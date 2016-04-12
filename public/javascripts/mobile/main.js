@@ -423,9 +423,12 @@ import './styles/mobile-general.scss';
 
     });
 
-    var _cardsWithTables = _.filter(pageMetadata.cards, {cardType: 'table'});
-    var _cardsWithoutTables = _.reject(pageMetadata.cards, {cardType: 'table'});
-    var allCardsWithOrder = _cardsWithoutTables.concat(_cardsWithTables);
+    var _cardsWithTables = _.filter(pageMetadata.cards, { cardType: 'table' });
+    var _cardsExpanded = _.filter(pageMetadata.cards, { expanded: true });
+    var _cardsOther = _.reject(pageMetadata.cards, function(card) {
+      return card.cardType == 'table' || card.expanded;
+    });
+    var allCardsWithOrder = _cardsExpanded.concat(_cardsOther).concat(_cardsWithTables);
 
     _.each(allCardsWithOrder, function(card) {
       var cardOptions = {
@@ -499,7 +502,8 @@ import './styles/mobile-general.scss';
           mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
         case 'column':
-          cardOptions.componentClass = 'column-chart';
+          cardOptions.containerClass = 'column-chart-upper-container';
+          cardOptions.componentClass = 'column-chart-upper-wrapper';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,

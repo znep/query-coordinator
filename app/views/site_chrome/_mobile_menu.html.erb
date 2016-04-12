@@ -1,5 +1,5 @@
 <div class="mobile-menu">
-  <h2 class="menu-header-title">Menu</h2>
+  <h2 class="menu-header-title">Menu</h2> <!-- TODO - localization for platform words -->
   <a class="menu-toggle" href="#">
     <span class="icon-close-2"></span>
   </a>
@@ -10,7 +10,9 @@
     </div>
 
     <div class="menu-section-header">Account</div>
-    <a class="mobile-btn sign-in-toggle" href="/login">Sign In</a>
+
+    <%= render 'mobile_user_actions' %>
+
     <div class="nav-links social-links">
       <%= render 'social_links', show_label: true %>
     </div>

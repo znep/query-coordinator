@@ -4,7 +4,7 @@
 /* Overrides */
 <%
   custom_themes.keys.each do |theme_section|
-    section_styles = custom_themes[theme_section]
+    section_styles = custom_themes[theme_section] || {}
     section_styles.each do |style_key, style_value|
       style_key_with_prefix = theme_variable_key(theme_section, style_key)
       theme_value = theme_value(style_key, style_value) %>

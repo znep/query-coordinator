@@ -248,6 +248,10 @@ a {
 		//featured content
 		.result-card {
 
+			.img-wrapper:hover {
+				cursor: pointer;
+			}
+
 			//MVP icons
 			.img-wrapper {
 				&.story, &.map, &.data-lens, &.chart {

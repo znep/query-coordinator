@@ -9,7 +9,7 @@
 #
 # @note 'save!' required to cancel save on failed validations
 class ProcessDocumentJob < ActiveJob::Base
-  queue_as :default
+  queue_as :documents
 
   rescue_from(StandardError) do |error|
     document_id = self.arguments.first

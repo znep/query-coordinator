@@ -43,5 +43,11 @@ Dropdown.prototype = {
         });
       });
     }
+
+    document.addEventListener('click', function() {
+      Array.from(document.querySelectorAll('.dropdown')).forEach(function(dropdown) {
+        dropdown.classList.remove('active');
+      });
+    });
   }
 }

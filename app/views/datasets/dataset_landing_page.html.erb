@@ -12,6 +12,24 @@
           <span class="tag-category"><%= @view.category.capitalize %></span>
         <%- end -%>
       </div>
+
+      <div class="entry-actions">
+        <div class="btn-group">
+          <button class="btn btn-default grid btn-sm">
+            <%= t('dataset_landing_page.action_buttons.data') %>
+          </button>
+          <button class="btn btn-default download btn-sm dropdown-orientation-bottom">
+            <%= t('dataset_landing_page.action_buttons.download') %>
+          </button>
+          <button class="btn btn-default api btn-sm" data-flannel="api-flannel" data-toggle>
+            <%= t('dataset_landing_page.action_buttons.api') %>
+          </button>
+          <button class="btn btn-default share btn-sm" data-modal="share-modal">
+            <%= t('dataset_landing_page.action_buttons.share') %>
+          </button>
+          <button class="btn btn-default share btn-sm"><span class="icon-waiting"></span></button>
+        </div>
+      </div>
     </div>
 
     <div class="entry-content">
@@ -43,3 +61,6 @@
     </div>
   </div>
 </div>
+
+<%= render :partial => 'dataset_landing_page_api_flannel' %>
+<%= render :partial => 'dataset_landing_page_share_modal' %>

@@ -1,11 +1,20 @@
+$body-background: #f8f8f8;
+$white: #fff;
+$whitesmoke: #f5f5f5;
+$description-toggle-color: #adadad;
+$alert-link-color: #5aafe1;
+$share-twitter-color: #55acee;
+$share-facebook-color: #3b5998;
+$share-email-color: #333;
+
 body {
   margin: 0;
   padding: 0;
-  background: #f8f8f8;
+  background: $body-background;
 }
 
 .info-pane {
-  background: #fff;
+  background: $white;
   width: 100%;
 
   .container {
@@ -20,10 +29,30 @@ body {
     margin-right: 11px;
   }
 
+  .entry-header {
+    .entry-title {
+      width: auto !important;
+      margin-right: 20px !important;
+    }
+
+    .entry-actions {
+      padding-top: 8px;
+      text-align: right;
+
+      .btn-default {
+        background: $whitesmoke;
+      }
+
+      .dropdown:after {
+        display: none;
+      }
+    }
+  }
+
   .entry-description-toggle {
     margin-left: 4px;
     text-decoration: underline;
-    color: #adadad;
+    color: $description-toggle-color;
     cursor: pointer;
   }
 
@@ -73,5 +102,111 @@ body {
     .entry-meta.updated .meta-title {
       padding-top: 0;
     }
+  }
+}
+
+#api-flannel {
+  letter-spacing: 0;
+  text-align: left;
+  width: 420px;
+
+  .flannel-header {
+    max-width: 95%;
+  }
+
+  h4, h6 {
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .api-endpoint {
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .layer-name {
+      margin-bottom: 0.2rem;
+    }
+
+    .api-endpoint-input {
+      color: #adadad;
+    }
+  }
+
+  .flannel-content {
+    &.api-description {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group-btn {
+      .dropdown {
+        padding: 6px 12px;
+      }
+    }
+  }
+
+  @media(max-width: 420px) {
+    width: auto;
+
+    .flannel-content {
+      .btn:not(.dropdown) {
+        display: block;
+        width: 100%;
+        margin-bottom: 6px;
+        text-align: center;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+#share-modal {
+  .modal-header {
+    h5 {
+      margin: 0;
+    }
+
+    margin-bottom: 24px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .alert a {
+    color: $alert-link-color;
+  }
+
+  .twitter, .facebook, .email {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    [class^="icon"] {
+      margin-right: 8px;
+    }
+  }
+
+  .twitter a {
+    color: $share-twitter-color;
+  }
+
+  .facebook a {
+    color: $share-facebook-color;
+  }
+
+  .email a {
+    color: $share-email-color;
+  }
+}
+
+.btn {
+  [class^="icon-"]:last-child {
+    padding-right: 0;
   }
 }

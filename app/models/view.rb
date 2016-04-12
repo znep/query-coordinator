@@ -899,12 +899,14 @@ class View < Model
   end
 
   def api_foundry_url
+    uid = new_backend? ? id : migrations.fetch(:nbeId, id)
     domain = self.federated? ? self.domainCName : CurrentDomain.cname
-    "https://dev.socrata.com/foundry/#{domain}/#{id}"
+    "https://dev.socrata.com/foundry/#{domain}/#{uid}"
   end
 
   def resource_url(request = nil)
-    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{id}.json"
+    uid = new_backend? ? id : migrations.fetch(:nbeId, id)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{uid}.json"
   end
 
   def odata_url(request = nil)

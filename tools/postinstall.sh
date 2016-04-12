@@ -1,4 +1,6 @@
 #!/bin/bash
 
-mkdir -p app/styles/vendor
-cp node_modules/socrata-styleguide/dist/css/styleguide.css app/styles/vendor
+mkdir -p public/stylesheets/styleguide/css
+mkdir -p public/stylesheets/styleguide/fonts
+cp node_modules/socrata-styleguide/dist/css/* public/stylesheets/styleguide/css
+cp node_modules/socrata-styleguide/dist/fonts/* public/stylesheets/styleguide/fonts

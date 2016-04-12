@@ -1,0 +1,39 @@
+<div class="api-endpoint">
+  <section class="flannel-content">
+    <%- if show_name -%>
+      <h6 class="layer-name"><%= view.name %></h6>
+    <%- end -%>
+    <a class="btn btn-default btn-sm" href="<%= view.api_foundry_url %>" target="external">
+      <span class="icon-copy-document"></span>
+      <%= t('dataset_landing_page.api_flannel.foundry_button') %>
+    </a>
+    <a class="btn btn-default btn-sm" href="https://dev.socrata.com" target="external">
+      <span class="icon-settings"></span>
+      <%= t('dataset_landing_page.api_flannel.developer_portal_button') %>
+    </a>
+  </section>
+  <section class="flannel-content">
+    <h6><%= t('dataset_landing_page.api_flannel.endpoint_title') %></h6>
+    <form>
+      <span class="input-group">
+        <input class="api-endpoint-input text-input text-input-sm" type="text" value="<%= view.resource_url %>" readonly />
+        <%- if view.is_geospatial? -%>
+          <span class="input-group-btn">
+            <div class="api-endpoint-format-selector dropdown btn btn-default btn-simple btn-sm" data-orientation="bottom" data-selectable>
+              <span>JSON</span><span class="icon-arrow-down"></span>
+              <ul class="dropdown-options">
+                <li><a class="option" data-value="json">JSON</a></li>
+                <li><a class="option" data-value="geojson">GeoJSON</a></li>
+              </ul>
+            </div>
+          </span>
+        <%- end -%>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-primary btn-sm copy" data-confirmation="<%= t('dataset_landing_page.copy_success') %>">
+            <%= t('dataset_landing_page.copy') %>
+          </button>
+        </span>
+      </span>
+    </form>
+  </section>
+</div>

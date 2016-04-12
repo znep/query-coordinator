@@ -617,14 +617,21 @@ class ViewTest < Test::Unit::TestCase
   end
 
   def test_api_foundry_url
-    view = View.new('id' => '1234-1234')
+    stub_core_server_connection
     CurrentDomain.stubs(:cname => 'giraffes')
+    view = View.new('id' => '1234-1234')
+    View.any_instance.stubs(:migrations => {})
     assert_equal('https://dev.socrata.com/foundry/giraffes/1234-1234', view.api_foundry_url)
     view.stubs(:federated? => true, :domainCName => 'wombats')
     assert_equal('https://dev.socrata.com/foundry/wombats/1234-1234', view.api_foundry_url)
+    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
+    assert_equal('https://dev.socrata.com/foundry/wombats/abcd-abcd', view.api_foundry_url)
   end
 
   def test_resource_url_uses_proper_scheme
+    stub_core_server_connection
+    View.any_instance.stubs(:migrations => {})
+
     view = View.new('id' => '1234-1234')
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)
     mock_request = stub
@@ -632,6 +639,8 @@ class ViewTest < Test::Unit::TestCase
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url(mock_request))
     mock_request.stubs(:scheme => 'http')
     assert_equal('http://localhost/resource/1234-1234.json', view.resource_url(mock_request))
+    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
+    assert_equal('http://localhost/resource/abcd-abcd.json', view.resource_url(mock_request))
   end
 
   def test_odata_url_uses_proper_scheme

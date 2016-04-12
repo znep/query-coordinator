@@ -2,8 +2,11 @@
 # system, it is possible to create a new 'type' simply by choosing a different string
 # when coding it.
 #
-# The `discourage_in_creation_ui` property is meaningful.
+# Meaningful Properties (they do not show up in autocomplete):
+# * `discourage_in_creation_ui`
 #   When you add an `instead`, prefer using the named route, such as :feature_flags_config
+# * `default-config_name`
+#   When creating a config, this will be the default.
 # Everything else just gets dumped out for the user to see.
 #
 # `known_properties` is mostly to make sure it's easy for the autocomplete to match something.

@@ -615,6 +615,7 @@ function TimelineChart(element, vif) {
   var cachedChartData = null;
 
   var lastHighlightData = {};
+  var lastHighlightDataByOffset = {};
 
   // Keep track of whether or not the mouse position is within this
   // instance of a timeline chart's visualization area (the chart itself
@@ -2348,6 +2349,16 @@ function TimelineChart(element, vif) {
    *                           the visualization, in pixels.
    */
   function highlightChartByMouseOffset(offsetX) {
+    if (vif.configuration.isMobile) {
+      if (lastHighlightDataByOffset == offsetX) {
+        offsetX = null;
+        clearChartHighlight();
+        return;
+      }
+
+      lastHighlightDataByOffset = offsetX;
+    }
+
     var highlightData;
     if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
       highlightData = filterChartDataByOffset(offsetX);

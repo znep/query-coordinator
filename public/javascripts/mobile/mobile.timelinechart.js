@@ -8,7 +8,7 @@ module.exports = function(values, $target) {
 
   var timelineChartVIF = {
     'aggregation': {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     'columnName': values.columnName,

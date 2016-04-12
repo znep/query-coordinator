@@ -1,3 +1,5 @@
+@import "grid";
+
 .modal {
   position: fixed;
   top: 0;
@@ -32,6 +34,13 @@
   > *:last-child {
     margin-bottom: 0;
   }
+
+  @media(max-width: $small) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
 }
 
 .modal-header {
@@ -49,7 +58,7 @@
   right: 0;
   padding: 0;
   font-size: ms(-1);
-  color: $light-grey-1; 
+  color: $light-grey-1;
 
   &:hover {
     color: $dark-grey-1;

@@ -8,13 +8,17 @@ class Displays::Table < Displays::Base
       I18n.t('core.view_types.table')
     elsif @view.is_grouped?
       I18n.t('core.view_types.group')
+    elsif @view.draft?
+      I18n.t('core.view_types.draft')
     else
       I18n.t('core.view_types.filter')
     end
   end
 
   def type
-    if @view.is_unpublished?
+    if @view.draft?
+      'draft'
+    elsif @view.is_unpublished?
       'unpublished'
     elsif @view.is_api_geospatial?
       'map'
@@ -26,6 +30,14 @@ class Displays::Table < Displays::Base
       'grouped'
     else
       'filter'
+    end
+  end
+
+  def icon_class
+    if @view.draft?
+      'icon-table'
+    else
+      super
     end
   end
 end

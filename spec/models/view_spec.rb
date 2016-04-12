@@ -2,6 +2,42 @@ require 'rails_helper'
 
 describe View do
 
+  describe 'draft display types' do
+    let(:fake_views) do
+      [
+        {
+          'id' => 'fake-fak1',
+          'name' => 'Fake 1',
+          'view_type' => 'tabular',
+          'display_type' => 'draft'
+        },
+        {
+          'id' => 'fake-fak2',
+          'name' => 'Fake 2',
+          'view_type' => 'story'
+        },
+        {
+          'id' => 'fake-fak2',
+          'name' => 'Fake 2',
+          'view_type' => 'tabular',
+          'display_type' => 'table'
+        }
+      ]
+    end
+
+    it 'Should return true when given an asset that is a draft dataset?' do
+      expect(View.new(fake_views[0]).draft?)
+    end
+
+    it 'Should return false when given a page that is not a draft display type' do
+      expect(!View.new(fake_views[1]).draft?)
+    end
+
+    it 'Should return false when given a tabular dataset without the draft display type' do
+      expect(!View.new(fake_views[2]).draft?)
+    end
+  end
+  
   describe 'pulse view types' do
     let(:fake_views) do
       [

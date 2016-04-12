@@ -486,6 +486,7 @@ en:
           chart: Chart
           dataset: Dataset
           data_lens: Data Lens
+          draft: Draft Dataset
           filter: Filtered View
           form: Form
           href: External Link
@@ -590,6 +591,7 @@ en:
           charts: Charts
           data_lens: Data Lens pages
           datasets: Datasets
+          draft: Draft Datasets
           filters: Filtered Views
           forms: Forms
           href: External Datasets
@@ -598,7 +600,7 @@ en:
           pulse_help: Learn about Pulse
           story: Stories
           story_help: New
-          unpublished: Unpublished Datasets
+          unpublished: Working Copies
         view_types_singular_title: type
         view_types_title: View Types
       listing:

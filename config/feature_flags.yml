@@ -189,6 +189,9 @@ hide_interpolated_nulls:
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
+ingress_reenter:
+  description: Changes the order and allows re-entrancy to the import wizard
+  defaultValue: false
 ingress_strategy:
   description: When performing import operations, such as via the wizard or append/replace, this determines the endpoint to use. If `obe`, it will use the existing endpoint. If `nbe`, it will be set `nbe=true` on relevant calls. If `delta-importer`, it will use the Delta Importer Javascript port.
   defaultValue: obe

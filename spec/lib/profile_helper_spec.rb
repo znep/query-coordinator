@@ -12,7 +12,7 @@ RSpec.describe ProfileHelper, type: :helper do
       end
     end
   end
-
+  
   describe '#view_url' do
     let(:rights) { [] }
     let(:current_user_id) { 'four-four' }

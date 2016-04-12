@@ -24,6 +24,7 @@ module Cetera
         'story' => 'stories',
         'pulse' => 'pulses',
         'tables' => 'datasets',
+        'draft' => 'drafts',
         'blob' => 'files',
         'href' => 'links'
       }.fetch(limitTo, limitTo)
@@ -104,6 +105,7 @@ module Cetera
 
       when 'datalens' then Cetera::Displays::DataLens
       when 'pulse' then Cetera::Displays::Pulse
+      when 'draft' then Cetera::Displays::Draft
       when 'story' then Cetera::Displays::Story
 
       when 'dataset' then Cetera::Displays::Dataset

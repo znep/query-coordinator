@@ -1219,6 +1219,10 @@ class View < Model
     displayType == 'pulse'
   end
 
+  def draft?
+    displayType == 'draft' && viewType == 'tabular'
+  end
+
   def story?
     # 12/8/2015 - We are changing the viewType of a storyteller asset from 'href'
     # to 'story'. As such, for the duration of our migration we will have to

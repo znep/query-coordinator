@@ -84,6 +84,10 @@ module ProfileHelper
     "/pulse/view/#{view.id}"
   end
 
+  def draft_url(view)
+    "/d/#{view.id}"
+  end
+  
   def story_url(view)
     is_admin = current_user.is_admin?
     base_relative_url = "/stories/s/#{view.id}"
@@ -103,8 +107,14 @@ module ProfileHelper
       end
     elsif owns?(view, current_user) || is_admin
       base_relative_url << '/edit'
+    elsif current_user.has_right?(UserRights::VIEW_UNPUBLISHED_STORY)
+      base_relative_url << '/preview'
     else
       base_relative_url
     end
+  end
+
+  def viewing_self?
+    @user.id == current_user.id
   end
 end

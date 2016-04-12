@@ -28,6 +28,20 @@ class BrowseActionsTest < Test::Unit::TestCase
         'enable pulse feature flag is true, but we do not have a pulse link in the catalog')
     end
 
+    def test_does_not_add_drafts_if_feature_flag_false
+      stub_feature_flags_with(:ingress_reenter, false)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
+             'new wizard order feature flag is false, but we have a drafts link in the catalog')
+    end
+
+    def test_does_add_drafts_if_feature_flag_true
+      stub_feature_flags_with(:ingress_reenter, true)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
+             'new wizard order feature flag is true, but we do not have a drafts link in the catalog')
+    end
+    
     def test_does_not_add_stories_if_feature_flag_false
       stub_feature_flags_with(:stories_show_facet_in_catalog, false)
       view_types_list = @browse_actions_container.send(:view_types_facet)

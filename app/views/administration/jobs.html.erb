@@ -23,6 +23,35 @@
 <div class="contentBox withLeftNavigation jobsScreen">
   <%= display_standard_flashes %>
 
+  <div class="jobs-filter">
+    <span class="jobs-filter--header"><%= t("#{jobs_prefix}.filters.filter_by") %>:</span>
+    <form class="jobs-filter--form" action="/admin/jobs">
+      <label for="activity_type"><%= t("#{jobs_prefix}.filters.type") %>:</label>
+      
+      <%= select_tag(:activity_type, options_for_select([[t("#{jobs_prefix}.filters.all"), 'All']]) + grouped_options_for_select(
+        [
+          [t("#{jobs_prefix}.filters.import_activity"),
+            [
+              [t("#{jobs_prefix}.filters.import"), 'Import'],
+              [t("#{jobs_prefix}.filters.append"), 'Append'],
+              [t("#{jobs_prefix}.filters.replace"), 'Replace']
+            ]
+          ]
+          # TODO once these events are added, uncomment this!
+          #[t("#{jobs_prefix}.filters.data_workflow"),
+          #  [
+          #    [t("#{jobs_prefix}.filters.working_copy"), 'WorkingCopy'],
+          #    [t("#{jobs_prefix}.filters.publish"), 'Publish']
+          #  ] 
+          #]
+        ],
+        params[:activity_type]
+      )) %>
+      
+      <button type="submit"><%= t("#{jobs_prefix}.filters.apply_filters") %></button>
+    </form>
+  </div>
+
   <table class="gridList">
     <thead>
       <tr>
@@ -97,7 +126,7 @@
 <div class="pager">
   <% @pager_elements.each do |element| %>
     <% if element.page? %>
-      <%= link_to(element.index, "/admin/jobs?page=#{element.index}",
+      <%= link_to(element.index, "/admin/jobs?page=#{element.index}&#{element.get_params}",
                   :class => 'pager-element page ' + (element.selected ? 'pager-page-selected' : '')) %>
     <% else %>
       <span class="pager-element ellipsis">…</span>

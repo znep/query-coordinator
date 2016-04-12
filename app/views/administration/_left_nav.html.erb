@@ -7,49 +7,49 @@
   </div>
   <ul class="navigationList adminNav">
       <li class="analytics">
-        <%= admin_nav_link_to 'Site Analytics', :action => 'analytics' %>
+        <%= admin_nav_link_to 'Site Analytics', :controller => '/administration', :action => 'analytics' %>
       </li>
     <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
       <li class="users">
-        <%= admin_nav_link_to 'Users', :action => 'users' %>
+        <%= admin_nav_link_to 'Users', :controller => '/administration', :action => 'users' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
       <li class="federation">
-        <%= admin_nav_link_to 'Federation', :action => 'federations' %>
+        <%= admin_nav_link_to 'Federation', :controller => '/administration', :action => 'federations' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
-        <%= admin_nav_link_to 'Comments', :action => 'comment_moderation' %>
+        <%= admin_nav_link_to 'Comments', :controller => '/administration', :action => 'comment_moderation' %>
       </li>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
       <li class="viewmoderation">
-        <%= admin_nav_link_to 'Views', :action => 'views' %>
+        <%= admin_nav_link_to 'Views', :controller => '/administration', :action => 'views' %>
       </li>
     <%- end -%>
     <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
       <li class="appearance">
-        <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
+        <%= admin_nav_link_to 'SDP Templates', :controller => '/administration', :action => 'sdp_templates' %>
       </li>
     <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
       <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
         <li class="contentmgmt">
-          <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>
+          <%= admin_nav_link_to 'DataSlate Pages', :controller => '/administration', :action => 'canvas_pages' %>
         </li>
       <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
            CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="datasets">
-        <%= admin_nav_link_to t('screens.admin.datasets.title'), :action => 'datasets' %>
+        <%= admin_nav_link_to t('screens.admin.datasets.title'), :controller => '/administration', :action => 'datasets' %>
       </li>
     <%- end -%>
     <%- if can_view_georegions_admin?(current_user) -%>
       <li class="georegions">
-        <%= admin_nav_link_to t('screens.admin.georegions.title'), :action => 'georegions' %>
+        <%= admin_nav_link_to t('screens.admin.georegions.title'), :controller => '/administration', :action => 'georegions' %>
       </li>
     <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
@@ -57,29 +57,29 @@
               CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||
               CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
         <li class="homemgmt">
-          <%= admin_nav_link_to 'Home Page', :action => 'home' %>
+          <%= admin_nav_link_to 'Home Page', :controller => '/administration', :action => 'home' %>
         </li>
       <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="metadata">
-        <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
+        <%= admin_nav_link_to 'Metadata', :controller => '/administration', :action => 'metadata' %>
       </li>
     <%- end -%>
     <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
             CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
       <li class="jobs">
-        <%= admin_nav_link_to 'Jobs', :action => 'jobs' %>
+        <%= admin_nav_link_to 'Jobs', :controller => '/administration', :action => 'jobs' %>
       </li>
     <% end %>
     <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
-        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :action => 'routing_approval' %>
+        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :controller => '/administration/routing_approval', :action => 'index' %>
       </li>
     <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
+        <%= admin_nav_link_to 'Internal', :controller => 'internal', :controller => '/administration', :action => 'index' %>
       </li>
     <%- end -%>
     <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>

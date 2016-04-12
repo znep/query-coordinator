@@ -11,14 +11,14 @@
 
   <ul class="adminList">
       <li class="analytics">
-        <%= admin_nav_link_to 'Site Analytics', :action => 'analytics' %>
+        <%= admin_nav_link_to 'Site Analytics', :controller => '/administration', :action => 'analytics' %>
         <span class="description">
           View sitewide statistics for datasets, views, visitors and more
         </span>
       </li>
     <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
       <li class="users">
-        <%= admin_nav_link_to 'Users', :action => 'users' %>
+        <%= admin_nav_link_to 'Users', :controller => '/administration', :action => 'users' %>
         <span class="description">
           Manage users on your site and what permissions and abilities they have
         </span>
@@ -26,7 +26,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
       <li class="federation">
-        <%= admin_nav_link_to 'Federation', :action => 'federations' %>
+        <%= admin_nav_link_to 'Federation', :controller => '/administration', :action => 'federations' %>
         <span class="description">
           Manage connections and data sharing with other sites via Open Data
           Federation Services
@@ -35,7 +35,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
-        <%= admin_nav_link_to 'Comment Moderation', :action => 'comment_moderation' %>
+        <%= admin_nav_link_to 'Comment Moderation', :controller => '/administration', :action => 'comment_moderation' %>
         <span class="description">
           Review and moderate comments for datasets on your site
         </span>
@@ -43,7 +43,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
       <li class="viewmoderation">
-        <%= admin_nav_link_to 'View Moderation', :action => 'views' %>
+        <%= admin_nav_link_to 'View Moderation', :controller => '/administration', :action => 'views' %>
           <span class="description">
             View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
           </span>
@@ -51,7 +51,7 @@
     <%- end -%>
     <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
       <li class="appearance">
-        <%= admin_nav_link_to 'SDP Templates', :action => 'sdp_templates' %>
+        <%= admin_nav_link_to 'SDP Templates', :controller => '/administration', :action => 'sdp_templates' %>
         <span class="description">
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
@@ -59,7 +59,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
       <li class="contentmgmt">
-        <%= admin_nav_link_to 'DataSlate Pages', :action => 'canvas_pages' %>
+        <%= admin_nav_link_to 'DataSlate Pages', :controller => '/administration', :action => 'canvas_pages' %>
         <span class="description">
           List and manage the DataSlate pages on this domain
         </span>
@@ -68,7 +68,7 @@
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
             CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="datasets">
-        <%= admin_nav_link_to t('screens.admin.datasets.title'), :action => 'datasets' %>
+        <%= admin_nav_link_to t('screens.admin.datasets.title'), :controller => '/administration', :action => 'datasets' %>
         <span class="description">
           <%= t('screens.admin.datasets.description') %>
         </span>
@@ -76,7 +76,7 @@
     <%- end -%>
     <%- if can_view_georegions_admin?(current_user) -%>
       <li class="georegions">
-        <%= admin_nav_link_to t('screens.admin.georegions.title'), :action => 'georegions' %>
+        <%= admin_nav_link_to t('screens.admin.georegions.title'), :controller => '/administration', :action => 'georegions' %>
         <span class="description">
           <%= t('screens.admin.georegions.description') %>
         </span>
@@ -86,7 +86,7 @@
             CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||
             CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="homemgmt">
-        <%= admin_nav_link_to 'Home Page', :action => 'home' %>
+        <%= admin_nav_link_to 'Home Page', :controller => '/administration', :action => 'home' %>
         <span class="description">
           Configure what content is featured on the home page
         </span>
@@ -94,7 +94,7 @@
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
       <li class="metadata">
-        <%= admin_nav_link_to 'Metadata', :action => 'metadata' %>
+        <%= admin_nav_link_to 'Metadata', :controller => '/administration', :action => 'metadata' %>
         <span class="description">
           Manage the dataset metadata fields, including categories and custom fields
         </span>
@@ -102,7 +102,7 @@
     <%- end -%>
     <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
-        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :action => 'routing_approval' %>
+        <%= admin_nav_link_to 'Dataset Routing &amp; Approval', :controller => '/administration/routing_approval', :action => 'index' %>
         <span class="description">
           Review datasets that are in the approval process, and manage the steps of the approval process
         </span>
@@ -111,7 +111,7 @@
     <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
             CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
       <li class="jobs">
-        <%= admin_nav_link_to 'Jobs', :action => 'jobs' %>
+        <%= admin_nav_link_to 'Jobs', :controller => '/administration', :action => 'jobs' %>
         <span class="description">
           See all current and recent long-running data processing jobs happening on your platform
         </span>
@@ -119,7 +119,7 @@
     <%- end %>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
+        <%= admin_nav_link_to 'Internal', :controller => 'internal', :controller => '/administration', :action => 'index' %>
         <span class="description">
           Change and add modules, sites, and more
         </span>

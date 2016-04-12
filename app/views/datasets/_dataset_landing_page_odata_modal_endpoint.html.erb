@@ -1,0 +1,20 @@
+<div class="endpoint odata-endpoint">
+  <section class="modal-content">
+    <%- if show_name -%>
+      <h6 class="layer-name"><%= "#{view.name} #{t('dataset_landing_page.odata_modal.endpoint_title')}" %></h6>
+    <%- else -%>
+      <h6 class="endpoint-title"><%= t('dataset_landing_page.odata_modal.endpoint_title') %></h6>
+    <%- end -%>
+    <form>
+      <span class="input-group">
+        <input class="endpoint-input text-input text-input-sm" type="text" value="<%= view.odata_url %>" readonly />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-primary btn-sm copy" data-confirmation="<%= t('dataset_landing_page.copy_success') %>">
+            <%= t('dataset_landing_page.copy') %>
+          </button>
+        </span>
+      </span>
+    </form>
+  </section>
+</div>
+

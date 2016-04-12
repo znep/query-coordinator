@@ -578,11 +578,14 @@ import './styles/mobile-general.scss';
       }
     });
 
+    var filterDataObservable = document.createDocumentFragment();
+
     ReactDOM.render(<FilterContainer
       domain={ datasetMetadata.domain }
       datasetId={ pageMetadata.datasetId }
       filters={ preloadedFilters }
       filterOps={ aFilterOps }
+      filterDataObservable={ filterDataObservable }
       handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
 
     function handleBroadcast(filterObject) {
@@ -597,7 +600,23 @@ import './styles/mobile-general.scss';
         if (parseInt(data) > 0) {
           $(document).trigger('appliedFilters.qfb.socrata', filterObject);
         } else {
-          // TODO: open flannel here
+          $('#modal-container').removeClass('hidden').on('click', function() {
+            $(this).addClass('hidden');
+          });
+
+          $('.warning-modal').on('click', function(e) {
+            e.stopPropagation();
+          });
+          $('#btn-close').on('click', function() {
+            $('#modal-container').addClass('hidden');
+          });
+          $('#btn-proceed').on('click', function() {
+            $('#modal-container').addClass('hidden');
+          });
+          $('#btn-clear-filters').on('click', function() {
+            filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
+            $('#modal-container').addClass('hidden');
+          });
         }
       });
     }

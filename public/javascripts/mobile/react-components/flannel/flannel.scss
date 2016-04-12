@@ -19,3 +19,51 @@ body.is-mobile.is-modal-open {
     opacity: 0.7;
   }
 }
+
+#modal-container {
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 2000;
+}
+.warning-modal {
+  position: relative;
+  padding: 20px;
+  color: #555555;
+  background-color: #F3F3F3;
+  .icon-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 1rem;
+    color: #aaa;
+  }
+  h1 {
+    margin-top: 6px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #555555;
+  }
+  p {
+    font-size: 1.6rem;
+  }
+  .warning-modal-button-container {
+    display: flex;
+    justify-content: flex-end;
+    .btn {
+      padding: 5px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 0;
+      &.btn-primary {
+        background-color: #3495D4;
+      }
+    }
+  }
+}

@@ -153,13 +153,12 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var currentHtmlFragment = '';
     var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
       fileUploader.cancel();
 
       var htmlFragment = $(event.target).val();
       _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);
-      if (htmlFragment.length === 0 || htmlFragment === currentHtmlFragment) {
+      if (htmlFragment.length === 0) {
         return;
       }
 
@@ -176,7 +175,6 @@ export default function AssetSelectorRenderer(options) {
         doneAction: Actions.EMBED_CODE_UPLOAD_DONE
       });
 
-      currentHtmlFragment = htmlFragment;
     }, Constants.EMBED_CODE_DEBOUNCE_DELAY);
 
     _container.on(

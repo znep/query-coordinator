@@ -592,34 +592,36 @@ import './styles/mobile-general.scss';
       filterDataObservable={ filterDataObservable }
       handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
 
+    $('.warning-modal').on('click', function(e) {
+      e.stopPropagation();
+    });
+
+    $('#btn-close, #btn-proceed').on('click', function() {
+      $('#modal-container').addClass('hidden');
+    });
+
+    $('#btn-clear-filters').on('click', function() {
+      filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
+      $('#modal-container').addClass('hidden');
+    });
+
     function handleBroadcast(filterObject) {
       var whereClauseComponents = dataProviders.SoqlHelpers.whereClauseFilteringOwnColumn({
         filters: filterObject.filters,
         type: 'table'
       });
 
-      var soqlDataProvider = new dataProviders.SoqlDataProvider({ datasetUid: datasetMetadata.id, domain: datasetMetadata.domain });
+      var soqlDataProvider = new dataProviders.SoqlDataProvider({
+        datasetUid: datasetMetadata.id,
+        domain: datasetMetadata.domain
+      });
 
       soqlDataProvider.getRowCount(whereClauseComponents).then(function(data) {
-        if (parseInt(data) > 0) {
+        if (parseInt(data, 10) > 0) {
           $(document).trigger('appliedFilters.qfb.socrata', filterObject);
         } else {
           $('#modal-container').removeClass('hidden').on('click', function() {
             $(this).addClass('hidden');
-          });
-
-          $('.warning-modal').on('click', function(e) {
-            e.stopPropagation();
-          });
-          $('#btn-close').on('click', function() {
-            $('#modal-container').addClass('hidden');
-          });
-          $('#btn-proceed').on('click', function() {
-            $('#modal-container').addClass('hidden');
-          });
-          $('#btn-clear-filters').on('click', function() {
-            filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
-            $('#modal-container').addClass('hidden');
           });
         }
       });

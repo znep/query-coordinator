@@ -40,6 +40,7 @@ When a significant amount of changes have been made, according to the rules of [
 3. Run `gulp dist` to update `/dist`.
 4. Commit the changes: `git commit -am "Major.Minor.Patch;" && git push origin master`.
 5. Tag the release, push it: `git tag Major.Minor.Patch && git push --tags`.
+6. Publish: `npm publish`
 
 ### Deploying to socrata.github.io/styleguide
 When a PR is successfully merged, an admin must run – from `master` — the deploy script at the base of the project.

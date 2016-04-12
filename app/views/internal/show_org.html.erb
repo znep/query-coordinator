@@ -21,10 +21,10 @@
         <%- else -%>
           <ul>
             <%- @org.domains.each do |domain| -%>
-            <li><a href="/internal/orgs/<%= @org.id.to_s + '/domains/' +
-              domain.cname %>">
-              <%= domain.name %> (<%= domain.cname %>)
-            </a></li>
+              <li><%= link_to(
+                "#{domain.name} (#{domain.cname})",
+                show_domain_path(domain_id: domain.cname)
+              ) %></li>
           <%- end -%>
         </ul>
       <%- end -%>
@@ -40,22 +40,28 @@
           <label>CName:</label>
           <input type="text" name="domain[cName]"/>
         </div>
-        <div class='line'>
-          <label>Short Name:</label>
-          <input type="text" name="domain[shortName]"/>
-        </div>
-        <div class='line'>
-          <label>Tier:</label>
-          <select name="domain[accountTierId]">
-            <%- @tiers.each do |tier| -%>
-            <option value="<%= tier.id %>"><%= tier.name %></option>
-            <%- end -%>
-          </select>
-        </div>
-        <input type="hidden" name="config[parentDomainCName]" value="<%= @domains.first.cname %>" />
-        <input type="hidden" name="domain[parentDomainId]" value="<%= @domains.first.id %>" />
+        <input type="hidden" name="config[parentDomainCName]" value="<%= @default_domain.cname %>" />
+        <input type="hidden" name="domain[parentDomainId]" value="<%= @default_domain.id %>" />
         <input type="submit" value="Create"/>
       <% end %>
     <%- end -%>
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      $('input[name="domain[cName]"]').keydown(function() {
+        var $this = $(this);
+        // Copied from InternalController#valid_cname?
+        var validCname = /^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/.test($this.val());
+        if (!validCname) {
+          $this.css('background-color', '#FF9494');
+          // TODO: Should probably add an explanatory warning of some kind.
+        } else {
+          $this.css('background-color', 'white');
+        }
+      });
+    });
+  </script>
+<% end %>

@@ -8,7 +8,7 @@ module.exports = function(values, $target) {
 
   var timelineChartVIF = {
     'aggregation': {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     'columnName': values.columnName,
@@ -94,7 +94,7 @@ module.exports = function(values, $target) {
   function mobileFlyoutRender(payload) {
     var flyoutPosition = payload.flyoutPosition;
     var flyoutBounds = payload.element.getBoundingClientRect();
-    var highlightedBarWidth = $('.timeline-chart-highlight-container').width();
+    var highlightedBarWidth = $timelineChartElement.find('.timeline-chart-highlight-container').width();
     var filteredLabelLine = '';
     var valuesStyleClass = 'unfiltered';
 
@@ -111,13 +111,15 @@ module.exports = function(values, $target) {
       unFilteredValue[0] + '<span> ' + unFilteredValue[1] + '</span></div>';
 
     var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
-    var dotTop = flyoutPosition.vertical - 297;
+    var dotTop = flyoutPosition.vertical +
+      $timelineChartElement.parent().find('.intro-text').height() +
+      parseInt($('.timeline-chart-upper-container').css('border-width')) + 5;
 
     var flyoutData = $('<div>', {
       'class': 'title-wrapper',
       html:
+      '<div class="dot" style="left: ' + dotLeft + 'px; top: ' + dotTop + 'px;"></div>' +
       '<div class="labels mobile">' +
-        '<div class="dot" style="left: ' + dotLeft + 'px; top: ' + dotTop + 'px;"></div>' +
         '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
         '<h4 class="title pull-left">' + payload.title + '</h4>' +
         '<div class="values pull-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +

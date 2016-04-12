@@ -110,7 +110,6 @@ javascripts:
     - public/javascripts/component/content/catalog.js
     - public/javascripts/component/content/comments.js
     - public/javascripts/component/content/fixed-container.js
-    - public/javascripts/component/content/float-grid-container.js
     - public/javascripts/component/content/grid-container.js
     - public/javascripts/component/content/menu.js
     - public/javascripts/component/content/picture.js
@@ -370,6 +369,7 @@ javascripts:
   screen-internal:
     - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/screens/internal.js
+    - public/javascripts/plugins/ZeroClipboard.js
   screen-videos:
     - public/javascripts/plugins/jquery.quicksand.js
     - public/javascripts/screens/videos.js
@@ -680,8 +680,6 @@ javascripts:
     - public/javascripts/controls/panes/permissions.js
     - public/javascripts/controls/panes/share-dataset.js
     - public/javascripts/screens/api-manage.js
-  masonry:
-    - public/javascripts/plugins/jquery.masonry.js
   columnizer:
     - public/javascripts/plugins/jquery.columnizer.js
   tagcloud:
@@ -754,7 +752,6 @@ dump:
     - waypoints
     - image-uploader
     - awesomecomplete
-    - masonry
     - columnizer
     - markdown-render
     - markdown-create

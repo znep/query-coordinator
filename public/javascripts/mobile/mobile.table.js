@@ -6,7 +6,7 @@ module.exports = function(values, $target) {
 
   var tableVIF = {
     aggregation: {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     'columnName': values.columnName,

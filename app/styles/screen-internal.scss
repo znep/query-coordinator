@@ -83,7 +83,7 @@ form.wide {
     }
     textarea {
       width: 40em;
-      &[readonly=true] {
+      &[readonly=true], &[readonly=readonly] {
         background-color: #eee;
       }
     }
@@ -283,7 +283,7 @@ form.wide {
 dl.internalPanel {
   @include dl-section-content;
 }
-ul.config_type_autocomplete {
+ul.autocomplete {
   li.active p {
     white-space: normal;
   }
@@ -315,5 +315,171 @@ ul.config_type_autocomplete {
     padding: 1em;
     padding-left: 50%;
     text-align: right;
+  }
+}
+
+.internalPanelRedesign {
+  .expandable {
+    h2.headerLink {
+      @include sprite-accordion-icons;
+      width: 100%;
+      border-bottom: solid 1px black;
+      cursor: pointer;
+      .icon {
+        margin-top: 5px;
+        float: left;
+      }
+    }
+
+    div.collapsed {
+      display: none;
+    }
+  }
+
+  .actions button, .serialization button {
+    @include button;
+    font-size: 1.1em;
+    height: 2.5em;
+    margin-top: 1em;
+    padding-top: 0.1em;
+    display: inline-block;
+  }
+
+  .property.line {
+    .propertyActions {
+      display: inline-block;
+
+      a {
+        cursor: pointer;
+      }
+
+      .propertyAction {
+        display: none;
+      }
+    }
+  }
+
+  .configProperties {
+    .deleteLink, .exportLabel {
+      display: inline-block;
+      font-size: 1.1em;
+      margin-right: 0.5em;
+      padding-top: 0.4em;
+    }
+  }
+
+  .deleteMode .property.line .propertyActions .deleteAction {
+    display: block;
+  }
+  .exportMode .property.line .propertyActions .exportAction {
+    display: block;
+  }
+
+  .config_type_description {
+    margin-top: 0;
+
+    dt { width: 12.75rem; }
+    dd { padding-left: 12.75rem; width: calc(100% - 12.75rem); text-align: left; }
+    dd:first-of-type {
+      border-top: 0;
+    }
+  }
+
+  .newProperty input[type=text] {
+    width: 15.7em;
+  }
+
+  .serialization {
+    display: none;
+
+    .exportBox, .importBox, .doImportLink {
+      display: block;
+    }
+
+    .importBox, .exportBox {
+      width: 100%;
+    }
+
+    .importSection, .exportSection {
+      display: none;
+    }
+  }
+
+  .importMode .importSection, .exportMode .exportSection {
+    display: block;
+  }
+
+  #rename-config-to {
+    width: 15em;
+  }
+
+  .warning {
+    margin-top: 0.5em;
+    color: red;
+  }
+
+  .modeDescriptions {
+    div {
+      display: none;
+    }
+
+    .editMode {
+      display: block;
+    }
+  }
+
+  .featureList .line {
+    label {
+      display: inline-block;
+      font-size: 1.3em;
+      margin-top: 0.5em;
+      width: 16em;
+    }
+
+    &.featureDisabled {
+      color: #ccc;
+    }
+  }
+
+  .prebuiltActions dt {
+    .warning {
+      width: 100%;
+      white-space: normal;
+    }
+    input[type=submit] {
+      margin-top: 0;
+    }
+  }
+
+  .autocomplete {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+
+  .deleteConfig {
+    display: none;
+  }
+
+  .deleteMode .deleteConfig {
+    display: block;
+  }
+
+  .addConfigForm .warning {
+    .poorly_understood, .not_intended_for_direct_manipulation, .deprecation {
+      display: none;
+    }
+    .not_intended_for_direct_manipulation span.instead {
+      display: none;
+    }
+
+    &.poorly_understood .poorly_understood {
+      display: block;
+    }
+    &.not_intended_for_direct_manipulation .not_intended_for_direct_manipulation {
+      display: block;
+    }
+    &.deprecation .deprecation {
+      display: block;
+    }
   }
 }

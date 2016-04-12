@@ -1,0 +1,246 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title><%=
+  [ "Domain #{@domain.try(:name) || ''}",
+    'Internal Panel',
+    CurrentDomain.strings.site_title
+  ].join(' | ') %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation internalPanelRedesign">
+  <div class='content'>
+
+    <!-- Federations for everyone? <%= federations_for_everyone? %> -->
+
+    <%= render :partial => 'production_warning' %>
+    <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
+    <%= display_standard_flashes %>
+
+    <p>This is a
+    <a href="/internal/tiers/<%= @domain.accountTier.name %>">
+      <em><%= @domain.accountTier.name %></em>
+    </a>
+    domain.</p>
+    <p>Domain ID: <%= @domain.id %></p>
+
+    <h2>Domain/Aliases:</h2>
+    <%= form_tag update_aliases_path do %>
+      <div class='line'>
+        <%= label_tag 'new_cname', 'Primary CName' %>
+        <%= text_field_tag 'new_cname', @domain.cname %>
+      </div>
+      <div class='line'>
+        <%= label_tag 'aliases', 'Aliases' %>
+        <%= text_field_tag 'aliases', @domain.aliases, :title => 'separated by comma' %>
+      </div>
+      <%= submit_tag 'Update' %>
+    <% end %>
+
+    <h2>Configuration Sets</h2>
+    <ul>
+      <%- @configs.each do |conf|
+        case conf.type
+        when 'feature_flags'
+      -%>
+      <li><%= link_to 'Feature Flags', feature_flags_config_path %></li>
+      <%-
+        else
+      -%>
+      <li<%== ' class="isDefault"' if conf.default %>>
+      <a href='<%= show_config_path(org_id: @domain.organizationId,
+                                    domain_id: @domain.cname,
+                                    id: conf.id) %>'>
+        (<%= conf.type %>) <%= conf.name %>
+      </a>
+      </li>
+        <%- end -%>
+      <%- end -%>
+    </ul>
+
+    <h2>Add Configuration Set:</h2>
+    <%= form_tag create_site_config_path, :class => 'addConfigForm' do %>
+      <div class='line'>
+        <%= text_field_tag 'config[type]', '', :class => 'add_config_type' %>
+        <div class="warning">
+          <div class="poorly_understood">
+            This configuration is poorly understood or unknown, so if you're using this, please help document what it does.
+          </div>
+          <div class="not_intended_for_direct_manipulation">
+            This configuration is not intended for direct manipulation, so you probably shouldn't be creating it manually.
+            <span class="instead">Try going to <a>this page</a> instead.</span>
+          </div>
+          <div class="deprecation">
+            This configuration has been deprecated. It <i>should</i> do nothing even if you create it. Please don't create it.
+          </div>
+        </div>
+      </div>
+      <%= submit_tag 'Create' %>
+    <% end %>
+
+    <h2>Modules (formerly Modules and Features):</h2>
+    <div>Disabling a module will have it remain visible in this list. There is no functional difference between a disabled and removed module.</div>
+    <%# A module gets created in `domain_modules`. It is never deleted. A property is set in the config `feature_set`. This controls whether or not it is used. The exception is `federations`, which are automatically available in most cases unless it's not in our main datacenter. See CORE-2696 and InternalHelper#federations_for_everyone? %>
+    <div class="featureList">
+      <%- @domain.features.sort.each do |feature, enabled| -%>
+      <div class="line<%= ' featureDisabled' unless enabled %>">
+        <label><%= feature %></label>
+        <%= enable_or_disable_module_feature(feature, enabled) %>
+        <%= remove_module_feature(feature) %>
+      </div>
+      <%- end -%>
+    </div>
+
+    <h2>Add Module</h2>
+    <%= form_tag add_module_feature_path do %>
+      <div class='line'>
+        <%= text_field_tag 'new-feature_name' %>
+        <%= hidden_field_tag 'new-feature_enabled', 'enabled' %>
+      </div>
+      <%= submit_tag 'Add' %>
+    <% end %>
+
+    <div class="prebuiltActions expandable">
+      <%= expandable_header('Pre-built Actions') %>
+      <div class="collapsed">
+        <dl class="config_type_description">
+          <%= bulk_feature_flag_update(
+            @bulk_updates[:enable_nbe],
+            enable_text: 'Enable NBE-only',
+            disable_text: 'Reset from NBE-only',
+            feature_description: 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.') %>
+          <%= bulk_module_feature_addition(
+            @bulk_updates[:enable_govstat],
+            text: 'Enable GovStat',
+            feature_description: %Q!Add Open Performance to this domain. You will still need to go to #{link_to govstat_my_goals_path, '/stat/my/goals'}, press ~ twice, and type ".bootstrap".!.html_safe
+          ) %>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      var existingConfigTypes = <%== @configs.inject([]) { |memo, conf| memo << conf.type }.uniq.to_json %>;
+      var knownConfigTypes = <%== @known_config_types.to_json %>;
+
+      var $form = $('.addConfigForm');
+      $form.submit(function() {
+        var configType = $form.find('input[name="config[type]"]').val();
+
+        if (_.include(existingConfigTypes, configType)) {
+          return confirm('Hey, a config with type "{0}" already exists. Are you sure you want to add another one?'.format(configType));
+        } else {
+          return true;
+        }
+      });
+
+      var showAllFieldsRenderFunction = function(dataItem, topMatch, config) {
+        var toRender = [];
+        var excludeFields = (config.excludeFieldsFromRender || []).concat(config.nameField);
+        toRender.push(
+          $.tag2({ _: 'p', className: 'title', contents: dataItem[config.nameField] }));
+        _.each(_.difference(_.keys(dataItem), excludeFields), function(key) {
+          var value = dataItem[key];
+          // Autolink because that seems obvious.
+          // There's more refined autolinking theoretically possible, but it's more
+          // effort to figure out than it's worth.
+          if (/^http/.test(value)) {
+            value = {
+              _: 'a',
+              target: '_blank',
+              // Nuke all the html tags that awesomecomplete adds when matching.
+              href: $('<div>' + value + '</div>').text(),
+              contents: value
+            };
+          }
+          toRender.push(
+            $.tag2({ _: 'p', className: 'matchRow', contents: [
+              { _: 'span', className: 'matchedField', contents: key },
+              value]
+            }));
+        });
+        return _.pluck(toRender, '0.outerHTML').join('');
+      };
+
+      $('.addConfigForm input[name="config[type]"]').change(function() {
+        var chosenType = $(this).val();
+        var config = _.detect(knownConfigTypes, function(type) {
+          return type.name === chosenType;
+        });
+        var poorly_understood = { discourage_in_creation_ui: { reason: 'poorly_understood' }};
+        displayDiscouragement(config || poorly_understood);
+      });
+
+      var displayDiscouragement = function(dataItem) {
+        var discouragement = dataItem.discourage_in_creation_ui;
+        var $warning = $('.addConfigForm .warning');
+        $warning.removeClass().addClass('warning');
+        $warning.find('span.instead').hide();
+        if (discouragement) {
+          switch(discouragement.reason) {
+            case 'poorly_understood':
+              $warning.addClass('poorly_understood');
+              break;
+            case 'not_intended_for_direct_manipulation':
+              $warning.addClass('not_intended_for_direct_manipulation');
+              if (discouragement.instead) {
+                $warning.find('span.instead').show();
+                $warning.find('span.instead a').attr('href', discouragement.instead);
+              }
+              break;
+            case 'deprecation':
+              $warning.addClass('deprecation');
+              break;
+            default:
+              console.error('not sure what happened');
+          }
+        }
+      };
+
+      $('.add_config_type').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          excludeFieldsFromRender: ['default_config_name', 'discourage_in_creation_ui'],
+          renderFunction: showAllFieldsRenderFunction,
+          staticData: knownConfigTypes,
+          resultLimit: 100,
+          showAll: true,
+          onComplete: displayDiscouragement,
+          suggestionListClass: 'autocomplete config_type_autocomplete'
+        }).focus();
+      }));
+
+      var modules = <%== (@modules + @features).to_json %>;
+      $('input[name=new-feature_name]').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          excludeFieldsFromRender: ['flags'],
+          renderFunction: showAllFieldsRenderFunction,
+          staticData: modules,
+          resultLimit: 100,
+          showAll: true,
+          suggestionListClass: 'autocomplete'
+        }).focus();
+      }));
+
+      $('.featureList label').each(function() {
+        var $this = $(this);
+        var module = _.detect(modules, function(mod) { return mod.name === $this.text(); });
+        if (module) {
+          $this.socrataTip({
+            trigger: 'hover',
+            isSolo: true,
+            message: module.description,
+            'parent': 'body'
+          });
+        }
+      });
+    });
+  </script>
+<% end %>

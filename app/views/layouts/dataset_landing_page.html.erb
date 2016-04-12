@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= @view.name %> | Socrata</title>
+    <%= rendered_stylesheet_tag("dataset-landing-page") %>
+    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-icons/socrata-icons.css?<%= asset_revision_key %>"/>
+    <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
+  </head>
+
+  <body>
+    <%= yield %>
+
+    <%= include_webpack_bundle('datasetLandingPage/main.js') %>
+  </body>
+</html>

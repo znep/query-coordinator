@@ -17,6 +17,7 @@ class CustomContentController < ApplicationController
     Canvas::Environment.context = :homepage
 
     @cache_key = app_helper.cache_key("homepage", cache_hash(params))
+    aggressive_log('read for homepage', @cache_key)
     @cached_fragment = read_fragment(@cache_key)
     if @cached_fragment.nil?
       @page_config = get_config('homepage', 'homepage')
@@ -77,12 +78,14 @@ class CustomContentController < ApplicationController
     cache_key = app_helper.cache_key("canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
                                      { 'domain' => CurrentDomain.cname,
                                        'config_updated' => CurrentDomain.configuration(:custom_content).updatedAt })
+    aggressive_log('read stylesheet', cache_key)
     sheet = Rails.cache.read(cache_key)
 
     if sheet.nil?
       page_config = get_config(params[:page_type], params[:config_name])
 
       if (params[:page_type] == 'homepage') && (page_config.nil? || page_config.default_homepage)
+        aggressive_log('write stylesheet for homepage', cache_key)
         Rails.cache.write(cache_key, '')
         return render :nothing => true, :content_type => 'text/css'
       elsif page_config.nil?
@@ -91,6 +94,7 @@ class CustomContentController < ApplicationController
       prepare_config(page_config, false)
 
       sheet = build_stylesheet(page_config.contents)
+      aggressive_log('write stylesheet', cache_key)
       Rails.cache.write(cache_key, sheet, :expires_in => 12.minutes)
     end
 
@@ -232,9 +236,11 @@ class CustomContentController < ApplicationController
       Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
       MetricQueue.instance.push_metric(internal_metric_entity , "ds-manifest-valid", 1)
       return true if handle_conditional_request(request, response, lookup_manifest)
+      aggressive_log('read for global fragment cache manifest', @cache_key)
       @cached_fragment = read_fragment(cache_key_no_user) if can_be_globally_cached
       if @cached_fragment.nil?
         Rails.logger.info("Global fragment cache not available; trying per-user fragment cache")
+        aggressive_log('read for per-user fragment cache manifest', @cache_key)
         @cached_fragment = read_fragment(cache_key_user)
       else
         # If we got something out of the fragment cache; we can make that something cacheable down the line as well
@@ -293,12 +299,14 @@ class CustomContentController < ApplicationController
             format.html { render :action => 'page' }
             format.csv do
               file_content = @page.generate_file('csv')
+              aggressive_log('writing fragment csv', @cache_key)
               write_fragment(@cache_key, file_content,
                              :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
             end
             format.xlsx do
               file_content = @page.generate_file('xlsx')
+              aggressive_log('writing fragment xlsx', @cache_key)
               write_fragment(@cache_key, file_content,
                              :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
@@ -315,6 +323,7 @@ class CustomContentController < ApplicationController
             manifest.max_age = @page.max_age
             manifest.add_resource('pageUid-' + @page.uid,Time.now.to_i) if !@page.uid.nil?
             manifest.set_access_level(manifest_user)
+            aggressive_log('setting manifest', cache_key_no_user)
             VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
           end
           ConditionalRequestHandler.set_cache_control_headers(response, manifest_user == ANONYMOUS_USER)
@@ -337,6 +346,7 @@ class CustomContentController < ApplicationController
           else
             code = (@error.respond_to?(:code) ? @error.code : nil) || 404
             @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''
+            aggressive_log('writing error page', @cache_key)
             write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message,
                            :expires_in => 1.minutes)
             render :template => "custom_content/error_page", :layout => 'main', :status => code
@@ -400,6 +410,7 @@ private
   def cache_wrapper
     cache_params = cache_hash(params)
     @cache_key = app_helper.cache_key("canvas-#{params[:action]}", cache_params)
+    aggressive_log('cache_wrapper', @cache_key)
     @cached_fragment = read_fragment(@cache_key)
 
     if @cached_fragment.nil?
@@ -548,6 +559,21 @@ private
         }
       }]
     })
+  end
+
+  def aggressive_log(action, cache_key, extra = '')
+    the_params = params.each_with_object([]) do |param, memo|
+      memo << param.join('=')
+    end.join(' ') if defined? params
+
+    Rails.logger.info([
+                      'aggressive_log',
+                      action,
+                      the_params,
+                      "cache=#{cache_key}",
+                      extra,
+                      caller[0..10].join("\n")
+    ].join(';'))
   end
 end
 

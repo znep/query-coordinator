@@ -49,6 +49,10 @@ class Domain < Model
     @@all_domains
   end
 
+  def default?
+    shortName == 'default'
+  end
+
   def configurations(type)
     if @configs.nil?
       @configs = Hash.new
@@ -70,6 +74,10 @@ class Domain < Model
     end
 
     return @default_configs[type]
+  end
+
+  def modules
+    data['accountModules'].try(:pluck, 'name') || []
   end
 
   def features

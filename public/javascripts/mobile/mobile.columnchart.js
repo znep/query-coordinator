@@ -13,7 +13,7 @@ module.exports = function(values, $target) {
 
   var columnChartVIF = {
     aggregation: {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     labelUnit: 'rows',
@@ -129,7 +129,7 @@ module.exports = function(values, $target) {
         width: $columnChartElement.width()
       },
       html:
-      '<div class="labels mobile">' +
+      '<div class="mobile-flyout labels mobile">' +
       '<h4 class="title pull-left">' + $columnChartElement.selectedData.name + '</h4>' +
       '<h4 class="value pull-right text-right">' + filteredValue +
       '<span> ' + labelUnit + '</span>' +

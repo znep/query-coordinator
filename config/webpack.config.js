@@ -262,9 +262,32 @@ function generateDataLensMobileConfig() {
   }, baseConfig);
 }
 
+function generateDatasetLandingPageConfig() {
+  var landingPagePath = path.resolve(projectRootDir, 'public/javascripts/datasetLandingPage');
+
+  return _.defaultsDeep({
+    context: landingPagePath,
+    entry: path.resolve(landingPagePath, 'main.js'),
+    output: {
+      filename: isProduction() ? 'datasetLandingPage/[name]-[hash].js' : 'datasetLandingPage/[name].js'
+    },
+    plugins: [
+      new ManifestPlugin({
+        fileName: 'dataset-landing-page-manifest.json'
+      })
+    ].concat(getPlugins()),
+    resolve: {
+      alias: {
+        dotdotdot: 'dotdotdot/src/js/jquery.dotdotdot.min.js'
+      }
+    }
+  }, baseConfig);
+}
+
 // Export the bundle configurations to build
 module.exports = [
   generateOldUxConfig(),
   generateDataLensConfig(),
-  generateDataLensMobileConfig()
+  generateDataLensMobileConfig(),
+  generateDatasetLandingPageConfig()
 ];

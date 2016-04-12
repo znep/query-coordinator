@@ -68,12 +68,29 @@ module ApplicationHelper
 # CACHE HELPERS
 
   def cache_key(prefix, state)
-    prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
+    return_value = prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
       CGI.escape(v[1].to_s)}.join('&')
+    aggressive_log('this cache key was generated', return_value)
+    return_value
   end
 
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+  end
+
+  def aggressive_log(action, cache_key, extra = '')
+    the_params = params.each_with_object([]) do |param, memo|
+      memo << param.join('=')
+    end.join(' ') if defined? params
+
+    Rails.logger.info([
+                      'aggressive_log',
+                      action,
+                      the_params,
+                      "cache=#{cache_key}",
+                      extra,
+                      caller[0..10].join("\n")
+    ].join(';'))
   end
 
 # FRAGMENT HELPERS
@@ -838,6 +855,11 @@ module ApplicationHelper
     button = content_tag('button', t(translation_string), html_options)
 
     content_tag('form', button, form_options)
+  end
+
+  # Stolen from https://github.com/rails/rails/blob/b6c1ee0dfcb7ea8bfcac9daff0162876990665a3/actionview/lib/action_view/helpers/form_tag_helper.rb#L908-L910
+  def sanitize_to_id(name)
+    name.to_s.delete(']').tr('^-a-zA-Z0-9:.', "_")
   end
 
 end

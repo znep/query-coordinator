@@ -17,6 +17,9 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
+api_geospatial_hack:
+  description: When enabled, views matching the is_api_geospatial? criteria will attempt to render as a split map/table by default. See EN-3889 for details.
+  defaultValue: false
 asset_inventory:
   description: Controls asset inventory controls and buttons are shown
   defaultValue: false
@@ -65,6 +68,10 @@ enable_data_lens_export_menu:
   description: Toggles visibility of the export menu, which also allows export of the current filter.
   defaultValue: true
   category: data lens
+enable_dataset_landing_page:
+  description: Enable the dataset landing page
+  defaultValue: false
+  category: dataset landing page
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
@@ -185,6 +192,10 @@ ingress_strategy:
   disableTrueFalse: true
   expectedValues: obe nbe delta-importer
   category: obe deprecation
+internal_panel_redesign:
+  description: Redesign the UX for the Internal Panel so that useful actions are more exposed and scary options are more discouraged.
+  defaultValue: false
+  expectedValues: config domain all
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false

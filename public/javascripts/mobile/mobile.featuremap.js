@@ -42,7 +42,7 @@ module.exports = function(values, $target) {
 
   var featureMapVIF = {
     aggregation: {
-      'columnName': values.aggregationField,
+      'field': values.aggregationField,
       'function': values.aggregationFunction
     },
     'type': 'featureMap',

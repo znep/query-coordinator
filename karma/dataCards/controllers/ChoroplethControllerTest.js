@@ -10,6 +10,7 @@ describe('ChoroplethController', function() {
   var scope;
   var Model;
   var Constants;
+  var ViewRights;
   var I18n;
   var q;
   var timeout;
@@ -53,6 +54,7 @@ describe('ChoroplethController', function() {
     CardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
     CardDataService = $injector.get('CardDataService');
     Constants = $injector.get('Constants');
+    ViewRights = $injector.get('ViewRights');
     I18n = $injector.get('I18n');
     $controller = $injector.get('$controller');
     SpatialLensService = $injector.get('SpatialLensService');
@@ -115,7 +117,7 @@ describe('ChoroplethController', function() {
     };
   }
 
-  function createDatasetModelWithColumns(columns, version) {
+  function createDatasetModelWithColumns(columns, version, rights) {
 
     var datasetModel = new Model();
 
@@ -127,6 +129,7 @@ describe('ChoroplethController', function() {
 
     datasetModel.id = 'four-four';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'crime');
+    datasetModel.defineObservableProperty('permissions', {isPublic: true, rights: rights || [ViewRights.WRITE]});
     datasetModel.defineObservableProperty('columns', columns);
     datasetModel.version = version;
 
@@ -162,24 +165,24 @@ describe('ChoroplethController', function() {
 
     if (!datasetModel) {
       var columnsData = {
-        "points": {
-          "name": "source column.",
-          "description": "required",
-          "fred": "location",
-          "physicalDatatype": "point"
+        points: {
+          name: 'source column.',
+          description: 'required',
+          fred: 'location',
+          physicalDatatype: 'point'
         },
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "number",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "ward"
+        ward: {
+          name: 'Ward where crime was committed.',
+          description: 'Batman has bigger fish to fry sometimes, you know.',
+          fred: 'location',
+          physicalDatatype: 'number',
+          computationStrategy: {
+            parameters: {
+              region: '_snuk-a5kv',
+              geometryLabel: 'ward'
             },
-            "source_columns": ['computed_column_source_column'],
-            "strategy_type": "georegion_match_on_point"
+            source_columns: ['computed_column_source_column'],
+            strategy_type: 'georegion_match_on_point'
           }
         }
       };
@@ -459,25 +462,25 @@ describe('ChoroplethController', function() {
 
     });
 
-    it("should not fail to extract the shapefile from the column's 'computationStrategy' object", function() {
+    it('should not fail to extract the shapefile from the column\'s "computationStrategy" object', function() {
       var columns = {
-        "points": {
-          "name": "source column.",
-          "description": "required",
-          "fred": "location",
-          "physicalDatatype": "point"
+        points: {
+          name: 'source column.',
+          description: 'required',
+          fred: 'location',
+          physicalDatatype: 'point',
         },
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10"
+        ward: {
+          name: 'Ward where crime was committed.',
+          description: 'Batman has bigger fish to fry sometimes, you know.',
+          fred: 'location',
+          physicalDatatype: 'text',
+          computationStrategy: {
+            parameter: {
+              region: '_snuk-a5kv',
+              geometryLabel: 'geoid10'
             },
-            "strategy_type": "georegion_match_on_point"
+            strategy_type: 'georegion_match_on_point'
           }
         }
       };
@@ -494,24 +497,24 @@ describe('ChoroplethController', function() {
 
     });
 
-    it("should fail to extract the shapefile if the shapefile property does not exist in the column's 'computationStrategy' object", function() {
+    it('should fail to extract the shapefile if the shapefile property does not exist in the column\'s "computationStrategy" object', function() {
       var columns = {
-        "points": {
-          "name": "source column.",
-          "description": "required",
-          "fred": "location",
-          "physicalDatatype": "point"
+        points: {
+          name: 'source column.',
+          description: 'required',
+          fred: 'location',
+          physicalDatatype: 'point'
         },
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "geometryLabel": "geoid10"
+        ward: {
+          name: 'Ward where crime was committed.',
+          description: 'Batman has bigger fish to fry sometimes, you know.',
+          fred: 'location',
+          physicalDatatype: 'text',
+          computationStrategy: {
+            parameters: {
+              geometryLabel: 'geoid10'
             },
-            "strategy_type": "georegion_match_on_point"
+            strategy_type: 'georegion_match_on_point'
           }
         }
       };
@@ -528,29 +531,27 @@ describe('ChoroplethController', function() {
     });
 
     describe('if there are no available boundaries', function() {
-      beforeEach(function() {
-        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
-          return Rx.Observable.of([]);
-        });
-      });
-
       afterEach(function() {
         SpatialLensService.getAvailableGeoregions$.restore();
       });
 
-      it('should display an error message', function() {
+      it('should display an error message when no boundaries are enabled', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+          return Rx.Observable.of([]);
+        });
+
         var columns = {
-          "points": {
-            "name": "source column.",
-            "description": "required",
-            "fred": "location",
-            "physicalDatatype": "point"
+          points: {
+            name: 'source column.',
+            description: 'required',
+            fred: 'location',
+            physicalDatatype: 'point'
           },
-          "ward": {
-            "name": "Ward where crime was committed.",
-            "description": "Batman has bigger fish to fry sometimes, you know.",
-            "fred": "location",
-            "physicalDatatype": "text"
+          ward: {
+            name: 'Ward where crime was committed.',
+            description: 'Batman has bigger fish to fry sometimes, you know.',
+            fred: 'location',
+            physicalDatatype: 'text'
           }
         };
         var testSubject = createChoropleth({
@@ -563,6 +564,45 @@ describe('ChoroplethController', function() {
 
         expect(testSubject.$scope.choroplethRenderError).to.equal(true);
       });
+
+      // in this scenario, an enabled boundary is not accessible due to a lack of write permissions,
+      // meaning that the user cannot perform async region coding.
+      it('should display an error message when boundaries are not accessible due to insufficient permissions', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+          var region = {
+            enabledFlag: true,
+            id: 1,
+            uid: 'geor-ejun',
+            name: 'My Boundary',
+            view: { id: 'geor-ejun' }
+          };
+          return Rx.Observable.of([region]);
+        });
+
+        var columns = {
+          points: {
+            name: 'source column.',
+            description: 'required',
+            fred: 'location',
+            physicalDatatype: 'point'
+          },
+          ward: {
+            name: 'Ward where crime was committed.',
+            description: 'Batman has bigger fish to fry sometimes, you know.',
+            fred: 'location',
+            physicalDatatype: 'text'
+          }
+        };
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1', []),
+          version: '1'
+        });
+
+        expect(testSubject.$scope.choroplethRenderError).to.equal(true);
+      });
     });
 
     describe('if the extent query used to get the choropleth regions fails', function() {
@@ -570,24 +610,24 @@ describe('ChoroplethController', function() {
 
       beforeEach(function() {
         columns = {
-          "points": {
-            "name": "source column.",
-            "description": "required",
-            "fred": "location",
-            "physicalDatatype": "point"
+          'points': {
+            'name': 'source column.',
+            'description': 'required',
+            'fred': 'location',
+            'physicalDatatype': 'point'
           },
-          "ward": {
-            "name": "Ward where crime was committed.",
-            "description": "Batman has bigger fish to fry sometimes, you know.",
-            "fred": "location",
-            "physicalDatatype": "text",
-            "computationStrategy": {
-              "parameters": {
-                "region": "_snuk-a5kv",
-                "geometryLabel": "geoid10"
+          'ward': {
+            'name': 'Ward where crime was committed.',
+            'description': 'Batman has bigger fish to fry sometimes, you know.',
+            'fred': 'location',
+            'physicalDatatype': 'text',
+            'computationStrategy': {
+              'parameters': {
+                'region': '_snuk-a5kv',
+                'geometryLabel': 'geoid10'
               },
-              "source_columns": ['computed_column_source_column'],
-              "strategy_type": "georegion_match_on_point"
+              'source_columns': ['computed_column_source_column'],
+              'strategy_type': 'georegion_match_on_point'
             }
           }
         };
@@ -616,7 +656,7 @@ describe('ChoroplethController', function() {
         expect(testSubject.$scope.hasCardinalityError).to.equal(true);
       });
 
-      it("should display a generic error message when non-cardinality error detected", function() {
+      it('should display a generic error message when non-cardinality error detected', function() {
         mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
           var deferred = q.defer();
           deferred.reject({ message: 'Invalid extent response.', type: 'extentError' });
@@ -651,24 +691,24 @@ describe('ChoroplethController', function() {
 
       it('should display an error message', function() {
         var columns = {
-          "points": {
-            "name": "source column.",
-            "description": "required",
-            "fred": "location",
-            "physicalDatatype": "point"
+          points: {
+            name: 'source column.',
+            description: 'required',
+            fred: 'location',
+            physicalDatatype: 'point'
           },
-          "ward": {
-            "name": "Ward where crime was committed.",
-            "description": "Batman has bigger fish to fry sometimes, you know.",
-            "fred": "location",
-            "physicalDatatype": "text",
-            "computationStrategy": {
-              "parameters": {
-                "region": "_snuk-a5kv",
-                "geometryLabel": "geoid10"
+          ward: {
+            name: 'Ward where crime was committed.',
+            description: 'Batman has bigger fish to fry sometimes, you know.',
+            fred: 'location',
+            physicalDatatype: 'text',
+            computationStrategy: {
+              parameters: {
+                region: '_snuk-a5kv',
+                geometryLabel: 'geoid10'
               },
-              "source_columns": ['computed_column_source_column'],
-              "strategy_type": "georegion_match_on_point"
+              source_columns: ['computed_column_source_column'],
+              strategy_type: 'georegion_match_on_point'
             }
           }
         };
@@ -685,28 +725,28 @@ describe('ChoroplethController', function() {
 
     });
 
-    it("should not use the source column to get the choropleth regions if the computation strategy is 'georegion_match_on_string'", function() {
+    it('should not use the source column to get the choropleth regions if the computation strategy is "georegion_match_on_string"', function() {
 
       var columns = {
-        "points": {
-          "name": "source column.",
-          "description": "required",
-          "fred": "location",
-          "physicalDatatype": "point"
+        points: {
+          name: 'source column.',
+          description: 'required',
+          fred: 'location',
+          physicalDatatype: 'point'
         },
-        "ward": {
-          "name": "Some area where the crime was committed that can be described by a string",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "number",
-          "physicalDatatype": "number",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10",
-              "column": "someTextColumn"
+        ward: {
+          name: 'Some area where the crime was committed that can be described by a string',
+          description: 'Batman has bigger fish to fry sometimes, you know.',
+          fred: 'number',
+          physicalDatatype: 'number',
+          computationStrategy: {
+            parameters: {
+              region: '_snuk-a5kv',
+              geometryLabel: 'geoid10',
+              column: 'someTextColumn'
             },
-            "source_columns": ['computed_column_source_column'],
-            "strategy_type": "georegion_match_on_string"
+            source_columns: ['computed_column_source_column'],
+            strategy_type: 'georegion_match_on_string'
           }
         }
       };

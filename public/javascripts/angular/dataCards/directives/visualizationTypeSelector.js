@@ -35,9 +35,9 @@ module.exports = function visualizationTypeSelector(
       if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
         return {
           showInfoMessage: SpatialLensService.isSpatialLensAdminEnabled(),
-          showNonComputedSection: true,
+          showNonComputedSection: false,
           enableNonComputedSection: false,
-          nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.permissions
+          nonComputedSectionTitle: null
         };
       }
 
@@ -72,38 +72,62 @@ module.exports = function visualizationTypeSelector(
 
     // Bootstrap initial dropdown options and selection.
     Rx.Observable.subscribeLatest(
+      dataset$,
       allCuratedRegions$,
       columns$,
       computedColumn$.take(1),
-      function(curatedRegions, columns, computedColumn) {
+      function(dataset, curatedRegions, columns, computedColumn) {
         function shouldEnableCuratedRegion(curatedRegion) {
           return SpatialLensService.findComputedColumnForRegion(columns, curatedRegion.view.id);
         }
 
-        var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
-        $scope.computedCuratedRegions = partitionedCuratedRegions[0];
-        $scope.nonComputedCuratedRegions = partitionedCuratedRegions[1];
+        var isAsyncEnabled = SpatialLensService.isSpatialLensEnabled();
+        var canWrite = _.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE);
+        var computedCuratedRegions;
+        var nonComputedCuratedRegions;
 
-        $scope.hasZeroCuratedRegions = curatedRegions.length === 0;
-        $scope.hasSingleCuratedRegion = curatedRegions.length === 1;
+        if (isAsyncEnabled) {
+          var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
+          computedCuratedRegions = partitionedCuratedRegions[0];
+          nonComputedCuratedRegions = partitionedCuratedRegions[1];
+        } else {
+          computedCuratedRegions = curatedRegions;
+          nonComputedCuratedRegions = [];
+        }
+
+        var accessibleCuratedRegions = computedCuratedRegions;
+        if (canWrite) {
+          accessibleCuratedRegions = accessibleCuratedRegions.concat(nonComputedCuratedRegions);
+        }
 
         var defaultCuratedRegion = _.get(
-          _.first($scope.computedCuratedRegions) || _.first($scope.nonComputedCuratedRegions),
+          _.first(accessibleCuratedRegions),
          'view.id'
-       );
+        );
 
+        var selectedCuratedRegion;
         if (_.isPresent(computedColumn)) {
           var path = `${computedColumn}.computationStrategy.parameters.region`;
           var shapefile = _.get(columns, path);
 
           if (_.isUndefined(shapefile)) {
-            $scope.selectedCuratedRegion = defaultCuratedRegion;
+            selectedCuratedRegion = defaultCuratedRegion;
           } else {
-            $scope.selectedCuratedRegion = shapefile.substring(1);
+            selectedCuratedRegion = shapefile.substring(1);
           }
-        } else {
-          $scope.selectedCuratedRegion = defaultCuratedRegion;
+        } else if (_.any(accessibleCuratedRegions, 'view.id', defaultCuratedRegion)) {
+          selectedCuratedRegion = defaultCuratedRegion;
         }
+
+        $scope.computedCuratedRegions = computedCuratedRegions;
+        $scope.nonComputedCuratedRegions = nonComputedCuratedRegions;
+        $scope.accessibleCuratedRegions = accessibleCuratedRegions;
+        $scope.selectedCuratedRegion = selectedCuratedRegion;
+
+        $scope.showMultipleRegions = accessibleCuratedRegions.length > 1;
+        $scope.showSingleRegion = accessibleCuratedRegions.length === 1;
+        $scope.showNoRegions = accessibleCuratedRegions.length === 0;
+        $scope.showRegionDivider = computedCuratedRegions.length > 0 && nonComputedCuratedRegions.length > 0;
 
         $scope.$safeApply();
       }

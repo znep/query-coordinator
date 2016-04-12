@@ -123,15 +123,15 @@ module.exports = function(values, $target) {
     find('.bar-group[data-bar-name="{0}"]'.format(barName)).
     addClass('selected');
 
-    if (unFilteredValue > 999999) {
+    if (unFilteredValue >= 1000000) {
       unFilteredValue = (unFilteredValue / 1000000).toFixed(1) + 'M';
-    } else if (filteredValue > 999) {
+    } else if (filteredValue >= 1000) {
       unFilteredValue = (unFilteredValue / 1000).toFixed(1) + 'K';
     }
 
-    if (filteredValue > 999999) {
+    if (filteredValue >= 1000000) {
       filteredValue = (filteredValue / 1000000).toFixed(1) + 'M';
-    } else if (filteredValue > 999) {
+    } else if (filteredValue >= 1000) {
       filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
     }
 

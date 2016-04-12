@@ -12,6 +12,7 @@
 
     .column-chart-container {
       display: flex;
+      height: calc(100% - 27px);
 
       .column-chart {
         position: relative;
@@ -128,28 +129,30 @@
           padding: 0 15px;
           bottom: 0;
           background-color: #fff;
-          height: 40px;
+          height: 57px;
           z-index: 9;
 
           .title,
-          .value {
-            overflow: hidden;
+          .values {
             height: 30px;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 15px;
+            padding: 10px 0;
           }
           .title {
             width: 70%;
+            overflow: hidden;
+            font-size: 15px;
+            font-weight: 500;
           }
-          .value {
+          .values {
             width: 30%;
-            color: #5BDEBF;
-            font-weight: 900;
+            color: #02B38F;
+            font-size: 14px;
+            font-weight: 400;
+
             span {
-              color: #333;
-              font-weight: normal;
-              text-transform: capitalize;
+              color: #929292;
             }
           }
         }

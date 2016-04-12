@@ -185,18 +185,6 @@ import './styles/mobile-general.scss';
     });
   }
 
-  function findObjectWithProperties(name) {
-    var obj = {};
-    _.each(datasetMetadata.columns, function(column, fieldName) {
-      if (name == fieldName) {
-        obj.position = column.position;
-        obj.name = column.name;
-      }
-    });
-
-    return obj;
-  }
-
   function renderCards() {
     var $cardContainer;
     var values;
@@ -291,17 +279,18 @@ import './styles/mobile-general.scss';
     /**
      * Add filter to QFB filters collection
      * @param {string} position -- Yes it's string.
+     * @param {string} displayName
      * @param {string} dataTypeName
      * @param {string} fieldName
      * @param {object} args
      * @private
      */
-    function _addToQFBFilters(position, dataTypeName, fieldName, args) {
+    function _addToQFBFilters(position, displayName, dataTypeName, fieldName, args) {
       aPredefinedFilters.push({
         id: position,
         type: _convertFilterType2QFB(dataTypeName),
         name: fieldName,
-        displayName: findObjectWithProperties(fieldName).name,
+        displayName: displayName,
         data: args,
         startWithClosedFlannel: true
       });
@@ -329,8 +318,6 @@ import './styles/mobile-general.scss';
 
     _.each(sameColumnCards, function(cards) {
       var thisSetFirstCard = cards[0];
-      // This used as a ID in QFB
-      var position = findObjectWithProperties(thisSetFirstCard.fieldName).position.toString();
       var columnMeta = datasetMetadata.columns[thisSetFirstCard.fieldName];
 
       switch (thisSetFirstCard.activeFilters[0]['function']) {
@@ -364,7 +351,8 @@ import './styles/mobile-general.scss';
             });
           });
 
-          _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBDate(args));
+          _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+            columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBDate(args));
           break;
 
         case 'BinaryOperator':
@@ -381,7 +369,8 @@ import './styles/mobile-general.scss';
               });
             });
 
-            _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, valueList);
+            _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+              columnMeta.dataTypeName, thisSetFirstCard.fieldName, valueList);
           } else if (columnMeta.dataTypeName == 'number') {
             var _args = {};
 
@@ -416,7 +405,8 @@ import './styles/mobile-general.scss';
               });
             });
 
-            _addToQFBFilters(position, columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBNumber(_args));
+            _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+              columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBNumber(_args));
           }
           break;
       }
@@ -439,14 +429,14 @@ import './styles/mobile-general.scss';
 
       switch (card.cardType) {
         case 'search':
-          var position = findObjectWithProperties(card.fieldName).position.toString();
+          var position = _.get(cardOptions, 'metadata.position', '-1').toString();
 
-          if (!_.find(aPredefinedFilters, { id: position })) {
+          if (!_.find(aPredefinedFilters, { name: card.fieldName })) {
             var filterObj = {
               id: position,
               type: 'string',
               name: card.fieldName,
-              displayName: findObjectWithProperties(card.fieldName).name,
+              displayName: _.get(cardOptions, 'metaData.name'),
               data: null,
               startWithClosedFlannel: true
             };

@@ -108,35 +108,49 @@ module.exports = function(values, $target) {
 
   function selectBar(event) {
     var barName = event.currentTarget.getAttribute('data-bar-name');
+    var unFilteredValue = $columnChartElement.selectedData.unfilteredValue;
     var filteredValue = $columnChartElement.selectedData.filteredValue;
     var labelUnit = columnChartVIF.unit.other;
+    var filteredLabelLine = '';
+    var valuesStyleClass = 'unfiltered';
+    var isFiltered = filteredValue != unFilteredValue;
 
     if ($columnChartElement.selectedData.filteredValue === 1) {
       labelUnit = columnChartVIF.unit.one;
-    }
-
-    if (filteredValue > 999) {
-      filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
     }
 
     chartWrapper.
     find('.bar-group[data-bar-name="{0}"]'.format(barName)).
     addClass('selected');
 
-    var titles = $('<div>', {
+    if (unFilteredValue > 999999) {
+      unFilteredValue = (unFilteredValue / 1000000).toFixed(1) + 'M';
+    } else if (filteredValue > 999) {
+      unFilteredValue = (unFilteredValue / 1000).toFixed(1) + 'K';
+    }
+
+    if (filteredValue > 999999) {
+      filteredValue = (filteredValue / 1000000).toFixed(1) + 'M';
+    } else if (filteredValue > 999) {
+      filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
+    }
+
+    if (isFiltered) {
+      filteredLabelLine = '<div class="text-right filtered-values"><span>Filtered</span> ' + filteredValue + '</div>';
+      valuesStyleClass = 'filtered';
+    }
+
+    var unFilteredLabelLine = '<div class="text-right total-values"><span>Total</span> ' + unFilteredValue + '</div>';
+
+    var flyoutData = $('<div>', {
       'class': 'title-wrapper',
-      css: {
-        width: $columnChartElement.width()
-      },
       html:
       '<div class="mobile-flyout labels mobile">' +
-      '<h4 class="title pull-left">' + $columnChartElement.selectedData.name + '</h4>' +
-      '<h4 class="value pull-right text-right">' + filteredValue +
-      '<span> ' + labelUnit + '</span>' +
-      '</h4>' +
+        '<h4 class="title pull-left">' + $columnChartElement.selectedData.name + '</h4>' +
+        '<div class="values pull-right text-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +
       '</div>'
     });
 
-    labelWrapper.html(titles);
+    labelWrapper.html(flyoutData);
   }
 };

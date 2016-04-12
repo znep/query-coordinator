@@ -100,8 +100,8 @@ module.exports = function(values, $target) {
 
     if (payload.filteredValue) {
       var filteredValue = payload.filteredValue.split(' ');
-      filteredLabelLine = '<div class="text-right filtered-values">' + filteredValue[0] + '<span> ' +
-        filteredValue[1] + '</span></div>';
+      filteredLabelLine = '<div class="text-right filtered-values"><span>' + payload.filteredLabel + '</span> ' +
+        filteredValue[0] + '<span> ' + filteredValue[1] + '</span></div>';
 
       valuesStyleClass = 'filtered';
     }

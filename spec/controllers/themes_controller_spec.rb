@@ -29,9 +29,12 @@ RSpec.describe ThemesController, type: :controller do
         expect(response).to render_template('custom')
       end
 
-      it 'assigns @custom_themes' do
+      it 'sends a local, custom_themes, to render' do
+        allow(controller).to receive(:render).and_call_original
+        expect(controller).to receive(:render).with({
+          locals: { custom_themes: themes }
+        })
         get :custom, format: :css
-        expect(assigns(:custom_themes)).to eq(themes)
       end
     end
   end

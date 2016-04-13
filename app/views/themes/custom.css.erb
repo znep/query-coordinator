@@ -1,6 +1,6 @@
 @charset 'utf-8';
-<% cache(cache_key_for_custom_themes(@custom_themes)) do %>
-  <% @custom_themes.each do |custom_theme| -%>
+<% cache(cache_key_for_custom_themes(custom_themes)) do %>
+  <% custom_themes.each do |custom_theme| -%>
     <%=
       # Wow, this is super important. Since stylesheets come from heterogenous
       # sources, and some of them might be utf-8, something (Ruby?) is going way

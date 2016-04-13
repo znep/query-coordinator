@@ -102,9 +102,13 @@ Aborted.'
     build_number = nil
     dialog.infobox('Waiting for Jenkins build to complete successfully...', 4, 50)
     loop do
-      build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
-      break if build_number
-      sleep 15
+      begin
+        build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
+        break if build_number
+        sleep 15
+      rescue
+        retry
+      end
     end
 
     dialog.msgbox("Build complete (Build #{build_number})")

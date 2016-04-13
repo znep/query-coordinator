@@ -47,9 +47,20 @@ class StorytellerRelease
     raise "No marathon endpoint is defined for #{environment}, check StorytellerRelease" unless endpoint
 
     Marathon.url = endpoint
-    raise "Cannot reach marathon endpoint (#{endpoint}) for #{environment}" unless Marathon.ping
+    retry_count = 3
+    begin
+      retry_count -= 1
 
-    marathon_apps = Marathon::App.list(nil, nil, 'storyteller/') # slash is significant, excludes storyteller-worker
+      raise "Cannot reach marathon endpoint (#{endpoint}) for #{environment}" unless Marathon.ping
+
+      marathon_apps = Marathon::App.list(nil, nil, 'storyteller/') # slash is significant, excludes storyteller-worker
+    rescue Net::OpenTimeout => e
+      if retry_count > 0
+        retry
+      else
+        raise e
+      end
+    end
 
     marathon_apps.map do |marathon_app|
       StorytellerRelease.new(environment, marathon_app)

@@ -143,6 +143,7 @@ class StorytellerReleasesUi
 
   def deploy_to_env(environment, version)
     #TODO make this a separate rake task
+    dialog.infobox("Querying Jenkins to find build for #{version}")
     release_sha = git.tag(version.tr('v', '')).log.first.sha
     build_number = Jenkins.find_storyteller_release_build(release_sha)
     unless build_number

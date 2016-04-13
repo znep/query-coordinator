@@ -36,11 +36,15 @@ module Chrome
       }
     end
 
-    def current_user(localhost)
-      url = localhost ?
+    # Note: If in development you are getting 403 unauthorized, you may have to log in to Frontend
+    # to get a _core_session_id. Then add that cookie to your web page for the Site Chrome app.
+    # Enter in the browser console: `document.cookie="_core_session_id=xxxxxx"`
+    def current_user(request)
+      url = localhost?(request.host) ?
         'http://localhost:8080/users.json?method=getCurrent' : '/api/users.json?method=getCurrent'
+      cookies = request.headers['Cookie'].to_s
       begin
-        response = HTTParty.get(url)
+        response = HTTParty.get(url, :headers => { 'Cookie' => cookies })
         if response.code == 200 && response.body
           JSON.parse(response.body)
         end
@@ -54,5 +58,10 @@ module Chrome
     #   ERB.new(template).result(OpenStruct.new(section_content).instance_eval { binding })
     # end
 
+    private
+
+    def localhost?(host)
+      host == 'localhost' || !!ENV['LOCALHOST'].to_s.downcase == 'true'
+    end
   end
 end

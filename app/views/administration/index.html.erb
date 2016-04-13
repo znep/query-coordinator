@@ -119,7 +119,7 @@
     <%- end %>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= admin_nav_link_to 'Internal', :controller => 'internal', :controller => '/administration', :action => 'index' %>
+        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
         <span class="description">
           Change and add modules, sites, and more
         </span>

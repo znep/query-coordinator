@@ -1,16 +1,25 @@
-var Dropdown = module.exports = function(element) {
+var DropdownFactory = module.exports = function(element) {
+  this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
+  this.dropdowns.forEach(function(dropdown) {
+    new Dropdown(dropdown);
+  });
+}
+
+var Dropdown = function(element) {
   this.dd = element;
-  this.orientation = element.getAttribute('data-orientation') || 'bottom';
-  this.selectable = element.hasAttribute('data-selectable');
+  this.orientation = this.dd.getAttribute('data-orientation') || 'bottom';
+  this.selectable = this.dd.hasAttribute('data-selectable');
+
   this.dd.classList.add('dropdown-orientation-' + this.orientation);
 
   this.placeholder = this.dd.querySelector('span');
   this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
-  this.val = '';
-  this.index = -1;
+
+  this.dd.dataset.value = '';
+  this.dd.dataset.index = -1;
 
   this.initEvents();
-}
+};
 
 Dropdown.prototype = {
   initEvents: function() {
@@ -34,8 +43,8 @@ Dropdown.prototype = {
             index++;
           }
 
-          obj.val = opt.textContent;
-          obj.index = index;
+          obj.dd.dataset.value = opt.textContent;
+          obj.dd.dataset.index = index;
 
           obj.placeholder.innerHTML = opt.innerText.trim();
 

@@ -2,7 +2,9 @@ FROM socrata/runit-ruby-2.2
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller
+ENV APP_TMP_DIR ${APP_DIR}/tmp
 ENV SERVICE_DIR_BASE /etc/service
+ENV RAILS_SERVE_STATIC_FILES true
 
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive && \
@@ -21,28 +23,33 @@ COPY runit/work_documents_queue ${SERVICE_DIR_BASE}/storyteller-documents-queue-
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker
 COPY runit/work_metrics_queue ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker/run
 
-ADD . ${APP_DIR}
-
-WORKDIR ${APP_DIR}
-RUN bundle install
-
-ADD config/database.yml.production ${APP_DIR}/config/database.yml
-
-ENV RAILS_ENV production
-
+# Run this early since we don't expect it to change very often
 RUN npm install -g n
 RUN n lts
-RUN npm install
-RUN npm run webpack
 
+# Only bundle install when Gemfile has changed
+COPY Gemfile* /tmp/
+COPY .ruby-version /tmp/
+COPY vendor /tmp/vendor
+WORKDIR /tmp
+RUN bundle install
+
+# Only run npm install fresh when package.json is changed
+COPY package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}/
+
+# Add application code
+ADD . ${APP_DIR}
+WORKDIR ${APP_DIR}
+
+RUN npm run webpack
 RUN bundle exec rake assets:precompile
 
 # Make and chown the rails tmp dir to the socrata user
-ENV APP_TMP_DIR ${APP_DIR}/tmp
 RUN mkdir -p ${APP_TMP_DIR}
 RUN chown socrata -R ${APP_TMP_DIR}
 
-# Note: this is temporary until we have a proper web server setup (not webrick)
-ENV RAILS_SERVE_STATIC_FILES true
+ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
 EXPOSE 3010

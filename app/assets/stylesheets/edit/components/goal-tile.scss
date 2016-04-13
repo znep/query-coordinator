@@ -1,0 +1,232 @@
+@import 'lib/variables';
+
+.component-goal-tile {
+  width: 100%;
+  height: 42rem;
+
+  &.error {
+    display: flex;
+    border: 1px solid $goal-tile-border-color;
+
+    p {
+      margin: auto;
+      padding: 1rem;
+      color: $goal-tile-error-text-color;
+      background-color: $goal-tile-error-background-color;
+      border: solid 1px $goal-tile-error-border-color;
+    }
+  }
+
+  .goal-tile-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid $goal-tile-border-color;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+
+    .goal-tile {
+      width: 100%;
+      height: 100%;
+
+      .goal-tile-title,
+      .goal-tile-metric-value,
+      .goal-tile-metric-unit {
+        font-family: 'Open Sans', sans-serif;
+        opacity: 0;
+        transition: opacity $transition-duration;
+      }
+
+      .goal-tile-title-container {
+        width: 100%;
+        height: 9.5rem;
+        overflow: hidden;
+
+        .goal-tile-title {
+          @include selectable();
+
+          margin: 0;
+          padding: 0.75rem 1rem;
+          color: $story-tile-text-color;
+          font-size: 2.3rem;
+          font-weight: 600;
+          letter-spacing: -0.5px;
+          line-height: 4rem;
+        }
+      }
+
+      .goal-tile-metric-container {
+        height: 20rem;
+        border-bottom: 1px solid $story-tile-view-story-border-color;
+
+        .goal-tile-metric-value,
+        .goal-tile-metric-subtitle {
+          @include selectable();
+
+          margin: 0;
+          padding: 0.75rem 1rem;
+          color: $story-tile-text-color;
+          font-size: 1.5rem;
+          line-height: 2.5rem;
+        }
+
+        .goal-tile-metric-value {
+          height: 9rem;
+          font-weight: 600;
+          line-height: 9rem;
+
+          .goal-tile-metric-value-major {
+            font-size: 8rem;
+          }
+
+          .goal-tile-metric-value-minor {
+            font-size: 4rem;
+          }
+        }
+
+        .goal-tile-metric-subtitle {
+          font-weight: 500;
+        }
+      }
+
+      .goal-tile-metadata-container {
+        @include clearfix();
+
+        margin: 0;
+        padding: 0.75rem 1rem;
+        font-size: 1.5rem;
+        line-height: 2.5rem;
+
+        .goal-tile-metric-progress,
+        .goal-tile-metric-progress-end-date {
+          position: relative;
+          display: block;
+          float: left;
+          width: 50%;
+        }
+
+        .goal-tile-metric-progress {
+          font-weight: 800;
+          text-align: left;
+        }
+
+        .goal-tile-metric-progress-end-date {
+          font-weight: 400;
+          text-align: right;
+          color: $goal-tile-end-date-color;
+        }
+      }
+
+      .goal-tile-view-goal {
+        position: absolute;
+        display: block;
+        margin: 0;
+        width: 100%;
+        height: 3.5rem;
+        left: 0;
+        bottom: 0;
+        color: $story-tile-view-story-text-color;
+        font-size: 1.5rem;
+        line-height: 3.5rem;
+        text-align: center;
+        border-top: 1px solid $story-tile-view-story-border-color;
+      }
+
+      &.palette-blue {
+
+        .goal-tile-metric-container {
+          border-top: 0.5rem solid #2c97de;
+          background-color: #d5eaf8;
+
+          .goal-tile-metric-value,
+          .goal-tile-metric-progress {
+            color: #2c97de;
+          }
+        }
+
+        .goal-tile-metadata-container {
+          .goal-tile-metric-progress {
+            color: #2c97de;
+          }
+        }
+      }
+
+      &.palette-green {
+
+        .goal-tile-metric-container {
+          border-top: 0.5rem solid #64cf6c;
+          background-color: #e0f5e2;
+
+          .goal-tile-metric-value,
+          .goal-tile-metric-progress {
+            color: #64cf6c;
+          }
+        }
+
+        .goal-tile-metadata-container {
+          .goal-tile-metric-progress {
+            color: #64cf6c;
+          }
+        }
+      }
+
+      &.palette-red {
+
+        .goal-tile-metric-container {
+          border-top: 0.5rem solid #ce6565;
+          background-color: #f5e0e0;
+
+          .goal-tile-metric-value {
+            color: #ce6565;
+          }
+        }
+
+        .goal-tile-metadata-container {
+          .goal-tile-metric-progress {
+            color: #ce6565;
+          }
+        }
+      }
+
+      &.palette-yellow {
+
+        .goal-tile-metric-container {
+          border-top: 0.5rem solid #f7a700;
+          background-color: #fdedcc;
+
+          .goal-tile-metric-value {
+            color: #f7a700;
+          }
+        }
+
+        .goal-tile-metadata-container {
+          .goal-tile-metric-progress {
+            color: #f7a700;
+          }
+        }
+      }
+    }
+
+    &.rendered {
+
+      .goal-tile {
+
+        .goal-tile-title,
+        .goal-tile-metric-value,
+        .goal-tile-metric-subtitle {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:hover {
+
+      .goal-tile-view-goal {
+        color: $btn-primary-color;
+        background-color: $btn-primary-background-color;
+      }
+    }
+  }
+}

@@ -167,6 +167,19 @@ export default _.merge({}, SocrataUtils, VifUtils, {
     return 'https://' + storyDomain + '/stories/s/' + storyUid + '/tile.json';
   },
 
+  generateGoalTileJsonSrc: function(goalDomain, goalUid) {
+
+    this.assertIsOneOfTypes(goalDomain, 'string');
+    this.assertIsOneOfTypes(goalUid, 'string');
+    this.assertEqual(goalDomain.match(/[^a-z0-9\.\-]/gi), null);
+    this.assert(
+      goalUid.match(/^\w{4}\-\w{4}$/) !== null,
+      '`goalUid` does not match anchored four-by-four pattern'
+    );
+
+    return 'https://' + goalDomain + '/stat/api/v1/goals/' + goalUid + '.json';
+  },
+
   generateYoutubeUrl: function(youtubeId) {
 
     this.assertIsOneOfTypes(youtubeId, 'string');
@@ -228,5 +241,48 @@ export default _.merge({}, SocrataUtils, VifUtils, {
         data: requestData
       })
     );
+  },
+
+  /**
+   * @function ellipsifyText
+   * @description
+   * Truncates a string and appends an ellipsis such that when rendered in its
+   * container element the number of lines of text is less than or equal to the
+   * argument `lineCount`.
+   *
+   * @param {Object} $element - a jQuery-wrapped DOM element.
+   * @param {Number} lineCount - an integer specifying the maximum number of
+   * lines of text to render before truncating the string and appending an
+   * ellipsis.
+   *
+   * @return {Undefined} - this method is side-effecty.
+   */
+  ellipsifyText: function($element, lineCount) {
+    var elementHeight = $element.height();
+    var lineHeight = Math.ceil(parseFloat($element.css('line-height')));
+    var targetElementHeight = lineHeight * lineCount;
+    var words;
+    var truncatedWords;
+
+    this.assert(
+      (Math.floor(lineCount) === lineCount),
+      '`lineCount` must be an integer'
+    );
+
+    if (elementHeight > targetElementHeight) {
+      words = $element.text().split(' ');
+
+      if (words[words.length - 1] === '…') {
+        truncatedWords = words.slice(0, -2);
+      } else {
+        truncatedWords = words.slice(0, -1);
+      }
+
+      $element.text(truncatedWords.join(' ') + '…');
+
+      if (truncatedWords.length > 0) {
+        this.ellipsifyText($element, lineCount);
+      }
+    }
   }
 });

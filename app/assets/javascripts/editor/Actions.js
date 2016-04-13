@@ -151,12 +151,20 @@ export default {
   // - 'INSERT_VISUALIZATION'
   // - 'CREATE_VISUALIZATION'
   ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN: 'ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN',
+
   /**
    * Story tile embed flow
    */
 
   // {string} url
   ASSET_SELECTOR_UPDATE_STORY_URL: 'ASSET_SELECTOR_UPDATE_STORY_URL',
+
+  /**
+   * Goal tile embed flow
+   */
+
+  // {string} url
+  ASSET_SELECTOR_UPDATE_GOAL_URL: 'ASSET_SELECTOR_UPDATE_GOAL_URL',
 
   /**
    * YouTube embed flow

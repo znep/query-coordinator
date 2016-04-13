@@ -70,6 +70,7 @@
   .component-socrata-visualization-timeline-chart,
   .component-story-tile,
   .component-story-widget,
+  .component-goal-tile,
   .component-youtube-video {
     @include media-query-property(
       'margin-top',
@@ -92,6 +93,7 @@
 .component-socrata-visualization-timeline-chart,
 .component-story-tile,
 .component-story-widget,
+.component-goal-tile,
 .component-youtube-video {
   @include media-query-property(
     'margin-top',

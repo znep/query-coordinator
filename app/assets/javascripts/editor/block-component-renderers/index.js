@@ -13,5 +13,6 @@ import './componentSocrataVisualizationTable';
 import './componentSocrataVisualizationTimelineChart';
 import './componentSpacer';
 import './componentStoryTile';
+import './componentGoalTile';
 import './componentYoutubeVideo';
 

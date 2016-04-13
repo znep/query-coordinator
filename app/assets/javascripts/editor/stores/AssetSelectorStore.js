@@ -21,6 +21,8 @@ export var WIZARD_STEP = {
 
   ENTER_STORY_URL: 'ENTER_STORY_URL',
 
+  ENTER_GOAL_URL: 'ENTER_GOAL_URL',
+
   // You want a Socrata visualization, so please choose an option
   SELECT_VISUALIZATION_OPTION: 'SELECT_VISUALIZATION_OPTION',
   // You want a Socrata visualization, so please choose your dataset.
@@ -78,6 +80,10 @@ export default function AssetSelectorStore() {
         _updateStoryUrl(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_GOAL_URL:
+        _updateGoalUrl(payload);
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
         _updateYoutubeUrl(payload);
         break;
@@ -89,6 +95,9 @@ export default function AssetSelectorStore() {
             break;
           case 'STORY_TILE':
             _chooseStoryTile();
+            break;
+          case 'GOAL_TILE':
+            _chooseGoalTile();
             break;
           case 'YOUTUBE':
             _chooseYoutube();
@@ -236,6 +245,8 @@ export default function AssetSelectorStore() {
       case 'story.tile':
       case 'story.widget':
         return WIZARD_STEP.ENTER_STORY_URL;
+      case 'goal.tile':
+        return WIZARD_STEP.ENTER_GOAL_URL;
       case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
       case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
@@ -314,6 +325,11 @@ export default function AssetSelectorStore() {
 
   function _chooseStoryTile() {
     _state.step = WIZARD_STEP.ENTER_STORY_URL;
+    self._emitChange();
+  }
+
+  function _chooseGoalTile() {
+    _state.step = WIZARD_STEP.ENTER_GOAL_URL;
     self._emitChange();
   }
 
@@ -632,13 +648,28 @@ export default function AssetSelectorStore() {
 
   function _updateStoryUrl(payload) {
     var storyDomain = _extractDomainFromStoryUrl(payload.url);
-    var storyId = _extractStoryUidFromStoryUrl(payload.url);
+    var storyUid = _extractStoryUidFromStoryUrl(payload.url);
 
     _state.componentType = 'story.tile';
 
     _state.componentProperties = {
       domain: storyDomain,
-      storyUid: storyId
+      storyUid: storyUid
+    };
+
+    self._emitChange();
+  }
+
+  function _updateGoalUrl(payload) {
+    var goalDomain = _extractDomainFromGoalUrl(payload.url);
+    var goalUid = _extractGoalUidFromGoalUrl(payload.url);
+
+    _state.componentType = 'goal.tile';
+
+    _state.componentProperties = {
+      domain: goalDomain,
+      goalUid: goalUid,
+      goalFullUrl: payload.url
     };
 
     self._emitChange();
@@ -685,13 +716,35 @@ export default function AssetSelectorStore() {
 
   function _extractStoryUidFromStoryUrl(storyUrl) {
     var match = storyUrl.match(/^https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
-    var storyId = null;
+    var storyUid = null;
 
     if (match !== null) {
-      storyId = match[1];
+      storyUid = match[1];
     }
 
-    return storyId;
+    return storyUid;
+  }
+
+  function _extractDomainFromGoalUrl(goalUrl) {
+    var match = goalUrl.match(/^https\:\/\/([a-z0-9\.\-]{3,})\/(?:.*)stat\/goals\/.*$/i);
+    var goalDomain = null;
+
+    if (match !== null) {
+      goalDomain = match[1];
+    }
+
+    return goalDomain;
+  }
+
+  function _extractGoalUidFromGoalUrl(goalUrl) {
+    var match = goalUrl.match(/^https\:\/\/.*\/stat\/goals\/(?:default|\w{4}\-\w{4})\/\w{4}\-\w{4}\/(\w{4}\-\w{4})/i);
+    var goalUid = null;
+
+    if (match !== null) {
+      goalUid = match[1];
+    }
+
+    return goalUid;
   }
 
   /**

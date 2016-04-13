@@ -53,6 +53,7 @@ module StoriesHelper
       'spacer' => 'component_spacer',
       'story.tile' => 'component_story_tile',
       'story.widget' => 'component_story_tile',
+      'goal.tile' => 'component_goal_tile',
       'youtube.video' => 'component_youtube_video'
     }
 

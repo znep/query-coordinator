@@ -37,11 +37,11 @@ en:
   default_page_title: 'Socrata Perspectives'
   preview_mode:
     presentation_mode:
-      title: "Presentation Mode"
-      previous: "Previous"
-      next: "Next"
+      title: 'Presentation Mode'
+      previous: 'Previous'
+      next: 'Next'
     linear_mode:
-      title: "Linear Mode"
+      title: 'Linear Mode'
   sample_story:
     title: 'Your Great Story Title'
   stories_controller:

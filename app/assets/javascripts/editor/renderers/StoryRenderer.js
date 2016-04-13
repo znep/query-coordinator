@@ -687,6 +687,8 @@ export default function StoryRenderer(options) {
       case 'story.tile':
       case 'story.widget':
         return 'componentStoryTile';
+      case 'goal.tile':
+        return 'componentGoalTile';
       case 'youtube.video':
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':

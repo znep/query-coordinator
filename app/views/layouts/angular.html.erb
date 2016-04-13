@@ -43,7 +43,7 @@
     <%= render_airbrake_shim %>
     <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>
-    <%= include_webpack_bundle "angular/data-lens.js" %>
+    <%= include_webpack_bundle 'data-lens/data-lens.js' %>
 
     <%= yield %>
   </body>

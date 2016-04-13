@@ -1,7 +1,10 @@
 //= require vendor/prism
 //= require vendor/styleguide
 
+styleguide(document);
+
 document.addEventListener('DOMContentLoaded', function() {
+
   /**
    * Fancy demo stuff.
    * Make the responsive navbar collapse to a smaller version.

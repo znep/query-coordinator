@@ -20,6 +20,28 @@
 </code>
 </pre>
 
+<h3 class="h6 styleguide-subheader">Default Buttons as Links</h3>
+<p>
+  <%= partial "components/buttons/button_link_default_lg", locals: { text: "Large Button Link" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_link_default", locals: { text: "Default Button Link" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_link_default_sm", locals: { text: "Small Button Link" } %>
+</p>
+<p>
+  <%= partial "components/buttons/button_link_default_xs", locals: { text: "Extra-Small Button Link" } %>
+</p>
+<pre class="usage">
+<code class="language-markup">
+<%= escape_html(partial "components/buttons/button_link_default_lg", locals: { text: "Large Button Link" }) %>
+<%= escape_html(partial "components/buttons/button_link_default", locals: { text: "Default Button Link" }) %>
+<%= escape_html(partial "components/buttons/button_link_default_sm", locals: { text: "Small Button Link" }) %>
+<%= escape_html(partial "components/buttons/button_link_default_xs", locals: { text: "Extra-Small Button Link" }) %>
+</code>
+</pre>
+
 <h3 class="h6 styleguide-subheader">Button Variations</h3>
 <p>
   <%= partial "components/buttons/button_primary", locals: { text: "Primary Button" } %>

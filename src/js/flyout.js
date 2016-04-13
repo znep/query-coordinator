@@ -1,9 +1,9 @@
 var FlyoutFactory = module.exports = function(element) {
   var padding = 10;
-  var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flyout]'));
+  var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'));
 
   hoverables.forEach(function(hoverable) {
-    var flyout = document.querySelector('#' + hoverable.getAttribute('data-flyout'));
+    var flyout = element.querySelector('#' + hoverable.getAttribute('data-flyout'));
 
     hoverable.addEventListener('mouseover', function() {
       flyout.classList.remove('flyout-hidden');

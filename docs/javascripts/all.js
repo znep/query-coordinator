@@ -2,14 +2,7 @@
 //= require vendor/styleguide
 
 document.addEventListener('DOMContentLoaded', function() {
-  if (document.querySelector('#dd')) {
-    var dd = new styleguide.Dropdown( document.querySelector('#dd') );
-  }
-
-  if (document.querySelector('#du')) {
-    var du = new styleguide.Dropdown( document.querySelector('#du') );
-  }
-
+  var dropdownFactory = new styleguide.DropdownFactory( document );
   var modalFactory = new styleguide.ModalFactory( document );
   var toggleFactory = new styleguide.ToggleFactory( document );
   var flyoutFactory = new styleguide.FlyoutFactory( document );

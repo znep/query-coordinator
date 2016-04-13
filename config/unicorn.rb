@@ -1,7 +1,6 @@
-listen 3000
-worker_processes Integer(ENV['WORKER_PROCESSES'] || 4)
-ENV['UNICORN'] = '1'
-timeout 300
+listen Integer(ENV['UNICORN_LISTEN_PORT'] || 3000)
+worker_processes Integer(ENV['UNICORN_WORKER_PROCESSES'] || ENV['WORKER_PROCESSES'] || 4)
+timeout Integer(ENV['UNICORN_TIMEOUT'] || 300)
 
 # By default, the Unicorn logger will write to stderr.
 # (http://unicorn.bogomips.org/Unicorn/Configurator.html)

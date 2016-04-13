@@ -54,9 +54,10 @@ Dropdown.prototype = {
     }
 
     document.addEventListener('click', function() {
-      Array.from(document.querySelectorAll('.dropdown')).forEach(function(dropdown) {
-        dropdown.classList.remove('active');
-      });
+      var dropdowns = document.querySelectorAll('.dropdown');
+      for (var i = 0; i < dropdowns.length; i++) {
+        dropdowns[i].classList.remove('active');
+      }
     });
   }
 }

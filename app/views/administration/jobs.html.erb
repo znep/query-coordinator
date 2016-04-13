@@ -9,9 +9,21 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
+<% content_for :js_footer do %>
+  <%- unless params[:no_js].present? -%>
+    <%= include_javascripts 'admin-jobs' %>
+  <%- end -%>
+<% end %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.plugins.daterangepicker %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <%= include_webpack_bundle 'spatial-lens-admin/admin-jobs.js' %>
+<%= include_webpack_bundle 'admin-time-control.js' %>
+<%= include_webpack_bundle 'admin-jobs.js' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">
   <div class="adminHeader floating jobs">
@@ -47,6 +59,9 @@
         ],
         params[:activity_type]
       )) %>
+
+      <label for="time-control-input">Date:</label>
+      <input name="date_range" type="text" id="time-control-input" class="currentTimeSlice" readonly="readonly" value='<%= if params[:date_range].present? then CGI.unescapeHTML params[:date_range] end %>' />
 
       <button type="submit"><%= t("#{jobs_prefix}.filters.apply_filters") %></button>
     </form>

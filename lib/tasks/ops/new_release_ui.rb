@@ -63,7 +63,7 @@ class NewReleaseUi
 
   def make_the_release!
     # 1- Reset or merge local release to new_release_commit
-    dialog.infobox('Prepare release branch')
+    dialog.infobox('Preparing release branch...')
     git.checkout(RELEASE_BRANCH_NAME)
 
     if merge_instead_of_reset?
@@ -82,24 +82,24 @@ Aborted.'
     end
 
     # 2- Commit semver
-    dialog.infobox('Commit semver')
+    dialog.infobox('Committing semver...')
     new_semver.save(SemVer.find_file)
     git.add(SemVer.find_file)
     git.commit("Bump version #{new_semver}")
 
 
     # 3- Apply tag.
-    dialog.infobox('Tag release')
+    dialog.infobox('Tagging release...')
     git.add_tag(new_semver.to_s.tr('v', ''))
 
     # 4- Push origin
-    dialog.infobox('Git push')
+    dialog.infobox('Pushing to origin/release...')
     git.push('origin', RELEASE_BRANCH_NAME, tags: ACTUALLY_PUSH_TAG, force: true)
   end
 
   def wait_for_jenkins_build
     build_number = nil
-    dialog.infobox('Waiting for Jenkins build to complete successfully', 4, 50)
+    dialog.infobox('Waiting for Jenkins build to complete successfully...', 4, 50)
     loop do
       build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
       break if build_number
@@ -193,7 +193,12 @@ Proceed?
       message.scan(/EN-\d+/)
     end.flatten.sort
 
-    commits_summary = "JIRA tickets: #{jira_tickets.join(', ')}\n\n"
+    jira_tickets_text = jira_tickets.map do |ticket_id|
+      "#{ticket_id}: https://socrata.atlassian.net/browse/#{ticket_id}"
+    end.join("\n")
+
+    commits_summary = "JIRA tickets:\n#{jira_tickets_text}\n\n"
+    commits_summary << "Diff: https://github.com/socrata/storyteller/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
     commits_summary << commits.map do |commit|
       "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
     end.join("\n\n")
@@ -223,9 +228,10 @@ Copy manifest to clipboard?")
     git.checkout(RELEASE_BRANCH_NAME)
     git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
 
-    dialog.msgbox("I've checked out the origin/release branch for you. Please get this branch into what you intend to release.
+    dialog.msgbox("I've checked out the #{RELEASE_BRANCH_NAME} branch for you.
+In another terminal, please get this branch into what you intend to release.
 Don't worry about updating semver, that will be done in a minute.
-DON'T push release to github! (I'll notice).
+DON'T push to github! (I'll notice).
 
 Cherry-pick example:
 # git cherry-pick abcd1234
@@ -243,10 +249,10 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
       end
     end
 
-    local_release_commit = git.object('release')
+    local_release_commit = git.object(RELEASE_BRANCH_NAME)
 
     if last_released_commit_sha == local_release_commit.sha
-      dialog.msgbox("Your release branch is the same as origin/#{RELEASE_BRANCH_NAME}!")
+      dialog.msgbox("Looks like you didn't make any changes to the #{RELEASE_BRANCH_NAME} branch. Aborting.")
       nil
     else
       local_release_commit

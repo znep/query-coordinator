@@ -4,7 +4,7 @@ var projectRootDir = path.resolve(__dirname, '../..');
 var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
 
 var packageJson = require(path.resolve(projectRootDir, 'package.json'));
-var datalensWebpackExternals = packageJson.config.datalensWebpackExternals;
+var dataLensWebpackExternals = packageJson.config.dataLensWebpackExternals;
 
 module.exports = function ( karma ) {
   karma.set({
@@ -72,7 +72,7 @@ module.exports = function ( karma ) {
     webpack: {
       cache: true,
       devtool: 'inline-source-map',
-      externals: datalensWebpackExternals,
+      externals: dataLensWebpackExternals,
       module: {
         loaders: [
           {

@@ -279,10 +279,7 @@ module ApplicationHelper
       src =
         if Rails.configuration.webpack[:use_manifest]
           manifest = Rails.configuration.webpack[:asset_manifest]
-          # Look for the basename as the key
-          # Note: this means that two bundle files can't have the same name
-          # TODO: see if there's a way to rectify this
-          filename = manifest[File.basename(entrypoint)]
+          filename = manifest[entrypoint]
 
           "build/#{filename}"
         else

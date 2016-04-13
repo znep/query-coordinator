@@ -24,9 +24,13 @@ var Dropdown = function(element) {
 Dropdown.prototype = {
   initEvents: function() {
     var obj = this;
+    // Reposition dropdown if it's near the edge of the window to avoid
+    // the dropdown making the window larger than we wanted
+    positionDropdown();
 
     obj.dd.addEventListener('click', function(event) {
       event.stopPropagation();
+      positionDropdown();
       obj.dd.classList.toggle('active');
       return false;
     });
@@ -59,5 +63,29 @@ Dropdown.prototype = {
         dropdowns[i].classList.remove('active');
       }
     });
+
+    window.addEventListener('resize', function() {
+      positionDropdown();
+    });
+
+    function positionDropdown() {
+      var optionsElement = obj.dd.querySelector('.dropdown-options');
+      var optionsElementWidth = optionsElement.offsetWidth;
+      var windowWidth = document.body.offsetWidth;
+
+      // Get left to check if the dropdown options are hanging off the side of the page
+      var node = optionsElement;
+      var left = 0;
+
+      do {
+        left += node.offsetLeft;
+      } while ((node = node.offsetParent) !== null);
+
+      // Update dropdown options position if needed
+      if (optionsElementWidth + left >= windowWidth || optionsElement.style.left) {
+        var dropdownWidth = obj.dd.getBoundingClientRect().width;
+        optionsElement.style.left = -(optionsElementWidth - dropdownWidth) + 'px';
+      }
+    }
   }
 }

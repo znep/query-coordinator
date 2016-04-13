@@ -2959,6 +2959,9 @@ en:
           more: More
           more_views: More Views
           visualize: Visualize
+        backup:
+          button: Back up this dataset
+          item_html: Backed up at <span class="backupTime"></span>
         view_list:
           delete_confirm: Are you sure you want to delete %{name}?
           delete_snapshot_confirm: Are you sure you want to delete %{name} (snapshotted %{date})?

@@ -2256,6 +2256,37 @@ var Dataset = ServerModel.extend({
             }});
     },
 
+    getBackups: function(callback) {
+      var ds = this;
+      if (!ds.newBackend) { return; }
+      var processTS = function(timestamps) {
+        var rv = _.map(timestamps, function(timestamp) {
+          return {
+            downloadLinks: {
+              csv: '/api/views/{0}/backups/{1}'.format(ds.id, timestamp)
+            },
+            moment: moment(timestamp)
+          };
+        });
+        callback(rv);
+      };
+
+      ds.makeRequest({
+        url: '/api/views/{0}/backups'.format(ds.id), type: 'GET',
+        success: processTS
+      });
+    },
+
+    makeBackup: function(successCallback) {
+      var ds = this;
+      if (!ds.newBackend) { return; }
+      if (!_.isFunction(successCallback)) { successCallback = function(){}; }
+      ds.makeRequest({
+        url: '/api/views/{0}/backups'.format(ds.id), type: 'POST',
+        success: function() { successCallback(); }
+      });
+    },
+
     getSnapshotDatasets: function(callback)
     {
         var ds = this;

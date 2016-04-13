@@ -5,7 +5,7 @@ class SiteChromeController < ApplicationController
     @footer = @site_chrome.footer
     @general = @site_chrome.general
     @locales = @site_chrome.locales
-    @current_user = @site_chrome.current_user(localhost?)
+    @current_user = @site_chrome.current_user(request)
   end
 
   private

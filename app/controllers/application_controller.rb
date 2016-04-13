@@ -4,6 +4,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def localhost?
-    request.host == 'localhost' || !!ENV['LOCALHOST'].to_s == 'true'
+    request.host == 'localhost' || !!ENV['LOCALHOST'].to_s.downcase == 'true'
   end
 end

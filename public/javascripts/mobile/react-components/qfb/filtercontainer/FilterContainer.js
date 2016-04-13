@@ -16,6 +16,7 @@ class FilterContainer extends React.Component {
       filters: this.props.filters
     };
 
+    var self = this;
     this.domain = this.props.domain;
     this.datasetId = this.props.datasetId;
 
@@ -25,13 +26,13 @@ class FilterContainer extends React.Component {
 
     this.handleFilterAddition = this.handleFilterAddition.bind(this);
     this.handleFilterDeletion = this.handleFilterDeletion.bind(this);
+
+    this.props.filterDataObservable.addEventListener('clearFilters.qfb.socrata', function() {
+      self.onClickClearAllFilters();
+    });
   }
 
   // LIFE CYCLE EVENTS
-  componentWillMount() {
-
-  }
-
   componentDidMount() {
     $(document).keyup(function(e) {
       if (e.keyCode == 27) {

@@ -241,6 +241,10 @@ $site-header-z-index: 6;
   .responsive-navbar-nav {
     float: right;
 
+    .btn {
+      display: inline;
+    }
+
     .btn-default {
       margin-right: 0.5rem;
 

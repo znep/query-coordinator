@@ -1,4 +1,4 @@
-var Styleguide = module.exports = {
+var Styleguide = {
   DropdownFactory: require('./dropdown'),
   FlannelFactory: require('./flannel'),
   FlyoutFactory: require('./flyout'),
@@ -8,13 +8,15 @@ var Styleguide = module.exports = {
   TourFactory: require('./tour')
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-  /*
-  new Styleguide.DropdownFactory(document);
-  new Styleguide.FlannelFactory(document);
-  new Styleguide.FlyoutFactory(document);
-  new Styleguide.MenuFactory(document);
-  new Styleguide.ToggleFactory(document);
-  new Styleguide.TourFactory(document);
-  */
-});
+module.exports = function(element) {
+  document.addEventListener('DOMContentLoaded', function() {
+    new Styleguide.DropdownFactory(element);
+    new Styleguide.FlannelFactory(element);
+    new Styleguide.FlyoutFactory(element);
+    new Styleguide.MenuFactory(element);
+    new Styleguide.ToggleFactory(element);
+    new Styleguide.TourFactory(element);
+  });
+
+  return Styleguide;
+};

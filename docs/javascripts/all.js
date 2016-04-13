@@ -2,14 +2,6 @@
 //= require vendor/styleguide
 
 document.addEventListener('DOMContentLoaded', function() {
-  var dropdownFactory = new styleguide.DropdownFactory( document );
-  var modalFactory = new styleguide.ModalFactory( document );
-  var toggleFactory = new styleguide.ToggleFactory( document );
-  var flyoutFactory = new styleguide.FlyoutFactory( document );
-  var flannelFactory = new styleguide.FlannelFactory( document );
-  var menuFactory = new styleguide.MenuFactory( document );
-  var tourFactory = new styleguide.TourFactory( document );
-
   /**
    * Fancy demo stuff.
    * Make the responsive navbar collapse to a smaller version.

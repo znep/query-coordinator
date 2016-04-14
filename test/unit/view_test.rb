@@ -584,34 +584,42 @@ class ViewTest < Test::Unit::TestCase
     )
   end
 
-  def test_is_layered?
+  def test_is_multi_layered?
+    View.any_instance.stubs(:is_geospatial? => true)
+
     view_without_keys = View.new
-    assert_equal(false, view_without_keys.is_layered?)
+    refute view_without_keys.is_multi_layered?, 'View without layers is definitely not multi-layered'
 
     json = {'metadata' => {'geo' => {'layers' => '4444-4444'}}}
     view_with_single_layer = View.new(json)
-    assert_equal(false, view_with_single_layer.is_layered?)
+    refute view_with_single_layer.is_multi_layered?, 'Single geoRows is not multi-layered'
 
     json = {'metadata' => {'geo' => {'layers' => '4444-4444,5555-5555'}}}
     view_with_multiple_layers = View.new(json)
-    assert(view_with_multiple_layers.is_layered?)
+    assert view_with_multiple_layers.is_multi_layered?, 'Multiple geoRows is multi-layered'
 
     json = {'displayFormat' => {'viewDefinitions' => [{'uid' => 'self'}]}}
     derived_view_from_single_dataset = View.new(json)
-    assert_equal(false, derived_view_from_single_dataset.is_layered?)
+    refute derived_view_from_single_dataset.is_multi_layered?, 'View definitions only referencing self is not multi-layered'
 
     json = {'displayFormat' => {'viewDefinitions' =>
        [ {'uid' => 'self'}, {'uid' => '4444-4444'} ]}}
     derived_view_from_multiple_datasets = View.new(json)
-    assert(derived_view_from_multiple_datasets.is_layered?)
+    assert derived_view_from_multiple_datasets.is_multi_layered?, 'View definitions referencing other view is multi-layered'
   end
 
   def test_geospatial_child_layers
     View.stubs(:find_multiple => ['giraffes'])
+
+    view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {}})
+    view.stubs(:is_geospatial? => true)
+    assert_equal(view.geospatial_child_layers, [])
+
     view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {'layers' => '4444-4444'}})
     view.stubs(:is_geospatial? => true)
-    view.stubs(:is_layered? => true)
     assert_equal(view.geospatial_child_layers, ['giraffes'])
+
+    view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {'layers' => '4444-4444'}})
     view.stubs(:is_geospatial? => false)
     assert_equal(view.geospatial_child_layers, [])
   end

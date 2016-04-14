@@ -79,7 +79,7 @@
     <%- end -%>
     <%- if current_user && current_user.is_admin? -%>
       <li class="internal">
-        <%= admin_nav_link_to 'Internal', :controller => 'internal', :action => 'index' %>
+        <%= admin_nav_link_to 'Internal', :controller => '/internal', :action => 'index' %>
       </li>
     <%- end -%>
     <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>

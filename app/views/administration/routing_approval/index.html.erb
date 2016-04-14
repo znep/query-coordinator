@@ -20,7 +20,7 @@
     <%- if !@approval_template.nil? -%>
     <%- if @appr_count > 0 -%>
     <div class="banner clearfix">
-      <a href="<%= routing_approval_queue_path %>" class="button">Take Action</a>
+      <a href="<%= queue_path %>" class="button">Take Action</a>
       <p>You have <strong><%= @appr_count %></strong> <%= @appr_count > 1 ?
         'datasets' : 'dataset' %> that require<%= @appr_count == 1 ? 's' : '' %> action.</p>
     </div>
@@ -104,7 +104,7 @@
         </tbody>
       </table>
       <%- if @stuck_count > 5 -%>
-        <a href="<%= routing_approval_queue_path(show_stuck: true) %>" class="moreStuck">Show More</a>
+        <a href="<%= queue_path(show_stuck: true) %>" class="moreStuck">Show More</a>
       <%- end -%>
     </div>
 

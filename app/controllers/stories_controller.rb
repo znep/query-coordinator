@@ -161,7 +161,7 @@ class StoriesController < ApplicationController
 
     if @story
       if Rails.application.assets_manifest.assets['themes/themes.css']
-        themes = File.read(Rails.application.assets_manifest.assets['themes/themes.css'])
+        themes = File.read(Rails.root.join('public', 'assets', Rails.application.assets_manifest.assets['themes/themes.css']))
       else
         themes = Rails.application.assets.find_asset(Rails.root.join('app/assets/stylesheets/themes/themes.scss')).to_s
       end

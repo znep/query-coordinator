@@ -562,4 +562,131 @@ describe('StorytellerUtils', function() {
       });
     });
   });
+
+  describe('.formatValueWithoutRounding()', function() {
+
+    describe('when given non-numeric input', function() {
+
+      it('returns the input value', function() {
+
+        assert.equal(StorytellerUtils.formatValueWithoutRounding(undefined), undefined);
+        assert.equal(StorytellerUtils.formatValueWithoutRounding(null), null);
+        assert.equal(StorytellerUtils.formatValueWithoutRounding(false), false);
+        assert.equal(StorytellerUtils.formatValueWithoutRounding('test'), 'test');
+      });
+    });
+
+    describe('when given numeric input', function() {
+
+      describe('when given a value (-1000, 1000)', function() {
+
+        it('does not change the unit but rounds to the tenths place (except with nines)', function() {
+
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999.999), '-999.9');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999.599), '-999.6');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999.509), '-999.5');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(0), '0');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(0.0), '0');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999.509), '999.5');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999.599), '999.6');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999.999), '999.9');
+        });
+      });
+
+      describe('when given a value (-1,000,000, -1000] or [1000, 1,000,000)', function() {
+
+        it('changes the unit to thousands and rounds to the hundreds place (except with nines)', function() {
+
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999.999), '-999.9K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599.599), '-999.6K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999509.509), '-999.5K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1599.999), '-1.6K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1509.999), '-1.5K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000.999), '-1K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000), '-1K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000), '1K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000.999), '1K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1509.999), '1.5K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1599.999), '1.6K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999509.509), '999.5K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999599.599), '999.6K');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999999.999), '999.9K');
+        });
+      });
+
+      describe('when given a value (-1,000,000,000, -1,000,000] or [1,000,000, 1,000,000,000)', function() {
+
+        it('changes the unit to millions and rounds to the hundred-thousands place (except with nines)', function() {
+
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999999.999), '-999.9M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599999.599), '-999.6M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999509999.509), '-999.5M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1599999.999), '-1.6M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1509999.999), '-1.5M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000.999), '-1M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000), '-1M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000), '1M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000.999), '1M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1509999.999), '1.5M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1599999.999), '1.6M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999509999.509), '999.5M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999599999.599), '999.6M');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999999999.999), '999.9M');
+        });
+      });
+
+      describe('when given a value (-1,000,000,000,000, -1,000,000,000] or [1,000,000,000, 1,000,000,000,000)', function() {
+
+        it('changes the unit to billions and rounds to the hundred-millions place (except with nines)', function() {
+
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999999999.999), '-999.9B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599999999.599), '-999.6B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-999509999999.509), '-999.5B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1599999999.999), '-1.6B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1509999999.999), '-1.5B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000.999), '-1B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000), '-1B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000), '1B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000.999), '1B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1509999999.999), '1.5B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1599999999.999), '1.6B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999509999999.509), '999.5B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999599999999.599), '999.6B');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(999999999999.999), '999.9B');
+        });
+      });
+
+      describe('when given a value (-infinity, -1,000,000,000,000] or [1,000,000,000,000, +infinity)', function() {
+
+        it('changes the unit to trillions and behaves erratically', function() {
+
+          // Note: PhantomJS appears to implement `.toLocaleString()` as an alias of `.toString(),
+          // so we expect it to format the thousands-values like `1000`. In actual browsers, it may
+          // be more likely rendered as `1,000` in the US locale, and something different in other
+          // locales.
+          //
+          // Furthermore, (presumably because JavaScript numbers are all floating point), we seem to
+          // end up with rounded numbers around 15 digits. These tests basically only check that there
+          // has not been a regression resulting in the output of the function being completely wrong
+          // (e.g. undefined as opposed to a number-looking string).
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000000000.00), '-1000T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-99999999999999.999), '-100T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-99959999999999.599), '-99.9T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-99950999999999.509), '-99.9T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1599999999999.999), '-1.6T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1509999999999.999), '-1.5T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000000.999), '-1T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000000), '-1T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000000), '1T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000000.999), '1T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1509999999999.999), '1.5T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1599999999999.999), '1.6T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(99950999999999.509), '99.9T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(99959999999999.599), '99.9T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(99999999999999.999), '100T');
+          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000000000.00), '1000T');
+        });
+      });
+    });
+  });
 });

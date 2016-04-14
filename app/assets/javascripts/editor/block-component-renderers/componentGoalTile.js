@@ -112,59 +112,36 @@ function _updateTextEllipsification($element) {
     $tileMetricSubtitle = $element.find('.goal-tile-metric-subtitle');
 
     $tileTitle.text(_.get(goalTileData, 'name'));
-    $tileMetricSubtitle.text(expandSubtitle(goalTileData));
+    $tileMetricSubtitle.text(_expandSubtitle(goalTileData));
 
     StorytellerUtils.ellipsifyText($tileTitle, 2);
     StorytellerUtils.ellipsifyText($tileMetricSubtitle, 3);
   }
 }
 
-function formatMetricValue(goalTileData) {
+function _formatMetricValue(goalTileData) {
   var value = _.get(
     goalTileData,
     'prevailing_measure.computed_values.metric.current_value'
   );
-  var valueIntegerAndFraction;
-  var valueInteger;
-  var valueFraction;
+  var valueUnit = (_.get(goalTileData, 'prevailing_measure.unit') === 'percent') ?
+    '%' :
+    _.get(goalTileData, 'prevailing_measure.unit');
 
   if (!_.isNumber(value)) {
 
     return '<span class="goal-tile-metric-value-major">-</span>';
-  } else if (_.get(goalTileData, 'prevailing_measure.unit') === 'percent') {
-
-    if (value >= 10000) {
-
-      valueInteger = value.toString().split('.')[0];
-      valueFraction = '';
-    } else {
-      valueIntegerAndFraction = value.toString().split('.');
-      valueInteger = valueIntegerAndFraction[0];
-      valueFraction = valueIntegerAndFraction[1];
-
-      if (valueFraction && valueFraction.length > 1) {
-        valueFraction = '.' + valueFraction.substring(0, 1);
-      } else {
-        valueFraction = '';
-      }
-    }
-
-    return StorytellerUtils.format(
-      '<span class="goal-tile-metric-value-major">{0}{1}</span><span class="goal-tile-metric-value-minor">%</span>',
-      valueInteger,
-      valueFraction
-    );
   } else {
 
     return StorytellerUtils.format(
-      '<span class="goal-tile-metric-value-major">{0}</span> <span class="goal-tile-metric-value-minor">{1}</span>',
-      StorytellerUtils.formatNumber(value),
-      _.get(goalTileData, 'prevailing_measure.unit')
+      '<span class="goal-tile-metric-value-major">{0}</span><span class="goal-tile-metric-value-minor">{1}</span>',
+      StorytellerUtils.formatValueWithoutRounding(value),
+      valueUnit
     );
   }
 }
 
-function expandSubtitle(goalTileData) {
+function _expandSubtitle(goalTileData) {
   var customSubtitle = _.get(goalTileData, 'metadata.custom_subtitle');
   var defaultSubtitle = StorytellerUtils.format(
     I18n.t('editor.goal_tile.measure.subheadline') || '',
@@ -175,7 +152,7 @@ function expandSubtitle(goalTileData) {
   return customSubtitle || defaultSubtitle;
 }
 
-function expandProgress(progress, isEnded) {
+function _expandProgress(progress, isEnded) {
   var expandedProgress = null;
 
   if (progress != null) {
@@ -192,7 +169,7 @@ function expandProgress(progress, isEnded) {
   return expandedProgress || progress;
 }
 
-function formatEndDate(endDate) {
+function _formatEndDate(endDate) {
 
   return StorytellerUtils.format(
     '{0} {1}, {2}',
@@ -200,6 +177,37 @@ function formatEndDate(endDate) {
     endDate.getDate(),
     endDate.getFullYear()
   );
+}
+
+function _shrinkGoalMetricToFitContainer($element) {
+  var $tileMetricValue = $element.find('.goal-tile-metric-value');
+  var $tileMetricValueMajor = $element.find('.goal-tile-metric-value-major');
+  var $tileMetricValueMinor = $element.find('.goal-tile-metric-value-minor');
+  var targetWidth = $tileMetricValue.width();
+  var actualWidth = (
+    $tileMetricValueMajor.outerWidth(true) +
+    $tileMetricValueMinor.outerWidth(true)
+  );
+  var iterationCount = 0;
+
+  if (targetWidth !== parseInt($tileMetricValue.attr('last-rendered-width'), 10)) {
+
+    $tileMetricValue.
+      removeAttr('style').
+      attr('last-rendered-width', targetWidth);
+
+    while ((actualWidth > targetWidth) && (iterationCount < 10)) {
+
+      $tileMetricValue.css('font-size', parseInt($tileMetricValue.css('font-size'), 10) * 0.9);
+
+      actualWidth = (
+        $tileMetricValueMajor.outerWidth(true) +
+        $tileMetricValueMinor.outerWidth(true)
+      );
+
+      iterationCount++;
+    }
+  }
 }
 
 function _renderGoalTile($element, componentData, goalTileData) {
@@ -230,6 +238,7 @@ function _renderGoalTile($element, componentData, goalTileData) {
   if (!goalTileData) {
 
     _updateTextEllipsification($element);
+    _shrinkGoalMetricToFitContainer($element);
     return;
   }
 
@@ -297,10 +306,10 @@ function _renderGoalTile($element, componentData, goalTileData) {
     append($tileTitle);
 
   $tileMetricValue = $('<h2>', {'class': 'goal-tile-metric-value'}).
-    html(formatMetricValue(goalTileData));
+    html(_formatMetricValue(goalTileData));
 
   $tileMetricSubtitle = $('<h2>', {'class': 'goal-tile-metric-subtitle'}).
-    text(expandSubtitle(goalTileData));
+    text(_expandSubtitle(goalTileData));
 
   $tileMetricContainer = $('<div>', {'class': 'goal-tile-metric-container'}).
     append([
@@ -310,7 +319,7 @@ function _renderGoalTile($element, componentData, goalTileData) {
 
   $tileProgress = $('<span>', {'class': 'goal-tile-metric-progress'}).
     text(
-      expandProgress(
+      _expandProgress(
         goalProgress,
         goalIsEnded
       )
@@ -319,7 +328,7 @@ function _renderGoalTile($element, componentData, goalTileData) {
   if (goalIsEnded) {
 
     $tileProgressEndDate = $('<span>', {'class': 'goal-tile-metric-progress-end-date'}).
-      text(formatEndDate(goalEndDate));
+      text(_formatEndDate(goalEndDate));
   }
 
   $tilePublicPrivate = $('<span>', {'class': 'goal-tile-public-private'});
@@ -356,6 +365,8 @@ function _renderGoalTile($element, componentData, goalTileData) {
   $element.append($tileContainer);
 
   $tileContainer.addClass('rendered');
+
+  _shrinkGoalMetricToFitContainer($element);
 
   StorytellerUtils.ellipsifyText($tileTitle, 2);
   StorytellerUtils.ellipsifyText($tileMetricSubtitle, 3);
@@ -412,6 +423,6 @@ function _renderGoalTileError($element) {
   $element.
     addClass('error').
     append([
-      $('<p>').text(I18n.t('editor.goal_tile.render_errors'))
+      $('<p>').text(I18n.t('editor.goal_tile.render_error'))
     ]);
 }

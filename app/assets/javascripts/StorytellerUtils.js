@@ -284,5 +284,62 @@ export default _.merge({}, SocrataUtils, VifUtils, {
         this.ellipsifyText($element, lineCount);
       }
     }
+  },
+
+  formatValueWithoutRounding: function(value) {
+    var valueIsNegative = value < 0;
+    var absValue = Math.abs(value);
+    var valueInteger;
+    var valueFraction;
+    var valueUnit;
+    var valueFractionHundredths;
+
+    function deriveValueFraction(val, digits) {
+      var fraction = val.toString().split('.')[0];
+
+      return fraction.substring(fraction.length - digits);
+    }
+
+    if (!_.isNumber(value)) {
+      return value;
+    }
+
+    valueInteger = Math.floor(absValue);
+
+    if (valueInteger < 1e3) {
+      valueFraction = absValue.toString().split('.')[1] || '';
+      valueUnit = '';
+    } else if (valueInteger < 1e6) {
+      valueInteger = Math.floor(absValue / 1e3);
+      valueFraction = deriveValueFraction(absValue, 3);
+      valueUnit = 'K';
+    } else if (valueInteger < 1e9) {
+      valueInteger = Math.floor(absValue / 1e6);
+      valueFraction = deriveValueFraction(absValue, 6);
+      valueUnit = 'M';
+    } else if (valueInteger < 1e12) {
+      valueInteger = Math.floor(absValue / 1e9);
+      valueFraction = deriveValueFraction(absValue, 9);
+      valueUnit = 'B';
+    } else {
+      valueInteger = Math.floor(absValue / 1e12);
+      valueFraction = deriveValueFraction(absValue, 12);
+      valueUnit = 'T';
+    }
+
+    valueFractionHundredths = (valueFraction.length > 1) ? parseInt(valueFraction.charAt(1), 10) : 0;
+
+    if (valueFractionHundredths >= 5) {
+      valueFraction = Math.min(9, parseInt(valueFraction.charAt(0), 10) + 1).toString();
+    } else {
+      valueFraction = (valueFraction.charAt(0) === '0') ? '' : valueFraction.charAt(0);
+    }
+
+    return (
+      ((valueIsNegative) ? '-' : '') +
+      valueInteger.toLocaleString() +
+      ((valueFraction.length > 0) ? ('.' + valueFraction) : '') +
+      valueUnit
+    );
   }
 });

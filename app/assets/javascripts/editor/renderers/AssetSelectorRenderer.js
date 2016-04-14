@@ -426,20 +426,19 @@ export default function AssetSelectorRenderer(options) {
     var storyTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.story_tile.description'));
 
+    var goalTileHeader;
+    var goalTileDescription;
+    var $goalTileProvider;
+
     if (Environment.ENABLE_GOAL_TILES) {
 
-      var goalTileHeader = $('<h3>').
+      goalTileHeader = $('<h3>').
         text(I18n.t('editor.asset_selector.goal_tile.name'));
-      var goalTileDescription = $('<p>').
+      goalTileDescription = $('<p>').
         text(I18n.t('editor.asset_selector.goal_tile.description'));
-      var $goalTileProvider = $('<li>', {
+      $goalTileProvider = $('<li>', {
         'data-provider': 'GOAL_TILE'
       }).append(goalTileHeader, goalTileDescription);
-    } else {
-
-      var goalTileHeader;
-      var goalTileDescription;
-      var $goalTileProvider;
     }
 
     var embedCodeHeader = $('<h3>').
@@ -1060,17 +1059,23 @@ export default function AssetSelectorRenderer(options) {
     var renderedGoalUid = $goalTilePreviewContainer.attr('data-rendered-goal-uid');
     var componentData;
 
-    if (componentProperties !== null &&
-      _.has(componentProperties, 'domain') &&
-      _.has(componentProperties, 'goalUid') &&
-      _.has(componentProperties, 'goalFullUrl')) {
+    function allComponentPropertiesAreNotNull(properties) {
 
+      return (
+        _.isObject(properties) &&
+        _.has(properties, 'domain') &&
+        !_.isNull(_.get(properties, 'domain')) &&
+        _.has(properties, 'goalUid') &&
+        !_.isNull(_.get(properties, 'goalUid')) &&
+        _.has(properties, 'goalFullUrl') &&
+        !_.isNull(_.get(properties, 'goalFullUrl'))
+      );
+    }
+
+    if (allComponentPropertiesAreNotNull(componentProperties)) {
       goalDomain = componentProperties.domain;
       goalUid = componentProperties.goalUid;
       goalFullUrl = componentProperties.goalFullUrl;
-    }
-
-    if (goalDomain !== null && goalUid !== null && goalFullUrl !== null) {
 
       if (
         goalDomain !== renderedGoalDomain ||

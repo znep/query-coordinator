@@ -33,7 +33,7 @@
 
       .goal-tile-title,
       .goal-tile-metric-value,
-      .goal-tile-metric-unit {
+      .goal-tile-metric-subtitle {
         font-family: 'Open Sans', sans-serif;
         opacity: 0;
         transition: opacity $transition-duration;
@@ -74,15 +74,16 @@
 
         .goal-tile-metric-value {
           height: 9rem;
+          font-size: 4rem;
           font-weight: 600;
           line-height: 9rem;
 
           .goal-tile-metric-value-major {
-            font-size: 8rem;
+            font-size: 2em;
           }
 
           .goal-tile-metric-value-minor {
-            font-size: 4rem;
+            font-size: 1em;
           }
         }
 

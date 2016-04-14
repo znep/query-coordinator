@@ -899,13 +899,21 @@ class View < Model
   end
 
   def api_foundry_url
-    uid = new_backend? ? id : migrations.fetch(:nbeId, id)
+    begin
+      uid = new_backend? ? id : migrations.fetch(:nbeId, id)
+    rescue CoreServer::ResourceNotFound
+      uid = id # This means the migration was not found.
+    end
     domain = self.federated? ? self.domainCName : CurrentDomain.cname
     "https://dev.socrata.com/foundry/#{domain}/#{uid}"
   end
 
   def resource_url(request = nil)
-    uid = new_backend? ? id : migrations.fetch(:nbeId, id)
+    begin
+      uid = new_backend? ? id : migrations.fetch(:nbeId, id)
+    rescue CoreServer::ResourceNotFound
+      uid = id # This means the migration was not found.
+    end
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{uid}.json"
   end
 

@@ -29,11 +29,18 @@ import './styles/mobile-general.scss';
   $dlName.html(datasetMetadata.name);
 
   const TABLE_UNSORTABLE_PHYSICAL_DATATYPES = ['geo_entity', 'point'];
+  const LARGE_DATASET_ROW_COUNT = 100000;
+  const LARGE_DATASET_COLUMN_COUNT = 50;
 
   var firstCard = _.sortBy(
     _.filter(datasetMetadata.columns, function(column) {
       return TABLE_UNSORTABLE_PHYSICAL_DATATYPES.indexOf(column.physicalDatatype) < 0;
     }), 'position')[0];
+
+  var soqlDataProvider = new dataProviders.SoqlDataProvider({
+    datasetUid: datasetMetadata.id,
+    domain: datasetMetadata.domain
+  });
 
   function getPageTemplate() {
 
@@ -535,75 +542,16 @@ import './styles/mobile-general.scss';
   }
 
   function setupQfb(preloadedFilters) {
-
-    var aFilterOps = [];
-    _.each(datasetMetadata.columns, function(column, fieldName) {
-      var filterOption = {};
-      switch (column.dataTypeName) {
-        case 'text':
-          filterOption = {
-            filterName: column.name,
-            name: fieldName,
-            id: column.position,
-            type: 'string'
-          };
-          aFilterOps.push(filterOption);
-          break;
-        case 'number':
-          filterOption = {
-            filterName: column.name,
-            name: fieldName,
-            id: column.position,
-            type: 'int'
-          };
-          aFilterOps.push(filterOption);
-          break;
-        case 'calendar_date':
-          filterOption = {
-            filterName: column.name,
-            name: fieldName,
-            id: column.position,
-            type: 'calendar_date'
-          };
-          aFilterOps.push(filterOption);
-          break;
-        default:
-          break;
-      }
-    });
-
     var filterDataObservable = document.createDocumentFragment();
 
-    ReactDOM.render(<FilterContainer
-      domain={ datasetMetadata.domain }
-      datasetId={ pageMetadata.datasetId }
-      filters={ preloadedFilters }
-      filterOps={ aFilterOps }
-      filterDataObservable={ filterDataObservable }
-      handleFilterBroadcast={ handleBroadcast } />, document.getElementById('filters'));
+    _attachModalEvents();
+    _determineDatasetSize().
+      then(_renderFilterContainer);
 
-    $('.warning-modal').on('click', function(e) {
-      e.stopPropagation();
-    });
-
-    $('#btn-close, #btn-proceed').on('click', function() {
-      $('#modal-container').addClass('hidden');
-    });
-
-    $('#btn-clear-filters').on('click', function() {
-      filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
-      $('#modal-container').addClass('hidden');
-    });
-
-    function handleBroadcast(filterObject) {
+    function _handleBroadcast(filterObject) {
       var whereClauseComponents = dataProviders.SoqlHelpers.whereClauseFilteringOwnColumn({
         filters: filterObject.filters,
         type: 'table'
-      });
-
-      var soqlDataProvider = new dataProviders.SoqlDataProvider({
-        datasetUid: datasetMetadata.id,
-        domain: datasetMetadata.domain
       });
 
       soqlDataProvider.getRowCount(whereClauseComponents).then(function(data) {
@@ -614,6 +562,88 @@ import './styles/mobile-general.scss';
             $(this).addClass('hidden');
           });
         }
+      });
+    }
+
+    function _attachModalEvents() {
+      $('.warning-modal').on('click', function(e) {
+        e.stopPropagation();
+      });
+
+      $('#btn-close, #btn-proceed').on('click', function() {
+        $('#modal-container').addClass('hidden');
+      });
+
+      $('#btn-clear-filters').on('click', function() {
+        filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
+        $('#modal-container').addClass('hidden');
+      });
+    }
+
+    function _generateFilterOptions(isLargeDataset) {
+      // TODO: rewrite this with _.pickBy when we update to lodash 4 so we can object preserve keys.
+      var columns = isLargeDataset ?
+        _.filter(datasetMetadata.columns, function(column, fieldName) {
+          return _.find(pageMetadata.cards, { fieldName: fieldName });
+        }) :
+        datasetMetadata.columns;
+
+      var filterOptions = [];
+
+      _.each(columns, function(column) {
+        var filterOption = {};
+        switch (column.dataTypeName) {
+          case 'text':
+            filterOption = {
+              filterName: column.name,
+              name: _.findKey(datasetMetadata.columns, { position: column.position }),
+              id: column.position,
+              type: 'string'
+            };
+            filterOptions.push(filterOption);
+            break;
+          case 'number':
+            filterOption = {
+              filterName: column.name,
+              name: _.findKey(datasetMetadata.columns, { position: column.position }),
+              id: column.position,
+              type: 'int'
+            };
+            filterOptions.push(filterOption);
+            break;
+          case 'calendar_date':
+            filterOption = {
+              filterName: column.name,
+              name: _.findKey(datasetMetadata.columns, { position: column.position }),
+              id: column.position,
+              type: 'calendar_date'
+            };
+            filterOptions.push(filterOption);
+            break;
+          default:
+            break;
+        }
+      });
+
+      return filterOptions;
+    }
+
+    function _renderFilterContainer(isLargeDataset) {
+      ReactDOM.render(<FilterContainer
+        domain={ datasetMetadata.domain }
+        datasetId={ pageMetadata.datasetId }
+        filters={ preloadedFilters }
+        filterOps={ _generateFilterOptions(isLargeDataset) }
+        filterDataObservable={ filterDataObservable }
+        handleFilterBroadcast={ _handleBroadcast } />, document.getElementById('filters'));
+    }
+
+    function _determineDatasetSize() {
+      return new Promise(function(resolve) {
+        soqlDataProvider.getRowCount().then(function(data) {
+          resolve(parseInt(data, 10) > LARGE_DATASET_ROW_COUNT ||
+            Object.keys(datasetMetadata.columns).length > LARGE_DATASET_COLUMN_COUNT);
+        });
       });
     }
   }

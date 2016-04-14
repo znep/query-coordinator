@@ -68,62 +68,6 @@ h1, h2, h3, h4, h5, h6, {
   letter-spacing: -0.5px;
 }
 
-.menu {
-	width: 100%;
-	@include breakpoint($tablet) {
-		width: 30%;
-	}
-	background-color: $light-grey-7;
-	color: $black;
-
-	& > *:first-child {
-		margin-top: .3em;
-	}
-
-	& > *:last-child {
-  		margin-bottom: 0;
-	}
-
-	.container {
-		max-width: 100%;
-	}
-
-	.filter-wrapper {
-		overflow-y: scroll;
-	}
-
-	.filter-action-container {
-		max-width: 94%;
-		margin: 0 auto;
-		padding-top: ms(0);
-	}
-
-
-	&.menu-offscreen.menu-anchor-left {
-		left: -150%;
-		box-shadow: none;
-		border-right: none;
-	}
-
-	.menu-header {
-		height: ms(1);
-	}
-
-	.menu-header-title {
-	  	color: $black;
-	  	font-weight: lighter;
-	  	text-align: center;
-	}
-
-	.menu-header-dismiss {
-		color: $primary;
-		text-align: left;
-		&:hover {
-			color: $dark-grey-1;
-		}
-	}
-
-} //.menu
 
 
 body {

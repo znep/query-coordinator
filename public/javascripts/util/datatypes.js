@@ -1617,6 +1617,7 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: nonNumericAggs,
             createable: true,
             deleteable: true,
+            nbeOnly: true,
             filterConditions: blist.filter.groups.blob,
             inlineType: true
         },

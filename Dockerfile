@@ -36,7 +36,6 @@ RUN bundle install
 
 # Only run npm install fresh when package.json is changed
 COPY package.json /tmp/package.json
-COPY .npmrc /tmp/.npmrc
 RUN cd /tmp && npm install
 RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}/
 
@@ -44,13 +43,13 @@ RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}/
 ADD . ${APP_DIR}
 WORKDIR ${APP_DIR}
 
-ADD config/database.yml.production ${APP_DIR}/config/database.yml
-
 RUN npm run webpack
-RUN RAILS_ENV=production bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 # Make and chown the rails tmp dir to the socrata user
 RUN mkdir -p ${APP_TMP_DIR}
 RUN chown socrata -R ${APP_TMP_DIR}
+
+ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
 EXPOSE 3010

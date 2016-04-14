@@ -14,6 +14,7 @@ module.exports = function(element) {
     new Styleguide.FlannelFactory(element);
     new Styleguide.FlyoutFactory(element);
     new Styleguide.MenuFactory(element);
+    new Styleguide.ModalFactory(element);
     new Styleguide.ToggleFactory(element);
     new Styleguide.TourFactory(element);
   });

@@ -3,7 +3,7 @@
     <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
       <%= t 'screens.ds.blob.download' %>
     <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-      <%= t 'screens.ds.blob.data_extraction' %>
+      <%= h(@view.name) %>
     <%- else -%>
       <%= t 'screens.ds.blob.limited_download' %>
     <%- end -%>
@@ -33,9 +33,16 @@
       <%- @view.allAccessPoints.each do |accessPoint| -%>
         <%- if accessPoint['title'].present? -%>
           <li>
-            <span class="accessPointTitle">
-              <%= accessPoint['title'] %>
-            </span>
+            <div class="accessPointText">
+              <div class="accessPointTitle">
+                <%= accessPoint['title'] %>
+              </div>
+              <%- if accessPoint['description'].present? -%>
+              <div class="accessPointDescription">
+                <%= accessPoint['description'] %>
+              </div>
+              <%- end -%>
+            </div>
             <div class="accessPointButtons">
               <%- accessPoint['urls'].each do |format, url| -%>
                 <a class="button" href="<%= url %>" target="_blank">

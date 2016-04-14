@@ -1501,7 +1501,6 @@ en:
       last_month: Last Month
       last_week: Last Week
       last_year: Last Year
-      last_3_days: Last 3 Days
       month_to_date: Month to Date
       next: Next
       preceding_30_days: the preceding 30 days
@@ -1513,7 +1512,6 @@ en:
       the_month_of: The Month Of...
       the_week_of: The Week Of...
       the_year_of: The Year Of...
-      the_day_of: The Day Of...
       today: Today
       week_to_date: Week to Date
       year_to_date: Year to Date

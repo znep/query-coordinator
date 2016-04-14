@@ -167,6 +167,19 @@ export default _.merge({}, SocrataUtils, VifUtils, {
     return 'https://' + storyDomain + '/stories/s/' + storyUid + '/tile.json';
   },
 
+  generateGoalTileJsonSrc: function(goalDomain, goalUid) {
+
+    this.assertIsOneOfTypes(goalDomain, 'string');
+    this.assertIsOneOfTypes(goalUid, 'string');
+    this.assertEqual(goalDomain.match(/[^a-z0-9\.\-]/gi), null);
+    this.assert(
+      goalUid.match(/^\w{4}\-\w{4}$/) !== null,
+      '`goalUid` does not match anchored four-by-four pattern'
+    );
+
+    return 'https://' + goalDomain + '/stat/api/v1/goals/' + goalUid + '.json';
+  },
+
   generateYoutubeUrl: function(youtubeId) {
 
     this.assertIsOneOfTypes(youtubeId, 'string');
@@ -227,6 +240,106 @@ export default _.merge({}, SocrataUtils, VifUtils, {
         },
         data: requestData
       })
+    );
+  },
+
+  /**
+   * @function ellipsifyText
+   * @description
+   * Truncates a string and appends an ellipsis such that when rendered in its
+   * container element the number of lines of text is less than or equal to the
+   * argument `lineCount`.
+   *
+   * @param {Object} $element - a jQuery-wrapped DOM element.
+   * @param {Number} lineCount - an integer specifying the maximum number of
+   * lines of text to render before truncating the string and appending an
+   * ellipsis.
+   *
+   * @return {Undefined} - this method is side-effecty.
+   */
+  ellipsifyText: function($element, lineCount) {
+    var elementHeight = $element.height();
+    var lineHeight = Math.ceil(parseFloat($element.css('line-height')));
+    var targetElementHeight = lineHeight * lineCount;
+    var words;
+    var truncatedWords;
+
+    this.assert(
+      (Math.floor(lineCount) === lineCount),
+      '`lineCount` must be an integer'
+    );
+
+    if (elementHeight > targetElementHeight) {
+      words = $element.text().split(' ');
+
+      if (words[words.length - 1] === '…') {
+        truncatedWords = words.slice(0, -2);
+      } else {
+        truncatedWords = words.slice(0, -1);
+      }
+
+      $element.text(truncatedWords.join(' ') + '…');
+
+      if (truncatedWords.length > 0) {
+        this.ellipsifyText($element, lineCount);
+      }
+    }
+  },
+
+  formatValueWithoutRounding: function(value) {
+    var valueIsNegative = value < 0;
+    var absValue = Math.abs(value);
+    var valueInteger;
+    var valueFraction;
+    var valueUnit;
+    var valueFractionHundredths;
+
+    function deriveValueFraction(val, digits) {
+      var fraction = val.toString().split('.')[0];
+
+      return fraction.substring(fraction.length - digits);
+    }
+
+    if (!_.isNumber(value)) {
+      return value;
+    }
+
+    valueInteger = Math.floor(absValue);
+
+    if (valueInteger < 1e3) {
+      valueFraction = absValue.toString().split('.')[1] || '';
+      valueUnit = '';
+    } else if (valueInteger < 1e6) {
+      valueInteger = Math.floor(absValue / 1e3);
+      valueFraction = deriveValueFraction(absValue, 3);
+      valueUnit = 'K';
+    } else if (valueInteger < 1e9) {
+      valueInteger = Math.floor(absValue / 1e6);
+      valueFraction = deriveValueFraction(absValue, 6);
+      valueUnit = 'M';
+    } else if (valueInteger < 1e12) {
+      valueInteger = Math.floor(absValue / 1e9);
+      valueFraction = deriveValueFraction(absValue, 9);
+      valueUnit = 'B';
+    } else {
+      valueInteger = Math.floor(absValue / 1e12);
+      valueFraction = deriveValueFraction(absValue, 12);
+      valueUnit = 'T';
+    }
+
+    valueFractionHundredths = (valueFraction.length > 1) ? parseInt(valueFraction.charAt(1), 10) : 0;
+
+    if (valueFractionHundredths >= 5) {
+      valueFraction = Math.min(9, parseInt(valueFraction.charAt(0), 10) + 1).toString();
+    } else {
+      valueFraction = (valueFraction.charAt(0) === '0') ? '' : valueFraction.charAt(0);
+    }
+
+    return (
+      ((valueIsNegative) ? '-' : '') +
+      valueInteger.toLocaleString() +
+      ((valueFraction.length > 0) ? ('.' + valueFraction) : '') +
+      valueUnit
     );
   }
 });

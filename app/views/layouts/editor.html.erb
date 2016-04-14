@@ -33,7 +33,8 @@
     window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
     window.IMAGES = {
       COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>'
-    }
+    };
+    window.ENABLE_GOAL_TILES = <%= Rails.application.config.enable_goal_tiles %>;
   </script>
 
   <% if Rails.env.test? -%>

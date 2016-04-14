@@ -190,6 +190,15 @@ en:
         invalid_message_title_2: 'Something went wrong.'
         invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
         invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
+      goal_tile:
+        name: 'Socrata OpenPerformance Goal Tile'
+        description: 'Insert a preview of a Socrata OpenPerformance Goal.'
+        heading: 'Add a Preview of a Socrata OpenPerformance Goal'
+        input_label: 'Link to goal page'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a Socrata OpenPerformance Goal.'
+        invalid_permissions: "Oh no!  It looks like you don't have permission to view this goal."
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'
@@ -210,6 +219,33 @@ en:
     story_tile:
       view_story_prompt: 'View Story'
       invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
+    goal_tile:
+      view_goal_prompt: 'View Goal'
+      render_error: "This goal is not available or cannot be displayed"
+      public_label: 'Public'
+      private_label: 'Private'
+      measure:
+        progress:
+          no_judgement: 'Measuring'
+          none: 'Needs More Data'
+          needs_more_data: 'Needs More Data'
+          within_tolerance: 'Near Target'
+          good: 'On Track'
+          progressing: 'In Progress'
+          poor: 'Needs Improvement'
+          bad: 'Needs Improvement'
+          no_status: 'No Status'
+        end_progress:
+          no_judgement: 'Measured'
+          none: 'Needed More Data'
+          needs_more_data: 'Needed More Data'
+          within_tolerance: 'Almost met target'
+          good: 'Achieved Goal'
+          progressing: 'Almost met target'
+          poor: 'Did not meet target'
+          bad: 'Did not meet target'
+        # {0} -> goal name, {1} -> goal unit
+        subheadline: 'This goal is measured by tracking {0} in {1}.'
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:
@@ -232,3 +268,16 @@ en:
         flyout_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled'
         row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time'
         user_current_position: 'Your current location (estimated)'
+    time:
+      full_month_1: 'January'
+      full_month_2: 'February'
+      full_month_3: 'March'
+      full_month_4: 'April'
+      full_month_5: 'May'
+      full_month_6: 'June'
+      full_month_7: 'July'
+      full_month_8: 'August'
+      full_month_9: 'September'
+      full_month_10: 'October'
+      full_month_11: 'November'
+      full_month_12: 'December'

@@ -111,6 +111,18 @@ export default function AssetSelectorRenderer(options) {
 
     _container.on(
       'input',
+      '[data-asset-selector-validate-field="goalUrl"]',
+      function(event) {
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_GOAL_URL,
+          url: $(event.target).val()
+        });
+      }
+    );
+
+    _container.on(
+      'input',
       '[data-asset-selector-validate-field="youtubeId"]',
       function(event) {
         dispatcher.dispatch({
@@ -264,6 +276,11 @@ export default function AssetSelectorRenderer(options) {
           selectorContent = _renderChooseStoryTemplate(componentValue);
           break;
 
+        case WIZARD_STEP.ENTER_GOAL_URL:
+          selectorTitle = I18n.t('editor.asset_selector.goal_tile.heading');
+          selectorContent = _renderChooseGoalTemplate(componentValue);
+          break;
+
         case WIZARD_STEP.ENTER_YOUTUBE_URL:
           selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
           selectorContent = _renderChooseYoutubeTemplate(componentValue);
@@ -351,6 +368,10 @@ export default function AssetSelectorRenderer(options) {
         _renderChooseStoryData(componentValue);
         break;
 
+      case WIZARD_STEP.ENTER_GOAL_URL:
+        _renderChooseGoalData(componentValue);
+        break;
+
       case WIZARD_STEP.ENTER_YOUTUBE_URL:
         _renderChooseYoutubeData(componentValue);
         break;
@@ -403,6 +424,21 @@ export default function AssetSelectorRenderer(options) {
     var storyTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.story_tile.description'));
 
+    var goalTileHeader;
+    var goalTileDescription;
+    var $goalTileProvider;
+
+    if (Environment.ENABLE_GOAL_TILES) {
+
+      goalTileHeader = $('<h3>').
+        text(I18n.t('editor.asset_selector.goal_tile.name'));
+      goalTileDescription = $('<p>').
+        text(I18n.t('editor.asset_selector.goal_tile.description'));
+      $goalTileProvider = $('<li>', {
+        'data-provider': 'GOAL_TILE'
+      }).append(goalTileHeader, goalTileDescription);
+    }
+
     var embedCodeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.embed_code.name'));
     var embedCodeDescription = $('<p>').
@@ -415,6 +451,9 @@ export default function AssetSelectorRenderer(options) {
       $('<li>', {
         'data-provider': 'STORY_TILE'
       }).append(storyTileHeader, storyTileDescription),
+      // TODO: Bring the feature-flag-enabled code path back here to conform
+      // with local style once feature flag is removed.
+      $goalTileProvider,
       $('<li>', {
         'data-provider': 'YOUTUBE'
       }).append(youtubeHeader, youtubeDescription),
@@ -863,6 +902,7 @@ export default function AssetSelectorRenderer(options) {
     }
 
     if (storyDomain !== null && storyUid !== null) {
+
       if (
         storyDomain !== renderedStoryDomain ||
         storyUid !== renderedStoryUid
@@ -917,6 +957,172 @@ export default function AssetSelectorRenderer(options) {
       } else {
         $previewContainer.addClass('invalid');
       }
+
+      $insertButton.prop('disabled', true);
+    }
+  }
+
+  function _renderChooseGoalTemplate() {
+    var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+      text(I18n.t('editor.asset_selector.goal_tile.input_label'));
+
+    var inputControl = $(
+      '<input>',
+      {
+        'class': 'asset-selector-text-input',
+        'data-asset-selector-validate-field': 'goalUrl',
+        'placeholder': 'https://www.example.com/stat/goals/abcd-1234/abcd-1234/abcd-1234',
+        'type': 'text'
+      }
+    );
+
+    var previewInvalidMessageTitle = $(
+      '<div>',
+      { 'class': 'asset-selector-invalid-title' }
+    ).html(
+      [
+        I18n.t('editor.asset_selector.goal_tile.invalid_message_title_1'),
+        '<br />',
+        I18n.t('editor.asset_selector.goal_tile.invalid_message_title_2')
+      ].join('')
+    );
+
+    var previewInvalidMessageDescription = $(
+      '<div>',
+      { 'class': 'asset-selector-invalid-description' }
+    ).text(
+      I18n.t('editor.asset_selector.goal_tile.invalid_message_description')
+    );
+
+    var previewInvalidMessage = $(
+      '<div>',
+      {
+        'class': 'asset-selector-invalid-message'
+      }
+    ).append([
+      previewInvalidMessageTitle,
+      previewInvalidMessageDescription
+    ]);
+
+    var previewTileContainer = $(
+      '<div>',
+      {
+        'class': 'asset-selector-preview-tile-container'
+      }
+    );
+
+    var previewContainer = $(
+      '<div>',
+      {
+        'class': 'asset-selector-preview-container asset-selector-goal-tile-preview-container'
+      }
+    ).append([
+      previewInvalidMessage,
+      previewTileContainer
+    ]);
+
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+
+    var insertButton = $(
+      '<button>',
+      {
+        'class': 'btn btn-primary btn-apply'
+      }
+    ).text(_insertButtonText());
+
+    var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+      inputLabel,
+      inputControl,
+      previewContainer
+    ]);
+
+    var buttonGroup = $(
+      '<div>',
+      {
+        'class': 'modal-button-group r-to-l'
+      }).append([ backButton, insertButton ]);
+
+    return [ content, buttonGroup ];
+  }
+
+  function _renderChooseGoalData(componentProperties) {
+    var $previewContainer = _container.find('.asset-selector-preview-container');
+    var $goalTilePreviewContainer = _container.find('.asset-selector-preview-tile-container');
+    var $inputControl = _container.find('[data-asset-selector-validate-field="goalUrl"]');
+    var $insertButton = _container.find('.btn-apply');
+    var goalDomain = null;
+    var goalUid = null;
+    var goalFullUrl = null;
+    var renderedGoalDomain = $goalTilePreviewContainer.attr('data-rendered-goal-domain');
+    var renderedGoalUid = $goalTilePreviewContainer.attr('data-rendered-goal-uid');
+    var componentData;
+
+    function allComponentPropertiesAreNotNull(properties) {
+
+      return (
+        _.isObject(properties) &&
+        _.has(properties, 'domain') &&
+        !_.isNull(_.get(properties, 'domain')) &&
+        _.has(properties, 'goalUid') &&
+        !_.isNull(_.get(properties, 'goalUid')) &&
+        _.has(properties, 'goalFullUrl') &&
+        !_.isNull(_.get(properties, 'goalFullUrl'))
+      );
+    }
+
+    if (allComponentPropertiesAreNotNull(componentProperties)) {
+      goalDomain = componentProperties.domain;
+      goalUid = componentProperties.goalUid;
+      goalFullUrl = componentProperties.goalFullUrl;
+
+      if (
+        goalDomain !== renderedGoalDomain ||
+        goalUid !== renderedGoalUid
+      ) {
+
+        componentData = {
+          type: 'goal.tile',
+          value: {
+            domain: goalDomain,
+            goalUid: goalUid,
+            goalFullUrl: goalFullUrl
+          }
+        };
+
+        $goalTilePreviewContainer.
+          trigger('destroy').
+          empty().
+          append($('<div>').componentGoalTile(componentData)).
+          attr('data-rendered-goal-domain', goalDomain).
+          attr('data-rendered-goal-uid', goalUid);
+
+        // If we have already configured a goal but there is not currently-
+        // selected url, it is probably because we're editing an existing
+        // component. In order to make the UI consistent with this state,
+        // we can insert the URL originally provided by the user.
+        if ($inputControl.val().trim() === '') {
+          $inputControl.val(goalFullUrl);
+        }
+
+        $previewContainer.removeClass('invalid');
+
+        $insertButton.prop('disabled', false);
+      }
+
+    } else {
+
+      $goalTilePreviewContainer.
+        trigger('destroy').
+        empty().
+        attr('data-rendered-goal-domain', null).
+        attr('data-rendered-goal-uid', null);
+
+      // Only show the 'invalid url' icon if the user has entered text.
+      $previewContainer.
+        toggleClass(
+          'invalid',
+          $inputControl.val().trim() !== ''
+        );
 
       $insertButton.prop('disabled', true);
     }

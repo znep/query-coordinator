@@ -78,39 +78,15 @@ function _updateSrc($element, componentData) {
         }
       ).
       catch(
-        function() {
+        function(error) {
+
+          if (window.console && console.error) {
+            console.error(error);
+          }
+
           _renderStoryTileError($element);
         }
       );
-  }
-}
-
-function _ellipsifyText($element, lineCount) {
-  var elementHeight = $element.height();
-  var lineHeight = Math.ceil(parseFloat($element.css('line-height')));
-  var targetElementHeight = lineHeight * lineCount;
-  var words;
-  var truncatedWords;
-
-  StorytellerUtils.assert(
-    (Math.floor(lineCount) === lineCount),
-    '`lineCount` must be an integer'
-  );
-
-  if (elementHeight > targetElementHeight) {
-    words = $element.text().split(' ');
-
-    if (words[words.length - 1] === '…') {
-      truncatedWords = words.slice(0, -2);
-    } else {
-      truncatedWords = words.slice(0, -1);
-    }
-
-    $element.text(truncatedWords.join(' ') + '…');
-
-    if (truncatedWords.length > 0) {
-      _ellipsifyText($element, lineCount);
-    }
   }
 }
 
@@ -123,6 +99,7 @@ function _updateTextEllipsification($element) {
   var $tileDescription;
 
   if (renderedResponse && renderedWidth !== elementWidth) {
+
     storyTileData = JSON.parse(renderedResponse);
 
     $element.attr('data-rendered-story-tile-width', elementWidth);
@@ -130,15 +107,13 @@ function _updateTextEllipsification($element) {
     $tileTitle = $element.find('.story-tile-title');
     $tileTitle.text(storyTileData.title);
 
-    _ellipsifyText($tileTitle, 2);
-
+    StorytellerUtils.ellipsifyText($tileTitle, 2);
     $tileDescription = $element.find('.story-tile-description');
 
     if (storyTileData.description !== null) {
 
       $tileDescription.text(storyTileData.description);
-
-      _ellipsifyText($tileDescription, 3);
+      StorytellerUtils.ellipsifyText($tileDescription, 3);
     }
   }
 }
@@ -160,11 +135,12 @@ function _renderStoryTile($element, componentData, storyTileData) {
   // the container has changed (doing so more often is not great for
   // performance).
   if (!storyTileData) {
+
     _updateTextEllipsification($element);
     return;
   }
 
-  $element.removeClass('error').empty();
+  _removeStoryTile($element);
 
   $element.attr(
     'data-rendered-story-tile-data',
@@ -219,23 +195,31 @@ function _renderStoryTile($element, componentData, storyTileData) {
 
   $element.append($tileContainer);
 
-  _ellipsifyText($tileTitle, 2);
+  StorytellerUtils.ellipsifyText($tileTitle, 2);
 
   if ($tileDescription) {
-    _ellipsifyText($tileDescription, 3);
+    StorytellerUtils.ellipsifyText($tileDescription, 3);
   }
 
   $tileContainer.addClass('rendered');
 }
 
-function _renderStoryTileError($element) {
+function _removeStoryTile($element) {
+
   $element.
-    empty().
+    removeClass('error').
+    children().
+    // Don't accidentally remove the edit control when trying to clear the
+    // component's DOM tree in order to re-render it.
+    not('.component-edit-controls').
+    remove();
+}
+
+function _renderStoryTileError($element) {
+
+  $element.
     addClass('error').
-    html(
-      StorytellerUtils.format(
-        '<p>{0}</p>',
-        I18n.t('editor.story_tile.invalid_permissions')
-      )
-    );
+    append([
+      $('<p>').text(I18n.t('editor.story_tile.invalid_permissions'))
+    ]);
 }

@@ -102,11 +102,16 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  ran_once = false
+
   # Integration tests specific before and after
   config.before(:all, type: :feature) do
     # Integration tests need a web connection
     WebMock.allow_net_connect!
-    system "RAILS_ENV=test rake webpack"
+    unless ran_once
+      system "RAILS_ENV=test rake webpack"
+      ran_once = true
+    end
   end
 
   # We stub the custom theme css because it's costly to build and we want tests to

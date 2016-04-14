@@ -907,7 +907,17 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
+     "#{root_url(host: self.domainCName || CurrentDomain.cname)}#{download_path(ext)}"
+  end
+
+  def download_path(extension, params = {})
+    path = "/api/views/#{self.id}/rows.#{extension}"
+    query_string = '?' + params.reverse_merge({ :accessType => 'DOWNLOAD' }).to_query
+    path + query_string
+  end
+
+  def geo_download_path(format)
+    "/api/geospatial/#{self.id}?method=export&format=#{format}"
   end
 
   def api_foundry_url

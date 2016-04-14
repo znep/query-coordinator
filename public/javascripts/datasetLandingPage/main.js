@@ -116,4 +116,8 @@ $(function() {
   new Styleguide.FlannelFactory(document);
   new Styleguide.ToggleFactory(document);
   new Styleguide.ModalFactory(document);
+
+  if (document.querySelector('.dropdown.download')) {
+    new Styleguide.Dropdown(document.querySelector('.dropdown.download'));
+  }
 });

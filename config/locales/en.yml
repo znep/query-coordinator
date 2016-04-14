@@ -1266,6 +1266,12 @@ en:
       title: Access this Dataset via SODA API
     copy: Copy
     copy_success: Copied!
+    download:
+      csv_for_excel: CSV for Excel
+      csv_without_geo: CSV (without geospatial data)
+      json_without_geo: JSON (without geospatial data)
+      original: Original
+      shapefile: Shapefile
     less: Less
     more: More
     official: Official

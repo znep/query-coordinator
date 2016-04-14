@@ -29,7 +29,7 @@ function getOutput(identifier) {
 
   return {
     path: isProduction ? path.resolve(build, identifier) : build,
-    filename: isProduction ? '[name]-[hash].js' : `${identifier}/[name].js`,
+    filename: isProduction ? '[name]-[hash].js' : identifier + '/[name].js',
     publicPath: isProduction ? '/javascripts/build' : '/javascripts/webpack'
   };
 }
@@ -37,7 +37,7 @@ function getOutput(identifier) {
 function getManifestPlugin(identifier) {
   return new ManifestPlugin({
     fileName: 'manifest.json',
-    basePath: `${identifier}/`
+    basePath: identifier + '/'
   });
 }
 

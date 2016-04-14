@@ -1,48 +1,46 @@
 <div class="apiContentWrapper">
-  <%- if @view.is_geospatial? -%>
-    <%- if @view.has_geo_layers? -%>
-      <p><%= t('screens.ds.grid_sidebar.api.multiple_endpoints_intro_html') %></p>
-      <%- @view.geospatial_child_layers.each do |child_layer| -%>
-        <div class="multipleEndpointWrapper">
-          <h3><%= child_layer.name %></h3>
-          <ul class="finishButtons actionButtons clearfix">
-            <li><%= api_foundry_url_tag(child_layer.api_foundry_url) %></li>
-            <li><%= link_to(t('screens.ds.grid_sidebar.api.developer_portal'), 'http://dev.socrata.com', :class => 'button', :rel => 'external') %></li>
-          </ul>
-          <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
-          <div class="apiEndpointWrapper">
-            <%= endpoint_url_tag(child_layer.resource_url(request)) %>
-          </div>
-          <%- if child_layer.visible_columns.present? -%>
-            <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
-            <dl class="sectionContent">
-              <%- child_layer.visible_columns.each do |column| -%>
-                <dt title="<%= column.name %>"><%= column.name %></dt>
-                <dd title="<%= column.fieldName %>"><%= column.fieldName %></dd>
-              <%- end -%>
-            </dl>
-          <%- end -%>
+  <%- if @view.geospatial_child_layer_count > 1 -%>
+    <p><%= t('screens.ds.grid_sidebar.api.multiple_endpoints_intro_html') %></p>
+    <%- @view.geospatial_child_layers.each do |child_layer| -%>
+      <div class="multipleEndpointWrapper">
+        <h3><%= child_layer.name %></h3>
+        <ul class="finishButtons actionButtons clearfix">
+          <li><%= api_foundry_url_tag(child_layer.api_foundry_url) %></li>
+          <li><%= link_to(t('screens.ds.grid_sidebar.api.developer_portal'), 'http://dev.socrata.com', :class => 'button', :rel => 'external') %></li>
+        </ul>
+        <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
+        <div class="apiEndpointWrapper">
+          <%= endpoint_url_tag(child_layer.resource_url(request)) %>
         </div>
-      <%- end -%>
-    <%- else -%>
-      <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.geospatial_child_layers[0].api_foundry_url) %></p>
-      <ul class="finishButtons actionButtons clearfix">
-        <li><%= api_foundry_url_tag(@view.geospatial_child_layers[0].api_foundry_url) %></li>
-        <li><%= link_to(t('screens.ds.grid_sidebar.api.developer_portal'), 'http://dev.socrata.com', :class => 'button', :rel => 'external') %></li>
-      </ul>
-      <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
-      <div class="apiEndpointWrapper">
-        <%= endpoint_url_tag(@view.geospatial_child_layers[0].resource_url(request), :label_id => 'api') %>
+        <%- if child_layer.visible_columns.present? -%>
+          <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
+          <dl class="sectionContent">
+            <%- child_layer.visible_columns.each do |column| -%>
+              <dt title="<%= column.name %>"><%= column.name %></dt>
+              <dd title="<%= column.fieldName %>"><%= column.fieldName %></dd>
+            <%- end -%>
+          </dl>
+        <%- end -%>
       </div>
-      <%- if @view.geospatial_child_layers[0].visible_columns.present? -%>
-        <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
-        <dl class="sectionContent">
-          <%- @view.geospatial_child_layers[0].visible_columns.each do |column| -%>
-            <dt title="<%= column.name %>"><%= column.name %></dt>
-            <dd title="<%= column.fieldName %>"><%= column.fieldName %></dd>
-          <%- end -%>
-        </dl>
-      <%- end -%>
+    <%- end -%>
+  <%- elsif @view.geospatial_child_layer_count == 1 -%>
+    <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.geospatial_child_layers[0].api_foundry_url) %></p>
+    <ul class="finishButtons actionButtons clearfix">
+      <li><%= api_foundry_url_tag(@view.geospatial_child_layers[0].api_foundry_url) %></li>
+      <li><%= link_to(t('screens.ds.grid_sidebar.api.developer_portal'), 'http://dev.socrata.com', :class => 'button', :rel => 'external') %></li>
+    </ul>
+    <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
+    <div class="apiEndpointWrapper">
+      <%= endpoint_url_tag(@view.geospatial_child_layers[0].resource_url(request), :label_id => 'api') %>
+    </div>
+    <%- if @view.geospatial_child_layers[0].visible_columns.present? -%>
+      <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
+      <dl class="sectionContent">
+        <%- @view.geospatial_child_layers[0].visible_columns.each do |column| -%>
+          <dt title="<%= column.name %>"><%= column.name %></dt>
+          <dd title="<%= column.fieldName %>"><%= column.fieldName %></dd>
+        <%- end -%>
+      </dl>
     <%- end -%>
   <%- else -%>
     <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.api_foundry_url ) %></p>

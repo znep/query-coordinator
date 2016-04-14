@@ -7,18 +7,16 @@
   </header>
   <section class="flannel-content api-description">
     <p class="small"><%= t('dataset_landing_page.api_flannel.description') %></p>
-    <%- if @view.is_geospatial? && @view.has_geo_layers? -%>
+    <%- if @view.geospatial_child_layer_count > 1 -%>
       <p class="small"><%= t('dataset_landing_page.api_flannel.multiple_geo_layers') %></p>
     <%- end -%>
   </section>
-  <%- if @view.is_geospatial? -%>
-    <%- if @view.has_geo_layers? -%>
-      <%- @view.geospatial_child_layers.each do |child_layer| -%>
-        <%= render 'dataset_landing_page_api_flannel_endpoint', :view => child_layer, :show_name => true %>
-      <%- end -%>
-    <%- else -%>
-      <%= render 'dataset_landing_page_api_flannel_endpoint', :view => @view.geospatial_child_layers[0], :show_name => false %>
+  <%- if @view.geospatial_child_layer_count > 1 -%>
+    <%- @view.geospatial_child_layers.each do |child_layer| -%>
+      <%= render 'dataset_landing_page_api_flannel_endpoint', :view => child_layer, :show_name => true %>
     <%- end -%>
+  <%- elsif @view.geospatial_child_layer_count == 1 -%>
+    <%= render 'dataset_landing_page_api_flannel_endpoint', :view => @view.geospatial_child_layers[0], :show_name => false %>
   <%- else -%>
     <%= render 'dataset_landing_page_api_flannel_endpoint', :view => @view, :show_name => false %>
   <%- end -%>

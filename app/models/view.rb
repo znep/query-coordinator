@@ -82,26 +82,6 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 
-  def is_layered?
-    has_geo_layers? || has_derived_layers?
-  end
-
-  # checks for layers as direct child lenses
-  def has_geo_layers?
-    metadata.present? &&
-      metadata.data['geo'].present? &&
-      metadata.data['geo']['layers'].respond_to?(:split) &&
-      metadata.data['geo']['layers'].split(',').length > 1
-  end
-
-  # checks for layers that come from a separate dataset (derived views)
-  def has_derived_layers?
-    if displayFormat.present? && displayFormat.viewDefinitions.present?
-      return displayFormat.viewDefinitions.any? { |v| v["uid"] != "self" }
-    end
-    false
-  end
-
   # NBE geospatial datasets no longer have an OBE component, so this method
   # answers the question of whether or not an NBE dataset is geospatial.
   def is_geospatial?
@@ -120,13 +100,45 @@ class View < Model
     nbe_only && has_geo_column && half_tabular
   end
 
-  def geospatial_child_layers
+  def geospatial_child_layer_count
     if is_geospatial?
-      endpoint_ids = metadata.data['geo']['layers'].split(',')
-      View.find_multiple(endpoint_ids)
+      has_geo_layers = metadata.present? &&
+        metadata.geo.present? &&
+        metadata.geo['layers'].respond_to?(:split)
+
+      has_geo_layers ? metadata.geo['layers'].split(',').length : 0
+    else
+      0
+    end
+  end
+
+  def geospatial_child_layers
+    if geospatial_child_layer_count > 0
+      layer_ids = metadata.geo['layers'].split(',')
+      View.find_multiple(layer_ids)
     else
       []
     end
+  end
+
+  def derived_layer_count
+    if displayFormat.present? && displayFormat.viewDefinitions.present?
+      displayFormat.viewDefinitions.length
+    else
+      0
+    end
+  end
+
+  def derived_layers
+    if derived_layer_count > 0
+      displayFormat.viewDefinitions
+    else
+      []
+    end
+  end
+
+  def is_multi_layered?
+    geospatial_child_layer_count > 1 || derived_layer_count > 1
   end
 
   def nbe_view

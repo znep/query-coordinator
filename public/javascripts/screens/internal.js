@@ -60,6 +60,18 @@
     });
   });
 
+  $('input[name="domain[cName]"], input[name="new_cname"]').keydown(function() {
+    var $this = $(this);
+    // Copied from InternalController#valid_cname?
+    var validCname = /^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/.test($this.val());
+    if (!validCname) {
+      $this.css('background-color', '#FF9494');
+      // TODO: Should probably add an explanatory warning of some kind.
+    } else {
+      $this.css('background-color', 'white');
+    }
+  });
+
   if ($('body').is('action_internal_show_config')) {
 
   }

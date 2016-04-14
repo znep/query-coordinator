@@ -1,13 +1,22 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
-  <p class="info">
-    <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
-      <%= t 'screens.ds.blob.download' %>
-    <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-      <%= h(@view.name) %>
-    <%- else -%>
-      <%= t 'screens.ds.blob.limited_download' %>
-    <%- end -%>
-  </p>
+  <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
+    <h1 class="externalLinkTitle"><%= h(@view.name) %></h1>
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <p class="externalLinkDescriptionLabel"><%= t('screens.about.description') %></p>
+    </a>
+    <p class="externalLinkDescription">
+      <%= h(@view.description) %>
+    </p>
+  <%- else -%>
+    <p class="info">
+      <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
+        <%= t 'screens.ds.blob.download' %>
+      <%- else -%>
+        <%= t 'screens.ds.blob.limited_download' %>
+      <%- end -%>
+    </p>
+  <%- end -%>
   <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.try(:length) > 1 %>">
     <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
       <h5><%= t 'screens.ds.blob.external_link' %></h5>
@@ -34,9 +43,9 @@
         <%- if accessPoint['title'].present? -%>
           <li>
             <div class="accessPointText">
-              <div class="accessPointTitle">
+              <h2 class="accessPointTitle">
                 <%= accessPoint['title'] %>
-              </div>
+              </h2>
               <%- if accessPoint['description'].present? -%>
               <div class="accessPointDescription">
                 <%= accessPoint['description'] %>

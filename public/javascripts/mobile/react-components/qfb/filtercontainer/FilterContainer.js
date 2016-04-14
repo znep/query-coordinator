@@ -117,7 +117,7 @@ class FilterContainer extends React.Component {
         case 'int':
           if (filter.data.val1 && filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'valueRange';// eslint-disable-line dot-notation
+            filterObj['function'] = 'valueRange';
             filterObj.arguments = {
               start: filter.data.val1,
               end: filter.data.val2
@@ -126,7 +126,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val1) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: filter.data.val1
@@ -135,7 +135,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '<',
               operand: filter.data.val2
@@ -147,7 +147,7 @@ class FilterContainer extends React.Component {
           break;
         case 'string':
           filterObj.columnName = filter.name;
-          filterObj['function'] = 'binaryOperator'; // eslint-disable-line dot-notation
+          filterObj['function'] = 'binaryOperator';
 
           if (filter.data.length > 1) {
             var aArguments = [];
@@ -168,11 +168,11 @@ class FilterContainer extends React.Component {
           break;
         case 'calendar_date':
           filterObj.columnName = filter.name;
-          filterObj['function'] = 'binaryOperator'; // eslint-disable-line dot-notation
+          filterObj['function'] = 'binaryOperator';
 
           if (filter.data.val1 && filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: moment(filter.data.val1).format('YYYY-MM-DD')
@@ -189,7 +189,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj2);
           } else if (filter.data.val1) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: moment(filter.data.val1).format('YYYY-MM-DD')
@@ -198,7 +198,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj['function'] = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '<',
               operand: moment(filter.data.val2).format('YYYY-MM-DD')
@@ -341,3 +341,4 @@ class FilterContainer extends React.Component {
 }
 
 export default FilterContainer;
+

@@ -160,8 +160,14 @@ class StoriesController < ApplicationController
     @story = DraftStory.find_by_uid(params[:uid])
 
     if @story
+      if Rails.application.assets_manifest.assets['themes/themes.css']
+        themes = File.read(Rails.root.join('public', 'assets', Rails.application.assets_manifest.assets['themes/themes.css']))
+      else
+        themes = Rails.application.assets.find_asset(Rails.root.join('app/assets/stylesheets/themes/themes.scss')).to_s
+      end
+
       @bootstrap_styles = {
-        themes: Rails.application.assets.find_asset(Rails.root.join('app/assets/stylesheets/themes/themes.scss')).to_s,
+        themes: themes,
         custom: render_to_string(
           'stories/custom.css',
           locals: { custom_themes: Theme.all_custom_for_current_domain }

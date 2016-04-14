@@ -252,6 +252,17 @@ def mock_valid_initialized_lenses_view
   }
 end
 
+
+def mock_visualization_metadata_view
+  {
+    'metadata' => {
+      'renderTypeConfig' => {
+        'visible' => { 'table' => 'hello' }
+      }
+    }
+  }
+end
+
 def stub_valid_session
   allow(CoreServer).to receive(:current_user).and_return(mock_valid_user)
   allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(
@@ -281,6 +292,10 @@ end
 
 def stub_valid_initialized_lenses_view
   allow(CoreServer).to receive(:get_view).and_return(mock_valid_initialized_lenses_view)
+end
+
+def stub_visualization_component_view
+  allow(CoreServer).to receive(:get_view).and_return(mock_visualization_metadata_view)
 end
 
 def stub_successful_view_creation

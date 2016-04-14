@@ -366,26 +366,42 @@ class CoreServer
     raise ArgumentError.new("':verb' is required.") unless options[:verb].present?
     raise ArgumentError.new("':path' is required.") unless options[:path].present?
 
+    redirections = options[:redirections] || 0
+
+    raise Error.new("Redirections reached limit.") unless redirections < 10
+
     verb = options[:verb].to_s.capitalize
     body = JSON.dump(options[:body]) if options[:body].present?
     query_params = generate_query_params(options[:query_params])
 
     path = options[:path]
     path = options[:path] << "?#{query_params}" unless query_params.blank?
-    uri = Addressable::URI.parse("#{core_server_address}#{path}")
+    path = path.start_with?('http') ? path : "#{coreservice_uri}#{path}"
+    uri = Addressable::URI.parse(path)
 
     http = Net::HTTP.new(uri.host, uri.port)
     http.open_timeout = core_request_open_timeout
     http.read_timeout = core_request_read_timeout
 
     # instantiates a class of Net:HTTP::Get (or insert other verb)
-    core_request = "Net::HTTP::#{verb}".constantize.new(uri.request_uri)
+    core_request = "Net::HTTP::#{verb}".constantize.new(uri)
     core_request.body = body
     core_server_headers.each do |key, value|
       core_request[key] = value
     end
 
     response = http.request(core_request)
+
+    # Follow 302 Redirection.
+    if response.instance_of?(Net::HTTPFound)
+      response = core_server_http_request(
+        {
+          verb: options[:verb],
+          path: response['location'],
+          redirections: redirections + 1
+        }
+      )
+    end
 
     if options[:verb] == :get
       ::RequestStore.store[request_uid(core_server_headers, options)] = response
@@ -426,6 +442,7 @@ class CoreServer
   def self.core_server_headers
     headers = session_headers.merge('Content-Type' => 'application/json')
     headers['X-App-Token'] = core_app_token if core_app_token.present?
+    headers['X-Socrata-Federation'] = 'Honey Badger'
     headers
   end
 
@@ -433,8 +450,8 @@ class CoreServer
     ::RequestStore.store[:socrata_session_headers] || {}
   end
 
-  def self.core_server_address
-    Rails.application.config.core_service_uri
+  def self.coreservice_uri
+    Rails.application.config.coreservice_uri
   end
 
   def self.core_request_open_timeout

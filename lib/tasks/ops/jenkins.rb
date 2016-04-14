@@ -13,7 +13,7 @@ class Jenkins
 
   def self.assert_auth_configured
     unless auth_configured?
-      raise "Jenkins auth not configured, set #{USERNAME_ENV_KEY} and #{TOKEN_ENV_KEY} in your environment from https://jenkins-build.socrata.com/me/configure"
+      raise "Jenkins auth not configured, set #{USERNAME_ENV_KEY} and #{TOKEN_ENV_KEY} in your environment. Get them from https://jenkins-build.socrata.com/me/configure (click 'Show API token')"
     end
   end
 

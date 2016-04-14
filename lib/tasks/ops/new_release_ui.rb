@@ -14,11 +14,12 @@ class NewReleaseUi
   RELEASE_BRANCH_NAME = 'release'
   ACTUALLY_PUSH_TAG = true # Set this to false if you're debugging
 
-  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit_sha, :current_master_commit
+  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit_sha, :current_master_commit, :merge_instead_of_reset
 
   def initialize
     @dialog = MRDialog.new
     @git = open_git_repo
+    @merge_instead_of_reset = false
   end
 
   def open
@@ -66,7 +67,7 @@ class NewReleaseUi
     dialog.infobox('Preparing release branch...')
     git.checkout(RELEASE_BRANCH_NAME)
 
-    if merge_instead_of_reset?
+    if merge_instead_of_reset
       git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
       if current_master_commit.sha == new_release_commit.sha
         git.merge('origin/master')
@@ -101,12 +102,16 @@ Aborted.'
     build_number = nil
     dialog.infobox('Waiting for Jenkins build to complete successfully...', 4, 50)
     loop do
-      build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
-      break if build_number
-      sleep 15
+      begin
+        build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
+        break if build_number
+        sleep 15
+      rescue
+        retry
+      end
     end
 
-    dialog.msgbox("Build complete (#{build_number}")
+    dialog.msgbox("Build complete (Build #{build_number})")
 
     build_number
   end
@@ -123,10 +128,40 @@ Aborted.'
 
     case release_type
       when 'master'
-        current_master_commit
+        if is_mergeable_into_release?(current_master_commit)
+          @merge_instead_of_reset = true
+          current_master_commit
+        else
+          @merge_instead_of_reset = false
+          if dialog.yesno(
+            "WARNING: Master will not merge cleanly into #{RELEASE_BRANCH_NAME}. Do a hard reset instead?"
+          )
+            current_master_commit
+          else
+            nil
+          end
+        end
       when 'custom'
+        @merge_instead_of_reset = false
         create_custom_release_commit
     end
+  end
+
+  def is_mergeable_into_release?(commit)
+    is_ok = true
+
+    dialog.infobox("Checking mergeability into origin/#{RELEASE_BRANCH_NAME}...")
+    git.checkout(RELEASE_BRANCH_NAME)
+    git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
+    begin
+      git.merge(commit)
+    rescue
+      is_ok = false
+    ensure
+      git.reset_hard("origin/#{RELEASE_BRANCH_NAME}")
+    end
+
+    is_ok
   end
 
   def input_semver
@@ -166,7 +201,7 @@ You'll have an opportunity to copy this to the clipboard momentarily.
   end
 
   def user_approves_task_summary?
-    merge_or_reset = if merge_instead_of_reset?
+    merge_or_reset = if merge_instead_of_reset
       'Merge master into release'
     else
       "Reset release to: #{new_release_commit.sha}\n#{new_release_commit.message}"
@@ -191,7 +226,7 @@ Proceed?
 
     jira_tickets = commits.map(&:message).map do |message|
       message.scan(/EN-\d+/)
-    end.flatten.sort
+    end.flatten.sort.uniq
 
     jira_tickets_text = jira_tickets.map do |ticket_id|
       "#{ticket_id}: https://socrata.atlassian.net/browse/#{ticket_id}"
@@ -267,13 +302,6 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
     semver_yaml = git.gblob("#{last_released_commit_sha}:.semver").contents
     semver = YAML.load(semver_yaml)
     SemVer.new(semver[:major], semver[:minor], semver[:patch], semver[:special])
-  end
-
-  # Our policy is:
-  #   * If we're releasing from master, merge master into release.
-  #   * Otherwise, hard reset release to desired point.
-  def merge_instead_of_reset?
-    current_master_commit.sha == new_release_commit.sha
   end
 
   def git_clean?

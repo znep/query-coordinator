@@ -1506,6 +1506,7 @@ en:
       date_range: Date Range
       done: Done
       end_date: End date
+      last_3_days: Last 3 Days
       last_30_days: Last 30 Days
       last_month: Last Month
       last_week: Last Week
@@ -1518,6 +1519,7 @@ en:
       prev: Prev
       specific_date: Specific Date
       start_date: Start date
+      the_day_of: The Day Of...
       the_month_of: The Month Of...
       the_week_of: The Week Of...
       the_year_of: The Year Of...

@@ -935,8 +935,30 @@ class AdministrationController < ApplicationController
 
     activity_type = params[:activity_type]
     activity_type = activity_type == 'All' ? nil : activity_type
+    
+    # parse start/end date from params
+    date_string = params[:date_range]
+    start_date = nil
+    end_date = nil
+    if date_string.present?
+      begin
+        dates = date_string.split(' - ')
+        start_date = DateTime.strptime(dates[0] << ' 00:00:00', '%m/%d/%Y %H:%M:%S') # beginning of start day...
+        if dates.count >= 2
+          end_date = DateTime.strptime(dates[1] << ' 23:59:59', '%m/%d/%Y %H:%M:%S') # to end of end day
+        end
+      rescue ArgumentError
+        Rails.logger.warn("Invalid date in AdministrationController#jobs: #{date_string}")
+      end
+    end
 
-    activities_response = ImportActivity.find_all_by_created_at_descending({:offset => offset, :limit => page_size, :activityType => activity_type})
+    activities_response = ImportActivity.find_all_by_created_at_descending({
+      :offset => offset,
+      :limit => page_size,
+      :activityType => activity_type,
+      :startDate => start_date,
+      :endDate => end_date
+    })
     @activities = activities_response[:activities]
     count = activities_response[:count]
     
@@ -944,6 +966,10 @@ class AdministrationController < ApplicationController
     pager_params = {}
     if activity_type.present?
       pager_params[:activity_type] = activity_type
+    end
+    
+    if date_string.present?
+      pager_params[:date_range] = date_string
     end
     
     @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => pager_params })

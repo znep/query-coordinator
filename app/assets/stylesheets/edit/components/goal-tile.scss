@@ -62,33 +62,39 @@
         border-bottom: 1px solid $story-tile-view-story-border-color;
 
         .goal-tile-metric-value,
+        .goal-tile-metric-unit,
         .goal-tile-metric-subtitle {
           @include selectable();
 
           margin: 0;
           padding: 0.75rem 1rem;
-          color: $story-tile-text-color;
-          font-size: 1.5rem;
-          line-height: 2.5rem;
         }
 
         .goal-tile-metric-value {
-          height: 9rem;
-          font-size: 4rem;
+          display: block;
+          float: left;
+          margin-bottom: -1rem;
+          font-size: 6rem;
           font-weight: 600;
-          line-height: 9rem;
+          line-height: 6rem;
+        }
 
-          .goal-tile-metric-value-major {
-            font-size: 2em;
-          }
+        .goal-tile-metric-unit {
+          @include clearfix();
 
-          .goal-tile-metric-value-minor {
-            font-size: 1em;
-          }
+          min-height: 10rem;
+          margin-top: 3.2rem;
+          font-size: 2rem;
+          font-weight: 600;
+          line-height: 3rem;
         }
 
         .goal-tile-metric-subtitle {
-          font-weight: 500;
+
+          font-size: 1.5rem;
+          font-weight: 400;
+          line-height: 2.5rem;
+          color: $story-tile-text-color;
         }
       }
 
@@ -106,6 +112,7 @@
           display: block;
           float: left;
           width: 50%;
+          min-height: 1px;
         }
 
         .goal-tile-metric-progress {
@@ -142,6 +149,7 @@
           background-color: #d5eaf8;
 
           .goal-tile-metric-value,
+          .goal-tile-metric-unit,
           .goal-tile-metric-progress {
             color: #2c97de;
           }
@@ -161,6 +169,7 @@
           background-color: #e0f5e2;
 
           .goal-tile-metric-value,
+          .goal-tile-metric-unit,
           .goal-tile-metric-progress {
             color: #64cf6c;
           }
@@ -179,7 +188,9 @@
           border-top: 0.5rem solid #ce6565;
           background-color: #f5e0e0;
 
-          .goal-tile-metric-value {
+          .goal-tile-metric-value,
+          .goal-tile-metric-unit,
+          .goal-tile-metric-progress {
             color: #ce6565;
           }
         }
@@ -197,7 +208,9 @@
           border-top: 0.5rem solid #f7a700;
           background-color: #fdedcc;
 
-          .goal-tile-metric-value {
+          .goal-tile-metric-value,
+          .goal-tile-metric-unit,
+          .goal-tile-metric-progress {
             color: #f7a700;
           }
         }

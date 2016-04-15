@@ -98,6 +98,29 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'mouseenter',
+      '.asset-selector-goal-url-hint',
+      function() {
+        flyoutRenderer.render({
+          element: this,
+          content: '<span class="tooltip-text">' +
+            I18n.t('editor.asset_selector.goal_tile.url_tooltip') +
+            '</span>',
+          rightSideHint: false,
+          belowTarget: false
+        });
+      }
+    );
+
+    _container.on(
+      'mouseout',
+      '.asset-selector-goal-url-hint',
+      function() {
+        flyoutRenderer.clear();
+      }
+    );
+
+    _container.on(
       'input',
       '[data-asset-selector-validate-field="storyUrl"]',
       function(event) {
@@ -964,7 +987,10 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseGoalTemplate() {
     var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
-      text(I18n.t('editor.asset_selector.goal_tile.input_label'));
+      append([
+        $('<span>').text(I18n.t('editor.asset_selector.goal_tile.input_label')),
+        $('<span>', {'class': 'icon-question-inverse asset-selector-goal-url-hint'})
+      ]);
 
     var inputControl = $(
       '<input>',

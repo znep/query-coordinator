@@ -361,7 +361,6 @@ DEPENDENCIES
   foreman
   git
   headless
-  httparty
   inifile
   jbuilder (~> 2.0)
   jenkins_api_client

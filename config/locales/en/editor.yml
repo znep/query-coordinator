@@ -164,7 +164,6 @@ en:
         choose_insert_visualization_description: 'Choose an existing chart or map from your public catalog'
         choose_create_visualization_heading: 'Create New Visualization'
         choose_create_visualization_description: 'Create a new chart, map, or table based on a public dataset'
-
       image_upload:
         name: 'Image Upload'
         description: 'Upload an image from your computer up to 5MB.'
@@ -191,14 +190,15 @@ en:
         invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
         invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
       goal_tile:
-        name: 'Socrata OpenPerformance Goal Tile'
-        description: 'Insert a preview of a Socrata OpenPerformance Goal.'
-        heading: 'Add a Preview of a Socrata OpenPerformance Goal'
+        name: 'Socrata Open Performance Goal Tile'
+        description: 'Insert a preview of a Socrata Open Performance Goal.'
+        heading: 'Add a Preview of a Socrata Open Performance Goal'
         input_label: 'Link to goal page'
         invalid_message_title_1: 'Oh No!'
         invalid_message_title_2: 'Something went wrong.'
-        invalid_message_description: 'Try using a valid link to a Socrata OpenPerformance Goal.'
+        invalid_message_description: 'Try using a valid link to a Socrata Open Performance Goal.'
         invalid_permissions: "Oh no!  It looks like you don't have permission to view this goal."
+        url_tooltip: 'Use the link (URL) to your goal page to generate a goal tile. You can find this by visiting one of your goal pages and copying the link from the browser.'
       embed_code:
         name: 'HTML Embed'
         description: 'Insert embed code to include external web content.'
@@ -221,10 +221,11 @@ en:
       invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
     goal_tile:
       view_goal_prompt: 'View Goal'
-      render_error: "This goal is not available or cannot be displayed"
+      render_error: 'This goal is not available or cannot be displayed'
       public_label: 'Public'
       private_label: 'Private'
       measure:
+        unit_percent: 'percent'
         progress:
           no_judgement: 'Measuring'
           none: 'Needs More Data'

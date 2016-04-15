@@ -5,6 +5,9 @@ require('velocity-animate');
 var Clipboard = require('clipboard');
 var Styleguide = require('socrata-styleguide');
 
+// Initialize the styleguide javascript components
+Styleguide(document);
+
 $(function() {
   var $description = $('.entry-description');
   var $container = $($description).parents('.entry-description-container');
@@ -66,8 +69,8 @@ $(function() {
 
   truncateDescription();
 
-  // Highlight input on click
-  $('.api-endpoint-input').
+  // Highlight endpoint input on click
+  $('.endpoint-input').
     focus(function() { $(this).select(); }).
     mouseup(function(event) { event.preventDefault(); });
 
@@ -94,17 +97,12 @@ $(function() {
     }, 2000);
   });
 
-  // Set up switch api endpoint between JSON and GeoJSON
-  var apiEndpointFormatSelector = $('.api-endpoint-format-selector');
+  // Set up switch API/OData endpoint between JSON and GeoJSON
+  var apiEndpointFormatSelector = $('.endpoint-format-selector');
   apiEndpointFormatSelector.each(function(index, formatSelector) {
-
-    // Set up dropdown
-    new Styleguide.Dropdown(formatSelector);
-
-    // Set up endpoint format switching
     $(formatSelector).find('.dropdown-options .option').click(function(event) {
       var $option = $(event.target);
-      var $input = $option.closest('form').find('.api-endpoint-input');
+      var $input = $option.closest('form').find('.endpoint-input');
 
       var oldEndpoint = $input.val();
       var newEndpoint = oldEndpoint.replace(/\w*json$/, $option.data('value'));
@@ -112,8 +110,4 @@ $(function() {
       $input.val(newEndpoint);
     });
   });
-
-  new Styleguide.FlannelFactory(document);
-  new Styleguide.ToggleFactory(document);
-  new Styleguide.ModalFactory(document);
 });

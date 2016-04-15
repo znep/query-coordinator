@@ -314,6 +314,7 @@ Frontend::Application.routes do
       # Overloaded route matcher for SEO purposes.
       # The route structure is identical in each case; the handler for the route
       # is determined by the constraint that is satisfied.
+      get '/mobile', :to => 'data_lens#show_mobile', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
       get '', :to => 'data_lens#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
 
       # Fallback: let DatasetsController#show handle it, since it was the original

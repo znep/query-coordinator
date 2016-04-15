@@ -907,30 +907,41 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
+     "#{root_url(host: self.domainCName || CurrentDomain.cname)}#{download_path(ext)}"
+  end
+
+  def download_path(extension, params = {})
+    path = "/api/views/#{self.id}/rows.#{extension}"
+    query_string = '?' + params.reverse_merge({ :accessType => 'DOWNLOAD' }).to_query
+    path + query_string
+  end
+
+  def geo_download_path(format)
+    "/api/geospatial/#{self.id}?method=export&format=#{format}"
+  end
+
+  # While we still have datasets in both OBE and NBE, prefer the NBE id
+  # when possible. This involves fetching the dataset's NBE id from its
+  # migrations (if available), and falling back to the OBE id.
+  def preferred_id
+    @preferred_id ||= begin
+      new_backend? ? id : migrations.fetch(:nbeId, id)
+    rescue CoreServer::ResourceNotFound
+      id # This means the migration was not found.
+    end
   end
 
   def api_foundry_url
-    begin
-      uid = new_backend? ? id : migrations.fetch(:nbeId, id)
-    rescue CoreServer::ResourceNotFound
-      uid = id # This means the migration was not found.
-    end
     domain = self.federated? ? self.domainCName : CurrentDomain.cname
-    "https://dev.socrata.com/foundry/#{domain}/#{uid}"
+    "https://dev.socrata.com/foundry/#{domain}/#{preferred_id}"
   end
 
   def resource_url(request = nil)
-    begin
-      uid = new_backend? ? id : migrations.fetch(:nbeId, id)
-    rescue CoreServer::ResourceNotFound
-      uid = id # This means the migration was not found.
-    end
-    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{uid}.json"
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{preferred_id}.json"
   end
 
   def odata_url(request = nil)
-    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{preferred_id}"
   end
 
   def tweet

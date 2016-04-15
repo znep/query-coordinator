@@ -1301,11 +1301,7 @@ class View < Model
     !is_alt_view?
   end
 
-  def is_href?
-    display.type == 'href'
-  end
-
-  def link?
+  def is_link?
     display.display_type == 'link'
   end
 

@@ -58,7 +58,7 @@ class InternalController < ApplicationController
         disable_nbe_redirection_warning_message: true,
         enable_ingress_geometry_types: true,
         geo_imports_to_nbe_enabled: true,
-        ingress_strategy: 'delta-importer'
+        ingress_strategy: 'nbe'
       },
       :enable_govstat => [
         'canvas2', 'canvas_designer', 'govStat', 'govstat_15', 'govstat_target_tolerance'

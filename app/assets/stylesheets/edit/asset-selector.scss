@@ -141,6 +141,10 @@
     margin-top: 12rem;
   }
 
+  .asset-selector-goal-url-hint {
+    margin-left: 1rem;
+  }
+
   .asset-selector-preview-image-container,
   .asset-selector-image-upload-progress {
     @include media-query-property(

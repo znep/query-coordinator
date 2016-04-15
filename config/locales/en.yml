@@ -1254,8 +1254,10 @@ en:
   dataset_landing_page:
     action_buttons:
       api: API
+      contact_owner: Contact Dataset Owner
       data: View Data
       download: Download
+      odata: Access Data via OData
       share: Share
     api_flannel:
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. 
@@ -1266,6 +1268,7 @@ en:
       title: Access this Dataset via SODA API
     copy: Copy
     copy_success: Copied!
+    done: Done
     download:
       csv_for_excel: CSV for Excel
       csv_without_geo: CSV (without geospatial data)
@@ -1274,6 +1277,12 @@ en:
       shapefile: Shapefile
     less: Less
     more: More
+    odata_modal:
+      description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
+      developer_portal_button: Socrata OData Documentation
+      endpoint_title: OData Endpoint
+      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
+      title: Access this Dataset via OData
     official: Official
     published_by: Published by
     share:

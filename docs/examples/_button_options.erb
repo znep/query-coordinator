@@ -55,6 +55,17 @@
 </pre>
 
 <p>
+  <%= partial "components/buttons/button_primary-alt-1", locals: { text: "Primary Alternative Button" } %>
+  <%= partial "components/buttons/button_primary-alt-1_inverse", locals: { text: "Primary Alternative Inverse Button" } %>
+</p>
+<pre class="usage">
+<code class="language-markup">
+<%= escape_html(partial "components/buttons/button_primary-alt-1", locals: { text: "Primary Alternative Button" }) %>
+<%= escape_html(partial "components/buttons/button_primary-alt-1_inverse", locals: { text: "Primary Alternative Inverse Button" }) %>
+</code>
+</pre>
+
+<p>
   <%= partial "components/buttons/button_secondary", locals: { text: "Secondary Button" } %>
   <%= partial "components/buttons/button_secondary_inverse", locals: { text: "Secondary Inverse Button" } %>
 </p>

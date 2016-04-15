@@ -63,6 +63,24 @@ gem 'request_store'
 # Exception notifier - required last so we get airbrake from delayed jobs
 gem 'airbrake'
 
+# We use aws-sdk v2 for RDS database migrations
+gem 'aws-sdk'
+
+# AWS DB migration tasks
+gem 'httparty'
+gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
+# Fetch from git, we need some of the recent bugfixes.
+gem 'marathon-api', require: 'marathon', :git => 'https://github.com/otto-de/marathon-api.git', :ref => '0c5e5e0600b298ebb8f47d4007f96ac6bd5c34c6'
+
+# Ops tasks
+gem 'net-ping'
+gem 'mrdialog'
+gem 'inifile'
+gem 'diplomat'
+gem 'git'
+gem 'clipboard'
+gem 'jenkins_api_client'
+
 group :production do
   # Reaps unicorn worker processes under predefined conditions
   gem 'unicorn-worker-killer', '~> 0.4'
@@ -114,20 +132,4 @@ group :development do
   gem 'stackprof', require: false
   gem 'flamegraph'
   gem 'rack-mini-profiler'
-
-  # We use aws-sdk v2 for RDS database migrations
-  gem 'aws-sdk'
-
-  gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
-
-  # Ops tasks
-  gem 'net-ping'
-  gem 'mrdialog'
-  gem 'inifile'
-  # Fetch from git, we need some of the recent bugfixes.
-  gem 'marathon-api', :require => 'marathon', :git => 'https://github.com/otto-de/marathon-api.git', :ref => '0c5e5e0600b298ebb8f47d4007f96ac6bd5c34c6'
-  gem 'diplomat'
-  gem 'git'
-  gem 'clipboard'
-  gem 'jenkins_api_client'
 end

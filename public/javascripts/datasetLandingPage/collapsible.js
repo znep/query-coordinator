@@ -1,6 +1,6 @@
 var velocity = require('velocity-animate');
 
-$.Velocity.defaults.duration = 300;
+$.Velocity.defaults.duration = 320;
 $.Velocity.defaults.easing = [.645, .045, .355, 1];
 
 module.exports = function(el, options) {

@@ -108,4 +108,151 @@ module DatasetLandingPageHelper
       'icon-dataset'
     end
   end
+
+  def data_type_metadata
+    {
+      :blob => {
+        :icon => 'icon-data',
+        :soda_type => nil
+      },
+      :calendar_date => {
+        :icon => 'icon-date',
+        :soda_type => 'floating_timestamp',
+      },
+      :checkbox => {
+        :icon => 'icon-check',
+        :soda_type => 'checkbox',
+      },
+      :dataset_link => {
+        :icon => 'icon-link',
+        :soda_type => nil,
+      },
+      :date => {
+        :icon => 'icon-date',
+        :soda_type => nil,
+      },
+      :document => {
+        :icon => 'icon-copy-document',
+        :soda_type => nil,
+      },
+      :drop_down_list => {
+        :icon => 'icon-list-2',
+        :soda_type => nil,
+      },
+      :email => {
+        :icon => 'icon-email',
+        :soda_type => 'text',
+      },
+      :flag => {
+        :icon => 'icon-region',
+        :soda_type => 'text'
+      },
+      :geospatial => {
+        :icon => 'icon-geo',
+        :soda_type => nil
+      },
+      :html => {
+        :icon => 'icon-clear-formatting',
+        :soda_type => 'text'
+      },
+      :line => {
+        :icon => 'icon-geo',
+        :soda_type => 'line'
+      },
+      :link => {
+        :icon => 'icon-link',
+        :soda_type => 'text'
+      },
+      :list => {
+        :icon => 'icon-list-numbered',
+        :soda_type => nil
+      },
+      :location => {
+        :icon => 'icon-map',
+        :soda_type => 'location'
+      },
+      :money => {
+        :icon => 'icon-number',
+        :soda_type => 'money'
+      },
+      :multiline => {
+        :icon => 'icon-geo',
+        :soda_type => 'line'
+      },
+      :multipoint => {
+        :icon => 'icon-geo',
+        :soda_type => 'point'
+      },
+      :multipolygon => {
+        :icon => 'icon-geo',
+        :soda_type => 'polygon'
+      },
+      :nested_table => {
+        :icon => 'icon-table',
+        :soda_type => nil
+      },
+      :number => {
+        :icon => 'icon-number',
+        :soda_type => 'number'
+      },
+      :object => {
+        :icon => 'icon-data',
+        :soda_type => nil
+      },
+      :percent => {
+        :icon => 'icon-number',
+        :soda_type => 'number'
+      },
+      :photo => {
+        :icon => 'icon-chart',
+        :soda_type => nil
+      },
+      :point => {
+        :icon => 'icon-map',
+        :soda_type => 'point'
+      },
+      :polygon => {
+        :icon =>'icon-geo',
+        :soda_type => 'polygon'
+      },
+      :stars => {
+        :icon => nil,
+        :soda_type => 'number'
+      },
+      :text => {
+        :icon => 'icon-text',
+        :soda_type => 'text'
+      },
+      :url => {
+        :icon => 'icon-link',
+        :soda_type => 'text'
+      }
+    }.with_indifferent_access
+  end
+
+  def icon_class_for_data_type(data_type)
+    data_type_metadata[data_type] && data_type_metadata[data_type][:icon] || ''
+  end
+
+  def documentation_link_for_data_type(data_type)
+    return '' if data_type.blank?
+
+    data_type_text = t('dataset_landing_page.schema_preview.data_types.' + data_type)
+
+    soda_type = data_type_metadata[data_type] && data_type_metadata[data_type][:soda_type]
+
+    if soda_type
+      link_to(data_type_text, "https://dev.socrata.com/docs/datatypes/#{soda_type}.html", :target => 'blank')
+    else
+      data_type_text
+    end
+  end
+
+  def view_columns
+    (@view.nbe_view || @view).visible_columns
+  end
+
+  def schema_table_column_count
+    7
+  end
 end

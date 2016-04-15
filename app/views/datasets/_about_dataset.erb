@@ -30,7 +30,7 @@
   <%- end -%>
 
   <div class="formSection">
-    <%- if @view.display.type != 'href' && @view.display.display_type != 'link' %>
+    <%- if  !(@view.is_href? || @view.is_blobby?) %>
       <a class="expander expanded formHeader" href="#expand">
         <span class="icon"></span>
         <%= t('screens.about.description') %>

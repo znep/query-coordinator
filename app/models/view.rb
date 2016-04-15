@@ -1301,6 +1301,18 @@ class View < Model
     !is_alt_view?
   end
 
+  def is_href?
+    display.type == 'href'
+  end
+
+  def link?
+    display.display_type == 'link'
+  end
+
+  def is_blob?
+    display.type == 'blob'
+  end
+
   def modern_display_type
     {
       'annotatedtimeline' => 'chart',

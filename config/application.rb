@@ -2,9 +2,8 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
+# Require the default gems and those in the group for the current environment listed in Gemfile, 
+Bundler.require(:default, Rails.env)
 
 module Storyteller
   class Application < Rails::Application

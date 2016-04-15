@@ -1305,10 +1305,6 @@ class View < Model
     display.display_type == 'link'
   end
 
-  def is_blob?
-    display.type == 'blob'
-  end
-
   def modern_display_type
     {
       'annotatedtimeline' => 'chart',

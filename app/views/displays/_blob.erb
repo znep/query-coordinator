@@ -1,5 +1,5 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
-  <%- if @view.is_href? || @view.link? -%>
+  <%- if @view.is_href? || @view.is_link? -%>
     <h1 class="externalLinkTitle"><%= h(@view.name) %></h1>
     <%- if @view.description -%>
       <a class="expander expanded formHeader" href="#expand">
@@ -16,7 +16,7 @@
     </p>
   <%- end -%>
   <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.try(:length) > 1 %>">
-    <%- if @view.is_blob? %>
+    <%- if @view.is_blobby? %>
       <h5><%= t 'screens.ds.blob.download' %></h5>
     <%- else -%>
       <h5><%= t 'screens.ds.blob.external_link' %></h5>

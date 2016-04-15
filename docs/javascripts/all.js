@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
    * Make the responsive navbar collapse to a smaller version.
    */
   function collapse(event) {
+    if (!menu) { return; }
+
     if (event.pageY > 500) {
       navbar.classList.add('responsive-navbar-collapsed');
       buttons.forEach(function(button) {

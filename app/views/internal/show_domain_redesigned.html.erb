@@ -26,16 +26,28 @@
     <p>Domain ID: <%= @domain.id %></p>
 
     <h2>Domain/Aliases:</h2>
-    <%= form_tag update_aliases_path do %>
-      <div class='line'>
+    <div class="updateAliases">
+      <div class="line">
         <%= label_tag 'new_cname', 'Primary CName' %>
-        <%= text_field_tag 'new_cname', @domain.cname %>
+        <%= content_tag :span, @domain.cname %>
       </div>
-      <div class='line'>
-        <%= label_tag 'aliases', 'Aliases' %>
-        <%= text_field_tag 'aliases', @domain.aliases, :title => 'separated by comma' %>
+      <%- @aliases.each_with_index do |_alias, index| %>
+        <div class="line" title="<%= _alias %>">
+          <%= label_tag 'aliases', index.zero? ? 'Aliases' : '' %>
+          <%= content_tag :span, _alias, :class => 'alias' %>
+          <%= remove_alias_button(_alias) %>
+          <%= promote_to_primary_cname_button(_alias) %>
+        </div>
+      <%- end %>
+    </div>
+
+    <h2>Add New Alias:</h2>
+    <%= form_tag update_aliases_path, :class => 'updateAliasesForm' do %>
+      <div class="line">
+        <%= text_field_tag 'new_alias', '' %>
       </div>
-      <%= submit_tag 'Update' %>
+      <%= hidden_field_tag 'redesigned', 'true' %>
+      <%= submit_tag 'Add Alias' %>
     <% end %>
 
     <h2>Configuration Sets</h2>

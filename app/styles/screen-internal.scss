@@ -491,4 +491,23 @@ ul.autocomplete {
     .warning div { display: none; }
     .warning.duplicateProperty .duplicateProperty { display: block; }
   }
+
+  .updateAliases {
+    label {
+      display: inline-block;
+      font-size: 1.3em;
+      margin-top: 0.5em;
+      width: 9em;
+    }
+
+    span {
+      font-size: 1.3em;
+
+      &.alias {
+        display: inline-block;
+        width: 16em;
+        white-space: nowrap;
+      }
+    }
+  }
 }

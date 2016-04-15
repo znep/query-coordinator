@@ -27,6 +27,7 @@ class InternalController < ApplicationController
   ]
   def show_domain
     @domain = Domain.find(params[:domain_id])
+    @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
@@ -309,6 +310,11 @@ class InternalController < ApplicationController
   end
 
   def update_aliases
+    if params[:redesigned]
+      update_aliases_better
+      return
+    end
+
     new_cname = params[:new_cname].strip
 
     begin
@@ -329,6 +335,38 @@ class InternalController < ApplicationController
     redirect_to show_domain_path(domain_id: new_cname)
   end
 
+  def update_aliases_better
+    begin
+      if params[:new_alias]
+        domain = Domain.find(params[:domain_id])
+        aliases = (domain.aliases || '').split(',').push(params[:new_alias]).join(',')
+        Domain.update_aliases(params[:domain_id], domain.cname, aliases)
+        notices << 'Added new alias successfully.'
+      elsif params[:new_cname]
+
+        new_cname = params[:new_cname]
+        unless valid_cname?(new_cname)
+          flash.now[:error] = "Invalid Primary CName: #{new_cname}"
+          return render 'shared/error', :status => :internal_server_error
+        end
+
+        Domain.update_aliases(params[:domain_id], new_cname, params[:aliases])
+        notices << "Set cname to `#{params[:new_cname]}`."
+        notices << "Moved #{params[:domain_id]} into the aliases."
+      elsif params[:aliases]
+        Domain.update_aliases(params[:domain_id], params[:domain_id], params[:aliases])
+        notices << 'Changed aliases successfully.'
+      end
+    rescue CoreServer::CoreServerError => e
+      flash.now[:error] = e.error_message
+      return render 'shared/error', :status => :internal_server_error
+    end
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+    prepare_to_render_flashes!
+
+    cname = params[:new_cname] || params[:domain_id]
+    redirect_to show_domain_path(domain_id: cname)
+  end
 
   def set_property
     config = ::Configuration.find(params[:id])

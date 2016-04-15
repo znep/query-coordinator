@@ -1,14 +1,20 @@
 //Color Palette
 
 //Base Palette Colors
-$primary: #2C97DE;
-$secondary: #00BE9B;
-$success: #64CF6C;
+$primary: #288DC1;
+$primary-alt-1: #E28432;
+$primary-alt-2: #00A1AF;
+$primary-alt-3: #00BE9B;
+$secondary: tint(#425363, 40%);
+$success: lighten(#218649, 10%);
 $error: #CE6565;
-$warning: #F7A700;
+$warning: shade(#FABE00, 5%);
 
 //Colors light version
 $primary-light: tint($primary, 80%);
+$primary-alt-1-light: tint($primary-alt-1, 80%);
+$primary-alt-2-light: tint($primary-alt-2, 80%);
+$primary-alt-3-light: tint($primary-alt-3, 80%);
 $secondary-light: tint($secondary, 80%);
 $success-light: tint($success, 80%);
 $error-light: tint($error, 80%);
@@ -16,6 +22,9 @@ $warning-light: tint($warning, 80%);
 
 //Colors dark version
 $primary-dark: shade($primary, 30%);
+$primary-alt-1-dark: shade($primary-alt-1, 30%);
+$primary-alt-2-dark: shade($primary-alt-2, 30%);
+$primary-alt-3-dark: shade($primary-alt-3, 30%);
 $secondary-dark: shade($secondary, 30%);
 $success-dark: shade($success, 30%);
 $error-dark: shade($error, 30%);
@@ -23,7 +32,7 @@ $warning-dark: shade($warning, 30%);
 
 
 //Greys
-$white: #fff;
+$white: #FFF;
 $grey: #999;
 $black: #2C2C2C; //as black as it will ever be at least
 
@@ -91,6 +100,38 @@ $btn-primary-inverse-hover-color: $white;
 $btn-primary-inverse-hover-background-color: $primary;
 $btn-primary-busy-border-right-color: tint($primary, 20%);
 
+$btn-primary-alt-1-color: $white;
+$btn-primary-alt-1-background-color: $primary-alt-1;
+$btn-primary-alt-1-border-color: $primary-alt-1;
+$btn-primary-alt-1-hover-background-color: shade($primary-alt-1, 20%);
+$btn-primary-alt-1-active-border-color: shade($primary-alt-1, 10%);
+$btn-primary-alt-1-inverse-color: $primary-alt-1;
+$btn-primary-alt-1-inverse-background-color: $white;
+$btn-primary-alt-1-inverse-hover-color: $white;
+$btn-primary-alt-1-inverse-hover-background-color: $primary-alt-1;
+$btn-primary-alt-1-busy-border-right-color: tint($primary-alt-1, 20%);
+
+$btn-primary-alt-2-color: $white;
+$btn-primary-alt-2-background-color: $primary-alt-2;
+$btn-primary-alt-2-border-color: $primary-alt-2;
+$btn-primary-alt-2-hover-background-color: shade($primary-alt-2, 20%);
+$btn-primary-alt-2-active-border-color: shade($primary-alt-2, 10%);
+$btn-primary-alt-2-inverse-color: $primary-alt-2;
+$btn-primary-alt-2-inverse-background-color: $white;
+$btn-primary-alt-2-inverse-hover-color: $white;
+$btn-primary-alt-2-inverse-hover-background-color: $primary-alt-2;
+$btn-primary-alt-2-busy-border-right-color: tint($primary-alt-2, 20%);
+
+$btn-primary-alt-3-color: $white;
+$btn-primary-alt-3-background-color: $primary-alt-3;
+$btn-primary-alt-3-border-color: $primary-alt-3;
+$btn-primary-alt-3-hover-background-color: shade($primary-alt-3, 20%);
+$btn-primary-alt-3-active-border-color: shade($primary-alt-3, 10%);
+$btn-primary-alt-3-inverse-color: $primary-alt-3;
+$btn-primary-alt-3-inverse-background-color: $white;
+$btn-primary-alt-3-inverse-hover-color: $white;
+$btn-primary-alt-3-inverse-hover-background-color: $primary-alt-3;
+$btn-primary-alt-3-busy-border-right-color: tint($primary-alt-3, 20%);
 
 $btn-secondary-color: $white;
 $btn-secondary-background-color: $secondary;

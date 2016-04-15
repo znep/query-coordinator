@@ -7,13 +7,13 @@
 .swatch-container {
   display: block;
   margin-top: 0.2em;
-  
+
   .subcontainer {
     display: block;
     float: left;
     width: 2.5em;
   }
-  .box { 
+  .box {
     width: 5em;
     height: 5em;
     float: left;
@@ -31,11 +31,17 @@
     display: block;
     margin-bottom: 2em;
   }
+  .grey, .black {
+    padding-left: 10px;
+  }
 }
 
 .color-label {
   font-size: ms(-2);
   margin: 0;
+  &.light {
+    color: $white;
+  }
 }
 
 
@@ -56,6 +62,36 @@
   }
   &.dark {
     background-color: $secondary-dark;
+  }
+}
+
+.primary-alt-1 {
+  background-color: $primary-alt-1;
+  &.light {
+    background-color: $primary-alt-1-light;
+  }
+  &.dark {
+    background-color: $primary-alt-1-dark;
+  }
+}
+
+.primary-alt-2 {
+  background-color: $primary-alt-2;
+  &.light {
+    background-color: $primary-alt-2-light;
+  }
+  &.dark {
+    background-color: $primary-alt-2-dark;
+  }
+}
+
+.primary-alt-3 {
+  background-color: $primary-alt-3;
+  &.light {
+    background-color: $primary-alt-3-light;
+  }
+  &.dark {
+    background-color: $primary-alt-3-dark;
   }
 }
 
@@ -112,6 +148,12 @@
   }
   &.light-5 {
     background-color: $light-grey-5;
+  }
+  &.light-6 {
+    background-color: $light-grey-6;
+  }
+  &.light-7 {
+    background-color: $light-grey-7;
   }
   &.dark-1 {
     background-color: $dark-grey-1;

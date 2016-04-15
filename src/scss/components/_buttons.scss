@@ -185,6 +185,115 @@
   // .btn-dark is used in both contexts.
 }
 
+.btn-primary-alt-1 {
+  color: $btn-primary-alt-1-color;
+  background-color: $btn-primary-alt-1-background-color;
+  border-color: $btn-primary-alt-1-border-color;
+
+  &:hover {
+    background-color: $btn-primary-alt-1-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-primary-alt-1-inverse-hover-color;
+      background-color: $btn-primary-alt-1-inverse-hover-background-color;
+    }
+  }
+
+  &:active,
+  &.active {
+    border-color: $btn-primary-alt-1-active-border-color;
+    background-color: $btn-primary-alt-1-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
+  }
+
+  &:disabled {
+    @include btn-disabled;
+  }
+
+  &.btn-inverse {
+    color: $btn-primary-alt-1-inverse-color;
+    background-color: $btn-primary-alt-1-inverse-background-color;
+  }
+
+  &.btn-busy span {
+    border-right-color: $btn-primary-alt-1-busy-border-right-color;
+  }
+
+  // .btn-dark is used in both contexts.
+}
+.btn-primary-alt-2 {
+  color: $btn-primary-alt-2-color;
+  background-color: $btn-primary-alt-2-background-color;
+  border-color: $btn-primary-alt-2-border-color;
+
+  &:hover {
+    background-color: $btn-primary-alt-2-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-primary-alt-2-inverse-hover-color;
+      background-color: $btn-primary-alt-2-inverse-hover-background-color;
+    }
+  }
+
+  &:active,
+  &.active {
+    border-color: $btn-primary-alt-2-active-border-color;
+    background-color: $btn-primary-alt-2-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
+  }
+
+  &:disabled {
+    @include btn-disabled;
+  }
+
+  &.btn-inverse {
+    color: $btn-primary-alt-2-inverse-color;
+    background-color: $btn-primary-alt-2-inverse-background-color;
+  }
+
+  &.btn-busy span {
+    border-right-color: $btn-primary-alt-2-busy-border-right-color;
+  }
+
+  // .btn-dark is used in both contexts.
+}
+.btn-primary-alt-3 {
+  color: $btn-primary-alt-3-color;
+  background-color: $btn-primary-alt-3-background-color;
+  border-color: $btn-primary-alt-3-border-color;
+
+  &:hover {
+    background-color: $btn-primary-alt-3-hover-background-color;
+
+    &.btn-inverse {
+      color: $btn-primary-alt-3-inverse-hover-color;
+      background-color: $btn-primary-alt-3-inverse-hover-background-color;
+    }
+  }
+
+  &:active,
+  &.active {
+    border-color: $btn-primary-alt-3-active-border-color;
+    background-color: $btn-primary-alt-3-hover-background-color;
+    box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
+  }
+
+  &:disabled {
+    @include btn-disabled;
+  }
+
+  &.btn-inverse {
+    color: $btn-primary-alt-3-inverse-color;
+    background-color: $btn-primary-alt-3-inverse-background-color;
+  }
+
+  &.btn-busy span {
+    border-right-color: $btn-primary-alt-3-busy-border-right-color;
+  }
+
+  // .btn-dark is used in both contexts.
+}
+
 .btn-secondary {
   color: $btn-secondary-color;
   background-color: $btn-secondary-background-color;

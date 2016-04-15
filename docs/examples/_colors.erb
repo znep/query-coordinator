@@ -1,17 +1,46 @@
 <div class="inline-container">
   <div class="color-group">
-    <%= partial "components/swatch" , locals: { 
+    <%= partial "components/swatch" , locals: {
       color: 'primary',
       label: "Primary",
-      hexValue: "#2C97DE",
-      hexValueLight: "#d5eaf8",
-      hexValueDark: "#1f6a9b"
+      hexValue: "#288DC1",
+      hexValueLight: "#d4e8f3",
+      hexValueDark: "#1c6387"
     } %>
   </div>
   <div class="color-group">
-    <%= partial "components/swatch" , locals: { 
+    <%= partial "components/swatch" , locals: {
       color: 'secondary',
       label: "Secondary",
+      hexValue: "#8e98a1",
+      hexValueLight: "#e8eaec",
+      hexValueDark: "636a71"
+    } %>
+  </div>
+</div>
+<div class="inline-container">
+    <div class="color-group">
+    <%= partial "components/swatch" , locals: {
+      color: 'primary-alt-1',
+      label: "Primary Alt. 1",
+      hexValue: "#E28432",
+      hexValueLight: "#f9e6d6",
+      hexValueDark: "#9e5c23"
+    } %>
+  </div>
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: {
+      color: 'primary-alt-2',
+      label: "Primary Alt. 2",
+      hexValue: "#00A1AF",
+      hexValueLight: "#ccecef",
+      hexValueDark: "#00717b"
+    } %>
+  </div>
+  <div class="color-group">
+    <%= partial "components/swatch" , locals: {
+      color: 'primary-alt-3',
+      label: "Primary Alt. 3",
       hexValue: "#00BE9B",
       hexValueLight: "#ccf2eb",
       hexValueDark: "#00856d"
@@ -20,16 +49,16 @@
 </div>
 <div class="inline-container">
   <div class="color-group">
-    <%= partial "components/swatch" , locals: { 
+    <%= partial "components/swatch" , locals: {
       color: 'warning',
       label: "Warning",
-      hexValue: "#F7A700",
-      hexValueLight: "#fdedcc",
-      hexValueDark: "#ad7500"
+      hexValue: "#eeb500",
+      hexValueLight: "#fcf0cc",
+      hexValueDark: "#a77f00"
     } %>
   </div>
   <div class="color-group">
-    <%= partial "components/swatch" , locals: { 
+    <%= partial "components/swatch" , locals: {
       color: 'error',
       label: "Error",
       hexValue: "#CE6565",
@@ -38,18 +67,21 @@
     } %>
   </div>
   <div class="color-group">
-    <%= partial "components/swatch" , locals: { 
+    <%= partial "components/swatch" , locals: {
       color: 'success',
       label: "Success",
-      hexValue: "#64CF6C",
-      hexValueLight: "#e0f5e2",
-      hexValueDark: "#46914c"
+      hexValue: "#2baf5f",
+      hexValueLight: "#d5efdf",
+      hexValueDark: "#1e7b43"
     } %>
   </div>
 </div>
 
 <div class="inline-container">
   <h6> Black/White</h6>
+  <p class="color-label">Grey: #999</p>
+  <p class="color-label">White: #FFF</p>
+  <p class="color-label">Black: #2C2C2C</p>
   <div class="swatch-container">
     <div class="grey box"></div>
     <div class="subcontainer">
@@ -61,36 +93,97 @@
 
 <div class="inline-container">
   <h6> Greys (not grays)</h6>
-  <div class="swatch-container">
-    <div class="box grey light-5"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 7</p>
+    <p class="color-label">#fafafa</p>
+    <div class="swatch-container">
+      <div class="box grey light-7"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey light-4"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 6</p>
+    <p class="color-label">#f8f8f8</p>
+    <div class="swatch-container">
+      <div class="box grey light-6"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey light-3"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 5</p>
+    <p class="color-label">#F5F5F5</p>
+    <div class="swatch-container">
+      <div class="box grey light-5"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey light-2"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 4</p>
+    <p class="color-label">#ebebeb</p>
+    <div class="swatch-container">
+      <div class="box grey light-4"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey light-1"></div>
-  </div>  
- </div> 
+</div>
+
 <div class="inline-container">
-  <div class="swatch-container">
-    <div class="box grey"></div>
-  </div>  
-  <div class="swatch-container">
-    <div class="box grey dark-1"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 3</p>
+    <p class="color-label">#d6d6d6</p>
+    <div class="swatch-container">
+      <div class="box grey light-3"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey dark-2"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 2</p>
+    <p class="color-label">#c2c2c2</p>
+    <div class="swatch-container">
+      <div class="box grey light-2"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box grey dark-3"></div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 1</p>
+    <p class="color-label">#adadad</p>
+    <div class="swatch-container">
+      <div class="box grey light-1"></div>
+    </div>
   </div>
-  <div class="swatch-container">
-    <div class="box black"></div>
-  </div>  
+  <div class="color-group">
+    <p class="color-label">Just Grey</p>
+    <p class="color-label">#999</p>
+    <div class="swatch-container">
+      <div class="box grey"></div>
+    </div>
+  </div>
+</div>
+
+<div class="inline-container">
+  <div class="color-group">
+    <p class="color-label">Dark Grey 1</p>
+    <p class="color-label">#7a7a7a</p>
+    <div class="swatch-container">
+      <div class="box grey dark-1"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Dark Grey 2</p>
+    <p class="color-label">#5c5c5c</p>
+    <div class="swatch-container">
+      <div class="box grey dark-2"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Dark Grey 3</p>
+    <p class="color-label">#3d3d3d</p>
+    <div class="swatch-container">
+      <div class="box grey dark-3"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Black</p>
+    <p class="color-label">#2C2C2C</p>
+    <div class="swatch-container">
+      <div class="box black"></div>
+    </div>
+  </div>
 </div>

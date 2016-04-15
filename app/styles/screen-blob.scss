@@ -52,8 +52,8 @@
     }
   }
   .downloadBox {
-    float: right;
-    text-align: center;
+    margin: 1em;
+    text-align: left;
     .widgetContent & {
       float: none;
       margin-top: 1em;

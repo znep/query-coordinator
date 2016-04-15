@@ -119,5 +119,7 @@ var FlannelFactory = module.exports = function(element) {
         positionFlannel(flannel, hoverable);
       }
     });
+
+    positionFlannel(flannel, hoverable);
   });
 }

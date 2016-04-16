@@ -120,7 +120,8 @@ form.wide {
       background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
     }
     &:after {
-      content: 'Please wait for a moment before typing..'
+      content: 'Please wait for a moment before typing..';
+      color: red;
     }
   }
 }

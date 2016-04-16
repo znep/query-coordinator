@@ -12,6 +12,7 @@
 
     if (_.isUndefined(staticOptions.staticData)) {
       $element.addClass('loading');
+      $element.find('input').attr('readonly', 'readonly');
       $.ajax({
         url: '/internal/domains_summary.json',
         dataType: 'json',
@@ -19,6 +20,7 @@
           blist.internal.domains = domainList;
           $.extend(staticOptions, { staticData: blist.internal.domains });
           $element.removeClass('loading');
+          $element.find('input').removeAttr('readonly');
           $element.find('input').awesomecomplete(staticOptions);
         }
       });

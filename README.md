@@ -52,4 +52,4 @@ When a PR is successfully merged, an admin must run – from `master` — the de
 2. [Modular Scale](https://github.com/modularscale/modularscale-sass)
 3. [Bourbon](http://bourbon.io/) and [Neat](http://neat.bourbon.io) (for layout grids)
 4. [Prism](http://prismjs.com/) (for syntax highlighting)
-5. [Font]
+5. [FontCustom](https://github.com/FontCustom/fontcustom)

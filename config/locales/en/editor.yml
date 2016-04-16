@@ -169,16 +169,22 @@ en:
         choose_create_visualization_heading: 'Create New Visualization'
         choose_create_visualization_description: 'Create a new chart or map based on a public dataset'
       image_upload:
-        name: 'Image Upload'
-        description: 'Upload an image from your computer up to 5MB.'
+        name: 'Image'
+        description: 'Add an image from Getty Images or upload an image from your computer (up to 5MB).'
+        search: 'Search and hit "Enter".'
+        tab_upload: 'Upload'
+        tab_getty: 'Photos by Getty'
         input_label: 'Images can be JPG, PNG, or GIF format and up to 5MB file size.'
         input_subtext: 'Select an image from your computer...'
         input_button_text: 'Choose File'
         uploading_message: 'Uploading...'
+        show_more: 'Show More'
+        thats_it: "That's everything!"
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
           exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+          image_search: "We can't complete your search right now. Try different keywords."
       image_preview:
         preview_label: 'Preview'
         description_label: 'Image Description (optional)'

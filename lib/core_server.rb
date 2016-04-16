@@ -99,41 +99,41 @@ class CoreServer
     return stored_authorization if stored_authorization.present?
 
     user = CoreServer.current_user
-    uid = ::RequestStore.store[:story_uid]
+    domain_role = user['roleName'] || 'unknown'
+    domain_rights = user['rights'] || []
+    authorization = {
+      'domainRole' => domain_role,
+      'domainRights' => domain_rights,
+      'viewRole' => 'unknown',
+      'viewRights' => [],
+    }
 
-    if user.present? && uid.present?
+    if user.present? && ::RequestStore.store[:story_uid].present?
+      uid = ::RequestStore.store[:story_uid]
       view = CoreServer.get_view(uid)
 
       if view.present?
-        domain_role = user['roleName'] || 'unknown'
-        domain_rights = user['rights'] || []
         view_rights = view['rights'] || []
         corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
         is_primary_owner = view['owner']['id'] == user['id']
         has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
 
         if is_primary_owner
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
+          authorization.merge!({
             'viewRole' => 'owner',
             'viewRights' => view_rights,
             'primary' => true
-          }
+          })
         elsif has_user_grant
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
+          authorization.merge!({
             'viewRole' => view['grants'].find(&corresponding_grant)['type'],
             'viewRights' => view_rights
-          }
+          })
         else
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
+          authorization.merge!({
             'viewRole' => 'unknown',
             'viewRights' => view_rights
-          }
+          })
         end
       end
     end

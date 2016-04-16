@@ -32,6 +32,8 @@ export default {
 
   SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY',
 
+  IMAGE_SEARCH_PAGE_SIZE: 15,
+
   API_PREFIX_PATH: '/stories/api/v1/',
 
   // This doesn't set the base font size for the scss

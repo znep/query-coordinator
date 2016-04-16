@@ -62,6 +62,7 @@
   .component-asset-selector,
   .component-embedded-html,
   .component-image,
+  .component-getty-image,
   .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
@@ -85,6 +86,7 @@
 .component-asset-selector,
 .component-embedded-html,
 .component-image,
+.component-getty-image,
 .component-socrata-visualization-choropleth-map,
 .component-socrata-visualization-classic,
 .component-socrata-visualization-column-chart,
@@ -124,6 +126,7 @@
   background-color: $youtube-bg-color;
 }
 
+.component-getty-image,
 .component-image {
   overflow: hidden;
   img {

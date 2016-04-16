@@ -63,6 +63,9 @@ gem 'request_store'
 # Exception notifier - required last so we get airbrake from delayed jobs
 gem 'airbrake'
 
+# Getty Images' library for making OAuth2 calls to their API.
+gem 'ConnectSDK', path: 'vendor/gems/ConnectSdk'
+
 # We use aws-sdk v2 for RDS database migrations
 gem 'aws-sdk'
 

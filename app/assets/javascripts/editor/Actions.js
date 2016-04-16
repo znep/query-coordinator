@@ -115,6 +115,15 @@ export default {
    * Generic asset selector flow
    */
 
+  // No payload
+  ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE: 'ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE',
+
+  // {string} phrase
+  ASSET_SELECTOR_IMAGE_SEARCH: 'ASSET_SELECTOR_IMAGE_SEARCH',
+
+  // {string} uri
+  ASSET_SELECTOR_IMAGE_SELECTED: 'ASSET_SELECTOR_IMAGE_SELECTED',
+
   // Have the user select an asset, then insert it into
   // the given block and component.
   // {string} blockId

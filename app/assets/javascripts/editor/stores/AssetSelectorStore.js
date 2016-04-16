@@ -238,6 +238,18 @@ export default function AssetSelectorStore() {
       case Actions.ASSET_SELECTOR_JUMP_TO_STEP:
         _jumpToStep(payload);
         break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE:
+        _nextImageSearchPage();
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SEARCH:
+        _setImageSearchPhrase(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SELECTED:
+        _setImageSearchSelection(payload);
+        break;
     }
   });
 
@@ -285,6 +297,114 @@ export default function AssetSelectorStore() {
   this.isUploading = function() {
     return _state.isUploading;
   };
+
+  this.getImageSearchUrl = function() {
+    var phrase = this.getImageSearchPhrase();
+    var page = this.getImageSearchPage();
+    var pageSize = this.getImageSearchPageSize();
+
+    return StorytellerUtils.format(
+      '{0}images/search?phrase={1}&page={2}&page_size={3}&sort_order=best_match&graphical_styles=photography',
+      Constants.API_PREFIX_PATH,
+      phrase,
+      page,
+      pageSize
+    );
+  };
+
+  this.getImageSearchResults = function() {
+    return _.get(_state, 'imageSearchResults', []);
+  };
+
+  this.getImageSearchPhrase = function() {
+    return _.get(_state, 'imageSearchPhrase', null);
+  };
+
+  this.getImageSearchPage = function() {
+    return _.get(_state, 'imageSearchPage', 1);
+  };
+
+  this.getImageSearchPageSize = function() {
+    return Constants.IMAGE_SEARCH_PAGE_SIZE;
+  };
+
+  this.hasImageSearchPhrase = function() {
+    return self.getImageSearchPhrase() !== null;
+  };
+
+  this.hasImageSearchResults = function() {
+    return !_.get(_state, 'imageSearchEmpty', true);
+  };
+
+  this.isImageSearching = function() {
+    return _.get(_state, 'imageSearching', false);
+  };
+
+  this.hasImageSearchError = function() {
+    return _.get(_state, 'imageSearchError', false);
+  };
+
+  this.canPageImageSearchNext = function() {
+    return (self.getImageSearchPage() + 1) * self.getImageSearchPageSize() <= _state.imageSearchCount;
+  };
+
+  function _setImageSearchPhrase(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'phrase');
+    StorytellerUtils.assertIsOneOfTypes(payload.phrase, 'string');
+
+    _state.imageSearchPhrase = payload.phrase.trim();
+    _state.imageSearching = _state.imageSearchPhrase.length > 0;
+    _state.imageSearchError = false;
+
+    if (!payload.continuous) {
+      _state.imageSearchResults = [];
+      _state.imageSearchCount = 0;
+      _state.imageSearchPage = 1;
+      _state.imageSearchEmpty = true;
+
+      self._emitChange();
+    }
+
+    self.isImageSearching() && $.getJSON({
+      method: 'GET',
+      url: self.getImageSearchUrl()
+    }).then(function(response) {
+      _state.imageSearchResults = response.images;
+      _state.imageSearchCount = response.result_count;
+      _state.imageSearchEmpty = _state.imageSearchCount === 0;
+      _state.imageSearching = false;
+      self._emitChange();
+    }, function() {
+      _state.imageSearching = false;
+      _state.imageSearchError = true;
+      self._emitChange();
+    });
+  }
+
+  function _nextImageSearchPage() {
+    if (self.canPageImageSearchNext()) {
+      _state.imageSearchPage = self.getImageSearchPage() + 1;
+      _setImageSearchPhrase({phrase: self.getImageSearchPhrase(), continuous: true});
+    }
+  }
+
+  function _setImageSearchSelection(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'uri');
+
+    var type = self.getComponentType();
+    var image = {
+      documentId: _.uniqueId(),
+      url: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Okapi_in_florida.jpg' //payload.uri
+    };
+
+    if (type === 'author') {
+      _state.componentProperties.image = image;
+    } else if (type === 'hero') {
+      _state.componentProperties = _.merge(_state.componentProperties, image);
+    } else {
+      _state.componentProperties = image;
+    }
+  }
 
   /**
    * Private methods

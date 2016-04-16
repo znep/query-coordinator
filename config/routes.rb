@@ -28,6 +28,9 @@ Rails.application.routes.draw do
       post 'stories/:uid/drafts' => 'drafts#create'
       post 'stories/:uid/published' => 'published#create'
       put 'stories/:uid/permissions' => 'permissions#update'
+
+      get 'images/search' => 'images#search'
+      get 'images/download/:id' => 'images#download'
     end
   end
 

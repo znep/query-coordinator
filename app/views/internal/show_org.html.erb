@@ -21,10 +21,16 @@
         <%- else -%>
           <ul>
             <%- @org.domains.each do |domain| -%>
-              <li><%= link_to(
-                "#{domain.name} (#{domain.cname})",
-                show_domain_path(domain_id: domain.cname)
-              ) %></li>
+              <li><%=
+              begin
+                link_to(
+                  "#{domain.name} (#{domain.cname})",
+                  show_domain_path(domain_id: domain.cname)
+                )
+              # Invalid CNAMEs will not resolve the route path.
+              rescue ActionController::RoutingError
+                content_tag :span, "#{domain.name} (#{domain.cname})", :class => 'invalidCname'
+              end%></li>
           <%- end -%>
         </ul>
       <%- end -%>

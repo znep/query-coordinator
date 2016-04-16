@@ -53,21 +53,15 @@
     <h2>Configuration Sets</h2>
     <ul>
       <%- @configs.each do |conf|
-        case conf.type
-        when 'feature_flags'
-      -%>
-      <li><%= link_to 'Feature Flags', feature_flags_config_path %></li>
-      <%-
-        else
-      -%>
-      <li<%== ' class="isDefault"' if conf.default %>>
-      <a href='<%= show_config_path(org_id: @domain.organizationId,
-                                    domain_id: @domain.cname,
-                                    id: conf.id) %>'>
-        (<%= conf.type %>) <%= conf.name %>
-      </a>
-      </li>
-        <%- end -%>
+        path =
+          case conf.type
+          when 'feature_flags' then feature_flags_config_path
+          else show_config_path(domain_id: @domain.cname,
+                                id: conf.id)
+          end -%>
+          <li<%== ' class="isDefault"' if conf.default %>>
+          <%= link_to "(#{conf.type}) #{conf.name}", path %>
+          </li>
       <%- end -%>
     </ul>
 

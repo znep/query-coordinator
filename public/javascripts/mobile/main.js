@@ -16,7 +16,7 @@ var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
 
-var dataProviders = require('socrata-visualizations').dataProviders;
+import Visualizations from 'socrata-visualizations';
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
@@ -37,7 +37,7 @@ import './styles/mobile-general.scss';
       return TABLE_UNSORTABLE_PHYSICAL_DATATYPES.indexOf(column.physicalDatatype) < 0;
     }), 'position')[0];
 
-  var soqlDataProvider = new dataProviders.SoqlDataProvider({
+  var soqlDataProvider = new Visualizations.dataProviders.SoqlDataProvider({
     datasetUid: datasetMetadata.id,
     domain: datasetMetadata.domain
   });
@@ -541,15 +541,29 @@ import './styles/mobile-general.scss';
     setupQfb(aPredefinedFilters);
   }
 
+  /**
+   * Sets up QFB bar with fields from cards
+   * @param preloadedFilters
+   */
   function setupQfb(preloadedFilters) {
     var filterDataObservable = document.createDocumentFragment();
 
     _attachModalEvents();
     _determineDatasetSize().
+      then(_generateFilterOptions).
       then(_renderFilterContainer);
 
+    $('#btn-close, #btn-proceed').on('click', function() {
+      $('#modal-container').addClass('hidden');
+    });
+
+    $('#btn-clear-filters').on('click', function() {
+      filterDataObservable.dispatchEvent(new Event('clearFilters.qfb.socrata'));
+      $('#modal-container').addClass('hidden');
+    });
+
     function _handleBroadcast(filterObject) {
-      var whereClauseComponents = dataProviders.SoqlHelpers.whereClauseFilteringOwnColumn({
+      var whereClauseComponents = Visualizations.dataProviders.SoqlHelpers.whereClauseFilteringOwnColumn({
         filters: filterObject.filters,
         type: 'table'
       });
@@ -581,59 +595,181 @@ import './styles/mobile-general.scss';
     }
 
     function _generateFilterOptions(isLargeDataset) {
-      // TODO: rewrite this with _.pickBy when we update to lodash 4 so we can object preserve keys.
-      var columns = isLargeDataset ?
-        _.filter(datasetMetadata.columns, function(column, fieldName) {
-          return _.find(pageMetadata.cards, { fieldName: fieldName });
-        }) :
-        datasetMetadata.columns;
+      return new Promise(function(resolve) {
+        // TODO: rewrite this with _.pickBy when we update to lodash 4 so we can preserve object keys.
+        var columns = isLargeDataset ?
+          _.filter(datasetMetadata.columns, function(column, fieldName) {
+            return _.find(pageMetadata.cards, { fieldName: fieldName });
+          }) : datasetMetadata.columns;
 
-      var filterOptions = [];
+        var filterOptionsPromises = [];
+        _.each(columns, function(column) {
+          switch (column.dataTypeName) {
+            case 'text':
+              filterOptionsPromises.push(__textTypeFilter(column));
+              break;
+            case 'number':
+              filterOptionsPromises.push(__numberTypeFilter(column));
+              break;
+            case 'calendar_date':
+              filterOptionsPromises.push(__dateTypeFilter(column));
+              break;
+            default:
+              break;
+          }
+        });
 
-      _.each(columns, function(column) {
-        var filterOption = {};
-        switch (column.dataTypeName) {
-          case 'text':
-            filterOption = {
-              filterName: column.name,
-              name: _.findKey(datasetMetadata.columns, { position: column.position }),
-              id: column.position,
-              type: 'string'
-            };
-            filterOptions.push(filterOption);
-            break;
-          case 'number':
-            filterOption = {
-              filterName: column.name,
-              name: _.findKey(datasetMetadata.columns, { position: column.position }),
-              id: column.position,
-              type: 'int'
-            };
-            filterOptions.push(filterOption);
-            break;
-          case 'calendar_date':
-            filterOption = {
-              filterName: column.name,
-              name: _.findKey(datasetMetadata.columns, { position: column.position }),
-              id: column.position,
-              type: 'calendar_date'
-            };
-            filterOptions.push(filterOption);
-            break;
-          default:
-            break;
-        }
+        Promise.
+          all(filterOptionsPromises).
+          then(resolve)
+          ['catch'](function(error){
+            console.error(error);
+          });
       });
 
-      return filterOptions;
+      function __textTypeFilter(column) {
+        return new Promise(function(resolve) {
+          resolve({
+            filterName: column.name,
+            name: _.findKey(datasetMetadata.columns, { position: column.position }),
+            id: column.position,
+            type: 'string'
+          });
+        })
+      }
+
+      function __numberTypeFilter(column) {
+        return new Promise(function(resolve) {
+          var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
+
+          __queryLimits(fieldName).
+            then(__getBuckets).
+            then(function(buckets) {
+              resolve({
+                filterName: column.name,
+                name: fieldName,
+                id: column.position,
+                type: 'int',
+                scale: buckets
+              });
+            });
+        });
+      }
+
+      function __dateTypeFilter(column) {
+        return new Promise(function(resolve) {
+          var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
+
+          __queryLimits(fieldName).then(function(promiseArguments) {
+            var data = promiseArguments[0];
+
+            data = _.map(data, function(val) {
+              return new Date(String(val));
+            });
+
+            var scale = d3.time.scale().domain(data).ticks(20);
+
+            resolve({
+              filterName: column.name,
+              name: _.findKey(datasetMetadata.columns, { position: column.position }),
+              id: column.position,
+              type: 'calendar_date',
+              scale: scale
+            });
+          });
+        });
+      }
+
+      function __queryLimits(fieldName) {
+        return new Promise(function(resolve) {
+          var columnNames = [ 'min', 'max' ];
+          var query = '$query=SELECT min({column}) as `min`, max({column}) as `max`'.format({
+            column: fieldName
+          });
+
+          soqlDataProvider.getRows(columnNames, query).then(function(data) {
+            resolve([data, fieldName]);
+          });
+        });
+      }
+
+      function __getBuckets(promiseArguments) {
+        var data = _.map(_.first(promiseArguments[0].rows), parseFloat);
+        var fieldName = promiseArguments[1];
+        var bucketingOptions = {};
+        var absMax = Math.max(Math.abs(data[0]), Math.abs(data[1]));
+        var threshold = 2000;
+
+        bucketingOptions.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';
+
+        if (bucketingOptions.bucketType === 'linear') {
+          var buckets = d3.scale.linear().nice().domain(data).ticks(20);
+
+          if (buckets.length >= 2) {
+            bucketingOptions.bucketSize = buckets[1] - buckets[0];
+          } else {
+            bucketingOptions.bucketSize = 1;
+          }
+        }
+
+        var bucketingFunction;
+        var bucketingArguments;
+
+        if (bucketingOptions.bucketType === 'linear') {
+          bucketingFunction = 'signed_magnitude_linear';
+          bucketingArguments = [ bucketingOptions.bucketSize ];
+        } else {
+          bucketingFunction = 'signed_magnitude_10';
+          bucketingArguments = [];
+        }
+
+        var card = _.find(pageMetadata.cards, {fieldName: fieldName});
+        var aggregationClause = Visualizations.dataProviders.SoqlHelpers.aggregationClause({
+          aggregation: {
+            'function': card.aggregationFunction,
+            field: card.aggregationField
+          }
+        });
+
+        var queryParameters = {
+          bucketingFunction: bucketingFunction,
+          bucketingArguments: [''].concat(bucketingArguments).join(', '),
+          column: fieldName,
+          columnAlias: '__magnitude__',
+          value: aggregationClause,
+          valueAlias: '__value__',
+          whereClause: ''
+        };
+
+        var queryTemplate = [
+          'select {bucketingFunction}({column}{bucketingArguments}) as {columnAlias}, ',
+          '{value} as {valueAlias} ',
+          '{whereClause} group by {columnAlias} order by {columnAlias} limit 200'
+        ].join('');
+
+        return new Promise(function(resolve) {
+          soqlDataProvider.query(queryTemplate.format(queryParameters), queryParameters.columnAlias,
+            queryParameters.valueAlias).
+            then(function(unfilteredResponse) {
+              var requestData = _.mapValues({'unfiltered': unfilteredResponse}, function (response) {
+                return _.chain(response.rows).map(function (pair) {
+                  return _.map(pair, parseFloat);
+                }).map(_.partial(_.zipObject, ['magnitude', 'value'])).value();
+              });
+
+              resolve(Visualizations.views.DistributionChartHelpers.bucketData(requestData.unfiltered,
+                bucketingOptions));
+            });
+        });
+      }
     }
 
-    function _renderFilterContainer(isLargeDataset) {
+    function _renderFilterContainer(filterOptions) {
       ReactDOM.render(<FilterContainer
         domain={ datasetMetadata.domain }
         datasetId={ pageMetadata.datasetId }
         filters={ preloadedFilters }
-        filterOps={ _generateFilterOptions(isLargeDataset) }
+        filterOps={ filterOptions }
         filterDataObservable={ filterDataObservable }
         handleFilterBroadcast={ _handleBroadcast } />, document.getElementById('filters'));
     }

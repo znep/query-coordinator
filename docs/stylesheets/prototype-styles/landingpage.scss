@@ -659,6 +659,9 @@ a {
 				}
 				.grid {
 					width: 28%;
+					a {
+						color: $btn-default-color;
+					}
 				}
 				.api {
 					width: 14%;

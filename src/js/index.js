@@ -8,16 +8,20 @@ var Styleguide = {
   TourFactory: require('./tour')
 };
 
+function bootstrap(element) {
+  return function() {
+    Object.keys(Styleguide).forEach(function(factory) {
+      new Styleguide[factory](element);
+    });
+  };
+};
+
 module.exports = function(element) {
-  document.addEventListener('DOMContentLoaded', function() {
-    new Styleguide.DropdownFactory(element);
-    new Styleguide.FlannelFactory(element);
-    new Styleguide.FlyoutFactory(element);
-    new Styleguide.MenuFactory(element);
-    new Styleguide.ModalFactory(element);
-    new Styleguide.ToggleFactory(element);
-    new Styleguide.TourFactory(element);
-  });
+  if (document.readyState === 'complete') {
+    bootstrap(element)();
+  } else {
+    document.addEventListener('DOMContentLoaded', bootstrap(element));
+  }
 
   return Styleguide;
 };

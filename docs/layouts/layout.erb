@@ -9,8 +9,9 @@
     <!-- Use title if it's in the page YAML frontmatter -->
     <title><%= current_page.data.title || "Socrata's Styleguide" %></title>
 
-    <%= stylesheet_link_tag "all" %>
-    <%= javascript_include_tag  "all" %>
+    <link rel="stylesheet" href="stylesheets/vendor/reset.css">
+    <link rel="stylesheet" href="stylesheets/vendor/prism.css">
+    <link rel="stylesheet" href="css/styleguide.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
   </head>
 
@@ -18,7 +19,7 @@
     <div class="responsive-navbar responsive-navbar-fixed">
        <span class="site-controls">
          <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="icon-hamburger"> Menu</a>
-       
+
         <a class="home" href="index.html">
           <span>Product Styleguide</span>
         </a>
@@ -29,5 +30,9 @@
     </div>
 
     <%= yield %>
+
+    <script type="text/javascript" src="javascripts/vendor/prism.js"></script>
+    <script type="text/javascript" src="js/styleguide.js"></script>
+    <script type="text/javascript" src="javascripts/all.js"></script>
   </body>
 </html>

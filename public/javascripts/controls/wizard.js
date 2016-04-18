@@ -54,6 +54,9 @@
                     $currentPane.siblings().detach();
                     $paneContainer.css('marginLeft', 0);
 
+                    // focus on the first input in the form
+                    $('form :input:visible:enabled:first').focus();
+
                     var paneConfig = opts.paneConfig[$currentPane.data('wizardpanename')] || {};
                     if (_.isFunction(paneConfig.onAnimatedIn)) {
                         paneConfig.onAnimatedIn($currentPane);
@@ -208,9 +211,6 @@
                     if ($button.jquery) $button.addClass('disabled');
                 });
                 
-                // focus on the first input in the form
-                $('form :input:visible:enabled:first').focus();
-
                 // fire events the old pane is expecting
                 if (!_.isUndefined(currentPaneConfig) && _.isFunction(currentPaneConfig.onLeave))
                     currentPaneConfig.onLeave($currentPane, currentPaneConfig, currentState);

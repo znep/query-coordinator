@@ -1319,6 +1319,10 @@ en:
       twitter: Share via Twitter
       visibility_alert_html: <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with.
     updated: Updated
+    featured_views:
+      no_content_alert_html: <b>Hmm...</b> Looks like there is no public content using this data.
+      title: Popular Content Using this Data
+      view: View
   dataslate:
     component:
       edit: Edit this component

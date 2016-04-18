@@ -1,34 +1,14 @@
 module DatasetLandingPageHelper
   def format_date(date)
-    date.strftime('%B %-d, %Y')
+    date.to_s(:dslp)
   end
 
   def format_number(number)
     number_with_delimiter(number)
   end
 
-  def view_created_at
-    format_date(Time.at(@view.createdAt))
-  end
-
-  def data_last_updated_at
-    format_date(Time.at(@view.rowsUpdatedAt))
-  end
-
-  def metadata_last_updated_at
-    format_date(Time.at(@view.viewLastModified))
-  end
-
-  def view_last_updated_at
-    format_date(Time.at(@view.last_activity))
-  end
-
-  def seo_friendly_url
-    ERB::Util.url_encode(request.base_url + view_path(@view.route_params))
-  end
-
   def share_facebook_url
-    "http://www.facebook.com/sharer/sharer.php?u=#{seo_friendly_url}"
+    "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
   end
 
   def share_twitter_url
@@ -40,7 +20,7 @@ module DatasetLandingPageHelper
 
     text = ERB::Util.url_encode(text)
 
-    "http://twitter.com/share?text=#{text}&url=#{seo_friendly_url}"
+    "http://twitter.com/share?text=#{text}&url=#{@view.encoded_seo_friendly_url(request)}"
   end
 
   def share_email_url
@@ -49,7 +29,7 @@ module DatasetLandingPageHelper
     body = I18n.t(
       'dataset_landing_page.share.email_body',
       :provider => CurrentDomain.strings.company,
-      :url => seo_friendly_url
+      :url => @view.encoded_seo_friendly_url(request)
     )
 
     "mailto:?subject=#{subject}&body=#{body}"
@@ -108,5 +88,24 @@ module DatasetLandingPageHelper
 
   def row_label
     @view.metadata.try(:rowLabel)
+  end
+
+  def view_icon(view)
+    return 'icon-dataset' unless view.display
+
+    case view.display.type
+    when 'grouped', 'filter'
+      'icon-filter'
+    when 'data_lens'
+      'icon-cards'
+    when 'story'
+      'icon-story'
+    when 'map', 'intensitymap', 'geomap', 'data_lens_map'
+      'icon-map'
+    when 'chart', 'annotatedtimeline', 'imagesparkline', 'areachart', 'barchart', 'columnchart', 'linechart', 'piechart', 'data_lens_chart'
+      'icon-bar-chart'
+    else
+      'icon-dataset'
+    end
   end
 end

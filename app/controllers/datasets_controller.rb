@@ -38,6 +38,9 @@ class DatasetsController < ApplicationController
         return redirect_to canonical_path
       end
 
+      related_views = @view.try(:find_dataset_landing_page_related_content) || []
+      @featured_views = related_views.slice(0, 3)
+
       render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
       return
     end
@@ -636,6 +639,9 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
 
     if dataset_landing_page_enabled?
+      related_views = @view.try(:find_dataset_landing_page_related_content) || []
+      @featured_views = related_views.slice(0, 3)
+
       render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
       return
     end

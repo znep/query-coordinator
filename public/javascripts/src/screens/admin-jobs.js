@@ -1,4 +1,4 @@
-import { timeControl } from "../lib/admin-time-control";
+import { timeControl } from '../lib/admin-time-control';
 
 export function replaceTimestamps($parent) {
   $parent.find('.started-time').each((i, el) => {
@@ -33,7 +33,7 @@ function dateRangeFromParams() {
   );
 
   return {
-    dateStart: () => _.first(range), 
+    dateStart: () => _.first(range),
     dateEnd: () => _.last(range)
   };
 }
@@ -42,7 +42,7 @@ $(() => {
   replaceTimestamps($(document.body));
 
   const $timecontrol = $('#time-control-input');
-  
+
   const DEFAULT_DATE_RANGES = [
     // Today
     {
@@ -53,7 +53,7 @@ $(() => {
       datePrevious: Date.parse('yesterday'),
       enabled: true
     },
-    
+
     // Last 3 Days
     {
       text: $.t('plugins.daterangepicker.last_3_days'),
@@ -62,7 +62,7 @@ $(() => {
       dateEnd: () => Date.parse('yesterday'),
       enabled: true
     },
-    
+
     // Last Week
     {
       text: $.t('plugins.daterangepicker.last_week'),
@@ -73,16 +73,16 @@ $(() => {
       enabled: true
     }
   ];
-  
+
   timeControl(
     $timecontrol,
     DEFAULT_DATE_RANGES,
     dateRangeFromParams()
   );
 
-  // blank out the input field if we don't have URL params for the date, 
-  // since the daterangepicker on this page is ancient and defaults to 
-  // today's date no matter what 
+  // blank out the input field if we don't have URL params for the date,
+  // since the daterangepicker on this page is ancient and defaults to
+  // today's date no matter what
   if (!$.urlParam(window.location.href, 'date_range')) {
     $timecontrol.val('');
   }

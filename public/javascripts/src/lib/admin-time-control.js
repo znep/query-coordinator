@@ -2,7 +2,7 @@
  * Turns an input box into a date range picker
  * @param {jQuery object} input - jQuery-wrapped input to turn into date range picker
  * @param {Object[]} ranges - Array of date-range objects to use for selecting default ranges
- * @param {Object} initialRange - Initial range to put into input; null is allowed and input will default to "today" 
+ * @param {Object} initialRange - Initial range to put into input; null is allowed and input will default to "today"
  */
 export function timeControl(input, ranges, initialRange) {
   const today = Date.parse('today');
@@ -32,4 +32,4 @@ export function timeControl(input, ranges, initialRange) {
   input.daterangepicker(options);
 }
 
-function t(str) { return $.t(`plugins.daterangepicker.${str}`)}
+function t(str) { return $.t(`plugins.daterangepicker.${str}`); }

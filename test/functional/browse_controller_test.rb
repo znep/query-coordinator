@@ -301,6 +301,11 @@ class BrowseControllerTest < ActionController::TestCase
       search_context: 'localhost'
     }
 
+    cetera_headers = {
+      'Cookie' => 'assume_nothing=Pass It All Along',
+      'X-Socrata-Host' => 'localhost'
+    }
+
     # NOTE: this is an Array of Hashie::Mash, unlike other facets
     custom_facets = [
       Hashie::Mash.new(
@@ -464,9 +469,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with embed' do
+      @request.cookies['assume_nothing'] = 'Pass It All Along'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params).
+        with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:embed, view_type: 'browse2')
@@ -477,9 +483,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with browse' do
+      @request.cookies['assume_nothing'] = 'Pass It All Along'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params).
+        with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, {})
@@ -491,13 +498,11 @@ class BrowseControllerTest < ActionController::TestCase
 
     # See EN-3383
     should 'truncate custom cutoffs as configured' do
+      @request.cookies['assume_nothing'] = 'Pass It All Along'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params, headers: {'X-Socrata-Host'=>'localhost'}).
+        with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
-      # stub_request(:get, 'http://localhost:5704/catalog/v1?domains=localhost&limit=10&offset=0&order=relevance&search_context=localhost').
-      #   with(:headers => { 'X-Socrata-Host' => 'localhost' }).
-      #   to_return(:status => 200, :body => '', :headers => {})
 
       get(:show, {})
       assert_response :success

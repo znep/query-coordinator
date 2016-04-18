@@ -184,10 +184,6 @@ module Cetera
       @data = data
     end
 
-    def self.from_result(result)
-      new(JSON.parse(result, max_nesting: 25)) if result.present?
-    end
-
     def results
       @results ||= (data['results'] || []).map { |data| self.class.klass.new(data) }
     end

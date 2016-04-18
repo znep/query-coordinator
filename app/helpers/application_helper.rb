@@ -845,6 +845,18 @@ module ApplicationHelper
     I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
   end
 
+  # gets the active locale for the request.
+  # returns nil if the active locale is the default (which makes it easy to use
+  # with redirect rewriting).
+  # this behavior can be changed by setting suppress_default to false.
+  def current_locale(suppress_default = true)
+    if suppress_default
+      CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
+    else
+      I18n.locale
+    end
+  end
+
   def button_for_t(translation_string, url_options = {}, html_options = {})
     html_options = html_options.stringify_keys
 

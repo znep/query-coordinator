@@ -897,7 +897,6 @@ class ViewTest < Minitest::Test
 
   def test_resource_url_uses_proper_scheme
     View.any_instance.stubs(:preferred_id => '1234-1234')
-    # init_current_domain
     view = View.new('id' => '1234-1234')
 
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)

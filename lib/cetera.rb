@@ -3,14 +3,23 @@ require 'httparty'
 require 'ostruct'
 
 module Cetera
-  def self.search_views(opts)
+  def self.search_views(opts, cookies = {})
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
     query = cetera_soql_params(opts)
 
     Rails.logger.info("Cetera request to #{cetera_url} with params: #{query.inspect}")
 
-    result = HTTParty.get(cetera_url, query: query.to_query, timeout: 5)
-    CeteraSearchResult.from_result(result.body)
+    options = {
+      cookies: cookies, # Cetera is fine with empty cookie string
+      format: :json,
+      headers: { 'X-Socrata-Host' => CurrentDomain.cname },
+      query: query.to_query,
+      timeout: 5
+    }
+
+    result = HTTParty.get(cetera_url, options)
+
+    result.success? && CeteraSearchResult.new(result)
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
@@ -173,10 +182,6 @@ module Cetera
 
     def initialize(data = {})
       @data = data
-    end
-
-    def self.from_result(result)
-      new(JSON.parse(result, max_nesting: 25)) if result.present?
     end
 
     def results

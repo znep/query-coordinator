@@ -418,7 +418,7 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
-            Cetera.search_views(browse_options[:search_options])
+            Cetera.search_views(browse_options[:search_options], request.cookies)
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end

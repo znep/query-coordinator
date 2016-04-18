@@ -1,73 +1,57 @@
 require('script!jquery');
 require('dotdotdot');
-require('velocity-animate');
 
 var Clipboard = require('clipboard');
 var Styleguide = require('socrata-styleguide');
+var Collapsible = require('./collapsible'); // TODO integrate into styleguide
 
 // Initialize the styleguide javascript components
 Styleguide(document);
 
 $(function() {
-  var $description = $('.entry-description');
-  var $container = $($description).parents('.entry-description-container');
-  var animationDuration = 300;
-  var animationEasing = [.645, .045, .355, 1];
+  initDescriptionHeight();
+  initCollapsibles();
+  initApiEndpointControls();
+  initPrivateDismissal();
+});
 
+// Fixes a visual border issue when descriptions are very short
+function initDescriptionHeight() {
+  var metadata = document.querySelector('.entry-meta.second');
+  var metadataHeight = metadata.getBoundingClientRect().height;
+
+  var description = document.querySelector('.entry-description');
+  var descriptionHeight = description.getBoundingClientRect().height;
+
+  if (descriptionHeight < metadataHeight) {
+    description.style.height = metadataHeight + 'px';
+  }
+}
+
+// Ellipsify dataset description and tag list
+function initCollapsibles() {
   var lineHeight = 24;
-  var padding = 11;
+  var descriptionPadding = 11;
 
-  var truncatedHeight = null;
+  // Collapse dataset description to 4 lines.
+  Collapsible(document.querySelector('.entry-description'), {
+    height: 4 * lineHeight + 2 * descriptionPadding
+  });
 
-  function truncateDescription() {
-    $description.dotdotdot({
-      height: lineHeight * 4 + padding * 2,
-      after: '.entry-description-toggle.more',
-      watch: true,
-      callback: function(isTruncated) {
-        if (isTruncated) {
-          $container.attr('data-description-display', 'truncate');
-          truncatedHeight = truncatedHeight || $container.height();
-        } else {
-          $(this).children('a.entry-description-toggle').hide();
-        }
+  // Collapse tags to 2 lines, breaking on tags, preserving commas.
+  if (document.querySelector('.tag-list')) {
+    Collapsible(document.querySelector('.tag-list'), {
+      height: 2 * lineHeight,
+      wrap: 'children',
+      lastCharacter: {
+        remove: [ ' ', ';', '.', '!', '?' ]
       }
     });
   }
+}
 
-  $('.entry-description-toggle').click(function(event) {
-    event.preventDefault();
-    var currentDisplay = $container.attr('data-description-display');
-
-    if (currentDisplay === 'show') {
-      $container.velocity({
-        height: truncatedHeight
-      }, {
-        duration: animationDuration,
-        easing: animationEasing,
-        complete: truncateDescription
-      });
-    } else {
-      $container.attr('data-description-display', 'show');
-      $description.trigger('destroy.dot');
-      $description.height('auto');
-      var originalHeight = $description.height();
-      $container.height(truncatedHeight);
-      $container.velocity({
-        height: originalHeight + 2 * padding
-      }, {
-        duration: animationDuration,
-        easing: animationEasing
-      });
-    }
-  });
-
-  var $metadata = $('.entry-meta.second');
-  if ($description.height() < $metadata.height()) {
-    $description.height($metadata.height());
-  }
-
-  truncateDescription();
+// Copy-to-clipboard and json/geojson toggle in API flannel and OData modal
+function initApiEndpointControls() {
 
   // Highlight endpoint input on click
   $('.endpoint-input').
@@ -110,4 +94,44 @@ $(function() {
       $input.val(newEndpoint);
     });
   });
-});
+}
+
+// Close private notice when clicked and remember using sessionStorage
+function initPrivateDismissal() {
+  var privateNotice = document.querySelector('.private-notice');
+  var hasDismissedPrivateNotice;
+
+  if (!privateNotice) {
+    return;
+  }
+
+  try {
+    var privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
+    hasDismissedPrivateNotice = privateNoticesClosed[privateNotice.dataset.storageKey];
+  } catch(e) {
+    hasDismissedPrivateNotice = false;
+  }
+
+  if (hasDismissedPrivateNotice) {
+    return;
+  }
+
+  privateNotice.style.display = 'block';
+
+  var dismissButton = privateNotice.querySelector('.alert-dismiss');
+
+  if (!dismissButton) {
+    return;
+  }
+
+  dismissButton.addEventListener('click', function(event) {
+    try {
+      var privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
+      privateNoticesClosed = privateNoticesClosed || {};
+      privateNoticesClosed[privateNotice.dataset.storageKey] = true;
+      sessionStorage.setItem('dismissedPrivateNotices', JSON.stringify(privateNoticesClosed));
+    } finally {
+      privateNotice.style.display = 'none';
+    }
+  });
+}

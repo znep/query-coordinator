@@ -2,11 +2,30 @@
   <span>Site Header</span>
 </div>
 
+<%- if @view.is_private? -%>
+  <div class="alert info full-width private-notice" data-storage-key="<%= @view.id %>">
+    <div class="alert-container">
+      <%= t('dataset_landing_page.private_notice') %>
+      <a href="/dataset/<%= @view.id %>?pane=manage&enable_dataset_landing_page=false">
+        <%= t('dataset_landing_page.manage_prompt') %>
+      </a>
+      <span class="icon-close-2 alert-dismiss"></span>
+    </div>
+  </div>
+<%- end -%>
+
 <div class="info-pane result-card">
   <div class="container">
     <div class="entry-header">
       <div class="entry-title">
-        <h2 class="info-pane-name"><%= @view.name %></h2>
+        <h1 class="info-pane-name">
+          <%- if @view.is_private? -%>
+            <span class="icon-private" title="Private Dataset"></span>
+          <%- end -%>
+
+          <%= @view.name %>
+        </h1>
+
         <span class="tag-official"><span class="icon-official"></span> <%= t('dataset_landing_page.official') %></span>
         <%- if @view.category -%>
           <span class="tag-category"><%= @view.category.capitalize %></span>
@@ -83,13 +102,13 @@
 
     <div class="entry-content">
       <div class="entry-main">
-        <div class="entry-description-container">
+        <div class="entry-description-container collapsible">
           <div class="entry-description">
             <%- if @view.description -%>
               <%= @view.description %>
             <%- end -%>
-            <a class="entry-description-toggle more"><%= t('dataset_landing_page.more') %></a>
-            <a class="entry-description-toggle less"><%= t('dataset_landing_page.less') %></a>
+            <a class="collapse-toggle more"><%= t('dataset_landing_page.more') %></a>
+            <a class="collapse-toggle less"><%= t('dataset_landing_page.less') %></a>
           </div>
         </div>
       </div>
@@ -97,7 +116,7 @@
       <div class="entry-meta second">
         <div class="entry-meta updated">
           <span class="meta-title"><%= t('dataset_landing_page.updated') %></span>
-          <span class="date"><%= view_last_updated %></span>
+          <span class="date"><%= view_last_updated_at %></span>
         </div>
 
         <%- if @view.attribution -%>
@@ -110,6 +129,255 @@
     </div>
   </div>
 </div>
+
+<main class="container landing-page-container">
+  <section class="landing-page-section">
+    <h2 class="landing-page-section-header">
+      <%= t('dataset_landing_page.metadata.title') %>
+    </h2>
+
+    <div class="metadata-frame">
+      <div class="metadata-column fancy">
+        <div class="metadata-section">
+          <div class="metadata-row">
+            <div class="metadata-pair">
+              <span class="metadata-pair-key">
+                <%= t('dataset_landing_page.updated') %>
+              </span>
+
+              <h3 class="metadata-pair-value">
+                <%= view_last_updated_at %>
+              </h3>
+            </div>
+          </div>
+
+          <div class="metadata-row middle metadata-flex metadata-detail-groups">
+            <div class="metadata-detail-group">
+              <div class="metadata-detail-group-title">
+                <%= t('dataset_landing_page.metadata.data_last_updated') %>
+              </div>
+
+              <div class="metadata-detail-group-value">
+                <%= data_last_updated_at %>
+              </div>
+            </div>
+
+            <div class="metadata-detail-group">
+              <div class="metadata-detail-group-title">
+                <%= t('dataset_landing_page.metadata.metadata_last_updated') %>
+              </div>
+
+              <div class="metadata-detail-group-value">
+                <%= metadata_last_updated_at %>
+              </div>
+            </div>
+          </div>
+
+          <div class="metadata-row metadata-detail-groups">
+            <div class="metadata-detail-group">
+              <div class="metadata-detail-group-title">
+                <%= t('dataset_landing_page.metadata.creation_date') %>
+              </div>
+
+              <div class="metadata-detail-group-value">
+                <%= view_created_at %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="metadata-section">
+          <div class="metadata-row metadata-flex">
+            <div class="metadata-pair">
+              <span class="metadata-pair-key">
+                <%= t('dataset_landing_page.metadata.views') %>
+              </span>
+
+              <h3 class="metadata-pair-value">
+                <%= format_number(@view.viewCount) %>
+              </h3>
+            </div>
+
+            <div class="metadata-pair">
+              <span class="metadata-pair-key">
+                <%= t('dataset_landing_page.metadata.downloads') %>
+              </span>
+
+              <h3 class="metadata-pair-value">
+                <%= format_number(@view.downloadCount) %>
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="metadata-section">
+          <div class="metadata-row metadata-flex metadata-detail-groups">
+            <div class="metadata-detail-group">
+              <div class="metadata-detail-group-title">
+                <%= t('dataset_landing_page.metadata.data_provided_by') %>
+              </div>
+
+              <%- if @view.attribution -%>
+                <div class="metadata-detail-group-value">
+                  <%= @view.attribution %>
+                </div>
+              <%- else -%>
+                <div class="metadata-detail-group-value empty">
+                  <%= t('dataset_landing_page.metadata.no_value') %>
+                </div>
+              <%- end -%>
+            </div>
+
+            <div class="metadata-detail-group">
+              <div class="metadata-detail-group-title">
+                <%= t('dataset_landing_page.metadata.dataset_owner') %>
+              </div>
+
+              <div class="metadata-detail-group-value">
+                <%= @view.owner.displayName %>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-sm btn-primary btn-block contact-dataset-owner">
+            <%= t('dataset_landing_page.contact_dataset_owner') %>
+          </button>
+        </div>
+      </div>
+
+      <div class="metadata-column tables">
+        <div class="metadata-table">
+          <%- if @view.metadata && @view.metadata.attachments.present? -%>
+            <h5 class="metadata-table-title">
+              <%= t('dataset_landing_page.metadata.attachments') %>
+            </h5>
+
+            <table class="table-condensed table-borderless table-discrete table-striped">
+              <tbody>
+                <%- @view.metadata.attachments.each do |attachment_data| -%>
+                  <%- attachment = Attachment.set_up_model(attachment_data) -%>
+                  <td><%= attachment.displayName %></td>
+                  <td>
+                    <span class="icon-copy-document"></span>
+                    <%= link_to(attachment.filename, attachment.href(@view.id), :target => '_blank') %>
+                  </td>
+                <%- end -%>
+              </tbody>
+            </table>
+          <%- end -%>
+
+          <h5 class="metadata-table-title">
+            <%= t('dataset_landing_page.metadata.topics') %>
+          </h5>
+
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+              <tr>
+                <td><%= t('dataset_landing_page.metadata.category') %></td>
+                <%- if @view.category -%>
+                  <td><%= @view.category.capitalize %></td>
+                <%- else -%>
+                  <td class="empty"><%= t('dataset_landing_page.metadata.no_value') %></td>
+                <%- end -%>
+              </tr>
+
+              <tr>
+                <td><%= t('dataset_landing_page.metadata.tags') %></td>
+                <%- if @view.tags -%>
+                  <td>
+                    <div class="tag-list-container collapsible">
+                      <div class="tag-list">
+                        <%= raw tag_links %>
+                        <a class="collapse-toggle more"><%= t('dataset_landing_page.more') %></a>
+                        <a class="collapse-toggle less"><%= t('dataset_landing_page.less') %></a>
+                      </div>
+                    </div>
+                  </td>
+                <%- else -%>
+                  <td class="empty"><%= t('dataset_landing_page.metadata.no_value') %></td>
+                <%- end -%>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5 class="metadata-table-title">
+            <%= t('dataset_landing_page.metadata.licensing') %>
+          </h5>
+
+          <table class="table-condensed table-borderless table-discrete table-striped">
+            <tbody>
+              <tr>
+                <td><%= t('dataset_landing_page.metadata.license') %></td>
+                <%- if @view.license -%>
+                  <td><%= @view.license.name %></td>
+                <%- else -%>
+                  <td class="empty"><%= t('dataset_landing_page.metadata.no_value') %></td>
+                <%- end -%>
+              </tr>
+
+              <tr>
+                <td><%= t('dataset_landing_page.metadata.source_link') %></td>
+                <%- if @view.attributionLink -%>
+                  <td><%= link_to_url(@view.attributionLink) %></td>
+                <%- else -%>
+                  <td class="empty"><%= t('dataset_landing_page.metadata.no_value') %></td>
+                <%- end -%>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-page-section">
+    <h2 class="landing-page-section-header">
+      <%= t('dataset_landing_page.dataset_contents.title') %>
+    </h2>
+
+    <div class="metadata-frame">
+      <div class="metadata-section">
+        <div class="metadata-row">
+          <div class="metadata-pair">
+            <span class="metadata-pair-key">
+              <%= t('dataset_landing_page.dataset_contents.rows') %>
+            </span>
+
+            <h3 class="metadata-pair-value">
+              <%= format_number(@view.row_count) %>
+            </h3>
+          </div>
+
+          <div class="metadata-pair">
+            <span class="metadata-pair-key">
+              <%= t('dataset_landing_page.dataset_contents.columns') %>
+            </span>
+
+            <h3 class="metadata-pair-value">
+              <%= format_number(@view.columns.length) %>
+            </h3>
+          </div>
+
+          <%- if row_label -%>
+            <div class="metadata-pair">
+              <span class="metadata-pair-key">
+                <%= t('dataset_landing_page.dataset_contents.row_display_unit') %>
+              </span>
+
+              <h3 class="metadata-pair-value">
+                <%= row_label %>
+              </h3>
+            </div>
+          <%- end -%>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <%= render :partial => 'dataset_landing_page_api_flannel' %>
 <%= render :partial => 'dataset_landing_page_share_modal' %>

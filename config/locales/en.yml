@@ -1268,6 +1268,12 @@ en:
       title: Access this Dataset via SODA API
     copy: Copy
     copy_success: Copied!
+    contact_dataset_owner: Contact Dataset Owner
+    dataset_contents:
+      columns: Columns
+      rows: Rows
+      row_display_unit: Each row is a
+      title: What's in this Dataset
     done: Done
     download:
       csv_for_excel: CSV for Excel
@@ -1276,6 +1282,24 @@ en:
       original: Original
       shapefile: Shapefile
     less: Less
+    metadata:
+      attachments: Attachments
+      category: Category
+      creation_date: Creation Date
+      data_last_updated: Data Last Updated
+      data_provided_by: Data Provided by
+      dataset_owner: Dataset Owner
+      downloads: Downloads
+      license: License
+      licensing: Licensing and Attribution
+      metadata_last_updated: Metadata Last Updated
+      no_value: (none)
+      source_link: Source Link
+      tags: Tags
+      title: About this Dataset
+      topics: Topics
+      views: Views
+    manage_prompt: Click here to manage permissions
     more: More
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
@@ -1284,6 +1308,7 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
+    private_notice: You are looking at a private dataset.
     published_by: Published by
     share:
       cancel: Cancel
@@ -1291,7 +1316,6 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      manage_prompt: Click here to manage permissions
       twitter: Share via Twitter
       visibility_alert_html: <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with.
     updated: Updated

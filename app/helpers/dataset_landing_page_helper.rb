@@ -1,6 +1,26 @@
 module DatasetLandingPageHelper
-  def view_last_updated
-    Time.at(@view.last_activity).strftime('%B %-d, %Y')
+  def format_date(date)
+    date.strftime('%B %-d, %Y')
+  end
+
+  def format_number(number)
+    number_with_delimiter(number)
+  end
+
+  def view_created_at
+    format_date(Time.at(@view.createdAt))
+  end
+
+  def data_last_updated_at
+    format_date(Time.at(@view.rowsUpdatedAt))
+  end
+
+  def metadata_last_updated_at
+    format_date(Time.at(@view.viewLastModified))
+  end
+
+  def view_last_updated_at
+    format_date(Time.at(@view.last_activity))
   end
 
   def seo_friendly_url
@@ -74,5 +94,19 @@ module DatasetLandingPageHelper
     end
 
     formats
+  end
+
+  def tag_links
+    (@view.tags || []).map.with_index { |tag, index|
+      query = { :tag => tag }.to_query
+      url = "/browse?#{query}"
+      content = link_to(tag, url)
+      content += ', ' if index < @view.tags.length - 1
+      raw("<span>#{content}</span>")
+    }.join('')
+  end
+
+  def row_label
+    @view.metadata.try(:rowLabel)
   end
 end

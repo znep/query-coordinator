@@ -21,10 +21,16 @@
         <%- else -%>
           <ul>
             <%- @org.domains.each do |domain| -%>
-              <li><%= link_to(
-                "#{domain.name} (#{domain.cname})",
-                show_domain_path(domain_id: domain.cname)
-              ) %></li>
+              <li><%=
+              begin
+                link_to(
+                  "#{domain.name} (#{domain.cname})",
+                  show_domain_path(domain_id: domain.cname)
+                )
+              # Invalid CNAMEs will not resolve the route path.
+              rescue ActionController::RoutingError
+                content_tag :span, "#{domain.name} (#{domain.cname})", :class => 'invalidCname'
+              end%></li>
           <%- end -%>
         </ul>
       <%- end -%>
@@ -47,21 +53,3 @@
     <%- end -%>
   </div>
 </div>
-
-<% content_for :js_footer do %>
-  <script type="text/javascript">
-    $(function() {
-      $('input[name="domain[cName]"]').keydown(function() {
-        var $this = $(this);
-        // Copied from InternalController#valid_cname?
-        var validCname = /^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/.test($this.val());
-        if (!validCname) {
-          $this.css('background-color', '#FF9494');
-          // TODO: Should probably add an explanatory warning of some kind.
-        } else {
-          $this.css('background-color', 'white');
-        }
-      });
-    });
-  </script>
-<% end %>

@@ -144,4 +144,25 @@ module InternalHelper
     html = content_tag(:dt, button)
     html << content_tag(:dd, content_tag(:span, options.fetch(:feature_description)))
   end
+
+  def remove_alias_button(_alias)
+    aliases = @aliases - [_alias]
+    one_button_form(url: update_aliases_path, text: 'Remove Alias', as_button: true) do
+      html = hidden_field_tag('aliases', aliases.join(','))
+      html << hidden_field_tag('redesigned', 'true')
+      html
+    end
+  end
+
+  def promote_to_primary_cname_button(_alias)
+    aliases = @aliases - [_alias] + [@domain.cname]
+    one_button_form(url: update_aliases_path,
+                    text: 'Promote to Primary CName',
+                    as_button: true) do
+      html = hidden_field_tag('aliases', aliases.join(','))
+      html << hidden_field_tag('new_cname', _alias)
+      html << hidden_field_tag('redesigned', 'true')
+      html
+    end
+  end
 end

@@ -321,11 +321,11 @@ module ApplicationHelper
         flash_to_display, level = flash_obj[type], type.to_s
         flash_to_display = flash_to_display.join(' ') if flash_to_display.is_a? Array
         if flash_to_display.include?('|')
-          pieces = flash_to_display.split('|')
-          flash_to_display = pieces.zip(Array.new(pieces.size - 1).
-                                    collect { tag 'br' }).
-                                    join.
-                                    html_safe
+          pieces = flash_to_display.split('|').map { |piece| content_tag(:span, piece) }
+          flash_to_display = pieces.inject(pieces.shift) do |safe_html, html|
+            safe_html << tag('br')
+            safe_html << html
+          end
         end
         break
       end

@@ -2,8 +2,11 @@
 # system, it is possible to create a new 'type' simply by choosing a different string
 # when coding it.
 #
-# The `discourage_in_creation_ui` property is meaningful.
+# Meaningful Properties (they do not show up in autocomplete):
+# * `discourage_in_creation_ui`
 #   When you add an `instead`, prefer using the named route, such as :feature_flags_config
+# * `default-config_name`
+#   When creating a config, this will be the default.
 # Everything else just gets dumped out for the user to see.
 #
 # `known_properties` is mostly to make sure it's easy for the autocomplete to match something.
@@ -21,6 +24,8 @@ catalog:
   holy_shit: There is a lot of magic in this config.
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/catalog-options
   new_catalog_info: https://sites.google.com/a/socrata.com/client-services/4-adding-additional-site-features/enabling-new-catalog
+  property_type_checking:
+    custom_facets: Array
 catalog_federations:
   description: Used by core server. Not sure for what.
   discourage_in_creation_ui:

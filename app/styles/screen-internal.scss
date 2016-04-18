@@ -120,7 +120,8 @@ form.wide {
       background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
     }
     &:after {
-      content: 'Please wait for a moment before typing..'
+      content: 'Please wait for a moment before typing..';
+      color: red;
     }
   }
 }
@@ -436,6 +437,10 @@ ul.autocomplete {
       width: 16em;
     }
 
+    button {
+      width: 6em;
+    }
+
     &.featureDisabled {
       color: #ccc;
     }
@@ -482,4 +487,33 @@ ul.autocomplete {
       display: block;
     }
   }
+
+  .newProperty {
+    .warning div { display: none; }
+    .warning.duplicateProperty .duplicateProperty { display: block; }
+  }
+
+  .updateAliases {
+    label {
+      display: inline-block;
+      font-size: 1.3em;
+      margin-top: 0.5em;
+      width: 9em;
+    }
+
+    span {
+      font-size: 1.3em;
+
+      &.alias {
+        display: inline-block;
+        width: 16em;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.invalidCname {
+  color: #cccccc;
+  font-size: 1.3em;
 }

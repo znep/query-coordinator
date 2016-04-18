@@ -12,6 +12,7 @@
 
     if (_.isUndefined(staticOptions.staticData)) {
       $element.addClass('loading');
+      $element.find('input').attr('readonly', 'readonly');
       $.ajax({
         url: '/internal/domains_summary.json',
         dataType: 'json',
@@ -19,6 +20,7 @@
           blist.internal.domains = domainList;
           $.extend(staticOptions, { staticData: blist.internal.domains });
           $element.removeClass('loading');
+          $element.find('input').removeAttr('readonly');
           $element.find('input').awesomecomplete(staticOptions);
         }
       });
@@ -58,6 +60,21 @@
         $panel.toggleClass('collapsed');
       }
     });
+  });
+
+  $([ 'input[name="domain[cName]"]',
+      'input[name="new_cname"]',
+      'input[name="new_alias"]'
+    ].join(', ')).keydown(function() {
+    var $this = $(this);
+    // Copied from InternalController#valid_cname?
+    var validCname = /^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/.test($this.val());
+    if (!validCname) {
+      $this.css('background-color', '#FF9494');
+      // TODO: Should probably add an explanatory warning of some kind.
+    } else {
+      $this.css('background-color', 'white');
+    }
   });
 
   if ($('body').is('action_internal_show_config')) {

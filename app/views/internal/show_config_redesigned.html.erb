@@ -177,6 +177,9 @@
           <%= text_field_tag 'new-property_name' %>
           <%= text_area_tag 'new-property_value' %>
         </div>
+        <div class="warning">
+          <div class="duplicateProperty">This property already exists.</div>
+        </div>
         <input type="submit" value="Add"/>
       <% end %>
     </div>
@@ -188,6 +191,18 @@
     $(function() {
       $('.deleteConfig').submit(function() {
         return confirm('Are you sure you want to delete this config?');
+      });
+
+      var properties = <%== @properties.try(:pluck, 'name').to_json %>;
+      $('.newProperty input[name="new-property_name"]').on('keyup blur', function() {
+        var $this = $(this);
+        $this.parents('form').find('.warning').removeClass().addClass('warning');
+        if (_.include(properties, $this.val())) {
+          $this.css('background-color', '#FF9494');
+          $this.parents('form').find('.warning').addClass('duplicateProperty');
+        } else {
+          $this.css('background-color', 'white');
+        }
       });
 
       $('.modes button').click(function() {

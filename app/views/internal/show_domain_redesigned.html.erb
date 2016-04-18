@@ -26,36 +26,42 @@
     <p>Domain ID: <%= @domain.id %></p>
 
     <h2>Domain/Aliases:</h2>
-    <%= form_tag update_aliases_path do %>
-      <div class='line'>
+    <div class="updateAliases">
+      <div class="line">
         <%= label_tag 'new_cname', 'Primary CName' %>
-        <%= text_field_tag 'new_cname', @domain.cname %>
+        <%= content_tag :span, @domain.cname %>
       </div>
-      <div class='line'>
-        <%= label_tag 'aliases', 'Aliases' %>
-        <%= text_field_tag 'aliases', @domain.aliases, :title => 'separated by comma' %>
+      <%- @aliases.each_with_index do |_alias, index| %>
+        <div class="line" title="<%= _alias %>">
+          <%= label_tag 'aliases', index.zero? ? 'Aliases' : '' %>
+          <%= content_tag :span, _alias, :class => 'alias' %>
+          <%= remove_alias_button(_alias) %>
+          <%= promote_to_primary_cname_button(_alias) %>
+        </div>
+      <%- end %>
+    </div>
+
+    <h2>Add New Alias:</h2>
+    <%= form_tag update_aliases_path, :class => 'updateAliasesForm' do %>
+      <div class="line">
+        <%= text_field_tag 'new_alias', '' %>
       </div>
-      <%= submit_tag 'Update' %>
+      <%= hidden_field_tag 'redesigned', 'true' %>
+      <%= submit_tag 'Add Alias' %>
     <% end %>
 
     <h2>Configuration Sets</h2>
     <ul>
       <%- @configs.each do |conf|
-        case conf.type
-        when 'feature_flags'
-      -%>
-      <li><%= link_to 'Feature Flags', feature_flags_config_path %></li>
-      <%-
-        else
-      -%>
-      <li<%== ' class="isDefault"' if conf.default %>>
-      <a href='<%= show_config_path(org_id: @domain.organizationId,
-                                    domain_id: @domain.cname,
-                                    id: conf.id) %>'>
-        (<%= conf.type %>) <%= conf.name %>
-      </a>
-      </li>
-        <%- end -%>
+        path =
+          case conf.type
+          when 'feature_flags' then feature_flags_config_path
+          else show_config_path(domain_id: @domain.cname,
+                                id: conf.id)
+          end -%>
+          <li<%== ' class="isDefault"' if conf.default %>>
+          <%= link_to "(#{conf.type}) #{conf.name}", path %>
+          </li>
       <%- end -%>
     </ul>
 

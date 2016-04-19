@@ -626,16 +626,23 @@ class ViewTest < Test::Unit::TestCase
 
   def test_preferred_id
     view = View.new('id' => '1234-1234')
-    View.any_instance.stubs(:new_backend? => false)
-    View.any_instance.stubs(:migrations => {})
+    view.stubs(:new_backend? => false, :migrations => {})
+    view.stubs(:flag?).with('default').returns(true)
     assert_equal('1234-1234', view.preferred_id)
 
     view = View.new('id' => '1234-1234')
-    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
+    view.stubs(:migrations => {:nbeId => 'abcd-abcd'})
+    view.stubs(:flag?).with('default').returns(true)
     assert_equal('abcd-abcd', view.preferred_id)
 
     view = View.new('id' => '1234-1234')
-    View.any_instance.stubs(:new_backend? => true)
+    view.stubs(:new_backend? => true)
+    view.stubs(:flag?).with('default').returns(true)
+    assert_equal('1234-1234', view.preferred_id)
+
+    view = View.new('id' => '1234-1234')
+    view.stubs(:new_backend? => false)
+    view.stubs(:flag?).with('default').returns(false)
     assert_equal('1234-1234', view.preferred_id)
   end
 

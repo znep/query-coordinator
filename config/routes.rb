@@ -299,6 +299,7 @@ Frontend::Application.routes do
     scope '/:category/:view_name/:id', :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
       get '/:row_id', :action => 'show', :as => :view_row,
         :constraints => {:row_id => /\d+/}
+      get '/data', :action => 'show', :as => :data_grid, :bypass_dslp => true
       get '/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get '/edit', :action => 'edit', :as => :edit_view
       get '/edit_rr', :action => 'edit_rr', :as => :edit_view_rr

@@ -6,10 +6,10 @@ class DatasetsControllerTest < ActionController::TestCase
     init_core_session
     init_current_domain
     load_sample_data('test/fixtures/sample-data.json')
-    test_view = View.find('test-data')
+    @test_view = View.find('test-data')
     View.any_instance.stubs(
-      :find => test_view,
-      :find_related => [test_view],
+      :find => @test_view,
+      :find_related => [@test_view],
       :user_granted? => false
     )
     @view = View.new(
@@ -110,7 +110,7 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'redirects to OBE view page for NBE datasets without default page for non-admin users when feature flag set' do
     setup_nbe_dataset_test(false, true)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: true ) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
     View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/view/page-xist'
@@ -119,7 +119,7 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'redirects to OBE view page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, true)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: false ) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: false ) })
     View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/d/olde-four'
@@ -127,14 +127,14 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'stops redirection to OBE view page when the feature flag disable_obe_redirection is true' do
     setup_nbe_dataset_test(false, true)
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(disable_obe_redirection: true) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(disable_obe_redirection: true) })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_response :success
   end
 
   test 'redirects to Lens page for NBE datasets for non-admin users when feature flag set' do
     setup_nbe_dataset_test(false, true)
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: true ) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/view/page-xist'
   end
@@ -142,7 +142,7 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'redirects to home page for NBE datasets without default page for non-admin users when feature flag set' do
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: true ) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
     expectent_flash = stub
     expectent_flash.expects(:[]=).with(:notice, I18n.t('screens.ds.unable_to_find_dataset_page'))
     assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
@@ -154,13 +154,57 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'redirects to home page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: false ) })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: false ) })
     expectent_flash = stub
     expectent_flash.expects(:[]=).with(:notice, I18n.t('screens.ds.unable_to_find_dataset_page'))
     assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
     @controller.class.any_instance.stubs(:flash => expectent_flash)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/'
+  end
+
+  context 'with DSLP fully enabled' do
+    should 'display the DSLP on the show path' do
+      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+        feature_flags.stubs(
+          enable_dataset_landing_page: true,
+          default_to_dataset_landing_page: true
+        )
+      end)
+      @controller.stubs(:get_view => @test_view)
+
+      get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      assert_select_quiet('.result-card').any?
+      assert_response 200
+    end
+
+    should 'display the DSLP when /about is appended to the show path' do
+      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+        feature_flags.stubs(
+          enable_dataset_landing_page: true,
+          default_to_dataset_landing_page: true
+        )
+      end)
+      @controller.stubs(:get_view => @test_view)
+
+      get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      assert_select_quiet('.result-card').any?
+      assert_response 200
+    end
+
+    should 'display the grid view when /data is appended to the show path' do
+      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+        feature_flags.stubs(
+          enable_dataset_landing_page: true,
+          default_to_dataset_landing_page: true
+        )
+      end)
+
+      setup_nbe_dataset_test
+      get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data', :bypass_dslp => true
+      assert_select_quiet('.result-card', 0)
+      assert_response 302 # we know this is not the authoritative path
+    end
   end
 
   test 'renders page meta content over https and not http' do

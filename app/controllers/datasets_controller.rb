@@ -26,12 +26,20 @@ class DatasetsController < ApplicationController
 
 # member actions
   def show
-    if FeatureFlags.derive(nil, request).enable_dataset_landing_page == true
+    if params['$$store']
+      @view = View.find_in_store(params[:id], params['$$store'])
+    else
       @view = get_view(params[:id])
+    end
 
-      return if @view.nil?
+    if dataset_landing_page_is_default? && !request[:bypass_dslp]
+      # See if the user is accessing the canonical URL; if not, redirect
+      unless request.path == canonical_path_proc.call(locale: nil)
+        return redirect_to canonical_path
+      end
 
-      return render 'dataset_landing_page', :layout => 'dataset_landing_page'
+      render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
+      return
     end
 
     # adjust layout to thin versions (rather than '_full')
@@ -42,12 +50,6 @@ class DatasetsController < ApplicationController
 
     if is_mobile?
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
-    end
-
-    if params['$$store']
-      @view = View.find_in_store(params[:id], params['$$store'])
-    else
-      @view = get_view(params[:id])
     end
 
     return if @view.nil?
@@ -120,23 +122,14 @@ class DatasetsController < ApplicationController
 
     @user_session = UserSession.new unless current_user
 
-    if @row.nil?
-      href = Proc.new { |params| view_path(@view.route_params.merge(params || {})) }
-    else
-      href = Proc.new { |params| view_row_path(@view.route_params.merge(row_id: @row['sid']).merge(params || {})) }
-    end
-
-    # See if it matches the canonical URL; if not, redirect
-    unless request.path == href.call( locale: nil )
+    # See if the user is accessing the canonical URL; if not, redirect
+    unless request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
       # Log redirects in production
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
       flash.keep
 
-      locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
-      canonical_path = href.call(locale: locale)
-      canonical_path += "?#{request.query_string}" unless request.query_string.empty?
       return redirect_to canonical_path
     end
 
@@ -268,19 +261,15 @@ class DatasetsController < ApplicationController
       return require_user(true)
     end
 
-    # Taken from `show` method, allows alt pages to have name expansions
-    # /d/abcd-1234/alt  becomes:  /dataset/My-test-data/abcd-1234/alt
-
-    href = Proc.new { |params| alt_view_path(@view.route_params.merge(params || {})) }
-
-    # See if it matches the authoritative URL; if not, redirect
-    unless request.path == href.call( locale: nil )
-      # Log redirects in development
+    # See if the user is accessing the canonical URL; if not, redirect
+    unless request.path == canonical_path_proc.call(locale: nil)
+      # Log redirects in production
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
       flash.keep
-      return redirect_to "#{href.call}?#{request.query_string}"
+
+      return redirect_to canonical_path
     end
 
     @conditions = parse_alt_conditions(params)
@@ -633,6 +622,12 @@ class DatasetsController < ApplicationController
 
   def about
     @view = get_view(params[:id])
+
+    if dataset_landing_page_enabled?
+      render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
+      return
+    end
+
     @user_session = UserSession.new if !current_user
 
     @page_custom_chrome = ''
@@ -887,6 +882,42 @@ protected
   end
 
   private
+
+  # NOTE: canonical paths are only defined for the DSLP and data views
+  # (including row and alt views)
+  # NOTE: this method relies on external state (@view, @row)
+  def canonical_path_proc
+    Proc.new do |params|
+      composite_params = @view.route_params
+      composite_params.merge!(row_id: @row['sid']) unless @row.nil?
+      composite_params.merge!(params || {})
+
+      if @row
+        view_row_path(composite_params)
+      elsif request.path =~ /\/alt$/
+        alt_view_path(composite_params)
+      else
+        view_path(composite_params)
+      end
+    end
+  end
+
+  def canonical_path(with_query_string = true)
+    path = canonical_path_proc.call(locale: current_locale)
+    if with_query_string
+      path += "?#{request.query_string}" unless request.query_string.empty?
+    end
+    path
+  end
+
+  def dataset_landing_page_enabled?
+    FeatureFlags.derive(nil, request).enable_dataset_landing_page == true
+  end
+
+  def dataset_landing_page_is_default?
+    dataset_landing_page_enabled? &&
+      FeatureFlags.derive(nil, request).default_to_dataset_landing_page == true
+  end
 
   def fetch_layer_info(layer_url)
     begin

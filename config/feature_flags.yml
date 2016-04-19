@@ -57,6 +57,10 @@ debug_data_lens:
   description: expose useful debugging information (data source, etc) for data lens pages
   defaultValue: false
   category: data lens
+default_to_dataset_landing_page:
+  description: Use the dataset landing page as the main entry point (/category/name/four-four). This should connect catalog results to DSLP. Requires enable_dataset_landing_page to be true.
+  defaultValue: false
+  category: dataset landing page
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false

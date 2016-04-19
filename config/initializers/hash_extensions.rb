@@ -104,4 +104,11 @@ class Hash
     end
   end
 
+  # NOTE: I can be removed after Rails 4.1
+  unless instance_methods.include?(:compact)
+    # File activesupport/lib/active_support/core_ext/hash/compact.rb, line 8
+    def compact
+      self.select { |_, value| !value.nil? }
+    end
+  end
 end

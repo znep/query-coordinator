@@ -39,7 +39,7 @@ module BrowseActions
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
     add_draft_display_type_if_enabled!(view_types)
-    
+
     # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
     # because API foundry v1 is deprecated
     if module_enabled?(:api_foundry) && !using_cetera?
@@ -418,7 +418,9 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
-            Cetera.search_views(browse_options[:search_options])
+
+            # See app/helpers/application_helper.rb#request_id
+            Cetera.search_views(browse_options[:search_options], request.cookies, request_id(request))
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end

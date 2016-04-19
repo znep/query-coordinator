@@ -493,8 +493,11 @@ class BrowseControllerTest < ActionController::TestCase
     should 'truncate custom cutoffs as configured' do
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params, headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby' }).
+        with(query: default_cetera_params, headers: {'X-Socrata-Host'=>'localhost'}).
         to_return(status: 200, body: cetera_payload, headers: {})
+      # stub_request(:get, 'http://localhost:5704/catalog/v1?domains=localhost&limit=10&offset=0&order=relevance&search_context=localhost').
+      #   with(:headers => { 'X-Socrata-Host' => 'localhost' }).
+      #   to_return(:status => 200, :body => '', :headers => {})
 
       get(:show, {})
       assert_response :success

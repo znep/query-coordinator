@@ -832,10 +832,10 @@ module ApplicationHelper
     Digest::SHA256.hexdigest(session['session_id'] + Frontend::SESSION_SALT) if session['session_id'].present?
   end
 
-  def request_id
-    return 'Unavailable' unless request.present?
+  def request_id(req = request)
+    return 'Unavailable' unless req.present?
 
-    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
+    req.headers['X-Socrata-RequestId'] || req.headers['action_dispatch.req_id']
   end
 
   # a snippet that can be included before any non-localized url

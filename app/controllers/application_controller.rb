@@ -293,6 +293,8 @@ class ApplicationController < ActionController::Base
       else
         if action != 'show' && action != 'tile'
           handle_unauthorized_request
+        elsif CoreServer.view_inaccessible?(story_uid)
+          render_404
         end
       end
     end

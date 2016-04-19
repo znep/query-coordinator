@@ -25,6 +25,30 @@ describe CoreServer do
     allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
   end
 
+  describe '#view_inaccessible?' do
+    let(:view) { nil }
+
+    before do
+      allow(CoreServer).to receive(:get_view) { view }
+    end
+
+    context 'when the view is inaccessible' do
+      let(:view) { nil }
+
+      it 'returns true' do
+        expect(CoreServer.view_inaccessible?('four-four')).to be(true)
+      end
+    end
+
+    context 'when the view is accessible' do
+      let(:view) { {uid: 'four-four'} }
+
+      it 'returns false' do
+        expect(CoreServer.view_inaccessible?('four-four')).to be(false)
+      end
+    end
+  end
+
   describe '#current_user_story_authorization' do
     let(:grants) { [] }
     let(:view_rights) { [] }

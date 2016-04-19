@@ -590,7 +590,6 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
-
         it 'redirects' do
           get :preview, uid: 'notf-ound'
           expect(response).to have_http_status(302)
@@ -934,10 +933,10 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no matching story' do
-          it 'redirects' do
-            get :edit, uid: 'notf-ound'
-            expect(response).to have_http_status(302)
-          end
+        it 'redirects' do
+          get :edit, uid: 'notf-ound'
+          expect(response).to have_http_status(302)
+        end
       end
     end
   end

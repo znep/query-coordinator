@@ -91,7 +91,7 @@ module Canvas2
           @manifest.add_resource(search_response.id, search_response.check_time)
           ds_list = search_response.results.reject do |ds|
             got_dataset(ds, config)
-            config['requireData'] && ds.get_total_rows({}, !Canvas2::Util.is_private) < 1
+            config['requireData'] && ds.row_count < 1
           end
           if ds_list.length > 0 || config['noFail']
             available_contexts[id] = {id: id, type: config['type'], search: config['search'],
@@ -346,7 +346,7 @@ module Canvas2
       ds.data['preferredImage'] = ds.preferred_image
       ds.data['preferredImageType'] = ds.preferred_image_type
 
-      ds.data['totalRows'] = ds.get_total_rows({}, !Canvas2::Util.is_private) if config['getTotal']
+      ds.data['totalRows'] = ds.row_count if config['getTotal']
     end
 
     def self.log_timing(start_time, config)

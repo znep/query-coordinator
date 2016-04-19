@@ -173,10 +173,7 @@ class View < Model
 
   def fetch_json
     path = "/views/#{id}.json"
-    JSON::parse(
-      CoreServer::Base.connection.get_request(path),
-      :max_nesting => 25
-    )
+    parse_json_with_max_nesting(CoreServer::Base.connection.get_request(path))
   end
 
 
@@ -218,11 +215,11 @@ class View < Model
 
   def prefetch(rows, conditions = {})
     row_data = get_rows(rows, 1, conditions, true)
-    @sodacan = SodaCan::Processor.new(row_data[:meta], row_data, true)
+    @sodacan = SodaCan::Processor.new(row_data[:meta], row_data, true) unless use_soda2?
   end
 
   def set_sodacan(sodacan)
-    @sodacan = sodacan
+    @sodacan = sodacan unless use_soda2?
   end
 
   def sodacan
@@ -363,31 +360,82 @@ class View < Model
                :length => per_page }
 
     if conditions.empty?
-      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url,
-                                                         { 'X-Socrata-Federation' => 'Honey Badger' }),
-                                                         {:max_nesting => 25})
+      if use_soda2?
+        page_params = {
+          '$order' => ':id',
+          '$offset' => (page - 1) * per_page,
+          '$limit' => per_page
+        }
+        url = "/id/#{id}.json?#{page_params.to_param}"
+        meta_and_data = {
+          'data' => parse_json_with_max_nesting(
+            CoreServer::Base.connection.get_request(
+              url,
+              { 'X-Socrata-Federation' => 'Honey Badger' }
+            )
+          )
+        }
+        meta_and_data['meta'] = { 'view' => { 'columns' => columns }}
+      else
+        url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+        meta_and_data = parse_json_with_max_nesting(
+          CoreServer::Base.connection.get_request(
+            url,
+            { 'X-Socrata-Federation' => 'Honey Badger' }
+          )
+        )
 
-      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, {},
-                                 { 'X-Socrata-Federation' => 'Honey Badger' }))
+        url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
+        aggregates = parse_json_with_max_nesting(
+          CoreServer::Base.connection.create_request(
+            url,
+            {},
+            { 'X-Socrata-Federation' => 'Honey Badger' }
+          )
+        )
+      end
     else
       merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).
         deep_merge(conditions)
-      request_body = {
-        'name' => self.name,
-        'searchString' => merged_conditions.delete('searchString'),
-        'query' => merged_conditions,
-        'originalViewId' => self.id
-      }.to_json
+      if use_soda2?
+        soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
+        params['$$version'] = '2.0'
+        params['$$row_count'] = 'approximate'
+        params.merge! soql_obj.to_soql_parts
 
-      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body,
-                                 { 'X-Socrata-Federation' => 'Honey Badger' }), {:max_nesting => 25})
+        params['$select'] = [ params['$select'] || '*', ':*' ].compact.join(',')
+        params['$offset'] = (page - 1) * per_page
+        params['$limit'] = per_page
+        params['$order'] ||= ':id'
 
-      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body,
-                                 { 'X-Socrata-Federation' => 'Honey Badger' }), {:max_nesting => 25})
+        meta_and_data =
+          make_rows_request_using_soda2(url: "/id/#{self.id}.json?#{params.to_param}")
+      else
+        request_body = {
+          'name' => self.name,
+          'searchString' => merged_conditions.delete('searchString'),
+          'query' => merged_conditions,
+          'originalViewId' => self.id
+        }.to_json
+
+        url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
+        meta_and_data = parse_json_with_max_nesting(
+          CoreServer::Base.connection.create_request(
+            url,
+            request_body,
+            { 'X-Socrata-Federation' => 'Honey Badger' }
+          )
+        )
+
+        url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
+        aggregates = parse_json_with_max_nesting(
+          CoreServer::Base.connection.create_request(
+            url,
+            request_body,
+            { 'X-Socrata-Federation' => 'Honey Badger' }
+          )
+        )
+      end
     end
 
     # grab viewable columns; this is inline rather than a separate method to
@@ -402,7 +450,12 @@ class View < Model
 
     # grab other return values
     data = meta_and_data['data']
-    row_count = meta_and_data['meta']['totalRows']
+    row_count =
+      if use_soda2?
+        self.row_count
+      else
+        meta_and_data['meta']['totalRows']
+      end
 
     return data, viewable_columns, aggregates, row_count
   end
@@ -411,6 +464,14 @@ class View < Model
   # Return a tuple for a getRowsByIds request
   #
   def get_rows_request(per_page_or_ids, page = 1, merged_conditions, include_meta)
+    if use_soda2?
+      get_rows_request_using_soda1(per_page_or_ids, page, merged_conditions, include_meta)
+    else
+      get_rows_request_using_soda1(per_page_or_ids, page, merged_conditions, include_meta)
+    end
+  end
+
+  def get_rows_request_using_soda1(per_page_or_ids, page = 1, merged_conditions, include_meta)
     params = { :method => 'getByIds',
                :asHashes => true,
                :accessType => 'WEBSITE',
@@ -433,6 +494,26 @@ class View < Model
     { url: url, request: request_body}
   end
 
+  def get_rows_request_using_soda2(per_page_or_ids, page = 1, merged_conditions, include_meta)
+    params = {}
+
+    # per_page_or_ids might be an Array.
+    # This is not something SODA2 can handle and we really can't do anything about that.
+
+    params['$offset'] = (page - 1) * per_page_or_ids
+    params['$limit'] = per_page_or_ids
+
+    soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
+
+    params['$$version'] = '2.0'
+    params['$$row_count'] = 'approximate'
+    params.merge! soql_obj.to_soql_parts
+
+    params['$select'] = [ params['$select'] || '*', ':*' ].compact.join(',') if include_meta
+
+    { url: "/id/#{self.id}.json?#{params.to_param}", request: {} }
+  end
+
   #
   # Return rows only (not metadata), possibly cached - Can be used in discrete
   # locations where we make a large number of small requests to the core server
@@ -448,73 +529,75 @@ class View < Model
     end
 
     req = get_rows_request(per_page, page, merged_conditions, true)
-    rows_updated_at = self.rowsUpdatedAt.nil? ? nil : self.rowsUpdatedAt
-    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{rows_updated_at}"
-    cache_key += ':anon' if is_anon
+    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{self.rowsUpdatedAt}"
+    cache_key << ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?
       begin
-        server_result = JSON.parse(
-          CoreServer::Base.connection.create_request(
-            req[:url],
-            req[:request].to_json,
-            { 'X-Socrata-Federation' => 'Honey Badger' },
-            true,
-            false,
-            is_anon
-          ),
-          :max_nesting => 25
-        )
+        server_result = make_rows_request(req, is_anon)
         result = {
           rows: server_result['data'],
           total_count: server_result['meta']['totalRows'],
-          meta_columns: server_result['meta']['view']['columns'].select { |c| c['dataTypeName'] == 'meta_data' }
+          meta_columns: server_result['meta']['view']['columns'].select do |c|
+            c['dataTypeName'] == 'meta_data'
+          end
         }
         cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
         Rails.logger.info(
-          "Possibly invalid model found in row request, deleting model cache key: #{model_cache_key}." <<
-            " Exception details: #{e.inspect}, #{e.backtrace[0]}"
+          "Possibly invalid model found in row request, deleting model cache key: " +
+          "#{model_cache_key}. Exception details: #{e.inspect}, #{e.backtrace[0]}"
         )
         cache.delete(model_cache_key) if model_cache_key
         raise e
       end
     end
-    if conditions.empty?
-      @cached_rows ||= {}
-      @cached_rows[:rows] = result[:rows]
-      @cached_rows[:start] = (page - 1) * per_page
-      @cached_rows[:total_count] = result[:total_count]
-      @cached_rows[:meta_columns] = result[:meta_columns]
-    end
+    cache_row_result(result, result.merge({ start: (page - 1) * per_page })) if conditions.empty?
     {rows: result[:rows], meta: nil}
   end
 
   def get_rows(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
-    include_meta = true if @cached_rows.nil? || @cached_rows[:rows].nil?
+    if use_soda2?
+      get_rows_with_soda2(per_page, page, conditions, include_meta, is_anon)
+    else
+      get_rows_with_soda1(per_page, page, conditions, include_meta, is_anon)
+    end
+  end
+
+  def get_rows_with_soda1(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
+    include_meta = true if @cached_rows.try(:[], :rows).nil?
     # dedup with create request
     merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
     unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
-      result = {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: include_meta ? @sodacan.meta : nil }
+      result = {
+        rows: @sodacan.get_rows(merged_conditions, per_page, page),
+        meta: include_meta ? @sodacan.meta : nil
+      }
       return result
     end
-    req = get_rows_request(per_page, page, merged_conditions, include_meta)
-    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json,
-                                                                   { 'X-Socrata-Federation' => 'Honey Badger' },
-                                                                   true, false, is_anon),
-                        {:max_nesting => 25})
-    row_result = include_meta ? result['data'] : result
+
+    req = get_rows_request_using_soda1(per_page, page, merged_conditions, include_meta)
+    result = make_rows_request_using_soda1(req, is_anon)
+    result[:rows] = row_result = include_meta ? result['data'] : result
     if conditions.empty?
-      @cached_rows ||= {}
-      @cached_rows[:rows] = row_result
-      @cached_rows[:start] = (page - 1) * per_page
-      if include_meta
-        @cached_rows[:total_count] = result['meta']['totalRows']
-        @cached_rows[:meta_columns] = result['meta']['view']['columns'].
-          find_all { |c| c['dataTypeName'] == 'meta_data' }
-      end
+      cache_row_results(result, { start: (page - 1) * per_page,
+                                  no_meta: !include_meta })
     end
     {rows: row_result, meta: include_meta ? result['meta'] : nil}
+  end
+
+  def get_rows_with_soda2(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
+    include_meta = true if @cached_rows.try(:[], :rows).nil?
+    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+
+    req = get_rows_request_using_soda2(per_page, page, merged_conditions, include_meta)
+    row_result = result = make_rows_request_using_soda2(req, is_anon)
+    if conditions.empty?
+      cache_row_results({ rows: row_result }, { start: (page - 1) * per_page,
+                                                total_count: row_count,
+                                                meta_columns: [] })
+    end
+    {rows: row_result, meta: nil}
   end
 
   def get_total_rows(conditions = {}, is_anon = false)
@@ -537,32 +620,15 @@ class View < Model
     request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json,
-                                                                   { 'X-Socrata-Federation' => 'Honey Badger' },
-                                                                  false, false, is_anon),
-                      {:max_nesting => 25})
-    if conditions.empty?
-      @cached_rows ||= {}
-      @cached_rows[:total_count] = result['meta']['totalRows']
-      @cached_rows[:meta_columns] = result['meta']['view']['columns'].
-        find_all { |c| c['dataTypeName'] == 'meta_data' }
-    end
+    result = parse_json_with_max_nesting(
+      CoreServer::Base.connection.create_request(url, request_body.to_json,
+                                                 { 'X-Socrata-Federation' => 'Honey Badger' },
+                                                 false, false, is_anon))
+    cache_row_results(result, only_meta: true) if conditions.empty?
     return result['meta']['totalRows']
   end
 
-  def get_rows_by_ids(ids, req_body = nil)
-    id_params = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
-
-    if req_body.nil?
-      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?accessType=WEBSITE#{id_params}"
-      return JSON.parse(CoreServer::Base.connection.get_request(url, { 'X-Socrata-Federation' => 'Honey Badger' }))['data']
-    else
-      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?accessType=WEBSITE#{id_params}"
-      return JSON.parse(CoreServer::Base.connection.create_request(url, req_body,
-                                                                   { 'X-Socrata-Federation' => 'Honey Badger' }))['data']
-    end
-  end
-
+  # This does not work for SODA2.
   def get_row(row_id, is_anon = false)
     merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString})
     req = get_rows_request([row_id], 0, merged_conditions, false)
@@ -573,27 +639,19 @@ class View < Model
   end
 
   def get_row_by_index(row_index)
-    JSON.parse(CoreServer::Base.connection.get_request(
-      "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true",
-      { 'X-Socrata-Federation' => 'Honey Badger' }),
-        {:max_nesting => 25})[0]
-  end
-
-  def get_row_index(row_id)
-    result = JSON.parse(CoreServer::Base.connection.get_request(
-      "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?ids=#{row_id}&indexesOnly=true&method=getByIds",
-      { 'X-Socrata-Federation' => 'Honey Badger' }))
-    return result[row_id.to_s]
+    parse_json_with_max_nesting(
+      CoreServer::Base.connection.get_request(
+        "/#{self.class.name.pluralize.downcase}/#{id}/" +
+        "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true",
+        { 'X-Socrata-Federation' => 'Honey Badger' }))[0]
   end
 
   def get_sid_by_row_identifier(row_identifier)
-    result = CoreServer::Base.connection.get_request(
+    CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows?method=getSidByRowIdentifier&id=#{row_identifier}",
-      { 'X-Socrata-Federation' => 'Honey Badger' })
-    return result
+      { 'X-Socrata-Federation' => 'Honey Badger' }
+    )
   end
 
   def get_aggregates(aggregates, conditions = {})
@@ -631,7 +689,7 @@ class View < Model
                                                    true, b_id)
       end
     end.each do |r|
-      agg_resp = JSON.parse(r['response'], {:max_nesting => 25})
+      agg_resp = parse_json_with_max_nesting(r['response'])
       agg_resp.each do |agg|
         agg_results[agg['columnId']] ||= {}
         agg_results[agg['columnId']][agg['name']] = agg['value']
@@ -650,7 +708,7 @@ class View < Model
     if !params.nil?
       url += '?' + params.to_param
     end
-    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url), {:max_nesting => 25})).
+    escape_object(parse_json_with_max_nesting(CoreServer::Base.connection.get_request(url))).
       to_json.html_safe
   end
 
@@ -834,11 +892,6 @@ class View < Model
     flag?("default") && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
   end
 
-  # TODO This is a temporary method to be removed after SoQL merging is supported post 2014Q1
-  def prevent_soql_merging?
-    new_backend? && !is_blist?
-  end
-
   def is_public?
     @_is_public ||= display.is_public?
   end
@@ -907,7 +960,7 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-     "#{root_url(host: self.domainCName || CurrentDomain.cname)}#{download_path(ext)}"
+    "#{root_url(host: self.domainCName || CurrentDomain.cname)}#{download_path(ext)}"
   end
 
   def download_path(extension, params = {})
@@ -995,7 +1048,9 @@ class View < Model
   def has_importable_type?
     return false unless is_href?
 
-    blobs.any? {|b| ['csv', 'tsv', 'xls', 'xlsx', 'esri', 'kml', 'kmz'].include?(b['type'].downcase)}
+    blobs.any? do |b|
+      ['csv', 'tsv', 'xls', 'xlsx', 'esri', 'kml', 'kmz'].include?(b['type'].downcase)
+    end
   end
 
   def domain_icon_href
@@ -1157,6 +1212,17 @@ class View < Model
 
   def new_backend?
     newBackend? # Cannot use alias because :newBackend? derives from method_missing
+  end
+
+  def use_soda2?
+    should_use = newBackend? || FeatureFlags.derive(self).useSoda2
+
+    case should_use
+    when 'always', TrueClass
+      true
+    else
+      false
+    end
   end
 
   def can_add_form?
@@ -1434,18 +1500,20 @@ class View < Model
 
   # Value out of 100
   def update_rating(value, type)
-    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}/ratings.json",
-                                               { type: type, rating: value }.to_json)
+    CoreServer::Base.connection.create_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}/ratings.json",
+      { type: type, rating: value }.to_json)
   end
 
   def email(email = nil)
-    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}" +
-      ".json?method=sendAsEmail", { :message => '', :recipient => email }.to_json)
+    CoreServer::Base.connection.create_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}.json?method=sendAsEmail",
+      { :message => '', :recipient => email }.to_json)
   end
 
   def flag(params = {})
-    CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
-      "?method=flag&" + params.to_param)
+    CoreServer::Base.connection.create_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}.json?method=flag&#{params.to_param}")
   end
 
   def rdf_class
@@ -1841,10 +1909,58 @@ class View < Model
     'Table' => 'Dataset'
   }
 
+  protected
+  def make_rows_request(req, is_anon, cache_req = true)
+    if use_soda2?
+      make_rows_request_using_soda2(req, is_anon)
+    else
+      make_rows_request_using_soda1(req, is_anon, cache_req)
+    end
+  end
+
+  def make_rows_request_using_soda1(req, is_anon, cache_req = true)
+    parse_json_with_max_nesting(
+      CoreServer::Base.connection.create_request(
+        req[:url],
+        req[:request].to_json,
+        { 'X-Socrata-Federation' => 'Honey Badger' },
+        cache_req,
+        false,
+        is_anon
+    ))
+  end
+
+  def make_rows_request_using_soda2(req, is_anon)
+    parse_json_with_max_nesting(
+      CoreServer::Base.connection.get_request(
+        req[:url],
+        { 'X-Socrata-Federation' => 'Honey Badger' },
+        false,
+        is_anon
+    ))
+  end
+
+  def cache_row_results(result, options = {})
+    @cached_rows ||= {}
+    unless options[:only_meta]
+      @cached_rows[:rows] = result[:rows]
+      @cached_rows[:start] = options[:start]
+    end
+    unless options[:no_meta]
+      @cached_rows[:total_count] = options[:total_count] || result['meta']['totalRows']
+      @cached_rows[:meta_columns] = options[:meta_columns] ||
+        result['meta']['view']['columns'].find_all { |c| c['dataTypeName'] == 'meta_data' }
+    end
+  end
+
   private
 
   def cache
     @@cache ||= Rails.cache
+  end
+
+  def parse_json_with_max_nesting(data, max_nesting = 25)
+    JSON.parse(data, :max_nesting => max_nesting)
   end
 
 end

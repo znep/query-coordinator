@@ -176,7 +176,7 @@ class RenderType
           '" class="type_' + column.client_type + '"' +
           (column.is_nested_table ? ' colspan="' +
            (column.viewable_children.length + 1).to_s + '"' : '') + '>'
-        cell = r[column.id.to_s]
+        cell = ds.newBackend? ? r[column.fieldName] : r[column.id.to_s]
         t << column.render_type.cell_html(cell, column, ds, {parent_id: t_id, row_index: row_index})
         t << '</td>'
       end

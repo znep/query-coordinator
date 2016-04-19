@@ -1,7 +1,7 @@
 module SoqlFromConditions
 
-  def self.process(dataset)
-    json_query = JsonQueryFromDataset.new(dataset)
+  def self.process(dataset, merged_conditions = nil)
+    json_query = JsonQueryFromDataset.new(dataset, merged_conditions || dataset.query)
     base_query = JsonQueryFromDataset.new(dataset.parent_view)
     SoqlFromJsonQuery.new(json_query, base_query).to_soql
   end
@@ -29,12 +29,12 @@ module SoqlFromConditions
 
     include Helpers
 
-    def initialize(dataset)
+    def initialize(dataset, query = dataset.query)
       @ds = dataset
-      @group = translate_group_bys ds.query.groupBys
-      @where, @having = split_filter_condition_by_grouping(ds.query.filterCondition)
-      @order = translate_order_bys ds.query.orderBys
-      @search = ds.searchString.try(:dup)
+      @group = translate_group_bys(query.groupBys)
+      @where, @having = split_filter_condition_by_grouping(query.filterCondition)
+      @order = translate_order_bys(query.orderBys)
+      @search = query.delete('searchString') || ds.searchString.try(:dup)
       @select = create_selects_from_group_bys
     end
 

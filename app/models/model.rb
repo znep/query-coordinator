@@ -339,6 +339,7 @@ class Model
   end
 
   def self.set_up_model(json_data)
+    return json_data if json_data.is_a?(self)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |
         m = self.new

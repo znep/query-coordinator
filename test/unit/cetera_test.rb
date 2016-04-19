@@ -153,8 +153,24 @@ class CeteraTest < MiniTest::Unit::TestCase
           to_timeout
 
         assert_raises TimeoutError do
-          Cetera.search_views(query)
+          Cetera.search_views(query, {}, 'Unvailable')
         end
+      end
+
+      def test_cookies_and_request_id_get_passed_along_to_cetera
+        query = { domains: ['example.com'] }
+        cookies = { 'i am a cookie' => 'of oatmeal and raisins',
+                    'i am also a cookie' => 'of chocolate chips' }
+        request_id = 'iAmProbablyUnique'
+
+        stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+          with(headers: { 'Cookie' => cookies.map { |key, val| "#{key}=#{val}" }.join('; '),
+                          'X-Socrata-RequestId' => request_id },
+               query: Cetera.cetera_soql_params(query)).
+          to_return(status: 500, body: 'I cannot be parsed!')
+
+        # Unsuccessful response returns false, just sayin'
+        assert_equal false, Cetera.search_views(query, cookies, request_id)
       end
     end
   end

@@ -3,7 +3,7 @@ require 'httparty'
 require 'ostruct'
 
 module Cetera
-  def self.search_views(opts, cookies = {})
+  def self.search_views(opts, cookies, request_id)
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
     query = cetera_soql_params(opts)
 
@@ -12,13 +12,13 @@ module Cetera
     options = {
       cookies: cookies, # Cetera is fine with empty cookie string
       format: :json,
-      headers: { 'X-Socrata-Host' => CurrentDomain.cname },
+      headers: { 'X-Socrata-Host' => CurrentDomain.cname,
+                 'X-Socrata-RequestId' => request_id }.compact,
       query: query.to_query,
       timeout: 5
     }
 
     result = HTTParty.get(cetera_url, options)
-
     result.success? && CeteraSearchResult.new(result)
   end
 
@@ -65,7 +65,7 @@ module Cetera
       offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
       limit: opts[:limit],
       order: translate_sort_by(opts[:sortBy])
-    ).reject { |_, v| v.blank? }
+    ).compact
   end
 
   # A row of Cetera results

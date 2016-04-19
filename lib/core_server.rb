@@ -95,45 +95,47 @@ class CoreServer
   def self.current_user_story_authorization
     authorization = nil
     stored_authorization = ::RequestStore.store[:current_user_story_authorization]
+    user = CoreServer.current_user
 
     return stored_authorization if stored_authorization.present?
 
-    user = CoreServer.current_user
-    domain_role = user['roleName'] || 'unknown'
-    domain_rights = user['rights'] || []
-    authorization = {
-      'domainRole' => domain_role,
-      'domainRights' => domain_rights,
-      'viewRole' => 'unknown',
-      'viewRights' => [],
-    }
+    if user.present?
+      domain_role = user['roleName'] || 'unknown'
+      domain_rights = user['rights'] || []
+      authorization = {
+        'domainRole' => domain_role,
+        'domainRights' => domain_rights,
+        'viewRole' => 'unknown',
+        'viewRights' => [],
+      }
 
-    if user.present? && ::RequestStore.store[:story_uid].present?
-      uid = ::RequestStore.store[:story_uid]
-      view = CoreServer.get_view(uid)
+      if ::RequestStore.store[:story_uid].present?
+        uid = ::RequestStore.store[:story_uid]
+        view = CoreServer.get_view(uid)
 
-      if view.present?
-        view_rights = view['rights'] || []
-        corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
-        is_primary_owner = view['owner']['id'] == user['id']
-        has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
+        if view.present?
+          view_rights = view['rights'] || []
+          corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
+          is_primary_owner = view['owner']['id'] == user['id']
+          has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
 
-        if is_primary_owner
-          authorization.merge!({
-            'viewRole' => 'owner',
-            'viewRights' => view_rights,
-            'primary' => true
-          })
-        elsif has_user_grant
-          authorization.merge!({
-            'viewRole' => view['grants'].find(&corresponding_grant)['type'],
-            'viewRights' => view_rights
-          })
-        else
-          authorization.merge!({
-            'viewRole' => 'unknown',
-            'viewRights' => view_rights
-          })
+          if is_primary_owner
+            authorization.merge!({
+              'viewRole' => 'owner',
+              'viewRights' => view_rights,
+              'primary' => true
+            })
+          elsif has_user_grant
+            authorization.merge!({
+              'viewRole' => view['grants'].find(&corresponding_grant)['type'],
+              'viewRights' => view_rights
+            })
+          else
+            authorization.merge!({
+              'viewRole' => 'unknown',
+              'viewRights' => view_rights
+            })
+          end
         end
       end
     end

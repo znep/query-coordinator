@@ -2,21 +2,14 @@ require "ConnectSdk"
 
 # An API endpoint for Getty Image searches that handles
 # the OAuth2 communication, paging, and keyword searches.
-class Api::V1::ImagesController < ApplicationController
-  def download
-    asset_id = params[:id]
+class Api::V1::GettyImagesController < ApplicationController
+  include UserAuthorizationHelper
 
-    return render_bad_request unless asset_id.is_a?(String)
-
-    begin
-      result = connect_sdk.
-        download().
-        with_id(asset_id).
-        execute()
-
-      render json: {'uri' => result}
-    rescue => error
-      render_bad_request
+  def show
+    if getty_image.present? && getty_image.url.present?
+      redirect_to getty_image.url
+    else
+      head :not_found
     end
   end
 
@@ -31,11 +24,11 @@ class Api::V1::ImagesController < ApplicationController
 
     begin
       results = connect_sdk.
-        search().images().
+        search.images.
         with_phrase(phrase).
         with_page(page).
         with_page_size(page_size).
-        execute()
+        execute
 
       render json: results
     rescue => error
@@ -43,19 +36,18 @@ class Api::V1::ImagesController < ApplicationController
     end
   end
 
+  private
+
   def render_bad_request
     render nothing: true, status: 400
   end
 
-  def connect_sdk
-    @connect_sdk ||= ConnectSdk.new(
-      Rails.application.secrets.getty['api_key'],
-      Rails.application.secrets.getty['api_secret']
-    )
+  def getty_image
+    @getty_image ||= GettyImage.find_or_initialize_by(getty_id: params[:id])
   end
 
-  def download_request
-    @download_request ||= DownloadRequest.new(
+  def connect_sdk
+    @connect_sdk ||= ConnectSdk.new(
       Rails.application.secrets.getty['api_key'],
       Rails.application.secrets.getty['api_secret']
     )

@@ -51,6 +51,8 @@ class StoryPublisher
         story.destroy
         saved = false
       end
+
+      GettyImagesDownloader.new(story, user).download
     end
 
     saved

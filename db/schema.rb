@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317202528) do
+ActiveRecord::Schema.define(version: 20160421190934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,18 @@ ActiveRecord::Schema.define(version: 20160317202528) do
   add_index "draft_stories", ["uid", "digest"], name: "index_draft_stories_on_uid_and_digest", using: :btree
   add_index "draft_stories", ["uid"], name: "index_draft_stories_on_uid", using: :btree
 
+  create_table "getty_images", force: :cascade do |t|
+    t.string   "getty_id",                    null: false
+    t.integer  "document_id"
+    t.integer  "domain_id",                   null: false
+    t.boolean  "downloading", default: false
+    t.string   "created_by",                  null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "getty_images", ["getty_id"], name: "index_getty_images_on_getty_id", unique: true, using: :btree
+
   create_table "published_stories", force: :cascade do |t|
     t.string   "uid",        limit: 9,              null: false
     t.integer  "block_ids",            default: [], null: false, array: true
@@ -87,4 +99,5 @@ ActiveRecord::Schema.define(version: 20160317202528) do
   add_index "published_stories", ["created_by"], name: "index_published_stories_on_created_by", using: :btree
   add_index "published_stories", ["uid"], name: "index_published_stories_on_uid", using: :btree
 
+  add_foreign_key "getty_images", "documents"
 end

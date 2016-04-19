@@ -62,7 +62,6 @@
   .component-asset-selector,
   .component-embedded-html,
   .component-image,
-  .component-getty-image,
   .component-socrata-visualization-choropleth-map,
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
@@ -86,7 +85,6 @@
 .component-asset-selector,
 .component-embedded-html,
 .component-image,
-.component-getty-image,
 .component-socrata-visualization-choropleth-map,
 .component-socrata-visualization-classic,
 .component-socrata-visualization-column-chart,
@@ -126,11 +124,15 @@
   background-color: $youtube-bg-color;
 }
 
-.component-getty-image,
 .component-image {
   overflow: hidden;
   img {
     width: 100%;
+  }
+
+  .getty-image-preview-watermark {
+    position: absolute;
+    top: 1rem;
   }
 }
 
@@ -222,6 +224,10 @@
       $extra-large-height
     );
   }
+
+  .getty-image-preview-watermark {
+    font-size: 0.5rem;
+  }
 }
 
 .col6 {
@@ -273,6 +279,10 @@
       $col6-block-edit-content-width-large * 1,
       $col6-block-edit-content-width-extra-large * (4/5)
     );
+  }
+
+  .getty-image-preview-watermark {
+    font-size: 0.5rem;
   }
 }
 

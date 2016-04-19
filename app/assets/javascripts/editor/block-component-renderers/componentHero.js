@@ -126,6 +126,19 @@ function templateHeroText() {
   return '<div class="hero-text"></div>';
 }
 
+function templateGettyImagePreview() {
+  return [
+    '<div class="getty-image-preview-watermark">',
+      '<h1>',
+        I18n.t('editor.components.getty_images.header'),
+      '</h1>',
+      '<p>',
+        I18n.t('editor.components.getty_images.subheader'),
+      '</p>',
+    '</div>'
+  ].join('');
+}
+
 function templateUnconfiguredHero() {
   /* eslint-disable indent */
   return [
@@ -140,13 +153,24 @@ function templateUnconfiguredHero() {
   /* eslint-enable indent */
 }
 
-function templateHero() {
+function templateGettyHero() {
   /* eslint-disable indent */
   return [
     '<div class="hero" data-url="{image}">',
-    templateHeroText(),
+      templateGettyImagePreview(),
+      templateHeroText(),
     '</div>'
   ].join('');
+  /* eslint-enable indent */
+}
+
+function templateGetty() {
+  /* eslint-disable indent */
+  return [
+    '<div class="hero" data-url="{image}">',
+      templateHeroText(),
+    '</div>'
+  ];
   /* eslint-enable indent */
 }
 
@@ -180,6 +204,7 @@ function renderHero($element, componentData) {
 
   var url = componentData.value.url;
   var formatters = {image: url};
+  var template = isGettyImage(url) ? templateGettyHero() : templateHero();
   var $template = $(StorytellerUtils.format(templateHero(), formatters));
 
   $element.
@@ -306,6 +331,10 @@ function notRendered($element) {
 
 function changedImage(url, componentData) {
   return url !== componentData.value.url;
+}
+
+function isGettyImage(url) {
+  return Constants.VALID_GETTY_IMAGE_PATTERN.test(url);
 }
 
 function synthesizeRichTextEditorData(componentData) {

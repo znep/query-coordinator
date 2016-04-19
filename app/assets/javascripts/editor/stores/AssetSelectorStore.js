@@ -302,13 +302,19 @@ export default function AssetSelectorStore() {
     var phrase = this.getImageSearchPhrase();
     var page = this.getImageSearchPage();
     var pageSize = this.getImageSearchPageSize();
+    var query = encodeURI(
+      StorytellerUtils.format(
+        'phrase={0}&page={1}&page_size={2}&sort_order=best_match&graphical_styles=photography&fields=preview,id',
+        phrase,
+        page,
+        pageSize
+      )
+    );
 
     return StorytellerUtils.format(
-      '{0}images/search?phrase={1}&page={2}&page_size={3}&sort_order=best_match&graphical_styles=photography',
+      '{0}getty-images/search?{1}',
       Constants.API_PREFIX_PATH,
-      phrase,
-      page,
-      pageSize
+      query
     );
   };
 
@@ -389,12 +395,13 @@ export default function AssetSelectorStore() {
   }
 
   function _setImageSearchSelection(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'uri');
+    StorytellerUtils.assertHasProperty(payload, 'id');
 
     var type = self.getComponentType();
+    var url = StorytellerUtils.format('{0}getty-images/{1}', Constants.API_PREFIX_PATH, payload.id);
     var image = {
-      documentId: _.uniqueId(),
-      url: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Okapi_in_florida.jpg' //payload.uri
+      documentId: null,
+      url: url
     };
 
     if (type === 'author') {

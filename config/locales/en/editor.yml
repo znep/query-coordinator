@@ -73,6 +73,9 @@ en:
         remove: 'Remove'
         edit: 'Edit'
     components:
+      getty_images:
+        header: 'This Getty image is only a preview.'
+        subheader: 'A full resolution version will replace the preview when you publish your story.'
       edit_controls:
         button: 'Edit'
       asset_selector:
@@ -138,6 +141,7 @@ en:
       insert_button_text: 'Insert'
       update_button_text: 'Update'
       cancel_button_text: 'Cancel'
+      select_button_text: 'Select'
       try_again_button_text: 'Try again'
       youtube:
         name: 'YouTube'

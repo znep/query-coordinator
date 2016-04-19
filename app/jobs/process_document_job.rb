@@ -28,6 +28,6 @@ class ProcessDocumentJob < ActiveJob::Base
     document = Document.find(document_id)
     document.upload = URI.parse(document.direct_upload_url)
     document.status = 'processed'
-    document.save!
+    saved = document.save!
   end
 end

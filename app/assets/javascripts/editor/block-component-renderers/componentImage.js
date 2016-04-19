@@ -2,6 +2,7 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import '../componentBase';
+import I18n from '../I18n';
 import CustomEvent from '../../CustomEvent';
 import StorytellerUtils from '../../StorytellerUtils';
 
@@ -54,6 +55,13 @@ export default function componentImage(componentData, theme, options) {
 function _renderImage($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
+  var $gettyImage = $('<div>', {
+    class: 'getty-image-preview-watermark'
+  }).append(
+    $('<h1>').append(I18n.t('editor.components.getty_images.header')),
+    $('<p>').append(I18n.t('editor.components.getty_images.subheader'))
+  );
+
   var $imgElement = $(
     '<img>',
     {
@@ -64,6 +72,7 @@ function _renderImage($element, componentData) {
 
   $element.
     addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
+    append($element.closest('.component-author').length ? null : $gettyImage).
     append($imgElement);
 }
 

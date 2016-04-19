@@ -665,21 +665,28 @@ export default function AssetSelectorRenderer(options) {
     );
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
-    var insertButton = $(
+    var selectButton = $(
       '<button>',
       {
         'class': 'btn btn-primary btn-apply',
         'disabled': 'disabled'
       }
-    ).text(_insertButtonText());
+    ).text(I18n.t('editor.asset_selector.select_button_text'));
 
     var navGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
       backButton,
-      insertButton
+      selectButton
     ]);
+
+    selectButton.click(function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.IMAGE_PREVIEW
+      });
+    });
 
     searchField.keyup(function(event) {
       if (event.keyCode === 13) {
@@ -715,6 +722,8 @@ export default function AssetSelectorRenderer(options) {
       chunked.forEach(function(images) {
         images.forEach(function(image, index) {
           var uri = _.find(image.display_sizes, {name: 'thumb'}).uri;
+          var id = image.id;
+
           var promise = new Promise(function(resolve, reject) {
             var imageElement = new Image();
 
@@ -745,7 +754,7 @@ export default function AssetSelectorRenderer(options) {
 
                 dispatcher.dispatch({
                   action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
-                  uri: $image.attr('src')
+                  id: id
                 });
               }
             };
@@ -985,6 +994,12 @@ export default function AssetSelectorRenderer(options) {
         'type': 'text'
       }
     );
+
+    inputField.on('keyup', function(event) {
+      if (event.keyCode === 13) {
+        $('.modal-dialog .btn-apply').click();
+      }
+    });
 
     var descriptionContainer = $(
       '<div>',

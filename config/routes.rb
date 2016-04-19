@@ -29,8 +29,8 @@ Rails.application.routes.draw do
       post 'stories/:uid/published' => 'published#create'
       put 'stories/:uid/permissions' => 'permissions#update'
 
-      get 'images/search' => 'images#search'
-      get 'images/download/:id' => 'images#download'
+      get 'getty-images/search' => 'getty_images#search'
+      get 'getty-images/:id' => 'getty_images#show'
     end
   end
 

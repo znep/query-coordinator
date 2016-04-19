@@ -336,6 +336,21 @@ a[role="button"] {
   }
 }
 
+.getty-image-preview-watermark {
+  opacity: 0.4;
+  font-size: 1.1rem;
+  margin-left: 1rem;
+  color: white;
+  padding: 1rem;
+  background: #5d5d5d;
+  border-radius: 3px;
+  cursor: default;
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+}
+
 // Developer mode Rack Mini Profiler.
 // Positioned under the header.
 .profiler-results {

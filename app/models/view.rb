@@ -923,9 +923,10 @@ class View < Model
   # While we still have datasets in both OBE and NBE, prefer the NBE id
   # when possible. This involves fetching the dataset's NBE id from its
   # migrations (if available), and falling back to the OBE id.
+  # Note that non-default views should always use their own id.
   def preferred_id
     @preferred_id ||= begin
-      new_backend? ? id : migrations.fetch(:nbeId, id)
+      (new_backend? || !flag?('default')) ? id : migrations.fetch(:nbeId, id)
     rescue CoreServer::ResourceNotFound
       id # This means the migration was not found.
     end

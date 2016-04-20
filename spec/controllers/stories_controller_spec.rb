@@ -974,6 +974,23 @@ RSpec.describe StoriesController, type: :controller do
       stub_valid_session
     end
 
+    describe '#show' do
+      let(:action) { :show }
+      let(:view) { nil }
+      let(:get_request) { get action, uid: 'test-test' }
+
+      before do
+        allow(CoreServer).to receive(:get_view).and_return(view)
+      end
+
+      context 'when the metadb view doesn\'t exist' do
+        it '404s' do
+          get_request
+          expect(response.status).to eq(404)
+        end
+      end
+    end
+
     describe '#edit' do
       let(:action) { :edit }
 

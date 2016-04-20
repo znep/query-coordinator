@@ -821,8 +821,8 @@ export default function AssetSelectorStore() {
   }
 
   function _cancelFileUploads() {
-    if (fileUploader && fileUploader !== null) {
-      fileUploader.cancel();
+    if (storyteller.fileUploader && storyteller.fileUploader !== null) {
+      storyteller.fileUploader.cancel();
     }
   }
 }

@@ -8,11 +8,12 @@ import Constants from './Constants';
 import { dispatcher } from './Dispatcher';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 
-export var fileUploader = new FileUploader();
+export var fileUploader = StorytellerUtils.export(new FileUploader(), 'storyteller.fileUploader');
 export default function FileUploader() {
 
   var _apiPrefixPath = '/stories/api/v1';
 
+  var _cancelled = false;
   var _uploadedPercent;
   var _file;
   var _getDocInterval = null;
@@ -122,6 +123,8 @@ export default function FileUploader() {
    * processing progress.
    */
   this.cancel = function() {
+    _cancelled = true;
+
     if (_xhr !== null) {
       _xhr.abort();
     }
@@ -138,25 +141,19 @@ export default function FileUploader() {
 
   // Private methods
 
-  function _cancelled() {
-
-    // If the _file is null, either we cancelled
-    // or there isn't an upload happening right now.
-    return _.isNull(_file);
-  }
-
   function _emitProgress(progressBytes) {
-    _uploadedPercent = progressBytes / _file.size;
+    if (!_cancelled) {
+      _uploadedPercent = progressBytes / _file.size;
 
-    dispatcher.dispatch({
-      action: options.progressAction || Actions.FILE_UPLOAD_PROGRESS,
-      percentLoaded: _uploadedPercent
-    });
+      dispatcher.dispatch({
+        action: options.progressAction || Actions.FILE_UPLOAD_PROGRESS,
+        percentLoaded: _uploadedPercent
+      });
+    }
   }
 
   function _emitError(errorStep, reason) {
     var errorReportingLabel = 'FileUploader#_emitError';
-
     dispatcher.dispatch({
       action: options.errorAction || Actions.FILE_UPLOAD_ERROR,
       error: {
@@ -217,15 +214,17 @@ export default function FileUploader() {
       _xhr = new XMLHttpRequest();
 
       function onFail() {
-        _emitError(
-          'upload_file',
-          { status: parseInt(_xhr.status, 10), message: _xhr.statusText }
-        );
-        reject(
-          new Error(
-            StorytellerUtils.format('Failed to upload file to {0}', uploadUrl)
-          )
-        );
+        if (!_cancelled) {
+          _emitError(
+            'upload_file',
+            { status: parseInt(_xhr.status, 10), message: _xhr.statusText }
+          );
+          reject(
+            new Error(
+              StorytellerUtils.format('Failed to upload file to {0}', uploadUrl)
+            )
+          );
+        }
       }
 
       _xhr.onload = function() {
@@ -252,7 +251,9 @@ export default function FileUploader() {
       _xhr.onabort = onFail;
       _xhr.onerror = onFail;
 
-      _xhr.send(_file instanceof File ? _file : _file.body);
+      if (!_cancelled) {
+        _xhr.send(_file instanceof File ? _file : _file.body);
+      }
     });
   }
 
@@ -294,7 +295,7 @@ export default function FileUploader() {
   }
 
   function _dispatchFileDone(resource) {
-    if (!_cancelled()) {
+    if (!_cancelled) {
       dispatcher.dispatch({
         action: options.doneAction || Actions.FILE_UPLOAD_DONE,
         documentId: resource.id,

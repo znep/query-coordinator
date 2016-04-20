@@ -9,7 +9,7 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
 import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
-import { fileUploader } from '../FileUploader';
+import FileUploader from '../FileUploader';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 export default function AssetSelectorRenderer(options) {
@@ -53,8 +53,9 @@ export default function AssetSelectorRenderer(options) {
       '[data-asset-selector-validate-field="imageUpload"]',
       function(event) {
         if (event.target.files && event.target.files.length > 0) {
-          fileUploader.cancel();
-          fileUploader.upload(event.target.files[0], {
+          _cancelFileUpload();
+          storyteller.fileUploader = new FileUploader();
+          storyteller.fileUploader.upload(event.target.files[0], {
             progressAction: Actions.FILE_UPLOAD_PROGRESS,
             errorAction: Actions.FILE_UPLOAD_ERROR,
             doneAction: Actions.FILE_UPLOAD_DONE
@@ -189,7 +190,8 @@ export default function AssetSelectorRenderer(options) {
     );
 
     var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
-      fileUploader.cancel();
+      _cancelFileUpload();
+      storyteller.fileUploader = new FileUploader();
 
       var htmlFragment = $(event.target).val();
       _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);
@@ -204,7 +206,7 @@ export default function AssetSelectorRenderer(options) {
         body: htmlFragment
       };
 
-      fileUploader.upload(simulatedFileForUpload, {
+      storyteller.fileUploader.upload(simulatedFileForUpload, {
         progressAction: Actions.EMBED_CODE_UPLOAD_PROGRESS,
         errorAction: Actions.EMBED_CODE_UPLOAD_ERROR,
         doneAction: Actions.EMBED_CODE_UPLOAD_DONE
@@ -274,6 +276,12 @@ export default function AssetSelectorRenderer(options) {
     dispatcher.dispatch({
       action: Actions.ASSET_SELECTOR_CLOSE
     });
+  }
+
+  function _cancelFileUpload() {
+    if (storyteller.fileUploader) {
+      storyteller.fileUploader.cancel();
+    }
   }
 
   function _renderSelector() {

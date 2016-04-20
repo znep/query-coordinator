@@ -6,6 +6,7 @@ import FlannelUtils from '../../flannel/flannel';
 /* eslint-disable */
 import SocrataAutocompletefilter from '../autocompletefilter/react.socrata.autocompletefilter';
 import SocrataNumberfilter from '../numberfilter/react.socrata.numberfilter';
+import SocrataRangefilter from '../rangefilter/react.socrata.rangefilter';
 import SocrataDatefilter from '../datefilter/react.socrata.datefilter';
 /* eslint-enable */
 
@@ -93,20 +94,30 @@ class FilterItem extends React.Component {
   render() {
     var filter;
 
+    var scaleArray = [
+    0.02,0.04,0.06,0.08,0.10,0.12,0.14,0.16,0.18,0.20,0.22,0.24,0.26,
+    0.28,0.30,0.32,0.34,0.36,0.38,0.40,0.42,0.44,0.46,0.48,0.50];
+
     switch (this.props.filter.type) {
       case 'bool':
       case 'binary':
         break;
       case 'float':
       case 'int':
-        filter = <SocrataNumberfilter
+        /*filter = <SocrataNumberfilter
           key={ 'qf-' + this.props.filter.id }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
           data={ this.props.filter.data || {} }
           labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData }
-          remoteApply={ this.onClickApply } />;
+          remoteApply={ this.onClickApply } />;*/
+        filter = <SocrataRangefilter
+          key={ 'qf-' + this.props.filter.id }
+          componentId={ this.props.filter.id }
+          name={ this.props.filter.name }
+          domain={ scaleArray }
+          dataHandler={ this.handleFilterData }/>;
         break;
       case 'string':
         filter = <SocrataAutocompletefilter

@@ -34,6 +34,32 @@ class SocrataRangeFilter extends React.Component {
       values: values,
       valueLabels: labelsObject
     });
+
+
+    var formattedMin = (values.min == 0) ? 'No Min' : this.domain[values.min];
+    var formattedMax = (values.max == this.domain.length - 1) ? 'No Max' : this.domain[values.max];
+
+    var formattedLabel = '';
+    var filterObj = {};
+
+    if (formattedMin == 'No Min' && formattedMin == 'No Max') {
+      formattedLabel = '(all values)';
+      filterObj['dir'] = null;
+    } else if (formattedMin == 'No Min') {
+      formattedLabel = 'No Min - ' + formattedMax;
+      filterObj['dir'] = 'lt';
+    } else if (formattedMax == 'No Max') {
+      formattedLabel = formattedMin + ' - No Max';
+      filterObj['dir'] = 'gt';
+    } else {
+      formattedLabel = formattedMin + ' - ' + formattedMax;
+      filterObj['dir'] = 'bt';
+    }
+
+    filterObj['val1'] = (formattedMin == 'No Min') ? null : formattedMin;
+    filterObj['val2'] = (formattedMax == 'No Max') ? null : formattedMax;
+
+    this.props.dataHandler(formattedLabel, filterObj, true, true);
   }
 
   render() {

@@ -54,9 +54,11 @@ $success-light: #d5efdf;
 $success-dark: #1e7b43;
 
 // Miscellaneous colors not in styleguide
+$data-lens-blue: #288dc1;
 $facebook-blue: #3b5998;
 $light-blue: #5aafe1;
 $link-color: #2c97de;
+$map-green: #218649;
 $twitter-blue: #55acee;
 
 // Mobile breakpoints
@@ -187,6 +189,91 @@ main.container.landing-page-container {
       font-weight: 500;
       margin: 0;
       padding: 11px 0;
+    }
+  }
+
+  .media-results {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+
+    .second {
+      .date {
+        font-size: 11px;
+      }
+    }
+
+    .result-card {
+      margin-right: 2%;
+      flex: 0 0 auto;
+      width: 32%;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .entry-header {
+        .entry-title {
+          margin-right: 2%;
+
+          h3 {
+            margin: 0;
+          }
+        }
+      }
+
+      .img-wrapper:hover {
+        cursor: pointer;
+      }
+
+      .img-wrapper {
+        background-color: $light-grey-5;
+        display: flex;
+        justify-content: center;
+        padding: 1.5em 0;
+
+        .x-large-icon {
+          font-size: 72px;
+          color: $dark-grey-1;
+          line-height: 1;
+        }
+
+        .icon-story {
+          &.x-large-icon {
+            color: $primary-alt-2-base;
+          }
+        }
+
+        .icon-map {
+          &.x-large-icon {
+            color: $map-green;
+          }
+        }
+
+        .icon-cards {
+          &.x-large-icon {
+            color: $data-lens-blue;
+          }
+        }
+
+        .icon-bar-chart {
+          &.x-large-icon {
+            color: $primary-alt-1-base;
+          }
+        }
+      }
+
+      @media(max-width: $medium) {
+        flex: 0 0 260px;
+
+        .img-wrapper {
+          display: flex;
+          max-height: 150px;
+        }
+      }
     }
   }
 

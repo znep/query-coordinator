@@ -150,6 +150,8 @@ class View < Model
       else
         View.find(parent_view.migrations[:nbeId])
       end
+    rescue CoreServer::ResourceNotFound
+      nil # This means the migration was not found.
     rescue CoreServer::CoreServerError => e
       raise e
     end
@@ -201,6 +203,27 @@ class View < Model
     }
     path = "/views.json?" + params.to_param
     View.parse(CoreServer::Base.connection.get_request(path))
+  end
+
+  def find_dataset_landing_page_related_content
+    # Get related datasets associated with the OBE
+    related_obe_views = obe_view ? obe_view.find_related(1) : []
+
+    # Get related datasets associated with the NBE
+    related_nbe_views = nbe_view ? nbe_view.find_related(1) : []
+
+    # Separate Data Lens views
+    related_data_lens_views, related_nbe_views = related_nbe_views.partition do |related_view|
+      related_view.displayType == 'data_lens'
+    end
+
+    # Combine everything in our preferred order
+    related_data_lens_views.
+      concat(related_nbe_views).
+      concat(related_obe_views).
+      reject do |related_view|
+        (obe_view && related_view.id == obe_view.id) || (nbe_view && related_view.id == nbe_view.id)
+      end
   end
 
   def find_api_throttles()
@@ -868,6 +891,22 @@ class View < Model
     @last_activity
   end
 
+  def time_created_at
+    Time.at(createdAt)
+  end
+
+  def time_data_last_updated_at
+    Time.at(rowsUpdatedAt)
+  end
+
+  def time_metadata_last_updated_at
+    Time.at(viewLastModified)
+  end
+
+  def time_last_updated_at
+    Time.at(last_activity)
+  end
+
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = ["public", "data", "statistics", "dataset"]
   def meta_keywords
@@ -996,6 +1035,23 @@ class View < Model
 
   def odata_url(request = nil)
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{preferred_id}"
+  end
+
+  def seo_friendly_url(request = nil)
+    base_url = request.try(:base_url) || "https://#{CurrentDomain.cname}"
+    base_url + locale_url_prefix + view_path(route_params)
+  end
+
+  def encoded_seo_friendly_url(request = nil)
+    ERB::Util.url_encode(seo_friendly_url(request))
+  end
+
+  # Taken from ApplicationHelper#locale_url_prefix
+  # a snippet that can be included before any non-localized url
+  # to provide a localized url without unnecessary path segments
+  # in the case of the default locale
+  def locale_url_prefix
+    I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
   end
 
   def tweet

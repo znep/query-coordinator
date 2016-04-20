@@ -2,15 +2,16 @@ require('script!jquery');
 require('dotdotdot');
 
 var Clipboard = require('clipboard');
-var Styleguide = require('socrata-styleguide');
-var Collapsible = require('./collapsible'); // TODO integrate into styleguide
+var styleguide = require('socrata-styleguide');
+var collapsible = require('./collapsible'); // TODO integrate into styleguide
 
 // Initialize the styleguide javascript components
-Styleguide(document);
+styleguide(document);
 
 $(function() {
   initDescriptionHeight();
   initCollapsibles();
+  initFeaturedViewsTruncation();
   initApiEndpointControls();
   initPrivateDismissal();
 });
@@ -34,13 +35,13 @@ function initCollapsibles() {
   var descriptionPadding = 11;
 
   // Collapse dataset description to 4 lines.
-  Collapsible(document.querySelector('.entry-description'), {
+  collapsible(document.querySelector('.info-pane .entry-description'), {
     height: 4 * lineHeight + 2 * descriptionPadding
   });
 
   // Collapse tags to 2 lines, breaking on tags, preserving commas.
   if (document.querySelector('.tag-list')) {
-    Collapsible(document.querySelector('.tag-list'), {
+    collapsible(document.querySelector('.tag-list'), {
       height: 2 * lineHeight,
       wrap: 'children',
       lastCharacter: {
@@ -48,6 +49,22 @@ function initCollapsibles() {
       }
     });
   }
+}
+
+function initFeaturedViewsTruncation() {
+  var titleLineHeight = 24;
+  var descriptionLineHeight = 19;
+  var descriptionPadding = 8;
+
+  // Collapse featured view titles to 2 lines.
+  $('.media-results .entry-title').dotdotdot({
+    height: 2 * titleLineHeight
+  });
+
+  // Collapse featured view descriptions to 3 lines.
+  $('.media-results .entry-description').dotdotdot({
+    height: 3 * descriptionLineHeight + 2 * descriptionPadding
+  });
 }
 
 // Copy-to-clipboard and json/geojson toggle in API flannel and OData modal
@@ -100,15 +117,16 @@ function initApiEndpointControls() {
 function initPrivateDismissal() {
   var privateNotice = document.querySelector('.private-notice');
   var hasDismissedPrivateNotice;
+  var privateNoticesClosed;
 
   if (!privateNotice) {
     return;
   }
 
   try {
-    var privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
+    privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
     hasDismissedPrivateNotice = privateNoticesClosed[privateNotice.dataset.storageKey];
-  } catch(e) {
+  } catch (e) {
     hasDismissedPrivateNotice = false;
   }
 
@@ -124,9 +142,9 @@ function initPrivateDismissal() {
     return;
   }
 
-  dismissButton.addEventListener('click', function(event) {
+  dismissButton.addEventListener('click', function() {
     try {
-      var privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
+      privateNoticesClosed = JSON.parse(sessionStorage.getItem('dismissedPrivateNotices'));
       privateNoticesClosed = privateNoticesClosed || {};
       privateNoticesClosed[privateNotice.dataset.storageKey] = true;
       sessionStorage.setItem('dismissedPrivateNotices', JSON.stringify(privateNoticesClosed));

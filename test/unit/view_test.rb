@@ -398,6 +398,61 @@ class ViewTest < Test::Unit::TestCase
     assert_equal(123, view.row_count)
   end
 
+  def test_find_related
+    view = View.new('tableId' => 1234)
+
+    CoreServer::Base.connection.expects(:get_request).with('/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=1234').
+      returns('[{"id" : "test-data", "name" : "Wombats in Space"}]')
+
+    related_views = view.find_related(1)
+    assert_equal('Wombats in Space', related_views[0].name)
+  end
+
+  def test_find_dataset_landing_page_related_content
+    # NBE && OBE
+    obe_view = View.new('id' => 'abcd-abcd', 'tableId' => 123)
+    obe_endpoint = '/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=123'
+
+    nbe_view = View.new('id' => 'efgh-efgh', 'tableId' => 456)
+    nbe_endpoint = '/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=456'
+
+    view = View.new('id' => 'abcd-abcd')
+    view.stubs(:nbe_view => nbe_view, :obe_view => obe_view)
+
+    CoreServer::Base.connection.expects(:get_request).with(obe_endpoint).
+      returns('[{"id" : "abcd-abcd", "name" : "Requesting View"}, {"id" : "abcd-1234", "name" : "Related OBE View"}]')
+    CoreServer::Base.connection.expects(:get_request).with(nbe_endpoint).
+      returns('[{"id" : "efgh-efgh", "name" : "Requesting View"}, {"id" : "abcd-1234", "name" : "Related Data Lens", "displayType": "data_lens"}]')
+
+    actual_view_titles = view.find_dataset_landing_page_related_content.map(&:name)
+    expected_views_titles = ['Related Data Lens', 'Related OBE View']
+    assert_equal(expected_views_titles, actual_view_titles)
+
+    # Only OBE
+    view.stubs(:nbe_view => nil, :obe_view => obe_view)
+
+    CoreServer::Base.connection.expects(:get_request).with(obe_endpoint).
+      returns('[{"id" : "abcd-abcd", "name" : "Requesting View"}, {"id" : "abcd-1234", "name" : "Related OBE View"}]')
+
+    actual_view_titles = view.find_dataset_landing_page_related_content.map(&:name)
+    expected_views_titles = ['Related OBE View']
+    assert_equal(expected_views_titles, actual_view_titles)
+
+    # Only NBE
+    view.stubs(:nbe_view => nbe_view, :obe_view => nil)
+
+    CoreServer::Base.connection.expects(:get_request).with(nbe_endpoint).
+      returns('[{"id" : "efgh-efgh", "name" : "Requesting View"}, {"id" : "abcd-1234", "name" : "Related Data Lens", "displayType": "data_lens"}]')
+
+    actual_view_titles = view.find_dataset_landing_page_related_content.map(&:name)
+    expected_views_titles = ['Related Data Lens']
+    assert_equal(expected_views_titles, actual_view_titles)
+
+    # Neither NBE nor OBE (just in case)
+    view.stubs(:nbe_view => nil, :obe_view => nil)
+    assert_equal([], view.find_dataset_landing_page_related_content)
+  end
+
   def test_visualization?
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
@@ -678,6 +733,27 @@ class ViewTest < Test::Unit::TestCase
     assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
     mock_request.stubs(:scheme => 'http')
     assert_equal('http://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
+  end
+
+  def test_seo_friendly_url
+    view = View.new('id' => '1234-1234', 'name' => 'wombat friends')
+
+    assert_equal('https://localhost/dataset/wombat-friends/1234-1234', view.seo_friendly_url)
+    I18n.stubs('locale' => 'ca')
+    assert_equal('https://localhost/ca/dataset/wombat-friends/1234-1234', view.seo_friendly_url)
+  end
+
+  # Taken from ApplicationHelperTest#test_locale_url_prefix
+  def test_locale_url_prefix
+    view = View.new
+
+    I18n.stubs(:locale => :foo)
+    CurrentDomain.stubs(:default_locale => 'foo')
+    assert_equal view.locale_url_prefix, ''
+
+    I18n.stubs(:locale => :bar)
+    CurrentDomain.stubs(:default_locale => 'foo')
+    assert_equal view.locale_url_prefix, '/bar'
   end
 
   private

@@ -414,7 +414,7 @@
             </h3>
           </div>
 
-          <%- if row_label -%>
+          <%- if row_label && row_label != t('screens.edit_metadata.default_row_label') -%>
             <div class="metadata-pair">
               <span class="metadata-pair-key">
                 <%= t('dataset_landing_page.dataset_contents.row_display_unit') %>

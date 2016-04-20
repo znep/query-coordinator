@@ -500,6 +500,7 @@ import './styles/mobile-general.scss';
 
           mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
+        case 'histogram':
         case 'column':
           cardOptions.containerClass = 'column-chart-upper-container';
           cardOptions.componentClass = 'column-chart-upper-wrapper';

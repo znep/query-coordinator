@@ -286,15 +286,6 @@ class DatasetsController < ApplicationController
       begin
         # get rows
         @per_page = 50
-        if @view.use_soda2?
-          page_size = FeatureFlags.derive(@view, request).nbe_bucket_size
-          @per_page =
-            case page_size
-            when TrueClass then 1000
-            when FalseClass then @per_page
-            when Numeric then page_size
-            end
-        end
         @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
       rescue CoreServer::CoreServerError => e
         case e.error_code

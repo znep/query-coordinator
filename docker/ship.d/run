@@ -5,7 +5,6 @@ export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
 export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 
 /bin/env_parse ${APP_DIR}/docker/config.yml.j2 ${APP_DIR}/config/config.yml
-/bin/env_parse ${APP_DIR}/docker/unicorn.rb.j2 ${APP_DIR}/config/unicorn.rb
 
 /bin/env_parse ${APP_DIR}/docker/environments-config.rb.j2 ${APP_DIR}/config/environments/${RAILS_ENV}.rb
 

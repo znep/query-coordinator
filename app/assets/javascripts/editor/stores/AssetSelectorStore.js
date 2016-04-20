@@ -7,7 +7,7 @@ import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
-import { fileUploader } from '../FileUploader';
+import '../FileUploader';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 // The step in the asset selection flow the user is in.

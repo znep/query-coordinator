@@ -52,9 +52,10 @@ Instructions on how to use these credentials can be found in the
 
 To install dependencies, run:
 
-```sh
-npm install
-```
+`bin/setup_environment.sh`
+
+This will set up NPM properly and will create a user for
+`frontend@socrata.com` with password `OpenData!`.
 
 ## Tests
 

@@ -138,7 +138,7 @@ class DataLensController < ActionController::Base
   end
 
   def redirect_to_mobile
-    if is_mobile?
+    if is_data_lens_mobile_redirect_enabled? && is_mobile?
       redirect_to "#{request.path}/mobile"
     end
   end
@@ -371,4 +371,7 @@ class DataLensController < ActionController::Base
     I18n.locale = 'en'
   end
 
+  def is_data_lens_mobile_redirect_enabled?
+    FeatureFlags.derive(nil, request).enable_data_lens_mobile_redirect
+  end
 end

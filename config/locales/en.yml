@@ -1310,6 +1310,46 @@ en:
     official: Official
     private_notice: You are looking at a private dataset.
     published_by: Published by
+    schema_preview:
+      api_field_name: API Field Name
+      column_name: Column Name
+      data_type: Data Type
+      description: Description
+      show_all: Show All
+      show_less: Show Less
+      title: Columns in this Dataset
+      type: Type
+      data_types:
+        blob: Blob
+        calendar_date: Floating Timestamp
+        checkbox: Checkbox
+        dataset_link: Dataset Link
+        date: Fixed Timestamp
+        document: Document
+        drop_down_list: Text
+        email: Text
+        flag: Text
+        geospatial: Geospatial
+        html: Text
+        line: Line
+        link: Text
+        list: List
+        location: Location
+        money: Money
+        multiline: Line
+        multipoint: Point
+        multipolygon: Polygon
+        nested_table: Nested Table
+        number: Number
+        object: Object
+        percent: Number
+        phone: Text
+        photo: Photo
+        point: Point
+        polygon: Polygon
+        stars: Number
+        text: Text
+        url: Text
     share:
       cancel: Cancel
       title: Share this Dataset

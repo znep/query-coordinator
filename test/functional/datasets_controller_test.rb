@@ -12,6 +12,9 @@ class DatasetsControllerTest < ActionController::TestCase
       :find_related => [@test_view],
       :user_granted? => false
     )
+    View.stubs(
+      :find => @test_view
+    )
     @view = View.new(
       'resourceName' => 'resource-name',
       'id' => 'four-four',

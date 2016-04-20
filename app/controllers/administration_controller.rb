@@ -726,8 +726,8 @@ class AdministrationController < ApplicationController
       return redirect_to :action => 'metadata'
     end
 
-    metadata = config.properties.fieldsets
-    fieldset = metadata[params[:fieldset].to_i]
+    metadata = config.properties.fieldsets || []
+    fieldset = metadata[params[:fieldset].to_i] || {}
 
     fieldset['fields'] ||= []
 

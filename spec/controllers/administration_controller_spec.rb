@@ -458,6 +458,34 @@ describe AdministrationController do
     end
   end
 
+  describe 'metadata' do
+
+    before(:each) do
+      init_current_user(controller)
+      allow_any_instance_of(ApplicationController).to receive(:default_url_options).and_return({})
+      allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
+      allow_any_instance_of(ApplicationController).to receive(:set_user)
+      allow_any_instance_of(ApplicationController).to receive(:set_meta)
+      allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
+      allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse('[{}]'))
+      allow_any_instance_of(Configuration).to receive(:update_or_create_property)
+      strings = Hashie::Mash.new
+      strings.site_title = 'My Site'
+      allow(CurrentDomain).to receive(:user_can?).with(anything, UserRights::EDIT_SITE_THEME).and_return(true)
+      allow(CurrentDomain).to receive(:strings).and_return(strings)
+    end
+
+    describe '#create_metadata_field' do
+      it 'post /metadata/:fieldset/create' do
+
+        post :create_metadata_field, :fieldset => 'foo', :newFieldName => 'new_fieldname'
+
+        expect(flash[:notice]).to include('Field Successfully Created')
+        expect(response).to redirect_to(:action => 'metadata')
+      end
+    end
+
+  end
   private
 
   def stub_admin_user

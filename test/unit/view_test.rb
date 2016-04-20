@@ -584,67 +584,87 @@ class ViewTest < Test::Unit::TestCase
     )
   end
 
-  def test_is_layered?
+  def test_is_multi_layered?
+    View.any_instance.stubs(:is_geospatial? => true)
+
     view_without_keys = View.new
-    assert_equal(false, view_without_keys.is_layered?)
+    refute view_without_keys.is_multi_layered?, 'View without layers is definitely not multi-layered'
 
     json = {'metadata' => {'geo' => {'layers' => '4444-4444'}}}
     view_with_single_layer = View.new(json)
-    assert_equal(false, view_with_single_layer.is_layered?)
+    refute view_with_single_layer.is_multi_layered?, 'Single geoRows is not multi-layered'
 
     json = {'metadata' => {'geo' => {'layers' => '4444-4444,5555-5555'}}}
     view_with_multiple_layers = View.new(json)
-    assert(view_with_multiple_layers.is_layered?)
+    assert view_with_multiple_layers.is_multi_layered?, 'Multiple geoRows is multi-layered'
 
     json = {'displayFormat' => {'viewDefinitions' => [{'uid' => 'self'}]}}
     derived_view_from_single_dataset = View.new(json)
-    assert_equal(false, derived_view_from_single_dataset.is_layered?)
+    refute derived_view_from_single_dataset.is_multi_layered?, 'View definitions only referencing self is not multi-layered'
 
     json = {'displayFormat' => {'viewDefinitions' =>
        [ {'uid' => 'self'}, {'uid' => '4444-4444'} ]}}
     derived_view_from_multiple_datasets = View.new(json)
-    assert(derived_view_from_multiple_datasets.is_layered?)
+    assert derived_view_from_multiple_datasets.is_multi_layered?, 'View definitions referencing other view is multi-layered'
   end
 
   def test_geospatial_child_layers
     View.stubs(:find_multiple => ['giraffes'])
+
+    view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {}})
+    view.stubs(:is_geospatial? => true)
+    assert_equal(view.geospatial_child_layers, [])
+
     view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {'layers' => '4444-4444'}})
     view.stubs(:is_geospatial? => true)
-    view.stubs(:is_layered? => true)
     assert_equal(view.geospatial_child_layers, ['giraffes'])
+
+    view = View.new('id' => '1234-1234', 'metadata' => {'geo' => {'layers' => '4444-4444'}})
     view.stubs(:is_geospatial? => false)
     assert_equal(view.geospatial_child_layers, [])
   end
 
-  def test_api_foundry_url
-    stub_core_server_connection
-    CurrentDomain.stubs(:cname => 'giraffes')
+  def test_preferred_id
     view = View.new('id' => '1234-1234')
+    View.any_instance.stubs(:new_backend? => false)
     View.any_instance.stubs(:migrations => {})
+    assert_equal('1234-1234', view.preferred_id)
+
+    view = View.new('id' => '1234-1234')
+    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
+    assert_equal('abcd-abcd', view.preferred_id)
+
+    view = View.new('id' => '1234-1234')
+    View.any_instance.stubs(:new_backend? => true)
+    assert_equal('1234-1234', view.preferred_id)
+  end
+
+  def test_api_foundry_url
+    CurrentDomain.stubs(:cname => 'giraffes')
+    View.any_instance.stubs(:preferred_id => '1234-1234')
+    view = View.new('id' => '1234-1234')
+
     assert_equal('https://dev.socrata.com/foundry/giraffes/1234-1234', view.api_foundry_url)
     view.stubs(:federated? => true, :domainCName => 'wombats')
     assert_equal('https://dev.socrata.com/foundry/wombats/1234-1234', view.api_foundry_url)
-    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
-    assert_equal('https://dev.socrata.com/foundry/wombats/abcd-abcd', view.api_foundry_url)
   end
 
   def test_resource_url_uses_proper_scheme
-    stub_core_server_connection
-    View.any_instance.stubs(:migrations => {})
-
+    View.any_instance.stubs(:preferred_id => '1234-1234')
     view = View.new('id' => '1234-1234')
+
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url)
     mock_request = stub
     mock_request.stubs(:scheme => 'https')
     assert_equal('https://localhost/resource/1234-1234.json', view.resource_url(mock_request))
     mock_request.stubs(:scheme => 'http')
     assert_equal('http://localhost/resource/1234-1234.json', view.resource_url(mock_request))
-    View.any_instance.stubs(:migrations => {:nbeId => 'abcd-abcd'})
-    assert_equal('http://localhost/resource/abcd-abcd.json', view.resource_url(mock_request))
   end
 
   def test_odata_url_uses_proper_scheme
+    View.any_instance.stubs(:preferred_id => '1234-1234')
     view = View.new('id' => '1234-1234')
+
     assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url)
     mock_request = stub
     mock_request.stubs(:scheme => 'https')

@@ -15,19 +15,68 @@
 
       <div class="entry-actions">
         <div class="btn-group">
-          <button class="btn btn-default grid btn-sm">
+          <button class="btn btn-default btn-sm grid">
             <%= t('dataset_landing_page.action_buttons.data') %>
           </button>
-          <button class="btn btn-default download btn-sm dropdown-orientation-bottom">
-            <%= t('dataset_landing_page.action_buttons.download') %>
-          </button>
-          <button class="btn btn-default api btn-sm" data-flannel="api-flannel" data-toggle>
+          <%- if @view.downloadOverride -%>
+            <a href="<%= @view.downloadOverride %>" class="btn btn-default btn-sm download">
+              <%= t('dataset_landing_page.action_buttons.download') %>
+            </a>
+          <%- else -%>
+            <button class="dropdown btn btn-default download btn-sm" data-dropdown data-orientation="bottom">
+              <%= t('dataset_landing_page.action_buttons.download') %>
+              <ul class="dropdown-options">
+                <%- export_formats.each do |export_format| -%>
+                  <li>
+                    <a href="<%= export_format[:url] %>"><%= export_format[:label] %></a>
+                  </li>
+                <%- end -%>
+
+                <%- if @view.geospatial_child_layer_count == 1 -%>
+                  <li>
+                    <a href="<%= @view.geospatial_child_layers.first.download_path('csv') %>">
+                      <%= t('dataset_landing_page.download.csv_without_geo') %>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="<%= @view.geospatial_child_layers.first.download_path('json') %>">
+                      <%= t('dataset_landing_page.download.json_without_geo') %>
+                    </a>
+                  </li>
+                <%- elsif @view.geospatial_child_layer_count > 1 -%>
+                  <%- @view.geospatial_child_layers.each do |child_layer| -%>
+                    <li class="geo-layer-heading"><%= child_layer.name %></li>
+
+                    <li class="geo-layer-export">
+                      <a href="<%= child_layer.download_path('csv') %>">
+                        <%= t('dataset_landing_page.download.csv_without_geo') %>
+                      </a>
+                    </li>
+
+                    <li class="geo-layer-export">
+                      <a href="<%= child_layer.download_path('json') %>">
+                        <%= t('dataset_landing_page.download.json_without_geo') %>
+                      </a>
+                    </li>
+                  <%- end -%>
+                <%- end -%>
+              </ul>
+            </button>
+          <%- end -%>
+          <button class="btn btn-default btn-sm api" data-flannel="api-flannel" data-toggle>
             <%= t('dataset_landing_page.action_buttons.api') %>
           </button>
-          <button class="btn btn-default share btn-sm" data-modal="share-modal">
+          <button class="btn btn-default btn-sm share" data-modal="share-modal">
             <%= t('dataset_landing_page.action_buttons.share') %>
           </button>
-          <button class="btn btn-default share btn-sm"><span class="icon-waiting"></span></button>
+          <button class="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
+            <span class="icon-waiting"></span>
+            <ul class="dropdown-options">
+              <li><a class="option"><%= t('dataset_landing_page.action_buttons.contact_owner') %></a></li>
+              <li><a class="option" data-modal="odata-modal"><%= t('dataset_landing_page.action_buttons.odata') %></a></li>
+            </ul>
+          </button>
         </div>
       </div>
     </div>
@@ -64,3 +113,4 @@
 
 <%= render :partial => 'dataset_landing_page_api_flannel' %>
 <%= render :partial => 'dataset_landing_page_share_modal' %>
+<%= render :partial => 'dataset_landing_page_odata_modal' %>

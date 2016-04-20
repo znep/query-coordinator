@@ -9,7 +9,7 @@
   </div>
   <%- if @view.is_geo? -%>
   <div class="layerTableDownloads">
-    <%- if @view.is_layered? -%>
+    <%- if @view.is_multi_layered? -%>
       <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.multilayer_header') %></label>
     <%- else -%>
       <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.monolayer_header') %></label>

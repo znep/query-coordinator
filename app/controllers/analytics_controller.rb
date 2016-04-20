@@ -131,7 +131,7 @@ module ClientAnalyticsHelper
                               domain-intern/js-cardsview-page-load-time
                               domain-intern/js-cardsview-region-filter-time
                               domain-intern/js-cardsview-spatial-lens-service-time
-                              domain-intern/js-cardsview-suggest-service-time
+                              domain-intern/js-cardsview-suggestion-service-time
                               domain-intern/js-cardsview-table-column-sort-time
                               domain-intern/js-cardsview-timeline-filter-time
                               domain-intern/js-page-load-samples

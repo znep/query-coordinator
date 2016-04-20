@@ -21,7 +21,7 @@ class FilterContainer extends React.Component {
     this.datasetId = this.props.datasetId;
 
     this.onClickToggleFilters = this.onClickToggleFilters.bind(this);
-    this.onClickNewFilter = this.onClickNewFilter.bind(this);
+    this.onChangeAddFilter = this.onChangeAddFilter.bind(this);
     this.onClickClearAllFilters = this.onClickClearAllFilters.bind(this);
 
     this.handleFilterAddition = this.handleFilterAddition.bind(this);
@@ -59,21 +59,32 @@ class FilterContainer extends React.Component {
   }
 
   // LOGIC
-  onClickNewFilter(e) {
-    var newFilterObj = {
-      id: $(e.target).attr('id'),
-      type: $(e.target).data('type'),
-      name: $(e.target).data('name'),
-      displayName: $(e.target).data('displayname'),
-      data: null
-    };
+  onChangeAddFilter(e) {
 
-    var aFilters = this.state.filters;
-    aFilters.push(newFilterObj);
-    this.setState({ filters: aFilters });
+    var options = e.target.options;
 
-    $('body').addClass('is-modal-open');
-    $('.qfb-row-filters').removeClass('hidden-xs');
+    for (var i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected && $(options[i]).attr('id')) {
+        var $selectedOption = $(options[i]);
+
+        var newFilterObj = {
+          id: $selectedOption.attr('id'),
+          type: $selectedOption.data('type'),
+          name: $selectedOption.data('name'),
+          displayName: $selectedOption.data('displayname'),
+          data: null
+        };
+
+        var aFilters = this.state.filters;
+        aFilters.push(newFilterObj);
+        this.setState({ filters: aFilters });
+
+        $('body').addClass('is-modal-open');
+        $('.qfb-row-filters').removeClass('hidden-xs');
+
+        $('option:selected', this).removeAttr('selected');
+      }
+    }
   }
 
   onClickToggleFilters() {
@@ -106,7 +117,7 @@ class FilterContainer extends React.Component {
         case 'int':
           if (filter.data.val1 && filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'valueRange';// eslint-disable-line dot-notation
+            filterObj['function'] = 'valueRange';
             filterObj.arguments = {
               start: filter.data.val1,
               end: filter.data.val2
@@ -115,7 +126,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val1) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: filter.data.val1
@@ -124,7 +135,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '<',
               operand: filter.data.val2
@@ -136,7 +147,7 @@ class FilterContainer extends React.Component {
           break;
         case 'string':
           filterObj.columnName = filter.name;
-          filterObj.function = 'binaryOperator'; // eslint-disable-line dot-notation
+          filterObj['function'] = 'binaryOperator';
 
           if (filter.data.length > 1) {
             var aArguments = [];
@@ -157,11 +168,11 @@ class FilterContainer extends React.Component {
           break;
         case 'calendar_date':
           filterObj.columnName = filter.name;
-          filterObj.function = 'binaryOperator'; // eslint-disable-line dot-notation
+          filterObj['function'] = 'binaryOperator';
 
           if (filter.data.val1 && filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: moment(filter.data.val1).format('YYYY-MM-DD')
@@ -178,7 +189,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj2);
           } else if (filter.data.val1) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '>=',
               operand: moment(filter.data.val1).format('YYYY-MM-DD')
@@ -187,7 +198,7 @@ class FilterContainer extends React.Component {
             modifiedFilters.push(filterObj);
           } else if (filter.data.val2) {
             filterObj.columnName = filter.name;
-            filterObj.function = 'binaryOperator';// eslint-disable-line dot-notation
+            filterObj['function'] = 'binaryOperator';
             filterObj.arguments = {
               operator: '<',
               operand: moment(filter.data.val2).format('YYYY-MM-DD')
@@ -232,42 +243,39 @@ class FilterContainer extends React.Component {
 
   // RENDERING
   render() {
+
     var filterOptions = this.state.filterOps.map((filter, i) => {
       var aFiltersApplied = this.state.filters;
-
       if (aFiltersApplied.length > 0) {
         var filterApplied = false;
         for (var j = 0; j < aFiltersApplied.length; j++) {
-          if (aFiltersApplied[j].id == filter.id) {
+          if (aFiltersApplied[j].name == filter.name) {
             filterApplied = true;
             break;
           }
         }
 
         if (filterApplied) {
-          return <li id={ filter.id }
+          return <option id={ filter.id }
             key={i}
-            className="disabled"
             title="Filter already in use"
             data-type={filter.type}
             data-name={filter.name}
             data-displayname={filter.filterName}
-            onClick={ this.onClickNewFilter }>{ filter.filterName }</li>;
+            disabled>{ filter.filterName }</option>;
         } else {
-          return <li id={ filter.id }
+          return <option id={ filter.id }
             key={i}
             data-type={filter.type}
             data-name={filter.name}
-            data-displayname={filter.filterName}
-            onClick={ this.onClickNewFilter }>{ filter.filterName }</li>;
+            data-displayname={filter.filterName}>{ filter.filterName }</option>;
         }
       } else {
-        return <li id={ filter.id }
+        return <option id={ filter.id }
           key={i}
           data-type={filter.type}
           data-name={filter.name}
-          data-displayname={filter.filterName}
-          onClick={ this.onClickNewFilter }>{ filter.filterName }</li>;
+          data-displayname={filter.filterName}>{ filter.filterName }</option>;
       }
     });
 
@@ -306,17 +314,13 @@ class FilterContainer extends React.Component {
     return  (
       <div id="qfb-container" className="container-fluid">
         <div className="qfb-row-main">
-          <div id="qfb-dropdown" className="qfb-dropdown dropdown">
-            <button type="button"
-                    className="btn btn-default btn-lg dropdown-toggle"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-              Add Filter <span className="caret"></span>
-            </button>
-            <ul className="dropdown-menu">
+          <div id="qfb-dropdown" className="qfb-select-container">
+            <span>Add Filter</span>
+            <i className="icon-arrow-down"></i>
+            <select className="qfb-select-filter-list" onChange={ this.onChangeAddFilter }>
+              <option>Add Filter</option>
               { filterOptions }
-            </ul>
+            </select>
           </div>
           { filtersMobileToggle }
         </div>
@@ -337,3 +341,4 @@ class FilterContainer extends React.Component {
 }
 
 export default FilterContainer;
+

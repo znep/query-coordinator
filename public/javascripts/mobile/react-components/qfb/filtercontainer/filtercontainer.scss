@@ -106,3 +106,36 @@
       margin-bottom: 0;
     }
 }
+
+
+.qfb-select-container {
+  position: relative;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  justify-content: space-between;
+  align-items: center;
+  width: 140px;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  color: #333333;
+  font-family: 'Open Sans', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 18px;
+  margin-right: 10px;
+  i {
+    font-size: 14px;
+  }
+}
+.qfb-select-filter-list {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: transparent;
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  font-family: 'Open Sans', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 14px;
+  opacity: 0;
+}

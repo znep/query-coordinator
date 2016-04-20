@@ -215,6 +215,10 @@ blist.namespace.fetch('blist.datatypes');
     // Percent
     var renderPercent = function(value, column, plainText, inMenu)
     {
+        if ($.deepGet(column, 'view', 'newBackend') && !_.isUndefined(value)) {
+          value = value * 100;
+        }
+
         if (plainText || inMenu)
         {
             return numberHelper(value, column.format.precision,

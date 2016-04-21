@@ -235,6 +235,7 @@ a {
 	
 	&.facet-bar-desktop {
 		display: none;
+		margin-top: 49px;
 		@include media($tablet) {
 			display: inherit;
 		}
@@ -471,6 +472,11 @@ a {
 		@include span-columns(9);
 	}
 
+}
+
+
+.results-info {
+	margin-bottom: ms(3);
 }
 
 

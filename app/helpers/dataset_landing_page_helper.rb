@@ -263,4 +263,18 @@ module DatasetLandingPageHelper
   def schema_table_column_count
     7
   end
+
+  def custom_metadata_fieldsets
+    custom_metadata = @view.merged_metadata['custom_fields']
+
+    return nil if custom_metadata.blank?
+
+    merge_custom_metadata(@view).select do |fieldset|
+      fieldset.fields.present? && fieldset.fields.any? do |field|
+        (custom_metadata[fieldset.name] || {})[field.name].present?
+      end
+    end.map do |fieldset|
+      fieldset.merge(existing_fields: custom_metadata.try(:assoc, fieldset.name).try(:[], 1) || {})
+    end
+  end
 end

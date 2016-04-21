@@ -302,7 +302,31 @@
         </div>
       </div>
 
-      <div class="metadata-column tables">
+      <div class="metadata-column tables collapsed">
+
+        <%- if custom_metadata_fieldsets.present? -%>
+          <%- custom_metadata_fieldsets.each do |fieldset| -%>
+            <div class="metadata-table">
+              <h5 class="metadata-table-title">
+                <%= fieldset.name %>
+              </h5>
+
+              <table class="table-condensed table-borderless table-discrete table-striped">
+                <tbody>
+                  <%- fieldset.fields.each do |field| -%>
+                    <tr>
+                      <td><%= field.displayName || field.name %></td>
+                      <td><%= raw(auto_link(h(fieldset.existing_fields[field.name]) || '',
+                              :html => { :rel => 'nofollow noreferrer external' })) %>
+                      </td>
+                    </tr>
+                  <%- end -%>
+                </tbody>
+              </table>
+            </div>
+          <%- end -%>
+        <%- end -%>
+
         <div class="metadata-table">
           <%- if @view.metadata && @view.metadata.attachments.present? -%>
             <h5 class="metadata-table-title">
@@ -324,7 +348,9 @@
               </tbody>
             </table>
           <%- end -%>
+        </div>
 
+        <div class="metadata-table">
           <h5 class="metadata-table-title">
             <%= t('dataset_landing_page.metadata.topics') %>
           </h5>
@@ -358,7 +384,9 @@
               </tr>
             </tbody>
           </table>
+        </div>
 
+        <div class="metadata-table">
           <h5 class="metadata-table-title">
             <%= t('dataset_landing_page.metadata.licensing') %>
           </h5>
@@ -384,6 +412,26 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div class="metadata-table-toggle-group desktop">
+          <a class="metadata-table-toggle more">
+            <%= t('dataset_landing_page.more') %>
+          </a>
+
+          <a class="metadata-table-toggle less">
+            <%= t('dataset_landing_page.less') %>
+          </a>
+        </div>
+
+        <div class="metadata-table-toggle-group mobile">
+          <button class="btn btn-block btn-default metadata-table-toggle more mobile">
+            <%= t('dataset_landing_page.more') %>
+          </button>
+
+          <button class="btn btn-block btn-default metadata-table-toggle less mobile">
+            <%= t('dataset_landing_page.less') %>
+          </button>
         </div>
       </div>
     </div>

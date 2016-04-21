@@ -308,6 +308,11 @@
     float: left;
   }
 
+  .component-html {
+    @include word-wrap(break-word);
+    @include hyphens(auto);
+  }
+
   .profiler-results {
     top: 0 !important;
   }

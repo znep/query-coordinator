@@ -118,7 +118,8 @@ module VersionAuthority
   def self.set_manifest(key, user, manifest)
     name = manifest_key(key, user)
     Rails.logger.info("Writing manifest #{name} to cache #{manifest.to_json}")
-    Rails.cache.write(name, manifest, :expires_in => 168.hours)
+    expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || 168.hours
+    Rails.cache.write(name, manifest, :expires_in => expiry)
     manifest.hash
   end
 

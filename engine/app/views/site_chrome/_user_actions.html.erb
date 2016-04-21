@@ -1,0 +1,9 @@
+<% if logged_in? %>
+  <%= content_tag(:span, nil, :class => 'divider') %>
+  <%= link_to('/profile', :class => 'profile-link') do %>
+    <%= content_tag(:span, nil, :class => 'icon-user')  %>
+    <%= username %>
+  <% end %>
+<% else %>
+  <%= link_to('Sign In', '/login', :class => "sign-in-toggle btn") %>
+<% end %>

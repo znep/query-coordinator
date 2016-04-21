@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 # source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
 ruby '2.3.0'
 
+gem 'chrome', '0.0.1', :path => 'engine'
+
 gem 'httparty'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -37,6 +39,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 group :test do
   gem 'webmock'
+  gem 'sqlite3'
 end
 
 group :development, :test do

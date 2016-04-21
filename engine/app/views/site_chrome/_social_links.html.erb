@@ -1,0 +1,7 @@
+<% @general[:social_shares].each do |social_share| %>
+  <% label = localized("general.social_shares.#{social_share[:type]}", @locales) %>
+  <%= link_to(social_share[:url], :class => 'nav-link social-link') do %>
+    <%= content_tag(:span, nil, :class => social_link_classname(social_share[:type]), :title => label) %>
+    <%= label if show_label %>
+  <% end %>
+<% end %>

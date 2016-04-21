@@ -1,0 +1,80 @@
+{
+  "updatedAt": "123546789",
+  "content": {
+    "footer": {
+      "logo": {
+        "alt": "Evergreen",
+        "src": "http://i.imgur.com/rF2EJ4P.gif",
+        "href": "#"
+      },
+      "styles": {
+        "fg_color": "yellow",
+        "bg_color": "blue"
+      },
+      "links": [
+        "/",
+        "http://www.socrata.com/terms-of-service",
+        "http://www.socrata.com/privacy/",
+        "http://www.socrata.com/accessibility/",
+        "http://www.socrata.com/contact-us/"
+      ]
+    },
+    "locales": {
+      "en": {
+        "footer": [
+          "Home Page",
+          "Terms of Service",
+          "Privacy Policy",
+          "Contact Us",
+          "Accessibility"
+        ],
+        "header": [
+          "Home Page",
+          "Support",
+          "Catalog",
+          "Evergreen",
+          "Developers"
+        ]
+      }
+    },
+    "general": {
+      "social_shares": [
+        {
+          "label": "Like us on Facebook",
+          "type": "facebook",
+          "url": "http://facebook.com"
+        },
+        {
+          "label": "Follow us on Twitter",
+          "type": "twitter",
+          "url": "http://twitter.com"
+        }
+      ],
+      "link_text_color": "blue",
+      "site_display_name": "City of Evergreen",
+      "styles": {
+        "fg_color": "#fff",
+        "bg_color": "#2c97de",
+        "font_family": "Open Sans"
+      }
+    },
+    "header": {
+      "logo": {
+        "alt": "test header",
+        "src": "http://i.imgur.com/rF2EJ4P.gif",
+        "href": "#"
+      },
+      "styles": {
+        "fg_color": "pink",
+        "bg_color": "blue"
+      },
+      "links": [
+        "/",
+        "/browse",
+        "http://dev.socrata.com",
+        "https://support.socrata.com",
+        "http://data.evergreen.gov"
+      ]
+    }
+  }
+}

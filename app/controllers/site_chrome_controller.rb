@@ -11,7 +11,7 @@ class SiteChromeController < ApplicationController
   private
 
   def get_site_chrome
-    domain_config = Chrome::DomainConfig.new(ENV['DOMAIN'], localhost?)
+    domain_config = Chrome::DomainConfig.new(ENV['DOMAIN'] || 'local.dev', localhost?)
     site_chrome_config = domain_config.to_site_chrome_config
     Chrome::SiteChrome.new(site_chrome_config)
   end

@@ -1,4 +1,6 @@
-<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => Rails.application.config.cache_ttl_fragment do -%>
+<%-
+  expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || Rails.application.config.cache_ttl_fragment
+  prerendered_cache @cache_key, @cached_fragment, :expires_in => expiry do -%>
 
 <%- if !@minimal_render -%>
   <%- context_result = @page.set_context(@vars) -%>

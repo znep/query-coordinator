@@ -248,7 +248,8 @@ private
   def self.set_cached_ds(cache_key, ds)
     snapped = Snappy.deflate(Marshal.dump(ds))
     Rails.logger.info("Compressed size of pages structure #{snapped.size}")
-    Rails.cache.write(cache_key, snapped, :expires_in => 24.hours, :raw => true)
+    expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || 24.hours
+    Rails.cache.write(cache_key, snapped, :expires_in => expiry, :raw => true)
   end
 
   def self.cache_time

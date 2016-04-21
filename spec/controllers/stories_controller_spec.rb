@@ -590,7 +590,6 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
-
         it 'redirects' do
           get :preview, uid: 'notf-ound'
           expect(response).to have_http_status(302)
@@ -934,10 +933,10 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no matching story' do
-          it 'redirects' do
-            get :edit, uid: 'notf-ound'
-            expect(response).to have_http_status(302)
-          end
+        it 'redirects' do
+          get :edit, uid: 'notf-ound'
+          expect(response).to have_http_status(302)
+        end
       end
     end
   end
@@ -973,6 +972,23 @@ RSpec.describe StoriesController, type: :controller do
 
     before do
       stub_valid_session
+    end
+
+    describe '#show' do
+      let(:action) { :show }
+      let(:view) { nil }
+      let(:get_request) { get action, uid: 'test-test' }
+
+      before do
+        allow(CoreServer).to receive(:get_view).and_return(view)
+      end
+
+      context 'when the metadb view doesn\'t exist' do
+        it '404s' do
+          get_request
+          expect(response.status).to eq(404)
+        end
+      end
     end
 
     describe '#edit' do

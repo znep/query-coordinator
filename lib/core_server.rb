@@ -15,6 +15,10 @@ class CoreServer
     get_view(uid).present?
   end
 
+  def self.view_inaccessible?(uid)
+    !view_accessible?(uid)
+  end
+
   def self.update_view(uid, view_data, query_params = nil)
     options = { uid: uid, verb: :put, body: view_data, query_params: query_params, path: view_url(uid) }
     response = core_server_http_request(options)

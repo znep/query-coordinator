@@ -549,13 +549,11 @@ a {
 					  				font-size: ms(0);
 					  			}
 				  				.stat-details {
-				  					//@include span-columns(5);
-				  					@include span-columns(2); //MVP
+				  					@include span-columns(5);
 								}
 								.type-details {
-				  					//@include span-columns(2);
-				  					//@include shift(1);
-				  					@include span-columns(2); //MVP
+				  					@include span-columns(2);
+				  					@include shift(1);
 				  					border-top: none;
 				  					.detail-group {
 				  						margin-top: ms(-8);

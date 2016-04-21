@@ -1085,6 +1085,30 @@ describe('CardDataService', function() {
     });
   });
 
+  describe('getChoroplethRegionsUsingSourceColumn', function() {
+    it('uses the extent to fetch regions by default', function() {
+      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
+      var TEST_FIELD_NAME = 'location';
+      var fake4x4 = 'four-four';
+      var urlMatcher = new RegExp(
+        '/resource/{1}\\.json\\?%24select=extent(\\(|%28){0}(\\)|%29)'.
+          format(TEST_FIELD_NAME, fake4x4)
+      );
+      $httpBackend.expectGET(urlMatcher).respond(TEST_RESPONSE);
+      $httpBackend.expectGET(/where=intersects/).respond([]);
+      CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
+      $httpBackend.flush();
+    });
+
+    it('uses the custom polygon to fetch regions if it is present', function() {
+      ServerConfig.override('choroplethCustomBoundary', 'asdf');
+      $httpBackend.expectGET(/where=within_polygon\(the_geom%2C\'asdf\'\)/).respond([]);
+      CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
+      $httpBackend.flush();
+      ServerConfig.override('dataLensChoroplethCustomBoundary', null);
+    });
+  });
+
   describe('getSampleData', function() {
     var TEST_FIELD_NAME = 'my test field';
     it('should format the request correctly', function() {

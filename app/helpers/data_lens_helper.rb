@@ -64,9 +64,15 @@ module DataLensHelper
         js_config_key = config_key.camelize(:lower)
         config.merge!(js_config_key => APP_CONFIG[config_key])
       end
+
       FeatureFlags.list.each do |feature_key|
         js_feature_key = feature_key.camelize(:lower)
         config.merge!(js_feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])
+      end
+
+      data_lens_config.each do |key, value|
+        js_key = key.camelize(:lower)
+        config.merge!(js_key => value)
       end
     end
   end
@@ -82,6 +88,10 @@ module DataLensHelper
 
   def theme
     configuration_by_type('theme_v3')
+  end
+
+  def data_lens_config
+    configuration_by_type('data_lens_config') || {}
   end
 
   def configuration_by_type(key)

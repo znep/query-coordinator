@@ -559,12 +559,35 @@ ${JSON.stringify(errors)}`
 
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-      // http://dataspace-demo.test-socrata.com/resource/vtvh-wqgq.json?$select=extent(point)
-      var url = $.baseUrl(`/resource/${datasetId}.json`);
-      url.searchParams.set('$select', `extent(${datasetSourceColumn})`);
-
       var config = httpConfig.call(this);
       var self = this;
+
+      var geoJsonUrl;
+      var geoJsonConfig = httpConfig.call(self, {
+        headers: {
+          Accept: 'application/vnd.geo+json'
+        }
+      });
+
+      // If the feature flag specifying a custom polygon for the regions exists, immediately fetch
+      // all regions contained completely in this region and return.
+      var customBoundary = ServerConfig.get('choroplethCustomBoundary');
+      if (customBoundary) {
+        geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);
+        geoJsonUrl.searchParams.set('$select', '*');
+        geoJsonUrl.searchParams.set('$where', `within_polygon(the_geom,'${customBoundary}')`);
+        geoJsonUrl.searchParams.set('$limit', shapefileRegionQueryLimit());
+
+        return http.get(geoJsonUrl.href, geoJsonConfig).
+          then(function(geoJsonResponse) {
+            return geoJsonResponse.data;
+          });
+      }
+
+      // Otherwise, fetch all regions that intersect the rectangle containing all the points in
+      // the source location column.
+      var url = $.baseUrl(`/resource/${datasetId}.json`);
+      url.searchParams.set('$select', `extent(${datasetSourceColumn})`);
 
       return http.get(url.href, config).then(function(response) {
         if (response.status === 200) {
@@ -606,21 +629,13 @@ ${JSON.stringify(errors)}`
             });
           }
 
-          //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
-          //  the_geom,
-          //  'MULTIPOLYGON(((-71.153911%2042.398355,-71.153911%2042.354528,-71.076298%2042.354528,-71.076298%2042.398355,-71.153911%2042.398355)))')
           var multiPolygon = `'MULTIPOLYGON(((${extent.bottomLeft},${extent.topLeft},${extent.topRight},${extent.bottomRight},${extent.bottomLeft})))'`;
 
-          var geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);
+          geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);
           geoJsonUrl.searchParams.set('$select', '*');
           geoJsonUrl.searchParams.set('$where', `intersects(the_geom,${multiPolygon})`);
           geoJsonUrl.searchParams.set('$limit', shapefileRegionQueryLimit());
 
-          var geoJsonConfig = httpConfig.call(self, {
-            headers: {
-              Accept: 'application/vnd.geo+json'
-            }
-          });
           return http.get(geoJsonUrl.href, geoJsonConfig).
             then(function(geoJsonResponse) {
               return geoJsonResponse.data;

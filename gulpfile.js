@@ -8,5 +8,5 @@ gulp.task('prototypes', require('./tasks/prototypes.js'));
 gulp.task('sass', ['font'], require('./tasks/sass.js'));
 gulp.task('watch', require('./tasks/watch.js'));
 
-gulp.task('dist', ['clean', 'copy', 'sass', 'javascript', 'font']);
+gulp.task('dist', ['clean', 'copy', 'sass', 'prototypes', 'javascript', 'font']);
 gulp.task('default', ['dist']);

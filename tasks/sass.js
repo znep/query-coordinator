@@ -1,6 +1,6 @@
 var async = require('async');
 var banner = require('./helpers/banner.js');
-var browsers = require('./helpers/browsers.js');
+var browsers = require('./helpers/browsers.js')();
 var gulp = require('gulp');
 var includePaths = require('./helpers/includePaths.js')();
 

@@ -17,9 +17,6 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
-api_geospatial_hack:
-  description: When enabled, views matching the is_api_geospatial? criteria will attempt to render as a split map/table by default. See EN-3889 for details.
-  defaultValue: false
 asset_inventory:
   description: Controls asset inventory controls and buttons are shown
   defaultValue: false

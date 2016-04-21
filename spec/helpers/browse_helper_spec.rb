@@ -8,10 +8,6 @@ describe BrowseHelper do
     allow(FeatureFlags).
       to receive(:derive).
       and_return(feature_flag_mock)
-
-    allow(feature_flag_mock).
-      to receive(:api_geospatial_hack).
-      and_return(false)
   end
 
   describe '#join_and_truncate_array' do

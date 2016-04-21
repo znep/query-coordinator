@@ -131,6 +131,18 @@ a {
 
 
 .page-content {
+
+
+	.more-link {
+		display: none;
+	}
+
+	@include breakpoint($desktop) {
+		.more-link {
+			display: inline;
+		}
+	}
+
 	@include outer-container();
 	.lp-section {
 
@@ -165,7 +177,7 @@ a {
 				}
 			}
 
-			@include media($tablet) {
+			@include media($desktop) {
 				@include row();
 			}
 
@@ -189,11 +201,28 @@ a {
 			}
 		}
 
+
 		//featured content
 		.result-card {
 
 			.img-wrapper:hover {
 				cursor: pointer;
+			}
+
+			&.loading-card {
+				.img-wrapper {
+					margin-left: 40%;
+					margin-top: 50%;
+				}
+			}
+
+			@include breakpoint($desktop) {
+				&.loading-card {
+					display: none;
+				}
+				&.last {
+					margin-right: 0;
+				}
 			}
 
 			//MVP icons
@@ -220,10 +249,6 @@ a {
 					.x-large-icon {
 						color: #e28432;
 					}
-				}
-				.x-large-icon {
-					margin: 0 37%;
-					font-size: ms(15);
 				}
 			}
 
@@ -631,7 +656,7 @@ a {
 				color: $grey;
 			}
 
-			@include breakpoint($tablet) {
+			@include breakpoint($desktop) {
 				@include span-columns(8);
 					.infopane-name {
 
@@ -885,7 +910,7 @@ a {
 	h1, h4, h6 {
 		font-weight: 400;
 	}
-	.modal-header {
+	.modal-header-title {
 		max-width: 95%;
 	}
 
@@ -908,6 +933,15 @@ a {
 	}
 }
 
+.x-large-icon {
+	margin: 0 37%;
+	font-size: ms(15);
+}
+.x-large-spinner {
+	border-width: 7px;
+	width: 55px;
+	height: 55px;
+}
 /* .container {
 	@include outer-container();
   	margin-top: 80px;

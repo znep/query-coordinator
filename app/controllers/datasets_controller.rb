@@ -183,7 +183,7 @@ class DatasetsController < ApplicationController
       end
 
       @view.displayType = 'map'
-      @view.metadata ||= Metadata.new({
+      @view.metadata = Metadata.new({
         'geo' => {
           'bbox' => bbox,
           'bboxCrs' => 'EPSG:4326', # we always reproject to this reference system
@@ -194,8 +194,8 @@ class DatasetsController < ApplicationController
           'owsUrl' => "/api/geospatial/#{@view.id}"
         },
         'availableDisplayTypes' => %w(map table fatrow page),
-        'renderTypeConfig' => { 'visible' => { 'map' => true, 'table' => true } }
-      })
+        'renderTypeConfig' => { 'visible' => { 'map' => true } }
+      }.deep_merge(@view.metadata.try(:data) || {}))
     end
 
     # add geo parent information if this view is a child layer

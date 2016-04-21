@@ -92,7 +92,14 @@ class View < Model
 
   # NBE geospatial datasets created via API end up with weird metadata.
   def is_api_geospatial?
-    return false unless FeatureFlags.derive.api_geospatial_hack
+    return false unless (merged_metadata['custom_fields'] || {}).reduce(false) do |acc, (fieldset, fields)|
+      # Customers must opt-in on a per-dataset basis by creating a custom metadata group called
+      # "Geospatial API Pre-release" with a field called "Enabled", then setting that field to "true"
+      # on the desired datasets.
+      #
+      # This can be implemented self-serve by customers; let's be forgiving.
+      acc || (fieldset =~ /^geo-?spatial api pre-?release$/i && (fields['Enabled'] || fields['enabled']) == 'true')
+    end
 
     nbe_only = new_backend? && obe_view.nil?
     has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }

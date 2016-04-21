@@ -1,13 +1,12 @@
 module Chrome
-    class ThemesController < Chrome::ApplicationController
+  class ThemesController < Chrome::ApplicationController
 
-    layout 'theme'
+    include Chrome::ApplicationHelper
+
+    layout nil # We don't want to use any layout at all for the CSS response body
 
     def custom
-      domain_config = Chrome::DomainConfig.new(ENV['DOMAIN'], localhost?)
-      site_chrome_config = domain_config.to_site_chrome_config
-      site_chrome = Chrome::SiteChrome.new(site_chrome_config)
-      @custom_themes = site_chrome.styles
     end
+
   end
 end

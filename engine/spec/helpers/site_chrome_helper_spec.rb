@@ -25,6 +25,33 @@ describe SiteChromeHelper do
     end
   end
 
+  describe '#username' do
+    it 'returns "Profile" if there is no current_user' do
+      expect(helper.username).to eq('Profile')
+    end
+
+    it 'returns the current_user displayName if there is a current_user' do
+      @current_user = { 'displayName' => 'derek zoolander' }
+      expect(helper.username).to eq('derek zoolander')
+    end
+  end
+
+  describe '#copyright' do
+    it 'returns only the copyright and year if there is no site name' do
+      allow(helper).to receive(:site_name).and_return(nil)
+      test_time = Time.parse('Jan 1 1984')
+      allow(Time).to receive(:now).and_return(test_time)
+      expect(helper.copyright).to eq("\u00A9 1984")
+    end
+
+    it 'returns the copyright and year and site name' do
+      allow(helper).to receive(:site_name).and_return(%Q(Seattle's silly data!))
+      test_time = Time.parse('Jan 1 1984')
+      allow(Time).to receive(:now).and_return(test_time)
+      expect(helper.copyright).to eq(%Q(\u00A9 1984, Seattle's silly data!))
+    end
+  end
+
   describe '#social_link_classname' do
     it 'returns the icon classname regardless of symbol vs string and capitalization' do
       result = helper.social_link_classname('FacEboOk')

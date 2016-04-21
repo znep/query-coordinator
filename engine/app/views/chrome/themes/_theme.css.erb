@@ -1,0 +1,16 @@
+<%# Defaults -%>
+<%== File.read("#{Chrome::Engine.root}/app/assets/stylesheets/chrome/_variables.scss") %>
+
+<%# Overrides -%>
+<%
+  custom_themes.keys.each do |theme_section|
+    section_styles = custom_themes[theme_section] || {}
+    section_styles.each do |style_key, style_value|
+      style_key_with_prefix = theme_variable_key(theme_section, style_key)
+      concat(raw("$#{style_key_with_prefix}: #{theme_value(style_key, style_value)};\n"))
+    end
+  end
+%>
+
+<%# Load template -%>
+<%== File.read("#{Chrome::Engine.root}/app/assets/stylesheets/chrome/site_chrome.scss") %>

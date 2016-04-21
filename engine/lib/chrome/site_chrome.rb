@@ -61,7 +61,8 @@ module Chrome
     private
 
     def localhost?(host = nil)
-      %w(local.dev localhost).include?(host) || !!ENV['LOCALHOST'].to_s.downcase == 'true'
+      %w(local.dev localhost).include?(host.downcase) || ENV['LOCALHOST'].to_s.downcase == 'true'
     end
+
   end
 end

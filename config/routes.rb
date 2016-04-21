@@ -3,7 +3,5 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
   mount Chrome::Engine => '/chrome'
 
-  root 'site_chrome#index'
-
-  get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }
+  root 'demo#index'
 end

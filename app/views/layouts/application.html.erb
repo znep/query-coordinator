@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Chrome</title>
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%#= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
-  <%= chrome_stylesheet_tag %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+  <head>
+    <title>Chrome</title>
+    <%= chrome_meta_viewport_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= chrome_stylesheet_tag %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= chrome_javascript_tag %>
+    <%= csrf_meta_tags %>
+    <%= render 'site_chrome/header' %>
+  </head>
 
-<%= yield %>
-
-</body>
+  <body>
+    <%= yield %>
+    <%= render 'site_chrome/footer' %>
+  </body>
 </html>

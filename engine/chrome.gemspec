@@ -9,15 +9,13 @@ Gem::Specification.new do |s|
   s.version     = Chrome::VERSION
   s.authors     = ['Randy Antler']
   s.email       = ['randy.antler@socrata.com']
-  s.homepage    = 'TODO'
-  s.summary     = 'TODO: Summary of Chrome.'
-  s.description = 'TODO: Description of Chrome.'
+  s.homepage    = 'https://github.com/socrata/chrome'
+  s.summary     = 'Header/footer/navbar.'
+  s.description = 'The "Chrome" is the header (including navigation bar) and footer of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.'
   s.license     = 'MIT'
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", 'README.rdoc']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'rails', '~> 4.2.6'
-
-  s.add_development_dependency 'sqlite3'
+  s.add_dependency 'rails', '~> 4.2', '>= 4.2.6'
 end

@@ -76,5 +76,6 @@ module Chrome
         "https://#{uri}"
       end
     end
+
   end
 end

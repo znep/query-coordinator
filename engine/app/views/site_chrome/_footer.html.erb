@@ -1,20 +1,20 @@
+<%- self.class.include Chrome::ApplicationHelper -%>
 <footer id="chrome-footer">
   <div class="content">
     <div class="logo">
-      <%= logo(@footer) %>
+      <%= logo(get_site_chrome.footer) %>
       <span class="site-name"><%= site_name %></span>
 
       <div class="social-links">
-        <%= render 'social_links', show_label: true %>
+        <%= render 'site_chrome/social_links', show_label: true %>
       </div>
     </div>
 
     <div class="links">
       <ul class="links-col">
-
-        <% @footer[:links].each do |link| %>
+        <% get_site_chrome.footer[:links].each do |link| %>
           <li>
-            <%= link_to(localized("footer.links.#{link[:key]}", @locales), link[:url], :class => 'footer-link') %>
+            <%= link_to(localized("footer.links.#{link[:key]}", get_site_chrome.locales), link[:url], :class => 'footer-link') %>
           </li>
         <% end %>
       </ul>

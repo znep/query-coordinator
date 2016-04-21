@@ -39,6 +39,9 @@ current_dataset_metadata_version:
 current_page_metadata_version:
   description: The current version of page metadata that the app should read and write.
   defaultValue: 1
+data_jobs_daterange:
+  description: Show daterange picker on data jobs page
+  defaultValue: false
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: post_beta

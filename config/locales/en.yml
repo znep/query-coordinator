@@ -1281,7 +1281,7 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
-    less: Less
+    less: Show Less
     metadata:
       attachments: Attachments
       category: Category
@@ -1300,7 +1300,7 @@ en:
       topics: Topics
       views: Views
     manage_prompt: Click here to manage permissions
-    more: More
+    more: Show More
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation

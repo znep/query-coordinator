@@ -12,9 +12,10 @@ module.exports = function(el, options) {
     after: '.collapse-toggle.more',
     watch: true,
     callback: function(isTruncated) {
-      if (isTruncated) {
+      var parentHeight = parent.getBoundingClientRect().height;
+      if (isTruncated && parentHeight !== originalHeight) {
         parent.dataset.collapsed = true;
-        collapsedHeight = collapsedHeight || parent.getBoundingClientRect().height;
+        collapsedHeight = collapsedHeight || parentHeight;
       } else {
         var toggles = Array.prototype.slice.call(el.querySelectorAll('.collapse-toggle'));
         toggles.forEach(function(toggle) {

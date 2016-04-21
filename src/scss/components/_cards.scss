@@ -314,7 +314,7 @@ $tablet: 749px;
     border-top: 1px solid $light-grey-3;
     .header-content {
       @include span-columns(12);
-      padding: ms(1) 0;
+      padding: ms(-3) 0 0;
     }
   }
 

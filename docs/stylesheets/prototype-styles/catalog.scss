@@ -482,7 +482,6 @@ a {
 
 
 
-
 .media-results {
 	//display: flex;
 	display: flex;
@@ -505,7 +504,7 @@ a {
 		border-top: 1px solid $light-grey-3;
 		.header-content {
 			@include span-columns(12);
-			padding: ms(1) 0;
+			
 		}
 	}
 

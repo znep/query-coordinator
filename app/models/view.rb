@@ -892,19 +892,19 @@ class View < Model
   end
 
   def time_created_at
-    Time.at(createdAt)
+    createdAt ? Time.at(createdAt) : nil
   end
 
   def time_data_last_updated_at
-    Time.at(rowsUpdatedAt)
+    rowsUpdatedAt ? Time.at(rowsUpdatedAt) : nil
   end
 
   def time_metadata_last_updated_at
-    Time.at(viewLastModified)
+    viewLastModified ? Time.at(viewLastModified) : nil
   end
 
   def time_last_updated_at
-    Time.at(last_activity)
+    last_activity ? Time.at(last_activity) : nil
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers

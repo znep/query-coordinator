@@ -1,6 +1,6 @@
 module DatasetLandingPageHelper
   def format_date(date)
-    date.to_s(:dslp)
+    date ? date.to_s(:dslp) : I18n.t('dataset_landing_page.metadata.no_value')
   end
 
   def format_number(number)

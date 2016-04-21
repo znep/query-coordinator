@@ -453,6 +453,39 @@ class ViewTest < Test::Unit::TestCase
     assert_equal([], view.find_dataset_landing_page_related_content)
   end
 
+  def test_time_created_at
+    view = View.new
+    assert_equal(view.time_created_at, nil)
+
+    view.stubs(:createdAt => 1445460290)
+    assert_equal(view.time_created_at.class, Time)
+  end
+
+  def test_time_data_last_updated_at
+    view = View.new
+    assert_equal(view.time_data_last_updated_at, nil)
+
+    view.stubs(:rowsUpdatedAt => 1445460290)
+    assert_equal(view.time_data_last_updated_at.class, Time)
+  end
+
+  def test_time_metadata_last_updated_at
+    view = View.new
+    assert_equal(view.time_metadata_last_updated_at, nil)
+
+    view.stubs(:viewLastModified => 1445460290)
+    assert_equal(view.time_metadata_last_updated_at.class, Time)
+  end
+
+  def test_time_last_updated_at
+    view = View.new
+    view.stubs(:last_activity => nil)
+    assert_equal(view.time_last_updated_at, nil)
+
+    view.stubs(:last_activity => 1445460290)
+    assert_equal(view.time_last_updated_at.class, Time)
+  end
+
   def test_visualization?
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')

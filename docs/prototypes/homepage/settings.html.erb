@@ -1,15 +1,18 @@
 ---
 title: Socrata Styleguide
-layout: prototype-homepage-settings
+layout: prototype
 ---
 
+<% content_for :page_css do %>
+  <link rel="stylesheet" href="/prototypes/homepage-settings.css">
+<% end %>
 
 <% content_for :page_js do %>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
 
 $(document).ready(function(){
-  
+
   $('ul.tabs li').click(function(){
     var tab_id = $(this).attr('data-tab-id');
 
@@ -25,7 +28,7 @@ $(document).ready(function(){
 
 
 
-<% end %> 
+<% end %>
 
 <div class="responsive-navbar">
   <img src="../../images/evergreen.png" />
@@ -37,7 +40,7 @@ $(document).ready(function(){
 
 
 <div class="container">
-  
+
   <div class="content">
 
     <div class="admin-header">
@@ -215,7 +218,7 @@ $(document).ready(function(){
         </tbody>
       </table>
      </form>
-   
+
 
      </section>
 
@@ -318,7 +321,7 @@ $(document).ready(function(){
       <button class="btn btn-small btn-default btn-sm"><span class="icon-add"></span> Add Link</button>
 
      </form>
-   
+
 
      </section>
 
@@ -345,7 +348,7 @@ $(document).ready(function(){
 
     </div><!-- /#tab-3 -->
 
- 
-  
+
+
   </div><!-- /.content -->
 </div><!-- /.container -->

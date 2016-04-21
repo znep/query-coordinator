@@ -1,8 +1,11 @@
 ---
 title: Homepage
-layout: prototype-homepage-view
+layout: prototype
 ---
 
+<% content_for :page_css do %>
+  <link rel="stylesheet" href="/prototypes/homepage-view.css">
+<% end %>
 
 <% content_for :page_js do %>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -18,7 +21,7 @@ $("#sign-in-toggle").on('click', function() {
 </script>
 
 
-<% end %> 
+<% end %>
 
 <div class="responsive-navbar">
   <img src="../../images/evergreen.png" />
@@ -36,20 +39,20 @@ $("#sign-in-toggle").on('click', function() {
     </ul>
     <span class="divider"></span>
     <ul class="nav-links">
-     
+
     </ul>
   </div>
 </div>
 
 
 <div class="container">
-  
+
   <div class="content">
 
-   
 
- 
-  
+
+
+
   </div><!-- /.content -->
 
   <footer>

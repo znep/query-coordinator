@@ -1,6 +1,8 @@
 var async = require('async');
 var banner = require('./helpers/banner.js');
+var browsers = require('./helpers/browsers.js');
 var gulp = require('gulp');
+var includePaths = require('./helpers/includePaths.js')();
 
 var autoprefixer = require('gulp-autoprefixer');
 var nano = require('gulp-cssnano');
@@ -9,18 +11,6 @@ var prepend = require('gulp-insert').prepend;
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
-
-var includePaths = [
-  ...require('node-bourbon').includePaths,
-  ...require('node-neat').includePaths,
-  'node_modules/breakpoint-sass/stylesheets',
-  'node_modules/modularscale-sass/stylesheets'
-];
-
-var browsers = [
-  'last 2 versions',
-  'ie >= 10'
-];
 
 function stream() {
   return gulp.src('src/scss/**/*.scss').

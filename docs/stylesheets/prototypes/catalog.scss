@@ -280,9 +280,9 @@ a {
   &.sort {
     margin-bottom: ms(4);
 
-    ul > li a.active:after {
-      font-family: "socrata-icons";
-      content: "\f10e";
+    ul > li a.active:before {
+      @extend .icon-chevron-down:before;
+
       font-size: ms(0);
       top: 15%;
       right: 1.3em;
@@ -347,9 +347,8 @@ a {
       color: $dark-grey-2;
       display: block;
       padding: ms(0) ms(-4);
-      &:after {
-        font-family: "socrata-icons";
-        content: "\f102";
+      &:before {
+        @extend .icon-arrow-down:before;
         position: absolute;
         right: 1.2em;
         line-height: 1.6;
@@ -388,9 +387,8 @@ a {
         &.active {
           border-left-color: $secondary;
 
-          &:after {
-            font-family: "icomoon";
-            content: "\e806";
+          &:before {
+            @extend .icon-chevron-down:before;
             font-size: ms(-2);
             position: absolute;
             right: 1.89em;

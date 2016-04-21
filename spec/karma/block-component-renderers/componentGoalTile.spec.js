@@ -38,6 +38,17 @@ describe('componentGoalTile jQuery plugin', function() {
     }
   };
 
+  var fakeDomainStrings = {
+    open_performance: {
+      measure: {
+        end_progress: {
+          bad: 'test override string'
+        }
+      }
+    }
+  };
+
+
   function mockGoalServerResponse(componentData, statusCode, responseJson) {
     var server = sinon.fakeServer.create();
     server.respondImmediately = true;
@@ -45,7 +56,7 @@ describe('componentGoalTile jQuery plugin', function() {
       'GET',
       StorytellerUtils.format(
         'https://example.com/stat/api/v1/goals/{0}.json',
-        validComponentData.value.goalUid
+        componentData.value.goalUid
       ),
       [
         statusCode,
@@ -75,6 +86,16 @@ describe('componentGoalTile jQuery plugin', function() {
       statusCode = 200;
     });
   }
+
+  before(function() {
+    sinon.stub(StorytellerUtils, 'fetchDomainStrings', function() {
+      return Promise.resolve(fakeDomainStrings);
+    });
+  });
+
+  after(function() {
+    StorytellerUtils.fetchDomainStrings.restore();
+  });
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -162,6 +183,14 @@ describe('componentGoalTile jQuery plugin', function() {
       );
     });
 
+    describe('for progress values whose translations have not been overridden', function() {
+      it('should render the goal metric progress with default status strings', function() {
+        var $progress = $component.find('.goal-tile-metric-progress');
+        assert.lengthOf($progress, 1);
+        assert.include($progress.text(), 'good');
+      });
+    });
+
     it('should render the goal metadata container', function() {
       assert.lengthOf(
         $component.find('.goal-tile-metadata-container'), 1
@@ -174,6 +203,20 @@ describe('componentGoalTile jQuery plugin', function() {
         $component.find('.goal-tile-title').text(),
         validGoalData.name
       );
+    });
+  });
+
+  describe('with progress values whose translations have been overridden', function() {
+    var validGoalDataWithBadProgress = _.cloneDeep(validGoalData);
+    validGoalDataWithBadProgress.prevailing_measure.computed_values.progress = { progress: 'bad' };
+    var validComponentDataWithDifferentUid = _.cloneDeep(validComponentData);
+    validComponentDataWithDifferentUid.value.goalUid = 'asdf-fdsa';
+
+    stubGoalJsonApiAndCreateGoalTile(validComponentDataWithDifferentUid, 200, validGoalDataWithBadProgress);
+    it('should render the goal metric progress with the overriden status strings', function() {
+      var $progress = $component.find('.goal-tile-metric-progress');
+      assert.lengthOf($progress, 1);
+      assert.include($progress.text(), 'test override string');
     });
   });
 });

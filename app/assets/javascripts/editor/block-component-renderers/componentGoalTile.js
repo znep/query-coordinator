@@ -9,6 +9,24 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.componentGoalTile = componentGoalTile;
 
+// Given a domain, returns a promise for an I18n.t style function that respects
+// the domain's string overrides.
+// The response is cached for the lifetime of the page.
+var fetchOpenPerformanceDomainI18n = _.memoize(function(domain) {
+  return StorytellerUtils.fetchDomainStrings('en', domain).then(function(domainStrings) {
+    // Storyteller javascript expects all localization strings to live under `editor`,
+    // for historical reasons. See EN-5158.
+    domainStrings = {
+      editor: domainStrings
+    };
+
+    return function(key) {
+      // Fetch from domain strings first, then fall back to storyteller strings
+      return _.get(domainStrings, key, I18n.t(key));
+    };
+  });
+});
+
 export default function componentGoalTile(componentData, theme, options) {
   var $this = $(this);
   var rerenderOnResizeTimeout;
@@ -16,13 +34,15 @@ export default function componentGoalTile(componentData, theme, options) {
   function _handleWindowResize() {
     clearTimeout(rerenderOnResizeTimeout);
 
-    rerenderOnResizeTimeout = setTimeout(
-      _renderGoalTile($this, componentData),
-      // Add some jitter in order to make sure multiple visualizations are
-      // unlikely to all attempt to rerender themselves at the exact same
-      // moment.
-      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
-    );
+    fetchOpenPerformanceDomainI18n(componentData.value.domain).then(function(domainI18n) {
+      rerenderOnResizeTimeout = setTimeout(
+        _renderGoalTile($this, domainI18n, componentData),
+        // Add some jitter in order to make sure multiple visualizations are
+        // unlikely to all attempt to rerender themselves at the exact same
+        // moment.
+        WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+      );
+    });
   }
 
   // Execution starts here
@@ -75,11 +95,15 @@ function _updateSrc($element, componentData) {
     // risk.
     $element.attr('data-rendered-goal-tile-url', goalTileSrc);
 
-    Promise.resolve($.get(goalTileSrc)).
+    Promise.all([
+      Promise.resolve($.get(goalTileSrc)),
+      fetchOpenPerformanceDomainI18n(componentData.value.domain)
+    ]).
       then(
-        function(goalTileData) {
-
-          _renderGoalTile($element, componentData, goalTileData);
+        function(resolutions) {
+          var goalTileData = resolutions[0];
+          var domainI18n = resolutions[1];
+          _renderGoalTile($element, domainI18n, componentData, goalTileData);
         }
       ).
       catch(
@@ -135,36 +159,19 @@ function _formatMetricValue(goalTileData) {
 function _formatMetricUnit(goalTileData) {
 
   return (_.get(goalTileData, 'prevailing_measure.unit') === 'percent') ?
-    I18n.t('editor.goal_tile.measure.unit_percent') :
+    I18n.t('editor.open_performance.measure.unit_percent') :
     _.get(goalTileData, 'prevailing_measure.unit');
 }
 
 function _expandSubtitle(goalTileData) {
   var customSubtitle = _.get(goalTileData, 'metadata.custom_subtitle');
   var defaultSubtitle = StorytellerUtils.format(
-    I18n.t('editor.goal_tile.measure.subheadline') || '',
+    I18n.t('editor.open_performance.measure.subheadline') || '',
     _.get(goalTileData, 'name'),
     _.get(goalTileData, 'prevailing_measure.unit')
   );
 
   return customSubtitle || defaultSubtitle;
-}
-
-function _expandProgress(progress, isEnded) {
-  var expandedProgress = null;
-
-  if (progress != null) {
-
-    expandedProgress = I18n.t(
-      StorytellerUtils.format(
-        'editor.goal_tile.measure.{0}progress.{1}',
-        ((isEnded) ? 'end_' : ''),
-        progress
-      )
-    );
-  }
-
-  return expandedProgress || progress;
 }
 
 function _formatEndDate(endDate) {
@@ -177,7 +184,24 @@ function _formatEndDate(endDate) {
   );
 }
 
-function _renderGoalTile($element, componentData, goalTileData) {
+function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
+  function expandProgress(progress, isEnded) {
+    var expandedProgress = null;
+
+    if (progress != null) {
+
+      expandedProgress = domainI18n(
+        StorytellerUtils.format(
+          'editor.open_performance.measure.{0}progress.{1}',
+          ((isEnded) ? 'end_' : ''),
+          progress
+        )
+      );
+    }
+
+    return _.isUndefined(expandedProgress) ? progress : expandedProgress;
+  }
+
   var goalProgress;
   var goalEndDate;
   var goalIsEnded;
@@ -294,7 +318,7 @@ function _renderGoalTile($element, componentData, goalTileData) {
 
   $tileProgress = $('<span>', {'class': 'goal-tile-metric-progress'}).
     text(
-      _expandProgress(
+      expandProgress(
         goalProgress,
         goalIsEnded
       )

@@ -6,11 +6,13 @@ import Constants from './editor/Constants';
 import Environment from './StorytellerEnvironment';
 import VifUtils from './VifUtils';
 
-export default _.merge({}, SocrataUtils, VifUtils, {
-  export: function(thing, as) {
-    _.set(window, as, thing);
-    return thing;
-  },
+function exportImpl(thing, as) {
+  _.set(window, as, thing);
+  return thing;
+}
+
+var utils = _.merge({}, SocrataUtils, VifUtils, {
+  export: exportImpl,
   format: function(string) {
     return String.prototype.format.apply(string, _.tail(arguments));
   },
@@ -341,5 +343,209 @@ export default _.merge({}, SocrataUtils, VifUtils, {
       ((valueFraction.length > 0) ? ('.' + valueFraction) : '') +
       valueUnit
     );
+  },
+
+  // Fetch strings from the site_theme of the specified domain's configuration.
+  // Returns a promise for a plain object.
+  //
+  // Example promise resolution:
+  // {
+  //   "open_performance": {
+  //     "metric": {
+  //       "progress": {
+  //         "good": "Some String"
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // locale: String, optional, defaults to 'en'
+  // domain: String, optional, defaults to page domain.
+  fetchDomainStrings: function(locale, domain) {
+    locale = locale || 'en';
+    return this.fetchDomainConfigurationHash(domain, { type: 'site_theme' }).
+      then(function(configs) { return _.merge.apply(_, configs); }).
+      then(function(config) {
+        var strings = _.get(config, 'properties.strings', {});
+        return _.merge(strings, _.get(strings, locale, {}));
+      });
+  },
+
+  /**
+   * Fetch configurations for the given domain (page domain if omitted). Returns a promise for
+   * an array of configurations. You likely want to use fetchDomainConfigurationHash instead,
+   * because the configuration properties as returned here are difficult to consume.
+   * Not only are they an array of name-value pairs (meaning by-name lookup is annoying,
+   * but the names are also dot-delimited to arbitrary depth.
+   *
+   * Example promise resolution:
+   * [
+   *   {
+   *     "id": 19,
+   *     "name": "Feature Flags",
+   *     "default": true,
+   *     "domainCName": "localhost",
+   *     "type": "feature_flags",
+   *     "updatedAt": 1457488698,
+   *     "properties": [
+   *       {
+   *         "name": "stories_enabled",
+   *         "value": "true"
+   *       },
+   *       {
+   *         "name": "asteroids",
+   *         "value": "true"
+   *       }
+   *     ]
+   *   },
+   *   {
+   *     "id": 4,
+   *     "name": "Current Theme",
+   *     "default": true,
+   *     "domainCName": "localhost",
+   *     "type": "site_theme",
+   *     "updatedAt": 1457488698,
+   *     "properties": [
+   *       {
+   *         "name": "strings.open_performance.metric.progress.good", // <-- Note the dot delimiter.
+   *         "value": "A Good Goal"
+   *       },
+   *       {
+   *         "name": "strings.open_performance.metric.progress.bad",
+   *         "value": "A Bad Goal"
+   *       },
+   *       {
+   *         "name": "custom_css",
+   *         "value": "stuff"
+   *       }
+   *     ]
+   *   }
+   * ]
+   *
+   * Options:
+   *   Authoritative list is here, under the Parameters heading: https://localhost/api/docs/configurations
+   *
+   *   Quick ref (default value):
+   *   merge (true): Whether to merge with parent properties.
+   *   default_only (false): Whether to return only the default.
+   *   type (unset): The tope of configuration to return.
+   */
+  fetchDomainConfigurations: function(domain, options) {
+    domain = domain || window.location.hostname;
+    options = _.extend({}, { merge: true, default_only: false }, options);
+    return Promise.resolve($.get(
+      this.format('https://{0}/api/configurations.json?{1}', domain, $.param(options))
+    ));
+  },
+
+  /**
+   * Fetch configurations for the given domain (page domain if omitted). Returns a promise for an array of
+   * configurations. Each configuration's properties are represented as a hash.
+   *
+   * Example promise resolution:
+   * [
+   *   {
+   *     "id": 19,
+   *     "name": "Feature Flags",
+   *     "default": true,
+   *     "domainCName": "localhost",
+   *     "type": "feature_flags",
+   *     "updatedAt": 1457488698,
+   *     "properties": {
+   *       "stories_enabled": true,
+   *       "asteroids: true
+   *     }
+   *   },
+   *   {
+   *     "id": 4,
+   *     "name": "Current Theme",
+   *     "default": true,
+   *     "domainCName": "localhost",
+   *     "type": "site_theme",
+   *     "updatedAt": 1457488698,
+   *     "properties": {             // <-- Note that this is a hash.
+   *       "custom_css": "stuff",
+   *       "strings": {
+   *         "open_performance": {
+   *           "metric": {
+   *             "progress": {
+   *               "bad": "A Bad Goal",
+   *               "good": "A Good Goal"
+   *             }
+   *           }
+   *         }
+   *       }
+   *     }
+   *   }
+   * ]
+   *
+   * Options:
+   *   Authoritative list is here, under the Parameters heading: https://localhost/api/docs/configurations
+   *
+   *   Quick ref (default value):
+   *   merge (true): Whether to merge with parent properties.
+   *   default_only (false): Whether to return only the default.
+   *   type (unset): The tope of configuration to return.
+   */
+  fetchDomainConfigurationHash: function(domain, options) {
+    return utils.fetchDomainConfigurations(domain, options).then(function(configurations) {
+      // Hashify each config, taking into account that properties may have a dot-delimited name
+      // (i.e. "strings.homepage.foobar") that should be parsed.
+      return _.each(configurations, function(configuration) {
+        configuration.properties = utils.keyByPath(configuration.properties, 'name', 'value');
+      });
+    });
+  },
+
+  /**
+   * Maps a collection of [path, value] pairs to an object.
+   * Similar to _.indexBy/_.keyBy, but correctly understands dot-delimited paths.
+   * Best explained by example:
+   * keyByPath(
+   *   [
+   *     { name: 'a', value: 'one' },
+   *     { name: 'b.x', value: 'two' },
+   *     { name: 'b.y', value: 'three' }
+   *   ],
+   *   'name',
+   *   'value'
+   *  )
+   * Returns:
+   * {
+   *   a: 'one',
+   *   b: {
+   *     x: 'two',
+   *     y: 'three'
+   *   }
+   * }
+   *
+   * By comparison, _.indexBy/_.keyBy would return:
+   * {
+   *   'a', 'one',
+   *   'b.x', 'two',
+   *   'b.y', 'three'
+   * }
+   *
+   * pathIteratee and valueIteratee, like in lodash, can be either
+   * a string property name or an iteratee function.
+   * valueIteratee defaults to _.identity. Omitting pathIteratee is an error.
+   */
+  keyByPath: function(collection, pathIteratee, valueIteratee) {
+    var result = {};
+
+    pathIteratee = _.iteratee(pathIteratee);
+    valueIteratee = _.iteratee(valueIteratee) || _.identity;
+
+    _.each(
+      collection,
+      function(item) {
+        _.set(result, pathIteratee(item), valueIteratee(item));
+      }
+    );
+
+    return result;
   }
 });
+
+exportImpl(utils, 'socrata.utils');
+export default utils;

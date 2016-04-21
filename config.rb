@@ -18,8 +18,7 @@ end
 activate :external_pipeline,
   name: :gulp,
   command: build? ? './node_modules/.bin/gulp dist' : './node_modules/.bin/gulp watch',
-  source: 'dist',
-  latency: 1
+  source: 'dist'
 
 after_configuration do
   FileUtils.mkdir_p('./docs/javascripts/vendor')

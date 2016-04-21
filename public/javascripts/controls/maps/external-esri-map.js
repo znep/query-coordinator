@@ -72,6 +72,12 @@
                         clearTimeout(errorOverlayTimer);
                         errorOverlay.remove();
 
+                        layer.showNoFeaturesWarning();
+
+                        layer.map.events.register('zoomend', null, function() {
+                            layer.showNoFeaturesWarning();
+                        });
+
                         if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
                         {
                             layer._suggestedTolerance = Math.round(Math.max.apply(null,
@@ -198,6 +204,38 @@
                 }
             }
             return this.getFullRequestString(newParams);
+        },
+
+        showNoFeaturesWarning: function() {
+            var layer = this;
+
+            // If the map's current zoom level is beyond the layer's minScale or maxScale
+            // (as set in ESRI) display an error message informing the user that ESRI
+            // isn't returning any features for that layer at that zoom level.
+            var esriMinScale = layer.featureLayer.minScale;
+            var esriMaxScale = layer.featureLayer.maxScale;
+
+            // If the scales is not 0 or NaN, it's actually set
+            var esriMinSet = !_.isNaN(esriMinScale) && esriMinScale !== 0;
+            var esriMaxSet = !_.isNaN(esriMaxScale) && esriMaxScale !== 0;
+
+            var currentScale = layer.map.getScale();
+
+            var noFeaturesWarningOverlay = $.tag2({
+                _: 'div',
+                'class': 'esriConnectorWarning',
+                'id': 'noFeaturesWarning',
+                contents: $.t('controls.map.unable_to_display_features_html')
+            });
+
+            // Note that the scale gets bigger as you zoom in and smaller as you zoom out
+            if ((esriMinSet && currentScale > esriMinScale) || (esriMaxSet && currentScale < esriMaxScale)) {
+                if ($('.visualizationArea #noFeaturesWarning').length == 0) {
+                    $('.visualizationArea').prepend(noFeaturesWarningOverlay);
+                }
+            } else {
+                $('.visualizationArea #noFeaturesWarning').remove();
+            }
         }
     });
 

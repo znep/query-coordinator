@@ -267,3 +267,6 @@ useSoda2:
   defaultValue: never
   disableTrueFalse: never
   expectedValues: never read-only always
+zealous_dataslate_cache_expiry:
+  description: 'This flag sets the expiry on three caches for DataSlate: the pages dataset, the manifest, and the fragment cache. `false` means the previous problematic-in-EU expiries; `true` means 5.seconds; and setting a number will set it in SECONDS.'
+  defaultValue: false

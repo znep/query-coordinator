@@ -68,29 +68,12 @@ module ApplicationHelper
 # CACHE HELPERS
 
   def cache_key(prefix, state)
-    return_value = prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
+    prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
       CGI.escape(v[1].to_s)}.join('&')
-    aggressive_log('this cache key was generated', return_value)
-    return_value
   end
 
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
-  end
-
-  def aggressive_log(action, cache_key, extra = '')
-    the_params = params.each_with_object([]) do |param, memo|
-      memo << param.join('=')
-    end.join(' ') if defined? params
-
-    Rails.logger.info([
-                      'aggressive_log',
-                      action,
-                      the_params,
-                      "cache=#{cache_key}",
-                      extra,
-                      caller[0..10].join("\n")
-    ].join(';'))
   end
 
 # FRAGMENT HELPERS

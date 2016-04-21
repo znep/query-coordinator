@@ -268,4 +268,20 @@ describe 'FeatureFlags' do
       end
     end
   end
+
+  describe '.value_for' do
+    let(:derived_flags) { Hashie::Mash.new.tap { |hashie| hashie.test_method = 'foo' } }
+
+    it 'should use mutate_value to' do
+      class << FeatureFlags::Getters
+        define_method :test_method do |value|
+          value.to_s + ' mutated'
+        end
+      end
+
+      allow(FeatureFlags).to receive(:derive).and_return(derived_flags)
+
+      expect(FeatureFlags.value_for(:test_method)).to eq('foo mutated')
+    end
+  end
 end

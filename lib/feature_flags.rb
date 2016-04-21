@@ -1,3 +1,5 @@
+require 'feature_flags/getters'
+
 module FeatureFlags
   def self.merge(base = {}, other = {})
     flags = Hashie::Mash.new

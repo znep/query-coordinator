@@ -36,9 +36,9 @@ custom_content:
   discourage_in_creation_ui:
     reason: :deprecation
 data_lens_config:
-  description: Miscellaneous configuration for Data Lens
+  description: Miscellaneous configuration for Data Lens.  If choropleth_custom_boundary is specified as a WKT string, choropleths in Data Lens will only render regions completely contained within this polygon.  See http://arthur-e.github.io/Wicket/sandbox-gmaps3.html to generate a WKT string.
   known_properties:
-  - choropleth_custom_boundary # WKT string
+  - choropleth_custom_boundary
 email_interests:
   description: "Found this deep in core. I don't understand it yet."
   discourage_in_creation_ui:

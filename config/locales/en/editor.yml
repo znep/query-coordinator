@@ -224,29 +224,7 @@ en:
       render_error: 'This goal is not available or cannot be displayed'
       public_label: 'Public'
       private_label: 'Private'
-      measure:
-        unit_percent: 'percent'
-        progress:
-          no_judgement: 'Measuring'
-          none: 'Needs More Data'
-          needs_more_data: 'Needs More Data'
-          within_tolerance: 'Near Target'
-          good: 'On Track'
-          progressing: 'In Progress'
-          poor: 'Needs Improvement'
-          bad: 'Needs Improvement'
-          no_status: 'No Status'
-        end_progress:
-          no_judgement: 'Measured'
-          none: 'Needed More Data'
-          needs_more_data: 'Needed More Data'
-          within_tolerance: 'Almost met target'
-          good: 'Achieved Goal'
-          progressing: 'Almost met target'
-          poor: 'Did not meet target'
-          bad: 'Did not meet target'
-        # {0} -> goal name, {1} -> goal unit
-        subheadline: 'This goal is measured by tracking {0} in {1}.'
+      # Also see the open_performance key elsewhere in this file.
     visualizations:
       no_value_placeholder: '(No value)'
       default_unit:
@@ -282,3 +260,28 @@ en:
       full_month_10: 'October'
       full_month_11: 'November'
       full_month_12: 'December'
+    # Translations common with OpenPerformance
+    open_performance:
+      measure:
+        unit_percent: 'percent'
+        progress:
+          no_judgement: 'Measuring'
+          none: 'Needs More Data'
+          needs_more_data: 'Needs More Data'
+          within_tolerance: 'Near Target'
+          good: 'On Track'
+          progressing: 'In Progress'
+          poor: 'Needs Improvement'
+          bad: 'Needs Improvement'
+          no_status: 'No Status'
+        end_progress:
+          no_judgement: 'Measured'
+          none: 'Needed More Data'
+          needs_more_data: 'Needed More Data'
+          within_tolerance: 'Almost met target'
+          good: 'Achieved Goal'
+          progressing: 'Almost met target'
+          poor: 'Did not meet target'
+          bad: 'Did not meet target'
+        # {0} -> goal name, {1} -> goal unit
+        subheadline: 'This goal is measured by tracking {0} in {1}.'

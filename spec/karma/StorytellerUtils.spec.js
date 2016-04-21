@@ -689,4 +689,70 @@ describe('StorytellerUtils', function() {
       });
     });
   });
+
+  describe('fetchDomainConfigurationHash', function() {
+    var fakeDomainConfigurationsResponse = [
+      { id: 'one', name: 'some config', type: 'awesome', properties: [ { name: 'foo.bar', value: 'baz' } ] },
+      { id: 'two', name: 'some other config', type: 'awesomer', properties: [ { name: 'meep', value: 'beep' } ] }
+    ];
+
+    beforeEach(function() {
+      sinon.stub(StorytellerUtils, 'fetchDomainConfigurations', function() {
+        return Promise.resolve(_.cloneDeep(fakeDomainConfigurationsResponse));
+      });
+    });
+
+    it('should pass domain and options to fetchDomainConfigurations', function() {
+      StorytellerUtils.fetchDomainConfigurationHash('theDomain', { options: 'hash' });
+      sinon.assert.calledWithExactly(StorytellerUtils.fetchDomainConfigurations, 'theDomain', { options: 'hash' });
+    });
+
+    it('should flatten property values', function(done) {
+      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then(function(response) {
+        assert.deepEqual(_.pluck(response, 'properties'), [
+          { foo: { bar: 'baz' } },
+          { meep: 'beep' }
+        ]);
+        done();
+      });
+    });
+
+    it('should preserve the rest of the config metadata', function(done) {
+      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then(function(response) {
+        assert.propertyVal(response[0], 'id', 'one');
+        assert.propertyVal(response[1], 'id', 'two');
+        assert.propertyVal(response[0], 'type', 'awesome');
+        assert.propertyVal(response[1], 'type', 'awesomer');
+        done();
+      });
+    });
+
+    afterEach(function() { StorytellerUtils.fetchDomainConfigurations.restore(); });
+  });
+
+  describe('keyByPath', function() {
+    function test(subject, expected) {
+      assert.deepEqual(StorytellerUtils.keyByPath(subject, 'name', 'value'), expected);
+    }
+
+    it('keys by path', function() {
+      test([], {});
+      test([ { name: 'foo', value: 'bar' } ], { foo: 'bar' });
+      test([
+        { name: 'a', value: '1' },
+        { name: 'b', value: '2' },
+        { name: 'c.a', value: '3' },
+        { name: 'c.b', value: '4' },
+        { name: 'd.a.a', value: '5' },
+        { name: 'd.a.b', value: '6' },
+        { name: 'f.o.o.b.a.r', value: '7' }
+      ], {
+        a: '1',
+        b: '2',
+        c: { a: '3', b: '4' },
+        d: { a: { a: '5', b: '6' } },
+        f: { o: { o: { b: { a: { r: '7' } } } } }
+      });
+    });
+  });
 });

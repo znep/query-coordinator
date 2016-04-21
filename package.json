@@ -78,7 +78,8 @@
     "globals": {
       "assert": true,
       "sinon": true,
-      "Promise": true
+      "Promise": true,
+      "_": true
     }
   },
   "dependencies": {

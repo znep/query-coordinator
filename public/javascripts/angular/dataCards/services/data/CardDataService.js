@@ -571,7 +571,7 @@ ${JSON.stringify(errors)}`
 
       // If the feature flag specifying a custom polygon for the regions exists, immediately fetch
       // all regions contained completely in this region and return.
-      var customBoundary = ServerConfig.get('dataLensChoroplethCustomBoundary');
+      var customBoundary = ServerConfig.get('choroplethCustomBoundary');
       if (customBoundary) {
         geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);
         geoJsonUrl.searchParams.set('$select', '*');

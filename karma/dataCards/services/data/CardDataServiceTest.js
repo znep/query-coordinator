@@ -1101,7 +1101,7 @@ describe('CardDataService', function() {
     });
 
     it('uses the custom polygon to fetch regions if it is present', function() {
-      ServerConfig.override('dataLensChoroplethCustomBoundary', 'asdf');
+      ServerConfig.override('choroplethCustomBoundary', 'asdf');
       $httpBackend.expectGET(/where=within_polygon\(the_geom%2C\'asdf\'\)/).respond([]);
       CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
       $httpBackend.flush();

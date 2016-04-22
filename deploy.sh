@@ -2,6 +2,7 @@
 
 if [[ -z $(git status -s) ]]; then
   bundle exec middleman build
+  git checkout  .
   git checkout gh-pages
   git pull --rebase origin gh-pages
 

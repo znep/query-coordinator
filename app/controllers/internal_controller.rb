@@ -1,5 +1,9 @@
 class InternalController < ApplicationController
   before_filter :check_auth
+  before_filter :redirect_to_current_domain,
+                :only => [ :show_domain, :show_config, :show_property ]
+  before_filter :redirect_to_default_config_id_from_type,
+                :only => [ :show_config, :show_property ]
 
   def index
   end
@@ -12,6 +16,11 @@ class InternalController < ApplicationController
   end
 
   def show_org
+    if params[:id] == 'current'
+      redirect_to show_org_path(id: CurrentDomain.domain.organizationId)
+      return
+    end
+
     @org = Organization.find(params[:id])
     domains = Organization.find.collect {|o| o.domains}.flatten.compact
     @default_domain = domains.detect(&:default?)
@@ -90,14 +99,6 @@ class InternalController < ApplicationController
   end
 
   def show_config
-    # If you put in a config type into the :id, it'll redirect you to the default config!
-    if /^\d+$/ !~ params[:id]
-      config_type = params[:id]
-      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      if config.nil? then render_404 else redirect_to show_config_path(id: config.id) end
-      return
-    end
-
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:id])
     if @config.parentId.present?
@@ -468,6 +469,11 @@ class InternalController < ApplicationController
   end
 
   def feature_flags
+    if params[:domain_id] == 'current'
+      redirect_to feature_flags_config_path(domain_id: CurrentDomain.cname)
+      return
+    end
+
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
@@ -645,4 +651,25 @@ private
     end
   end
 
+  def redirect_to_current_domain
+    if params[:domain_id] == 'current'
+      redirect_to url_for(params.merge(domain_id: CurrentDomain.cname))
+    end
+  end
+
+  # It is often aggravating to figure out the ID of a particular configuration.
+  # Instead, this makes it so that you can be redirected to the default configuration
+  # on a domain for that config type.
+  #
+  # For example /site_config/catalog on the opendata.socrata.com domain will redirect you to
+  # /domains/opendata.socrata.com/site_config/1200 because that's the default config.
+  def redirect_to_default_config_id_from_type
+    param_key = params[:config_id] ? :config_id : :id
+    config_type = params[param_key]
+    unless config_type.match /^\d+$/
+      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
+      return render_404 if config.nil? 
+      redirect_to url_for(params.merge(param_key => config.id))
+    end
+  end
 end

@@ -63,7 +63,7 @@ Frontend::Application.routes do
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'
-      get '/orgs/:id', :action => 'show_org'
+      get '/orgs/:id', :action => 'show_org', :as => 'show_org'
       post '/orgs/:id/domains', :action => 'create_domain'
 
       scope :path => '(/orgs/:org_id)/domains/:domain_id',

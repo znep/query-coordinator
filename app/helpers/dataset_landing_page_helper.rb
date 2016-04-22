@@ -237,7 +237,7 @@ module DatasetLandingPageHelper
   def documentation_link_for_data_type(data_type)
     return '' if data_type.blank?
 
-    data_type_text = t('dataset_landing_page.schema_preview.data_types.' + data_type)
+    data_type_text = t("dataset_landing_page.schema_preview.data_types.#{data_type}")
 
     soda_type = data_type_metadata[data_type] && data_type_metadata[data_type][:soda_type]
 

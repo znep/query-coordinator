@@ -107,6 +107,32 @@
       <%= submit_tag 'Add' %>
     <% end %>
 
+    <div class="actions expandable">
+      <%= expandable_header('Management Actions') %>
+      <div class="collapsed">
+        <dl class="config_type_description">
+          <dt>Change Organization</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Update') do %>
+              <%= select_tag :org_id,
+                options_from_collection_for_select(@organizations,
+                                                   'id',
+                                                   'name',
+                                                   @domain.organizationId) %>
+            <%- end %>
+            <p>This is entirely organizational and only affects which organization you see this domain listed in.</p>
+          </dd>
+          <dt>Rename Domain</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Rename') do %>
+              <%= text_field_tag :new_name, @domain.name %>
+            <%- end %>
+            <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
     <div class="prebuiltActions expandable">
       <%= expandable_header('Pre-built Actions') %>
       <div class="collapsed">

@@ -69,6 +69,7 @@ Frontend::Application.routes do
       scope :path => '(/orgs/:org_id)/domains/:domain_id',
         :constraints => {:domain_id => /(\w|-|\.)+/} do
         get '', :action => 'show_domain', :as => 'show_domain'
+        post '', :action => 'update_domain', :as => 'update_domain'
         get '/data', :action => 'show_domain', :format => :json
         post '/default_site_config', :action => 'set_default_site_config'
         post '/delete_config/:id', :action => 'delete_site_config', :as => 'delete_site_config'

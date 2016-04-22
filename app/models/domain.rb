@@ -42,7 +42,7 @@ class Domain < Model
 
   def self.update_name(cname, name)
     headers = { "X-Socrata-Host" => cname }
-    path = "/domains/#{cname}.json?method=updateName&name=#{name}"
+    path = "/domains/#{cname}.json?method=updateName&newName=#{CGI.escape(name)}"
     CoreServer::Base.connection.update_request(path, headers)
   end
 

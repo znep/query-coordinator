@@ -380,12 +380,21 @@ ul.autocomplete {
     margin-top: 0;
 
     dt { width: 12.75rem; }
-    dd { padding-left: 12.75rem; width: calc(100% - 12.75rem); text-align: left; }
-    dd:first-of-type {
-      border-top: 0;
-    }
-    dd.unknownConfigType {
-      color: red;
+    dd {
+      padding-left: 12.75rem;
+      width: calc(100% - 12.75rem);
+      text-align: left;
+
+      &:first-of-type {
+        border-top: 0;
+      }
+      &.unknownConfigType {
+        color: red;
+      }
+
+      input[type=text] {
+        width: 15em;
+      }
     }
   }
 
@@ -411,10 +420,6 @@ ul.autocomplete {
 
   .importMode .importSection, .exportMode .exportSection {
     display: block;
-  }
-
-  #rename-config-to {
-    width: 15em;
   }
 
   .warning {

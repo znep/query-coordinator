@@ -144,9 +144,10 @@
           <dt>Rename Config</dt>
           <dd>
             <%= one_button_form(url: rename_config_path,
-                                :text => 'Rename Config') do
-              text_field_tag('rename-config-to', @config.name)
-            end %>
+                                :text => 'Rename Config') do %>
+              <p>This is entirely cosmetic and only affects how the name of the config is reflected in the Internal Panel.</p>
+              <%= text_field_tag('rename-config-to', @config.name) %>
+            <%- end %>
           </dd>
           <%- unless @config.default %>
           <dt>Set this Config to Default</dt>

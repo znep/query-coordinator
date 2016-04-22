@@ -36,6 +36,7 @@ class InternalController < ApplicationController
   ]
   def show_domain
     @domain = Domain.find(params[:domain_id])
+    @organizations = Organization.find
     @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
@@ -200,6 +201,21 @@ class InternalController < ApplicationController
       return (render 'shared/error', :status => :internal_server_error)
     end
     redirect_to show_domain_path(org_id: params[:id], domain_id: domain.cname)
+  end
+
+  def update_domain
+    if params[:org_id]
+      Domain.update_organization_id(params[:domain_id], params[:org_id])
+      notices << 'Successfully updated org_id.'
+    end
+
+    if params[:new_name]
+      Domain.update_name(params[:domain_id], params[:new_name])
+      notices << 'Successfully updated name.'
+    end
+
+    prepare_to_render_flashes!
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def create_site_config

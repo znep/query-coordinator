@@ -150,6 +150,16 @@ body {
         }
       }
 
+      .grid {
+        color: $dark-grey-1;
+        letter-spacing: normal;
+        line-height: 1.25;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
       .more .icon-waiting {
         padding-left: 0;
       }

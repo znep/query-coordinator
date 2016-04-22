@@ -6,24 +6,36 @@ The "Chrome" is the header (including navigation bar) and footer of a customer s
 
 ## Installation
 
-TODO: write installation steps
+None
 
 ## Usage
 
-TODO: write usage steps
+To run on your local development machine:
+
+```sh
+LOCALHOST=true bundle exec rails s
+```
+
+To start a Rails console to experiment:
+
+```sh
+LOCALHOST=true bundle exec rails c
+```
+>Note: If the console hangs, try running this first `bin/spring stop`
+
+## Feature flag
+
+By default the feature flag is off, so in order to see the unified header/footer, you can enable it either in `config/feature_flags.yml` or you can set it on the URL by visiting:
+
+```
+http://localhost:3000/?enable_unified_header_footer=true
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rake` to run the tests.
-
-Run `bundle exec rake console` for an interactive promprt that will allow you to experiment.
+After checking out the repo, run `bundle install`.
 
 Run `bundle exec rake templates` to generate the dist HTML/CSS from your src ERB/SCSS.
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/chrome. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
 
 ## License
 

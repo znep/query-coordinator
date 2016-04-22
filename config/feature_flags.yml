@@ -1,0 +1,276 @@
+###
+#
+# Flag key name is the key.
+#
+# Description should also explain the expected values. This is messaging for client services.
+# Possible values should not have spaces.
+# `expectedValues` are delimited by space.
+#   Because I don't like YAML arrays, and it enforces simple values.
+# `category` is a UI convenience. it is the full string.
+# `disableTrueFalse` indicates that true/false are invalid values.
+#   If `expectedValues` is undefined, this setting is ignored.
+#
+# This is truth. Anything not in this list gets ignored.
+#
+
+allow_data_lens_owner_change:
+  description: Controls whether ownership of data lenses can be transferred away from the creator.
+  defaultValue: true
+  category: data lens
+api_geospatial_hack:
+  description: When enabled, views matching the is_api_geospatial? criteria will attempt to render as a split map/table by default. See EN-3889 for details.
+  defaultValue: false
+asset_inventory:
+  description: Controls asset inventory controls and buttons are shown
+  defaultValue: false
+bubble:
+  description: D3 Bubble Charts
+  defaultValue: old
+  expectedValues: nextgen old
+cetera_search:
+  description: Use the shiny new Cetera backend search service. NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
+  defaultValue: false
+create_v2_data_lens:
+  description: Newly created data lenses are stored as v2 metadata in metadb.
+  defaultValue: true
+current_dataset_metadata_version:
+  description: The current version of dataset metadata that the app should read and write.
+  defaultValue: 1
+current_page_metadata_version:
+  description: The current version of page metadata that the app should read and write.
+  defaultValue: 1
+data_jobs_daterange:
+  description: Show daterange picker on data jobs page
+  defaultValue: false
+data_lens_transition_state:
+  description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
+  defaultValue: post_beta
+  disableTrueFalse: true
+  expectedValues: pre_beta beta post_beta
+dataset_count_v2:
+  description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
+  defaultValue: true
+debug_assets:
+  description: Switch over to using unpackaged Javascript files.
+  defaultValue: false
+debug_labjs:
+  description: Turn on debugging in the lazy-loader that old UX uses so that we can see problems.
+  defaultValue: false
+debug_data_lens:
+  description: expose useful debugging information (data source, etc) for data lens pages
+  defaultValue: false
+  category: data lens
+default_to_dataset_landing_page:
+  description: Use the dataset landing page as the main entry point (/category/name/four-four). This should connect catalog results to DSLP. Requires enable_dataset_landing_page to be true.
+  defaultValue: false
+  category: dataset landing page
+disable_dataset_search_box:
+  description: Disable the search box in dataset pages.
+  defaultValue: false
+enable_data_lens_aggregation_tour:
+  description: Show the tour of the card-level aggregation.
+  defaultValue: true
+  category: data lens
+enable_data_lens_export_menu:
+  description: Toggles visibility of the export menu, which also allows export of the current filter.
+  defaultValue: true
+  category: data lens
+enable_data_lens_mobile_redirect:
+  description: Enables the mobile version of Data Lens
+  defaultValue: false
+  category: data lens
+enable_dataset_landing_page:
+  description: Enable the dataset landing page
+  defaultValue: false
+  category: dataset landing page
+enable_ingress_geometry_types:
+  description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
+  defaultValue: false
+  category: obe deprecation
+disable_legacy_types:
+  description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
+  defaultValue: false
+  category: obe deprecation
+disable_obe_redirection:
+  description: When clicking on an NBE dataset, you are no longer redirected to the OBE dataset.
+  defaultValue: false
+disable_nbe_redirection_warning_message:
+  description: When clicking to an NBE dataset, you no longer see a "You would be redirected to" message.
+  defaultValue: false
+display_catalog_lens_delete_button:
+  description: Whether to show the Delete button for data lenses, in the old UX.
+  defaultValue: true
+embetter_analytics_page:
+  description: Incremental improvements to site analytics page
+  defaultValue: false
+enable_airbrake_js:
+  description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
+  defaultValue: false
+enable_api_foundry_pane:
+  description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
+  defaultValue: false
+enable_data_lens_other_views:
+  description: Show the "other views of this data" button in the upper left of Data Lens pages.
+  defaultValue: false
+enable_data_lens_page_metadata_migrations:
+  description: Lazily migrate data lens page metadata schemas on each request.
+  defaultValue: true
+enable_data_lens_provenance:
+  description: Ability to set data lens views to "Official" or not.
+  defaultValue: true
+enable_data_lens_save_as:
+  description: Enables the "Save As" button in the data lens Customize bar.
+  defaultValue: true
+enable_export_service:
+  description: Use the new Export Service on this domain.
+  defaultValue: false
+  category: obe deprecation
+enable_embed_widget_for_nbe:
+  description: Enable embed widget for NBE datasets.
+  defaultValue: false
+  category: obe deprecation
+enable_feedback:
+  description: Include third-party feedback widgets.
+  defaultValue: true
+enable_opendata_ga_tracking:
+  description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled. NOTE - if enable_standard_ga_tracking is true, it will override any value that this is set to with a default standard ga tracking code specified in the config.
+enable_pulse:
+  description: Enable the Pulse application, including catalog link.
+  category: pulse
+  defaultValue: false
+enable_spatial_lens_admin:
+  description: Allow visibility of spatial lens admin panel at /admin/geo.
+  defaultValue: true
+  category: spatial-lens
+enable_spatial_lens_region_coding:
+  description: Lets an admin kick off region coding for curated regions in the Data Lens interface.
+  category: data lens
+  defaultValue: true
+enable_standard_ga_tracking:
+  description: If enabled, uses a standard Socrata GA code (same across all domains) defined in the config for tracking. It will also cause any custom GA tokens defined in "enable_opendata_ga_tracking" to be ignored.
+  defaultValue: false
+enable_synthetic_spatial_lens_id:
+  description: Enable synthetic primary keys for Spatial Lens shapes.
+  category: data lens
+  defaultValue: true
+enable_unified_header_footer:
+  description: Enable the new unified header / footer on this domain.
+  category: homepage
+  defaultValue: false
+stories_enabled:
+  description: Enable the Storyteller application.
+  category: storyteller
+  defaultValue: false
+stories_show_facet_in_catalog:
+  description: Show the Stories facet in the catalog.
+  category: storyteller
+  defaultValue: false
+enable_new_account_verification_email:
+  description: When enabled, causes new accounts to receive an email with verification link that must be validated before account can be used.
+  defaultValue: false
+enable_pdf_download_type:
+  description: Control visibility of the "Export > Download dataset as PDF" format. See enable_xls_download_type for more background.
+  defaultValue: true
+enable_xls_download_type:
+  description: Control visibility of the "Export > Download dataset as XLS/XLSX" formats.  A reason for disabling these download types is to avoid customer confusion stemming from the fact that there is a hard limit on the number of cells that can be exported for XLS/XLSX downloads.  XLS and XLSX file exports are truncated at 250,000 cells to preserve performance.
+  defaultValue: true
+eventing_metrics:
+  description: Use experimental event-based instead of key-value metrics. If 'both', emit both.
+  defaultValue: false
+  expectedValues: both
+feature_map_default_extent:
+  description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
+  defaultValue: ''
+force_redirect_to_data_lens:
+  description: Automatically redirect to the default Data Lens page for a given NBE dataset.
+  defaultValue: false
+geo_imports_to_nbe_enabled:
+  description: Show Append/Replace pane on nbe geo datasets. This setting will be ignored if `ingress_strategy` is set to `obe`.
+  defaultValue: true
+govstat_missing_locale_crash:
+  description: Crash (500) when a translation is missing.
+  defaultValue: false
+govstat_progress_settings:
+  description: Allows overriding of goal progress.
+  defaultValue: true
+hide_decimal_tick_lines:
+  description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
+  defaultValue: true
+  category: testing bug fix
+hide_interpolated_nulls:
+  description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
+  defaultValue: false
+  category: testing bug fix
+include_sr_in_esri:
+  description: ESRI-only; stop using SRs in the export URL.
+  defaultValue: false
+ingress_reenter:
+  description: Changes the order and allows re-entrancy to the import wizard
+  defaultValue: false
+ingress_strategy:
+  description: When performing import operations, such as via the wizard or append/replace, this determines the endpoint to use. If `obe`, it will use the existing endpoint. If `nbe`, it will be set `nbe=true` on relevant calls. If `delta-importer`, it will use the Delta Importer Javascript port.
+  defaultValue: obe
+  disableTrueFalse: true
+  expectedValues: obe nbe delta-importer
+  category: obe deprecation
+internal_panel_redesign:
+  description: Redesign the UX for the Internal Panel so that useful actions are more exposed and scary options are more discouraged.
+  defaultValue: false
+  expectedValues: config domain all
+kill_esri_reprojection_and_pass_different_webm:
+  description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
+  defaultValue: false
+nbe_bucket_size:
+  description: Bucket-ize the fetching of rows when hitting NBE. Defaults to 1000 unless explicitly set to another value. This is also the page size on Old UX grid view.
+  defaultValue: true
+odux_enable_feature_map_hover:
+  description: Enable hover functionality in point maps.
+  defaultValue: true
+  category: data lens
+reenable_ui_for_nbe:
+  description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
+  defaultValue: false
+  category: obe deprecation
+see_socrata_news:
+  description: Enable the "What's New" news widget and updated profile page
+  defaultValue: true
+show_admin_processes:
+  description: Enable the "Jobs" section of the admin interface, which allows users to monitor the status of ingress jobs
+  defaultValue: true
+  category: admin
+show_newux_page_header:
+  description: Show the header logo and sign in/up/out links.
+  defaultValue: true
+  category: data lens
+show_provenance_badge_in_catalog:
+  description: Show the provenance "Official" badge for official views in the catalog.
+  defaultValue: false
+show_share_dataset_by_email_button_for_general_users:
+  description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
+  defaultValue: true
+swap_in_nbe_view:
+  description: "Utility flag to make frontend views use their NBE counterparts. NOTE: This is intended to be used for NBE Go testing; it may cause errors if enabled for general use."
+  defaultValue: false
+  category: obe deprecation
+timeline:
+  description: D3 Timeline Charts
+  defaultValue: old
+  expectedValues: nextgen old
+use_auth0:
+  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
+  defaultValue: false
+use_ephemeral_bootstrap:
+  description: When true, bootstrapping a Data Lens page is ephemeral — that is, the page is not immediately persisted in the catalog.
+  defaultValue: true
+  category: data lens
+use_merged_styles:
+  description: For simulating merged stylesheets in development. Please never change this setting on a non-dev machine.
+  defaultValue: false
+useSoda2:
+  description: Switch to using SODA2.
+  defaultValue: never
+  disableTrueFalse: never
+  expectedValues: never read-only always
+zealous_dataslate_cache_expiry:
+  description: 'This flag sets the expiry on three caches for DataSlate: the pages dataset, the manifest, and the fragment cache. `false` means the previous problematic-in-EU expiries; `true` means 5.seconds; and setting a number will set it in SECONDS.'
+  defaultValue: false

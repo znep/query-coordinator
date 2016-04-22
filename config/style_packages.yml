@@ -1,0 +1,289 @@
+angular-app-dataCards:
+- dataCards/main
+- dataCards/flexgrid-custom
+- dataCards/ellipsis
+- dataCards/flyout
+- dataCards/choropleth
+- dataCards/timeline-chart
+- dataCards/table
+- dataCards/search
+- dataCards/cards
+- dataCards/single-card-view
+- dataCards/visualization-add
+- dataCards/card
+- dataCards/multiline-ellipsis
+- dataCards/modal-dialog
+- dataCards/add-customize-card-dialog
+- dataCards/manage-dialog
+- dataCards/new-share-dialog
+- dataCards/feature-map
+- dataCards/feedback-panel
+- dataCards/lens-type
+- dataCards/visualization-type-selector
+- dataCards/classic-visualization-previewer
+- dataCards/export-menu
+- dataCards/tour
+- dataCards/_leaflet
+
+dataset-landing-page:
+- dataset-landing-page
+
+ie9:
+- dataCards/ie9
+
+includes:
+- scss-common
+- icons
+base:
+- base
+- layout
+- common
+- forms
+- old-controls
+- controls
+- tables
+base-sdp:
+- base
+- common
+- forms
+- old-controls
+- controls
+- tables
+- table-core
+- dataset-grid
+- control-feed
+- render-type-images
+components:
+- components
+configurator:
+- grid-sidebar
+- configurator
+markdown-create:
+- font-awesome
+base-control-third-party:
+- jquery.ui.resizable
+- ui.slider
+- jquery-ui-1.8.4.custom
+colorpicker:
+- colorpicker
+print:
+- print
+feed:
+- control-feed
+share:
+- control-share
+analytics-shared:
+- jquery-ui-1.8.4.custom
+- ui.daterangepicker
+strip-chrome:
+- strip-chrome
+screen-login:
+- screen-login
+api-new:
+- jquery-ui-1.8.23.custom
+- screen-api-new
+api-manage:
+- control-share
+- control-pane
+- control-pane-custom
+- jquery-ui-1.8.23.custom
+- screen-metrics
+- screen-api-manage
+administration-screen:
+- jquery.dropdown.min
+- screen-admin
+administration-browse-widget:
+- control-pane
+- grid-sidebar
+- screen-admin-customizer
+- screen-admin-browse-widget
+administration-canvas-pages:
+- screen-admin-canvas-pages
+administration-federation:
+- screen-administration-federation
+administration-home:
+- screen-administration-home
+administration-jobs:
+- screen-administration-jobs
+- jquery-ui-1.8.4.custom
+- ui.daterangepicker
+administration-index-screen:
+- screen-admin-index
+administration-analytics-screen:
+- screen-metrics
+administration-georegions:
+- screen-administration-georegions
+administration-metadata:
+- screen-administration-metadata
+administration-moderation:
+- screen-administration-moderation
+administration-routing-approval:
+- screen-administration-routing-approval
+administration-sdp-templates:
+- screen-admin-sdp-templates
+administration-sdp-template:
+- control-pane
+- grid-sidebar
+- screen-admin-customizer
+administration-stories-appearance:
+- control-pane
+- grid-sidebar
+- screen-homepage-show-reset
+- screen-homepage-show
+- screen-admin-customizer
+administration-users:
+- screen-admin-users
+administration-view-moderation:
+- screen-administration-views
+administration-tos:
+- screen-administration-tos
+base-control:
+- control-pane
+- control-pane-custom
+browse-select-dataset:
+- screen-browse-select-dataset
+browse-control:
+- screen-browse
+- rich-render-types
+browse2-control:
+- screen-browse2
+rich-render-bundle:
+- table-core
+- dataset-grid
+- rich-render-types
+render-images-bundle:
+- render-type-images
+display-blob:
+- screen-blob
+display-calendar:
+- screen-calendar
+display-form:
+- screen-form
+display-map:
+- screen-map
+- openlayers
+- jquery-ui-1.8.23.custom
+display-chart:
+- charts
+dataset-new:
+- screen-dataset-new
+dataset-show:
+- control-pane
+- control-pane-custom
+- font-awesome
+- grid-sidebar
+- table-core
+- dataset-grid
+- control-feed
+- control-share
+- about-dataset
+- screen-dataset
+- render-type-images
+dataset-alt:
+- screen-dataset-alt
+dataset-analytics:
+- screen-metrics
+dataset-edit-metadata:
+- screen-dataset-edit-metadata
+dataset-edit-rr:
+- control-pane
+- grid-sidebar
+- table-core
+- dataset-grid
+- render-type-images
+- rich-render-types
+- screen-dataset-edit-rr
+dataset-thumbnail:
+- screen-dataset-thumbnail
+dataset-upload:
+- screen-dataset-upload
+dataset-bare:
+- screen-dataset-bare
+screen-classic-visualization:
+- screen-classic-visualization
+error-pages:
+- screen-error-pages
+internal:
+- screen-internal
+internal-metrics:
+- screen-metrics
+homepage-show:
+- screen-homepage-show
+oauth-authorize:
+- screen-oauth-authorize
+profile-show:
+- jquery.dropdown.min
+- screen-profile
+- screen-profile-shared
+- control-feed
+- screen-whats-new
+profile-edit:
+- screen-profile-edit
+- screen-profile-shared
+screen-nominations:
+- screen-nominations-shared
+- screen-nominations
+screen-nomination:
+- screen-nominations-shared
+- screen-nomination
+- control-feed
+screen-videos:
+- screen-videos
+screen-videos-popup:
+- strip-chrome
+- screen-videos-popup
+odysseus-base:
+- odysseus-base
+- colorpicker
+govstat-base:
+- screen-govstat-base
+govstat-layout:
+- screen-govstat-base
+- govstat-layout
+screen-govstat-goals:
+- font-awesome
+- screen-govstat-goals
+- screen-govstat-goal-page
+- screen-govstat-dashboard
+- screen-govstat-manage
+screen-govstat-manage:
+- screen-govstat-dashboard
+- screen-govstat-manage
+screen-govstat-homepage:
+- screen-govstat-dashboard
+screen-govstat-goal-page:
+- screen-govstat-goal-page
+administration-govstat:
+- screen-govstat-administration
+template-instantiator:
+- components
+- template-instantiator
+grid:
+- table-core
+- dataset-grid
+embed-form:
+- embed-form
+html-styles:
+- table-core
+- dataset-grid
+canvas:
+- canvas
+- control-feed
+canvas-view-preview:
+- table-core
+- dataset-grid
+dataset-about-minimal:
+- about-dataset
+dataset-about-full:
+- about-dataset
+- screen-dataset
+- screen-blob
+- screen-dataset-about
+mobile:
+- mobile/base
+- mobile/fonts
+- mobile/layout
+- mobile/states
+- mobile/loader
+- mobile/components/navbar
+- mobile/components/meta

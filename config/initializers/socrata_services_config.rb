@@ -17,3 +17,6 @@ Rails.application.config.consul_service_timeout = (ENV['CONSUL_SERVICE_TIMEOUT_S
 
 # Enable or disable Goal Tiles
 Rails.application.config.enable_goal_tiles = (ENV['ENABLE_GOAL_TILES'].to_s.downcase == 'true')
+
+# Change to metrics, which relies on a frontend fix
+Rails.application.config.send_new_page_views_metric = (ENV['SEND_NEW_PAGE_VIEWS_METRIC'].to_s.downcase == 'true')

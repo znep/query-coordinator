@@ -24,9 +24,6 @@ shared_examples 'a secure application' do
 
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
-    end
-
-    it 'should successfully load the page' do
       expect(page.html).to include('positive test')
     end
   end
@@ -43,9 +40,6 @@ shared_examples 'a secure application' do
 
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
-    end
-
-    it 'should successfully load the page' do
       expect(page.html).to include('positive test')
     end
   end
@@ -62,9 +56,6 @@ shared_examples 'a secure application' do
 
     it 'should not evaluate JS' do
       expect(page.evaluate_script('window.xssFailure')).to eq(nil)
-    end
-
-    it 'should successfully load the page' do
       expect(page.html).to include('positive test')
     end
   end
@@ -74,8 +65,33 @@ end
 # Tread lightly. This was TDDd and was verified to fail before
 # the fixes were put in place.
 RSpec.describe 'XSS protection', type: :feature, js: true do
-  let(:site_chrome) { nil }
-  let(:view_metadata) { {} }
+  let(:site_chrome) do
+
+    site_chrome = double('site_chrome')
+    allow(site_chrome).to receive(:styles).and_return(
+      {
+        '$bg-color' => '#000',
+        '$font-color' => '#000'
+      }
+    )
+    allow(site_chrome).to receive(:content).and_return(
+      {
+        'friendlySiteName' => '',
+        'footerText' => '<script>window.xssFailure="site chrome footer injection"</script>'
+      }
+    )
+
+    site_chrome
+  end
+  let(:view_metadata) {
+    evil_title = '"><script>window.xssFailure="title injection"</script>'
+    evil_description = '"><script>window.xssFailure="description injection"</script>'
+
+    {
+      name: evil_title,
+      description: evil_description
+    }
+  }
 
   before do
     stub_logged_in_user
@@ -93,11 +109,11 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     stub_core_view(attack_story_uid, view_metadata)
   end
 
-  describe 'attacks against the html component' do
+  describe 'attacks against components' do
     # A selection of HTML-based attacks.
     # Many of these come from
     # https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
-    let(:html_component_attacks) do
+    let(:html_component_attack_blocks) do
       [
         '<script>window.xssFailure = "simple script tag injection"</script>',
         '</script><script>window.xssFailure="premature script close"</script>',
@@ -107,11 +123,7 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
         '<BODY onload="window.xssFailure=\'body.onload event injection\'">',
         '<DIV STYLE="width: expression(window.xssFailure=\'style expression script injection\');"><BR></DIV>',
         '<!--[if gte IE 4]>\n<SCRIPT>window.xssFailure = "ie comment conditional script injection"</SCRIPT>\n<![endif]-->'
-      ]
-    end
-
-    let(:story_blocks) do
-      html_component_attacks.map do |attack_markup|
+      ].map do |attack_markup|
         FactoryGirl.create(
           :block,
           { layout: '6-6',
@@ -124,15 +136,9 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
       end
     end
 
-    let(:attack_story_uid) { 'html-doom' }
-
-    it_behaves_like 'a secure application'
-  end
-
-  describe 'attacks against the youtube component' do
-    let(:story_blocks) do
+    let(:youtube_component_attack_blocks) do
       evil_youtube_value = {
-        id: '"><script>window.xssFailure=true</script>'
+        id: '"><script>window.xssFailure="youtube component"</script>'
       }
 
       [
@@ -148,60 +154,12 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
       ]
     end
 
-    let(:attack_story_uid) { 'ytub-doom' }
-
-    it_behaves_like 'a secure application'
-  end
-
-  describe 'attacks against the story metadata' do
-    let(:view_metadata) {
-      evil_title = '"><script>window.xssFailure="title injection"</script>'
-      evil_description = '"><script>window.xssFailure="description injection"</script>'
-
-      {
-        name: evil_title,
-        description: evil_description
-      }
-    }
-
     let(:story_blocks) do
-      [
-        FactoryGirl.create(:block, components: [ { type: 'html', value: 'positive test' } ])
-      ]
+      html_component_attack_blocks +
+      youtube_component_attack_blocks
     end
 
-    let(:attack_story_uid) { 'mtda-doom' }
-
-    it_behaves_like 'a secure application'
-  end
-
-  describe 'attacks against the site chrome footer' do
-    let(:site_chrome) do
-
-      site_chrome = double('site_chrome')
-      allow(site_chrome).to receive(:styles).and_return(
-        {
-          '$bg-color' => '#000',
-          '$font-color' => '#000'
-        }
-      )
-      allow(site_chrome).to receive(:content).and_return(
-        {
-          'friendlySiteName' => '',
-          'footerText' => '<script>window.xssFailure="site chrome footer injection"</script>'
-        }
-      )
-
-      site_chrome
-    end
-
-    let(:story_blocks) do
-      [
-        FactoryGirl.create(:block, components: [ { type: 'html', value: 'positive test' } ])
-      ]
-    end
-
-    let(:attack_story_uid) { 'chrm-doom' }
+    let(:attack_story_uid) { 'stry-doom' }
 
     it_behaves_like 'a secure application'
   end

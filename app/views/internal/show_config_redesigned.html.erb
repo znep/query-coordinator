@@ -29,7 +29,9 @@
           <% end %>
           <%- if @type_description.nil? %>
             <%# You can document config types in config/configuration_types.yml %>
-            <%= definition('Unknown Config Type', 'Help by documenting this and explaining how to use it!') %>
+            <%= definition('Unknown Config Type',
+                           'Help by documenting this and explaining how to use it!',
+                           unknown: true) %>
           <%- end %>
         </dl>
       </div>

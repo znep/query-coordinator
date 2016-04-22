@@ -384,6 +384,9 @@ ul.autocomplete {
     dd:first-of-type {
       border-top: 0;
     }
+    dd.unknownConfigType {
+      color: red;
+    }
   }
 
   .newProperty input[type=text] {

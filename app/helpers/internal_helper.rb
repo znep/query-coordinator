@@ -28,8 +28,11 @@ module InternalHelper
     end
   end
 
-  def definition(term, definition)
-    content_tag(:dt, term) + content_tag(:dd, definition)
+  def definition(term, definition, options = {})
+    dd_html_options = {}
+    dd_html_options[:class] = 'unknownConfigType' if options[:unknown]
+
+    content_tag(:dt, term) + content_tag(:dd, definition, dd_html_options)
   end
 
   def explain_defaultness

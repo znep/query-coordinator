@@ -14,7 +14,7 @@
   <div class="content">
 
     <%= render :partial => 'production_warning' %>
-    <h1><%= @config.name %></h1>
+    <h1><%= @config.name %> (<%= @config.type %>)</h1>
     <%= display_standard_flashes %>
 
     <div class="description expandable">

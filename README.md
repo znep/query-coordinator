@@ -354,7 +354,6 @@ under the `eslintConfig` key. Currently we use no configuration options for
 ##### These feature_flags must be turned on:
 * enable\_ingress\_geometry\_types
 * geo\_imports\_to\_nbe\_enabled
-* enable\_spatial\_lens\_admin
 * enable\_spatial\_lens\_region_coding
 
 ##### These Features must be added to your domain(s):

@@ -123,8 +123,7 @@ module InternalHelper
                     text: button_text) do
       flags.inject(nil) do |memo, (flag, value)|
         html = hidden_field_tag("#{prefix}[#{flag}]", value)
-        if memo.nil? then memo = html else memo << html
-        end
+        if memo.nil? then memo = html else memo << html end
       end
     end
 

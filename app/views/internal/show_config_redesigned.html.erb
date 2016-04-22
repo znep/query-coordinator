@@ -25,7 +25,6 @@
           <%= definition('Domain', domain_link) %>
           <%= definition('Default', explain_defaultness) %>
           <% @type_description.try(:each) do |key, value| %>
-            <%- next if key == 'hide_from_creator' %>
             <%= definition(key.titleize, autolink(value)) %>
           <% end %>
           <%- if @type_description.nil? %>
@@ -143,7 +142,6 @@
           <dt>Rename Config</dt>
           <dd>
             <%= one_button_form(url: rename_config_path,
-                                :class => 'oneButtonForm renameConfig',
                                 :text => 'Rename Config') do
               text_field_tag('rename-config-to', @config.name)
             end %>

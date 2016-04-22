@@ -32,6 +32,8 @@ class DatasetsController < ApplicationController
       @view = get_view(params[:id])
     end
 
+    return if @view.nil?
+
     if dataset_landing_page_is_default? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
@@ -41,7 +43,7 @@ class DatasetsController < ApplicationController
       related_views = @view.try(:find_dataset_landing_page_related_content) || []
       @featured_views = related_views.slice(0, 3)
 
-      render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
+      render 'dataset_landing_page', :layout => 'dataset_landing_page'
       return
     end
 
@@ -54,8 +56,6 @@ class DatasetsController < ApplicationController
     if is_mobile?
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
-
-    return if @view.nil?
 
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
     user = @current_user.nil? ? "ANONYMOUS" : @current_user.id

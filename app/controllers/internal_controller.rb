@@ -42,7 +42,8 @@ class InternalController < ApplicationController
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
-      @configs << Struct.new(:type).new('feature_flags')
+      @configs << Struct.new(:type, :name, :default).
+        new('feature_flags', 'Feature Flags', true)
     end
     @configs.reject! { |config| config.type == 'feature_set' }
     @configs.sort! do |a, b|

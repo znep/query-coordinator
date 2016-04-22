@@ -1357,6 +1357,10 @@ var RowSet = ServerModel.extend({
           params['$order'] = ':id';
         }
 
+        if (params['$offset']) {
+          params['$offset'] = Math.max(0, params['$offset']);
+        }
+
         // TODO: CORE-1794: The correct fix is changing the ETag in the backend, but
         // that won't happen anytime soon and a customer wants this and the only impact
         // should be client-side repeated fetches for the same set of rows.

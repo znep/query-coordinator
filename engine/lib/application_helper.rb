@@ -7,11 +7,11 @@ module ApplicationHelper
   end
 
   def chrome_stylesheet_tag
-    stylesheet_link_tag '/chrome/themes/custom.css', media: 'all'
+    stylesheet_link_tag('/chrome/themes/custom.css', media: 'all')
   end
 
   def chrome_javascript_tag
-    javascript_include_tag '/assets/chrome/site_chrome'
+    javascript_include_tag('/assets/chrome/site_chrome')
   end
 
 end

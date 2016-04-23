@@ -46,6 +46,12 @@ In the `<body>` section, add the following to the bottom of the section:
 <%= render 'footer' %>
 ```
 
+Add the following to `config/routes.rb` to mount the engine:
+
+```
+mount Chrome::Engine => '/chrome'
+```
+
 ## Site Configuration & Styling
 
 Create a **Configuration** in the Internal Panel called `site_chrome`. Within this configuration, add a property called `siteChromeConfigVars`, into which you can copy the configuration information shown below.

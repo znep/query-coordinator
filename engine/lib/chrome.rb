@@ -1,5 +1,3 @@
-require 'byebug'
-
 module Chrome
 
   # Global configuration options for the engine go here

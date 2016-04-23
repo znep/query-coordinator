@@ -1,6 +1,7 @@
 require 'mrdialog'
 
 require_relative 'storyteller_releases_ui'
+require_relative 'new_release_ui'
 
 class OpsUi
   attr_reader :dialog
@@ -20,20 +21,23 @@ class OpsUi
   end
 
   private
-  
+
   def main_menu
     items = [
-      StorytellerReleasesUi.new
+      { name: 'Create a new release', description: 'Create release and build it', task: 'ops:ui:new_release' },
+      { name: 'Manage releases', description: 'Change the active version', task: 'ops:ui:releases' }
     ]
 
     loop do
       choice = dialog.menu('What\'ll it be?', items.map do |item|
-        [ item.main_menu_entry_name, item.main_menu_entry_description ]
+        [ item[:name], item[:description] ]
       end)
 
       break if choice == false # User pressed cancel.
 
-      items.detect { |item| item.main_menu_entry_name == choice }.show_main_menu
+      Rake.application[
+        items.detect { |item| item[:name] == choice }[:task]
+      ].execute
     end
   end
 end

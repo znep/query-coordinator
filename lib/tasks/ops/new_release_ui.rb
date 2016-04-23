@@ -25,7 +25,6 @@ class NewReleaseUi
   def open
     begin
       Rake.application['ops:jenkins:check_creds'].invoke
-      Rake.application['ops:check_aws_creds'].invoke
       Rake.application['ops:check_vpn'].invoke
     rescue => e
       dialog.msgbox(e.message)
@@ -307,6 +306,7 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
   def git_clean?
     dialog.infobox('Checking git status...', 3, 30)
     status = git.status
+    dialog.infobox('Checking working copy state...', 3, 30)
     clean = status.changed.empty? && status.added.empty?
     dialog.msgbox('Git working copy not clean. Cannot proceed.', 6, 35) unless clean
 

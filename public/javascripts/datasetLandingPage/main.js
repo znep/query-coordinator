@@ -20,6 +20,13 @@ $(function() {
   initSchemaPreview();
   initApiEndpointControls();
   initPrivateDismissal();
+
+  // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
+  Array.prototype.slice.call(document.querySelectorAll('td.attachment a')).forEach(function(link) {
+    link.style.display = 'none';
+    link.offsetHeight;
+    link.style.display = '';
+  });
 });
 
 // Fixes a visual border issue when descriptions are very short

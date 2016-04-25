@@ -61,11 +61,8 @@ module Chrome
     end
 
     def domain_config_uri
-      domain_config_url_params = '?type=site_chrome&defaultOnly=true'
-      (localhost? ?
-        'http://localhost:8080/configurations.json' :
-        "#{domain_with_scheme}/api/configurations.json"
-      ) << domain_config_url_params
+      uri = localhost? ? 'http://localhost:8080/configurations.json' : "#{domain_with_scheme}/api/configurations.json"
+      "#{uri}?type=site_chrome&defaultOnly=true"
     end
 
     def domain_with_scheme

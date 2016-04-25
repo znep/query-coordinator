@@ -6,7 +6,7 @@
   <div class="alert info full-width private-notice" data-storage-key="<%= @view.id %>">
     <div class="alert-container">
       <%= t('dataset_landing_page.private_notice') %>
-      <a href="/dataset/<%= @view.id %>?pane=manage&enable_dataset_landing_page=false">
+      <a href="/dataset/<%= @view.id %>?pane=manage&enable_dataset_landing_page=false" target="_blank">
         <%= t('dataset_landing_page.manage_prompt') %>
       </a>
       <span class="icon-close-2 alert-dismiss"></span>

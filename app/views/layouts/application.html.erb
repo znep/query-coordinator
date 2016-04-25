@@ -15,6 +15,7 @@
     // StorytellerEnvironment bindings.
     window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
     window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
+    window.SEND_NEW_PAGE_VIEWS_METRIC = <%= Rails.application.config.send_new_page_views_metric %>;
   </script>
 
   <%= google_font_code_embed %>

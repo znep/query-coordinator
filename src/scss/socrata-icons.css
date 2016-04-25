@@ -61,9 +61,9 @@
 .icon-info-inverse:before,
 .icon-info:before,
 .icon-italic2:before,
+.icon-kebab:before,
 .icon-line-chart:before,
 .icon-link:before,
-.icon-link2:before,
 .icon-linked:before,
 .icon-list-numbered:before,
 .icon-list2:before,
@@ -72,6 +72,7 @@
 .icon-number:before,
 .icon-official:before,
 .icon-paragraph-center3:before,
+.icon-paragraph-left:before,
 .icon-paragraph-left3:before,
 .icon-paragraph-right3:before,
 .icon-pause:before,
@@ -175,9 +176,9 @@
 .icon-info-inverse:before { content: "\EA2A"; }
 .icon-info:before { content: "\EA2B"; }
 .icon-italic2:before { content: "\EA2C"; }
-.icon-line-chart:before { content: "\EA2D"; }
-.icon-link:before { content: "\EA2E"; }
-.icon-link2:before { content: "\EA2F"; }
+.icon-kebab:before { content: "\EA2D"; }
+.icon-line-chart:before { content: "\EA2E"; }
+.icon-link:before { content: "\EA2F"; }
 .icon-linked:before { content: "\EA30"; }
 .icon-list-numbered:before { content: "\EA31"; }
 .icon-list2:before { content: "\EA32"; }
@@ -186,34 +187,35 @@
 .icon-number:before { content: "\EA35"; }
 .icon-official:before { content: "\EA36"; }
 .icon-paragraph-center3:before { content: "\EA37"; }
-.icon-paragraph-left3:before { content: "\EA38"; }
-.icon-paragraph-right3:before { content: "\EA39"; }
-.icon-pause:before { content: "\EA3A"; }
-.icon-play:before { content: "\EA3B"; }
-.icon-plus2:before { content: "\EA3C"; }
-.icon-plus3:before { content: "\EA3D"; }
-.icon-presentation:before { content: "\EA3E"; }
-.icon-preview:before { content: "\EA3F"; }
-.icon-private:before { content: "\EA40"; }
-.icon-processing:before { content: "\EA41"; }
-.icon-pulse:before { content: "\EA42"; }
-.icon-puzzle:before { content: "\EA43"; }
-.icon-question-inverse:before { content: "\EA44"; }
-.icon-question:before { content: "\EA45"; }
-.icon-quotes-left:before { content: "\EA46"; }
-.icon-redo:before { content: "\EA47"; }
-.icon-region:before { content: "\EA48"; }
-.icon-search:before { content: "\EA49"; }
-.icon-settings:before { content: "\EA4A"; }
-.icon-share:before { content: "\EA4B"; }
-.icon-stories-icon:before { content: "\EA4C"; }
-.icon-stories-menu:before { content: "\EA4D"; }
-.icon-story:before { content: "\EA4E"; }
-.icon-table:before { content: "\EA4F"; }
-.icon-tag:before { content: "\EA50"; }
-.icon-text:before { content: "\EA51"; }
-.icon-twitter:before { content: "\EA52"; }
-.icon-undo:before { content: "\EA53"; }
-.icon-user:before { content: "\EA54"; }
-.icon-waiting:before { content: "\EA55"; }
-.icon-warning:before { content: "\EA56"; }
+.icon-paragraph-left:before { content: "\EA38"; }
+.icon-paragraph-left3:before { content: "\EA39"; }
+.icon-paragraph-right3:before { content: "\EA3A"; }
+.icon-pause:before { content: "\EA3B"; }
+.icon-play:before { content: "\EA3C"; }
+.icon-plus2:before { content: "\EA3D"; }
+.icon-plus3:before { content: "\EA3E"; }
+.icon-presentation:before { content: "\EA3F"; }
+.icon-preview:before { content: "\EA40"; }
+.icon-private:before { content: "\EA41"; }
+.icon-processing:before { content: "\EA42"; }
+.icon-pulse:before { content: "\EA43"; }
+.icon-puzzle:before { content: "\EA44"; }
+.icon-question-inverse:before { content: "\EA45"; }
+.icon-question:before { content: "\EA46"; }
+.icon-quotes-left:before { content: "\EA47"; }
+.icon-redo:before { content: "\EA48"; }
+.icon-region:before { content: "\EA49"; }
+.icon-search:before { content: "\EA4A"; }
+.icon-settings:before { content: "\EA4B"; }
+.icon-share:before { content: "\EA4C"; }
+.icon-stories-icon:before { content: "\EA4D"; }
+.icon-stories-menu:before { content: "\EA4E"; }
+.icon-story:before { content: "\EA4F"; }
+.icon-table:before { content: "\EA50"; }
+.icon-tag:before { content: "\EA51"; }
+.icon-text:before { content: "\EA52"; }
+.icon-twitter:before { content: "\EA53"; }
+.icon-undo:before { content: "\EA54"; }
+.icon-user:before { content: "\EA55"; }
+.icon-waiting:before { content: "\EA56"; }
+.icon-warning:before { content: "\EA57"; }

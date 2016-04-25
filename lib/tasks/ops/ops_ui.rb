@@ -29,15 +29,17 @@ class OpsUi
     ]
 
     loop do
-      choice = dialog.menu('What\'ll it be?', items.map do |item|
+      choice = dialog.menu("What'll it be?", items.map do |item|
         [ item[:name], item[:description] ]
       end)
 
       break if choice == false # User pressed cancel.
 
-      Rake.application[
-        items.detect { |item| item[:name] == choice }[:task]
-      ].execute
+      task_name = items.detect { |item| item[:name] == choice }[:task]
+
+      raise "Missing task for: #{choice}" unless task_name
+
+      Rake.application[task_name].execute
     end
   end
 end

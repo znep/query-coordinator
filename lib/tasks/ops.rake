@@ -85,14 +85,13 @@ namespace :ops do
   namespace :ui do
     desc 'Create a new release and build it'
     task :new_release do
-      ui = NewReleaseUi.new
+      NewReleaseUi.new.open
       ui.open
     end
 
     desc 'Manage deployed versions (activate/rollback)'
     task :releases do
-      ui = StorytellerReleasesUi.new
-      ui.open
+      StorytellerReleasesUi.new.open
     end
   end
 end

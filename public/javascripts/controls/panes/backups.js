@@ -109,11 +109,13 @@
                 });
               };
 
-              cpObj._$section.find('.createBackup').
-                removeClass('hide').
-                click(function() {
-                  cpObj._view.makeBackup(fetchBackups);
-                });
+              if (cpObj._view.hasRight(blist.rights.view.UPDATE_VIEW)) {
+                cpObj._$section.find('.createBackup').
+                  removeClass('hide').
+                  click(function() {
+                    cpObj._view.makeBackup(fetchBackups);
+                  });
+              }
 
               fetchBackups();
             }

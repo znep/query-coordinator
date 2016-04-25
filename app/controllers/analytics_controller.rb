@@ -23,20 +23,20 @@ class AnalyticsController < ApplicationController
     metrics.each { |m|
       valid, error = add_metric(m['entity'], m['metric'], m['increment'])
       all_valid = all_valid && valid
-      
+
       Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside." unless valid
-      
+
       messages.push({
         :status => valid ? "200" : "400",
         :metric => "#{m['metric']}",
         :message => valid ? "OK" : "#{error}"
       })
     }
-    
+
     if all_valid
       return render :json => "OK".to_json
     end
-      
+
     render :json => messages.to_json, :status => 207
   end
 
@@ -115,6 +115,7 @@ module ClientAnalyticsHelper
   STATIC_MARK_METRICS = %w(domain/js-page-view
                            domain/js-page-view-story
                            domain/page-view
+                           domain/page-views
                            domain-intern/js-page-load-samples
                            domain-intern/js-dom-load-samples).freeze
 
@@ -122,6 +123,7 @@ module ClientAnalyticsHelper
   STATIC_ALLOWED_METRICS = %w(domain/js-page-view
                               domain/js-page-view-story
                               domain/page-view
+                              domain/page-views
                               domain-intern/js-cardsview-api-explorer-time
                               domain-intern/js-cardsview-bar-filter-time
                               domain-intern/js-cardsview-card-data-service-time

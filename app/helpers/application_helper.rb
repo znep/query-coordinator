@@ -842,4 +842,19 @@ module ApplicationHelper
     name.to_s.delete(']').tr('^-a-zA-Z0-9:.', "_")
   end
 
+  def canary_warning
+    return unless APP_CONFIG.canary
+    content_tag(:style, :type => 'text/css') do
+      %q[body:before {
+        font-weight: bold;
+        color: white;
+        background-color: red;
+        content: "CANARY!";
+        display: block;
+        font-size: 32px;
+        padding: 5px;
+      }].html_safe
+    end
+  end
+
 end

@@ -304,7 +304,7 @@ export default function AssetSelectorStore() {
     var pageSize = this.getImageSearchPageSize();
     var query = encodeURI(
       StorytellerUtils.format(
-        'phrase={0}&page={1}&page_size={2}&sort_order=best_match&graphical_styles=photography&fields=preview,id',
+        'phrase={0}&page={1}&page_size={2}',
         phrase,
         page,
         pageSize

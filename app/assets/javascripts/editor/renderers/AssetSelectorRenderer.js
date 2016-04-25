@@ -721,7 +721,7 @@ export default function AssetSelectorRenderer(options) {
 
       chunked.forEach(function(images) {
         images.forEach(function(image, index) {
-          var uri = _.find(image.display_sizes, {name: 'thumb'}).uri;
+          var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
           var id = image.id;
 
           var promise = new Promise(function(resolve, reject) {

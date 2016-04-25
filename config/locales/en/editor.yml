@@ -181,7 +181,7 @@ en:
         uploading_message: 'Uploading...'
         show_more: 'Show More'
         thats_it: "That's everything!"
-        getty_image_info: "When you publish your story, the preview image will be upgraded to a full resolution image."
+        getty_image_info: "When you publish this story, the photo preview will be replaced by a full-resolution image."
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'

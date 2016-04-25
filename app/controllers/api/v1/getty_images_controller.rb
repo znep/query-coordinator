@@ -23,11 +23,17 @@ class Api::V1::GettyImagesController < ApplicationController
     return render_bad_request unless page && page_size.is_a?(String) && page_size.to_i > 0
 
     begin
-      results = connect_sdk.
-        search.images.
+      search_images_sdk = connect_sdk.search.images
+      search_images_sdk.query_params = {
+        'sort_order' => 'best_match',
+        'fields' => 'preview,id'
+      }
+
+      results = search_images_sdk.
         with_phrase(phrase).
         with_page(page).
         with_page_size(page_size).
+        with_graphical_styles('photography').
         execute
 
       render json: results

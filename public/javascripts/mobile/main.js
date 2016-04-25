@@ -659,7 +659,7 @@ import './styles/mobile-general.scss';
     var $logo = $('.navbar-brand img');
     var $navigation = $('.navbar ul.nav');
 
-    var theme = socrataConfig.themeV3;
+    var theme = socrataConfig.themeV3 || {};
     var routes = {
       user: [{
         title: 'Sign Out',

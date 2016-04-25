@@ -154,6 +154,10 @@ module.exports = function(values, $target) {
     // Render/hide a flyout
     if (payload !== null) {
       flyoutRenderer.render(payload);
+
+      $(window).one('touchmove', function() {
+        flyoutRenderer.clear();
+      });
     } else {
       flyoutRenderer.clear();
     }

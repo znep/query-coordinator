@@ -110,14 +110,9 @@ module.exports = function(values, $target) {
     var barName = event.currentTarget.getAttribute('data-bar-name');
     var unFilteredValue = $columnChartElement.selectedData.unfilteredValue;
     var filteredValue = $columnChartElement.selectedData.filteredValue;
-    var labelUnit = columnChartVIF.unit.other;
     var filteredLabelLine = '';
     var valuesStyleClass = 'unfiltered';
     var isFiltered = filteredValue != unFilteredValue;
-
-    if ($columnChartElement.selectedData.filteredValue === 1) {
-      labelUnit = columnChartVIF.unit.one;
-    }
 
     chartWrapper.
     find('.bar-group[data-bar-name="{0}"]'.format(barName)).

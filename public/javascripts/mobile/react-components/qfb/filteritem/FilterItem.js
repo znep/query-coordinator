@@ -132,8 +132,6 @@ class FilterItem extends React.Component {
           remoteApply={ this.onClickApply } />;*/
         var scaleArray = this.props.filter.scale.split(',');
         var largeDataset = this.props.isLarge;
-        // TODO: CLEAT OVERRIDE!!!
-        largeDataset = false;
 
         if (largeDataset) {
           filter = <SocrataRangefilter

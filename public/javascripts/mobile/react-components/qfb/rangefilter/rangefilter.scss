@@ -60,7 +60,8 @@
   position: relative;
   width: 100%; }
 
-.rangeLabels {
+.rangeLabels,
+.range-inputs-container {
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flexbox;
@@ -71,4 +72,28 @@
   -webkit-align-items: center;
   -moz-align-items: center;
   align-items: center;
+}
+.large-dataset,
+.small-dataset {
+  min-width: 300px;
+}
+.range-inputs-container {
+  margin-top: 10px;
+}
+.range-input-part {
+  .range-input-field {
+    max-width: 110px;
+    padding: 5px;
+    &.range-input-field-upper {
+      text-align: right;
+    }
+    &.is-error {
+      border: 2px solid red;
+    }
+    &:hover.is-error,
+    &:active.is-error,
+    &:focus.is-error, {
+      outline: none;
+    }
+  }
 }

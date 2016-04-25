@@ -72,6 +72,8 @@ class FilterContainer extends React.Component {
           type: $selectedOption.data('type'),
           name: $selectedOption.data('name'),
           displayName: $selectedOption.data('displayname'),
+          scale: $selectedOption.data('scale'),
+          isLarge: $selectedOption.data('islarge'),
           data: null
         };
 
@@ -219,7 +221,6 @@ class FilterContainer extends React.Component {
     var aFilters = this.state.filters;
     var index = this.findIndexOfFilterFromArrayById(filterId, aFilters);
     aFilters[index].data = dataObj;
-
     this.setState({ filters: aFilters });
 
     var modifiedFilters = this.prettifyFilterForDLMobile(aFilters);
@@ -241,10 +242,51 @@ class FilterContainer extends React.Component {
     }
   }
 
+  makeFilterOption(filter, index, isApplied) {
+    switch (filter.type) {
+      case 'int':
+        if (isApplied) {
+          return <option id={ filter.id }
+            key={index}
+            title="Filter already in use"
+            data-type={filter.type}
+            data-name={filter.name}
+            data-displayname={filter.filterName}
+            data-scale={filter.scale}
+            data-islarge={filter.largeDataset}
+            disabled>{ filter.filterName }</option>;
+        } else {
+          return <option id={ filter.id }
+            key={index}
+            data-type={filter.type}
+            data-name={filter.name}
+            data-displayname={filter.filterName}
+            data-scale={filter.scale}
+            data-islarge={filter.largeDataset}>{ filter.filterName }</option>;
+        }
+      default:
+        if (isApplied) {
+          return <option id={ filter.id }
+            key={index}
+            title="Filter already in use"
+            data-type={filter.type}
+            data-name={filter.name}
+            data-displayname={filter.filterName}
+            disabled>{ filter.filterName }</option>;
+        } else {
+          return <option id={ filter.id }
+            key={index}
+            data-type={filter.type}
+            data-name={filter.name}
+            data-displayname={filter.filterName}>{ filter.filterName }</option>;
+        }
+    }
+  }
+
   // RENDERING
   render() {
-
     var filterOptions = this.state.filterOps.map((filter, i) => {
+
       var aFiltersApplied = this.state.filters;
       if (aFiltersApplied.length > 0) {
         var filterApplied = false;
@@ -254,34 +296,26 @@ class FilterContainer extends React.Component {
             break;
           }
         }
-
-        if (filterApplied) {
-          return <option id={ filter.id }
-            key={i}
-            title="Filter already in use"
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}
-            disabled>{ filter.filterName }</option>;
-        } else {
-          return <option id={ filter.id }
-            key={i}
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}>{ filter.filterName }</option>;
-        }
+        return this.makeFilterOption(filter, i, filterApplied);
       } else {
-        return <option id={ filter.id }
-          key={i}
-          data-type={filter.type}
-          data-name={filter.name}
-          data-displayname={filter.filterName}>{ filter.filterName }</option>;
+        return this.makeFilterOption(filter, i, false);
       }
     });
 
     var selectedFilters = this.state.filters.map((filter) => {
 
-      return <FilterItem
+      if (filter.type == 'int') {
+        return <FilterItem
+          key={ 'qf-' + filter.id }
+          filter={ filter }
+          isLarge={ filter.isLarge }
+          startWithClosedFlannel={ filter.startWithClosedFlannel }
+          domain={ this.domain }
+          datasetId={ this.datasetId }
+          deletionHandler={ this.handleFilterDeletion.bind(this, filter.id) }
+          additionHandler={ this.handleFilterAddition } />;
+      } else {
+        return <FilterItem
           key={ 'qf-' + filter.id }
           filter={ filter }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
@@ -289,6 +323,7 @@ class FilterContainer extends React.Component {
           datasetId={ this.datasetId }
           deletionHandler={ this.handleFilterDeletion.bind(this, filter.id) }
           additionHandler={ this.handleFilterAddition } />;
+      }
     });
 
     var self = this;

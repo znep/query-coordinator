@@ -609,7 +609,7 @@ import './styles/mobile-general.scss';
               filterOptionsPromises.push(__textTypeFilter(column));
               break;
             case 'number':
-              filterOptionsPromises.push(__numberTypeFilter(column));
+              filterOptionsPromises.push(__numberTypeFilter(column, isLargeDataset));
               break;
             case 'calendar_date':
               filterOptionsPromises.push(__dateTypeFilter(column));
@@ -638,19 +638,26 @@ import './styles/mobile-general.scss';
         })
       }
 
-      function __numberTypeFilter(column) {
+      function __numberTypeFilter(column, isLargeDataset) {
         return new Promise(function(resolve) {
           var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
 
           __queryLimits(fieldName).
             then(__getBuckets).
             then(function(buckets) {
+              var scaleArray = _.map(buckets, function(el) {
+                return el.start;
+              });
+
+              scaleArray.push(_.last(buckets).end);
+
               resolve({
                 filterName: column.name,
                 name: fieldName,
                 id: column.position,
                 type: 'int',
-                scale: buckets
+                scale: scaleArray,
+                largeDataset: isLargeDataset
               });
             });
         });

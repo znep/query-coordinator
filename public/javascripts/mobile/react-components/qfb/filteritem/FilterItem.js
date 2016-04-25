@@ -20,7 +20,9 @@ class FilterItem extends React.Component {
       pendingLabel: '',
       pendingData: null,
       isApplicable: false,
-      isCorrect: true
+      isCorrect: true,
+      showWarning: false,
+      warningText: null
     };
 
     this.onClickFlannelCanvas = this.onClickFlannelCanvas.bind(this);
@@ -32,6 +34,7 @@ class FilterItem extends React.Component {
 
     this.handleFilterData = this.handleFilterData.bind(this);
     this.handleFilterLabel = this.handleFilterLabel.bind(this);
+    this.handleWarning = this.handleWarning.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +88,25 @@ class FilterItem extends React.Component {
     });
   }
 
+  handleWarning(isVisible, warningMessage) {
+    this.setState({
+      showWarning: isVisible,
+      warningText: warningMessage
+    });
+
+    if(isVisible) {
+      this.setState({
+        isCorrect: false,
+        isApplicable: false,
+      });
+    } else {
+      this.setState({
+        isCorrect: true,
+        isApplicable: true,
+      });
+    }
+  }
+
   handleFilterLabel(label) {
     this.setState({
       label: label
@@ -93,10 +115,6 @@ class FilterItem extends React.Component {
 
   render() {
     var filter;
-
-    var scaleArray = [
-    0.02,0.04,0.06,0.08,0.10,0.12,0.14,0.16,0.18,0.20,0.22,0.24,0.26,
-    0.28,0.30,0.32,0.34,0.36,0.38,0.40,0.42,0.44,0.46,0.48,0.50];
 
     switch (this.props.filter.type) {
       case 'bool':
@@ -112,12 +130,34 @@ class FilterItem extends React.Component {
           labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData }
           remoteApply={ this.onClickApply } />;*/
-        filter = <SocrataRangefilter
-          key={ 'qf-' + this.props.filter.id }
-          componentId={ this.props.filter.id }
-          name={ this.props.filter.name }
-          domain={ scaleArray }
-          dataHandler={ this.handleFilterData }/>;
+        var scaleArray = this.props.filter.scale.split(',');
+        var largeDataset = this.props.isLarge;
+        // TODO: CLEAT OVERRIDE!!!
+        largeDataset = false;
+
+        if (largeDataset) {
+          filter = <SocrataRangefilter
+            key={ 'qf-' + this.props.filter.id }
+            componentId={ this.props.filter.id }
+            name={ this.props.filter.name }
+            isLarge={ largeDataset }
+            scale={ scaleArray }
+            dataHandler={ this.handleFilterData }/>;
+        } else {
+          var rangeMin = Number(scaleArray[0]);
+          var rangeMax = Number(scaleArray[scaleArray.length-1]);
+
+          filter = <SocrataRangefilter
+            key={ 'qf-' + this.props.filter.id }
+            componentId={ this.props.filter.id }
+            name={ this.props.filter.name }
+            isLarge={ largeDataset }
+            rangeMin={ rangeMin }
+            rangeMax={ rangeMax }
+            warningHandler={ this.handleWarning }
+            dataHandler={ this.handleFilterData }/>;
+        }
+
         break;
       case 'string':
         filter = <SocrataAutocompletefilter
@@ -147,7 +187,8 @@ class FilterItem extends React.Component {
     if (!this.state.isApplicable) { applyButtonClasses += ' disabled'; }
 
     var warningClasses = 'qfb-filter-item-flannel-actions-warningmessage';
-    if (this.state.isCorrect) { warningClasses += ' hidden'; }
+    if (!this.state.showWarning) { warningClasses += ' hidden'; }
+    // if (this.state.isCorrect) { warningClasses += ' hidden'; }
 
     return (
       <div id={ 'qf-' + this.props.filter.id } className="qfb-filter-item">
@@ -177,7 +218,7 @@ class FilterItem extends React.Component {
             { filter }
             <div className="qfb-filter-item-flannel-actions">
               <p className={ warningClasses }>
-                <i className="icon-warning"></i> Please check your values.
+                <i className="icon-warning"></i> { this.state.warningText }
               </p>
               <button className="qfb-filter-item-flannel-actions-btncancel btn btn-link"
                 onClick={ this.onClickCancel }>Cancel</button>

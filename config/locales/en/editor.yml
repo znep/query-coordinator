@@ -73,9 +73,6 @@ en:
         remove: 'Remove'
         edit: 'Edit'
     components:
-      getty_images:
-        header: 'This Getty image is only a preview.'
-        subheader: 'A full resolution version will replace the preview when you publish your story.'
       edit_controls:
         button: 'Edit'
       asset_selector:
@@ -184,6 +181,7 @@ en:
         uploading_message: 'Uploading...'
         show_more: 'Show More'
         thats_it: "That's everything!"
+        getty_image_info: "When you publish your story, the preview image will be upgraded to a full resolution image."
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
@@ -191,8 +189,7 @@ en:
           image_search: "We can't complete your search right now. Try different keywords."
       image_preview:
         preview_label: 'Preview'
-        description_label: 'Image Description (optional)'
-        description_alt_attribute: 'This text is called an alt attribute and will not be displayed on your story page '
+        description_label: 'Alt Attribute (optional)'
         alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
       story_tile:
         name: 'Socrata Story Tile'

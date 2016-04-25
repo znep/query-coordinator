@@ -286,24 +286,3 @@
     }
   }
 }
-
-.alert.info {
-  font-size: 1.5rem;
-  background-color: $collaborators-select-alert-info-background-color;
-  border: none;
-  color: $collaborators-select-alert-info-color;
-  margin-left: 3rem;
-  margin-right: 3rem;
-  margin-top: 5px;
-  padding: 0.75rem;
-  padding-bottom: 0.9rem;
-
-  a {
-    color: $collaborators-select-alert-info-anchor-color;
-  }
-
-  [class^="icon-"] {
-    color: $collaborators-select-alert-info-icon-color;
-    margin-right: 4px;
-  }
-}

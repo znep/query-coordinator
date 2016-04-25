@@ -129,11 +129,6 @@
   img {
     width: 100%;
   }
-
-  .getty-image-preview-watermark {
-    position: absolute;
-    top: 1rem;
-  }
 }
 
 .component-socrata-visualization-table {
@@ -224,10 +219,6 @@
       $extra-large-height
     );
   }
-
-  .getty-image-preview-watermark {
-    font-size: 0.5rem;
-  }
 }
 
 .col6 {
@@ -279,10 +270,6 @@
       $col6-block-edit-content-width-large * 1,
       $col6-block-edit-content-width-extra-large * (4/5)
     );
-  }
-
-  .getty-image-preview-watermark {
-    font-size: 0.5rem;
   }
 }
 

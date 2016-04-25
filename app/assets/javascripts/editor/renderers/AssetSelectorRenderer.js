@@ -741,7 +741,6 @@ export default function AssetSelectorRenderer(options) {
               resolve();
             };
             imageElement.onclick = function(event) {
-              var $image = $(event.currentTarget).closest('[src]');
               var $result = $(event.currentTarget).closest('.gallery-result');
 
               if ($result.hasClass('active')) {
@@ -973,19 +972,24 @@ export default function AssetSelectorRenderer(options) {
       previewImage
     ]);
 
-    var descriptionLabel = $(
-      '<h2>',
-      { 'class': 'asset-selector-image-description-label' }
-    ).text(I18n.t('editor.asset_selector.image_preview.description_label'));
+    var gettyImageInfo = $(
+      '<div>',
+      { class: 'alert info getty-image-info hidden' }
+    ).append(
+      $('<span>', {class: 'icon-info-inverse'}),
+      I18n.t('editor.asset_selector.image_upload.getty_image_info')
+    );
 
     var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });
 
-    var inputLabelText = $(
-      '<p>',
-      { 'class': 'asset-selector-image-alt-input-info' }
-    ).text(I18n.t('editor.asset_selector.image_preview.description_alt_attribute'));
+    var descriptionLabel = $(
+      '<h2>',
+      { 'class': 'asset-selector-image-description-label' }
+    ).append(
+      I18n.t('editor.asset_selector.image_preview.description_label'),
+      questionIcon
+    );
 
-    var inputLabel = inputLabelText.append([questionIcon]);
 
     var inputField = $(
       '<input>',
@@ -1005,8 +1009,7 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-image-description-container' }
     ).append([
-      inputField,
-      inputLabel
+      inputField
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
@@ -1026,6 +1029,7 @@ export default function AssetSelectorRenderer(options) {
     ).append([
       previewImageLabel,
       previewContainer,
+      gettyImageInfo,
       isImage ? descriptionLabel : null,
       isImage ? descriptionContainer : null
     ]);
@@ -1059,12 +1063,15 @@ export default function AssetSelectorRenderer(options) {
     var imageSrc = imageElement.attr('src');
     var altInputField = _container.find('.asset-selector-alt-text-input');
     var insertButton = _container.find('.btn-apply');
+    var gettyImageInfo = _container.find('.getty-image-info');
+    var isNotGettyImage = !Constants.VALID_GETTY_IMAGE_PATTERN.test(imageUrl);
 
     altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
     if (!_.isNull(imageUrl)) {
       if (imageSrc !== imageUrl) {
         imageElement.attr('src', imageUrl);
+        gettyImageInfo.toggleClass('hidden', isNotGettyImage);
       }
 
       insertButton.prop('disabled', false);

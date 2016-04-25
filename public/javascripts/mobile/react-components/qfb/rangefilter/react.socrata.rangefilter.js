@@ -1,10 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import $ from 'jquery'; // eslint-disable-line
 import InputRange from 'react-input-range';
 import './rangefilter.scss';
-// import FlannelUtils from '../../flannel/flannel';
 
 class SocrataRangeFilter extends React.Component {
 
@@ -51,16 +49,16 @@ class SocrataRangeFilter extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props.isLarge) {
+    if (this.props.isLarge) {
       var filterObj = {
         dir: 'bt',
         val1: this.domain[0],
-        val2: this.domain[this.domain.length-1]
+        val2: this.domain[this.domain.length - 1]
       };
 
       this.props.dataHandler('(all values)', filterObj, true, true);
     } else {
-      var filterObj = {
+      filterObj = {
         dir: 'bt',
         val1: this.props.rangeMin,
         val2: this.props.rangeMax
@@ -72,7 +70,7 @@ class SocrataRangeFilter extends React.Component {
 
   onChangeVal(whichBound, e) {
 
-    if(whichBound == 'lower') {
+    if (whichBound == 'lower') {
       // Changing LOWER range limit
       this.setState({
         inputValue: {
@@ -82,7 +80,7 @@ class SocrataRangeFilter extends React.Component {
       });
 
       // VALIDATION
-      if(e.target.value == '') {
+      if (e.target.value == '') {
         this.setState({
           values: {
             min: this.props.rangeMin,
@@ -102,7 +100,7 @@ class SocrataRangeFilter extends React.Component {
             upper: this.state.errorBoundary.upper
           }
         });
-      } else if(e.target.value > this.state.values.max) {
+      } else if (e.target.value > this.state.values.max) {
         // lower bound is greater than upper bound ---- Warning!
         this.props.warningHandler(true, 'The min cannot exceed the max');
         this.setState({ errorBoundary: {
@@ -110,7 +108,7 @@ class SocrataRangeFilter extends React.Component {
             upper: this.state.errorBoundary.upper
           }
         });
-      } else if(e.target.value > this.props.rangeMax || e.target.value < this.props.rangeMin ) {
+      } else if (e.target.value > this.props.rangeMax || e.target.value < this.props.rangeMin ) {
         // lower bound exceeds either upper or lower limit ---- Warning!
         this.props.warningHandler(true, 'The min cannot exceed range limits');
         this.setState({ errorBoundary: {
@@ -150,7 +148,7 @@ class SocrataRangeFilter extends React.Component {
       });
 
       // VALIDATION
-      if(e.target.value == '') {
+      if (e.target.value == '') {
         console.log('validation stuck 1');
         this.setState({
           values: {
@@ -171,7 +169,7 @@ class SocrataRangeFilter extends React.Component {
             upper: false
           }
         });
-      } else if(e.target.value < this.state.values.min) {
+      } else if (e.target.value < this.state.values.min) {
         // upper bound is greater than lower bound ---- Warning!
         this.props.warningHandler(true, 'The max cannot be smaller than the min');
         this.setState({ errorBoundary: {
@@ -179,7 +177,7 @@ class SocrataRangeFilter extends React.Component {
             upper: true
           }
         });
-      } else if(e.target.value > this.props.rangeMax || e.target.value < this.props.rangeMin ) {
+      } else if (e.target.value > this.props.rangeMax || e.target.value < this.props.rangeMin ) {
         console.log('validation stuck 3');
         // upper bound exceeds either upper or lower limit ---- Warning!
         this.props.warningHandler(true, 'The max cannot exceed range limits');
@@ -217,7 +215,7 @@ class SocrataRangeFilter extends React.Component {
     var formattedLabel = '';
     var filterObj = {};
 
-    if(this.props.isLarge) {
+    if (this.props.isLarge) {
       var labelsObject = {
         min: (values.min == this.domain[0]) ? 'No Min' : this.domain[values.min],
         max: (values.max == this.domain.length - 1) ? 'No Max' : this.domain[values.max]
@@ -228,27 +226,22 @@ class SocrataRangeFilter extends React.Component {
         valueLabels: labelsObject
       });
 
-      if (values.min == 0 && values.max == this.domain.length - 1)
-      {
+      if (values.min == 0 && values.max == this.domain.length - 1) {
         formattedLabel = '(all values)';
-        filterObj['dir'] = null;
-      }
-        else if (values.min == 0)
-      {
+        filterObj.dir = null;
+      } else if (values.min == 0) {
         formattedLabel = 'Less than ' + values.max;
-        filterObj['dir'] = 'lt';
-      }
-        else if (values.max == this.domain.length - 1)
-      {
+        filterObj.dir = 'lt';
+      } else if (values.max == this.domain.length - 1) {
         formattedLabel = 'More than ' + values.min;
-        filterObj['dir'] = 'gt';
+        filterObj.dir = 'gt';
       } else {
         formattedLabel = values.min + ' - ' + values.max;
-        filterObj['dir'] = 'bt';
+        filterObj.dir = 'bt';
       }
 
-      filterObj['val1'] = values.min == 0 ? null : this.domain[values.min];
-      filterObj['val2'] = values.max == this.domain.length - 1 ? null : this.domain[values.max];
+      filterObj.val1 = values.min == 0 ? null : this.domain[values.min];
+      filterObj.val2 = values.max == this.domain.length - 1 ? null : this.domain[values.max];
 
       this.props.dataHandler(formattedLabel, filterObj, true, true);
     } else {
@@ -256,32 +249,27 @@ class SocrataRangeFilter extends React.Component {
         values: values,
         inputValue: {
           lower: values.min,
-          upper: values.max,
+          upper: values.max
         }
       });
 
       console.log(this.props.rangeMin);
-      if (values.min == this.props.rangeMin && values.max == this.props.rangeMax)
-        {
+      if (values.min == this.props.rangeMin && values.max == this.props.rangeMax) {
           formattedLabel = '(all values)';
-          filterObj['dir'] = null;
-        }
-          else if (values.min == this.props.rangeMin)
-        {
+          filterObj.dir = null;
+        } else if (values.min == this.props.rangeMin) {
           formattedLabel = 'Less than ' + values.max;
-          filterObj['dir'] = 'lt';
-        }
-          else if (values.max == this.props.rangeMax)
-        {
+          filterObj.dir = 'lt';
+        } else if (values.max == this.props.rangeMax) {
           formattedLabel = 'More than ' + values.min;
-          filterObj['dir'] = 'gt';
+          filterObj.dir = 'gt';
         } else {
           formattedLabel = values.min + ' - ' + values.max;
-          filterObj['dir'] = 'bt';
+          filterObj.dir = 'bt';
         }
 
-        filterObj['val1'] = values.min == this.props.rangeMin ? null : values.min;
-        filterObj['val2'] = values.max == this.props.rangeMax ? null : values.max;
+        filterObj.val1 = values.min == this.props.rangeMin ? null : values.min;
+        filterObj.val2 = values.max == this.props.rangeMax ? null : values.max;
 
         this.props.dataHandler(formattedLabel, filterObj, true, true);
       }
@@ -303,11 +291,11 @@ class SocrataRangeFilter extends React.Component {
         </div>
       </div>);
     } else {
-      var inputClassLower = "range-input-field range-input-field-lower";
-      inputClassLower = this.state.errorBoundary.lower ? inputClassLower + " is-error" : inputClassLower;
+      var inputClassLower = 'range-input-field range-input-field-lower';
+      inputClassLower = this.state.errorBoundary.lower ? inputClassLower + ' is-error' : inputClassLower;
 
-      var inputClassUpper = "range-input-field range-input-field-upper";
-      inputClassUpper = this.state.errorBoundary.upper ? inputClassUpper + " is-error" : inputClassUpper;
+      var inputClassUpper = 'range-input-field range-input-field-upper';
+      inputClassUpper = this.state.errorBoundary.upper ? inputClassUpper + ' is-error' : inputClassUpper;
 
       return (<div className="small-dataset">
         <InputRange

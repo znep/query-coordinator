@@ -622,7 +622,7 @@ import './styles/mobile-general.scss';
         Promise.
           all(filterOptionsPromises).
           then(resolve)
-          ['catch'](function(error){
+          ['catch'](function(error) {
             console.error(error);
           });
       });
@@ -635,10 +635,10 @@ import './styles/mobile-general.scss';
             id: column.position,
             type: 'string'
           });
-        })
+        });
       }
 
-      function __numberTypeFilter(column, isLargeDataset) {
+      function __numberTypeFilter(column, isLargeData) {
         return new Promise(function(resolve) {
           var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
 
@@ -657,7 +657,7 @@ import './styles/mobile-general.scss';
                 id: column.position,
                 type: 'int',
                 scale: scaleArray,
-                largeDataset: isLargeDataset
+                largeDataset: isLargeData
               });
             });
         });
@@ -758,8 +758,8 @@ import './styles/mobile-general.scss';
           soqlDataProvider.query(queryTemplate.format(queryParameters), queryParameters.columnAlias,
             queryParameters.valueAlias).
             then(function(unfilteredResponse) {
-              var requestData = _.mapValues({'unfiltered': unfilteredResponse}, function (response) {
-                return _.chain(response.rows).map(function (pair) {
+              var requestData = _.mapValues({'unfiltered': unfilteredResponse}, function(response) {
+                return _.chain(response.rows).map(function(pair) {
                   return _.map(pair, parseFloat);
                 }).map(_.partial(_.zipObject, ['magnitude', 'value'])).value();
               });

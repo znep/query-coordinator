@@ -143,7 +143,7 @@ class FilterItem extends React.Component {
             dataHandler={ this.handleFilterData }/>;
         } else {
           var rangeMin = Number(scaleArray[0]);
-          var rangeMax = Number(scaleArray[scaleArray.length-1]);
+          var rangeMax = Number(scaleArray[scaleArray.length - 1]);
 
           filter = <SocrataRangefilter
             key={ 'qf-' + this.props.filter.id }

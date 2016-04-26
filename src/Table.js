@@ -41,10 +41,8 @@ $.fn.socrataTable = function(vif) {
   );
 
   var $element = $(this);
+  var vifToRender = vif;
   var soqlDataProvider = new SoqlDataProvider(
-    _.pick(vif, 'datasetUid', 'domain')
-  );
-  var metadataProvider = new MetadataProvider(
     _.pick(vif, 'datasetUid', 'domain')
   );
   var visualization = new Table($element, vif);
@@ -80,7 +78,20 @@ $.fn.socrataTable = function(vif) {
     datasetRowCount: null
   };
 
-  var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+  var getMemoizedDatasetMetadata = _.memoize(
+    function(metadataProviderConfig) {
+
+      return new MetadataProvider(metadataProviderConfig).
+        getDatasetMetadata();
+    },
+    function(metadataProviderConfig) {
+
+      return '{0}_{1}'.format(
+        metadataProviderConfig.domain,
+        metadataProviderConfig.datasetUid
+      );
+    }
+  );
 
   _attachEvents();
 
@@ -92,7 +103,7 @@ $.fn.socrataTable = function(vif) {
     0, // Offset
     _computePageSize(),
     _.get(vif, 'configuration.order'),
-    whereClauseComponents
+    SoqlHelpers.whereClauseFilteringOwnColumn(vif)
   ).then(function() {
     visualization.freezeColumnWidthsAndRender();
   });
@@ -297,11 +308,9 @@ $.fn.socrataTable = function(vif) {
       );
     }
 
-    soqlDataProvider = new SoqlDataProvider(
-      _.pick(newVif, 'datasetUid', 'domain')
-    );
+    vifToRender = newVif;
 
-    metadataProvider = new MetadataProvider(
+    soqlDataProvider = new SoqlDataProvider(
       _.pick(newVif, 'datasetUid', 'domain')
     );
 
@@ -327,20 +336,12 @@ $.fn.socrataTable = function(vif) {
 
   function _handleSetDataQueryError(error) {
 
-    try {
+    console.error(
+      'Error while fulfilling table data request: {0}'.
+        format(error)
+    );
 
-      console.error(
-        'Error while fulfilling table data request: {0}'.
-          format(error)
-      );
-      _updateState({ busy: false });
-    } catch (updateStateError) {
-
-      console.error(
-        'Error while processing failed SODA request (reported separately)',
-        updateStateError
-      );
-    }
+    _updateState({ busy: false });
 
     throw error;
   }
@@ -359,36 +360,42 @@ $.fn.socrataTable = function(vif) {
 
     _updateState({ busy: true });
 
-    return metadataProvider.
-      getDatasetMetadata().
+    return getMemoizedDatasetMetadata(
+      _.pick(vifToRender, 'datasetUid', 'domain')
+    ).
       then(
         function(datasetMetadata) {
-          var displayableColumns = metadataProvider.
+          var displayableColumns = new MetadataProvider(
+            _.pick(vifToRender, 'datasetUid', 'domain')
+          ).
             getDisplayableColumns(datasetMetadata);
           var displayableColumnsFieldNames = _.pluck(
             displayableColumns,
             'fieldName'
           ).
-          slice(0, MAX_COLUMN_COUNT);
-          var soqlData = soqlDataProvider.getTableData(
-            displayableColumnsFieldNames,
-            order,
-            startIndex,
-            pageSize,
-            whereClauseComponents
-          );
+            slice(0, MAX_COLUMN_COUNT);
+          var soqlRowCountPromise = soqlDataProvider.
+            getRowCount(whereClauseComponents);
+          var soqlDataPromise = soqlDataProvider.
+            getTableData(
+              displayableColumnsFieldNames,
+              order,
+              startIndex,
+              pageSize,
+              whereClauseComponents
+            );
 
           return Promise.all([
-            soqlDataProvider.getRowCount(whereClauseComponents),
-            soqlData
+            soqlRowCountPromise,
+            soqlDataPromise
           ]).then(
             function(resolutions) {
               var rowCount = resolutions[0];
               var soqlData = resolutions[1];
 
-              // Rows can either be undefined OR of the exact length of
-              // the displayableColumns OR 64, if the displayableColumns
-              // has more than 64 items.
+              // Rows can either be undefined OR of the exact length of the
+              // displayableColumns OR MAX_COLUMN_COUNT, if the
+              // displayableColumns has more than MAX_COLUMN_COUNT items.
               utils.assert(_.all(soqlData.rows, function(row) {
 
                 return (
@@ -419,10 +426,6 @@ $.fn.socrataTable = function(vif) {
         }
       )
       ['catch'](_handleSetDataQueryError);
-  }
-
-  function _getDisplayableColumns() {
-    return metadataProvider.getDatasetMetadata().then();
   }
 
   function _getVif() {

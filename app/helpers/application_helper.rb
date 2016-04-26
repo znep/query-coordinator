@@ -768,6 +768,12 @@ module ApplicationHelper
   def using_cetera?
     return false unless APP_CONFIG.cetera_host.present?
 
+    uri = URI(APP_CONFIG.cetera_host)
+    unless uri.host.present? && uri.scheme.present?
+      Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')
+      return false
+    end
+
     req = request if defined?(request)
 
     # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things

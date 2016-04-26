@@ -74,17 +74,11 @@ function SoqlDataProvider(config) {
       '&$where={0}'.format(whereClauseComponents) :
       '';
 
-    return Promise.resolve(
-      $.get(
-        _queryUrl(
-          '$select=count(*){0}'.format(whereClause)
-        )
-      )
-    ).then(
-      function(data) {
+    return _makeSoqlGetRequestWithSalt(_queryUrl(
+      '$select=count(*){0}&$$$$$read_from_nbe=true&$$$$$version=UNSTABLE'.format(whereClause)
+      )).then(function(data) {
         return parseInt(_.get(data, '[0].count'), 10);
-      }
-    );
+      });
   };
 
   /**
@@ -160,14 +154,18 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    var queryString = '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.format(
-      columnNames.map(_escapeColumnName).join(','),
-      order[0].columnName,
-      (order[0].ascending ? 'ASC' : 'DESC'),
-      limit,
-      offset,
-      whereClauseComponents ? '&$where=' + whereClauseComponents : ''
-    );
+    // Note: The five $ signs are eventually collapsed down to two $ signs, because
+    // of strange corner-casey behavior of String.format.
+    var queryString =
+      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$$$read_from_nbe=true&$$$$$version=UNSTABLE'.
+      format(
+        columnNames.map(_escapeColumnName).join(','),
+        order[0].columnName,
+        (order[0].ascending ? 'ASC' : 'DESC'),
+        limit,
+        offset,
+        whereClauseComponents ? '&$where=' + whereClauseComponents : ''
+      );
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {
       return _mapRowsResponseToTable(columnNames, data);

@@ -262,6 +262,14 @@ var Dataset = ServerModel.extend({
         return (this.metadata && this.metadata.geo);
     },
 
+    isApiGeospatial: function()
+    {
+        var customFields = _.merge(this.metadata || {}, this.privateMetadata || {}).custom_fields || {};
+        return _.reduce(customFields, function(acc, fields, fieldset) {
+            return acc || (/^geo-?spatial api pre-?release$/i.test(fieldset) && (fields['Enabled'] || fields['enabled']) === 'true');
+        }, false);
+    },
+
     isBlobby: function()
     {
         return (this.type == 'blob');
@@ -286,7 +294,10 @@ var Dataset = ServerModel.extend({
     isExportable: function()
     {
         if (this.newBackend) {
-            return this.displayName === 'dataset' || this.displayName === 'working copy' || this.viewType === 'geo';
+            return this.displayName === 'dataset' ||
+                this.displayName === 'working copy' ||
+                this.viewType === 'geo' ||
+                this.isApiGeospatial();
         } else {
             return true;
         }

@@ -1,5 +1,5 @@
 <div class="downloadsSectionContent">
-  <%- if @view.is_geo? -%>
+  <%- if @view.is_geo? || @view.is_api_geospatial? -%>
   <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.geo_header') %></label>
   <%- end -%>
   <div class="downloadsTable">
@@ -7,7 +7,7 @@
       <%= render :partial => 'datasets/downloads_table_inner' %>
     </div>
   </div>
-  <%- if @view.is_geo? -%>
+  <%- if @view.is_geo? || @view.is_api_geospatial? -%>
   <div class="layerTableDownloads">
     <%- if @view.is_multi_layered? -%>
       <label class="formHeader"><%= t('screens.ds.grid_sidebar.download.multilayer_header') %></label>

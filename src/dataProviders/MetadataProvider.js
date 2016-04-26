@@ -19,12 +19,14 @@ function MetadataProvider(config) {
    */
 
   /**
+   * Gets dataset metadata from /api/views/4x4.json?read_from_nbe=true.
+   *
    * NOTE:
    * Columns are structured in an Array.
    * (See: https://localhost/api/docs/types#View)
    */
   this.getDatasetMetadata = function() {
-    var url = 'https://{0}/api/views/{1}.json'.format(
+    var url = 'https://{0}/api/views/{1}.json?read_from_nbe=true'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
     );
@@ -183,8 +185,6 @@ function MetadataProvider(config) {
         self.isSubcolumn(column.fieldName, datasetMetadata);
     });
   };
-
-
 }
 
 module.exports = MetadataProvider;

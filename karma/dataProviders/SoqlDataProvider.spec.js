@@ -628,6 +628,13 @@ describe('SoqlDataProvider', function() {
         var args = pair.args;
         var resultantQueryParts = pair.resultantQueryParts;
 
+        it('should query the NBE', function() {
+          soqlDataProvider.getTableData.apply(soqlDataProvider, args);
+          assert.lengthOf($getStub.getCalls(), 1);
+          assert.include($getStub.getCalls()[0].args[0], '$$read_from_nbe=true');
+          assert.include($getStub.getCalls()[0].args[0], '$$version=UNSTABLE');
+        });
+
         resultantQueryParts.map(function(queryPart) {
           it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), function() {
             soqlDataProvider.getTableData.apply(soqlDataProvider, args);
@@ -821,6 +828,19 @@ describe('SoqlDataProvider', function() {
 
     afterEach(function() {
       server.restore();
+    });
+
+    it('should query the nbe', function() {
+      soqlDataProvider.getRowCount(); // Discard response, we don't care.
+      assert.lengthOf(server.requests, 1);
+      assert.include(
+        server.requests[0].url,
+        '$$read_from_nbe=true'
+      );
+      assert.include(
+        server.requests[0].url,
+        '$$version=UNSTABLE'
+      );
     });
 
     describe('on request error', function() {

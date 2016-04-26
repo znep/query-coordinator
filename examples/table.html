@@ -13,18 +13,22 @@
         margin: 0;
       }
 
-      #table-1,
-      #table-2,
-      #table-3 {
+      [id^=table-] {
         height: 640px;
       }
 
     </style>
   </head>
   <body>
+    <button id="kill-btn">Destroy all</button>
+    <p>Chicago crimes, unfiltered.</p>
     <div id="table-1"></div>
+    <p>Chicago crimes filtered via VIF (description = POSS: CRACK)</p>
     <div id="table-2"></div>
+    <p>Prod derived view filtered inherently (crime type = burglary)</p>
     <div id="table-3"></div>
+    <p>Staging derived view filtered inherently (type = bunnies)</p>
+    <div id="table-4"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -110,29 +114,24 @@
     table3VIF.domain = 'stories.demo.socrata.com';
     $table3Element.socrataTable(table3VIF);
 
+    var $table4Element = $('#table-4');
+    var table4VIF = _.cloneDeep(table1VIF);
+    table4VIF.columnName = 'crime_type';
+    table4VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'date'
+    }];
+    table4VIF.datasetUid = 'fhhu-4yqk';
+    table4VIF.domain = 'vertex-stories.test-socrata.com';
+    $table4Element.socrataTable(table4VIF);
+
+    var $tables = $('[id^=table-]');
+
     $(window).resize(function() {
-      $table1Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
-      $table2Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
-      $table3Element.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+      $tables.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
     });
 
-    $table1Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
-      if (event.originalEvent.detail) {
-        flyoutRenderer.render(event.originalEvent.detail);
-      } else {
-        flyoutRenderer.clear();
-      }
-    });
-
-    $table2Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
-      if (event.originalEvent.detail) {
-        flyoutRenderer.render(event.originalEvent.detail);
-      } else {
-        flyoutRenderer.clear();
-      }
-    });
-
-    $table3Element.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+    $tables.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
       if (event.originalEvent.detail) {
         flyoutRenderer.render(event.originalEvent.detail);
       } else {
@@ -146,8 +145,6 @@
      * The plugin (and all internal modules) can be destroyed by triggering
      * `destroy` on the element.
      */
-    // $table1Element.trigger('destroy');
-    // $table2Element.trigger('destroy');
-    // $table3Element.trigger('destroy');
+    $('#kill-btn').click(function() { $tables.trigger('destroy'); });
   </script>
 </html>

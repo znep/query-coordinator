@@ -54,7 +54,7 @@ mount Chrome::Engine => '/chrome'
 
 ## Site Configuration & Styling
 
-Create a **Configuration** in the Internal Panel called `site_chrome`. Within this configuration, add a property called `siteChromeConfigVars`, into which you can copy the configuration information shown below.
+Create a **Configuration** in the Internal Panel of type `site_chrome` (you can name it whatever you like). Within this configuration, add a property called `siteChromeConfigVars`, into which you can copy the configuration information shown below.
 
 The values specified in the configuration file are used in the following files to generate the CSS that defines the theme.
 

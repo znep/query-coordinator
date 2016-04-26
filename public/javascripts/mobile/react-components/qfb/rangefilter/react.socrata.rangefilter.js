@@ -104,14 +104,14 @@ class SocrataRangeFilter extends React.Component {
             upper: true
           }
         });
-        this.props.warningHandler(true, 'The max cannot be smaller than the min');
+        this.props.warningHandler(true, 'Max cannot be smaller than Min');
       } else if (this.changing == 'lower') {
         this.setState({ errorBoundary: {
             lower: true,
             upper: false
           }
         });
-        this.props.warningHandler(true, 'The min cannot exceed the max');
+        this.props.warningHandler(true, 'Min cannot exceed the Max');
       }
     } else {
       var filterObj = {

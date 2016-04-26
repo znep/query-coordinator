@@ -94,15 +94,15 @@ class FilterItem extends React.Component {
       warningText: warningMessage
     });
 
-    if(isVisible) {
+    if (isVisible) {
       this.setState({
         isCorrect: false,
-        isApplicable: false,
+        isApplicable: false
       });
     } else {
       this.setState({
         isCorrect: true,
-        isApplicable: true,
+        isApplicable: true
       });
     }
   }

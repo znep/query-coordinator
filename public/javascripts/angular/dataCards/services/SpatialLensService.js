@@ -8,7 +8,6 @@ var httpConfig = {
 module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVisualizationChoroplethHelpers) {
   var spatialLensService = {
     isSpatialLensEnabled: isSpatialLensEnabled,
-    isSpatialLensAdminEnabled: isSpatialLensAdminEnabled,
     getAvailableGeoregions$: getAvailableGeoregions$,
     findComputedColumnForRegion: findComputedColumnForRegion,
     cardNeedsRegionCoding: cardNeedsRegionCoding,
@@ -22,10 +21,6 @@ module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVis
 
   function isSpatialLensEnabled() {
     return ServerConfig.get('enableSpatialLensRegionCoding');
-  }
-
-  function isSpatialLensAdminEnabled() {
-    return ServerConfig.get('enableSpatialLensAdmin');
   }
 
   function getAvailableGeoregions$(dataset) {

@@ -34,7 +34,7 @@ module.exports = function visualizationTypeSelector(
 
       if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
         return {
-          showInfoMessage: SpatialLensService.isSpatialLensAdminEnabled(),
+          showInfoMessage: false,
           showNonComputedSection: false,
           enableNonComputedSection: false,
           nonComputedSectionTitle: null
@@ -42,7 +42,7 @@ module.exports = function visualizationTypeSelector(
       }
 
       return {
-        showInfoMessage: SpatialLensService.isSpatialLensAdminEnabled(),
+        showInfoMessage: true,
         showNonComputedSection: true,
         enableNonComputedSection: true,
         nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.notYetComputed

@@ -36,20 +36,6 @@ describe('SpatialLensService', function() {
     });
   });
 
-  describe('isSpatialLensAdminEnabled', function() {
-    it('is false if enableSpatialLensAdmin is false', function() {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensAdmin').returns(false);
-      expect(self.SpatialLensService.isSpatialLensAdminEnabled()).to.equal(false);
-      self.ServerConfig.get.restore();
-    });
-
-    it('is true if enableSpatialLensAdmin is true', function() {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensAdmin').returns(true);
-      expect(self.SpatialLensService.isSpatialLensAdminEnabled()).to.equal(true);
-      self.ServerConfig.get.restore();
-    });
-  });
-
   describe('getAvailableGeoregions$', function() {
     afterEach(function() {
       self.$httpBackend.verifyNoOutstandingExpectation();

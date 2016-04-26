@@ -11,6 +11,7 @@ class CurrentDomainMiddleware
 
   def self.current_domain=(domain)
     Thread.current[:current_domain] = domain
+    CurrentDomain.set(domain)
   end
 
   def self.current_domain

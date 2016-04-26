@@ -1,0 +1,32 @@
+<%-
+  # Hack Hack Hack
+  # TODO: Determine how to properly get these helper methods included in this scope.
+  self.class.include Chrome::ApplicationHelper
+-%>
+<header id="chrome-header">
+  <div class="banner">
+    <%= link_to(get_site_chrome.header[:logo][:href], class: 'logo') do
+      logo(get_site_chrome.header) << content_tag(:span, site_name, :class => 'site-name')
+    end %>
+
+    <nav class="desktop">
+      <%= render 'site_chrome/nav_links' %>
+
+      <%= content_tag(:span, nil, :class => 'divider') %>
+
+      <%= render 'site_chrome/social_links', show_label: false %>
+
+      <%= render 'site_chrome/user_actions' %>
+    </nav>
+
+    <nav class="mobile">
+      <a class="btn menu-toggle" href="#">
+        <span class="icon-hamburger"></span>
+        Menu
+      </a>
+    </nav>
+  </div>
+
+  <%= render 'site_chrome/mobile_menu' %>
+
+</header>

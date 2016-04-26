@@ -253,26 +253,25 @@ class SocrataRangeFilter extends React.Component {
         }
       });
 
-      console.log(this.props.rangeMin);
       if (values.min == this.props.rangeMin && values.max == this.props.rangeMax) {
           formattedLabel = '(all values)';
           filterObj.dir = null;
-        } else if (values.min == this.props.rangeMin) {
-          formattedLabel = 'Less than ' + values.max;
-          filterObj.dir = 'lt';
-        } else if (values.max == this.props.rangeMax) {
-          formattedLabel = 'More than ' + values.min;
-          filterObj.dir = 'gt';
-        } else {
-          formattedLabel = values.min + ' - ' + values.max;
-          filterObj.dir = 'bt';
-        }
-
-        filterObj.val1 = values.min == this.props.rangeMin ? null : values.min;
-        filterObj.val2 = values.max == this.props.rangeMax ? null : values.max;
-
-        this.props.dataHandler(formattedLabel, filterObj, true, true);
+      } else if (values.min == this.props.rangeMin) {
+        formattedLabel = 'Less than ' + values.max;
+        filterObj.dir = 'lt';
+      } else if (values.max == this.props.rangeMax) {
+        formattedLabel = 'More than ' + values.min;
+        filterObj.dir = 'gt';
+      } else {
+        formattedLabel = values.min + ' - ' + values.max;
+        filterObj.dir = 'bt';
       }
+
+      filterObj.val1 = values.min == this.props.rangeMin ? null : values.min;
+      filterObj.val2 = values.max == this.props.rangeMax ? null : values.max;
+
+      this.props.dataHandler(formattedLabel, filterObj, true, true);
+    }
   }
 
   render() {

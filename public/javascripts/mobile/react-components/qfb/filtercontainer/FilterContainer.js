@@ -243,49 +243,70 @@ class FilterContainer extends React.Component {
   }
 
   makeFilterOption(filter, index, isApplied) {
+
     switch (filter.type) {
       case 'int':
         if (isApplied) {
           return <option id={ filter.id }
-            key={index}
+            key={ index }
             title="Filter already in use"
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}
-            data-scale={filter.scale}
-            data-islarge={filter.largeDataset}
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }
+            data-scale={ filter.scale }
+            data-islarge={ filter.largeDataset }
             disabled>{ filter.filterName }</option>;
         } else {
           return <option id={ filter.id }
-            key={index}
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}
-            data-scale={filter.scale}
-            data-islarge={filter.largeDataset}>{ filter.filterName }</option>;
+            key={ index }
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }
+            data-scale={ filter.scale }
+            data-islarge={ filter.largeDataset }>{ filter.filterName }</option>;
         }
+        break;
+      case 'calendar_date':
+        if (isApplied) {
+          return <option id={ filter.id }
+            key={ index }
+            title="Filter already in use"
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }
+            data-scale={ filter.scale }
+            disabled>{ filter.filterName }</option>;
+        } else {
+          return <option id={ filter.id }
+            key={ index }
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }
+            data-scale={ filter.scale }>{ filter.filterName }</option>;
+        }
+        break;
       default:
         if (isApplied) {
           return <option id={ filter.id }
-            key={index}
+            key={ index }
             title="Filter already in use"
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }
             disabled>{ filter.filterName }</option>;
         } else {
           return <option id={ filter.id }
-            key={index}
-            data-type={filter.type}
-            data-name={filter.name}
-            data-displayname={filter.filterName}>{ filter.filterName }</option>;
+            key={ index }
+            data-type={ filter.type }
+            data-name={ filter.name }
+            data-displayname={ filter.filterName }>{ filter.filterName }</option>;
         }
     }
   }
 
   // RENDERING
   render() {
-    var filterOptions = this.state.filterOps.map((filter, i) => {
+    var filterOptions = this.state.filterOps.map((filter, index) => {
 
       var aFiltersApplied = this.state.filters;
       if (aFiltersApplied.length > 0) {
@@ -296,11 +317,12 @@ class FilterContainer extends React.Component {
             break;
           }
         }
-        return this.makeFilterOption(filter, i, filterApplied);
+        return this.makeFilterOption(filter, index, filterApplied);
       } else {
-        return this.makeFilterOption(filter, i, false);
+        return this.makeFilterOption(filter, index, false);
       }
     });
+
 
     var selectedFilters = this.state.filters.map((filter) => {
 

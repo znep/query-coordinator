@@ -6,6 +6,7 @@ import FlannelUtils from '../../flannel/flannel';
 /* eslint-disable */
 import SocrataAutocompletefilter from '../autocompletefilter/react.socrata.autocompletefilter';
 import SocrataNumberfilter from '../numberfilter/react.socrata.numberfilter';
+import SocrataRangefilter from '../rangefilter/react.socrata.rangefilter';
 import SocrataDatefilter from '../datefilter/react.socrata.datefilter';
 /* eslint-enable */
 
@@ -19,7 +20,9 @@ class FilterItem extends React.Component {
       pendingLabel: '',
       pendingData: null,
       isApplicable: false,
-      isCorrect: true
+      isCorrect: true,
+      showWarning: false,
+      warningText: null
     };
 
     this.onClickFlannelCanvas = this.onClickFlannelCanvas.bind(this);
@@ -31,6 +34,7 @@ class FilterItem extends React.Component {
 
     this.handleFilterData = this.handleFilterData.bind(this);
     this.handleFilterLabel = this.handleFilterLabel.bind(this);
+    this.handleWarning = this.handleWarning.bind(this);
   }
 
   componentDidMount() {
@@ -84,6 +88,25 @@ class FilterItem extends React.Component {
     });
   }
 
+  handleWarning(isVisible, warningMessage) {
+    this.setState({
+      showWarning: isVisible,
+      warningText: warningMessage
+    });
+
+    if (isVisible) {
+      this.setState({
+        isCorrect: false,
+        isApplicable: false
+      });
+    } else {
+      this.setState({
+        isCorrect: true,
+        isApplicable: true
+      });
+    }
+  }
+
   handleFilterLabel(label) {
     this.setState({
       label: label
@@ -99,14 +122,40 @@ class FilterItem extends React.Component {
         break;
       case 'float':
       case 'int':
-        filter = <SocrataNumberfilter
+        /*filter = <SocrataNumberfilter
           key={ 'qf-' + this.props.filter.id }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
           data={ this.props.filter.data || {} }
           labelHandler={ this.handleFilterLabel }
           dataHandler={ this.handleFilterData }
-          remoteApply={ this.onClickApply } />;
+          remoteApply={ this.onClickApply } />;*/
+        var scaleArray = this.props.filter.scale.split(',');
+        var largeDataset = this.props.isLarge;
+
+        if (largeDataset) {
+          filter = <SocrataRangefilter
+            key={ 'qf-' + this.props.filter.id }
+            componentId={ this.props.filter.id }
+            name={ this.props.filter.name }
+            isLarge={ largeDataset }
+            scale={ scaleArray }
+            dataHandler={ this.handleFilterData }/>;
+        } else {
+          var rangeMin = Number(scaleArray[0]);
+          var rangeMax = Number(scaleArray[scaleArray.length - 1]);
+
+          filter = <SocrataRangefilter
+            key={ 'qf-' + this.props.filter.id }
+            componentId={ this.props.filter.id }
+            name={ this.props.filter.name }
+            isLarge={ largeDataset }
+            rangeMin={ rangeMin }
+            rangeMax={ rangeMax }
+            warningHandler={ this.handleWarning }
+            dataHandler={ this.handleFilterData }/>;
+        }
+
         break;
       case 'string':
         filter = <SocrataAutocompletefilter
@@ -136,7 +185,8 @@ class FilterItem extends React.Component {
     if (!this.state.isApplicable) { applyButtonClasses += ' disabled'; }
 
     var warningClasses = 'qfb-filter-item-flannel-actions-warningmessage';
-    if (this.state.isCorrect) { warningClasses += ' hidden'; }
+    if (!this.state.showWarning) { warningClasses += ' hidden'; }
+    // if (this.state.isCorrect) { warningClasses += ' hidden'; }
 
     return (
       <div id={ 'qf-' + this.props.filter.id } className="qfb-filter-item">
@@ -166,7 +216,7 @@ class FilterItem extends React.Component {
             { filter }
             <div className="qfb-filter-item-flannel-actions">
               <p className={ warningClasses }>
-                <i className="icon-warning"></i> Please check your values.
+                <i className="icon-warning"></i> { this.state.warningText }
               </p>
               <button className="qfb-filter-item-flannel-actions-btncancel btn btn-link"
                 onClick={ this.onClickCancel }>Cancel</button>

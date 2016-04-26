@@ -113,6 +113,31 @@ RSpec.describe StoryPublisher do
           expect(subject.publish).to eq(false)
         end
       end
+
+      context 'when downloading Getty Images' do
+        context 'when successful' do
+          before do
+            getty_images_downloader = double('getty_images_downloader', :download => nil)
+            allow(GettyImagesDownloader).to receive(:new).and_return(getty_images_downloader)
+          end
+
+          it 'does not raise' do
+            expect { subject.publish }.to_not raise_exception
+            expect(AirbrakeNotifier).to_not receive(:report_error)
+          end
+        end
+
+        context 'when unsuccessful' do
+          before do
+            allow(GettyImagesDownloader).to receive(:new).and_raise
+          end
+
+          it 'calls AirbrakeNotifier#report_error' do
+            expect(AirbrakeNotifier).to receive(:report_error)
+            subject.publish
+          end
+        end
+      end
     end
 
     context 'when published story is invalid' do

@@ -300,6 +300,9 @@ export default function AssetSelectorStore() {
 
   this.getImageSearchUrl = function() {
     var phrase = this.getImageSearchPhrase();
+    var phraseIsNull = _.isNull(phrase);
+    var phraseIsEmptyString = _.isString(phrase) && _.isEmpty(phrase);
+
     var page = this.getImageSearchPage();
     var pageSize = this.getImageSearchPageSize();
     var query = encodeURI(
@@ -311,11 +314,15 @@ export default function AssetSelectorStore() {
       )
     );
 
-    return StorytellerUtils.format(
-      '{0}getty-images/search?{1}',
-      Constants.API_PREFIX_PATH,
-      query
-    );
+    if (phraseIsNull || phraseIsEmptyString) {
+      return null;
+    } else {
+      return StorytellerUtils.format(
+        '{0}getty-images/search?{1}',
+        Constants.API_PREFIX_PATH,
+        query
+      );
+    }
   };
 
   this.getImageSearchResults = function() {
@@ -371,7 +378,11 @@ export default function AssetSelectorStore() {
       self._emitChange();
     }
 
-    self.isImageSearching() && $.getJSON({
+    if (!self.isImageSearching()) {
+      return;
+    }
+
+    $.getJSON({
       method: 'GET',
       url: self.getImageSearchUrl()
     }).then(function(response) {
@@ -379,6 +390,7 @@ export default function AssetSelectorStore() {
       _state.imageSearchCount = response.result_count;
       _state.imageSearchEmpty = _state.imageSearchCount === 0;
       _state.imageSearching = false;
+      _state.imageSearchError = false;
       self._emitChange();
     }, function() {
       _state.imageSearching = false;
@@ -396,6 +408,7 @@ export default function AssetSelectorStore() {
 
   function _setImageSearchSelection(payload) {
     StorytellerUtils.assertHasProperty(payload, 'id');
+    StorytellerUtils.assertIsOneOfTypes(payload.id, 'string', 'number');
 
     var type = self.getComponentType();
     var url = StorytellerUtils.format('{0}getty-images/{1}', Constants.API_PREFIX_PATH, payload.id);

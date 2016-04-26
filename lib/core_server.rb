@@ -402,6 +402,7 @@ class CoreServer
     response = http.request(core_request)
 
     # Follow 302 Redirection.
+
     if response.instance_of?(Net::HTTPFound)
       response = core_server_http_request(
         {

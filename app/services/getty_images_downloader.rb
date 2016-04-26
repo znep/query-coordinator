@@ -7,29 +7,24 @@ class GettyImagesDownloader
   attr_reader :user, :story
 
   def initialize(story, user)
+    raise 'A valid draft or published story is required.' unless story.is_a?(DraftStory) || story.is_a?(PublishedStory)
+    raise 'A valid user object is required.' unless user && user['id']
+
     @story = story
     @user = user
   end
 
   def download
-    if draft_story?
-      urls.each do |url|
-        id = getty_id(url)
-        getty_image = GettyImage.find_or_initialize_by(getty_id: id)
-        getty_image.download(user, story.uid)
-      end
-    else
-      # Error
+    urls.each do |url|
+      id = getty_id(url)
+      getty_image = GettyImage.find_or_initialize_by(getty_id: id)
+      getty_image.download(user, story.uid)
     end
   end
 
   private
 
   attr_reader :draft_story
-
-  def draft_story?
-    draft_story.present?
-  end
 
   def draft_story
     @draft_story ||= (DraftStory.find_by_uid(story.uid).as_json || {})

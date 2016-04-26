@@ -17,5 +17,14 @@ FactoryGirl.define do
         end
       end
     end
+
+    factory :draft_story_with_getty_image do
+      after(:build) do |story|
+        story.block_ids.push(
+          FactoryGirl.create(:block_with_getty_image).id,
+          FactoryGirl.create(:block).id
+        )
+      end
+    end
   end
 end

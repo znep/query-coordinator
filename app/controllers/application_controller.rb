@@ -208,7 +208,9 @@ class ApplicationController < ActionController::Base
           raise_undefined_authorization_handler_error
       end
     else
-      handle_unauthorized_request
+      if action != 'action'
+        handle_unauthorized_request
+      end
     end
   end
 

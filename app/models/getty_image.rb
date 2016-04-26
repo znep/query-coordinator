@@ -1,12 +1,12 @@
 require "ConnectSdk"
 
 class GettyImage < ActiveRecord::Base
-  has_one :document
+  belongs_to :document
 
   validates :created_by, presence: true, format: FOUR_BY_FOUR_PATTERN
 
   def url
-    if document.present? && document.processed
+    if document.present? && document.processed?
       document.upload.url
     else
       preview_url
@@ -20,21 +20,17 @@ class GettyImage < ActiveRecord::Base
     document_saved = create_document.create
 
     unless document_saved
-      binding.pry
-      raise create_document.document.errors.full_messages.to_sentence
+      raise "Failed to create a new document.\n#{create_document.document.errors.full_messages.to_sentence}"
     end
 
-    if document_saved
-      # self.document = create_document.document
-      self.document_id = create_document.document.id
-      self.domain_id = '1'
-      self.created_by = user['id']
+    self.document = create_document.document
+    self.domain_id = CoreServer.current_domain['id']
+    self.created_by = user['id']
 
-      if save!
-        ProcessDocumentJob.perform_later(create_document.document.id)
-      else
-        # raise ''
-      end
+    if save!
+      ProcessDocumentJob.perform_later(create_document.document.id)
+    else
+      raise 'GettyImage failed to persist to the database.'
     end
   end
 
@@ -48,7 +44,7 @@ class GettyImage < ActiveRecord::Base
   end
 
   def preview_url
-    @preview_url if @preview_url.present?
+    return @preview_url if @preview_url.present?
 
     images_sdk = connect_sdk.images
     images_sdk.query_params['fields'] = ['comp']

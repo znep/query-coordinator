@@ -23,19 +23,7 @@ class Api::V1::GettyImagesController < ApplicationController
     return render_bad_request unless page && page_size.is_a?(String) && page_size.to_i > 0
 
     begin
-      search_images_sdk = connect_sdk.search.images
-      search_images_sdk.query_params = {
-        'sort_order' => 'best_match',
-        'fields' => 'preview,id'
-      }
-
-      results = search_images_sdk.
-        with_phrase(phrase).
-        with_page(page).
-        with_page_size(page_size).
-        with_graphical_styles('photography').
-        execute
-
+      results = search_workflow(phrase, page, page_size).execute
       render json: results
     rescue => error
       render_bad_request
@@ -43,6 +31,20 @@ class Api::V1::GettyImagesController < ApplicationController
   end
 
   private
+
+  def search_workflow(phrase, page, page_size)
+    search_images_sdk = connect_sdk.search.images
+    search_images_sdk.query_params = {
+      'sort_order' => 'best_match',
+      'fields' => 'preview,id'
+    }
+
+    search_images_sdk.
+      with_phrase(phrase).
+      with_page(page).
+      with_page_size(page_size).
+      with_graphical_styles('photography')
+  end
 
   def render_bad_request
     render nothing: true, status: 400

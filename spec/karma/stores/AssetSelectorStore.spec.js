@@ -186,6 +186,69 @@ describe('AssetSelectorStore', function() {
           assert.isUndefined(assetSelectorStore.isUploading());
         });
       });
+
+      describe('.getImageSearchUrl', function() {
+        it('should return null', function() {
+          assert.isNull(assetSelectorStore.getImageSearchUrl());
+        });
+      });
+
+      describe('.getImageSearchResults', function() {
+        it('should return an empty array', function() {
+          var results = assetSelectorStore.getImageSearchResults();
+
+          assert.isArray(results);
+          assert.lengthOf(results, 0);
+        });
+      });
+
+      describe('.getImageSearchPhrase', function() {
+        it('should return null', function() {
+          assert.isNull(assetSelectorStore.getImageSearchPhrase());
+        });
+      });
+
+      describe('.getImageSearchPage', function() {
+        it('should return 1', function() {
+          assert.equal(assetSelectorStore.getImageSearchPage(), 1);
+        });
+      });
+
+      describe('.getImageSearchPageSize', function() {
+        it('should return Constants.IMAGE_SEARCH_PAGE_SIZE', function() {
+          assert.equal(assetSelectorStore.getImageSearchPageSize(), Constants.IMAGE_SEARCH_PAGE_SIZE);
+        });
+      });
+
+      describe('.hasImageSearchPhrase', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.hasImageSearchPhrase());
+        });
+      });
+
+      describe('.hasImageSearchResults', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.hasImageSearchResults());
+        });
+      });
+
+      describe('.isImageSearching', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.isImageSearching());
+        });
+      });
+
+      describe('.hasImageSearchError', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.hasImageSearchError());
+        });
+      });
+
+      describe('.canPageImageSearchNext', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.canPageImageSearchNext());
+        });
+      });
     });
 
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
@@ -1180,6 +1243,196 @@ describe('AssetSelectorStore', function() {
             }
           );
         });
+      });
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_SEARCH', function() {
+    var dispatch = function(phrase, continuous) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
+        phrase: phrase,
+        continuous: continuous
+      });
+    };
+
+    describe('when given an invalid phrase', function() {
+      it('throws', function() {
+        assert.throws(function() {
+          dispatch(10);
+        });
+      });
+    });
+
+    describe('when given a valid phrase', function() {
+      var emitChangeSpy;
+      var phrase = 'Katze!';
+
+      beforeEach(function() {
+        emitChangeSpy = sinon.spy(assetSelectorStore, '_emitChange');
+      });
+
+      afterEach(function() {
+        emitChangeSpy.reset();
+      });
+
+      describe('.isImageSearching()', function() {
+        it('should be true', function() {
+          dispatch(phrase);
+          assert.isTrue(assetSelectorStore.isImageSearching());
+        });
+      });
+
+      describe('when search fails', function() {
+        it('should emit a change', function() {
+          dispatch(phrase);
+
+          assert.lengthOf(server.requests, 1);
+          server.respondWith('GET', server.requests[0].url, [400, {'Content-Type': 'application/json'}, '']);
+
+          _.defer(function() {
+            assert.isTrue(emitChangeSpy.calledOnce);
+            assert.isFalse(assetSelectorStore.isImageSearching());
+            assert.isTrue(assetSelectorStore.hasImageSearchError());
+          });
+        });
+      });
+
+      describe('when search is not continuous', function() {
+        var continuous = false;
+
+        it('should emit a change before and after the search', function() {
+          dispatch(phrase, continuous);
+
+          assert.lengthOf(server.requests, 1);
+          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '[{}]']);
+
+          _.defer(function() {
+            assert.isTrue(emitChangeSpy.calledTwice);
+            assert.isFalse(assetSelectorStore.isImageSearching());
+            assert.isFalse(assetSelectorStore.hasImageSearchError());
+            assert.isTrue(assetSelectorStore.hasImageSearchResults());
+            assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+          });
+        });
+      });
+
+      describe('when search is continuous', function() {
+        var continuous = true;
+
+        it('should emit a change after the search', function() {
+          dispatch(phrase, continuous);
+
+          assert.lengthOf(server.requests, 1);
+          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '[{}]']);
+
+          _.defer(function() {
+            assert.isTrue(emitChangeSpy.calledOnce);
+          });
+        });
+      });
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_SELECTED', function() {
+    var dispatch = function(id) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
+        id: id
+      });
+    };
+
+    describe('when given a payload without an ID', function() {
+      var id = null;
+
+      it('should throw', function() {
+        assert.throws(function() {
+          dispatch(id);
+        });
+      });
+    });
+
+    describe('when given a payload with an ID', function() {
+      var id = 'youseeme';
+      var url = StorytellerUtils.format('/stories/api/v1/getty-images/{0}', id);
+      var setComponentTypeAndSetImage = function(componentType) {
+        beforeEach(function() {
+          _.attempt(_.get(assetSelectorStore.getComponentType, 'restore'));
+          sinon.stub(assetSelectorStore, 'getComponentType', _.constant(componentType));
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+            blockId: 'blockId',
+            componentIndex: 'componentIndex',
+            initialComponentProperties: {}
+          });
+
+          dispatch(id);
+        });
+      };
+
+      describe('when componentType is author', function() {
+        setComponentTypeAndSetImage('author');
+
+        it('should build a valid component', function() {
+          assert.deepEqual(assetSelectorStore.getComponentValue(), {
+            image: {
+              documentId: null,
+              url: url
+            }
+          });
+        });
+      });
+
+      describe('when componentType is hero', function() {
+        setComponentTypeAndSetImage('hero');
+
+        it('should build a valid component', function() {
+          assert.deepEqual(assetSelectorStore.getComponentValue(), {
+            documentId: null,
+            url: url
+          });
+        });
+      });
+
+      describe('when componentType is image', function() {
+        setComponentTypeAndSetImage('image');
+
+        it('should build a valid component', function() {
+          assert.deepEqual(assetSelectorStore.getComponentValue(), {
+            documentId: null,
+            url: url
+          });
+        });
+      });
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE', function() {
+    describe('when you cannot get to the next page', function() {
+      // Silence is golden?
+    });
+
+    describe('when you can get to the next page', function() {
+      var canPageImageSearchNextStub;
+      var getImageSearchPhraseStub;
+
+      beforeEach(function() {
+        canPageImageSearchNextStub = sinon.stub(assetSelectorStore, 'canPageImageSearchNext', _.constant(true));
+        getImageSearchPhraseStub = sinon.stub(assetSelectorStore, 'getImageSearchPhrase', _.constant('ine'));
+      });
+
+      afterEach(function() {
+        canPageImageSearchNextStub.restore();
+        getImageSearchPhraseStub.restore();
+      });
+
+      it('should request a new search', function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE
+        });
+
+        assert.lengthOf(server.requests, 1);
       });
     });
   });

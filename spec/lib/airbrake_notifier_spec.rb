@@ -56,6 +56,9 @@ describe AirbrakeNotifier do
     end
     let(:referrer) { 'http://otherdomain.com/someplace.html' }
     let(:story_uid) { 'hoth-mh2o' }
+    let(:current_user) {
+      { 'id': 'four-four' }
+    }
 
     let(:request_store) do
       {
@@ -70,6 +73,7 @@ describe AirbrakeNotifier do
     before do
       allow(Rails.application.config).to receive(:version).and_return(version)
       allow(RequestStore).to receive(:store).and_return(request_store)
+      allow(CoreServer).to receive(:current_user).and_return(current_user)
     end
 
     it 'adds current app version to environment' do
@@ -86,6 +90,10 @@ describe AirbrakeNotifier do
 
     it 'adds referrer to context' do
       expect(subject[:context][:referrer]).to eq(referrer)
+    end
+
+    it 'adds current_user to context' do
+      expect(subject[:context][:user_id]).to eq(current_user['id'])
     end
 
     it 'adds storyUid to params' do

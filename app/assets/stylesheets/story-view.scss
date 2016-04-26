@@ -308,7 +308,7 @@
     float: left;
   }
 
-  .component-html {
+  .component-html a {
     @include word-wrap(break-word);
     @include hyphens(auto);
   }

@@ -91,8 +91,13 @@ class View < Model
   end
 
   # NBE geospatial datasets created via API end up with weird metadata.
+  # See EN-3889 for context.
   def is_api_geospatial?
-    return false unless (merged_metadata['custom_fields'] || {}).reduce(false) do |acc, (fieldset, fields)|
+    # return a cached value for this property once defined (see below)
+    return @_is_api_geospatial unless @_is_api_geospatial.nil?
+
+    # exit early (and cache) if the opt-in signal is missing
+    return (@_is_api_geospatial = false) unless (merged_metadata['custom_fields'] || {}).reduce(false) do |acc, (fieldset, fields)|
       # Customers must opt-in on a per-dataset basis by creating a custom metadata group called
       # "Geospatial API Pre-release" with a field called "Enabled", then setting that field to "true"
       # on the desired datasets.
@@ -101,10 +106,15 @@ class View < Model
       acc || (fieldset =~ /^geo-?spatial api pre-?release$/i && (fields['Enabled'] || fields['enabled']) == 'true')
     end
 
+    # examine markers of API-ingressed geospatial datasets
     nbe_only = new_backend? && obe_view.nil?
     has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }
     half_tabular = displayType.nil? && is_tabular?
-    nbe_only && has_geo_column && half_tabular
+
+    # return and cache this determination, because consumers may conditionally
+    # override the metadata upon encountering a `true` case... in a way that
+    # will make the above heuristic no longer true.
+    @_is_api_geospatial = nbe_only && has_geo_column && half_tabular
   end
 
   def geospatial_child_layer_count

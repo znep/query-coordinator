@@ -377,7 +377,7 @@ module.exports = React.createClass({
       elementProps = {
         className: 'controls',
         onMouseUp: this.onMouseMove
-      }
+      };
     } else {
       elementProps = {
         className: 'controls',
@@ -385,7 +385,7 @@ module.exports = React.createClass({
         onMouseUp: this.onMouseUp,
         onMouseMove: this.onMouseMove,
         onMouseOut: this.onMouseOut
-      }
+      };
     }
 
     return React.DOM.g(elementProps,

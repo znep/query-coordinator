@@ -70,7 +70,7 @@ Frontend::Application.routes do
         :constraints => {:domain_id => /(\w|-|\.)+/} do
         get '', :action => 'show_domain', :as => 'show_domain'
         post '', :action => 'update_domain', :as => 'update_domain'
-        get '/data', :action => 'show_domain', :format => :json
+        get '/data', :action => 'show_domain', :format => :json, :as => 'show_domain_data'
         post '/default_site_config', :action => 'set_default_site_config'
         post '/delete_config/:id', :action => 'delete_site_config', :as => 'delete_site_config'
         post '/rename_config/:id', :action => 'rename_site_config', :as => 'rename_config'

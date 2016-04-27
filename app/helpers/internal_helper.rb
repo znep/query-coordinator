@@ -167,4 +167,12 @@ module InternalHelper
       html
     end
   end
+
+  def domain_cache_time
+    if Rails.env.development?
+      'Dev Mode does not cache.'
+    else
+      CurrentDomain.last_refresh(@domain.cname)
+    end
+  end
 end

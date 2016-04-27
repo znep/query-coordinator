@@ -78,6 +78,15 @@ export default function AddContentPanel(toggleButton) {
           blockContent: blockContent,
           insertAt: storyStore.getStoryBlockIds(Environment.STORY_UID).length
         });
+
+        setTimeout(function() {
+          var $lastBlock = $('.block-edit:last-child');
+          var lastBlockOffset = $lastBlock.offset().top + $lastBlock.height();
+
+          $('html, body').animate({
+            scrollTop: lastBlockOffset
+          });
+        }, 200);
       }
     });
 

@@ -6,7 +6,97 @@ import Actions from '../../../app/assets/javascripts/editor/Actions';
 import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import AssetSelectorStore, {WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+import AssetSelectorStore, {viewIsDirectlyVisualizable, WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+
+var nbeView = {
+  'id' : StandardMocks.validStoryUid,
+  'name' : 'nbe',
+  'displayType' : 'table',
+  'newBackend' : true,
+  'viewType' : 'tabular',
+  'query' : {}
+};
+var obeViewWithNoQuery = {
+  'id' : StandardMocks.validStoryUid,
+  'name' : 'obe plain',
+  'displayType' : 'table',
+  'newBackend' : false,
+  'viewType' : 'tabular',
+  'query' : {}
+};
+var obeViewWithFilter = {
+  'id' : StandardMocks.validStoryUid,
+  'name' : 'obe filtered',
+  'displayType' : 'table',
+  'newBackend' : false,
+  'viewType' : 'tabular',
+  'query' : {
+    'filterCondition' : {
+      'type' : 'operator',
+      'value' : 'EQUALS',
+      'children' : [ {
+        'columnId' : 3156549,
+        'type' : 'column'
+      }, {
+        'type' : 'literal',
+        'value' : 'bunnies'
+      } ]
+    },
+    'metadata' : {
+      'unifiedVersion' : 2
+    }
+  }
+};
+var obeViewWithGroup = {
+  'id' : StandardMocks.validStoryUid,
+  'name' : 'obe grouped',
+  'displayType' : 'table',
+  'newBackend' : false,
+  'viewType' : 'tabular',
+  'query' : {
+    'groupBys' : [ {
+      'columnId' : 9756,
+      'type' : 'column'
+    } ]
+  }
+};
+
+describe('AssetSelectorStore static functions', function() {
+  describe('viewIsDirectlyVisualizable', function() {
+    describe('making a table', function() {
+      var tableType = 'socrata.visualization.table';
+      it('return true for nbe views', function() {
+        assert.isTrue(viewIsDirectlyVisualizable(tableType, nbeView));
+      });
+      it('return true for obe views with a filter query', function() {
+        assert.isTrue(viewIsDirectlyVisualizable(tableType, obeViewWithFilter));
+      });
+      it('return false for obe views with a group query', function() {
+        assert.isFalse(viewIsDirectlyVisualizable(tableType, obeViewWithGroup));
+      });
+      it('return false for obe views with no query', function() {
+        assert.isFalse(viewIsDirectlyVisualizable(tableType, obeViewWithNoQuery));
+      });
+    });
+
+    describe('making a non-table visualization', function() {
+      var columnChart = 'socrata.visualization.columnChart';
+      it('return true for nbe views', function() {
+        assert.isTrue(viewIsDirectlyVisualizable(columnChart, nbeView));
+      });
+      it('return false for obe views with a filter query', function() {
+        assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithFilter));
+      });
+      it('return false for obe views with a group query', function() {
+        assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithGroup));
+      });
+      it('return false for obe views with no query', function() {
+        assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithNoQuery));
+      });
+    });
+
+  });
+});
 
 describe('AssetSelectorStore', function() {
 
@@ -15,6 +105,18 @@ describe('AssetSelectorStore', function() {
   var storyStore;
   var assetSelectorStore;
   var blockComponentAtIndex;
+
+  function respondToMetadataRequestWith(viewData) {
+    var viewDataUrl;
+
+    viewDataUrl = StorytellerUtils.format('/api/views/{0}.json', viewData.id);
+
+    assert.lengthOf(server.requests, 1);
+    var metadataRequest = server.requests[0];
+    assert.equal(metadataRequest.method, 'GET');
+    assert.include(metadataRequest.url, viewDataUrl);
+    server.respond([200, { 'Content-Type': 'application/json' }, JSON.stringify(viewData) ]);
+  }
 
   beforeEach(function() {
     dispatcher = new Dispatcher();
@@ -313,7 +415,7 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
+      it('should attempt to fetch the NBE datasetUid if view is not directly visualizable', function(done) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           domain: window.location.hostname,
@@ -321,13 +423,18 @@ describe('AssetSelectorStore', function() {
           isNewBackend: false
         });
 
-        assert.lengthOf(server.requests, 1);
-        var request = server.requests[0];
-        assert.equal(request.method, 'GET');
-        assert.include(request.url, migrationUrl);
+        respondToMetadataRequestWith(obeViewWithFilter);
+
+        // Wait for promises...
+        setTimeout(function() {
+          assert.lengthOf(server.requests, 2);
+          var migrationsRequest = server.requests[1];
+          assert.include(migrationsRequest.url, migrationUrl);
+          done();
+        }, 1);
       });
 
-      it('should not request API migrations if dataset is already NBE', function() {
+      it('should not request API migrations if dataset is directly visualizable', function(done) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: StandardMocks.validStoryUid,
@@ -335,13 +442,19 @@ describe('AssetSelectorStore', function() {
           isNewBackend: true
         });
 
-        assert.isDefined(server);
-        assert.isFalse(_.any(server.requests, function(request) {
-          return request.url === migrationUrl;
-        }));
+        respondToMetadataRequestWith(nbeView);
+
+        // Wait for promises...
+        setTimeout(function() {
+          assert.lengthOf(server.requests, 1);
+          assert.isFalse(_.any(server.requests, function(request) {
+            return request.url === migrationUrl;
+          }));
+          done();
+        }, 1);
       });
 
-      it('should add datasetUid to _currentComponentProperities', function() {
+      it('should add datasetUid to _currentComponentProperities', function(done) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: StandardMocks.validStoryUid,
@@ -349,17 +462,20 @@ describe('AssetSelectorStore', function() {
           isNewBackend: true
         });
 
-        server.respond([200, {}, '{}']);
+        assetSelectorStore.addChangeListener(function() {
+          assert.equal(
+            assetSelectorStore.getComponentValue().dataset.datasetUid,
+            StandardMocks.validStoryUid
+          );
+          done();
+        });
 
-        assert.equal(
-          assetSelectorStore.getComponentValue().dataset.datasetUid,
-          StandardMocks.validStoryUid
-        );
+        respondToMetadataRequestWith(nbeView);
       });
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
-      beforeEach(function() {
+      beforeEach(function(done) {
 
         // Send in dataset uid so ComponentValues.value.settings exists
         dispatcher.dispatch({
@@ -369,7 +485,8 @@ describe('AssetSelectorStore', function() {
           isNewBackend: true
         });
 
-        server.respond([200, {}, '{}']);
+        assetSelectorStore.addChangeListener(_.once(done));
+        respondToMetadataRequestWith(nbeView);
       });
 
       it('clears the componentType and sets componentProperties to an object containing only the dataset when there is a null visualization', function() {
@@ -911,9 +1028,9 @@ describe('AssetSelectorStore', function() {
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
-          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION', function() {
-            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION');
-            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION');
+          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG', function() {
+            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
+            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
@@ -940,9 +1057,9 @@ describe('AssetSelectorStore', function() {
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
-          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION', function() {
-            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION');
-            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION');
+          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG', function() {
+            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
+            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
         });

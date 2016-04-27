@@ -27,14 +27,15 @@ export var WIZARD_STEP = {
   SELECT_VISUALIZATION_OPTION: 'SELECT_VISUALIZATION_OPTION',
   // You want a Socrata visualization, so please choose your dataset.
   SELECT_DATASET_FOR_VISUALIZATION: 'SELECT_DATASET_FOR_VISUALIZATION',
-  // You chose a dataset. Will it be displayed as a table or some other visualization?
-  SELECT_TABLE_OR_CHART: 'SELECT_TABLE_OR_CHART',
+  // You choose a table.
+  SELECT_TABLE_FROM_CATALOG: 'SELECT_TABLE_FROM_CATALOG',
   // You choose a map or chart visualization.
-  SELECT_MAP_OR_CHART_VISUALIZATION: 'SELECT_MAP_OR_CHART_VISUALIZATION',
-  // You chose some other visualization. Please edit it to your liking.
+  SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
+  // You chose some other visualization. Use Data Lens embed to configure it.
   CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
   CONFIGURE_MAP_OR_CHART: 'CONFIGURE_MAP_OR_CHART',
+  TABLE_PREVIEW: 'TABLE_PREVIEW',
 
   SELECT_IMAGE_TO_UPLOAD: 'SELECT_IMAGE_TO_UPLOAD',
   IMAGE_UPLOADING: 'IMAGE_UPLOADING',
@@ -43,6 +44,58 @@ export var WIZARD_STEP = {
 };
 
 export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore(), 'storyteller.assetSelectorStore');
+
+// Given a view blob an an intended componentType, returns true
+// if there is any hope of visualizing it directly.
+// We gotta do this because of the craziness around NBE
+// migration which sometimes require using a completely
+// different view than the intended view (but not always,
+// ha ha!).
+export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
+  var isCreatingTable = intendedComponentType === 'socrata.visualization.table';
+  var hasQuery = !_.isEmpty(viewData.query);
+  var hasGroupBys = !_.isEmpty(_.get(viewData, 'query.groupBys'));
+
+  // Now this is peculiar because our backend is peculiar.
+  // All this stems from the fact that ALL our visualizations
+  // depend on NBE APIs (or are explicitly unsupported on the OBE).
+  //
+  // If the OBE view DOES NOT have a query applied, we cannot
+  // use it via the NBE API and must thus query for the NBE uid.
+  // A missing NBE uid in this case is an error.
+  //
+  // HOWEVER(!!)
+  // if the OBE view DOES have a query applied, and it has NO groupBys,
+  // we can visualize it as a table. We can get away with this because
+  // magic elves have granted us the ability to read with NBE APIs using
+  // the canonical view UID. This does not work for un-queried views,
+  // which don't support NBE APIs directly. However, we don't feel
+  // comfortable supporting anything other than tables in this case.
+  // There's too much of a testing burden to be practical at this time.
+  //
+  // Read the above carefully. It's the opposite of what you might
+  // expect. Maybe even the opposite of that. What.
+
+  if (viewData.newBackend) {
+    return true;
+  } else if (hasGroupBys) {
+    // Not working with NBE APIs at this time.
+    return false;
+  } else if (hasQuery) {
+    if (isCreatingTable) {
+      // Well okay, but only if you SWEAR you'll create just a table...
+      return true;
+    } else {
+      // Old backend, with query, not creating table. Unsupported.
+      return false;
+    }
+  } else {
+    // No query. This suggests that there is an NBE uid we should be using,
+    // but that's Someone Else's Problem.
+    return false;
+  }
+}
+
 export default function AssetSelectorStore() {
   _.extend(this, new Store());
 
@@ -124,9 +177,13 @@ export default function AssetSelectorStore() {
         break;
 
       case Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN:
+        delete _state.componentType;
         switch (payload.visualizationOption) {
           case 'INSERT_VISUALIZATION':
             _chooseInsertVisualization();
+            break;
+          case 'INSERT_TABLE':
+            _visualizeAsTable();
             break;
           case 'CREATE_VISUALIZATION':
             _chooseCreateVisualization();
@@ -140,10 +197,6 @@ export default function AssetSelectorStore() {
 
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART:
         _chooseVisualizationMapOrChart(payload);
-        break;
-
-      case Actions.ASSET_SELECTOR_VISUALIZE_AS_TABLE:
-        _visualizeAsTable(payload);
         break;
 
       case Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP:
@@ -254,7 +307,7 @@ export default function AssetSelectorStore() {
       case 'youtube.video': return WIZARD_STEP.ENTER_YOUTUBE_URL;
       case 'embeddedHtml': return WIZARD_STEP.ENTER_EMBED_CODE;
       case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
-      case 'socrata.visualization.table': return WIZARD_STEP.SELECT_TABLE_OR_CHART;
+      case 'socrata.visualization.table': return WIZARD_STEP.TABLE_PREVIEW;
       case 'socrata.visualization.classic': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
     }
 
@@ -307,7 +360,9 @@ export default function AssetSelectorStore() {
 
     if (datasetUid) {
       // Fetch additional data needed for UI.
-      _setVisualizationDataset(domain, datasetUid);
+      _getView(domain, datasetUid).
+        then(_setComponentPropertiesFromViewData).
+        then(self._emitChange());
     } else {
       self._emitChange();
     }
@@ -343,7 +398,13 @@ export default function AssetSelectorStore() {
   }
 
   function _chooseInsertVisualization() {
-    _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION;
+    _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
+    self._emitChange();
+  }
+
+  function _visualizeAsTable() {
+    _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
+    _state.componentType = 'socrata.visualization.table';
     self._emitChange();
   }
 
@@ -370,31 +431,54 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _chooseVisualizationDataset(payload) {
-    _state.step = WIZARD_STEP.SELECT_TABLE_OR_CHART;
-
-    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
-
-    if (payload.isNewBackend) {
-      _setVisualizationDataset(payload.domain, payload.datasetUid);
+  // Given a view data object we can't directly visualize, returns a promise
+  // for a view data object we can directly visualize. Not guaranteed to succeed, as
+  // this transformation is not possible in all conditions.
+  function _getVisualizableView(originalViewData) {
+    if (viewIsDirectlyVisualizable(_state.componentType, originalViewData)) {
+      return Promise.resolve(originalViewData);
     } else {
-      // We have an OBE datasetId, go fetch the NBE datasetId
-      $.get(
-        StorytellerUtils.format(
-          'https://{0}/api/migrations/{1}.json',
-          payload.domain,
-          payload.datasetUid
-        )
-      ).
-      then(
-        function(migrationData) {
-          _setVisualizationDataset(payload.domain, migrationData.nbeId);
+      return _getNbeView(originalViewData.domain, originalViewData.id).then(
+        function(nbeViewData) {
+          // We should be able to handle all NBE datasets.
+          StorytellerUtils.assert(
+            viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
+            'All versions of this dataset deemed unfit for visualization!'
+          );
+          return nbeViewData;
         },
-        function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
+        function() {
+          // No migration. Give up.
           alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); //eslint-disable-line no-alert
+          return Promise.reject();
         }
       );
     }
+  }
+
+  function _chooseVisualizationDataset(payload) {
+    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
+    StorytellerUtils.assertIsOneOfTypes(payload.datasetUid, 'string');
+
+    _getView(payload.domain, payload.datasetUid).then(
+      _getVisualizableView
+    ).then(function(viewData) {
+      var isCreatingTable = (_state.componentType === 'socrata.visualization.table');
+      _setComponentPropertiesFromViewData(viewData);
+
+      if (isCreatingTable) {
+        _setUpTableFromSelectedDataset();
+        _state.step = WIZARD_STEP.TABLE_PREVIEW;
+      } else {
+        _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+      }
+      self._emitChange();
+    }).catch(function(error) {
+      if (window.console && console.error) {
+        console.error('Error selecting dataset: ', error);
+      }
+      exceptionNotifier.notify(error);
+    });
   }
 
   function _chooseVisualizationMapOrChart(payload) {
@@ -406,16 +490,11 @@ export default function AssetSelectorStore() {
       alert(I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')); //eslint-disable-line no-alert
     };
 
-    $.get(
-      StorytellerUtils.format(
-        'https://{0}/api/views/{1}.json',
-        payload.domain,
-        payload.mapOrChartUid
-      )
-    ).then(
+    _getView(payload.domain, payload.mapOrChartUid).then(
       function(viewData) {
         if (viewData.displayType === 'chart' || viewData.displayType === 'map') {
-          _setVisualizationDataset(payload.domain, payload.mapOrChartUid, viewData);
+          _setComponentPropertiesFromViewData(viewData);
+          self._emitChange();
         } else {
           mapChartError();
         }
@@ -424,7 +503,7 @@ export default function AssetSelectorStore() {
     );
   }
 
-  function _visualizeAsTable() {
+  function _setUpTableFromSelectedDataset() {
     var visualization;
     // TODO We need an official story for handling row unit.
     // view.rowLabel exists, but does not provide the pluralized form.
@@ -438,6 +517,10 @@ export default function AssetSelectorStore() {
       'componentProperties.dataset.domain',
       'componentProperties.dataset.datasetUid',
       'dataset.columns'
+    );
+    StorytellerUtils.assert(
+      _state.componentType === 'socrata.visualization.table',
+      'Visualization under construction is not a table, cannot proceed. Was: ' + _state.componentType
     );
 
     StorytellerUtils.assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
@@ -475,14 +558,11 @@ export default function AssetSelectorStore() {
       }
     };
 
-    _state.componentType = 'socrata.visualization.table';
     _state.componentProperties = {
       vif: visualization,
       dataset: _state.componentProperties.dataset,
       originalUid: null
     };
-
-    self._emitChange();
   }
 
   function _visualizeAsChart() {
@@ -490,43 +570,70 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _setVisualizationDataset(domain, datasetUid, viewData) {
-    var updateStateComponentPropertiesAndDataset = function(data) {
-      _state.componentProperties = _state.componentProperties || {};
-      _.extend(_state.componentProperties, {
-        dataset: {
-          domain: domain,
-          datasetUid: datasetUid
-        }
-      });
+  // Given a dataset domain, uid, and view metadata, sets:
+  // * _state.componentProperties.dataset.domain,
+  // * _state.componentProperties.dataset.datasetUid,
+  // * _state.dataset
+  function _setComponentPropertiesFromViewData(viewData) {
+    StorytellerUtils.assertIsOneOfTypes(viewData, 'object');
+    StorytellerUtils.assertHasProperties(viewData,
+      'domain', // We retcon this in, sorry if you tried to feed in plain data from /api/views.
+      'id'
+    );
 
-      // Not going into _state.componentProperties, as we don't want this blob
-      // to end up stored in the story component data.
-      _state.dataset = _.cloneDeep(data);
+    _state.componentProperties = _state.componentProperties || {};
+    _.extend(_state.componentProperties, {
+      dataset: {
+        domain: viewData.domain,
+        datasetUid: viewData.id
+      }
+    });
 
-      self._emitChange();
-    };
-    var viewUrl;
+    // Not going into _state.componentProperties, as we don't want this blob
+    // to end up stored in the story component data.
+    _state.dataset = _.cloneDeep(viewData);
+  }
 
+  function _getNbeView(domain, obeUid) {
+    return Promise.resolve($.get(
+      StorytellerUtils.format(
+        'https://{0}/api/migrations/{1}.json',
+        domain,
+        obeUid
+      )
+    )).then(
+      function(migrationData) {
+        return _getView(domain, migrationData.nbeId);
+      }
+    );
+
+  }
+
+  function _getView(domain, uid) {
     // Fetch the view info.
     // NOTE: Beware that view.metadata is not sync'd across to the NBE
     // as of this writing. If you need to get info out of view.metadata
     // (like rowLabel), you'll need to fetch the OBE view separately.
-    if (!viewData) {
+    // Also, I CAN'T BELIEVE I'M WRITING THIS AGAIN
+    var viewUrl = StorytellerUtils.format(
+      'https://{0}/api/views/{1}.json?read_from_nbe=true',
+      domain,
+      uid
+    );
 
-      viewUrl = StorytellerUtils.format(
-        'https://{0}/api/views/{1}.json',
-        domain,
-        datasetUid
-      );
-
-      $.get(viewUrl).
-      then(
-        updateStateComponentPropertiesAndDataset,
+    return Promise.resolve($.get(viewUrl)).
+      then(function(viewData) {
+        // Retcon the domain into the view data.
+        // We'd have to pass it around like 5 methods
+        // otherwise.
+        viewData.domain = domain;
+        return viewData;
+      }).
+      catch(
         function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
           var errorObj = new Error(
             StorytellerUtils.format(
-              'Could not retrieve "{0}" in _setVisualizationDataset(): {1}',
+              'Could not retrieve "{0}" in _getView(): {1}',
               viewUrl,
               jqXhr.responseText
             )
@@ -536,9 +643,6 @@ export default function AssetSelectorStore() {
           alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
         }
       );
-    } else {
-      updateStateComponentPropertiesAndDataset(viewData);
-    }
   }
 
   function _updateVisualizationConfiguration(payload) {

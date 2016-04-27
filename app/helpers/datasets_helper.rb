@@ -529,7 +529,8 @@ module DatasetsHelper
       view.non_tabular?,
       view.is_form?,
       view.is_api?,
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -544,6 +545,7 @@ module DatasetsHelper
       view.non_tabular? && !view.is_form?,
       view.is_api?,
       view.geoParent.present?,
+      view.is_api_geospatial?,
       view.is_grouped?,
       current_user_does_not_own && !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
     ].any?
@@ -571,7 +573,8 @@ module DatasetsHelper
       view.non_tabular?,
       view.is_form?,
       view.is_api?,
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -580,7 +583,8 @@ module DatasetsHelper
       view.is_snapshotted?,
       view.non_tabular?,
       view.is_form?,
-      view.is_geo?
+      view.is_geo?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -619,7 +623,8 @@ module DatasetsHelper
       view.non_tabular?,
       view.is_form?,
       view.is_insecure_arcgis?,
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -627,7 +632,8 @@ module DatasetsHelper
     [
       view.is_unpublished?,
       view.is_alt_view? && !view.available_display_types.include?('calendar'),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -635,7 +641,8 @@ module DatasetsHelper
     [
       view.is_unpublished?,
       view.is_alt_view? && !view.available_display_types.include?('chart'),
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -651,15 +658,11 @@ module DatasetsHelper
   def hide_data_lens_create?
     return true unless current_user
 
-    # view.is_api_geospatial? can't be used at this point because
-    # we override dataset metadata after detecting the condition
-    is_api_geospatial = view.metadata && view.metadata.geo && view.metadata.geo['isApiGeospatial']
-
     [
       current_user.rights.blank?,
       view.is_unpublished?,
       !view.dataset?,
-      is_api_geospatial,
+      view.is_api_geospatial?,
       view.geoParent.present?
     ].any?
   end
@@ -702,7 +705,8 @@ module DatasetsHelper
       view.is_unpublished?,
       !view.flag?('default'),
       view.is_arcgis?,
-      view.is_geo?
+      view.is_geo?,
+      view.is_api_geospatial?
     ].any?
   end
 
@@ -712,7 +716,8 @@ module DatasetsHelper
       view.is_unpublished?,
       !view.flag?('default'),
       view.is_arcgis?,
-      view.is_geo?
+      view.is_geo?,
+      view.is_api_geospatial?
     ].any?
   end
 end

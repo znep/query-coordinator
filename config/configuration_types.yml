@@ -104,6 +104,7 @@ site_chrome:
     reason: :not_intended_for_direct_manipulation
 site_theme:
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/2-editing-an-open-data-site/a-site-configurations
+  things_site_theme_controls: favicon
 soda2:
   known_properties:
   - switch_table_rows_threshold

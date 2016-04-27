@@ -251,10 +251,6 @@ $tablet: 749px;
 
       .first {
         @include span-columns(6);
-
-        .date {
-          font-size: ms(-2);
-        }
       } 
       
       .second {
@@ -265,6 +261,10 @@ $tablet: 749px;
           margin-right: 0;
         }
       }
+
+      .date {
+          font-size: ms(-2);
+        }
 
     }
 
@@ -286,7 +286,8 @@ $tablet: 749px;
       img {
         width: 100%;
         min-height: 136px;
-      }
+        max-height: 140px;
+      } 
     }
   }
 
@@ -297,13 +298,14 @@ $tablet: 749px;
   //display: flex;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   
   @include media($tablet) {
     @include row();
+
 
   }
 
@@ -312,7 +314,7 @@ $tablet: 749px;
     border-top: 1px solid $light-grey-3;
     .header-content {
       @include span-columns(12);
-      padding: ms(1) 0;
+      padding: ms(-3) 0 0;
     }
   }
 

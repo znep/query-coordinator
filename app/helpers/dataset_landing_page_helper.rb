@@ -1,4 +1,12 @@
 module DatasetLandingPageHelper
+  def meta_description
+    if @view.description.present?
+      "#{@view.name} - #{@view.description}"
+    else
+      @view.name
+    end
+  end
+
   def format_date(date)
     date ? date.to_s(:dslp) : I18n.t('dataset_landing_page.metadata.no_value')
   end

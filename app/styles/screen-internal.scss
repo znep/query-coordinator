@@ -478,7 +478,7 @@ ul.autocomplete {
   }
 
   .addConfigForm .warning {
-    .poorly_understood, .not_intended_for_direct_manipulation, .deprecation {
+    .poorly_understood, .not_intended_for_direct_manipulation, .deprecation, .already_exists {
       display: none;
     }
     .not_intended_for_direct_manipulation span.instead {
@@ -492,6 +492,9 @@ ul.autocomplete {
       display: block;
     }
     &.deprecation .deprecation {
+      display: block;
+    }
+    &.already_exists .already_exists {
       display: block;
     }
   }

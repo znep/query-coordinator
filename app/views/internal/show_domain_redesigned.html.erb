@@ -81,6 +81,9 @@
           <div class="deprecation">
             This configuration has been deprecated. It <i>should</i> do nothing even if you create it. Please don't create it.
           </div>
+          <div class="already_exists">
+            This configuration already exists. Maybe you should edit the <a>existing one</a> instead?
+          </div>
         </div>
       </div>
       <%= submit_tag 'Create' %>
@@ -160,17 +163,6 @@
       var existingConfigTypes = <%== @configs.inject([]) { |memo, conf| memo << conf.type }.uniq.to_json %>;
       var knownConfigTypes = <%== @known_config_types.to_json %>;
 
-      var $form = $('.addConfigForm');
-      $form.submit(function() {
-        var configType = $form.find('input[name="config[type]"]').val();
-
-        if (_.include(existingConfigTypes, configType)) {
-          return confirm('Hey, a config with type "{0}" already exists. Are you sure you want to add another one?'.format(configType));
-        } else {
-          return true;
-        }
-      });
-
       var showAllFieldsRenderFunction = function(dataItem, topMatch, config) {
         var toRender = [];
         var excludeFields = (config.excludeFieldsFromRender || []).concat(config.nameField);
@@ -201,6 +193,11 @@
 
       $('.addConfigForm input[name="config[type]"]').change(function() {
         var chosenType = $(this).val();
+        if (_.isEmpty(chosenType)) {
+          displayDiscouragement({});
+          return;
+        }
+
         var config = _.detect(knownConfigTypes, function(type) {
           return type.name === chosenType;
         });
@@ -231,6 +228,12 @@
             default:
               console.error('not sure what happened');
           }
+        } else if (_.include(existingConfigTypes, dataItem.name)) {
+          $warning.addClass('already_exists');
+          <%# Using `replace` instead of `format` because the url_helper is insistent on
+            # escaping the value I give it. %>
+          $warning.find('a').attr('href',
+              '<%= show_config_path(id: '{0}') %>'.replace('%7B0%7D', dataItem.name));
         }
       };
 

@@ -364,17 +364,31 @@ module.exports = React.createClass({
     if (!_.isEqual(this.state.hover, payload)) {
       this.setState({ hover: payload });
       this.props.onFlyout(payload);
+    } else if (_.get(this.props.vif, 'configuration.isMobile')) {
+      this.props.onFlyout(null);
+      this.setState({ hover: null });
     }
   },
 
   render: function() {
-    return React.DOM.g({
+    var elementProps;
+
+    if (_.get(this.props.vif, 'configuration.isMobile')) {
+      elementProps = {
+        className: 'controls',
+        onMouseUp: this.onMouseMove
+      }
+    } else {
+      elementProps = {
         className: 'controls',
         onMouseDown: this.onMouseDown,
         onMouseUp: this.onMouseUp,
         onMouseMove: this.onMouseMove,
         onMouseOut: this.onMouseOut
-      },
+      }
+    }
+
+    return React.DOM.g(elementProps,
       this.getClipPath(),
       this.getHover(),
       this.getFilterIndicator(),

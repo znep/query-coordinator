@@ -288,6 +288,17 @@ DistributionChart.prototype.transformBucketedData = function(bucketingOptions, r
  * @fires SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT
  */
 DistributionChart.prototype.onFlyout = function(payload) {
+  var event;
+
+  if (_.get(this.props.vif, 'configuration.isMobile')) {
+    event = new window.CustomEvent('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', {
+      detail: payload,
+      bubbles: true
+    });
+
+    return this.element.dispatchEvent(event);
+  }
+
   var eventPayload;
 
   if (_.isNull(payload)) {
@@ -333,7 +344,7 @@ DistributionChart.prototype.onFlyout = function(payload) {
     };
   }
 
-  var event = new window.CustomEvent('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', {
+  event = new window.CustomEvent('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', {
     detail: eventPayload,
     bubbles: true
   });

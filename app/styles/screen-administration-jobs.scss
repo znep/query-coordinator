@@ -21,6 +21,10 @@ $warning-icon-color: #debb1e;
   color: green;
 }
 
+.import-status-deleted {
+  color: darkred;
+}
+
 .import-status-icon-success-with-data-errors:before {
   color: $warning-icon-color;
 }

@@ -1,13 +1,11 @@
 .timeline-chart-upper-container {
   position: relative;
   width: 100%;
-  //height: 375px;
   height: 60vh;
   font-size: 14px;
   box-sizing: border-box;
 
   &.expanded {
-    //height: 383px;
     height: 65vh;
   }
 
@@ -35,7 +33,7 @@
     bottom: 0;
     z-index: 11;
     position: absolute;
-    padding: 3px 5px 3px 5px;
+    padding: 3px 10px 3px 10px;
     width: 100%;
 
     .arrow {
@@ -142,23 +140,18 @@
     top: 0;
     z-index: 1;
     pointer-events: none;
-    font-size: 12px;
-    font-weight: 400;
-    color: #666;
 
     .y-tick {
       position: absolute;
       width: 115%;
       margin-left: -15%;
       text-align: left;
-      font-size: 12px;
-      font-weight: bold;
-      color: #929292;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      color: #666 !important;
     }
 
     .zero {
-      font-weight: bold;
-      color: #888;
       bottom: 5px !important;
     }
   }

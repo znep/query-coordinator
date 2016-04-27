@@ -1,0 +1,105 @@
+.distribution-chart-upper-container {
+  height: 60vh;
+
+  &.expanded {
+    height: calc(60vh + 60px);
+  }
+
+  .distribution-chart-upper-wrapper {
+    height: calc(100% - 60px);
+
+    path {
+      &.filtered {
+        &.area {
+          fill: rgba(148, 228, 214, 0.5) !important;
+        }
+
+        &.line {
+          stroke: rgba(2, 179, 143, 1) !important;
+        }
+      }
+
+      &.unfiltered {
+        &.area {
+          fill: rgba(214, 212, 213, 0.5) !important;
+        }
+
+        &.line {
+          stroke: rgba(214, 212, 213, 1) !important;
+        }
+      }
+    }
+
+    g.controls rect.hover {
+      fill: rgba(0, 120, 98, 0.75) !important;
+      stroke: transparent;
+      height: calc(100% - 32px);
+    }
+
+    text.label.y {
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      color: #666 !important;
+    }
+  }
+
+  .mobile-flyout .labels.mobile {
+    height: 57px;
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
+    bottom: 0;
+    z-index: 11;
+    position: absolute;
+    padding: 3px 10px 3px 10px;
+    width: 100%;
+
+    .arrow {
+      width: 33px;
+      height: 12px;
+      background: url(/images/flyout-arrow.png) no-repeat;
+      display: block;
+      position: absolute;
+      top: -12px;
+      background-size: 100%;
+    }
+
+    .title {
+      width: 50%;
+      padding: 10px 0;
+      font-size: 15px !important;
+      font-weight: 500;
+    }
+
+    .values {
+      width: 45%;
+      line-height: 16.5px;
+
+      &.unfiltered {
+        padding: 20px 0;
+
+        .total-values {
+          color: #02B38F;
+
+          span {
+            color: #929292;
+          }
+        }
+      }
+
+      &.filtered {
+        padding: 10px 0;
+
+        .total-values {
+          color: #929292;
+        }
+
+        .filtered-values {
+          color: #02B38F;
+
+          span {
+            color: #929292;
+          }
+        }
+      }
+    }
+  }
+}

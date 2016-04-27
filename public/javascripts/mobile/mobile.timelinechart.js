@@ -36,8 +36,8 @@ module.exports = function(values, $target) {
     'title': values.columnName,
     'type': 'timelineChart',
     'unit': {
-      'one': 'case',
-      'other': 'cases'
+      'one': 'row',
+      'other': 'rows'
     }
   };
 

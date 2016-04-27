@@ -3,6 +3,7 @@ MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller
 ENV APP_TMP_DIR ${APP_DIR}/tmp
+ENV RACK_ENV production
 ENV RAILS_ENV production
 ENV RAILS_SERVE_STATIC_FILES true
 ENV SERVICE_DIR_BASE /etc/service

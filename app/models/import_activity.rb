@@ -3,7 +3,7 @@ class ImportActivity
   include JobsHelper
 
   # throws ISS errors and Core errors
-  def self.find_all_by_created_at_descending(params)
+  def self.find_all_by_created_at_descending(params, show_deleted)
     url = "/v2/activity?#{params.delete_if { |k, v| v.nil? }.to_query}"
     
     response = ImportStatusService::get(url)
@@ -12,10 +12,12 @@ class ImportActivity
     working_copy_ids = activities.pluck(:working_copy_id)
     views = View.find_multiple_dedup(view_ids + working_copy_ids)
     
-    # get names of deleted datasets
-    views.keys.each do |uid|
-      if views[uid].nil?
-        views[uid] = View.new({ 'id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true })
+    if show_deleted
+      # get names of deleted datasets
+      views.keys.each do |uid|
+        if views[uid].nil?
+          views[uid] = View.new({ 'id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true })
+        end
       end
     end
     

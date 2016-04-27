@@ -36,6 +36,9 @@ current_page_metadata_version:
 data_jobs_daterange:
   description: Show daterange picker on data jobs page
   defaultValue: false
+data_jobs_show_deleted:
+  description: Show deleted dataset names on data jobs page
+  defaultValue: false
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: post_beta

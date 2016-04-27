@@ -1441,6 +1441,10 @@ class View < Model
     !is_alt_view?
   end
 
+  def is_link?
+    display.display_type == 'link'
+  end
+
   def modern_display_type
     {
       'annotatedtimeline' => 'chart',

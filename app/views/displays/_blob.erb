@@ -1,18 +1,25 @@
 <div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
-  <p class="info">
-    <%- if @view.display.type == 'href' && @view.has_importable_type? -%>
-      <%= t 'screens.ds.blob.download' %>
-    <%- elsif @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-      <%= t 'screens.ds.blob.data_extraction' %>
-    <%- else -%>
-      <%= t 'screens.ds.blob.limited_download' %>
+  <%- if @view.is_href? || @view.is_link? -%>
+    <h1 class="externalLinkTitle"><%= h(@view.name) %></h1>
+    <%- if @view.description -%>
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <p class="externalLinkDescriptionLabel"><%= t('screens.about.description') %></p>
+      </a>
+      <p class="externalLinkDescription">
+        <%= h(@view.description) %>
+      </p>
     <%- end -%>
-  </p>
+  <%- else -%>
+    <p class="info">
+      <%= t 'screens.ds.blob.limited_download' %>
+    </p>
+  <%- end -%>
   <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.try(:length) > 1 %>">
-    <%- if @view.display.type == 'href' || @view.display.display_type == 'link' -%>
-      <h5><%= t 'screens.ds.blob.external_link' %></h5>
-    <%- else -%>
+    <%- if @view.is_blobby? %>
       <h5><%= t 'screens.ds.blob.download' %></h5>
+    <%- else -%>
+      <h5><%= t 'screens.ds.blob.external_link' %></h5>
     <%- end -%>
     <ul>
       <%# Blobs and accessPoints are mutually exclusive, but they each populate the same list
@@ -33,9 +40,16 @@
       <%- @view.allAccessPoints.each do |accessPoint| -%>
         <%- if accessPoint['title'].present? -%>
           <li>
-            <span class="accessPointTitle">
-              <%= accessPoint['title'] %>
-            </span>
+            <div class="accessPointText">
+              <h2 class="accessPointTitle">
+                <%= accessPoint['title'] %>
+              </h2>
+              <%- if accessPoint['description'].present? -%>
+              <div class="accessPointDescription">
+                <%= accessPoint['description'] %>
+              </div>
+              <%- end -%>
+            </div>
             <div class="accessPointButtons">
               <%- accessPoint['urls'].each do |format, url| -%>
                 <a class="button" href="<%= url %>" target="_blank">

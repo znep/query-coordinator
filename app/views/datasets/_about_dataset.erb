@@ -30,13 +30,15 @@
   <%- end -%>
 
   <div class="formSection">
-    <a class="expander expanded formHeader" href="#expand">
-      <span class="icon"></span>
-      <%= t('screens.about.description') %>
-    </a>
-    <div class="sectionContent">
-      <p><%= view_formatted_description(@view) || t('screens.about.none') %></p>
-    </div>
+    <%- if  !(@view.is_href? || @view.is_blobby?) %>
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <%= t('screens.about.description') %>
+      </a>
+      <div class="sectionContent">
+        <p><%= view_formatted_description(@view) || t('screens.about.none') %></p>
+      </div>
+    <%- end %>
   </div>
 
   <%- if module_enabled?(:routing_approval) && current_user.present? && @view.flag?('default') &&

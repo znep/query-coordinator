@@ -1967,6 +1967,8 @@ en:
           replace: Replace
           type: Type
           upsert: Upsert
+          delete: Delete
+          data_workflow: Data Workflow
           working_copy: Working Copy
         index_page:
           action: Action

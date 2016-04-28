@@ -958,6 +958,8 @@ class View < Model
     @_is_public ||= display.is_public?
   end
 
+  # This represents whether or not the view is accessible exclusively to the current user.
+  # Importantly, note that is_private? is not the opposite of is_public?
   def is_private?
     grants.nil? || grants.length == 0
   end

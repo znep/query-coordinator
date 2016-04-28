@@ -1,7 +1,9 @@
+import 'dotdotdot';
+
 var velocity = require('velocity-animate');
 
-$.Velocity.defaults.duration = 320;
-$.Velocity.defaults.easing = [.645, .045, .355, 1];
+velocity.defaults.duration = 320;
+velocity.defaults.easing = [.645, .045, .355, 1];
 
 module.exports = function(el, options) {
   var parent = el.parentElement;

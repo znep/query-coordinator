@@ -11,6 +11,15 @@
   <body>
     <%= yield %>
 
+    <script>
+      var initialState = {
+        view: <%= raw transformed_view.to_json %>,
+        featuredViews: <%= raw transformed_featured_views.to_json %>
+      };
+    </script>
+
+    <%= render_dataset_landing_page_translations %>
+
     <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
   </body>
 </html>

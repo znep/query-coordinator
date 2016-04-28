@@ -1,8 +1,12 @@
 ---
 title: Socrata Styleguide
-layout: prototype-homepage-settings
+layout: prototype
 ---
 
+
+<% content_for :page_css do %>
+  <link rel="stylesheet" href="/prototypes/homepage-settings.css">
+<% end %>
 
 <% content_for :page_js do %>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -48,7 +52,6 @@ $(document).ready(function(){
         <div class="btn-group">
           <button class="btn btn-default" >Preview Changes <span class="icon-preview"></span></button>
           <button class="btn btn-default" >Save Changes</button>
-          <button class="btn btn-default" >Revert</button>
         </div>
       </div>
 
@@ -65,95 +68,82 @@ $(document).ready(function(){
 
     <div id="tab-1" class="tab-content current">
 
-       <h3 class="section-header">General Settings</h3>
+     <h3 class="section-header">General Settings</h3>
 
 
-        <section class="settings-group">
+     <section class="settings-group">
 
 
 
-          <div class="settings-form">
-            <form>
-            <label class="block-label">Window or Tab Title Display</label>
-            <input class="text-input" type="text" placeholder="Evergreen Open Data" width="200"/>
-            </form>
-          </div><!-- ./settings-group  -->
+      <div class="settings-form">
+        <form>
+          <label class="block-label">Window or Tab Title Display</label>
+          <input class="text-input" type="text" placeholder="Evergreen Open Data" width="200"/>
+        </form>
+      </div><!-- ./settings-group  -->
 
-          <aside>
-              <p>Name displayed in the window or tab title.</p>
-          </aside>
+      <aside>
+        <p>Name displayed in the window or tab title.</p>
+      </aside>
 
-         </section>
+    </section>
 
-         <section class="settings-group">
+    <section class="settings-group">
 
-          <div class="settings-form">
-            <form>
-            <label class="block-label">Window or Tab Icon (favicon)</label>
-            <input class="text-input" type="text" placeholder="URL" width="200"/>
-            </form>
-          </div><!-- ./settings-group  -->
+      <div class="settings-form">
+        <form>
+          <label class="block-label">Window or Tab Icon (favicon)</label>
+          <input class="text-input" type="text" placeholder="URL" width="200"/>
+        </form>
+      </div><!-- ./settings-group  -->
 
-          <aside>
-              <p>URL reference to the icon displayed in the window, tab, and browser URL field.</p>
-          </aside>
+      <aside>
+        <p>URL reference to the icon displayed in the window, tab, and browser URL field.</p>
+      </aside>
 
-         </section>
-
-
-         <section class="settings-group">
-
-          <div class="settings-form">
-            <form>
-            <label class="block-label">Site Logo (large)</label>
-            <input class="text-input" type="text" placeholder="URL" width="200"/>
-            </form>
-          </div><!-- ./settings-group  -->
-
-          <aside>
-              <p>URL reference the large site logo. Recommended minum size is 300px x 200px.</p>
-          </aside>
-
-         </section>
-
-         <section class="settings-group">
-
-          <div class="settings-form">
-            <form>
-            <label class="block-label">Site Logo (small)</label>
-            <input class="text-input" type="text" placeholder="URL" width="200"/>
-            </form>
-          </div><!-- ./settings-group  -->
-
-          <aside>
-              <p>URL reference the small site logo. Recommended minum size is 100 x 40px.</p>
-          </aside>
-
-         </section>
-
-    </div>
+    </section>
 
 
-    <div id="tab-2" class="tab-content">
+
+
+  </div>
+
+
+  <div id="tab-2" class="tab-content">
 
     <h3 class="section-header">Header Bar</h3>
 
     <section class="settings-group">
 
-
-
       <div class="settings-form">
         <form>
-        <label class="block-label">Site Display Name</label>
-        <input class="text-input" type="text" placeholder="Evergreen Open Data" width="200"/>
+          <label class="block-label">Header Bar Logo</label>
+          <input class="text-input" type="text" placeholder="URL" width="200"/>
         </form>
       </div><!-- ./settings-group  -->
 
       <aside>
-          <p>Name displayed in the Header Bar. Usually set to your organizations name.</p>
+        <p>URL reference to the header bar logo. Recommended minium size is 100 x 40px. This logo will be displayed at a small size.</p>
       </aside>
 
-     </section>
+    </section>
+
+    <section class="settings-group">
+
+
+
+      <div class="settings-form">
+        <form>
+          <label class="block-label">Site Display Name</label>
+          <input class="text-input" type="text" placeholder="Evergreen Open Data" width="200"/>
+        </form>
+      </div><!-- ./settings-group  -->
+
+      <aside>
+        <p>Name displayed in the Header Bar. Usually set to your organizations name.</p>
+      </aside>
+
+    </section>
 
 
 
@@ -162,128 +152,111 @@ $(document).ready(function(){
 
       <div class="settings-form half">
         <form>
-        <label class="block-label">Bar Background Color</label>
-        <input class="text-input" type="text" placeholder="#123456" width="200"/>
+          <label class="block-label">Bar Background Color</label>
+          <input class="text-input" type="text" placeholder="#123456" width="200"/>
         </form>
       </div><!-- ./settings-group  -->
 
       <div class="settings-form half">
         <form>
-        <label class="block-label">Bar Text &amp; Link Color</label>
-        <input class="text-input" type="text" placeholder="#ffffff" width="200"/>
+          <label class="block-label">Bar Text &amp; Link Color</label>
+          <input class="text-input" type="text" placeholder="#ffffff" width="200"/>
         </form>
       </div><!-- ./settings-group  -->
 
       <aside>
-          <p>Background color of the header bar and the color of text and links that sit atop the bar.</p>
+        <p>Background color of the header bar and the color of text and links that sit atop the bar.</p>
       </aside>
 
-     </section>
+    </section>
 
 
     <section class="settings-group">
 
       <form>
-      <h5>Menu Links</h5>
-      <p>Display up to 5 links in the Heaader Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.</p>
-      <table class="table-discrete table-condensed table-borderless">
-        <thead>
-          <th>Link Label</th>
-          <th>URL</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
-            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-          <tr>
-            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
-            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-                    <tr>
-            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
-            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-          <tr>
-            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
-            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-          <tr>
-            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
-            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-        </tbody>
-      </table>
-     </form>
-   
-
-     </section>
+        <h5>Menu Links</h5>
+        <p>Display up to 5 links in the Heaader Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.</p>
+        <table class="table-discrete table-condensed table-borderless">
+          <thead>
+            <th>Link Label</th>
+            <th>URL</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+              <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+            </tr>
+            <tr>
+              <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+              <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+            </tr>
+            <tr>
+              <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+              <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+            </tr>
+            <tr>
+              <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+              <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+            </tr>
+            <tr>
+              <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+              <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
 
 
+    </section>
+
+
+  </div><!-- /#tab-2 -->
+
+  <div id="tab-3" class="tab-content">
+
+   <h3 class="section-header">Footer</h3>
 
     <section class="settings-group">
 
-      <h6>Social Sharing Links</h6>
-          <p>Toggle the Twitter and Facebook sharing links in your header bar.</p>
-
       <div class="settings-form">
         <form>
-       <div class="checkbox">
-          <input id="1" type="checkbox" />
-          <label for="1">
-            <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
-           Show Twitter Sharing Link
-          </label>
-        </div>
-        <div class="checkbox">
-          <input id="2" type="checkbox" />
-          <label for="2">
-            <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
-           Show Facebook Sharing Link
-          </label>
-        </div>
-
+          <label class="block-label">Footer Logo</label>
+          <input class="text-input" type="text" placeholder="URL" width="200"/>
         </form>
-      </div><!-- /.settings-group  -->
+      </div><!-- ./settings-group  -->
 
-     </section>
+      <aside>
+        <p>URL reference the footer logo. Recommended minum size is 300px x 200px.</p>
+      </aside>
 
-     <div class="page-controls">
-        <button class="btn btn-primary">Save</button> <button class="btn btn-default">Cancel</button>
-     </div>
+    </section>
 
-   </div><!-- /#tab-2 -->
-
-      <div id="tab-3" class="tab-content">
-
-       <h3 class="section-header">Footer</h3>
-
-         <section class="settings-group">
+   <section class="settings-group">
 
 
-      <div class="settings-form half">
-        <form>
+    <div class="settings-form half">
+      <form>
         <label class="block-label">Footer Background Color</label>
         <input class="text-input" type="text" placeholder="#123456" width="200"/>
-        </form>
-      </div><!-- ./settings-group  -->
+      </form>
+    </div><!-- ./settings-group  -->
 
-      <div class="settings-form half">
-        <form>
+    <div class="settings-form half">
+      <form>
         <label class="block-label">Footer Text &amp; Link Color</label>
         <input class="text-input" type="text" placeholder="#ffffff" width="200"/>
-        </form>
-      </div><!-- ./settings-group  -->
+      </form>
+    </div><!-- ./settings-group  -->
 
-      <aside>
-          <p>Background color of the footer and the color of the text and links displayed inside the footer.</p>
-      </aside>
+    <aside>
+      <p>Background color of the footer and the color of the text and links displayed inside the footer.</p>
+    </aside>
 
-     </section>
+  </section>
 
-     <section class="settings-group">
+  <section class="settings-group">
 
-      <form>
+    <form>
       <h5>Footer Menu Links</h5>
       <p>Display up to 15 links in the Footer. We automatically place these links in columns.</p>
       <table class="table-discrete table-condensed table-borderless">
@@ -300,52 +273,125 @@ $(document).ready(function(){
             <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
             <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
           </tr>
-                    <tr>
+          <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>
+          <tr>
             <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
             <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
           </tr>
           <tr>
             <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
             <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
-          </tr>
-          <tr>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
+            <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
+            <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
+          </tr>         <tr>
             <td> <input class="text-input" type="text" placeholder="Link Text" width="200"/></td>
             <td> <input class="text-input" type="text" placeholder="http://data.evergreen.gov" width="200"/></td>
           </tr>
         </tbody>
       </table>
 
-      <button class="btn btn-small btn-default btn-sm"><span class="icon-add"></span> Add Link</button>
+    </form>
+
+
+  </section>
+
+  <section class="settings-group">
+
+    <h5>Copyright Notice</h5>
+    <p>Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.</p>
+
+    <div class="settings-form">
+      <form>
+       <div class="checkbox">
+        <input id="3" type="checkbox" />
+        <label for="3">
+          <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
+          Show Copyright Notice
+        </label>
+      </div>
+
+
+    </form>
+  </div><!-- /.settings-form  -->
+
+</section>
+
+</div><!-- /#tab-3 -->
+
+<div id="tab-4" class="tab-content">
+</div>
+
+<div id="tab-5" class="tab-content">
+
+  <h3 class="section-header">Social Sharing</h3>
+
+  <section class="settings-group">
+    <div class="settings-form">
+    
+    <form>
+     <label class="block-label">Facebook Profile Link</label>
+     <input class="text-input" type="text" placeholder="http://www.facebook.com/" width="200"/>
+   </form>
+ </div>
+      <aside>
+        <p>Displays Facebook profile link link in Header and Footer when  present.</p>
+      </aside>
+   </section>
+
+
+   <section class="settings-group">
+   
+    <div class="settings-form">
+      <form>
+
+       <label class="block-label">Twitter Profile Link</label>
+       <input class="text-input" type="text" placeholder="http://www.twitter.com/" width="200"/>
+       
+       
 
      </form>
-   
+   </div><!-- /.settings-form  -->
 
-     </section>
+   <aside>
+        <p>Displays Twitter profile link in Header and Footer when  present.</p>
+      </aside>
 
-         <section class="settings-group">
+ </section><!-- /.settings-group  -->
 
-      <h5>Copyright Notice</h5>
-          <p>Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.</p>
+</div><!-- /#-tab-5 -->
 
-      <div class="settings-form">
-        <form>
-       <div class="checkbox">
-          <input id="3" type="checkbox" />
-          <label for="3">
-            <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
-           Show Copyright Notice
-          </label>
-        </div>
+    <div class="page-controls">
+      <button class="btn btn-primary">Save</button> <button class="btn btn-default">Cancel</button>
+    </div>
 
-
-        </form>
-      </div><!-- /.settings-group  -->
-
-     </section>
-
-    </div><!-- /#tab-3 -->
-
- 
   
   </div><!-- /.content -->
 </div><!-- /.container -->

@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+    <title><%= current_page.data.title || "Socrata's Styleguide" %></title>
+
+    <% if content_for?(:page_css) %>
+      <%= yield_content :page_css %>
+    <% end %>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body class="<%= page_classes %>">
+    <%= yield %>
+
+    <script type="text/javascript" src="/javascripts/vendor/prism.js"></script>
+    <script type="text/javascript" src="/js/styleguide.js"></script>
+    <script type="text/javascript" src="/javascripts/all.js"></script>
+    <% if content_for?(:page_js) %>
+      <%= yield_content :page_js %>
+    <% end %>
+  </body>
+</html>

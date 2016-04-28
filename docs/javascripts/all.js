@@ -1,6 +1,3 @@
-//= require vendor/prism
-//= require vendor/styleguide
-
 styleguide(document);
 
 document.addEventListener('DOMContentLoaded', function() {

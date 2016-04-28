@@ -13,15 +13,7 @@ class StorytellerReleasesUi
     @git = open_git_repo
   end
 
-  def main_menu_entry_name
-    'Manage Releases'
-  end
-
-  def main_menu_entry_description
-    'Create releases and deploy them'
-  end
-
-  def show_main_menu
+  def open
     begin
       Rake.application['ops:jenkins:check_creds'].invoke
       Rake.application['ops:check_aws_creds'].invoke

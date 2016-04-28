@@ -3,6 +3,7 @@ require_relative 'ops/aws_credentials'
 require_relative 'ops/vpn'
 require_relative 'ops/jenkins'
 require_relative 'ops/ops_ui'
+require_relative 'ops/storyteller_releases_ui'
 require_relative 'ops/new_release_ui'
 
 def neuter_airbrake
@@ -84,8 +85,13 @@ namespace :ops do
   namespace :ui do
     desc 'Create a new release and build it'
     task :new_release do
-      ui = NewReleaseUi.new
+      NewReleaseUi.new.open
       ui.open
+    end
+
+    desc 'Manage deployed versions (activate/rollback)'
+    task :releases do
+      StorytellerReleasesUi.new.open
     end
   end
 end

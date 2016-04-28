@@ -26,6 +26,7 @@ class SocrataRangeFilter extends React.Component {
     } else {
       if (this.props.type == 'calendar_date') {
         this.domain = this.props.scale;
+
         this.lowerIndex = 0;
         this.upperIndex = this.domain.length - 1;
 
@@ -33,10 +34,6 @@ class SocrataRangeFilter extends React.Component {
           values: {
             min: 0,
             max: this.domain.length - 1
-          },
-          valueLabels: {
-            min: 'No Min',
-            max: 'No Max'
           },
           inputValue: {
             lower: this.inputFieldDate(this.domain[0]),
@@ -115,10 +112,11 @@ class SocrataRangeFilter extends React.Component {
 
   onChangeDateInputs(whichBound, e) {
 
+    this.changing = whichBound;
     var selectedDate = new Date(e.target.value);
 
     if (whichBound == 'lower') {
-      for(var i = 0; i < this.domain.length - 1; i++) {
+      for (var i = 0; i < this.domain.length - 1; i++) {
         if (selectedDate.getTime() > this.domain[i].getTime() && selectedDate.getTime() < this.domain[i + 1].getTime()) {
           this.lowerIndex = i;
         } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime()) {
@@ -127,33 +125,101 @@ class SocrataRangeFilter extends React.Component {
           this.lowerIndex = 0;
         }
       }
+
+      if (selectedDate.getTime() > this.domain[this.upperIndex].getTime()) {
+        this.setState({
+          inputValue: {
+            lower: e.target.value,
+            upper: this.state.inputValue.upper
+          },
+          errorBoundary: {
+            lower: true,
+            upper: false
+          }
+        });
+        this.props.warningHandler(true, 'Min cannot exceed Max');
+      } else {
+        this.props.warningHandler(false, '');
+
+        this.setState({
+          values: {
+            min: this.lowerIndex,
+            max: this.state.values.max
+          },
+          inputValue: {
+            lower: e.target.value,
+            upper: this.state.inputValue.upper
+          },
+          errorBoundary: {
+            lower: false,
+            upper: false
+          }
+        }, function() {
+
+          var filterObj = {
+            dir: 'bt',
+            val1: this.timeStamp(this.domain[this.state.values.min]),
+            val2: this.timeStamp(this.domain[this.state.values.max])
+          };
+          this.props.dataHandler(
+            this.displayDate(this.domain[this.state.values.min]) + ' - ' +
+            this.displayDate(this.domain[this.state.values.max]), filterObj, true, true);
+        });
+
+      }
+
     } else if (whichBound == 'upper') {
-      for(var i = 1; i < this.domain.length; i++) {
-        if (selectedDate.getTime() < this.domain[i].getTime() && selectedDate.getTime() > this.domain[i - 1].getTime()) {
-          this.upperIndex = i;
+      for (var j = 1; j < this.domain.length; j++) {
+        if (selectedDate.getTime() < this.domain[j].getTime() && selectedDate.getTime() > this.domain[j - 1].getTime()) {
+          this.upperIndex = j;
         } else if (selectedDate.getTime() < this.domain[0].getTime()) {
           this.upperIndex = 0;
         } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime())  {
           this.upperIndex = this.domain.length - 1;
         }
       }
+      console.log(this.upperIndex);
+
+      if (selectedDate.getTime() < this.domain[this.lowerIndex].getTime()) {
+        this.setState({
+          inputValue: {
+            lower: this.state.inputValue.lower,
+            upper: e.target.value
+          },
+          errorBoundary: {
+            lower: false,
+            upper: true
+          }
+        });
+        this.props.warningHandler(true, 'Max cannot be smaller than Min');
+      } else {
+        this.props.warningHandler(false, '');
+        this.setState({
+          values: {
+            min: this.state.values.min,
+            max: this.upperIndex
+          },
+          inputValue: {
+            lower: this.state.inputValue.lower,
+            upper: e.target.value
+          },
+          errorBoundary: {
+            lower: false,
+            upper: false
+          }
+        }, function() {
+
+          var filterObj = {
+            dir: 'bt',
+            val1: this.inputFieldDate(this.domain[this.state.values.min]),
+            val2: this.inputFieldDate(this.domain[this.state.values.max])
+          };
+          this.props.dataHandler(
+            this.displayDate(this.domain[this.state.values.min]) + ' - ' +
+            this.displayDate(this.domain[this.state.values.max]), filterObj, true, true);
+        });
+      }
     }
-
-    var lowerDate = this.timeStamp(this.domain[this.lowerIndex]);
-    var upperDate = this.timeStamp(this.domain[this.upperIndex]);
-
-    var labelsObject = {
-      min: (this.lowerIndex == 0) ? 'No Min' : lowerDate,
-      max: (this.upperIndex == this.domain.length - 1) ? 'No Max' : upperDate
-    };
-
-    this.setState({
-      values: {
-        min: this.lowerIndex,
-        max: this.upperIndex
-      },
-      valueLabels: labelsObject
-    });
   }
 
   validateNumericData() {
@@ -172,7 +238,7 @@ class SocrataRangeFilter extends React.Component {
             upper: false
           }
         });
-        this.props.warningHandler(true, 'Min cannot exceed the Max');
+        this.props.warningHandler(true, 'Min cannot exceed Max');
       }
     } else {
       var filterObj = {
@@ -191,24 +257,35 @@ class SocrataRangeFilter extends React.Component {
   }
 
   inputFieldDate(dateObject) {
+
     var yyyy = dateObject.getFullYear().toString();
     var mm = (dateObject.getMonth() + 1).toString();
     var dd  = dateObject.getDate().toString();
 
     return yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0]);
-   }
+  }
+
+  displayDate(dateObject) {
+
+    var yyyy = dateObject.getFullYear().toString();
+    var mm = (dateObject.getMonth() + 1).toString();
+    var dd  = dateObject.getDate().toString();
+
+    return (mm[1] ? mm : '0' + mm[0]) + '/' + (dd[1] ? dd : '0' + dd[0]) + '/' + yyyy;
+  }
 
   timeStamp(dateObject) {
+
     var aMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return aMonths[dateObject.getMonth()] + '-' + dateObject.getFullYear();
   }
 
   handleValuesChange(component, values) {
 
-    console.log('handle change triggered');
-
     var formattedLabel = '';
     var filterObj = {};
+    this.lowerIndex = values.min;
+    this.upperIndex = values.max;
 
     if (this.props.isLarge) {
       if (this.props.type == 'calendar_date') {
@@ -250,32 +327,52 @@ class SocrataRangeFilter extends React.Component {
 
       this.props.dataHandler(formattedLabel, filterObj, true, true);
     } else {
-      this.setState({
-        values: values,
-        inputValue: {
-          lower: values.min,
-          upper: values.max
-        }
-      });
+      if (this.props.type == 'calendar_date') {
+        this.setState({
+          values: values,
+          inputValue: {
+            lower: this.inputFieldDate(this.domain[values.min]),
+            upper: this.inputFieldDate(this.domain[values.max])
+          }
+        });
 
-      if (values.min == this.props.rangeMin && values.max == this.props.rangeMax) {
-          formattedLabel = '(all values)';
-          filterObj.dir = null;
-      } else if (values.min == this.props.rangeMin) {
-        formattedLabel = 'Less than ' + values.max;
-        filterObj.dir = 'lt';
-      } else if (values.max == this.props.rangeMax) {
-        formattedLabel = 'More than ' + values.min;
-        filterObj.dir = 'gt';
+        filterObj = {
+          dir: 'bt',
+          val1: this.timeStamp(this.domain[this.state.values.min]),
+          val2: this.timeStamp(this.domain[this.state.values.max])
+        };
+        this.props.dataHandler(
+          this.displayDate(this.domain[this.state.values.min]) + ' - ' +
+          this.displayDate(this.domain[this.state.values.max]), filterObj, true, true);
       } else {
-        formattedLabel = values.min + ' - ' + values.max;
-        filterObj.dir = 'bt';
+        this.setState({
+          values: values,
+          inputValue: {
+            lower: values.min,
+            upper: values.max
+          }
+        });
+
+        if (values.min == this.props.rangeMin && values.max == this.props.rangeMax) {
+            formattedLabel = '(all values)';
+            filterObj.dir = null;
+        } else if (values.min == this.props.rangeMin) {
+          formattedLabel = 'Less than ' + values.max;
+          filterObj.dir = 'lt';
+        } else if (values.max == this.props.rangeMax) {
+          formattedLabel = 'More than ' + values.min;
+          filterObj.dir = 'gt';
+        } else {
+          formattedLabel = values.min + ' - ' + values.max;
+          filterObj.dir = 'bt';
+        }
+
+        filterObj.val1 = values.min == this.props.rangeMin ? null : values.min;
+        filterObj.val2 = values.max == this.props.rangeMax ? null : values.max;
+
+        this.props.dataHandler(formattedLabel, filterObj, true, true);
       }
 
-      filterObj.val1 = values.min == this.props.rangeMin ? null : values.min;
-      filterObj.val2 = values.max == this.props.rangeMax ? null : values.max;
-
-      this.props.dataHandler(formattedLabel, filterObj, true, true);
     }
   }
 
@@ -340,8 +437,8 @@ class SocrataRangeFilter extends React.Component {
         case 'calendar_date':
           return (<div className="small-dataset">
             <InputRange
-                  minValue={ 1 }
-                  maxValue={ 100 }
+                  minValue={ 0 }
+                  maxValue={ this.domain.length - 1 }
                   step={ 1 }
                   value={ this.state.values }
                   onChange={ this.handleValuesChange.bind(this) } />

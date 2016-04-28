@@ -168,6 +168,7 @@ class FilterItem extends React.Component {
           name={ this.props.filter.name }
           isLarge={ this.props.isLarge }
           scale={ this.props.filter.scale }
+          warningHandler={ this.handleWarning }
           dataHandler={ this.handleFilterData }/>;
         break;
       default:

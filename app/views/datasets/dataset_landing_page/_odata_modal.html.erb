@@ -20,12 +20,12 @@
     </section>
     <%- if @view.geospatial_child_layer_count > 1 -%>
       <%- @view.geospatial_child_layers.each do |child_layer| -%>
-        <%= render 'dataset_landing_page_odata_modal_endpoint', :view => child_layer, :show_name => true %>
+        <%= render 'datasets/dataset_landing_page/odata_modal_endpoint', :view => child_layer, :show_name => true %>
       <%- end -%>
     <%- elsif @view.geospatial_child_layer_count == 1 -%>
-      <%= render 'dataset_landing_page_odata_modal_endpoint', :view => @view.geospatial_child_layers[0], :show_name => false %>
+      <%= render 'datasets/dataset_landing_page/odata_modal_endpoint', :view => @view.geospatial_child_layers[0], :show_name => false %>
     <%- else -%>
-      <%= render 'dataset_landing_page_odata_modal_endpoint', :view => @view, :show_name => false %>
+      <%= render 'datasets/dataset_landing_page/odata_modal_endpoint', :view => @view, :show_name => false %>
     <%- end -%>
     <footer class="modal-actions">
       <button class="btn btn-default btn-sm" data-modal-dismiss>

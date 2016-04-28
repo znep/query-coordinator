@@ -1302,6 +1302,7 @@ en:
       views: Views
     manage_prompt: Click here to manage permissions
     more: Show More
+    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation
@@ -1316,6 +1317,7 @@ en:
       column_name: Column Name
       data_type: Data Type
       description: Description
+      geospatial_layer_title: Columns in this Layer
       show_all: Show All
       show_less: Show Less
       title: Columns in this Dataset

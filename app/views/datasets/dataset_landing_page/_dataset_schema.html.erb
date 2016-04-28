@@ -1,0 +1,99 @@
+<section class="landing-page-section schema-preview">
+  <%- if show_as_layer -%>
+    <h3 class="landing-page-section-header">
+      <%= t('dataset_landing_page.schema_preview.geospatial_layer_title') %>
+    </h3>
+  <%- else -%>
+    <h2 class="landing-page-section-header">
+      <%= t('dataset_landing_page.schema_preview.title') %>
+    </h2>
+  <%- end -%>
+
+  <div class="section-content collapsed">
+    <div class="table-wrapper">
+      <table class="table-borderless table-condensed table-discrete schema-table">
+        <thead>
+          <tr>
+            <th scope="col" class="column-name">
+              <%= t('dataset_landing_page.schema_preview.column_name') %>
+            </th>
+
+            <th scope="col" class="column-description">
+              <%= t('dataset_landing_page.schema_preview.description') %>
+            </th>
+
+            <th scope="col" class="column-type">
+              <%= t('dataset_landing_page.schema_preview.type') %>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <%- columns.each do |column| -%>
+            <tr class="column-summary" data-column="<%= column.fieldName %>">
+              <td class="column-name" scope="row">
+                <%= column.name %>
+              </td>
+
+              <td class="column-description">
+                <div class="contents clamped">
+                  <%= column.description %>
+                </div>
+              </td>
+
+              <td class="column-type">
+                <%- if column.dataTypeName.present? -%>
+                  <span class="type-name"><%= t('core.data_types.' + column.dataTypeName) %></span>
+                  <span class="icon <%= icon_class_for_data_type(column.dataTypeName) %>"></span>
+                <%- end -%>
+              </td>
+
+              <td class="column-expand">
+                <span class="icon-arrow-down"></span>
+              </td>
+            </tr>
+
+            <tr class="column-details" data-column="<%= column.fieldName %>">
+              <td colspan="4">
+                <div class="contents schema-detail-groups">
+                  <div class="schema-detail-group">
+                    <h7 class="schema-detail-group-title">
+                      <%= t('dataset_landing_page.schema_preview.data_type') %>
+                    </h7>
+
+                    <div class="schema-detail-group-value">
+                      <%= documentation_link_for_data_type(column.dataTypeName) %>
+                    </div>
+                  </div>
+
+                  <div class="schema-detail-group">
+                    <h7 class="schema-detail-group-title">
+                      <%= t('dataset_landing_page.schema_preview.api_field_name') %>
+                    </h7>
+
+                    <div class="schema-detail-group-value">
+                      <%= column.fieldName %>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+
+    <%- if columns.length > schema_table_column_count -%>
+      <div class="table-collapse-toggles">
+        <a class="table-collapse-toggle more">
+          <%= t('dataset_landing_page.schema_preview.show_all') %>
+          (<%= columns.length %>)
+        </a>
+
+        <a class="table-collapse-toggle less">
+          <%= t('dataset_landing_page.schema_preview.show_less') %>
+        </a>
+      </div>
+    </div>
+  <%- end -%>
+</section>

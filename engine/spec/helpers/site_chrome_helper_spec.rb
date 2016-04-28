@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SiteChromeHelper do
+describe Chrome::ApplicationHelper do
   describe'#logo' do
     it 'returns an image tag with the a src and alt attribute' do
       source = {

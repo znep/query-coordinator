@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ThemesController, type: :controller do
+RSpec.describe Chrome::ThemesController, type: :controller do
 
   let(:domain) { 'data.seattle.gov' }
 
@@ -19,12 +19,15 @@ RSpec.describe ThemesController, type: :controller do
   end
 
   describe 'GET custom' do
+
+    routes { Chrome::Engine.routes }
+
     it 'renders the custom template' do
       stub_domain_config
-      get :custom
+      get 'custom', :format => :css
       expect(response).to render_template('custom')
       assert_template 'custom'
-      assert_template layout: 'blank'
+      assert_template layout: nil
     end
   end
 end

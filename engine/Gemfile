@@ -13,3 +13,11 @@ gemspec
 # To use a debugger
 gem 'byebug', group: [:development, :test]
 gem 'httparty'
+gem 'hashie'
+gem 'webmock'
+gem 'guard'
+
+# gem 'shoulda-matchers', require: false
+
+gem 'rspec-rails'
+gem 'guard-rspec'

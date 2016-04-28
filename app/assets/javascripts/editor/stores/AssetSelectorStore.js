@@ -229,6 +229,10 @@ export default function AssetSelectorStore() {
     return _.get(_state, 'uploadPercentLoaded', null);
   };
 
+  this.isUploading = function() {
+    return _state.isUploading;
+  };
+
   /**
    * Private methods
    */
@@ -784,7 +788,7 @@ export default function AssetSelectorStore() {
 
   function _updateEmbedCodeProgress(payload) {
     _state.componentType = 'embeddedHtml';
-
+    _state.isUploading = true;
     _state.uploadPercentLoaded = payload.percentLoaded;
 
     self._emitChange();
@@ -795,6 +799,8 @@ export default function AssetSelectorStore() {
       error: true,
       step: payload.error.step
     };
+
+    _state.isUploading = false;
 
     if (!_.isUndefined(payload.error.reason)) {
       _state.componentProperties.reason = payload.error.reason;
@@ -808,7 +814,7 @@ export default function AssetSelectorStore() {
     var documentId = payload.documentId;
 
     _state.componentType = 'embeddedHtml';
-
+    _state.isUploading = false;
     _state.componentProperties = {
       url: htmlFragmentUrl,
       documentId: documentId,
@@ -824,5 +830,7 @@ export default function AssetSelectorStore() {
     if (storyteller.fileUploader && storyteller.fileUploader !== null) {
       storyteller.fileUploader.cancel();
     }
+    _state.isUploading = false;
+    self._emitChange();
   }
 }

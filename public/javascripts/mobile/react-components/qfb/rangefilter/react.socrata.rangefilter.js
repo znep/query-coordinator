@@ -9,9 +9,9 @@ class SocrataRangeFilter extends React.Component {
   constructor(props) {
     super(props);
 
-    this.domain = this.props.scale;
-
     if (this.props.isLarge) {
+      this.domain = this.props.scale;
+
       this.state = {
         values: {
           min: 0,
@@ -24,45 +24,63 @@ class SocrataRangeFilter extends React.Component {
       };
 
     } else {
-      this.state = {
-        values: {
-          min: this.props.rangeMin,
-          max: this.props.rangeMax
-        },
-        inputValue: {
-          lower: this.props.rangeMin,
-          upper: this.props.rangeMax
-        },
-        errorBoundary: {
-          lower: false,
-          upper: false
-        }
-      };
-    }
+      if (this.props.type == 'calendar_date') {
+        this.domain = this.props.scale;
+        this.lowerIndex = 0;
+        this.upperIndex = this.domain.length - 1;
 
+        this.state = {
+          values: {
+            min: 0,
+            max: this.domain.length - 1
+          },
+          valueLabels: {
+            min: 'No Min',
+            max: 'No Max'
+          },
+          inputValue: {
+            lower: this.inputFieldDate(this.domain[0]),
+            upper: this.inputFieldDate(this.domain[this.domain.length - 1])
+          },
+          errorBoundary: {
+            lower: false,
+            upper: false
+          }
+        };
+      } else {
+        this.state = {
+          values: {
+            min: this.props.rangeMin,
+            max: this.props.rangeMax
+          },
+          inputValue: {
+            lower: this.props.rangeMin,
+            upper: this.props.rangeMax
+          },
+          errorBoundary: {
+            lower: false,
+            upper: false
+          }
+        };
+      }
+    }
   }
 
   componentDidMount() {
+
+    var filterObj = { dir: 'bt' };
     if (this.props.isLarge) {
-      var filterObj = {
-        dir: 'bt',
-        val1: this.domain[0],
-        val2: this.domain[this.domain.length - 1]
-      };
-
-      this.props.dataHandler('(all values)', filterObj, true, true);
+      filterObj.val1 = this.domain[0];
+      filterObj.val2 = this.domain[this.domain.length - 1];
     } else {
-      filterObj = {
-        dir: 'bt',
-        val1: this.props.rangeMin,
-        val2: this.props.rangeMax
-      };
-
-      this.props.dataHandler('(all values)', filterObj, true, true);
+      filterObj.val1 = this.props.rangeMin;
+      filterObj.val2 = this.props.rangeMax;
     }
+
+    this.props.dataHandler('(all values)', filterObj, true, true);
   }
 
-  onChangeVal(whichBound, e) {
+  onChangeNumericInputs(whichBound, e) {
 
     this.changing = whichBound;
 
@@ -78,7 +96,7 @@ class SocrataRangeFilter extends React.Component {
           min: lowerValue,
           max: this.state.values.max
         }
-      }, this.validateData);
+      }, this.validateNumericData);
     } else {
       var upperValue = (e.target.value == '') ? this.props.rangeMax : parseFloat(e.target.value);
 
@@ -91,11 +109,57 @@ class SocrataRangeFilter extends React.Component {
           min: this.state.values.min,
           max: upperValue
         }
-      }, this.validateData);
+      }, this.validateNumericData);
     }
   }
 
-  validateData() {
+  onChangeDateInputs(whichBound, e) {
+
+    var selectedDate = new Date(e.target.value);
+
+    if (whichBound == 'lower') {
+      for(var i = 0; i < this.domain.length - 1; i++) {
+        if (selectedDate.getTime() > this.domain[i].getTime() && selectedDate.getTime() < this.domain[i + 1].getTime()) {
+          this.lowerIndex = i;
+        } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime()) {
+          this.lowerIndex = this.domain.length - 1;
+        } else if (selectedDate.getTime() < this.domain[0].getTime())  {
+          this.lowerIndex = 0;
+        }
+      }
+    } else if (whichBound == 'upper') {
+      for(var i = 1; i < this.domain.length; i++) {
+        if (selectedDate.getTime() < this.domain[i].getTime() && selectedDate.getTime() > this.domain[i - 1].getTime()) {
+          this.upperIndex = i;
+        } else if (selectedDate.getTime() < this.domain[0].getTime()) {
+          this.upperIndex = 0;
+        } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime())  {
+          this.upperIndex = this.domain.length - 1;
+        }
+      }
+    }
+    debugger;
+    console.log(this.domain[this.lowerIndex]);
+    console.log(this.domain[this.upperIndex]);
+
+    var lowerDate = this.timeStamp(this.domain[this.lowerIndex]);
+    var upperDate = this.timeStamp(this.domain[this.upperIndex]);
+
+    var labelsObject = {
+      min: (this.lowerIndex == 0) ? 'No Min' : lowerDate,
+      max: (this.upperIndex == this.domain.length - 1) ? 'No Max' : upperDate
+    };
+
+    this.setState({
+      values: {
+        min: this.lowerIndex,
+        max: this.upperIndex
+      },
+      valueLabels: labelsObject
+    });
+  }
+
+  validateNumericData() {
     if (this.state.values.min > this.state.values.max) {
 
       if (this.changing == 'upper') {
@@ -120,30 +184,42 @@ class SocrataRangeFilter extends React.Component {
         val2: this.state.values.max
       };
       this.setState({ errorBoundary: {
-            lower: false,
-            upper: false
-          }
-        });
+          lower: false,
+          upper: false
+        }
+      });
       this.props.warningHandler(false, '');
       this.props.dataHandler(filterObj.val1 + ' - ' + filterObj.val2, filterObj, true, true);
     }
   }
 
+  inputFieldDate(dateObject) {
+    var yyyy = dateObject.getFullYear().toString();
+    var mm = (dateObject.getMonth() + 1).toString();
+    var dd  = dateObject.getDate().toString();
+
+    return yyyy + (mm[1] ? mm : '0' + mm[0]) + (dd[1] ? dd : '0' + dd[0]);
+   }
+
+  timeStamp(dateObject) {
+    var aMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return aMonths[dateObject.getMonth()] + '-' + dateObject.getFullYear();
+  }
+
   handleValuesChange(component, values) {
+
+    console.log('handle change triggered');
+
     var formattedLabel = '';
     var filterObj = {};
 
     if (this.props.isLarge) {
       if (this.props.type == 'calendar_date') {
-        var aMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        var lowerDate = this.domain[values.min];
-        lowerDate = aMonths[lowerDate.getMonth()] + '-' + lowerDate.getFullYear();
-        var upperDate = this.domain[values.max];
-        upperDate = aMonths[upperDate.getMonth()] + '-' + upperDate.getFullYear();
+        var lowerDate = this.timeStamp(this.domain[values.min]);
+        var upperDate = this.timeStamp(this.domain[values.max]);
 
         var labelsObject = {
-          min: (values.min == this.domain[0]) ? 'No Min' : lowerDate,
+          min: (values.min == 0) ? 'No Min' : lowerDate,
           max: (values.max == this.domain.length - 1) ? 'No Max' : upperDate
         };
       } else {
@@ -162,14 +238,14 @@ class SocrataRangeFilter extends React.Component {
         formattedLabel = '(all values)';
         filterObj.dir = null;
       } else if (values.min == 0) {
-        formattedLabel = 'Less than ' + values.max;
         filterObj.dir = 'lt';
+        formattedLabel = 'Less than ' + this.formattedLabel(values.max);
       } else if (values.max == this.domain.length - 1) {
-        formattedLabel = 'More than ' + values.min;
         filterObj.dir = 'gt';
+        formattedLabel = 'More than ' + this.formattedLabel(values.min);
       } else {
-        formattedLabel = values.min + ' - ' + values.max;
         filterObj.dir = 'bt';
+        formattedLabel = this.formattedLabel(values.min) + ' - ' + this.formattedLabel(values.max);
       }
 
       filterObj.val1 = values.min == 0 ? null : this.domain[values.min];
@@ -206,6 +282,16 @@ class SocrataRangeFilter extends React.Component {
     }
   }
 
+  formattedLabel(value) {
+    if (this.props.type == 'calendar_date') {
+      if (this.props.isLarge) {
+        this.timeStamp(this.domain[value]);
+      }
+    } else {
+      return value;
+    }
+  }
+
   render() {
 
     if (this.props.isLarge) {
@@ -228,30 +314,61 @@ class SocrataRangeFilter extends React.Component {
       var inputClassUpper = 'range-input-field range-input-field-upper';
       inputClassUpper = this.state.errorBoundary.upper ? inputClassUpper + ' is-error' : inputClassUpper;
 
-      return (<div className="small-dataset">
-        <InputRange
-              minValue={ this.props.rangeMin }
-              maxValue={ this.props.rangeMax }
-              step={ 1 }
-              value={ this.state.values }
-              onChange={ this.handleValuesChange.bind(this) } />
-        <div className="range-inputs-container">
-          <div className="range-input-part">
-            <input type="number" pattern="-?[1-9][0-9]*"
-              className={ inputClassLower }
-              placeholder="Min"
-              value={ this.state.inputValue.lower }
-              onChange={ this.onChangeVal.bind(this, 'lower') }/>
-          </div>
-          <div className="range-input-part">
-            <input type="number" pattern="-?[1-9][0-9]*"
-              className={ inputClassUpper }
-              placeholder="Max"
-              value={ this.state.inputValue.upper }
-              onChange={ this.onChangeVal.bind(this, 'upper') }/>
-          </div>
-        </div>
-      </div>);
+      switch (this.props.type) {
+        case 'int':
+          return (<div className="small-dataset">
+            <InputRange
+                  minValue={ this.props.rangeMin }
+                  maxValue={ this.props.rangeMax }
+                  step={ 1 }
+                  value={ this.state.values }
+                  onChange={ this.handleValuesChange.bind(this) } />
+            <div className="range-inputs-container">
+              <div className="range-input-part">
+                <input type="number" pattern="-?[1-9][0-9]*"
+                  className={ inputClassLower }
+                  placeholder="Min"
+                  value={ this.state.inputValue.lower }
+                  onChange={ this.onChangeNumericInputs.bind(this, 'lower') }/>
+              </div>
+              <div className="range-input-part">
+                <input type="number" pattern="-?[1-9][0-9]*"
+                  className={ inputClassUpper }
+                  placeholder="Max"
+                  value={ this.state.inputValue.upper }
+                  onChange={ this.onChangeNumericInputs.bind(this, 'upper') }/>
+              </div>
+            </div>
+          </div>);
+        case 'calendar_date':
+          return (<div className="small-dataset">
+            <InputRange
+                  minValue={ 1 }
+                  maxValue={ 100 }
+                  step={ 1 }
+                  value={ this.state.values }
+                  onChange={ this.handleValuesChange.bind(this) } />
+            <div className="range-inputs-container">
+              <div className="range-input-part">
+                <input type="date"
+                  className={ inputClassLower }
+                  placeholder="Min"
+                  value={ this.state.inputValue.lower }
+                  onChange={ this.onChangeDateInputs.bind(this, 'lower') }/>
+              </div>
+              <div className="range-input-part">
+                <input type="date"
+                  className={ inputClassUpper }
+                  placeholder="Max"
+                  value={ this.state.inputValue.upper }
+                  onChange={ this.onChangeDateInputs.bind(this, 'upper') }/>
+              </div>
+            </div>
+          </div>);
+        default:
+          break;
+      }
+
     }
   }
 }
@@ -260,8 +377,12 @@ SocrataRangeFilter.propTypes = {
   componentId: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
   scale: React.PropTypes.array,
-  rangeMin: React.PropTypes.number,
-  rangeMax: React.PropTypes.number
+  rangeMin: React.PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.number]),
+  rangeMax: React.PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.number])
 };
 
 export default SocrataRangeFilter;

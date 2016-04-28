@@ -390,7 +390,7 @@ class InternalController < ApplicationController
           end
 
           params[:properties].each do |name, value|
-            if config.properties.keys.include? name
+            if config.raw_properties.has_key? name
               config.update_property(name, get_json_or_string(value), batch_id)
               notices << "Updated property `#{name}` successfully."
             else

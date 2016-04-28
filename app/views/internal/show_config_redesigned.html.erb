@@ -18,8 +18,7 @@
     <%= display_standard_flashes %>
 
     <div class="description expandable">
-      <%= expandable_header('Description', collapsed: false) %>
-      <div>
+      <%= expandable_section('Description', collapsed: false) do %>
         <dl class="config_type_description">
           <%= definition('Type', @config.type) %>
           <%= definition('Domain', domain_link) %>
@@ -34,12 +33,11 @@
                            unknown: true) %>
           <%- end %>
         </dl>
-      </div>
+      <%- end %>
     </div>
 
     <div class="properties expandable">
-      <%= expandable_header('Properties', collapsed: false) %>
-      <div>
+      <%= expandable_section('Properties', collapsed: false) do %>
         <%= form_tag(set_property_path, :class => 'wide configProperties') do %>
           <%- if @properties.nil? -%>
             <div class="line">No properties for this configuration</div>
@@ -60,12 +58,12 @@
           <input type="submit" value="Save"/>
           <%- end # end if %>
         <%- end # end form -%>
-      </div> <%# end collapsible div %>
+      <%- end # collapsible div %>
     </div> <%# end properties section %>
 
     <%- if @parent_config.present? && @parent_config.data['properties'].present? -%>
       <div class="inheritedProperties expandable">
-        <%=
+        <%-
           link = link_to("#{@parent_config.name} at #{@parent_domain.cname}",
                          show_config_path(org_id: @parent_domain.organizationId,
                                           domain_id: @parent_domain.cname,
@@ -73,9 +71,8 @@
           link = link.prepend('Inherited Properties (from ')
           link = link.html_safe
           link << ')'
-          expandable_header(link, collapsed: true)
         %>
-        <div class="collapsed">
+        <%= expandable_section(link, collapsed: true) do %>
         <form class='wide inheritedProperties'>
           <%- @parent_config.data['properties'].
             sort{ |a, b| a['name'] <=> b['name'] }.
@@ -92,13 +89,12 @@
               </div>
             <%- end -%>
         </form>
-        </div>
+        <%- end %>
       </div>
     <%- end # end if -%>
 
     <div class="serialization expandable">
-      <%= expandable_header('Import/Export Snapshot', collapsed: false) %>
-      <div>
+      <%= expandable_section('Import/Export Snapshot', collapsed: false) do %>
         <div class="importSection">
           <textarea class="importBox"></textarea>
           <button class="doImportLink">Import this</button>
@@ -110,12 +106,11 @@
             Copy to Clipboard
           </button>
         </div>
-      </div>
+      <%- end %>
     </div>
 
     <div class="actions expandable">
-      <%= expandable_header('Actions') %>
-      <div class="collapsed">
+      <%= expandable_section('Actions') do %>
         <dl class="config_type_description">
           <dt>Change Mode</dt>
           <dd class="modes">
@@ -167,7 +162,7 @@
           </dd>
           <%- end %>
         </dl>
-    </div>
+      <%- end %>
   </div>
 
   <div class="newProperty">

@@ -20,12 +20,21 @@ module InternalHelper
     end
   end
 
-  def expandable_header(text, options = {})
+  def expandable_section(text, options = {}, &block)
     classes = %w(headerLink formSection)
     classes << 'collapsed' if options.fetch(:collapsed, true)
-    content_tag :h2, :class => classes do
+    html = content_tag :h2, :class => classes do
       content_tag(:span, '', :class => 'icon') << text
     end
+
+    contents = capture(&block)
+    html <<
+      if options.fetch(:collapsed, true)
+        content_tag(:div, contents, :class => 'collapsed')
+      else
+        content_tag(:div, contents)
+      end
+    html
   end
 
   def definition(term, definition, options = {})

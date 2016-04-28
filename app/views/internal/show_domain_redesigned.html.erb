@@ -112,8 +112,7 @@
     <% end %>
 
     <div class="actions expandable">
-      <%= expandable_header('Management Actions') %>
-      <div class="collapsed">
+      <%= expandable_section('Management Actions') do %>
         <dl class="config_type_description">
           <dt>Change Organization</dt>
           <dd>
@@ -134,12 +133,11 @@
             <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
           </dd>
         </dl>
-      </div>
+      <%- end %>
     </div>
 
     <div class="prebuiltActions expandable">
-      <%= expandable_header('Pre-built Actions') %>
-      <div class="collapsed">
+      <%= expandable_section('Pre-built Actions') do %>
         <dl class="config_type_description">
           <%= bulk_feature_flag_update(
             @bulk_updates[:enable_nbe],
@@ -152,7 +150,7 @@
             feature_description: %Q!Add Open Performance to this domain. You will still need to go to #{link_to govstat_my_goals_path, '/stat/my/goals'}, press ~ twice, and type ".bootstrap".!.html_safe
           ) %>
         </dl>
-      </div>
+      <%- end %>
     </div>
   </div>
 </div>

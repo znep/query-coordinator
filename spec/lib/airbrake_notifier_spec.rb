@@ -56,9 +56,9 @@ describe AirbrakeNotifier do
     end
     let(:referrer) { 'http://otherdomain.com/someplace.html' }
     let(:story_uid) { 'hoth-mh2o' }
-    let(:current_user) {
+    let(:current_user) do
       { 'id': 'four-four' }
-    }
+    end
 
     let(:request_store) do
       {

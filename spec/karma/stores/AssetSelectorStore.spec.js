@@ -249,6 +249,12 @@ describe('AssetSelectorStore', function() {
           assert.isFalse(assetSelectorStore.canPageImageSearchNext());
         });
       });
+
+      describe('.getImageSearchSelected', function() {
+        it('should return null', function() {
+          assert.isNull(assetSelectorStore.getImageSearchSelected());
+        });
+      });
     });
 
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
@@ -1284,51 +1290,61 @@ describe('AssetSelectorStore', function() {
       });
 
       describe('when search fails', function() {
-        it('should emit a change', function() {
+        it('should emit a change', function(done) {
+          assert.lengthOf(server.requests, 0);
+
           dispatch(phrase);
 
           assert.lengthOf(server.requests, 1);
-          server.respondWith('GET', server.requests[0].url, [400, {'Content-Type': 'application/json'}, '']);
+          server.respondWith('GET', server.requests[0].url, [400, {'Content-Type': 'application/json'}, '{}']);
+          server.respond();
 
-          _.defer(function() {
-            assert.isTrue(emitChangeSpy.calledOnce);
+          _.delay(function() {
+            sinon.assert.calledTwice(emitChangeSpy);
             assert.isFalse(assetSelectorStore.isImageSearching());
             assert.isTrue(assetSelectorStore.hasImageSearchError());
-          });
+            done();
+          }, 20);
         });
       });
 
       describe('when search is not continuous', function() {
         var continuous = false;
 
-        it('should emit a change before and after the search', function() {
+        it('should emit a change before and after the search', function(done) {
+          assert.lengthOf(server.requests, 0);
+
           dispatch(phrase, continuous);
 
           assert.lengthOf(server.requests, 1);
-          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '[{}]']);
+          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '{}']);
+          server.respond();
 
-          _.defer(function() {
-            assert.isTrue(emitChangeSpy.calledTwice);
+          _.delay(function() {
+            sinon.assert.calledTwice(emitChangeSpy);
             assert.isFalse(assetSelectorStore.isImageSearching());
             assert.isFalse(assetSelectorStore.hasImageSearchError());
             assert.isTrue(assetSelectorStore.hasImageSearchResults());
             assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
-          });
+            done();
+          }, 20);
         });
       });
 
       describe('when search is continuous', function() {
         var continuous = true;
 
-        it('should emit a change after the search', function() {
+        it('should emit a change after the search', function(done) {
           dispatch(phrase, continuous);
 
           assert.lengthOf(server.requests, 1);
           server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '[{}]']);
+          server.respond();
 
-          _.defer(function() {
-            assert.isTrue(emitChangeSpy.calledOnce);
-          });
+          _.delay(function() {
+            sinon.assert.calledOnce(emitChangeSpy);
+            done();
+          }, 20);
         });
       });
     });
@@ -1408,7 +1424,7 @@ describe('AssetSelectorStore', function() {
     });
   });
 
-  describe('ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE', function() {
+  describe('ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE', function() {
     describe('when you cannot get to the next page', function() {
       // Silence is golden?
     });
@@ -1429,7 +1445,7 @@ describe('AssetSelectorStore', function() {
 
       it('should request a new search', function() {
         dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE
+          action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE
         });
 
         assert.lengthOf(server.requests, 1);

@@ -9,7 +9,6 @@ RSpec.describe GettyImage, type: :model do
   let(:document) { FactoryGirl.create(:document, :status => status) }
 
   let(:domain_id) { 20 }
-  let(:downloading) { false }
   let(:created_by) { 'four-four' }
 
   let(:attributes) do
@@ -17,12 +16,15 @@ RSpec.describe GettyImage, type: :model do
       'getty_id' => getty_id,
       'domain_id' => domain_id,
       'document_id' => document.id,
-      'downloading' => downloading,
       'created_by' => created_by
     }
   end
 
   let(:subject) { GettyImage.new(attributes) }
+
+  it 'has a valid factory' do
+    expect(FactoryGirl.build(:getty_image)).to be_valid
+  end
 
   it 'sets getty_id from attributes' do
     expect(subject.getty_id).to eq(getty_id)
@@ -34,10 +36,6 @@ RSpec.describe GettyImage, type: :model do
 
   it 'sets domain_id from attributes' do
     expect(subject.domain_id).to eq(domain_id)
-  end
-
-  it 'sets downloading from attributes' do
-    expect(subject.downloading).to eq(false)
   end
 
   describe 'created_by' do
@@ -70,13 +68,7 @@ RSpec.describe GettyImage, type: :model do
       let(:status) { 0 }
 
       let(:uri) { 'https://not-this-day.com' }
-      let(:metadata) do
-        [{
-          'display_sizes' => [{
-            'uri' => uri
-          }]
-        }]
-      end
+      let(:metadata) { [{ 'display_sizes' => [{ 'uri' => uri }] }] }
 
       let(:execute) { double('execute', :[] => metadata) }
       let(:with_ids) { double('with_ids', :execute => execute) }
@@ -105,25 +97,31 @@ RSpec.describe GettyImage, type: :model do
       describe 'when ConnectSdk fails' do
         let(:metadata) { nil }
 
+        before do
+          allow(AirbrakeNotifier).to receive(:report_error)
+          allow(with_ids).to receive(:execute).and_raise
+        end
+
         it 'returns nothing' do
           expect(subject.url).to be_nil
+        end
+
+        it 'causes an Airbrake' do
+          subject.url
+          expect(AirbrakeNotifier).to have_received(:report_error)
         end
       end
     end
   end
 
-  describe '#download' do
+  describe '#download!' do
     let(:create) { true }
     let(:create_document_document) { FactoryGirl.create(:document) }
     let(:create_document) { spy('create_document', :create => create, :document => create_document_document) }
-    let(:current_domain) { {'id': domain_id} }
+    let(:current_domain) { {'id' => domain_id} }
     let(:download_parameters) { {} }
     let(:story_uid) { 'four-four' }
-    let(:user) do
-      {
-        'id' => 'four-four'
-      }
-    end
+    let(:user) { {'id' => 'four-four'} }
 
     before do
       allow(CoreServer).to receive(:current_domain).and_return(current_domain)
@@ -133,7 +131,7 @@ RSpec.describe GettyImage, type: :model do
 
     describe 'when the document is already associated with the model' do
       it 'returns' do
-        expect(subject.download(user, story_uid)).to be_nil
+        expect(subject.download!(user, story_uid)).to be_nil
         expect(CreateDocument).to_not have_received(:new)
       end
     end
@@ -143,7 +141,6 @@ RSpec.describe GettyImage, type: :model do
         {
           'getty_id' => getty_id,
           'domain_id' => domain_id,
-          'downloading' => downloading,
           'created_by' => created_by
         }
       end
@@ -152,7 +149,7 @@ RSpec.describe GettyImage, type: :model do
         let(:create) { false }
 
         it 'raises' do
-          expect { subject.download(user, story_uid) }.to raise_error(/Failed to create a new document/)
+          expect { subject.download!(user, story_uid) }.to raise_error(/Failed to create a new document/)
         end
       end
 
@@ -161,11 +158,11 @@ RSpec.describe GettyImage, type: :model do
 
         describe 'when saving fails' do
           before do
-            allow(subject).to receive(:save!).and_return(false)
+            allow(subject).to receive(:save!).and_raise('saving failed')
           end
 
           it 'raises' do
-            expect { subject.download(user, story_uid) }.to raise_error(/GettyImage failed to persist to the database/)
+            expect { subject.download!(user, story_uid) }.to raise_error(/saving failed/)
           end
         end
 
@@ -174,11 +171,11 @@ RSpec.describe GettyImage, type: :model do
 
           before do
             allow(ProcessDocumentJob).to receive(:perform_later).and_return(perform_later_spy)
-            allow(subject).to receive(:save!).and_return(true)
+            allow(subject).to receive(:save!)
           end
 
           it 'returns a ProcessDocumentJob' do
-            subject.download(user, story_uid)
+            subject.download!(user, story_uid)
             expect(ProcessDocumentJob).to have_received(:perform_later)
           end
         end

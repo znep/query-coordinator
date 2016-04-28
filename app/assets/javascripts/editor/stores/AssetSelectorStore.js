@@ -239,7 +239,7 @@ export default function AssetSelectorStore() {
         _jumpToStep(payload);
         break;
 
-      case Actions.ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE:
+      case Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE:
         _nextImageSearchPage();
         break;
 
@@ -305,13 +305,11 @@ export default function AssetSelectorStore() {
 
     var page = this.getImageSearchPage();
     var pageSize = this.getImageSearchPageSize();
-    var query = encodeURI(
-      StorytellerUtils.format(
-        'phrase={0}&page={1}&page_size={2}',
-        phrase,
-        page,
-        pageSize
-      )
+    var query = StorytellerUtils.format(
+      'phrase={0}&page={1}&page_size={2}',
+      encodeURIComponent(phrase),
+      encodeURIComponent(page),
+      encodeURIComponent(pageSize)
     );
 
     if (phraseIsNull || phraseIsEmptyString) {
@@ -335,6 +333,10 @@ export default function AssetSelectorStore() {
 
   this.getImageSearchPage = function() {
     return _.get(_state, 'imageSearchPage', 1);
+  };
+
+  this.getImageSearchSelected = function() {
+    return _.get(_state, 'selectedImageId', null);
   };
 
   this.getImageSearchPageSize = function() {
@@ -386,8 +388,8 @@ export default function AssetSelectorStore() {
       method: 'GET',
       url: self.getImageSearchUrl()
     }).then(function(response) {
-      _state.imageSearchResults = response.images;
-      _state.imageSearchCount = response.result_count;
+      _state.imageSearchResults = self.getImageSearchResults().concat(response.images);
+      _state.imageSearchCount += response.result_count;
       _state.imageSearchEmpty = _state.imageSearchCount === 0;
       _state.imageSearching = false;
       _state.imageSearchError = false;
@@ -417,13 +419,21 @@ export default function AssetSelectorStore() {
       url: url
     };
 
-    if (type === 'author') {
-      _state.componentProperties.image = image;
-    } else if (type === 'hero') {
-      _state.componentProperties = _.merge(_state.componentProperties, image);
+    if (_state.selectedImageId !== payload.id) {
+      _state.selectedImageId = payload.id;
+
+      if (type === 'author') {
+        _state.componentProperties.image = image;
+      } else if (type === 'hero') {
+        _state.componentProperties = _.merge(_state.componentProperties, image);
+      } else {
+        _state.componentProperties = image;
+      }
     } else {
-      _state.componentProperties = image;
+      _state.selectedImageId = null;
     }
+
+    self._emitChange();
   }
 
   /**

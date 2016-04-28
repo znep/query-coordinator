@@ -403,7 +403,7 @@ export default function AssetSelectorRenderer(options) {
     switch (step) {
 
       case WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD:
-        _renderChooseImageGalleryPreview();
+        _renderChooseImageGalleryPreviewData();
         break;
 
       case WIZARD_STEP.ENTER_STORY_URL:
@@ -583,14 +583,14 @@ export default function AssetSelectorRenderer(options) {
 
     tabs.append(tabUpload, tabGetty);
 
-    tabs.find('a').click(function(event) {
+    tabs.on('click', 'a', function(event) {
       event.preventDefault();
 
       var href = $(event.target).closest('[href]');
       var id = href.attr('href');
 
-      $('.image-tabs .tab').removeClass('active');
-      $('.image-pages .page').removeClass('active');
+      tabs.find('.tab').removeClass('active');
+      pages.find('.page').removeClass('active');
 
       $(id).addClass('active');
       href.parent().addClass('active');
@@ -654,7 +654,7 @@ export default function AssetSelectorRenderer(options) {
       class: 'btn btn-default gallery-thats-everything',
       style: 'display: none;',
       disabled: true
-    }).text(I18n.t('editor.asset_selector.image_upload.thats_it'));
+    }).text(I18n.t('editor.asset_selector.image_upload.thats_everything'));
 
     galleryResults.append(
       $('<div>', {class: 'gallery-column hidden'}),
@@ -688,13 +688,11 @@ export default function AssetSelectorRenderer(options) {
       });
     });
 
-    searchField.keyup(function(event) {
-      if (event.keyCode === 13) {
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
-          phrase: searchField.val()
-        });
-      }
+    searchField.change(function(event) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
+        phrase: searchField.val()
+      });
     });
 
     showMoreButton.click(function() {
@@ -702,35 +700,35 @@ export default function AssetSelectorRenderer(options) {
         addClass('btn-busy').
         prop('disabled', true);
       dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_NEXT_PAGE
+        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE
       });
     });
 
     return [search, searchError, galleryResults, navGroup];
   }
 
-  function _renderChooseImageGalleryPreview() {
+  function _renderChooseImageGalleryPreviewData() {
     var results = assetSelectorStore.getImageSearchResults();
     var hasImages = assetSelectorStore.hasImageSearchResults();
     var hasError = assetSelectorStore.hasImageSearchError();
     var isSearching = assetSelectorStore.isImageSearching();
 
     if (hasImages) {
-      var promises = [];
-      var chunked = _.chunk(results, 3);
+      var renderedSources = _.indexBy(_.pluck(_container.find('.gallery-result img'), 'src'));
+      var promises = results.map(function(image, index) {
+        var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
 
-      chunked.forEach(function(images) {
-        images.forEach(function(image, index) {
-          var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
+        if (renderedSources.hasOwnProperty(uri)) {
+          return Promise.resolve();
+        } else {
           var id = image.id;
-
           var promise = new Promise(function(resolve, reject) {
             var imageElement = new Image();
 
             imageElement.src = uri;
             imageElement.onerror = reject;
             imageElement.onload = function() {
-              $('.gallery-column:nth-child(' + (index + 1) + ')').append(
+              $('.gallery-column:nth-child(' + ((index % 3) + 1) + ')').append(
                 $('<div>', {class: 'gallery-result'}).append(
                   imageElement,
                   $('<div>', {class: 'gallery-result-cover'}),
@@ -741,31 +739,30 @@ export default function AssetSelectorRenderer(options) {
               resolve();
             };
             imageElement.onclick = function(event) {
-              var $result = $(event.currentTarget).closest('.gallery-result');
-
-              if ($result.hasClass('active')) {
-                $result.removeClass('active');
-                $('.btn-apply').prop('disabled', true);
-              } else {
-                $('.gallery-result').removeClass('active');
-                $result.addClass('active');
-                $('.btn-apply').prop('disabled', false);
-
-                dispatcher.dispatch({
-                  action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
-                  id: id
-                });
-              }
+              dispatcher.dispatch({
+                action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
+                id: id
+              });
             };
           });
 
-          promises.push(promise);
-        });
+          return promise;
+        }
       });
 
       Promise.all(promises).then(function() {
+        var galleryResults = _container.find('.gallery-result');
         var hasMoreImages = assetSelectorStore.canPageImageSearchNext();
         var outOfImages = !hasMoreImages;
+
+        galleryResults.each(function(i, result) {
+          var $result = $(result);
+          var isSelectedImage = $result.find('img').attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
+
+          $result.toggleClass('active', isSelectedImage);
+        });
+
+        _container.find('.btn-apply').prop('disabled', _.isEmpty(assetSelectorStore.getImageSearchSelected()));
 
         $('.images-error').addClass('hidden');
         $('.images-search-loading-spinner').hide();
@@ -777,7 +774,9 @@ export default function AssetSelectorRenderer(options) {
           toggle(hasMoreImages);
 
         $('.gallery-column').removeClass('hidden');
-      }).catch(function() {
+      }).catch(function(error) {
+        console.error(error);
+
         $('.images-search-loading-spinner').hide();
         $('.images-error').removeClass('hidden');
       });
@@ -790,8 +789,11 @@ export default function AssetSelectorRenderer(options) {
       $('.gallery-show-more').hide();
       $('.gallery-thats-everything').hide();
     } else {
+      if (assetSelectorStore.hasImageSearchPhrase()) {
+        $('.images-error').removeClass('hidden');
+      }
+
       $('.images-search-loading-spinner').hide();
-      assetSelectorStore.hasImageSearchPhrase() && $('.images-error').removeClass('hidden');
       $('.gallery-column').empty();
       $('.gallery-show-more').hide();
       $('.gallery-thats-everything').hide();
@@ -965,11 +967,21 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'asset-selector-preview-image' }
     );
 
+    var previewSpinner = $(
+      '<button>',
+      { 'class': 'btn-busy btn-transparent' }
+    ).append($('<span>'));
+
+    previewImage.on('load', function() {
+      previewSpinner.hide();
+    });
+
     var previewContainer = $(
       '<div>',
       { 'class': 'asset-selector-preview-container' }
     ).append([
-      previewImage
+      previewImage,
+      previewSpinner
     ]);
 
     var gettyImageInfo = $(
@@ -1064,7 +1076,7 @@ export default function AssetSelectorRenderer(options) {
     var altInputField = _container.find('.asset-selector-alt-text-input');
     var insertButton = _container.find('.btn-apply');
     var gettyImageInfo = _container.find('.getty-image-info');
-    var isNotGettyImage = !Constants.VALID_GETTY_IMAGE_PATTERN.test(imageUrl);
+    var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
     altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 

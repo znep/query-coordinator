@@ -1,4 +1,4 @@
-require "ConnectSdk"
+require 'ConnectSDK'
 
 # An API endpoint for Getty Image searches that handles
 # the OAuth2 communication, paging, and keyword searches.
@@ -18,21 +18,24 @@ class Api::V1::GettyImagesController < ApplicationController
     page = params[:page]
     page_size = params[:page_size]
 
-    return render_bad_request unless phrase.is_a?(String) && phrase.size > 0
-    return render_bad_request unless page && page.is_a?(String) && page.to_i > 0
-    return render_bad_request unless page && page_size.is_a?(String) && page_size.to_i > 0
+    return render_bad_request('The String parameter, phrase, is required.') unless phrase.is_a?(String) && phrase.size > 0
+    return render_bad_request('The Number parameter, page, is required.') unless page.is_a?(String) && page.to_i > 0
+    return render_bad_request('The Number parameter, page_size, is required.') unless page_size.is_a?(String) && page_size.to_i > 0
 
     begin
-      results = search_workflow(phrase, page, page_size).execute
+      results = search_workflow(phrase, page: page, page_size: page_size)
       render json: results
     rescue => error
-      render_bad_request
+      # Uh, don't like reveal information unnecessarily.
+      # Let Airbrake deal with it.
+      AirbrakeNotifier.report_error(error, onmethod: 'GettyImagesController#search_workflow')
+      render_bad_request('Error accessing Getty Images API.')
     end
   end
 
   private
 
-  def search_workflow(phrase, page, page_size)
+  def search_workflow(phrase, page: 1, page_size: 10)
     search_images_sdk = connect_sdk.search.images
     search_images_sdk.query_params = {
       'sort_order' => 'best_match',
@@ -43,11 +46,12 @@ class Api::V1::GettyImagesController < ApplicationController
       with_phrase(phrase).
       with_page(page).
       with_page_size(page_size).
-      with_graphical_styles('photography')
+      with_graphical_styles('photography').
+      execute
   end
 
-  def render_bad_request
-    render nothing: true, status: 400
+  def render_bad_request(message)
+    render json: {error: true, message: message}, status: 400
   end
 
   def getty_image

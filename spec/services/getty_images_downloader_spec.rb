@@ -43,13 +43,13 @@ describe GettyImagesDownloader do
   describe '#download' do
     describe 'when there are Getty Images in the story' do
       before do
-        allow(getty_image).to receive(:download)
+        allow(getty_image).to receive(:download!)
         allow(GettyImage).to receive(:find_or_initialize_by).and_return(getty_image)
       end
 
       it 'downloads each image' do
         subject.download
-        expect(getty_image).to have_received(:download).with(user, story.uid).at_least(:once)
+        expect(getty_image).to have_received(:download!).with(user, story.uid).at_least(:once)
       end
     end
 

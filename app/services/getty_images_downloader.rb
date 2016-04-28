@@ -18,7 +18,7 @@ class GettyImagesDownloader
     urls.each do |url|
       id = getty_id(url)
       getty_image = GettyImage.find_or_initialize_by(getty_id: id)
-      getty_image.download(user, story.uid)
+      getty_image.download!(user, story.uid)
     end
   end
 
@@ -55,6 +55,6 @@ class GettyImagesDownloader
 
   def contains_getty_image(component)
     COMPONENTS.include?(component['type']) &&
-    GETTY_IMAGE_API_FORMAT.match(component_url(component)) != nil
+    GETTY_IMAGE_API_FORMAT.match(component_url(component)).present?
   end
 end

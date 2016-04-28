@@ -95,11 +95,13 @@ class CoreServer
   def self.current_user_story_authorization
     authorization = nil
     stored_authorization = ::RequestStore.store[:current_user_story_authorization]
-    user = CoreServer.current_user
 
     return stored_authorization if stored_authorization.present?
 
+    user = CoreServer.current_user
+
     if user.present?
+      uid = ::RequestStore.store[:story_uid]
       domain_role = user['roleName'] || 'unknown'
       domain_rights = user['rights'] || []
       authorization = {
@@ -109,8 +111,7 @@ class CoreServer
         'viewRights' => [],
       }
 
-      if ::RequestStore.store[:story_uid].present?
-        uid = ::RequestStore.store[:story_uid]
+      if uid.present?
         view = CoreServer.get_view(uid)
 
         if view.present?

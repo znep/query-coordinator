@@ -47,9 +47,9 @@ RSpec.describe Api::V1::GettyImagesController, type: :controller do
         stub_invalid_session
       end
 
-      it 'redirects' do
+      it '404s' do
         get :show, params
-        expect(response).to be_redirect
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -102,8 +102,7 @@ RSpec.describe Api::V1::GettyImagesController, type: :controller do
           let(:metadata) { [{}] }
 
           before do
-            search_workflow = double('search_workflow', :execute => metadata)
-            allow(controller).to receive(:search_workflow).and_return(search_workflow)
+            allow(controller).to receive(:search_workflow).and_return(metadata)
           end
 
           it 'returns metadata' do
@@ -115,11 +114,17 @@ RSpec.describe Api::V1::GettyImagesController, type: :controller do
         describe 'with a non-workable connection to Getty Images' do
           before do
             allow(controller).to receive(:search_workflow).and_raise('Hello, Error!')
+            allow(AirbrakeNotifier).to receive(:report_error)
           end
 
           it 'renders a 400' do
             get :search, params
             expect(response.status).to eq(400)
+          end
+
+          it 'notifies Airbrake' do
+            get :search, params
+            expect(AirbrakeNotifier).to have_received(:report_error)
           end
         end
       end

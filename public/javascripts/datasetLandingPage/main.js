@@ -17,6 +17,7 @@ $(function() {
   initDescriptionHeight();
   initCollapsibles();
   initFeaturedViewsTruncation();
+  initMetadataTableToggle();
   initSchemaPreview();
   initApiEndpointControls();
   initPrivateDismissal();
@@ -77,6 +78,68 @@ function initFeaturedViewsTruncation() {
   // Collapse featured view descriptions to 3 lines.
   $('.media-results .entry-description').dotdotdot({
     height: 3 * descriptionLineHeight + 2 * descriptionPadding
+  });
+}
+
+function initMetadataTableToggle() {
+  var leftColumnHeight = document.querySelector('.metadata-column.fancy').offsetHeight;
+  var tableColumn = document.querySelector('.metadata-column.tables');
+  var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
+  var shouldHideToggles = true;
+
+  // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
+  // shown and hidden as the tableColumn is expanded and collapsed.
+  tables.forEach(function(table) {
+    if (table.offsetTop > leftColumnHeight) {
+      table.classList.add('hidden');
+      shouldHideToggles = false;
+    }
+  });
+
+  var columnToggles = Array.prototype.slice.call(document.querySelectorAll('.metadata-table-toggle'));
+
+  // If there is not enough content in the tableColumn, hide the toggles and avoid binding event
+  // handlers, as no collapsing is necessary.
+  if (shouldHideToggles) {
+    var toggleGroups = Array.prototype.slice.call(document.querySelectorAll('.metadata-table-toggle-group'));
+    toggleGroups.forEach(function(group) {
+      group.style.display = 'none';
+    });
+
+    tableColumn.classList.remove('collapsed');
+    tableColumn.style.paddingBottom = 0;
+
+    return;
+  }
+
+  columnToggles.forEach(function(toggle) {
+    toggle.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      var wasCollapsed = tableColumn.classList.contains('collapsed');
+      var originalHeight = getHeight(tableColumn);
+      tableColumn.classList.toggle('collapsed');
+      var targetHeight = getHeight(tableColumn);
+      tableColumn.style.height = originalHeight + 'px';
+
+      if (wasCollapsed) {
+        velocity(tableColumn, {
+          height: targetHeight
+        }, function() {
+          tableColumn.style.height = '';
+        });
+      } else {
+        tableColumn.classList.remove('collapsed');
+
+        tableColumn.style.height = originalHeight + 'px';
+        velocity(tableColumn, {
+          height: targetHeight
+        }, function() {
+          tableColumn.style.height = '';
+          tableColumn.classList.add('collapsed');
+        });
+      }
+    });
   });
 }
 

@@ -138,9 +138,6 @@ class SocrataRangeFilter extends React.Component {
         }
       }
     }
-    debugger;
-    console.log(this.domain[this.lowerIndex]);
-    console.log(this.domain[this.upperIndex]);
 
     var lowerDate = this.timeStamp(this.domain[this.lowerIndex]);
     var upperDate = this.timeStamp(this.domain[this.upperIndex]);
@@ -198,7 +195,7 @@ class SocrataRangeFilter extends React.Component {
     var mm = (dateObject.getMonth() + 1).toString();
     var dd  = dateObject.getDate().toString();
 
-    return yyyy + (mm[1] ? mm : '0' + mm[0]) + (dd[1] ? dd : '0' + dd[0]);
+    return yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0]);
    }
 
   timeStamp(dateObject) {

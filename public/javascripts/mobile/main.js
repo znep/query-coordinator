@@ -682,27 +682,162 @@ import './styles/mobile-general.scss';
       }
 
       function __dateTypeFilter(column) {
-        return new Promise(function(resolve) {
-          var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
+        var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
+        var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
+        var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
+        var DATA_QUERY_PREFIX = 'SELECT {4}(`{0}`) AS {1}, {2} AS {3}';
+        var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
+        var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
+        var DATA_QUERY_WHERE_CLAUSE_SUFFIX = "`{0}` IS NOT NULL AND `{0}` < '{1}' AND (1=1)";
 
+        var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
+
+        return new Promise(function(resolve) {
           __queryLimits(fieldName).then(function(promiseArguments) {
             var data = promiseArguments[0];
+            var precision = mapQueryResponseToPrecision(data);
+            var dataQueryString = mapPrecisionToDataQuery(precision);
 
-            data = _.map(data, function(val) {
-              return new Date(String(val));
-            });
+            var unfilteredWhereClause = '{0} {1}'.format(
+              DATA_QUERY_WHERE_CLAUSE_PREFIX,
+              DATA_QUERY_WHERE_CLAUSE_SUFFIX.format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
+            );
 
-            var scale = d3.time.scale().domain(data).ticks(20);
+            var unfilteredSoqlQuery = soqlDataProvider.query(
+              dataQueryString.format(unfilteredWhereClause),
+              SOQL_DATA_PROVIDER_NAME_ALIAS,
+              SOQL_DATA_PROVIDER_VALUE_ALIAS
+            );
 
-            resolve({
-              filterName: column.name,
-              name: _.findKey(datasetMetadata.columns, { position: column.position }),
-              id: column.position,
-              type: 'calendar_date',
-              scale: scale
+            unfilteredSoqlQuery.then(function(response) {
+              var thisDate;
+              var allLabels = [];
+
+              _.each(response.rows, function(value, i) {
+                if (i === 0) {
+                  return;
+                }
+                thisDate = new Date((_.isNull(value[0]) || _.isUndefined(value[0])) ? '' : value[0]);
+
+                switch (precision) {
+                  case 'DECADE':
+                    if (thisDate.getFullYear() % 10 === 0) {
+                      allLabels.push(thisDate);
+                    }
+                    break;
+                  case 'YEAR':
+                    if (thisDate.getMonth() === 0) {
+                      allLabels.push(thisDate);
+                    }
+                    break;
+                  case 'MONTH':
+                    if (thisDate.getDate() === 1) {
+                      allLabels.push(thisDate);
+                    }
+                    break;
+                  case 'DAY':
+                    allLabels.push(thisDate);
+                    break;
+                }
+              });
+
+              resolve({
+                filterName: column.name,
+                name: _.findKey(datasetMetadata.columns, { position: column.position }),
+                id: column.position,
+                type: 'calendar_date',
+                scale: _.sortBy(allLabels)
+              });
             });
           });
         });
+
+        function mapQueryResponseToPrecision(data) {
+          var domainStartDate = data.rows[0][0];
+          var domainEndDate = data.rows[0][1];
+
+          var domain = {
+            start: moment(domainStartDate, moment.ISO_8601),
+            end: moment(domainEndDate, moment.ISO_8601)
+          };
+
+          if (!domain.start.isValid()) {
+            domain.start = null;
+            console.warn('Invalid start date on {0} ({1})'.format(fieldName, domainStartDate));
+          }
+
+          if (!domain.end.isValid()) {
+            domain.end = null;
+            console.warn('Invalid end date on {0} ({1})'.format(fieldName, domainEndDate));
+          }
+
+          // Return undefined if the domain is undefined, null, or malformed
+          // in some way.  Later on, we will test if datasetPrecision is
+          // undefined and display the proper error message.
+          // By examining the return of getTimelineDomain, these are the
+          // only checks we need.
+          if (_.isUndefined(domain) || _.isNull(domain.start) || _.isNull(domain.end)) {
+            throw 'Timeline Domain is invalid: {0}'.format(domain);
+          }
+
+          var precision;
+
+          // Otherwise, return the precision as a string.
+          // Moment objects are inherently mutable. Therefore, the .add()
+          // call in the first condition will need to be accounted for in
+          // the second condition. We're doing this instead of just cloning
+          // the objects because moment.clone is surprisingly slow (something
+          // like 40ms).
+          if (domain.start.add('years', 1).isAfter(domain.end)) {
+            precision = 'DAY';
+            // We're actually checking for 20 years but have already added one
+            // to the original domain start date in the if block above.
+          } else if (domain.start.add('years', 19).isAfter(domain.end)) {
+            precision = 'MONTH';
+          } else {
+            precision = 'YEAR';
+          }
+
+          return precision;
+        }
+
+        function mapPrecisionToDataQuery(precision) {
+          var dateTruncFunction;
+          var card = _.find(pageMetadata.cards, { fieldName: fieldName });
+          var tempVif = {
+            aggregation: {
+              'function': _.get(card, 'aggregationFunction'),
+              'field': _.get(card, 'aggregationField')
+            }
+          };
+          var aggregationClause = Visualizations.dataProviders.SoqlHelpers.aggregationClause(tempVif);
+
+          switch (precision) {
+            case 'YEAR':
+              dateTruncFunction = 'date_trunc_y';
+              break;
+            case 'MONTH':
+              dateTruncFunction = 'date_trunc_ym';
+              break;
+            case 'DAY':
+              dateTruncFunction = 'date_trunc_ymd';
+              break;
+            default:
+              throw 'precision was invalid: {0}'.format(precision);
+          }
+
+          return (
+            DATA_QUERY_PREFIX.format(
+              fieldName,
+              SOQL_DATA_PROVIDER_NAME_ALIAS,
+              aggregationClause,
+              SOQL_DATA_PROVIDER_VALUE_ALIAS,
+              dateTruncFunction
+            ) +
+            ' {0} ' +
+            DATA_QUERY_SUFFIX.format(SOQL_DATA_PROVIDER_NAME_ALIAS)
+          );
+        }
       }
 
       function __queryLimits(fieldName) {

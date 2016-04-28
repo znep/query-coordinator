@@ -237,11 +237,38 @@
                 { viewport: this.viewportHandler()[viewportFunc](
                     blist.openLayers.geographicProjection, locCol.fieldName) });
 
-            if (_.isEqual(this._query, query)
+            // If the viewport hasn't changed, we're in here because some other filter
+            // has been updated and we need to go get the new data from the dataset object
+            if (this.compareViewportFilters(this._query, query, useSoda2)
                 && $.subKeyDefined(this._view, 'query.namedFilters.viewport'))
             { this.getData(); }
             else
             { this.setQuery(query, true); }
+        },
+
+        compareViewportFilters: function(currentQuery, newQuery, useSoda2) {
+            // If our query is in soql, we can simply compare the strings
+            if (useSoda2) {
+                return _.isEqual(currentQuery, newQuery);
+            }
+
+            function flattenQuery(query) {
+                var viewportFilters = _.get(query, 'namedFilters.viewport.children', []);
+
+                return _.reduce(viewportFilters, function(result, filter) {
+                    var operator = filter.value;
+                    var column = _.find(filter.children, { type: 'column' }).value;
+                    var value = _.find(filter.children, { type: 'literal' }).value;
+
+                    result[operator + column] = value;
+                    return result;
+                }, {});
+            }
+
+            // Otherwise, we need to carefully compare our query's viewport filters,
+            // as our existing query may have irrelevant metadata, but we shouldn't
+            // let non-viewport metadata trick us into thinking our viewport has changed
+            return _.isEqual(flattenQuery(currentQuery), flattenQuery(newQuery));
         },
 
         handleQueryChange: function()

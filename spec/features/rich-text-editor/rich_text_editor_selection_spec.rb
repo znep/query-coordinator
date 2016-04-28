@@ -153,6 +153,9 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
       # Switch to a new theme
       page.find('[data-panel-toggle="style-and-presentation-panel"]').click
+      # Wait for existing animations. If you can come up with a good
+      # reliable selector for this, be my guest :)
+      sleep 0.5
       another_theme_button = page.all('.theme-list .theme:not(.active)').first
       another_theme_button.click
 

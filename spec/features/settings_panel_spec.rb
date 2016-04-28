@@ -158,6 +158,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     # Dummy action to force capybara to wait for the selector to return nonempty
     # I.e., wait for panel to open.
     page.find('#settings-panel-container.active').visible?
+    sleep 0.5 # See comment at the top of this function.
   end
 
   def string_with_1024_chars

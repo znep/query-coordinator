@@ -341,25 +341,23 @@ main.container.landing-page-container {
         background: $light-grey-6;
       }
 
-      td {
-        padding: 3px;
-
-        &:first-child {
-          color: $grey;
-          width: 35%;
-        }
-
+      tr {
         td {
           padding: 3px;
 
           &:first-child {
             color: $grey;
             width: 35%;
-            padding-left: 11px;
+            padding: 3px 11px;
           }
 
           &.empty {
             font-style: italic;
+          }
+
+          &.attachment, &.attachment a {
+            word-break: break-all;
+            word-wrap: break-word;
           }
         }
       }

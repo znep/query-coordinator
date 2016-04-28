@@ -313,11 +313,13 @@
               <tbody>
                 <%- @view.metadata.attachments.each do |attachment_data| -%>
                   <%- attachment = Attachment.set_up_model(attachment_data) -%>
-                  <td><%= attachment.displayName %></td>
-                  <td>
-                    <span class="icon-copy-document"></span>
-                    <%= link_to(attachment.filename, attachment.href(@view.id), :target => '_blank') %>
-                  </td>
+                  <tr>
+                    <td class="attachment"><%= attachment.displayName %></td>
+                    <td class="attachment">
+                      <span class="icon-copy-document"></span>
+                      <%= link_to(attachment.filename, attachment.href(@view.id), :target => '_blank') %>
+                    </td>
+                  </tr>
                 <%- end -%>
               </tbody>
             </table>

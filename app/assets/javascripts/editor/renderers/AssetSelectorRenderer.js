@@ -567,7 +567,7 @@ export default function AssetSelectorRenderer(options) {
   function _renderChooseImageTemplate() {
     var tabs = $('<ul>', {
       class: 'image-tabs tabs'
-    });
+    }).toggleClass('hidden', !Environment.ENABLE_GETTY_IMAGES_GALLERY);
 
     var tabUpload = $('<li>', {
       class: 'tab active'

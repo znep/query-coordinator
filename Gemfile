@@ -64,7 +64,7 @@ gem 'request_store'
 gem 'airbrake'
 
 # Getty Images' library for making OAuth2 calls to their API.
-gem 'ConnectSDK', path: 'vendor/gems/ConnectSdk'
+gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 
 # We use aws-sdk v2 for RDS database migrations
 gem 'aws-sdk'

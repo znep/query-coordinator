@@ -26,6 +26,9 @@
           <% @type_description.try(:each) do |key, value| %>
             <%= definition(key.titleize, autolink(value)) %>
           <% end %>
+          <%- if @usage_discouragement %>
+            <%= definition('Usage Discouraged', @usage_discouragement, discouraged: true) %>
+          <%- end %>
           <%- if @type_description.nil? %>
             <%# You can document config types in config/configuration_types.yml %>
             <%= definition('Unknown Config Type',

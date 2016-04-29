@@ -111,6 +111,7 @@ class InternalController < ApplicationController
     type_data = ExternalConfig.for(:configuration_types)
     @type_description = type_data.description_for(@config.type)
     @property_type_checking = type_data.property_type_checking_for(@config.type)
+    @usage_discouragement = type_data.discouragement_for(@config.type, params)
 
     @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
 

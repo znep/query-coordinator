@@ -40,6 +40,7 @@ module InternalHelper
   def definition(term, definition, options = {})
     dd_html_options = {}
     dd_html_options[:class] = 'unknownConfigType' if options[:unknown]
+    dd_html_options[:class] = 'discouragedConfigType' if options[:discouraged]
 
     content_tag(:dt, term) + content_tag(:dd, definition, dd_html_options)
   end
@@ -183,5 +184,12 @@ module InternalHelper
     else
       CurrentDomain.last_refresh(@domain.cname)
     end
+  end
+
+  def discouragement_explanation(reason)
+    content = ExternalConfig.for(:configuration_types).
+      discouragement_because(reason, force_instead: true)
+
+    content_tag(:div, content, :class => reason)
   end
 end

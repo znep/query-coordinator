@@ -360,12 +360,35 @@ ul.autocomplete {
     }
   }
 
-  .configProperties {
+  form.wide.configProperties {
     .deleteLink, .exportLabel {
       display: inline-block;
       font-size: 1.1em;
       margin-right: 0.5em;
-      padding-top: 0.4em;
+      padding-top: 0;
+    }
+  }
+
+  .line.property {
+    margin-bottom: 1.25em;
+
+    > label {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+      display: block;
+      width: auto;
+    }
+
+    .propertyActions {
+      display: block;
+      div {
+        white-space: nowrap;
+
+        a {
+          padding-top: 0.4em;
+          display: inline-block;
+        }
+      }
     }
   }
 
@@ -396,10 +419,6 @@ ul.autocomplete {
         width: 15em;
       }
     }
-  }
-
-  .newProperty input[type=text] {
-    width: 15.7em;
   }
 
   .serialization {
@@ -502,6 +521,11 @@ ul.autocomplete {
   .newProperty {
     .warning div { display: none; }
     .warning.duplicateProperty .duplicateProperty { display: block; }
+
+    input[type=text] {
+      width: 15.7em;
+      display: block;
+    }
   }
 
   .updateAliases {

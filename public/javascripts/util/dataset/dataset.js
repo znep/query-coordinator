@@ -3402,7 +3402,7 @@ var Dataset = ServerModel.extend({
             //
             // This is a NOOP in OBE land.
             var oldRowId = undefined;
-            if (ds.newBackend && result[':id']) {
+            if (ds._useSODA2 && result[':id']) {
               oldRowId = r.row.id;
               r.row.id = result[':id'];
             }

@@ -122,6 +122,10 @@ RSpec.configure do |config|
       .and_return(status: 200, body: '', headers: {})
   end
 
+  config.after(:each) do
+    ::RequestStore.clear!
+  end
+
   config.after(:all, type: :feature) do
     WebMock.disable_net_connect!
   end

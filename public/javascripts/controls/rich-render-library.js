@@ -343,7 +343,7 @@
         if (row.invalid && row.invalid[column.lookup])
         {
             return $('<span class="invalid">' +
-                blist.datatypes.invalid.renderer(row.data[column.lookup]) +
+                blist.datatypes.invalid.renderer(row.data[column.lookup], column) +
                 '</span>');
         }
 

@@ -145,125 +145,128 @@ function initMetadataTableToggle() {
 
 // Init expand/collapse for schema table.
 function initSchemaPreview() {
-  var schemaSection = document.querySelector('.schema-preview .section-content');
-  var tableWrapper = schemaSection.querySelector('.table-wrapper');
-  var tableToggles = Array.prototype.slice.call(schemaSection.querySelectorAll('.table-collapse-toggle'));
+  var schemaSections = Array.prototype.slice.call(document.querySelectorAll('.schema-preview .section-content'));
 
-  // Expand/collapse the table upon clicking "Show All" or "Show Less" toggle.
-  tableToggles.forEach(function(toggle) {
-    toggle.addEventListener('click', function() {
-      var wasCollapsed = schemaSection.classList.contains('collapsed');
-      var originalScrollPosition = document.body.scrollTop;
+  schemaSections.forEach(function(schemaSection) {
+    var tableWrapper = schemaSection.querySelector('.table-wrapper');
+    var tableToggles = Array.prototype.slice.call(schemaSection.querySelectorAll('.table-collapse-toggle'));
 
-      // Calculate current height and the height we are going to animate to.
-      var originalHeight = getHeight(tableWrapper);
-      schemaSection.classList.toggle('collapsed');
-      var newHeight = getHeight(tableWrapper);
+    // Expand/collapse the table upon clicking "Show All" or "Show Less" toggle.
+    tableToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function() {
+        var wasCollapsed = schemaSection.classList.contains('collapsed');
+        var originalScrollPosition = document.body.scrollTop;
 
-      // Here we expand the table if we are collapsing so the contents are visible while the
-      // animation is playing.  We also reset the scroll position to the original position because
-      // getBoundingClientRect was called while the table was collapsed which will reset the scroll
-      // position of the window.
-      if (!wasCollapsed) {
-        schemaSection.classList.remove('collapsed');
-        window.scrollTo(0, originalScrollPosition);
-      }
+        // Calculate current height and the height we are going to animate to.
+        var originalHeight = getHeight(tableWrapper);
+        schemaSection.classList.toggle('collapsed');
+        var newHeight = getHeight(tableWrapper);
 
-      // Set the height to the original height and animate to the new height.
-      tableWrapper.style.height = originalHeight + 'px';
-      velocity(tableWrapper, {
-        height: newHeight
-      }, function() {
-
-        // Let the wrapper set its own height after the animation is finished.  This allows the
-        // wrapper height to naturally adjust as the nested collapsibles are animating.
-        tableWrapper.style.height = '';
-
-        // If we just collapsed the table, hide the contents at the end of the animation.
+        // Here we expand the table if we are collapsing so the contents are visible while the
+        // animation is playing.  We also reset the scroll position to the original position because
+        // getBoundingClientRect was called while the table was collapsed which will reset the scroll
+        // position of the window.
         if (!wasCollapsed) {
-          schemaSection.classList.add('collapsed');
+          schemaSection.classList.remove('collapsed');
+          window.scrollTo(0, originalScrollPosition);
         }
+
+        // Set the height to the original height and animate to the new height.
+        tableWrapper.style.height = originalHeight + 'px';
+        velocity(tableWrapper, {
+          height: newHeight
+        }, function() {
+
+          // Let the wrapper set its own height after the animation is finished.  This allows the
+          // wrapper height to naturally adjust as the nested collapsibles are animating.
+          tableWrapper.style.height = '';
+
+          // If we just collapsed the table, hide the contents at the end of the animation.
+          if (!wasCollapsed) {
+            schemaSection.classList.add('collapsed');
+          }
+        });
       });
     });
-  });
 
-  // Expand and collapse each row of the table when clicked.  There are two elements that are
-  // simultaneously animated: the row itself (animated to show the full description), and the
-  // "details" row that immediately follows the "summary" row in the DOM, containing more
-  // information about the column.
-  var collapsibleRows = Array.prototype.slice.call(tableWrapper.querySelectorAll('.column-summary'));
-  collapsibleRows.forEach(function(row) {
-    row.addEventListener('click', function() {
-      var columnId = row.dataset.column;
+    // Expand and collapse each row of the table when clicked.  There are two elements that are
+    // simultaneously animated: the row itself (animated to show the full description), and the
+    // "details" row that immediately follows the "summary" row in the DOM, containing more
+    // information about the column.
+    var collapsibleRows = Array.prototype.slice.call(tableWrapper.querySelectorAll('.column-summary'));
+    collapsibleRows.forEach(function(row) {
+      row.addEventListener('click', function() {
+        var columnId = row.dataset.column;
 
-      // Animate the sister row
-      var detailRow = tableWrapper.querySelector('.column-details[data-column="' + columnId + '"]');
-      if (detailRow) {
-        var detailRowIsHidden = detailRow.style.display === 'none' || detailRow.style.display === '';
-        var detailRowContents = detailRow.querySelector('.contents');
+        // Animate the sister row
+        var detailRow = tableWrapper.querySelector('.column-details[data-column="' + columnId + '"]');
+        if (detailRow) {
+          var detailRowIsHidden = detailRow.style.display === 'none' || detailRow.style.display === '';
+          var detailRowContents = detailRow.querySelector('.contents');
 
-        if (detailRowIsHidden) {
-          var originalRowHeight = 0;
-          var targetRowHeight;
-          var padding = 15;
+          if (detailRowIsHidden) {
+            var originalRowHeight = 0;
+            var targetRowHeight;
+            var padding = 15;
 
-          // Show the row
-          detailRow.style.display = 'table-row';
+            // Show the row
+            detailRow.style.display = 'table-row';
 
-          // Temporarily set height to auto to determine the height to animate to
-          detailRowContents.style.height = 'auto';
-          targetRowHeight = getHeight(detailRowContents);
-          detailRowContents.style.height = originalRowHeight;
+            // Temporarily set height to auto to determine the height to animate to
+            detailRowContents.style.height = 'auto';
+            targetRowHeight = getHeight(detailRowContents);
+            detailRowContents.style.height = originalRowHeight;
 
-          // Also animate padding due to the way <td>s work
-          velocity(detailRowContents, {
-            height: targetRowHeight + (2 * padding),
-            paddingTop: padding,
-            paddingBottom: padding
-          });
-        } else {
-          velocity(detailRowContents, {
-            height: 0,
-            paddingTop: 0,
-            paddingBottom: 0
-          }, function() {
-            detailRow.style.display = 'none';
-          });
+            // Also animate padding due to the way <td>s work
+            velocity(detailRowContents, {
+              height: targetRowHeight + (2 * padding),
+              paddingTop: padding,
+              paddingBottom: padding
+            });
+          } else {
+            velocity(detailRowContents, {
+              height: 0,
+              paddingTop: 0,
+              paddingBottom: 0
+            }, function() {
+              detailRow.style.display = 'none';
+            });
+          }
         }
-      }
 
-      // Animate the description
-      var description = row.querySelector('.column-description .contents');
-      if (description) {
-        if (description.classList.contains('clamped')) {
-          var originalDescriptionHeight = getHeight(description);
-          var targetDescriptionHeight;
+        // Animate the description
+        var description = row.querySelector('.column-description .contents');
+        if (description) {
+          if (description.classList.contains('clamped')) {
+            var originalDescriptionHeight = getHeight(description);
+            var targetDescriptionHeight;
 
-          // Keep track of current collapsed height for collapse animation.
-          description.dataset.originalHeight = originalDescriptionHeight;
+            // Keep track of current collapsed height for collapse animation.
+            description.dataset.originalHeight = originalDescriptionHeight;
 
-          // Remove ellipsification and determine target height
-          description.classList.remove('clamped');
-          description.style.height = 'auto';
-          targetDescriptionHeight = getHeight(description);
-
-          // Set height to original and animate to target
-          description.style.height = originalDescriptionHeight + 'px';
-          velocity(description, {
-            height: targetDescriptionHeight
-          }, function() {
+            // Remove ellipsification and determine target height
+            description.classList.remove('clamped');
             description.style.height = 'auto';
-          });
-        } else {
+            targetDescriptionHeight = getHeight(description);
 
-          // Animate to collapsed height, ellipsify when done
-          velocity(description, {
-            height: description.dataset.originalHeight
-          }, function() {
-            description.classList.add('clamped');
-          });
+            // Set height to original and animate to target
+            description.style.height = originalDescriptionHeight + 'px';
+            velocity(description, {
+              height: targetDescriptionHeight
+            }, function() {
+              description.style.height = 'auto';
+            });
+          } else {
+
+            // Animate to collapsed height, ellipsify when done
+            velocity(description, {
+              height: description.dataset.originalHeight
+            }, function() {
+              description.classList.add('clamped');
+            });
+          }
         }
-      }
+      });
     });
   });
 }

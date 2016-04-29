@@ -94,10 +94,6 @@ module DatasetLandingPageHelper
     }.join('')
   end
 
-  def row_label
-    @view.metadata.try(:rowLabel)
-  end
-
   def view_icon(view)
     return 'icon-dataset' unless view.display
 
@@ -254,10 +250,6 @@ module DatasetLandingPageHelper
     else
       data_type_text
     end
-  end
-
-  def view_columns
-    (@view.nbe_view || @view).visible_columns
   end
 
   def schema_table_column_count

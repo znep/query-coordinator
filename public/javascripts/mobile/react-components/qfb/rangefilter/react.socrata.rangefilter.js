@@ -116,12 +116,13 @@ class SocrataRangeFilter extends React.Component {
     var selectedDate = new Date(e.target.value);
 
     if (whichBound == 'lower') {
+
       for (var i = 0; i < this.domain.length - 1; i++) {
-        if (selectedDate.getTime() > this.domain[i].getTime() && selectedDate.getTime() < this.domain[i + 1].getTime()) {
+        if (selectedDate.getTime() >= this.domain[i].getTime() && selectedDate.getTime() < this.domain[i + 1].getTime()) {
           this.lowerIndex = i;
-        } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime()) {
+        } else if (selectedDate.getTime() >= this.domain[this.domain.length - 1].getTime()) {
           this.lowerIndex = this.domain.length - 1;
-        } else if (selectedDate.getTime() < this.domain[0].getTime())  {
+        } else if (selectedDate.getTime() <= this.domain[0].getTime())  {
           this.lowerIndex = 0;
         }
       }
@@ -170,15 +171,14 @@ class SocrataRangeFilter extends React.Component {
 
     } else if (whichBound == 'upper') {
       for (var j = 1; j < this.domain.length; j++) {
-        if (selectedDate.getTime() < this.domain[j].getTime() && selectedDate.getTime() > this.domain[j - 1].getTime()) {
+        if (selectedDate.getTime() <= this.domain[j].getTime() && selectedDate.getTime() > this.domain[j - 1].getTime()) {
           this.upperIndex = j;
-        } else if (selectedDate.getTime() < this.domain[0].getTime()) {
+        } else if (selectedDate.getTime() <= this.domain[0].getTime()) {
           this.upperIndex = 0;
         } else if (selectedDate.getTime() > this.domain[this.domain.length - 1].getTime())  {
           this.upperIndex = this.domain.length - 1;
         }
       }
-      console.log(this.upperIndex);
 
       if (selectedDate.getTime() < this.domain[this.lowerIndex].getTime()) {
         this.setState({

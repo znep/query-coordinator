@@ -694,6 +694,7 @@ import './styles/mobile-general.scss';
 
         return new Promise(function(resolve) {
           __queryLimits(fieldName).then(function(promiseArguments) {
+
             var data = promiseArguments[0];
             var precision = mapQueryResponseToPrecision(data);
             var dataQueryString = mapPrecisionToDataQuery(precision);

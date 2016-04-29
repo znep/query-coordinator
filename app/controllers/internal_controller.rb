@@ -16,12 +16,12 @@ class InternalController < ApplicationController
   end
 
   def show_org
-    if params[:id] == 'current'
-      redirect_to show_org_path(id: CurrentDomain.domain.organizationId)
+    if params[:org_id] == 'current'
+      redirect_to show_org_path(org_id: CurrentDomain.domain.organizationId)
       return
     end
 
-    @org = Organization.find(params[:id])
+    @org = Organization.find(params[:org_id])
     domains = Organization.find.collect {|o| o.domains}.flatten.compact
     @default_domain = domains.detect(&:default?)
   end
@@ -102,7 +102,7 @@ class InternalController < ApplicationController
 
   def show_config
     @domain = Domain.find(params[:domain_id])
-    @config = ::Configuration.find_unmerged(params[:id])
+    @config = ::Configuration.find_unmerged(params[:config_id])
     if @config.parentId.present?
       @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
@@ -200,7 +200,7 @@ class InternalController < ApplicationController
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
     end
-    redirect_to show_domain_path(org_id: params[:id], domain_id: domain.cname)
+    redirect_to show_domain_path(org_id: params[:org_id], domain_id: domain.cname)
   end
 
   def update_domain
@@ -242,12 +242,12 @@ class InternalController < ApplicationController
     end
 
     redirect_to show_config_path(domain_id: params[:domain_id],
-                                 id: config.id)
+                                 config_id: config.id)
   end
 
   def rename_site_config
     if params['rename-config-to'].present?
-      ::Configuration.update_attributes!(params[:id], { 'name' => params['rename-config-to'] })
+      ::Configuration.update_attributes!(params[:config_id], { 'name' => params['rename-config-to'] })
       flash[:notice] = 'Renamed config successfully.'
 
       CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -269,9 +269,9 @@ class InternalController < ApplicationController
   end
 
   def delete_site_config
-    config = ::Configuration.find(params[:id])
+    config = ::Configuration.find(params[:config_id])
     message = %Q(Soft-deleted configuration "#{config.name}" of type `#{config.type}` successfully.)
-    ::Configuration.delete(params[:id])
+    ::Configuration.delete(params[:config_id])
     flash[:notice] = message
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -387,7 +387,7 @@ class InternalController < ApplicationController
   end
 
   def set_property
-    config = ::Configuration.find(params[:id])
+    config = ::Configuration.find(params[:config_id])
 
     if !params['new-property_name'].blank?
       new_feature_name = params['new-feature_name']
@@ -437,7 +437,7 @@ class InternalController < ApplicationController
           if config.type == 'feature_set' # I'd rather check the referer...
             show_domain_path(domain_id: params[:domain_id])
           else
-            show_config_path(domain_id: params[:domain_id], id: params[:id])
+            show_config_path(domain_id: params[:domain_id], config_id: params[:config_id])
           end
         )
       end
@@ -681,12 +681,12 @@ private
   # For example /site_config/catalog on the opendata.socrata.com domain will redirect you to
   # /domains/opendata.socrata.com/site_config/1200 because that's the default config.
   def redirect_to_default_config_id_from_type
-    param_key = params[:config_id] ? :config_id : :id
-    config_type = params[param_key]
+    # If you put in a config type into the :config_id, it'll redirect to the default config!
+    config_type = params[:config_id]
     unless config_type.match /^\d+$/
       config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
       return render_404 if config.nil? 
-      redirect_to url_for(params.merge(param_key => config.id))
+      redirect_to url_for(params.merge(config_id: config.id))
     end
   end
 end

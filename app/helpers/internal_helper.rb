@@ -112,7 +112,7 @@ module InternalHelper
 
   def remove_module_feature(feature)
     config_id = @domain.default_configuration('feature_set').id
-    one_button_form(url: set_property_path(id: config_id), as_button: true, text: 'Remove') do
+    one_button_form(url: set_property_path(config_id: config_id), as_button: true, text: 'Remove') do
       html = hidden_field_tag("delete_properties[#{feature}]", 'delete')
       html << hidden_field_tag("properties[#{feature}]", false)
     end

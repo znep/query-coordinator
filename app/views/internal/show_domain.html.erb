@@ -53,7 +53,7 @@
         <li<%== ' class="isDefault"' if conf.default %>>
         <a href='<%= show_config_path(org_id: @domain.organizationId,
                                       domain_id: @domain.cname,
-                                      id: conf.id) %>'>
+                                      config_id: conf.id) %>'>
           (<%= conf.type %>) <%= conf.name %>
         </a>
         </li>

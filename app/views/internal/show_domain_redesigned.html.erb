@@ -58,7 +58,7 @@
           case conf.type
           when 'feature_flags' then feature_flags_config_path
           else show_config_path(domain_id: @domain.cname,
-                                id: conf.id)
+                                config_id: conf.id)
           end -%>
           <li<%== ' class="isDefault"' if conf.default %>>
           <%= link_to "(#{conf.type}) #{conf.name}", path %>
@@ -231,7 +231,7 @@
           <%# Using `replace` instead of `format` because the url_helper is insistent on
             # escaping the value I give it. %>
           $warning.find('a').attr('href',
-              '<%= show_config_path(id: '{0}') %>'.replace('%7B0%7D', dataItem.name));
+              '<%= show_config_path(config_id: '{0}') %>'.replace('%7B0%7D', dataItem.name));
         }
       };
 

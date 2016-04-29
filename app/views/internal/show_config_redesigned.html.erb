@@ -67,7 +67,7 @@
           link = link_to("#{@parent_config.name} at #{@parent_domain.cname}",
                          show_config_path(org_id: @parent_domain.organizationId,
                                           domain_id: @parent_domain.cname,
-                                          id: @parent_config.id))
+                                          config_id: @parent_config.id))
           link = link.prepend('Inherited Properties (from ')
           link = link.html_safe
           link << ')'

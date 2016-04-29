@@ -78,6 +78,12 @@ describe('AssetSelectorStore', function() {
           assert.isUndefined(value);
         });
       });
+
+      describe('.isUploading()', function() {
+        it('should return undefined', function() {
+          assert.isUndefined(assetSelectorStore.isUploading());
+        });
+      });
     });
 
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
@@ -955,7 +961,71 @@ describe('AssetSelectorStore', function() {
       });
     });
 
-    describe('after a `EMBED_CODE_UPLOAD_DONE` action', function() {
+    describe('after an `EMBED_CODE_UPLOAD_PROGRESS` action', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.EMBED_CODE_UPLOAD_PROGRESS,
+          percentLoaded: 1
+        });
+      });
+
+      describe('.getComponentType()', function() {
+        it('returns `embeddedHtml`', function() {
+          assert.equal(
+            assetSelectorStore.getComponentType(),
+            'embeddedHtml'
+          );
+        });
+      });
+
+      describe('.isUploading()', function() {
+        it('returns true', function() {
+          assert.isTrue(assetSelectorStore.isUploading());
+        });
+      });
+
+      describe('.getUploadPercentLoaded()', function() {
+        it('returns 1', function() {
+          assert.equal(
+            assetSelectorStore.getUploadPercentLoaded(),
+            1
+          );
+        });
+      });
+    });
+
+    describe('after an `EMBED_CODE_UPLOAD_ERROR` action', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.EMBED_CODE_UPLOAD_ERROR,
+          error: {
+            step: 'hello',
+            reason: 'because'
+          }
+        });
+      });
+
+      describe('.getComponentValue()', function() {
+        it('returns payload with error and step', function() {
+          assert.deepEqual(
+            assetSelectorStore.getComponentValue(),
+            {
+              error: true,
+              step: 'hello',
+              reason: 'because'
+            }
+          );
+        });
+      });
+
+      describe('.isUploading()', function() {
+        it('returns false', function() {
+          assert.isFalse(assetSelectorStore.isUploading());
+        });
+      });
+    });
+
+    describe('after an `EMBED_CODE_UPLOAD_DONE` action', function() {
       var payloadUrl = 'https://validurl.com/embeddedHtml.html';
       var payloadDocumentId = '2345';
 
@@ -973,6 +1043,12 @@ describe('AssetSelectorStore', function() {
             assetSelectorStore.getComponentType(),
             'embeddedHtml'
           );
+        });
+      });
+
+      describe('.isUploading()', function() {
+        it('returns false', function() {
+          assert.isFalse(assetSelectorStore.isUploading());
         });
       });
 

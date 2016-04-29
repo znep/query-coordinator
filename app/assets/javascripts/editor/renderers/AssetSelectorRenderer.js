@@ -1328,6 +1328,7 @@ export default function AssetSelectorRenderer(options) {
     var htmlFragmentUrl = null;
     var documentId = null;
     var percentLoaded = assetSelectorStore.getUploadPercentLoaded();
+    var isUploading = assetSelectorStore.isUploading();
     var errorStep = null;
     var messageTranslationKey;
     var iframeContainer = _container.find('.asset-selector-preview-container');
@@ -1339,6 +1340,9 @@ export default function AssetSelectorRenderer(options) {
     var insertButton = _container.find('.btn-apply');
     var insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
     var textareaElement = _container.find('.asset-selector-text-input');
+    var isNotUploadingAndDoesNotHaveSource = !isUploading && _.isUndefined(iframeSrc);
+    var isUploadingAndHasSource = isUploading && _.isString(iframeSrc);
+    var showPlaceholder = isNotUploadingAndDoesNotHaveSource || isUploadingAndHasSource;
 
     function textareaIsUnedited() {
       return textareaElement.val() === '';
@@ -1357,6 +1361,8 @@ export default function AssetSelectorRenderer(options) {
     }
 
     insecureHtmlWarning.toggle(_warnAboutInsecureHTML);
+    loadingButton.toggleClass('hidden', !isUploading);
+    iframeContainer.toggleClass('placeholder', showPlaceholder);
 
     if (!_.isNull(htmlFragmentUrl)) {
 
@@ -1383,7 +1389,6 @@ export default function AssetSelectorRenderer(options) {
         removeClass('placeholder').
         removeClass('invalid');
 
-      loadingButton.addClass('hidden');
       invalidMessageContainer.hide();
       insertButton.prop('disabled', false);
     } else if (!_.isNull(errorStep)) {
@@ -1397,25 +1402,18 @@ export default function AssetSelectorRenderer(options) {
       invalidMessageContainer.show();
       invalidMessageElement.html(I18n.t(messageTranslationKey));
 
-      iframeContainer.
-        removeClass('placeholder').
-        addClass('invalid');
+      iframeContainer.addClass('invalid');
 
-      loadingButton.addClass('hidden');
       insertButton.prop('disabled', true);
     } else if (_.isFinite(percentLoaded)) {
 
       invalidMessageContainer.hide();
 
-      iframeContainer.
-        removeClass('placeholder').
-        removeClass('invalid');
+      iframeContainer.removeClass('invalid');
 
-      loadingButton.removeClass('hidden');
       insertButton.prop('disabled', true);
     } else {
       invalidMessageContainer.hide();
-      loadingButton.addClass('hidden');
       insertButton.prop('disabled', true);
     }
   }

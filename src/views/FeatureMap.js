@@ -787,8 +787,9 @@ function FeatureMap(element, vif) {
     var isLeftClick = event.which === 1;
     var isOutsideOfCurrentMap = $target.closest('.feature-map-container')[0] !== _mapContainer[0];
     var isIconClose = $target.is('.icon-close');
+    var isRowInspector = $target.parents('#socrata-row-inspector').length > 0 && !isIconClose;
 
-    if (isLeftClick && (isOutsideOfCurrentMap || isIconClose)) {
+    if (isLeftClick && (isOutsideOfCurrentMap || isIconClose) && !isRowInspector) {
       _map.fire('clearhighlightrequest');
     }
   }

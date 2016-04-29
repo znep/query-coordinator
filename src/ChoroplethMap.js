@@ -607,6 +607,9 @@ $.fn.socrataChoroplethMap = function(vif) {
           top: payload.clientY
         },
         content: flyoutContent,
+        title: payload.title,
+        filtered: payload.filteredValue,
+        unfiltered: payload.unfilteredValue,
         rightSideHint: false,
         belowTarget: false
       };

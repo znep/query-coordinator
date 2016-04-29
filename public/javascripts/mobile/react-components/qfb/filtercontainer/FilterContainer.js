@@ -325,10 +325,9 @@ class FilterContainer extends React.Component {
 
 
     var selectedFilters = this.state.filters.map((filter) => {
-
       if (filter.type == 'int') {
         return <FilterItem
-          key={ 'qf-' + filter.id }
+          key={ 'qf-{0}'.format(filter.name) }
           filter={ filter }
           isLarge={ filter.isLarge }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
@@ -338,7 +337,7 @@ class FilterContainer extends React.Component {
           additionHandler={ this.handleFilterAddition } />;
       } else {
         return <FilterItem
-          key={ 'qf-' + filter.id }
+          key={ 'qf-{0}'.format(filter.name) }
           filter={ filter }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
           domain={ this.domain }

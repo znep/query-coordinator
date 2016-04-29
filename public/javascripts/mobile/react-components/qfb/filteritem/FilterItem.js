@@ -122,20 +122,12 @@ class FilterItem extends React.Component {
         break;
       case 'float':
       case 'int':
-        /*filter = <SocrataNumberfilter
-          key={ 'qf-' + this.props.filter.id }
-          componentId={ this.props.filter.id }
-          name={ this.props.filter.name }
-          data={ this.props.filter.data || {} }
-          labelHandler={ this.handleFilterLabel }
-          dataHandler={ this.handleFilterData }
-          remoteApply={ this.onClickApply } />;*/
         var scaleArray = this.props.filter.scale.split(',');
         var largeDataset = this.props.isLarge;
 
         if (largeDataset) {
           filter = <SocrataRangefilter
-            key={ 'qf-' + this.props.filter.id }
+            key={ 'qf-{0}'.format(this.props.filter.name) }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
             isLarge={ largeDataset }
@@ -146,7 +138,7 @@ class FilterItem extends React.Component {
           var rangeMax = Number(scaleArray[scaleArray.length - 1]);
 
           filter = <SocrataRangefilter
-            key={ 'qf-' + this.props.filter.id }
+            key={ 'qf-{0}'.format(this.props.filter.name) }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
             isLarge={ largeDataset }
@@ -159,7 +151,7 @@ class FilterItem extends React.Component {
         break;
       case 'string':
         filter = <SocrataAutocompletefilter
-          key={ 'qf-' + this.props.filter.id }
+          key={ 'qf-{0}'.format(this.props.filter.name) }
           componentId={ this.props.filter.id }
           domain={ this.props.domain }
           datasetId={ this.props.datasetId }
@@ -170,7 +162,7 @@ class FilterItem extends React.Component {
         break;
       case 'calendar_date':
         filter = <SocrataDatefilter
-          key={ 'qf-' + this.props.filter.id }
+          key={ 'qf-{0}'.format(this.props.filter.name) }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
           data={ this.props.filter.data || {} }
@@ -186,10 +178,9 @@ class FilterItem extends React.Component {
 
     var warningClasses = 'qfb-filter-item-flannel-actions-warningmessage';
     if (!this.state.showWarning) { warningClasses += ' hidden'; }
-    // if (this.state.isCorrect) { warningClasses += ' hidden'; }
 
     return (
-      <div id={ 'qf-' + this.props.filter.id } className="qfb-filter-item">
+      <div id={ 'qf-{0}'.format(this.props.filter.name) } className="qfb-filter-item">
         <div className="qfb-filter-item-main">
           <button className="qfb-filter-item-mobile-btn visible-xs" onClick={ this.onClickDeleteFilter }>
             <i className="icon-close-circle"></i>

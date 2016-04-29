@@ -6,14 +6,18 @@
   box-sizing: border-box;
 
   &.expanded {
-    height: 65vh;
+    height: calc(60vh + 60px);
+
+    .x-ticks {
+      top: calc(100% - 90px);
+    }
   }
 
   .timeline-chart-upper-wrapper {
+    height: calc(100% - 60px);
+
     display: block;
-    position: relative;
     width: 85%;
-    height: calc(60vh - 100px);
     margin-left: 55px;
   }
 
@@ -27,7 +31,18 @@
     z-index: 10;
   }
 
-  .mobile-flyout .labels.mobile {
+  .mobile-flyout {
+    margin-top: -60px;
+    height: 60px;
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
+    bottom: 0;
+    z-index: 11;
+    position: absolute;
+    padding: 3px 10px 3px 10px;
+    width: 100%;
+  }
+
+  .mobile-flyout-backup .labels.mobile {
     height: 57px;
     box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
     bottom: 0;
@@ -88,8 +103,7 @@
   }
 
   .x-ticks {
-    position: absolute;
-    bottom: 0;
+    top: calc(100% - 30px);
     z-index: 6;
 
     .x-tick-label {

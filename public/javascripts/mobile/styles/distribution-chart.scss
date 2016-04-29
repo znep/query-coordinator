@@ -43,63 +43,14 @@
     }
   }
 
-  .mobile-flyout .labels.mobile {
-    height: 57px;
+  div.mobile-flyout {
+    margin-top: -60px;
+    height: 60px;
     box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
     bottom: 0;
     z-index: 11;
     position: absolute;
     padding: 3px 10px 3px 10px;
     width: 100%;
-
-    .arrow {
-      width: 33px;
-      height: 12px;
-      background: url(/images/flyout-arrow.png) no-repeat;
-      display: block;
-      position: absolute;
-      top: -12px;
-      background-size: 100%;
-    }
-
-    .title {
-      width: 50%;
-      padding: 10px 0;
-      font-size: 15px !important;
-      font-weight: 500;
-    }
-
-    .values {
-      width: 45%;
-      line-height: 16.5px;
-
-      &.unfiltered {
-        padding: 20px 0;
-
-        .total-values {
-          color: #02B38F;
-
-          span {
-            color: #929292;
-          }
-        }
-      }
-
-      &.filtered {
-        padding: 10px 0;
-
-        .total-values {
-          color: #929292;
-        }
-
-        .filtered-values {
-          color: #02B38F;
-
-          span {
-            color: #929292;
-          }
-        }
-      }
-    }
   }
 }

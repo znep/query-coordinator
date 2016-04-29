@@ -1,7 +1,9 @@
 require('socrata-visualizations').DistributionChart;
 require('./styles/distribution-chart.scss');
 
-var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import MobileChartFlyout from './react-components/mobileFlyout/mobileChartFlyout';
 
 module.exports = function(values, $target) {
   'use strict';
@@ -20,9 +22,9 @@ module.exports = function(values, $target) {
     },
     filters: values.filters,
     type: 'distributionChart',
-    'unit': {
-      'one': 'row',
-      'other': 'rows'
+    unit: {
+      one: 'row',
+      other: 'rows'
     }
   };
 
@@ -30,7 +32,7 @@ module.exports = function(values, $target) {
   $target.socrataDistributionChart(vif);
 
   var $distributionChartContainer = $target.parent();
-  $distributionChartContainer.append('<div class="mobile-flyout"></div>');
+  $distributionChartContainer.append('<div class="mobile-flyout hidden"></div>');
 
   $target.on('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', handleFlyout);
 
@@ -42,12 +44,13 @@ module.exports = function(values, $target) {
     } else {
       mobileFlyoutRender(payload);
       $distributionChartContainer.addClass('expanded');
+      $distributionChartContainer.find('.mobile-flyout').toggleClass('hidden', false);
     }
   }
 
   function clearFlyout() {
     $distributionChartContainer.removeClass('expanded');
-    $distributionChartContainer.find('.mobile-flyout').html('');
+    $distributionChartContainer.find('.mobile-flyout').toggleClass('hidden', true).empty();
   }
 
   // Filters
@@ -66,32 +69,15 @@ module.exports = function(values, $target) {
   }
 
   function mobileFlyoutRender(payload) {
-    var valuesStyleClass = 'unfiltered';
-    var filteredLabelLine = '';
-
-    if (payload.filtered && payload.filtered != payload.unfiltered) {
-      filteredLabelLine = '<div class="text-right filtered-values"><span>Filtered</span> ' +
-        payload.filtered + '<span> ' + (payload.filtered > 1 ? vif.unit.other : vif.unit.one) + '</span></div>';
-
-      valuesStyleClass = 'filtered';
-    }
-
-    var unFilteredLabelLine = '<div class="text-right total-values"><span>Total</span> ' +
-      payload.unfiltered + '<span> ' + (payload.unfiltered > 1 ? vif.unit.other : vif.unit.one) + '</span></div>';
-
-    // position.x - arrow.png half width
+    var flyoutContainer = $distributionChartContainer.find('.mobile-flyout').empty()[0];
     var arrowMarginLeft = parseFloat(payload.x) - 16.5;
+    var title = '{0} - {1}'.format(payload.start, payload.end);
 
-    var flyoutData = $('<div>', {
-      'class': 'title-wrapper',
-      'html':
-        '<div class="labels mobile">' +
-          '<div class="arrow" style="left: ' + arrowMarginLeft + 'px"></div>' +
-          '<h4 class="title pull-left">' + payload.start + ' - ' + payload.end + '</h4>' +
-          '<div class="values pull-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +
-        '</div>'
-    });
-
-    $distributionChartContainer.find('.mobile-flyout').html(flyoutData);
+    ReactDOM.render(<MobileChartFlyout
+      title={ title }
+      filteredValue={ payload.filtered && payload.filtered != payload.unfiltered ? payload.filtered : false }
+      unFilteredValue={ payload.unfiltered }
+      arrowPosition={ arrowMarginLeft }
+      unit={ vif.unit } />, flyoutContainer);
   }
 };

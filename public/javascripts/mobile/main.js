@@ -485,7 +485,8 @@ import './styles/mobile-general.scss';
           mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
           break;
         case 'choropleth':
-          cardOptions.componentClass = 'choropleth';
+          cardOptions.containerClass = 'choropleth-upper-container';
+          cardOptions.componentClass = 'choropleth-upper-wrapper';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,

@@ -1,15 +1,14 @@
 // Has side effect of registering jQuery plugin.
 require('socrata-visualizations').ChoroplethMap;
 require('./styles/choropleth-map.scss');
-var FlyoutRenderer = require('socrata-visualizations').views.FlyoutRenderer;
+require('./styles/choropleth-map-legend.scss');
+
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import MobileChartFlyout from './react-components/mobileFlyout/mobileChartFlyout';
 
 module.exports = function(values, $target) {
-
-  /**
-   * Render things!
-   */
-
-  var flyoutRenderer = new FlyoutRenderer();
+  'use strict';
 
   var choroplethVIF = {
     'aggregation': {
@@ -62,19 +61,17 @@ module.exports = function(values, $target) {
     'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
     'type': 'choroplethMap',
     'unit': {
-      'one': ' ',
-      'other': ' '
+      'one': '',
+      'other': ''
     }
   };
 
-  var $choroplethElement1 = $target;
-  $choroplethElement1.socrataChoroplethMap(choroplethVIF);
+  var $choroplethElement = $target;
+  var $choroplethContainer = $target.parent();
+  $choroplethElement.socrataChoroplethMap(choroplethVIF);
+  $choroplethContainer.append('<div class="mobile-flyout hidden"></div>');
 
-  /**
-   * Handle flyout events.
-   */
-
-  $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+  $choroplethElement.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
 
   function handleFlyout(event) {
 
@@ -82,14 +79,25 @@ module.exports = function(values, $target) {
 
     // Render/hide a flyout
     if (payload !== null) {
-      flyoutRenderer.render(payload);
+      $choroplethContainer.toggleClass('expanded', true);
+      $choroplethContainer.find('.mobile-flyout').toggleClass('hidden', false);
+      $choroplethContainer.find('.choropleth-container').toggleClass('with-flyout-open', true);
+
+      mobileFlyoutRender(payload);
 
       $(window).one('touchmove', function() {
-        flyoutRenderer.clear();
+        clearFlyout();
       });
+
     } else {
-      flyoutRenderer.clear();
+      clearFlyout();
     }
+  }
+
+  function clearFlyout() {
+    $choroplethContainer.toggleClass('expanded', false);
+    $choroplethContainer.find('.choropleth-container').toggleClass('with-flyout-open', false);
+    $choroplethContainer.find('.mobile-flyout').toggleClass('hidden', true).empty();
   }
 
   function handleFiltersUpdated(event, data) {
@@ -100,9 +108,20 @@ module.exports = function(values, $target) {
       detail: choroplethVIF
     };
 
-    $choroplethElement1.trigger(changeEvent);
+    $choroplethElement.trigger(changeEvent);
   }
 
   $(document).on('appliedFilters.qfb.socrata', handleFiltersUpdated);
 
+  function mobileFlyoutRender(payload) {
+    var flyoutContainer = $choroplethContainer.find('.mobile-flyout').empty()[0];
+    var arrowMarginLeft = parseFloat(payload.flyoutOffset.left) - 16.5;
+
+    ReactDOM.render(<MobileChartFlyout
+      title={ payload.title }
+      filteredValue={ payload.filtered !== '(No Value)' ? payload.filtered : false }
+      unFilteredValue={ payload.unfiltered == '(No Value)' ? 0 : payload.unfiltered }
+      arrowPosition={ arrowMarginLeft }
+      unit={ choroplethVIF.unit } />, flyoutContainer);
+  }
 };

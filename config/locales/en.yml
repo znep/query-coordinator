@@ -53,7 +53,7 @@ en:
         column_label: Column
         curated_region_messages:
           not_yet_computed: Boundaries needing initialization
-        custom: (Custom...)
+        custom: "(Custom...)"
         customize_prompt: Customize this card
         generic_prompt: Choose a column from the dropdown above to add a new visualization
         histogram_column_chart_warning: 'Note: Because of the distribution of values of this column, it will be presented as a histogram of bars instead of a distribution curve'
@@ -69,6 +69,19 @@ en:
           feature_map: Visualize this column as a feature map
           search_card: Visualize this column as a search card
           timeline_chart: Visualize this column as a timeline chart
+      aggregation_chooser:
+        by_the_number_of: <span class="information">by the</span> number of
+        by_the_sum_of: <span class="information">by the</span> sum of
+        count_label: count {0} per element
+        description: 'See data elements sized or colored by:'
+        option_disabled: This column cannot be used with a<br>number of aggregate
+        sum_label: add for each {0}
+        the_number_of: The number of
+        the_sum_of: The sum of
+        title: Aggregation
+        too_many_columns:
+          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
+          title: Looks like this dataset contains more than {0} number columns
       api_explorer:
         additional_resources: 'Additional resources for this API:'
         api_button: API
@@ -104,11 +117,11 @@ en:
         number_of: number of {0}
         sum_of: sum of {0}
       choropleth:
-        no_preview_available: No preview available
-        pending_computation: <p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>
-        computation_in_progress: <p>Initializing boundary for this dataset. This operation may take a few minutes (longer for large datasets).</p><p>The map will be displayed when the initialization is complete.</p>
-        has_no_polygons: No data is present within the boundaries.
+        computation_in_progress: "<p>Initializing boundary for this dataset. This operation may take a few minutes (longer for large datasets).</p><p>The map will be displayed when the initialization is complete.</p>"
         has_cardinality_error: This map cannot be rendered as all points are in the same location.
+        has_no_polygons: No data is present within the boundaries.
+        no_preview_available: No preview available
+        pending_computation: "<p>This is the first time this boundary is being used for this dataset.</p><p>It can take a few minutes (more for large datasets) for the map to render once you add it to the page.</p>"
       common:
         by: by
         cancel: Cancel
@@ -133,6 +146,8 @@ en:
         longitude: Longitude
         no_value: No value
         ok: OK
+        pending_adding_column: Add this card to the page to begin computing this visualization.
+        pending_computation: This visualization is being computed. Check back in a few minutes.
         permissions:
           permissions: Permissions
           private: Private
@@ -176,16 +191,26 @@ en:
           error: An error was encountered when trying to render this card.
           no_data: There is no data to display.
       export_menu:
+        choose_card: Choose Card
         csv:
-          header: Rows as CSV (Excel)
-          current_filter: Current Filter
           all_rows: All Rows
+          current_filter: Current Filter
+          header: Rows as CSV (Excel)
           not_available: N/A
           not_available_specific: Not available for this dataset.
+        download_button_for_image: Visualization as Image
+        download_button_for_rows: Rows as CSV (Excel)
+        download_explanation: Export the currently filtered view as a file on your computer. See the <u>Source Dataset</u> to download the full source data.
+        download_title: Download
         image:
-          header: Visualization as Image
           description: Save a PNG-image file of a visualization
-        choose_card: Choose Card
+          header: Visualization as Image
+        save_to_catalog_button: Standalone Visualization
+        save_to_catalog_explanation: Save a part of this Data Lens directly to the site Catalog.
+        save_to_catalog_title: Save to Catalog
+        standalone_visualization:
+          description: Save one of the cards as a standalone interactive visualization in the catalog
+          header: Visualization to Catalog
       feature_map:
         feature_map_disabled: Feature maps are unavailable.
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
@@ -194,7 +219,7 @@ en:
         next: Next
         paging: "{0} of {1}"
         previous: Previous
-        showing: "Showing {0}"
+        showing: Showing {0}
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback
@@ -248,11 +273,12 @@ en:
           title: Owner
           warning: You must select an Owner for this Data Lens in order to proceed.
         provenance:
-          title: View Status
-          label: Official View
           description: Selecting this option will give the view a special demarcation indicating that it is an Official View
+          label: Official View
+          title: View Status
         sharing:
           add_new: Add New
+          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           contributor: Contributor
           inherited_description: 'Inherited from the source dataset:'
           keep: Keep
@@ -270,10 +296,10 @@ en:
         title: Manage
         unsaved_changes_message: You have unsaved changes
         visibility:
+          dataset_is_private: This Data Lens is based on the private dataset {0}.  The Data Lens can only be shown in the catalog if the source dataset is made public.
           hidden: Hidden from catalog
           shown: Shown in catalog
           title: Visibility
-          dataset_is_private: This Data Lens is based on the private dataset {0}.  The Data Lens can only be shown in the catalog if the source dataset is made public.
           user_is_unprivileged: You must be an administrator or a publisher to modify Data Lens visibility. Please contact the site administrator to change this setting.
           view_moderation_approved: Approved
           view_moderation_pending: Pending
@@ -288,6 +314,7 @@ en:
         validation_error_min_length: Please enter a title
         validation_error_required: Please enter a title
         visualization_as_image: Visualization as image
+        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
       mobile_warning_dialog:
         acknowledgement: Okay, got it!
         description: We're working on improving the mobile experience on this site.
@@ -302,10 +329,9 @@ en:
       quick_filter_bar:
         clear_all: Clear All
         clear_all_flyout: Click to reset all filters
+        filtered_title: Showing <span class="light">{0}</span>
         old_filter_title: Showing <span class="light">the {0}</span>
-        filter_title:
-          unfiltered: Showing <span class="light">all {0}</span>
-          filtered: Showing <span class="light">{0}</span>
+        unfiltered_title: Showing <span class="light">all {0}</span>
       related_views:
         button: Other views of this data
         title: Other views of this data
@@ -335,6 +361,7 @@ en:
         flyoutFailedBody: Please contact Socrata Support
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes as a new page
+        flyoutNoChanges: No changes to be saved
         text: Save As
       save_as_panel:
         description: Enter a description for your new page (optional)
@@ -353,6 +380,23 @@ en:
         save: Save
         saved: Saved!
         saving: Saving...
+      save_visualization_as_dialog:
+        category_label: Choose a category for your new visualization (optional)
+        description_help_text: |-
+          As a guideline, describe:
+          <ul>
+          <li>What this visualization means</li>
+          <li>Why it’s important to the viewer</li>
+          <li>How this information will be used to inform future plans or decisions</li>
+          </ul>
+        description_label: Enter a description for your new visualization (optional)
+        enter_name_error: Please enter a title
+        enter_name_placeholder: Enter a name
+        name_label: Save this visualization with a new name
+        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
+        official_view_label: Official View
+        server_error: Sorry, something went wrong. Please try again later.
+        title: Save Visualization As
       search_card:
         error_explanation: "<p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>"
         invalid_search: Try searching for a number containing no letters.
@@ -399,21 +443,21 @@ en:
       tour:
         aggregation:
           step_1:
-            title: Notice something different?
             text: We listened to your feedback. We moved a setting to improve customize mode!
+            title: Notice something different?
           step_2:
-            title: Use Settings to change the Aggregation function
             text: Each card can be summarized by a different column. We also removed the 15 number column limit.
+            title: Use Settings to change the Aggregation function
           step_3:
-            title: Summarize by SUM or COUNT
             text: Pick the number column you want to sum, or choose to count the rows.
+            title: Summarize by SUM or COUNT
           step_4:
-            title: It's now more flexible!
             text: You can add multiple cards for the same column, then summarize by different column values. This allows for useful comparisons.
+            title: It's now more flexible!
           step_5:
-            title: Try it yourself!
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
+            title: Try it yourself!
   controls:
     browse:
       actions:
@@ -477,15 +521,15 @@ en:
         data_types:
           label: Data Types
         description:
-          show_more_label: More
           show_less_label: Less
+          show_more_label: More
         display_types:
           api: API
           blob: File or Document
           calendar: Calendar
           chart: Chart
-          dataset: Dataset
           data_lens: Data Lens
+          dataset: Dataset
           draft: Draft Dataset
           filter: Filtered View
           form: Form
@@ -496,31 +540,35 @@ en:
           story: Story
           unknown: Unknown
         edit:
-          make_public:
-            error: There was an error making "%{dataset}" public. Please try again.
-            label: Make Public
-            title: Make "%{name}" public
-          make_private:
-            error: There was an error making "%{dataset}" private. Please try again.
-            label: Make Private
-            title: Make "%{name}" private
           delete:
             confirm: Are you sure you want to delete "%{dataset}"?
             error: There was an error deleting "%{dataset}". Please try again.
             label: Delete
             title: Delete "%{name}"
+          make_private:
+            error: There was an error making "%{dataset}" private. Please try again.
+            label: Make Private
+            title: Make "%{name}" private
+          make_public:
+            error: There was an error making "%{dataset}" public. Please try again.
+            label: Make Public
+            title: Make "%{name}" public
         facets:
-          hint: Filter or Browse Results
-          clear_all: Clear All
+          clear_all:
+            label: Clear All
+          contract:
+            label: Show Less
+            title: Click to show fewer options
           expand:
             label: Show All...
             title: Show all options
-          hint: Filter or Browse Results
           header:
-            result: Result
             filter: Filter
             filtered_by: filtered by
+            result: Result
+          hint: Filter or Browse Results
           mobile:
+            all_filters: All Filters
             back: Back
             clear_all: Clear All
             filter: Filter
@@ -533,44 +581,51 @@ en:
         federation:
           label: Data Provided by
           label_with_source: Data Provided by %{source}
+          source: Federated from %{source}
         last_updated:
           label: Updated
         odn:
-          prompt: Find Data Like This
           link:
             label: on the Open Data Network
             title: Find more data like this on the Open Data Network
+          prompt: Find Data Like This
         results:
-          count: Showing %{this} of %{total} results
           cetera_count: Showing %{start}-%{end} of %{total} results
+          count: Showing %{this} of %{total} results
+          summary: '"%{query}"'
         search:
           clear:
             title: Clear search
-          title: Search
           placeholder: Search
+          title: Search
         settings:
-          title: Settings
           label: Settings
+          title: Settings
         skiplinks:
           results: Skip to the results
         sort:
           label: Sort by
+          periods:
+            label: Sort Period
+            month: This month
+            week: This week
+            year: This year
         sorts:
           last_modified: Recently Updated
           most_accessed: Most Accessed
           newest: Recently Added
           relevance: Most Relevant
         topics:
-          label: Topics
           empty: No topics assigned
+          label: Topics
           more: and %{count} more
         view_count:
           label: Views
         visibility:
-          public:
-            label: 'Visibility: Public'
           private:
             label: 'Visibility: Private'
+          public:
+            label: 'Visibility: Public'
       facets:
         categories_singular_title: category
         categories_title: Categories
@@ -596,6 +651,7 @@ en:
           forms: Forms
           href: External Datasets
           maps: Maps
+          new_view: Data Lens pages
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
@@ -615,7 +671,6 @@ en:
           popularity: Popularity
           rss: RSS
           type: Type
-        # NOTE: timeout is used as a generic search failure message
         timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
       ordered_topics: Ordered Topics
       row_results:
@@ -648,6 +703,7 @@ en:
           main: Results %{body}
           term: for "%{term}"
     charts:
+      missing_column_html: Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.
       negatives_in_data: 'Invalid chart: negative values present'
       no_data: No data
       other_slice_label: Other
@@ -667,7 +723,6 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
-      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.'
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:
@@ -688,8 +743,8 @@ en:
           email: Email
           facebook: Facebook
           twitter: Twitter
-        share_text: 'Check out the %{name}, dataset on %{site}: '
         share_story_text: 'Check out %{name} on %{site}: '
+        share_text: 'Check out the %{name}, dataset on %{site}: '
       sidebar:
         tabs:
           about: About This Dataset
@@ -896,8 +951,8 @@ en:
       previous: Previous
       previous_row: Previous row
       request_timed_out: Request for this data timed out.
-      unable_to_display_features_html: <h3>There are no available features at this zoom level.</h3>
-      unable_to_load_map_html: <h3>We're having trouble connecting to the Esri map service that hosts this map.</h3><p>If the problem persists, please contact this site’s administrator with this error message.</p>
+      unable_to_display_features_html: "<h3>There are no available features at this zoom level.</h3>"
+      unable_to_load_map_html: "<h3>We're having trouble connecting to the Esri map service that hosts this map.</h3><p>If the problem persists, please contact this site’s administrator with this error message.</p>"
     nominate:
       all: All
       approve: "(Approve)"
@@ -980,8 +1035,8 @@ en:
     and: and
     auth:
       invalid_userpass: Invalid username or password
-      need_login: You must be logged in to access this page
       need_email_verification: Before you can complete your registration and login, you need to verify the email address for this account. If you don't have access to the verification email we sent you, simply create a new account with the same email address and you will receive another email.
+      need_login: You must be logged in to access this page
       need_permission: You do not have permission to view this page
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     browser_support:
@@ -1237,8 +1292,9 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
-      table: table
+      new_view: Data Lens page
       story: story
+      table: table
       working_copy: working copy
     view_types_plural:
       api: APIs
@@ -1261,19 +1317,19 @@ en:
       odata: Access Data via OData
       share: Share
     api_flannel:
-      description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data. 
+      description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
+    contact_dataset_owner: Contact Dataset Owner
     copy: Copy
     copy_success: Copied!
-    contact_dataset_owner: Contact Dataset Owner
     dataset_contents:
       columns: Columns
-      rows: Rows
       row_display_unit: Each row is a
+      rows: Rows
       title: What's in this Dataset
     done: Done
     download:
@@ -1282,7 +1338,12 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
+    featured_views:
+      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
+      title: Popular Content Using this Data
+      view: View
     less: Show Less
+    manage_prompt: Click here to manage permissions
     metadata:
       attachments: Attachments
       category: Category
@@ -1294,13 +1355,12 @@ en:
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
-      no_value: (none)
+      no_value: "(none)"
       source_link: Source Link
       tags: Tags
       title: About this Dataset
       topics: Topics
       views: Views
-    manage_prompt: Click here to manage permissions
     more: Show More
     multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
@@ -1316,12 +1376,6 @@ en:
       api_field_name: API Field Name
       column_name: Column Name
       data_type: Data Type
-      description: Description
-      geospatial_layer_title: Columns in this Layer
-      show_all: Show All
-      show_less: Show Less
-      title: Columns in this Dataset
-      type: Type
       data_types:
         blob: Blob
         calendar_date: Floating Timestamp
@@ -1353,19 +1407,22 @@ en:
         stars: Number
         text: Text
         url: Text
+      description: Description
+      geospatial_layer_title: Columns in this Layer
+      show_all: Show All
+      show_less: Show Less
+      title: Columns in this Dataset
+      type: Type
     share:
       cancel: Cancel
-      title: Share this Dataset
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
+      manage_prompt: Click here to manage permissions
+      title: Share this Dataset
       twitter: Share via Twitter
-      visibility_alert_html: <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with.
+      visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     updated: Updated
-    featured_views:
-      no_content_alert_html: <b>Hmm...</b> Looks like there is no public content using this data.
-      title: Popular Content Using this Data
-      view: View
   dataslate:
     component:
       edit: Edit this component
@@ -1459,7 +1516,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Mar
@@ -1577,8 +1634,8 @@ en:
       date_range: Date Range
       done: Done
       end_date: End date
-      last_3_days: Last 3 Days
       last_30_days: Last 30 Days
+      last_3_days: Last 3 Days
       last_month: Last Month
       last_week: Last Week
       last_year: Last Year
@@ -1714,6 +1771,9 @@ en:
       your: Your Rating
     admin:
       datasets:
+        asset_inventory:
+          tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
+        description: List the assets on this domain and configure the layout of the dataset page
         layout_config: Layout Configuration
         left: Left
         right: Right
@@ -1723,11 +1783,8 @@ en:
         skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Asset Inventory
-        description: List the assets on this domain and configure the layout of the dataset page
         unpublished_datasets: Unpublished Datasets
         view_as_a_dataset: View as a Dataset
-        asset_inventory:
-          tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
       federation:
         accept: Accept
         accepted: Accepted
@@ -1759,52 +1816,55 @@ en:
         title: Open Data Federation
       georegions:
         actions: Actions
+        add_new: Add new
         choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
-          boundary_geometry_label_page_error: "Unable to save: the boundary must have a shape label."
+          boundary_geometry_label_page_error: 'Unable to save: the boundary must have a shape label.'
           boundary_name: Boundary Name
           boundary_name_description: 'The name of the boundary (ex: "States" or "Neighborhoods"). Will be displayed in Spatial Lens maps.'
           boundary_name_required_field_error: The boundary must have a name.
+          boundary_name_required_page_error: 'Unable to save: the boundary must have a name.'
           boundary_name_unique_error: The boundary name must be unique.
-          boundary_name_required_page_error: "Unable to save: the boundary must have a name."
           choose_a_column: Choose a column...
           configure_boundary: Configure Boundary
-          confirm_html: "<p>Click \"Create\" to add a new Spatial Lens Boundary based on the geospatial dataset \"%{boundary_name}\".</p><p>This new Spatial Lens Boundary is a snapshot and will not change even if you update the geospatial dataset \"%{boundary_name}\".</p>"
+          confirm_html: <p>Click "Create" to add a new Spatial Lens Boundary based on the geospatial dataset "%{boundary_name}".</p><p>This new Spatial Lens Boundary is a snapshot and will not change even if you update the geospatial dataset "%{boundary_name}".</p>
           confirm_title: Create Your Spatial Lens
           next: Next
           page_title: Manage Boundaries
           primary_key_column: Shape ID
           primary_key_column_description: The column that contains the unique ID that identifies each shape in the boundary.  If there isn’t such a column, pick any unique column.
           primary_key_column_missing_field_error: You must specify a column for the shape ID.
-          save_core_error: "Could not create the boundary: %{error_message}"
+          save_core_error: 'Could not create the boundary: %{error_message}'
           save_error: Something went wrong while trying to save your changes. Please try again later, or contact Socrata Support if the problem persists.
           save_success: Changes saved successfully.
           shape_label: Shape Label
-          shape_label_description: "The column that should be used as the label for each shape (ex: a column containing \"WA\" and \"NY\")."
+          shape_label_description: 'The column that should be used as the label for each shape (ex: a column containing "WA" and "NY").'
         create_new: Create New
         custom_georegions: Custom Boundaries
         date_added: Date Added
-        description: Configure custom boundaries that can be used to create Spatial Lens maps
         default: Set Quick-add for boundary
-        default_georegions: 'Enable Quick-add for New Datasets (%{count} of %{limit})'
+        default_georegions: Enable Quick-add for New Datasets (%{count} of %{limit})
         default_georegions_flyout: If you have a boundary you want to use on most Data Lens pages, this option will make it quicker to visualize for any dataset uploaded after enabling Quick-add. You can enable up to 5 Quick-add boundaries.
         default_georegions_limit: You can at most have %{limit} Quick-add boundaries.
-        default_success: '%{name} has been set to Quick-add. All new datasets will automatically be region coded using this Spatial Lens boundary.'
+        default_success: "%{name} has been set to Quick-add. All new datasets will automatically be region coded using this Spatial Lens boundary."
         delete: Delete
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         disable: Disable
-        disable_success: '%{name} has been disabled and will no longer be available for creating choropleth maps in Data Lens using this Spatial Lens boundary.'
+        disable_success: "%{name} has been disabled and will no longer be available for creating choropleth maps in Data Lens using this Spatial Lens boundary."
         edit: Edit
         enable: Enable
-        enabled?: Enabled?
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
+        enabled?: Enabled?
+        enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
+        enabled_no: 'No'
+        enabled_yes: 'Yes'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
           service_unavailable_html: <div>We are experiencing technical issues with some services related to Spatial Lens. Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</div>
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
-        page_title: Manage Spatial Lens
         page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.
+        page_title: Manage Spatial Lens
         picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
         picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
@@ -1817,7 +1877,7 @@ en:
         substatus_progress: Available shortly
         title: Spatial Lens
         undefault: Unset Quick-add for boundary
-        undefault_success: 'Quick-add has been unset for %{name}. New datasets will no longer be automatically region coded using this Spatial Lens boundary.'
+        undefault_success: Quick-add has been unset for %{name}. New datasets will no longer be automatically region coded using this Spatial Lens boundary.
       home:
         add_featured_dataset: Add a New Featured Dataset
         are_you_sure: Are you sure? This action cannot be undone.
@@ -1865,206 +1925,290 @@ en:
         up: Up
       jobs:
         actions:
-          import: Import
-          replace: Replace
-          working_copy: Working Copy
           geocoding: Geocoding
-          upsert: Upsert
-        filters:
-          filter_by: Filter By
-          type: Type
-          all: All
-          apply_filters: Go
-          import_activity: Import Activity
           import: Import
-          append: Append
           replace: Replace
-          data_workflow: Data Workflow
+          upsert: Upsert
           working_copy: Working Copy
+        filters:
+          all: All
+          append: Append
+          apply_filters: Go
+          data_workflow: Data Workflow
+          filter_by: Filter By
+          import: Import
+          import_activity: Import Activity
           publish: Publish
+          replace: Replace
+          type: Type
+          working_copy: Working Copy
         index_page:
           action: Action
           dataset: Dataset
+          deleted_dataset: Deleted dataset
+          deleted_user: User has been deleted
           export_as_csv: Export As CSV
           initiated_by: Initiated by
           no_jobs: No jobs to show
           page_title: Data Jobs
+          showing_all_so_far: Showing all jobs which have been recorded so far
+          showing_most_recent: Showing the most recent %{limit} jobs
           started: Started
           status: Status
-          showing_most_recent: Showing the most recent %{limit} jobs
-          showing_all_so_far: Showing all jobs which have been recorded so far
           title: Data Jobs
           to_working_copy: to working copy
-          deleted_dataset: Deleted dataset
-          deleted_user: User has been deleted
           with_problems: with problems
         show_page:
           back: Back to jobs list
           error_details_heading: Error details
-          page_title: Data Job Detail
-          title: Data Job Detail
-          fallback_event_title: "Error: %{error_code}"
-          file_name_unknown: file name unknown
-          import: Import
-          services:
-            Imports2: Web Interface
-            DeltaImporter2: DataSync
-            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
           event_messages:
+            failure:
+              bad_response_from_server:
+                description: We were not able to import your data because of an unexpected error. Please try again later.
+                title: Something went wrong
+              bad_timestamp_format:
+                description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+                title: Bad date/time value
+              bad_timezone:
+                description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+                title: Bad timezone
+              completed_with_warnings:
+                description: 'Your data was imported with warnings, but there was an error saving the warnings to the dataset. However, you can find a full list of warnings here: %{warnings}'
+                title: Error saving warnings
+              control_file_invalid_json:
+                description: 'Your control file was not parseable as JSON. Error message: "%{message}". Please verify that it is valid JSON.'
+                title: Malformed control file
+              control_file_malformed:
+                description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
+                title: Malformed control file
+              control_file_too_large:
+                description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
+                title: Control file too large
+              corrupt_archive:
+                description: 'We could not process the archive you uploaded. Error message: %{reason}'
+                title: Corrupt archive
+              corrupt_gzip:
+                description: 'The GZip-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid GZip file.'
+                title: Unable to extract compressed file
+              corrupt_shapefile:
+                description: The shapefile header could not be read.
+                title: Corrupt shapefile
+              corrupt_xz:
+                description: 'The XZ-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid XZ file.'
+                title: Unable to extract compressed file
+              delete_without_user_pk:
+                description: We cannot successfully process delete operations unless a row identifier field is declared.
+                title: Cannot delete without row identifier
+              di2_counts:
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+                title: Completed
+              duplicated_fields_in_input:
+                description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
+                title: Duplicate field names specified
+              field_not_in_dataset:
+                description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
+                title: Could not find field in dataset
+              field_not_in_input:
+                description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
+                title: Could not find field in file
+              field_wrong_format:
+                description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ASCII characters and begin with an underscore or letter.
+                title: Illegal field name given
+              generic:
+                description: Sorry, we were unable to process your import request due to an unexpected error.
+                title: Something went wrong
+              geocoding_failure:
+                description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
+                title: Unknown geocoding failure
+              geocoding_source_ignored:
+                description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
+                title: Could not ignore specified columns
+              geocoding_source_invalid_type:
+                description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
+                title: Could not geocode from given columns
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
+                title: Could not ignore specified columns
+              incomplete_archive:
+                description: The shapefile archive you uploaded is missing a file with extension "%{missing}". Please ensure that your archive has this file and try again.
+                title: Incomplete shapefile archive
+              invalid_encoding:
+                description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
+                title: Invalid file encoding
+              invalid_row_length:
+                description: 'Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.'
+                title: Unexpected number of fields in row
+              malformed_blueprint:
+                description: 'The blueprint you provided could not be used. Error message: "%{message}".'
+                title: Malformed blueprint
+              malformed_upsert:
+                description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
+                title: Malformed upsert
+              no_field_names_in_input:
+                description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
+                title: Could not find CSV header
+              no_identity_column:
+                description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
+                title: Row identifier column not found
+              parse_error:
+                description: Parsing the file you uploaded failed on line %{lineNumber} with message "%{reason}".
+                title: Parse error
+              permission_denied:
+                description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
+                title: Permission denied
+              record_too_large:
+                description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
+                title: Single record too large
+              row_too_large:
+                description: Row number %{nearRecord} of your file had too many characters; the limit is %{limit}.
+                title: Row too large
+              synthetic_location_in_input:
+                description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
+                title: Cannot import into synthetic column
+              too_many_errors_in_input:
+                description: The job is being aborted because too many errors were found in your input data.
+                title: Too many input errors found
+              too_many_records_in_input:
+                description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
+                title: Too many records
+              uninterpretable_value:
+                description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
+                title: Uninterpretable record value
+              unknown_domain:
+                description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
+                title: Domain not recognized
+              unknown_file_type:
+                description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
+                title: Unknown file type
+              unsupported_import_type:
+                description: The import method "%{importType}" is not supported. Please use "replace", "append", or "import".
+                title: Unsupported import method
+              upsert_already_in_progress_by_someone_else:
+                description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+                title: Upsert already in progress
+              upsert_counts:
+                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
+                title: Completed
             success_with_data_errors:
               di2_counts:
-                title: Completed
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
+                title: Completed
               upsert_counts:
-                title: Completed
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
-            failure:
-              # Derived from the tags specified in the codec in DI2's FailureDetails.scala
-              # https://github.com/socrata/delta-importer-2/blob/master/di2-common/src/main/scala/com/socrata/deltaimporter/messaging/details/FailureDetails.scala
-              # with -'s replaced with _'s.
-              # Interpolation arguments in the messages come directly from the fields of case classes
-              # in that Scala file (via an AutomaticJsonCodecBuilder for each class).
-              # (Imports2 also reuses some of these)
-              invalid_encoding:
-                title: Invalid file encoding
-                description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
-              record_too_large:
-                title: Single record too large
-                description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
-              malformed_upsert:
-                title: Malformed upsert
-                description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
-              bad_timezone:
-                title: Bad timezone
-                description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
-              bad_timestamp_format:
-                title: Bad date/time value
-                description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
-              control_file_malformed:
-                title: Malformed control file
-                description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
-              control_file_invalid_json:
-                title: Malformed control file
-                description: "Your control file was not parseable as JSON. Error message: \"%{message}\". Please verify that it is valid JSON."
-              control_file_too_large:
-                title: Control file too large
-                description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
-              delete_without_user_pk:
-                title: Cannot delete without row identifier
-                description: We cannot successfully process delete operations unless a row identifier field is declared.
-              di2_counts:
                 title: Completed
-                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
-              corrupt_gzip:
-                title: Unable to extract compressed file
-                description: "The GZip-compressed file you provided could not be successfully extracted. Error message: \"%{message}\". Please verify that it is a valid GZip file."
-              corrupt_xz:
-                title: Unable to extract compressed file
-                description: "The XZ-compressed file you provided could not be successfully extracted. Error message: \"%{message}\". Please verify that it is a valid XZ file."
-              unknown_file_type:
-                title: Unknown file type
-                description: "We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid."
-              no_field_names_in_input:
-                title: Could not find CSV header
-                description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
-              field_not_in_dataset:
-                title: Could not find field in dataset
-                description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
-              field_not_in_input:
-                title: Could not find field in file
-                description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
-              no_identity_column:
-                title: Row identifier column not found
-                description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
-              synthetic_location_in_input:
-                title: Cannot import into synthetic column
-                description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
-              geocoding_source_invalid_type:
-                title: Could not geocode from given columns
-                description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
-              geocoding_source_ignored:
-                title: Could not ignore specified columns
-                description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
-              field_wrong_format:
-                title: Illegal field name given
-                description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ASCII characters and begin with an underscore or letter.
-              unknown_domain:
-                title: Domain not recognized
-                description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
-              too_many_errors_in_input:
-                title: Too many input errors found
-                description: The job is being aborted because too many errors were found in your input data.
-              invalid_row_length:
-                title: Unexpected number of fields in row
-                description: "Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row."
-              uninterpretable_value:
-                title: Uninterpretable record value
-                description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
-              duplicated_fields_in_input:
-                title: Duplicate field names specified
-                description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
-              too_many_records_in_input:
-                title: Too many records
-                description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
-              ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                title: Could not ignore specified columns
-                description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
-              geocoding_failure:
-                title: Unknown geocoding failure
-                description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
-              permission_denied:
-                title: Permission denied
-                description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
-              upsert_already_in_progress_by_someone_else:
-                title: Upsert already in progress
-                description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
-              bad_response_from_server:
-                title: Something went wrong
-                description: We were not able to import your data because of an unexpected error. Please try again later.
-              # Sent by Imports2
-              unsupported_import_type:
-                title: Unsupported import method
-                description: The import method "%{importType}" is not supported. Please use "replace", "append", or "import".
-              generic:
-                title: Something went wrong
-                description: Sorry, we were unable to process your import request due to an unexpected error.
-              row_too_large:
-                title: Row too large
-                description: Row number %{nearRecord} of your file had too many characters; the limit is %{limit}.
-              completed_with_warnings:
-                title: Error saving warnings
-                description: "Your data was imported with warnings, but there was an error saving the warnings to the dataset. However, you can find a full list of warnings here: %{warnings}"
-              malformed_blueprint:
-                title: Malformed blueprint
-                description: 'The blueprint you provided could not be used. Error message: "%{message}".'
-              # Sent by GeoImporter
-              corrupt_shapefile:
-                title: Corrupt shapefile
-                description: The shapefile header could not be read.
-              incomplete_archive:
-                title: Incomplete shapefile archive
-                description: 'The shapefile archive you uploaded is missing a file with extension "%{missing}". Please ensure that your archive has this file and try again.'
-              parse_error:
-                title: Parse error
-                description: 'Parsing the file you uploaded failed on line %{lineNumber} with message "%{reason}".'
-              corrupt_archive:
-                title: Corrupt archive
-                description: 'We could not process the archive you uploaded. Error message: %{reason}'
-              # sent from upsert API
-              upsert_counts:
-                title: Completed
-                description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
-          no_events: No progress events have been recorded yet for this job.
-          to: to
-          started_by: Started by
-          initiated_at: Initiated at
-          import_method: Import method
           failed_rows: Failed Rows
+          fallback_event_title: 'Error: %{error_code}'
+          file_name_unknown: file name unknown
+          import: Import
+          import_failures:
+            bad_timestamp_format:
+              description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+              title: Bad date/time value
+            bad_timezone:
+              description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
+              title: Bad timezone
+            control_file_invalid_json:
+              description: 'Your control file was not parseable as JSON. Error message: "%{message}". Please verify that it is valid JSON.'
+              title: Malformed control file
+            control_file_malformed:
+              description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
+              title: Malformed control file
+            control_file_too_large:
+              description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
+              title: Control file too large
+            corrupt_gzip:
+              description: 'The GZip-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid GZip file.'
+              title: Unable to extract compressed file
+            corrupt_xz:
+              description: 'The XZ-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid XZ file.'
+              title: Unable to extract compressed file
+            delete_without_user_pk:
+              description: We cannot successfully process delete operations unless a row identifier field is declared.
+              title: Cannot delete without row identifier
+            duplicated_fields_in_input:
+              description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
+              title: Duplicate field names specified
+            field_not_in_dataset:
+              description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
+              title: Could not find field in dataset
+            field_not_in_input:
+              description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
+              title: Could not find field in file
+            field_wrong_format:
+              description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ascii characters and begin with an underscore or letter.
+              title: Illegal field name given
+            geocoding_failure:
+              description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
+              title: Unknown geocoding failure
+            geocoding_source_ignored:
+              description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
+              title: Could not ignore specified columns
+            geocoding_source_invalid_type:
+              description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
+              title: Could not geocode from given columns
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
+              title: Could not ignore specified columns
+            invalid_encoding:
+              description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
+              title: Invalid file encoding
+            invalid_row_length:
+              description: 'Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.'
+              title: Unexpected number of fields in row
+            malformed_upsert:
+              description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
+              title: Malformed upsert
+            no_field_names_in_input:
+              description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
+              title: Could not find CSV header
+            no_identity_column:
+              description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
+              title: Row identifier column not found
+            permission_denied:
+              description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
+              title: Permission denied
+            record_too_large:
+              description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
+              title: Single record too large
+            synthetic_location_in_input:
+              description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
+              title: Cannot import into synthetic column
+            too_many_errors_in_input:
+              description: The job is being aborted because too many errors were found in your input data.
+              title: Too many input errors found
+            too_many_records_in_input:
+              description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
+              title: Too many records
+            uninterpretable_value:
+              description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
+              title: Uninterpretable record value
+            unknown_domain:
+              description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
+              title: Domain not recognized
+            unknown_file_type:
+              description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
+              title: Unknown file type
+            upsert_already_in_progress_by_someone_else:
+              description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
+              title: Upsert already in progress
+          import_method: Import method
+          initiated_at: Initiated at
+          no_events: No progress events have been recorded yet for this job.
+          page_title: Data Job Detail
+          services:
+            DeltaImporter2: DataSync
+            Imports2: Web Interface
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
+          started_by: Started by
+          title: Data Job Detail
+          to: to
         statuses:
-          success: Completed
-          not_started: Not yet started
           failure: Failed
           in_progress: In Progress
+          inprogress: In Progress
+          not_started: Not yet started
+          notstarted: Not yet started
+          success: Completed
           success_with_data_errors: Completed, with problems
       metadata:
         add_new_category: Add New Category
@@ -2077,7 +2221,6 @@ en:
         create_new_fieldset: Create a New Field Set
         define_categories: Define Dataset Categories
         define_custom_fields: Define Custom Fields
-        metadata_field_table_description: Metadata Fields for '%{name}'
         down: Down
         enter_a_name: Enter a name
         'false': false
@@ -2103,6 +2246,7 @@ en:
         metadata_explain1: Custom metadata is broken down into <span class="code">fieldsets</span> and <span class="code">fields</span>. A <span class="code">fieldset</span> is a way to logically and visually group one or more custom <span class="code">fields</span> together.
         metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
         metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
+        metadata_field_table_description: Metadata Fields for '%{name}'
         no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
         page_title: Manage Dataset Metadata
@@ -2141,6 +2285,7 @@ en:
         no_users_found: No existing users found
         no_users_match: No users match your current filter.
         pending_users: The following users have accounts pending, but have not activated them yet
+        pending_users_table_description: Pending Users
         reenable_privileges: Re-Enable Privileges
         remove: Remove
         reset_password: Reset Password
@@ -2150,18 +2295,17 @@ en:
           administrator: administrator
           designer: designer
           editor: editor
+          editor_stories: editor + perspectives
           none: none
           publisher: publisher
-          viewer: viewer
           publisher_stories: publisher + perspectives
-          editor_stories: editor + perspectives
+          viewer: viewer
         search: Search
         search_for_users: Search for Users to Add
         search_results: Search Results for '%{term}'
         title: Manage Users
         user_saved: User saved
         users_table_description: Users
-        pending_users_table_description: Pending Users
       view_moderation:
         table_description: Moderated Datasets
     dataset_edit:
@@ -2254,14 +2398,14 @@ en:
         why_choose_now: Why is it important to choose column types now?
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:
+        abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
+        abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
         crs: Coordinate Reference System
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
         layers_list: Layers to import
         name: Name
         pending: Please wait while we load your layers...
         subheadline: This shapefile contains <span class="layerCount"></span> layers.
-        abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
-        abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
       import_warnings:
         headline: Warnings during import
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
@@ -2325,7 +2469,7 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title:
+        snapshot_title: 
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -2465,6 +2609,9 @@ en:
           wizard_button:
             immutable: Launch the Replace wizard
             mutable: Launch the Append and Replace wizard
+        backup:
+          button: Back up this dataset
+          item_html: Backed up at <span class="backupTime"></span>
         base:
           buttons:
             apply: Apply
@@ -2729,7 +2876,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning:
+            format_mask_warning: 
             groups:
               all: All
               common: Common
@@ -2765,8 +2912,8 @@ en:
           subtitle: Update various properties on this column
           success: Your column has been updated
           text_formatting:
-            title: Text Formatting
             display_style: Display Style
+            title: Text Formatting
           title: Column Properties
           url:
             base_url: Base URL
@@ -2828,6 +2975,7 @@ en:
           download_as: Download As
           download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
+          layers_header: Download without Geospatial Data
           monolayer_header: Download without geospatial data
           multilayer_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format
@@ -3047,9 +3195,6 @@ en:
           more: More
           more_views: More Views
           visualize: Visualize
-        backup:
-          button: Back up this dataset
-          item_html: Backed up at <span class="backupTime"></span>
         view_list:
           delete_confirm: Are you sure you want to delete %{name}?
           delete_snapshot_confirm: Are you sure you want to delete %{name} (snapshotted %{date})?
@@ -3061,7 +3206,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html:
+          no_results_html: 
           pagination:
             last: See last view
             next: See next %{count} views
@@ -3289,18 +3434,13 @@ en:
         no_applications: You have not created any applications yet. Click 'Manage' on the right to get started
         title: "%{user}'s Applications"
       bar:
-        edit_settings_link: Edit Account Settings
         edit_info_link: Edit Basic Info
+        edit_settings_link: Edit Account Settings
         follow_link: Follow
         join_date: Joined on
         last_seen_date: Last logged in
         message_link: Send Message
         unfollow_link: Unfollow
-      whats_new:
-        title: The latest from Socrata
-        caught_up: You're all caught up! Check out our most recent updates <a target="_blank" href="%{href}">here</a>.
-        read_more: Read more
-        older_news: See older news
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me
@@ -3423,6 +3563,11 @@ en:
         followers: Followers
         following: Following
         hide_contacts_link: Hide
+      whats_new:
+        caught_up: You're all caught up! Check out our most recent updates <a target="_blank" href="%{href}">here</a>.
+        older_news: See older news
+        read_more: Read more
+        title: The latest from Socrata
     reset_password:
       failed: There was a problem resetting your password. Please try again.
       form:
@@ -3443,6 +3588,10 @@ en:
       sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
     sign_up:
+      email_verification:
+        expired: This email verification link has expired. Please create a new account with the same email address and you will receive another verification email to complete the registration.
+        sent: We sent a verification email to %{email}, please follow the instructions in the email to complete the registration process.
+        success: Your email address has been verified, please log in.
       form:
         create_account_button: Create My Account
         have_account_link: I already have an account
@@ -3453,10 +3602,6 @@ en:
       third_party_return: Before using these credentials, you must
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
-      email_verification:
-        expired: This email verification link has expired. Please create a new account with the same email address and you will receive another verification email to complete the registration.
-        sent: We sent a verification email to %{email}, please follow the instructions in the email to complete the registration process.
-        success: Your email address has been verified, please log in.
     stats:
       api: API
       apply: Apply
@@ -3541,9 +3686,6 @@ en:
       finish: Finish
       next: Next
       previous: Previous
-  table:
-    summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}
-    no_summary_available: No Summary Available
   support:
     array:
       last_word_connector: ", and "
@@ -3551,3 +3693,6 @@ en:
     array_or:
       last_word_connector: ", or "
       two_words_connector: " or "
+  table:
+    no_summary_available: No Summary Available
+    summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}

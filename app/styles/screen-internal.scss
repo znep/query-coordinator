@@ -435,6 +435,10 @@ ul.autocomplete {
     .importSection, .exportSection {
       display: none;
     }
+
+    .copiedToClipboard {
+      display: none;
+    }
   }
 
   .importMode .importSection, .exportMode .exportSection {

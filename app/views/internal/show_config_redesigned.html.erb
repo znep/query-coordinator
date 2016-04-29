@@ -108,6 +108,7 @@
           <button class="exportToClipboard" data-clipboard-target="exportBox">
             Copy to Clipboard
           </button>
+          <div class="copiedToClipboard flash notice">Copied to Clipboard!</div>
         </div>
       <%- end %>
     </div>
@@ -250,7 +251,13 @@
       });
 
       ZeroClipboard.config({ swfPath: '/ZeroClipboard.swf' });
-      new ZeroClipboard( $('.exportToClipboard')[0] );
+      new ZeroClipboard( $('.exportToClipboard')[0] ).
+        on( 'aftercopy', function() {
+          $('.copiedToClipboard').show();
+          setTimeout(function() {
+            $('.copiedToClipboard').fadeOut(500);
+          }, 2000);
+        });
 
       var buildExport = function() {
         var aggrData = {};

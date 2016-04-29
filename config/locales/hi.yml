@@ -42,16 +42,22 @@ hi:
     dataCards:
       add_card_dialog:
         add_card: "कार्ड जोड़ें"
+        add_card_title:
         add_this_card: "इस कार्ड को जोड़ें"
         card_on_page: "कार्ड पहले से ही पेज पर है"
         card_on_page_long: "यह कार्ड पहले से ही पेज पर है"
         choose_column: "एक कॉलम चुनें..."
-        classic_chart:
+        choropleth_admin_message:
+        choropleth_message:
         column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगे। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है।"
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
         custom:
         customize_prompt: "यह कार्ड अनुकूलित करें"
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported: "वर्तमान में संभव नहीं"
         not_supported_long: "इस प्रकार के कार्ड का प्रयोग वर्तमान में संभव नहीं है "
         prompt: "नया कार्ड जोड़ने के लिए ऊपर ड्रॉपडाउन से कोई कॉलम चुनें "
@@ -63,6 +69,19 @@ hi:
           feature_map:
           search_card:
           timeline_chart:
+      aggregation_chooser:
+        by_the_number_of:
+        by_the_sum_of:
+        count_label: "प्रति अंश गिनती {0} करें"
+        description: "आकार या रंग के अनुसार डेटा अंशों को देखें:"
+        option_disabled: "इस कॉलम का प्रयोग<br>कुल संख्या के लिए नहीं किया जा सकता है"
+        sum_label: "प्रत्येक के लिए जोड़ें {0}"
+        the_number_of:
+        the_sum_of: "का योग "
+        title: "संग्रह "
+        too_many_columns:
+          message: "इस समय हम {0} से अधिक कॉलम (प्रकार, संख्या या धन के) वाले डेटा लेंस पेजों के लिए कुल योग प्रदान करने की स्थिति में नहीं हैं। "
+          title: "ऐसा लगता है कि इस डेटासेट में {0} से अधिक कॉलम हैं"
       api_explorer:
         additional_resources: "इस एपीआई के लिए अतिरिक्त उपाय: "
         api_button: "एपीआई (API)"
@@ -76,6 +95,12 @@ hi:
         json: "जेसन"
         title: "एपीआई (API)"
         url: "आप इस डेटा तक सोक्रेटा ओपन डेटा एपीआई के माध्यम से पहुँच सकते हैं, यूआरएल है:"
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card: "इस कार्ड को संकुचित करें "
         customize_disabled: "इस कार्ड को रूचि अनुसार बनाने का अभी कोई विकल्प उपलब्ध नहीं हैं। "
@@ -91,6 +116,12 @@ hi:
         average:
         number_of:
         sum_of:
+      choropleth:
+        computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
+        pending_computation:
       common:
         by:
         cancel: "रद्द करें"
@@ -115,6 +146,8 @@ hi:
         longitude: "देशांतर"
         no_value: "कोई मूल्य नहीं"
         ok: "ठीक है"
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions: "अनुमतियां"
           private: "निजी"
@@ -148,6 +181,7 @@ hi:
           simple_blue:
           simple_grey:
           title: "मानचित्र आधारित परत "
+        title:
         visualization_options:
           title: "कार्ड प्रकार"
       distribution_chart:
@@ -157,21 +191,33 @@ hi:
           error: "इस कार्ड को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
           no_data: "प्रदर्शित करने के लिए कोई डाटा नहीं है।"
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+          not_available_specific:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -209,6 +255,8 @@ hi:
       lens_type:
         community: "कम्युनिटी (समुदाय) डेटा लेंस"
         official: "आधिकारिक आंकड़ों का लेंस"
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private: "इस पेज का सोर्स डेटासेट <b>Private</b> पर सेट किया गया है इसलिए इसे पब्लिक नहीं किया जा सकता। केवल विशेषाधिकार प्राप्त लोग ही इसका उपयोग कर सकेंगे, और यह पब्लिक (सार्वजनिक) सूची में दिखाई नहीं देगा।"
         dataset_private_page_public: '<span class="icon-warning"></span> इस पेज का सोर्स डेटासेट <b>Private</b> पर सेट किया गया है इसलिए भले ही इस पेज को पब्लिक किया गया है लेकिन इसे वे लोग नहीं देख सकेंगे जिनकी पहुँच सोर्स डेटासेट तक नहीं है। यह फिर भी सार्वजनिक सूची में दिखाई देगा। आप सेटिंग में जा कर इस डेटासेट को पब्लिक या प्राइवेट कर सकते हैं। '
@@ -224,6 +272,10 @@ hi:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -242,6 +294,7 @@ hi:
           title:
           viewer:
         title: "प्रबंधित करना"
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -261,6 +314,7 @@ hi:
         validation_error_min_length: "कृपया शीर्षक दर्ज करें"
         validation_error_required: "कृपया शीर्षक दर्ज करें"
         visualization_as_image: "छवि के रूप में दृश्य "
+        visualization_as_image_disabled_flyout: "दृश्य को छवि के रूप में डाउनलोड करने के लिए कृपया इस पेज को सेव करें "
       mobile_warning_dialog:
         acknowledgement: "ठीक है, समझ आ गया!"
         description: "हम इस साइट पर मोबाइल अनुभव में सुधार लाने पर काम कर रहे हैं। "
@@ -276,6 +330,10 @@ hi:
         clear_all: "सभी साफ़ करें"
         clear_all_flyout: "सभी फिल्टर को रीसेट करने के लिए क्लिक करें"
         filter_title: दिखा रहा है <span class="light">the {0}</span>
+        filtered_title:
+        old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button: "इस डेटा के अन्य व्यूज"
         title: "इस डेटा के अन्य व्यूज"
@@ -320,9 +378,21 @@ hi:
         flyoutFailedTitle: "एक त्रुटि हुई है"
         flyoutIdle: "अपने परिवर्तनों को सेव करने के लिए क्लिक करें"
         flyoutNoChanges: "सहेजने के लिए कोई परिवर्तन नहीं है"
+        flyoutNoEditPermission:
         save: "सहेजें"
         saved: "सहेजा गया!"
         saving: "सहेजा जा रहा है..."
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search: "ऐसे नंबर को खोजने का प्रयास करें जिसमें कोई अक्षर न हों। "
@@ -366,6 +436,24 @@ hi:
           bad_dates: "अमान्य तिथियों के कारण चार्ट प्रदान नहीं किया जा सकता।"
           default: "चार्ट प्रदान नहीं किया जा सकता।"
           no_data: "बिना किसी मान वाला चार्ट प्रदान नहीं किया जा सकता। "
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -409,6 +497,131 @@ hi:
         suggest_dataset_short: "डेटासेट सुझाएँ"
         suggest_dataset_verb: "सुझाएँ"
       back_to_dataset: "डेटासेट में वापिस"
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        created_at:
+          label:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          draft:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+            sort:
+            sort_by:
+          modal:
+            alphaAscending:
+            close:
+            top:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary:
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        sorts:
+          last_modified: "हाल में अद्यतित"
+          most_accessed: "सर्वाधिक एक्‍सेस किया गया"
+          newest: "नवीनतम सबसे पहले"
+          relevance: "सर्वाधिक उपयोग"
+        topics:
+          empty:
+          label:
+          more:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: "श्रेणी"
         categories_title: "श्रेणियाँ"
@@ -427,12 +640,14 @@ hi:
           blob: "फाइल व दस्‍तावेज"
           calendars: "कैलेंडर"
           charts: "चार्ट"
-          data_lens: "डाटा लेंस पृष्ठ"
+          data_lens:
           datasets: "डेटासेट"
+          draft:
           filters: "फिल्‍टर किये गये अवलोकन"
           forms: "प्रपत्र"
           href: "बाहरी डेटासेट"
           maps: "नक्‍शे"
+          new_view: "डाटा लेंस पृष्ठ"
           pulse:
           pulse_help:
           story: "कहानियां"
@@ -453,6 +668,7 @@ hi:
           rss: "आरएसएस"
           type: "प्रकार"
         timeout: "क्षमा करें। इस समय परिणाम हासिल नहीं किये जा सकते हें। कृपया बाद में फिर से प्रयास करें।"
+      ordered_topics:
       row_results:
         less_link: "कम"
         matching_rows: "मिलान पंक्तियाँ"
@@ -483,6 +699,7 @@ hi:
           main: "परिणाम %{body}"
           term: '"%{term}" के लिए'
     charts:
+      missing_column_html:
       negatives_in_data: "अवैध चार्ट: ऋणात्मक मान मौजूद"
       no_data: "कोई डेटा नहीं"
       other_slice_label: "अन्य"
@@ -522,6 +739,7 @@ hi:
           email: "ईमेल"
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: "%{site} के डेटासेट, %{name} की जांच करें:"
       sidebar:
         tabs:
@@ -669,6 +887,7 @@ hi:
       delete_warning_multi_column: "क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!"
       delete_warning_single_column: "क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!"
       edit_column_properties: "कॉलम प्रॉपर्टी संपादित करें"
+      end_page:
       errors:
         cannot_edit_at_this_time: "इस कॉलम (स्तंभ) को इस समय संपादित नहीं किया जा सकता है। कृपया बाद में फिर से प्रयास करें।"
         data_lens_is_incompatible_with_group_bys:
@@ -681,13 +900,18 @@ hi:
       menu: "मेनू"
       must_enter_name: "आपको इस कॉलम के लिए नाम देना चाहिए"
       new_row: "नई"
+      next_page:
       no_columns: "डेटासेट %{uid} के पास कोई कॉलम नहीं है।"
       no_rows: "प्रदर्शन के लिए पंक्तियाँ नहीं"
+      page_size:
       permission_denied: "आपके पास इस व्यू की पहुंच नहीं है।"
       previous: "पिछला"
+      previous_page:
       required_cols_missing: "इस दृश्य के लिए आवश्यक कॉलम गायब हैं"
+      row_count:
       sort_ascending: "आरोही क्रम में छांटें"
       sort_descending: "अवरोही क्रम में छांटें"
+      start_page:
       totals: "कुल"
       view_cell_comments: "इस सेल के लिए टिप्पणियाँ देखें"
       view_first_row: "पहली पंक्ति देखें"
@@ -696,6 +920,7 @@ hi:
       view_previous_row: "पिछली पंक्ति देखें"
       view_row: "पंक्ति देखें"
       view_single_row: "एकल पंक्ति डेटा देखें"
+      viewing_current_page:
       viewing_row_html: पंक्ति <span class="curPage"></span> को देख रहे हैं, कुल <span class="totalPages"></span> पंक्तियाँ हैं
     map:
       address_prompt: "यहां पता दर्ज करें"
@@ -722,6 +947,8 @@ hi:
       previous: "पिछला"
       previous_row: "पिछली पंक्ति"
       request_timed_out: "इस डेटा के लिए अनुरोध का समय समाप्त हो गया है।"
+      unable_to_display_features_html:
+      unable_to_load_map_html:
     nominate:
       all: "सब"
       approve: "(अनुमोदित करें)"
@@ -804,6 +1031,7 @@ hi:
     and: "और"
     auth:
       invalid_userpass: "अमान्य ईमेल या पासवर्ड"
+      need_email_verification:
       need_login: "आप इस पृष्ठ का उपयोग करने के लिए आपको लॉगिन करना होगा"
       need_permission: "आपके पास यह पृष्ठ देखने की अनुमति नहीं है"
       too_many_tries: "उस लॉगिन के लिए लॉगिन के बहुत सारे प्रयास किये गये हैं। खाता अस्थायी रूप से अक्षम है।"
@@ -837,6 +1065,7 @@ hi:
       timeline: "समय रेखा"
       treemap: "वृक्ष मानचित्र"
     data_types:
+      blob:
       calendar_date: "तिथि व समय"
       checkbox: "चेकबॉक्‍स"
       dataset_link: "डेटासेट लिंक"
@@ -1051,7 +1280,7 @@ hi:
       blob: "गैर-तालिका युक्‍त फाइल या दस्‍तावेज"
       calendar: "कैलेंडर"
       chart: "चार्ट"
-      data_lens: "डाटा लेंस पृष्ठ"
+      data_lens:
       dataset: "डेटासेट"
       filter: "फिल्‍टर किये गये व्‍यू"
       form: "फ़ॉर्म"
@@ -1059,6 +1288,8 @@ hi:
       grouped: "समूहबद्ध व्‍यू"
       href: "बाहरी डेटासेट"
       map: "नक्‍शा"
+      new_view: "डाटा लेंस पृष्ठ"
+      story:
       table: "तालिका"
       working_copy: "कामकाजी प्रति"
     view_types_plural:
@@ -1073,6 +1304,119 @@ hi:
     visibility:
       private: "निजी"
       public: "सार्वजनिक"
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: "इस घटक को संपादित कीजिये"
@@ -1217,6 +1561,7 @@ hi:
       datasets: "डेटासेट"
       federations: "संघ"
       homepage: "मुख्य पृष्ठ"
+      jobs:
       metadata: "मेटाडेटा"
       moderation: "टिप्पणी संतुलन"
       nomination: "नामांकन संतुलन"
@@ -1271,6 +1616,7 @@ hi:
       done: "हो गया"
       end_date: "समापन तिथि"
       last_30_days:
+      last_3_days:
       last_month: "पिछले महीने"
       last_week:
       last_year:
@@ -1282,6 +1628,7 @@ hi:
       prev: "पिछला"
       specific_date: "विशिष्ट तिथि"
       start_date: "प्रारंभ तिथि"
+      the_day_of:
       the_month_of: "...का माह"
       the_week_of: "...का सप्ताह"
       the_year_of: "...का वर्ष"
@@ -1359,6 +1706,7 @@ hi:
     about:
       actions: "कार्रवाई"
       activity: "गतिविधि"
+      admin_debugging:
       attachments: "संलग्‍नक"
       category: "श्रेणी"
       comments: "टिप्‍पणी"
@@ -1367,6 +1715,7 @@ hi:
       contributors: "योगदानकर्ता"
       created: "बनाया गया"
       data_provided_by: "डेटा प्रदानकर्ता"
+      datasync_status:
       description: "विवरण"
       downloads: "डाउनलोड"
       edit_metadata: "मेटाडेटा संपादित करें"
@@ -1403,14 +1752,20 @@ hi:
       your: "आपकी रेटिंग"
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: "लेआउट कॉन्फ़िगरेशन"
         left: "बायां"
         right: "दायां"
         saved: "सहेजा गया"
         saving: "सहेजा जा रहा है"
         sidebar_position: "साइडबार स्थिति"
+        skip_to_dataset_listing:
+        table_description:
         title: "डेटासेट"
         unpublished_datasets: "अप्रकाशित डेटासेट्स"
+        view_as_a_dataset:
       federation:
         accept: "स्वीकारें"
         accepted: "स्वीकृत"
@@ -1442,6 +1797,7 @@ hi:
         title: "डेटा संघ खोलें"
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1450,8 +1806,12 @@ hi:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1461,8 +1821,14 @@ hi:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1472,13 +1838,27 @@ hi:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: "एक नया विशेष रूप से प्रदर्शित डेटासेट जोड़ें"
         are_you_sure: "क्या आपको यकीन है? इस एक्शन को अनडन या पूर्ववत नहीं किया जा सकता है।"
@@ -1524,12 +1904,300 @@ hi:
         thumbnail: "थंबनेल"
         title: "मुख्य पृष्ठ का प्रबंधन करें"
         up: "ऊपर"
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          deleted_dataset:
+          deleted_user:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_all_so_far:
+          showing_most_recent:
+          started:
+          status:
+          title:
+          to_working_copy:
+          with_problems:
+        show_page:
+          back:
+          error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          import_method:
+          initiated_at:
+          no_events:
+          page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
+          title:
+          to:
+        statuses:
+          failure:
+          in_progress:
+          inprogress:
+          not_started:
+          notstarted:
+          success:
+          success_with_data_errors:
       metadata:
         add_new_category: "नई श्रेणी जोड़ें"
         add_new_field: "नई फील्ड जोड़ें"
         allowed_values: "स्वीकृत मान"
         are_you_sure: "क्या आप वाकई इस फील्डसेट और इससे जुड़े सभी फील्ड्स को हटाना चाहते हैं?"
         category_name: "श्रेणी का नाम"
+        category_table_description:
         create: "बनाएं"
         create_new_fieldset: "एक नए फील्ड सेट को बनाएं"
         define_categories: "डेटासेट श्रेणियों को परिभाषित करें"
@@ -1559,6 +2227,7 @@ hi:
         metadata_explain1: कस्टम मेटाडेटा को <span class="code">फील्डसेट्स</span> और <span class="code">फील्ड्स</span> में विभाजित किया जाता है। <span class="code">फील्डसेट</span> वह तरीका होता है जिसके द्वारा एक या उससे अधिक कस्टम <span class="code">फील्ड्स</span> को तर्कसंगत और दृष्टिगत रूप से इकठ्ठा किया जाता है।
         metadata_explain2: फील्ड्स को कई तरीके से कॉन्फ़िगर किया जा सकता है। उनकी <span class="code">आवश्यकता हो सकती है</span>, जिसे तब लागू किया जाता है जब प्रकाशक नये डेटासेट बनाते हैं और मौजूदा मेटाडेटा का नवीनीकरण करते हैं। वे <span class="code">निजी</span> भी हो सकते हैं, अर्थात दर्ज किये गये मान सार्वजनिक रूप से दिखाई नहीं देंगे।
         metadata_explain3: अंत में, यदि आप मुक्त रूप से दर्ज पाठ के बजाय सूची में से मान का चयन करना चाहते हैं तो आप अपने <span class="code">फील्ड्स</span> के लिए विकल्पों का पूर्व-परिभाषित चयन कर सकते हैं।
+        metadata_field_table_description:
         no_data: "कोई कस्टम डेटासेट फील्ड आपके डोमेन के लिए अभी तक परिभाषित नहीं की गई हैं। नीचे एक नाम दर्ज करें और शुरू करने के लिए 'बनाएँ' पर क्लिक करें।"
         no_fields_defined: "इस फील्ड सेट के पास अभी तक कोई परिभाषित फील्ड नहीं है।"
         page_title: "डेटासेट मेटाडाटा का प्रबंधन करें"
@@ -1577,6 +2246,7 @@ hi:
         email_prompt: "आप जो खाते बनाना चाहते हैं उनके लिए ईमेल पते दर्ज करें"
         emails: "ईमेल"
         error_permission_request: "आपका अनुमति अनुरोध संसाधित करने में एक त्रुटि हुई थी।"
+        export_as_csv:
         filter_by: "द्वारा फ़िल्टर"
         flashes:
           accounts_created:
@@ -1596,6 +2266,7 @@ hi:
         no_users_found: "कोई मौजूदा उपयोगकर्ता नहीं मिला"
         no_users_match: "कोई उपयोगकर्ता आपके मौजूदा फिल्टर से मेल नहीं खाते।"
         pending_users: "निम्नलिखित उपयोगकर्ताओं के लंबित खाते हैं, लेकिन उन्हें अभी तक सक्रिय नहीं किया गया है"
+        pending_users_table_description:
         reenable_privileges: "विशेषाधिकार दोबारा सक्षम कीजिये"
         remove: "हटाएं"
         reset_password: "पासवर्ड रीसेट करें"
@@ -1605,14 +2276,19 @@ hi:
           administrator: "व्यवस्थापक"
           designer: "डिज़ाइनर"
           editor: "संपादक"
+          editor_stories:
           none: "कोई नहीं"
           publisher: "प्रकाशक"
+          publisher_stories:
           viewer: "दर्शक"
         search: "खोजें"
         search_for_users: "जोड़ने के लिए उपयोगकर्ताओं की खोज कीजिये"
         search_results: "'%{term}' के लिए खोज के परिणाम"
         title: "उपयोगकर्ताओं को प्रबंधित करें"
         user_saved: "उपयोगकर्ता को सहेजा गया"
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: "संलग्न करें"
       append_and_replace: "डेटा संलग्न करें और बदलें"
@@ -1703,6 +2379,8 @@ hi:
         why_choose_now: "अभी कॉलम के प्रकार का चयन करना महत्वपूर्ण क्यों है?"
       import_help: <strong>सहायता की आवश्यकता है?</strong> हम <a href="%{common_errors}" rel="external">सामान्य चेतावनियों और त्रुटियों की सूची</a> कायम रखते हैं जो आपके लिए सहायक हो सकती है।
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: "निर्देशांक संदर्भ प्रणाली"
         headline: बताएं कि &ldquo;<span class="fileName"></span>&rdquo; किस प्रकार इम्पोर्ट किया जाना चाहिए।
         layers_list: "इम्पोर्ट करने वाले स्तर"
@@ -1740,6 +2418,7 @@ hi:
       bar:
         api_unsavable: "एपीआई व्‍यू को संशोधित नहीं किया जा सकता है"
         based_on_html: <a class="revertLink currentViewName" href="#revert">%{name}</a> पर आधारित
+        based_on_layer_html:
         based_on_parent_html: <a class="parentName"></a> पर आधारित
         based_on_private_view: "निजी दृश्य"
         based_on_working_copy_html: <a class="revertLink currentViewName" href="#revert">%{name}</a> की कामकाजी प्रति पर आधारित
@@ -1888,6 +2567,7 @@ hi:
           developer_portal: "डेवलपर पोर्टल "
           endpoint_title: "एपीआई एक्‍सेस एंडप्‍वाइंट:"
           intro_html: "<strong>सोक्राटा ओपन डेटा एपीआई</strong> (SODA) सॉफ़्टवेयर डेवलेपर को सोक्राटा डेटा साइट पर प्रोग्राम के तौर पर होस्‍ट किये गये डेटा तक पहुंच प्रदान करता है। चित्रित करने और &ldquo;mash-up&rdquo के लिए SODA APIs का उपयोग करने वाली एप्‍लीकेशन डेवलेपर बना सकते हैं; सोक्राटा डेटासेट नये व दिलचस्‍प तरीके में। एक एप्‍लीकेशन बनाएँ जो आपके क्षेत्र में सरकारी खर्च को चित्रित करे, एक वेब एप्‍लीकेशन जो नागरिकों को उन संभावित सरकारी लाभों के बारे में जानने का मौका दे जिन्‍हें वे नजरंदाज करते हैं, या ऐसी सेवा जो स्‍वत: आपको ईमेल भेजें जब उन बिल में नये ईयरमार्क जोड़े जाते हैं जिनकी आप निगरानी रखना चाहते हैं।"
+          multiple_endpoints_intro_html:
           reference_html: इस डेटासेट तक प्रोग्राम के रूप में पहुंच शुरू करने के लिए, नीचे दिये गये एपीआई एंडप्‍वाइंट का उपयोग करें।  सोक्राटा ओपन डेटा एपीआई के उपयोग के तरीकों की अधिक जानकारी व उदाहरण के लिए हमारे <a href="http://dev.socrata.com" rel="external">डेवलेपर दस्‍तावेज</a>देखें।
           subtitle: SODA के जरिए इस %{view_type} तक पहुंचे
           title: SODA एपीआई
@@ -1910,6 +2590,9 @@ hi:
           wizard_button:
             immutable: "प्रतिस्‍थापन विज़र्ड आरंभ करें"
             mutable: "संलग्‍न व प्रतिस्‍थापित करें विज़र्ड आरंभ करें"
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: "लागू करें"
@@ -2213,6 +2896,9 @@ hi:
             title: "फ़ोटो विकल्‍प"
           subtitle: "इस कॉलम में विभिन्‍न प्रॉपर्टी अद्यतित करें"
           success: "आपका कॉलम अद्यतित किया गया"
+          text_formatting:
+            display_style:
+            title:
           title: "कॉलम प्रॉपर्टी"
           url:
             base_url: "मूल यूआरएल"
@@ -2246,6 +2932,7 @@ hi:
             no_icons: "आईकन केवल मैप व्‍यू के लिए उपयोगी हैं"
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2274,6 +2961,8 @@ hi:
           download_dataset: "कृपया उस डेटासेट को डाउनलोड करें जिससे यह दृश्य प्राप्त होता है। "
           geo_header: "जियोस्‍पाटियल (भूआकाशीय) डेटा डाउनलोड करें"
           layers_header: "टैब्‍यूलर लेयर डाउनलोड करें"
+          monolayer_header:
+          multilayer_header:
           subtitle: "इस डेटासेट की प्रति स्थिर स्‍वरूप में डाउनलोड करें"
           title: "डाउनलोड करें"
         feed:
@@ -2367,6 +3056,7 @@ hi:
           validation:
             hidden_location_html: आप <a href="#showLoc" title="Show a location column">छिपे हुए स्‍थान वाला कॉलम दिखा सकते हैं</a>।
             location_column: "नक्‍शा बनाने के लिए स्‍थान कॉलम आवश्‍यक है।"
+            location_column_invalid_dataset:
             viz_limit: "एक व्‍यू का केवल एक ही मानस चित्रण हो सकता है"
         odata:
           endpoint_action: "इस लिंक को कॉपी करें:"
@@ -2555,6 +3245,8 @@ hi:
       unable_to_find_dataset_page: "हम इस डाटासेट के लिए एक डाटा लेंस पेज को खोजने में असमर्थ थे। "
     edit_metadata:
       about: "परिचय"
+      add_link:
+      add_source:
       additional_source: "अतिरिक्त स्रोत"
       alternative_access_prompt: "इस डेटासेट के लिए एक वैकल्पिक पहुंच बिंदु दर्ज करें"
       api_endpoint: "एपीआई अंतिम बिंदु"
@@ -2577,6 +3269,7 @@ hi:
       dataset_title_prompt: "शीर्षक दर्ज करें"
       dataset_url: "डेटासेट यूआरएल"
       dataset_url_prompt: "अपने बाहरी डेटासेट का स्थान दर्ज करें"
+      default_row_label:
       delete: "हटाएँ"
       email_address: "ईमेल पता"
       email_help: "इस पते को सार्वजनिक रूप से प्रदर्शित नहीं किया जाएगा। यदि इसे खाली छोड़ा जाए, तो यहाँ आपका डिफ़ोल्ट पता रख दिया जाएगा"
@@ -2596,6 +3289,8 @@ hi:
       licensing_attr: "लाइसेंसिंग और आरोपण"
       list: "सूची"
       metadata_help: "इस फ़ील्ड को आपके संगठन ने निजी के रूप में चिह्नित किया है और उसे सार्वजनिक रूप से नहीं देखा जा सकता है"
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: "नया अनुलग्नक"
       none: "(कोई नहीं)"
       northwest_latitude: "उत्तरपश्चिम अक्षांश"
@@ -2603,6 +3298,7 @@ hi:
       optional: "वैकल्पिक"
       private_help: "इस फ़ील्ड को आपके संगठन ने निजी के रूप में चिह्नित किया है और उसे सार्वजनिक रूप से नहीं देखा जा सकता है"
       remove_image: "छवि हटाएँ"
+      remove_link:
       required_field: "आवश्यक फ़ील्ड"
       resource_name: "संसाधन नाम"
       resource_name_prompt: "कोई संसाधन नाम दर्ज करें"
@@ -2631,6 +3327,7 @@ hi:
       upload_help: "इस छवि को काट-छाँटकर वर्गाकार बनाया जाएगा"
       upload_image: "छवि अपलोड करें"
       upload_new_attachment: "नया अनुलग्नक अपलोड करें"
+      url:
     forgot_password:
       already_authenticated: "पासवर्ड रिसेट करने में अक्षम रहे: आप पहले से ही लॉगिन कर चुके हैं।"
       failed: "आपके पासवर्ड रीसेट अनुरोध को जमा करते समय त्रुटि हुई। कृपया फिर से कोशिश करें।"
@@ -2722,6 +3419,7 @@ hi:
         no_applications: "आपने अभी तक कोई एप्‍लीकेश्‍न नहीं बनाई है। शुरू करने के लिए दायीं ओर 'प्रबंधन करें' पर क्लिक करें।"
         title: "%{user}की एप्‍लीकेशन"
       bar:
+        edit_info_link:
         edit_settings_link: "खाता सेटिंग संपादित करें"
         follow_link: "फॉलो करें"
         join_date: "इस तिथि से जुड़े"
@@ -2850,6 +3548,11 @@ hi:
         followers: "फॉलोअर्स"
         following: "फॉलो कर रहे हैं"
         hide_contacts_link: "छिपाएं"
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: "आपके पासवर्ड को रीसेट करते समय समस्या आई। कृपया फिर से कोशिश करें।"
       form:
@@ -2867,8 +3570,13 @@ hi:
       mismatch: "पासवर्ड मेल नहीं खा रहे हैं। कृपया फिर से कोशिश करें"
       prompt_html: "अपनी <strong>सोक्राटा आईडी</strong>से साइन इन करें "
       sign_in_with: "%{provider} के साथ <strong>साइन इन</strong> करें"
+      sso_required:
       tips_html: <strong><a href="http://www.socrata.com" rel="external">सोक्राटा</a> द्वारा संचालित</strong> सभी साइटों में साइन इन करने के लिए अपने ईमेल व पासवर्ड का उपयोग करें।
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: "मेरा खाता बनाएँ"
         have_account_link: "मेरा पहले से एक खाता है"
@@ -2882,6 +3590,7 @@ hi:
     stats:
       api: "एपीआई (API)"
       apply: "लागू करें"
+      browser_page_views:
       bytes_out: "बाइट्स बाहर"
       chart_created: "चार्ट बनाया गया"
       charts: "चार्ट्स"
@@ -2890,6 +3599,7 @@ hi:
       comments: "टिप्पणियां"
       comments_created: "टिप्पणियां बनाई गईं"
       daily: "प्रतिदिन"
+      date_range:
       deleted_application: "हटाई गई एप्लिकेशन"
       delta_decrease:
       delta_decrease_compared:
@@ -2968,3 +3678,6 @@ hi:
     array_or:
       last_word_connector: ", या"
       two_words_connector: "या"
+  table:
+    no_summary_available:
+    summary:

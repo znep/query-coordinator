@@ -42,16 +42,22 @@ ro:
     dataCards:
       add_card_dialog:
         add_card: Adăugați card
+        add_card_title:
         add_this_card: Adăugați acest card
         card_on_page: Cardul se află deja pe pagină
         card_on_page_long: Acest card se află deja pe pagină
         choose_column: Alegeți o coloană
-        classic_chart:
+        choropleth_admin_message:
+        choropleth_message:
         column_chart_warning: 'Notă: Asta ar rezulta într-o diagramă tip bară, cu peste 100 de bare, ar putea fi mai mai lentă decât alte diagrame'
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
         custom:
         customize_prompt: Personalizați acest card
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported: Nu este acceptat momentan
         not_supported_long: Acest tip de card nu este acceptat momentan
         prompt: Alegeți o coloană dintre cele derulante de mai sus pentru a adăuga un card nou
@@ -63,6 +69,19 @@ ro:
           feature_map: Vizualizați această coloană ca pe o cartă caracteristică
           search_card: Vizualizați această coloană ca pe o căutare card
           timeline_chart: Vizualizați această coloană ca pe o diagramă cronologică
+      aggregation_chooser:
+        by_the_number_of: <span class="information">prin</span> număr de
+        by_the_sum_of: <span class="information">prin</span> suma de
+        count_label: numărați {0} per element
+        description: 'Vedeți elementele de date de mărimea sau culoarea:'
+        option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
+        sum_label: adăugați pentru fiecare {0}
+        the_number_of: Număr de
+        the_sum_of: Suma de
+        title: "Însumare"
+        too_many_columns:
+          message: "În acest moment nu vă putem furniza bilanțul ca o însumare a paginilor Data Lens care au mai mult de {0} coloane de tipul Număr sau Bani"
+          title: Se pare că setul de date conține mai mult de {0} coloane de numere
       api_explorer:
         additional_resources: 'Resurse suplimentare pentru acest API:'
         api_button: API
@@ -76,6 +95,12 @@ ro:
         json: JSON
         title: API
         url: 'Puteți accesa această informație via Socrata Open Data API la acest URL:'
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card: Epuizați acest card
         customize_disabled: "Încă nu există opțiuni de personalizare pentru acest card"
@@ -91,6 +116,12 @@ ro:
         average: medie de {0}
         number_of: număr de {0}
         sum_of: suma de {0}
+      choropleth:
+        computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
+        pending_computation:
       common:
         by:
         cancel: Anulare
@@ -115,6 +146,8 @@ ro:
         longitude: Longitudine
         no_value: Nici o valoare
         ok: Ok
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions: Drepturi
           private: Privat
@@ -148,6 +181,7 @@ ro:
           simple_blue:
           simple_grey:
           title: Suportul de bază al hărții
+        title:
         visualization_options:
           title: Tip de card
       distribution_chart:
@@ -157,21 +191,33 @@ ro:
           error: A survenit o eroare încercând să redăm acest card.
           no_data: Nu există date de afișat.
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+          not_available_specific:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -209,6 +255,8 @@ ro:
       lens_type:
         community: Comunitatea Data Lens
         official: Data Lens official
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private: Din cauza faptului că setul de date sursă al acestei pagini este setat pe <b>Privat<b>, această pagină nu poate fi transformată pentru afișaj Public. Doar cei cu acces privilegiat o pot accesa și nu va apărea în catalogul public.
         dataset_private_page_public: <span class="icon-warning"></span> Setul de date sursă al acestei pagini este setat pe <b>Privat<b>, așadar, deși acestă pagină este setată pentru afișaj Public, oricine nu are acces la setul de date sursă, nu va putea vedea pagina. Dar aceasta tot va apărea în catalogul public. Puteți modifica setul de date pentru afișaj Public, sau puteți seta această pagină pentru afișaj Privat.
@@ -224,6 +272,10 @@ ro:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -242,6 +294,7 @@ ro:
           title:
           viewer:
         title: Administrare
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -261,6 +314,7 @@ ro:
         validation_error_min_length: Vă rugăm să introduceți un titlu
         validation_error_required: Vă rugăm să introduceți un titlu
         visualization_as_image: Vizualizare ca imagine
+        visualization_as_image_disabled_flyout: Vă rugăm să salvați pagina pentru a putea descărca o vizualizare ca și imagine
       mobile_warning_dialog:
         acknowledgement: Ok, am înțeles!
         description: Lucrăm la îmbunătățirea experienței dvs. pe acest site de pe dispozitivele mobile.
@@ -276,6 +330,10 @@ ro:
         clear_all: "Ştergere toate"
         clear_all_flyout: Apăsați pentru a reseta toate filtrele
         filter_title: Care arată <span class="light">{0}</span>
+        filtered_title:
+        old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button: Alte vizualizări ale acestei informații
         title: Alte vizualizări ale acestei informații
@@ -320,9 +378,21 @@ ro:
         flyoutFailedTitle: A survenit o eroare
         flyoutIdle: Apăsați pentru a salva modificările
         flyoutNoChanges: Nu există modificări de salvat
+        flyoutNoEditPermission:
         save: Salvare
         saved: Salvat!
         saving: Se salvează...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search: "Încercați să căutați un număr care să nu conțină litere"
@@ -366,6 +436,24 @@ ro:
           bad_dates: Diagrama nu poate fi redată din cauza introducerii unor valori nevalide ale datelor.
           default: Diagrama nu poate fi redată.
           no_data: Diagrama nu poate fi redată fără introducerea unor valori.
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -409,6 +497,131 @@ ro:
         suggest_dataset_short: Sugeraţi un set de date
         suggest_dataset_verb: Sugerare
       back_to_dataset: "Înapoi la setul de date"
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        created_at:
+          label:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          draft:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+            sort:
+            sort_by:
+          modal:
+            alphaAscending:
+            close:
+            top:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary: "«%{query}»"
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        sorts:
+          last_modified: Actualizate recent
+          most_accessed: Cele mai accesate
+          newest: cel mai nou primul
+          relevance: Cele mai relevante
+        topics:
+          empty:
+          label:
+          more:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: categorie
         categories_title: Categorii
@@ -427,12 +640,14 @@ ro:
           blob: Fişiere şi documente
           calendars: Calendare
           charts: Diagrame
-          data_lens: Paginile Data Lens
+          data_lens:
           datasets: Seturi de date
+          draft:
           filters: Vizualizări filtrate
           forms: Formulare
           href: Seturi de date externe
           maps: Hărţi
+          new_view: Paginile Data Lens
           pulse:
           pulse_help:
           story: Povestiri
@@ -453,6 +668,7 @@ ro:
           rss: RSS
           type: Tip
         timeout: Ne pare rău. Rezultatele nu au putut fi recuperate în acest moment. Vă rugăm să încercaţi mai târziu.
+      ordered_topics:
       row_results:
         less_link: Mai puţin
         matching_rows: Se caută seturi de date pentru rânduri care se potrivesc
@@ -483,6 +699,7 @@ ro:
           main: Rezultate %{body}
           term: pentru "%{term}"
     charts:
+      missing_column_html:
       negatives_in_data: 'Diagramă nevalabilă: conţine valori negative'
       no_data: Fără date
       other_slice_label: Altele
@@ -522,6 +739,7 @@ ro:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: 'Uitaţi-vă la setul de date %{name} de pe %{site}: '
       sidebar:
         tabs:
@@ -670,6 +888,7 @@ ro:
       delete_warning_multi_column: Doriţi să ştergeţi coloanele selectate? Toate datele din aceste coloane vor fi eliminate!
       delete_warning_single_column: Doriţi să ştergeţi coloana selectată? Toate datele din această coloană vor fi eliminate!
       edit_column_properties: Editare proprietăţi coloană
+      end_page:
       errors:
         cannot_edit_at_this_time: "În acest moment, această coloană nu poate fi editată. Vă rugăm să încercați mai târziu."
         data_lens_is_incompatible_with_group_bys:
@@ -682,13 +901,18 @@ ro:
       menu: Meniu
       must_enter_name: Trebuie să introduceţi un nume pentru această coloană
       new_row: Nou
+      next_page:
       no_columns: Setul de date %{uid} nu are nicio coloană.
       no_rows: Niciun rând de afişat
+      page_size:
       permission_denied: Nu aveţi acces la această vizualizare.
       previous: Anterior
+      previous_page:
       required_cols_missing: Coloanele necesare pentru această vizualizare lipsesc
+      row_count:
       sort_ascending: Sortare ascendentă
       sort_descending: Sortare descendentă
+      start_page:
       totals: Totaluri
       view_cell_comments: Vizualizaţi comentariile acestei celule
       view_first_row: Vizualizare primul rând
@@ -697,6 +921,7 @@ ro:
       view_previous_row: Vizualizare rândul anterior
       view_row: Vizualizare rând
       view_single_row: Vizualizare date rând unic
+      viewing_current_page:
       viewing_row_html: Vizualizare rând <span class="curPage"></span> din <span class="totalPages"></span>
     map:
       address_prompt: Introduceţi adresa aici
@@ -723,6 +948,8 @@ ro:
       previous: Anteriorul
       previous_row: Rândul anterior
       request_timed_out: Solicitarea acestor date a expirat.
+      unable_to_display_features_html:
+      unable_to_load_map_html:
     nominate:
       all: Toate
       approve: "(Aprobare)"
@@ -805,6 +1032,7 @@ ro:
     and: "şi"
     auth:
       invalid_userpass: Nume de utilizator sau parolă nevalidă
+      need_email_verification:
       need_login: Trebuie să fiți autentificat ca să accesați această pagină
       need_permission: Nu aveți permisiunea de a accesa această pagină
       too_many_tries: Prea multe tentative de autentificare. Cont dezactivat temporar.
@@ -838,6 +1066,7 @@ ro:
       timeline: Cronologie
       treemap: Hartă arborescentă
     data_types:
+      blob:
       calendar_date: Data şi ora
       checkbox: Casetă de bifare
       dataset_link: Link set de date
@@ -1052,7 +1281,7 @@ ro:
       blob: fişier sau document netabelat
       calendar: calendar
       chart: diagramă
-      data_lens: Pagina Data Lens
+      data_lens:
       dataset: set de date
       filter: vizualizare filtrată
       form: formular
@@ -1060,6 +1289,8 @@ ro:
       grouped: vizualizare grupată
       href: set de date extern
       map: hartă
+      new_view: Pagina Data Lens
+      story:
       table: tabel
       working_copy: copie funcţională
     view_types_plural:
@@ -1074,6 +1305,119 @@ ro:
     visibility:
       private: confidenţial
       public: public
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: Edita această componentă
@@ -1231,6 +1575,7 @@ ro:
       datasets: Seturi de date
       federations: Externalizări
       homepage: Pagina de pornire
+      jobs:
       metadata: Metadate
       moderation: Moderare comentarii
       nomination: Moderare nominalizare
@@ -1285,6 +1630,7 @@ ro:
       done: Gata
       end_date: Dată încheiere
       last_30_days:
+      last_3_days:
       last_month: Luna trecută
       last_week:
       last_year:
@@ -1296,6 +1642,7 @@ ro:
       prev: Anterior
       specific_date: Dată specifică
       start_date: Dată început
+      the_day_of:
       the_month_of: Luna...
       the_week_of: Săptămâna...
       the_year_of: Anul...
@@ -1373,6 +1720,7 @@ ro:
     about:
       actions: Acţiuni
       activity: Activitate
+      admin_debugging:
       attachments: Ataşamente
       category: Categorie
       comments: Comentarii
@@ -1381,6 +1729,7 @@ ro:
       contributors: Colaboratori
       created: creat
       data_provided_by: Date furnizate de
+      datasync_status:
       description: Descriere
       downloads: Descărcări
       edit_metadata: Editare metadate
@@ -1417,14 +1766,20 @@ ro:
       your: Votul dvs.
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: Configurare amplasare
         left: Stânga
         right: Dreapta
         saved: Salvat
         saving: Se salvează
         sidebar_position: Poziție bară laterală
+        skip_to_dataset_listing:
+        table_description:
         title: Seturi de date
         unpublished_datasets: Seturi de date nepublicate
+        view_as_a_dataset:
       federation:
         accept: Acceptare
         accepted: Acceptat
@@ -1456,6 +1811,7 @@ ro:
         title: Deschidere federare date
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1464,8 +1820,12 @@ ro:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1475,8 +1835,14 @@ ro:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1486,13 +1852,27 @@ ro:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: Adăugare set de date expus nou
         are_you_sure: Sunteți sigur? Această acțiune nu poate fi refăcută.
@@ -1538,12 +1918,300 @@ ro:
         thumbnail: Miniatură
         title: Administrare pagină de pornire
         up: Sus
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          deleted_dataset:
+          deleted_user:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_all_so_far:
+          showing_most_recent:
+          started:
+          status:
+          title:
+          to_working_copy:
+          with_problems:
+        show_page:
+          back:
+          error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          import_method:
+          initiated_at:
+          no_events:
+          page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
+          title:
+          to:
+        statuses:
+          failure:
+          in_progress:
+          inprogress:
+          not_started:
+          notstarted:
+          success:
+          success_with_data_errors:
       metadata:
         add_new_category: Adăugare categorie nouă
         add_new_field: Adăugare prieten nou
         allowed_values: Valori permise
         are_you_sure: Sunteți sigur că doriți să  ștergeți acest câmp și toate câmpurile asociate?
         category_name: Nume categorie
+        category_table_description:
         create: Creare
         create_new_fieldset: Creare set de câmpuri nou
         define_categories: Definire categorii seturi de date
@@ -1573,6 +2241,7 @@ ro:
         metadata_explain1: Metadatele personalizate sunt împărțite în <span class="code">seturi de câmpuri</span> și <span class="code">câmpuri</span>. Un <span class="code">set de câmpuri</span> este un mod de a grupa logic și vizual unul sau mai multe <span class="code">câmpuri</span> personalizate la un loc.
         metadata_explain2: Câmpurile pot fi configurate în mai multe feluri. Ele pot fi <span class="code">obligatorii</span>, ceea ce va fi aplicat atunci când editorii creează noi seturi de date și actualizează metadatele existente. Ele pot fi și <span class="code">private</span>, aceasta însemnând că valorile introduse nu vor fi vizibile publicului.
         metadata_explain3: 'În final, puteți alege să vă predefinți opțiunile pentru <span class="code">câmpuri</span> dacă doriți ca valorile să fie alese dintr-o listă mai degrabă decât introduse ca text în formă liberă.                                                                                                                                               '
+        metadata_field_table_description:
         no_data: "Încă nu au fost definite niciun fel de câmpuri de seturi de date pentru domeniul dvs. Introduceți mai jos un nume și dați click pe „Creare” pentru a începe."
         no_fields_defined: Acest câmp nu are încă niciun câmp definit
         page_title: Administrare metadate set de date
@@ -1591,6 +2260,7 @@ ro:
         email_prompt: Introduceți adresele de e-mail pentru conturile pe acre doriți să le creați
         emails: E-mail-uri
         error_permission_request: A survenit o eroare la procesarea solicitării dvs. de permisiune
+        export_as_csv:
         filter_by: Filtrare după
         flashes:
           accounts_created:
@@ -1610,6 +2280,7 @@ ro:
         no_users_found: Nu s-a găsit niciun utilizator existent
         no_users_match: Niciun utilizator nu se potrivește cu filtrul dvs. actual
         pending_users: Următorii utilizatori au conturile în așteptare, dar încă nu le-au activat
+        pending_users_table_description:
         reenable_privileges: Reactivare privilegii
         remove: Eliminare
         reset_password: Resetare parolă
@@ -1619,14 +2290,19 @@ ro:
           administrator: administrator
           designer: designer
           editor: redactor
+          editor_stories:
           none: niciunul
           publisher: editor
+          publisher_stories:
           viewer: spectator
         search: Căutare
         search_for_users: Căutare utilizatori de adăugat
         search_results: Căutare rezultate pentru '%{term}'
         title: Administrare utilizatori
         user_saved: Utilizator salvat
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: Adăugare
       append_and_replace: Adăugare şi înlocuire date
@@ -1717,6 +2393,8 @@ ro:
         why_choose_now: De ce este important să alegeţi acum tipurile de coloane?
       import_help: <strong>Aveţi nevoie de ajutor?</strong> Noi păstrăm o <a href="%{common_errors}" rel="external">listă a avertismentelor şi erorilor obişnuite</a>, care v-ar putea ajuta.
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: Coordonată sistem de referinţă
         headline: Specificaţi modul în care &ldquo;<span class="fileName"></span>&rdquo; trebuie importat.
         layers_list: Straturi de importat
@@ -1754,6 +2432,7 @@ ro:
       bar:
         api_unsavable: Vizualizările API nu pot fi modificate
         based_on_html: Bazat pe <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html:
         based_on_parent_html: Bazat pe <a class="parentName"></a>
         based_on_private_view: o vizualizare privată.
         based_on_working_copy_html: Bazat pe copia funcţională a <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -1902,6 +2581,7 @@ ro:
           developer_portal: Portalul dezvoltatorului
           endpoint_title: 'Punct terminal acces API:'
           intro_html: "<strong>Socrata Open Data API</strong> (SODA) permite dezvoltatorilor de software să acceseze datele găzduite pe Socrata în mod programatic. Dezvoltatorii pot crea aplicaţii ce utilizează API-urile SODA pentru vizualizare şi combinare. Socrata lucrează cu seturi de date în moduri noi şi captivante. Creaţi o aplicaţie pentru iPhone care vizualizează cheltuielile guvernamentale din zona dvs., o aplicaţie web care permite cetăţenilor să caute potenţiale beneficii guvernamentale pe care le-au scăpat din vedere, sau un serviciu care trimite automat e-mail-uri atunci când la facturile pe care doriţi să le urmăriţi au fost adăugate ştampile noi."
+          multiple_endpoints_intro_html:
           reference_html: Pentru a începe să accesaţi acest set de date în mod programatic, utilizaţi punctul terminal APi furnizat mai jos. Pentru mai multe informaţii şi exemple privind modul în care puteţi utiliza Socrata Open Data API, consultaţi <a href="http://dev.socrata.com" rel="external">Documentaţia Dezvoltatorului</a>.
           subtitle: Accesaţi această %{view_type} prin intermediul SODA
           title: SODA API
@@ -1924,6 +2604,9 @@ ro:
           wizard_button:
             immutable: Lansaţi aplicaţia expert "Înlocuire"
             mutable: Lansaţi aplicaţia expert "Adăugare şi înlocuire"
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: Aplicare
@@ -2223,6 +2906,9 @@ ro:
             title: Opţiuni fotografie
           subtitle: Actualizaţi diversele proprietăţi ale acestei coloane
           success: Coloana dvs. a fost actualizată
+          text_formatting:
+            display_style:
+            title:
           title: Proprietăţi coloană
           url:
             base_url: URL bază
@@ -2256,6 +2942,7 @@ ro:
             no_icons: Pictogramele sunt relevante doar în vizualizarea ca hartă
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2284,6 +2971,8 @@ ro:
           download_dataset: Vă rugăm să descărcați setul de date din care derivă această vizualizare.
           geo_header: Descărcare date geospaţiale
           layers_header: Descărcare straturi tabulare
+          monolayer_header:
+          multilayer_header:
           subtitle: Descărcaţi o copie a acestui set de date în format static
           title: Descărcare
         feed:
@@ -2377,6 +3066,7 @@ ro:
           validation:
             hidden_location_html: Puteţi <a href="#showLoc" title="Show a location column">arăta o coloană de localizare ascunsă</a>.
             location_column: O coloană de localizare este necesară pentru a crea o hartă.
+            location_column_invalid_dataset:
             viz_limit: O vizualizare poate avea o singură vedere în ea.
         odata:
           endpoint_action: 'Copiați acest link:'
@@ -2565,6 +3255,8 @@ ro:
       unable_to_find_dataset_page: Nu a fost găsită o pagină Data Lens pentru acest set de date.
     edit_metadata:
       about: Despre
+      add_link:
+      add_source:
       additional_source: Sursă suplimentară
       alternative_access_prompt: Introduceţi un punct alternativ de acces pentru acest set de date
       api_endpoint: Punct terminal API
@@ -2587,6 +3279,7 @@ ro:
       dataset_title_prompt: Introduceţi un titlu
       dataset_url: URL set de date
       dataset_url_prompt: Introduceţi localizarea setului dvs. de date extern
+      default_row_label:
       delete: "Ştergere"
       email_address: Adresă de e-mail
       email_help: Această adresă nu va fi afişată public. Dacă este lăsată goală, va fi trecută implicit adresa dvs.
@@ -2606,6 +3299,8 @@ ro:
       licensing_attr: Acordare licenţă şi atribuire
       list: Listă
       metadata_help: Acest câmp a fost marcat ca fiind confidenţial de către organizaţia dvs. şi nu este vizualizabil public.
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: Ataşament nou
       none: "(niciunul)"
       northwest_latitude: Latitudine nordvestică
@@ -2613,6 +3308,7 @@ ro:
       optional: Opţional
       private_help: Acest câmp a fost marcat ca fiind confidenţial de către organizaţia dvs. şi nu este vizualizabil public
       remove_image: Eliminare imagine
+      remove_link:
       required_field: Câmp obligatoriu
       resource_name: Nume resursă
       resource_name_prompt: Introduceţi un nume de resursă
@@ -2641,6 +3337,7 @@ ro:
       upload_help: Această imagine va fi decupată într-un pătrat
       upload_image: "Încărcare imagine"
       upload_new_attachment: "Încărcare ataşament nou"
+      url:
     forgot_password:
       already_authenticated: 'Nu se poate reseta parola: sunteţi deja autentificat.'
       failed: A survenit o problemă la trimiterea solicitării de resetare a parolei. Vă rugăm să încercaţi din nou.
@@ -2732,6 +3429,7 @@ ro:
         no_applications: Nu aţi creat încă nicio aplicaţie. Click "Administrare" în dreapta pentru a începe.
         title: Aplicaţiile utilizatorului %{user}
       bar:
+        edit_info_link:
         edit_settings_link: Editare setări cont
         follow_link: Urmăriţi
         join_date: "Înregistrat în"
@@ -2860,6 +3558,11 @@ ro:
         followers: Persoane care vă urmăresc
         following: Vă urmăresc
         hide_contacts_link: Ascundere
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: A survenit o problemă la resetarea parolei dvs. Vă rugăm să încercaţi din nou.
       form:
@@ -2877,8 +3580,13 @@ ro:
       mismatch: Parolele nu se potrivesc. Vă rugăm să încercaţi din nou
       prompt_html: Autentificaţi-vă cu <strong>Socrata ID</strong>
       sign_in_with: "<strong>Conectare</strong> la %{provider}"
+      sso_required:
       tips_html: Utilizaţi-vă e-mail-ul şi parola pentru a vă autentifica în toate site-urile <strong>dezvoltate de <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: Crează-mi contul
         have_account_link: Am deja cont
@@ -2892,6 +3600,7 @@ ro:
     stats:
       api: API
       apply: Aplicare
+      browser_page_views:
       bytes_out: 'Octeţi '
       chart_created: diagramă creată
       charts: Diagrame
@@ -2900,6 +3609,7 @@ ro:
       comments: Comentarii
       comments_created: comentarii create
       daily: Zilnic
+      date_range:
       deleted_application: aplicaţie ştearsă
       delta_decrease:
       delta_decrease_compared:
@@ -2978,3 +3688,6 @@ ro:
     array_or:
       last_word_connector: sau
       two_words_connector: sau
+  table:
+    no_summary_available:
+    summary:

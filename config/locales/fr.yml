@@ -42,16 +42,22 @@ fr:
     dataCards:
       add_card_dialog:
         add_card: Ajouter carte
+        add_card_title:
         add_this_card: Ajouter cette carte
         card_on_page: Carte déjà sur la page
         card_on_page_long: Cette carte est déjà sur la page
         choose_column: Choisir une colonne
-        classic_chart:
+        choropleth_admin_message:
+        choropleth_message:
         column_chart_warning: 'Remarque : cela aura pour résultat un diagramme à barres avec plus d''une centaine de barres, ça pourrait être plus lent que d''autres diagrammes'
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
         custom:
         customize_prompt: Personnaliser cette carte
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported: Pas actuellement prise en charge
         not_supported_long: Ce type de carte n'est pas pris en charge pour le moment
         prompt: Choisir une colonne dans la liste déroulante ci-dessus pour ajouter une nouvelle carte
@@ -63,6 +69,19 @@ fr:
           feature_map: Visualiser cette colonne comme carte présentée
           search_card: Visualiser cette colonne comme carte de recherche
           timeline_chart: Visualiser cette colonne comme frise chronologique
+      aggregation_chooser:
+        by_the_number_of: <span class="information">par le</span> nombre de
+        by_the_sum_of: <span class="information">par la</span> somme de
+        count_label: compter {0} par élément
+        description: 'Afficher les éléments de données calibrées ou colorées par :'
+        option_disabled: Cette colonne ne peut pas être utilisée avec un<br>nombre d'agrégats
+        sum_label: ajouter pour chacun {0}
+        the_number_of: Le nombre de
+        the_sum_of: La somme de
+        title: Agrégation
+        too_many_columns:
+          message: Nous ne sommes pas actuellement capables de fournir la somme sous forme d'agrégat pour les pages de Lentille de données qui ont plus de {0} colonnes de type Nombre ou Argent.
+          title: Il semble que cet ensemble de données contient plus de {0} nombre de colonnes
       api_explorer:
         additional_resources: 'Ressources supplémentaires pour cet API :'
         api_button: API
@@ -76,6 +95,12 @@ fr:
         json: JSON
         title: API
         url: 'Vous pouvez accéder à ces données via la Socrata Open Data API à cette URL :'
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card: Faire tomber cette carte
         customize_disabled: Il n'existe pas encore d'option de personnalisation pour cette carte
@@ -91,6 +116,12 @@ fr:
         average: moyenne de {0}
         number_of: nombre de {0}
         sum_of: somme de {0}
+      choropleth:
+        computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
+        pending_computation:
       common:
         by:
         cancel: Annuler
@@ -115,6 +146,8 @@ fr:
         longitude: Longitude
         no_value: Aucune valeur
         ok: OK
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions: Autorisation
           private: Privé
@@ -148,6 +181,7 @@ fr:
           simple_blue:
           simple_grey:
           title: Couche de carte de base
+        title:
         visualization_options:
           title: Type de carte
       distribution_chart:
@@ -157,21 +191,33 @@ fr:
           error: Une erreur s'est produite en essayant d'afficher cette carde.
           no_data: Il n'y a aucune donnée de dîsponible.
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+          not_available_specific:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Le Zomm est temporairement non disponible.
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -209,6 +255,8 @@ fr:
       lens_type:
         community: lentille de données communautaire
         official: lentille de données officielle
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private: Parce ce que l'ensemble de données source de cette page est défini sur <b>Privée</b>, cette page ne peut être rendue publique. Seuls ceux avec des accès privilégiés seront capables de la voir et elle n'apparaîtra pas dans le catalogue public.
         dataset_private_page_public: '<span class="icon-warning"></span> L''ensemble de données source de cette page est défini sur <b>Privé</b>, alors même si cette page est définie sur Public, quiconque n''a pas accès à l''ensemble de données ne sera pas capable de la voir. Elle apparaîtra dans le catalogue public. Vous devriez considérer le paramétrage de l''ensemble de données sur Public, ou le paramétrage de cette page sur Privé. '
@@ -224,6 +272,10 @@ fr:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -242,6 +294,7 @@ fr:
           title:
           viewer:
         title: Gérer
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -261,6 +314,7 @@ fr:
         validation_error_min_length: Veuillez entrer un titre
         validation_error_required: Veuillez entrer un titre
         visualization_as_image: Visualisation en tant qu'image
+        visualization_as_image_disabled_flyout: Veuillez sauvegarder cette page afin de télécharger une visualisation en tant qu'image
       mobile_warning_dialog:
         acknowledgement: D'accord, compris !
         description: Nous travaillons sur l'amélioration de l'expérience mobile sur ce site.
@@ -276,6 +330,10 @@ fr:
         clear_all: Tout Effacer
         clear_all_flyout: Cliquer pour réinitialiser tous les filtres
         filter_title: Affichage <span class="light">du {0}</span>
+        filtered_title:
+        old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button: Autres vues de ces données
         title: Autres vues de ces données
@@ -320,9 +378,21 @@ fr:
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications
         flyoutNoChanges: Aucun changement à sauvegarder
+        flyoutNoEditPermission:
         save: Enregistrer
         saved: Enregistré!
         saving: Sauvegarde...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.
@@ -366,6 +436,24 @@ fr:
           bad_dates: Le diagramme ne peut pas être affiché à cause de valeurs de date non valides.
           default: Le diagramme ne peut pas être affiché.
           no_data: Le diagramme ne peut pas être rendu sans valeurs.
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -409,6 +497,131 @@ fr:
         suggest_dataset_short: Suggérer une série de données
         suggest_dataset_verb: Suggestion
       back_to_dataset: Retour à la série
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        created_at:
+          label:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          draft:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+            sort:
+            sort_by:
+          modal:
+            alphaAscending:
+            close:
+            top:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary: "«%{query}»"
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        sorts:
+          last_modified: Mise à jour récente
+          most_accessed: Plus visité
+          newest: le plus récent en premier
+          relevance: Plus pertinent
+        topics:
+          empty:
+          label:
+          more:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: Catégorie
         categories_title: Catégories
@@ -427,12 +640,14 @@ fr:
           blob: Fichiers et documents
           calendars: Calendriers
           charts: Graphiques
-          data_lens: Pages de lentilles de données
+          data_lens:
           datasets: Séries de données
+          draft:
           filters: Vues filtrées
           forms: Formulaires
           href: Séries de données externes
           maps: Cartes
+          new_view: Pages de lentilles de données
           pulse:
           pulse_help:
           story: Histoires
@@ -453,6 +668,7 @@ fr:
           rss: RSS
           type: Type
         timeout: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
+      ordered_topics:
       row_results:
         less_link: Moins
         matching_rows: Trouve rangées correspondantes
@@ -483,6 +699,7 @@ fr:
           main: Résultats %{body}
           term: pour « %{term} »
     charts:
+      missing_column_html:
       negatives_in_data: Diagramme non valide
       no_data: Aucune donnée
       other_slice_label: Autres
@@ -522,6 +739,7 @@ fr:
           email: Courrier électronique
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: 'Voyez la série %{name} sur %{site}: '
       sidebar:
         tabs:
@@ -669,6 +887,7 @@ fr:
       delete_warning_multi_column: Voulez-vous enlever les colonnes sélectionnées ? Toutes les données qui y figurent seront supprimées !
       delete_warning_single_column: Voulez-vous enlever la colonne sélectionnée ? Toutes les données qui y figurent seront supprimées !
       edit_column_properties: Modifier les propriétés de la colonne
+      end_page:
       errors:
         cannot_edit_at_this_time: Cette colonne ne peut pas être éditée pour le moment. Veuillez réessayer.
         data_lens_is_incompatible_with_group_bys:
@@ -681,13 +900,18 @@ fr:
       menu: Menu
       must_enter_name: Vous devez inscrire un nom pour cette colonne
       new_row: Nouvelle
+      next_page:
       no_columns: Le set de données %{uid} n'a pas de colonnes.
       no_rows: Pas de rangées affichables
+      page_size:
       permission_denied: Vous n'avez pas accès à cet affichage.
       previous: Précédent
+      previous_page:
       required_cols_missing: Les colonnes nécessaires pour cet affichage sont manquantes
+      row_count:
       sort_ascending: Tri par ordre ascendant
       sort_descending: Tri par ordre descendant
+      start_page:
       totals: Totaux
       view_cell_comments: Voir les commentaires pour cette cellule
       view_first_row: Afficher première ligne
@@ -696,6 +920,7 @@ fr:
       view_previous_row: Affichez ligne précédente
       view_row: Voir rangée
       view_single_row: Visualiser les données en une seule rangée
+      viewing_current_page:
       viewing_row_html: Afficher ligne <span class="curPage"></span> de <span class="totalPages"></span>
     map:
       address_prompt: Entrer l'adresse ici
@@ -722,6 +947,8 @@ fr:
       previous: Précédent
       previous_row: Rangée précédente
       request_timed_out: La requête pour ces données n'a pas abouti.
+      unable_to_display_features_html:
+      unable_to_load_map_html:
     nominate:
       all: Tous
       approve: "(Approuver)"
@@ -804,6 +1031,7 @@ fr:
     and: et
     auth:
       invalid_userpass: Nom d'utilisateur ou mot de passe non valide
+      need_email_verification:
       need_login: Vous devez être connecté pour avoir accès à cette page
       need_permission: Vous n'êtes pas autorisé à voir cette page
       too_many_tries: Trop de tentatives de connexion pour cet identifiant. Compte temporairement désactivé.
@@ -837,6 +1065,7 @@ fr:
       timeline: Chronologie
       treemap: Organigramme
     data_types:
+      blob:
       calendar_date: Date & heure
       checkbox: Case à cocher
       dataset_link: Lien vers une série
@@ -1051,7 +1280,7 @@ fr:
       blob: Fichier ou document non tabulaire
       calendar: Calendrier
       chart: Graphique
-      data_lens: Page de données de lentilles
+      data_lens:
       dataset: Jeu de données
       filter: Vue filtrée
       form: Formulaire
@@ -1059,6 +1288,8 @@ fr:
       grouped: Vue groupée
       href: Série de données externe
       map: Carte
+      new_view: Page de données de lentilles
+      story:
       table: Tableau
       working_copy: Copie de travail
     view_types_plural:
@@ -1073,6 +1304,119 @@ fr:
     visibility:
       private: privé
       public: public
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: Modifier ce composant
@@ -1217,6 +1561,7 @@ fr:
       datasets: Sets de données
       federations: Fédérations
       homepage: Page d'accueil
+      jobs:
       metadata: Métadonnées
       moderation: Modération de Commentaire
       nomination: Modération de Nomination
@@ -1271,6 +1616,7 @@ fr:
       done: Terminé
       end_date: Date de fin
       last_30_days:
+      last_3_days:
       last_month: Mois Dernier
       last_week:
       last_year:
@@ -1282,6 +1628,7 @@ fr:
       prev: Précédent
       specific_date: Date Spécifique
       start_date: Date de début
+      the_day_of:
       the_month_of: Le Mois De...
       the_week_of: La Semaine Du...
       the_year_of: L'Année De...
@@ -1359,6 +1706,7 @@ fr:
     about:
       actions: Actions
       activity: Activité
+      admin_debugging:
       attachments: Pièces jointes
       category: Catégorie
       comments: Commentaires
@@ -1367,6 +1715,7 @@ fr:
       contributors: Contributeurs
       created: créé
       data_provided_by: Source des données
+      datasync_status:
       description: Description
       downloads: Téléchargements
       edit_metadata: "Éditer les métadonnées"
@@ -1403,14 +1752,20 @@ fr:
       your: Votre notation
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: Configuration de la Disposition
         left: Gauche
         right: Droite
         saved: Enregistré
         saving: Enregistrement en cours
         sidebar_position: Position de la barre latérale
+        skip_to_dataset_listing:
+        table_description:
         title: Sets de données
         unpublished_datasets: Sets de données non publiées
+        view_as_a_dataset:
       federation:
         accept: Accepter
         accepted: Accepté
@@ -1442,6 +1797,7 @@ fr:
         title: Ouvrir Fédération de Données
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1450,8 +1806,12 @@ fr:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1461,8 +1821,14 @@ fr:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1472,13 +1838,27 @@ fr:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: Ajouter un nouveau Set de Données à Présenter
         are_you_sure: En êtes-vous certain ? Cette action est irréversible.
@@ -1524,12 +1904,300 @@ fr:
         thumbnail: Vignette
         title: Gérer Page d'Accueil
         up: En haut
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          deleted_dataset:
+          deleted_user:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_all_so_far:
+          showing_most_recent:
+          started:
+          status:
+          title:
+          to_working_copy:
+          with_problems:
+        show_page:
+          back:
+          error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          import_method:
+          initiated_at:
+          no_events:
+          page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
+          title:
+          to:
+        statuses:
+          failure:
+          in_progress:
+          inprogress:
+          not_started:
+          notstarted:
+          success:
+          success_with_data_errors:
       metadata:
         add_new_category: Ajouter Nouvelle Catégorie
         add_new_field: Ajouter Nouveau Champ
         allowed_values: Valeurs Autorisées
         are_you_sure: "Êtes-vous certain de vouloir supprimer ce set de champs et tous les champs qui y sont associés ?"
         category_name: Nom de Catégorie
+        category_table_description:
         create: Créer
         create_new_fieldset: Créer un Nouveau Set de Champs
         define_categories: Définir Catégories de Set de Données
@@ -1559,6 +2227,7 @@ fr:
         metadata_explain1: Les métadonnées personnalisées sont séparées en <span class="code">sets de champs</span> et <span class="code">champs</span>. Un <span class="code">set de champ</span> est une façon de grouper logiquement et visuellement un ou plusieurs <span class="code">champs</span> personnalisés ensemble.
         metadata_explain2: Les champs peuvent être configurés de multiples façons. Ils peuvent être span class="code">requis</span>, ce qui sera appliqué lorsque les éditeurs créent de nouveaux sets de données et mettent à jour des métadonnées existantes. Ils peuvent aussi être <span class="code">privés</span>, ce qui signifie que les valeurs entrées ne seront pas visibles par le public.
         metadata_explain3: Finalement, vous pouvez choisir de prédéfinir les options pour vos <span class="code">champs</span> si vous souhaitez avoir des valeurs choisies à partir d'une liste et non entrées sous forme de texte libre.
+        metadata_field_table_description:
         no_data: Aucun champ de sets de données personnalisés n'a encore été défini pour votre domaine. Entrer un nom ci-dessous et cliquer « Créer » pour commencer.
         no_fields_defined: Ce set de champ n'a pas encore de champs définis
         page_title: Gérer Métadonnées de Set de Données
@@ -1577,6 +2246,7 @@ fr:
         email_prompt: Entrer les adresses e-mail pour les comptes que vous souhaitez créer
         emails: E-mails
         error_permission_request: Il y a eu une erreur lors du traitement de votre demande d'autorisation
+        export_as_csv:
         filter_by: Filtrer par
         flashes:
           accounts_created:
@@ -1596,6 +2266,7 @@ fr:
         no_users_found: Aucun utilisateur existant n'a été trouvé
         no_users_match: Aucun utilisateur ne correspond à votre filtre actuel.
         pending_users: Les utilisateurs suivants possèdent des comptes en attente, mais ne les ont pas encore activés
+        pending_users_table_description:
         reenable_privileges: Réactiver Privilèges
         remove: Supprimer
         reset_password: Réinitialiser Mot de Passe
@@ -1605,14 +2276,19 @@ fr:
           administrator: administrateur
           designer: designer
           editor: rédacteur
+          editor_stories:
           none: aucun
           publisher: "éditeur"
+          publisher_stories:
           viewer: lecteur
         search: Rechercher
         search_for_users: Rechercher des Utilisateurs à Ajouter
         search_results: Rechercher des Résultats pour '%{term}'
         title: Gérer les Utilisateurs
         user_saved: Utilisateur a enregistré
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: Apposer
       append_and_replace: Apposer et Remplacer les Données
@@ -1703,6 +2379,8 @@ fr:
         why_choose_now: Pourquoi est-il important de choisir les types de colonnes maintenant ?
       import_help: <strong>Besoin d'aide ?</strong> Nous avons une <a href="%{common_errors}" rel="external">liste des avertissements et erreurs les plus fréquents</a> qui pourrait vous aider.
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: Système de Référence des Coordonnées
         headline: Indiquer comment &ldquo;<span class="fileName"></span>&rdquo; devrait être importé.
         layers_list: Couches à importer
@@ -1740,6 +2418,7 @@ fr:
       bar:
         api_unsavable: Les vues API ne peuvent pas être créées ou modifiées
         based_on_html: Basé sur <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html:
         based_on_parent_html: Basé sur <a class="parentName"></a>
         based_on_private_view: Un affichage privé
         based_on_working_copy_html: Basé sur la copie de travail de <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -1888,6 +2567,7 @@ fr:
           developer_portal: Portail de dévelopeur
           endpoint_title: 'Point de terminaison de l’API : '
           intro_html: 'La <strong>Socrata Open Data API</strong> (SODA) permet aux développeurs de logiciels d’accéder selon des paramètres préétablis aux données hébergées dans les sites de données Socrata. Ils peuvent par ce biais créer des applications qui se servent des API de type SODA pour présenter, sous des formes novatrices et attractives, des visualisations et composites des séries de données Socrata. Par exemple : une application iPhone permettant de visualiser les dépenses publiques dans telle ou telle région, une application web fournissant aux particuliers des renseignements sur des prestations publiques méconnues, ou un service adressant des alertes automatiques par courrier électronique à ceux que cela intéresse lorsque des affectations de crédits budgétaires sont inscrites dans les projets de lois qu’ils suivent.'
+          multiple_endpoints_intro_html:
           reference_html: Pour commencer à accéder à cette série de données selon des paramètres préétablis, utilisez le point de terminaison ci-dessous. Pour plus de renseignements et d’exemples sur la façon d’utiliser la Socrata Open Data API, référez-vous à notre Documentation pour développeurs <a href="http://dev.socrata.com" rel="external"></a>.
           subtitle: Accéder à cette %{view_type} par le biais de SODA
           title: SODA API
@@ -1910,6 +2590,9 @@ fr:
           wizard_button:
             immutable: Lancer l’assistant Remplacer
             mutable: Lancer l’assistant Ajouter et remplacer
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: Appliquer
@@ -2209,6 +2892,9 @@ fr:
             title: Options photos
           subtitle: Mettre à jour les propriétés de cette colonne
           success: Votre colonne a été mise à jour
+          text_formatting:
+            display_style:
+            title:
           title: Propriétés de la colonne
           url:
             base_url: URL de base
@@ -2242,6 +2928,7 @@ fr:
             no_icons: Les icônes ne s’appliquent qu’à la vue carte
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2270,6 +2957,8 @@ fr:
           download_dataset: Veuillez télécharger l'ensemble de données à partir duquel cette affichage est dérivé.
           geo_header: Télécharger des données géospatiales
           layers_header: Télécharger des couches tabulaires
+          monolayer_header:
+          multilayer_header:
           subtitle: Télécharger un exemplaire de cette série de données dans un format statique
           title: Télécharger
         feed:
@@ -2363,6 +3052,7 @@ fr:
           validation:
             hidden_location_html: Vous pouvez <a href="#showLoc" title="Show a location column">afficher une colonne emplacement masquée</a>.
             location_column: Une colonne emplacement est requise pour créer une carte.
+            location_column_invalid_dataset:
             viz_limit: Une vue ne peut avoir qu’une visualisation correspondante
         odata:
           endpoint_action: 'Copiez ce lien :'
@@ -2551,6 +3241,8 @@ fr:
       unable_to_find_dataset_page: Nous avons été incapable de trouver une page de Lentille de données pour cet ensemble de données
     edit_metadata:
       about: "À Propos"
+      add_link:
+      add_source:
       additional_source: Source supplémentaire
       alternative_access_prompt: Entrez un point d'accès différent pour ce jeu de données
       api_endpoint: Terminal API
@@ -2573,6 +3265,7 @@ fr:
       dataset_title_prompt: Entrez un titre
       dataset_url: URL Set de Données
       dataset_url_prompt: Entrer la location de votre set de données externe
+      default_row_label:
       delete: Supprimer
       email_address: Adresse e-mail
       email_help: Cette adresse ne sera pas visible pour le public Si ce champ reste vierge, il indiquera votre adresse par défaut
@@ -2592,6 +3285,8 @@ fr:
       licensing_attr: Licence & attribution
       list: Liste
       metadata_help: Ce champ a été identifié comme privé par votre organisation et ne peut être vu publiquement
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: Nouvelle pièce jointe
       none: "(néant)"
       northwest_latitude: Latitude nord-ouest
@@ -2599,6 +3294,7 @@ fr:
       optional: Optionnel
       private_help: Ce champ a été identifié comme privé par votre organisation et ne peut être vu publiquement
       remove_image: Supprimer l'image
+      remove_link:
       required_field: Champ obligatoire
       resource_name: Nom de ressource
       resource_name_prompt: Entrez un nom de ressource
@@ -2627,6 +3323,7 @@ fr:
       upload_help: Cette image sera rognée dans un carré
       upload_image: Charger l’image
       upload_new_attachment: Charger la nouvelle pièce jointe
+      url:
     forgot_password:
       already_authenticated: 'Impossible de réinitialiser le mot de passe : vous êtes déjà connecté.'
       failed: Problème lors de l’envoi de votre demande de réinitialisation de votre mot de passe. Veuillez réessayer.
@@ -2718,6 +3415,7 @@ fr:
         no_applications: Vous n’avez pas encore créé d’applications. Cliquez sur Gérer (à droite) pour démarrer
         title: Applications de %{user}
       bar:
+        edit_info_link:
         edit_settings_link: "Éditer paramètres de compte"
         follow_link: Suivre
         join_date: Membre depuis
@@ -2846,6 +3544,11 @@ fr:
         followers: Abonnés
         following: Abonnements
         hide_contacts_link: Cacher
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: Problème lors de la réinitialisation de votre mot de passe. Veuillez réessayer.
       form:
@@ -2863,8 +3566,13 @@ fr:
       mismatch: Les mots de passe ne correspondent pas. Veuillez réessayer
       prompt_html: Connexion avec votre <strong>ID Socrata</strong>
       sign_in_with: "<strong>Connexion</strong> avec %{provider}"
+      sso_required:
       tips_html: Utilisez votre adresse e-mail et mot de passe pour vous connecter sur tous les sites fonctionnant sous  <strong><a href="http://www.socrata.com" rel="external">Socrata</a> </strong>.
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: Créer mon compte
         have_account_link: J’ai déjà un compte
@@ -2878,6 +3586,7 @@ fr:
     stats:
       api: API
       apply: Appliquer
+      browser_page_views:
       bytes_out: Octets Sortants
       chart_created: diagramme créé
       charts: Diagrammes
@@ -2886,6 +3595,7 @@ fr:
       comments: Commentaires
       comments_created: commentaires créés
       daily: Par jour
+      date_range:
       deleted_application: application supprimée
       delta_decrease:
       delta_decrease_compared:
@@ -2964,3 +3674,6 @@ fr:
     array_or:
       last_word_connector: ", ou "
       two_words_connector: " ou "
+  table:
+    no_summary_available:
+    summary:

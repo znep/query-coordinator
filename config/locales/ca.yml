@@ -49,20 +49,15 @@ ca:
         choose_column: Tria una columna
         choropleth_admin_message:
         choropleth_message:
-        choropleth_warning:
-        classic_chart:
         column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
         column_label:
         curated_region_messages:
           not_yet_computed:
-          permissions:
         custom:
         customize_prompt: Personalitza aquesta targeta
-        disabled_curated_region_message:
-          dataset_too_big:
-          permissions:
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported: Actualment no és compatible
         not_supported_long: Aquesta mena de targetes actualment no són compatibles
         prompt: Tria una columna del menú desplegable de sobre per afegir-hi una targeta nova
@@ -88,17 +83,17 @@ ca:
           message: Actualment no podem donar-vos una suma com a total per les pàgines de Visió de dades que tinguin més de {0} columnes de tipus de números o diners.
           title: Sembla que aquesta taula de dades té més de {0} columnes de números
       api_explorer:
-        additional_resources: 'Recursos addicionals per aquest la API:'
-        api_button: API
-        api_button_title: Accediu a aquesta taula de dades a traves de la API
+        additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
+        api_button: Institut Americà de Petroli
+        api_button_title: Accediu a aquesta taula de dades a traves de l'Institut Americà de Petroli
         code_libraries: Codi de biblioteques
-        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de la API '
+        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''Institut Americà de Petroli '
         documentation: Documentació
-        documentation_title: Vegeu la documentació de la API
+        documentation_title: Vegeu la documentació de l'Institut Americà de Petroli
         formats: 'Aquesta dada es troba disponible en diferents formats:'
         geojson: GeoJSON
         json: JSON
-        title: API
+        title: Institut Americà de Petroli
         url: 'Podeu accedir a aquesta informació a través de Socrata Open Data API a aquesta URL:'
       card_aggregation_selector:
         add_this_aggregation:
@@ -123,6 +118,9 @@ ca:
         sum_of: quantitat de {0}
       choropleth:
         computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
         pending_computation:
       common:
         by:
@@ -143,7 +141,7 @@ ca:
           export_visualization_disabled: Aquesta visualització no està disponible<br/> per exportar imatges
           invalid_card: Visualització d'una targeta invàlida
           map_render_error: Hem trobat un error mentre intentàvem representar el mapa.
-        export: Exportar
+        export: Esportar
         latitude: Latitud
         longitude: Longitud
         no_value: Cap valor
@@ -199,6 +197,7 @@ ca:
           current_filter:
           header:
           not_available:
+          not_available_specific:
         download_button_for_image:
         download_button_for_rows:
         download_explanation:
@@ -218,6 +217,7 @@ ca:
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -255,6 +255,8 @@ ca:
       lens_type:
         community: comunitat de visió de dades
         official: visió de dades oficial
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private: Com que la font de la taula de dades d'aquesta pàgina s'ha configurat com a <b>Private</b>, aquesta pàgina no es podrà fer pública. Només aquells que tinguin un accés privilegiat podran veure-ho i no apareixerà al catàleg públic.
         dataset_private_page_public: '<span class="icon-warning"></span>  La font de la taula de dades d''aquesta pàgina s''ha configurat com a <b>Private</b>, així que encara que aquesta pàgina sigui configurada com a pública, ningú sense accés no podrà veure la font d''aquesta taula de dades. Així i tot, apareixerà en el catàleg públic. Hauríeu de considerar de configurar la taula de dades com a pública o la pàgina com a privada. '
@@ -328,7 +330,10 @@ ca:
         clear_all: Esborra-ho tot
         clear_all_flyout: Feu clic per reconfigurar tots els filtres
         filter_title: Mostrant <span class="light">the {0}</span>
+        filtered_title:
         old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button: Altres vistes d'aquesta dada
         title: Aaltres vistes d'aquesta dada
@@ -431,6 +436,24 @@ ca:
           bad_dates: El gràfic no es pot reproduir a causa de valors de dades invàlids
           default: El gràfic no es pot reproduir
           no_data: El gràfic no es pot reproduir sense cap valor.
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -477,113 +500,128 @@ ca:
       browse2:
         api:
           link:
-            label:
-            title:
-        comment_count:
+            label: Documents de l'API
+            title: Veure documentació de l'API per a aquest conjunt de dades
+        comment_count: Número de commentat
         create:
           dataset:
-            label:
-            title:
-          label:
+            label: Crear/Pujar un conjunt de dades
+            title: Crear o pujar un conjunt de dades a la plataforma Socrata
+          label: Afegir nou
           story:
-            label:
-            title:
-          title:
+            label: Crear una perspectiva Socrata
+            title: Creara una nova perspectiva Socrata
+          title: Afegir nou recurs
+        created_at:
+          label: Creat
         data_types:
-          label:
+          label: Tipus de vista
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: menys
+          show_more_label: Més
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          filter:
-          form:
-          href:
-          map:
-          predeply_api:
-          pulse:
-          story:
-          unknown:
+          api: API
+          blob: Dossier o document
+          calendar: Calendari
+          chart: Taula
+          data_lens: Lent de dades
+          dataset: Conjunt de dades
+          draft: Projecte conjunt de dades
+          filter: Vista filtrada
+          form: Formulari
+          href: Enllaç extern
+          map: Mapa
+          predeply_api: API implementar prèviament
+          pulse: Pols
+          story: Perspectiva
+          unknown: Desconegut
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: "¿Està segur que vol eliminar «%{dataset}»?"
+            error: Hi va haver un error d'esborrat «%{dataset}». Siusplau torna-ho a provar.
+            label: Esborrar
+            title: Esborrar «%{name}»
           make_private:
-            error:
-            label:
-            title:
+            error: Hi va haver un error d'fer «%{dataset}» privada. Siusplau torna-ho a provar.
+            label: Fer privada
+            title: Fer «%{name}» private
           make_public:
-            error:
-            label:
-            title:
+            error: Hi va haver un error d'fer «%{dataset}» públic. Siusplau torna-ho a provar.
+            label: Fer públic
+            title: Fer «%{name}» públic
         facets:
           clear_all:
-            label:
+            label: Netejar tots
           contract:
-            label:
-            title:
+            label: Mostrar menys
+            title: Fer clic per mostrar un menor nombre d'opcions
           expand:
-            label:
-            title:
+            label: Mostrar tots...
+            title: Mostrar totes les opcions
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: Filtre
+            filtered_by: Filtrada per
+            result: Resultat
+          hint: Filtrar or Revisar els Resultats
           mobile:
-            all_filters:
-            back:
-            clear_all:
-            filter:
+            all_filters: Tots els filtres
+            back: Torna
+            clear_all: Netejar tots
+            filter: Filtre
+            sort: Ordenar
+            sort_by: Ordenar per
+          modal:
+            alphaAscending: A-Z
+            close: Tancar
+            top: Primer
         federation:
-          label:
-          label_with_source:
-          source:
+          label: Dades Proporcionades Per
+          label_with_source: Dades Proporcionades Per %{source}
+          source: Federat de %{source}
         last_updated:
-          label:
+          label: Actualitzat
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: a la Xarxa de Dades Obert
+            title: Trobar més dades d'aquest tipus a la Xarxa de Dades Obert
+          prompt: Trobar Dades Com Aquest
         results:
-          cetera_count:
-          count:
-          summary:
+          cetera_count: Mostrant %{start}-%{end} de %{total} resultats
+          count: Mostrant %{this} of %{total} resultats
+          summary: "«%{query}»"
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: Netejar cerca
+          placeholder: Cerca
+          title: Cerca
         settings:
-          label:
-          title:
+          label: Ajustos
+          title: Ajustos
         skiplinks:
-          results:
+          results: Anar als resultats
         sort:
-          label:
+          label: Ordenar per
           periods:
-            label:
-            month:
-            week:
-            year:
+            label: Període d'ordre
+            month: Aquest mes
+            week: Aquest setmana
+            year: Aquest curs
+        sorts:
+          last_modified: Actualitzat Recentment
+          most_accessed: Més Visitat
+          newest: El primer més nou
+          relevance: Més Relevant
         topics:
-          empty:
-          label:
+          empty: Hi ha temes assignats
+          label: Temes
+          more: i %{count} més
         view_count:
-          label:
+          label: Vistas
         visibility:
           private:
-            label:
+            label: 'Visibilitat: Privada'
           public:
-            label:
+            label: 'Visibilitat: pública'
       facets:
         categories_singular_title: categoria
         categories_title: Categories
@@ -604,17 +642,19 @@ ca:
           charts: Gràfics
           data_lens: Pàgines de visió de dades
           datasets: Conjunts de Dades
+          draft:
           filters: Vistes amb Filtres
           forms: Formulari
           href: Conjunts de Dades Externs
           maps: Mapes
+          new_view: Pàgines de visió de dades
           pulse:
           pulse_help:
           story: Històries
           story_help: Apreneu més coses sobre les històries
           unpublished: Conjunts de Dades No Publicats
         view_types_singular_title: tipus
-        view_types_title: Veure Tipus
+        view_types_title: Tipus de vista
       listing:
         comment_count: Nombre de comentaris
         federation_source: Federat per %{source}
@@ -643,7 +683,7 @@ ca:
         month: Aquest mes
         week: Aquesta setmana
         year: Aquest any
-      sort_title: Ordena per
+      sort_title: Ordenar per
       sorts:
         alpha: Alfabèticament
         comments: Més Comentat
@@ -711,7 +751,7 @@ ca:
           discuss: Discussió
           edit: Editar
           embed: Encastar
-          export: Exportar
+          export: Esportar
           filter: Filtre
           manage: Gestionar
           moreViews: Més Vistes
@@ -849,6 +889,7 @@ ca:
       delete_warning_multi_column: Desitja eliminar les columnes seleccionades? Totes les dades d'aquestes columnes seran eliminades!
       delete_warning_single_column: Desitja eliminar la columna seleccionada? Totes les dades d'aquesta columna seran eliminades!
       edit_column_properties: Editar Propietats de la Columna
+      end_page:
       errors:
         cannot_edit_at_this_time: 'Aquesta columna no és pot editar actualment. Proveu-ho més tard. '
         data_lens_is_incompatible_with_group_bys:
@@ -861,13 +902,18 @@ ca:
       menu: Menú
       must_enter_name: 'Ha d''introduir un nom per a aquesta columna '
       new_row: Nou
+      next_page:
       no_columns: El conjunt de dades %{uid} no té cap columna.
       no_rows: No hi ha files per a mostrar
+      page_size:
       permission_denied: No té accés a aquesta vista.
       previous: Anterior
+      previous_page:
       required_cols_missing: Les columnes requerides per a aquesta vista no són enlloc
+      row_count:
       sort_ascending: Ordre Ascendent
       sort_descending: Ordre Descendent
+      start_page:
       totals: Totals
       view_cell_comments: Veure comentaris per a aquesta cel·la
       view_first_row: Veure la primera fila
@@ -876,6 +922,7 @@ ca:
       view_previous_row: Veure l'anterior fila
       view_row: Veure fila
       view_single_row: Veure les Dades d'una Única Fila
+      viewing_current_page:
       viewing_row_html: Veient fila <span class"curPage"></span> de <span class="totalPages"></span>
     map:
       address_prompt: Introduir l'adreça ací
@@ -902,6 +949,7 @@ ca:
       previous: Anterior
       previous_row: Anterior fila
       request_timed_out: La sol·licitud per a aquesta dada ha expirat.
+      unable_to_display_features_html:
       unable_to_load_map_html:
     nominate:
       all: Tots
@@ -985,6 +1033,7 @@ ca:
     and: i
     auth:
       invalid_userpass: Nom d'usuari o contrasenya invàlids
+      need_email_verification:
       need_login: Ha d'iniciar sessió per accedir a aquesta pàgina
       need_permission: No té permís per veure aquesta pàgina
       too_many_tries: Massa intents per a iniciar sessió. El compte ha estat deshabilitat temporalment.
@@ -1018,6 +1067,7 @@ ca:
       timeline: Línia temporal
       treemap: Mapa d'Arbre
     data_types:
+      blob:
       calendar_date: Data & Temps
       checkbox: Casella
       dataset_link: Enllaç al Conjunt de Dades
@@ -1240,6 +1290,8 @@ ca:
       grouped: vista agrupada
       href: conjunt de dades extern
       map: mapa
+      new_view: Pàgina de visió de dades
+      story:
       table: taules
       working_copy: còpia de treball
     view_types_plural:
@@ -1254,6 +1306,119 @@ ca:
     visibility:
       private: privat
       public: públic
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: Editar aquesta component
@@ -1411,6 +1576,7 @@ ca:
       datasets: Conjunts de Dades
       federations: Federacions
       homepage: Pagina d'Inici
+      jobs:
       metadata: Metadades
       moderation: Comentar Moderació
       nomination: Nomenar Moderació
@@ -1465,6 +1631,7 @@ ca:
       done: Fet
       end_date: Data de finalització
       last_30_days:
+      last_3_days:
       last_month: Mes passat
       last_week:
       last_year:
@@ -1476,6 +1643,7 @@ ca:
       prev: Previ
       specific_date: Data Específica
       start_date: Data d'inici
+      the_day_of:
       the_month_of: El mes de...
       the_week_of: La setmana de...
       the_year_of: L'any de...
@@ -1599,6 +1767,9 @@ ca:
       your: La seva Puntuació
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: Configuració de Capes
         left: Esquerra
         right: Dreta
@@ -1609,6 +1780,7 @@ ca:
         table_description:
         title: Conjunts de Dades
         unpublished_datasets: Conjunts de Dades no publicats
+        view_as_a_dataset:
       federation:
         accept: Acceptar
         accepted: Acceptat
@@ -1649,8 +1821,12 @@ ca:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1660,8 +1836,14 @@ ca:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1675,11 +1857,23 @@ ca:
         enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: Afegir un Nou Conjunt de Dades Destacat
         are_you_sure: Està segur? Aquesta acció no es pot desfer.
@@ -1732,20 +1926,173 @@ ca:
           replace:
           upsert:
           working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
         index_page:
           action:
           dataset:
+          deleted_dataset:
+          deleted_user:
           export_as_csv:
           initiated_by:
           no_jobs:
           page_title:
+          showing_all_so_far:
           showing_most_recent:
           started:
           status:
           title:
+          to_working_copy:
+          with_problems:
         show_page:
           back:
           error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
           fallback_event_title:
           file_name_unknown:
           import:
@@ -1840,15 +2187,25 @@ ca:
             upsert_already_in_progress_by_someone_else:
               description:
               title:
+          import_method:
+          initiated_at:
           no_events:
           page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
           title:
           to:
         statuses:
           failure:
+          in_progress:
           inprogress:
+          not_started:
           notstarted:
           success:
+          success_with_data_errors:
       metadata:
         add_new_category: Afegir una Categoria Nova
         add_new_field: Afegir un Camp nou
@@ -2076,6 +2433,7 @@ ca:
       bar:
         api_unsavable: Les vistes de l'API no poden ser modificades
         based_on_html: Basat en <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html:
         based_on_parent_html: Basat en <a class="parentName"></a>
         based_on_private_view: una vista privada.
         based_on_working_copy_html: Basat en la còpia de treball de <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -2219,11 +2577,12 @@ ca:
           validation:
             view_column: No pot afegir una columna a la vista
         api:
-          api_docs: Documents de la API
+          api_docs: Documents de l'Institut Americà de Petroli
           column_ids_title: IDs de les Columnes
           developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'
           intro_html: L'<strong>API de Dades Obertes de Socrata</strong> (SODA) permet al enginyers de programari accedir a les dades allotjades en els llocs de dades de Socrata programàticament. Els desenvolupadors poden crear aplicacions que emprin les APIs SODA per a visualitzar i &ldquo;mesclar&rdquo; els conjunts de dades de Socrata de formes noves i excitants. Podreu crear una aplicació d'iPhone que visualitzi la despesa del govern a la vostra àrea, una aplicació web que permeti als ciutadans obtenir beneficis potencials del govern en temes ignorats fins al moment o un servei que automàticament enviï correus electrònics quan s'afegeixin noves característiques als rebuts que us interessi seguir.
+          multiple_endpoints_intro_html:
           reference_html: Per a accedir a aquest conjunt de dades programàticament, utilitzi el punt final de l'API proveïda a sota. Per a més informació i exemples sobre com usar l'API de Dades Obertes de Socrata, miri la nostra <a href="http://dev.socrata.com" rel="external">Documentació del Desenvolupador</a>.
           subtitle: Accedir-hi %{view_type} mitjançant SODA
           title: SODA API
@@ -2246,6 +2605,9 @@ ca:
           wizard_button:
             immutable: Iniciar l'assistent de Reemplaçament
             mutable: Iniciar l'assistent d'Adjuntament i Reemplaçament
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: Aplicar
@@ -2545,6 +2907,9 @@ ca:
             title: Opcions de Foto
           subtitle: Actualitzar varies propietats en aquesta columna
           success: La seva columna s'ha actualitzat
+          text_formatting:
+            display_style:
+            title:
           title: Propietats de Columna
           url:
             base_url: URL Base
@@ -2702,6 +3067,7 @@ ca:
           validation:
             hidden_location_html: Vostè pot <a href="#showLoc" title="Show a location column">mostrar una columna de localització</a>.
             location_column: Es requereix una columna de localització per a crear el mapa.
+            location_column_invalid_dataset:
             viz_limit: Una vista deu tenir només una visualització a sobre
         odata:
           endpoint_action: 'Copia aquest enllaç:'
@@ -2890,6 +3256,8 @@ ca:
       unable_to_find_dataset_page: 'No som capaços de trobar una visió de dades per aquesta taula de dades. '
     edit_metadata:
       about: Sobre
+      add_link:
+      add_source:
       additional_source: 'Font Addicional '
       alternative_access_prompt: Introdueixi un punt d'accés alternatiu per a aquest conjunt de dades
       api_endpoint: Punt Final d'API
@@ -2932,6 +3300,8 @@ ca:
       licensing_attr: Llicències i Atribució
       list: Llista
       metadata_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: Nou Adjunt
       none: "(cap)"
       northwest_latitude: Latitud Nord-Oest
@@ -2939,6 +3309,7 @@ ca:
       optional: Opcional
       private_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
       remove_image: Eliminar Imatge
+      remove_link:
       required_field: Camp Requerit
       resource_name: Nom del Recurs
       resource_name_prompt: Introdueixi un nom per al recurs
@@ -2967,6 +3338,7 @@ ca:
       upload_help: Aquesta imatge es retallarà per a ajustar-la al quadrat
       upload_image: Carregar la Imatge
       upload_new_attachment: Carregar Nou Adjunt
+      url:
     forgot_password:
       already_authenticated: 'Impossible reiniciar la contrasenya: ja ha iniciat la sessió.'
       failed: Ha ocorregut un problema mentre enviàvem la seva petició de reinici de contrasenya. Si us plau, provi una altra vegada.
@@ -3058,6 +3430,7 @@ ca:
         no_applications: No ha creat encara cap aplicació. Cliqui 'Administrar' a la dreta per començar-hi
         title: Les Aplicacions de %{user}
       bar:
+        edit_info_link:
         edit_settings_link: Editar els Ajustaments de Compte
         follow_link: Seguir
         join_date: S'ha unit en
@@ -3186,6 +3559,11 @@ ca:
         followers: Seguidors
         following: Seguint
         hide_contacts_link: Amagar
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: Ha ocorregut un problema mentre reiniciàvem la seva contrasenya. Si us pla, provi una altra vegada.
       form:
@@ -3203,8 +3581,13 @@ ca:
       mismatch: Les contrasenyes no coincideixen; si  us plau, provi una altra vegada
       prompt_html: Iniciar Sessió amb la seva <strong>Socrata ID</strong>
       sign_in_with: "<strong>Registreu-vos</strong> amb %{provider}"
+      sso_required:
       tips_html: Empri el seu Correu Electrònic i Contrasenya per a iniciar sessió en tots els llocs <strong><a href="http://www.socrata.com" rel="external">Socrata</a> relacionants</strong>.
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: Crear el Meu Compte
         have_account_link: Ja disposo d'un compte

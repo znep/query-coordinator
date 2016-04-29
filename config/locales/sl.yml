@@ -42,16 +42,22 @@ sl:
     dataCards:
       add_card_dialog:
         add_card: Dodaj kartico
+        add_card_title:
         add_this_card: Dodaj to kartico
         card_on_page: Kartica je že na strani
         card_on_page_long: Ta kartica je že na strani
         choose_column: Izberite stolpec
-        classic_chart:
+        choropleth_admin_message:
+        choropleth_message:
         column_chart_warning: 'Upoštevajte: to bi imelo za posledico palični stolpčni diagram, ki bi vseboval več kot sto stolpcev -- lahko, da bo šlo počasneje kot pri drugih diagramih'
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
         custom:
         customize_prompt: Prilagodite si to kartico
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported: Trenutno ni podprta
         not_supported_long: Ta kartica trenutno ni podprta
         prompt: Za dodajanje nove kartice na spustnem meniju izberite stolpec
@@ -63,6 +69,19 @@ sl:
           feature_map: Predstavi ta stolpec kot zemljevid s funkcijami
           search_card: Predstavi ta stolpec kot išči kartico
           timeline_chart: Predstavi ta stolpec kot diagram časovnega poteka
+      aggregation_chooser:
+        by_the_number_of: <span class="information">s</span> številom
+        by_the_sum_of: <span class="information">z</span> vsoto
+        count_label: "štej {0} za vsak element"
+        description: 'Glej elemente podatkov te velikosti ali barve:'
+        option_disabled: Tega stolpca ni mogoče uporabljati z/s<br>številom skupka
+        sum_label: dodaj za vsak {0}
+        the_number_of: "Število"
+        the_sum_of: Seštevek
+        title: Zbiranje
+        too_many_columns:
+          message: V tem trenutku ne moremo zagotoviti seštevanja za zbiranje vrednosti na straneh Data Lens (Razvid podatkov), ki imajo več kot {0} stolpcev s številkami ali denarjem.
+          title: Videti je, da združuje ta podatkovni niz več kot {0} stolpcev s številkami
       api_explorer:
         additional_resources: 'Dodatni viri za ta API:'
         api_button: API
@@ -76,6 +95,12 @@ sl:
         json: JSON
         title: API
         url: 'Do teh podatkov lahko dostopate preko API-ja za Prostodostopne podatke Socrata na tem spletnem naslovu:'
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card: Zapri to kartico
         customize_disabled: Za to kartico še ni možnosti za prilagoditev
@@ -91,6 +116,12 @@ sl:
         average: povprečje {0}
         number_of: stevilo {0}
         sum_of: seštevek {0}
+      choropleth:
+        computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
+        pending_computation:
       common:
         by:
         cancel: Prekliči
@@ -116,6 +147,8 @@ sl:
         no_value: Ni vrednosti
         ok: |
           V redu
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions: Dovoljenja
           private: Zasebno
@@ -149,6 +182,7 @@ sl:
           simple_blue:
           simple_grey:
           title: Osnovna plast zemljevida
+        title:
         visualization_options:
           title: Tip kartice
       distribution_chart:
@@ -158,21 +192,33 @@ sl:
           error: Pri poskusu predstavitve te kartice je prišlo do napake.
           no_data: Ni podatkov za prikaz.
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+          not_available_specific:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled: Približevanje trenutno ni na voljo. Prosimo, poskusite znova kasneje.
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -210,6 +256,8 @@ sl:
       lens_type:
         community: razvid podatkov data lens za skupnost
         official: uradni razvid podatkov data lens
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private: Ker je izvorni podatkovni niz za to stran nastavljen na <b>Zasebno</b>, te strani ni mogoče narediti javno dostopne. Videli jo bodo lahko samo tisti s prednostnim dostopom, v javnem katalogu pa se ne bo pojavila.
         dataset_private_page_public: <span class="icon-warning"></span> Izvorni niz podatkov za to stran je nastavljen na <b>Zasebno</b>, tako da je tudi, če bo stran nastavljena na Javno, ne bo mogel videti kdorkoli z dostopom do izvornega podatkovnega niza. Kljub temu se bo pojavil v javnem katalogu. Razmislite o nastavitvi na Javno za ta podatkovni niz ali pa na Zasebno za to stran.
@@ -225,6 +273,10 @@ sl:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -243,6 +295,7 @@ sl:
           title:
           viewer:
         title: Upravljaj
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -262,6 +315,7 @@ sl:
         validation_error_min_length: Prosimo, vnesite naslov
         validation_error_required: Prosimo, vnesite naslov
         visualization_as_image: Vizualizacija v obliki slike
+        visualization_as_image_disabled_flyout: Prosimo, shranite stran, da boste lahko prenesli vizualizacijo v obliki slike
       mobile_warning_dialog:
         acknowledgement: Prav, razumem!
         description: Delamo na tem, da se bo vaša mobilna izkušnja na tej strani izboljšala
@@ -277,6 +331,10 @@ sl:
         clear_all: Počisti vse
         clear_all_flyout: Kliknite za ponastavitev vseh filtrov
         filter_title: Prikazujem <span class="light">{0}</span>
+        filtered_title:
+        old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button: Drugi pogledi na te podatke
         title: Drugi pogledi na te podatke
@@ -321,9 +379,21 @@ sl:
         flyoutFailedTitle: Prišlo je do napake
         flyoutIdle: Kliknite, če želite shraniti spremembe
         flyoutNoChanges: Ni sprememb, ki bi jih lahko shranili
+        flyoutNoEditPermission:
         save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search: Poskusite z iskanjem številke, ki ne vsebuje črk.
@@ -367,6 +437,24 @@ sl:
           bad_dates: Diagrama zaradi neveljavnih vrednosti podatkov ni mogoče prikazati.
           default: Diagrama ni mogoče prikazati.
           no_data: Diagrama ni mogoče prikazati brez vrednosti.
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -410,6 +498,131 @@ sl:
         suggest_dataset_short: Predlagaj podatkovni niz.
         suggest_dataset_verb: Predlagaj
       back_to_dataset: Nazaj na podatkovni niz
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        created_at:
+          label:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          draft:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+            sort:
+            sort_by:
+          modal:
+            alphaAscending:
+            close:
+            top:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary: "»%{query}«"
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        sorts:
+          last_modified: Nedavno posodobljeno
+          most_accessed: Največkrat obiskano
+          newest: najprej najnovejši
+          relevance: Najustreznejše
+        topics:
+          empty:
+          label:
+          more:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: kategorija
         categories_title: Kategorije
@@ -428,12 +641,14 @@ sl:
           blob: Datoteke in dokumenti
           calendars: Koledarji
           charts: Diagrami
-          data_lens: Strani Data Lens
+          data_lens:
           datasets: Podatkovni nizi
+          draft:
           filters: Filtrirani pogledi
           forms: Oblike
           href: Zunanji podatkovni nizi
           maps: Zemljevidi
+          new_view: Strani Data Lens
           pulse:
           pulse_help:
           story: Zgodbe
@@ -454,6 +669,7 @@ sl:
           rss: RSS
           type: Vrsta
         timeout: Oprostite. Rezultatov trenutno ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
+      ordered_topics:
       row_results:
         less_link: Manj
         matching_rows: Iskanje ujemajočih vrstic po podatkovnih nizih
@@ -484,6 +700,7 @@ sl:
           main: Rezultati %{body}
           term: za "%{term}"
     charts:
+      missing_column_html:
       negatives_in_data: 'Neveljaven diagram: prisotne negativne vrednosti'
       no_data: Ni podatkov
       other_slice_label: Drugo
@@ -523,6 +740,7 @@ sl:
           email: E-pošta
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: 'Poglej %{name}, podatkovni niz na strani %{site}: '
       sidebar:
         tabs:
@@ -678,6 +896,7 @@ sl:
       delete_warning_multi_column: Ali želite izbrisati izbrane stolpce? Vsi podatki iz teh stolpcev bodo odstranjeni!
       delete_warning_single_column: Ali želite izbrisati izbrani stolpec? Vsi podatki v tem stolpcu bodo odstranjeni!
       edit_column_properties: Uredi lastnosti stolpca
+      end_page:
       errors:
         cannot_edit_at_this_time: Tega stolpca ta trenutek ne morete urejati. Prosimo, poskusite znova kasneje.
         data_lens_is_incompatible_with_group_bys:
@@ -690,13 +909,18 @@ sl:
       menu: Meni
       must_enter_name: Za ta stolpec morate vnesti ime
       new_row: Novo
+      next_page:
       no_columns: Podatkovni niz %{uid} nima nobenih stolpcev.
       no_rows: Ni vrstic za prikaz
+      page_size:
       permission_denied: Nimate dostopa do tega pogleda.
       previous: Prejšnji
+      previous_page:
       required_cols_missing: Stolpci, potrebni za ta pogled, manjkajo
+      row_count:
       sort_ascending: Razvrsti naraščajoče
       sort_descending: Razvrsti padajoče
+      start_page:
       totals: Skupno
       view_cell_comments: Poglej komentarje za to celico
       view_first_row: Poglej prvo vrstico
@@ -705,6 +929,7 @@ sl:
       view_previous_row: Poglej prejšnjo vrstico
       view_row: Poglej vrstico
       view_single_row: Poglej podatke o eni vrstici
+      viewing_current_page:
       viewing_row_html: Gledanje vrstice <span class="curPage"></span> od <span class="totalPages"></span>
     map:
       address_prompt: Tukaj vnesite naslov
@@ -731,6 +956,8 @@ sl:
       previous: Prejšnja
       previous_row: Prejšnja vrstica
       request_timed_out: "Čas zahteve za te podatke je potekel."
+      unable_to_display_features_html:
+      unable_to_load_map_html:
     nominate:
       all: Vse
       approve: "(Odobri)"
@@ -813,6 +1040,7 @@ sl:
     and: in
     auth:
       invalid_userpass: neveljavno uporabniško ime ali geslo
+      need_email_verification:
       need_login: Za dostop do te strani morate biti prijavljeni
       need_permission: Nimate dovoljenja za ogled te strani
       too_many_tries: Preveč poskusov prijave tega uporabnika. Račun začasno onemogočen.
@@ -846,6 +1074,7 @@ sl:
       timeline: "Časovnica"
       treemap: Drevesni zemljevid
     data_types:
+      blob:
       calendar_date: Datum in čas
       checkbox: Potrditveno polje
       dataset_link: Povezava podatkovnega niza
@@ -1060,7 +1289,7 @@ sl:
       blob: netabelarna datoteka ali dokument
       calendar: koledar
       chart: grafikon
-      data_lens: Stran Data Lens
+      data_lens:
       dataset: podatkovni niz
       filter: filtriran pogled
       form: oblika
@@ -1068,6 +1297,8 @@ sl:
       grouped: združen pogled
       href: zunanji podatkovni niz
       map: zemljevid
+      new_view: Stran Data Lens
+      story:
       table: tabela
       working_copy: delovna kopija
     view_types_plural:
@@ -1082,6 +1313,119 @@ sl:
     visibility:
       private: zasebno
       public: javno
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: Uredi to komponento
@@ -1239,6 +1583,7 @@ sl:
       datasets: Podatkovni nizi
       federations: Združevanja
       homepage: Domača stran
+      jobs:
       metadata: Meta podatki
       moderation: Moderiranje komentarjev
       nomination: Moderiranje nominacij
@@ -1293,6 +1638,7 @@ sl:
       done: Končano
       end_date: Datum konca
       last_30_days:
+      last_3_days:
       last_month: Prejšnji mesec
       last_week:
       last_year:
@@ -1304,6 +1650,7 @@ sl:
       prev: Prejšnji
       specific_date: Določen datum
       start_date: Datum začetka
+      the_day_of:
       the_month_of: Mesec ...
       the_week_of: Teden ...
       the_year_of: Leto ...
@@ -1381,6 +1728,7 @@ sl:
     about:
       actions: Dejanja
       activity: Dejavnost
+      admin_debugging:
       attachments: Priloge
       category: Kategorija
       comments: Komentarji
@@ -1389,6 +1737,7 @@ sl:
       contributors: Sodelavci
       created: ustvarjeno
       data_provided_by: Podatke omogočil
+      datasync_status:
       description: Opis
       downloads: Prenosi
       edit_metadata: Uredi meta podatke
@@ -1425,14 +1774,20 @@ sl:
       your: Vaša ocena
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: Konfiguracija postavitve
         left: Levo
         right: Desno
         saved: Shranjeno
         saving: Shranjevanje
         sidebar_position: Položaj stranske vrstice
+        skip_to_dataset_listing:
+        table_description:
         title: Podatkovni nizi
         unpublished_datasets: Neobjavljeni podatkovni nizi
+        view_as_a_dataset:
       federation:
         accept: Sprejmi
         accepted: Sprejeto
@@ -1464,6 +1819,7 @@ sl:
         title: Odpri združevanje podatkov
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1472,8 +1828,12 @@ sl:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1483,8 +1843,14 @@ sl:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1494,13 +1860,27 @@ sl:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: Dodaj nov priljubljen podatkovni niz
         are_you_sure: Ali ste prepričani? Tega dejanja ni mogoče razveljaviti.
@@ -1546,12 +1926,300 @@ sl:
         thumbnail: Sličica
         title: Upravljaj domačo stran
         up: Gor
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          deleted_dataset:
+          deleted_user:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_all_so_far:
+          showing_most_recent:
+          started:
+          status:
+          title:
+          to_working_copy:
+          with_problems:
+        show_page:
+          back:
+          error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          import_method:
+          initiated_at:
+          no_events:
+          page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
+          title:
+          to:
+        statuses:
+          failure:
+          in_progress:
+          inprogress:
+          not_started:
+          notstarted:
+          success:
+          success_with_data_errors:
       metadata:
         add_new_category: Dodaj novo kategorijo
         add_new_field: Dodaj novo polje
         allowed_values: Dovoljene vrednosti
         are_you_sure: Ali ste prepričani, da želite izbrisati ta komplet polj in vsa povezana polja?
         category_name: Ime kategorije
+        category_table_description:
         create: Ustvari
         create_new_fieldset: Ustvari nov komplet polj
         define_categories: Določi kategorije podatkovnih nizov
@@ -1581,6 +2249,7 @@ sl:
         metadata_explain1: Meta podatki po meri so razdeljeni na <span class="code">komplete polj</span> in <span class="code">polja</span>. <span class="code">Komplet polj</span> je način za logično in vizualno razvrščanje v skupino enega ali več <span class="code">polj</span> po meri.
         metadata_explain2: Polja lahko konfigurirate na več načinov. Lahko so <span class="code">zahtevana</span>, kar bo uveljavljeno, ko sodelavci ustvarijo nove podatkovne nize in posodobijo obstoječe meta podatke. Lahko so tudi <span class="code">zasebna</span>, kar pomeni, da vnesene vrednosti ne bodo vidne javnosti.
         metadata_explain3: Nazadnje lahko izberete določitev možnosti za svoja <span class="code">polja</span>, če raje želite imeti izbiro vrednosti s seznama kot pa vnos prostega besedila.
+        metadata_field_table_description:
         no_data: Za vašo domeno še niso bila določena polja s podatkovnimi nizi po meri. Spodaj vnesite ime in za začetek kliknite 'Ustvari'.
         no_fields_defined: Za ta komplet polj še ni določeno nobeno polje
         page_title: Upravljaj z meta podatki podatkovnega niza
@@ -1599,6 +2268,7 @@ sl:
         email_prompt: Vnesi e-poštne naslove za račune, ki jih želite ustvariti
         emails: E-sporočila
         error_permission_request: Pri obdelavi vaše zahteve za dovoljenje je prišlo do napake
+        export_as_csv:
         filter_by: Filtriraj po
         flashes:
           accounts_created:
@@ -1620,6 +2290,7 @@ sl:
         no_users_found: Noben obstoječ uporabnik ni bil najden
         no_users_match: Noben uporabnik se ne ujema z vašim trenutnim filtrom.
         pending_users: Naslednji uporabniki imajo čakajoče račune, vendar jih še niso aktivirali
+        pending_users_table_description:
         reenable_privileges: Znova omogoči pravice
         remove: Odstrani
         reset_password: Ponastavi geslo
@@ -1629,14 +2300,19 @@ sl:
           administrator: skrbnik
           designer: snovalec
           editor: urednik
+          editor_stories:
           none: noben
           publisher: izdajatelj
+          publisher_stories:
           viewer: pregledovalec
         search: Išči
         search_for_users: Išči uporabnike, ki bodo dodani
         search_results: Išči rezultate za '%{term}'
         title: Upravljaj z uporabniki
         user_saved: Uporabnik shranjen
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: Dodaj
       append_and_replace: Dodaj in zamenjaj podatke
@@ -1727,6 +2403,8 @@ sl:
         why_choose_now: Zakaj je pomembno, da zdaj izberem vrsto stolpcev?
       import_help: <strong>Potrebujete pomoč?</strong> Vzdržujemo <a href="%{common_errors}" rel="external">seznam običajnih opozoril in napak</a>, ki vam lahko pomagajo.
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: Referenčni koordinatni sistem
         headline: Določite, kako bo uvoženo &ldquo;<span class="fileName"></span>&rdquo;.
         layers_list: Plasti za uvoz
@@ -1764,6 +2442,7 @@ sl:
       bar:
         api_unsavable: Pogledov API ni mogoče spreminjati
         based_on_html: Na osnovi <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html:
         based_on_parent_html: Na osnovi <a class="parentName"></a>
         based_on_private_view: zasebni pogled.
         based_on_working_copy_html: Na osnovi delovne kopije <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -1912,6 +2591,7 @@ sl:
           developer_portal: Portal za razvijalce
           endpoint_title: 'Končna točka dostopa do API-jev:'
           intro_html: "<strong>Socrata Open Data API</strong> (SODA) omogoča razvijalcem programske opreme dostop do podatkov, ki programsko gostujejo na podatkovnih straneh Socrata. Razvijalci lahko ustvarjajo aplikacije, ki uporabljajo API-je SODA za vizualizacijo in &ldquo;sestavljanje&rdquo; podatkovnih nizov Socrata na nove in razburljive načine. Ustvarite aplikacijo za iPhone, ki vizualizira vladno potrošnjo v vašem območju, spletno aplikacijo, ki omogoča državljanom, da pogledajo morebitne vladne prednosti, ki so jih spregledali, ali storitev, ki vam samodejno pošlje e-sporočilo, kadar se dodajo nove rezervacije dodanim osnutkom zakonov, ki jim želite slediti."
+          multiple_endpoints_intro_html:
           reference_html: Za začetek programskega dostopa do teh podatkovnih nizov uporabite spodnjo končno točko API. Za več informacij in primerov glede uporabe Socrata Open Data API si oglejte našo <a href="http://dev.socrata.com" rel="external">dokumentacijo za razvijalce</a>.
           subtitle: Dostopajte do tega %{view_type} prek SODA
           title: SODA API
@@ -1934,6 +2614,9 @@ sl:
           wizard_button:
             immutable: Zaženi čarovnika za zamenjavo
             mutable: Zaženi čarovnika za dodajanje in zamenjavo
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: Potrdi
@@ -2241,6 +2924,9 @@ sl:
             title: Možnosti fotografij
           subtitle: Posodobi različne lastnosti v tem stolpcu
           success: Vaš stolpec je bil posodobljen
+          text_formatting:
+            display_style:
+            title:
           title: Lastnosti stolpca
           url:
             base_url: Osnovi spletni naslov
@@ -2274,6 +2960,7 @@ sl:
             no_icons: Ikone se nanašajo le na pogled z zemljevidi
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2302,6 +2989,8 @@ sl:
           download_dataset: Prosimo, prenesite zbirko podatkov, iz katere je izveden ta pogled.
           geo_header: Prenesi geoprostorske podatke
           layers_header: Prenesi tabelarne plasti
+          monolayer_header:
+          multilayer_header:
           subtitle: Prenesi kopijo tega podatkovnega niza v statični obliki
           title: Prenos
         feed:
@@ -2395,6 +3084,7 @@ sl:
           validation:
             hidden_location_html: Prikažete lahko <a href="#showLoc" title="Show a location column">skriti stolpec z lokacijami</a>.
             location_column: Stolpec z lokacijami je obvezen za ustvarjanje zemljevida.
+            location_column_invalid_dataset:
             viz_limit: Pogled lahko ima le eno vizualizacijo
         odata:
           endpoint_action: 'Kopiraj to povezavo:'
@@ -2587,6 +3277,8 @@ sl:
       unable_to_find_dataset_page: Nismo uspeli najti Data Lens strani za to zbirko podatkov.
     edit_metadata:
       about: O
+      add_link:
+      add_source:
       additional_source: Dodatni vir
       alternative_access_prompt: Vnesite alternativno dostopno točko za ta podatkovni niz
       api_endpoint: Končna točka API
@@ -2609,6 +3301,7 @@ sl:
       dataset_title_prompt: Vnesi naslov
       dataset_url: Spletni naslov podatkovnega niza
       dataset_url_prompt: Vnesi lokacijo svojega zunanjega podatkovnega niza
+      default_row_label:
       delete: Izbriši
       email_address: E-poštni naslov
       email_help: Ta naslov ne bo prikazan javno. Če pustite prazno, bo privzeto uporabljen vaš e-poštni naslov
@@ -2628,6 +3321,8 @@ sl:
       licensing_attr: Licenciranje in funkcija
       list: Seznam
       metadata_help: To polje je vaša organizacija označila kot zasebno in ni javno vidno
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: Nova priloga
       none: "(brez)"
       northwest_latitude: Severozahodna zemljepisna širina
@@ -2635,6 +3330,7 @@ sl:
       optional: Izbirno
       private_help: To polje je vaša organizacija označila kot zasebno in ni javno vidno
       remove_image: Odstrani sliko
+      remove_link:
       required_field: Obvezno polje
       resource_name: Ime vira
       resource_name_prompt: Vnesi ime vira
@@ -2663,6 +3359,7 @@ sl:
       upload_help: Ta slika bo obrezana v kvadrat
       upload_image: Naloži sliko
       upload_new_attachment: Naloži novo prilogo
+      url:
     forgot_password:
       already_authenticated: 'Ni mogoče ponastaviti gesla: ste že prijavljeni.'
       failed: Prišlo je do težave pri pošiljanju vaše zahteve za ponastavitev gesla. Prosimo, poskusite znova.
@@ -2754,6 +3451,7 @@ sl:
         no_applications: Niste še ustvarili nobene aplikacije. Za začetek kliknite 'Upravljaj' ne desni
         title: Aplikacije %{user}
       bar:
+        edit_info_link:
         edit_settings_link: Uredi nastavitve računa
         follow_link: Sledi
         join_date: Pridružil/-a dne
@@ -2882,6 +3580,11 @@ sl:
         followers: Sledilci
         following: Sledenje
         hide_contacts_link: Skrij
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: Pri ponastavitvi vašega gesla je prišlo do napake. Prosimo, poskusite znova.
       form:
@@ -2899,8 +3602,13 @@ sl:
       mismatch: Gesli se ne eujemata, poskusite znova
       prompt_html: Prijavite se s svojim <strong>Socrata ID-jem</strong>
       sign_in_with: "<strong>Vpišite se</strong>s/z %{provider}"
+      sso_required:
       tips_html: Uporabite svojo e-pošto in geslo, da se prijavite v vse <strong><a href="http://www.socrata.com" rel="external">Socrata</a> poganjane</strong> strani.
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: Ustvari moj račun
         have_account_link: "Že imam račun"
@@ -2914,6 +3622,7 @@ sl:
     stats:
       api: API
       apply: Uporabi
+      browser_page_views:
       bytes_out: Bajtov ven
       chart_created: grafikon ustvarjen
       charts: Grafikoni
@@ -2922,6 +3631,7 @@ sl:
       comments: Komentarji
       comments_created: komentarji ustvarjeni
       daily: Dnevno
+      date_range:
       deleted_application: izbrisana aplikacija
       delta_decrease:
       delta_decrease_compared:
@@ -3000,3 +3710,6 @@ sl:
     array_or:
       last_word_connector: ali
       two_words_connector: ali
+  table:
+    no_summary_available:
+    summary:

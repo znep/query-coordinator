@@ -329,8 +329,10 @@ en:
       quick_filter_bar:
         clear_all: Clear All
         clear_all_flyout: Click to reset all filters
+        filter_title: Showing <span class="light">the {0}</span>
         filtered_title: Showing <span class="light">{0}</span>
         old_filter_title: Showing <span class="light">the {0}</span>
+        old_filtered_title: Showing <span class="light">the {0}</span>
         unfiltered_title: Showing <span class="light">all {0}</span>
       related_views:
         button: Other views of this data
@@ -1516,7 +1518,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2469,7 +2471,7 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title: 
+        snapshot_title:
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -2876,7 +2878,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning: 
+            format_mask_warning:
             groups:
               all: All
               common: Common
@@ -3206,7 +3208,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html: 
+          no_results_html:
           pagination:
             last: See last view
             next: See next %{count} views

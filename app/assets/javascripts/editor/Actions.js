@@ -189,10 +189,6 @@ export default {
   // {string} domain
   ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART',
 
-  // User chose to visualize the dataset as a table.
-  // No payload.
-  ASSET_SELECTOR_VISUALIZE_AS_TABLE: 'ASSET_SELECTOR_VISUALIZE_AS_TABLE',
-
   // User chose to visualize the dataset as a chart.
   // No payload.
   ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP: 'ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP',

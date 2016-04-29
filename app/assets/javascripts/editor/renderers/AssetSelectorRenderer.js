@@ -157,7 +157,7 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
-      'datasetSelected',
+      'viewSelected',
       function(event, datasetObj) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
@@ -328,20 +328,27 @@ export default function AssetSelectorRenderer(options) {
           selectorWideDisplay = true;
           break;
 
-        case WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION:
+        case WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG:
           selectorTitle = I18n.t('editor.asset_selector.visualization.choose_map_or_chart_heading');
           selectorContent = _renderChooseMapOrChartTemplate();
           selectorWideDisplay = true;
           break;
 
-        case WIZARD_STEP.SELECT_TABLE_OR_CHART:
-          selectorTitle = I18n.t('editor.asset_selector.visualization.choose_visualization_mode');
-          selectorContent = _renderChooseTableOrChartTemplate();
+        case WIZARD_STEP.SELECT_TABLE_FROM_CATALOG:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.choose_insert_table_heading');
+          selectorContent = _renderChooseTableTemplate();
+          selectorWideDisplay = true;
           break;
 
         case WIZARD_STEP.CONFIGURE_VISUALIZATION:
           selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
           selectorContent = _renderConfigureVisualizationTemplate();
+          selectorWideDisplay = true;
+          break;
+
+        case WIZARD_STEP.TABLE_PREVIEW:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.preview_table_heading');
+          selectorContent = _renderTablePreviewTemplate();
           selectorWideDisplay = true;
           break;
 
@@ -409,6 +416,10 @@ export default function AssetSelectorRenderer(options) {
 
       case WIZARD_STEP.CONFIGURE_VISUALIZATION:
         _renderConfigureVisualizationData(componentType, componentValue);
+        break;
+
+      case WIZARD_STEP.TABLE_PREVIEW:
+        _renderTablePreviewData(componentType, componentValue);
         break;
 
       case WIZARD_STEP.CONFIGURE_MAP_OR_CHART:
@@ -505,6 +516,11 @@ export default function AssetSelectorRenderer(options) {
     var insertVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_description'));
 
+    var insertTableHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_table_heading'));
+    var insertTableDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_table_description'));
+
     var createVisualizationHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
     var createVisualizationDescription = $('<p>').
@@ -521,6 +537,11 @@ export default function AssetSelectorRenderer(options) {
             {'data-visualization-option': 'INSERT_VISUALIZATION'}
           ).
             append(insertVisualizationHeader, insertVisualizationDescription),
+          $(
+            '<li>',
+            {'data-visualization-option': 'INSERT_TABLE'}
+          ).
+            append(insertTableHeader, insertTableDescription),
           $(
             '<li>',
             {'data-visualization-option': 'CREATE_VISUALIZATION'}
@@ -575,14 +596,6 @@ export default function AssetSelectorRenderer(options) {
       backButton.text(I18n.t('editor.modal.buttons.cancel'));
     }
 
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn btn-primary btn-apply',
-        'disabled': 'disabled'
-      }
-    ).text(_insertButtonText());
-
     var content = $(
       '<div>',
       { 'class': 'asset-selector-input-group asset-selector-input-group-fixed-height' }
@@ -598,7 +611,7 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'modal-button-group r-to-l' }
     ).append([
       backButton,
-      insertButton
+      _renderModalInsertButton({ disabled: true })
     ]);
 
     // Indirection for styling's sake.
@@ -661,14 +674,6 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
 
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary btn-apply',
-        'disabled': 'disabled'
-      }
-    ).text(_insertButtonText());
-
     var content = $(
       '<div>',
       { 'class': 'asset-selector-input-group' }
@@ -681,7 +686,7 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'modal-button-group r-to-l' }
     ).append([
       backButton,
-      insertButton
+      _renderModalInsertButton({ disabled: true })
     ]);
 
     return [ content, buttonGroup ];
@@ -714,7 +719,7 @@ export default function AssetSelectorRenderer(options) {
   function _renderImagePreviewTemplate() {
     var previewImageLabel = $(
       '<h2>',
-      { 'class': 'asset-selector-preview-image-label' }
+      { 'class': 'asset-selector-preview-label' }
     ).text(I18n.t('editor.asset_selector.image_preview.preview_label'));
 
     var previewImage = $(
@@ -724,7 +729,7 @@ export default function AssetSelectorRenderer(options) {
 
     var previewContainer = $(
       '<div>',
-      { 'class': 'asset-selector-preview-image-container' }
+      { 'class': 'asset-selector-preview-container' }
     ).append([
       previewImage
     ]);
@@ -761,19 +766,12 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
 
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary btn-apply'
-      }
-    ).text(_insertButtonText());
-
     var buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
       backButton,
-      insertButton
+      _renderModalInsertButton()
     ]);
 
     var isImage = assetSelectorStore.getComponentType() === 'image';
@@ -811,7 +809,7 @@ export default function AssetSelectorRenderer(options) {
   function _renderImagePreviewData(componentProperties) {
     var imageUrl = _extractImageUrl(componentProperties);
     var altAttribute = _extractImageAlt(componentProperties);
-    var imageContainer = _container.find('.asset-selector-preview-image-container');
+    var imageContainer = _container.find('.asset-selector-preview-container');
     var imageElement = imageContainer.find('.asset-selector-preview-image');
     var imageSrc = imageElement.attr('src');
     var altInputField = _container.find('.asset-selector-alt-text-input');
@@ -875,14 +873,14 @@ export default function AssetSelectorRenderer(options) {
     var previewTileContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-tile-container'
+        'class': 'asset-selector-story-tile-embed-component'
       }
     );
 
     var previewContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-container asset-selector-story-tile-preview-container'
+        'class': 'asset-selector-story-tile-preview-container'
       }
     ).append([
       previewInvalidMessage,
@@ -890,13 +888,6 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
-
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn btn-primary btn-apply'
-      }
-    ).text(_insertButtonText());
 
     var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
       inputLabel,
@@ -908,14 +899,14 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
-      }).append([ backButton, insertButton ]);
+      }).append([ backButton, _renderModalInsertButton() ]);
 
     return [ content, buttonGroup ];
   }
 
   function _renderChooseStoryData(componentProperties) {
-    var $previewContainer = _container.find('.asset-selector-preview-container');
-    var $storyTilePreviewContainer = _container.find('.asset-selector-preview-tile-container');
+    var $previewContainer = _container.find('.asset-selector-story-tile-preview-container');
+    var $storyTilePreviewContainer = _container.find('.asset-selector-story-tile-embed-component');
     var $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
     var $insertButton = _container.find('.btn-apply');
     var storyDomain = null;
@@ -1041,14 +1032,14 @@ export default function AssetSelectorRenderer(options) {
     var previewTileContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-tile-container'
+        'class': 'asset-selector-goal-tile-embed-component'
       }
     );
 
     var previewContainer = $(
       '<div>',
       {
-        'class': 'asset-selector-preview-container asset-selector-goal-tile-preview-container'
+        'class': 'asset-selector-goal-tile-preview-container'
       }
     ).append([
       previewInvalidMessage,
@@ -1056,13 +1047,6 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
-
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn btn-primary btn-apply'
-      }
-    ).text(_insertButtonText());
 
     var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
       inputLabel,
@@ -1074,14 +1058,14 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
-      }).append([ backButton, insertButton ]);
+      }).append([ backButton, _renderModalInsertButton() ]);
 
     return [ content, buttonGroup ];
   }
 
   function _renderChooseGoalData(componentProperties) {
-    var $previewContainer = _container.find('.asset-selector-preview-container');
-    var $goalTilePreviewContainer = _container.find('.asset-selector-preview-tile-container');
+    var $previewContainer = _container.find('.asset-selector-goal-tile-preview-container');
+    var $goalTilePreviewContainer = _container.find('.asset-selector-goal-tile-embed-component');
     var $inputControl = _container.find('[data-asset-selector-validate-field="goalUrl"]');
     var $insertButton = _container.find('.btn-apply');
     var goalDomain = null;
@@ -1223,13 +1207,6 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn btn-primary btn-apply'
-      }
-    ).text(_insertButtonText());
-
     var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
       inputLabel,
       inputControl,
@@ -1240,7 +1217,7 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
-      }).append([ backButton, insertButton ]);
+      }).append([ backButton, _renderModalInsertButton() ]);
 
     return [ content, buttonGroup ];
   }
@@ -1418,14 +1395,18 @@ export default function AssetSelectorRenderer(options) {
     }
   }
 
-  function _renderChooseDatasetTemplate() {
+  // Renders a view chooser (/browse/choose_dataset)
+  // with the given params. When a view is picked,
+  // a 'viewSelected' browser event is triggered with
+  //
+  function _renderViewChooserTemplate(paramString) {
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
 
-    var datasetChooserIframe = $(
+    var viewChooserIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe',
-        'src': _datasetChooserUrl()
+        'src': _viewChooserUrl(paramString)
       }
     );
 
@@ -1438,54 +1419,34 @@ export default function AssetSelectorRenderer(options) {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton ]);
 
-    datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
-      $(this).trigger('datasetSelected', datasetObj);
+    viewChooserIframe[0].onDatasetSelected = function(datasetObj) {
+      $(this).trigger('viewSelected', datasetObj);
     };
 
-    datasetChooserIframe.one('load', function() {
+    viewChooserIframe.one('load', function() {
       loadingButton.addClass('hidden');
     });
 
-    return [ loadingButton, datasetChooserIframe, buttonGroup ];
+    return [ loadingButton, viewChooserIframe, buttonGroup ];
+
   }
 
-  function _renderChooseTableOrChartTemplate() {
-    var $backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
+  function _renderChooseDatasetTemplate() {
+    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+  }
 
-    var $chartButton = $('<button>', { 'class': 'btn-visualize-chart' }).
-      append($('<span>', { 'class': 'icon-chart' })).
-      append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_chart')));
-
-    var $tableButton = $('<button>', { 'class': 'btn-visualize-table' }).
-      append($('<span>', { 'class': 'icon-table' })).
-      append($('<div>').text(I18n.t('editor.asset_selector.visualization.choose_table')));
-
-    var $visualizationChoiceGroup = $('<div>', {
-      'class': 'visualization-choice'
-    }).append([ $chartButton, $tableButton ]);
-
-    $visualizationChoiceGroup.prepend($('<button>', { 'class': 'default-focus focus-catcher'}));
-
-    var $buttonGroup = $('<div>', {
-      'class': 'modal-button-group r-to-l'
-    }).append([ $backButton ]);
-
-    $chartButton.on('click', function() {
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
-      });
-    });
-
-    $tableButton.on('click', function() {
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_VISUALIZE_AS_TABLE
-      });
-      // TODO this should likely be handled automatically as part of ASSET_SELECTOR_VISUALIZE_AS_TABLE.
-      // See TODO in _saveAndClose().
-      _saveAndClose();
-    });
-
-    return [ $visualizationChoiceGroup, $buttonGroup ];
+  function _renderChooseTableTemplate() {
+    if (Environment.ENABLE_FILTERED_TABLE_CREATION) {
+      // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
+      // We can limitTo one or the other, but not both. Without refactoring
+      // the frontend dataset picker, our only recourse is to limitTo tables, which
+      // includes datasets, filtered views, and grouped views. We don't support
+      // grouped views, but for now we're OK just notifying the user if they
+      // select a grouped view.
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
+    } else {
+      return _renderChooseDatasetTemplate();
+    }
   }
 
   function _renderChooseMapOrChartTemplate() {
@@ -1528,18 +1489,10 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_OR_CHART);
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
 
     // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
     // into shared function
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary btn-apply',
-        'disabled': 'disabled'
-      }
-    ).text(_insertButtonText());
-
     var loadingButton = $('<button>', {
       'class': 'btn-transparent btn-busy visualization-busy',
       'disabled': true
@@ -1547,7 +1500,7 @@ export default function AssetSelectorRenderer(options) {
 
     var buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
-    }).append([ backButton, insertButton ]);
+    }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
 
     configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
       // This function is called by the visualization chooser when:
@@ -1579,6 +1532,60 @@ export default function AssetSelectorRenderer(options) {
     insertButton.prop('disabled', !componentType);
   }
 
+  function _renderTablePreviewTemplate() {
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_FROM_CATALOG);
+
+    var buttonGroup = $('<div>', {
+      'class': 'modal-button-group r-to-l'
+    }).append([ backButton, _renderModalInsertButton() ]);
+
+    var label = $(
+      '<h2>',
+      { 'class': 'asset-selector-preview-label' }
+    ).text(I18n.t('editor.asset_selector.visualization.preview_label'));
+
+    var table = $(
+      '<div>',
+      { 'class': 'asset-selector-preview-table' }
+    );
+
+    var container = $(
+      '<div>',
+      { 'class': 'asset-selector-preview-container' }
+    ).append([
+      table
+    ]);
+
+    var content = $(
+      '<div>',
+      { 'class': 'asset-selector-input-group' }
+    ).append([
+      label,
+      container
+    ]);
+
+    return [ content, buttonGroup ];
+  }
+
+  function _renderTablePreviewData(componentType, componentProperties) {
+    var table = _container.find('.asset-selector-preview-table');
+    table.componentSocrataVisualizationTable(
+      {
+        type: componentType,
+        value: _.extend(
+          {},
+          componentProperties,
+          {
+            layout: {
+              height: table.height() - parseFloat(table.parent().css('padding')) * 2
+            }
+          }
+        )
+      }
+    );
+  }
+
+
   function _renderConfigureMapOrChartTemplate() {
     var configureMapOrChartIframe = $(
       '<iframe>',
@@ -1588,15 +1595,7 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION);
-
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary btn-apply',
-        'disabled': 'disabled'
-      }
-    ).text(_insertButtonText());
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG);
 
     var loadingButton = $('<button>', {
       'class': 'btn-transparent btn-busy visualization-busy',
@@ -1605,7 +1604,7 @@ export default function AssetSelectorRenderer(options) {
 
     var buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
-    }).append([ backButton, insertButton ]);
+    }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
 
     return [ loadingButton, configureMapOrChartIframe, buttonGroup ];
   }
@@ -1679,11 +1678,12 @@ export default function AssetSelectorRenderer(options) {
    * Small helper functions
    */
 
-  function _datasetChooserUrl() {
+  function _viewChooserUrl(paramString) {
     return encodeURI(
       StorytellerUtils.format(
-        '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets',
-        window.location.protocol + '//' + window.location.hostname
+        '{0}/browse/select_dataset?{1}',
+        window.location.protocol + '//' + window.location.hostname,
+        paramString
       )
     );
   }
@@ -1814,13 +1814,6 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var insertButton = $(
-      '<button>',
-      {
-        'class': 'btn-primary btn-apply'
-      }
-    ).text(_insertButtonText());
-
     var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
       inputLabel,
       inputControl,
@@ -1832,7 +1825,7 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
-      }).append([ backButton, insertButton ]);
+      }).append([ backButton, _renderModalInsertButton() ]);
 
     return [ content, buttonGroup ];
   }
@@ -1860,6 +1853,15 @@ export default function AssetSelectorRenderer(options) {
                     // a bit of resources by removing the content.
     }).trigger('modal-close');
   }
+}
+
+function _renderModalInsertButton(options) {
+  return $(
+    '<button>',
+    { 'class': 'btn-primary btn-apply' }
+  ).
+  text(_insertButtonText()).
+  attr('disabled', _.get(options, 'disabled', false));
 }
 
 function _insertButtonText() {

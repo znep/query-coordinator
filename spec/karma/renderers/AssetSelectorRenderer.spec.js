@@ -209,7 +209,7 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event for a federated dataset', function(done) {
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a viewSelected event for a federated dataset', function(done) {
       dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
@@ -220,14 +220,14 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      container.find('.modal-dialog').trigger('datasetSelected', {
+      container.find('.modal-dialog').trigger('viewSelected', {
         id: 'the-id',
         domainCName: 'federate.me',
         newBackend: true
       });
     });
 
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event for a non-federated dataset', function(done) {
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a viewSelected event for a non-federated dataset', function(done) {
       dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
@@ -238,7 +238,7 @@ describe('AssetSelectorRenderer', function() {
         done();
       });
 
-      container.find('.modal-dialog').trigger('datasetSelected', {
+      container.find('.modal-dialog').trigger('viewSelected', {
         id: 'the-id',
         domainCName: undefined, // yes, it comes back as undefined from the dataset picker.
         newBackend: true
@@ -282,7 +282,19 @@ describe('AssetSelectorRenderer', function() {
         domain: 'example.com',
         isNewBackend: true
       });
-      server.respond([200, {}, '{}']);
+
+      server.respond([
+        200,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify({
+          id: 'fooo-baar',
+          newBackend: true,
+          domain: 'foo',
+          columns: [{
+            'fieldName': 'foo'
+          }]
+        })
+      ]);
     });
 
     xdescribe('select file in image upload', function() {
@@ -543,6 +555,98 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
+    describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = INSERT_TABLE is fired', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+          visualizationOption: 'INSERT_TABLE'
+        });
+      });
+
+      it('renders an iframe', function() {
+        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
+      });
+
+      describe('the iframe', function() {
+        it('has the correct source', function() {
+          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
+          assert.include(iframeSrc, 'browse/select_dataset');
+          assert.include(iframeSrc, 'suppressed_facets[]=type');
+          assert.include(iframeSrc, 'limitTo=tables');
+        });
+      });
+
+      describe('the modal', function() {
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+        });
+
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the provider list', function() {
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
+            1
+          );
+        });
+      });
+
+      describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+        var tableStub;
+        beforeEach(function(done) {
+          tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable', _.noop);
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            domain: 'example.com',
+            isNewBackend: true
+          });
+
+          server.respond([
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify({
+              id: 'fooo-baar',
+              newBackend: true,
+              domain: 'foo',
+              columns: [{
+                'fieldName': 'foo'
+              }]
+            })
+          ]);
+
+          //Wait for promises in AssetSelectorStore
+          setTimeout(function() { done(); }, 10);
+        });
+
+        afterEach(function() {
+          tableStub.restore();
+        });
+
+        it('previews the table', function() {
+          sinon.assert.called(tableStub);
+          var componentData = tableStub.args[0][0];
+          assert.propertyVal(componentData, 'type', 'socrata.visualization.table');
+          assert.propertyVal(componentData.value.vif, 'type', 'table');
+          assert.propertyVal(componentData.value.vif, 'domain', 'example.com');
+          assert.propertyVal(componentData.value.vif, 'datasetUid', 'fooo-baar');
+        });
+
+        it('has an enabled insert button', function() {
+          assert.isFalse(
+            container.find('.btn-apply').prop('disabled')
+          );
+        });
+      });
+    });
+
     describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = CREATE_VISUALIZATION is fired', function() {
       beforeEach(function() {
         dispatcher.dispatch({
@@ -584,167 +688,143 @@ describe('AssetSelectorRenderer', function() {
           );
         });
       });
-    });
 
-    describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
-          storyUid: StandardMocks.validStoryUid,
-          blockId: StandardMocks.validBlockId,
-          componentIndex: 0
-        });
-
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          datasetUid: StandardMocks.validStoryUid,
-          domain: 'example.com',
-          isNewBackend: true
-        });
-
-        server.respond([
-          200,
-          { 'Content-Type': 'application/json' },
-          JSON.stringify({
-            newBackend: true,
-            columns: [{
-              'fieldName': 'foo'
-            }]
-          })
-        ]);
-      });
-
-      it('has a button that goes to the chart visualization page', function() {
-        container.find('.btn-visualize-chart').click();
-        assert.equal(
-          assetSelectorStoreMock.getStep(),
-          WIZARD_STEP.CONFIGURE_VISUALIZATION
-        );
-      });
-
-      it('has a button that inserts a table', function(done) {
-        dispatcher.register(function(payload) {
-          if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
-            assert.equal(
-              payload.value.vif.type,
-              'table'
-            );
-            done();
-          }
-        });
-
-        container.find('.btn-visualize-table').click();
-      });
-
-      describe('then `ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP` is fired', function() {
-        beforeEach(function() {
+      describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+        beforeEach(function(done) {
           dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            domain: 'example.com',
+            isNewBackend: true
           });
+
+          server.respond([
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify({
+              id: 'fooo-baar',
+              newBackend: true,
+              domain: 'foo',
+              columns: [{
+                'fieldName': 'foo'
+              }]
+            })
+          ]);
+
+          //Wait for promises in AssetSelectorStore
+          setTimeout(function() { done(); }, 10);
         });
 
-        it('renders an iframe', function() {
-          assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
-        });
-
-        it('disables the insert button on render', function() {
-          assert.equal(
-            container.find('.btn-primary').attr('disabled'),
-            'disabled'
-          );
-        });
-
-        describe('the iframe', function() {
-          it('has the correct src', function() {
-            var iframeSrc = container.find('iframe').attr('src');
-            assert.include(iframeSrc, 'component/visualization/add?datasetId');
-          });
-
-          it('has a modal title loading spinner', function() {
-            assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-          });
-
-          describe('onVisualizationSelected on the iframe', function() {
-            var iframe;
-            var selectedVisualization = { visualization: 'blob' };
-
-            beforeEach(function() {
-              iframe = container.find('iframe')[0];
-            });
-
-            it('has a onVisualizationSelectedV2 function on it', function() {
-              assert.isFunction(iframe.onVisualizationSelectedV2);
-            });
-
-            it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
-              dispatcher.register(function(payload) {
-                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
-                  assert.deepEqual(payload.visualization.data, selectedVisualization);
-                  assert.deepPropertyVal(payload, 'visualization.format', 'classic');
-                  assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
-                  done();
-                }
-              });
-
-              iframe.onVisualizationSelectedV2(JSON.stringify(selectedVisualization), 'classic', 'orig-inal');
-            });
-
-            it('does not preserve the object constructor (because in IE, the constructor will break on iframe unload)', function(done) {
-              function StrangeConstructor() {}
-              var objectWithStrangeConstructor = new StrangeConstructor();
-
-              dispatcher.register(function(payload) {
-                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
-                  assert.notInstanceOf(payload.visualization.data, StrangeConstructor);
-                  done();
-                }
-              });
-
-              iframe.onVisualizationSelectedV2(JSON.stringify(objectWithStrangeConstructor), 'classic', 'orig-inal');
+        describe('then `ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP` is fired', function() {
+          beforeEach(function() {
+            dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
             });
           });
 
-          describe('onVisualizationSelectedV2 on the iframe', function() {
-            var iframe;
-            var selectedVisualizationJson = JSON.stringify({ visualization: 'blob' });
-
-            beforeEach(function() {
-              iframe = container.find('iframe')[0];
-            });
-
-            it('has a onVisualizationSelectedV2 function on it', function() {
-              assert.isFunction(iframe.onVisualizationSelectedV2);
-            });
-
-            it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
-              dispatcher.register(function(payload) {
-                if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
-                  assert.deepEqual(payload.visualization.data, JSON.parse(selectedVisualizationJson));
-                  assert.deepPropertyVal(payload, 'visualization.format', 'classic');
-                  assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
-                  done();
-                }
-              });
-
-              iframe.onVisualizationSelectedV2(selectedVisualizationJson, 'classic', 'orig-inal');
-            });
-          });
-        });
-
-        describe('the modal', function() {
-          it('has a close button', function() {
-            assert.equal(container.find('.modal-close-btn').length, 1);
+          it('renders an iframe', function() {
+            assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
           });
 
-          it('has the wide class to display the iframe', function() {
-            assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
-          });
-
-          it('has a button that goes back to the choose table/chart page', function() {
-            assert.lengthOf(
-              container.find('[data-resume-from-step="SELECT_TABLE_OR_CHART"]'),
-              1
+          it('disables the insert button on render', function() {
+            assert.equal(
+              container.find('.btn-primary').attr('disabled'),
+              'disabled'
             );
+          });
+
+          describe('the iframe', function() {
+            it('has the correct src', function() {
+              var iframeSrc = container.find('iframe').attr('src');
+              assert.include(iframeSrc, 'component/visualization/add?datasetId');
+            });
+
+            it('has a modal title loading spinner', function() {
+              assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+            });
+
+            describe('onVisualizationSelected on the iframe', function() {
+              var iframe;
+              var selectedVisualization = { visualization: 'blob' };
+
+              beforeEach(function() {
+                iframe = container.find('iframe')[0];
+              });
+
+              it('has a onVisualizationSelectedV2 function on it', function() {
+                assert.isFunction(iframe.onVisualizationSelectedV2);
+              });
+
+              it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
+                dispatcher.register(function(payload) {
+                  if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                    assert.deepEqual(payload.visualization.data, selectedVisualization);
+                    assert.deepPropertyVal(payload, 'visualization.format', 'classic');
+                    assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
+                    done();
+                  }
+                });
+
+                iframe.onVisualizationSelectedV2(JSON.stringify(selectedVisualization), 'classic', 'orig-inal');
+              });
+
+              it('does not preserve the object constructor (because in IE, the constructor will break on iframe unload)', function(done) {
+                function StrangeConstructor() {}
+                var objectWithStrangeConstructor = new StrangeConstructor();
+
+                dispatcher.register(function(payload) {
+                  if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                    assert.notInstanceOf(payload.visualization.data, StrangeConstructor);
+                    done();
+                  }
+                });
+
+                iframe.onVisualizationSelectedV2(JSON.stringify(objectWithStrangeConstructor), 'classic', 'orig-inal');
+              });
+            });
+
+            describe('onVisualizationSelectedV2 on the iframe', function() {
+              var iframe;
+              var selectedVisualizationJson = JSON.stringify({ visualization: 'blob' });
+
+              beforeEach(function() {
+                iframe = container.find('iframe')[0];
+              });
+
+              it('has a onVisualizationSelectedV2 function on it', function() {
+                assert.isFunction(iframe.onVisualizationSelectedV2);
+              });
+
+              it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
+                dispatcher.register(function(payload) {
+                  if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
+                    assert.deepEqual(payload.visualization.data, JSON.parse(selectedVisualizationJson));
+                    assert.deepPropertyVal(payload, 'visualization.format', 'classic');
+                    assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
+                    done();
+                  }
+                });
+
+                iframe.onVisualizationSelectedV2(selectedVisualizationJson, 'classic', 'orig-inal');
+              });
+            });
+          });
+
+          describe('the modal', function() {
+            it('has a close button', function() {
+              assert.equal(container.find('.modal-close-btn').length, 1);
+            });
+
+            it('has the wide class to display the iframe', function() {
+              assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+            });
+
+            it('has a button that goes back to the dataset picker', function() {
+              assert.equal(
+                container.find('[data-resume-from-step]').attr('data-resume-from-step'),
+                'SELECT_DATASET_FOR_VISUALIZATION'
+              );
+            });
           });
         });
       });

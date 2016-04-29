@@ -35,6 +35,7 @@
       COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>'
     };
     window.ENABLE_GOAL_TILES = <%= Rails.application.config.enable_goal_tiles %>;
+    window.ENABLE_FILTERED_TABLE_CREATION = <%= Rails.application.config.enable_filtered_table_creation %>;
   </script>
 
   <% if Rails.env.test? -%>

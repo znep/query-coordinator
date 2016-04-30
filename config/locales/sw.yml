@@ -44,16 +44,22 @@ sw:
     dataCards:
       add_card_dialog:
         add_card:
+        add_card_title:
         add_this_card:
         card_on_page:
         card_on_page_long:
         choose_column:
-        classic_chart:
+        choropleth_admin_message:
+        choropleth_message:
         column_chart_warning:
+        column_label:
+        curated_region_messages:
+          not_yet_computed:
         custom:
         customize_prompt:
         generic_prompt:
         histogram_column_chart_warning:
+        no_available_boundaries:
         not_supported:
         not_supported_long:
         prompt:
@@ -65,6 +71,19 @@ sw:
           feature_map:
           search_card:
           timeline_chart:
+      aggregation_chooser:
+        by_the_number_of:
+        by_the_sum_of:
+        count_label:
+        description:
+        option_disabled:
+        sum_label:
+        the_number_of:
+        the_sum_of:
+        title:
+        too_many_columns:
+          message:
+          title:
       api_explorer:
         additional_resources:
         api_button:
@@ -78,6 +97,12 @@ sw:
         json:
         title:
         url:
+      card_aggregation_selector:
+        add_this_aggregation:
+        choose_count:
+        choose_sum:
+        function_label:
+        value_label:
       card_controls:
         collapse_card:
         customize_disabled:
@@ -93,6 +118,12 @@ sw:
         average:
         number_of:
         sum_of:
+      choropleth:
+        computation_in_progress:
+        has_cardinality_error:
+        has_no_polygons:
+        no_preview_available:
+        pending_computation:
       common:
         by:
         cancel:
@@ -117,6 +148,8 @@ sw:
         longitude:
         no_value:
         ok:
+        pending_adding_column:
+        pending_computation:
         permissions:
           permissions:
           private:
@@ -150,6 +183,7 @@ sw:
           simple_blue:
           simple_grey:
           title:
+        title:
         visualization_options:
           title:
       distribution_chart:
@@ -159,21 +193,33 @@ sw:
           error:
           no_data:
       export_menu:
-        csv:
-          header:
-          current_filter:
-          all_rows:
-          not_available:
-        image:
-          header:
-          description:
         choose_card:
+        csv:
+          all_rows:
+          current_filter:
+          header:
+          not_available:
+          not_available_specific:
+        download_button_for_image:
+        download_button_for_rows:
+        download_explanation:
+        download_title:
+        image:
+          description:
+          header:
+        save_to_catalog_button:
+        save_to_catalog_explanation:
+        save_to_catalog_title:
+        standalone_visualization:
+          description:
+          header:
       feature_map:
         feature_map_disabled:
         zoom_disabled:
       feature_map_flannel:
         error_message:
         next:
+        paging:
         previous:
         showing:
       feedback_panel:
@@ -211,6 +257,8 @@ sw:
       lens_type:
         community:
         official:
+        official_view_explanation:
+        official_view_label:
       manage_lens_dialog:
         dataset_private_page_private:
         dataset_private_page_public:
@@ -226,6 +274,10 @@ sw:
           owner_unavailable:
           title:
           warning:
+        provenance:
+          description:
+          label:
+          title:
         sharing:
           add_new:
           add_new_prompt:
@@ -244,6 +296,7 @@ sw:
           title:
           viewer:
         title:
+        unsaved_changes_message:
         visibility:
           dataset_is_private:
           hidden:
@@ -263,6 +316,7 @@ sw:
         validation_error_min_length:
         validation_error_required:
         visualization_as_image:
+        visualization_as_image_disabled_flyout:
       mobile_warning_dialog:
         acknowledgement:
         description:
@@ -278,6 +332,10 @@ sw:
         clear_all:
         clear_all_flyout:
         filter_title:
+        filtered_title:
+        old_filter_title:
+        old_filtered_title:
+        unfiltered_title:
       related_views:
         button:
         title:
@@ -322,9 +380,21 @@ sw:
         flyoutFailedTitle:
         flyoutIdle:
         flyoutNoChanges:
+        flyoutNoEditPermission:
         save:
         saved:
         saving:
+      save_visualization_as_dialog:
+        category_label:
+        description_help_text:
+        description_label:
+        enter_name_error:
+        enter_name_placeholder:
+        name_label:
+        official_view_explanation:
+        official_view_label:
+        server_error:
+        title:
       search_card:
         error_explanation:
         invalid_search:
@@ -368,6 +438,24 @@ sw:
           bad_dates:
           default:
           no_data:
+      tour:
+        aggregation:
+          step_1:
+            text:
+            title:
+          step_2:
+            text:
+            title:
+          step_3:
+            text:
+            title:
+          step_4:
+            text:
+            title:
+          step_5:
+            text_one:
+            text_two:
+            title:
   controls:
     browse:
       actions:
@@ -411,6 +499,131 @@ sw:
         suggest_dataset_short: Pendekeza Setidata
         suggest_dataset_verb: Pendekeza
       back_to_dataset: Rudi kwenye Setidata
+      browse2:
+        api:
+          link:
+            label:
+            title:
+        comment_count:
+        create:
+          dataset:
+            label:
+            title:
+          label:
+          story:
+            label:
+            title:
+          title:
+        created_at:
+          label:
+        data_types:
+          label:
+        description:
+          show_less_label:
+          show_more_label:
+        display_types:
+          api:
+          blob:
+          calendar:
+          chart:
+          data_lens:
+          dataset:
+          draft:
+          filter:
+          form:
+          href:
+          map:
+          predeply_api:
+          pulse:
+          story:
+          unknown:
+        edit:
+          delete:
+            confirm:
+            error:
+            label:
+            title:
+          make_private:
+            error:
+            label:
+            title:
+          make_public:
+            error:
+            label:
+            title:
+        facets:
+          clear_all:
+            label:
+          contract:
+            label:
+            title:
+          expand:
+            label:
+            title:
+          header:
+            filter:
+            filtered_by:
+            result:
+          hint:
+          mobile:
+            all_filters:
+            back:
+            clear_all:
+            filter:
+            sort:
+            sort_by:
+          modal:
+            alphaAscending:
+            close:
+            top:
+        federation:
+          label:
+          label_with_source:
+          source:
+        last_updated:
+          label:
+        odn:
+          link:
+            label:
+            title:
+          prompt:
+        results:
+          cetera_count:
+          count:
+          summary:
+        search:
+          clear:
+            title:
+          placeholder:
+          title:
+        settings:
+          label:
+          title:
+        skiplinks:
+          results:
+        sort:
+          label:
+          periods:
+            label:
+            month:
+            week:
+            year:
+        sorts:
+          last_modified: Iliyosasishwa Hivi Karibuni
+          most_accessed: Iliyofikiwa zaidi
+          newest:
+          relevance: Yahusikayo Zaidi
+        topics:
+          empty:
+          label:
+          more:
+        view_count:
+          label:
+        visibility:
+          private:
+            label:
+          public:
+            label:
       facets:
         categories_singular_title: aina
         categories_title: Aina
@@ -431,10 +644,12 @@ sw:
           charts: Chati
           data_lens:
           datasets: Setidata
+          draft:
           filters: Mitazamo Iliyochujwa
           forms: Fomu
           href: Setidata za Nje
           maps: Ramani
+          new_view:
           pulse:
           pulse_help:
           story:
@@ -455,6 +670,7 @@ sw:
           rss: RSS
           type: Aina
         timeout: Tunasikitika. Matokeo hayakuweza kupatikana kwa sasa. Tafadhali jaribu tena baadaye.
+      ordered_topics:
       row_results:
         less_link: Kidogo
         matching_rows: Kutafuta Setidata kwa mistari inayolingana
@@ -485,6 +701,7 @@ sw:
           main: Matokeo %{body}
           term: kwa "%{term}"
     charts:
+      missing_column_html:
       negatives_in_data: 'Chati Batili: maadili hasi yapo'
       no_data: Hakuna data
       other_slice_label: Mingine
@@ -525,6 +742,7 @@ sw:
           email: Barua pepe
           facebook: Facebook
           twitter: Twitter
+        share_story_text:
         share_text: 'Angalia %{name}, Setidata katika %{site}: '
       sidebar:
         tabs:
@@ -684,6 +902,7 @@ sw:
         Je unataka kufuta safu iliyochaguliwa?
         Data zote kwenye safu hii zitaondolewa!
       edit_column_properties: Hariri Vyombo vya Safu
+      end_page:
       errors:
         cannot_edit_at_this_time:
         data_lens_is_incompatible_with_group_bys:
@@ -698,13 +917,18 @@ sw:
       menu: Menyu
       must_enter_name: Sharti uandike jina la safu hii
       new_row: Mpya
+      next_page:
       no_columns: Setidata %{uid} haina safu zozote
       no_rows: Hakuna safu za kuonyesha
+      page_size:
       permission_denied: Huna njia ya kufikia mtazamo huu.
       previous: Iliyotangulia
+      previous_page:
       required_cols_missing: Safu zinazotakiwa kwa mtazamo huu hazipo
+      row_count:
       sort_ascending: Ainisha kwa Kupanda
       sort_descending: Ainisha kwa Kushuka
+      start_page:
       totals: Jumla
       view_cell_comments: Tazama maoni ya seli hii
       view_first_row: Tazama mstari wa kwanza
@@ -713,6 +937,7 @@ sw:
       view_previous_row: Tazama mstari uliotangulia
       view_row: Tazama mstari
       view_single_row: Tazama Data ya Mstari Mmoja
+      viewing_current_page:
       viewing_row_html: Kuona mstari <span class="curPage"></span> wa <span class="totalPages"></span>
     map:
       address_prompt: Andika anwani hapa
@@ -743,6 +968,8 @@ sw:
       previous: Iliyotangulia
       previous_row: Mstari Uliotangulia
       request_timed_out: Ombi la data hii lilisimama.
+      unable_to_display_features_html:
+      unable_to_load_map_html:
     nominate:
       all: Yote
       approve: "(Thibitisha)"
@@ -826,6 +1053,7 @@ sw:
     and: na
     auth:
       invalid_userpass: Jina la mtumiaji au nenosiri ni batili
+      need_email_verification:
       need_login: Sharti uwe umeingia ndani ili kufikia ukurasa huu
       need_permission: Hauna idhini ya kutazama ukurasa huu
       too_many_tries: Majaribio ya kuingia mengi mno kwa uingiaji huo. Akaunti imefungwa kwa muda.
@@ -859,6 +1087,7 @@ sw:
       timeline: Kalenda ya matukio
       treemap: Ramani ya Mti
     data_types:
+      blob:
       calendar_date: Tarehe na Muda
       checkbox: Kisanduku cha Kutia Alama
       dataset_link: Kiungo cha Setidata
@@ -1087,6 +1316,8 @@ sw:
       href: |
         Setidata ya nje
       map: ramani
+      new_view:
+      story:
       table: jedwali
       working_copy: Nakala ya kazi
     view_types_plural:
@@ -1101,6 +1332,119 @@ sw:
     visibility:
       private: binafsi
       public: umma
+  dataset_landing_page:
+    action_buttons:
+      api:
+      contact_owner:
+      data:
+      download:
+      odata:
+      share:
+    api_flannel:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      foundry_button:
+      multiple_geo_layers:
+      title:
+    contact_dataset_owner:
+    copy:
+    copy_success:
+    dataset_contents:
+      columns:
+      row_display_unit:
+      rows:
+      title:
+    done:
+    download:
+      csv_for_excel:
+      csv_without_geo:
+      json_without_geo:
+      original:
+      shapefile:
+    featured_views:
+      no_content_alert_html:
+      title:
+      view:
+    less:
+    manage_prompt:
+    metadata:
+      attachments:
+      category:
+      creation_date:
+      data_last_updated:
+      data_provided_by:
+      dataset_owner:
+      downloads:
+      license:
+      licensing:
+      metadata_last_updated:
+      no_value:
+      source_link:
+      tags:
+      title:
+      topics:
+      views:
+    more:
+    odata_modal:
+      description:
+      developer_portal_button:
+      endpoint_title:
+      multiple_geo_layers:
+      title:
+    official:
+    private_notice:
+    published_by:
+    schema_preview:
+      api_field_name:
+      column_name:
+      data_type:
+      data_types:
+        blob:
+        calendar_date:
+        checkbox:
+        dataset_link:
+        date:
+        document:
+        drop_down_list:
+        email:
+        flag:
+        geospatial:
+        html:
+        line:
+        link:
+        list:
+        location:
+        money:
+        multiline:
+        multipoint:
+        multipolygon:
+        nested_table:
+        number:
+        object:
+        percent:
+        phone:
+        photo:
+        point:
+        polygon:
+        stars:
+        text:
+        url:
+      description:
+      show_all:
+      show_less:
+      title:
+      type:
+    share:
+      cancel:
+      email:
+      email_body:
+      facebook:
+      manage_prompt:
+      title:
+      twitter:
+      visibility_alert_html:
+    updated:
   dataslate:
     component:
       edit: Hariri kijenzi hiki
@@ -1246,6 +1590,7 @@ sw:
       datasets: Setidata
       federations: Miungano
       homepage: Ukurasa wa Nyumbani
+      jobs:
       metadata: Metadata
       moderation: Marekebisho ya maoni
       nomination: Marekebisho ya Uteuzi
@@ -1301,6 +1646,7 @@ sw:
       done: Imefanywa
       end_date: Tarehe ya Mwisho
       last_30_days:
+      last_3_days:
       last_month: Mwezi Uliopita
       last_week:
       last_year:
@@ -1312,6 +1658,7 @@ sw:
       prev: Iliyotangulia
       specific_date: Tarehe Maalumu
       start_date: Tarehe ya kuanza
+      the_day_of:
       the_month_of: Mwezi Wa…
       the_week_of: Wiki Ya…
       the_year_of: Mwaka Wa…
@@ -1336,14 +1683,14 @@ sw:
       april_short: Apr
       august: Agosti
       august_short: Ago
-      december: Disemba
-      december_short: Dis
+      december: Desemba
+      december_short: Des
       done: Imefanywa
       february: Februari
       february_short: Feb
       friday: Ijumaa
       friday_min: Ijm
-      friday_short: Ijm
+      friday_short: Ij
       january: Januari
       january_short: Jan
       july: Julai
@@ -1354,9 +1701,9 @@ sw:
       march_short: Mac
       may: Mei
       may_short: Mei
-      monday: Juma Tatu
-      monday_min: Jtt
-      monday_short: Jtt
+      monday: Jumatatu
+      monday_min: Jtat
+      monday_short: J3
       next: Ijayo
       november: Novemba
       november_short: |
@@ -1364,24 +1711,24 @@ sw:
       october: Oktoba
       october_short: Okt
       prev: Iliyotangulia
-      saturday: Juma Mosi
-      saturday_min: Jms
-      saturday_short: Jms
+      saturday: Jumamosi
+      saturday_min: Jmos
+      saturday_short: J1
       september: Septemba
       september_short: Sep
-      sunday: Juma Pili
+      sunday: Jumapili
       sunday_min: Jpl
-      sunday_short: Jpl
+      sunday_short: J2
       thursday: Alhamisi
       thursday_min: Alh
-      thursday_short: Alh
+      thursday_short: Al
       today: Leo
-      tuesday: Juma Nne
+      tuesday: Jumanne
       tuesday_min: Jnn
-      tuesday_short: Jnn
-      wednesday: Juma Tano
-      wednesday_min: Jtn
-      wednesday_short: Jtn
+      tuesday_short: J4
+      wednesday: Jumatano
+      wednesday_min: Jtan
+      wednesday_short: J5
       week_min: Wiki
   recaptcha:
     errors:
@@ -1390,6 +1737,7 @@ sw:
     about:
       actions: Hatua
       activity: Harakati
+      admin_debugging:
       attachments: Viambatisho
       category: Aina
       comments: Maoni
@@ -1398,6 +1746,7 @@ sw:
       contributors: Wasiliana na Mmiliki wa Setidata
       created: Iliundwa
       data_provided_by: Data Imetolewa na
+      datasync_status:
       description: Maelezo
       downloads: Kupakua
       edit_metadata: Hariri Metadata
@@ -1434,14 +1783,20 @@ sw:
       your: Tathmini Yako
     admin:
       datasets:
+        asset_inventory:
+          tooltip:
+        description:
         layout_config: Umbo la Mpango
         left: Kushoto
         right: Kulia
         saved: Imehifadhiwa
         saving: Kuhifadhi
         sidebar_position: Mahali pa Mwambaa wa Pembeni
+        skip_to_dataset_listing:
+        table_description:
         title: Setidata
         unpublished_datasets: Setidata Ambayo haijachapishwa
+        view_as_a_dataset:
       federation:
         accept: Kubali
         accepted: Limekubaliwa
@@ -1475,6 +1830,7 @@ sw:
         title: Fungua Muungano wa Data
       georegions:
         actions:
+        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1483,8 +1839,12 @@ sw:
           boundary_name_description:
           boundary_name_required_field_error:
           boundary_name_required_page_error:
+          boundary_name_unique_error:
           choose_a_column:
           configure_boundary:
+          confirm_html:
+          confirm_title:
+          next:
           page_title:
           primary_key_column:
           primary_key_column_description:
@@ -1494,8 +1854,14 @@ sw:
           save_success:
           shape_label:
           shape_label_description:
+        create_new:
         custom_georegions:
+        date_added:
+        default:
         default_georegions:
+        default_georegions_flyout:
+        default_georegions_limit:
+        default_success:
         delete:
         description:
         disable:
@@ -1505,13 +1871,27 @@ sw:
         enable_success:
         enabled?:
         enabled_georegions_limit:
+        enabled_no:
+        enabled_yes:
         flashes:
           add_georegion_error:
+          service_unavailable_html:
+        learn_more:
         page_subtitle:
         page_title:
+        picker_explanation:
+        picker_support_html:
         region_name:
         remove:
+        status_disabled:
+        status_enabled:
+        status_failed:
+        status_progress:
+        substatus_failed_html:
+        substatus_progress:
         title:
+        undefault:
+        undefault_success:
       home:
         add_featured_dataset: Ongeza Setidata Mpya Iliyoonyeshwa
         are_you_sure: Je, una uhakika? Tendo hili haliwezi kubatilishwa
@@ -1559,12 +1939,300 @@ sw:
         thumbnail: Muhtasari
         title: Simamia Ukurasa wa Nyumbani
         up: Juu
+      jobs:
+        actions:
+          geocoding:
+          import:
+          replace:
+          upsert:
+          working_copy:
+        filters:
+          all:
+          append:
+          apply_filters:
+          data_workflow:
+          filter_by:
+          import:
+          import_activity:
+          publish:
+          replace:
+          type:
+          working_copy:
+        index_page:
+          action:
+          dataset:
+          deleted_dataset:
+          deleted_user:
+          export_as_csv:
+          initiated_by:
+          no_jobs:
+          page_title:
+          showing_all_so_far:
+          showing_most_recent:
+          started:
+          status:
+          title:
+          to_working_copy:
+          with_problems:
+        show_page:
+          back:
+          error_details_heading:
+          event_messages:
+            failure:
+              bad_response_from_server:
+                description:
+                title:
+              bad_timestamp_format:
+                description:
+                title:
+              bad_timezone:
+                description:
+                title:
+              completed_with_warnings:
+                description:
+                title:
+              control_file_invalid_json:
+                description:
+                title:
+              control_file_malformed:
+                description:
+                title:
+              control_file_too_large:
+                description:
+                title:
+              corrupt_archive:
+                description:
+                title:
+              corrupt_gzip:
+                description:
+                title:
+              corrupt_shapefile:
+                description:
+                title:
+              corrupt_xz:
+                description:
+                title:
+              delete_without_user_pk:
+                description:
+                title:
+              di2_counts:
+                description:
+                title:
+              duplicated_fields_in_input:
+                description:
+                title:
+              field_not_in_dataset:
+                description:
+                title:
+              field_not_in_input:
+                description:
+                title:
+              field_wrong_format:
+                description:
+                title:
+              generic:
+                description:
+                title:
+              geocoding_failure:
+                description:
+                title:
+              geocoding_source_ignored:
+                description:
+                title:
+              geocoding_source_invalid_type:
+                description:
+                title:
+              ignored_synthetic_location_column_inputs_in_nbe_dataset:
+                description:
+                title:
+              incomplete_archive:
+                description:
+                title:
+              invalid_encoding:
+                description:
+                title:
+              invalid_row_length:
+                description:
+                title:
+              malformed_blueprint:
+                description:
+                title:
+              malformed_upsert:
+                description:
+                title:
+              no_field_names_in_input:
+                description:
+                title:
+              no_identity_column:
+                description:
+                title:
+              parse_error:
+                description:
+                title:
+              permission_denied:
+                description:
+                title:
+              record_too_large:
+                description:
+                title:
+              row_too_large:
+                description:
+                title:
+              synthetic_location_in_input:
+                description:
+                title:
+              too_many_errors_in_input:
+                description:
+                title:
+              too_many_records_in_input:
+                description:
+                title:
+              uninterpretable_value:
+                description:
+                title:
+              unknown_domain:
+                description:
+                title:
+              unknown_file_type:
+                description:
+                title:
+              unsupported_import_type:
+                description:
+                title:
+              upsert_already_in_progress_by_someone_else:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+            success_with_data_errors:
+              di2_counts:
+                description:
+                title:
+              upsert_counts:
+                description:
+                title:
+          failed_rows:
+          fallback_event_title:
+          file_name_unknown:
+          import:
+          import_failures:
+            bad_timestamp_format:
+              description:
+              title:
+            bad_timezone:
+              description:
+              title:
+            control_file_invalid_json:
+              description:
+              title:
+            control_file_malformed:
+              description:
+              title:
+            control_file_too_large:
+              description:
+              title:
+            corrupt_gzip:
+              description:
+              title:
+            corrupt_xz:
+              description:
+              title:
+            delete_without_user_pk:
+              description:
+              title:
+            duplicated_fields_in_input:
+              description:
+              title:
+            field_not_in_dataset:
+              description:
+              title:
+            field_not_in_input:
+              description:
+              title:
+            field_wrong_format:
+              description:
+              title:
+            geocoding_failure:
+              description:
+              title:
+            geocoding_source_ignored:
+              description:
+              title:
+            geocoding_source_invalid_type:
+              description:
+              title:
+            ignored_synthetic_location_column_inputs_in_nbe_dataset:
+              description:
+              title:
+            invalid_encoding:
+              description:
+              title:
+            invalid_row_length:
+              description:
+              title:
+            malformed_upsert:
+              description:
+              title:
+            no_field_names_in_input:
+              description:
+              title:
+            no_identity_column:
+              description:
+              title:
+            permission_denied:
+              description:
+              title:
+            record_too_large:
+              description:
+              title:
+            synthetic_location_in_input:
+              description:
+              title:
+            too_many_errors_in_input:
+              description:
+              title:
+            too_many_records_in_input:
+              description:
+              title:
+            uninterpretable_value:
+              description:
+              title:
+            unknown_domain:
+              description:
+              title:
+            unknown_file_type:
+              description:
+              title:
+            upsert_already_in_progress_by_someone_else:
+              description:
+              title:
+          import_method:
+          initiated_at:
+          no_events:
+          page_title:
+          services:
+            DeltaImporter2:
+            Imports2:
+            ResourcesAPI:
+          started_by:
+          title:
+          to:
+        statuses:
+          failure:
+          in_progress:
+          inprogress:
+          not_started:
+          notstarted:
+          success:
+          success_with_data_errors:
       metadata:
         add_new_category: Ongeza Aina Mpya
         add_new_field: Onegza Eeneo Mpya
         allowed_values: Thamani inayoruhusiwa
         are_you_sure: Je una uhakika unataka kufuta seti hii ya eneo na maeneo yote yanayohusika nayo?
         category_name: Jina la Aina
+        category_table_description:
         create: Unda
         create_new_fieldset: Unda Seti Mpya ya Eneo
         define_categories: Elezea Aina za Setidata
@@ -1596,6 +2264,7 @@ sw:
         metadata_explain2: |
           Maeneo yanaweza kuundwa kwa njia nyingi. Yanaweza <span class="code">hitajika</span>, ambayo yatatiwa nguvu wakati mchapishaji anaunda Setidata mpya na kusasisha metadata iliyopo. Pia yanaweza kuwa <span class="code">binafsi</span>, ikimaanisha kuwa thamami iandikwazo haitaonekana kwa umma.
         metadata_explain3: Mwisho, unaweza kuchagua kuelezea awali chaguzi kwa ajili ya <span class="code">maeneo yako</span> ikiwa unataka thamani zichaguliwe kutoka kwenye orodha badala ya kuingizwa kama maandiko ya fomu huru.
+        metadata_field_table_description:
         no_data: Hakuna maeneo ya Setidata ya kawaida yaliyoelezewa kwa ajili ya jina lako. Andika jina hapo chini na ubofye 'Unda' ili kuanza.
         no_fields_defined: Seti ya eneo hii bado haina maeneo yoyote yaliyoelezewa
         page_title: Ongoza Metadata ya Setidata
@@ -1614,6 +2283,7 @@ sw:
         email_prompt: 'Andika anwani za barua pepe za akaunti unazotaka kuunda '
         emails: Barua Pepe
         error_permission_request: Kosa lilitokea wakati wa kuchakata ombi lako la idhini
+        export_as_csv:
         filter_by: Chuja kwa
         flashes:
           accounts_created:
@@ -1633,6 +2303,7 @@ sw:
         no_users_found: Hakuna watumiaji waliopo waliogunduliwa
         no_users_match: Hakuna watumiaji wanaolingana na kichujio chako cha sasa.
         pending_users: Watumiaji wafuatao wana akaunti zinazongoja, lakini bado hawajaziamsha
+        pending_users_table_description:
         reenable_privileges: Wezesha Tena Haki
         remove: Ondoa
         reset_password: Seti Tena Nenosiri
@@ -1642,14 +2313,19 @@ sw:
           administrator: msimamizi
           designer: msanii mchoraji
           editor: mhariri
+          editor_stories:
           none: hakuna
           publisher: mchapishaji
+          publisher_stories:
           viewer: mtazamaji
         search: Tafuta
         search_for_users: Tafuta Watumiaji wa Kuongeza
         search_results: Tafuta Matokeo kwa '%{term}'
         title: Simamia Watumiaji
         user_saved: Mtumiaji amehifadhiwa
+        users_table_description:
+      view_moderation:
+        table_description:
     dataset_edit:
       append: Ambatisha
       append_and_replace: Ambatisha na Badilisha Data
@@ -1746,6 +2422,8 @@ sw:
         why_choose_now: Kwa nini ni muhimu kuchagua aina za safu sasahivi?
       import_help: <strong>Unahitaji msaada?</strong> tunafanyia matengenezo <a href="%{common_errors}" rel="external"> orodha ya tahadhari za kawaida na makosa </a> ambayo inaweza kukusaidia.
       import_shapefile:
+        abbreviatedSubheadline:
+        abbreviatedSummary:
         crs: Ratibu Mfumo wa Marejeo
         headline: |
           Eleza namna &ldquo;<span class="fileName"></span>&rdquo; inapaswa kuletwa.
@@ -1787,6 +2465,7 @@ sw:
       bar:
         api_unsavable: Mitazamo ya API haiwezi kurekebishwa
         based_on_html: Inahusu <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_layer_html:
         based_on_parent_html: Inahusu <a class="parentName"></a>
         based_on_private_view: mwonekano binafsi.
         based_on_working_copy_html: Inahusu nakala ya kazi ya <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -1946,6 +2625,7 @@ sw:
           endpoint_title: 'Nukta ya Mwisho ya Kufikia API:'
           intro_html: |
             <strong>Data ya Wazi API ya Socrata</strong> (SODA) itaruhusu watengenezaji wa programu kufikia data iliyohifadhiwa kwenye tovuti za data Socrata kiprogramu. Watengenezaji wanaweza kuunda program ambazo zinatumia SODA APIs ili kupata sura na &ldquo;mash-up&rdquo; Setidata za Socrata katika njia mpya na zilizopo. Kuunda programu ya iPhone ambayo itatoa picha ya matumizi ya serikali katika eneo lako, programu ya mtandao ambayo itawaruhusu wananchi kuangalia ruzuku za serikali zinazoweza kutokea ambazo waliziangalia, au huduma ambayo inakutumia barua pepe moja kwa moja wakati alama mpya zimeongezwa katika matangazo ambayo unapenda kufuatilia.
+          multiple_endpoints_intro_html:
           reference_html: |
             Ili kuanza kufikia Setidata hii kwa programu, tumia nukta ya mwisho ya API iliyotolewa hapo chini. Kwa maelezo zaidi na mifano kuhusu utumiaji wa Data ya Wazi API ya Socrata,tumia <a href="http://dev.socrata.com" rel="external">Uandikaji wetu wa Hati wa Mtengenezaji</a>.
           subtitle: Tembeleaa hii %{view_type} kupitia SODA
@@ -1970,6 +2650,9 @@ sw:
           wizard_button:
             immutable: Zindua Sogora ya Kubadilisha
             mutable: Zindua Sogora ya Kugeuza na Kubadilisha
+        backup:
+          button:
+          item_html:
         base:
           buttons:
             apply: Tumia
@@ -2277,6 +2960,9 @@ sw:
             title: Chaguzi za Picha
           subtitle: Sasisha vyombo mbalimbali katika safu hii
           success: Safu yako imesasishwa
+          text_formatting:
+            display_style:
+            title:
           title: Vyombo vya Safu
           url:
             base_url: URL ya Msingi
@@ -2311,6 +2997,7 @@ sw:
             no_icons: Ikoni zinahusika na mwonekano wa ramani tu
         data_lens:
           button:
+          button_flyout:
           subtitle:
           title:
         delete:
@@ -2343,6 +3030,8 @@ sw:
           download_dataset: Tafadhali pakua Setidata kutoka kwenye kitu ambacho umetolewa mwonekano huu.
           geo_header: Pakua Data ya Jiografia ya Mahali
           layers_header: 'Pakua bila Data ya Jiografia ya Mahali '
+          monolayer_header:
+          multilayer_header:
           subtitle: Pakua nakala ya Setidata hii katika umbo tuli
           title: Pakua
         feed:
@@ -2436,6 +3125,7 @@ sw:
           validation:
             hidden_location_html: Unaweza <a href="#showLoc" title="Show a location column">kuonyesha safu ya mahali palipofichwa</a>.
             location_column: Safu ya mahali inahitajika ili kuunda ramani.
+            location_column_invalid_dataset:
             viz_limit: Mwonekano unaweza kuwa na taswira moja tu
         odata:
           endpoint_action: 'Nakili kiungo hiki:'
@@ -2634,6 +3324,8 @@ sw:
       unable_to_find_dataset_page:
     edit_metadata:
       about: Kuhusu
+      add_link:
+      add_source:
       additional_source: Chanzo cha Ziada
       alternative_access_prompt: Andikaa nukta ya njia ya kupokezana kwa Setidata hii
       api_endpoint: Nukta ya Mwisho API
@@ -2658,6 +3350,7 @@ sw:
       dataset_title_prompt: Andika kichwa
       dataset_url: URL ya Setidata
       dataset_url_prompt: Andika mahali katika Setidata yako ya nje
+      default_row_label:
       delete: Futa
       email_address: Anwani ya Barua pepe
       email_help: |
@@ -2678,6 +3371,8 @@ sw:
       licensing_attr: Utoaji Leseni na Uhusishaji
       list: Orodha
       metadata_help: Eneo hili limetiwa alama ya binafsi na shirika lako na haionekani kwa umma
+      missing_external_dataset:
+      multiple_extensions:
       new_attachment: Kiambatisho Kipya
       none: "(hakuna)"
       northwest_latitude: Latitudo za Mashariki Magharibi
@@ -2685,6 +3380,7 @@ sw:
       optional: Chaguo
       private_help: Eneo hili limetiwa alama ya binafsi na shirika lako na haionekani kwa umma
       remove_image: Ondoa Picha
+      remove_link:
       required_field: Eneo Linalohitajika
       resource_name: Jina la Rasilimali
       resource_name_prompt: Andika jina la rasilimali
@@ -2713,6 +3409,7 @@ sw:
       upload_help: Picha hii itaingizwa katika mraba
       upload_image: Pakia Picha
       upload_new_attachment: Pakia Kiambatisho Kipya
+      url:
     forgot_password:
       already_authenticated: 'Huwezi kuseti tena nenosiri: tayari umeingia'
       failed: |
@@ -2807,6 +3504,7 @@ sw:
         no_applications: Bado hujaunda maombi yoyote. Bofya 'Simamia' upande wa kulia ili kuanza
         title: "%{user}maombi ya mtumiaji"
       bar:
+        edit_info_link:
         edit_settings_link: Hariri Mipangilio ya Akaunti
         follow_link: Fuata
         join_date: Alijiunga
@@ -2940,6 +3638,11 @@ sw:
         followers: Wafuasi
         following: Ufuatiliaji
         hide_contacts_link: Ficha
+      whats_new:
+        caught_up:
+        older_news:
+        read_more:
+        title:
     reset_password:
       failed: |
         Kosa lilitokea wakati wa kuseti nenosiri lako. Tafadhali jaribu tena.
@@ -2961,8 +3664,13 @@ sw:
         Manenosiri hayalingani; Tafadhali jaribu tena
       prompt_html: Ingia na <strong>Namba yako ya Socrata</strong>
       sign_in_with:
+      sso_required:
       tips_html: Tumia Barua Pepe yako na Nenosiri kuingia katika <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> tovuti zote.
     sign_up:
+      email_verification:
+        expired:
+        sent:
+        success:
       form:
         create_account_button: Unda Akaunti Yangu
         have_account_link: Tayari nina akaunti
@@ -2976,6 +3684,7 @@ sw:
     stats:
       api: API
       apply: Tumia
+      browser_page_views:
       bytes_out: Baiti Zilizoisha
       chart_created: Chati iliyoundwa
       charts: Chati
@@ -2984,6 +3693,7 @@ sw:
       comments: Maoni
       comments_created: Maoni yaliyoundwa
       daily: Kila siku
+      date_range:
       deleted_application: programu iliyofutwa
       delta_decrease:
       delta_decrease_compared:
@@ -3066,3 +3776,6 @@ sw:
     array_or:
       last_word_connector: ", au"
       two_words_connector: au
+  table:
+    no_summary_available:
+    summary:

@@ -115,9 +115,9 @@ module.exports = function quickFilterBar(
           rowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit || I18n.common.row);
 
           if (_.isEmpty(appliedFiltersForDisplay)) {
-            return I18n.t('quickFilterBar.filterTitle.unfiltered', rowDisplayUnit);
+            return I18n.t('quickFilterBar.unfilteredTitle', rowDisplayUnit);
           } else {
-            return I18n.t('quickFilterBar.filterTitle.filtered', rowDisplayUnit);
+            return I18n.t('quickFilterBar.filteredTitle', rowDisplayUnit);
           }
         }
       );

@@ -23,7 +23,7 @@ function stream() {
 
 function compileCSS(callback) {
   stream().
-    pipe(sourcemaps.write()).
+    pipe(sourcemaps.write('.')).
     pipe(gulp.dest('dist/css')).
     on('finish', callback);
 }
@@ -32,7 +32,7 @@ function compileNanoCSS(callback) {
   stream().
     pipe(nano({discardComments: {removeAllButFirst: true}})).
     pipe(rename('styleguide.min.css')).
-  pipe(sourcemaps.write()).
+  pipe(sourcemaps.write('.')).
   pipe(gulp.dest('dist/css')).
   on('finish', callback);
 }

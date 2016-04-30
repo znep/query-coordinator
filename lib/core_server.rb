@@ -374,6 +374,9 @@ class CoreServer
 
     raise Error.new("Redirections reached limit.") unless redirections < 10
 
+    cached_response = ::RequestStore.store[request_uid(core_server_headers, options)]
+    return cached_response if cached_response.present?
+
     verb = options[:verb].to_s.capitalize
     body = JSON.dump(options[:body]) if options[:body].present?
     query_params = generate_query_params(options[:query_params])
@@ -407,11 +410,13 @@ class CoreServer
       )
     end
 
-    if options[:verb] == :get
+    response = CoreServerResponse.new(response)
+    if options[:verb] == :get && response.ok?
+      # We cache GET requests to the same core resources per storyteller request
       ::RequestStore.store[request_uid(core_server_headers, options)] = response
     end
 
-    CoreServerResponse.new(response)
+    response
   end
 
   def self.view_with_title(title)

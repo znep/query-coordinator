@@ -25,6 +25,27 @@ describe CoreServer do
     allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
   end
 
+  describe '#get_view' do
+    before do
+      stub_request(:get, "#{coreservice_uri}/views/four-four")
+      stub_request(:get, "#{coreservice_uri}/views/four-five")
+    end
+
+    it 'caches result' do
+      CoreServer.get_view('four-four')
+      CoreServer.get_view('four-four')
+      expect(a_request(:get, "#{coreservice_uri}/views/four-four")).to have_been_made.once
+    end
+
+    it 'does not cache result for different 4x4s' do
+      CoreServer.get_view('four-four')
+      CoreServer.get_view('four-five')
+
+      expect(a_request(:get, "#{coreservice_uri}/views/four-four")).to have_been_made.once
+      expect(a_request(:get, "#{coreservice_uri}/views/four-five")).to have_been_made.once
+    end
+  end
+
   describe '#view_inaccessible?' do
     let(:view) { nil }
 
@@ -60,9 +81,15 @@ describe CoreServer do
     let(:subject) { CoreServer.current_user_story_authorization }
 
     before do
-      allow(::RequestStore).to receive(:store) { {:story_uid => 'what-what'} }
+      ::RequestStore.store[:story_uid] = 'what-what'
       allow(CoreServer).to receive(:current_user) { user }
       allow(CoreServer).to receive(:get_view) { view }
+    end
+
+    it 'caches result' do
+      CoreServer.current_user_story_authorization
+      CoreServer.current_user_story_authorization
+      expect(CoreServer).to have_received(:current_user).once
     end
 
     describe 'when a user without a role or rights' do
@@ -309,7 +336,7 @@ describe CoreServer do
     context 'unredirected core server http request' do
 
       before do
-        allow(RequestStore.store).to receive(:[]).with(:socrata_session_headers).and_return(mock_headers)
+        ::RequestStore.store[:socrata_session_headers] = mock_headers
         expect(mock_http).to receive(:request).with(mock_get)
 
         allow(mock_get).to receive(:[]=)

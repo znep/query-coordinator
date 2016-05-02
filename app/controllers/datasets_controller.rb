@@ -149,7 +149,7 @@ class DatasetsController < ApplicationController
     @user_session = UserSession.new unless current_user
 
     # See if the user is accessing the canonical URL; if not, redirect
-    unless request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
+    unless using_canonical_url?
       # Log redirects in production
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
@@ -1116,6 +1116,10 @@ protected
     Rails.cache.fetch(cache_key, expires_in: 1.day, race_condition_ttl: 15.seconds) do
       soda_fountain.get_extent(options)
     end
+  end
+
+  def using_canonical_url?
+    request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
   end
 
 end

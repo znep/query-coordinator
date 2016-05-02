@@ -40,6 +40,7 @@ group :test do
   gem 'factory_girl'
   gem 'guard'
   gem 'guard-minitest'
+  gem 'guard-rspec', :require => false
   gem 'minitest', '~> 5.8', '>= 5.8.4'
   gem 'minitest-reporters', '~> 1.1', '>= 1.1.8'
   gem 'mocha', :require => false

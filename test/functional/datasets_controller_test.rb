@@ -174,6 +174,7 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
+<<<<<<< 33af515fa8c8b787cd8af8f91bcb840fe0af037c
   test 'special snowflake SF api geo datasets do not die' do
     setup_nbe_dataset_test(false, false)
     @view.stubs(is_api_geospatial?: true)
@@ -240,6 +241,55 @@ class DatasetsControllerTest < ActionController::TestCase
 
 
   end
+
+  #######################################################################
+  # See spec/controllers/datasets_controller_spec.rb
+  #######################################################################
+
+  # context 'with DSLP fully enabled' do
+  #   should 'display the DSLP on the show path' do
+  #     FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+  #       feature_flags.stubs(
+  #         enable_dataset_landing_page: true,
+  #         default_to_dataset_landing_page: true
+  #       )
+  #     end)
+  #     @controller.stubs(:get_view => @test_view)
+  #     @test_view.stubs(find_dataset_landing_page_related_content: [])
+
+  #     get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+  #     assert_select_quiet('.result-card').any?
+  #     assert_response 200
+  #   end
+
+  #   should 'display the DSLP when /about is appended to the show path' do
+  #     FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+  #       feature_flags.stubs(
+  #         enable_dataset_landing_page: true,
+  #         default_to_dataset_landing_page: true
+  #       )
+  #     end)
+  #     @controller.stubs(:get_view => @test_view)
+  #     @test_view.stubs(find_dataset_landing_page_related_content: [])
+  #     get :about, :category => 'dataset', :view_name => 'dataset', :id => 'test-data'
+  #     assert_select_quiet('.result-card').any?
+  #     assert_response 200
+  #   end
+
+  #   should 'display the grid view when /data is appended to the show path' do
+  #     FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
+  #       feature_flags.stubs(
+  #         enable_dataset_landing_page: true,
+  #         default_to_dataset_landing_page: true
+  #       )
+  #     end)
+
+  #     setup_nbe_dataset_test
+  #     get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+  #     assert_select_quiet('.result-card', 0)
+  #     assert_response 302 # we know this is not the authoritative path
+  #   end
+  # end
 
   test 'renders page meta content over https and not http' do
     setup_nbe_dataset_test(true)

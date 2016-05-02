@@ -2,6 +2,7 @@
 @import "socrata-icons";
 @import "components/grid";
 @import "components/typography";
+@import "components/branding";
 @import "components/colors";
 @import "components/color-swatches";
 @import "components/button-group";
@@ -23,6 +24,13 @@
 @import "components/input-groups";
 @import "components/cards";
 @import "components/tour";
+
+a {
+  color: $primary;
+  &:hover {
+    color: $primary-dark;
+  }
+}
 
 .container {
   @include outer-container();
@@ -161,8 +169,22 @@ section.styleguide-section {
   }
 }
 
+.logo-sample {
+  margin-bottom: 49px;
+}
+
 .dark-context {
-  background-color: #4a4a4a;
+  background-color: $black;
+  padding: ms(-3);
+}
+
+.medium-context {
+  background-color: $dark-grey-2;
+  padding: ms(-3);
+}
+
+.primary-context {
+  background-color: $primary;
   padding: ms(-3);
 }
 
@@ -290,4 +312,9 @@ section.styleguide-section {
       padding-top: ms(-2);
     }
   }
+}
+
+/* Responsive Images in the guide? */
+img {
+  max-width: 100%;
 }

@@ -57,14 +57,14 @@ class BrowseControllerTest < ActionController::TestCase
     stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
     get :show, { 'data_lens_transition_state' => 'post_beta' }
 
-    assert_response :success
-    assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
+    assert_response(:success)
+    assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
   end
 
   test 'it should render page meta content over https and not http' do
     @request.env['HTTPS'] = 'on'
     get :show
-    assert_select 'meta' do |elements|
+    assert_select('meta') do |elements|
       elements.each do |element|
         element.attributes.values.each do |value|
           value.to_s.scan(/http.?:\/\//).each do |match|
@@ -96,8 +96,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
     end
 
     should 'not show any new view facet for users able to edit the datasets of others' do
@@ -116,8 +116,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
     end
   end
 
@@ -142,8 +142,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 0
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -162,8 +162,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
     end
   end
 
@@ -188,8 +188,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
     end
 
     should 'show new view facets for users able to edit the datasets of others' do
@@ -208,8 +208,8 @@ class BrowseControllerTest < ActionController::TestCase
       )
       get :show
 
-      assert_response :success
-      assert_select '.facetSection.limitTo > ul > li > .typeDataLens', 1
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
     end
   end
 
@@ -219,7 +219,7 @@ class BrowseControllerTest < ActionController::TestCase
       with() { |actual| !actual[:limitTo].present? }.
       returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
     get :show
-    assert_response :success
+    assert_response(:success)
     Clytemnestra.unstub(:search_views)
   end
 
@@ -229,26 +229,26 @@ class BrowseControllerTest < ActionController::TestCase
       with() { |actual| actual[:limitTo].eql? 'new_view' }.
       returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
     get :show, { 'limitTo' => 'new_view' }
-    assert_response :success
+    assert_response(:success)
     Clytemnestra.unstub(:search_views)
   end
 
   context 'embedded browse page' do
     should 'render without errors' do
       get :embed
-      assert_response :success
+      assert_response(:success)
     end
 
     should 'render without errors when custom facets is nil' do
       BrowseActions.stubs(custom_facets: nil)
       get :embed
-      assert_response :success
+      assert_response(:success)
     end
 
     should 'render without errors when custom facets is []' do
       BrowseActions.stubs(custom_facets: [])
       get :embed
-      assert_response :success
+      assert_response(:success)
     end
   end
 
@@ -382,7 +382,7 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.expects(:property).with(:view_types_facet, :catalog).
         returns(nil)
 #      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
-     # CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
+#      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
 #      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
     end
 
@@ -400,7 +400,7 @@ class BrowseControllerTest < ActionController::TestCase
         returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
 
       get(:show, front_end_url_params)
-      assert_response :success
+      assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Newest/, @response.body) # sort order
       Clytemnestra.unstub(:search_views)
@@ -413,7 +413,7 @@ class BrowseControllerTest < ActionController::TestCase
         returns(Clytemnestra::ViewSearchResult.from_result(clytemnestra_payload))
 
       get(:embed, front_end_url_params)
-      assert_response :success
+      assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
       Clytemnestra.unstub(:search_views)
@@ -430,7 +430,7 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, front_end_url_params)
-      assert_response :success
+      assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Most Relevant/, @response.body) # sort order
 
@@ -448,7 +448,7 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:embed, front_end_url_params)
-      assert_response :success
+      assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Most Accessed/, @response.body) # sort order
 
@@ -463,7 +463,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
       get(:embed, {})
-      assert_response :success
+      assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Most Relevant/, @response.body) # sort order
     end
@@ -473,7 +473,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Most Accessed/, @response.body) # sort order
     end
@@ -486,7 +486,7 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:embed, view_type: 'browse2')
-      assert_response :success
+      assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Added/, @response.body) # 'Newest' is now 'Recently Added'
       assert_match(/Created/, @response.body) # created_at timestamp shows with 'Recently Added'
@@ -500,7 +500,7 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload, headers: {})
 
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
       assert_match(/Updated/, @response.body) # sort order
@@ -517,7 +517,7 @@ class BrowseControllerTest < ActionController::TestCase
       @controller.stubs(:get_facet_cutoff => stubbed_custom_cutoff)
 
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
 
       def visible_selector(index)
         [
@@ -580,9 +580,9 @@ class BrowseControllerTest < ActionController::TestCase
 
       # Cetera should be paired with browse2
       get(:show, view_type: 'browse2')
-      assert_response :success
+      assert_response(:success)
 
-      assert_select cetera_selector, search_failure_message
+      assert_select(cetera_selector, search_failure_message)
     end
 
     should 'fail gracefully on Cetera 500' do
@@ -599,9 +599,9 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 500)
 
       get(:show, view_type: 'browse2')
-      assert_response :success
+      assert_response(:success)
 
-      assert_select cetera_selector, search_failure_message
+      assert_select(cetera_selector, search_failure_message)
     end
 
     should 'fail gracefully on Cetera unexpected payload' do
@@ -618,9 +618,9 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: 'oh no they were ready for that!')
 
       get(:show, view_type: 'browse2')
-      assert_response :success
+      assert_response(:success)
 
-      assert_select cetera_selector, search_failure_message
+      assert_select(cetera_selector, search_failure_message)
     end
 
     ##########
@@ -637,9 +637,9 @@ class BrowseControllerTest < ActionController::TestCase
         to_timeout
 
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
 
-      assert_select core_cly_selector, search_failure_message
+      assert_select(core_cly_selector, search_failure_message)
     end
 
     should 'fail gracefully on Core/Cly 500' do
@@ -651,9 +651,9 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 500)
 
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
 
-      assert_select core_cly_selector, search_failure_message
+      assert_select(core_cly_selector, search_failure_message)
     end
 
     should 'fail gracefully on Core/Cly unexpected payload' do
@@ -665,9 +665,9 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: 'core has been deprecated')
 
       get(:show, {})
-      assert_response :success
+      assert_response(:success)
 
-      assert_select core_cly_selector, search_failure_message
+      assert_select(core_cly_selector, search_failure_message)
     end
   end
 
@@ -694,10 +694,10 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload)
 
       get(:embed, view_type: 'browse2', sortBy: 'newest')
-      assert_response :success
+      assert_response(:success)
 
-      assert_select selector, 'Created'
-      assert_select selector, count: 0, text: 'Updated'
+      assert_select(selector, 'Created')
+      assert_select(selector, count: 0, text: 'Updated')
     end
 
     should 'show updated at timestamp when sorting by default' do
@@ -706,10 +706,10 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload)
 
       get(:embed, view_type: 'browse2') # default sort should be relevance
-      assert_response :success
+      assert_response(:success)
 
-      assert_select selector, 'Updated'
-      assert_select selector, count: 0, text: 'Created'
+      assert_select(selector, 'Updated')
+      assert_select(selector, count: 0, text: 'Created')
     end
 
     should 'show updated at timestamp when sorting by last updated' do
@@ -718,10 +718,10 @@ class BrowseControllerTest < ActionController::TestCase
         to_return(status: 200, body: cetera_payload)
 
       get(:embed, view_type: 'browse2', sortBy: 'last_modified')
-      assert_response :success
+      assert_response(:success)
 
-      assert_select selector, 'Updated'
-      assert_select selector, count: 0, text: 'Created'
+      assert_select(selector, 'Updated')
+      assert_select(selector, count: 0, text: 'Created')
     end
   end
 end

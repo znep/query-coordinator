@@ -1,0 +1,62 @@
+div.mobile-chart-flyout {
+  height: 60px;
+
+  $grayColor: #929292;
+  $greenColor: #02B38F;
+
+  .arrow {
+    width: 33px;
+    height: 12px;
+    top: -12px;
+    background: url(/images/flyout-arrow.png) no-repeat;
+    display: block;
+    position: absolute;
+    background-size: 100%;
+  }
+
+  .title {
+    width: 50%;
+    padding: 17px 0;
+    font-size: 15px;
+    font-weight: 500;
+    float: left;
+  }
+
+  .values {
+    width: 45%;
+    float: right;
+
+    &.unfiltered {
+      padding: 18px 0;
+
+      .total-values {
+        color: $greenColor;
+
+        span.value-title, span.value-unit {
+          color: $grayColor;
+        }
+      }
+    }
+
+    &.filtered {
+      padding: 10px 0;
+
+      .total-values {
+        color: $grayColor;
+
+        span.value-title, span.value-unit {
+          color: $grayColor;
+        }
+      }
+
+      .filtered-values {
+        color: $greenColor;
+
+        span.value-title, span.value-unit {
+          color: $grayColor;
+        }
+      }
+    }
+  }
+
+}

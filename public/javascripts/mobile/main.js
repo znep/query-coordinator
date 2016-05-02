@@ -15,6 +15,7 @@ var mobileTimelineChart = require('./mobile.timelinechart.js');
 var mobileFeatureMap = require('./mobile.featuremap.js');
 var mobileChoroplethMap = require('./mobile.choroplethmap.js');
 var mobileTable = require('./mobile.table.js');
+var mobileDistributionChart = require('./mobile.distribution-chart.js');
 
 import Visualizations from 'socrata-visualizations';
 
@@ -484,7 +485,8 @@ import './styles/mobile-general.scss';
           mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
           break;
         case 'choropleth':
-          cardOptions.componentClass = 'choropleth';
+          cardOptions.containerClass = 'choropleth-upper-container';
+          cardOptions.componentClass = 'choropleth-upper-wrapper';
           $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
           values = {
             domain: datasetMetadata.domain,
@@ -500,7 +502,6 @@ import './styles/mobile-general.scss';
 
           mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
           break;
-        case 'histogram':
         case 'column':
           cardOptions.containerClass = 'column-chart-upper-container';
           cardOptions.componentClass = 'column-chart-upper-wrapper';
@@ -531,6 +532,22 @@ import './styles/mobile-general.scss';
           };
 
           mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));
+          break;
+        case 'histogram':
+          cardOptions.componentClass = 'distribution-chart-upper-wrapper';
+          cardOptions.containerClass = 'distribution-chart-upper-container';
+          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
+          values = {
+            domain: datasetMetadata.domain,
+            datasetUid: datasetMetadata.id,
+            columnName: card.fieldName,
+            orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
+            aggregationFunction: card.aggregationFunction,
+            aggregationField: card.aggregationField,
+            filters: vifFilters
+          };
+
+          mobileDistributionChart(values, $($cardContainer.find('.' + cardOptions.componentClass)));
           break;
         default:
           break;

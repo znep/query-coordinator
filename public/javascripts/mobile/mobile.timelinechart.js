@@ -3,6 +3,10 @@ require('./styles/timeline-chart.scss');
 require('socrata-visualizations').TimelineChart;
 var Loader = require('./components/Loader');
 
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import MobileChartFlyout from './react-components/mobileFlyout/mobileChartFlyout';
+
 module.exports = function(values, $target) {
   'use strict';
 
@@ -36,8 +40,8 @@ module.exports = function(values, $target) {
     'title': values.columnName,
     'type': 'timelineChart',
     'unit': {
-      'one': 'case',
-      'other': 'cases'
+      'one': 'row',
+      'other': 'rows'
     }
   };
 
@@ -47,6 +51,7 @@ module.exports = function(values, $target) {
 
   $timelineChartElement.socrataTimelineChart(timelineChartVIF);
   $timelineChartContainer.append('<div class="mobile-flyout"></div>');
+  $timelineChartContainer.append('<div class="mobile-flyout-dot"></div>');
 
   // Loader events for timelineChart
   $timelineChartElement.on('SOCRATA_VISUALIZATION_DATA_LOAD_START', function() {
@@ -77,8 +82,9 @@ module.exports = function(values, $target) {
   }
 
   function clearFlyout() {
-    $timelineChartContainer.removeClass('expanded');
-    $timelineChartContainer.find('.mobile-flyout').html('');
+    $timelineChartContainer.toggleClass('expanded', false);
+    $timelineChartContainer.find('.mobile-flyout, .mobile-flyout-dot').
+      toggleClass('hidden', true).empty();
   }
 
   function handleFlyout(event) {
@@ -87,7 +93,9 @@ module.exports = function(values, $target) {
     // Render mobile flyout
     if (payload !== null) {
       mobileFlyoutRender(payload);
-      $timelineChartElement.parent().addClass('expanded');
+      $timelineChartContainer.toggleClass('expanded', true);
+      $timelineChartContainer.find('.mobile-flyout, .mobile-flyout-dot').
+        toggleClass('hidden', false);
     }
   }
 
@@ -95,37 +103,26 @@ module.exports = function(values, $target) {
     var flyoutPosition = payload.flyoutPosition;
     var flyoutBounds = payload.element.getBoundingClientRect();
     var highlightedBarWidth = $timelineChartElement.find('.timeline-chart-highlight-container').width();
-    var filteredLabelLine = '';
-    var valuesStyleClass = 'unfiltered';
+    var flyoutContainer = $timelineChartContainer.find('.mobile-flyout').empty()[0];
+    var arrowMarginLeft = parseFloat((flyoutBounds.left - 12) + (highlightedBarWidth / 2)) - 16.5;
 
-    if (payload.filteredValue) {
-      var filteredValue = payload.filteredValue.split(' ');
-      filteredLabelLine = '<div class="text-right filtered-values"><span>' + payload.filteredLabel + '</span> ' +
-        filteredValue[0] + '<span> ' + filteredValue[1] + '</span></div>';
-
-      valuesStyleClass = 'filtered';
-    }
-
-    var unFilteredValue = payload.unfilteredValue.split(' ');
-    var unFilteredLabelLine = '<div class="text-right total-values"><span>' + payload.unfilteredLabel + '</span> ' +
-      unFilteredValue[0] + '<span> ' + unFilteredValue[1] + '</span></div>';
+    var filteredValue = payload.filteredValue ? payload.filteredValue.split(' ')[0] : false;
+    var unFilteredValue = payload.unfilteredValue.split(' ')[0];
 
     var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
     var dotTop = flyoutPosition.vertical +
       $timelineChartElement.parent().find('.intro-text').height() +
       parseInt($('.timeline-chart-upper-container').css('border-width')) + 5;
 
-    var flyoutData = $('<div>', {
-      'class': 'title-wrapper',
-      html:
-      '<div class="dot" style="left: ' + dotLeft + 'px; top: ' + dotTop + 'px;"></div>' +
-      '<div class="labels mobile">' +
-        '<div class="arrow" style="left: ' + ((flyoutBounds.left - 28) + (highlightedBarWidth / 2)) + 'px"></div>' +
-        '<h4 class="title pull-left">' + payload.title + '</h4>' +
-        '<div class="values pull-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +
-      '</div>'
-    });
+    $timelineChartContainer.
+      find('.mobile-flyout-dot').
+      html('<div class="dot" style="left: {0}px; top: {1}px;"></div>'.format(dotLeft, dotTop));
 
-    $timelineChartContainer.find('.mobile-flyout').html(flyoutData);
+    ReactDOM.render(<MobileChartFlyout
+      title={ payload.title }
+      filteredValue={ filteredValue }
+      unFilteredValue={ unFilteredValue }
+      arrowPosition={ arrowMarginLeft }
+      unit={ timelineChartVIF.unit } />, flyoutContainer);
   }
 };

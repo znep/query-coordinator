@@ -1,21 +1,23 @@
 .timeline-chart-upper-container {
   position: relative;
   width: 100%;
-  //height: 375px;
   height: 60vh;
   font-size: 14px;
   box-sizing: border-box;
 
   &.expanded {
-    //height: 383px;
-    height: 65vh;
+    height: calc(60vh + 60px);
+
+    .x-ticks {
+      top: calc(100% - 90px);
+    }
   }
 
   .timeline-chart-upper-wrapper {
+    height: calc(100% - 60px);
+
     display: block;
-    position: relative;
     width: 85%;
-    height: calc(60vh - 100px);
     margin-left: 55px;
   }
 
@@ -29,13 +31,24 @@
     z-index: 10;
   }
 
-  .mobile-flyout .labels.mobile {
+  .mobile-flyout {
+    margin-top: -60px;
+    height: 60px;
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
+    bottom: 0;
+    z-index: 11;
+    position: absolute;
+    padding: 3px 10px 3px 10px;
+    width: 100%;
+  }
+
+  .mobile-flyout-backup .labels.mobile {
     height: 57px;
     box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
     bottom: 0;
     z-index: 11;
     position: absolute;
-    padding: 3px 5px 3px 5px;
+    padding: 3px 10px 3px 10px;
     width: 100%;
 
     .arrow {
@@ -90,8 +103,7 @@
   }
 
   .x-ticks {
-    position: absolute;
-    bottom: 0;
+    top: calc(100% - 30px);
     z-index: 6;
 
     .x-tick-label {
@@ -142,23 +154,18 @@
     top: 0;
     z-index: 1;
     pointer-events: none;
-    font-size: 12px;
-    font-weight: 400;
-    color: #666;
 
     .y-tick {
       position: absolute;
       width: 115%;
       margin-left: -15%;
       text-align: left;
-      font-size: 12px;
-      font-weight: bold;
-      color: #929292;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      color: #666 !important;
     }
 
     .zero {
-      font-weight: bold;
-      color: #888;
       bottom: 5px !important;
     }
   }

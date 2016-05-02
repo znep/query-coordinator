@@ -69,12 +69,20 @@ module InternalHelper
   end
 
   def property_actions_for(property_name)
-    html = selection_checkbox(:delete, property_name)
+    html = selection_checkbox(:edit, property_name)
+    html << selection_checkbox(:delete, property_name)
     html << selection_checkbox(:export, property_name)
   end
 
   def selection_checkbox(kind, property_name)
     case kind
+    when :edit
+      content_tag :div, :class => 'propertyAction editAction' do
+        html = link_to('Edit this field alone.',
+                       show_property_path(config_id: @config.id,
+                                          property_id: property_name),
+                       :class => 'editLink')
+      end
     when :delete
       content_tag :div, :class => 'propertyAction deleteAction' do
         id  = "delete_properties[#{property_name}]"

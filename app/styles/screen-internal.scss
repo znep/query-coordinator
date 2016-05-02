@@ -392,6 +392,9 @@ ul.autocomplete {
     }
   }
 
+  .editMode .property.line .propertyActions .editAction {
+    display: block;
+  }
   .deleteMode .property.line .propertyActions .deleteAction {
     display: block;
   }

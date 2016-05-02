@@ -50,11 +50,8 @@
               <label title="<%= prop['name'] %>"><%= prop['name'] %></label>
               <%= text_area_tag "properties[#{prop['name']}]", property_value(prop['value']) %>
               <div class="propertyActions">
-                <div><%= link_to 'Edit this field alone.',
-                  show_property_path(config_id: @config.id,
-                                     property_id: prop['name']),
-                  :class => 'editLink' %></div>
                 <%= property_actions_for(prop['name']) %>
+                <div>To perform other actions, change the mode under Actions.</div>
               </div>
             </div>
           <%- end # end each -%>
@@ -208,7 +205,7 @@
       $('.modes button').click(function() {
         var mode = $(this).data('mode')
         $('.content').
-          removeClass('viewMode deleteMode exportMode importMode').
+          removeClass('editMode deleteMode exportMode importMode').
           addClass(mode + 'Mode');
         $('.modes button').
           removeClass('disabled').
@@ -249,6 +246,7 @@
         default: console.error('what just happened?');
         }
       });
+      $('.content').addClass('editMode');
 
       ZeroClipboard.config({ swfPath: '/ZeroClipboard.swf' });
       new ZeroClipboard( $('.exportToClipboard')[0] ).

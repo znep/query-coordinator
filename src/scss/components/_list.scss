@@ -1,5 +1,7 @@
-ul, ol {
-  ul, ol {
+ul,
+ol {
+  ul,
+  ol {
     margin: 0;
   }
 }
@@ -14,20 +16,21 @@ ol {
 }
 
 .list-unstyled {
-	list-style: none;
-	padding-left: 0;
-	& > ul {
-		padding-left: inherit;
-	}
+  list-style: none;
+  padding-left: 0;
+  & > ul {
+    padding-left: inherit;
+  }
 }
 
 .list-inline {
-	list-style: none;
-	padding-left: 0;
-	margin-left: -(ms(-2));
-	& li {
-		display: inline-block;
-		padding-left: ms(-2);
-		padding-right: ms(-2);
-	}
+  list-style: none;
+  padding-left: 0;
+  margin-left: -(ms(-2));
+  & li {
+    display: inline-block;
+    padding-left: ms(-2);
+    padding-right: ms(-2);
+  }
 }
+

@@ -1,23 +1,21 @@
-// Loaders, Spinners, etc.
-
-
-// Animation
 @include keyframes(spin) {
-  100% { @include transform(rotate(360deg)); }
+  100% {
+    @include transform(rotate(360deg));
+  }
 }
 
 .spinner-default {
+  @include animation(spin 0.9s linear infinite);
+
   border: 3px solid $light-grey-5;
   border-right-color: lighten($grey, 10%);
   border-radius: 60%;
   display: inline-block;
   width: ms(1);
   height: ms(1);
-  @include animation(spin .90s linear infinite);
 }
 
 .spinner-btn-primary {
   border-color: $white;
   border-right-color: shade($primary, 20%);
-
 }

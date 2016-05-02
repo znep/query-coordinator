@@ -3,16 +3,19 @@
 .input-group {
   position: relative;
   display: flex;
+
   .text-input {
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
     flex: 1 0;
   }
+
   .input-group-btn {
     position: relative;
+
     .btn {
       border-left: none;
-      margin-left: 0px;
+      margin-left: 0;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       padding: 8px;

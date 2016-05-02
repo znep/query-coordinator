@@ -1,6 +1,6 @@
 @import "mixins";
 
-// Header
+/* Header */
 $header-height: ms(13);
 $header-box-shadow-size: 0.15rem;
 $site-header-z-index: 6;
@@ -20,40 +20,44 @@ $site-header-z-index: 6;
   color: $header-text-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
-  min-width: 73rem; // current point where header would bump to line 2
+  min-width: 73rem;
 
-  &:after {
+  &::after {
     position: absolute;
     top: $header-height;
-    left: 0px;
+    left: 0;
     width: 100%;
     height: 75px;
     pointer-events: none;
-    // Gradient from white, start transitioning to transparent at 25%
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,rgba(255,255,255,1)), color-stop(25%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* IE10+ */
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* W3C */
+
+    /* Gradient from white, start transitioning to transparent at 25% */
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 1) 2%,
+        rgba(255, 255, 255, 1) 25%,
+        rgba(255, 255, 255, 0) 100%
+      );
   }
 
   .header-right {
     display: inline-block;
-    float: right;
     line-height: $header-height;
     font-size: 1.5rem;
     font-weight: 100;
     padding-right: 1rem;
   }
 
-  .app-bar-menu, .navbar-nav {
+  .app-bar-menu,
+  .navbar-nav {
     list-style: none;
     margin: 0;
     padding: 0;
     border: 0;
     vertical-align: baseline;
 
-    li, ul {
+    ul,
+    li {
       display: inline-block;
       height: $header-height;
     }
@@ -65,13 +69,14 @@ $site-header-z-index: 6;
     }
   }
 
-  li.menu-divider, div.menu-divider {  // line divider
+  li.menu-divider,
+  div.menu-divider {
     height: $header-height / 2;
     display: inline-block;
     padding: 0;
     margin: 0;
     vertical-align: middle;
-    border-left: 1px solid #6B6B6B;
+    border-left: 1px solid #6b6b6b;
   }
 
   .story-title {
@@ -100,7 +105,6 @@ $site-header-z-index: 6;
     }
   }
 
-  // Buttons
   .btn-transparent {
     color: $header-text-color;
     background-color: transparent;
@@ -159,12 +163,13 @@ $site-header-z-index: 6;
       color: lighten($header-bg-color, 10%);
     }
 
-    &:before {
+    &::before {
       text-align: center;
     }
   }
 
-  .panel-btn, .status-indicator {
+  .panel-btn,
+  .status-indicator {
     padding: 0.8rem 1.5rem;
   }
 
@@ -183,7 +188,6 @@ $site-header-z-index: 6;
     }
   }
 
-  // Status Indicators
   .status-indicator {
     color: $header-text-color;
     background-color: transparent;
@@ -202,7 +206,7 @@ $site-header-z-index: 6;
   }
 }
 
-// Display nav bar in section instead of at the top of the page
+/* Display nav bar in section instead of at the top of the page */
 .example {
   .app-navbar {
     position: relative;
@@ -219,7 +223,7 @@ $site-header-z-index: 6;
 }
 
 .responsive-navbar {
-  background-color: #22B479;
+  background-color: #22b479;
   line-height: 60px;
   padding: 0 1rem;
   color: white;

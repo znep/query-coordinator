@@ -1,58 +1,60 @@
-.btn-group, .btn-group-vertical {
+.btn-group,
+.btn-group-vertical {
   display: inline-block;
   letter-spacing: -4px;
 
-  >.btn {
+  > .btn {
     border-radius: 0;
-    &.btn-primary:not(.btn-inverse), &.btn-secondary:not(.btn-inverse), &.btn-dark {
+    margin-right: 0;
+
+    &.btn-primary:not(.btn-inverse),
+    &.btn-secondary:not(.btn-inverse),
+    &.btn-dark {
       border: 1px solid transparent;
     }
-    margin-right: 0;
   }
 
-
-  >.btn:first-child {
+  > .btn:first-child {
     border-top-left-radius: 1px;
     border-bottom-left-radius: 1px;
   }
 
-  >.btn:last-child {
+  > .btn:last-child {
     border-top-right-radius: 1px;
     border-bottom-right-radius: 1px;
   }
-
-
 }
 
 .btn-group-vertical {
-  &.btn-primary:not(.btn-inverse), &.btn-secondary:not(.btn-inverse), &.btn-dark {
+  &.btn-primary:not(.btn-inverse),
+  &.btn-secondary:not(.btn-inverse),
+  &.btn-dark {
     border-color: transparent;
   }
-  &> .btn {
+
+  & > .btn {
     display: block;
     width: 100%;
     float: none;
-    border-bottom-width: 0px;
+    border-bottom-width: 0;
 
     &:first-child:not(:last-child) {
       border-right-width: 1px;
-      border-bottom-left-radius: 0px;
+      border-bottom-left-radius: 0;
       border-top-right-radius: 1px;
       border-top-left-radius: 1px;
     }
 
     &:last-child:not(:first-child) {
-      border-top-right-radius: 0px;
+      border-top-right-radius: 0;
       border-bottom-left-radius: 1px;
       border-left-width: 1px;
       border-bottom-width: 1px;
     }
-
-
   }
 }
 
-// Prevent double borders when buttons are next to each other
+/* Prevent double borders when buttons are next to each other */
 .btn-group {
   .btn + .btn,
   .btn + .btn-group,

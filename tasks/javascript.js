@@ -2,9 +2,6 @@ var async = require('async');
 var gulp = require('gulp');
 var UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 
-var prepend = require('gulp-insert').prepend;
-var rename = require('gulp-rename');
-var sourcemaps = require('gulp-sourcemaps');
 var webpack = require('gulp-webpack');
 
 function configuration(filename, minify) {

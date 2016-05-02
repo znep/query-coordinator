@@ -1,4 +1,4 @@
-var DropdownFactory = module.exports = function(element) {
+module.exports = function DropdownFactory(element) {
   this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
   this.dropdowns.forEach(function(dropdown) {
     new Dropdown(dropdown);

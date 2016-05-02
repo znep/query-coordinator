@@ -1,6 +1,6 @@
 var velocity = require('velocity-animate');
 
-var FlannelFactory = module.exports = function(element) {
+module.exports = function FlannelFactory() {
   var mobileBreakpoint = 420;
   var animationDuration = 300;
   var animationEasing = [.645, .045, .355, 1];

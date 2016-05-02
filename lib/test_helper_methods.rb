@@ -5,12 +5,12 @@ module TestHelperMethods
     # For some reason, Domain and Configuration aren't autoloaded at this point,
     # so force them to load before we read test/fixtures/domain.yml
     Domain && Configuration
-    @domain = YAML::load(File.open("test/fixtures/domain.yml"))
+    @domain = YAML::load(File.open('test/fixtures/domain.yml'))
     CurrentDomain.set_domain(@domain)
   end
 
-  def init_current_user(controller, name = "test-test", session_token = "123456")
-    user = User.new({'id' => name})
+  def init_current_user(controller, name = 'test-test', session_token = '123456')
+    user = User.new('id' => name)
     UserSession.controller=controller
     UserSession.update_current_user(user, session_token)
     user_session = UserSession.new

@@ -316,8 +316,7 @@ Rails.application.routes.draw do
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
     scope '/:category/:view_name/:id', :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
-      get '/:row_id', :action => 'show', :as => :view_row,
-        :constraints => {:row_id => /\d+/}
+      get '/:row_id', :action => 'show', :as => :view_row, :constraints => { :row_id => /\d+/ }
       get '/data', :action => 'show', :as => :data_grid, :bypass_dslp => true
       get '/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get '/edit', :action => 'edit', :as => :edit_view

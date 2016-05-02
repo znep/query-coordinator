@@ -81,7 +81,7 @@ class DatasetsController < ApplicationController
     end
 
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
-    user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
+    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
 
     if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url
@@ -117,7 +117,6 @@ class DatasetsController < ApplicationController
         return true
       end
     end
-
 
     # We definitely don't want to have to look up the row index
     # ever again, as that causes a full scan. Persist the

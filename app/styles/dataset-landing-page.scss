@@ -831,3 +831,85 @@ a {
     cursor: pointer;
   }
 }
+
+.feedback-panel {
+  position: fixed;
+  width: 37rem;
+  bottom: 0;
+  right: 0;
+  z-index: 10000;
+  @media(max-width: $medium) {
+    height: 0;
+    width: 100%;
+    position: absolute;
+  }
+
+  .feedback-panel-button {
+    background-color: $primary-alt-1-light;
+    border: 1px solid $primary-alt-1-dark;
+    border-bottom: none;
+    color: $primary-alt-1-dark;
+    padding: 0.5rem 1rem 1rem 1rem;
+    position: fixed;
+    bottom: -0.35rem;
+    right: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    @include prefixer(transition, '0.25s');
+
+    &:hover {
+      bottom: 0;
+    }
+  }
+
+  .flannel-header {
+    max-width: 95%;
+
+    h5 {
+      margin: 0.5rem 0 0;
+    }
+  }
+
+  .feedback-panel-content {
+    position: fixed;
+    width: 36rem;
+    padding: 0 1rem 1rem;
+    bottom: -22rem;
+
+    p {
+      margin: 1rem 0;
+    }
+
+    a {
+      font-weight: bold;
+    }
+
+    button:first-child {
+      margin-bottom: 1rem;
+    }
+
+    .desktop {
+      display: block;
+    }
+    .mobile {
+      display: none;
+    }
+
+    @media(max-width: $medium) {
+      height: auto;
+      width: 100%;
+
+      .desktop {
+        display: none;
+      }
+      .mobile {
+        display: block;
+      }
+    }
+  }
+}
+
+// third-party widget overrides
+#us_report_button {
+  display: none !important;
+}

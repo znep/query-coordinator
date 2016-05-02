@@ -3,6 +3,10 @@ require('socrata-visualizations').ColumnChart;
 require('./styles/column-chart.scss');
 var Loader = require('./components/Loader');
 
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import MobileChartFlyout from './react-components/mobileFlyout/mobileChartFlyout';
+
 module.exports = function(values, $target) {
   'use strict';
 
@@ -54,12 +58,10 @@ module.exports = function(values, $target) {
   var $columnChartElement = $target;
   $columnChartElement.socrataColumnChart(columnChartVIF);
 
-  var chartWrapper = $columnChartElement.find('.column-chart-wrapper');
-  var labelWrapper = $('<div>', {
-    'class': 'labels mobile'
-  });
+  var $columnChartContainer = $target.parent();
+  $columnChartContainer.append('<div class="mobile-flyout hidden"></div>');
 
-  $columnChartElement.append(labelWrapper);
+  var chartWrapper = $columnChartElement.find('.column-chart-wrapper');
 
   $columnChartElement.on(
     'click',
@@ -90,6 +92,9 @@ module.exports = function(values, $target) {
       filteredValue: d3.select(event.currentTarget).datum()[FILTERED_INDEX],
       selected: d3.select(event.currentTarget).datum()[SELECTED_INDEX]
     };
+
+    $columnChartContainer.find('.mobile-flyout').toggleClass('hidden', false);
+
     selectBar(event);
   }
 
@@ -110,42 +115,33 @@ module.exports = function(values, $target) {
     var barName = event.currentTarget.getAttribute('data-bar-name');
     var unFilteredValue = $columnChartElement.selectedData.unfilteredValue;
     var filteredValue = $columnChartElement.selectedData.filteredValue;
-    var filteredLabelLine = '';
-    var valuesStyleClass = 'unfiltered';
-    var isFiltered = filteredValue != unFilteredValue;
 
-    chartWrapper.
-    find('.bar-group[data-bar-name="{0}"]'.format(barName)).
-    addClass('selected');
+    var selectedBar = chartWrapper.find('.bar-group[data-bar-name="{0}"]'.format(barName)).addClass('selected');
 
-    if (unFilteredValue >= 1000000) {
+    if (filteredValue != unFilteredValue) {
+      if (parseInt(filteredValue) >= 1000000) {
+        filteredValue = (filteredValue / 1000000).toFixed(1) + 'M';
+      } else if (parseInt(filteredValue) >= 1000) {
+        filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
+      }
+    } else {
+      filteredValue = false;
+    }
+
+    if (parseInt(unFilteredValue) >= 1000000) {
       unFilteredValue = (unFilteredValue / 1000000).toFixed(1) + 'M';
-    } else if (filteredValue >= 1000) {
+    } else if (parseInt(unFilteredValue) >= 1000) {
       unFilteredValue = (unFilteredValue / 1000).toFixed(1) + 'K';
     }
 
-    if (filteredValue >= 1000000) {
-      filteredValue = (filteredValue / 1000000).toFixed(1) + 'M';
-    } else if (filteredValue >= 1000) {
-      filteredValue = (filteredValue / 1000).toFixed(1) + 'K';
-    }
+    var flyoutContainer = $columnChartContainer.find('.mobile-flyout').empty()[0];
+    var arrowMarginLeft = selectedBar.offset().left  - 8;
 
-    if (isFiltered) {
-      filteredLabelLine = '<div class="text-right filtered-values"><span>Filtered</span> ' + filteredValue + '</div>';
-      valuesStyleClass = 'filtered';
-    }
-
-    var unFilteredLabelLine = '<div class="text-right total-values"><span>Total</span> ' + unFilteredValue + '</div>';
-
-    var flyoutData = $('<div>', {
-      'class': 'title-wrapper',
-      html:
-      '<div class="mobile-flyout labels mobile">' +
-        '<h4 class="title pull-left">' + $columnChartElement.selectedData.name + '</h4>' +
-        '<div class="values pull-right text-right ' + valuesStyleClass + '">' + filteredLabelLine + unFilteredLabelLine + '</div>' +
-      '</div>'
-    });
-
-    labelWrapper.html(flyoutData);
+    ReactDOM.render(<MobileChartFlyout
+      title={ barName }
+      filteredValue={ filteredValue }
+      unFilteredValue={ unFilteredValue }
+      arrowPosition={ arrowMarginLeft }
+      unit={ columnChartVIF.unit } />, flyoutContainer);
   }
 };

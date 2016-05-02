@@ -33,16 +33,9 @@ module.exports = function(values, $target) {
       'type': 'visualization_interchange_format',
       'version': 1
     },
-    'origin': {
-      'type': 'test_data',
-      'url': 'localhost'
-    },
     'title': values.columnName,
     'type': 'timelineChart',
-    'unit': {
-      'one': 'row',
-      'other': 'rows'
-    }
+    'unit': values.unit
   };
 
   var timelineLoader = new Loader($target);

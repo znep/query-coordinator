@@ -60,10 +60,7 @@ module.exports = function(values, $target) {
     },
     'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
     'type': 'choroplethMap',
-    'unit': {
-      'one': '',
-      'other': ''
-    }
+    'unit': values.unit
   };
 
   var $choroplethElement = $target;

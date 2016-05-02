@@ -288,16 +288,15 @@ import './styles/mobile-general.scss';
 
     /**
      * Add filter to QFB filters collection
-     * @param {string} position -- Yes it's string.
      * @param {string} displayName
      * @param {string} dataTypeName
      * @param {string} fieldName
      * @param {object} args
      * @private
      */
-    function _addToQFBFilters(position, displayName, dataTypeName, fieldName, args) {
+    function _addToQFBFilters(displayName, dataTypeName, fieldName, args) {
       aPredefinedFilters.push({
-        id: position,
+        id: fieldName,
         type: _convertFilterType2QFB(dataTypeName),
         name: fieldName,
         displayName: displayName,
@@ -361,7 +360,7 @@ import './styles/mobile-general.scss';
             });
           });
 
-          _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+          _addToQFBFilters(_.get(columnMeta, 'name'),
             columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBDate(args));
           break;
 
@@ -379,7 +378,7 @@ import './styles/mobile-general.scss';
               });
             });
 
-            _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+            _addToQFBFilters(_.get(columnMeta, 'name'),
               columnMeta.dataTypeName, thisSetFirstCard.fieldName, valueList);
           } else if (columnMeta.dataTypeName == 'number') {
             var _args = {};
@@ -415,7 +414,7 @@ import './styles/mobile-general.scss';
               });
             });
 
-            _addToQFBFilters(_.get(columnMeta, 'position', '-1').toString(), _.get(columnMeta, 'name'),
+            _addToQFBFilters(_.get(columnMeta, 'name'),
               columnMeta.dataTypeName, thisSetFirstCard.fieldName, _convertToQFBNumber(_args));
           }
           break;
@@ -429,6 +428,10 @@ import './styles/mobile-general.scss';
       return card.cardType == 'table' || card.expanded;
     });
     var allCardsWithOrder = _cardsExpanded.concat(_cardsOther).concat(_cardsWithTables);
+    var unit = {
+      one: _.get(datasetMetadata, 'rowDisplayUnit', 'row'),
+      other: socrata.utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
+    };
 
     _.each(allCardsWithOrder, function(card) {
       var cardOptions = {
@@ -443,7 +446,7 @@ import './styles/mobile-general.scss';
 
           if (!_.find(aPredefinedFilters, { name: card.fieldName })) {
             var filterObj = {
-              id: position,
+              id: card.fieldName,
               type: 'string',
               name: card.fieldName,
               displayName: _.get(cardOptions, 'metaData.name'),
@@ -464,7 +467,8 @@ import './styles/mobile-general.scss';
             unitLabel: datasetMetadata.columns[(card.aggregationField || card.fieldName)].name,
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileTimelineChart(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -479,7 +483,8 @@ import './styles/mobile-general.scss';
             columnName: card.fieldName,
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
@@ -497,7 +502,8 @@ import './styles/mobile-general.scss';
             mapExtent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {},
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -512,7 +518,8 @@ import './styles/mobile-general.scss';
             columnName: card.fieldName,
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -528,7 +535,8 @@ import './styles/mobile-general.scss';
             orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));
@@ -544,7 +552,8 @@ import './styles/mobile-general.scss';
             orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
             aggregationFunction: card.aggregationFunction,
             aggregationField: card.aggregationField,
-            filters: vifFilters
+            filters: vifFilters,
+            unit: unit
           };
 
           mobileDistributionChart(values, $($cardContainer.find('.' + cardOptions.componentClass)));

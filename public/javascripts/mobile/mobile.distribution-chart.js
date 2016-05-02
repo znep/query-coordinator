@@ -22,10 +22,7 @@ module.exports = function(values, $target) {
     },
     filters: values.filters,
     type: 'distributionChart',
-    unit: {
-      one: 'row',
-      other: 'rows'
-    }
+    unit: values.unit
   };
 
   // Distribution chart

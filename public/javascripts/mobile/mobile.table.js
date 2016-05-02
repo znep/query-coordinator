@@ -34,16 +34,9 @@ module.exports = function(values, $target) {
       'type': 'visualization_interchange_format',
       'version': 1
     },
-    'origin': {
-      'type': 'test_data',
-      'url': 'localhost'
-    },
     'title': values.columnName,
     'type': 'table',
-    'unit': {
-      'one': 'case',
-      'other': 'cases'
-    }
+    'unit': values.unit
   };
 
   var $tableElement = $target;

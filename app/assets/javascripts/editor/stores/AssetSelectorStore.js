@@ -238,6 +238,18 @@ export default function AssetSelectorStore() {
       case Actions.ASSET_SELECTOR_JUMP_TO_STEP:
         _jumpToStep(payload);
         break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE:
+        _nextImageSearchPage();
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SEARCH:
+        _setImageSearchPhrase(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_SELECTED:
+        _setImageSearchSelection(payload);
+        break;
     }
   });
 
@@ -285,6 +297,144 @@ export default function AssetSelectorStore() {
   this.isUploading = function() {
     return _state.isUploading;
   };
+
+  this.getImageSearchUrl = function() {
+    var phrase = this.getImageSearchPhrase();
+    var phraseIsNull = _.isNull(phrase);
+    var phraseIsEmptyString = _.isString(phrase) && _.isEmpty(phrase);
+
+    var page = this.getImageSearchPage();
+    var pageSize = this.getImageSearchPageSize();
+    var query = StorytellerUtils.format(
+      'phrase={0}&page={1}&page_size={2}',
+      encodeURIComponent(phrase),
+      encodeURIComponent(page),
+      encodeURIComponent(pageSize)
+    );
+
+    if (phraseIsNull || phraseIsEmptyString) {
+      return null;
+    } else {
+      return StorytellerUtils.format(
+        '{0}getty-images/search?{1}',
+        Constants.API_PREFIX_PATH,
+        query
+      );
+    }
+  };
+
+  this.getImageSearchResults = function() {
+    return _.get(_state, 'imageSearchResults', []);
+  };
+
+  this.getImageSearchPhrase = function() {
+    return _.get(_state, 'imageSearchPhrase', null);
+  };
+
+  this.getImageSearchPage = function() {
+    return _.get(_state, 'imageSearchPage', 1);
+  };
+
+  this.getImageSearchSelected = function() {
+    return _.get(_state, 'selectedImageId', null);
+  };
+
+  this.getImageSearchPageSize = function() {
+    return Constants.IMAGE_SEARCH_PAGE_SIZE;
+  };
+
+  this.hasImageSearchPhrase = function() {
+    return self.getImageSearchPhrase() !== null;
+  };
+
+  this.hasImageSearchResults = function() {
+    return !_.get(_state, 'imageSearchEmpty', true);
+  };
+
+  this.isImageSearching = function() {
+    return _.get(_state, 'imageSearching', false);
+  };
+
+  this.hasImageSearchError = function() {
+    return _.get(_state, 'imageSearchError', false);
+  };
+
+  this.canPageImageSearchNext = function() {
+    return (self.getImageSearchPage() + 1) * self.getImageSearchPageSize() <= _state.imageSearchCount;
+  };
+
+  function _setImageSearchPhrase(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'phrase');
+    StorytellerUtils.assertIsOneOfTypes(payload.phrase, 'string');
+
+    _state.imageSearchPhrase = payload.phrase.trim();
+    _state.imageSearching = _state.imageSearchPhrase.length > 0;
+    _state.imageSearchError = false;
+
+    if (!payload.continuous) {
+      _state.imageSearchResults = [];
+      _state.imageSearchCount = 0;
+      _state.imageSearchPage = 1;
+      _state.imageSearchEmpty = true;
+
+      self._emitChange();
+    }
+
+    if (!self.isImageSearching()) {
+      return;
+    }
+
+    $.getJSON({
+      method: 'GET',
+      url: self.getImageSearchUrl()
+    }).then(function(response) {
+      _state.imageSearchResults = self.getImageSearchResults().concat(response.images);
+      _state.imageSearchCount += response.result_count;
+      _state.imageSearchEmpty = _state.imageSearchCount === 0;
+      _state.imageSearching = false;
+      _state.imageSearchError = false;
+      self._emitChange();
+    }, function() {
+      _state.imageSearching = false;
+      _state.imageSearchError = true;
+      self._emitChange();
+    });
+  }
+
+  function _nextImageSearchPage() {
+    if (self.canPageImageSearchNext()) {
+      _state.imageSearchPage = self.getImageSearchPage() + 1;
+      _setImageSearchPhrase({phrase: self.getImageSearchPhrase(), continuous: true});
+    }
+  }
+
+  function _setImageSearchSelection(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'id');
+    StorytellerUtils.assertIsOneOfTypes(payload.id, 'string', 'number');
+
+    var type = self.getComponentType();
+    var url = StorytellerUtils.format('{0}getty-images/{1}', Constants.API_PREFIX_PATH, payload.id);
+    var image = {
+      documentId: null,
+      url: url
+    };
+
+    if (_state.selectedImageId !== payload.id) {
+      _state.selectedImageId = payload.id;
+
+      if (type === 'author') {
+        _state.componentProperties.image = image;
+      } else if (type === 'hero') {
+        _state.componentProperties = _.merge(_state.componentProperties, image);
+      } else {
+        _state.componentProperties = image;
+      }
+    } else {
+      _state.selectedImageId = null;
+    }
+
+    self._emitChange();
+  }
 
   /**
    * Private methods

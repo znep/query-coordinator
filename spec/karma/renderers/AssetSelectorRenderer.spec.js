@@ -868,10 +868,10 @@ describe('AssetSelectorRenderer', function() {
           assert.equal(container.find('.modal-close-btn').length, 1);
         });
 
-        it('has a button that goes back to the provider list', function() {
+        it('has two buttons that go back to the provider list', function() {
           assert.lengthOf(
             container.find('[data-resume-from-step="SELECT_ASSET_PROVIDER"]'),
-            1
+            2
           );
         });
 

@@ -28,6 +28,9 @@ Rails.application.routes.draw do
       post 'stories/:uid/drafts' => 'drafts#create'
       post 'stories/:uid/published' => 'published#create'
       put 'stories/:uid/permissions' => 'permissions#update'
+
+      get 'getty-images/search' => 'getty_images#search'
+      get 'getty-images/:id' => 'getty_images#show'
     end
   end
 

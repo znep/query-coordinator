@@ -51,6 +51,15 @@ class StoryPublisher
         story.destroy
         saved = false
       end
+
+      begin
+        GettyImagesDownloader.new(story, user).download
+      rescue => exception
+        AirbrakeNotifier.report_error(
+          exception,
+          on_method: "GettyImagesDownloader#new(story_uid: '#{story_uid}', user_id: '#{user['id']}')"
+        )
+      end
     end
 
     saved

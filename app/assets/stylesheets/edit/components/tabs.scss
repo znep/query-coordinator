@@ -1,0 +1,51 @@
+.tabs {
+  border-bottom: 1px solid #d6d6d6;
+
+  &::after {
+    display: table;
+    content: "";
+    clear: both;
+  }
+}
+
+.tab {
+  display: block;
+  float: left;
+  margin: 0 1rem;
+
+  &.active {
+    a {
+      outline: none;
+      border-bottom: solid 4px #1E8BDC;
+    }
+  }
+
+  a {
+    display: block;
+    text-decoration: none;
+    color: #7a7a7a;
+    padding: 6px 9px;
+    font-size: 1.4rem;
+    border-bottom: solid 4px transparent;
+
+    &:hover {
+      border-bottom: solid 4px #ccc;
+    }
+
+    &:focus,
+    &:active,
+    &.active {
+      outline: none;
+      border-bottom: solid 4px #1E8BDC;
+    }
+  }
+}
+
+.page {
+  display: none;
+  margin-top: 1rem;
+
+  &.active {
+    display: block;
+  }
+}

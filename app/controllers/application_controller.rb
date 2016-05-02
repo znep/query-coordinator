@@ -55,6 +55,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_documents
       when 'api/v1/drafts'
         require_sufficient_rights_for_api_drafts
+      when 'api/v1/getty_images'
+        require_sufficient_rights_for_api_getty_images
       when 'api/v1/permissions'
         require_sufficient_rights_for_api_permissions
       when 'api/v1/published'
@@ -190,6 +192,25 @@ class ApplicationController < ActionController::Base
       end
     else
       handle_unauthorized_request
+    end
+  end
+
+  def require_sufficient_rights_for_api_getty_images
+    action = params[:action]
+
+    if current_user.present?
+      case action
+        when 'show'
+          # Silence is golden.
+        when 'search'
+          return render nothing: true, status: 403 unless can_edit_story?
+        else
+          raise_undefined_authorization_handler_error
+      end
+    else
+      if action != 'show'
+        handle_unauthorized_request
+      end
     end
   end
 

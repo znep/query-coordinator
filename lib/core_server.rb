@@ -99,41 +99,44 @@ class CoreServer
     return stored_authorization if stored_authorization.present?
 
     user = CoreServer.current_user
-    uid = ::RequestStore.store[:story_uid]
 
-    if user.present? && uid.present?
-      view = CoreServer.get_view(uid)
+    if user.present?
+      uid = ::RequestStore.store[:story_uid]
+      domain_role = user['roleName'] || 'unknown'
+      domain_rights = user['rights'] || []
+      authorization = {
+        'domainRole' => domain_role,
+        'domainRights' => domain_rights,
+        'viewRole' => 'unknown',
+        'viewRights' => [],
+      }
 
-      if view.present?
-        domain_role = user['roleName'] || 'unknown'
-        domain_rights = user['rights'] || []
-        view_rights = view['rights'] || []
-        corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
-        is_primary_owner = view['owner']['id'] == user['id']
-        has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
+      if uid.present?
+        view = CoreServer.get_view(uid)
 
-        if is_primary_owner
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
-            'viewRole' => 'owner',
-            'viewRights' => view_rights,
-            'primary' => true
-          }
-        elsif has_user_grant
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
-            'viewRole' => view['grants'].find(&corresponding_grant)['type'],
-            'viewRights' => view_rights
-          }
-        else
-          authorization = {
-            'domainRole' => domain_role,
-            'domainRights' => domain_rights,
-            'viewRole' => 'unknown',
-            'viewRights' => view_rights
-          }
+        if view.present?
+          view_rights = view['rights'] || []
+          corresponding_grant = lambda { |grant| grant['userId'] == user['id'] }
+          is_primary_owner = view['owner']['id'] == user['id']
+          has_user_grant = view['grants'].present? && view['grants'].one?(&corresponding_grant)
+
+          if is_primary_owner
+            authorization.merge!({
+              'viewRole' => 'owner',
+              'viewRights' => view_rights,
+              'primary' => true
+            })
+          elsif has_user_grant
+            authorization.merge!({
+              'viewRole' => view['grants'].find(&corresponding_grant)['type'],
+              'viewRights' => view_rights
+            })
+          else
+            authorization.merge!({
+              'viewRole' => 'unknown',
+              'viewRights' => view_rights
+            })
+          end
         end
       end
     end
@@ -400,6 +403,7 @@ class CoreServer
     response = http.request(core_request)
 
     # Follow 302 Redirection.
+
     if response.instance_of?(Net::HTTPFound)
       response = core_server_http_request(
         {

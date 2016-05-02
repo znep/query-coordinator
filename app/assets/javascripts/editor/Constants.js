@@ -32,6 +32,9 @@ export default {
 
   SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY',
 
+  IMAGE_SEARCH_PAGE_SIZE: 15,
+  VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN: /\/stories\/api\/v1\/getty-images\/(.+)/,
+
   API_PREFIX_PATH: '/stories/api/v1/',
 
   // This doesn't set the base font size for the scss

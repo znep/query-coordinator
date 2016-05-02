@@ -360,7 +360,7 @@ export default function AssetSelectorRenderer(options) {
 
         case WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD:
           selectorTitle = I18n.t('editor.asset_selector.image_upload.name');
-          selectorContent = _renderChooseImageUploadTemplate();
+          selectorContent = _renderChooseImageTemplate();
           break;
 
         case WIZARD_STEP.IMAGE_UPLOADING:
@@ -401,6 +401,10 @@ export default function AssetSelectorRenderer(options) {
     // Note: Some templates may not have renderData function because they do
     // not update dynamically
     switch (step) {
+
+      case WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD:
+        _renderChooseImageGalleryPreviewData();
+        break;
 
       case WIZARD_STEP.ENTER_STORY_URL:
         _renderChooseStoryData(componentValue);
@@ -558,6 +562,242 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     return [ visualizationOptions, buttonGroup ];
+  }
+
+  function _renderChooseImageTemplate() {
+    var tabs = $('<ul>', {
+      class: 'image-tabs tabs'
+    }).toggleClass('hidden', !Environment.ENABLE_GETTY_IMAGES_GALLERY);
+
+    var tabUpload = $('<li>', {
+      class: 'tab active'
+    }).append(
+      $('<a>', {href: '#page-upload'}).text(I18n.t('editor.asset_selector.image_upload.tab_upload'))
+    );
+
+    var tabGetty = $('<li>', {
+      class: 'tab'
+    }).append(
+      $('<a>', {href: '#page-getty'}).text(I18n.t('editor.asset_selector.image_upload.tab_getty'))
+    );
+
+    tabs.append(tabUpload, tabGetty);
+
+    tabs.on('click', 'a', function(event) {
+      event.preventDefault();
+
+      var href = $(event.target).closest('[href]');
+      var id = href.attr('href');
+
+      tabs.find('.tab').removeClass('active');
+      pages.find('.page').removeClass('active');
+
+      $(id).addClass('active');
+      href.parent().addClass('active');
+    });
+
+    var pages = $('<div>', {
+      class: 'image-pages pages'
+    });
+
+    var pageUpload = $('<div>', {
+      id: 'page-upload',
+      class: 'page active',
+      'data-tab-default': true
+    }).append(_renderChooseImageUploadTemplate());
+
+    var pageGetty = $('<div>', {
+      id: 'page-getty',
+      class: 'page'
+    }).append(_renderChooseImageGalleryTemplate());
+
+    pages.append(pageUpload, pageGetty);
+
+    return [tabs, pages];
+  }
+
+  function _renderChooseImageGalleryTemplate() {
+    var search = $('<div>', {
+      class: 'images-search'
+    });
+
+    var searchField = $('<input>', {
+      class: 'asset-selector-text-input',
+      placeholder: I18n.t('editor.asset_selector.image_upload.search'),
+      type: 'text'
+    });
+
+    var searchLoadingSpinner = $('<button>', {
+      class: 'btn btn-busy btn-transparent images-search-loading-spinner'
+    }).append($('<span>')).hide();
+
+    var searchError = $('<div>', {
+      class: 'alert warning-bar hidden images-error'
+    }).append(
+      $('<p>').append($('<span>', {class: 'icon-warning'})),
+      $('<p>').text(I18n.t('editor.asset_selector.image_upload.errors.image_search'))
+    );
+
+    search.append(searchField, searchLoadingSpinner);
+
+    var galleryResults = $('<div>', {
+      class: 'gallery-results'
+    });
+
+    var showMoreButton = $('<button>', {
+      class: 'btn btn-default gallery-show-more'
+    }).append(
+      $('<span>').text(I18n.t('editor.asset_selector.image_upload.show_more'))
+    );
+
+    var thatsEverything = $('<button>', {
+      class: 'btn btn-default gallery-thats-everything',
+      style: 'display: none;',
+      disabled: true
+    }).text(I18n.t('editor.asset_selector.image_upload.thats_everything'));
+
+    galleryResults.append(
+      $('<div>', {class: 'gallery-column hidden'}),
+      $('<div>', {class: 'gallery-column hidden'}),
+      $('<div>', {class: 'gallery-column hidden'}),
+      showMoreButton,
+      thatsEverything
+    );
+
+    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    var selectButton = $(
+      '<button>',
+      {
+        'class': 'btn btn-primary btn-apply',
+        'disabled': 'disabled'
+      }
+    ).text(I18n.t('editor.asset_selector.select_button_text'));
+
+    var navGroup = $(
+      '<div>',
+      { 'class': 'modal-button-group r-to-l' }
+    ).append([
+      backButton,
+      selectButton
+    ]);
+
+    selectButton.click(function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.IMAGE_PREVIEW
+      });
+    });
+
+    searchField.change(function(event) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
+        phrase: searchField.val()
+      });
+    });
+
+    showMoreButton.click(function() {
+      showMoreButton.
+        addClass('btn-busy').
+        prop('disabled', true);
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE
+      });
+    });
+
+    return [search, searchError, galleryResults, navGroup];
+  }
+
+  function _renderChooseImageGalleryPreviewData() {
+    var results = assetSelectorStore.getImageSearchResults();
+    var hasImages = assetSelectorStore.hasImageSearchResults();
+    var hasError = assetSelectorStore.hasImageSearchError();
+    var isSearching = assetSelectorStore.isImageSearching();
+
+    if (hasImages) {
+      var renderedSources = _.indexBy(_.pluck(_container.find('.gallery-result img'), 'src'));
+      var promises = results.map(function(image, index) {
+        var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
+
+        if (renderedSources.hasOwnProperty(uri)) {
+          return Promise.resolve();
+        } else {
+          var id = image.id;
+          var promise = new Promise(function(resolve, reject) {
+            var imageElement = new Image();
+
+            imageElement.src = uri;
+            imageElement.onerror = reject;
+            imageElement.onload = function() {
+              $('.gallery-column:nth-child(' + ((index % 3) + 1) + ')').append(
+                $('<div>', {class: 'gallery-result'}).append(
+                  imageElement,
+                  $('<div>', {class: 'gallery-result-cover'}),
+                  $('<span>', {class: 'icon-checkmark3'})
+                )
+              );
+
+              resolve();
+            };
+            imageElement.onclick = function(event) {
+              dispatcher.dispatch({
+                action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
+                id: id
+              });
+            };
+          });
+
+          return promise;
+        }
+      });
+
+      Promise.all(promises).then(function() {
+        var galleryResults = _container.find('.gallery-result');
+        var hasMoreImages = assetSelectorStore.canPageImageSearchNext();
+        var outOfImages = !hasMoreImages;
+
+        galleryResults.each(function(i, result) {
+          var $result = $(result);
+          var isSelectedImage = $result.find('img').attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
+
+          $result.toggleClass('active', isSelectedImage);
+        });
+
+        _container.find('.btn-apply').prop('disabled', _.isEmpty(assetSelectorStore.getImageSearchSelected()));
+
+        $('.images-error').addClass('hidden');
+        $('.images-search-loading-spinner').hide();
+
+        $('.gallery-thats-everything').toggle(outOfImages);
+        $('.gallery-show-more').
+          removeClass('btn-busy').
+          prop('disabled', outOfImages).
+          toggle(hasMoreImages);
+
+        $('.gallery-column').removeClass('hidden');
+      }).catch(function(error) {
+        console.error(error);
+
+        $('.images-search-loading-spinner').hide();
+        $('.images-error').removeClass('hidden');
+      });
+    } else if (hasError) {
+      $('.images-error').removeClass('hidden');
+      $('.images-search-loading-spinner').hide();
+    } else if (isSearching) {
+      $('.images-search-loading-spinner').show();
+      $('.gallery-column').empty();
+      $('.gallery-show-more').hide();
+      $('.gallery-thats-everything').hide();
+    } else {
+      if (assetSelectorStore.hasImageSearchPhrase()) {
+        $('.images-error').removeClass('hidden');
+      }
+
+      $('.images-search-loading-spinner').hide();
+      $('.gallery-column').empty();
+      $('.gallery-show-more').hide();
+      $('.gallery-thats-everything').hide();
+    }
   }
 
   function _renderChooseImageUploadTemplate() {
@@ -727,26 +967,41 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'asset-selector-preview-image' }
     );
 
+    var previewSpinner = $(
+      '<button>',
+      { 'class': 'btn-busy btn-transparent' }
+    ).append($('<span>'));
+
+    previewImage.on('load', function() {
+      previewSpinner.hide();
+    });
+
     var previewContainer = $(
       '<div>',
       { 'class': 'asset-selector-preview-container' }
     ).append([
-      previewImage
+      previewImage,
+      previewSpinner
     ]);
+
+    var gettyImageInfo = $(
+      '<div>',
+      { class: 'alert info getty-image-info hidden' }
+    ).append(
+      $('<span>', {class: 'icon-info-inverse'}),
+      I18n.t('editor.asset_selector.image_upload.getty_image_info')
+    );
+
+    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });
 
     var descriptionLabel = $(
       '<h2>',
       { 'class': 'asset-selector-image-description-label' }
-    ).text(I18n.t('editor.asset_selector.image_preview.description_label'));
+    ).append(
+      I18n.t('editor.asset_selector.image_preview.description_label'),
+      questionIcon
+    );
 
-    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });
-
-    var inputLabelText = $(
-      '<p>',
-      { 'class': 'asset-selector-image-alt-input-info' }
-    ).text(I18n.t('editor.asset_selector.image_preview.description_alt_attribute'));
-
-    var inputLabel = inputLabelText.append([questionIcon]);
 
     var inputField = $(
       '<input>',
@@ -756,12 +1011,17 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
+    inputField.on('keyup', function(event) {
+      if (event.keyCode === 13) {
+        $('.modal-dialog .btn-apply').click();
+      }
+    });
+
     var descriptionContainer = $(
       '<div>',
       { 'class': 'asset-selector-image-description-container' }
     ).append([
-      inputField,
-      inputLabel
+      inputField
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
@@ -781,6 +1041,7 @@ export default function AssetSelectorRenderer(options) {
     ).append([
       previewImageLabel,
       previewContainer,
+      gettyImageInfo,
       isImage ? descriptionLabel : null,
       isImage ? descriptionContainer : null
     ]);
@@ -814,12 +1075,15 @@ export default function AssetSelectorRenderer(options) {
     var imageSrc = imageElement.attr('src');
     var altInputField = _container.find('.asset-selector-alt-text-input');
     var insertButton = _container.find('.btn-apply');
+    var gettyImageInfo = _container.find('.getty-image-info');
+    var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
     altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
     if (!_.isNull(imageUrl)) {
       if (imageSrc !== imageUrl) {
         imageElement.attr('src', imageUrl);
+        gettyImageInfo.toggleClass('hidden', isNotGettyImage);
       }
 
       insertButton.prop('disabled', false);

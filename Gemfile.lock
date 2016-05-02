@@ -9,6 +9,11 @@ GIT
       trollop (>= 2.0)
 
 PATH
+  remote: vendor/gems/ConnectSDK
+  specs:
+    ConnectSDK (1.0.2.Beta)
+
+PATH
   remote: vendor/gems/decima-ruby-0.1.0
   specs:
     decima-ruby (0.1.0)
@@ -341,6 +346,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ConnectSDK!
   airbrake
   aws-sdk
   aws-sdk-v1

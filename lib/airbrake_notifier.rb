@@ -48,6 +48,10 @@ class AirbrakeNotifier
     end
     payload[:context][:referrer] = ::RequestStore.store[:http_referrer]
 
+    unless CoreServer.current_user.blank?
+      payload[:context][:user_id] = CoreServer.current_user['id']
+    end
+
     story_uid = ::RequestStore.store[:story_uid]
     unless story_uid.blank?
       payload[:params] ||= {}

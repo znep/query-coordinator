@@ -336,6 +336,27 @@ a[role="button"] {
   }
 }
 
+.alert.info {
+  font-size: 1.5rem;
+  background-color: $alert-info-background-color;
+  border: solid 1px $alert-info-border-color;
+  color: $alert-info-color;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  margin-top: 5px;
+  padding: 0.75rem;
+  padding-bottom: 0.9rem;
+
+  a {
+    color: $alert-info-anchor-color;
+  }
+
+  [class^="icon-"] {
+    color: $alert-info-icon-color;
+    margin-right: 4px;
+  }
+}
+
 // Developer mode Rack Mini Profiler.
 // Positioned under the header.
 .profiler-results {

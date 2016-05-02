@@ -144,7 +144,7 @@ function templateHero() {
   /* eslint-disable indent */
   return [
     '<div class="hero" data-url="{image}">',
-    templateHeroText(),
+      templateHeroText(),
     '</div>'
   ].join('');
   /* eslint-enable indent */

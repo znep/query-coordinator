@@ -382,7 +382,7 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.expects(:property).with(:view_types_facet, :catalog).
         returns(nil)
 #      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
-#      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
+     # CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
 #      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
     end
 
@@ -514,10 +514,11 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
+      @controller.stubs(:get_facet_cutoff => stubbed_custom_cutoff)
+
       get(:show, {})
       assert_response :success
 
-      visible = custom_facets.first['options'].map { |opt| opt['text'] }.first(stubbed_custom_cutoff)
       def visible_selector(index)
         [
           'div.browseFacets',
@@ -527,8 +528,10 @@ class BrowseControllerTest < ActionController::TestCase
           'a'
         ].join(' > ')
       end
+      custom_facets.first['options'].pluck('text').first(stubbed_custom_cutoff).each_with_index do |text, index|
+        assert_select(visible_selector(index + 1))
+      end
 
-      truncated = custom_facets.first['options'].map { |opt| opt['text'] }[stubbed_custom_cutoff..-1]
       def truncated_selector(index)
         [
           'div.browseFacets',
@@ -537,13 +540,8 @@ class BrowseControllerTest < ActionController::TestCase
           "a:nth-child(#{index})"
         ].join(' > ')
       end
-
-      visible.each_with_index do |text, index|
-        assert_select visible_selector(index + 1)
-      end
-
-      truncated.each_with_index do |text, index|
-        assert_select truncated_selector(index + 1)
+      custom_facets.first['options'].pluck('text')[stubbed_custom_cutoff..-1].each_with_index do |text, index|
+        assert_select(truncated_selector(index + 1))
       end
     end
   end

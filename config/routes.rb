@@ -146,6 +146,14 @@ Frontend::Application.routes do
       post '/federations/:id/accept', :action => 'accept_federation'
       post '/federations/:id/reject', :action => 'reject_federation'
       post '/federations/create', :action => 'create_federation'
+
+      get '/external_federation', :action => 'external_federation'
+      get '/external_federation/:server_id', :action => 'edit_external_federation'
+      post '/external_federation/:server_id', :action => 'update_external_federation'
+      post '/external_federation', :action => 'create_external_federation'
+      delete '/external_federation/:server_id/delete', :action => 'delete_external_federation'
+
+
       post '/metadata/:fieldset/create', :action => 'create_metadata_field'
       put '/metadata/save_field', :action => 'save_metadata_field'
       delete '/metadata/:fieldset/delete', :action => 'delete_metadata_fieldset'

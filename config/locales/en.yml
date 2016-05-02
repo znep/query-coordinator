@@ -1772,6 +1772,51 @@ en:
         target_domain: Target Domain
         terminate: Terminate
         title: Open Data Federation
+      external_federation:
+        actions: Actions
+        add_new: Add new
+        add_new_federation: Add External Federation
+        all_assets: Federate all assets
+        arcgis_server_address: ArcGIS Server Address
+        assets_federated:
+          one: 1 asset federated
+          other: '%{count} assets federated'
+        catalog: Catalog
+        current_status: Current Status
+        data: Data
+        edit: Edit
+        edit_federation: 'Edit Federation: %{url}'
+        errors:
+          duplicate_server_error: That Esri Server has already been federated on this domain.
+          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
+          json_format_error: Your JSON was malformed.
+          missing_attributes_error: 'These parameters were missing: %{missing}.'
+          not_found_error: That resource was not found.
+          problem_with_errors: 'We were unable to process your request.'
+          server_ping_error: 'Could not connect to server: %{url}'
+          unknown_error: 'Your request failed for the following reason: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS Server address
+        failing: Failing
+        federated_assets: Federated assets
+        flashes:
+          created: Success! We reached your server.
+          deleted: Your federation has been marked for deletion.
+          updated: Your federation settings have been saved.
+        ignore: Ignored
+        last_synced: Last synced
+        not_synced_yet_edit: You may edit the federation settings once we have synced the ArcGIS catalog.
+        no_external_federations: There are no current External Federations. If you wish to connect an external source to your catalog, click Add New above.
+        not_yet: Not yet synced
+        search: Search the domain
+        selective_federation: Selective Federation
+        service_unavailable: 'External federation is currently unavailable.'
+        source: Federation source
+        source_domain: Source Domain
+        some_assets: Federate only these assets
+        title: External Federation
+        working: Working
+        save: Save
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer

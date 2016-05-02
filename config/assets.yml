@@ -337,6 +337,8 @@ javascripts:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-federation-screen.js
+  admin-edit-federation:
+    - public/javascripts/src/screens/admin-esri/edit-federation.js
   admin-collapse-nav:
     - public/javascripts/screens/admin-collapse-nav.js
   admin-jobs:

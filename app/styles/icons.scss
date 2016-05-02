@@ -933,6 +933,9 @@ $data-lens-color: #80acca;
   &.jobs #{$subselector} {
     background-position: 0 -416px;
   }
+  &.externalFederation #{$subselector} {
+    background-position: 0 -448px;
+  }
 }
 
 //API Management icons

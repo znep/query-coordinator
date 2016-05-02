@@ -1,0 +1,24 @@
+<%- external_federation = 'screens.admin.external_federation' %>
+
+<div class="line">
+  <label for="federation_source" class="required"><%= t("#{external_federation}.federation_source") %></label>
+  <select disabled>
+    <option id="federation_source"><%= t("#{external_federation}.esri_arcgis") %></option>
+  </select>
+</div>
+<div class="line">
+  <label for="esri_domain" class="required"><%= t("#{external_federation}.arcgis_server_address") %></label>
+
+  <div class="input-group">
+    <span class="input-group-prepend">https://</span>
+    <input type="text" name="server[esri_domain]" id="esri_domain" value="<%= @server['esri_domain']%>" class="required input-prepended input-appended"/>
+    <span class="input-group-append">/ArcGIS/rest</span>
+  </div>
+
+</div>
+
+<%= display_standard_flashes %>
+
+<div class="line clearfix">
+  <input type="submit" value=<%=t("#{external_federation}.save")%> class="button"/>
+</div>

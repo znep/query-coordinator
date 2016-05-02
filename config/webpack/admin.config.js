@@ -10,7 +10,8 @@ module.exports = _.defaultsDeep({
   entry: {
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-jobs': './screens/admin-jobs',
-    'admin-show-job': './screens/admin-show-job'
+    'admin-show-job': './screens/admin-show-job',
+    'edit-federation': './screens/admin-esri/edit-federation'
   },
   output: common.getOutput(identifier),
   module: {

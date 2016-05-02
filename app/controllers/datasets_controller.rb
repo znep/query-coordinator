@@ -111,7 +111,7 @@ class DatasetsController < ApplicationController
     etag = "#{dsmtime}-#{user}"
     ConditionalRequestHandler.set_etag(response, etag)
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
-    if @current_user.nil?
+    unless current_user
       if ConditionalRequestHandler.etag_matches_hash?(request, etag)
         render :nothing => true, :status => 304
         return true

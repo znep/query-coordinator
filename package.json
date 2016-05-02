@@ -95,7 +95,7 @@
     "moment": "2.11.2",
     "socrata-styleguide": "0.4.2",
     "socrata-utils": "1.3.0",
-    "socrata-visualizations": "8.11.0",
+    "socrata-visualizations": "8.13.0",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

@@ -43,6 +43,7 @@ group :test do
   gem 'minitest', '~> 5.8', '>= 5.8.4'
   gem 'minitest-reporters', '~> 1.1', '>= 1.1.8'
   gem 'mocha', :require => false
+  gem 'rails-dom-testing'
   gem 'rb-fsevent'
   gem 'shoulda-context'
   gem 'timecop'

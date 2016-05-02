@@ -458,13 +458,26 @@ function ColumnChart(element, vif) {
     var chartRightEdge = chartWidth - chartLeftOffset;
 
     _chartWrapper.css('height', innerHeight + topMargin + 1);
+
+    var chartScrollHeight = innerHeight + topMargin + horizontalScrollbarHeight;
     _chartScroll.css({
       'padding-top': 0,
-      'padding-bottom': bottomMargin,
-      'top': 'initial',
       'width': chartWidth,
-      'height': innerHeight + topMargin + horizontalScrollbarHeight
+      'height': chartScrollHeight
     });
+
+    if (vif.configuration.isMobile) {
+      var marginTop = _chartScroll.parent().height() - chartScrollHeight - 36;
+
+      _chartScroll.css({
+        'margin-top': marginTop
+      });
+    } else {
+      _chartScroll.css({
+        'top': 'initial',
+        'padding-bottom': bottomMargin
+      });
+    }
 
     var _renderTicks = function() {
       // The `+ 3` term accounts for the border-width.

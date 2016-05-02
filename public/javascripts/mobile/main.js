@@ -731,13 +731,20 @@ import './styles/mobile-general.scss';
           bucketingArguments = [];
         }
 
+        var aggregationClause;
         var card = _.find(pageMetadata.cards, {fieldName: fieldName});
-        var aggregationClause = Visualizations.dataProviders.SoqlHelpers.aggregationClause({
-          aggregation: {
-            'function': card.aggregationFunction,
-            field: card.aggregationField
-          }
-        });
+        if (card) {
+          aggregationClause = Visualizations.dataProviders.SoqlHelpers.aggregationClause({
+            aggregation: {
+              'function': card.aggregationFunction,
+              field: card.aggregationField
+            }
+          });
+        } else {
+          aggregationClause = Visualizations.dataProviders.SoqlHelpers.aggregationClause({
+            aggregation: { 'function': '', field: '' }
+          });
+        }
 
         var queryParameters = {
           bucketingFunction: bucketingFunction,

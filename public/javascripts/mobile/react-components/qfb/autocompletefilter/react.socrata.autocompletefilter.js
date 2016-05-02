@@ -30,7 +30,7 @@ class SocrataAutocompletefilter extends React.Component {
     this.urlSections = text.split('/');
     this.fourByFour = this.urlSections[2];
 
-    var $component = $('#qf-' + this.props.componentId);
+    var $component = $('#qf-{0}'.format(this.props.componentId));
 
     $component.find('.searchInput').on('focusin', function() {
       if (!$component.find('.search-icon').hasClass('is-active-focus')) {

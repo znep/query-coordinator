@@ -463,7 +463,11 @@ export default function AssetSelectorRenderer(options) {
     var imageUploadHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.image_upload.name'));
     var imageUploadDescription = $('<p>').
-      text(I18n.t('editor.asset_selector.image_upload.description'));
+      text(
+        Environment.ENABLE_GETTY_IMAGES_GALLERY ?
+          I18n.t('editor.asset_selector.image_upload.description_with_getty_images') :
+          I18n.t('editor.asset_selector.image_upload.description')
+      );
 
     var storyTileHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.story_tile.name'));

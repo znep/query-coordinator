@@ -79,7 +79,7 @@ module.exports = function Pager(element, vif) {
       previous: vif.configuration.localization.PREVIOUS,
       next: vif.configuration.localization.NEXT,
       previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
-      nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount - 1) ? ' disabled' : ''
+      nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount) ? ' disabled' : ''
     });
   }
 

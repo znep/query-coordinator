@@ -21,7 +21,7 @@
 
 <%= render :partial => 'left_nav' %>
 
-<%= include_webpack_bundle 'spatial-lens-admin/admin-jobs.js' %>
+<%= include_webpack_bundle 'admin/admin-jobs.js' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">
   <div class="adminHeader floating jobs">
@@ -52,7 +52,7 @@
           #  [
           #    [t("#{jobs_prefix}.filters.working_copy"), 'WorkingCopy'],
           #    [t("#{jobs_prefix}.filters.publish"), 'Publish']
-          #  ] 
+          #  ]
           #]
         ],
         params[:activity_type]

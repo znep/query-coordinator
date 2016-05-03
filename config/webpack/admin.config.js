@@ -1,5 +1,5 @@
+/*eslint-env node */
 var path = require('path');
-var fs = require('fs');
 var _ = require('lodash');
 
 var common = require('./common');
@@ -20,5 +20,5 @@ module.exports = _.defaultsDeep({
       loaders: ['babel']
     }]
   },
-  plugins: common.plugins.concat(common.getManifestPlugin(identifier)),
+  plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

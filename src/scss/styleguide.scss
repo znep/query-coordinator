@@ -170,7 +170,19 @@ section.styleguide-section {
 }
 
 .logo-sample {
-  margin-bottom: 24px;
+  margin-bottom: ms(2);
+}
+
+.logo-download  {
+  margin-bottom: ms(10);
+}
+
+.powered-by-sample {
+  margin-top: ms(4);
+  span.powered-by-socrata {
+    display: block;
+    margin-bottom: ms(10);
+  }
 }
 
 .dark-context {

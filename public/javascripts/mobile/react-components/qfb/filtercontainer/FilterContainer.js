@@ -83,9 +83,9 @@ class FilterContainer extends React.Component {
 
         $('body').addClass('is-modal-open');
         $('.qfb-row-filters').removeClass('hidden-xs');
-
-        $('option:selected', this).removeAttr('selected');
       }
+
+      options[i].selected = false;
     }
   }
 

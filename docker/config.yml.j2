@@ -1,63 +1,49 @@
 default: &default
-  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
-  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
-  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
-  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
-
-  app_token: {{ APP_TOKEN }}
-  data_cards_app_token: {{ DATA_CARDS_APP_TOKEN }}
-
-  {% if FEATURE_MAP_ZOOM_DEBOUNCE is defined -%}
-  feature_map_zoom_debounce: {{ FEATURE_MAP_ZOOM_DEBOUNCE }}
-  {% else %}
-  feature_map_zoom_debounce: 500
-  {%- endif %}
-
-  {% if ENABLE_SEARCH_SUGGESTIONS is defined -%}
-  enable_search_suggestions: {{ ENABLE_SEARCH_SUGGESTIONS }}
-  {% else -%}
-  enable_search_suggestions: true
-  {% endif -%}
-
-  {% if ODUX_ENABLE_FEATURE_MAP is defined -%}
-  odux_enable_feature_map: {{ ODUX_ENABLE_FEATURE_MAP }}
-  {% else -%}
-  odux_enable_feature_map: true
-  {% endif -%}
-
-  {% if FEATURE_MAP_DISABLE_PAN_ZOOM is defined -%}
-  feature_map_disable_pan_zoom: {{ FEATURE_MAP_DISABLE_PAN_ZOOM }}
-  {% else -%}
-  feature_map_disable_pan_zoom: false
-  {% endif -%}
-
-  {% if ENABLE_PNG_DOWNLOAD_UI -%}
-  enable_png_download_ui: {{ ENABLE_PNG_DOWNLOAD_UI }}
-  {% else -%}
-  enable_png_download_ui: true
-  {% endif -%}
-
-  {% if FEATURE_MAP_FEATURES_PER_TILE is defined -%}
-  feature_map_features_per_tile: {{ FEATURE_MAP_FEATURES_PER_TILE }}
-  {% else %}
-  feature_map_features_per_tile: 50000
-  {%- endif %}
-
-  {% if SHAPE_FILE_REGION_QUERY_LIMIT is defined -%}
-  shape_file_region_query_limit: {{ SHAPE_FILE_REGION_QUERY_LIMIT }}
-  {% else %}
-  shape_file_region_query_limit: 5000
-  {%- endif %}
-
-  zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
-  coreservice_uri: http://{{ CORESERVICE_URI }}
-  odysseus_uri: http://{{ ODYSSEUS_HOST }}
-  odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
+  {#
+   # service hosts/ports/names et simil
+   #
+   # conditional checks account for environments (including local dev)
+   # where only a subset of services may be running
+   #}
+  {% if CETERA_HOST is defined -%}
   cetera_host: {{ CETERA_HOST }}
+  {%- endif %}
+
+  {% if CONSUL_HOST is defined -%}
+  consul_host: {{ CONSUL_HOST }}
+  {%- endif %}
+
+  coreservice_uri: http://{{ CORESERVICE_URI }}
+
+  {% if CURATED_REGION_JOB_QUEUE_HOSTNAME is defined and CURATED_REGION_JOB_QUEUE_PORT is defined -%}
+  curated_region_job_queue_hostname: {{ CURATED_REGION_JOB_QUEUE_HOSTNAME }}
+  curated_region_job_queue_port: {{ CURATED_REGION_JOB_QUEUE_PORT }}
+  {%- endif %}
+
+  {% if IMPORT_STATUS_SERVICE_HOSTNAME is defined and IMPORT_STATUS_SERVICE_PORT is defined -%}
+  import_status_service_hostname: {{ IMPORT_STATUS_SERVICE_HOSTNAME }}
+  import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}
+  {%- endif %}
 
   {% if KAFKA_REST_URI is defined -%}
   kafka_rest_uri: {{ KAFKA_REST_URI }}
   {%- endif %}
+
+  {% if METRICS_DIR is defined -%}
+  metrics_dir: {{ METRICS_DIR }}
+  {% else %}
+  metrics_dir: tmp/metriclogs
+  {%- endif %}
+
+  odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
+  odysseus_uri: http://{{ ODYSSEUS_HOST }}
+
+  {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}
+  polaroid_hostname: {{ POLAROID_HOSTNAME }}
+  polaroid_port: {{ POLAROID_PORT }}
+  {%- endif %}
+
+  secondary_group_identifier: '_spandex_'
 
   {% if STATSD_ENABLED is defined and STATSD_SERVER is defined -%}
   statsd_enabled: {{ STATSD_ENABLED }}
@@ -66,39 +52,43 @@ default: &default
   statsd_enabled: false
   {%- endif %}
 
-  {% if METRICS_DIR is defined -%}
-  metrics_dir: {{ METRICS_DIR }}
-  {% else %}
-  metrics_dir: tmp/metriclogs
-  {% endif -%}
-
-  {% if MIXPANEL_TOKEN is defined -%}
-  mixpanel_token: {{ MIXPANEL_TOKEN }}
-  {%- endif %}
-
-  {% if GOOGLE_ANALYTICS_TRACKING_CODE is defined -%}
-  opendata_ga_tracking_code: {{ GOOGLE_ANALYTICS_TRACKING_CODE }}
-  {%- endif %}
-
-  {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}
-  polaroid_hostname: {{ POLAROID_HOSTNAME }}
-  polaroid_port: {{ POLAROID_PORT }}
-  {%- endif %}
-
-  {% if CURATED_REGION_JOB_QUEUE_HOSTNAME is defined and CURATED_REGION_JOB_QUEUE_PORT is defined -%}
-  curated_region_job_queue_hostname: {{ CURATED_REGION_JOB_QUEUE_HOSTNAME }}
-  curated_region_job_queue_port: {{ CURATED_REGION_JOB_QUEUE_PORT }}
-  {%- endif %}
-
-  {% if IMPORT_STATUS_SERVICE_HOSTNAME -%}
-  import_status_service_hostname: {{ IMPORT_STATUS_SERVICE_HOSTNAME }}
-  import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}
-  {%- endif %}
-
   {% if TILESERVER_HOSTS is defined -%}
   tileserver_hosts: '{{ TILESERVER_HOSTS }}'
   {%- endif %}
 
+  zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
+
+  {#
+   # internal app tokens
+   #}
+  app_token: {{ APP_TOKEN }}
+  data_cards_app_token: {{ DATA_CARDS_APP_TOKEN }}
+
+  {#
+   # third-party app tokens
+   #}
+  {% if MIXPANEL_TOKEN is defined -%}
+  mixpanel_token: {{ MIXPANEL_TOKEN }}
+  {%- endif %}
+
+  {% if OPENDATA_GA_TRACKING_CODE is defined -%}
+  opendata_ga_tracking_code: {{ OPENDATA_GA_TRACKING_CODE }}
+  {% elif GOOGLE_ANALYTICS_TRACKING_CODE is defined -%}
+  opendata_ga_tracking_code: {{ GOOGLE_ANALYTICS_TRACKING_CODE }}
+  {%- endif %}
+
+  {% if STANDARD_GA_TRACKING_CODE is defined -%}
+  standard_ga_tracking_code: {{ STANDARD_GA_TRACKING_CODE }}
+  {%- endif %}
+
+  {% if USERZOOM_CUID is defined -%}
+  userzoom:
+    cuid: {{USERZOOM_CUID}}
+  {%- endif %}
+
+  {#
+   # auth alternatives
+   #}
   {% if AUTH0_URI is defined and AUTH0_CLIENT_ID is defined and AUTH0_CLIENT_SECRET is defined and AUTH0_JWT is defined -%}
   auth0_uri: {{ AUTH0_URI }}
   auth0_id: {{ AUTH0_CLIENT_ID }}
@@ -106,9 +96,64 @@ default: &default
   auth0_jwt: {{ AUTH0_JWT }}
   {%- endif %}
 
-  {% if CONSUL_HOST is defined -%}
-  consul_host: {{ CONSUL_HOST }}
+  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
+  rps_googleplus_url: https://socrata-test.rpxnow.com/googleplus/start
+  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
+  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
+  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
+
+  {#
+   # data lens behaviors
+   #}
+  {% if ENABLE_PNG_DOWNLOAD_UI -%}
+  enable_png_download_ui: {{ ENABLE_PNG_DOWNLOAD_UI }}
+  {% else -%}
+  enable_png_download_ui: true
+  {% endif -%}
+
+  {% if ENABLE_SEARCH_SUGGESTIONS is defined -%}
+  enable_search_suggestions: {{ ENABLE_SEARCH_SUGGESTIONS }}
+  {% else -%}
+  enable_search_suggestions: true
+  {% endif -%}
+
+  {% if FEATURE_MAP_DISABLE_PAN_ZOOM is defined -%}
+  feature_map_disable_pan_zoom: {{ FEATURE_MAP_DISABLE_PAN_ZOOM }}
+  {% else -%}
+  feature_map_disable_pan_zoom: false
+  {% endif -%}
+
+  {% if FEATURE_MAP_FEATURES_PER_TILE is defined -%}
+  feature_map_features_per_tile: {{ FEATURE_MAP_FEATURES_PER_TILE }}
+  {% else %}
+  feature_map_features_per_tile: 50000
   {%- endif %}
+
+  {% if FEATURE_MAP_ZOOM_DEBOUNCE is defined -%}
+  feature_map_zoom_debounce: {{ FEATURE_MAP_ZOOM_DEBOUNCE }}
+  {% else %}
+  feature_map_zoom_debounce: 500
+  {%- endif %}
+
+  {% if ODUX_ENABLE_FEATURE_MAP is defined -%}
+  odux_enable_feature_map: {{ ODUX_ENABLE_FEATURE_MAP }}
+  {% else -%}
+  odux_enable_feature_map: true
+  {% endif -%}
+
+  {% if SHAPE_FILE_REGION_QUERY_LIMIT is defined -%}
+  shape_file_region_query_limit: {{ SHAPE_FILE_REGION_QUERY_LIMIT }}
+  {% else %}
+  shape_file_region_query_limit: 5000
+  {%- endif %}
+
+  {#
+   # other behaviors
+   #}
+  whats_new:
+    article_count: 3
+    zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
+    zendesk_section: 203977877
 
 development:
   <<: *default
@@ -127,7 +172,11 @@ rc:
 
 production:
   <<: *default
+  {#
+   # auth alternatives
+   #}
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
-  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
+  rpx_googleplus_url: https://socrata.rpxnow.com/googleplus/start
   rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
+  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start

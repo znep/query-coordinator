@@ -78,11 +78,7 @@ class AppConfig < Hashie::Dash
   property :userzoom, default: {}
 
   # What's New configuration
-  property :whats_new, default: {
-    :article_count => 3,
-    :zendesk_section => '200633703',
-    :zendesk_link => 'https://support.socrata.com/hc/en-us/sections/200633703-Release-Notes-and-Updates'
-  }
+  property :whats_new, default: {}
 
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int

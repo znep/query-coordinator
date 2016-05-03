@@ -1,5 +1,5 @@
+/*eslint-env node */
 var path = require('path');
-var fs = require('fs');
 var _ = require('lodash');
 
 var common = require('./common');
@@ -7,9 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/angular/src'),
-  entry: {
-    'data-lens': './data-lens'
-  },
+  entry: './data-lens',
   output: common.getOutput(identifier),
   module: {
     loaders: [

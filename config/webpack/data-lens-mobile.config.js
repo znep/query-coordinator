@@ -1,5 +1,5 @@
+/*eslint-env node */
 var path = require('path');
-var fs = require('fs');
 var _ = require('lodash');
 
 var common = require('./common');

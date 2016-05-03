@@ -171,7 +171,8 @@ en:
         choose_create_visualization_description: 'Create a new chart or map based on a public dataset'
       image_upload:
         name: 'Image'
-        description: 'Add an image from Getty Images or upload an image from your computer (up to 5MB).'
+        description: 'Upload an image from your computer up to 5MB.'
+        description_with_getty_images: 'Add an image from Getty Images or upload an image from your computer (up to 5MB).'
         search: 'Search and hit "Enter".'
         tab_upload: 'Upload'
         tab_getty: 'Photos by Getty'

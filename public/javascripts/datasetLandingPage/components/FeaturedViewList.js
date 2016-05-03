@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import FeaturedView from './FeaturedView';
 
-var FeaturedViewList = React.createClass({
+export var FeaturedViewList = React.createClass({
   propTypes: {
     featuredViews: PropTypes.arrayOf(PropTypes.object).isRequired
   },

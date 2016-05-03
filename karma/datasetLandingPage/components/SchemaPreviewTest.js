@@ -1,4 +1,4 @@
-import SchemaPreview from 'components/SchemaPreview';
+import { SchemaPreview } from 'components/SchemaPreview';
 import mockView from 'data/mockView';
 
 describe('components/SchemaPreview', function() {

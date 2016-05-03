@@ -18,6 +18,34 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
+  def render_mixpanel_config
+    mixpanel_config = {
+      :token => APP_CONFIG.mixpanel_token
+    }
+
+    if CurrentDomain.feature?(:mixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => nil}
+    elsif CurrentDomain.feature?(:fullMixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => 365}
+    else
+      mixpanel_config[:disable] = true
+    end
+    javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
+  end
+
+  def render_session_data
+    session_data = {
+      :userId => current_user.try(:id) || 'N/A',
+      :ownerId => @view.try(:owner).try(:id) || 'N/A',
+      :userOwnsDataset => @view.owned_by?(current_user),
+      :socrataEmployee => current_user.try(:is_admin?) || false,
+      :userRoleName => current_user.try(:roleName) || 'N/A',
+      :viewId => @view.try(:id) || 'N/A'
+    }
+
+    javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+  end
+
   def share_facebook_url
     "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
   end
@@ -44,47 +72,6 @@ module DatasetLandingPageHelper
     )
 
     "mailto:?subject=#{subject}&body=#{body}"
-  end
-
-  def export_formats
-    if @view.is_geospatial? || @view.is_api_geospatial?
-      return [
-        { :url => @view.geo_download_path('KML'), :label => 'KML' },
-        { :url => @view.geo_download_path('KMZ'), :label => 'KMZ' },
-        {
-          :url => @view.geo_download_path('Shapefile'),
-          :label => I18n.t('dataset_landing_page.download.shapefile')
-        },
-        {
-          :url => @view.geo_download_path('Original'),
-          :label => I18n.t('dataset_landing_page.download.original')
-        },
-        { :url => @view.geo_download_path('GeoJSON'), :label => 'GeoJSON' }
-      ]
-    end
-
-    formats = [
-      { :url => @view.download_path('csv'), :label => 'CSV' },
-      {
-        :url => @view.download_path('csv', :bom => true),
-        :label => I18n.t('dataset_landing_page.download.csv_for_excel')
-      },
-      { :url => @view.download_path('json'), :label => 'JSON' },
-      { :url => @view.download_path('rdf'), :label => 'RDF' },
-      { :url => @view.download_path('rss'), :label => 'RSS' },
-      { :url => @view.download_path('xml'), :label => 'XML' }
-    ]
-
-    if FeatureFlags.derive(nil, request).enable_pdf_download_type
-      formats.push({ :url => @view.download_path('pdf'), :label => 'PDF' })
-    end
-
-    if FeatureFlags.derive(nil, request).enable_xls_download_type
-      formats.push({ :url => @view.download_path('xls'), :label => 'XLS' })
-      formats.push({ :url => @view.download_path('xlsx'), :label => 'XLSX' })
-    end
-
-    formats
   end
 
   def transformed_formats
@@ -177,6 +164,7 @@ module DatasetLandingPageHelper
     @featured_views.map do |featured_view|
       {
         :name => featured_view.name,
+        :id => featured_view.id,
         :description => sanitize(featured_view.description),
         :url => featured_view.seo_friendly_url,
         :displayType => featured_view.display.try(:type),

@@ -1,22 +1,29 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { findDOMNode } from 'react-dom';
+import { emitMixpanelEvent } from '../actions';
 
 function generateDownloadLink(view, format, className) {
   var extension = format;
+  var type = format.toUpperCase();
   var params = {
     accessType: 'DOWNLOAD'
   };
 
   if (format === 'csv_for_excel') {
     extension = 'csv';
+    type = 'CSV for Excel';
     params.bom = 'true';
   }
 
   if (format === 'csv_without_geo') {
     extension = 'csv';
+    type = 'CSV (without geospatial data)';
   }
 
   if (format === 'json_without_geo') {
     extension = 'json';
+    type = 'JSON (without geospatial data)';
   }
 
   var queryString = _.pairs(params).map(function(param) { return param.join('='); }).join('&');
@@ -25,7 +32,7 @@ function generateDownloadLink(view, format, className) {
 
   return (
     <li key={format} className={className}>
-      <a href={url}>
+      <a href={url} data-type={type}>
         {label}
       </a>
     </li>
@@ -38,16 +45,22 @@ function generateGeoDownloadLink(view, format) {
 
   return (
     <li key={format}>
-      <a href={url}>
+      <a href={url} data-type={format}>
         {label}
       </a>
     </li>
   );
 }
 
-var DownloadDropdown = React.createClass({
+export var DownloadDropdown = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
+  },
+
+  componentDidMount: function() {
+    // We unfortunately have to watch for clicks here because the styleguide breaks
+    // React's onClick handler when it turns this component into a dropdown.
+    $(findDOMNode(this)).find('a').click(this.props.onClickOption);
   },
 
   render: function() {
@@ -100,4 +113,19 @@ var DownloadDropdown = React.createClass({
   }
 });
 
-export default DownloadDropdown;
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickOption: function(event) {
+      var payload = {
+        name: 'Downloaded Data',
+        properties: {
+          'Type': event.target.dataset.type
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(_.identity, mapDispatchToProps)(DownloadDropdown);

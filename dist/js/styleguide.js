@@ -4372,7 +4372,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var windowWidth = document.body.offsetWidth;
 	    var modalContainer = modal.querySelector('.modal-container');
 	
-	    if (windowWidth <= mobileBreakpoint) {
+	    if (windowWidth <= mobileBreakpoint && closeable) {
 	      velocity(modalContainer, {
 	        left: windowWidth
 	      }, {

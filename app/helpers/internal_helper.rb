@@ -20,16 +20,29 @@ module InternalHelper
     end
   end
 
-  def expandable_header(text, options = {})
+  def expandable_section(text, options = {}, &block)
     classes = %w(headerLink formSection)
     classes << 'collapsed' if options.fetch(:collapsed, true)
-    content_tag :h2, :class => classes do
+    html = content_tag :h2, :class => classes do
       content_tag(:span, '', :class => 'icon') << text
     end
+
+    contents = capture(&block)
+    html <<
+      if options.fetch(:collapsed, true)
+        content_tag(:div, contents, :class => 'collapsed')
+      else
+        content_tag(:div, contents)
+      end
+    html
   end
 
-  def definition(term, definition)
-    content_tag(:dt, term) + content_tag(:dd, definition)
+  def definition(term, definition, options = {})
+    dd_html_options = {}
+    dd_html_options[:class] = 'unknownConfigType' if options[:unknown]
+    dd_html_options[:class] = 'discouragedConfigType' if options[:discouraged]
+
+    content_tag(:dt, term) + content_tag(:dd, definition, dd_html_options)
   end
 
   def explain_defaultness
@@ -56,12 +69,20 @@ module InternalHelper
   end
 
   def property_actions_for(property_name)
-    html = selection_checkbox(:delete, property_name)
+    html = selection_checkbox(:edit, property_name)
+    html << selection_checkbox(:delete, property_name)
     html << selection_checkbox(:export, property_name)
   end
 
   def selection_checkbox(kind, property_name)
     case kind
+    when :edit
+      content_tag :div, :class => 'propertyAction editAction' do
+        html = link_to('Edit this field alone.',
+                       show_property_path(config_id: @config.id,
+                                          property_id: property_name),
+                       :class => 'editLink')
+      end
     when :delete
       content_tag :div, :class => 'propertyAction deleteAction' do
         id  = "delete_properties[#{property_name}]"
@@ -100,7 +121,7 @@ module InternalHelper
 
   def remove_module_feature(feature)
     config_id = @domain.default_configuration('feature_set').id
-    one_button_form(url: set_property_path(id: config_id), as_button: true, text: 'Remove') do
+    one_button_form(url: set_property_path(config_id: config_id), as_button: true, text: 'Remove') do
       html = hidden_field_tag("delete_properties[#{feature}]", 'delete')
       html << hidden_field_tag("properties[#{feature}]", false)
     end
@@ -123,8 +144,7 @@ module InternalHelper
                     text: button_text) do
       flags.inject(nil) do |memo, (flag, value)|
         html = hidden_field_tag("#{prefix}[#{flag}]", value)
-        if memo.nil? then memo = html else memo << html
-        end
+        if memo.nil? then memo = html else memo << html end
       end
     end
 
@@ -164,5 +184,20 @@ module InternalHelper
       html << hidden_field_tag('redesigned', 'true')
       html
     end
+  end
+
+  def domain_cache_time
+    if Rails.env.development?
+      'Dev Mode does not cache.'
+    else
+      CurrentDomain.last_refresh(@domain.cname)
+    end
+  end
+
+  def discouragement_explanation(reason)
+    content = ExternalConfig.for(:configuration_types).
+      discouragement_because(reason, force_instead: true)
+
+    content_tag(:div, content, :class => reason)
   end
 end

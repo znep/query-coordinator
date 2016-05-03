@@ -14,31 +14,33 @@
   <div class="content">
 
     <%= render :partial => 'production_warning' %>
-    <h1><%= @config.name %></h1>
+    <h1><%= @config.name %> (<%= @config.type %>)</h1>
     <%= display_standard_flashes %>
 
     <div class="description expandable">
-      <%= expandable_header('Description', collapsed: false) %>
-      <div>
+      <%= expandable_section('Description', collapsed: false) do %>
         <dl class="config_type_description">
           <%= definition('Type', @config.type) %>
           <%= definition('Domain', domain_link) %>
           <%= definition('Default', explain_defaultness) %>
           <% @type_description.try(:each) do |key, value| %>
-            <%- next if key == 'hide_from_creator' %>
             <%= definition(key.titleize, autolink(value)) %>
           <% end %>
+          <%- if @usage_discouragement %>
+            <%= definition('Usage Discouraged', @usage_discouragement, discouraged: true) %>
+          <%- end %>
           <%- if @type_description.nil? %>
             <%# You can document config types in config/configuration_types.yml %>
-            <%= definition('Unknown Config Type', 'Help by documenting this and explaining how to use it!') %>
+            <%= definition('Unknown Config Type',
+                           'Help by documenting this and explaining how to use it!',
+                           unknown: true) %>
           <%- end %>
         </dl>
-      </div>
+      <%- end %>
     </div>
 
     <div class="properties expandable">
-      <%= expandable_header('Properties', collapsed: false) %>
-      <div>
+      <%= expandable_section('Properties', collapsed: false) do %>
         <%= form_tag(set_property_path, :class => 'wide configProperties') do %>
           <%- if @properties.nil? -%>
             <div class="line">No properties for this configuration</div>
@@ -48,33 +50,29 @@
               <label title="<%= prop['name'] %>"><%= prop['name'] %></label>
               <%= text_area_tag "properties[#{prop['name']}]", property_value(prop['value']) %>
               <div class="propertyActions">
-                <div><%= link_to 'Edit this field alone.',
-                  show_property_path(config_id: @config.id,
-                                     property_id: prop['name']),
-                  :class => 'editLink' %></div>
                 <%= property_actions_for(prop['name']) %>
+                <div>To perform other actions, change the mode under Actions.</div>
               </div>
             </div>
           <%- end # end each -%>
           <input type="submit" value="Save"/>
           <%- end # end if %>
         <%- end # end form -%>
-      </div> <%# end collapsible div %>
+      <%- end # collapsible div %>
     </div> <%# end properties section %>
 
     <%- if @parent_config.present? && @parent_config.data['properties'].present? -%>
       <div class="inheritedProperties expandable">
-        <%=
+        <%-
           link = link_to("#{@parent_config.name} at #{@parent_domain.cname}",
                          show_config_path(org_id: @parent_domain.organizationId,
                                           domain_id: @parent_domain.cname,
-                                          id: @parent_config.id))
+                                          config_id: @parent_config.id))
           link = link.prepend('Inherited Properties (from ')
           link = link.html_safe
           link << ')'
-          expandable_header(link, collapsed: true)
         %>
-        <div class="collapsed">
+        <%= expandable_section(link, collapsed: true) do %>
         <form class='wide inheritedProperties'>
           <%- @parent_config.data['properties'].
             sort{ |a, b| a['name'] <=> b['name'] }.
@@ -91,13 +89,12 @@
               </div>
             <%- end -%>
         </form>
-        </div>
+        <%- end %>
       </div>
     <%- end # end if -%>
 
     <div class="serialization expandable">
-      <%= expandable_header('Import/Export Snapshot', collapsed: false) %>
-      <div>
+      <%= expandable_section('Import/Export Snapshot', collapsed: false) do %>
         <div class="importSection">
           <textarea class="importBox"></textarea>
           <button class="doImportLink">Import this</button>
@@ -108,13 +105,13 @@
           <button class="exportToClipboard" data-clipboard-target="exportBox">
             Copy to Clipboard
           </button>
+          <div class="copiedToClipboard flash notice">Copied to Clipboard!</div>
         </div>
-      </div>
+      <%- end %>
     </div>
 
     <div class="actions expandable">
-      <%= expandable_header('Actions') %>
-      <div class="collapsed">
+      <%= expandable_section('Actions') do %>
         <dl class="config_type_description">
           <dt>Change Mode</dt>
           <dd class="modes">
@@ -143,10 +140,10 @@
           <dt>Rename Config</dt>
           <dd>
             <%= one_button_form(url: rename_config_path,
-                                :class => 'oneButtonForm renameConfig',
-                                :text => 'Rename Config') do
-              text_field_tag('rename-config-to', @config.name)
-            end %>
+                                :text => 'Rename Config') do %>
+              <p>This is entirely cosmetic and only affects how the name of the config is reflected in the Internal Panel.</p>
+              <%= text_field_tag('rename-config-to', @config.name) %>
+            <%- end %>
           </dd>
           <%- unless @config.default %>
           <dt>Set this Config to Default</dt>
@@ -166,7 +163,7 @@
           </dd>
           <%- end %>
         </dl>
-    </div>
+      <%- end %>
   </div>
 
   <div class="newProperty">
@@ -193,7 +190,7 @@
         return confirm('Are you sure you want to delete this config?');
       });
 
-      var properties = <%== @properties.try(:pluck, 'name').to_json %>;
+      var properties = <%== @properties.try(:pluck, 'name').try(:map, &CGI.method(:escape)).to_json %>;
       $('.newProperty input[name="new-property_name"]').on('keyup blur', function() {
         var $this = $(this);
         $this.parents('form').find('.warning').removeClass().addClass('warning');
@@ -208,7 +205,7 @@
       $('.modes button').click(function() {
         var mode = $(this).data('mode')
         $('.content').
-          removeClass('viewMode deleteMode exportMode importMode').
+          removeClass('editMode deleteMode exportMode importMode').
           addClass(mode + 'Mode');
         $('.modes button').
           removeClass('disabled').
@@ -249,9 +246,16 @@
         default: console.error('what just happened?');
         }
       });
+      $('.content').addClass('editMode');
 
       ZeroClipboard.config({ swfPath: '/ZeroClipboard.swf' });
-      new ZeroClipboard( $('.exportToClipboard')[0] );
+      new ZeroClipboard( $('.exportToClipboard')[0] ).
+        on( 'aftercopy', function() {
+          $('.copiedToClipboard').show();
+          setTimeout(function() {
+            $('.copiedToClipboard').fadeOut(500);
+          }, 2000);
+        });
 
       var buildExport = function() {
         var aggrData = {};

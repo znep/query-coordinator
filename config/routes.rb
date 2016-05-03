@@ -63,16 +63,17 @@ Frontend::Application.routes do
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'
-      get '/orgs/:id', :action => 'show_org'
-      post '/orgs/:id/domains', :action => 'create_domain'
+      get '/orgs/:org_id', :action => 'show_org', :as => 'show_org'
+      post '/orgs/:org_id/domains', :action => 'create_domain'
 
       scope :path => '(/orgs/:org_id)/domains/:domain_id',
         :constraints => {:domain_id => /(\w|-|\.)+/} do
         get '', :action => 'show_domain', :as => 'show_domain'
-        get '/data', :action => 'show_domain', :format => :json
+        post '', :action => 'update_domain', :as => 'update_domain'
+        get '/data', :action => 'show_domain', :format => :json, :as => 'show_domain_data'
         post '/default_site_config', :action => 'set_default_site_config'
-        post '/delete_config/:id', :action => 'delete_site_config', :as => 'delete_site_config'
-        post '/rename_config/:id', :action => 'rename_site_config', :as => 'rename_config'
+        post '/delete_config/:config_id', :action => 'delete_site_config', :as => 'delete_site_config'
+        post '/rename_config/:config_id', :action => 'rename_site_config', :as => 'rename_config'
         post '/feature', :action => 'set_features', :as => 'set_features'
         post '/aliases', :action => 'update_aliases', :as => 'update_aliases'
         post '/module_feature', :action => 'add_a_module_feature', :as => 'add_module_feature'
@@ -83,9 +84,11 @@ Frontend::Application.routes do
 
         scope :path => '/site_config' do
           post '', :action => 'create_site_config', :as => 'create_site_config'
-          get '/:id', :action => 'show_config', :as => :show_config
-          post '/:id/property', :action => 'set_property', :as => 'set_property'
-          get '/:config_id/edit_property', :action => 'show_property', :as => 'show_property'
+          scope :path => '/:config_id' do
+            get '', :action => 'show_config', :as => :show_config
+            post '/property', :action => 'set_property', :as => 'set_property'
+            get '/edit_property', :action => 'show_property', :as => 'show_property'
+          end
         end
       end
     end

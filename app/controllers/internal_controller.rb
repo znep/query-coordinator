@@ -1,5 +1,9 @@
 class InternalController < ApplicationController
   before_filter :check_auth
+  before_filter :redirect_to_current_domain,
+                :only => [ :show_domain, :show_config, :show_property ]
+  before_filter :redirect_to_default_config_id_from_type,
+                :only => [ :show_config, :show_property ]
 
   def index
   end
@@ -12,7 +16,12 @@ class InternalController < ApplicationController
   end
 
   def show_org
-    @org = Organization.find(params[:id])
+    if params[:org_id] == 'current'
+      redirect_to show_org_path(org_id: CurrentDomain.domain.organizationId)
+      return
+    end
+
+    @org = Organization.find(params[:org_id])
     domains = Organization.find.collect {|o| o.domains}.flatten.compact
     @default_domain = domains.detect(&:default?)
   end
@@ -27,13 +36,15 @@ class InternalController < ApplicationController
   ]
   def show_domain
     @domain = Domain.find(params[:domain_id])
+    @organizations = Organization.find
     @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
-      @configs << Struct.new(:type).new('feature_flags')
+      @configs << Struct.new(:type, :name, :default).
+        new('feature_flags', 'Feature Flags', true)
     end
     @configs.reject! { |config| config.type == 'feature_set' }
     @configs.sort! do |a, b|
@@ -90,16 +101,8 @@ class InternalController < ApplicationController
   end
 
   def show_config
-    # If you put in a config type into the :id, it'll redirect you to the default config!
-    if /^\d+$/ !~ params[:id]
-      config_type = params[:id]
-      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      if config.nil? then render_404 else redirect_to show_config_path(id: config.id) end
-      return
-    end
-
     @domain = Domain.find(params[:domain_id])
-    @config = ::Configuration.find_unmerged(params[:id])
+    @config = ::Configuration.find_unmerged(params[:config_id])
     if @config.parentId.present?
       @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
@@ -108,6 +111,7 @@ class InternalController < ApplicationController
     type_data = ExternalConfig.for(:configuration_types)
     @type_description = type_data.description_for(@config.type)
     @property_type_checking = type_data.property_type_checking_for(@config.type)
+    @usage_discouragement = type_data.discouragement_for(@config.type, params)
 
     @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
 
@@ -197,7 +201,22 @@ class InternalController < ApplicationController
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
     end
-    redirect_to show_domain_path(org_id: params[:id], domain_id: domain.cname)
+    redirect_to show_domain_path(org_id: params[:org_id], domain_id: domain.cname)
+  end
+
+  def update_domain
+    if params[:org_id]
+      Domain.update_organization_id(params[:domain_id], params[:org_id])
+      notices << 'Successfully updated org_id.'
+    end
+
+    if params[:new_name]
+      Domain.update_name(params[:domain_id], params[:new_name])
+      notices << 'Successfully updated name.'
+    end
+
+    prepare_to_render_flashes!
+    redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 
   def create_site_config
@@ -224,12 +243,12 @@ class InternalController < ApplicationController
     end
 
     redirect_to show_config_path(domain_id: params[:domain_id],
-                                 id: config.id)
+                                 config_id: config.id)
   end
 
   def rename_site_config
     if params['rename-config-to'].present?
-      ::Configuration.update_attributes!(params[:id], { 'name' => params['rename-config-to'] })
+      ::Configuration.update_attributes!(params[:config_id], { 'name' => params['rename-config-to'] })
       flash[:notice] = 'Renamed config successfully.'
 
       CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -251,9 +270,9 @@ class InternalController < ApplicationController
   end
 
   def delete_site_config
-    config = ::Configuration.find(params[:id])
+    config = ::Configuration.find(params[:config_id])
     message = %Q(Soft-deleted configuration "#{config.name}" of type `#{config.type}` successfully.)
-    ::Configuration.delete(params[:id])
+    ::Configuration.delete(params[:config_id])
     flash[:notice] = message
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -369,7 +388,7 @@ class InternalController < ApplicationController
   end
 
   def set_property
-    config = ::Configuration.find(params[:id])
+    config = ::Configuration.find(params[:config_id])
 
     if !params['new-property_name'].blank?
       new_feature_name = params['new-feature_name']
@@ -419,7 +438,7 @@ class InternalController < ApplicationController
           if config.type == 'feature_set' # I'd rather check the referer...
             show_domain_path(domain_id: params[:domain_id])
           else
-            show_config_path(domain_id: params[:domain_id], id: params[:id])
+            show_config_path(domain_id: params[:domain_id], config_id: params[:config_id])
           end
         )
       end
@@ -468,6 +487,11 @@ class InternalController < ApplicationController
   end
 
   def feature_flags
+    if params[:domain_id] == 'current'
+      redirect_to feature_flags_config_path(domain_id: CurrentDomain.cname)
+      return
+    end
+
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
@@ -645,4 +669,25 @@ private
     end
   end
 
+  def redirect_to_current_domain
+    if params[:domain_id] == 'current'
+      redirect_to url_for(params.merge(domain_id: CurrentDomain.cname))
+    end
+  end
+
+  # It is often aggravating to figure out the ID of a particular configuration.
+  # Instead, this makes it so that you can be redirected to the default configuration
+  # on a domain for that config type.
+  #
+  # For example /site_config/catalog on the opendata.socrata.com domain will redirect you to
+  # /domains/opendata.socrata.com/site_config/1200 because that's the default config.
+  def redirect_to_default_config_id_from_type
+    # If you put in a config type into the :config_id, it'll redirect to the default config!
+    config_type = params[:config_id]
+    unless config_type.match /^\d+$/
+      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
+      return render_404 if config.nil? 
+      redirect_to url_for(params.merge(config_id: config.id))
+    end
+  end
 end

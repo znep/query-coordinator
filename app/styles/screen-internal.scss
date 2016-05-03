@@ -360,15 +360,41 @@ ul.autocomplete {
     }
   }
 
-  .configProperties {
+  form.wide.configProperties {
     .deleteLink, .exportLabel {
       display: inline-block;
       font-size: 1.1em;
       margin-right: 0.5em;
-      padding-top: 0.4em;
+      padding-top: 0;
     }
   }
 
+  .line.property {
+    margin-bottom: 1.25em;
+
+    > label {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+      display: block;
+      width: auto;
+    }
+
+    .propertyActions {
+      display: block;
+      div {
+        white-space: nowrap;
+
+        a {
+          padding-top: 0.4em;
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .editMode .property.line .propertyActions .editAction {
+    display: block;
+  }
   .deleteMode .property.line .propertyActions .deleteAction {
     display: block;
   }
@@ -380,14 +406,22 @@ ul.autocomplete {
     margin-top: 0;
 
     dt { width: 12.75rem; }
-    dd { padding-left: 12.75rem; width: calc(100% - 12.75rem); text-align: left; }
-    dd:first-of-type {
-      border-top: 0;
-    }
-  }
+    dd {
+      padding-left: 12.75rem;
+      width: calc(100% - 12.75rem);
+      text-align: left;
 
-  .newProperty input[type=text] {
-    width: 15.7em;
+      &:first-of-type {
+        border-top: 0;
+      }
+      &.unknownConfigType, &.discouragedConfigType {
+        color: red;
+      }
+
+      input[type=text] {
+        width: 15em;
+      }
+    }
   }
 
   .serialization {
@@ -404,14 +438,14 @@ ul.autocomplete {
     .importSection, .exportSection {
       display: none;
     }
+
+    .copiedToClipboard {
+      display: none;
+    }
   }
 
   .importMode .importSection, .exportMode .exportSection {
     display: block;
-  }
-
-  #rename-config-to {
-    width: 15em;
   }
 
   .warning {
@@ -470,7 +504,7 @@ ul.autocomplete {
   }
 
   .addConfigForm .warning {
-    .poorly_understood, .not_intended_for_direct_manipulation, .deprecation {
+    .poorly_understood, .not_intended_for_direct_manipulation, .deprecation, .already_exists {
       display: none;
     }
     .not_intended_for_direct_manipulation span.instead {
@@ -486,11 +520,19 @@ ul.autocomplete {
     &.deprecation .deprecation {
       display: block;
     }
+    &.already_exists .already_exists {
+      display: block;
+    }
   }
 
   .newProperty {
     .warning div { display: none; }
     .warning.duplicateProperty .duplicateProperty { display: block; }
+
+    input[type=text] {
+      width: 15.7em;
+      display: block;
+    }
   }
 
   .updateAliases {

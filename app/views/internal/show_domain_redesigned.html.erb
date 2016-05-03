@@ -24,6 +24,7 @@
     </a>
     domain.</p>
     <p>Domain ID: <%= @domain.id %></p>
+    <p>Cache Refreshed at: <%= link_to domain_cache_time, show_domain_data_path %></p>
 
     <h2>Domain/Aliases:</h2>
     <div class="updateAliases">
@@ -57,7 +58,7 @@
           case conf.type
           when 'feature_flags' then feature_flags_config_path
           else show_config_path(domain_id: @domain.cname,
-                                id: conf.id)
+                                config_id: conf.id)
           end -%>
           <li<%== ' class="isDefault"' if conf.default %>>
           <%= link_to "(#{conf.type}) #{conf.name}", path %>
@@ -70,15 +71,13 @@
       <div class='line'>
         <%= text_field_tag 'config[type]', '', :class => 'add_config_type' %>
         <div class="warning">
-          <div class="poorly_understood">
-            This configuration is poorly understood or unknown, so if you're using this, please help document what it does.
-          </div>
-          <div class="not_intended_for_direct_manipulation">
-            This configuration is not intended for direct manipulation, so you probably shouldn't be creating it manually.
-            <span class="instead">Try going to <a>this page</a> instead.</span>
-          </div>
-          <div class="deprecation">
-            This configuration has been deprecated. It <i>should</i> do nothing even if you create it. Please don't create it.
+          <%- [ :poorly_understood,
+                :not_intended_for_direct_manipulation,
+                :deprecation ].each do |reason| %>
+            <%= discouragement_explanation(reason) %>
+          <%- end %>
+          <div class="already_exists">
+            This configuration already exists. Maybe you should edit the <a>existing one</a> instead?
           </div>
         </div>
       </div>
@@ -107,9 +106,33 @@
       <%= submit_tag 'Add' %>
     <% end %>
 
+    <div class="actions expandable">
+      <%= expandable_section('Management Actions') do %>
+        <dl class="config_type_description">
+          <dt>Change Organization</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Update') do %>
+              <%= select_tag :org_id,
+                options_from_collection_for_select(@organizations,
+                                                   'id',
+                                                   'name',
+                                                   @domain.organizationId) %>
+            <%- end %>
+            <p>This is entirely organizational and only affects which organization you see this domain listed in.</p>
+          </dd>
+          <dt>Rename Domain</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Rename') do %>
+              <%= text_field_tag :new_name, @domain.name %>
+            <%- end %>
+            <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
+          </dd>
+        </dl>
+      <%- end %>
+    </div>
+
     <div class="prebuiltActions expandable">
-      <%= expandable_header('Pre-built Actions') %>
-      <div class="collapsed">
+      <%= expandable_section('Pre-built Actions') do %>
         <dl class="config_type_description">
           <%= bulk_feature_flag_update(
             @bulk_updates[:enable_nbe],
@@ -122,7 +145,7 @@
             feature_description: %Q!Add Open Performance to this domain. You will still need to go to #{link_to govstat_my_goals_path, '/stat/my/goals'}, press ~ twice, and type ".bootstrap".!.html_safe
           ) %>
         </dl>
-      </div>
+      <%- end %>
     </div>
   </div>
 </div>
@@ -132,17 +155,6 @@
     $(function() {
       var existingConfigTypes = <%== @configs.inject([]) { |memo, conf| memo << conf.type }.uniq.to_json %>;
       var knownConfigTypes = <%== @known_config_types.to_json %>;
-
-      var $form = $('.addConfigForm');
-      $form.submit(function() {
-        var configType = $form.find('input[name="config[type]"]').val();
-
-        if (_.include(existingConfigTypes, configType)) {
-          return confirm('Hey, a config with type "{0}" already exists. Are you sure you want to add another one?'.format(configType));
-        } else {
-          return true;
-        }
-      });
 
       var showAllFieldsRenderFunction = function(dataItem, topMatch, config) {
         var toRender = [];
@@ -174,6 +186,11 @@
 
       $('.addConfigForm input[name="config[type]"]').change(function() {
         var chosenType = $(this).val();
+        if (_.isEmpty(chosenType)) {
+          displayDiscouragement({});
+          return;
+        }
+
         var config = _.detect(knownConfigTypes, function(type) {
           return type.name === chosenType;
         });
@@ -204,6 +221,12 @@
             default:
               console.error('not sure what happened');
           }
+        } else if (_.include(existingConfigTypes, dataItem.name)) {
+          $warning.addClass('already_exists');
+          <%# Using `replace` instead of `format` because the url_helper is insistent on
+            # escaping the value I give it. %>
+          $warning.find('a').attr('href',
+              '<%= show_config_path(config_id: '{0}') %>'.replace('%7B0%7D', dataItem.name));
         }
       };
 

@@ -4,6 +4,6 @@ class AccountModule < Model
   end
 
   def self.include?(module_name)
-    find.pluck('name').include?(module_name)
+    find.map(&:name).include?(module_name)
   end
 end

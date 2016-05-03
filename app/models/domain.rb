@@ -40,6 +40,18 @@ class Domain < Model
     CoreServer::Base.connection.update_request(path, headers)
   end
 
+  def self.update_name(cname, name)
+    headers = { "X-Socrata-Host" => cname }
+    path = "/domains/#{cname}.json?method=updateName&newName=#{CGI.escape(name)}"
+    CoreServer::Base.connection.update_request(path, headers)
+  end
+
+  def self.update_organization_id(cname, orgId)
+    headers = { "X-Socrata-Host" => cname }
+    path = "/domains/#{cname}.json?method=updateOrganizationId&orgId=#{orgId}"
+    CoreServer::Base.connection.update_request(path, headers)
+  end
+
   def self.all
     # cache in memory locally for 10 minutes:
     return @@all_domains if (defined? @@all_domains) && @@all_domains_fetched.since(600) > DateTime.current

@@ -70,7 +70,7 @@
       <h2>Inherited Properties (from
         <%= link_to @parent_config.name, show_config_path(org_id: @parent_domain.organizationId,
                                                           domain_id: @parent_domain.cname,
-                                                          id: @parent_config.id) %>):</h2>
+                                                          config_id: @parent_config.id) %>):</h2>
     <form class='wide inheritedProperties'>
       <%- @parent_config.data['properties'].
         sort{ |a, b| a['name'] <=> b['name'] }.
@@ -95,7 +95,7 @@
       </div>
       <input type="submit" value="Add"/>
     <% end %>
-    <%= form_tag rename_config_path(id: @config.id), :class => 'oneButtonForm renameConfig' do %>
+    <%= form_tag rename_config_path(config_id: @config.id), :class => 'oneButtonForm renameConfig' do %>
         <input type="text" name="rename-config-to" value="<%= @config.name %>" />
         <input type="hidden" name="rename-config" value="<%= @config.id %>" />
         <input type="submit" value="Rename Config" />

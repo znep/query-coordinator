@@ -1,5 +1,9 @@
 # Socrata Frontend in Docker
 
+> **NOTE:** The source of truth is the `config.yml.j2` file in this directory.
+> This README has fallen behind; devs aren't looking at it often enough for us
+> to remember to keep it updated, so we need to rethink its purpose.
+
 Required ENV vars:
 
 - `CORESERVICE_URI` - The host and port to use for communicating with Core server

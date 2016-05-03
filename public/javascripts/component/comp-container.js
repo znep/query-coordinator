@@ -348,7 +348,7 @@
         _arrange: function()
         {
             this.each(function(child) {
-                if (child._arrange)
+                if (child && child._arrange)
                     child._arrange();
             });
             this._super();

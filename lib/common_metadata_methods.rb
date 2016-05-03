@@ -15,7 +15,7 @@ module CommonMetadataMethods
   # than keying off of the role.
   # Note that bootstrapping old backend datasets is controlled by this as well.
   ROLES_ALLOWED_TO_CREATE_V1_DATA_LENSES = %w(administrator publisher)
-  ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer)
+  ROLES_ALLOWED_TO_CREATE_V2_DATA_LENSES = %w(administrator publisher designer editor viewer publisher_stories editor_stories)
 
   def roles_allowed_to_create_data_lenses
     if FeatureFlags.derive(nil, nil)[:create_v2_data_lens]

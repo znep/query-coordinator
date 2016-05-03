@@ -933,11 +933,15 @@ import './styles/mobile-general.scss';
     }
 
     function _renderFilterContainer(filterOptions) {
+      var filterOps = _.sortBy(filterOptions, function(o) {
+        return o.filterName;
+      });
+
       ReactDOM.render(<FilterContainer
         domain={ datasetMetadata.domain }
         datasetId={ pageMetadata.datasetId }
         filters={ preloadedFilters }
-        filterOps={ filterOptions }
+        filterOps={ filterOps }
         filterDataObservable={ filterDataObservable }
         handleFilterBroadcast={ _handleBroadcast } />, document.getElementById('filters'));
     }

@@ -335,6 +335,22 @@ class FilterContainer extends React.Component {
           datasetId={ this.datasetId }
           deletionHandler={ this.handleFilterDeletion.bind(this, filter.id) }
           additionHandler={ this.handleFilterAddition } />;
+      } else if (filter.type == 'calendar_date') {
+        for (var i = 0; i < this.state.filterOps.length; i++) {
+          if (filter.name == this.state.filterOps[i].name) {
+            filter.scale = this.state.filterOps[i].scale;
+          }
+        }
+
+        return <FilterItem
+          key={ 'qf-' + filter.id }
+          filter={ filter }
+          isLarge={ filter.isLarge }
+          startWithClosedFlannel={ filter.startWithClosedFlannel }
+          domain={ this.domain }
+          datasetId={ this.datasetId }
+          deletionHandler={ this.handleFilterDeletion.bind(this, filter.id) }
+          additionHandler={ this.handleFilterAddition }/>;
       } else {
         return <FilterItem
           key={ 'qf-{0}'.format(filter.name) }

@@ -123,14 +123,14 @@ class FilterItem extends React.Component {
       case 'float':
       case 'int':
         var scaleArray = this.props.filter.scale.split(',');
-        var largeDataset = this.props.isLarge;
 
-        if (largeDataset) {
+        if (this.props.isLarge) {
           filter = <SocrataRangefilter
             key={ 'qf-{0}'.format(this.props.filter.name) }
+            type={ this.props.filter.type }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
-            isLarge={ largeDataset }
+            isLarge={ true }
             scale={ scaleArray }
             dataHandler={ this.handleFilterData }/>;
         } else {
@@ -139,15 +139,15 @@ class FilterItem extends React.Component {
 
           filter = <SocrataRangefilter
             key={ 'qf-{0}'.format(this.props.filter.name) }
+            type={ this.props.filter.type }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
-            isLarge={ largeDataset }
+            isLarge={ false }
             rangeMin={ rangeMin }
             rangeMax={ rangeMax }
             warningHandler={ this.handleWarning }
             dataHandler={ this.handleFilterData }/>;
         }
-
         break;
       case 'string':
         filter = <SocrataAutocompletefilter
@@ -161,13 +161,15 @@ class FilterItem extends React.Component {
           dataHandler={ this.handleFilterData } />;
         break;
       case 'calendar_date':
-        filter = <SocrataDatefilter
+        filter = <SocrataRangefilter
           key={ 'qf-{0}'.format(this.props.filter.name) }
+          type={ this.props.filter.type }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
-          data={ this.props.filter.data || {} }
-          labelHandler={ this.handleFilterLabel }
-          dataHandler={ this.handleFilterData } />;
+          isLarge={ this.props.isLarge }
+          scale={ this.props.filter.scale }
+          warningHandler={ this.handleWarning }
+          dataHandler={ this.handleFilterData }/>;
         break;
       default:
         break;

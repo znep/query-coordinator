@@ -108,7 +108,7 @@
     "lodash": "3.10.1",
     "react": "0.14.5",
     "react-dom": "0.14.5",
-    "socrata-styleguide": "0.8.3",
+    "socrata-styleguide": "1.0.1",
     "socrata-visualizations": "8.13.1",
     "tether-shepherd": "1.2.0",
     "velocity-animate": "1.2.3"

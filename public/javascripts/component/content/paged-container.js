@@ -278,7 +278,7 @@ $.component.Container.extend('Paged Container', 'none', {//'content', {
         var finalHide;
         cObj.eachPage(function(page)
             {
-                if (page != cObj._currentPage && !$.isBlank(page.$dom))
+                if (page && page != cObj._currentPage && !$.isBlank(page.$dom))
                 {
                     var callback = cObj._hidePage(page);
                     if ($.isBlank(finalHide)) { finalHide = callback; }

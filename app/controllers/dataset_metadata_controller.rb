@@ -62,6 +62,12 @@ class DatasetMetadataController < ApplicationController
       dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
       flag_subcolumns!(dataset_metadata[:columns])
 
+      # Explicitly allow cross-origin requests for this endpoint, since visualizations
+      # need to be able to access dataset metadata and the visualization itself may be
+      # hosted on a different domain.
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+
       render :json => dataset_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'

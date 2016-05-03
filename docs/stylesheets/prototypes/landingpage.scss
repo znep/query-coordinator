@@ -619,6 +619,52 @@ a {
 	}
 }
 
+.data-preview {
+	.table-wrapper {
+		display: block;
+		overflow-x: auto;
+		table {
+			margin-top: 0;
+			tbody tr td {
+				white-space: nowrap;
+			}
+		}
+	}
+	.grid-link {
+		display: none;
+	}
+
+	.ellipses {
+		padding-top: ms(0);
+	}
+	.results-pagination-controls {
+		text-align: center;
+		.pagination, .ellipses {
+			display: inline-block;
+		}
+	}
+
+	@include breakpoint($tablet) {
+		.results-pagination-controls {
+			width: 70%;
+			margin-left: ms(0);
+		}
+		.grid-link {
+			float: right;
+			display: block;
+			margin: 0 ms(0);
+			padding-top: ms(-2);
+		}
+		.grid-button {
+			display: none;
+		}
+	}
+}
+.right-adj-link {
+	display: block;
+	float: right;
+}
+
 .meta-title {
 		font-size: ms(-1);
 		color: $light-grey-0;

@@ -2138,6 +2138,38 @@ importNS.importingPaneConfig = {
               },
               pending: function(response)
               {
+                  var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
+                  if (!notifyButton.data('subscribed'))
+                  {
+                      $pane.find('.notifyUploadContainer').css("display", "block");
+                      notifyButton.click(function(event)
+                      {
+                          $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "block");
+                          $.socrataServer.makeRequest({
+                              type: 'post',
+                              contentType: 'application/json',
+                              dataType: 'json',
+                              url: '/users/' + blist.currentUser.id + '/email_interests.json?accessType=WEBSITE',
+                              data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
+                              success: function(response)
+                              {
+                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "none");
+                                  $pane.find('.notifyUploadContainer').css("display", "none");
+
+                                  $pane.find('.notifyingUploadComplete').css("display", "block");
+                              },
+                              error: function(xhr)
+                              {
+                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "none");
+                                  $pane.find('.notifyUploadContainer').css("display", "none");
+
+                                  $pane.find('.notifyUploadError').css("display", "block");
+                                  $pane.find('.flash').addClass('error');
+                              }
+                          });
+                      });
+                      notifyButton.data('subscribed', true);
+                  }
                   if ($.subKeyDefined(response, 'details.stage')) {
                     $pane.find('.importStatus').text(t(response.details.stage))
                   } else if ($.subKeyDefined(response, 'details.progress')) {

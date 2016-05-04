@@ -202,6 +202,30 @@
         <li class="workingPane" data-wizardpanename="importing">
           <p class="headline"><%= t('screens.dataset_new.importing_your_data') %></p>
           <p class="importStatus subheadline"></p>
+
+          <div class="notifyUploadComplete">
+
+            <div class="notifyUploadContainer clearfix">
+
+              <div class="notifyUploadButtonContainer">
+                <a class="button setNotifyComplete" href="#notifyComplete"><%= raw t("screens.dataset_new.notify_me") %></a>
+                <%= raw t("screens.dataset_new.notify_me_messaging") %>
+              </div>
+
+              <div class="notifyUploadThrobberContainer">
+                <span class="requestingNotify"></span>
+              </div>
+
+            </div>
+
+            <div class="notifyingUploadComplete">
+              <div class="messaging"><span class="icon-official green-check"></span> <%= raw t("screens.dataset_new.notify_me_success", :email => current_user.email) %></div>
+              <div class="messaging sub"><%= raw t("screens.dataset_new.notify_me_success_addl") %></div>
+            </div>
+
+            <div class="flash notifyUploadError"><%= raw t("screens.dataset_new.notify_me_error") %></div>
+          </div>
+
         </li>
         <li class="importWarningsPane" data-wizardpanename="importWarnings">
           <p class="headline"><%= t('screens.dataset_new.import_warnings.headline') %></p>

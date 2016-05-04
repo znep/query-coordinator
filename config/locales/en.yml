@@ -2422,6 +2422,11 @@ en:
         private_explain: My data is <strong>private</strong>
         prompt: Please describe your data.
         public_explain: 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
+      notify_me: Notify me
+      notify_me_messaging: via email when this completes.
+      notify_me_success: <strong>Great!</strong> We will send an email to <strong>%{email}</strong> when your dataset is ready.
+      notify_me_success_addl: It is safe to close this browser in the meantime.
+      notify_me_error: Something went wrong trying to schedule the notification email. Please try again later, or contact <a href="mailto:support@socrata.com">Socrata Support</a> if the problem persists.
       processing: Processing...
       title: New Dataset
       upload_accessible: Upload a new dataset accessibly

@@ -69,19 +69,6 @@ ru:
           feature_map: "Визуализировать этот столбец как характеристическая карта"
           search_card: "Визуализировать этот столбец как искать карту"
           timeline_chart: "Визуализировать этот столбец как хронологическая таблица"
-      aggregation_chooser:
-        by_the_number_of: <span class="information">по</span> количество
-        by_the_sum_of: <span class="information">по</span> сумма
-        count_label: "счет {0} по элементам"
-        description: "Просмотреть элементы данных, рассортированные или раскрашенные по:"
-        option_disabled: "Это столбец невозможно использовать с количеством <br> статистических вычислений"
-        sum_label: "добавить к каждому {0}"
-        the_number_of: "Количество"
-        the_sum_of: "Сумма"
-        title: "Агрегирование"
-        too_many_columns:
-          message: "В данный момент мы не можем предоставить суммирование в виде статистического выражения для страниц линз данных, которые имеют больше {0} столбцов типа Количество или Деньги."
-          title: "Похоже, что этот набор данных содержит больше {0} столбцов"
       api_explorer:
         additional_resources: "Дополнительные ресурсы для этого API:"
         api_button: API
@@ -146,8 +133,6 @@ ru:
         longitude: "Долгота"
         no_value: "Нет значений"
         ok: OK
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: "Разрешения"
           private: "Частный"
@@ -198,17 +183,7 @@ ru:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ ru:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ ru:
         validation_error_min_length: "Пожалуйста, введите заголовок"
         validation_error_required: "Пожалуйста, введите заголовок"
         visualization_as_image: "Визуализация в виде изображения"
-        visualization_as_image_disabled_flyout: "Пожалуйста, сохраните страницу, чтобы загрузить визуализацию в виде изображения"
       mobile_warning_dialog:
         acknowledgement: OK, понятно!
         description: "Мы работаем над улучшением использования этого сайта для мобильных устройств."
@@ -363,7 +336,6 @@ ru:
         flyoutFailedBody: "Обратитесь в службу поддержки Socrata"
         flyoutFailedTitle: "Произошла ошибка"
         flyoutIdle: "Нажать, чтобы сохранить изменения в виде новой страницы"
-        flyoutNoChanges: "Нет изменений для сохранения"
         text: "Сохранить как"
       save_as_panel:
         description: "Введите описание новой страницы (необязательно)"
@@ -382,17 +354,6 @@ ru:
         save: "Сохранить"
         saved: "Сохранено!"
         saving: "Идет сохранение..."
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: "Попробуйте искать число, не содержащее буквы."
@@ -552,9 +513,6 @@ ru:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ ru:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ ru:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ ru:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ ru:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: "Недавно обновленные"
           most_accessed: "по популярности"
@@ -647,7 +597,6 @@ ru:
           forms: "Бланки"
           href: "Массивы данных из внешних источников"
           maps: "Карты"
-          new_view: "Страницы Линз данных "
           pulse:
           pulse_help:
           story: "Истории"
@@ -1288,7 +1237,6 @@ ru:
       grouped: "систематизированный по группам вид"
       href: "внешний массив данных"
       map: "карта"
-      new_view: "Страница линз данных"
       story:
       table: "таблица"
       working_copy: "рабочая копия"
@@ -1403,6 +1351,7 @@ ru:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1412,7 +1361,6 @@ ru:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1812,7 +1760,6 @@ ru:
         title: "Федерация открытых данных"
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1826,6 +1773,7 @@ ru:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1852,9 +1800,6 @@ ru:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2201,9 +2146,7 @@ ru:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2982,7 +2925,6 @@ ru:
           download_as: "Загрузить как"
           download_dataset: "Пожалуйста, загрузите набор данных, из которого выведен этот вид."
           geo_header: "Загрузить геопространственные данные"
-          layers_header: "Загрузить табличные слои"
           monolayer_header:
           multilayer_header:
           subtitle: "Загрузить копию этого массива данных в статическом формате "

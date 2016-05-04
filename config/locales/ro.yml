@@ -69,19 +69,6 @@ ro:
           feature_map: Vizualizați această coloană ca pe o cartă caracteristică
           search_card: Vizualizați această coloană ca pe o căutare card
           timeline_chart: Vizualizați această coloană ca pe o diagramă cronologică
-      aggregation_chooser:
-        by_the_number_of: <span class="information">prin</span> număr de
-        by_the_sum_of: <span class="information">prin</span> suma de
-        count_label: numărați {0} per element
-        description: 'Vedeți elementele de date de mărimea sau culoarea:'
-        option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
-        sum_label: adăugați pentru fiecare {0}
-        the_number_of: Număr de
-        the_sum_of: Suma de
-        title: "Însumare"
-        too_many_columns:
-          message: "În acest moment nu vă putem furniza bilanțul ca o însumare a paginilor Data Lens care au mai mult de {0} coloane de tipul Număr sau Bani"
-          title: Se pare că setul de date conține mai mult de {0} coloane de numere
       api_explorer:
         additional_resources: 'Resurse suplimentare pentru acest API:'
         api_button: API
@@ -146,8 +133,6 @@ ro:
         longitude: Longitudine
         no_value: Nici o valoare
         ok: Ok
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Drepturi
           private: Privat
@@ -198,17 +183,7 @@ ro:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ ro:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ ro:
         validation_error_min_length: Vă rugăm să introduceți un titlu
         validation_error_required: Vă rugăm să introduceți un titlu
         visualization_as_image: Vizualizare ca imagine
-        visualization_as_image_disabled_flyout: Vă rugăm să salvați pagina pentru a putea descărca o vizualizare ca și imagine
       mobile_warning_dialog:
         acknowledgement: Ok, am înțeles!
         description: Lucrăm la îmbunătățirea experienței dvs. pe acest site de pe dispozitivele mobile.
@@ -363,7 +336,6 @@ ro:
         flyoutFailedBody: Vă rugăm să contactați Serviciul de Asistență Socrata
         flyoutFailedTitle: A survenit o eroare
         flyoutIdle: Apăsați pentru a salva modificările într-o pagină nouă
-        flyoutNoChanges: Nu există modificări de salvat
         text: Salvare ca
       save_as_panel:
         description: Introduceți o descriere pentru noua dvs. pagină (opțional)
@@ -382,17 +354,6 @@ ro:
         save: Salvare
         saved: Salvat!
         saving: Se salvează...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: "Încercați să căutați un număr care să nu conțină litere"
@@ -552,9 +513,6 @@ ro:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ ro:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ ro:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ ro:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ ro:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Actualizate recent
           most_accessed: Cele mai accesate
@@ -647,7 +597,6 @@ ro:
           forms: Formulare
           href: Seturi de date externe
           maps: Hărţi
-          new_view: Paginile Data Lens
           pulse:
           pulse_help:
           story: Povestiri
@@ -1289,7 +1238,6 @@ ro:
       grouped: vizualizare grupată
       href: set de date extern
       map: hartă
-      new_view: Pagina Data Lens
       story:
       table: tabel
       working_copy: copie funcţională
@@ -1404,6 +1352,7 @@ ro:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1413,7 +1362,6 @@ ro:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1811,7 +1759,6 @@ ro:
         title: Deschidere federare date
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1825,6 +1772,7 @@ ro:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1851,9 +1799,6 @@ ro:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2200,9 +2145,7 @@ ro:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2970,7 +2913,6 @@ ro:
           download_as: Descărcare ca
           download_dataset: Vă rugăm să descărcați setul de date din care derivă această vizualizare.
           geo_header: Descărcare date geospaţiale
-          layers_header: Descărcare straturi tabulare
           monolayer_header:
           multilayer_header:
           subtitle: Descărcaţi o copie a acestui set de date în format static

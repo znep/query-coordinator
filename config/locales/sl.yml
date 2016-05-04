@@ -69,19 +69,6 @@ sl:
           feature_map: Predstavi ta stolpec kot zemljevid s funkcijami
           search_card: Predstavi ta stolpec kot išči kartico
           timeline_chart: Predstavi ta stolpec kot diagram časovnega poteka
-      aggregation_chooser:
-        by_the_number_of: <span class="information">s</span> številom
-        by_the_sum_of: <span class="information">z</span> vsoto
-        count_label: "štej {0} za vsak element"
-        description: 'Glej elemente podatkov te velikosti ali barve:'
-        option_disabled: Tega stolpca ni mogoče uporabljati z/s<br>številom skupka
-        sum_label: dodaj za vsak {0}
-        the_number_of: "Število"
-        the_sum_of: Seštevek
-        title: Zbiranje
-        too_many_columns:
-          message: V tem trenutku ne moremo zagotoviti seštevanja za zbiranje vrednosti na straneh Data Lens (Razvid podatkov), ki imajo več kot {0} stolpcev s številkami ali denarjem.
-          title: Videti je, da združuje ta podatkovni niz več kot {0} stolpcev s številkami
       api_explorer:
         additional_resources: 'Dodatni viri za ta API:'
         api_button: API
@@ -147,8 +134,6 @@ sl:
         no_value: Ni vrednosti
         ok: |
           V redu
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Dovoljenja
           private: Zasebno
@@ -199,17 +184,7 @@ sl:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -279,7 +254,6 @@ sl:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -315,7 +289,6 @@ sl:
         validation_error_min_length: Prosimo, vnesite naslov
         validation_error_required: Prosimo, vnesite naslov
         visualization_as_image: Vizualizacija v obliki slike
-        visualization_as_image_disabled_flyout: Prosimo, shranite stran, da boste lahko prenesli vizualizacijo v obliki slike
       mobile_warning_dialog:
         acknowledgement: Prav, razumem!
         description: Delamo na tem, da se bo vaša mobilna izkušnja na tej strani izboljšala
@@ -364,7 +337,6 @@ sl:
         flyoutFailedBody: Prosimo, obrnite se na skupino za podporo Socrate
         flyoutFailedTitle: Prišlo je do napake
         flyoutIdle: 'Kliknite, če želite spremembe shraniti kot novo stran '
-        flyoutNoChanges: Ni sprememb, ki bi jih lahko shranili
         text: Shrani kot
       save_as_panel:
         description: Vnesite opis za svojo novo stran (izbirno)
@@ -383,17 +355,6 @@ sl:
         save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Poskusite z iskanjem številke, ki ne vsebuje črk.
@@ -553,9 +514,6 @@ sl:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -565,7 +523,6 @@ sl:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -578,7 +535,6 @@ sl:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -589,7 +545,6 @@ sl:
         results:
           cetera_count:
           count:
-          summary: "»%{query}«"
         search:
           clear:
             title:
@@ -602,11 +557,6 @@ sl:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Nedavno posodobljeno
           most_accessed: Največkrat obiskano
@@ -648,7 +598,6 @@ sl:
           forms: Oblike
           href: Zunanji podatkovni nizi
           maps: Zemljevidi
-          new_view: Strani Data Lens
           pulse:
           pulse_help:
           story: Zgodbe
@@ -1297,7 +1246,6 @@ sl:
       grouped: združen pogled
       href: zunanji podatkovni niz
       map: zemljevid
-      new_view: Stran Data Lens
       story:
       table: tabela
       working_copy: delovna kopija
@@ -1412,6 +1360,7 @@ sl:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1421,7 +1370,6 @@ sl:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1819,7 +1767,6 @@ sl:
         title: Odpri združevanje podatkov
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1833,6 +1780,7 @@ sl:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1859,9 +1807,6 @@ sl:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2208,9 +2153,7 @@ sl:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2988,7 +2931,6 @@ sl:
           download_as: Prenesi kot
           download_dataset: Prosimo, prenesite zbirko podatkov, iz katere je izveden ta pogled.
           geo_header: Prenesi geoprostorske podatke
-          layers_header: Prenesi tabelarne plasti
           monolayer_header:
           multilayer_header:
           subtitle: Prenesi kopijo tega podatkovnega niza v statični obliki

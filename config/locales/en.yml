@@ -69,19 +69,6 @@ en:
           feature_map: Visualize this column as a feature map
           search_card: Visualize this column as a search card
           timeline_chart: Visualize this column as a timeline chart
-      aggregation_chooser:
-        by_the_number_of: <span class="information">by the</span> number of
-        by_the_sum_of: <span class="information">by the</span> sum of
-        count_label: count {0} per element
-        description: 'See data elements sized or colored by:'
-        option_disabled: This column cannot be used with a<br>number of aggregate
-        sum_label: add for each {0}
-        the_number_of: The number of
-        the_sum_of: The sum of
-        title: Aggregation
-        too_many_columns:
-          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
-          title: Looks like this dataset contains more than {0} number columns
       api_explorer:
         additional_resources: 'Additional resources for this API:'
         api_button: API
@@ -146,8 +133,6 @@ en:
         longitude: Longitude
         no_value: No value
         ok: OK
-        pending_adding_column: Add this card to the page to begin computing this visualization.
-        pending_computation: This visualization is being computed. Check back in a few minutes.
         permissions:
           permissions: Permissions
           private: Private
@@ -198,19 +183,9 @@ en:
           header: Rows as CSV (Excel)
           not_available: N/A
           not_available_specific: Not available for this dataset.
-        download_button_for_image: Visualization as Image
-        download_button_for_rows: Rows as CSV (Excel)
-        download_explanation: Export the currently filtered view as a file on your computer. See the <u>Source Dataset</u> to download the full source data.
-        download_title: Download
         image:
           description: Save a PNG-image file of a visualization
           header: Visualization as Image
-        save_to_catalog_button: Standalone Visualization
-        save_to_catalog_explanation: Save a part of this Data Lens directly to the site Catalog.
-        save_to_catalog_title: Save to Catalog
-        standalone_visualization:
-          description: Save one of the cards as a standalone interactive visualization in the catalog
-          header: Visualization to Catalog
       feature_map:
         feature_map_disabled: Feature maps are unavailable.
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
@@ -278,7 +253,6 @@ en:
           title: View Status
         sharing:
           add_new: Add New
-          add_new_prompt: Save your changes below to invite these new users to this Data Lens
           contributor: Contributor
           inherited_description: 'Inherited from the source dataset:'
           keep: Keep
@@ -314,7 +288,6 @@ en:
         validation_error_min_length: Please enter a title
         validation_error_required: Please enter a title
         visualization_as_image: Visualization as image
-        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
       mobile_warning_dialog:
         acknowledgement: Okay, got it!
         description: We're working on improving the mobile experience on this site.
@@ -363,7 +336,6 @@ en:
         flyoutFailedBody: Please contact Socrata Support
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes as a new page
-        flyoutNoChanges: No changes to be saved
         text: Save As
       save_as_panel:
         description: Enter a description for your new page (optional)
@@ -382,23 +354,6 @@ en:
         save: Save
         saved: Saved!
         saving: Saving...
-      save_visualization_as_dialog:
-        category_label: Choose a category for your new visualization (optional)
-        description_help_text: |-
-          As a guideline, describe:
-          <ul>
-          <li>What this visualization means</li>
-          <li>Why it’s important to the viewer</li>
-          <li>How this information will be used to inform future plans or decisions</li>
-          </ul>
-        description_label: Enter a description for your new visualization (optional)
-        enter_name_error: Please enter a title
-        enter_name_placeholder: Enter a name
-        name_label: Save this visualization with a new name
-        official_view_explanation: Selecting this option will give the view a special designation indicating that it is an Official View.
-        official_view_label: Official View
-        server_error: Sorry, something went wrong. Please try again later.
-        title: Save Visualization As
       search_card:
         error_explanation: "<p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>"
         invalid_search: Try searching for a number containing no letters.
@@ -558,9 +513,6 @@ en:
         facets:
           clear_all:
             label: Clear All
-          contract:
-            label: Show Less
-            title: Click to show fewer options
           expand:
             label: Show All...
             title: Show all options
@@ -570,7 +522,6 @@ en:
             result: Result
           hint: Filter or Browse Results
           mobile:
-            all_filters: All Filters
             back: Back
             clear_all: Clear All
             filter: Filter
@@ -583,7 +534,6 @@ en:
         federation:
           label: Data Provided by
           label_with_source: Data Provided by %{source}
-          source: Federated from %{source}
         last_updated:
           label: Updated
         odn:
@@ -594,7 +544,6 @@ en:
         results:
           cetera_count: Showing %{start}-%{end} of %{total} results
           count: Showing %{this} of %{total} results
-          summary: '"%{query}"'
         search:
           clear:
             title: Clear search
@@ -607,11 +556,6 @@ en:
           results: Skip to the results
         sort:
           label: Sort by
-          periods:
-            label: Sort Period
-            month: This month
-            week: This week
-            year: This year
         sorts:
           last_modified: Recently Updated
           most_accessed: Most Accessed
@@ -653,7 +597,6 @@ en:
           forms: Forms
           href: External Datasets
           maps: Maps
-          new_view: Data Lens pages
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
@@ -1294,7 +1237,6 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
-      new_view: Data Lens page
       story: story
       table: table
       working_copy: working copy
@@ -1364,7 +1306,6 @@ en:
       topics: Topics
       views: Views
     more: Show More
-    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation
@@ -1420,7 +1361,6 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      manage_prompt: Click here to manage permissions
       title: Share this Dataset
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
@@ -1818,7 +1758,6 @@ en:
         title: Open Data Federation
       georegions:
         actions: Actions
-        add_new: Add new
         choose_a_dataset: Choose a Layer
         configure_boundary:
           boundary_geometry_label_field_error: The boundary must have a shape label.
@@ -1832,6 +1771,7 @@ en:
           configure_boundary: Configure Boundary
           confirm_html: <p>Click "Create" to add a new Spatial Lens Boundary based on the geospatial dataset "%{boundary_name}".</p><p>This new Spatial Lens Boundary is a snapshot and will not change even if you update the geospatial dataset "%{boundary_name}".</p>
           confirm_title: Create Your Spatial Lens
+          description: Configure custom boundaries that can be used to create Spatial Lens maps
           next: Next
           page_title: Manage Boundaries
           primary_key_column: Shape ID
@@ -1858,9 +1798,6 @@ en:
         enable: Enable
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         enabled?: Enabled?
-        enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
-        enabled_no: 'No'
-        enabled_yes: 'Yes'
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
           service_unavailable_html: <div>We are experiencing technical issues with some services related to Spatial Lens. Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</div>
@@ -2207,9 +2144,7 @@ en:
         statuses:
           failure: Failed
           in_progress: In Progress
-          inprogress: In Progress
           not_started: Not yet started
-          notstarted: Not yet started
           success: Completed
           success_with_data_errors: Completed, with problems
       metadata:
@@ -2977,7 +2912,6 @@ en:
           download_as: Download As
           download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
-          layers_header: Download without Geospatial Data
           monolayer_header: Download without geospatial data
           multilayer_header: Download a specific layer's data
           subtitle: Download a copy of this dataset in a static format

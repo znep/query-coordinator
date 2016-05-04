@@ -138,7 +138,11 @@ class UserSessionsController < ApplicationController
     end
     cookies.delete :remember_token
     flash[:notice] = t('core.dialogs.logout')
-    redirect_to(login_path)
+    if use_auth0?
+      redirect_to(generate_auth0_logout_uri)
+    else
+      redirect_to(login_path)
+    end
   end
 
   private
@@ -157,7 +161,6 @@ class UserSessionsController < ApplicationController
       # Booleans to determine validity of redirect request
       connection_is_present = connection.present?
       connection_is_valid = connection_exists(connection)
-      is_fresh_login = !(flash[:notice].present? && flash[:notice] == t('core.dialogs.logout'))
       has_redirect_param = params.fetch(:redirect, false)
 
       if connection_is_present && !connection_is_valid
@@ -167,7 +170,7 @@ class UserSessionsController < ApplicationController
         Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
       end
 
-      connection_is_present && connection_is_valid && is_fresh_login && !has_redirect_param
+      connection_is_present && connection_is_valid && !has_redirect_param
   end
 
   ##

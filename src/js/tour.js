@@ -115,7 +115,7 @@ TourFactory.prototype = {
     sortedSteps.forEach(function(step, index) {
       var stepConfig = {
         title: step.getAttribute('data-title') || '',
-        text: step.innerHTML,
+        text: step.innerHTML
       };
 
       var classes = step.getAttribute('data-classes') || '';

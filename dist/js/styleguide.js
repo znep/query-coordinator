@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      new Styleguide[factory](element);
 	    });
 	  };
-	};
+	}
 	
 	module.exports = function(element) {
 	  if (document.readyState === 'complete') {
@@ -87,7 +87,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports) {
 
-	var DropdownFactory = module.exports = function(element) {
+	module.exports = function DropdownFactory(element) {
 	  this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
 	  this.dropdowns.forEach(function(dropdown) {
 	    new Dropdown(dropdown);
@@ -186,7 +186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var velocity = __webpack_require__(3);
 	
-	var FlannelFactory = module.exports = function(element) {
+	module.exports = function FlannelFactory() {
 	  var mobileBreakpoint = 420;
 	  var animationDuration = 300;
 	  var animationEasing = [.645, .045, .355, 1];
@@ -4206,7 +4206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports) {
 
-	var FlyoutFactory = module.exports = function(element) {
+	module.exports = function FlyoutFactory(element) {
 	  var padding = 10;
 	  var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'));
 	
@@ -4243,7 +4243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports) {
 
-	var MenuFactory = module.exports = function(element) {
+	module.exports = function MenuFactory(element) {
 	  var menus = Array.prototype.slice.call(element.querySelectorAll('.menu'));
 	  var toggles = Array.prototype.slice.call(element.querySelectorAll('[data-menu-toggle]'));
 	
@@ -4306,7 +4306,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    });
 	
-	    window.addEventListener('resize', function(event) {
+	    window.addEventListener('resize', function() {
 	      var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
 	      modals.forEach(function(modal) {
 	        this.reposition(modal.querySelector('.modal-container'));
@@ -4550,7 +4550,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    sortedSteps.forEach(function(step, index) {
 	      var stepConfig = {
 	        title: step.getAttribute('data-title') || '',
-	        text: step.innerHTML,
+	        text: step.innerHTML
 	      };
 	
 	      var classes = step.getAttribute('data-classes') || '';

@@ -1,28 +1,24 @@
-//Dropdowns
 .dropdown {
-  /* Size and position */
   display: inline-block;
-  position: relative; /* Enable absolute positioning for children and pseudo elements */
-  >span[class*="icon-"] {
-    padding-left: ms(2); /* Make room for the arrow */
+  position: relative;
+
+  > span[class*="icon-"] {
+    padding-left: ms(2);
   }
 }
 
 .dropdown .dropdown-options {
-  /* Size & position */
   position: absolute;
   left: 0;
   right: inherit;
   min-width: 8em;
 
-  /* Styles */
   background: $white;
   border-radius: 1px;
   list-style: none;
   padding: 0;
-  box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 15px;
+  box-shadow: rgba(0, 0, 0, 0.23) 0 0 15px;
 
-  /* Hiding */
   opacity: 0;
   pointer-events: none;
 }
@@ -37,12 +33,14 @@
 
 .dropdown .dropdown-options li a {
   @include ellipsis;
+
   display: block;
   text-decoration: none;
   text-align: left;
   color: $dark-grey-1;
   padding: ms(-5) ms(0);
-  >span[class*="icon-"] {
+
+  > span[class*="icon-"] {
     padding-right: ms(-2);
   }
 }
@@ -59,11 +57,8 @@
   margin: 1px 0;
 }
 
-
-
-/////Forms
+/* Forms */
 form {
-
   margin-bottom: ms(0);
 
   .text-input {
@@ -75,7 +70,7 @@ form {
     padding: ms(-6);
     margin-bottom: ms(-1);
 
-   &.text-input-lg {
+    &.text-input-lg {
       font-size: ms(1);
       padding: ms(-2) ms(1);
     }
@@ -89,85 +84,92 @@ form {
       font-size: ms(-2);
       padding: ms(-8) ms(-1);
     }
-  
   }
-
 
   .block-label {
     display: block;
     margin-bottom: 0.2em;
   }
+
   .inline-label {
     display: inline;
     margin-right: 0.5em;
   }
+
   .text-area {
     min-width: 350px;
     margin-bottom: ms(-1);
   }
-    .checkbox{
-        input[type=checkbox] {
-            display: none;
-        }
-        label {
-            display: inline-block;
-            cursor: pointer;
-            position: relative;
-        }
-        .fake-checkbox{
-            border: solid 1px #E2E2E2;
-            border-radius: 1px;
-            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-            margin-right: ms(-5);
-            display:inline-block;
-            width:19px;
-            height:19px;
-            cursor:pointer; 
-            vertical-align: text-bottom;
-            line-height: 1;
-            padding: 2px;
-        }
-        input[type=checkbox] + label .fake-checkbox span{
-            display: none;
-        }
-        input[type=checkbox]:checked + label .fake-checkbox span{
-            display: inline-block;
-            vertical-align: text-top;
-            padding-left: 1px;
-        }
-    }
-    .radiobutton{
-        input[type=radio] {
-            display: none;
-        }
-        label {
-            display: inline-block;
-            cursor: pointer;
-            position: relative;
-        }
-        input[type=radio] + label span{
-            border: solid 1px #E2E2E2;
-            border-radius: 10px;
-            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-            margin-right: ms(-5);
-            display:inline-block;
-            width:19px;
-            height:19px;
-            cursor:pointer; 
-            vertical-align: text-bottom;
-        }
 
-        input[type=radio]:checked + label span{
-            display:inline-block;
-            width:19px;
-            height:19px;
-            background-color: $dark-grey-2;
-            border: solid 5px $light-grey-3; 
-            border-radius: 10px;
-            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-            vertical-align: text-bottom; 
-        }
+  .checkbox {
+    input[type=checkbox] {
+      display: none;
     }
 
+    label {
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .fake-checkbox {
+      border: solid 1px #e2e2e2;
+      border-radius: 1px;
+      box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+      margin-right: ms(-5);
+      display: inline-block;
+      width: 19px;
+      height: 19px;
+      cursor: pointer;
+      vertical-align: text-bottom;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    input[type=checkbox] + label .fake-checkbox span {
+      display: none;
+    }
+
+    input[type=checkbox]:checked + label .fake-checkbox span {
+      display: inline-block;
+      vertical-align: text-top;
+      padding-left: 1px;
+    }
+  }
+
+  .radiobutton {
+    input[type=radio] {
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+    }
+
+    input[type=radio] + label span {
+      border: solid 1px #e2e2e2;
+      border-radius: 10px;
+      box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+      margin-right: ms(-5);
+      display: inline-block;
+      width: 19px;
+      height: 19px;
+      cursor: pointer;
+      vertical-align: text-bottom;
+    }
+
+    input[type=radio]:checked + label span {
+      display: inline-block;
+      width: 19px;
+      height: 19px;
+      background-color: $dark-grey-2;
+      border: solid 5px $light-grey-3;
+      border-radius: 10px;
+      box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+      vertical-align: text-bottom;
+    }
+  }
 }
 

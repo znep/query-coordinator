@@ -13,7 +13,8 @@
   background-color: $btn-disabled-background-color;
   cursor: not-allowed;
 
-  &.btn-dark, &.btn-inverse {
+  &.btn-dark,
+  &.btn-inverse {
     color: $btn-disabled-dark-color;
     border-color: $btn-disabled-dark-border-color;
     background-color: $btn-disabled-dark-background-color;
@@ -58,12 +59,12 @@
   }
 }
 
-// Makes btn full width.
+/* Makes btn full width. */
 .btn-block {
   width: 100%;
 }
 
-// Adds a spinner in place of button text.
+/* Adds a spinner in place of button text. */
 .btn-busy {
   font-size: 0;
   cursor: progress;
@@ -88,6 +89,7 @@
   color: $btn-default-color;
   background-color: $btn-default-background-color;
   border-color: $btn-default-border-color;
+
   &.btn-simple {
     background-color: $light-grey-5;
   }
@@ -100,7 +102,7 @@
       border-color: $btn-default-inverse-hover-border-color;
       background-color: $btn-default-inverse-hover-background-color;
       color: $btn-default-inverse-hover-color;
-      transition: border-color .35s;
+      transition: border-color 0.35s;
     }
 
     &.btn-dark {
@@ -119,7 +121,7 @@
       border-color: $btn-default-inverse-hover-border-color;
       background-color: $btn-default-inverse-hover-background-color;
       color: $btn-default-inverse-hover-color;
-      transition: border-color .35s;
+      transition: border-color 0.35s;
     }
   }
 
@@ -183,7 +185,7 @@
     border-right-color: $btn-primary-busy-border-right-color;
   }
 
-  // .btn-dark is used in both contexts.
+  /* .btn-dark is used in both contexts. */
 }
 
 .btn-primary-alt-1 {
@@ -220,8 +222,9 @@
     border-right-color: $btn-primary-alt-1-busy-border-right-color;
   }
 
-  // .btn-dark is used in both contexts.
+  /* .btn-dark is used in both contexts. */
 }
+
 .btn-primary-alt-2 {
   color: $btn-primary-alt-2-color;
   background-color: $btn-primary-alt-2-background-color;
@@ -256,8 +259,9 @@
     border-right-color: $btn-primary-alt-2-busy-border-right-color;
   }
 
-  // .btn-dark is used in both contexts.
+  /* .btn-dark is used in both contexts. */
 }
+
 .btn-primary-alt-3 {
   color: $btn-primary-alt-3-color;
   background-color: $btn-primary-alt-3-background-color;
@@ -292,7 +296,7 @@
     border-right-color: $btn-primary-alt-3-busy-border-right-color;
   }
 
-  // .btn-dark is used in both contexts.
+  /* .btn-dark is used in both contexts. */
 }
 
 .btn-secondary {
@@ -330,7 +334,7 @@
     border-right-color: $btn-secondary-busy-border-right-color;
   }
 
-  // .btn-dark is used in both contexts.
+  /* .btn-dark is used in both contexts. */
 }
 
 .btn-warning {
@@ -347,7 +351,7 @@
     }
   }
 
-  &:active ,
+  &:active,
   &.active {
     border-color: $btn-warning-active-border-color;
     background-color: $btn-warning-hover-background-color;
@@ -382,7 +386,7 @@
     }
   }
 
-  &:active ,
+  &:active,
   &.active {
     border-color: $btn-success-active-border-color;
     background-color: $btn-success-hover-background-color;
@@ -417,7 +421,7 @@
     }
   }
 
-  &:active ,
+  &:active,
   &.active {
     border-color: $btn-error-active-border-color;
     background-color: $btn-error-hover-background-color;

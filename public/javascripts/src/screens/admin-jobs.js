@@ -24,7 +24,7 @@ export function todayYesterdayOrDate(timestamp) {
 function dateRangeFromParams() {
   const rangeParams = $.urlParam(window.location.href, 'date_range');
   if (!rangeParams) {
-    return;
+    return {};
   }
 
   const range = _.map(

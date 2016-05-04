@@ -1,0 +1,288 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/32
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: 
+      Accept: 
+      - "*/*"
+      User-Agent: 
+      - Ruby
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 1ggfrclsn2bxd2wz9ip3gc9qz
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 32,
+          "name" : "Current theme",
+          "default" : true,
+          "domainCName" : "localhost",
+          "parentId" : 3,
+          "type" : "site_theme",
+          "updatedAt" : 1447456659,
+          "properties" : [ {
+            "name" : "strings.site_title",
+            "value" : "Socrata"
+          }, {
+            "name" : "strings.company",
+            "value" : "Socrata"
+          }, {
+            "name" : "templates_v2b.header",
+            "value" : "<div class=\"clearfix\">{{main_logo}}<ul class=\"siteUserNav\">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>"
+          }, {
+            "name" : "templates_v2b.footer",
+            "value" : "<a href=\"/\" class=\"footerLogo\">Socrata</a><ul class=\"siteFooterNav\">{{urls.footer}}</ul>"
+          }, {
+            "name" : "templates_v2b.header_full",
+            "value" : "<div class=\"clearfix\">{{main_logo}}<ul class=\"siteUserNav\">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>"
+          }, {
+            "name" : "strings.sign_up",
+            "value" : "Sign Up"
+          }, {
+            "name" : "rating_types",
+            "value" : [ "rating" ]
+          }, {
+            "name" : "theme_v2b",
+            "value" : {
+              "text" : {
+                "error" : "b01e2d"
+              },
+              "stories" : {
+                "pager" : {
+                  "position" : "center",
+                  "type" : "bullets",
+                  "disposition" : "light"
+                },
+                "orientation" : "left",
+                "height" : {
+                  "unit" : "em",
+                  "value" : 25
+                },
+                "box" : {
+                  "headline" : {
+                    "font_family" : "Georgia",
+                    "color" : "f7f7f7",
+                    "shadow" : {
+                      "alpha" : 0.6,
+                      "radius" : {
+                        "unit" : "px",
+                        "value" : 3
+                      }
+                    },
+                    "font_size" : {
+                      "unit" : "em",
+                      "value" : 1.8
+                    }
+                  },
+                  "body" : {
+                    "font_family" : "Helvetica Neue",
+                    "color" : "dddddd",
+                    "shadow" : {
+                      "alpha" : 0.3,
+                      "radius" : {
+                        "unit" : "px",
+                        "value" : 2
+                      }
+                    },
+                    "font_size" : {
+                      "unit" : "em",
+                      "value" : 1.4
+                    }
+                  },
+                  "color" : "000000",
+                  "shadow" : 0,
+                  "alpha" : 0.8,
+                  "width" : {
+                    "unit" : "em",
+                    "value" : 35
+                  },
+                  "margin" : {
+                    "unit" : "em",
+                    "value" : 1
+                  }
+                },
+                "autoAdvance" : 7
+              },
+              "urls" : {
+                "footer" : [ {
+                  "text" : "What is Socrata?",
+                  "href" : "http://www.socrata.com/about"
+                }, {
+                  "text" : "Blog",
+                  "class" : "rss",
+                  "href" : "http://blog.socrata.com/"
+                }, {
+                  "text" : "Company Info",
+                  "rel" : "nofollow",
+                  "href" : "http://www.socrata.com/company-info"
+                }, {
+                  "text" : "Terms of Service",
+                  "rel" : "nofollow",
+                  "href" : "http://www.socrata.com/terms-of-service"
+                }, {
+                  "text" : "Privacy",
+                  "rel" : "nofollow",
+                  "href" : "http://www.socrata.com/privacy"
+                }, {
+                  "text" : "Contact Us",
+                  "rel" : "nofollow",
+                  "href" : "http://www.socrata.com/contact-us"
+                } ],
+                "headerUser" : [ {
+                  "text" : "What is Socrata?",
+                  "href" : "http://www.socrata.com/about"
+                }, {
+                  "text" : "Help",
+                  "href" : "http://www.getsatisfaction.com/socrata"
+                } ],
+                "headerMain" : [ {
+                  "text" : "Home",
+                  "href" : "/"
+                }, {
+                  "text" : "Community",
+                  "ifModuleEnabled" : "community_module",
+                  "href" : "/community"
+                }, {
+                  "text" : "My Socrata",
+                  "href" : "/home"
+                } ],
+                "signup" : [ {
+                  "text" : "Terms of Service",
+                  "href" : "/terms-of-service"
+                }, {
+                  "text" : "Privacy Policy",
+                  "href" : "/privacy"
+                } ]
+              },
+              "chrome" : {
+                "box_border" : "cecece",
+                "nav_buttons" : {
+                  "background" : [ {
+                    "color" : "19538b"
+                  }, {
+                    "color" : "042656"
+                  } ],
+                  "border" : "042656"
+                },
+                "background" : "f7f7f7",
+                "margin" : {
+                  "outer" : {
+                    "unit" : "em",
+                    "value" : 2
+                  },
+                  "inner" : {
+                    "unit" : "em",
+                    "value" : 2
+                  }
+                },
+                "sidebar" : {
+                  "text" : "666",
+                  "background" : "f7f7f7"
+                }
+              },
+              "images" : {
+                "logo_footer" : {
+                  "height" : "20",
+                  "width" : "89",
+                  "type" : "static",
+                  "href" : "/stylesheets/images/common/socrata_logo_footer.png"
+                },
+                "logo_header" : {
+                  "height" : "34",
+                  "width" : "129",
+                  "type" : "static",
+                  "href" : "/stylesheets/images/common/socrata_logo.png"
+                },
+                "favicon" : {
+                  "type" : "static",
+                  "href" : "/stylesheets/images/common/favicon.ico"
+                },
+                "logo_square" : {
+                  "height" : 110,
+                  "width" : 94,
+                  "type" : "static",
+                  "href" : "/stylesheets/images/common/socrata_logo_square.png"
+                }
+              },
+              "buttons" : {
+                "default" : {
+                  "text" : "ffffff",
+                  "background" : [ {
+                    "color" : "ff3333"
+                  }, {
+                    "color" : "993333"
+                  } ],
+                  "border" : "993333"
+                },
+                "default_disabled" : {
+                  "text" : "eeeeee",
+                  "background" : [ {
+                    "color" : "ff8888"
+                  }, {
+                    "color" : "cc6666"
+                  } ],
+                  "border" : "cc6666"
+                },
+                "active" : {
+                  "text" : "666666",
+                  "shadow" : "rgba(0,0,0,0.2)",
+                  "background" : [ {
+                    "color" : "fefefe"
+                  }, {
+                    "color" : "f2f2f2"
+                  } ],
+                  "border" : "999999"
+                },
+                "disabled" : {
+                  "text" : "888888",
+                  "background" : [ {
+                    "color" : "fcfcfc"
+                  }, {
+                    "color" : "f8f8f8"
+                  } ],
+                  "border" : "dddddd"
+                }
+              },
+              "links" : {
+                "visited" : "253A60",
+                "normal" : "3B5998"
+              },
+              "table" : {
+                "header" : {
+                  "inactive" : "e0e4e9",
+                  "active" : "c5ccd5"
+                }
+              }
+            }
+          }, {
+            "name" : "templates_v2b.footer_full",
+            "value" : "<a href=\"/\" class=\"footerLogo\">Socrata</a><ul class=\"siteFooterNav\">{{urls.footer}}</ul>"
+          }, {
+            "name" : "strings.sign_in",
+            "value" : "Sign In"
+          }, {
+            "name" : "strings.sign_out",
+            "value" : "Sign out"
+          } ]
+        }
+
+    http_version: 
+  recorded_at: Thu, 05 May 2016 23:49:39 GMT
+recorded_with: VCR 3.0.1

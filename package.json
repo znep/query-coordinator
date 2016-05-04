@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "8.13.4",
+  "version": "9.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"
@@ -73,6 +73,8 @@
       "moment": true,
       "pbf": true,
       "Promise": true,
+      "React": true,
+      "ReactDOM": true,
       "socrata": true,
       "ss": true,
       "Uint8Array": true,
@@ -81,6 +83,10 @@
     }
   },
   "dependencies": {
+    "babel": "6.5.2",
+    "babel-core": "6.8.0",
+    "babel-loader": "6.2.4",
+    "babel-preset-react": "6.5.0",
     "chroma-js": "0.5.6",
     "d3": "3.5.6",
     "jquery": "2.1.1",

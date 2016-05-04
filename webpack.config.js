@@ -33,8 +33,8 @@ module.exports = [
       'lodash': '_',
       'moment': 'moment',
       'leaflet': 'L',
-      'react': 'react',
-      'react-dom': 'react-dom'
+      'react': 'React',
+      'react-dom': 'ReactDOM'
     },
     output: {
       path: __dirname + '/dist',
@@ -43,6 +43,13 @@ module.exports = [
       library: ['socrata', 'visualizations']
     },
     module: {
+      preLoaders: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'babel'
+        },
+      ],
       loaders: [
         {
           test: /\.js$/,

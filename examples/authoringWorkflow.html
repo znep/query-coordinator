@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: AuthoringWorkflow</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  </head>
+
+  <body>
+    <button id="launch">Launch Authoring Workflow</button>
+
+    <div id="authoring-workflow"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+    var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
+    var container = document.querySelector('#authoring-workflow');
+
+    $('#launch').click(function() {
+      var authoringWorkflow = new AuthoringWorkflow(container, {
+        initialVif: null,
+
+        onComplete: function(vif) {
+          console.log(vif);
+          authoringWorkflow.destroy();
+        },
+
+        onCancel: function() {
+          authoringWorkflow.destroy();
+        }
+      });
+    });
+  </script>
+</html>

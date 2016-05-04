@@ -1,5 +1,6 @@
 var views = require('./views');
 var dataProviders = require('./dataProviders');
+var AuthoringWorkflow = require('./authoringWorkflow');
 // vv these requires have the side effect of registering jQuery plugins vv
 var ChoroplethMap = require('./ChoroplethMap');
 var ColumnChart = require('./ColumnChart');
@@ -12,6 +13,7 @@ var TimelineChart = require('./TimelineChart');
 // appropriate visualization based on the VIF's `type` field
 
 module.exports = {
+  AuthoringWorkflow: AuthoringWorkflow,
   views: views,
   dataProviders: dataProviders,
   ChoroplethMap: ChoroplethMap,

@@ -47,6 +47,7 @@
 @import "../../../src/scss/components/pagination";
 @import "../../../src/scss/components/input-groups";
 @import "../../../src/scss/components/cards";
+@import "../../../src/scss/components/nav-tabs";
 
 // Media Queries
 $lgmobile: 468px;
@@ -154,10 +155,22 @@ a {
 			padding: ms(-2) 0;
 			font-weight: 500;
 			font-size: ms(0);
+			&.editable {
+				display: block;
+				float: left;
+			}
 		}
 		@include breakpoint($tablet) {
 			.section-header {
 				font-size: ms(2);
+			}
+		}
+		.edit-button {
+			float: right;
+			margin-right: 0;
+			margin-top: ms(-2);
+			a {
+				color: $btn-default-color;
 			}
 		}
 
@@ -170,6 +183,11 @@ a {
 			overflow-x: auto;
 			-webkit-overflow-scrolling: touch;
 			-ms-overflow-style: -ms-autohiding-scrollbar;
+
+			.icon-private {
+				color: $warning;
+				margin-right: 5px;
+			}
 
 			.second {
 				.date {
@@ -291,6 +309,12 @@ a {
 				width: initial;
 				.row {
 					@include span-columns(12);
+				}
+				.small-link {
+					font-size: ms(-1);
+					color: $primary;
+					display: block;
+					margin-top: ms(0);
 				}
 			}
 			button {
@@ -643,6 +667,9 @@ a {
 			display: inline-block;
 		}
 	}
+	img.map-img {
+		max-width: 100%;
+	}
 
 	@include breakpoint($tablet) {
 		.results-pagination-controls {
@@ -697,7 +724,7 @@ a {
 			}
 			.icon-private:before {
 				font-size: ms(3);
-				color: $grey;
+				color: $warning;
 			}
 
 			@include breakpoint($desktop) {
@@ -986,21 +1013,28 @@ a {
 	width: 55px;
 	height: 55px;
 }
-/* .container {
-	@include outer-container();
-  	margin-top: 80px;
-  	&.main {
-    	margin-top: ms(8);
-  	}
 
-	> .menu {
-		@include span-columns(4);
-	    margin-top: 60px;
-	    z-index: 999;
-	 }
-
-  	> .content {
-    @include span-columns(12);
-  }
+.nav-tabs {
+	border-bottom: none;
+	margin-left: 0;
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	li {
+		a {
+			color: $dark-grey-2;
+		}
+		a:hover {
+			text-decoration: none;
+		}
+	}
 }
- */
+
+
+.tab-content {
+	&.current {
+		display: inherit;
+	}
+	display: none;
+}
+

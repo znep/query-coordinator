@@ -55,74 +55,25 @@ layout: prototype
       $(this).toggleClass("expanded");
 
    })
+
+  //get rid of alert
   $(".alert .icon-close-2").on("click", function() {
     $(".alert").hide();
   })
 
-  // Set the height of the menu content area to position the button
-  $(".filter-wrapper").css("height", maxContentHeight);
 
-  console.log("View Port: " + viewPortHeight);
-  console.log("Header: " + headerHeight);
-  console.log("Filter Action Button: " + filterActionHeight);
-  console.log("Active List: " + filterListActveHeight);
-  console.log("Content Max: " + maxContentHeight);
+//tabs logic
+$(document).ready(function(){
+   $('ul.nav-tabs li').click(function(){
+    var tab_id = $(this).attr('data-tab-id');
 
-  // Hide the facet list & the hint text
-  $(".filter-list ul, .filter-hint-text").hide();
+    $('ul.nav-tabs li').removeClass('current');
+    $('.tab-content').removeClass('current');
 
-
-  //Toggle the facet group
-  $(".facet-group").each(function() {
-    $(this).show(0).on("click", function(e){
-      e.preventDefault();
-      $(this).toggleClass("open");
-      $(this).next("ul").slideToggle("fast");
-    })
+    $(this).addClass('current');
+    $("#"+tab_id).addClass('current');
   })
-
-  $(".facet-item a").each(function() {
-    $(this).on("click", function(e) {
-      e.preventDefault();
-      $(this).parent("li").siblings("li").find("a").removeClass("active");
-      $(this).toggleClass("active");
-    })
-  })
-
-  //Collect and display current filters, remove them, do the filter
-  $("#filter").on("click", function(e) {
-
-    $(".active-filters a.active").remove();
-
-    $(".filter-list.active ul, .filter-hint-text").show();
-
-    $(".facet-group.open").next("ul").slideToggle();
-    $(".facet-group").removeClass("open");
-
-    var selectedFilters = $(".facet-item a.active:not(.filter-list.active a.active)").get();
-    //console.log(selectedFilters);
-
-    $.each(selectedFilters, function(i, obj) {
-
-      var facetGroupName = $(obj).parents("ul").attr("data-facet-name");
-     // console.log(facetGroupName);
-
-      $(".active-filters").append("<li class='facet-item'><a class='active' href='#'>" + facetGroupName + " > " + obj.innerHTML + "</a></li>");
-    })
-
-    $(".active-filters a.active").on("click", function(e) {
-        $(this).remove();
-    })
-
-    $("#clear-filters").on("click", function(e) {
-      $(".active-filters a.active").remove();
-      $(".facet-item a.active").toggleClass("active");
-      $(".facet-group.open").next("ul").slideToggle();
-      $(".facet-group").removeClass("open");
-      $(".filter-hint-text").hide();
-    })
-
-  });
+});
 
 </script>
 
@@ -308,7 +259,7 @@ layout: prototype
 
           <div class="entry-header">
             <div class="entry-title">
-              <h2 class="entry-name"><a href="#">Licenses by Type</a></h2>
+              <h2 class="entry-name"><span class="icon-private" title="Private Asset"></span><a href="#">Licenses by Type</a></h2>
             </div>
             <div class="entry-view-type"><span class="icon-cards"></span></div>
           </div>
@@ -362,7 +313,8 @@ layout: prototype
     </div><!-- /.lp-section -->
 
     <div class='lp-section'>
-      <h2 class="section-header">About this Dataset</h2>
+      <h2 class="section-header editable">About this Dataset</h2>
+      <button class="btn btn-default btn-sm edit-button"><a href="https://dataspace.demo.socrata.com/dataset/Liquor-Authority-Quarterly-List-of-Active-Licenses/nnb5-m2k4/edit_metadata">Edit Metadata</a></button>
 
       <div class="card-frame">
 
@@ -405,6 +357,9 @@ layout: prototype
                 <span class="small-label">Downloads</span>
                 <h1 class="large-number">1,123</h1>
               </div>
+            </div>
+            <div class="row">
+              <a class="small-link" href="https://dataspace.demo.socrata.com/dataset/Liquor-Authority-Quarterly-List-of-Active-Licenses/nnb5-m2k4/stats">View all statistics for this Dataset</a>
             </div>
           </div>
           <hr>
@@ -913,130 +868,147 @@ layout: prototype
         </div><!-- /.card-frame -->
       </div><!-- /.lp-section -->
 
-
       <div class="lp-section data-preview">
-        <h2 class="section-header">Data Preview</h2>
-        <div class="card-frame">
-          <div class="table-wrapper">
-            <table class="table-condensed">
-              <thead>
-                <tr>
-                  <th scope="col">Licensee</th>
-                  <th scope="col">DBA Name</th>
-                  <th scope="col">License Number</th>
-                  <th scope="col">Expiration Date</th>
-                  <th scope="col">Value</th>
-                  <th scope="col">Location</th>
+      <ul class="nav-tabs">
+        <li class="tab-link current section-header" data-tab-id="map"><a href="javascript:void()">Map Preview</a></li>
+        <li class="tab-link section-header" data-tab-id="data"><a href="javascript:void()">Table Preview</a></li>
+      </ul>
 
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-                <tr>
-                  <td scope="row">Gilbert Glover</td>
-                  <td>Burger King #214421</td>
-                  <td>12413182</td>
-                  <td>May 1, 2015</td>
-                  <td>34</td>
-                  <td>(-0.2324553,180.214141)</td>
-                </tr>
-                <tr>
-              </tbody>
-            </table>
+
+
+
+
+        <div id="map" class="tab-content current">
+          <div class="">
+           <!-- <img src="https://api.mapbox.com/styles/v1/socrata-apps/cinsbp4lm009lbom66vcaq3ku/static/-95.693911,39.029005,10.95,0.00,0.00/1000x600?access_token=pk.eyJ1Ijoic29jcmF0YS1hcHBzIiwiYSI6IlRUV0NRdFUifQ.7vUv6GVqqlxqHpwAo7DlDA" class="map-img" alt="Basic" /> -->
+            <img src="https://dl.dropboxusercontent.com/u/4235130/mondaraMap.png" alt="map" class="map-img"/>
           </div>
-          <div class="results-pagination-controls">
-            <div class="pagination">
-                <a href="#" class="pageLink active" title="Page 1"><span class="accessible">Current Page</span>1</a>
-                <a href="#" class="pageLink" title="Page 2"><span class="accessible">page</span>2</a>
-                <a href="#" class="pageLink" title="Page 3"><span class="accessible">page</span>3</a>
-                <a href="#" class="pageLink" title="Page 4"><span class="accessible">page</span>4</a>
-                <a href="#" class="pageLink" title="Page 5"><span class="accessible">page</span>5</a>
-              <span class="ellipses">Showing rows 1-10 of a 50 row sample</span>
+          <button class="btn btn-primary btn-sm btn-block">Explore this Map</button>
+        </div>
+
+        <div id="data" class="tab-content">
+          <div class="card-frame">
+            <div class="table-wrapper">
+              <table class="table-condensed">
+                <thead>
+                  <tr>
+                    <th scope="col">Licensee</th>
+                    <th scope="col">DBA Name</th>
+                    <th scope="col">License Number</th>
+                    <th scope="col">Expiration Date</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Location</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td scope="row">Gilbert Glover</td>
+                    <td>Burger King #214421</td>
+                    <td>12413182</td>
+                    <td>May 1, 2015</td>
+                    <td>34</td>
+                    <td>(-0.2324553,180.214141)</td>
+                  </tr>
+                  <tr>
+                </tbody>
+              </table>
             </div>
-          </div>
-          <a href="https://dataspace.demo.socrata.com/d/nnb5-m2k4" class="grid-link">Interact with the full table <span class="icon-external"></a>
-          <button class="btn btn-default btn-sm btn-block grid-button">Interact with the full table <span class="icon-external"></button>
+            <div class="results-pagination-controls">
+              <div class="pagination">
+                  <a href="#" class="pageLink active" title="Page 1"><span class="accessible">Current Page</span>1</a>
+                  <a href="#" class="pageLink" title="Page 2"><span class="accessible">page</span>2</a>
+                  <a href="#" class="pageLink" title="Page 3"><span class="accessible">page</span>3</a>
+                  <a href="#" class="pageLink" title="Page 4"><span class="accessible">page</span>4</a>
+                  <a href="#" class="pageLink" title="Page 5"><span class="accessible">page</span>5</a>
+                <span class="ellipses">Showing rows 1-10 of a 50 row sample</span>
+              </div>
+            </div>
+            <a href="https://dataspace.demo.socrata.com/d/nnb5-m2k4" class="grid-link">Interact with the full table <span class="icon-external"></a>
+            <button class="btn btn-default btn-sm btn-block grid-button">Interact with the full table <span class="icon-external"></button>
 
-        </div> <!-- /.card-frame -->
+          </div> <!-- /.card-frame -->
+        </div> <!-- /.tab-content -->
 
       </div> <!-- /.lp-section -->
 

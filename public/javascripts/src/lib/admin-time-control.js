@@ -7,7 +7,7 @@
 export function timeControl(input, ranges, initialRange) {
   const today = Date.parse('today');
 
-  let options = {
+  const options = {
     earliestDate: Date.parse('2008-01-01'),
     latestDate: today,
     posY: input.offset().top + input.outerHeight() + 5,

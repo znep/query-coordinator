@@ -69,19 +69,6 @@ fr:
           feature_map: Visualiser cette colonne comme carte présentée
           search_card: Visualiser cette colonne comme carte de recherche
           timeline_chart: Visualiser cette colonne comme frise chronologique
-      aggregation_chooser:
-        by_the_number_of: <span class="information">par le</span> nombre de
-        by_the_sum_of: <span class="information">par la</span> somme de
-        count_label: compter {0} par élément
-        description: 'Afficher les éléments de données calibrées ou colorées par :'
-        option_disabled: Cette colonne ne peut pas être utilisée avec un<br>nombre d'agrégats
-        sum_label: ajouter pour chacun {0}
-        the_number_of: Le nombre de
-        the_sum_of: La somme de
-        title: Agrégation
-        too_many_columns:
-          message: Nous ne sommes pas actuellement capables de fournir la somme sous forme d'agrégat pour les pages de Lentille de données qui ont plus de {0} colonnes de type Nombre ou Argent.
-          title: Il semble que cet ensemble de données contient plus de {0} nombre de colonnes
       api_explorer:
         additional_resources: 'Ressources supplémentaires pour cet API :'
         api_button: API
@@ -146,8 +133,6 @@ fr:
         longitude: Longitude
         no_value: Aucune valeur
         ok: OK
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Autorisation
           private: Privé
@@ -198,17 +183,7 @@ fr:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ fr:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ fr:
         validation_error_min_length: Veuillez entrer un titre
         validation_error_required: Veuillez entrer un titre
         visualization_as_image: Visualisation en tant qu'image
-        visualization_as_image_disabled_flyout: Veuillez sauvegarder cette page afin de télécharger une visualisation en tant qu'image
       mobile_warning_dialog:
         acknowledgement: D'accord, compris !
         description: Nous travaillons sur l'amélioration de l'expérience mobile sur ce site.
@@ -363,7 +336,6 @@ fr:
         flyoutFailedBody: Veuillez contacter le support Socrata
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications en tant que nouvelle page
-        flyoutNoChanges: Aucun changement à conserver
         text: Enregistrer en tant que
       save_as_panel:
         description: Entrer une description pour la page nouvel âge (en option)
@@ -382,17 +354,6 @@ fr:
         save: Enregistrer
         saved: Enregistré!
         saving: Sauvegarde...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.
@@ -552,9 +513,6 @@ fr:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ fr:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ fr:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ fr:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ fr:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Mise à jour récente
           most_accessed: Plus visité
@@ -647,7 +597,6 @@ fr:
           forms: Formulaires
           href: Séries de données externes
           maps: Cartes
-          new_view: Pages de lentilles de données
           pulse:
           pulse_help:
           story: Histoires
@@ -1288,7 +1237,6 @@ fr:
       grouped: Vue groupée
       href: Série de données externe
       map: Carte
-      new_view: Page de données de lentilles
       story:
       table: Tableau
       working_copy: Copie de travail
@@ -1403,6 +1351,7 @@ fr:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1412,7 +1361,6 @@ fr:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1797,7 +1745,6 @@ fr:
         title: Ouvrir Fédération de Données
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1811,6 +1758,7 @@ fr:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1837,9 +1785,6 @@ fr:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2186,9 +2131,7 @@ fr:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2956,7 +2899,6 @@ fr:
           download_as: Télécharger au format…
           download_dataset: Veuillez télécharger l'ensemble de données à partir duquel cette affichage est dérivé.
           geo_header: Télécharger des données géospatiales
-          layers_header: Télécharger des couches tabulaires
           monolayer_header:
           multilayer_header:
           subtitle: Télécharger un exemplaire de cette série de données dans un format statique

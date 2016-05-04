@@ -69,19 +69,6 @@ nl:
           feature_map: Visualiseer deze kolom als een eigenschapskaart
           search_card: Visualiseer deze kolom als een zoekkaart
           timeline_chart: Visualiseer deze kolom als een tijdlijn
-      aggregation_chooser:
-        by_the_number_of: <span class="information">per het</span> aantal
-        by_the_sum_of: <span class="information">per het</span> totaal aantal
-        count_label: aantal van {0} per element
-        description: 'Zie gegevenselementen gerangschikt of gekleurd door:'
-        option_disabled: Deze kolom kan niet worden gebruikt met een<br>aantal van het totaal
-        sum_label: toevoegen voor iedere {0}
-        the_number_of: Het aantal
-        the_sum_of: Het totaal aantal
-        title: Samenvoeging
-        too_many_columns:
-          message: Op dit moment kunnen we optellen niet als aanbieden als een samenvoeging voor Data Lens pagina's met meer dan {0} kolommen van het type Getal of Geld.
-          title: Het lijkt er op dat dit gegevensbestand meer dan {0} getallenkolommen bevat
       api_explorer:
         additional_resources: 'Aanvullende hulpbronnen voor deze API:'
         api_button: API
@@ -146,8 +133,6 @@ nl:
         longitude: Lengtegraad
         no_value: Geen waarde
         ok: Oké
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Permissies
           private: Privé
@@ -198,17 +183,7 @@ nl:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ nl:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ nl:
         validation_error_min_length: Vul alstublieft een titel in
         validation_error_required: Vul alstublieft een titel in
         visualization_as_image: Visualisatie als afbeelding
-        visualization_as_image_disabled_flyout: Bewaar de pagina om een visualisatie als een afbeelding te downloaden
       mobile_warning_dialog:
         acknowledgement: Oké, ik begrijp het!
         description: We werken aan het verbeteren van de mobiele ervaring op deze site.
@@ -363,7 +336,6 @@ nl:
         flyoutFailedBody: Neem contact op met Socrata Support
         flyoutFailedTitle: Er ging iets mis
         flyoutIdle: Klik om uw veranderingen op te slaan als een nieuwe pagina
-        flyoutNoChanges: Geen veranderingen om op te slaan
         text: Bewaren als
       save_as_panel:
         description: Vul een omschrijving voor uw nieuwe pagina in (optioneel)
@@ -382,17 +354,6 @@ nl:
         save: Bewaren
         saved: Bewaard!
         saving: Bezig met bewaren...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Probeer te zoeken naar een aantal zonder letters.
@@ -504,37 +465,38 @@ nl:
           link:
             label:
             title:
-        comment_count:
+        comment_count: Aantal reacties
         create:
           dataset:
             label:
             title:
-          label:
+          label: Voeg nieuwe
           story:
             label:
             title:
-          title:
+          title: Maak een nieuwe Socrata Resource
         created_at:
-          label:
+          label: Gemaakt
         data_types:
-          label:
+          label: |
+            Data Types
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: Minder
+          show_more_label: Meer
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          draft:
-          filter:
-          form:
-          href:
-          map:
+          api: API
+          blob: Bestand of Document
+          calendar: Kalender
+          chart: Tabel
+          data_lens: Data Lens
+          dataset: Dataset
+          draft: Ontwerp Dataset
+          filter: Filter
+          form: Formulier
+          href: Link
+          map: Kaart
           predeply_api:
-          pulse:
+          pulse: Streaming Data
           story:
           unknown:
         edit:
@@ -554,9 +516,6 @@ nl:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -566,7 +525,6 @@ nl:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -579,7 +537,6 @@ nl:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -590,7 +547,6 @@ nl:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -603,11 +559,6 @@ nl:
           results:
         sort:
           label: Sorteer op
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Recent bijgewerkt
           most_accessed: Meest bekeken
@@ -649,7 +600,6 @@ nl:
           forms: Formulieren
           href: Externe datasets
           maps: Kaarten
-          new_view: Data Lens pagina's
           pulse:
           pulse_help:
           story: Verhalen
@@ -1310,7 +1260,6 @@ nl:
       grouped: gegroepeerde view
       href: externe dataset
       map: kaart
-      new_view: Data Lens pagina
       story:
       table: tabel
       working_copy: werkende kopie
@@ -1425,6 +1374,7 @@ nl:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1434,7 +1384,6 @@ nl:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1823,7 +1772,6 @@ nl:
         title: Open datafederatie
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1837,6 +1785,7 @@ nl:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1863,9 +1812,6 @@ nl:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2212,9 +2158,7 @@ nl:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2990,7 +2934,6 @@ nl:
           download_as: Downloaden als
           download_dataset: Download alstublieft het gegevensbestand waar deze weergave aan is ontleend.
           geo_header: Download geogegevens
-          layers_header: Download tabellagen
           monolayer_header:
           multilayer_header:
           subtitle: Download een kopie van deze dataset in een statisch formaat

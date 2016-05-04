@@ -69,19 +69,6 @@ pt:
           feature_map: Visualize esta coluna como um apresentar mapas
           search_card: Visualize esta coluna como um procurar o cartão
           timeline_chart: Visualize esta coluna como um gráfico de linha do tempo
-      aggregation_chooser:
-        by_the_number_of: <span class="information">pelo</span> número de
-        by_the_sum_of: <span class="information">pela</span> quantia de
-        count_label: conte {0} por cada elemento
-        description: 'Veja elementos de dados dimensionados ou coloridos por:'
-        option_disabled: C
-        sum_label: Adicionar por cada {0}
-        the_number_of: O número de
-        the_sum_of: A quantia de
-        title: Agregação
-        too_many_columns:
-          message: Neste momento não nos é possível fornecer uma síntese como um agregado para páginas Data Lens que possuam mais de {0} colunas de tipo de Número ou de Dinheiro.
-          title: Parece que este conjunto de dados contém mias de {0} colunas de número
       api_explorer:
         additional_resources: 'Recursos adicionais para esta API:'
         api_button: API
@@ -146,8 +133,6 @@ pt:
         longitude: Longitude
         no_value: Sem qualquer valor
         ok: OK
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Autorizações
           private: Privado
@@ -198,17 +183,7 @@ pt:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ pt:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ pt:
         validation_error_min_length: Queira introduzir um título
         validation_error_required: Queira introduzir um título
         visualization_as_image: Visualização como imagem
-        visualization_as_image_disabled_flyout: Queira guardar a página para descarregar uma visualização como uma imagem
       mobile_warning_dialog:
         acknowledgement: Ok, consegui!
         description: Estamos a trabalhar para melhorar a experi
@@ -363,7 +336,6 @@ pt:
         flyoutFailedBody: Queira contactar o Serviço de Apoio ao Cliente da Socrata
         flyoutFailedTitle: Ocorreu um erro
         flyoutIdle: Clique para guardar as suas alterações como uma nova página
-        flyoutNoChanges: Sem alterações para guardar
         text: Guardar como
       save_as_panel:
         description: Introduza uma descrição para a sua nova página (opcional)
@@ -382,17 +354,6 @@ pt:
         save: Guardar
         saved: Guardado!
         saving: A guardar...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Tente pesquisar um número que não contenha letras.
@@ -552,9 +513,6 @@ pt:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ pt:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ pt:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ pt:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ pt:
           results:
         sort:
           label: Ordenar por
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Atualizado Recentemente
           most_accessed: Mais Acessadas
@@ -647,7 +597,6 @@ pt:
           forms: Formulários
           href: Tabelas Externas
           maps: Mapas
-          new_view: Páginas de Data Lens
           pulse:
           pulse_help:
           story: Histórias
@@ -1289,7 +1238,6 @@ pt:
       grouped: visualização agrupada
       href: tabela externa
       map: mapa
-      new_view: Página Data Lens
       story:
       table: tabela
       working_copy: cópia de trabalho
@@ -1404,6 +1352,7 @@ pt:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1413,7 +1362,6 @@ pt:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1811,7 +1759,6 @@ pt:
         title: Federação de Dados Abertos
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1825,6 +1772,7 @@ pt:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1851,9 +1799,6 @@ pt:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2200,9 +2145,7 @@ pt:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2970,7 +2913,6 @@ pt:
           download_as: Baixar como
           download_dataset: Por favor baixe a tabela da qual essa visualização é derivada.
           geo_header: Baixar dados geoespaciais
-          layers_header: Baixar sem dados geoespaciais
           monolayer_header:
           multilayer_header:
           subtitle: Baixar uma cópia desta tabela num formato estático

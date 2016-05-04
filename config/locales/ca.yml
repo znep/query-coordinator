@@ -69,19 +69,6 @@ ca:
           feature_map: Visualitza aquesta columna com a característica del mapa
           search_card: Visualitza aquesta columna com a cerca de targetes
           timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
-      aggregation_chooser:
-        by_the_number_of: <span class="information">per el</span> número de
-        by_the_sum_of: <span class="information">per la</span> quantitat de
-        count_label: compta {0} per element
-        description: 'Veges els elements de les dades amb mida o color per:'
-        option_disabled: Aquesta columna no es pot fer servir amb un<br>número total
-        sum_label: afegeix per cada {0}
-        the_number_of: El número de
-        the_sum_of: La quantitat de
-        title: Conjunt
-        too_many_columns:
-          message: Actualment no podem donar-vos una suma com a total per les pàgines de Visió de dades que tinguin més de {0} columnes de tipus de números o diners.
-          title: Sembla que aquesta taula de dades té més de {0} columnes de números
       api_explorer:
         additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
         api_button: Institut Americà de Petroli
@@ -146,8 +133,6 @@ ca:
         longitude: Longitud
         no_value: Cap valor
         ok: D'acord
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Permisos
           private: Privat
@@ -198,17 +183,7 @@ ca:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ ca:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ ca:
         validation_error_min_length: Si us plau, entreu un títol
         validation_error_required: Si us plau, entreu un títol
         visualization_as_image: Visualització com a imatge
-        visualization_as_image_disabled_flyout: Si us plau, guardeu la pàgina per tal de descarregar la visualització com a imatge
       mobile_warning_dialog:
         acknowledgement: D'acord, ja ho tinc!
         description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '
@@ -363,7 +336,6 @@ ca:
         flyoutFailedBody: Si us plau, contacteu amb Socrata Support
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar tots els canvis coma una pàgina nova
-        flyoutNoChanges: No hi ha cap canvi per guardar
         text: Guardar com
       save_as_panel:
         description: Entreu una descripció per la vostra nova pàgina (opcional)
@@ -382,17 +354,6 @@ ca:
         save: Guardar
         saved: Guardat!
         saving: Guardant...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Intenteu buscar per números, no per lletres.
@@ -502,59 +463,56 @@ ca:
           link:
             label: Documents de l'API
             title: Veure documentació de l'API per a aquest conjunt de dades
-        comment_count: Número de commentat
+        comment_count: Número de commentaris
         create:
           dataset:
             label: Crear/Pujar un conjunt de dades
             title: Crear o pujar un conjunt de dades a la plataforma Socrata
           label: Afegir nou
           story:
-            label: Crear una perspectiva Socrata
-            title: Creara una nova perspectiva Socrata
+            label: Crear una història Socrata
+            title: Crear una nova història Socrata
           title: Afegir nou recurs
         created_at:
           label: Creat
         data_types:
-          label: Tipus de vista
+          label: Tipus de dades
         description:
-          show_less_label: menys
+          show_less_label: Menys
           show_more_label: Més
         display_types:
           api: API
           blob: Dossier o document
           calendar: Calendari
-          chart: Taula
-          data_lens: Lent de dades
+          chart: Gràfic
+          data_lens: Data Lens
           dataset: Conjunt de dades
-          draft: Projecte conjunt de dades
+          draft: Esborrany de conjunt de dades
           filter: Vista filtrada
           form: Formulari
           href: Enllaç extern
           map: Mapa
-          predeply_api: API implementar prèviament
-          pulse: Pols
-          story: Perspectiva
+          predeply_api: Predesplegament API
+          pulse: Pulse
+          story: Històries
           unknown: Desconegut
         edit:
           delete:
             confirm: "¿Està segur que vol eliminar «%{dataset}»?"
-            error: Hi va haver un error d'esborrat «%{dataset}». Siusplau torna-ho a provar.
+            error: Hi ha hagut un error en esborrar «%{dataset}». Si us plau torna-ho a provar.
             label: Esborrar
             title: Esborrar «%{name}»
           make_private:
-            error: Hi va haver un error d'fer «%{dataset}» privada. Siusplau torna-ho a provar.
-            label: Fer privada
-            title: Fer «%{name}» private
+            error: Hi ha hagut un error en fer «%{dataset}» privat. Si us plau torna-ho a provar.
+            label: Fer privat
+            title: Fer «%{name}» privat
           make_public:
-            error: Hi va haver un error d'fer «%{dataset}» públic. Siusplau torna-ho a provar.
+            error: Hi ha hagut un error en fer «%{dataset}» públic. Si us plau torna-ho a provar.
             label: Fer públic
             title: Fer «%{name}» públic
         facets:
           clear_all:
             label: Netejar tots
-          contract:
-            label: Mostrar menys
-            title: Fer clic per mostrar un menor nombre d'opcions
           expand:
             label: Mostrar tots...
             title: Mostrar totes les opcions
@@ -562,9 +520,8 @@ ca:
             filter: Filtre
             filtered_by: Filtrada per
             result: Resultat
-          hint: Filtrar or Revisar els Resultats
+          hint: Filtrar o Revisar els Resultats
           mobile:
-            all_filters: Tots els filtres
             back: Torna
             clear_all: Netejar tots
             filter: Filtre
@@ -577,42 +534,35 @@ ca:
         federation:
           label: Dades Proporcionades Per
           label_with_source: Dades Proporcionades Per %{source}
-          source: Federat de %{source}
         last_updated:
           label: Actualitzat
         odn:
           link:
-            label: a la Xarxa de Dades Obert
-            title: Trobar més dades d'aquest tipus a la Xarxa de Dades Obert
-          prompt: Trobar Dades Com Aquest
+            label: a la Xarxa de Dades Obertes
+            title: Trobar més dades d'aquest tipus a la Xarxa de Dades Obertes
+          prompt: Trobar Dades com Aquestes
         results:
           cetera_count: Mostrant %{start}-%{end} de %{total} resultats
-          count: Mostrant %{this} of %{total} resultats
-          summary: "«%{query}»"
+          count: Mostrant %{this} de %{total} resultats
         search:
           clear:
             title: Netejar cerca
           placeholder: Cerca
           title: Cerca
         settings:
-          label: Ajustos
-          title: Ajustos
+          label: Configuració
+          title: Configuració
         skiplinks:
           results: Anar als resultats
         sort:
           label: Ordenar per
-          periods:
-            label: Període d'ordre
-            month: Aquest mes
-            week: Aquest setmana
-            year: Aquest curs
         sorts:
           last_modified: Actualitzat Recentment
           most_accessed: Més Visitat
-          newest: El primer més nou
+          newest: Afegits recentment
           relevance: Més Relevant
         topics:
-          empty: Hi ha temes assignats
+          empty: No hi ha temes assignats
           label: Temes
           more: i %{count} més
         view_count:
@@ -647,7 +597,6 @@ ca:
           forms: Formulari
           href: Conjunts de Dades Externs
           maps: Mapes
-          new_view: Pàgines de visió de dades
           pulse:
           pulse_help:
           story: Històries
@@ -1290,7 +1239,6 @@ ca:
       grouped: vista agrupada
       href: conjunt de dades extern
       map: mapa
-      new_view: Pàgina de visió de dades
       story:
       table: taules
       working_copy: còpia de treball
@@ -1405,6 +1353,7 @@ ca:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1414,7 +1363,6 @@ ca:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1812,7 +1760,6 @@ ca:
         title: Federació de Dades Obertes
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1826,6 +1773,7 @@ ca:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1852,9 +1800,6 @@ ca:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2201,9 +2146,7 @@ ca:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2971,7 +2914,6 @@ ca:
           download_as: Descarregar Com a
           download_dataset: Si us plau, descarregueu-vos la taula de dades de la qual deriva aquesta imatge.
           geo_header: Descarregar Dades Geoespacials
-          layers_header: Descarregar Capes Tabulars
           monolayer_header:
           multilayer_header:
           subtitle: Descarregar una còpia d'aquest conjunt de dades en format estàtic

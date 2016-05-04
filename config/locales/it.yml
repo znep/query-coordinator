@@ -69,19 +69,6 @@ it:
           feature_map: Visualizza questa colonna come una mappa delle funzionalità
           search_card: Visualizza questa colonna come una cerca scheda
           timeline_chart: Visualizza questa colonna come un grafico temporale
-      aggregation_chooser:
-        by_the_number_of: <span class="information">dal</span> numero di
-        by_the_sum_of: <span class="information">dalla</span> somma di
-        count_label: considera {0} per elemento
-        description: 'Visualizza gli elementi dei dati ridimensionati o colorati da:'
-        option_disabled: Questa colonna non può essere usata con un<br>numero di aggregazione
-        sum_label: aggiungi per ognuno {0}
-        the_number_of: Il numero di
-        the_sum_of: La somma di
-        title: Aggregazione
-        too_many_columns:
-          message: Al momento, non siamo in grado di fornire la somma come aggregato per le pagine Data Lens che hanno più di {0} colonne di tipo Numero o Denaro.
-          title: Sembra che questo set di dati contenga più di {0} numero di colonne
       api_explorer:
         additional_resources: 'Risorse aggiuntive per questa API:'
         api_button: API
@@ -146,8 +133,6 @@ it:
         longitude: Longitudine
         no_value: Nessun valore
         ok: OK
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Permessi
           private: Privato
@@ -198,17 +183,7 @@ it:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ it:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ it:
         validation_error_min_length: Inserisci un titolo
         validation_error_required: Inserisci un titolo
         visualization_as_image: Visualizzazione come immagine
-        visualization_as_image_disabled_flyout: Ti preghiamo di salvare la pagina per poter scaricare una visualizzazione come immagine
       mobile_warning_dialog:
         acknowledgement: Va bene, ho capito!
         description: Stiamo laviorando per migliorare l'esperienza mobile su questo sito.
@@ -363,7 +336,6 @@ it:
         flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
         flyoutFailedTitle: Si è verificato un errore
         flyoutIdle: Fai clic per salvare le tue modifiche come nuova pagina
-        flyoutNoChanges: Nessuna modifica da salvare
         text: Salva come
       save_as_panel:
         description: Inserisci una descrizione per la tua nuova pagina (facoltativo)
@@ -382,17 +354,6 @@ it:
         save: Salva
         saved: Salvata!
         saving: Salvataggio...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Prova a cercare un numero che non contenga lettere.
@@ -502,37 +463,38 @@ it:
           link:
             label:
             title:
-        comment_count:
+        comment_count: Numero di commenti
         create:
           dataset:
             label:
             title:
-          label:
+          label: Aggiungere nuova
           story:
             label:
             title:
-          title:
+          title: Creare una nuova risorsa Socrata
         created_at:
-          label:
+          label: Creato
         data_types:
-          label:
+          label: Tipi di dati
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: Di meno
+          show_more_label: Di Più
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          draft:
-          filter:
-          form:
-          href:
-          map:
+          api: API
+          blob: File o documento
+          calendar: Calendario
+          chart: Grafico
+          data_lens: Data Lens
+          dataset: Dataset
+          draft: Progetto Dataset
+          filter: Filer
+          form: Modulo
+          href: Link Esterno
+          map: |
+            Carta Geografica
           predeply_api:
-          pulse:
+          pulse: Streaming
           story:
           unknown:
         edit:
@@ -552,9 +514,6 @@ it:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +523,6 @@ it:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +535,6 @@ it:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +545,6 @@ it:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +557,6 @@ it:
           results:
         sort:
           label: Ordina per
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: Aggiornato di recente
           most_accessed: Con maggiori accessi
@@ -647,7 +598,6 @@ it:
           forms: Moduli
           href: Dati esterni
           maps: Mappe
-          new_view: Pagine Data Lens
           pulse:
           pulse_help:
           story: Sorie
@@ -1288,7 +1238,6 @@ it:
       grouped: visualizzazione in gruppi
       href: external dataset
       map: mappa
-      new_view: Pagina Data Lens
       story:
       table: tabella
       working_copy: copia di lavoro
@@ -1403,6 +1352,7 @@ it:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1412,7 +1362,6 @@ it:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1810,7 +1759,6 @@ it:
         title: Apri i dati della Federazione
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1824,6 +1772,7 @@ it:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1850,9 +1799,6 @@ it:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2199,9 +2145,7 @@ it:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2969,7 +2913,6 @@ it:
           download_as: Scarica come
           download_dataset: Ti preghiamo di scaricare il set di dati da cui deriva questa vista.
           geo_header: Scarica dati Geospaziali
-          layers_header: Scarica Layer Tabular
           monolayer_header:
           multilayer_header:
           subtitle: Scarica una copia di questo dataset in formato statico

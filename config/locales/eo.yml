@@ -69,19 +69,6 @@ eo:
           feature_map:
           search_card:
           timeline_chart:
-      aggregation_chooser:
-        by_the_number_of:
-        by_the_sum_of:
-        count_label:
-        description:
-        option_disabled:
-        sum_label:
-        the_number_of:
-        the_sum_of:
-        title:
-        too_many_columns:
-          message:
-          title:
       api_explorer:
         additional_resources:
         api_button:
@@ -146,8 +133,6 @@ eo:
         longitude:
         no_value:
         ok:
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions:
           private:
@@ -198,17 +183,7 @@ eo:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ eo:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ eo:
         validation_error_min_length:
         validation_error_required:
         visualization_as_image:
-        visualization_as_image_disabled_flyout:
       mobile_warning_dialog:
         acknowledgement:
         description:
@@ -363,7 +336,6 @@ eo:
         flyoutFailedBody:
         flyoutFailedTitle:
         flyoutIdle:
-        flyoutNoChanges:
         text:
       save_as_panel:
         description:
@@ -382,17 +354,6 @@ eo:
         save:
         saved:
         saving:
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search:
@@ -552,9 +513,6 @@ eo:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ eo:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ eo:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ eo:
         results:
           cetera_count:
           count:
-          summary: "«%{query}»"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ eo:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified:
           most_accessed:
@@ -647,7 +597,6 @@ eo:
           forms:
           href:
           maps:
-          new_view:
           pulse:
           pulse_help:
           story:
@@ -1288,7 +1237,6 @@ eo:
       grouped:
       href:
       map:
-      new_view:
       story:
       table:
       working_copy:
@@ -1403,6 +1351,7 @@ eo:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1412,7 +1361,6 @@ eo:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1797,7 +1745,6 @@ eo:
         title:
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1811,6 +1758,7 @@ eo:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1837,9 +1785,6 @@ eo:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2186,9 +2131,7 @@ eo:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2954,7 +2897,6 @@ eo:
           download_as:
           download_dataset:
           geo_header:
-          layers_header:
           monolayer_header:
           multilayer_header:
           subtitle:

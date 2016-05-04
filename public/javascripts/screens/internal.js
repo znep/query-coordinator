@@ -80,4 +80,14 @@
   if ($('body').is('action_internal_show_config')) {
 
   }
+
+  $.fn.formatWithMoment = function(format) {
+    var text = this.text();
+    var asMoment = moment(text);
+    format = format || 'llll Z';
+
+    if (asMoment.isValid()) {
+      this.text(asMoment.format(format));
+    }
+  };
 })(jQuery);

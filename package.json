@@ -109,7 +109,7 @@
     "react": "0.14.5",
     "react-dom": "0.14.5",
     "socrata-styleguide": "1.0.1",
-    "socrata-visualizations": "8.13.2",
+    "socrata-visualizations": "8.13.3",
     "tether-shepherd": "1.2.0",
     "velocity-animate": "1.2.3"
   }

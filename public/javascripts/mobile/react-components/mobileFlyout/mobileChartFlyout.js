@@ -1,5 +1,6 @@
 import React from 'react';
 import './mobileChartFlyout.scss';
+import _ from 'lodash';
 
 class MobileChartFlyout extends React.Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class MobileChartFlyout extends React.Component {
   }
 
   render() {
-    let valuesStyleClass = this.state.filteredValue ? 'values filtered' : 'values unfiltered';
+    let valuesStyleClass = _.isNumber(this.state.filteredValue) ? 'values filtered' : 'values unfiltered';
     let arrowStyle = {
       left: '{0}px'.format(this.state.arrowPosition)
     };
@@ -41,7 +42,7 @@ class MobileChartFlyout extends React.Component {
       <div className="title">{ this.state.title }</div>
       <div className={ valuesStyleClass }>
         { this.unFilteredLine() }
-        { this.state.filteredValue ? this.filteredLine() : '' }
+        { _.isNumber(this.state.filteredValue) ? this.filteredLine() : '' }
       </div>
     </div>;
   }

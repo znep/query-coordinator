@@ -190,7 +190,7 @@ module InternalHelper
     if Rails.env.development?
       'Dev Mode does not cache.'
     else
-      CurrentDomain.last_refresh(@domain.cname)
+      CurrentDomain.last_refresh(@domain.cname) || 'Not cached yet.'
     end
   end
 

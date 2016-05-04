@@ -96,14 +96,7 @@ module.exports = function(values, $target) {
       'type': 'visualization_interchange_format',
       'version': 1
     },
-    'origin': {
-      'type': 'test_data',
-      'url': 'localhost'
-    },
-    'unit': {
-      'one': ' ',
-      'other': ' '
-    }
+    'unit': values.unit
   };
 
   var $featureMapElement = $target;

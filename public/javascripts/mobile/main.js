@@ -565,6 +565,7 @@ import './styles/mobile-general.scss';
    */
   function setupQfb(preloadedFilters) {
     var filterDataObservable = document.createDocumentFragment();
+    var _latestFilterObject;
 
     _attachModalEvents();
     _determineDatasetSize().
@@ -572,6 +573,7 @@ import './styles/mobile-general.scss';
       then(_renderFilterContainer);
 
     $('#btn-close, #btn-proceed').on('click', function() {
+      $(document).trigger('appliedFilters.qfb.socrata', _latestFilterObject);
       $('#modal-container').addClass('hidden');
     });
 
@@ -590,6 +592,8 @@ import './styles/mobile-general.scss';
         if (parseInt(data, 10) > 0) {
           $(document).trigger('appliedFilters.qfb.socrata', filterObject);
         } else {
+          _latestFilterObject = filterObject;
+
           $('#modal-container').removeClass('hidden').on('click', function() {
             $(this).addClass('hidden');
           });

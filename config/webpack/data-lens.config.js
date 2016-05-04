@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/angular/src'),
-  entry: './data-lens',
+  entry: './main',
   output: common.getOutput(identifier),
   module: {
     loaders: [

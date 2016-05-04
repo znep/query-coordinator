@@ -2141,10 +2141,10 @@ importNS.importingPaneConfig = {
                   var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
                   if (!notifyButton.data('subscribed'))
                   {
-                      $pane.find('.notifyUploadContainer').css("display", "block");
+                      $pane.find('.notifyUploadContainer').show();
                       notifyButton.click(function(event)
                       {
-                          $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "block");
+                          $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
                           $.socrataServer.makeRequest({
                               type: 'post',
                               contentType: 'application/json',
@@ -2153,17 +2153,15 @@ importNS.importingPaneConfig = {
                               data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
                               success: function(response)
                               {
-                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "none");
-                                  $pane.find('.notifyUploadContainer').css("display", "none");
-
-                                  $pane.find('.notifyingUploadComplete').css("display", "block");
+                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
+                                  $pane.find('.notifyUploadContainer').hide();
+                                  $pane.find('.notifyingUploadComplete').show();
                               },
                               error: function(xhr)
                               {
-                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').css("display", "none");
-                                  $pane.find('.notifyUploadContainer').css("display", "none");
-
-                                  $pane.find('.notifyUploadError').css("display", "block");
+                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
+                                  $pane.find('.notifyUploadContainer').hide();
+                                  $pane.find('.notifyUploadError').show();
                                   $pane.find('.flash').addClass('error');
                               }
                           });

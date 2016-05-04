@@ -98,11 +98,11 @@ describe('Pager', function() {
     verifyNextButtonEnabledBehavior();
   });
 
-  describe('on the last of several pages', function() {
+  describe('on the last page', function() {
     renderPagerWithOptions({
       startIndex: 900,
       endIndex: 999,
-      datasetRowCount: 1000
+      datasetRowCount: 901
     });
 
     verifyPreviousButtonEnabledBehavior();

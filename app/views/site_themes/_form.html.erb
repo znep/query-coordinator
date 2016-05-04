@@ -1,0 +1,27 @@
+<%= form_tag site_theme_path(id: @site_theme.id), method: :put, class: :edit_site_theme, id: "edit_site_theme_#{@site_theme.id}" do %>
+  <% if @site_theme.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@site_theme.errors.count, "error") %> prohibited this site_theme from being saved:</h2>
+
+      <ul>
+      <% @site_theme.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <h2> Properties: <h2/>
+
+  <ul>
+    <% @site_theme.properties.each do |property| %>
+      <li>
+        <%= label_tag 'site_theme_' + property['name'] %>
+        <%= text_area_tag "site_theme[properties][#{property['name']}]", property['value'] %>
+      </li>
+      <br/>
+    <% end %>
+  </ul>
+
+  <%= submit_tag 'Submit', data: { confirm: 'Are you sure?' } %>
+<% end %>

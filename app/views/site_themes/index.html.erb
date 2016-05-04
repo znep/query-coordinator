@@ -1,0 +1,30 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <title>Site Themes | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<h1>Listing site themes</h1>
+
+<h2>NOTE: You should probably have just one of these</h2>
+
+<ul class="listOfSiteThemes">
+  <% @site_themes.each do |site_theme| %>
+    <li>
+      <div>id: <%= site_theme.id %></div>
+      <div>name: <%= site_theme.name %></div>
+      <div>default: <%= site_theme.default %></div>
+      <div>parentId: <%= site_theme.parentId %></div>
+      <div>type: <%= site_theme.type %></div>
+      <div>updatedAt: <%= Time.at(site_theme.updatedAt) %></div>
+      <div>properties: <%= site_theme.properties.first%> ...</div>
+      <br />
+      <div><%= link_to 'Show', site_theme_path(id: site_theme.id) %></div>
+      <br />
+      <div><%= link_to 'Edit', edit_site_theme_path(id: site_theme.id) %></div>
+    </li>
+  <% end %>
+  <br />
+<ul>
+
+<%= link_to 'New Site theme', new_site_theme_path %>

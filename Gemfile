@@ -51,6 +51,7 @@ group :test do
   gem 'rspec-rails', '~> 3.1.0'
   gem 'simplecov'
   gem 'simplecov-cobertura'
+  gem 'vcr'
 end
 
 group :development, :test do

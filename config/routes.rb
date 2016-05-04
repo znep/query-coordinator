@@ -174,6 +174,8 @@ Frontend::Application.routes do
       get '/asset_inventory', :action => 'asset_inventory'
     end
 
+    resources :site_themes
+
     get '/templates/:id', :controller => 'remote_partials', :action => :templates
     get '/modals/:id', :controller => 'remote_partials', :action => :modals
 

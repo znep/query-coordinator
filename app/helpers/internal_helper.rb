@@ -200,4 +200,9 @@ module InternalHelper
 
     content_tag(:div, content, :class => reason)
   end
+
+  def organization_link
+    organization_name = @organizations.find { |org| org.id == @domain.organizationId }.name
+    link_to organization_name, show_org_path(org_id: @domain.organizationId)
+  end
 end

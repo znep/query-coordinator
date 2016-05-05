@@ -11,7 +11,7 @@ module.exports = {
     quiet: false,
     noInfo: true,
     publicPath: '/javascripts/webpack',
-    stats: { colors: true }
+    stats: 'minimal'
   },
   eslint: {
     configFile: common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json',

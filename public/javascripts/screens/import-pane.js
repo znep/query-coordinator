@@ -2139,34 +2139,33 @@ importNS.importingPaneConfig = {
               pending: function(response)
               {
                   var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
-                  if (!notifyButton.data('subscribed'))
+                  if (!notifyButton.data('handlerAdded'))
                   {
                       $pane.find('.notifyUploadContainer').show();
                       notifyButton.click(function(event)
                       {
+                          $pane.find('.notifyUploadError').hide();
                           $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
                           $.socrataServer.makeRequest({
                               type: 'post',
                               contentType: 'application/json',
                               dataType: 'json',
-                              url: '/users/' + blist.currentUser.id + '/email_interests.json?accessType=WEBSITE',
+                              url: '/users/' + blist.currentUser.id + '/email_interests.json',
                               data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
                               success: function(response)
                               {
                                   $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
                                   $pane.find('.notifyUploadContainer').hide();
+                                  $pane.find('.notifyUploadError').hide();
                                   $pane.find('.notifyingUploadComplete').show();
                               },
                               error: function(xhr)
                               {
-                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
-                                  $pane.find('.notifyUploadContainer').hide();
                                   $pane.find('.notifyUploadError').show();
-                                  $pane.find('.flash').addClass('error');
                               }
                           });
                       });
-                      notifyButton.data('subscribed', true);
+                      notifyButton.data('handlerAdded', true);
                   }
                   if ($.subKeyDefined(response, 'details.stage')) {
                     $pane.find('.importStatus').text(t(response.details.stage))

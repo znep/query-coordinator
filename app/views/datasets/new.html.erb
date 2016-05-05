@@ -208,8 +208,8 @@
             <div class="notifyUploadContainer clearfix">
 
               <div class="notifyUploadButtonContainer">
-                <a class="button setNotifyComplete" href="#notifyComplete"><%= raw t("screens.dataset_new.notify_me") %></a>
-                <%= raw t("screens.dataset_new.notify_me_messaging") %>
+                <a class="button setNotifyComplete" href="#notifyComplete"><%= t("screens.dataset_new.notify_me") %></a>
+                <%= t("screens.dataset_new.notify_me_messaging") %>
               </div>
 
               <div class="notifyUploadThrobberContainer">
@@ -219,11 +219,11 @@
             </div>
 
             <div class="notifyingUploadComplete">
-              <div class="messaging"><span class="icon-official green-check"></span> <%= raw t("screens.dataset_new.notify_me_success", :email => current_user.email) %></div>
-              <div class="messaging sub"><%= raw t("screens.dataset_new.notify_me_success_addl") %></div>
+              <div class="messaging"><span class="icon-official green-check"></span> <%= t("screens.dataset_new.notify_me_success_html", :email => current_user.email) %></div>
+              <div class="messaging sub"><%= t("screens.dataset_new.notify_me_success_addl") %></div>
             </div>
 
-            <div class="flash notifyUploadError"><%= raw t("screens.dataset_new.notify_me_error") %></div>
+            <div class="flash error notifyUploadError"><%= t("screens.dataset_new.notify_me_error_html") %></div>
           </div>
 
         </li>

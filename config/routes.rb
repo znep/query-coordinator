@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   # NOTE: Currently socrata-analytics.js is dependent on path structure for accurately tracking metrics.
   # If you decide to change how pages are routed please reflect your changes in socrata-analytics 'determine_page_type'
 
+  # Note: When debugging in the Rails console, it is often helpful to review the methods implemented here:
+  # puts Rails.application.routes.url_helpers.methods.sort
+  # Also, one can test the helpers with the Applications instance. e.g. app.view_url
+
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
     get '/individual/:path.css', :action => 'individual',
@@ -344,11 +348,9 @@ Rails.application.routes.draw do
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'
 
-    scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP} do
+    scope :controller => 'datasets', :constraints => { :id => Frontend::UID_REGEXP } do
       # Redirect bounce for metric snatching
-      get 'download/:id/:type', :action => 'download',
-        :constraints => {:type => /.*/},
-        :as => 'metric_redirect'
+      get 'download/:id/:type', :action => 'download', :constraints => {:type => /.*/}, :as => 'metric_redirect'
 
       # Short URLs
       get 'blob/:id', :action => 'blob'
@@ -361,10 +363,8 @@ Rails.application.routes.draw do
       get 'd/:id/stats', :action => 'stats'
       get 'd/:id/about', :action => 'about'
 
-      get 'd/:id/:row_id', :action => 'show',
-        :constraints => {:row_id => /\d+/}
+      get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
     end
-
 
     # Semantic web cannoical URLs
     %w{resource id}.each do |prefix|
@@ -387,15 +387,9 @@ Rails.application.routes.draw do
     get '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
 
     # Auth/login/register paths
-    match '/forgot_password',
-      :to => 'accounts#forgot_password',
-      :as => 'forgot_password',
-      :via => [:get, :post]
-    match '/reset_password/:uid/:reset_code',
-      :to => 'accounts#reset_password',
-      :as => 'reset_password',
-      :via => [:get, :post],
-      :conditions => {:uid => Frontend::UID_REGEXP}
+    match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password', :via => [:get, :post]
+    match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
+      :via => [:get, :post], :conditions => { :uid => Frontend::UID_REGEXP }
     match '/verify_email', :to => 'accounts#verify_email', :as => 'verify_email', :via => [:get, :post]
 
     if Frontend.auth0_configured?
@@ -405,7 +399,7 @@ Rails.application.routes.draw do
       end
     end
 
-    scope :protocol => "https", :port => APP_CONFIG.ssl_port do
+    scope :protocol => 'https', :port => APP_CONFIG.ssl_port do
       post '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
       get '/login', :to => 'user_sessions#new', :as => 'login'
       post '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'
@@ -460,10 +454,8 @@ Rails.application.routes.draw do
     end
 
     scope :controller => 'data_lens' do
-      post '/geo/initiate',
-        :to => 'data_lens#initiate_region_coding'
-      get '/geo/status',
-        :to => 'data_lens#region_coding_status'
+      post '/geo/initiate', :to => 'data_lens#initiate_region_coding'
+      get '/geo/status', :to => 'data_lens#region_coding_status'
       get 'view/:id/mobile', :action => 'show_mobile'
     end
 
@@ -473,8 +465,7 @@ Rails.application.routes.draw do
       get '/page/:page_name', :action => 'show_page'
       get '/catalog/:page_name', :action => 'show_page'
       get '/facet/:facet_name', :action => 'show_facet_listing'
-      get '/facet/:facet_name/:facet_value', :action => 'show_facet_page',
-        :constraints => { :facet_value => /.*/ }
+      get '/facet/:facet_name/:facet_value', :action => 'show_facet_page', :constraints => { :facet_value => /.*/ }
       get '/styles/:page_type/:config_name.css', :action => 'stylesheet',
         :constraints => { :page_type => /homepage|page|facet_(listing|page)/i }
 

@@ -321,10 +321,10 @@
     _readChildren: function() {
       var children = [];
       this.each(function(child) {
-        children.push(child.properties());
+        if (child) children.push(child.properties());
       });
       _.each(this._funcChildren, function(child) {
-        children.push(child.properties());
+        if (child) children.push(child.properties());
       });
       return children;
     },
@@ -341,6 +341,14 @@
       this.each(function(child) {
         child._hidden();
       });
+    },
+
+    domOrAnyChildrenHidden: function() {
+      var domIsBlankOrHidden = $.isBlank(this.$dom) || this.$dom.hasClass('hide');
+      var anyChildIsHidden = _.any(this.children() || [], function(child) {
+        return (child && child.$dom && child.$dom.hasClass('hide'));
+      });
+      return domIsBlankOrHidden || anyChildIsHidden;
     },
 
     // Override Component._propWrite to update children (currently brute replace)

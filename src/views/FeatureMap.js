@@ -326,7 +326,10 @@ function FeatureMap(element, vif) {
       // the check for map existence anyway.
       if (_locateUser) {
         _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
-        _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
+
+        if (!_.get(vif, 'configuration.isMobile')) {
+          _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
+        }
 
         if (!vif.configuration.isMobile) {
           _mapLocateUserButton.on('mouseout', _hideFlyout);
@@ -430,7 +433,10 @@ function FeatureMap(element, vif) {
   function _handleLocateUserButtonClick() {
 
     _updateLocateUserButtonStatus('busy');
-    _showLocateUserButtonFlyout();
+
+    if (!_.get(vif, 'configuration.isMobile')) {
+      _showLocateUserButtonFlyout();
+    }
 
     navigator.geolocation.getCurrentPosition(
       _handleLocateUserSuccess,
@@ -520,7 +526,10 @@ function FeatureMap(element, vif) {
   function _handleLocateUserError() {
 
     _updateLocateUserButtonStatus('error');
-    _showLocateUserButtonFlyout();
+
+    if (!_.get(vif, 'configuration.isMobile')) {
+      _showLocateUserButtonFlyout();
+    }
   }
 
   function _updateLocateUserButtonStatus(status) {

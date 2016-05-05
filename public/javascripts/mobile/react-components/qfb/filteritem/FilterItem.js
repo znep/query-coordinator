@@ -25,6 +25,8 @@ class FilterItem extends React.Component {
       warningText: null
     };
 
+    this.filterChanged = 0;
+
     this.onClickFlannelCanvas = this.onClickFlannelCanvas.bind(this);
     this.onClickDeleteFilter = this.onClickDeleteFilter.bind(this);
     this.onClickOpenFlannel = this.onClickOpenFlannel.bind(this);
@@ -68,6 +70,10 @@ class FilterItem extends React.Component {
   }
 
   onClickCancel() {
+    if (this.filterChanged == 0) {
+      this.props.deletionHandler(this.props.filter.id);
+    }
+
     FlannelUtils.closeAll();
   }
 
@@ -80,6 +86,8 @@ class FilterItem extends React.Component {
   }
 
   handleFilterData(label, data, boolApplicable, boolCorrect) {
+    this.filterChanged++;
+
     this.setState({
       pendingLabel: label,
       pendingData: data,

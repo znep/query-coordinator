@@ -229,7 +229,9 @@ $.component.Component.extend('Map', 'data', {
     _readChildren: function()
     {
         var children = [];
-        _.each(this._viewDefinitions, function(child) { children.push(child.properties()); });
+        _.each(this._viewDefinitions, function(child) {
+            if (child) children.push(child.properties());
+        });
         return children;
     },
 

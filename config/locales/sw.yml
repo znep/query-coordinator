@@ -1485,7 +1485,34 @@ sw:
       save: Hifadhi
       title: Mipangilio ya Ukurasa
   date:
-    abbr_month_names: "--- \n...\n- Jan\n- Feb\n- Mac\n- Apr\n- Mei\n- Juni\n- Jul\n- Ago\n- Sep\n- Okt\n- Nov\n- Dis"
+    abbr_month_names:
+    -
+    - Jan
+    - Feb
+    - Mac
+    - Apr
+    - Mei
+    - Juni
+    - Jul
+    - Ago
+    - Sep
+    - Okt
+    - Nov
+    - Des
+    month_names:
+    -
+    - Januari
+    - Februari
+    - Machi
+    - Aprili
+    - Mei
+    - Juni
+    - Julai
+    - Agosti
+    - Septemba
+    - Oktoba
+    - Novemba
+    - Desemba
   error:
     back: Rudi
     error_500:

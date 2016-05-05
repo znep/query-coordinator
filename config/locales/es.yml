@@ -1475,6 +1475,20 @@ es:
     - Oct
     - Nov
     - Dic
+    month_names:
+    -
+    - Enero
+    - Febrero
+    - Marzo
+    - Abril
+    - Mayo
+    - Junio
+    - Julio
+    - Agosto
+    - Septiembre
+    - Octubre
+    - Noviembre
+    - Diciembre
   error:
     back: 'Volver '
     error_500:

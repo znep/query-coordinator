@@ -1471,6 +1471,20 @@ en:
     - Oct
     - Nov
     - Dec
+    month_names:
+    -
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
   error:
     back: Back
     error_500:

@@ -74,9 +74,11 @@ class CustomContentController < ApplicationController
   def stylesheet
     headers['Content-Type'] = 'text/css'
 
-    cache_key = app_helper.cache_key("canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
-                                     { 'domain' => CurrentDomain.cname,
-                                       'config_updated' => CurrentDomain.configuration(:custom_content).updatedAt })
+    cache_key = app_helper.cache_key(
+      "canvas-stylesheet-#{params[:page_type]}-#{params[:config_name]}",
+      'domain' => CurrentDomain.cname,
+      'config_updated' => CurrentDomain.configuration(:custom_content).updatedAt
+    )
     sheet = Rails.cache.read(cache_key)
 
     if sheet.nil?
@@ -102,13 +104,13 @@ class CustomContentController < ApplicationController
   def handle_conditional_request(request, response, manifest)
     ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
     if ConditionalRequestHandler.check_conditional_request?(request, manifest)
-      Rails.logger.info("Conditional Request Matches; returning a 304")
-      MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-no-render", 1)
+      Rails.logger.info('Conditional Request Matches; returning a 304')
+      MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + '-intern', 'ds-no-render', 1)
       render :nothing => true, :status => 304
       return true
     end
-    Rails.logger.info("Conditional Request Does Not Match")
-    return false
+    Rails.logger.info('Conditional Request Does Not Match')
+    false
   end
 
   def page
@@ -119,7 +121,7 @@ class CustomContentController < ApplicationController
 
     page_ext = (params[:ext] || '').downcase
     path = full_path = '/' + (params[:path] || '')
-    if !page_ext.blank?
+    if page_ext.present?
       full_path += '.' + page_ext
       if page_ext != 'csv' && page_ext != 'xlsx'
         path += '.' + page_ext
@@ -146,15 +148,15 @@ class CustomContentController < ApplicationController
       available_locales: request.env['socrata.available_locales']
     })
 
-    if @page_override.nil?
-      @page, @vars = Page[path, page_ext, @current_user]
-    else
+    if @page_override.present?
       @page = @page_override
       @vars = {}
+    else
+      @page, @vars = Page[path, page_ext, @current_user]
     end
 
     # check for redirects:
-    if (defined? @page) && @page.present? && @page.metadata.has_key?('redirect')
+    if defined?(@page) && @page.present? && @page.metadata.has_key?('redirect')
       redirect_to(@page.metadata['redirect'], :status => (@page.metadata['redirectCode'] || 301))
       return true # dunno why! but if i don't do this the canvas env is horked for the next req.
     end
@@ -188,23 +190,22 @@ class CustomContentController < ApplicationController
 
     ######## CACHING #########
     domain_id = CurrentDomain.domain.id.to_s
-    internal_metric_entity = domain_id + "-intern"
-    MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + "-intern", "ds-total", 1)
+    internal_metric_entity = domain_id + '-intern'
+    MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + '-intern', 'ds-total', 1)
 
     # Notes on page_updated:
     #  pages_mtime must be a long-lived cache key for this to work; it must also be invalidated
     #  explicitly by the core server on a pages update.
     #
-    cache_params = cache_hash(params).merge({ 'page_updated' => VersionAuthority.page_mtime(@page.uid) })
+    cache_params = cache_hash(params).merge('page_updated' => VersionAuthority.page_mtime(@page.uid))
 
 
     # We do not yet know whether the page can be cached globally, so we need to check both
     # the global cache and the per-user cache.
 
     cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
-    cache_key_no_user = app_helper.cache_key("canvas2-page", cache_params)
-    cache_key_user = app_helper.cache_key("canvas2-page", cache_params.merge({
-                   'current_user' => cache_user_id}))
+    cache_key_no_user = app_helper.cache_key('canvas2-page', cache_params)
+    cache_key_user = app_helper.cache_key('canvas2-page', cache_params.merge('current_user' => cache_user_id))
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
 
     # Slate Page Caching
@@ -229,19 +230,19 @@ class CustomContentController < ApplicationController
     end
 
     if !lookup_manifest.nil? && !@debug && !@edit_mode
-      Rails.logger.info("Manifest valid; reading content from fragment cache is OK")
-      MetricQueue.instance.push_metric(internal_metric_entity , "ds-manifest-valid", 1)
+      Rails.logger.info('Manifest valid; reading content from fragment cache is OK')
+      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-manifest-valid', 1)
       return true if handle_conditional_request(request, response, lookup_manifest)
       @cached_fragment = read_fragment(cache_key_no_user) if can_be_globally_cached
       if @cached_fragment.nil?
-        Rails.logger.info("Global fragment cache not available; trying per-user fragment cache")
+        Rails.logger.info('Global fragment cache not available; trying per-user fragment cache')
         @cached_fragment = read_fragment(cache_key_user)
       else
         # If we got something out of the fragment cache; we can make that something cacheable down the line as well
         ConditionalRequestHandler.set_cache_control_headers(response, true)
       end
     else
-      MetricQueue.instance.push_metric(internal_metric_entity , "ds-manifest-invalid", 1)
+      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-manifest-invalid', 1)
     end
 
     # The cached fragment is an error page; just return that then
@@ -249,8 +250,8 @@ class CustomContentController < ApplicationController
       str = @cached_fragment.slice(11, @cached_fragment.length)
       code = str.slice(0, 3)
       @display_message = str.slice(4, str.length)
-      render :template => "custom_content/error_page", :layout => 'main', :status => code.to_i
-      return true
+      render :template => 'custom_content/error_page', :layout => 'main', :status => code.to_i
+      true
     end
     ######### END ############
 
@@ -261,8 +262,8 @@ class CustomContentController < ApplicationController
     @custom_meta = @meta
     @meta = nil
     if @cached_fragment.nil?
-      Rails.logger.info("Performing full render")
-      MetricQueue.instance.push_metric(internal_metric_entity , "ds-full-render", 1)
+      Rails.logger.info('Performing full render')
+      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-full-render', 1)
 
       ########### RENDER ########
       if @page
@@ -293,14 +294,12 @@ class CustomContentController < ApplicationController
             format.html { render :action => 'page' }
             format.csv do
               file_content = @page.generate_file('csv')
-              write_fragment(@cache_key, file_content,
-                             :expires_in => Rails.application.config.cache_ttl_fragment)
+              write_fragment(@cache_key, file_content, :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
             end
             format.xlsx do
               file_content = @page.generate_file('xlsx')
-              write_fragment(@cache_key, file_content,
-                             :expires_in => Rails.application.config.cache_ttl_fragment)
+              write_fragment(@cache_key, file_content, :expires_in => Rails.application.config.cache_ttl_fragment)
               render :text => file_content
             end
             format.any { render :action => 'page' }
@@ -337,8 +336,7 @@ class CustomContentController < ApplicationController
           else
             code = (@error.respond_to?(:code) ? @error.code : nil) || 404
             @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''
-            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message,
-                           :expires_in => 1.minutes)
+            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message, :expires_in => 1.minutes)
             render :template => "custom_content/error_page", :layout => 'main', :status => code
           end
         end
@@ -350,8 +348,8 @@ class CustomContentController < ApplicationController
       # When we're rendering a cached item, force it to use the page action,
       # since we may have manipulated the action name to be homepage, and there
       # is no such view
-      Rails.logger.info("Using fragment cache")
-      MetricQueue.instance.push_metric(internal_metric_entity , "ds-fragment-render", 1)
+      Rails.logger.info('Using fragment cache')
+      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-fragment-render', 1)
       respond_to do |format|
         format.html { render :action => 'page' }
         format.csv { render :text => @cached_fragment }
@@ -371,9 +369,9 @@ class CustomContentController < ApplicationController
     return(render_404) unless @templet
   end
 
-private
+  private
 
-  ANONYMOUS_USER = "anon".freeze
+  ANONYMOUS_USER = 'anon'.freeze
 
   # Knowing whether privateData is set and the user figure out
   # which user_id should be used for the manifest key
@@ -390,10 +388,12 @@ private
   end
 
   def cache_hash(params)
-    { 'domain' => CurrentDomain.cname,
+    {
+      'domain' => CurrentDomain.cname,
       'locale' => I18n.locale,
       'domain_updated' => CurrentDomain.default_config_updated_at,
-      'params' => Digest::MD5.hexdigest(params.sort.to_json) }
+      'params' => Digest::MD5.hexdigest(params.sort.to_json)
+    }
   end
 
   # around_filter for caching
@@ -417,7 +417,7 @@ private
     page_config = properties[config_name]
     return nil unless page_config
 
-    return page_config
+    page_config
   end
 
   # take a canvas configuration and prepare it for render
@@ -433,7 +433,7 @@ private
       Canvas::Environment.facet_value = nil
     end
     Canvas::Environment.params = params
-    Canvas::Environment.page_config = page_config.reject{ |key| key == 'contents' }
+    Canvas::Environment.page_config = page_config.reject { |key| key == 'contents' }
     Canvas::Environment.request = request
     Canvas::Environment.locale_config = I18n.config
 
@@ -492,10 +492,10 @@ private
             else
               1
             end
-          bindings[key.to_s] = Hashie::Mash.new({
+          bindings[key.to_s] = Hashie::Mash.new(
             properties: properties,
-            views: (1..limit).map{ Canvas::Util::FakeView.new }
-          })
+            views: (1..limit).map { Canvas::Util::FakeView.new }
+          )
         end
 
         Canvas::Environment.bindings = bindings
@@ -506,14 +506,14 @@ private
     # Get a unique array of style packages required by the widgets to be displayed
     page_config.stylesheets = page_config.contents.collect{ |widget| widget.stylesheets }.flatten.compact.uniq
 
-    return page_config
+    page_config
   end
 
   def build_stylesheet(widget)
-    if widget.is_a? Array
-      return widget.map{ |child| build_stylesheet(child) }.join
+    if widget.is_a?(Array)
+      widget.map { |child| build_stylesheet(child) }.join
     else
-      return widget.stylesheet
+      widget.stylesheet
     end
   end
 
@@ -522,7 +522,7 @@ private
   end
 
   def default_homepage
-    Hashie::Mash.new({
+    Hashie::Mash.new(
       title: '',
       default_homepage: true,
       default_styles: true,
@@ -547,7 +547,7 @@ private
           }
         }
       }]
-    })
+    )
   end
 end
 

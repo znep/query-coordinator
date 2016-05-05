@@ -340,7 +340,7 @@ module Canvas
       view = self.get_view
       return if view.nil?
 
-      @href = view_path(view)
+      @href = view_path(view.route_params)
       @href += '?' + self.properties.queryParams.to_param unless self.properties.queryParams.empty?
       @href += '#' + self.properties.hashParams.to_param unless self.properties.hashParams.empty?
 
@@ -545,7 +545,7 @@ module Canvas
         real_view = real_views.find{ |real_view| fv.viewId == real_view.id }
         ((@featured_views.delete fv) and next) if real_view.nil? || !real_view.is_public?
 
-        fv.href = view_path(real_view)
+        fv.href = view_path(real_view.route_params)
 
         # HACK: URL override for featured views
         if self.properties && self.properties.urlOverride

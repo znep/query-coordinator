@@ -342,7 +342,7 @@ class DatasetsController < ApplicationController
     view = View.find_external(params[:id])
 
     if !view.blank?
-      redirect_to view_path(view[0].route_params)
+      redirect_to view_path(view.first.route_params)
     else
       render_404
     end

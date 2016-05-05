@@ -1847,6 +1847,12 @@ importNS.importingPaneConfig = {
         submitError = null;
 
         $pane.loadingSpinner({showInitially: true});
+        if (!blist.feature_flags.notify_import_result) {
+            // If the notify_import_result feature flag isn't set, make sure the working pane looks correct
+            $pane.find('.notifyUploadComplete').hide();
+            $pane.css('padding-bottom', '7em');
+            $pane.find('.loadingSpinnerContainer').css('top', '70%');
+        }
 
         // let's figure out what to send to the server
         var importer, blueprint, translation;
@@ -2138,34 +2144,36 @@ importNS.importingPaneConfig = {
               },
               pending: function(response)
               {
-                  var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
-                  if (!notifyButton.data('handlerAdded'))
-                  {
-                      $pane.find('.notifyUploadContainer').show();
-                      notifyButton.click(function(event)
+                  if (blist.feature_flags.notify_import_result) {
+                      var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
+                      if (!notifyButton.data('handlerAdded'))
                       {
-                          $pane.find('.notifyUploadError').hide();
-                          $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
-                          $.socrataServer.makeRequest({
-                              type: 'post',
-                              contentType: 'application/json',
-                              dataType: 'json',
-                              url: '/users/' + blist.currentUser.id + '/email_interests.json',
-                              data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
-                              success: function(response)
-                              {
-                                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
-                                  $pane.find('.notifyUploadContainer').hide();
-                                  $pane.find('.notifyUploadError').hide();
-                                  $pane.find('.notifyingUploadComplete').show();
-                              },
-                              error: function(xhr)
-                              {
-                                  $pane.find('.notifyUploadError').show();
-                              }
+                          $pane.find('.notifyUploadContainer').show();
+                          notifyButton.click(function(event)
+                          {
+                              $pane.find('.notifyUploadError').hide();
+                              $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
+                              $.socrataServer.makeRequest({
+                                  type: 'post',
+                                  contentType: 'application/json',
+                                  dataType: 'json',
+                                  url: '/users/' + blist.currentUser.id + '/email_interests.json',
+                                  data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
+                                  success: function(response)
+                                  {
+                                      $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
+                                      $pane.find('.notifyUploadContainer').hide();
+                                      $pane.find('.notifyUploadError').hide();
+                                      $pane.find('.notifyingUploadComplete').show();
+                                  },
+                                  error: function(xhr)
+                                  {
+                                      $pane.find('.notifyUploadError').show();
+                                  }
+                              });
                           });
-                      });
-                      notifyButton.data('handlerAdded', true);
+                          notifyButton.data('handlerAdded', true);
+                      }
                   }
                   if ($.subKeyDefined(response, 'details.stage')) {
                     $pane.find('.importStatus').text(t(response.details.stage))

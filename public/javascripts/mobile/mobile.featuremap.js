@@ -83,7 +83,7 @@ module.exports = function(values, $target) {
         'USER_CURRENT_POSITION': 'Your current location (estimated)'
       },
       // Base layer
-      'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.5,
       'tileserverHosts': domainBasedTileServerList,
       'useOriginHost': false

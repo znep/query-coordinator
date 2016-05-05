@@ -2186,7 +2186,7 @@ function TimelineChart(element, vif) {
   // This function determines the vertical position of the flyout.
   // If not mobile, it always positions the flyout above all timeline paths.
   function flyoutVerticalPosition() {
-    if (vif.configuration.isMobile) {
+    if (_.get(vif, 'configuration.isMobile')) {
       return d3YScale(currentDatum.filtered != currentDatum.unfiltered ?
         currentDatum.filtered :
         currentDatum.unfiltered);
@@ -2322,7 +2322,7 @@ function TimelineChart(element, vif) {
    */
   function highlightChart(startDate, endDate) {
 
-    if (vif.configuration.isMobile) {
+    if (_.get(vif, 'configuration.isMobile')) {
       if (_.get(lastHighlightData, 'startDate', new Date()).getTime() == startDate.getTime() &&
         _.get(lastHighlightData, 'endDate', new Date()).getTime() == endDate.getTime()) {
 
@@ -2349,9 +2349,11 @@ function TimelineChart(element, vif) {
    *                           the visualization, in pixels.
    */
   function highlightChartByMouseOffset(offsetX) {
-    if (vif.configuration.isMobile) {
+    if (_.get(vif, 'configuration.isMobile')) {
       if (lastHighlightDataByOffset == offsetX) {
         offsetX = null;
+
+        lastHighlightDataByOffset = {};
         clearChartHighlight();
         return;
       }

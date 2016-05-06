@@ -219,8 +219,10 @@
     }
 
     .asset-selector-insecure-html-warning {
-      position: relative;
+      position: absolute;
       top: 0;
+      left: 0;
+      right: 0;
       display: none;
       border-top: none;
       border-left: none;
@@ -229,9 +231,12 @@
     }
 
     .asset-selector-invalid-message {
-      position: relative;
+      position: absolute;
       display: none;
-      height: 100%;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
 
       .asset-selector-invalid-title,
       .asset-selector-invalid-description {

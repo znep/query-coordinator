@@ -1,10 +1,8 @@
 class InternalController < ApplicationController
 
   before_filter :check_auth
-  before_filter :redirect_to_current_domain,
-                :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
-  before_filter :redirect_to_default_config_id_from_type,
-                :only => [ :show_config, :show_property ]
+  before_filter :redirect_to_current_domain, :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
+  before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
 
   KNOWN_FEATURES = [
     { name: 'view_moderation', description: 'Allows Publishers and Admin to moderate views.' },
@@ -52,8 +50,7 @@ class InternalController < ApplicationController
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
-      @configs << Struct.new(:type, :name, :default).
-        new('feature_flags', 'Feature Flags', true)
+      @configs << Struct.new(:type, :name, :default).new('feature_flags', 'Feature Flags', true)
     end
     @configs.reject! { |config| config.type == 'feature_set' }
     @configs.sort! do |a, b|
@@ -114,7 +111,7 @@ class InternalController < ApplicationController
     if /^\d+$/ !~ params[:id]
       config_type = params[:id]
       config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      return render_404 if config.nil?
+      return render_404 unless config.present?
       return redirect_to show_config_path(id: config.id)
     end
 
@@ -141,7 +138,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:config_id])
     @property_key = params[:property_id]
-    @property = @config.data['properties'].detect {|p| p['name'] == @property_key}['value']
+    @property = @config.data['properties'].detect { |p| p['name'] == @property_key }['value']
   end
 
   def index_modules

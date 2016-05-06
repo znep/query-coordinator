@@ -4,4 +4,6 @@ task :tag do
   timestamp = Time.now.strftime("%Y/%m/%d/%H%M")
   tag = "#{label}/#{timestamp}"
   system "git tag -a #{tag} -m #{tag}"
+  puts tag
+  puts "Run the command below if you ran this command by mistake\ngit tag -d #{tag}" 
 end

@@ -69,19 +69,6 @@ zh:
           feature_map:
           search_card:
           timeline_chart:
-      aggregation_chooser:
-        by_the_number_of:
-        by_the_sum_of:
-        count_label: "每个元素计{0}"
-        description: "查看大小或颜色如下的数据元素："
-        option_disabled: "此列不能与<BR>总数共用"
-        sum_label: "为每个{0}添加"
-        the_number_of: "数量"
-        the_sum_of: "总数"
-        title: "汇总"
-        too_many_columns:
-          message: "目前我们无法为型数列或金钱列超过{0}的Data Lens页面提供数据汇总"
-          title: "貌似该数据集包含超过{0}个数列"
       api_explorer:
         additional_resources: "此API的其他资源："
         api_button: API
@@ -146,8 +133,6 @@ zh:
         longitude: "经度"
         no_value: "无数值"
         ok: "好"
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: "许可"
           private: "隐私"
@@ -198,17 +183,7 @@ zh:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ zh:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ zh:
         validation_error_min_length: "请输入标题"
         validation_error_required: "请输入标题"
         visualization_as_image: "可视化此图片"
-        visualization_as_image_disabled_flyout: "请保存此页面以下载可视化图片"
       mobile_warning_dialog:
         acknowledgement: "好，明白了！"
         description: "我们正在努力改善此网站的移动体验。"
@@ -363,7 +336,6 @@ zh:
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改为新页面"
-        flyoutNoChanges: "没有要保存的修改"
         text: "保存为"
       save_as_panel:
         description: "为你的页面输入一段说明（可选）"
@@ -382,17 +354,6 @@ zh:
         save: "保存"
         saved: "已保存！"
         saving: "正在保存……"
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: "尝试搜索不含字母的数字。"
@@ -552,9 +513,6 @@ zh:
         facets:
           clear_all:
             label:
-          contract:
-            label:
-            title:
           expand:
             label:
             title:
@@ -564,7 +522,6 @@ zh:
             result:
           hint:
           mobile:
-            all_filters:
             back:
             clear_all:
             filter:
@@ -577,7 +534,6 @@ zh:
         federation:
           label:
           label_with_source:
-          source:
         last_updated:
           label:
         odn:
@@ -588,7 +544,6 @@ zh:
         results:
           cetera_count:
           count:
-          summary: "『%{query}』"
         search:
           clear:
             title:
@@ -601,11 +556,6 @@ zh:
           results:
         sort:
           label:
-          periods:
-            label:
-            month:
-            week:
-            year:
         sorts:
           last_modified: "最近更新"
           most_accessed: "浏览量最多"
@@ -647,7 +597,6 @@ zh:
           forms: "表格"
           href: "外部数据集"
           maps: "地图"
-          new_view: "数据透镜页面"
           pulse:
           pulse_help:
           story: "故事"
@@ -1288,7 +1237,6 @@ zh:
       grouped: "分组视图"
       href: "外部数据集"
       map: "地图"
-      new_view: "数据透镜页面"
       story:
       table: "表"
       working_copy: "工作副本"
@@ -1403,6 +1351,7 @@ zh:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1412,7 +1361,6 @@ zh:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1810,7 +1758,6 @@ zh:
         title: "打开数据联盟"
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1824,6 +1771,7 @@ zh:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1850,9 +1798,6 @@ zh:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2199,9 +2144,7 @@ zh:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2967,7 +2910,6 @@ zh:
           download_as: "下载格式"
           download_dataset: "请从生成此视图的地方下载数据集。"
           geo_header: "下载地理空间数据"
-          layers_header: "下载表格层"
           monolayer_header:
           multilayer_header:
           subtitle: "以静态格式下载此数据集"

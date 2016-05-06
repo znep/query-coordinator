@@ -69,19 +69,6 @@ es:
           feature_map: Visualizar esta columna como un mapa de características
           search_card: Visualizar esta columna como una tarjeta de búsqueda
           timeline_chart: Visualizar esta columna como un gráfico cronológico
-      aggregation_chooser:
-        by_the_number_of: <span class="information">al</span> número de
-        by_the_sum_of: <span class="information">a la</span> suma de
-        count_label: contar {0} por elemento
-        description: 'Ver los elementos de datos según los tamaños y colores siguientes:'
-        option_disabled: No se puede usar esta columna con un<br>número total
-        sum_label: añadir para cada {0}
-        the_number_of: El número de
-        the_sum_of: La suma de
-        title: Conjunto
-        too_many_columns:
-          message: Actualmente no podemos proporcionar la suma como total en las páginas Data Lens que tengan más de {0} columnas de tipo Número o Dinero.
-          title: Parece que este conjunto de datos contiene más de {0} columnas de números
       api_explorer:
         additional_resources: 'Recursos adicionales para esta API:'
         api_button: API
@@ -146,8 +133,6 @@ es:
         longitude: Longitud
         no_value: No existe un valor
         ok: De acuerdo
-        pending_adding_column:
-        pending_computation:
         permissions:
           permissions: Permisos
           private: Privado
@@ -198,17 +183,7 @@ es:
           header:
           not_available:
           not_available_specific:
-        download_button_for_image:
-        download_button_for_rows:
-        download_explanation:
-        download_title:
         image:
-          description:
-          header:
-        save_to_catalog_button:
-        save_to_catalog_explanation:
-        save_to_catalog_title:
-        standalone_visualization:
           description:
           header:
       feature_map:
@@ -278,7 +253,6 @@ es:
           title:
         sharing:
           add_new:
-          add_new_prompt:
           contributor:
           inherited_description:
           keep:
@@ -314,7 +288,6 @@ es:
         validation_error_min_length: Por favor, introduzca un título
         validation_error_required: Por favor, introduzca un título
         visualization_as_image: Visualización como imagen
-        visualization_as_image_disabled_flyout: Por favor, guarde la página para descargar una visualización como imagen
       mobile_warning_dialog:
         acknowledgement: De acuerdo, ¡ya está¡
         description: Estamos trabajando para mejorar la experiencia móvil de este sitio.
@@ -363,7 +336,6 @@ es:
         flyoutFailedBody: Por favor, póngase en contacto con el servicio de asistencia de Socrata
         flyoutFailedTitle: Ha ocurrido un error
         flyoutIdle: Haga clic para guardar los cambios como nueva página
-        flyoutNoChanges: No hay cambios que guardar
         text: Guardar como
       save_as_panel:
         description: Introduzca una descripción para su nueva página (opcional)
@@ -382,17 +354,6 @@ es:
         save: Guardar
         saved: "¡Guardado!"
         saving: Guardando...
-      save_visualization_as_dialog:
-        category_label:
-        description_help_text:
-        description_label:
-        enter_name_error:
-        enter_name_placeholder:
-        name_label:
-        official_view_explanation:
-        official_view_label:
-        server_error:
-        title:
       search_card:
         error_explanation:
         invalid_search: Pruebe a buscar un número que no contenga letras.
@@ -501,44 +462,44 @@ es:
         api:
           link:
             label: Documentos de API
-            title: Lea los documentos de API para estó conjunto de datos
+            title: Ver documentacioón de la API para este conjunto de datos
         comment_count: Número de comentarios
         create:
           dataset:
             label: Crear/Subir un conjunto de datos
-            title: Crear o subir un conjunto de datos à la plataforma de Socrata
+            title: Crear o cargar un conjunto de datos a la plataforma de Socrata
           label: Añadir nuevo
           story:
-            label: Crear un Perspectivo de Socrata
-            title: Crear un Perspectivo nuevo de Socrata
-          title: 'Crear un nuevo '
+            label: Crear una Historia en Socrata
+            title: Crear una Historia nueva en Socrata
+          title: Crear un nuevo Recurso de Socrata
         created_at:
-          label: creado
+          label: Creado
         data_types:
-          label: Tipós de datos
+          label: Tipos de datos
         description:
           show_less_label: Menos
           show_more_label: Más
         display_types:
           api: API
-          blob: Partido o documento
+          blob: Archivo o documento
           calendar: Calendario
-          chart: 'Visualización '
+          chart: Gráfico
           data_lens: Data Lens
-          dataset: Conjunto de datos
-          draft: Borrador de conjuntos de datos
+          dataset: Conjunto de Datos
+          draft: Borrador de Conjuntos de Datos
           filter: Vista filtrada
           form: Formulario
-          href: Enlace extrañado
+          href: Enlace externo
           map: Mapa
-          predeply_api: 'API de implementar previamente '
+          predeply_api: API de desplegar previamente
           pulse: Pulse
-          story: Perspectivo
+          story: Historia
           unknown: Desconocido
         edit:
           delete:
             confirm: ¿Esta seguro que quiere borrar "%{dataset}"?
-            error: Ha ocurrido un error de borrado "%{dataset}". Por favor, hace otra vez.
+            error: Ha ocurrido un error a eliminar "%{dataset}". Por favor, repita otra vez.
             label: Borrar
             title: Borrar "%{name}"
           make_private:
@@ -551,22 +512,18 @@ es:
             title: Haga "%{name}" público
         facets:
           clear_all:
-            label: Quitar
-          contract:
-            label: Ver menos
-            title: Haga clic para ver menos opciones
+            label: Eliminar
           expand:
             label: Ver todos
-            title: Ver todos los opciones
+            title: Ver tods las opciones
           header:
             filter: Filtrar
             filtered_by: Filtrado por
             result: Resulta
-          hint: Filtrar o Buscar Resultas
+          hint: Filtrar o Busqueda de Resultados
           mobile:
-            all_filters: Todos los filtros
             back: Volver
-            clear_all: Quitar Todos
+            clear_all: Eliminar Todos
             filter: Filtrar
             sort: Ordenar
             sort_by: Ordenar por
@@ -575,41 +532,34 @@ es:
             close: Cerrar
             top: Arriba
         federation:
-          label: Datos suministrados por
-          label_with_source: Datos suministrados por %{source}
-          source: Federar de %{source}
+          label: Datos proporcionados por
+          label_with_source: Datos proporcionados por %{source}
         last_updated:
           label: Actualizado
         odn:
           link:
-            label: en el Open Data Network
-            title: Buscar más como esto en el Open Data Network
-          prompt: Buscar datos como estos
+            label: "en la Red de Datos Abiertos \n"
+            title: Encontrar más datos de esta línea en la Red de Datos Abiertos
+          prompt: Encontrar datos como este
         results:
-          cetera_count: Mostrar %{start}-%{end} de %{total} resultas
-          count: Mostrar %{this} de %{total} resultas
-          summary: "«%{query}»"
+          cetera_count: Mostrar %{start}-%{end} de %{total} resultados
+          count: Mostrar %{this} de %{total} resultados
         search:
           clear:
-            title: 'Quitar la búsqueda '
-          placeholder: Búsqueda
+            title: Borrar la búsqueda
+          placeholder: Buscar
           title: Buscar
         settings:
           label: Configuraciones
           title: Configuraciones
         skiplinks:
-          results: Ver los resultados
+          results: Saltar a los resultados
         sort:
           label: Ordenar por
-          periods:
-            label: Ordenar en período
-            month: Este mes
-            week: Esta semana
-            year: Este año
         sorts:
-          last_modified: Actualizado recientemente
-          most_accessed: Más visitado
-          newest: Añadido recientemente
+          last_modified: Recientemente Actualizado
+          most_accessed: Más visitada
+          newest: Recientemente Añadido
           relevance: Más relevante
         topics:
           empty: No hay temas asignados
@@ -647,7 +597,6 @@ es:
           forms: Formularios
           href: Conjuntos de datos externos
           maps: Mapas
-          new_view: páginas de Data Lens
           pulse:
           pulse_help:
           story: Historias
@@ -1292,7 +1241,6 @@ es:
       grouped: vista agrupada
       href: conjunto de datos externo
       map: mapa
-      new_view: página de Data Lens
       story:
       table: tabla
       working_copy: copia de trabajo
@@ -1407,6 +1355,7 @@ es:
         text:
         url:
       description:
+      geospatial_layer_title:
       show_all:
       show_less:
       title:
@@ -1416,7 +1365,6 @@ es:
       email:
       email_body:
       facebook:
-      manage_prompt:
       title:
       twitter:
       visibility_alert_html:
@@ -1536,7 +1484,7 @@ es:
     error_site_unavailable:
       description: Este sitio que funciona con Socrata no está disponible actualmente.
       help_html: Siempre puede comprobar el estado de Socrata en <a href="http://status.socrata.com">http://status.socrata.com</a> o comprobar nuestra cuenta de Twitter en <a href="https://twitter.com/socrata">@socrata</a>.
-      title: Sitio no disponible actualmente
+      title: Sitio no está disponible en este momento
     not_acceptable_406:
       page_not_found: No se encontró la página.
       were_sorry: Lo sentimos mucho, pero la página no está disponible en el formato que usted pidió.
@@ -1814,7 +1762,6 @@ es:
         title: Abrir federación de datos
       georegions:
         actions:
-        add_new:
         choose_a_dataset:
         configure_boundary:
           boundary_geometry_label_field_error:
@@ -1828,6 +1775,7 @@ es:
           configure_boundary:
           confirm_html:
           confirm_title:
+          description:
           next:
           page_title:
           primary_key_column:
@@ -1854,9 +1802,6 @@ es:
         enable:
         enable_success:
         enabled?:
-        enabled_georegions_limit:
-        enabled_no:
-        enabled_yes:
         flashes:
           add_georegion_error:
           service_unavailable_html:
@@ -2203,9 +2148,7 @@ es:
         statuses:
           failure:
           in_progress:
-          inprogress:
           not_started:
-          notstarted:
           success:
           success_with_data_errors:
       metadata:
@@ -2973,7 +2916,6 @@ es:
           download_as: 'Descargar como:'
           download_dataset: Por favor, descargue el conjunto de datos del que se deriva esta vista.
           geo_header: Descargar datos geoespaciales
-          layers_header: Descargar capas tabulares
           monolayer_header:
           multilayer_header:
           subtitle: Descargar una copia de este conjunto de datos en un formato estático

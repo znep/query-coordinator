@@ -20,7 +20,7 @@ module.exports = function(values, $target) {
       'mapOptions': {
         'tap': false
       },
-      'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
       'baseLayerOpacity': 0.8,
       'computedColumnName': values.computedColumnName,
       'defaultExtent' : values.mapExtent,
@@ -60,10 +60,7 @@ module.exports = function(values, $target) {
     },
     'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
     'type': 'choroplethMap',
-    'unit': {
-      'one': '',
-      'other': ''
-    }
+    'unit': values.unit
   };
 
   var $choroplethElement = $target;

@@ -22,10 +22,7 @@ module.exports = function(values, $target) {
     },
     filters: values.filters,
     type: 'distributionChart',
-    unit: {
-      one: 'row',
-      other: 'rows'
-    }
+    unit: values.unit
   };
 
   // Distribution chart
@@ -75,7 +72,7 @@ module.exports = function(values, $target) {
 
     ReactDOM.render(<MobileChartFlyout
       title={ title }
-      filteredValue={ payload.filtered && payload.filtered != payload.unfiltered ? payload.filtered : false }
+      filteredValue={ payload.filtered != payload.unfiltered ? payload.filtered : false }
       unFilteredValue={ payload.unfiltered }
       arrowPosition={ arrowMarginLeft }
       unit={ vif.unit } />, flyoutContainer);

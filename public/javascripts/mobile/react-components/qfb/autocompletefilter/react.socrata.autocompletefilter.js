@@ -284,7 +284,7 @@ class SocrataAutocompletefilter extends React.Component {
     }
 
     var footnote;
-    if (this.state.options.length === 0 && ReactDOM.findDOMNode(this.refs.searchinput).value != '') {
+    if (this.state.options.length === 0 && ReactDOM.findDOMNode(this.refs.searchinput).value !== '') {
       footnote = 'No matching results.';
     }
 

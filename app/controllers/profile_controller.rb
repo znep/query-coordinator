@@ -380,7 +380,7 @@ class ProfileController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(profile_path(user_id)) }
+      format.html { redirect_to(profile_path(User.find(user_id).route_params)) }
       format.data { render :text => 'created' }
     end
   end

@@ -22,3 +22,6 @@ frontend.iml
 manifest*.txt
 public/javascripts/dist
 public/stylesheets/styleguide
+frontend.tgz
+.byebug_history
+REVISION

@@ -55,9 +55,7 @@ module BrowseHelper
       if facet_option[:icon]
         concat(image_tag(theme_image_url(facet_option[:icon]), :alt => 'icon', :class => 'customIcon'))
       end
-      if facet_option[:text]
-        concat(facet_option[:text])
-      end
+      concat(facet_option[:text]) if facet_option[:text]
     end
   end
 
@@ -105,15 +103,12 @@ module BrowseHelper
   end
 
   def a11y_browse_summary(browse_opts)
-    if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
-      return t('table.no_summary_available')
-    end
-    columns = browse_opts[:grid_items].select { |_, val| val }.map { |key, _| %("#{key.to_s}") }
+    return t('table.no_summary_available') if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
+
+    columns = browse_opts[:grid_items].select { |_, val| val }.map { |key, _| %("#{key}") }
     rows = browse_opts[:view_results].map { |row| %("#{row.name}") }
     row_headings = ''
-    if rows.size < 5
-      row_headings = rows.join(', ')
-    end
+    row_headings = rows.join(', ') if rows.size < 5
 
     template_opts = {
       :data_description => browse_opts[:a11y_table_description],

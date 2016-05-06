@@ -353,7 +353,7 @@ class DatasetsController < ApplicationController
     type = params[:type]
 
     if !view.blank? && !type.blank?
-      redirect_to metric_redirect_path(:type => type.upcase, :id => view[0].id)
+      redirect_to metric_redirect_path(:type => type.upcase, :id => view.first.id)
     else
       render_404
     end

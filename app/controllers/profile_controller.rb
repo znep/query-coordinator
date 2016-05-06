@@ -5,7 +5,7 @@ class ProfileController < ApplicationController
   # the comment at the top of ProfileHelper's implementation.
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
-  
+
   include WhatsNewHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
@@ -111,7 +111,7 @@ class ProfileController < ApplicationController
           :tag_cloud => true
         }
       end
-      
+
       @news = retrieve_news
 
       @processed_browse = process_browse(request, browse_options)
@@ -376,23 +376,21 @@ class ProfileController < ApplicationController
   def create_friend
     user_id = params[:id]
     if user_id != current_user.id
-      user = { :id => user_id }
-      Contact.create(user)
+      Contact.create(:id => user_id)
     end
 
     respond_to do |format|
       format.html { redirect_to(profile_path(user_id)) }
-      format.data { render :text => "created" }
+      format.data { render :text => 'created' }
     end
   end
 
   def delete_friend
-    user_id = params[:id]
-    Contact.delete(user_id)
+    Contact.delete(params[:id])
 
     respond_to do |format|
       format.html { redirect_to(profile_path(current_user.route_params)) }
-      format.data { render :text => "deleted" }
+      format.data { render :text => 'deleted' }
     end
   end
 
@@ -405,14 +403,12 @@ private
   # Pipe the file upload back to the core server
   def accessible_image_change(post_url)
     if params[:new_image]
-      unless ['image/png','image/x-png','image/gif','image/jpeg','image/pjpeg']
-        .include? params[:new_image].content_type
+      unless %w(image/png image/x-png image/gif image/jpeg image/pjpeg').include?(params[:new_image].content_type)
         flash[:error] = t('screens.profile.edit.validation.image_format')
         return
       end
       begin
-        resp = CoreServer::Base.connection.multipart_post_file(
-          post_url, params[:new_image])
+        resp = CoreServer::Base.connection.multipart_post_file(post_url, params[:new_image])
         flash[:notice] = t('screens.profile.edit.image.success')
       rescue => ex
         flash[:error] = t('screens.profile.edit.image.error', message: ex.message)
@@ -423,7 +419,7 @@ private
   def prepare_profile
     user_id = params[:id]
     begin
-      if (!current_user || user_id != current_user.id)
+      if current_user.blank? || user_id != current_user.id
         @is_user_current = false
         @user = User.find_profile(user_id)
       else
@@ -448,7 +444,7 @@ private
       end
     end
 
-    @current_state = {'user' => @user.try(:id), 'domain' => CurrentDomain.cname, 'locale' => I18n.locale}
+    @current_state = { 'user' => @user.try(:id), 'domain' => CurrentDomain.cname, 'locale' => I18n.locale }
 
     # Don't make a core server request for friends and followers every time
     unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))
@@ -459,24 +455,24 @@ private
     @stat_displays = []
 
     # Also, we can probably make these _views vars local, not @ accessible
-    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
-      base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
+    @view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))
+    unless @view_summary_cached
+      base_req = { :limit => 1, :for_user => @user.id, :nofederate => true }
       stats = [
         {:params => {:datasetView => 'dataset'}, :name => t('controls.browse.facets.view_types.datasets')},
-        {:params => {:limitTo => 'tables', :datasetView => 'view'},
-          :name => t('controls.browse.facets.view_types.filters')},
+        {:params => {:limitTo => 'tables', :datasetView => 'view'}, :name => t('controls.browse.facets.view_types.filters')},
         {:params => {:limitTo => 'charts'}, :name => t('controls.browse.facets.view_types.charts')},
         {:params => {:limitTo => 'maps'}, :name => t('controls.browse.facets.view_types.maps')},
         {:params => {:limitTo => 'calendars'}, :name => t('controls.browse.facets.view_types.calendars')},
         {:params => {:limitTo => 'forms'}, :name => t('controls.browse.facets.view_types.forms')}
       ]
       CoreServer::Base.connection.batch_request do |batch_id|
-        stats.each do |s|
-          Clytemnestra.search_views(base_req.merge(s[:params]), batch_id)
+        stats.each do |stat|
+          Clytemnestra.search_views(base_req.merge(stat[:params]), batch_id)
         end
-      end.each_with_index do |r, i|
-        p = JSON.parse(r['response'], {:max_nesting => 25})
-        @stat_displays << [stats[i][:name], p['count']]
+      end.each_with_index do |request, index|
+        json = JSON.parse(request['response'], :max_nesting => 25)
+        @stat_displays << [stats[index][:name], json['count']]
       end
     end
   end

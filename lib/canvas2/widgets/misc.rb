@@ -135,12 +135,12 @@ module Canvas2
     def render_contents
       p = string_substitute(@properties)
       params = {
-          disable: Util.array_to_obj_keys(p['disabledItems'] || [], true),
-          suppressed_facets: Util.array_to_obj_keys(p['disabledSections'] || [], true)
-        }
+        disable: Util.array_to_obj_keys(p['disabledItems'] || [], true),
+        suppressed_facets: Util.array_to_obj_keys(p['disabledSections'] || [], true)
+      }
       params = p['defaults'].merge(params) if p['defaults'].present?
-      t = '<iframe frameborder="0" scrolling="auto" title="Catalog" width="800" height="600" ' +
-        'src="' + embed_browse_path + '?' + params.to_param + '"></iframe>'
+      t = %Q{<iframe frameborder="0" scrolling="auto" title="Catalog" width="800" height="600" \
+        src="#{embed_browse_path}?#{params.to_param}"></iframe>}
       [t, true]
     end
   end
@@ -304,7 +304,7 @@ module Canvas2
     end
 
     def render_contents
-      ds = !context.blank? ? context[:dataset] : nil
+      ds = context.present? ? context[:dataset] : nil
       return ['', false] if ds.blank?
 
       page_size = 20
@@ -312,18 +312,14 @@ module Canvas2
       row_results = ds.get_rows(page_size, current_page, {}, true, !Canvas2::Util.is_private)
 
       t = '<noscript><div class="dataTableWrapper">'
-      t += RenderType.table_html(self.id, ds.visible_columns, row_results[:rows], ds,
-                                (current_page - 1) * page_size)
+      t += RenderType.table_html(id, ds.visible_columns, row_results[:rows], ds, (current_page - 1) * page_size)
 
       # Paging
       path = Util.page_path
       params = Util.page_params.clone
-      params['data_component'] = self.id
-      path += '?' + params.map {|k, v| k + '=' + v}.join('&')
-      t += Util.app_helper.create_pagination(
-        row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
-
-      t += '<a href="' + alt_view_path(ds.route_params) + '" class="altViewLink">Accessibly explore the data</a>'
+      path += '?' + params.merge('data_component' => id).to_query
+      t += Util.app_helper.create_pagination(row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
+      t += %Q{<a href="#{alt_view_path(ds.route_params)}" class="altViewLink">Accessibly explore the data</a>}
       t += '</div></noscript>'
       [t, false]
     end

@@ -3,8 +3,8 @@ module CustomContentHelper
   def render_widget(widget)
     return if widget.blank?
 
-    if widget.is_a? Array
-      return widget.map{ |widget_item| render_widget(widget_item) || '' }.join
+    if widget.is_a?(Array)
+      return widget.map { |widget_item| render_widget(widget_item) || '' }.join
     else
       if widget.type == 'html'
         # take the contents and just dump it in
@@ -13,9 +13,9 @@ module CustomContentHelper
         return render_widget(widget.children)
       elsif widget.can_prepare? && widget.can_render?
         file_name = File.join(Rails.root, 'app/views/custom_content', "_#{widget.type.gsub(/[^a-z_]/, '')}.erb")
-        return '' unless File.exist? file_name
+        return '' unless File.exist?(file_name)
 
-        return render(:partial => widget.type, :locals => { :widget => widget })
+        render widget.type, :widget => widget
       end
     end
   end
@@ -37,7 +37,7 @@ module CustomContentHelper
     Canvas2::Util.set_debug(false)
     Canvas2::Util.is_private(is_private)
     Canvas2::Util.set_no_cache(true)
-    Canvas2::Util.set_env({
+    Canvas2::Util.set_env(
       domain: CurrentDomain.cname,
       renderTime: Time.now.to_i,
       path: path,
@@ -45,8 +45,8 @@ module CustomContentHelper
       currentUser: current_user ? current_user.id : nil,
       current_locale: I18n.locale,
       available_locales: request.env['socrata.available_locales']
-    })
+    )
     Canvas2::Util.set_path(path)
-    Page.new(config.merge({path: path, name: name}). with_indifferent_access)
+    Page.new(config.merge(path: path, name: name).with_indifferent_access)
   end
 end

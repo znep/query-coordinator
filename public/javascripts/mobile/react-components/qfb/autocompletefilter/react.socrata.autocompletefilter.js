@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+
 import $ from 'jquery';
 import FlannelUtils from '../../flannel/flannel';
 import './autocompletefilter.scss';
@@ -92,7 +94,7 @@ class SocrataAutocompletefilter extends React.Component {
 
   getArrayItemIndexByText(selectedObj, scopeArray) {
     for (var i = scopeArray.length - 1; i >= 0; i--) {
-      if (scopeArray[i].text == selectedObj.text) {
+      if (scopeArray[i].text === selectedObj.text) {
         return i;
       }
     }
@@ -215,42 +217,56 @@ class SocrataAutocompletefilter extends React.Component {
       var aFilters = [];
       var aOptions = this.state.options;
 
-      if (this.state.activeIndex) {
-        for (var i = this.state.selected.length - 1; i >= 0; i--) {
-          if (this.state.selected[i].text == this.state.options[this.state.activeIndex].text) {
-            duplicate = true;
-          }
-        }
+      if (aOptions.length === 0) {
+        aFilters = this.state.selected;
+        aFilters.push({ text: ReactDOM.findDOMNode(this.refs.searchinput).value });
 
-        if (!duplicate) {
-          aFilters = this.state.selected;
-          aFilters.push(this.state.options[this.state.activeIndex]);
-          aOptions.splice(this.state.activeIndex, 1);
-
-          this.setState({
-            options: aOptions,
-            selected: aFilters
-          });
-        }
-      } else {
-        for (var j = this.state.selected.length - 1; j >= 0; j--) {
-          if (this.state.selected[j].text == this.state.options[this.state.activeIndex].text) {
-            duplicate = true;
-          }
-        }
-
-        if (!duplicate) {
-          aFilters = this.state.selected;
-          aFilters.push(this.state.options[0]);
-          aOptions.splice(this.state.activeIndex, 1);
-
-          this.setState({
-            options: aOptions,
-            selected: aFilters
-          });
-        }
+        this.setState({
+          options: aOptions,
+          selected: aFilters
+        });
+        ReactDOM.findDOMNode(this.refs.searchinput).value = '';
         this.refs.searchinput.focus();
+        this.props.dataHandler(this.formattedLabel(), aFilters, true, true);
+      } else {
+        if (this.state.activeIndex) {
+          for (var i = this.state.selected.length - 1; i >= 0; i--) {
+            if (this.state.selected[i].text === this.state.options[this.state.activeIndex].text) {
+              duplicate = true;
+            }
+          }
+
+          if (!duplicate) {
+            aFilters = this.state.selected;
+            aFilters.push(this.state.options[this.state.activeIndex]);
+            aOptions.splice(this.state.activeIndex, 1);
+
+            this.setState({
+              options: aOptions,
+              selected: aFilters
+            });
+          }
+        } else {
+          for (var j = this.state.selected.length - 1; j >= 0; j--) {
+            if (this.state.selected[j].text === this.state.options[this.state.activeIndex].text) {
+              duplicate = true;
+            }
+          }
+
+          if (!duplicate) {
+            aFilters = this.state.selected;
+            aFilters.push(this.state.options[0]);
+            aOptions.splice(this.state.activeIndex, 1);
+
+            this.setState({
+              options: aOptions,
+              selected: aFilters
+            });
+          }
+          this.refs.searchinput.focus();
+        }
       }
+
     }
   }
 

@@ -95,6 +95,7 @@
     "datasetMetadata": true,
     "DOMPurify": true,
     "Highcharts": true,
+    "I18n": true,
     "jQuery": true,
     "L": true,
     "migrationMetadata": true,

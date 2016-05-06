@@ -1275,6 +1275,7 @@ en:
       row_display_unit: Each row is a
       rows: Rows
       title: What's in this Dataset
+    default_row_label: row
     done: Done
     download:
       csv_for_excel: CSV for Excel
@@ -1306,6 +1307,7 @@ en:
       topics: Topics
       views: Views
     more: Show More
+    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation

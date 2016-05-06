@@ -178,7 +178,7 @@ class DatasetsControllerTest < ActionController::TestCase
       @test_view.stubs(find_dataset_landing_page_related_content: [])
 
       get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('.result-card').any?
+      assert_select_quiet('#app').any?
       assert_response 200
     end
 
@@ -193,7 +193,7 @@ class DatasetsControllerTest < ActionController::TestCase
       @test_view.stubs(find_dataset_landing_page_related_content: [])
 
       get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('.result-card').any?
+      assert_select_quiet('#app').any?
       assert_response 200
     end
 

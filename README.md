@@ -72,8 +72,10 @@ We use karma to test our Javascript code. These tests live under `karma`.
 There are multiple test suites defined by files named karma.conf.js.
 
 Test suites:
-1. Old UX tests: karma/oldUx/karma.conf.js
-2. Data Lens and Angular common components: karma/dataCards/karma.conf.js
+
+1. Data Lens and Angular common components: `karma/dataCards`
+2. Dataset Landing Page: `karma/datasetLandingPage`
+3. Old UX tests: `karma/oldUx`
 
 #### Setup
 
@@ -90,6 +92,7 @@ npm install -g karma-cli karma-phantomjs-launcher phantomjs
 ```sh
 bundle exec rake test:js
 bundle exec rake test:js:dataCards
+bundle exec rake test:js:datasetLandingPage
 bundle exec rake test:js:oldUx
 ```
 
@@ -206,9 +209,8 @@ Assets for data lens and some old UX pages are packaged using [webpack](http://w
 Webpack provides ES2015 w/ JSX transpilation through [Babel](http://babeljs.io),
 source map generation, hot module reloading for Babel, angular module annotation
 and template in-lining, uglification, and other modern front-end developer niceties.
-Its configuration is located in `config/webpack.config.js`.  It currently builds
-two sets of bundles, one for data-lens and one for oldUx.  At some point in the
-future, these configurations could probably be fully combined.
+Its configuration is located in `config/webpack`.  Each file ending in `.config.js`
+represents a configuration for a javascript module in the project.
 
 For production, webpack can generate bundles with a fingerprint hash in their
 filenames, as well as a manifest file mapping the entry name to its hashed

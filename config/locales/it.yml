@@ -461,17 +461,17 @@ it:
       browse2:
         api:
           link:
-            label:
-            title:
+            label: Documentazione API
+            title: Leggi Documentazione API per questo set di dati
         comment_count: Numero di commenti
         create:
           dataset:
-            label:
-            title:
+            label: Creare/Caricare un Set di Dati
+            title: Creare o caricare un set di dati per la piattaforma Socrata
           label: Aggiungere nuova
           story:
-            label:
-            title:
+            label: Creare una Storia Socrata
+            title: Creare una Nuova Storia Socrata
           title: Creare una nuova risorsa Socrata
         created_at:
           label: Creato
@@ -493,68 +493,68 @@ it:
           href: Link Esterno
           map: |
             Carta Geografica
-          predeply_api:
+          predeply_api: Predistribuzione API
           pulse: Streaming
-          story:
-          unknown:
+          story: Storia
+          unknown: Sconosciuto
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: Sei sicuro si desidera eliminare «%{dataset}»?
+            error: C'era un errore di eliminazione «%{dataset}». Per favore, riprova.
+            label: Eliminare
+            title: Eliminare «%{name}»
           make_private:
-            error:
-            label:
-            title:
+            error: C'era un errore di rendendo «%{dataset}» privato. Per favore, riprova.
+            label: Rendere privato
+            title: Rendere «%{name}» privato
           make_public:
-            error:
-            label:
-            title:
+            error: C'era un errore di rendendo «%{dataset}» pubblico. Per favore, riprova.
+            label: Rendere pubblico
+            title: Rendere «%{name}» pubblico
         facets:
           clear_all:
-            label:
+            label: Cancellare tutto
           expand:
-            label:
-            title:
+            label: Mostrare tutto...
+            title: Mostrare tutte le opzioni
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: Filtrare
+            filtered_by: filtrata da
+            result: Risultato
+          hint: Filtrare o Passare in Rassegna i Risultati
           mobile:
-            back:
-            clear_all:
-            filter:
-            sort:
+            back: Indietro
+            clear_all: Cancella tutto
+            filter: Filtrare
+            sort: Ordinare
             sort_by: Ordina per
           modal:
-            alphaAscending:
-            close:
-            top:
+            alphaAscending: A-Z
+            close: Chiudere
+            top: Primo
         federation:
-          label:
-          label_with_source:
+          label: Dati Forniti da
+          label_with_source: Dati Forniti da %{source}
         last_updated:
-          label:
+          label: Aggiornato
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: sulla Rete Dati Aperti
+            title: Trovare più dati come questo sulla Rete Dati Aperti
+          prompt: Trovare Dati Come Questo
         results:
-          cetera_count:
-          count:
+          cetera_count: Visualizzazione %{start}-%{end} di %{total} risultati
+          count: Visualizzazione %{this} di %{total} risultati
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: Liberare la ricerca
+          placeholder: Ricerca
+          title: Ricerca
         settings:
-          label:
-          title:
+          label: Configurazione
+          title: Configurazione
         skiplinks:
-          results:
+          results: Passare i risultati
         sort:
           label: Ordina per
         sorts:
@@ -563,16 +563,16 @@ it:
           newest: prima il più nuovo
           relevance: Più rilevante
         topics:
-          empty:
-          label:
-          more:
+          empty: Temi non assegnato
+          label: Temi
+          more: e %{count} di più
         view_count:
-          label:
+          label: Visualizzazioni
         visibility:
           private:
-            label:
+            label: 'Visibilità: Privato'
           public:
-            label:
+            label: 'Visibilità: Pubblico'
       facets:
         categories_singular_title: categoria
         categories_title: Categorie

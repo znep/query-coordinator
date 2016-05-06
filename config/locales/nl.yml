@@ -463,17 +463,17 @@ nl:
       browse2:
         api:
           link:
-            label:
-            title:
+            label: API Documentatie
+            title: Lees API documentatie voor deze dataset
         comment_count: Aantal reacties
         create:
           dataset:
-            label:
-            title:
+            label: Creëren/Uploaden een dataset
+            title: Creëren of Uploaden een dataset aan de Socrata platform
           label: Voeg nieuwe
           story:
-            label:
-            title:
+            label: Creëer een Socrata Story
+            title: Creëer een nieuwe Socrata Story
           title: Maak een nieuwe Socrata Resource
         created_at:
           label: Gemaakt
@@ -495,68 +495,68 @@ nl:
           form: Formulier
           href: Link
           map: Kaart
-          predeply_api:
+          predeply_api: Predeployeren API
           pulse: Streaming Data
-          story:
-          unknown:
+          story: Verhaal
+          unknown: Onbekend
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: Weet je het zeker dat je wilt verwijderen "%{dataset}"?
+            error: Er is een fout opgetreden verwijderen "%{dataset}". Alsjeblieft, proveer het opnieuw.
+            label: Verwijderen
+            title: Verwijderen "%{name}"
           make_private:
-            error:
-            label:
-            title:
+            error: Er is een fout opgetreden het maken van "%{dataset}" privaat. Alsjeblieft, proveer het opnieuw.
+            label: Maak Privaat
+            title: Maak "%{name}" privaat
           make_public:
-            error:
-            label:
-            title:
+            error: Er is een fout opgetreden het maken van "%{dataset}" publiek. Alsjeblieft, proveer het opnieuw.
+            label: Maak Publiek
+            title: Make "%{name}" publiek
         facets:
           clear_all:
-            label:
+            label: Wis Alles
           expand:
-            label:
-            title:
+            label: Toon Alles...
+            title: Toon alle opties
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: Filtreren
+            filtered_by: Filterer door
+            result: Resultaat
+          hint: Filteren of Doorbladeren Resultaat
           mobile:
-            back:
-            clear_all:
-            filter:
-            sort:
+            back: Terug
+            clear_all: Wis Alles
+            filter: Filteren
+            sort: Sorteren
             sort_by: Sorteer op
           modal:
-            alphaAscending:
-            close:
-            top:
+            alphaAscending: A-Z
+            close: Sluiten
+            top: Eerste
         federation:
-          label:
-          label_with_source:
+          label: Gegevens Verschaft van
+          label_with_source: Gegevens Verschaft van %{source}
         last_updated:
-          label:
+          label: Bijgewerkt
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: op de Open Datanetwerk
+            title: Vind meer gegevens zoals deze op de Open Datanetwerk
+          prompt: Vind Gegevens Zoals Deze
         results:
-          cetera_count:
-          count:
+          cetera_count: Tönend %{start}-%{end} van %{total} resultaten
+          count: Tönend %{this} van %{total} resultaten
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: Weggaan zoektocht
+          placeholder: Zoektocht
+          title: Zoektocht
         settings:
-          label:
-          title:
+          label: Configuratie
+          title: Configuratie
         skiplinks:
-          results:
+          results: Door naar de resultaten
         sort:
           label: Sorteer op
         sorts:
@@ -565,16 +565,16 @@ nl:
           newest: nieuwste eerst
           relevance: Relevantst
         topics:
-          empty:
-          label:
-          more:
+          empty: Geen onderwerpen toegewezen
+          label: Onderwerpen
+          more: en %{count} meer
         view_count:
-          label:
+          label: Denkbeelden
         visibility:
           private:
-            label:
+            label: 'Zicthbaarheid: Privaat'
           public:
-            label:
+            label: 'Zicthbaarheid: Publiek'
       facets:
         categories_singular_title: categorie
         categories_title: Categorieën

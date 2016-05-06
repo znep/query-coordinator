@@ -41,7 +41,7 @@ module WhatsNewHelper
   def parse_dates(news)
     # go through and parse the date on each article
     news['articles'].each do |article|
-      article['parsed_datetime'] = Date.parse(article['created_at'])
+      article['parsed_datetime'] = Date.parse(article['updated_at'])
                                        .strftime('%e %b %Y')
     end
   end

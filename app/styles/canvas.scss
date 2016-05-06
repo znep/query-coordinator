@@ -1,3 +1,18 @@
+$mobile-md-screen-width: 885px;
+$mobile-sm-screen-width: 650px;
+
+@mixin mobile-md {
+  @media screen and (min-width: #{$mobile-sm-screen-width}) and (max-width: #{$mobile-md-screen-width}) {
+    @content;
+  }
+}
+
+@mixin mobile-sm {
+  @media screen and (max-width: #{$mobile-sm-screen-width}) {
+    @content;
+  }
+}
+
 // general styles
 
 // control defaults
@@ -119,13 +134,13 @@
 .featuredViews {
   margin: 0 {
     bottom: $chrome_margin_inner;
-  };
+  }
   .featuredViewContainer {
     float: left;
     &.last {
-      float: none;
-      overflow: hidden;
-      width: auto;
+      .featuredView {
+        margin-right: 0;
+      }
     }
     .featuredView {
       background-color: #fff;
@@ -171,9 +186,59 @@
         font-size: 1.2em;
       }
     }
-    &.last {
-      .featuredView {
-        margin-right: 0;
+  }
+
+  &.tiles-1 {
+    .featuredViewContainer {
+      width: 100%;
+    }
+  }
+  &.tiles-2 {
+    .featuredViewContainer {
+      width: 50%;
+    }
+  }
+  &.tiles-3 {
+    .featuredViewContainer {
+      width: 33.3%;
+    }
+  }
+  &.tiles-4 {
+    .featuredViewContainer {
+      width: 25%;
+
+      @include mobile-md {
+        width: 50%;
+        .featuredView {
+          margin: 0 $chrome_margin_inner $chrome_margin_inner;
+        }
+        &:nth-of-type(2), &:nth-of-type(4) {
+          .featuredView {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+  }
+  &.tiles-1, &.tiles-2, &.tiles-3, &.tiles-4 {
+    @include mobile-md {
+      .featuredViewContainer:first-of-type {
+        .featuredView {
+          margin-left: $chrome_margin_inner;
+        }
+      }
+      .featuredViewContainer:last-of-type {
+        .featuredView {
+          margin-right: $chrome_margin_inner;
+        }
+      }
+    }
+    @include mobile-sm {
+      .featuredViewContainer {
+        width: 100%;
+        .featuredView {
+          margin: 0 $chrome_margin_inner $chrome_margin_inner;
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
 import AssetSelectorStore, {viewIsDirectlyVisualizable, WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+import {STATUS} from '../../../app/assets/javascripts/editor/stores/FileUploaderStore';
+import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker.js';
 
 var nbeView = {
   'id' : StandardMocks.validStoryUid,
@@ -104,6 +106,7 @@ describe('AssetSelectorStore', function() {
   var dispatcher;
   var storyStore;
   var assetSelectorStore;
+  var fileUploaderStoreMock;
   var blockComponentAtIndex;
 
   function respondToMetadataRequestWith(viewData) {
@@ -132,9 +135,22 @@ describe('AssetSelectorStore', function() {
     };
 
     storyStore = new StoryStoreMock();
+    fileUploaderStoreMock = FileUploaderStoreMocker.create({
+      properties: {
+        fileById: _.constant({
+          status: STATUS.COMPLETED,
+          raw: {name: 'raw.jpg'},
+          resource: {
+            url: 'http://google.com',
+            documentId: 12
+          }
+        })
+      }
+    });
 
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('storyStore',  storyStore);
+    AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
 
     server = sinon.fakeServer.create();
     assetSelectorStore = new AssetSelectorStore();
@@ -181,9 +197,9 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      describe('.isUploading()', function() {
-        it('should return undefined', function() {
-          assert.isUndefined(assetSelectorStore.isUploading());
+      describe('.isUploadingFile()', function() {
+        it('should return false', function() {
+          assert.isFalse(assetSelectorStore.isUploadingFile());
         });
       });
 
@@ -310,9 +326,8 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action', function() {
-      var payloadUrl = 'https://validurl.com/image.png';
-      var payloadDocumentId = '12345';
       var payloadAlt = 'So alt';
+      var isUploadingFileStub;
 
       describe('.getComponentValue()', function() {
         beforeEach(function() {
@@ -321,11 +336,8 @@ describe('AssetSelectorStore', function() {
             provider: 'IMAGE'
           });
 
-          dispatcher.dispatch({
-            action: Actions.FILE_UPLOAD_DONE,
-            url: payloadUrl,
-            documentId: payloadDocumentId
-          });
+          isUploadingFileStub = sinon.stub(assetSelectorStore, 'isUploadingFile', _.constant(true));
+          fileUploaderStoreMock._emitChange();
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE,
@@ -333,10 +345,15 @@ describe('AssetSelectorStore', function() {
           });
         });
 
+        afterEach(function() {
+          isUploadingFileStub.restore();
+        });
+
         it('returns object with alt', function() {
-          assert.deepEqual(
+          assert.propertyVal(
             assetSelectorStore.getComponentValue(),
-            { documentId: payloadDocumentId, url: payloadUrl, alt: payloadAlt }
+            'alt',
+            payloadAlt
           );
         });
       });
@@ -811,211 +828,6 @@ describe('AssetSelectorStore', function() {
       });
     });
 
-    describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_PROGRESS,
-          percentLoaded: 0.245
-        });
-      });
-
-      describe('.getUploadPercentLoaded()', function() {
-        it('returns the percent loaded', function() {
-          assert.equal(
-            assetSelectorStore.getUploadPercentLoaded(),
-            0.245
-          );
-        });
-      });
-    });
-
-    describe('after a `FILE_UPLOAD_DONE` action', function() {
-      var payloadUrl = 'https://validurl.com/image.png';
-      var payloadDocumentId = '12345';
-
-      ['HERO'].map(function(provider) {
-        describe(StorytellerUtils.format('while editing component type: {0}', provider), function() {
-          beforeEach(function() {
-            if (provider === 'AUTHOR') {
-              blockComponentAtIndex = {
-                type: provider.toLowerCase(),
-                value: {
-                  image: {
-                    url: payloadUrl,
-                    documentId: payloadDocumentId
-                  },
-                  blurb: 'blurb'
-                }
-              };
-            } else if (provider === 'HERO') {
-              blockComponentAtIndex = {
-                type: provider.toLowerCase(),
-                value: {
-                  url: payloadUrl,
-                  documentId: payloadDocumentId,
-                  html: 'html content'
-                }
-              };
-            } else {
-              blockComponentAtIndex = {
-                type: provider.toLowerCase(),
-                value: {
-                  url: payloadUrl,
-                  documentId: payloadDocumentId
-                }
-              };
-            }
-
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
-              blockId: 'block-id',
-              componentIndex: 0
-            });
-          });
-
-          beforeEach(function() {
-            dispatcher.dispatch({
-              action: Actions.FILE_UPLOAD_DONE,
-              url: payloadUrl,
-              documentId: payloadDocumentId
-            });
-          });
-
-          describe('.getComponentType()', function() {
-            var correctType;
-            if (provider === 'IMAGE') {
-              correctType = 'image';
-            } else if (provider === 'HERO') {
-              correctType = 'hero';
-            } else if (provider === 'AUTHOR') {
-              correctType = 'author';
-            }
-
-            it(StorytellerUtils.format('returns `{0}`', correctType), function() {
-              assert.equal(
-                assetSelectorStore.getComponentType(),
-                correctType
-              );
-            });
-          });
-
-          describe('.getComponentValue()', function() {
-            it('returns correct payload', function() {
-              if (provider === 'AUTHOR') {
-                assert.deepEqual(
-                  assetSelectorStore.getComponentValue(),
-                  {
-                    blurb: storyStore.getBlockComponentAtIndex(StandardMocks.authorBlockId, 0).value.blurb,
-                    image: { documentId: payloadDocumentId, url: payloadUrl }
-                  }
-                );
-              } else if (provider === 'HERO') {
-                assert.deepEqual(
-                  assetSelectorStore.getComponentValue(),
-                  { documentId: payloadDocumentId, url: payloadUrl, html: 'html content' }
-                );
-              } else {
-                assert.deepEqual(
-                  assetSelectorStore.getComponentValue(),
-                  { documentId: payloadDocumentId, url: payloadUrl }
-                );
-              }
-            });
-          });
-        });
-      });
-    });
-
-    describe('after a `FILE_UPLOAD_ERROR` action', function() {
-      describe('for file type validation error', function() {
-        beforeEach(function() {
-          dispatcher.dispatch({
-            action: Actions.FILE_UPLOAD_ERROR,
-            error: {
-              step: 'validation_file_type'
-            }
-          });
-        });
-
-        describe('.getComponentType()', function() {
-          it('returns `imageUploadError`', function() {
-            assert.equal(
-              assetSelectorStore.getComponentType(),
-              'imageUploadError'
-            );
-          });
-        });
-
-        describe('.getComponentValue()', function() {
-          it('returns `validation_file_type`', function() {
-            assert.deepEqual(
-              assetSelectorStore.getComponentValue(),
-              { step: 'validation_file_type' }
-            );
-          });
-        });
-      });
-
-      describe('for file size validation error', function() {
-        beforeEach(function() {
-          dispatcher.dispatch({
-            action: Actions.FILE_UPLOAD_ERROR,
-            error: {
-              step: 'validation_file_size'
-            }
-          });
-        });
-
-        describe('.getComponentType()', function() {
-          it('returns `imageUploadError`', function() {
-            assert.equal(
-              assetSelectorStore.getComponentType(),
-              'imageUploadError'
-            );
-          });
-        });
-
-        describe('.getComponentValue()', function() {
-          it('returns `validation_file_size`', function() {
-            assert.deepEqual(
-              assetSelectorStore.getComponentValue(),
-              { step: 'validation_file_size' }
-            );
-          });
-        });
-      });
-
-      describe('for other upload error with reason', function() {
-        beforeEach(function() {
-          dispatcher.dispatch({
-            action: Actions.FILE_UPLOAD_ERROR,
-            error: {
-              step: 'get_upload_url',
-              reason: { status: 500, message: 'Internal Server Error' }
-            }
-          });
-        });
-
-        describe('.getComponentType()', function() {
-          it('returns `imageUploadError`', function() {
-            assert.equal(
-              assetSelectorStore.getComponentType(),
-              'imageUploadError'
-            );
-          });
-        });
-
-        describe('.getComponentValue()', function() {
-          it('returns `get_upload_url`', function() {
-            assert.deepEqual(
-              assetSelectorStore.getComponentValue(),
-              { step: 'get_upload_url', reason: { status: 500, message: 'Internal Server Error' } }
-            );
-          });
-        });
-      });
-    });
-
     describe('non-linear workflows', function() {
       var blockIdBeingEdited;
 
@@ -1143,111 +955,6 @@ describe('AssetSelectorStore', function() {
             verifyStepIs('SELECT_ASSET_PROVIDER');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
-        });
-      });
-    });
-
-    describe('after an `EMBED_CODE_UPLOAD_PROGRESS` action', function() {
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.EMBED_CODE_UPLOAD_PROGRESS,
-          percentLoaded: 1
-        });
-      });
-
-      describe('.getComponentType()', function() {
-        it('returns `embeddedHtml`', function() {
-          assert.equal(
-            assetSelectorStore.getComponentType(),
-            'embeddedHtml'
-          );
-        });
-      });
-
-      describe('.isUploading()', function() {
-        it('returns true', function() {
-          assert.isTrue(assetSelectorStore.isUploading());
-        });
-      });
-
-      describe('.getUploadPercentLoaded()', function() {
-        it('returns 1', function() {
-          assert.equal(
-            assetSelectorStore.getUploadPercentLoaded(),
-            1
-          );
-        });
-      });
-    });
-
-    describe('after an `EMBED_CODE_UPLOAD_ERROR` action', function() {
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.EMBED_CODE_UPLOAD_ERROR,
-          error: {
-            step: 'hello',
-            reason: 'because'
-          }
-        });
-      });
-
-      describe('.getComponentValue()', function() {
-        it('returns payload with error and step', function() {
-          assert.deepEqual(
-            assetSelectorStore.getComponentValue(),
-            {
-              error: true,
-              step: 'hello',
-              reason: 'because'
-            }
-          );
-        });
-      });
-
-      describe('.isUploading()', function() {
-        it('returns false', function() {
-          assert.isFalse(assetSelectorStore.isUploading());
-        });
-      });
-    });
-
-    describe('after an `EMBED_CODE_UPLOAD_DONE` action', function() {
-      var payloadUrl = 'https://validurl.com/embeddedHtml.html';
-      var payloadDocumentId = '2345';
-
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.EMBED_CODE_UPLOAD_DONE,
-          url: payloadUrl,
-          documentId: payloadDocumentId
-        });
-      });
-
-      describe('.getComponentType()', function() {
-        it('returns `embeddedHtml`', function() {
-          assert.equal(
-            assetSelectorStore.getComponentType(),
-            'embeddedHtml'
-          );
-        });
-      });
-
-      describe('.isUploading()', function() {
-        it('returns false', function() {
-          assert.isFalse(assetSelectorStore.isUploading());
-        });
-      });
-
-      describe('.getComponentValue()', function() {
-        it('returns payload with url and documentId and layout', function() {
-          assert.deepEqual(
-            assetSelectorStore.getComponentValue(),
-            {
-              documentId: payloadDocumentId,
-              url: payloadUrl,
-              layout: { height: Constants.DEFAULT_VISUALIZATION_HEIGHT }
-            }
-          );
         });
       });
     });

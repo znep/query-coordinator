@@ -15,9 +15,7 @@ export default function ErrorReporter() {
 
   dispatcher.register(function(payload) {
     switch (payload.action) {
-      case Actions.FILE_UPLOAD_ERROR:
       case Actions.STORY_SAVE_FAILED:
-      case Actions.EMBED_CODE_UPLOAD_ERROR:
       case Actions.COLLABORATORS_ERROR:
         sendEventToGoogleAnalytics(payload);
         break;

@@ -11,6 +11,8 @@ import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import AssetSelectorRenderer, {__RewireAPI__ as AssetSelectorRendererAPI} from '../../../app/assets/javascripts/editor/renderers/AssetSelectorRenderer';
 import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
 import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
+import {STATUS} from '../../../app/assets/javascripts/editor/stores/FileUploaderStore';
+import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker';
 
 describe('AssetSelectorRenderer', function() {
 
@@ -19,6 +21,7 @@ describe('AssetSelectorRenderer', function() {
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
   var assetSelectorStoreMock;
+  var fileUploaderStoreMock;
   var server;
   var dispatcher;
 
@@ -34,8 +37,15 @@ describe('AssetSelectorRenderer', function() {
 
     dispatcher = new Dispatcher();
 
+    fileUploaderStoreMock = FileUploaderStoreMocker.create({
+      properties: {
+        fileById: _.constant({status: STATUS.COMPLETED, raw: {name: 'hello.jpg'}, resource: {url: 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif'}})
+      }
+    });
+
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
     AssetSelectorStoreAPI.__Rewire__('storyStore', {
       getBlockComponentAtIndex: _.constant({
         type: 'image'
@@ -175,20 +185,25 @@ describe('AssetSelectorRenderer', function() {
     });
 
     describe('event triggered in image description (alt attribute) field', function() {
-      beforeEach(function() {
-        var payloadUrl = 'https://validurl.com/image.png';
-        var payloadDocumentId = '12345';
+      var isUploadingFileStub;
 
+      beforeEach(function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
         });
 
         dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_DONE,
-          url: payloadUrl,
-          documentId: payloadDocumentId
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.IMAGE_PREVIEW
         });
+
+        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
+        fileUploaderStoreMock._emitChange();
+      });
+
+      afterEach(function() {
+        isUploadingFileStub.reset();
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a input event from the image description input field', function(done) {
@@ -360,21 +375,18 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders an image preview with a description (alt attribute) container', function() {
-      var payloadUrl = 'https://validurl.com/image.png';
-      var payloadDocumentId = '12345';
-
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        blockId: testBlockId,
-        componentIndex: testComponentIndex,
         provider: 'IMAGE'
       });
 
       dispatcher.dispatch({
-        action: Actions.FILE_UPLOAD_DONE,
-        url: payloadUrl,
-        documentId: payloadDocumentId
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.IMAGE_PREVIEW
       });
+
+      sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
+      fileUploaderStoreMock._emitChange();
 
       assert.equal(container.find('.asset-selector-image-description-container').length, 1);
       assert.equal(container.find('.asset-selector-alt-text-input').length, 1);
@@ -883,16 +895,11 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('a `FILE_UPLOAD_PROGRESS` action is fired', function() {
+    describe('when loading an image', function() {
       beforeEach(function() {
         dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-          provider: 'IMAGE'
-        });
-
-        dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_PROGRESS,
-          percentLoaded: 0
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.IMAGE_UPLOADING
         });
       });
 
@@ -904,7 +911,7 @@ describe('AssetSelectorRenderer', function() {
 
       it('has a cancel button in the progress pane', function() {
         assert.lengthOf(
-          container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+          container.find('.asset-selector-cancel-upload'),
           1
         );
       });
@@ -916,7 +923,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose image upload step', function() {
           assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+            container.find('.back-btn'),
             1
           );
         });
@@ -929,19 +936,11 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('a `FILE_UPLOAD_ERROR` action is fired', function() {
+    describe('when an image upload fails', function() {
       beforeEach(function() {
         dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-          provider: 'IMAGE'
-        });
-
-        dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_ERROR,
-          error: {
-            step: 'get_resource',
-            reason: { status: 400, message: 'Bad Request' }
-          }
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.IMAGE_UPLOAD_ERROR
         });
       });
 
@@ -960,7 +959,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose image upload step', function() {
           assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+            container.find('.back-btn'),
             1
           );
         });
@@ -974,8 +973,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     describe('a `FILE_UPLOAD_DONE` action is fired', function() {
+      var isUploadingFileStub;
       var imageUrl = 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif';
-      var documentId = 9876;
       var imgEl;
 
       ['IMAGE', 'HERO', 'AUTHOR'].map(function(provider) {
@@ -1000,11 +999,23 @@ describe('AssetSelectorRenderer', function() {
 
           beforeEach(function() {
             dispatcher.dispatch({
-              action: Actions.FILE_UPLOAD_DONE,
-              url: imageUrl,
-              documentId: documentId
+              action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+              provider: 'IMAGE'
             });
+
+            dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+              step: WIZARD_STEP.IMAGE_PREVIEW
+            });
+
+            isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
+            fileUploaderStoreMock._emitChange();
+
             imgEl = container.find('.asset-selector-preview-image');
+          });
+
+          afterEach(function() {
+            isUploadingFileStub.reset();
           });
 
           it('renders a preview image from the payload URL', function() {
@@ -1018,7 +1029,7 @@ describe('AssetSelectorRenderer', function() {
 
             it('has a button that goes back to the choose image upload step', function() {
               assert.lengthOf(
-                container.find('[data-resume-from-step="SELECT_IMAGE_TO_UPLOAD"]'),
+                container.find('.back-btn'),
                 1
               );
             });

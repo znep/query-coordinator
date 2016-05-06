@@ -130,6 +130,27 @@ export default {
   // {number} componentIndex
   ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT: 'ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT',
 
+  /**
+   * Image embed flow
+   */
+
+  ASSET_SELECTOR_CANCEL_FILE_UPLOAD: 'ASSET_SELECTOR_CANCEL_FILE_UPLOAD',
+
+  ASSET_SELECTOR_DRAG_FILES: 'ASSET_SELECTOR_DRAG_FILES',
+
+  // No payload
+  ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
+
+  // {string} altAttribute
+  ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE: 'ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE',
+
+  // {String} id
+  // {File, Blob} file
+  FILE_UPLOAD: 'FILE_UPLOAD',
+
+  // No payload
+  FILE_CANCEL: 'FILE_CANCEL',
+
   // Edit an existing asset.
   // {string} blockId
   // {number} componentIndex
@@ -204,25 +225,6 @@ export default {
 
   // {object} cardData
   ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',
-
-  /**
-   * Image embed flow
-   */
-
-  // No payload
-  ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
-
-  // {string} altAttribute
-  ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE: 'ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE',
-
-  // {number} percentLoaded
-  FILE_UPLOAD_PROGRESS: 'FILE_UPLOAD_PROGRESS',
-
-  // No payload
-  FILE_UPLOAD_DONE: 'FILE_UPLOAD_DONE',
-
-  // {object} error
-  FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR',
 
   /**
    * Code embed flow

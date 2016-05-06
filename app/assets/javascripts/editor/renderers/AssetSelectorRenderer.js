@@ -9,7 +9,7 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
 import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
-import FileUploader from '../FileUploader';
+import { fileUploaderStore } from '../stores/FileUploaderStore';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 export default function AssetSelectorRenderer(options) {
@@ -34,10 +34,8 @@ export default function AssetSelectorRenderer(options) {
    */
 
   function _listenForChanges() {
-
-    assetSelectorStore.addChangeListener(function() {
-      _renderSelector();
-    });
+    assetSelectorStore.addChangeListener(_renderSelector);
+    fileUploaderStore.addChangeListener(_renderSelector);
   }
 
   function _attachEvents() {
@@ -53,12 +51,10 @@ export default function AssetSelectorRenderer(options) {
       '[data-asset-selector-validate-field="imageUpload"]',
       function(event) {
         if (event.target.files && event.target.files.length > 0) {
-          _cancelFileUpload();
-          storyteller.fileUploader = new FileUploader();
-          storyteller.fileUploader.upload(event.target.files[0], {
-            progressAction: Actions.FILE_UPLOAD_PROGRESS,
-            errorAction: Actions.FILE_UPLOAD_ERROR,
-            doneAction: Actions.FILE_UPLOAD_DONE
+          dispatcher.dispatch({
+            id: _.uniqueId(),
+            action: Actions.FILE_UPLOAD,
+            file: event.target.files[0]
           });
         }
       }
@@ -190,28 +186,27 @@ export default function AssetSelectorRenderer(options) {
     );
 
     var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
-      _cancelFileUpload();
-      storyteller.fileUploader = new FileUploader();
-
       var htmlFragment = $(event.target).val();
       _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);
       if (htmlFragment.length === 0) {
         return;
       }
 
-      var simulatedFileForUpload = {
-        name: 'embedded_fragment.html',
-        size: htmlFragment.length,
-        type: 'text/html',
-        body: htmlFragment
-      };
+      if (assetSelectorStore.isUploadingFile() && assetSelectorStore.isHTMLFragment()) {
+        dispatcher.dispatch({
+          action: Actions.FILE_CANCEL,
+          id: assetSelectorStore.getFileId()
+        });
+      }
 
-      storyteller.fileUploader.upload(simulatedFileForUpload, {
-        progressAction: Actions.EMBED_CODE_UPLOAD_PROGRESS,
-        errorAction: Actions.EMBED_CODE_UPLOAD_ERROR,
-        doneAction: Actions.EMBED_CODE_UPLOAD_DONE
+      var blobForUpload = new Blob([htmlFragment], {type: 'text/html'});
+      blobForUpload.name = Constants.EMBEDDED_FRAGMENT_FILE_NAME;
+
+      dispatcher.dispatch({
+        action: Actions.FILE_UPLOAD,
+        file: blobForUpload,
+        id: _.uniqueId()
       });
-
     }, Constants.EMBED_CODE_DEBOUNCE_DELAY);
 
     _container.on(
@@ -276,12 +271,6 @@ export default function AssetSelectorRenderer(options) {
     dispatcher.dispatch({
       action: Actions.ASSET_SELECTOR_CLOSE
     });
-  }
-
-  function _cancelFileUpload() {
-    if (storyteller.fileUploader) {
-      storyteller.fileUploader.cancel();
-    }
   }
 
   function _renderSelector() {
@@ -692,7 +681,7 @@ export default function AssetSelectorRenderer(options) {
       });
     });
 
-    searchField.change(function(event) {
+    searchField.change(function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
         phrase: searchField.val()
@@ -742,7 +731,7 @@ export default function AssetSelectorRenderer(options) {
 
               resolve();
             };
-            imageElement.onclick = function(event) {
+            imageElement.onclick = function() {
               dispatcher.dispatch({
                 action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
                 id: id
@@ -806,17 +795,23 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseImageUploadTemplate() {
 
-    var inputSubtext = $('<h3>', {
-      'class': 'asset-selector-input-subtext'
-    }).text(I18n.t('editor.asset_selector.image_upload.input_subtext'));
+    var dragLabel = $(
+      '<h2>',
+      { class: 'image-drag-label' }
+    ).text(I18n.t('editor.asset_selector.image_upload.drag_label'));
 
     var inputLabel = $(
       '<h2>',
       { 'class': 'modal-input-label modal-input-label-centered input-label' }
     ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
+    var dragInstructionsSpacer = $(
+      '<div>',
+      { class: 'image-instructions-spacer' }
+    );
+
     var inputButton = $('<button>', {
-      'class': 'btn-primary'
+      'class': 'image-choose-upload-now btn-default'
     }).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
 
     var inputControl = $(
@@ -844,11 +839,43 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-input-group asset-selector-input-group-fixed-height' }
     ).append([
-      inputSubtext,
-      inputButton,
+      dragLabel,
       inputLabel,
+      dragInstructionsSpacer,
+      inputButton,
       inputControl
     ]);
+
+    content.
+      on('dragover', function(event) {
+        content.addClass('active');
+
+        event.stopPropagation();
+        event.preventDefault();
+      }).
+      on('drop', function(event) {
+        var files = event.originalEvent.dataTransfer.files;
+
+        content.removeClass('active');
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (files[0]) {
+          dispatcher.dispatch({
+            action: Actions.FILE_UPLOAD,
+            file: files[0],
+            id: _.uniqueId()
+          });
+        }
+      }).
+      on('dragleave', function() {
+        content.removeClass('active');
+      });
+
+    content.
+      on('drop', function() {
+      });
 
     var buttonGroup = $(
       '<div>',
@@ -877,7 +904,6 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderFileUploadProgressTemplate() {
-    var componentType = assetSelectorStore.getComponentType();
     var progress = $(
       '<div>',
       { 'class': 'asset-selector-image-upload-progress' }
@@ -893,21 +919,34 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'asset-selector-input-subtext asset-selector-uploading-message' }
     ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
 
-    var uploadCancelButton = $(
-      '<button>',
-      {
-        'class': 'btn-default btn-inverse asset-selector-cancel-upload',
-        'data-provider': componentType.toUpperCase()
+    var cancel = function() {
+      var id = assetSelectorStore.getFileId();
+
+      if (id) {
+        dispatcher.dispatch({
+          action: Actions.FILE_CANCEL,
+          id: id
+        });
+      } else {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD
+        });
       }
-    ).text(I18n.t('editor.asset_selector.cancel_button_text'));
+    };
 
     var tryAgainButton = $(
       '<button>',
-      {
-        'class': 'hidden btn-default btn-inverse asset-selector-try-again',
-        'data-provider': componentType.toUpperCase()
-      }
+      { 'class': 'btn-default btn-inverse hidden asset-selector-try-again' }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
+
+    var uploadCancelButton = $(
+      '<button>',
+      { 'class': 'btn-default btn-inverse asset-selector-cancel-upload' }
+    ).text(I18n.t('editor.asset_selector.cancel_button_text'));
+
+    tryAgainButton.on('click', cancel);
+    uploadCancelButton.on('click', cancel);
 
     progress.append([
       uploadProgressMessage,
@@ -916,7 +955,12 @@ export default function AssetSelectorRenderer(options) {
       tryAgainButton
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
+    var backButton = $(
+      '<button>',
+      { class: 'btn-default btn-inverse back-btn' }
+    ).text(I18n.t('editor.asset_selector.back_button_text'));
+
+    backButton.on('click', cancel);
 
     var content = $(
       '<div>',
@@ -942,21 +986,15 @@ export default function AssetSelectorRenderer(options) {
     var progressMessage = progressContainer.find('.asset-selector-uploading-message');
     var cancelButton = progressContainer.find('.asset-selector-cancel-upload');
     var tryAgainButton = progressContainer.find('.asset-selector-try-again');
-    var errorStep = componentProperties.step;
-    var messageTranslationKey;
 
-    if (errorStep) {
-      cancelButton.remove();
-      progressSpinner.addClass('hidden');
-      tryAgainButton.removeClass('hidden');
+    cancelButton.remove();
+    progressSpinner.addClass('hidden');
+    tryAgainButton.removeClass('hidden');
 
-      if (/^validation.*/.test(errorStep)) {
-        messageTranslationKey = StorytellerUtils.format('editor.asset_selector.image_upload.errors.{0}', errorStep);
-      } else {
-        messageTranslationKey = 'editor.asset_selector.image_upload.errors.exception';
-      }
-
-      progressMessage.html(I18n.t(messageTranslationKey));
+    if (componentProperties && componentProperties.reason) {
+      progressMessage.html(componentProperties.reason);
+    } else {
+      progressMessage.html(I18n.t('editor.asset_selector.image_upload.errors.exception'));
     }
   }
 
@@ -1572,10 +1610,8 @@ export default function AssetSelectorRenderer(options) {
   function _renderPreviewEmbedCodeData(componentProperties) {
     var htmlFragmentUrl = null;
     var documentId = null;
-    var percentLoaded = assetSelectorStore.getUploadPercentLoaded();
-    var isUploading = assetSelectorStore.isUploading();
-    var errorStep = null;
-    var messageTranslationKey;
+    var isUploading = assetSelectorStore.isUploadingFile();
+    var errorReason = null;
     var iframeContainer = _container.find('.asset-selector-preview-container');
     var iframeElement = _container.find('.asset-selector-preview-iframe');
     var invalidMessageContainer = _container.find('.asset-selector-invalid-message');
@@ -1597,8 +1633,8 @@ export default function AssetSelectorRenderer(options) {
       htmlFragmentUrl = componentProperties.url;
     }
 
-    if (_.has(componentProperties, 'step')) {
-      errorStep = componentProperties.step;
+    if (_.has(componentProperties, 'reason')) {
+      errorReason = componentProperties.reason;
     }
 
     if (_.has(componentProperties, 'documentId')) {
@@ -1636,25 +1672,13 @@ export default function AssetSelectorRenderer(options) {
 
       invalidMessageContainer.hide();
       insertButton.prop('disabled', false);
-    } else if (!_.isNull(errorStep)) {
-      if (/^validation.*/.test(errorStep)) {
-        messageTranslationKey = StorytellerUtils.format('editor.asset_selector.embed_code.errors.{0}', errorStep);
-      } else {
-        messageTranslationKey = 'editor.asset_selector.embed_code.errors.exception';
-      }
+    } else if (!_.isNull(errorReason)) {
 
       iframeElement.attr('src', '');
       invalidMessageContainer.show();
-      invalidMessageElement.html(I18n.t(messageTranslationKey));
+      invalidMessageElement.html(I18n.t('editor.asset_selector.embed_code.errors.exception'));
 
       iframeContainer.addClass('invalid');
-
-      insertButton.prop('disabled', true);
-    } else if (_.isFinite(percentLoaded)) {
-
-      invalidMessageContainer.hide();
-
-      iframeContainer.removeClass('invalid');
 
       insertButton.prop('disabled', true);
     } else {
@@ -2081,6 +2105,15 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+
+    backButton.on('click', function() {
+      if (assetSelectorStore.isUploadingFile() && assetSelectorStore.isHTMLFragment()) {
+        dispatcher.dispatch({
+          action: Actions.FILE_CANCEL,
+          id: assetSelectorStore.getFileId()
+        });
+      }
+    });
 
     var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
       inputLabel,

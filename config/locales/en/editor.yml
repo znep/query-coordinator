@@ -176,9 +176,9 @@ en:
         search: 'Search and hit "Enter".'
         tab_upload: 'Upload'
         tab_getty: 'Photos by Getty'
+        drag_label: 'Drag an image here to upload it.'
         input_label: 'Images can be JPG, PNG, or GIF format and up to 5MB file size.'
-        input_subtext: 'Select an image from your computer...'
-        input_button_text: 'Choose File'
+        input_button_text: 'Or choose an image.'
         uploading_message: 'Uploading...'
         show_more: 'Show More'
         thats_everything: "That's everything!"
@@ -186,8 +186,10 @@ en:
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
-          exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+          upload_timeout: 'Looks like the uploading is taking longer than it should. Try re-uploading and ensuring the your file is an acceptable size and file type.'
+          exception: "We're really sorry! There was an unexpected problem with your upload. Please try again."
           image_search: "We can't complete your search right now. Try different keywords."
+          cancelled: "Looks like the upload was canceled!"
       image_preview:
         preview_label: 'Preview'
         description_label: 'Alt Attribute (optional)'

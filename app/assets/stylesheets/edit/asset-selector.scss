@@ -143,12 +143,6 @@
     }
   }
 
-  .btn-primary {
-    margin: 0 auto;
-    display: block;
-    margin-top: 12rem;
-  }
-
   .asset-selector-goal-url-hint {
     margin-left: 1rem;
   }
@@ -281,10 +275,6 @@
   }
 }
 
-.image-pages .asset-selector-input-group {
-  border: none;
-}
-
 .asset-selector-button-list li {
   padding: 1.5rem 1rem;
   border-bottom: solid 1px $modal-button-list-border-color;
@@ -384,6 +374,39 @@
     top: 0;
     right: 0;
     bottom: 0;
+  }
+}
+
+#page-upload {
+  .asset-selector-input-group-fixed-height {
+    &.active {
+      border-color: #7A7A7A;
+      background: #E6E6E6;
+    }
+  }
+
+  .image-drag-label {
+    font-size: 2rem;
+    text-align: center;
+    color: #555;
+    margin-top: 8rem;
+  }
+
+  .modal-input-label {
+    font-size: 1.2rem;
+  }
+
+  .image-instructions-spacer {
+    width: 250px;
+    border-bottom: solid 1px #f2f2f2;
+    margin: 3rem auto;
+  }
+
+  .image-choose-upload-now {
+    margin: 3rem auto;
+    display: block;
+    font-size: 1.3rem;
+    padding: 0.7rem 1rem;
   }
 }
 

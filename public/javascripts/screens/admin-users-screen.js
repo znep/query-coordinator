@@ -9,7 +9,7 @@ $(function()
             .removeClass('error')
             .slideDown(300, function()
                 { setTimeout(function()
-                    { $('.userNotice').slideUp(); }, 5000) });
+                    { $('.userNotice').slideUp(); }, 5000); });
     };
 
     $('#adminContent .adminUsersTable .roleSelect').change(function()
@@ -60,7 +60,7 @@ $(function()
           sortTextExtraction: function(node) {
               return $(node).find('.cellInner').text();
           }
-    }
+    };
 
     $userTable.find('.actions .deleteButton').adminButton(deleteActions);
 

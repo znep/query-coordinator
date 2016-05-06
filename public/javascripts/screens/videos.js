@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     blist.namespace.fetch('blist.videos');
 
@@ -136,7 +136,7 @@
         {
             $modal.find('.videoContainer').empty();
         }, 1000);
-    })
+    });
 
 
     // detect if we have a hash at the end of the url; if

@@ -54,7 +54,7 @@ var formToViewMetadata = function(metadataForm)
     }
 
     return viewData;
-}
+};
 
 
 // USER TRACKING

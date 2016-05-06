@@ -246,7 +246,7 @@ $(function()
         page: { defaultRowId: blist.initialRowId }
     });
 
-    var $dataGrid = datasetPageNS.rtManager.$domForType('table')
+    var $dataGrid = datasetPageNS.rtManager.$domForType('table');
 
     $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly)
     {
@@ -275,7 +275,7 @@ $(function()
             var $activeLink = $('#sidebarOptions').find('a[data-paneName=' + primaryPane + ']');
             if ($activeLink.length > 0)
             {
-                $opts.css('background-color', $activeLink.css('background-color'))
+                $opts.css('background-color', $activeLink.css('background-color'));
                 $activeLink.closest('li').addClass('active');
             }
             else
@@ -684,7 +684,7 @@ $(function()
                 var overlapWidth = $('#description, #description .collapsed').width();
                 if (overlapWidth) { return width - (overlapWidth + offset); }
                 else { return width * 0.85; }
-            }
+            };
             $(".sidebarOptionsContainer").width(optionsWidth());
 
             if (windowWidth < width) // Bigger!
@@ -756,7 +756,7 @@ $(function()
                         .addClass('hasParent')
                         .find('.parentName')
                             .attr('href', null)
-                            .text($.t('screens.ds.bar.based_on_private_view'))
+                            .text($.t('screens.ds.bar.based_on_private_view'));
                 }
             });
         }

@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     var $fullContainer    = $('#fullThumbnail'),
         $imgContainer     = $('#fullThumbnail .fullThumbContainer'),

@@ -1,4 +1,4 @@
-;blist.namespace.fetch('blist.profile');
+blist.namespace.fetch('blist.profile');
 
 (function($)
 {

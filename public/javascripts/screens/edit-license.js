@@ -1,4 +1,4 @@
-;$(function() {
+$(function() {
 
   // lol assertion
   if (!_.isArray(blist.licenses)) {
@@ -138,7 +138,7 @@
     }
     $licenseId.change(requireAttribution);
     requireAttribution();
-  }
+  };
   if (blist.viewId) {
     blist.editLicenses();
   }

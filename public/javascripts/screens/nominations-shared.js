@@ -1,4 +1,4 @@
-;blist.namespace.fetch('blist.nominations');
+blist.namespace.fetch('blist.nominations');
 
 $(function()
 {

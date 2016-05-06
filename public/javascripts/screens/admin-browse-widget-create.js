@@ -1,4 +1,4 @@
-;var publishNS = blist.namespace.fetch('blist.publish');
+var publishNS = blist.namespace.fetch('blist.publish');
 
 // We're not saving anything, so don't pester users
 publishNS.dontPromptOnLeaving = true;
@@ -251,7 +251,7 @@ $.Control.extend('pane_widgetCreateAdvanced', {
                 type: 'text' },
             {   text: 'Disable Paging', name: 'disable.pagination',
                 type: 'checkbox' }]
-        }]
+        }];
     }
 }, {name: 'advanced', noReset: true}, 'controlPane');
 $.gridSidebar.registerConfig('advanced', 'pane_widgetCreateAdvanced');
@@ -283,13 +283,13 @@ $.Control.extend('pane_widgetCreateEmbed', {
                     publishNS.$embedForm.click(function() { $(this).select(); });
 
                     $formElem.find('.sizeInput').change( function() {
-                        catalogNS.handleResizeRequest($(this), $formElem)
+                        catalogNS.handleResizeRequest($(this), $formElem);
                     });
                     // Generate initial embed code
                     catalogNS.updateBrowseEmbedCode();
                 }
             }
-        }]
+        }];
     }
 }, {name: 'embed', noReset: true}, 'controlPane');
 $.gridSidebar.registerConfig('embed', 'pane_widgetCreateEmbed');

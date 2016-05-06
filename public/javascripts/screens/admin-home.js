@@ -1,4 +1,4 @@
-;(function($)
+(function($)
 {
 
 var homeNS = blist.namespace.fetch('blist.home');
@@ -170,7 +170,7 @@ $(function()
             event.preventDefault();
 
             var $link = $(this);
-            var $box = $link.closest('.featureWrapper')
+            var $box = $link.closest('.featureWrapper');
 
             var $left, $right;
 
@@ -278,7 +278,7 @@ $(function()
                             .val().clean(),
                         description: $this.find('.featureContentTextSubtitle')
                             .val().clean()
-                    }
+                    };
                 }
                 features.push(feature);
             });
@@ -304,7 +304,7 @@ $(function()
                                 { tagName: 'span', 'class': 'icon' }], true));
                     }, 2000);
                 }
-            })
+            });
         });
 
         updateFeatureState();

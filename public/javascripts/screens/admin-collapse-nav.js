@@ -1,4 +1,4 @@
-;(function($)
+(function($)
 {
     // Hide/show nav links for wide pages
     var $navBox     = $('.adminNavBox'),

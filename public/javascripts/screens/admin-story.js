@@ -1,4 +1,4 @@
-;(function($)
+(function($)
 {
 
 $(function()
@@ -7,7 +7,7 @@ $(function()
     $bgField.ColorPicker({
         color: $bgField.val(),
         onChange: function(hsb, hex, rgb) {
-            $bgField.val('#' + hex)
+            $bgField.val('#' + hex);
         }
     });
 

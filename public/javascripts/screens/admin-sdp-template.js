@@ -51,7 +51,7 @@ blist.publish.applyLogo = function($elem, value)
     }
     else
     {
-        $elem.css('background-image', 'url(/assets/'  + value['href'] + ')')
+        $elem.css('background-image', 'url(/assets/'  + value['href'] + ')');
     }
 };
 
@@ -69,7 +69,7 @@ blist.publish.applyGradient = function(selector, hover, value)
     {
         // ie/older
         widgetNS.setGhettoButtonImage((hover ? 'hover' : 'normal'), 'url(/ui/box.png?w=3&h=30&rx=1&ry=1&rw=1&fc=' +
-            firstColor.slice(1) + ',' + lastColor.slice(1) + ')')
+            firstColor.slice(1) + ',' + lastColor.slice(1) + ')');
     }
     else
     {
@@ -179,7 +179,7 @@ blist.publish.wireLogoEditor = function($section)
         $.uploadDialog().show(
             function(fileName)
             {
-                return '/assets.txt?name=' + fileName + '&type=WIDGET_CUSTOMIZATION_LOGO'
+                return '/assets.txt?name=' + fileName + '&type=WIDGET_CUSTOMIZATION_LOGO';
             },
             function(responseFile, file, response)
             {

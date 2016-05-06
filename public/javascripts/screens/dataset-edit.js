@@ -1,4 +1,4 @@
-;(function($)
+(function($)
 {
 
 blist.namespace.fetch('blist.importer');

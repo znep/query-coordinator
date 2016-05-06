@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     blist.util.enforceLodashFunctions();
 
@@ -213,7 +213,7 @@
     });
 
     //Timestamp for mixpanel loggning
-    blist.pageOpened = Math.round(new Date().getTime() / 1000)
+    blist.pageOpened = Math.round(new Date().getTime() / 1000);
 
     // Fix dates for local timezone
     $('.dateReplace').each(function()
@@ -348,7 +348,7 @@
       {
          if (blist.configuration.govstat_links_cb !== undefined)
          {
-            blist.configuration.govstat_links_cb(user)
+            blist.configuration.govstat_links_cb(user);
          }
       });
 

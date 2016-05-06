@@ -1,4 +1,4 @@
-;(function($) {
+(function($) {
   blist.namespace.fetch('blist.internal');
 
   blist.internal.fetchDomainList = function($element, options) {
@@ -27,7 +27,7 @@
     } else {
       $element.find('input').awesomecomplete(staticOptions);
     }
-  }
+  };
 
   var $domainCenter = $('.domainCompletion');
   var $youCompleteMe = $domainCenter.find('.domainAwesomeComplete');

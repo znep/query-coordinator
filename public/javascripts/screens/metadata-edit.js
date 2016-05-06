@@ -313,6 +313,6 @@
     var updateMetaData = function(selector, newMeta)
     {
         $(selector).val(JSON.stringify(newMeta.metadata));
-    }
+    };
 
 })(jQuery);

@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     // rendering
     var directive = {

@@ -1,4 +1,4 @@
-;blist.namespace.fetch('blist.metrics');
+blist.namespace.fetch('blist.metrics');
 
 $(function()
 {

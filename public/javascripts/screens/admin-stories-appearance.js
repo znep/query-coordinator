@@ -1,4 +1,4 @@
-;(function($)
+(function($)
 {
 
 var publishNS = blist.namespace.fetch('blist.publish');

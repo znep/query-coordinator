@@ -12,7 +12,7 @@
 
 // TODO: fix the linting errors in this file and re-enable linting in the .eslintignore file
 
-;(function($){
+(function($){
 
 var importNS = blist.namespace.fetch('blist.importer');
 var t = function(str, props) { return $.t('screens.import_pane.' + str, props); };
@@ -104,7 +104,7 @@ var optionsForSelect = function(collection)
         return { tagName: 'option',
                      value: column.value,
                      contents: $.htmlEscape(column.label),
-                     'class': column['class'] } } );
+                     'class': column['class'] }; } );
 };
 
 // textize a list of columns
@@ -1676,7 +1676,7 @@ importNS.importColumnsPaneConfig = {
 
         if (columns.length === 0)
         {
-            _finalizeAddColumns()
+            _finalizeAddColumns();
             return; // nothin to do!
         }
 
@@ -1709,7 +1709,7 @@ importNS.importShapefilePaneConfig = {
         scan = state.scan;
         isShown = false;
         wizardCommand = command;
-        layers = scan.summary.layers
+        layers = scan.summary.layers;
         $pane = $paneLocal;
         $summary = $paneLocal.find('.shapeSummary');
         $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
@@ -1729,7 +1729,7 @@ importNS.importShapefilePaneConfig = {
 
             _.each(layers, function(layer, i)
             {
-                layer.id = i
+                layer.id = i;
                 layer.type = 'layer';
 
                 newLayerLine(layer);
@@ -1812,7 +1812,7 @@ importNS.importShapefilePaneConfig = {
     {
         updateLayerLines();
 
-        state.importer = {}
+        state.importer = {};
         state.importer.importLayers = $.makeArray($layersList.children().map(function()
         {
             return $.extend(true, {}, $(this).data('importLayer'));
@@ -1860,7 +1860,7 @@ importNS.importingPaneConfig = {
                     layerId: importLayer.layerId,
                     name: importLayer.name,
                     replacingUid: importLayer.replacingUid
-                }
+                };
             });
         }
         else
@@ -1985,7 +1985,7 @@ importNS.importingPaneConfig = {
                 type: 'post',
                 url: '/views?nbe=true',
                 data: JSON.stringify({ name: state.fileName })
-              })
+              });
             });
 
             // ...and we must add the columns to that view.
@@ -2092,7 +2092,7 @@ importNS.importingPaneConfig = {
                   if (isReimport) {
                     nextState = 'finish';
                   } else {
-                    nextState = 'metadata'
+                    nextState = 'metadata';
                   }
                 }
                 command.next(nextState);
@@ -2139,7 +2139,7 @@ importNS.importingPaneConfig = {
               pending: function(response)
               {
                   if ($.subKeyDefined(response, 'details.stage')) {
-                    $pane.find('.importStatus').text(t(response.details.stage))
+                    $pane.find('.importStatus').text(t(response.details.stage));
                   } else if ($.subKeyDefined(response, 'details.progress')) {
                       var message = t('rows_imported', { num: response.details.progress });
                       if ($.subKeyDefined(response, 'details.layer'))
@@ -2186,6 +2186,6 @@ importNS.importWarningsPaneConfig = {
         }
         return 2; // go back two since we've imported.
     }
-}
+};
 
 })(jQuery);

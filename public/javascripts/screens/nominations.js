@@ -1,9 +1,9 @@
-;blist.namespace.fetch('blist.nominations');
+blist.namespace.fetch('blist.nominations');
 
 $(function()
 {
     var ratedNom = {};
-    blist.nominations.map = {}
+    blist.nominations.map = {};
     _.each(blist.nominations.items, function(n)
         { blist.nominations.map[n.id] = new Nomination(n); });
 

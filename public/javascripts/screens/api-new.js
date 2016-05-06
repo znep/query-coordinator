@@ -14,7 +14,7 @@ $(function(){
       finishText: "Deploy",
       paneConfig:makePaneConfig(),
       buttonContainerId: "aboveslide"
-  }
+  };
   var $paneList = $('#apiFoundryWizard ul');
   $("#stepTotal").text(stepTotal);
   $("#progressbar").progressbar({value:0});
@@ -88,7 +88,7 @@ $(function(){
     function defaultErrorHandler(err)
     {
       var message = err.responseText;
-      try {message = JSON.parse(message).message}
+      try {message = JSON.parse(message).message};
       catch(e){}
       $("#paneError").text(message);
       $("#paneError").show();
@@ -100,15 +100,15 @@ $(function(){
     onActivate.checkpub = function($pane, paneConfig, state, command)
     {
       $("#progress").hide();
-    }
+    };
 
     onActivate.welcome = function($pane, paneConfig, state, command)
     {
-      $("#skip").hide()
+      $("#skip").hide();
       getDataset(function(){}, defaultErrorHandler);
       if (blist.configuration.apiFoundry.makeNewView)  paneConfig.nextText = "Create an API";
       else paneConfig.nextText = "Customize this API";
-    }
+    };
 
     onTransition.welcome = function($pane, state, callback)
     {
@@ -117,14 +117,14 @@ $(function(){
         defaultErrorHandler
       );
       return false;
-    }
+    };
 
     onActivate.datasetResourceName = function($pane, paneConfig, state, command)
     {
       $("#skip").hide();
       var rn = apiView.resourceName;
       if (rn) {$('#resourceName').val(rn).blur();}
-    }
+    };
 
     onTransition.datasetResourceName = function($pane, state, callback)
     {
@@ -139,13 +139,13 @@ $(function(){
         }
       );
       return false;
-    }
+    };
 
     onActivate.datasetName = function($pane, paneConfig, state, command)
     {
       var n = apiView.name;
       if (n) {$('#editTitle').val(n).blur();}
-    }
+    };
 
     onTransition.datasetName = function($pane, state, callback)
     {
@@ -163,7 +163,7 @@ $(function(){
         }
       );
       return false;
-    }
+    };
 
     onTransition.datasetUniqueId = function($pane, state, callback)
     {
@@ -183,7 +183,7 @@ $(function(){
         defaultErrorHandler
       );
       return false;
-    }
+    };
 
     onActivate.datasetDescription = function($pane, paneConfig, state, command)
     {
@@ -194,7 +194,7 @@ $(function(){
         $('#description').val(desc).blur();
         $("#descriptionDoc").text(desc);
       }
-    }
+    };
 
     onTransition.datasetDescription = function($pane, state, callback)
     {
@@ -208,7 +208,7 @@ $(function(){
         defaultErrorHandler
       );
       return false;
-    }
+    };
 
     //add a pane for each column
     $("#apiFoundryWizard .apiFieldPane").each(function(index, element)
@@ -245,10 +245,10 @@ $(function(){
           } else {
             $pane.find(".mustNotBeHidden").attr("disabled", "disabled");
           }
-        }
+        };
         disableIfNecessary();
         $i.click(disableIfNecessary);
-      }
+      };
       onTransition[key] = function($pane, state, callback)
       {
         var col = columns[columnOriginalFieldName];
@@ -262,7 +262,7 @@ $(function(){
           name:$n.val().trim(),
           fieldName:$fn.val().trim(),
           description:$d.val()
-        }
+        };
         $prompt.blur();
         var doUpdate = function()
         {
@@ -272,7 +272,7 @@ $(function(){
             callback,
             defaultErrorHandler
           );
-        }
+        };
         if ($i.value())
         {
           if (col.hidden)
@@ -285,18 +285,18 @@ $(function(){
         {
           if (col.hidden)
           {
-            callback()
+            callback();
           }
           else { col.hide(callback, defaultErrorHandler); }
         }
         return false;
-      }
+      };
     });
 
     onActivate.apiPublish = function($pane, paneConfig, state, command)
     {
-      $("#skip").hide()
-    }
+      $("#skip").hide();
+    };
 
     function apiPublishOnNext($pane, state)
     {
@@ -332,20 +332,20 @@ $(function(){
 
     onActivate.published = function($pane, paneConfig, state, command)
     {
-      $("#skip").hide()
+      $("#skip").hide();
       paneConfig.nextText = "View Documentation";
       blist.configuration.apiFoundry.docsUrl = '/developers/docs/'
         + apiView.resourceName;
       $("#docslink").attr("href", blist.configuration.apiFoundry.docsUrl);
       $(".nextButton").attr("href", blist.configuration.apiFoundry.docsUrl);
-    }
+    };
 
     onTransition.published = function($pane, state, callback)
     {
         $("#paneSpinner").hide();
         window.location = blist.configuration.apiFoundry.docsUrl;
         return false;
-    }
+    };
 
     function startTransitionUI()
     {
@@ -388,7 +388,7 @@ $(function(){
       currentPaneId = $pane.attr('id');
       commandObj = command;
       updateProgressIndicator(paneConfig.ordinal);
-      $("#skip").show()
+      $("#skip").show();
       $("#paneError").hide();
       $("#paneSpinner").hide();
       $(".validationError").hide();
@@ -502,7 +502,7 @@ $(function(){
     {
       var key = pane.key;
       paneConfig[key] = pane;
-      if (index < panes.length - 1) {nextPaneMap[key] = panes[index + 1].key}
+      if (index < panes.length - 1) {nextPaneMap[key] = panes[index + 1].key};
     });
     for (var p = 0; p < panes.length; p++){
     }

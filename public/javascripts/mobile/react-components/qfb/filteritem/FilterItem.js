@@ -70,7 +70,7 @@ class FilterItem extends React.Component {
   }
 
   onClickCancel() {
-    if (this.filterChanged == 0) {
+    if (this.filterChanged === 0) {
       this.props.deletionHandler(this.props.filter.id);
     }
 

@@ -379,11 +379,11 @@ module ApplicationHelper
     accessible_page_spacer = '<span class="accessible">&nbsp;</span>'
 
     if (current_page > 1)
-      out += link_to("<span class='icon'>First</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
+      out += link_to("<span class='icon'>&#9666;&#9666;</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
                      "#{base_href}1",
                      :class => "start firstLink " + navigation_link_class,
                      :title => t('core.pagination.first_page'))
-      out += link_to("<span class='icon'>Prev</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
+      out += link_to("<span class='icon'>&#9666;</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
                      "#{base_href}#{current_page - 1}",
                      :class => "previous prevLink " + navigation_link_class,
                      :title => t('core.pagination.previous_page'))
@@ -395,17 +395,17 @@ module ApplicationHelper
       is_current = i == current_page
       page_link_class = is_current ? "pageLink active" : "pageLink"
       out += link_to("#{is_current ? accessible_current_page_text : accessible_page_text}#{accessible_page_spacer}#{i}#{accessible_page_spacer}".html_safe, base_href + i.to_s, :class => page_link_class,
-                     :title => "Page #{i}")
+                     :title => t('core.pagination.page') + " #{i}")
     end
     if (end_page < num_pages)
       out += "<span class='ellipses'>...</span>"
     end
     if (current_page < num_pages)
-      out += link_to("<span class='icon'>Next</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
+      out += link_to("<span class='icon'>&#9656;</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
                      base_href + (current_page + 1).to_s,
                      :class => "next nextLink " + navigation_link_class,
                      :title => t('core.pagination.next_page'))
-      out += link_to("<span class='icon'>Last</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
+      out += link_to("<span class='icon'>&#9656;&#9656;</span>#{accessible_page_spacer}#{accessible_page_text}#{accessible_page_spacer}".html_safe,
                      base_href + (num_pages).to_s,
                      :class => "end lastLink " + navigation_link_class,
                      :title => t('core.pagination.last_page'))

@@ -1472,6 +1472,20 @@ ro:
     - Oct
     - Nov
     - Dec
+    month_names:
+    -
+    - Ianuarie
+    - Februarie
+    - Martie
+    - Aprilie
+    - Mai
+    - Iunie
+    - Iulie
+    - August
+    - Septembrie
+    - Octombrie
+    - Noiembrie
+    - Decembrie
   error:
     back: "Înapoi"
     error_500:

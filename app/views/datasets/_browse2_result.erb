@@ -138,7 +138,7 @@
           <%= timelabel %>
         </div>
         <div class="browse2-result-timestamp-value">
-          <%= timestamp %>
+          <%= l(Time.parse(timestamp), :format => "%B %d, %Y") %>
         </div>
       </div>
 

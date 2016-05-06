@@ -1480,6 +1480,20 @@ sl:
     - Okt
     - Nov
     - Dec
+    month_names:
+    -
+    - Januar
+    - Februar
+    - Marec
+    - April
+    - Maj
+    - Junij
+    - Julij
+    - Avgust
+    - September
+    - Oktober
+    - November
+    - December
   error:
     back: Nazaj
     error_500:

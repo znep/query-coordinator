@@ -1473,6 +1473,20 @@ ca:
     - Oct
     - Nov
     - Des
+    month_names:
+    -
+    - Gener
+    - Febrer
+    - Març
+    - Abril
+    - Maig
+    - Juny
+    - Juliol
+    - Agost
+    - Setembre
+    - Octubre
+    - Novembre
+    - Desembre
   error:
     back: Tornar
     error_500:

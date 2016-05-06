@@ -1,7 +1,7 @@
 class InternalController < ApplicationController
   before_filter :check_auth
   before_filter :redirect_to_current_domain,
-                :only => [ :show_domain, :show_config, :show_property ]
+                :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
   before_filter :redirect_to_default_config_id_from_type,
                 :only => [ :show_config, :show_property ]
 
@@ -487,11 +487,6 @@ class InternalController < ApplicationController
   end
 
   def feature_flags
-    if params[:domain_id] == 'current'
-      redirect_to feature_flags_config_path(domain_id: CurrentDomain.cname)
-      return
-    end
-
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags

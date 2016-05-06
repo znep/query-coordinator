@@ -1,4 +1,5 @@
 var React = require('react');
+var defaultVif = require('./defaultVif');
 
 var AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -8,7 +9,7 @@ var AuthoringWorkflow = React.createClass({
 
   getInitialState: function() {
     return {
-      vif: this.props.initialVif
+      vif: _.merge(defaultVif, this.props.initialVif)
     };
   },
 

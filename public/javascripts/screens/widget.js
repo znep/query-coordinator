@@ -164,7 +164,7 @@ blist.widget.paneHandlers = {
             {
                 return _.include(['blob', 'href'], view.type);
             });
-            moreViews.sort(function(a, b) { return b.viewCount - a.viewCount }; );
+            moreViews.sort(function(a, b) { return b.viewCount - a.viewCount; } );
 
             $('.widgetContent_views').append(
                 $.renderTemplate(

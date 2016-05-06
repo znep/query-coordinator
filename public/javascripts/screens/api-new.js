@@ -88,8 +88,7 @@ $(function(){
     function defaultErrorHandler(err)
     {
       var message = err.responseText;
-      try {message = JSON.parse(message).message};
-      catch(e){}
+      try {message = JSON.parse(message).message} catch(e){}
       $("#paneError").text(message);
       $("#paneError").show();
       $("#paneSpinner").hide();

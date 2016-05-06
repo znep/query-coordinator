@@ -310,8 +310,7 @@
       });
 
       if (cObj._rendered) {
-        if (!$.isBlank(cObj._currentPage) &&
-          ($.isBlank(cObj._currentPage.$dom) || cObj._currentPage.$dom.hasClass('hide'))) {
+        if (!$.isBlank(cObj._currentPage) && cObj._currentPage.domOrAnyChildrenHidden()) {
           cObj._showPage(cObj._currentPage, finalHide);
         } else if (_.isFunction(finalHide)) {
           finalHide();

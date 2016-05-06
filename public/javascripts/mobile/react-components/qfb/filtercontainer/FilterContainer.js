@@ -366,14 +366,21 @@ class FilterContainer extends React.Component {
     var self = this;
 
     var filtersMobileToggle = function() {
-      if ( self.state.filters.length === 1) {
+      var activeFilter = 0;
+      self.state.filters.forEach(function(filter) {
+        if (filter.data) {
+          activeFilter++;
+        }
+      });
+
+      if ( activeFilter === 1) {
         return <button type="button"
                        id="filter-summary"
                        className="btn btn-link visible-only-on-mobile"
                        onClick={ self.onClickToggleFilters }>
           1 Active Filter <i id="filter-expander" className="caret"></i>
         </button>;
-      } else if (self.state.filters.length > 1) {
+      } else if (activeFilter > 1) {
         return <button type="button"
                        id="filter-summary"
                        className="btn btn-link visible-only-on-mobile"

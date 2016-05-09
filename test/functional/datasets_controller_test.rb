@@ -166,6 +166,14 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
+  test 'special snowflake SF api geo datasets do not die' do
+    setup_nbe_dataset_test(false, false)
+    @view.stubs(is_api_geospatial?: true)
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
+    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+    assert_response :success
+  end
+
   context 'with DSLP fully enabled' do
     should 'display the DSLP on the show path' do
       FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|

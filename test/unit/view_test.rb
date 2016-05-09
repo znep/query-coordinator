@@ -696,6 +696,18 @@ class ViewTest < Test::Unit::TestCase
     assert derived_view_from_multiple_datasets.is_multi_layered?, 'View definitions referencing other view is multi-layered'
   end
 
+  def test_is_api_geospatial
+    # when the view has not yet been saved
+    view = View.new('displayType' => nil, 'viewType' => 'tabular', 'columns' => [Hashie::Mash.new({ 'dataTypeName' => 'point' })])
+    view.stubs(:new_backend? => true, :obe_view => nil, :migrations => {}, :merged_metadata => { 'custom_fields' => { 'Geospatial API Pre-release' => { 'Enabled' => 'true' } } })
+    assert(view.is_api_geospatial?)
+
+    # when the view has been saved
+    view = View.new('displayType' => 'map', 'viewType' => 'tabular', 'columns' => [Hashie::Mash.new({ 'dataTypeName' => 'point' })])
+    view.stubs(:new_backend? => true, :obe_view => nil, :migrations => {}, :merged_metadata => { 'custom_fields' => { 'Geospatial API Pre-release' => { 'Enabled' => 'true' } } })
+    assert(view.is_api_geospatial?)
+  end
+
   def test_geospatial_child_layers
     View.stubs(:find_multiple => ['giraffes'])
 

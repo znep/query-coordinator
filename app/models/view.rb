@@ -109,7 +109,7 @@ class View < Model
     # examine markers of API-ingressed geospatial datasets
     nbe_only = new_backend? && obe_view.nil?
     has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }
-    half_tabular = displayType.nil? && is_tabular?
+    half_tabular = (displayType.nil? ||  displayType == 'map') && is_tabular?
 
     # return and cache this determination, because consumers may conditionally
     # override the metadata upon encountering a `true` case... in a way that

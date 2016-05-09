@@ -88,7 +88,12 @@ class AppConfig < Hashie::Dash
   # Canary declaration
   property :canary, default: false
 
+  # Recaptcha keys
+  property :recaptcha_public_key
+  property :recaptcha_private_key
+
   # Misc
+  property :session_store_secret
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier
 

@@ -769,7 +769,6 @@ class ViewTest < Test::Unit::TestCase
   end
 
   def test_odata_url_uses_proper_scheme
-    View.any_instance.stubs(:preferred_id => '1234-1234')
     view = View.new('id' => '1234-1234')
 
     assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url)
@@ -778,6 +777,14 @@ class ViewTest < Test::Unit::TestCase
     assert_equal('https://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
     mock_request.stubs(:scheme => 'http')
     assert_equal('http://localhost/OData.svc/1234-1234', view.odata_url(mock_request))
+  end
+
+  # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
+  def test_odata_url_does_not_use_nbe_id
+    View.any_instance.stubs(:migrations => {:obeId => '1234-1234', :nbeId => 'abcd-abcd'})
+    view = View.new('id' => '1234-1234')
+
+    refute_equal('https://localhost/OData.svc/abcd-abcd', view.odata_url)
   end
 
   def test_seo_friendly_url

@@ -1058,8 +1058,9 @@ class View < Model
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{preferred_id}.json"
   end
 
+  # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
   def odata_url(request = nil)
-    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{preferred_id}"
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
   end
 
   def seo_friendly_url(request = nil)

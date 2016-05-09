@@ -1,0 +1,95 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/86
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - drlymfp1wxx1v29j7nmoy4ja1
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 86,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462832002,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          }, {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 22:21:23 GMT
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/86/properties
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 2gwv2kbq9lh77llgq8gpo1an0
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        [ {
+          "name" : "propertyName",
+          "value" : {
+            "some key" : "another value",
+            "new key" : "new value"
+          }
+        }, {
+          "name" : "siteChromeConfigVars",
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        } ]
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 22:21:23 GMT
+recorded_with: VCR 3.0.1

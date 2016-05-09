@@ -1,0 +1,8 @@
+<p id="notice"><%= notice %></p>
+
+<pre>
+  <%= JSON.pretty_generate(JSON.parse(@site_chrome.to_json)) %>
+</pre>
+
+<%= link_to 'Edit', edit_site_chrome_path(id: @site_chrome.id) %> |
+<%= link_to 'Back', url_for(action: :index, controller: :site_chrome) %>

@@ -1,0 +1,91 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/86
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 5mvvajd0udcvslt91e8egag72
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 86,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462816997,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 21:50:45 GMT
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/86
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - drikzo1zahk366ydk2nqa7cad
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 86,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462816997,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 21:50:45 GMT
+recorded_with: VCR 3.0.1

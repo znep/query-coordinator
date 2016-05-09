@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SiteThemesController do
+describe SiteChromeController do
   include TestHelperMethods
 
   before :each do
@@ -12,25 +12,28 @@ describe SiteThemesController do
     logout
   end
 
-  # If you're going to re-record the VCR tapes, just grab a fresh batch of cookies from a valid
-  # local session, change the set_theme_id, wipe the site_theme*yml files, and re-run.
+  # If you're going to re-record the VCR tapes:
+  # * grab a fresh batch of cookies from a valid local session
+  # * change the set_theme_id
+  # * with wipe the site_chrome*yml files
+  # * and re-run.
   def auth_cookies
     {
       'remember_token' => 'eR9ZWVZCdcvcpTOw8ouyJA',
       'logged_in' => 'true',
-      'mp_mixpanel__c' => '9',
-      'mp_mixpanel__c3' => '12737',
-      'mp_mixpanel__c4' => '10222',
-      'mp_mixpanel__c5' => '75',
+      'mp_mixpanel__c' => '7',
+      'mp_mixpanel__c3' => '12706',
+      'mp_mixpanel__c4' => '9207',
+      'mp_mixpanel__c5' => '64',
+      '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa',
       'socrata-csrf-token' => 'R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=',
-      '_socrata_session_id' => 'BAh7CEkiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEZJIgl1c2VyBjsARmkH--453acf9420884d37b8603df38e14142985922fec',
-      '_core_session_id' => 'ODNueS13OXplIDE0NjI1MTQzMDcgMTRkNzZhMWVhNWI1IGQ0MWM2NDQ2ZjUzNmFjOWYzMGVlMTllODMyNjIyMWQ4NDc2NmJhNDU='
+      '_core_session_id' => 'ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q'
     }
   end
 
   # If you re-record the VCR tapes from your local dev box, you'll likely need to change this
-  def site_theme_id
-    32
+  def site_chrome_id
+    61
   end
 
   describe 'index' do
@@ -49,7 +52,7 @@ describe SiteThemesController do
     it 'loads if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      VCR.use_cassette('site_themes_index') do
+      VCR.use_cassette('site_chrome_index') do
         get :index
         expect(response).to be_success
       end
@@ -58,22 +61,22 @@ describe SiteThemesController do
 
   describe 'show' do
     it 'redirects if not logged in' do
-      get :show, id: site_theme_id
+      get :show, id: site_chrome_id
       expect(response).to redirect_to(login_url)
     end
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      get :show, id: site_theme_id
+      get :show, id: site_chrome_id
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'loads if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      VCR.use_cassette('site_themes_show') do
-        get :show, id: site_theme_id
+      VCR.use_cassette('site_chrome_show') do
+        get :show, id: site_chrome_id
         expect(response).to be_success
       end
     end
@@ -95,7 +98,7 @@ describe SiteThemesController do
     it 'loads if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      VCR.use_cassette('site_themes_new') do
+      VCR.use_cassette('site_chrome_new') do
         get :new
         expect(response).to be_success
       end
@@ -105,22 +108,22 @@ describe SiteThemesController do
   # The main page admins will typically access
   describe 'edit' do
     it 'redirects if not logged in' do
-      get :edit, id: site_theme_id
+      get :edit, id: site_chrome_id
       expect(response).to redirect_to(login_url)
     end
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      get :edit, id: site_theme_id
+      get :edit, id: site_chrome_id
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'loads if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      VCR.use_cassette('site_themes_edit') do
-        get :edit, id: site_theme_id
+      VCR.use_cassette('site_chrome_edit') do
+        get :edit, id: site_chrome_id
         expect(response).to be_success
       end
     end
@@ -131,55 +134,58 @@ describe SiteThemesController do
   #####################
 
   describe 'create' do
-    site_theme = { properties: { 'some_key' => 'some_value' } }
+    site_chrome = { properties: { 'some_key' => 'some_value' } }
 
     it 'redirects if not logged in' do
-      post :create, site_theme: site_theme
+      post :create, site_chrome: site_chrome
       expect(response).to redirect_to(login_url)
     end
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      post :create, site_theme: site_theme
+      post :create, site_chrome: site_chrome
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'works if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      post :create, site_theme: site_theme
-      expect(response).to be_success
+      VCR.use_cassette('site_chrome_controller_create') do
+        post :create, site_chrome: site_chrome
+        expect(response).to be_success
+      end
     end
   end
 
   describe 'update' do
-    site_theme = { properties: { 'some_key' => 'some_value' } }
+    site_chrome = { properties: { 'some_key' => 'some_value' } }
     name_value_hash = { 'name' => 'some_key', 'value' => 'some_value' }
 
     it 'redirects if not logged in' do
-      put :update, id: site_theme_id, site_theme: site_theme
+      put :update, id: site_chrome_id, site_chrome: site_chrome
       expect(response).to redirect_to(login_url)
     end
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      put :update, id: site_theme_id, site_theme: site_theme
+      put :update, id: site_chrome_id, site_chrome: site_chrome
       expect(response).to have_http_status(:forbidden)
     end
 
     it 'works if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      request.cookies = auth_cookies
 
-      VCR.use_cassette('site_themes_update') do
-        put :update, id: site_theme_id, site_theme: site_theme
+      auth_cookies.each { |key, value| @request.cookies[key] = value }
+
+      VCR.use_cassette('site_chrome_controller_update') do
+        put :update, id: site_chrome_id, site_chrome: site_chrome
         expect(response).to be_success
 
-        site_theme_reloaded = SiteTheme.find_one(site_theme_id)
-        expect(site_theme_reloaded.properties).to include(name_value_hash)
+        site_chrome_reloaded = SiteChrome.find_one(site_chrome_id)
+        expect(site_chrome_reloaded.properties).to include(name_value_hash)
       end
     end
   end
@@ -187,7 +193,7 @@ describe SiteThemesController do
   # Let's keep destroy from existing
   describe 'destroy' do
     it 'is unimplemented' do
-      expect { delete site_theme_path(site_theme_id) }.to raise_error(ActionController::RoutingError)
+      expect { delete site_chrome_path(site_chrome_id) }.to raise_error(ActionController::RoutingError)
     end
   end
 

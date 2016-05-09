@@ -1,0 +1,27 @@
+<%= form_tag site_chrome_path(id: @site_chrome.id), method: :put, class: :edit_site_chrome, id: "edit_site_chrome_#{@site_chrome.id}" do %>
+  <% if @site_chrome.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@site_chrome.errors.count, "error") %> prohibited this site_chrome from being saved:</h2>
+
+      <ul>
+      <% @site_chrome.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <h2> Properties: <h2/>
+
+  <ul>
+    <% @site_chrome.properties.each do |property| %>
+      <li>
+        <%= label_tag 'site_chrome_' + property['name'] %>
+        <%= text_area_tag "site_chrome[properties][#{property['name']}]", property['value'] %>
+      </li>
+      <br/>
+    <% end %>
+  </ul>
+
+  <%= submit_tag 'Submit', data: { confirm: 'Are you sure?' } %>
+<% end %>

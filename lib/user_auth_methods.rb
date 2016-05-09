@@ -40,6 +40,7 @@ module UserAuthMethods
   # concerned with setting session data, so it's easiest to just plumb
   # it through.
   def hook_auth_controller
+    STDOUT.puts cookies.inspect
     UserSession.controller = self
     UserSession.update_current_user(nil, nil)
   end

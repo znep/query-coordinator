@@ -1,0 +1,31 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <title>Site Chrome(s) | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<h1>Listing site chromes</h1>
+
+<h2>NOTE: You should probably have just one of these</h2>
+
+<ul class="listOfSiteChromes">
+  <% @site_chromes.each do |site_chrome| %>
+    <li>
+      <div>id: <%= site_chrome.id %></div>
+      <div>name: <%= site_chrome.name %></div>
+      <div>default: <%= site_chrome.default %></div>
+      <div>parentId: <%= site_chrome.parentId %></div>
+      <div>type: <%= site_chrome.type %></div>
+      <div>updatedAt: <%= Time.at(site_chrome.updatedAt) %></div>
+      <div>properties: <%= site_chrome.properties.first%> ...</div>
+      <br />
+      <div><%= link_to 'Show', site_chrome_path(id: site_chrome.id) %></div>
+      <br />
+      <div><%= link_to 'Edit', edit_site_chrome_path(id: site_chrome.id) %></div>
+      <br />
+    </li>
+  <% end %>
+  <br />
+<ul>
+
+<%= link_to 'New Site theme', new_site_chrome_path %>

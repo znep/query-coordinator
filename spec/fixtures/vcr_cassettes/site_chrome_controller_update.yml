@@ -1,0 +1,385 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/61
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 6c1cmdzj82oic8jaefntdgmyg
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 61,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462835353,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.1" : {
+                  "published" : {
+                    "content" : {
+                      "footer" : {
+                        "logo" : {
+                          "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                          "href" : "#"
+                        },
+                        "links" : [ {
+                          "key" : "home",
+                          "url" : "/"
+                        }, {
+                          "key" : "terms_of_service",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "privacy",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "accessibility",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "contact_us",
+                          "url" : "http://www.socrata.com/contact-us"
+                        }, {
+                          "key" : "a",
+                          "url" : "#a"
+                        }, {
+                          "key" : "b",
+                          "url" : "#b"
+                        }, {
+                          "key" : "c",
+                          "url" : "#c"
+                        }, {
+                          "key" : "d",
+                          "url" : "#d"
+                        }, {
+                          "key" : "e",
+                          "url" : "#e"
+                        }, {
+                          "key" : "f",
+                          "url" : "#f"
+                        }, {
+                          "key" : "g",
+                          "url" : "#g"
+                        }, {
+                          "key" : "h",
+                          "url" : "#h"
+                        }, {
+                          "key" : "i",
+                          "url" : "#i"
+                        }, {
+                          "key" : "j",
+                          "url" : "#j"
+                        } ]
+                      },
+                      "pants" : "fun",
+                      "locales" : {
+                        "en" : {
+                          "footer" : {
+                            "logo_alt" : "Evergreen!",
+                            "links" : {
+                              "f" : "Link F",
+                              "home" : "Home Page",
+                              "g" : "Link G with a super long title!!!",
+                              "d" : "Link D",
+                              "e" : "Link E",
+                              "b" : "Link B",
+                              "c" : "Link C",
+                              "a" : "Link A",
+                              "privacy" : "Privacy Policy",
+                              "terms_of_service" : "Terms of Service",
+                              "j" : "Link J",
+                              "h" : "Link H",
+                              "contact_us" : "Contact Us",
+                              "i" : "Link I",
+                              "accessibility" : "Accessibility"
+                            }
+                          },
+                          "header" : {
+                            "logo_alt" : "Evergreen!",
+                            "links" : {
+                              "home" : "Home Page",
+                              "support" : "Support",
+                              "catalog" : "Browse",
+                              "developers" : "Developers",
+                              "evergreen" : "City of Evergreen"
+                            }
+                          },
+                          "general" : {
+                            "social_shares" : {
+                              "twitter" : "Follow us on Twitter",
+                              "facebook" : "Like us on Facebook"
+                            },
+                            "site_name" : "City of Evergreen"
+                          }
+                        }
+                      },
+                      "superpants" : "happy walking",
+                      "general" : {
+                        "social_shares" : [ {
+                          "type" : "facebook",
+                          "url" : "http://facebook.com"
+                        }, {
+                          "type" : "twitter",
+                          "url" : "http://twitter.com"
+                        } ],
+                        "favicon" : "http://foo.png",
+                        "link_text_color" : "grey",
+                        "locales" : [ "en", "es", "fr" ],
+                        "default_locale" : "en",
+                        "styles" : {
+                          "fg_color" : "#eee",
+                          "bg_color" : "#2c97de",
+                          "font_family" : "Open Sans"
+                        },
+                        "site_title" : "Evergreen"
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "http://i.imgur.com/E8wtc6d.png",
+                          "href" : "#"
+                        },
+                        "styles" : {
+                          "fg_color" : "#eee",
+                          "bg_color" : "#5D7365"
+                        },
+                        "links" : [ {
+                          "key" : "home",
+                          "url" : "/"
+                        }, {
+                          "key" : "catalog",
+                          "url" : "/browse"
+                        }, {
+                          "key" : "developers",
+                          "url" : "http://dev.socrata.com"
+                        }, {
+                          "key" : "support",
+                          "url" : "http://support.socrata.com"
+                        }, {
+                          "key" : "evergreen",
+                          "url" : "http://data.evergreen.gov"
+                        } ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } ]
+        }
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 23:17:20 GMT
+- request: 
+    method: put
+    uri: http://localhost:8080/configurations/61/properties?method=update
+    body: 
+      encoding: US-ASCII
+      string: "{\"name\":\"siteChromeConfigVars\",\"value\":{\"versions\":{\"0.1\":{\"published\":{\"content\":{\"footer\":{\"logo\":{\"src\":\"http://i.imgur.com/rF2EJ4P.gif\",\"href\":\"#\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"terms_of_service\",\"url\":\"http://www.socrata.com/terms-of-service\"},{\"key\":\"privacy\",\"url\":\"http://www.socrata.com/privacy\"},{\"key\":\"accessibility\",\"url\":\"http://www.socrata.com/accessibility\"},{\"key\":\"contact_us\",\"url\":\"http://www.socrata.com/contact-us\"},{\"key\":\"a\",\"url\":\"#a\"},{\"key\":\"b\",\"url\":\"#b\"},{\"key\":\"c\",\"url\":\"#c\"},{\"key\":\"d\",\"url\":\"#d\"},{\"key\":\"e\",\"url\":\"#e\"},{\"key\":\"f\",\"url\":\"#f\"},{\"key\":\"g\",\"url\":\"#g\"},{\"key\":\"h\",\"url\":\"#h\"},{\"key\":\"i\",\"url\":\"#i\"},{\"key\":\"j\",\"url\":\"#j\"}]},\"pants\":\"fun\",\"locales\":{\"en\":{\"footer\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"f\":\"Link F\",\"home\":\"Home Page\",\"g\":\"Link G with a super long title!!!\",\"d\":\"Link D\",\"e\":\"Link E\",\"b\":\"Link B\",\"c\":\"Link C\",\"a\":\"Link A\",\"privacy\":\"Privacy Policy\",\"terms_of_service\":\"Terms of Service\",\"j\":\"Link J\",\"h\":\"Link H\",\"contact_us\":\"Contact Us\",\"i\":\"Link I\",\"accessibility\":\"Accessibility\"}},\"header\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"home\":\"Home Page\",\"support\":\"Support\",\"catalog\":\"Browse\",\"developers\":\"Developers\",\"evergreen\":\"City of Evergreen\"}},\"general\":{\"social_shares\":{\"twitter\":\"Follow us on Twitter\",\"facebook\":\"Like us on Facebook\"},\"site_name\":\"City of Evergreen\"}}},\"superpants\":\"happy walking\",\"general\":{\"social_shares\":[{\"type\":\"facebook\",\"url\":\"http://facebook.com\"},{\"type\":\"twitter\",\"url\":\"http://twitter.com\"}],\"favicon\":\"http://foo.png\",\"link_text_color\":\"grey\",\"locales\":[\"en\",\"es\",\"fr\"],\"default_locale\":\"en\",\"styles\":{\"fg_color\":\"#eee\",\"bg_color\":\"#2c97de\",\"font_family\":\"Open Sans\"},\"site_title\":\"Evergreen\"},\"header\":{\"logo\":{\"src\":\"http://i.imgur.com/E8wtc6d.png\",\"href\":\"#\"},\"styles\":{\"fg_color\":\"#eee\",\"bg_color\":\"#5D7365\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"catalog\",\"url\":\"/browse\"},{\"key\":\"developers\",\"url\":\"http://dev.socrata.com\"},{\"key\":\"support\",\"url\":\"http://support.socrata.com\"},{\"key\":\"evergreen\",\"url\":\"http://data.evergreen.gov\"}]},\"some_key\":\"some_value\"}}}}}}"
+    headers: 
+      Content-Type: 
+      - application/json
+      Cookie: 
+      - remember_token=eR9ZWVZCdcvcpTOw8ouyJA;logged_in=true;mp_mixpanel__c=7;mp_mixpanel__c3=12706;mp_mixpanel__c4=9207;mp_mixpanel__c5=64;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa;socrata-csrf-token=R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=;_core_session_id=ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q
+      X-Socrata-Host: 
+      - localhost
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 4s9i9d1nj8wxhubqvcgnpo8x8
+      Access-Control-Allow-Origin: 
+      - "*"
+      Set-Cookie: 
+      - _core_session_id=ODNueS13OXplIDE0NjI4NTc0NDAgYjE2YjUxZDk3NWY0IGEzNmM2NTQ3Y2FiZjdjZTI4MjgyMGQ2YWU2YTU5MzgyYTRmMGQ0MTc;Path=/
+      Expires: 
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "name" : "siteChromeConfigVars",
+          "value" : {
+            "versions" : {
+              "0.1" : {
+                "published" : {
+                  "content" : {
+                    "footer" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                        "href" : "#"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "terms_of_service",
+                        "url" : "http://www.socrata.com/terms-of-service"
+                      }, {
+                        "key" : "privacy",
+                        "url" : "http://www.socrata.com/privacy"
+                      }, {
+                        "key" : "accessibility",
+                        "url" : "http://www.socrata.com/accessibility"
+                      }, {
+                        "key" : "contact_us",
+                        "url" : "http://www.socrata.com/contact-us"
+                      }, {
+                        "key" : "a",
+                        "url" : "#a"
+                      }, {
+                        "key" : "b",
+                        "url" : "#b"
+                      }, {
+                        "key" : "c",
+                        "url" : "#c"
+                      }, {
+                        "key" : "d",
+                        "url" : "#d"
+                      }, {
+                        "key" : "e",
+                        "url" : "#e"
+                      }, {
+                        "key" : "f",
+                        "url" : "#f"
+                      }, {
+                        "key" : "g",
+                        "url" : "#g"
+                      }, {
+                        "key" : "h",
+                        "url" : "#h"
+                      }, {
+                        "key" : "i",
+                        "url" : "#i"
+                      }, {
+                        "key" : "j",
+                        "url" : "#j"
+                      } ]
+                    },
+                    "pants" : "fun",
+                    "some_key" : "some_value",
+                    "locales" : {
+                      "en" : {
+                        "footer" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "f" : "Link F",
+                            "home" : "Home Page",
+                            "g" : "Link G with a super long title!!!",
+                            "d" : "Link D",
+                            "e" : "Link E",
+                            "b" : "Link B",
+                            "c" : "Link C",
+                            "a" : "Link A",
+                            "privacy" : "Privacy Policy",
+                            "terms_of_service" : "Terms of Service",
+                            "j" : "Link J",
+                            "h" : "Link H",
+                            "contact_us" : "Contact Us",
+                            "i" : "Link I",
+                            "accessibility" : "Accessibility"
+                          }
+                        },
+                        "header" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "home" : "Home Page",
+                            "support" : "Support",
+                            "catalog" : "Browse",
+                            "developers" : "Developers",
+                            "evergreen" : "City of Evergreen"
+                          }
+                        },
+                        "general" : {
+                          "social_shares" : {
+                            "twitter" : "Follow us on Twitter",
+                            "facebook" : "Like us on Facebook"
+                          },
+                          "site_name" : "City of Evergreen"
+                        }
+                      }
+                    },
+                    "superpants" : "happy walking",
+                    "general" : {
+                      "social_shares" : [ {
+                        "type" : "facebook",
+                        "url" : "http://facebook.com"
+                      }, {
+                        "type" : "twitter",
+                        "url" : "http://twitter.com"
+                      } ],
+                      "favicon" : "http://foo.png",
+                      "link_text_color" : "grey",
+                      "locales" : [ "en", "es", "fr" ],
+                      "default_locale" : "en",
+                      "styles" : {
+                        "fg_color" : "#eee",
+                        "bg_color" : "#2c97de",
+                        "font_family" : "Open Sans"
+                      },
+                      "site_title" : "Evergreen"
+                    },
+                    "header" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/E8wtc6d.png",
+                        "href" : "#"
+                      },
+                      "styles" : {
+                        "fg_color" : "#eee",
+                        "bg_color" : "#5D7365"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "catalog",
+                        "url" : "/browse"
+                      }, {
+                        "key" : "developers",
+                        "url" : "http://dev.socrata.com"
+                      }, {
+                        "key" : "support",
+                        "url" : "http://support.socrata.com"
+                      }, {
+                        "key" : "evergreen",
+                        "url" : "http://data.evergreen.gov"
+                      } ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+    http_version: 
+  recorded_at: Mon, 09 May 2016 23:17:20 GMT
+recorded_with: VCR 3.0.1

@@ -1,5 +1,3 @@
-//Tags
-
 .alert {
   background-color: $light-grey-4;
   border: 1px solid $light-grey-1;
@@ -12,20 +10,24 @@
     background-color: $primary-light;
     border-color: $primary;
     color: $primary-dark;
-  } 
+  }
+
   &.success {
     background-color: $success-light;
     border-color: $success;
     color: $success-dark;
-  } 
+  }
+
   &.warning {
     background-color: $warning-light;
     border-color: $warning;
     color: $warning-dark;
-  } 
+  }
+
   &.error {
     background-color: $error-light;
     border-color: $error;
     color: $error-dark;
   }
 }
+

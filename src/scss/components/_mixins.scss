@@ -21,12 +21,13 @@
  * Source: http://nicolasgallagher.com/micro-clearfix-hack/
  */
 @mixin clearfix() {
-  &:before,
-  &:after {
-    content: " "; // 1
-    display: table; // 2
+  &::before,
+  &::after {
+    content: "";
+    display: table;
   }
-  &:after {
+
+  &::after {
     clear: both;
   }
 }
@@ -34,7 +35,7 @@
 /**
  * Offscreen. Hide text in UI, but keep in document. Accessibiity +1
  *
-*/ 
+*/
 @mixin offscreen-text {
   height: 1px;
   left: -10000px;

@@ -1,10 +1,10 @@
 $hint-size: 18px;
 $tour-step-width: 300px;
 $tour-step-background-color: #fff;
-$tour-step-box-shadow-color: rgba(#000, .34);
+$tour-step-box-shadow-color: rgba(#000, 0.34);
 $tour-hint-color: #fff;
 $tour-text-color: #5c5c5c;
-$tour-link-color: #0000C8;
+$tour-link-color: #0000c8;
 $tour-button-active-box-shadow-color: #2c2c2c;
 $tour-btn-primary-background-color: #2c97de;
 $tour-btn-primary-text-color: #fff;
@@ -20,7 +20,7 @@ $tour-btn-default-active-background-color: #e6e6e6;
 $tour-btn-default-active-border-color: #ccc;
 $tour-cancel-link-color: #adadad;
 $tour-cancel-link-hover-color: #7a7a7a;
-$tour-overlay-background-color: rgba(#000, .35);
+$tour-overlay-background-color: rgba(#000, 0.35);
 
 .shepherd-step {
   z-index: 5001;
@@ -63,7 +63,7 @@ $tour-overlay-background-color: rgba(#000, .35);
     }
   }
 
-  &:before {
+  &::before {
     content: "";
     display: block;
     position: absolute;
@@ -77,7 +77,7 @@ $tour-overlay-background-color: rgba(#000, .35);
   }
 
   &.shepherd-element-attached-bottom {
-    &:before {
+    &::before {
       top: 100%;
       left: 50%;
       border-top-color: $tour-hint-color;
@@ -85,7 +85,7 @@ $tour-overlay-background-color: rgba(#000, .35);
   }
 
   &.shepherd-element-attached-top {
-    &:before {
+    &::before {
       top: -$hint-size * 2;
       left: 50%;
       border-bottom-color: $tour-hint-color;
@@ -93,7 +93,7 @@ $tour-overlay-background-color: rgba(#000, .35);
   }
 
   &.shepherd-element-attached-right {
-    &:before {
+    &::before {
       left: $tour-step-width + $hint-size;
       top: 40%;
       border-left-color: $tour-hint-color;
@@ -101,7 +101,7 @@ $tour-overlay-background-color: rgba(#000, .35);
   }
 
   &.shepherd-element-attached-left {
-    &:before {
+    &::before {
       left: -$hint-size;
       top: 40%;
       border-right-color: $tour-hint-color;
@@ -142,7 +142,8 @@ $tour-overlay-background-color: rgba(#000, .35);
       }
     }
 
-    li, a {
+    a,
+    li {
       display: inline;
       margin-right: 10px;
       &:last-child {
@@ -159,7 +160,8 @@ $tour-overlay-background-color: rgba(#000, .35);
       text-decoration: none;
     }
 
-    .btn-primary, .btn-default {
+    .btn-primary,
+    .btn-default {
       transition: background-color 0.2s;
 
       &:active {

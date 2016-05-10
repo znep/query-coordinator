@@ -2,6 +2,7 @@
 @import "socrata-icons";
 @import "components/grid";
 @import "components/typography";
+@import "components/branding";
 @import "components/colors";
 @import "components/color-swatches";
 @import "components/button-group";
@@ -24,6 +25,13 @@
 @import "components/cards";
 @import "components/tour";
 
+a {
+  color: $primary;
+  &:hover {
+    color: $primary-dark;
+  }
+}
+
 .container {
   @include outer-container();
   margin-top: 80px;
@@ -33,7 +41,7 @@
 
   > .menu {
     @include span-columns(4);
-    margin-top: 0px;
+    margin-top: 0;
     z-index: 1999;
 
     .menu-header {
@@ -43,8 +51,7 @@
       .menu-header-dismiss {
         text-align: right;
         &:hover {
-          background-color: #3A3A3A;
-
+          background-color: #3a3a3a;
         }
       }
     }
@@ -56,7 +63,7 @@
   }
 }
 
-// Guidehome
+/* Guide Home. TODO: This shouldn't be in here. */
 .jumbotron {
   min-height: 400px;
   background-color: $primary-light;
@@ -66,7 +73,6 @@
 
   .container {
     margin-top: 30px;
-
 
     body.index & {
       padding: 80px 0;
@@ -81,7 +87,6 @@
       font-size: ms(4);
       color: $dark-grey-2;
     }
-
   }
 }
 
@@ -117,19 +122,21 @@ body > .responsive-navbar {
 }
 
 .responsive-navbar {
-   .home,
-   .menu-link {
-      text-decoration: none;
-      color: $white;
-      font-weight: 300;
+  .home,
+  .menu-link {
+    text-decoration: none;
+    color: $white;
+    font-weight: 300;
   }
+
   .home {
     padding-left: ms(-2);
   }
+
   .menu-link {
     border-right: 1px solid lighten($primary, 30%);
     padding-right: ms(0);
-    transition: color .5s;
+    transition: color 0.5s;
     &:hover {
       cursor: pointer;
       color: darken($white, 10%);
@@ -162,16 +169,43 @@ section.styleguide-section {
   }
 }
 
+.logo-sample {
+  margin-bottom: ms(2);
+}
+
+.logo-download  {
+  margin-bottom: ms(10);
+}
+
+.powered-by-sample {
+  margin-top: ms(4);
+  span.powered-by-socrata {
+    display: block;
+    margin-bottom: ms(10);
+  }
+}
+
 .dark-context {
-  background-color: #4A4A4A;
+  background-color: $black;
   padding: ms(-3);
 }
+
+.medium-context {
+  background-color: $dark-grey-2;
+  padding: ms(-3);
+}
+
+.primary-context {
+  background-color: $primary;
+  padding: ms(-3);
+}
+
 .medium-dark-context {
   background-color: $light-grey-bg;
   padding-top: ms(-3);
   padding-bottom: 200px;
   padding-left: ms(-3);
-  padding-right: ms(-3)
+  padding-right: ms(-3);
 }
 
 .styleguide-title {
@@ -220,7 +254,7 @@ section.styleguide-section {
   font-size: ms(3);
 
   &.italic {
-      font-style: italic;
+    font-style: italic;
   }
 
   &.light {
@@ -250,7 +284,7 @@ section.styleguide-section {
   color: $grey;
 }
 
-// Sample Grids for Styleguide
+/* Sample Grids for Styleguide */
 .inline-container {
   @include row();
 }
@@ -290,4 +324,9 @@ section.styleguide-section {
       padding-top: ms(-2);
     }
   }
+}
+
+/* Responsive Images in the guide? */
+img {
+  max-width: 100%;
 }

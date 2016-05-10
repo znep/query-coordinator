@@ -33,7 +33,7 @@ ModalFactory.prototype = {
       }
     });
 
-    window.addEventListener('resize', function(event) {
+    window.addEventListener('resize', function() {
       var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
       modals.forEach(function(modal) {
         this.reposition(modal.querySelector('.modal-container'));

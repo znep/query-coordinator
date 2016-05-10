@@ -8,6 +8,6 @@
 .fontcustom-manifest.json
 /src/js/vendor
 /docs/javascripts/vendor
-/dist/prototypes
+/dist
 .npmrc
 npm-debug.log

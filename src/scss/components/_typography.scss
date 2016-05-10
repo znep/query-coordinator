@@ -1,13 +1,8 @@
-//Typography
-
-// Colors
 @import 'colors';
-
-//Modular Scale 
 @import "modular-scale";
+
 $ms-base: 15px;
 $ms-ratio: 1.618, 1.25, 1.333;
-
 
 $default-font-stack: "Open Sans", "Helvetica", Arial, sans-serif;
 
@@ -16,26 +11,35 @@ body {
   font-size: ms(0);
   line-height: 1.618;
   color: $dark-grey-2;
-
 }
 
-input, textarea, keygen, select, button {
+input,
+textarea,
+keygen,
+select,
+button {
   font-family: $default-font-stack;
   line-height: 1.25;
 }
 
-
-//Bring back the defaults
-
-h1, h2, h3, h4, h5, h6, p, ul, ol, {
-  //margin-bottom: 1.618em;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.3px;
 }
 
-p, ol, ul {
-  // Space above and below paragraphs should be related
-  // to the line height. So, 15px * 1.618 = 24.27px.
+p,
+ol,
+ul {
+  /*
+   * Space above and below paragraphs should be related
+   * to the line height. So, 15px * 1.618 = 24.27px.
+   */
   margin-bottom: 24.27px;
-  margin-top: 24.27px;  
+  margin-top: 24.27px;
 }
 
 i {
@@ -47,8 +51,8 @@ b {
 }
 
 ul {
-  list-style-type: disc;  
-  padding-left: ms(2);  
+  list-style-type: disc;
+  padding-left: ms(2);
 }
 
 ol {
@@ -56,35 +60,43 @@ ol {
   padding-left: ms(2);
 }
 
-// All of the headings. Additional "heaing classes" are used to style 
-// type in contexts where the heading style and semantics don't align.
+/*
+ * All of the headings. Additional "heaing classes" are used to style
+ * type in contexts where the heading style and semantics don't align.
+ */
 
-h1, .h1 {
+h1,
+.h1 {
   font-size: ms(5);
-  font-weight: 600; 
+  font-weight: 600;
 }
 
-h2, .h2 {
+h2,
+.h2 {
   font-size: ms(4);
   font-weight: 600;
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-size: ms(3);
   font-weight: 600;
 }
 
-h4, .h4 {
+h4,
+.h4 {
   font-size: ms(2);
   font-weight: 600;
 }
 
-h5, .h5 {
+h5,
+.h5 {
   font-size: ms(1);
   font-weight: 600;
 }
 
-h6, .h6 {
+h6,
+.h6 {
   font-size: ms(0);
   text-transform: uppercase;
   font-weight: 600;
@@ -98,6 +110,7 @@ h6, .h6 {
 .small {
   font-size: ms(-1);
 }
+
 .x-small {
   font-size: ms(-3);
 }
@@ -106,7 +119,6 @@ h6, .h6 {
   color: $quiet-text-color;
 }
 
-//ellipsify long stuff
 @mixin ellipsis() {
   overflow: hidden;
   white-space: nowrap;
@@ -130,6 +142,7 @@ h6, .h6 {
   border-width: 6px 6px 0 6px;
   margin-top: -2px;
 }
+
 @mixin triangle-up() {
   @include triangle;
 

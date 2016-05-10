@@ -14,7 +14,7 @@ function bootstrap(element) {
       new Styleguide[factory](element);
     });
   };
-};
+}
 
 module.exports = function(element) {
   if (document.readyState === 'complete') {

@@ -14,7 +14,8 @@
     visibility: hidden;
   }
 
-  &::before, &::after {
+  &::before,
+  &::after {
     border-color: transparent;
     border-style: solid;
     margin-top: -5px;

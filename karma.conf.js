@@ -14,6 +14,8 @@ webpackConfig[1].externals['socrata-utils'] = 'socrata.utils';
 delete webpackConfig[1].externals['react'];
 delete webpackConfig[1].externals['react-dom'];
 
+webpackConfig[1].resolve.root = [ __dirname ];
+
 module.exports = function(config) {
   config.set({
 

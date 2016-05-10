@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SvgColumnChart.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #column-chart-1,
+      #column-chart-2,
+      #column-chart-3 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="column-chart-1"></div>
+    <div id="column-chart-2"></div>
+    <div id="column-chart-3"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var DIMENSION = 'district_name';
+      var MEASURE = 'proficient_2';
+      var MEASURE_AGGREGATION = null;
+      var DATASET_UID = 'mu6e-brbz';
+      var DOMAIN = 'data.iowa.gov';
+      var FILTERS = [
+        {
+          columnName: 'topic',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: 'Math'
+          },
+          pivot: true
+        },
+        {
+          columnName: 'grade',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '3'
+          },
+          pivot: true
+        },
+        {
+          columnName: 'school_year',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '2014'
+          },
+          pivot: true
+        }
+      ];
+
+      var columnChart1Vif = {
+        configuration: {
+          axisLabels: {
+            top: 'School District',
+            right: '% Proficient',
+            bottom: 'School Districts in Iowa, Sorted Alphabetically',
+            left: '% of 3rd Grade Students Rated Proficient in Math (For Real)'
+          },
+          // The localization values should be set by the application but are
+          // set to string literals for the purposes of this example.
+          localization: {
+            NO_VALUE: 'No value',
+            FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
+            FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
+            FLYOUT_SELECTED_NOTICE: 'This column is selected'
+          }
+        },
+        description: 'Math proficiency by school district for 3rd graders in 2014',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: DIMENSION,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: MEASURE,
+                aggregationFunction: MEASURE_AGGREGATION
+              },
+              type: 'socrata.soql',
+              filters: FILTERS
+            },
+            label: 'Proficient',
+            type: 'columnChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: {
+          x: {
+            type: 'ordinal',
+            unit: {
+              one: 'category',
+              other: 'categories'
+            }
+          },
+          y: {
+            type: 'quantitative'
+          }
+        },
+        title: 'Math Proficienty for 3rd Graders - Iowa Public Schools'
+      };
+
+      var VIF_1_COLUMN_NAME = 'category';
+      var VIF_1_DATASET_UID = 'r6t9-rak2';
+      var VIF_1_DOMAIN = 'dataspace.demo.socrata.com';
+
+      // This is a version 1 VIF, which should be automatically migrated
+      // when passed to the visualization.
+      var columnChart2Vif = {
+        'aggregation': {
+          'columnName': null,
+          'function': 'count'
+        },
+        'columnName': VIF_1_COLUMN_NAME,
+        'configuration': {
+          'interactive': true,
+          // The localization values should be set by the application but are
+          // set to string literals for the purposes of this example.
+          'localization': {
+            'NO_VALUE': 'No value',
+            'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+            'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+            'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+          }
+        },
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': VIF_1_DATASET_UID,
+        'domain': VIF_1_DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': VIF_1_COLUMN_NAME,
+        'type': 'columnChart',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      };
+
+      var columnChart3Vif = _.cloneDeep(columnChart1Vif);
+      columnChart3Vif.configuration.axisLabels = {
+        top: null,
+        right: null,
+        bottom: 'School District',
+        left: '# Proficient v.s. Total'
+      };
+      columnChart3Vif.series = [
+        {
+          color: {
+            primary: 'silver',
+            secondary: null,
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: DIMENSION,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: 'proficient_1',
+              aggregationFunction: null
+            },
+            type: 'socrata.soql',
+            filters: FILTERS.concat([
+              {
+                columnName: 'district_name',
+                function: 'binaryOperator',
+                arguments: [
+                  {
+                    operator: '=',
+                    operand: 'Ames'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Ankeny'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Cedar Falls'
+                  }
+                ],
+                pivot: true
+              }
+            ])
+          },
+          label: 'Proficient',
+          type: 'columnChart',
+          unit: {
+            one: 'student',
+            other: 'students'
+          }
+        },
+        {
+          color: {
+            primary: 'gold',
+            secondary: null,
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: DIMENSION,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: 'total',
+              aggregationFunction: null
+            },
+            type: 'socrata.soql',
+            filters: FILTERS.concat([
+              {
+                columnName: 'district_name',
+                function: 'binaryOperator',
+                arguments: [
+                  {
+                    operator: '=',
+                    operand: 'Ames'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Ankeny'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Cedar Falls'
+                  }
+                ],
+                pivot: true
+              }
+            ])
+          },
+          label: 'Total',
+          type: 'columnChart',
+          unit: {
+            one: 'student',
+            other: 'students'
+          }
+        }
+      ];
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      var $columnChart1Element = $('#column-chart-1');
+      $columnChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart1Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart1Element.socrataSvgColumnChart(columnChart1Vif);
+
+      var $columnChart2Element = $('#column-chart-2');
+      $columnChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart2Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart2Element.socrataSvgColumnChart(columnChart2Vif);
+
+      var $columnChart3Element = $('#column-chart-3');
+      $columnChart3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart3Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart3Element.socrataSvgColumnChart(columnChart3Vif);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $columnChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+    });
+  </script>
+</html>

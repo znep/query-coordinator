@@ -1052,7 +1052,7 @@ a {
 
 	.content-placeholder {
 		width: 300px;
-		height: 320px;
+		height: 314px;
 		border: 2px dashed $light-grey-2;
 		float: left;
 		margin-right: ms(0);
@@ -1111,10 +1111,13 @@ a {
 #story-modal, #external-asset-modal {
 	.asset-info {
 		float: left;
-		margin-right: ms(3);
+		margin-right: ms(5);
 	}
 	#description {
 		height: 80px;
+	}
+	.url-error {
+		margin-bottom: ms(1);
 	}
 }
 

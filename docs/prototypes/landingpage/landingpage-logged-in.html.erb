@@ -67,11 +67,12 @@ layout: prototype
   })
 
   //remove featured story
-  $("#remove-story").on("click", function() {
-    $(".story-preview-block.actual-content").hide();
+  $(".remove-item").on("click", function() {
+    $(this).parent().parent().parent().parent().parent('.actual-content').hide();
   });
 
 
+//click outside closes menu
 $('body').on('click',function(event){
    if(!$(event.target).is('.add-button')){
      $(".btn-group-vertical.type-menu").addClass("hidden");
@@ -86,20 +87,72 @@ setTimeout( function(){
 
     if ($(this).val() == 'link' ) {
       $('.url-error').hide();
-      $('.actual-content').show();
+      $('#story-modal .actual-content').show();
+      $('#featured-item-1 .actual-content').show();
       $('#add-story-button').prop('disabled', false);
     }
 
     else {
-      $('.actual-content').hide();
+      $('#story-modal .actual-content').hide();
       $('.url-error').show();
       $('#add-story-button').prop('disabled', true);
     }
   })
 }, 4000);
 
-$('#add-story-button').on('click', function(){
-  $('#manage-featured-content-modal .actual-content').removeClass('hidden');
+
+ // Enable the add button with all filled out external info
+
+setTimeout( function(){
+  $('#ext-url-input').on('input propertychange', function(){
+
+    if ($(this).val() == 'external link' ) {
+      $('.url-error').hide();
+      $('#featured-item-2 .actual-content').show();
+      $('#add-external-button').prop('disabled', false);
+    }
+
+    else {
+      $('#featured-item-2 .actual-content').hide();
+      $('.url-error').show();
+      $('#add-external-button').prop('disabled', true);
+    }
+  })
+}, 5000);
+
+
+//show text in preview
+$(function() {
+  $('#ext-title-input').keyup(function() {
+    $('#ext-title-preview').text($(this).val());
+    $('#ext-asset-title').text($(this).val());
+  });
+});
+$(function() {
+  $('#ext-description-input').keyup(function() {
+    $('#ext-description-preview').text($(this).val());
+    $('#ext-asset-description').text($(this).val());
+  });
+});
+
+
+//display img upload
+function readURL(input) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#image-preview').attr('src', e.target.result);
+            $('#ext-asset-image').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#image-file").change(function(){
+    readURL(this);
 });
 
 
@@ -231,7 +284,7 @@ $(document).ready(function(){
       <div class="alert default featured-assets-msg">
         <div>
           <div class="two-thirds">Choose to promote assets that use this data. By default Socrata visualizations or Stories with the highest number of views will be shown.</div>
-          <button id="manage-featured-content" class="btn btn-default btn-sm" data-modal="manage-featured-content-modal">Manage Featured Items</button>
+          <button id="manage-featured-content" class="btn btn-default btn-sm" data-modal="manage-featured-content-modal">Manage Featured Content</button>
           <div class="self-clear"></div>
         </div>
       </div>
@@ -1221,7 +1274,7 @@ $(document).ready(function(){
 <div id="manage-featured-content-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Manage Featured Assets</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
@@ -1233,8 +1286,8 @@ $(document).ready(function(){
 
     <section class="modal-content">
 
-      <div class="content-placeholder">
-        <button id="featured-item-1" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+      <div id="featured-item-1" class="content-placeholder">
+        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
@@ -1256,7 +1309,7 @@ $(document).ready(function(){
                 <span class="date">Mar. 12, 2016</span>
               </div>
               <div class="second">
-                <span class="tag-category">Animal Control</span>
+                <span class="date">12,235 Views</span>
               </div>
             </div>
 
@@ -1268,7 +1321,7 @@ $(document).ready(function(){
                     <span class="icon-edit"></span>
                     Change
                   </button>
-                  <button id="remove-story" class="btn btn-primary-alt-1 btn-inverse">
+                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
                     <span class="icon-close"></span>
                     Remove
                   </button>
@@ -1284,22 +1337,96 @@ $(document).ready(function(){
 
       </div>
 
-      <div class="content-placeholder">
-        <button id="featured-item-2" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+      <div id="featured-item-2" class="content-placeholder">
+        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
           <button class="btn btn-default" data-modal="external-asset-modal">External Resource</button>
         </div>
 
+        <div class="story-preview-block actual-content hidden">
+          <div class="result-card media">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a id="ext-asset-title" href="#"></a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-external-square"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">External Content</span>
+              </div>
+
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <img id="ext-asset-image" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="">
+                <div class="btn-group-vertical" role="group">
+                  <button class="btn btn-primary-alt-3" data-modal="external-asset-modal">
+                    <span class="icon-edit"></span>
+                    Change
+                  </button>
+                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
+                    <span class="icon-close"></span>
+                    Remove
+                  </button>
+                </div>
+                <div id="ext-asset-description" class="entry-description"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-      <div class="content-placeholder">
-        <button id="featured-item-3" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+
+
+      <div id="featured-item-3" class="content-placeholder">
+        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
           <button class="btn btn-default" data-modal="external-asset-modal">External Resource</button>
         </div>
+        <div class="actual-content hidden">
+          <div class="result-card media no-meta">
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-map"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">12,234 Views</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper map">
+                  <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
+                   <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+                </div>
+                <div class="entry-description">
+                  Map showing the number of approved licenses for each neighborhood in the city.
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.result-card -->
+        </div>
+
+
       </div>
     </section>
 
@@ -1365,7 +1492,7 @@ $(document).ready(function(){
                 <span class="date">Mar. 12, 2016</span>
               </div>
               <div class="second">
-                <span class="tag-category">Animal Control</span>
+                <span class="date">12,235 Views</span>
               </div>
             </div>
 
@@ -1404,31 +1531,65 @@ $(document).ready(function(){
 
     <section class="modal-content">
       <div class="asset-info">
-        <form>
-          <label class="block-label">Link to Resource</label>
-          <input class="text-input link-form" type="text" autofocus placeholder="https://www.example.com"/>
-        </form>
+
         <form>
           <label class="block-label">Title</label>
-          <input class="text-input link-form" type="text" placeholder=""/>
+          <input id="ext-title-input" class="text-input link-form" autofocus type="text" placeholder=""/>
           <label class="block-label">Description</label>
-          <input id="description" class="text-input text-area link-form" type="text" placeholder=""/>
+          <input id="ext-description-input" class="text-input text-area link-form" type="text" placeholder=""/>
         </form>
+
+        <form>
+          <label class="block-label">Link to Resource</label>
+          <input id="ext-url-input" class="text-input link-form" type="text" placeholder="https://www.example.com"/>
+          <div class="alert warning url-error hidden">That doesn't look like a valid url...</div>
+        </form>
+
+
         <form id="preview-image" runat="server">
           <label class="block-label">Image</label>
-          <input type='file' id="img" />
+          <input type='file' id="image-file" />
         </form>
       </div>
 
       <div class="content-placeholder">
+        <div class="story-preview-block actual-content">
+          <div class="result-card media">
 
-          <img id="" src="#" alt="" /></div>
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a id="ext-title-preview" href="#">Title</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-external-square"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">External Content</span>
+              </div>
+
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <img id="image-preview" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="" />
+                <div id="ext-description-preview" class="entry-description">
+                  Description
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
 
     </section>
 
     <footer class="modal-actions">
       <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
-      <button class="btn btn-primary btn-sm" data-modal-dismiss>Add</button>
+      <button id="add-external-button" class="btn btn-primary btn-sm" data-modal-dismiss>Add</button>
     </footer>
   </div>
 </div>

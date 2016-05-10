@@ -212,6 +212,9 @@ kill_esri_reprojection_and_pass_different_webm:
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE. Defaults to 1000 unless explicitly set to another value. This is also the page size on Old UX grid view.
   defaultValue: true
+notify_import_result:
+  description: Enable 'notify me' button during data set import. Button will register an email interest for the user and trigger an email to be sent once dataset import is completed.
+  defaultValue: false
 odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
   defaultValue: true

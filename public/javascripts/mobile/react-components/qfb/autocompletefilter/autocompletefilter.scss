@@ -18,6 +18,16 @@
   border-radius: 2px;
   border: 1px solid #C7C7C7;
   min-width: 260px;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
   .search-icon {
     color: #ccc;
     font-size: 1.8rem;
@@ -28,7 +38,7 @@
     }
   }
   input {
-    width: 84%;
+    flex-grow: 2;
     padding: 3px;
     font-size: 1.6rem;
     border: none;

@@ -114,7 +114,7 @@ story_theme:
     reason: :not_intended_for_direct_manipulation
     instead: /stories/admin/themes
 theme_v3:
-  description: Data Lens theming, I think?
+  description: Data Lens theme for customizing logo_url, sign up/in/out links.
 upload_record_limit:
   description: Change the maximum number of rows for DI2 import.
   how_to_override_row_limits: https://docs.google.com/document/d/1wWtGTw00Gmon2QRyUBRHDahubCc6Fbqdz_RbK8W6U4M/edit

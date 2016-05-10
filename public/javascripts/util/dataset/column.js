@@ -393,9 +393,40 @@ var Column = ServerModel.extend({
             this.width -= 30;
         }
 
-        if (!$.isBlank(this.currentFilter) &&
-            $.isBlank(((this.view.metadata.jsonQuery || {}).namedFilters ||
-                {})['col' + this.id]))
+        // EN-4561 - Unable to create column chart with data series grouping.
+        //
+        // When a filter is created using the dropdown as part of a column header, the
+        // filter object is created in a certain format. When a filter is created using
+        // the filtering pane, the filter object is created in a different, distinct
+        // format. In the former case the creation of the filter also causes the column
+        // being filtered to have a `currentFilter` property on the object representing
+        // it in the dataset model, but this does not happen in the latter case.
+        //
+        // The substance of this bug is that this code path is executed when a filter is
+        // created using the dropdown on the column header (but not when a filter is
+        // created using the side pane), and this code path assumes that `this.view`
+        // exists and has a metadata property.
+        //
+        // For reasons I do not comprehend, column objects sometimes, but not always,
+        // have a `this.view` property and it appears to be ok if they don't have one,
+        // except in this case when we throw an error trying to access a child property
+        // of the non-existent view.
+        //
+        // This fix adds the two checks that `this.view` and `this.view.metadata` are
+        // not undefined in order to avoid the TypeError trying to read
+        // `this.view.metadata.jsonQuery`.
+        if (
+            !$.isBlank(this.currentFilter) &&
+            (
+                typeof this.view !== 'undefined' &&
+                typeof this.view.metadata !== 'undefined' &&
+                $.isBlank(
+                    (
+                        (this.view.metadata.jsonQuery || {}).namedFilters || {}
+                    )['col' + this.id]
+                )
+            )
+        )
         { delete this.currentFilter; }
 
         if (this.dataTypeName == 'nested_table' && !this._ntInit && !$.isBlank(this.view))

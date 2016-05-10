@@ -166,6 +166,14 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
+  test 'special snowflake SF api geo datasets do not die' do
+    setup_nbe_dataset_test(false, false)
+    @view.stubs(is_api_geospatial?: true)
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
+    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+    assert_response :success
+  end
+
   context 'with DSLP fully enabled' do
     should 'display the DSLP on the show path' do
       FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
@@ -178,7 +186,7 @@ class DatasetsControllerTest < ActionController::TestCase
       @test_view.stubs(find_dataset_landing_page_related_content: [])
 
       get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('.result-card').any?
+      assert_select_quiet('#app').any?
       assert_response 200
     end
 
@@ -193,7 +201,7 @@ class DatasetsControllerTest < ActionController::TestCase
       @test_view.stubs(find_dataset_landing_page_related_content: [])
 
       get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('.result-card').any?
+      assert_select_quiet('#app').any?
       assert_response 200
     end
 

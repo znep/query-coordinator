@@ -1,7 +1,6 @@
-<ul class="featuredViews clearfix">
+<ul class="featuredViews clearfix tiles-<%= widget.featured_views.size %>">
   <%- widget.featured_views.each do |featured_view| -%>
-    <li class="featuredViewContainer<%= ' last' if featured_view == widget.featured_views.last %>"
-      <%= raw "style=\"width:#{100.0 / widget.featured_views.size}%\"" unless featured_view == widget.featured_views.last %>>
+    <li class="featuredViewContainer<%= ' last' if featured_view == widget.featured_views.last %>">
       <div class="featuredView">
         <%- if featured_view[:display] == 'thumbnail' || featured_view[:display] == 'custom' -%>
           <a href="<%= featured_view.href %>">

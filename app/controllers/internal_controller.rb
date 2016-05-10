@@ -638,7 +638,7 @@ private
   def add_module_features(module_features, enabled, domain_cname)
     module_features.try(:each) do |feature|
       feature_is_a_module = AccountModule.include?(feature)
-      module_already_added = CurrentDomain.domain.modules.include?(feature)
+      module_already_added = Domain.find(domain_cname, true).modules.include?(feature)
       if feature_is_a_module && !module_already_added
         Domain.add_account_module(domain_cname, feature)
         notices << "Added account module `#{feature}` successfully."

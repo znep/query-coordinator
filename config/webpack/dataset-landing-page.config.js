@@ -9,9 +9,21 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/datasetLandingPage'),
   entry: './main',
   output: common.getOutput(identifier),
+  module: {
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        include: path.resolve(common.root, 'public/javascripts'),
+        loader: 'babel'
+      }
+    ]
+  },
   resolve: {
     alias: {
-      dotdotdot: 'dotdotdot/src/js/jquery.dotdotdot.min.js'
+      'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
+      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
+      '_': 'lodash',
+      'jQuery': 'jquery'
     }
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

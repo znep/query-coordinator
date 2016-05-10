@@ -27,12 +27,12 @@
  *
  *  { selector: 'jQuery-selector', attr: 'html-attribute-name'[, outsideWidget: true] }
  *      Same as above, but sets an html attribute instead of a css one.
- *  
+ *
  *  { selector: 'jQuery-selector', hideShow: true[, outsideWidget: true] }
  *      Shortcut for setting display to block if the value in the hash is
  *      true and none if false.  Could be done with the previous syntax but
  *      this is a common enough idiom for it to exist.
- *  
+ *
  *  { callback: function(value) { } }
  *      Runs a custom function.  Value will be the value of the hash at that
  *      point in the traversal.
@@ -40,13 +40,13 @@
  *  { selector: 'jQuery-selector', callback: function($elem, value) { }[, outsideWidget: true] }
  *      Same as above, but has a shortcut idiom to select the elements within
  *      the widget for you.
- *  
+ *
  *  Each item in the array will be run against the value.
  *
  *  In addition, if at any point while traversing both trees an array appears
  *  here before a leaf is reached on the customization hash, the following
  *  syntaxes are the only valid definitions:
- *  
+ *
  *  { callback: function(subhash) { } }
  *      The entire subtree that was not reached in the customization hash
  *      will be passed in as subhash.
@@ -54,7 +54,7 @@
  *  { selector: 'jQuery-selector', callback: function($elem, subhash) { }[, outsideWidget: true] }
  *      Same as above, but has a shortcut idiom to select the elements within
  *      the widget for you.
- *  
+ *
  *  Good luck!
  *
  *  PS. sorry, but these hashes is simply not going to be 80-wide compliant.
@@ -63,7 +63,7 @@
  */
 
 
-;(function($)
+(function($)
 {
 
 var publishNS = blist.namespace.fetch('blist.publish');

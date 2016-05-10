@@ -109,7 +109,7 @@ class View < Model
     # examine markers of API-ingressed geospatial datasets
     nbe_only = new_backend? && obe_view.nil?
     has_geo_column = (columns || []).any? { |column| column.dataTypeName =~ /(polygon|line|point)$/i }
-    half_tabular = displayType.nil? && is_tabular?
+    half_tabular = (displayType.nil? ||  displayType == 'map') && is_tabular?
 
     # return and cache this determination, because consumers may conditionally
     # override the metadata upon encountering a `true` case... in a way that
@@ -958,6 +958,8 @@ class View < Model
     @_is_public ||= display.is_public?
   end
 
+  # This represents whether or not the view is accessible exclusively to the current user.
+  # Importantly, note that is_private? is not the opposite of is_public?
   def is_private?
     grants.nil? || grants.length == 0
   end
@@ -1056,8 +1058,9 @@ class View < Model
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{preferred_id}.json"
   end
 
+  # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
   def odata_url(request = nil)
-    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{preferred_id}"
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
   end
 
   def seo_friendly_url(request = nil)

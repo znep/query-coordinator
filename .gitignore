@@ -10,7 +10,7 @@ socrata-node/DEPEND
 socrata-node/node_modules
 nbproject
 karma/coverage-reports
-karma/dataCards/mockTranslations.js
+karma/**/mockTranslations.js
 /.idea/
 node_modules
 npm-debug.log
@@ -22,3 +22,6 @@ frontend.iml
 manifest*.txt
 public/javascripts/dist
 public/stylesheets/styleguide
+frontend.tgz
+.byebug_history
+REVISION

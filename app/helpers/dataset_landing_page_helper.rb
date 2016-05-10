@@ -7,12 +7,15 @@ module DatasetLandingPageHelper
     end
   end
 
-  def format_date(date)
-    date ? date.to_s(:dslp) : I18n.t('dataset_landing_page.metadata.no_value')
+  def dataset_landing_page_translations
+    LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page'].
+      merge({
+        data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
+      })
   end
 
-  def format_number(number)
-    number_with_delimiter(number)
+  def render_dataset_landing_page_translations
+    javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
   def share_facebook_url
@@ -84,176 +87,23 @@ module DatasetLandingPageHelper
     formats
   end
 
-  def tag_links
-    (@view.tags || []).map.with_index { |tag, index|
-      query = { :tag => tag }.to_query
-      url = "/browse?#{query}"
-      content = link_to(tag, url)
-      content += ', ' if index < @view.tags.length - 1
-      raw("<span>#{content}</span>")
-    }.join('')
-  end
-
-  def view_icon(view)
-    return 'icon-dataset' unless view.display
-
-    case view.display.type
-    when 'grouped', 'filter'
-      'icon-filter'
-    when 'data_lens'
-      'icon-cards'
-    when 'story'
-      'icon-story'
-    when 'map', 'intensitymap', 'geomap', 'data_lens_map'
-      'icon-map'
-    when 'chart', 'annotatedtimeline', 'imagesparkline', 'areachart', 'barchart', 'columnchart', 'linechart', 'piechart', 'data_lens_chart'
-      'icon-bar-chart'
-    else
-      'icon-dataset'
+  def transformed_formats
+    if @view.is_geospatial? || @view.is_api_geospatial?
+      return [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
     end
-  end
 
-  def data_type_metadata
-    {
-      :blob => {
-        :icon => 'icon-data',
-        :soda_type => nil
-      },
-      :calendar_date => {
-        :icon => 'icon-date',
-        :soda_type => 'floating_timestamp',
-      },
-      :checkbox => {
-        :icon => 'icon-check',
-        :soda_type => 'checkbox',
-      },
-      :dataset_link => {
-        :icon => 'icon-link',
-        :soda_type => nil,
-      },
-      :date => {
-        :icon => 'icon-date',
-        :soda_type => nil,
-      },
-      :document => {
-        :icon => 'icon-copy-document',
-        :soda_type => nil,
-      },
-      :drop_down_list => {
-        :icon => 'icon-list-2',
-        :soda_type => nil,
-      },
-      :email => {
-        :icon => 'icon-email',
-        :soda_type => 'text',
-      },
-      :flag => {
-        :icon => 'icon-region',
-        :soda_type => 'text'
-      },
-      :geospatial => {
-        :icon => 'icon-geo',
-        :soda_type => nil
-      },
-      :html => {
-        :icon => 'icon-clear-formatting',
-        :soda_type => 'text'
-      },
-      :line => {
-        :icon => 'icon-geo',
-        :soda_type => 'line'
-      },
-      :link => {
-        :icon => 'icon-link',
-        :soda_type => 'text'
-      },
-      :list => {
-        :icon => 'icon-list-numbered',
-        :soda_type => nil
-      },
-      :location => {
-        :icon => 'icon-map',
-        :soda_type => 'location'
-      },
-      :money => {
-        :icon => 'icon-number',
-        :soda_type => 'money'
-      },
-      :multiline => {
-        :icon => 'icon-geo',
-        :soda_type => 'line'
-      },
-      :multipoint => {
-        :icon => 'icon-geo',
-        :soda_type => 'point'
-      },
-      :multipolygon => {
-        :icon => 'icon-geo',
-        :soda_type => 'polygon'
-      },
-      :nested_table => {
-        :icon => 'icon-table',
-        :soda_type => nil
-      },
-      :number => {
-        :icon => 'icon-number',
-        :soda_type => 'number'
-      },
-      :object => {
-        :icon => 'icon-data',
-        :soda_type => nil
-      },
-      :percent => {
-        :icon => 'icon-number',
-        :soda_type => 'number'
-      },
-      :photo => {
-        :icon => 'icon-chart',
-        :soda_type => nil
-      },
-      :point => {
-        :icon => 'icon-map',
-        :soda_type => 'point'
-      },
-      :polygon => {
-        :icon =>'icon-geo',
-        :soda_type => 'polygon'
-      },
-      :stars => {
-        :icon => nil,
-        :soda_type => 'number'
-      },
-      :text => {
-        :icon => 'icon-text',
-        :soda_type => 'text'
-      },
-      :url => {
-        :icon => 'icon-link',
-        :soda_type => 'text'
-      }
-    }.with_indifferent_access
-  end
+    formats = [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
 
-  def icon_class_for_data_type(data_type)
-    data_type_metadata[data_type] && data_type_metadata[data_type][:icon] || ''
-  end
-
-  def documentation_link_for_data_type(data_type)
-    return '' if data_type.blank?
-
-    data_type_text = t("dataset_landing_page.schema_preview.data_types.#{data_type}")
-
-    soda_type = data_type_metadata[data_type] && data_type_metadata[data_type][:soda_type]
-
-    if soda_type
-      link_to(data_type_text, "https://dev.socrata.com/docs/datatypes/#{soda_type}.html", :target => 'blank')
-    else
-      data_type_text
+    if FeatureFlags.derive(nil, request).enable_pdf_download_type
+      formats.push('pdf')
     end
-  end
 
-  def schema_table_column_count
-    7
+    if FeatureFlags.derive(nil, request).enable_xls_download_type
+      formats.push('xls')
+      formats.push('xlsx')
+    end
+
+    formats
   end
 
   def custom_metadata_fieldsets
@@ -267,6 +117,89 @@ module DatasetLandingPageHelper
       end
     end.map do |fieldset|
       fieldset.merge(existing_fields: custom_metadata.try(:assoc, fieldset.name).try(:[], 1) || {})
+    end
+  end
+
+  def attachments
+    if @view.metadata && @view.metadata.attachments.present?
+      @view.metadata.attachments.map do |attachment_data|
+        attachment = Attachment.set_up_model(attachment_data)
+        {
+          :name => attachment.name,
+          :link => link_to(attachment.filename, attachment.href(@view.id), :target => '_blank')
+        }
+      end
+    end
+  end
+
+  def transformed_view
+    if !view.is_geospatial?
+      row_count = @view.row_count
+    end
+
+    {
+      :id => @view.id,
+      :name => @view.name,
+      :description => @view.description,
+      :category => @view.category,
+      :attribution => @view.attribution,
+      :rowLabel => @view.row_label,
+      :columns => @view.columns,
+      :isPrivate => !@view.is_public?,
+      :isGeospatial => @view.is_geospatial?,
+      :gridUrl => data_grid_path(@view),
+      :downloadOverride => @view.downloadOverride,
+      :exportFormats => transformed_formats,
+      :lastUpdatedAt => @view.time_last_updated_at,
+      :dataLastUpdatedAt => @view.time_data_last_updated_at,
+      :metadataLastUpdatedAt => @view.time_metadata_last_updated_at,
+      :createdAt => @view.time_created_at,
+      :geospatialChildLayers => transformed_child_layers,
+      :rowCount => row_count,
+      :apiFoundryUrl => @view.api_foundry_url,
+      :resourceUrl => @view.resource_url,
+      :odataUrl => @view.odata_url,
+      :facebookShareUrl => share_facebook_url,
+      :twitterShareUrl => share_twitter_url,
+      :emailShareUrl => share_email_url,
+      :viewCount => @view.viewCount,
+      :downloadCount => @view.downloadCount,
+      :ownerName => @view.owner.displayName,
+      :customMetadataFieldsets => custom_metadata_fieldsets,
+      :attachments => attachments,
+      :tags => @view.tags,
+      :licenseName => @view.license.try(:name),
+      :attributionLink => @view.attributionLink
+    }
+  end
+
+  def transformed_featured_views
+    @featured_views.map do |featured_view|
+      {
+        :name => featured_view.name,
+        :description => sanitize(featured_view.description),
+        :url => featured_view.seo_friendly_url,
+        :displayType => featured_view.display.try(:type),
+        :updatedAt => featured_view.time_last_updated_at,
+        :viewCount => featured_view.viewCount,
+        :isPrivate => !featured_view.is_public?
+      }
+    end
+  end
+
+  def transformed_child_layers
+    @view.geospatial_child_layers.map do |child_layer|
+      {
+        :id => child_layer.id,
+        :name => child_layer.name,
+        :columns => child_layer.columns,
+        :isGeospatial => true,
+        :apiFoundryUrl => child_layer.api_foundry_url,
+        :resourceUrl => child_layer.resource_url,
+        :odataUrl => child_layer.odata_url,
+        :rowLabel => child_layer.row_label,
+        :rowCount => child_layer.row_count
+      }
     end
   end
 end

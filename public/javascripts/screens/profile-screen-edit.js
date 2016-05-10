@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     var $basicPane   = $('.editBasicInfoForm'),
         $imagePane   = $('.editProfileImageForm'),

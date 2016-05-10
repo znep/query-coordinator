@@ -869,7 +869,7 @@ editRRNS.setUpColumns = function($col)
         { editRRNS.enableFieldItem($(this)); });
 
     // Set up rows
-    editRRNS.setUpRows($col.find('.richLine'))
+    editRRNS.setUpRows($col.find('.richLine'));
 
     // Set up columns
     $col.find('.richColumn').andSelf().each(function()
@@ -1110,7 +1110,7 @@ editRRNS.initLayout = function()
 
     $.live('.renderArea .fieldItem', 'dblclick', function(e)
     {
-        var $t = $(this).children('.staticLabel');;
+        var $t = $(this).children('.staticLabel');
         if ($t.length < 1 || $t.hasClass('inEdit')) { return; }
 
         var t = '';

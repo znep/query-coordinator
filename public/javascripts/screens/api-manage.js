@@ -5,23 +5,23 @@ $(function() {
 	var init = {};
 	var ns = {};
 
-	init.permission = function() 
+	init.permission = function()
   {
 		$("#permission-host").pane_datasetPermissions({
 			view: blist.dataset,
       showFinishButtons: false
 		}).render();
-	}
+	};
 
-	init.sharing = function() 
+	init.sharing = function()
   {
 		$("#sharing-host").pane_shareDataset({
       view: blist.dataset,
       showFinishButtons: false
 		}).render();
-	}
+	};
 
-	init.applications = function() 
+	init.applications = function()
   {
     $(".hunum").each(function(elem){
       $(this).text(blistUtilNS.toHumaneNumber($(this).text()));
@@ -47,20 +47,20 @@ $(function() {
 				}
 			});
 		});
-	}
+	};
 
-	init.names = function() 
+	init.names = function()
   {
 		$(".disabled").attr("disabled", "disabled");
 		function updateColumn(columnFieldName, changes, callback, errorCallback) {
 			var col = _.find(blist.dataset.columns, function(col) {
-				return col.fieldName === columnFieldName
+				return col.fieldName === columnFieldName;
 			});
 			col.update(changes);
 			col.save(callback, errorCallback);
 		}
 
-		function bindLiveDocs() 
+		function bindLiveDocs()
     {
 			$('.liveDoc').each(function(index, element) {
 				var $element = $(element);
@@ -75,7 +75,7 @@ $(function() {
 
 		bindLiveDocs();
 		$("#updateField").click(function() {
-			var columnOriginalFieldName = $(".fieldName").value()
+			var columnOriginalFieldName = $(".fieldName").value();
 			var $prompt = $(".prompt");
 			$prompt.val(null);
 			updateColumn(
@@ -102,21 +102,21 @@ $(function() {
         }
       );
     });
-	}
+	};
 
-	init.transfer = function() 
+	init.transfer = function()
   {
 		$("#transfer-host").pane_plagiarism({
 			view: blist.dataset
 		}).render();
-	}
+	};
 
-	init['delete'] = function() 
+	init['delete'] = function()
   {
 		$("#delete-host").pane_deleteDataset({
 			view: blist.dataset
 		}).render();
-	}
+	};
 
   var morsel = $("#morselmenu");
   morsel.children('LI').mouseenter(function()

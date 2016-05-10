@@ -428,19 +428,28 @@ module BrowseActions
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results
 
+      # EN-5680: browse_options is huge for customers who use a lot of facets, and spitting
+      # out all of it into our logs is verbose (and costly for Sumo). Instead let's make
+      # abridged_browse_options which doesn't have all the facets and results.
+      abridged_browse_options = browse_options.dup.tap do |options|
+        options.delete(:facets)
+        options.delete(:custom_facets)
+        options.delete(:view_results)
+      end.to_json
+
       rescue CoreServer::TimeoutError
-        Rails.logger.warn("Timeout on CoreServer request for #{browse_options.to_json}")
+        Rails.logger.warn("Timeout on CoreServer request for #{abridged_browse_options}")
         browse_options[:view_request_error] = true
         browse_options[:view_results] = []
 
       rescue TimeoutError # Cetera calls just uses HTTParty
-        Rails.logger.warn("Timeout on Cetera request for #{browse_options.to_json}")
+        Rails.logger.warn("Timeout on Cetera request for #{abridged_browse_options}")
         browse_options[:view_request_error] = true
         browse_options[:view_request_timed_out] = true
         browse_options[:view_results] = []
 
       rescue => e
-        Rails.logger.error("Unexpected error for #{browse_options.to_json}: #{e}")
+        Rails.logger.error("Unexpected error for #{abridged_browse_options}: #{e}")
         browse_options[:view_request_error] = true
         browse_options[:view_request_timed_out] = true # Untrue, but causes helpful browse2 error message
         browse_options[:view_results] = []

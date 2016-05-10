@@ -1,4 +1,4 @@
-;$(function()
+$(function()
 {
     $('.federationList').combinationList({
         headerContainerSelector: '.gridListWrapper',

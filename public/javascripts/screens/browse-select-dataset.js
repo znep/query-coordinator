@@ -28,7 +28,7 @@ $(function()
             // Add an attribute to the iframe element that is the function to be called
             // Ex: $('iframe')[0].onDatasetSelected = function(datasetObj) {}
             // Context: This was added for Storyteller
-            window.frameElement.onDatasetSelected(selectedDataset)
+            window.frameElement.onDatasetSelected(selectedDataset);
         } else {
             // Default behavior when embedded in an environment with blist.common
             // and the frameElement.onDatasetSelected is not defined
@@ -37,7 +37,7 @@ $(function()
             if (_.isFunction(commonNS.selectedDataset)) {
                 commonNS.selectedDataset(selectedDataset);
             } else {
-                throw "Can't find the blist.common.selectedDataset handler in the parent!"
+                throw "Can't find the blist.common.selectedDataset handler in the parent!";
             }
         }
     });

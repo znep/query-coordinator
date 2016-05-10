@@ -812,10 +812,64 @@
 
 // PANES SOMETHING-OR-OTHER: in process...
 .workingPane {
-  padding-bottom: 7em;
+  padding-bottom: 5em;
   position: relative;
   .loadingSpinnerContainer {
-    top: 70%;
+    top: 45%;
+  }
+
+  .notifyUploadButtonContainer {
+    text-align: center;
+    font-size: 1.3em;
+  }
+  .requestingNotify {
+    @include throbber-icon;
+    display: none;
+  }
+  .notifyUploadComplete {
+    padding-top: 10%;
+    height: 5em;
+  }
+
+  .notifyUploadContainer {
+    display: none;
+    width: 33em;
+    margin: auto;
+  }
+
+  .notifyUploadButtonContainer {
+    width: 23.5em;
+    float: left;
+  }
+  .notifyUploadThrobberContainer {
+    width: 16px;
+    float: left;
+    margin-top: 1.2em;
+  }
+
+  .notifyUploadError {
+    display: none;
+    font-size: 1.4em;
+    text-align: center;
+  }
+
+  .notifyingUploadComplete {
+    display: none;
+
+    .green-check {
+      font-size: 1.5em;
+      vertical-align: sub;
+      color: #3C9E15;
+    }
+    .messaging {
+      text-align: center;
+      font-size: 1.5em;
+      line-height: 1.6em;
+    }
+    .messaging.sub {
+      color: #666;
+      font-size: 1.3em;
+    }
   }
 }
 

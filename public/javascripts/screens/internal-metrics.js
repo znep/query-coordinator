@@ -1,4 +1,4 @@
-;var metricsNS = blist.namespace.fetch('blist.metrics');
+var metricsNS = blist.namespace.fetch('blist.metrics');
 
 $(function()
 {

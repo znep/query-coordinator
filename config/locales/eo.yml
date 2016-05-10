@@ -1458,6 +1458,7 @@ eo:
       title:
   date:
     abbr_month_names:
+    month_names:
   error:
     back:
     error_500:

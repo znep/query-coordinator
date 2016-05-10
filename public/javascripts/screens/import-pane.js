@@ -12,7 +12,7 @@
 
 // TODO: fix the linting errors in this file and re-enable linting in the .eslintignore file
 
-;(function($){
+(function($){
 
 var importNS = blist.namespace.fetch('blist.importer');
 var t = function(str, props) { return $.t('screens.import_pane.' + str, props); };
@@ -104,7 +104,7 @@ var optionsForSelect = function(collection)
         return { tagName: 'option',
                      value: column.value,
                      contents: $.htmlEscape(column.label),
-                     'class': column['class'] } } );
+                     'class': column['class'] }; } );
 };
 
 // textize a list of columns
@@ -1676,7 +1676,7 @@ importNS.importColumnsPaneConfig = {
 
         if (columns.length === 0)
         {
-            _finalizeAddColumns()
+            _finalizeAddColumns();
             return; // nothin to do!
         }
 
@@ -1709,7 +1709,7 @@ importNS.importShapefilePaneConfig = {
         scan = state.scan;
         isShown = false;
         wizardCommand = command;
-        layers = scan.summary.layers
+        layers = scan.summary.layers;
         $pane = $paneLocal;
         $summary = $paneLocal.find('.shapeSummary');
         $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
@@ -1729,7 +1729,7 @@ importNS.importShapefilePaneConfig = {
 
             _.each(layers, function(layer, i)
             {
-                layer.id = i
+                layer.id = i;
                 layer.type = 'layer';
 
                 newLayerLine(layer);
@@ -1812,7 +1812,7 @@ importNS.importShapefilePaneConfig = {
     {
         updateLayerLines();
 
-        state.importer = {}
+        state.importer = {};
         state.importer.importLayers = $.makeArray($layersList.children().map(function()
         {
             return $.extend(true, {}, $(this).data('importLayer'));
@@ -1847,6 +1847,12 @@ importNS.importingPaneConfig = {
         submitError = null;
 
         $pane.loadingSpinner({showInitially: true});
+        if (!blist.feature_flags.notify_import_result) {
+            // If the notify_import_result feature flag isn't set, make sure the working pane looks correct
+            $pane.find('.notifyUploadComplete').hide();
+            $pane.css('padding-bottom', '7em');
+            $pane.find('.loadingSpinnerContainer').css('top', '70%');
+        }
 
         // let's figure out what to send to the server
         var importer, blueprint, translation;
@@ -1860,7 +1866,7 @@ importNS.importingPaneConfig = {
                     layerId: importLayer.layerId,
                     name: importLayer.name,
                     replacingUid: importLayer.replacingUid
-                }
+                };
             });
         }
         else
@@ -1985,7 +1991,7 @@ importNS.importingPaneConfig = {
                 type: 'post',
                 url: '/views?nbe=true',
                 data: JSON.stringify({ name: state.fileName })
-              })
+              });
             });
 
             // ...and we must add the columns to that view.
@@ -2092,7 +2098,7 @@ importNS.importingPaneConfig = {
                   if (isReimport) {
                     nextState = 'finish';
                   } else {
-                    nextState = 'metadata'
+                    nextState = 'metadata';
                   }
                 }
                 command.next(nextState);
@@ -2138,8 +2144,39 @@ importNS.importingPaneConfig = {
               },
               pending: function(response)
               {
+                  if (blist.feature_flags.notify_import_result) {
+                      var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete')
+                      if (!notifyButton.data('handlerAdded'))
+                      {
+                          $pane.find('.notifyUploadContainer').show();
+                          notifyButton.click(function(event)
+                          {
+                              $pane.find('.notifyUploadError').hide();
+                              $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
+                              $.socrataServer.makeRequest({
+                                  type: 'post',
+                                  contentType: 'application/json',
+                                  dataType: 'json',
+                                  url: '/users/' + blist.currentUser.id + '/email_interests.json',
+                                  data: JSON.stringify({ eventTag: "MAIL.IMPORT_ACTIVITY_COMPLETE", extraInfo: response.ticket }),
+                                  success: function(response)
+                                  {
+                                      $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
+                                      $pane.find('.notifyUploadContainer').hide();
+                                      $pane.find('.notifyUploadError').hide();
+                                      $pane.find('.notifyingUploadComplete').show();
+                                  },
+                                  error: function(xhr)
+                                  {
+                                      $pane.find('.notifyUploadError').show();
+                                  }
+                              });
+                          });
+                          notifyButton.data('handlerAdded', true);
+                      }
+                  }
                   if ($.subKeyDefined(response, 'details.stage')) {
-                    $pane.find('.importStatus').text(t(response.details.stage))
+                    $pane.find('.importStatus').text(t(response.details.stage));
                   } else if ($.subKeyDefined(response, 'details.progress')) {
                       var message = t('rows_imported', { num: response.details.progress });
                       if ($.subKeyDefined(response, 'details.layer'))
@@ -2186,6 +2223,6 @@ importNS.importWarningsPaneConfig = {
         }
         return 2; // go back two since we've imported.
     }
-}
+};
 
 })(jQuery);

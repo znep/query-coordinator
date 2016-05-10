@@ -14,7 +14,7 @@ bundle exec rake assets:webpack
 if [ ! $COMPRESS_ASSETS = "true" ]; then
   echo "compress_assets: off" >> $WORKSPACE/config/assets.yml
 fi
-bundle exec jammit
+bundle exec tools/unfukd_jammit
 bundle exec rake assets:unminified
 for asset in public/packages/*.js; do
   if [ ! -s $asset ]; then

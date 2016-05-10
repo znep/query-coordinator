@@ -2,9 +2,29 @@
   font-family: "Open Sans", sans-serif;
   opacity: 0;
 
-  &.loaded {
+  &.loaded,
+  &.failed {
     transition: opacity 0.25s;
     opacity: 1;
+  }
+
+  &.failed {
+    display: flex;
+    background-color: #f2f2f2;
+
+    .socrata-table {
+      display: none;
+    }
+  }
+
+  .alert.error {
+    width: 100%;
+    margin: auto 1rem;
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
   }
 }
 

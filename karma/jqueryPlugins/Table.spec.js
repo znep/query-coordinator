@@ -77,6 +77,7 @@ describe('views/Table', function() {
     var vif;
     var getTableDataSpy;
     var tableRenderSpy;
+    var tableRenderErrorSpy;
     // Arbitrary choice, in real life MetadataProvider.getDisplayableColumns provides this for us.
     var theSingleNonDisplayableColumn = 'location_city';
     var displayableColumns;
@@ -91,6 +92,7 @@ describe('views/Table', function() {
         })
       ));
       tableRenderSpy = sinon.spy();
+      tableRenderErrorSpy = sinon.spy();
 
       displayableColumns = _.filter(
         window.testData.CHICAGO_CRIMES_DATASET_METADATA.columns,
@@ -119,6 +121,7 @@ describe('views/Table', function() {
           this.howManyRowsCanFitInHeight = _.constant(6);
           this.destroy = _.noop;
           this.render = tableRenderSpy;
+          this.renderError = tableRenderErrorSpy;
         }
       });
 

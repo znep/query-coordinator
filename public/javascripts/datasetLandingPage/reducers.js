@@ -8,17 +8,28 @@ import {
   SEND_CONTACT_FORM,
   RESET_CONTACT_FORM,
   HANDLE_CONTACT_FORM_SUCCESS,
-  HANDLE_CONTACT_FORM_FAILURE
+  HANDLE_CONTACT_FORM_FAILURE,
+  REQUEST_FEATURED_VIEWS,
+  RECEIVE_FEATURED_VIEWS,
+  HANDLE_FEATURED_VIEWS_ERROR,
+  DISMISS_FEATURED_VIEWS_ERROR,
+  TOGGLE_FEATURED_VIEWS
 } from './actions';
 
+// TODO: Decide how we want to structure our reducers. How we decide to modify state will
+// help determine how to structure this switch.
 function datasetLandingPage(state, action) {
-  // TODO: Decide how we want to structure our reducers. How we decide to modify state will
-  // help determine how to structure this switch.
   if (_.isUndefined(state)) {
     return {
       view: window.initialState.view,
-      featuredViews: window.initialState.featuredViews,
-      contactForm: initialContactFormState()
+      contactForm: initialContactFormState(),
+      featuredViews: {
+        list: _.take(window.initialState.featuredViews, 3),
+        hasMore: window.initialState.featuredViews.length > 3,
+        hasError: false,
+        isLoading: false,
+        isCollapsed: false
+      }
     };
   }
 
@@ -58,6 +69,29 @@ function datasetLandingPage(state, action) {
 
     case HANDLE_CONTACT_FORM_FAILURE:
       state.contactForm.status = 'failure';
+      return state;
+
+    case REQUEST_FEATURED_VIEWS:
+      state.featuredViews.isLoading = true;
+      return state;
+
+    case RECEIVE_FEATURED_VIEWS:
+      state.featuredViews.list = state.featuredViews.list.concat(_.take(action.featuredViews, 3));
+      state.featuredViews.hasMore = action.featuredViews.length > 3;
+      state.featuredViews.isLoading = false;
+      return state;
+
+    case HANDLE_FEATURED_VIEWS_ERROR:
+      state.featuredViews.hasError = true;
+      state.featuredViews.isLoading = false;
+      return state;
+
+    case DISMISS_FEATURED_VIEWS_ERROR:
+      state.featuredViews.hasError = false;
+      return state;
+
+    case TOGGLE_FEATURED_VIEWS:
+      state.featuredViews.isCollapsed = !state.featuredViews.isCollapsed;
       return state;
 
     default:

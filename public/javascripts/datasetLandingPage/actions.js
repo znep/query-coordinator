@@ -106,3 +106,60 @@ export function submitContactForm() {
       })['catch'](() => dispatch(handleContactFormFailure()));
   };
 }
+
+export const REQUEST_FEATURED_VIEWS = 'REQUEST_FEATURED_VIEWS';
+export function requestFeaturedViews() {
+  return {
+    type: REQUEST_FEATURED_VIEWS
+  };
+}
+
+export const RECEIVE_FEATURED_VIEWS = 'RECEIVE_FEATURED_VIEWS';
+export function receiveFeaturedViews(featuredViews) {
+  return {
+    type: RECEIVE_FEATURED_VIEWS,
+    featuredViews: featuredViews
+  };
+}
+
+export const HANDLE_FEATURED_VIEWS_ERROR = 'HANDLE_FEATURED_VIEWS_ERROR';
+export function handleFeaturedViewsError() {
+  return {
+    type: HANDLE_FEATURED_VIEWS_ERROR
+  };
+}
+
+export const DISMISS_FEATURED_VIEWS_ERROR = 'DISMISS_FEATURED_VIEWS_ERROR';
+export function dismissFeaturedViewsError() {
+  return {
+    type: DISMISS_FEATURED_VIEWS_ERROR
+  };
+}
+
+export function loadMoreFeaturedViews() {
+  return function(dispatch, getState) {
+    var state = getState();
+
+    if (_.get(state, 'featuredViews.isLoading', false)) {
+      return;
+    }
+
+    var viewId = state.view.id;
+    var offset = _.get(state, 'featuredViews.list.length', 0);
+    var limit = 4;
+
+    dispatch(requestFeaturedViews());
+
+    fetch(`/dataset_landing_page/${viewId}/featured_views?limit=${limit}&offset=${offset}`).
+      then(response => response.json()).
+      then(featuredViews => dispatch(receiveFeaturedViews(featuredViews)))
+      ['catch'](() => dispatch(handleFeaturedViewsError()));
+  };
+}
+
+export const TOGGLE_FEATURED_VIEWS = 'TOGGLE_FEATURED_VIEWS';
+export function toggleFeaturedViews() {
+  return {
+    type: TOGGLE_FEATURED_VIEWS
+  };
+}

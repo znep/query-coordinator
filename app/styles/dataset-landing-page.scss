@@ -30,12 +30,12 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding: 0 11px;
-
-    .alert-dismiss {
-      float: right;
-      cursor: pointer;
-    }
   }
+}
+
+.alert-dismiss {
+  float: right;
+  cursor: pointer;
 }
 
 .info-pane {
@@ -172,13 +172,16 @@ main.container.landing-page-container {
     }
   }
 
+  .alert.error {
+    margin-top: 15px;
+  }
+
   .media-results {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
 
     .alert {
       width: 100%;
@@ -191,12 +194,19 @@ main.container.landing-page-container {
     }
 
     .result-card {
-      margin-right: 2%;
       flex: 0 0 auto;
       width: 32%;
+      margin-right: 2%;
 
-      &:last-child {
-        margin-right: 0;
+      &.loading-card {
+        display: flex;
+
+        .spinner-default {
+          width: 64px;
+          height: 64px;
+          border-width: 5px;
+          margin: auto;
+        }
       }
 
       .entry-header {
@@ -261,6 +271,29 @@ main.container.landing-page-container {
         .img-wrapper {
           display: flex;
           max-height: 150px;
+        }
+      }
+    }
+
+    @media(min-width: $medium) {
+      .result-card {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+
+      .result-card {
+        opacity: 0;
+
+        &.loading-card {
+          opacity: 1;
         }
       }
     }

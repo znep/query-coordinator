@@ -7,7 +7,13 @@ import datasetLandingPage from 'reducers';
 export function getDefaultStore() {
   return redux.createStore(datasetLandingPage, {
     view: mockView,
-    featuredViews: _.times(3, _.constant(mockFeaturedView)),
-    contactForm: mockContactForm
+    contactForm: mockContactForm,
+    featuredViews: {
+      list: _.times(3, _.constant(mockFeaturedView)),
+      hasMore: false,
+      hasError: false,
+      isLoading: false,
+      isCollapsed: false
+    }
   });
 }

@@ -174,7 +174,6 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
-<<<<<<< 33af515fa8c8b787cd8af8f91bcb840fe0af037c
   test 'special snowflake SF api geo datasets do not die' do
     setup_nbe_dataset_test(false, false)
     @view.stubs(is_api_geospatial?: true)

@@ -1,0 +1,30 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <%= rendered_stylesheet_tag 'administration-site-chrome' %>
+  <title>Editing Site Chrome | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="site-chrome-admin">
+  <div class="admin-header">
+    <div class="header-title">
+      <h1><%= t('controls.admin.site_chrome.site_appearance') %></h1>
+    </div>
+
+    <div class="header-controls">
+      <button><%= t('controls.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
+      <button><%= t('controls.admin.site_chrome.save_changes') %></button>
+    </div>
+  </div>
+
+  <ul class="tabs">
+    <li class="tab-link current" data-tab-id="general"><a href="#"><%= t('controls.admin.site_chrome.tabs.general_settings') %></a></li>
+    <li class="tab-link" data-tab-id="header"><a href="#" class=""><%= t('controls.admin.site_chrome.tabs.header_bar') %></a></li>
+    <li class="tab-link" data-tab-id="footer"><a href="#"><%= t('controls.admin.site_chrome.tabs.footer') %></a></li>
+    <li class="tab-link" data-tab-id="homepage"><a href="#"><%= t('controls.admin.site_chrome.tabs.homepage') %></a></li>
+    <li class="tab-link" data-tab-id="social"><a href="#"><%= t('controls.admin.site_chrome.tabs.social_sharing') %></a></li>
+  </ul>
+
+</div>
+
+<%= include_javascripts 'admin-site-chrome' %>

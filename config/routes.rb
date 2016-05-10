@@ -176,6 +176,8 @@ Frontend::Application.routes do
 
     resources :site_chrome
 
+    get '/site_chrome_admin', :controller => 'site_chrome_admin', :action => :index
+
     get '/templates/:id', :controller => 'remote_partials', :action => :templates
     get '/modals/:id', :controller => 'remote_partials', :action => :modals
 

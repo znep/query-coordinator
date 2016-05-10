@@ -321,6 +321,8 @@ javascripts:
     - public/javascripts/controls/grid-sidebar.js
     - public/javascripts/screens/admin-customizer.js
     - public/javascripts/screens/admin-sdp-template.js
+  admin-site-chrome:
+    - public/javascripts/screens/site-chrome.js
   admin-story:
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/screens/admin-story.js

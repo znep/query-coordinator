@@ -1,0 +1,79 @@
+$dark-grey: #7a7a7a;
+
+.site-chrome-admin {
+  font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+  max-width: 68rem;
+  margin: 24px auto 0;
+
+  button {
+    color: $dark-grey;
+    background-color: #fff;
+    border: solid 1px #c2c2c2;
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0;
+    margin-right: 0;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: 1px;
+    &:hover {
+      color: $dark-grey;
+      background-color: #e6e6e6;
+    }
+  }
+
+  .admin-header {
+    margin-bottom: 46px;
+    overflow: hidden;
+
+    .header-title {
+      float: left;
+      display: block;
+
+      h1 {
+        letter-spacing: -0.5px;
+        font-size: 27px;
+        font-weight: 600;
+      }
+    }
+
+    .header-controls {
+      float: right;
+      display: block;
+      text-align: right;
+      button {
+        [class*="icon-"] {
+          position: relative;
+          padding-left: 11px;
+        }
+      }
+    }
+  }
+
+  ul.tabs {
+    border-bottom: 1px solid #d6d6d6;
+    padding-bottom: 10px;
+    li {
+      display: inline-block;
+      padding: 0 11px;
+      a {
+        text-decoration: none;
+        color: $dark-grey;
+        padding: 6px 9px;
+        font-size: 15px;
+        &:hover {
+          border-bottom: 4px solid #d6d6d6;
+          color: #3d3d3d;
+        }
+      }
+      &.current a {
+        border-bottom: 4px solid #288DC1;
+        color: #3d3d3d;
+      }
+    }
+  }
+
+}

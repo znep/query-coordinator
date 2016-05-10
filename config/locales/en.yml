@@ -2209,6 +2209,16 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+      site_chrome:
+        site_appearance: Site Appearance
+        preview_changes: Preview Changes
+        save_changes: Save Changes
+        tabs:
+          general_settings: General Settings
+          header_bar: Header Bar
+          footer: Footer
+          homepage: Homepage
+          social_sharing: Social Sharing
       users:
         actions: Actions
         all: All

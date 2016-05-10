@@ -58,8 +58,50 @@ layout: prototype
 
   //get rid of alert
   $(".alert .icon-close-2").on("click", function() {
-    $(".alert").hide();
+    $("#private-alert").hide();
   })
+
+  //add featured content
+  $(".add-button").on("click", function() {
+    $(this).next(".btn-group-vertical").removeClass("hidden");
+  })
+
+  //remove featured story
+  $("#remove-story").on("click", function() {
+    $(".story-preview-block.actual-content").hide();
+  });
+
+
+$('body').on('click',function(event){
+   if(!$(event.target).is('.add-button')){
+     $(".btn-group-vertical.type-menu").addClass("hidden");
+   }
+});
+
+
+ // Enable the add button with a 'proper' stories link
+
+setTimeout( function(){
+  $('#story-url').on('input propertychange', function(){
+
+    if ($(this).val() == 'link' ) {
+      $('.url-error').hide();
+      $('.actual-content').show();
+      $('#add-story-button').prop('disabled', false);
+    }
+
+    else {
+      $('.actual-content').hide();
+      $('.url-error').show();
+      $('#add-story-button').prop('disabled', true);
+    }
+  })
+}, 4000);
+
+$('#add-story-button').on('click', function(){
+  $('#manage-featured-content-modal .actual-content').removeClass('hidden');
+});
+
 
 
 //tabs logic
@@ -90,7 +132,12 @@ $(document).ready(function(){
 
 
 <div class="container main">
-
+  <div id="private-alert" class="alert info full-width">
+    <div class="alert-content"> You are right now looking at a private dataset.
+      <a href="https://dataspace.demo.socrata.com/d/nnb5-m2k4?pane=manage" target="_blank">Click here to manage permissions</a>
+      <span class="icon-close-2"></span>
+    </div>
+  </div>
   <div class="content">
 
     <div class="header-card">
@@ -99,7 +146,7 @@ $(document).ready(function(){
 
         <div class="infopane-title">
 
-          <h1 class="infopane-name"></span> Current Liquor Licenses</h1>
+          <h1 class="infopane-name"><span class="icon-private" title="Private Dataset"></span> Current Liquor Licenses</h1>
           <span class="tag-official">
             <span class="icon-official"></span> OFFICIAL</span>
             <span class="tag-category">Licensing</span>
@@ -181,10 +228,20 @@ $(document).ready(function(){
     <div class="lp-section">
       <h2 class="section-header">Popular Content Using this Data</h2>
 
+      <div class="alert default featured-assets-msg">
+        <div>
+          <div class="two-thirds">Choose to promote assets that use this data. By default Socrata visualizations or Stories with the highest number of views will be shown.</div>
+          <button id="manage-featured-content" class="btn btn-default btn-sm" data-modal="manage-featured-content-modal">Manage Featured Items</button>
+          <div class="self-clear"></div>
+        </div>
+      </div>
+
       <div class="alert default" hidden="hidden">
         <b>Hmm...</b> Looks like there is no public content using this data.</a>
       </div>
+    </div>
 
+    <div class="lp-section">
       <div class="media-results">
         <div class="result-card media no-meta">
 
@@ -207,7 +264,6 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <div class="img-wrapper chart">
-                <!-- <span class="icon-bar-chart x-large-icon"></span>  --><!-- MVP -->
                  <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />
               </div>
               <div class="entry-description">
@@ -254,7 +310,7 @@ $(document).ready(function(){
 
           <div class="entry-header">
             <div class="entry-title">
-              <h2 class="entry-name"><a href="#">Licenses by Type</a></h2>
+              <h2 class="entry-name"><span class="icon-private" title="Private Asset"></span><a href="#">Licenses by Type</a></h2>
             </div>
             <div class="entry-view-type"><span class="icon-cards"></span></div>
           </div>
@@ -309,6 +365,7 @@ $(document).ready(function(){
 
     <div class='lp-section'>
       <h2 class="section-header editable">About this Dataset</h2>
+      <button class="btn btn-default btn-sm edit-button"><a href="https://dataspace.demo.socrata.com/dataset/Liquor-Authority-Quarterly-List-of-Active-Licenses/nnb5-m2k4/edit_metadata">Edit Metadata</a></button>
 
       <div class="card-frame">
 
@@ -1057,6 +1114,9 @@ $(document).ready(function(){
     </header>
 
     <section class="modal-content">
+      <div class="alert info">
+        <b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with. <a href=""> Click here to manage permissions</a>
+      </div>
     </section>
 
     <section class="modal-content">
@@ -1153,4 +1213,222 @@ $(document).ready(function(){
         <b>Thank You!</b> Your message has been sent.</a>
       </div>
     </section>
+  </div>
+</div>
+
+
+
+<div id="manage-featured-content-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Manage Featured Assets</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <p>Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources.</p>
+    </section>
+
+    <section class="modal-content">
+
+      <div class="content-placeholder">
+        <button id="featured-item-1" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <div class="btn-group-vertical type-menu hidden" role="group">
+          <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
+          <button class="btn btn-default" data-modal="story-modal">Story</button>
+          <button class="btn btn-default" data-modal="external-asset-modal">External Resource</button>
+        </div>
+
+        <div class="story-preview-block actual-content hidden">
+          <div class="result-card media">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-story"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="tag-category">Animal Control</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt="BOTTELS">
+                <div class="btn-group-vertical" role="group">
+                  <button class="btn btn-primary-alt-3" data-modal="story-modal">
+                    <span class="icon-edit"></span>
+                    Change
+                  </button>
+                  <button id="remove-story" class="btn btn-primary-alt-1 btn-inverse">
+                    <span class="icon-close"></span>
+                    Remove
+                  </button>
+                </div>
+                <div class="entry-description">
+                  Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="content-placeholder">
+        <button id="featured-item-2" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <div class="btn-group-vertical type-menu hidden" role="group">
+          <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
+          <button class="btn btn-default" data-modal="story-modal">Story</button>
+          <button class="btn btn-default" data-modal="external-asset-modal">External Resource</button>
+        </div>
+
+      </div>
+      <div class="content-placeholder">
+        <button id="featured-item-3" class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <div class="btn-group-vertical type-menu hidden" role="group">
+          <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
+          <button class="btn btn-default" data-modal="story-modal">Story</button>
+          <button class="btn btn-default" data-modal="external-asset-modal">External Resource</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+      <button class="btn btn-primary btn-sm" data-modal-dismiss>Save</button>
+    </footer>
+  </div>
+</div>
+
+
+<div id="socrata-viz-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Feature a Socrata Visualization</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+    </footer>
+  </div>
+</div>
+
+<div id="story-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Feature a Socrata Story</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <div class="asset-info">
+        <form>
+          <label class="block-label">Link to Story</label>
+          <input id="story-url" class="text-input link-form" type="text" autofocus placeholder="https://www.example.com/stories/s/abcd-efgh"/>
+        </form>
+        <div class="alert warning url-error hidden"><b>Hmm..</b> That doesn't look like a link to a Socrata Story</div>
+      </div>
+
+      <div class="content-placeholder">
+
+        <div class="story-preview-block actual-content hidden">
+          <div class="result-card media">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-story"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="tag-category">Animal Control</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" ">
+                <div class="entry-description">
+                  Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+      <button id="add-story-button" class="btn btn-primary btn-sm" disabled data-modal-dismiss>Add</button>
+    </footer>
+  </div>
+</div>
+
+
+<div id="external-asset-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Feature an External Resource</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <div class="asset-info">
+        <form>
+          <label class="block-label">Link to Resource</label>
+          <input class="text-input link-form" type="text" autofocus placeholder="https://www.example.com"/>
+        </form>
+        <form>
+          <label class="block-label">Title</label>
+          <input class="text-input link-form" type="text" placeholder=""/>
+          <label class="block-label">Description</label>
+          <input id="description" class="text-input text-area link-form" type="text" placeholder=""/>
+        </form>
+        <form id="preview-image" runat="server">
+          <label class="block-label">Image</label>
+          <input type='file' id="img" />
+        </form>
+      </div>
+
+      <div class="content-placeholder">
+
+          <img id="" src="#" alt="" /></div>
+
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+      <button class="btn btn-primary btn-sm" data-modal-dismiss>Add</button>
+    </footer>
+  </div>
 </div>

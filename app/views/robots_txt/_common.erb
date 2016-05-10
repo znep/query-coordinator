@@ -1,0 +1,40 @@
+<%# This is primarily targeted at Bing who are very aggressive and have hit us with 10+ req/sec on a single domain, but lets include it for everyone  %>
+Crawl-delay: 1
+
+<% if !Rails.env.end_with?('production') || CurrentDomain.feature?('suppress_robots') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
+
+<%==
+# Attempt to prevent crawling endless catalog filter combinations.  Still allows a single filter for SEO
+# by only matching if the filter comes after another parameter.  Subject to some false positives and negatives
+# but seems like a reasonable thing overall.
+
+prefixes = [
+    '/browse',    # base catalog
+    '/browse/*',  # /browse/embed, /browse/select_dataset, etc.
+    '/*/browse',  # localized browse, eg. /es/browse
+    '/page/*',    # Canvas 1 URL that can have catalog calls, eg. https://www.opendata.go.ke/page/poverty?category=Natural+Disasters&limitTo=maps&tags=transport+related+deaths&utf8=%E2%9C%93
+    '/catalog/*', # Canvas 1 URL that can have catalog calls, eg. https://metrochicagodata.socrata.com/catalog/transportation?category=Places+%26+Boundaries&federation_filter=7&limitTo=maps&sortBy=relevance&tags=veterans+memorial+tollway&utf8=%E2%9C%93
+    '/facet/*'    # Canvas 1 URL that can have catalog calls  eg. https://opendata.go.ke/facet/counties/Kirinyaga?limitTo=forms&tags=nutrition&utf8=%E2%9C%93&view_type=table
+  ]
+
+filters = [
+    'category',
+    'federation_filter',
+    'limitTo',
+    'q',
+    'sortBy',
+    'tags',
+    'view_type',
+  ]
+
+prefixes.product(filters).map { |prefix, filter| "Disallow: #{prefix}?*&#{filter}=" }.join("\n")
+%>
+
+Disallow: */edit$
+Disallow: /*/*/*/widget_preview
+Disallow: /OData.svc/
+Disallow: /analytics/add
+Disallow: /browse/embed
+Disallow: /login
+Disallow: /reset_password/
+Disallow: /views/INLINE/rows.json?*method=clustered2*

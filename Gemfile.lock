@@ -21,7 +21,7 @@ PATH
       httparty (~> 0.13)
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)

@@ -125,133 +125,148 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('`.getPhidippidesAugmentedDatasetMetadata`', function() {
+  describe('`.getShapefileMetadata`', function() {
 
-    describe('on request error', function() {
+    it('should merge results from the curated regions API and phidippides if they succeed', function(done) {
+      server.respondWith(/\/api\/curated_regions/, JSON.stringify({
+        geometryLabel: 'jellyfish',
+        featurePk: null
+      }));
 
-      it('should return an object containing "code" and "message" properties', function(done) {
+      server.respondWith(/\/metadata\/v1\/dataset/, JSON.stringify({
+        geometryLabel: 'cuttlefish',
+        featurePk: 'octopus'
+      }));
 
-        metadataProvider.
-          getPhidippidesAugmentedDatasetMetadata().
-          then(
-            function() {
+      metadataProvider.
+        getShapefileMetadata().
+        then(
+          function(data) {
+            expect(data.geometryLabel).to.equal('jellyfish');
+            expect(data.featurePk).to.equal('octopus');
+            done();
+          },
+          function(error) {
 
-              // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
-            },
-            function(error) {
+            // Fail the test since we expected a success response.
+            assert.isTrue(undefined);
+            done();
+          }
+        ).catch(
+          function(e) {
 
-              assert.property(error, 'status');
-              assert.property(error, 'message');
-              done();
-            }
-          ).catch(
-            function(e) {
+            // Fail the test since we shouldn't be encountering an
+            // exception in any case.
+            console.log(e.message);
+            assert.isFalse(e);
+            done();
+          }
+        );
 
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
-
-        server.respond([ERROR_STATUS, {}, SAMPLE_DATASET_METADATA_REQUEST_ERROR]);
-      });
-
-      it('should include the correct request error code', function(done) {
-
-        metadataProvider.
-          getPhidippidesAugmentedDatasetMetadata().
-          then(
-            function() {
-
-              // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
-            },
-            function(error) {
-
-              assert.equal(error.status, ERROR_STATUS);
-              done();
-            }
-          ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
-
-        server.respond([ERROR_STATUS, {}, SAMPLE_DATASET_METADATA_REQUEST_ERROR]);
-      });
-
-      it('should include the correct request error message', function(done) {
-
-        metadataProvider.
-          getPhidippidesAugmentedDatasetMetadata().
-          then(
-            function() {
-
-              // Fail the test since we expected an error response.
-              assert.isTrue(undefined);
-              done();
-            },
-            function(error) {
-
-              assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
-              done();
-            }
-          ).catch(
-            function(e) {
-
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.error(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
-
-        server.respond([ERROR_STATUS, {}, SAMPLE_DATASET_METADATA_REQUEST_ERROR]);
-      });
+      server.respond();
     });
 
-    describe('on request success', function(done) {
+    it('should use the results from phidippides if the curated regions request fails', function(done) {
+      server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
+      server.respondWith(/\/metadata\/v1\/dataset/, JSON.stringify({
+        geometryLabel: 'cuttlefish',
+        featurePk: 'octopus'
+      }));
 
-      it('should return the expected metadata', function(done) {
+      metadataProvider.
+        getShapefileMetadata().
+        then(
+          function(data) {
+            expect(data.geometryLabel).to.equal('cuttlefish');
+            expect(data.featurePk).to.equal('octopus');
+            done();
+          },
+          function(error) {
 
-        metadataProvider.
-          getPhidippidesAugmentedDatasetMetadata().
-          then(
-            function(data) {
+            // Fail the test since we expected a success response.
+            assert.isTrue(undefined);
+            done();
+          }
+        ).catch(
+          function(e) {
 
-              assert.deepEqual(data, JSON.parse(SAMPLE_DATASET_METADATA_REQUEST_RESPONSE));
-              done();
-            },
-            function(error) {
+            // Fail the test since we shouldn't be encountering an
+            // exception in any case.
+            console.log(e.message);
+            assert.isFalse(e);
+            done();
+          }
+        );
 
-              // Fail the test since we expected a success response.
-              assert.isTrue(undefined);
-              done();
-            }
-          ).catch(
-            function(e) {
+      server.respond();
+    });
 
-              // Fail the test since we shouldn't be encountering an
-              // exception in any case.
-              console.log(e.message);
-              assert.isFalse(e);
-              done();
-            }
-          );
+    it('should use the results from the curated regions API if the phidippides request fails', function(done) {
+      server.respondWith(/\/api\/curated_regions/, JSON.stringify({
+        geometryLabel: null,
+        featurePk: 'cnidaria'
+      }));
 
-        server.respond([SUCCESS_STATUS, {}, SAMPLE_DATASET_METADATA_REQUEST_RESPONSE]);
-      });
+      server.respondWith(/\/metadata\/v1\/dataset/, [ERROR_STATUS, {}, '']);
+
+      metadataProvider.
+        getShapefileMetadata().
+        then(
+          function(data) {
+            expect(data.geometryLabel).to.equal(null);
+            expect(data.featurePk).to.equal('cnidaria');
+            done();
+          },
+          function(error) {
+
+            // Fail the test since we expected a success response.
+            assert.isTrue(undefined);
+            done();
+          }
+        ).catch(
+          function(e) {
+
+            // Fail the test since we shouldn't be encountering an
+            // exception in any case.
+            console.log(e.message);
+            assert.isFalse(e);
+            done();
+          }
+        );
+
+      server.respond();
+    });
+
+    it('should return default values for both metadata keys if both requests fail', function(done) {
+      server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
+      server.respondWith(/\/metadata\/v1\/dataset/, [ERROR_STATUS, {}, '']);
+
+      metadataProvider.
+        getShapefileMetadata().
+        then(
+          function(data) {
+            expect(data.geometryLabel).to.equal(null);
+            expect(data.featurePk).to.equal('_feature_id');
+            done();
+          },
+          function(error) {
+
+            // Fail the test since we expected a success response.
+            assert.isTrue(undefined);
+            done();
+          }
+        ).catch(
+          function(e) {
+
+            // Fail the test since we shouldn't be encountering an
+            // exception in any case.
+            console.log(e.message);
+            assert.isFalse(e);
+            done();
+          }
+        );
+
+      server.respond();
     });
   });
 

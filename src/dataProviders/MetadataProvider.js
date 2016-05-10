@@ -34,63 +34,85 @@ function MetadataProvider(config) {
     return Promise.resolve($.get(url));
   };
 
-  /**
-   * NOTE:
-   * Columns are structured in an object, where the key is the
-   * API field name and the value is column metadata.
-   */
-  this.getPhidippidesAugmentedDatasetMetadata = function() {
+  this.getShapefileMetadata = function() {
+    function makeRequest(url) {
+      return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
 
-    var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
+        function onFail() {
+
+          return reject({
+            status: parseInt(xhr.status, 10),
+            message: xhr.statusText
+          });
+        }
+
+        xhr.onload = function() {
+          var status = parseInt(xhr.status, 10);
+
+          if (status === 200) {
+
+            try {
+
+              return resolve(
+                JSON.parse(xhr.responseText)
+              );
+            } catch (e) {
+              // Let this fall through to the `onFail()` below.
+            }
+          }
+
+          onFail();
+        };
+
+        xhr.onabort = onFail;
+        xhr.onerror = onFail;
+
+        xhr.open('GET', url, true);
+
+        // Set user-defined headers.
+        var headers = {
+          Accept: 'application/json'
+        };
+
+        _.each(headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
+
+        xhr.send();
+      })['catch'](_.constant(null));
+    }
+
+
+    var curatedRegionsUrl = 'https://{0}/api/curated_regions?method=getByViewUid&viewUid={1}'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
     );
-    var headers = {
-      Accept: 'application/json'
-    };
 
-    return new Promise(function(resolve, reject) {
+    var phidippidesUrl = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
+      this.getConfigurationProperty('domain'),
+      this.getConfigurationProperty('datasetUid')
+    );
 
-      var xhr = new XMLHttpRequest();
+    var curatedRegionsRequest = makeRequest(curatedRegionsUrl);
+    var phidippidesRequest = makeRequest(phidippidesUrl);
 
-      function onFail() {
+    return Promise.all([curatedRegionsRequest, phidippidesRequest]).then(function(responses) {
+      var curatedRegionsResponse = responses[0];
+      var phidippidesResponse = responses[1];
 
-        return reject({
-          status: parseInt(xhr.status, 10),
-          message: xhr.statusText
-        });
-      }
+      var curatedRegionsGeometryLabel = _.get(curatedRegionsResponse, 'geometryLabel', null);
+      var phidippidesGeometryLabel = _.get(phidippidesResponse, 'geometryLabel', null);
+      var geometryLabel = curatedRegionsGeometryLabel || phidippidesGeometryLabel;
 
-      xhr.onload = function() {
+      var curatedRegionsFeaturePk = _.get(curatedRegionsResponse, 'featurePk', null);
+      var phidippidesFeaturePk = _.get(phidippidesResponse, 'featurePk', null);
+      var featurePk = curatedRegionsFeaturePk || phidippidesFeaturePk || '_feature_id';
 
-        var status = parseInt(xhr.status, 10);
-
-        if (status === 200) {
-
-          try {
-
-            return resolve(
-              JSON.parse(xhr.responseText)
-            );
-          } catch (e) {
-            // Let this fall through to the `onFail()` below.
-          }
-        }
-
-        onFail();
+      return {
+        geometryLabel: geometryLabel,
+        featurePk: featurePk
       };
-
-      xhr.onabort = onFail;
-      xhr.onerror = onFail;
-
-      xhr.open('GET', url, true);
-
-      // Set user-defined headers.
-      _.each(headers, function(value, key) {
-        xhr.setRequestHeader(key, value);
-      });
-
-      xhr.send();
     });
   };
 

@@ -87,6 +87,11 @@
   overflow-y: auto;
   margin-bottom: 1rem;
 
+  .modal-full & {
+    max-height: 100vh;
+    padding: 0 ms(2);
+  }
+
   *:first-child {
     margin-top: 0;
   }

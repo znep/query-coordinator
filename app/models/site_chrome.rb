@@ -12,9 +12,10 @@ class SiteChrome < OpenStruct
 
   # For talking to core
   attr_accessor :request_id, :cookies, :errors
+  # request_id and cookies are literal strings as in the header,
+  # errors is an array
 
-  # TODO: append_error and clear_errors
-
+  # TODO: append_error
   def clear_errors
     @errors = []
   end
@@ -29,21 +30,24 @@ class SiteChrome < OpenStruct
     }
   end
 
-  def initialize(hash = {})
-    clear_errors
-    super(SiteChrome.default_values.merge(hash))
+  # NOTE: obviously this is local to my dev box while I'm developing this and it changes frequently
+  def self.local_dev_box_auth_cookies
+    { "remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "logged_in"=>"true", "mp_mixpanel__c"=>"7", "mp_mixpanel__c3"=>"12706", "mp_mixpanel__c4"=>"9207", "mp_mixpanel__c5"=>"64", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q" }.
+      map { |k, v| "#{k}=#{v}" }.join(';')
   end
 
-  def self.auth_cookie_string
-    {"remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "logged_in"=>"true", "mp_mixpanel__c"=>"7", "mp_mixpanel__c3"=>"12706", "mp_mixpanel__c4"=>"9207", "mp_mixpanel__c5"=>"64", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q"}.map { |k, v| "#{k}=#{v}" }.join(';')
+  def initialize(hash = {})
+    clear_errors
+    @cookies = nil # SiteChrome.local_dev_box_auth_cookies
+    super(SiteChrome.default_values.merge(hash))
   end
 
   def request_headers
     {
       'Content-Type' => 'application/json',
-      'Cookie' => SiteChrome.auth_cookie_string,
-      'X-Socrata-Host' => 'localhost'
-    }
+      'Cookie' => @cookies,
+      'X-Socrata-Host' => CurrentDomain.cname.present? ? CurrentDomain.cname : 'localhost'
+    }.compact
   end
 
   # maybe not needed
@@ -205,7 +209,7 @@ class SiteChrome < OpenStruct
     handle_property_response(res)
   end
 
-  # TODO: use response handler
+  # TODO: use response handler?
   def reload_properties
     res = SiteChrome.get(properties_path, timeout: 5)
     res.success? && self.properties = res.to_a

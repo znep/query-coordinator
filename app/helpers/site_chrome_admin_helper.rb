@@ -1,0 +1,2 @@
+module SiteChromeAdminHelper
+end

@@ -44,5 +44,4 @@ module UserAuthMethods
     UserSession.controller = self
     UserSession.update_current_user(nil, nil)
   end
-
 end

@@ -76,4 +76,12 @@ $dark-grey: #7a7a7a;
     }
   }
 
+  .tab-content {
+    display: none;
+
+    &.current {
+      display: block;
+    }
+  }
+
 }

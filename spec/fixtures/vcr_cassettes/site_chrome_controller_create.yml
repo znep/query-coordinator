@@ -10,7 +10,7 @@ http_interactions:
       Content-Type: 
       - application/json
       Cookie: 
-      - remember_token=eR9ZWVZCdcvcpTOw8ouyJA;logged_in=true;mp_mixpanel__c=7;mp_mixpanel__c3=12706;mp_mixpanel__c4=9207;mp_mixpanel__c5=64;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa;socrata-csrf-token=R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=;_core_session_id=ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q
+      - logged_in=true; _socrata_session_id=BAh7CEkiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEZJIgl1c2VyBjsARmkH--453acf9420884d37b8603df38e14142985922fec; _core_session_id=ODNueS13OXplIDE0NjI5MjY2MDAgMzVlNzMwMzFjMGEyIDVlM2JmZDZhN2FlYjAzMDA0M2NmMTU5ZDIyMTBhYWM3Y2NiNWMwZjE=; socrata-csrf-token=R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=
       X-Socrata-Host: 
       - localhost
   response: 
@@ -19,11 +19,11 @@ http_interactions:
       message: OK
     headers: 
       X-Socrata-Requestid: 
-      - 6mloievt24emtq6e5xiq08r6r
+      - 9hr82gxy2semb4jr12fwhzoiv
       Access-Control-Allow-Origin: 
       - "*"
       Set-Cookie: 
-      - _core_session_id=ODNueS13OXplIDE0NjI4NTc0NDAgYjE2YjUxZDk3NWY0IGEzNmM2NTQ3Y2FiZjdjZTI4MjgyMGQ2YWU2YTU5MzgyYTRmMGQ0MTc;Path=/
+      - _core_session_id=ODNueS13OXplIDE0NjI5MjkwMTMgMzVlNzMwMzFjMGEyIDA3YjRjYzYyODBjM2IyOWI0NjRlNjcyODIwMmQzMWE0Y2EyN2U5Yzg;Path=/
       Expires: 
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type: 
@@ -36,14 +36,14 @@ http_interactions:
       encoding: US-ASCII
       string: |
         {
-          "id" : 95,
+          "id" : 96,
           "name" : "Site Chrome",
           "default" : false,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1462835840
+          "updatedAt" : 1462907413
         }
 
     http_version: 
-  recorded_at: Mon, 09 May 2016 23:17:20 GMT
+  recorded_at: Tue, 10 May 2016 19:10:13 GMT
 recorded_with: VCR 3.0.1

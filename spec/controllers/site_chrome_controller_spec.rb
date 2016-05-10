@@ -6,6 +6,7 @@ describe SiteChromeController do
   before :each do
     init_current_domain
     init_core_session
+    @request.host = 'localhost' # VCR tapes were recorded against localhost
   end
 
   after :each do
@@ -20,14 +21,14 @@ describe SiteChromeController do
   def auth_cookies
     {
       'remember_token' => 'eR9ZWVZCdcvcpTOw8ouyJA',
+      'mp_mixpanel__c' => '31',
+      'mp_mixpanel__c3' => '39199',
+      'mp_mixpanel__c4' => '32017',
+      'mp_mixpanel__c5' => '218',
       'logged_in' => 'true',
-      'mp_mixpanel__c' => '7',
-      'mp_mixpanel__c3' => '12706',
-      'mp_mixpanel__c4' => '9207',
-      'mp_mixpanel__c5' => '64',
-      '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa',
       'socrata-csrf-token' => 'R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=',
-      '_core_session_id' => 'ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q'
+      '_socrata_session_id' => 'BAh7CEkiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEZJIgl1c2VyBjsARmkH--453acf9420884d37b8603df38e14142985922fec',
+      '_core_session_id' => 'ODNueS13OXplIDE0NjI5MjY2MDAgMzVlNzMwMzFjMGEyIDVlM2JmZDZhN2FlYjAzMDA0M2NmMTU5ZDIyMTBhYWM3Y2NiNWMwZjE='
     }
   end
 
@@ -150,21 +151,27 @@ describe SiteChromeController do
 
     it 'works if admin' do
       init_current_user(@controller)
-      stub_superadmin_user
+      stub_superadmin_user # auth for FE
+
+      # now we get auth for core
+      auth_cookies.each { |key, value| @request.cookies[key] = value }
+
       VCR.use_cassette('site_chrome_controller_create') do
         post :create, site_chrome: site_chrome
-        expect(response).to be_success
+        # Q: How to get assignes and then infer redirect path?
+        # expect(response).to redirect_to(site_chrome_path(id: site_chrome_id))
       end
     end
   end
 
   describe 'update' do
-    site_chrome = { properties: { 'some_key' => 'some_value' } }
-    name_value_hash = { 'name' => 'some_key', 'value' => 'some_value' }
+    site_chrome = { properties: { 'some_key' => 'some_fine_value' } }
 
     it 'redirects if not logged in' do
-      put :update, id: site_chrome_id, site_chrome: site_chrome
-      expect(response).to redirect_to(login_url)
+      VCR.use_cassette('site_controller_update_not_logged_in') do
+        put :update, id: site_chrome_id, site_chrome: site_chrome
+        expect(response).to redirect_to(login_url)
+      end
     end
 
     it 'is forbidden to non-admins' do
@@ -176,16 +183,20 @@ describe SiteChromeController do
 
     it 'works if admin' do
       init_current_user(@controller)
-      stub_superadmin_user
+      stub_superadmin_user # auth for rails but not for core
 
+      # now we get auth for core
       auth_cookies.each { |key, value| @request.cookies[key] = value }
 
       VCR.use_cassette('site_chrome_controller_update') do
-        put :update, id: site_chrome_id, site_chrome: site_chrome
-        expect(response).to be_success
+        sc_before_update = SiteChrome.find_one(site_chrome_id)
+        expect(sc_before_update.content).not_to include('some_key' => 'some_fine_value')
 
-        site_chrome_reloaded = SiteChrome.find_one(site_chrome_id)
-        expect(site_chrome_reloaded.properties).to include(name_value_hash)
+        put :update, id: site_chrome_id, site_chrome: site_chrome
+        expect(response).to redirect_to(site_chrome_path(id: site_chrome_id))
+
+        sc_after_update = SiteChrome.find_one(site_chrome_id)
+        expect(sc_after_update.content).to include('some_key' => 'some_fine_value')
       end
     end
   end

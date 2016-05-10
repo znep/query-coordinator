@@ -25,6 +25,12 @@
     <li class="tab-link" data-tab-id="social"><a href="#"><%= t('controls.admin.site_chrome.tabs.social_sharing') %></a></li>
   </ul>
 
+  <% for section in %w(general header footer homepage social) %>
+    <div class="tab-content">
+      <%= render(:partial => "site_chrome_admin/tab_content/#{section}") %>
+    </div>
+  <% end %>
+
 </div>
 
 <%= include_javascripts 'admin-site-chrome' %>

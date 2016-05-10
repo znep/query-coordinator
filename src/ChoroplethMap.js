@@ -134,11 +134,8 @@ $.fn.socrataChoroplethMap = function(vif) {
   } else {
 
     shapefileMetadataRequest = shapefileMetadataProvider.
-      getPhidippidesAugmentedDatasetMetadata().
-      then(
-        function(shapefileMetadata) {
-          return shapefileMetadata;
-        },
+      getShapefileMetadata().
+      catch(
         function(error) {
           _logError(error);
 
@@ -157,7 +154,6 @@ $.fn.socrataChoroplethMap = function(vif) {
           };
         }
       );
-
   }
 
   featureExtentRequest = datasetGeospaceDataProvider.

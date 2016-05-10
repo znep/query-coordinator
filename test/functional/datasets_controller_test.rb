@@ -317,6 +317,33 @@ class DatasetsControllerTest < ActionController::TestCase
 
   end
 
+  context 'contacting dataset owner' do
+    setup do
+      stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
+        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        to_return(:status => 200, :body => "", :headers => {})
+    end
+
+    should 'return a JSON failure result if view is missing' do
+      @controller.stubs(:get_view => nil)
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
+      assert_equal('400', @response.code)
+      assert_equal({:success => false, :message => 'Can\'t find view: 1234-abcd'}.to_json, @response.body, 'should include a failure JSON response')
+    end
+
+    should 'return a JSON failure result if missing params' do
+      post(:contact_dataset_owner, {:id => '1234-abcd', :format => :data})
+      assert_equal('400', @response.code)
+      assert_equal({:success => false, :message => 'Missing key: type'}.to_json, @response.body, 'should include a failure JSON response')
+    end
+
+    should 'send email and return a JSON success result if all params present' do
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
+      assert_equal('200', @response.code)
+      assert_equal({:success => true}.to_json, @response.body, 'should include a success JSON response')
+    end
+  end
+
   context 'helper methods' do
 
     should 'respond to is_mobile?' do

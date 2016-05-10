@@ -40,10 +40,23 @@ module DatasetLandingPageHelper
       :userOwnsDataset => @view.owned_by?(current_user),
       :socrataEmployee => current_user.try(:is_admin?) || false,
       :userRoleName => current_user.try(:roleName) || 'N/A',
-      :viewId => @view.try(:id) || 'N/A'
+      :viewId => @view.try(:id) || 'N/A',
+      :email => current_user.try(:email)
     }
 
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+  end
+
+  # TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+  def render_contact_form_data
+    contact_form_data = {
+      :contactFormEnabled => FeatureFlags.derive(nil, request).enable_dataset_landing_page_contact_form,
+      :token => form_authenticity_token.to_s,
+      :locale => I18n.locale.to_s,
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+    }
+
+    javascript_tag("var contactFormData = #{json_escape(contact_form_data.to_json)};")
   end
 
   def render_current_user

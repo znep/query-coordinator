@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
 
+var contactFormData = window.contactFormData;
+
 export var MetadataTable = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
@@ -25,9 +27,17 @@ export var MetadataTable = React.createClass({
     var attribution;
     var attributionLink;
     var category;
+    var contactFormButton;
     var customMetadataFieldsets;
     var license;
     var tags;
+
+    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+    contactFormButton = contactFormData.contactFormEnabled ?
+      <button className="btn btn-sm btn-primary btn-block contact-dataset-owner" data-modal="contact-modal">
+        {I18n.contact_dataset_owner}
+      </button> :
+      null;
 
     if (view.attribution) {
       attribution = (
@@ -250,9 +260,7 @@ export var MetadataTable = React.createClass({
                 </div>
               </div>
 
-              <button className="btn btn-sm btn-primary btn-block contact-dataset-owner">
-                {I18n.contact_dataset_owner}
-              </button>
+              {contactFormButton}
             </div>
           </div>
 

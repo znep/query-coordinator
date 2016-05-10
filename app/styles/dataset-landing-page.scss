@@ -674,6 +674,16 @@ section.landing-page-section.schema-preview {
   }
 }
 
+.modal {
+  h1, h4, h5, h6 {
+    font-weight: 400;
+  }
+
+  .modal-header-title {
+    max-width: 95%;
+  }
+}
+
 #api-flannel {
   letter-spacing: 0;
   text-align: left;
@@ -793,6 +803,65 @@ section.landing-page-section.schema-preview {
   }
 }
 
+#contact-modal {
+  .modal-container {
+    max-width: 600px;
+    max-height: 600px;
+    overflow-y: scroll;
+
+    .modal-header {
+      .modal-header-title {
+        margin-top: 0;
+      }
+    }
+
+    .modal-content {
+      max-height: none;
+      overflow-y: visible;
+
+      .subject {
+        width: 100%;
+      }
+
+      .message {
+        width: 100%;
+        min-width: auto;
+        resize: vertical;
+        height: 7em;
+      }
+
+      .email {
+        width: 300px;
+      }
+
+      label .quiet {
+        margin-left: 5px;
+      }
+
+      .alert p {
+        margin: 0;
+      }
+    }
+
+    #cancel {
+      text-decoration: none;
+    }
+
+    #send {
+      padding: 10px 12px;
+
+      &.sending {
+        padding: 6px 12px;
+        vertical-align: bottom;
+      }
+    }
+
+    @media(max-width: $small) {
+      max-height: none;
+    }
+  }
+}
+
 a {
   color: $link-color;
   text-decoration: none;
@@ -843,11 +912,14 @@ a {
   width: 37rem;
   bottom: 0;
   right: 0;
-  z-index: 10000;
   @media(max-width: $medium) {
     height: 0;
     width: 100%;
     position: absolute;
+  }
+
+  .feedback-panel-content {
+    z-index: 10000;
   }
 
   .feedback-panel-button {

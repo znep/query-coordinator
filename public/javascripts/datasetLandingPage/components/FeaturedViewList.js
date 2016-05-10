@@ -13,10 +13,10 @@ export var FeaturedViewList = React.createClass({
     var featuredViews;
     if (_.isEmpty(props.featuredViews)) {
       var message = I18n.featured_views.no_content_alert_html;
-      featuredViews = <div className="alert default" dangerouslySetInnerHTML={{__html: message}}/>;
+      featuredViews = <div className="alert default" dangerouslySetInnerHTML={{__html: message}} />;
     } else {
       featuredViews = _.map(props.featuredViews, function(featuredView, i) {
-        return <FeaturedView key={i} {...featuredView}/>;
+        return <FeaturedView key={i} {...featuredView} />;
       });
     }
 

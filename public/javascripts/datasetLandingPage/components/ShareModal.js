@@ -15,7 +15,7 @@ export var ShareModal = React.createClass({
       privateNotice = (
         <section className="modal-content">
           <div className="alert info">
-            <span dangerouslySetInnerHTML={{__html: I18n.share.visibility_alert_html}}/>
+            <span dangerouslySetInnerHTML={{__html: I18n.share.visibility_alert_html}} />
             {' '}
             <a href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`} target="_blank">
               {I18n.manage_prompt}

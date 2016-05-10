@@ -9,6 +9,8 @@
     <button id="launch">Launch Authoring Workflow</button>
 
     <div id="authoring-workflow"></div>
+
+    <pre id="output" style="white-space: pre-wrap;"></pre>
   </body>
 
   <!-- Include external vendor -->
@@ -20,13 +22,16 @@
   <script type="text/javascript">
     var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
     var container = document.querySelector('#authoring-workflow');
+    var output = document.querySelector('#output');
 
     $('#launch').click(function() {
-      var authoringWorkflow = new AuthoringWorkflow(container, {
-        initialVif: null,
+      output.innerHTML = '';
 
-        onComplete: function(vif) {
-          console.log(vif);
+      var authoringWorkflow = new AuthoringWorkflow(container, {
+        vif: null,
+
+        onComplete: function(result) {
+          output.innerHTML = JSON.stringify(result.vif);
           authoringWorkflow.destroy();
         },
 

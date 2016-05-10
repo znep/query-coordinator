@@ -1,18 +1,29 @@
 // A skeleton vif used if none is provided
 module.exports = {
-  'aggregation': {
-    'field': null,
-    'function': 'count'
+  configuration: {
+
   },
-  'columnName': null,
-  'configuration': {},
-  'datasetUid': null,
-  'domain': 'localhost',
-  'filters': [],
-  'format': {
-    'type': 'visualization_interchange_format',
-    'version': 1
-  },
-  'title': null,
-  'type': null
+  description: '',
+  series: [
+    {
+      color: {},
+      dataSource: {
+        datasetUid: null,
+        dimension: {
+          columnName: null,
+          aggregationFunction: null
+        },
+        domain: '',
+        measure: {
+          columnName: null,
+          aggregationFunction: null
+        },
+        type: 'socrata.soql',
+        filters: []
+      },
+      label: null,
+      type: null
+    }
+  ],
+  title: ''
 };

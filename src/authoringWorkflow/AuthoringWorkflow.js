@@ -1,21 +1,17 @@
-var React = require('react');
-var defaultVif = require('./defaultVif');
+import React from 'react';
+import { connect } from 'react-redux';
 
-var AuthoringWorkflow = React.createClass({
+import { setDatasetUid, setDimension } from './actions';
+
+export var AuthoringWorkflow = React.createClass({
   propTypes: {
     vif: React.PropTypes.object,
     datasetMetadata: React.PropTypes.object
   },
 
-  getInitialState: function() {
-    return {
-      vif: _.merge(defaultVif, this.props.initialVif)
-    };
-  },
-
   onComplete: function() {
     this.props.onComplete({
-      vif: this.state.vif
+      vif: this.props.vif
     });
   },
 
@@ -24,15 +20,63 @@ var AuthoringWorkflow = React.createClass({
   },
 
   render: function() {
+    var vif = this.props.vif;
+    var datasetMetadata = this.props.datasetMetadata;
+    var datasetMetadataInfo;
+    var dimensionDropdown;
+
+    if (datasetMetadata.hasError) {
+      datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
+    } else if (datasetMetadata.isLoading) {
+      datasetMetadataInfo = <div>Loading dataset metadata</div>;
+    }
+
+    if (datasetMetadata.hasData) {
+      var options = datasetMetadata.data.columns.map(function(column) {
+        return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
+      });
+
+      dimensionDropdown = <select onChange={this.props.onChangeDimension}>{options}</select>;
+    }
+
     return (
       <div>
-        <div>This is a modal</div>
+        <div>Enter a dataset four by four:</div>
 
-        <button className="done" onClick={this.onComplete}>Done</button>
-        <button className="cancel" onClick={this.onCancel}>Cancel</button>
+        <div>
+          <input type="text" value={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
+        </div>
+
+        {datasetMetadataInfo}
+        {dimensionDropdown}
+
+        <div className="actions">
+          <button className="done" onClick={this.onComplete}>Done</button>
+          <button className="cancel" onClick={this.onCancel}>Cancel</button>
+        </div>
       </div>
     );
   }
 });
 
-module.exports = AuthoringWorkflow;
+function mapStateToProps(state) {
+  return {
+    vif: state.vif,
+    datasetMetadata: state.datasetMetadata
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onChangeDatasetUid: function(event) {
+      dispatch(setDatasetUid(event.target.value));
+    },
+
+    onChangeDimension: function(event) {
+      var dimension = event.target.value;
+      dispatch(setDimension(dimension));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflow);

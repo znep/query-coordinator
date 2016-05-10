@@ -1,19 +1,33 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var redux = require('redux');
+/* eslint-disable no-unused-vars */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
 
-var authoringWorkflowReducer = require('./reducers');
-var AuthoringWorkflow = require('./AuthoringWorkflow');
+import reducer from './reducers';
+import AuthoringWorkflow from './AuthoringWorkflow';
 
 // Top-level API
 module.exports = function(element, configuration) {
   var self = this;
+  var logger = createLogger();
+
   self.element = element;
   self.configuration = configuration;
-  self.store = redux.createStore(authoringWorkflowReducer);
+  self.store = createStore(
+    reducer,
+    applyMiddleware(thunk, logger)
+  );
 
   self.render = function() {
-    ReactDOM.render(<AuthoringWorkflow {...configuration}/>, self.element);
+    ReactDOM.render(
+      <Provider store={self.store}>
+        <AuthoringWorkflow {...configuration}/>
+      </Provider>,
+      self.element
+    );
   };
 
   self.destroy = function() {

@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 
 var sources = [
-  'src/js/*.js',
+  'src/**/*.js',
   'tasks/**/*.js',
   'gulpfile.js'
 ];

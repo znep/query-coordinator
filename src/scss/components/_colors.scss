@@ -58,11 +58,11 @@ $light-grey-bg: $light-grey-5;
 /* Button Colors */
 $btn-active-box-shadow-color: $black;
 
-$btn-default-color: $dark-grey-1;
+$btn-default-color: $grey;
 $btn-default-background-color: $white;
-$btn-default-border-color: $light-grey-2;
+$btn-default-border-color: $light-grey-3;
 $btn-default-hover-color: $dark-grey-1;
-$btn-default-hover-background-color: shade($white, 10%);
+$btn-default-hover-background-color: $light-grey-5;
 $btn-default-active-border-color: shade($white, 20%);
 
 $btn-default-dark-color: $white;

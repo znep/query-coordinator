@@ -827,7 +827,7 @@ Proj4js.Proj = Proj4js.Class({
         this.srsCode = wktName;
         break;
       case 'GEOGCS':
-        this.projName = 'longlat'
+        this.projName = 'longlat';
         this.geocsCode = wktName;
         if (!this.srsCode) this.srsCode = wktName;
         break;
@@ -837,7 +837,7 @@ Proj4js.Proj = Proj4js.Class({
       case 'GEOCCS':
         break;
       case 'PROJECTION':
-        this.projName = Proj4js.wktProjections[wktName]
+        this.projName = Proj4js.wktProjections[wktName];
         break;
       case 'DATUM':
         this.datumName = wktName;
@@ -981,7 +981,7 @@ Proj4js.Proj = Proj4js.Class({
                                  legalAxis.indexOf(paramVal.substr(2,1))!=-1) {
                                 this.axis= paramVal;
                              } //FIXME: be silent ?
-                             break
+                             break;
               case "no_defs": break;
               default: //alert("Unrecognized parameter: " + paramName);
           } // switch()
@@ -1241,7 +1241,7 @@ Proj4js.common = {
     do {
       Iphi= phi;
       con= eccent*Math.sin(Iphi);
-      phi= this.fL(Math.exp(eccent*Math.log((1.0+con)/(1.0-con))/2.0),ts)
+      phi= this.fL(Math.exp(eccent*Math.log((1.0+con)/(1.0-con))/2.0),ts);
     } while (Math.abs(phi-Iphi)>1.0e-12);
     return phi;
   },
@@ -2851,7 +2851,7 @@ Proj4js.Proj.ortho = {
     //double temp;			/* temporary variable		*/
 
     /* Place parameters in static storage for common use
-      -------------------------------------------------*/;
+      -------------------------------------------------*/
     this.sin_p14=Math.sin(this.lat0);
     this.cos_p14=Math.cos(this.lat0);
   },
@@ -4162,7 +4162,7 @@ ALGORITHM REFERENCES
 Proj4js.Proj.cass = {
   init : function() {
     if (!this.sphere) {
-      this.en = this.pj_enfn(this.es)
+      this.en = this.pj_enfn(this.es);
       this.m0 = this.pj_mlfn(this.lat0, Math.sin(this.lat0), Math.cos(this.lat0), this.en);
     }
   },
@@ -4294,7 +4294,7 @@ Proj4js.Proj.cass = {
   C68: .00569661458333333333,
   C88: .3076171875
 
-}
+};
 /* ======================================================================
     projCode/gauss.js
    ====================================================================== */
@@ -5019,7 +5019,7 @@ Proj4js.Proj.laea = {
             cCe = Math.cos(sCe);
             x *= (sCe = Math.sin(sCe));
             if (this.mode == this.OBLIQ) {
-              ab = cCe * this.sinb1 + y * sCe * this.cosb1 / rho
+              ab = cCe * this.sinb1 + y * sCe * this.cosb1 / rho;
               q = this.qp * ab;
               y = rho * this.cosb1 * cCe - y * this.sinb1 * sCe;
             } else {

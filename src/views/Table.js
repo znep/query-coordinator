@@ -44,6 +44,10 @@ module.exports = function Table(element, vif) {
     _render(data, options);
   };
 
+  this.renderError = function() {
+    _renderError();
+  };
+
   /**
    * Compute how many rows can fit into the given pixel height (taking into account header
    * size).
@@ -213,12 +217,18 @@ module.exports = function Table(element, vif) {
   }
 
   function _render(data, options) {
+    var $errorMessage = self.element.find('.alert.error');
     var $existingTable = self.element.find('.socrata-table');
     var $template = $(_templateTable(data, options));
     var scrollLeft = _.get($existingTable, '[0].scrollLeft') || 0;
     var $newTable;
 
     _applyFrozenColumns($template);
+
+    if ($errorMessage.length) {
+      self.element.removeClass('failed');
+      $errorMessage.remove();
+    }
 
     if ($existingTable.length) {
       $existingTable.replaceWith($template);
@@ -231,6 +241,19 @@ module.exports = function Table(element, vif) {
 
     // Cache the scrollbar height for later use.
     _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
+  }
+
+  function _renderError() {
+    var $errorMessage = $([
+      '<div class="alert error">',
+        '<p>{0}</p>'.format(vif.configuration.localization.UNABLE_TO_RENDER),
+      '</div>'
+    ].join(''));
+
+    self.element.
+      empty().
+      addClass('failed').
+      append($errorMessage);
   }
 
   function _attachEvents() {

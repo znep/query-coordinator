@@ -55,6 +55,9 @@ $.fn.socrataTable = function(vif) {
     // Is the table busy?
     busy: false,
 
+    // Did we freak out somewhere trying to get data?
+    error: false,
+
     // Holds result of last successful data fetch, plus
     // the metadata regarding that request (start index,
     // order, etc).
@@ -106,6 +109,9 @@ $.fn.socrataTable = function(vif) {
     SoqlHelpers.whereClauseFilteringOwnColumn(vif)
   ).then(function() {
     visualization.freezeColumnWidthsAndRender();
+  })
+  ['catch'](function() {
+    _updateState({error: true});
   });
 
   /**
@@ -145,8 +151,10 @@ $.fn.socrataTable = function(vif) {
   }
 
   function _render() {
+    if (_renderState.error) {
 
-    if (_renderState.fetchedData) {
+      visualization.renderError();
+    } else if (_renderState.fetchedData) {
 
       visualization.render(
         _renderState.fetchedData,
@@ -282,6 +290,7 @@ $.fn.socrataTable = function(vif) {
     // The size will be rechecked once the current request
     // is complete.
     if (
+      !_renderState.error &&
       !_renderState.busy &&
       oldPageSize !== pageSize &&
       _renderState.fetchedData
@@ -323,6 +332,10 @@ $.fn.socrataTable = function(vif) {
   }
 
   function _computePageSize() {
+    if (_renderState.error) {
+      return 0;
+    }
+
     var overallHeight = $element.height();
     var pagerHeight = $element.find('.socrata-pager').outerHeight();
     var heightRemaining = overallHeight - pagerHeight;
@@ -341,16 +354,17 @@ $.fn.socrataTable = function(vif) {
         format(error)
     );
 
-    _updateState({ busy: false });
+    // There was an issue populating this table with data. Retry?
 
-    throw error;
+    _updateState({ busy: false, error: true });
+
+    return Promise.reject();
   }
 
   function _setDataQuery(startIndex, pageSize, order, whereClauseComponents) {
-    utils.assert(
-      order.length === 1,
-      'order parameter must be an array with exactly one element.'
-    );
+    if (order.length !== 1) {
+      return Promise.reject('order parameter must be an array with exactly one element.');
+    }
 
     if (_renderState.busy) {
       throw new Error(
@@ -417,7 +431,8 @@ $.fn.socrataTable = function(vif) {
                   whereClauseComponents: whereClauseComponents
                 },
                 datasetRowCount: rowCount,
-                busy: false
+                busy: false,
+                error: false
               });
 
             }

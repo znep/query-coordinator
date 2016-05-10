@@ -123,11 +123,8 @@ module.exports = function VisualizationAddController(
         visualizationType,
         originalUid
       );
-    } else if (_.isFunction($window.frameElement.onVisualizationSelected)) {
-      // DEPRECATED: Remove this function once frontend and storyteller are stable in production.
-      $window.frameElement.onVisualizationSelected(visualizationData, visualizationType, originalUid);
     } else {
-      throw new Error('Cannot find onVisualizationSelected or onVisualizationSelectedV2 on the iframe.');
+      throw new Error('Cannot find onVisualizationSelectedV2 on the iframe.');
     }
   }
 

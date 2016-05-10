@@ -58,7 +58,7 @@
 
 #socrata-flyout.southwest .socrata-flyout-hint {
   left: 0;
-  bottom: -9px;
+  bottom: -8px;
 }
 
 #socrata-flyout.southwest .socrata-flyout-hint:after {
@@ -74,7 +74,7 @@
 }
 
 #socrata-flyout.southeast .socrata-flyout-hint {
-  bottom: -9px;
+  bottom: -8px;
 }
 
 #socrata-flyout.southeast .socrata-flyout-hint:after {
@@ -120,4 +120,58 @@
   right: -1px;
   border-width: 0 0 11px 11px;
   border-color: transparent transparent #ccc transparent;
+}
+
+#socrata-flyout.dark {
+  font-size: 15px;
+  font-weight: 200;
+  color: #f8f8f8;
+  background-color: #444;
+  border: none;
+  border-radius: 3px;
+
+  .socrata-flyout-content .socrata-flyout-title {
+    font-size: 18px;
+    font-weight: 200;
+  }
+
+  &.southwest .socrata-flyout-hint {
+    left: 5px;
+  }
+
+  &.southwest .socrata-flyout-hint:after {
+    border-color: transparent;
+  }
+
+  &.southwest .socrata-flyout-hint:before {
+    border-color: #444 transparent transparent transparent;
+  }
+
+  &.southeast .socrata-flyout-hint:after {
+    border-color: transparent #444 transparent transparent;
+  }
+
+  &.southeast .socrata-flyout-hint:before {
+    border-color: transparent;
+  }
+
+  &.northwest .socrata-flyout-hint {
+    left: 5px;
+  }
+
+  &.northwest .socrata-flyout-hint:after {
+    border-color: transparent transparent transparent #444;
+  }
+
+  &.northwest .socrata-flyout-hint:before {
+    border-color: transparent;
+  }
+
+  &.northeast .socrata-flyout-hint:after {
+    border-color: transparent transparent #444 transparent;
+  }
+
+  &.northeast .socrata-flyout-hint:before {
+    border-color: transparent;
+  }
 }

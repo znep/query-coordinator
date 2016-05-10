@@ -1,0 +1,255 @@
+$titleHeight: 44px;
+$descriptionHeight: 26px;
+$headerMargin: 6px;
+$infoHeight: 24px;
+$visualizationBorderColor: #ccc;
+$infoBorderColor: #ddd;
+$axisFontSize: 14px;
+$axisOffset: 21px;
+$axisPadding: 42px;
+
+.visualization {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: default;
+
+  /**
+   * Title and description
+   */
+
+  .title-container,
+  .description-container {
+    position: relative;
+    display: none;
+    padding: 7px 14px;
+    box-sizing: border-box;
+
+    .title,
+    .description {
+      position: relative;
+      display: inline-block;
+      width: auto;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .title-container {
+    height: $titleHeight;
+    padding-top: 15px;
+
+    .title {
+      color: #444;
+      font-size: 24px;
+      font-weight: 200;
+    }
+  }
+
+  .description-container {
+    height: $descriptionHeight;
+
+    .description {
+      color: #444;
+      font-weight: 200;
+    }
+  }
+
+  .info {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: $infoHeight;
+    left: 0;
+    bottom: 0;
+    border-top: 1px solid $infoBorderColor;
+    box-sizing: border-box;
+
+    .panning-notice {
+      margin-right: 6px;
+      color: #ccc;
+      font-size: 14px;
+      font-style: oblique;
+      font-weight: 200;
+      line-height: $infoHeight;
+      text-align: right;
+    }
+  }
+
+  &.title {
+
+    .title-container {
+      display: block;
+      margin-bottom: $headerMargin;
+    }
+
+    .visualization-container {
+      height: calc(100% - #{$titleHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.description {
+
+    .title-container {
+      margin-bottom: 0;
+    }
+
+    .description-container {
+      display: block;
+      margin-bottom: $headerMargin;
+    }
+
+    .visualization-container {
+      height: calc(100% - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.title.description {
+
+    .visualization-container {
+      height: calc(100% - #{$titleHeight} - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.panning-notice {
+
+    .visualization-container {
+      height: calc(100% - #{$infoHeight});
+    }
+
+    .info {
+      display: block;
+    }
+  }
+
+  &.title.panning-notice {
+
+    .visualization-container {
+      height: calc(100% - #{$titleHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.description.panning-notice {
+
+    .visualization-container {
+      height: calc(100% - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.title.description.panning-notice {
+
+    .visualization-container {
+      height: calc(100% - #{$titleHeight} - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  /**
+   * The container for the actual visualization
+   */
+
+  .visualization-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: calc(100% - #{$infoHeight});
+    box-sizing: border-box;
+
+    /**
+     * Axis labels
+     */
+
+    .top-axis-label,
+    .right-axis-label,
+    .bottom-axis-label,
+    .left-axis-label {
+      position: absolute;
+      font-size: $axisFontSize;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      visibility: hidden;
+    }
+
+    .top-axis-label {
+      left: 50%;
+      top: $axisFontSize;
+      transform-origin: left top 0;
+      transform: translate(-50%, 0);
+    }
+
+    .right-axis-label {
+      right: 2 * $axisFontSize;
+      top: 50%;
+      transform-origin: right top 0;
+      transform: rotate(-90deg) translate(50%, 0);
+    }
+
+    .bottom-axis-label {
+      left: 50%;
+      bottom: $axisFontSize;
+      transform-origin: left top 0;
+      transform: translate(-50%, 0);
+    }
+
+    .left-axis-label {
+      left: $axisFontSize;
+      top: 50%;
+      transform-origin: left top 0;
+      transform: rotate(-90deg) translate(-50%, 0);
+    }
+  }
+
+  &.top-axis-label {
+
+    .visualization-container {
+      padding-top: $axisPadding;
+
+      .top-axis-label {
+        visibility: visible;
+      }
+    }
+  }
+
+  &.right-axis-label {
+
+    .visualization-container {
+      padding-right: $axisPadding;
+
+      .right-axis-label {
+        visibility: visible;
+      }
+    }
+  }
+
+  &.bottom-axis-label {
+
+    .visualization-container {
+      padding-bottom: $axisPadding;
+
+      .bottom-axis-label {
+        visibility: visible;
+      }
+    }
+  }
+
+  &.left-axis-label {
+
+    .visualization-container {
+      padding-left: $axisPadding;
+
+      .left-axis-label {
+        visibility: visible;
+      }
+    }
+  }
+}

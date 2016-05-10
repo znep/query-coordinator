@@ -168,6 +168,20 @@ function FlyoutRenderer() {
     // If top of flyout is cut off by window, top-align the flyout.
     if (flyoutStyles.top < 0) {
       flyoutStyles.top = 0;
+
+    }
+
+    // There are certain changes we make for 'dark' flyouts.
+    if (options.dark) {
+
+      _flyout.addClass('dark');
+
+      if (!rightSideHint) {
+        // Account for the slight offset of the hint.
+        flyoutStyles.left = flyoutStyles.left - 5;
+      }
+    } else {
+      _flyout.removeClass('dark');
     }
 
     // Apply computed styles to the flyout hint.

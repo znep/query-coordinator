@@ -1,0 +1,17 @@
+.visualization-container {
+
+  .timeline-chart {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .highlight {
+      opacity: 1;
+    }
+
+    .overlay {
+      pointer-events: all;
+    }
+  }
+}

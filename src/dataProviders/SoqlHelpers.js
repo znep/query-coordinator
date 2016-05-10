@@ -9,50 +9,153 @@ var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
 
 /**
  * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * Note: Only works with VIF versions >= 2
  */
-function aggregationClause(vif) {
-  switch (_.get(vif, 'aggregation.function')) {
+function dimension(vif, seriesIndex) {
+  var aggregationFunction = _.get(
+    vif.series[seriesIndex],
+    'dataSource.dimension.aggregationFunction'
+  );
+  var columnName = _.get(
+    vif.series[seriesIndex],
+    'dataSource.dimension.columnName'
+  );
+
+  switch (aggregationFunction) {
 
     case 'sum':
-      return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.field'));
+      return ' SUM(`{0}`)'.format(columnName);
 
     case 'count':
-    default:
       return 'COUNT(*)';
+
+    default:
+      return '`{0}`'.format(columnName);
   }
 }
 
 /**
  * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * Note: Only works with VIF versions >= 2
  */
-function whereClauseNotFilteringOwnColumn(vif) {
-  var whereClauseComponents = _whereClauseFromVif(vif, false);
+function measure(vif, seriesIndex) {
+  var aggregationFunction = _.get(
+    vif.series[seriesIndex],
+    'dataSource.measure.aggregationFunction'
+  );
+  var columnName = _.get(
+    vif.series[seriesIndex],
+    'dataSource.measure.columnName'
+  );
 
-  if (whereClauseComponents) {
-    return whereClauseComponents;
+  switch (aggregationFunction) {
+
+    case 'sum':
+      return ' SUM(`{0}`)'.format(columnName);
+
+    case 'count':
+      return 'COUNT(*)';
+
+    default:
+      return '`{0}`'.format(columnName);
   }
-
-  return '';
 }
 
 /**
  * @param {Object} vif
+ * @param {Number} seriesIndex
+ * @param {String} dimensionOrMeasure
+ *
+ * If using with a version 1 VIF, only the first argument is required.
  */
-function whereClauseFilteringOwnColumn(vif) {
-  var whereClauseComponents = _whereClauseFromVif(vif, true);
+function aggregationClause(vif, seriesIndex, dimensionOrMeasure) {
+  var version = parseInt(_.get(vif, 'format.version', 1), 10);
+  var aggregationFunction;
+  var columnName;
 
-  if (whereClauseComponents) {
-    return whereClauseComponents;
+  if (version === 1) {
+
+    switch (_.get(vif, 'aggregation.function')) {
+
+      case 'sum':
+        return 'SUM(`{0}`)'.format(_.get(vif, 'aggregation.field'));
+
+      case 'count':
+      default:
+        return 'COUNT(*)';
+    }
+  } else {
+
+    aggregationFunction = _.get(
+      vif.series[seriesIndex],
+      'dataSource.{0}.aggregationFunction'.format(dimensionOrMeasure)
+    );
+    columnName = _.get(
+      vif.series[seriesIndex],
+      'dataSource.{0}.columnName'.format(dimensionOrMeasure)
+    );
+
+    switch (aggregationFunction) {
+
+      case 'sum':
+        return 'GROUP BY SUM(`{0}`)'.format(columnName);
+
+      case 'count':
+        return 'GROUP BY COUNT(*)';
+
+      default:
+        return 'GROUP BY `{0}`'.format(columnName);
+    }
+  }
+}
+
+/**
+ * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * If using with a version 1 VIF, only the first argument is required.
+ */
+function whereClauseNotFilteringOwnColumn(vif, seriesIndex) {
+  var version = parseInt(_.get(vif, 'format.version', 1), 10);
+  var whereClauseComponents;
+
+  if (version === 1) {
+    whereClauseComponents = whereClauseFromVif(vif, false);
+  } else {
+    whereClauseComponents = whereClauseFromSeries(vif, seriesIndex, false);
   }
 
-  return '';
+  return (whereClauseComponents) ? whereClauseComponents : '';
+}
+
+/**
+ * @param {Object} vif
+ * @param {Number} seriesIndex
+ *
+ * If using with a version 1 VIF, only the first argument is required.
+ */
+function whereClauseFilteringOwnColumn(vif, seriesIndex) {
+  var version = parseInt(_.get(vif, 'format.version', 1), 10);
+  var whereClauseComponents;
+
+  if (version === 1) {
+    whereClauseComponents = whereClauseFromVif(vif, true);
+  } else {
+    whereClauseComponents = whereClauseFromSeries(vif, seriesIndex, true);
+  }
+
+  return (whereClauseComponents) ? whereClauseComponents : '';
 }
 
 /**
  * 'Private' methods
  */
 
-function _whereClauseFromVif(vif, filterOwnColumn) {
+function whereClauseFromVif(vif, filterOwnColumn) {
   var filters = vif.filters || [];
   var isTable = false;
 
@@ -83,12 +186,73 @@ function _whereClauseFromVif(vif, filterOwnColumn) {
           filterOwnColumn || (filter.columnName !== vif.columnName);
       }
     ).map(
-      _filterToWhereClauseComponent
+      filterToWhereClauseComponent
     ).
     join(' AND ');
 }
 
-function _filterToWhereClauseComponent(filter) {
+function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
+  var series;
+  var filters;
+  var isTable = false;
+
+  utils.assertHasProperty(
+    vif,
+    'series'
+  );
+  utils.assert(
+    vif.series.length && vif.series.length >= seriesIndex,
+    '`vif.series` is not an array or seriesIndex is out of bounds.'
+  );
+
+  series = vif.series[seriesIndex];
+
+  utils.assertHasProperty(
+    series,
+    'dataSource'
+  );
+  utils.assertHasProperties(
+    series.dataSource,
+    'dimension',
+    'filters',
+    'type'
+  );
+  utils.assertHasProperty(
+    series.dataSource.dimension,
+    'columnName'
+  );
+
+  if (series.type === 'table') {
+    isTable = true;
+  } else {
+
+    utils.assertIsOneOfTypes(
+      series.dataSource.dimension.columnName,
+      'string'
+    );
+  }
+
+  utils.assertInstanceOf(series.dataSource.filters, Array);
+
+  filters = series.dataSource.filters;
+
+  return filters.
+    filter(
+      function(filter) {
+        return (isTable) ?
+          true :
+          (
+            filterOwnColumn ||
+            (filter.columnName !== series.dataSource.dimension.columnName)
+          );
+      }
+    ).map(
+      filterToWhereClauseComponent
+    ).
+    join(' AND ');
+}
+
+function filterToWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -98,15 +262,15 @@ function _filterToWhereClauseComponent(filter) {
 
   switch (filter.function) {
     case 'binaryOperator':
-      return _binaryOperatorWhereClauseComponent(filter);
+      return binaryOperatorWhereClauseComponent(filter);
     case 'binaryComputedGeoregionOperator':
-      return _binaryComputedGeoregionOperatorWhereClauseComponent(filter);
+      return binaryComputedGeoregionOperatorWhereClauseComponent(filter);
     case 'isNull':
-      return _isNullWhereClauseComponent(filter);
+      return isNullWhereClauseComponent(filter);
     case 'timeRange':
-      return _timeRangeWhereClauseComponent(filter);
+      return timeRangeWhereClauseComponent(filter);
     case 'valueRange':
-      return _valueRangeWhereClauseComponent(filter);
+      return valueRangeWhereClauseComponent(filter);
     default:
       throw new Error(
         'Invalid filter function: `{0}`.'.format(filter.function)
@@ -114,7 +278,7 @@ function _filterToWhereClauseComponent(filter) {
   }
 }
 
-function _soqlEncodeColumnName(columnName) {
+function soqlEncodeColumnName(columnName) {
   utils.assertIsOneOfTypes(columnName, 'string');
 
   return '`{0}`'.format(
@@ -122,14 +286,14 @@ function _soqlEncodeColumnName(columnName) {
   );
 }
 
-function _soqlEncodeValue(value) {
+function soqlEncodeValue(value) {
   // Note: These conditionals will fall through.
   if (_.isString(value)) {
-    return _soqlEncodeString(value);
+    return soqlEncodeString(value);
   }
 
   if (_.isDate(value)) {
-    return _soqlEncodeDate(value);
+    return soqlEncodeDate(value);
   }
 
   if (_.isNumber(value) || _.isBoolean(value)) {
@@ -141,20 +305,20 @@ function _soqlEncodeValue(value) {
   );
 }
 
-function _soqlEncodeString(value) {
+function soqlEncodeString(value) {
   return "'{0}'".format(value.replace(/'/g, "''"));
 }
 
-function _soqlEncodeDate(value) {
-  return _soqlEncodeString(
-    _serializeFloatingTimestamp(
+function soqlEncodeDate(value) {
+  return soqlEncodeString(
+    serializeFloatingTimestamp(
       value
     )
   );
 }
 
-function _serializeFloatingTimestamp(date) {
-  function _formatToTwoPlaces(value) {
+function serializeFloatingTimestamp(date) {
+  function formatToTwoPlaces(value) {
     return (value < 10) ?
       '0' + value.toString() :
       value.toString();
@@ -165,15 +329,15 @@ function _serializeFloatingTimestamp(date) {
     // The month component of JavaScript dates is 0-indexed (I have no idea
     // why) so when we are serializing a JavaScript date as ISO-8601 date we
     // need to increment the month value.
-    _formatToTwoPlaces(date.getMonth() + 1),
-    _formatToTwoPlaces(date.getDate()),
-    _formatToTwoPlaces(date.getHours()),
-    _formatToTwoPlaces(date.getMinutes()),
-    _formatToTwoPlaces(date.getSeconds())
+    formatToTwoPlaces(date.getMonth() + 1),
+    formatToTwoPlaces(date.getDate()),
+    formatToTwoPlaces(date.getHours()),
+    formatToTwoPlaces(date.getMinutes()),
+    formatToTwoPlaces(date.getSeconds())
   );
 }
 
-function _binaryOperatorWhereClauseComponent(filter) {
+function binaryOperatorWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -203,9 +367,9 @@ function _binaryOperatorWhereClauseComponent(filter) {
         arguments.
         map(function(argument) {
           return '{0} {1} {2}'.format(
-            _soqlEncodeColumnName(filter.columnName),
+            soqlEncodeColumnName(filter.columnName),
             argument.operator,
-            _soqlEncodeValue(argument.operand)
+            soqlEncodeValue(argument.operand)
           );
         }).
         join(' OR ')
@@ -227,14 +391,14 @@ function _binaryOperatorWhereClauseComponent(filter) {
     );
 
     return '{0} {1} {2}'.format(
-      _soqlEncodeColumnName(filter.columnName),
+      soqlEncodeColumnName(filter.columnName),
       filter.arguments.operator,
-      _soqlEncodeValue(filter.arguments.operand)
+      soqlEncodeValue(filter.arguments.operand)
     );
   }
 }
 
-function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
+function binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -249,13 +413,13 @@ function _binaryComputedGeoregionOperatorWhereClauseComponent(filter) {
   );
 
   return '{0} {1} {2}'.format(
-    _soqlEncodeColumnName(filter.arguments.computedColumnName),
+    soqlEncodeColumnName(filter.arguments.computedColumnName),
     filter.arguments.operator,
-    _soqlEncodeValue(filter.arguments.operand)
+    soqlEncodeValue(filter.arguments.operand)
   );
 }
 
-function _isNullWhereClauseComponent(filter) {
+function isNullWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -264,12 +428,12 @@ function _isNullWhereClauseComponent(filter) {
   );
 
   return '{0} {1}' .format(
-    _soqlEncodeColumnName(filter.columnName),
+    soqlEncodeColumnName(filter.columnName),
     filter.arguments.isNull ? 'IS NULL' : 'IS NOT NULL'
   );
 }
 
-function _timeRangeWhereClauseComponent(filter) {
+function timeRangeWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -279,13 +443,13 @@ function _timeRangeWhereClauseComponent(filter) {
   );
 
   return '{0} >= {1} AND {0} < {2}'.format(
-    _soqlEncodeColumnName(filter.columnName),
-    _soqlEncodeValue(filter.arguments.start),
-    _soqlEncodeValue(filter.arguments.end)
+    soqlEncodeColumnName(filter.columnName),
+    soqlEncodeValue(filter.arguments.start),
+    soqlEncodeValue(filter.arguments.end)
   );
 }
 
-function _valueRangeWhereClauseComponent(filter) {
+function valueRangeWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
     'columnName',
@@ -295,13 +459,15 @@ function _valueRangeWhereClauseComponent(filter) {
   );
 
   return '{0} >= {1} AND {0} < {2}'.format(
-    _soqlEncodeColumnName(filter.columnName),
-    _soqlEncodeValue(filter.arguments.start),
-    _soqlEncodeValue(filter.arguments.end)
+    soqlEncodeColumnName(filter.columnName),
+    soqlEncodeValue(filter.arguments.start),
+    soqlEncodeValue(filter.arguments.end)
   );
 }
 
 module.exports = {
+  dimension: dimension,
+  measure: measure,
   aggregationClause: aggregationClause,
   whereClauseNotFilteringOwnColumn: whereClauseNotFilteringOwnColumn,
   whereClauseFilteringOwnColumn: whereClauseFilteringOwnColumn

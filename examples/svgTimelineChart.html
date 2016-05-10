@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SvgTimelineChart.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #timeline-chart-1,
+      #timeline-chart-2,
+      #timeline-chart-3 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="timeline-chart-1"></div>
+    <div id="timeline-chart-2"></div>
+    <div id="timeline-chart-3"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var COLUMN_NAME = 'date';
+      var DATASET_UID = '52my-2pak';
+      var DOMAIN = 'dataspace.demo.socrata.com';
+
+      var timelineChart1Vif = {
+        'aggregation': {
+          'field': null,
+          'function': 'count'
+        },
+        'columnName': COLUMN_NAME,
+        'configuration': {
+          'interactive': true,
+          // The localization values should be set by the application but are set
+          // to string literals for the purposes of this example.
+          'localization': {
+            'NO_VALUE': 'No value',
+            'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+            'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+            'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+          },
+          'precision': 'MONTH'
+        },
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': DATASET_UID,
+        'domain': DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': COLUMN_NAME,
+        'type': 'timelineChart',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      };
+
+      var timelineChart2Vif = _.cloneDeep(timelineChart1Vif);
+      timelineChart2Vif.datasetUid = 'r6t9-rak2';
+      timelineChart2Vif.columnName = 'opened';
+
+      var timelineChart3Vif = {
+        configuration: {
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'School District',
+            left: '% Proficient'
+          },
+          // The localization values should be set by the application but are
+          // set to string literals for the purposes of this example.
+          localization: {
+            NO_VALUE: 'No value',
+            FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
+            FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
+            FLYOUT_SELECTED_NOTICE: 'This column is selected'
+          }
+        },
+        description: 'Math proficiency by school district for 3rd graders in 2014',
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'qu5r-r47b',
+              dimension: {
+                columnName: 'reportweekending',
+                aggregationFunction: null
+              },
+              domain: 'data.iowa.gov',
+              measure: {
+                columnName: 'initialclaims_ui',
+                aggregationFunction: null
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            label: 'Initial claims',
+            type: 'timelineChart.line',
+            unit: {
+              one: 'claim',
+              other: 'claims'
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'qu5r-r47b',
+              dimension: {
+                columnName: 'reportweekending',
+                aggregationFunction: null
+              },
+              domain: 'data.iowa.gov',
+              measure: {
+                columnName: 'continuedweeks_ui',
+                aggregationFunction: null
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            label: 'Continued weeks',
+            type: 'timelineChart.line',
+            unit: {
+              one: 'claim',
+              other: 'claims'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: {
+          x: {
+            type: 'time',
+            unit: {
+              one: null,
+              other: null
+            }
+          },
+          y: {
+            type: 'quantitative'
+          }
+        },
+        title: 'Claims'
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      var $timelineChart1Element = $('#timeline-chart-1');
+      $timelineChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart1Element.socrataSvgTimelineChart(timelineChart1Vif);
+
+      var $timelineChart2Element = $('#timeline-chart-2');
+      $timelineChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart2Element.socrataSvgTimelineChart(timelineChart2Vif);
+
+      var $timelineChart3Element = $('#timeline-chart-3');
+      $timelineChart3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart3Element.socrataSvgTimelineChart(timelineChart3Vif);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+
+      // $timelineChart1Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart2Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart3Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart3Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart3Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+    });
+  </script>
+</html>

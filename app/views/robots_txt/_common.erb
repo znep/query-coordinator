@@ -1,0 +1,20 @@
+<%# This is primarily targeted at Bing who are very aggressive and have hit us with 10+ req/sec on a single domain, but lets include it for everyone  %>
+Crawl-delay: 1
+
+<% if !Rails.env.end_with?('production') || CurrentDomain.feature?('suppress_robots') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
+Disallow: /*/*/*/widget_preview
+Disallow: /OData.svc/
+Disallow: /analytics/add
+Disallow: /browse/embed
+
+<%# Attempt to prevent crawling endless catalog filter combinations.  Still allows a single filter for SEO %>
+Disallow: /browse?*&category=
+Disallow: /browse?*&federation_filter=
+Disallow: /browse?*&limitTo=
+Disallow: /browse?*&q=
+Disallow: /browse?*&sortBy=
+Disallow: /browse?*&tags=
+Disallow: /browse?*&view_type=
+
+Disallow: /reset_password/
+Disallow: /views/INLINE/rows.json?*method=clustered2*

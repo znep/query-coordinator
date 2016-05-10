@@ -27,8 +27,12 @@ class SiteChromeController < ApplicationController
     if @site_chrome.create
       flash[:success] = 'Site theme created'
       redirect_to site_chrome_path(id: @site_chrome.id)
+    elsif @site_chrome.errors.any?
+      flash[:success] = "Create was unsuccessful because: #{@site_chrome.errors.inspect}"
+      render 'new', status: :unprocessable_entity
     else
-      render 'new'
+      flash[:success] = "Something went wrong, we're not sure what. Try re-saving."
+      render 'new', status: :internal_server_error
     end
   end
 
@@ -46,8 +50,12 @@ class SiteChromeController < ApplicationController
     if @site_chrome.update_published_content(params[:site_chrome][:properties])
       flash[:success] = 'Site theme updated'
       redirect_to site_chrome_path(id: @site_chrome.id)
+    elsif @site_chrome.errors.any?
+      flash[:success] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
+      render 'edit', status: :unprocessable_entity
     else
-      render 'edit'
+      flash[:success] = "Something went wrong, we're not sure what. Try re-saving."
+      render 'edit', status: :internal_server_error
     end
   end
 

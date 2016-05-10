@@ -30,7 +30,7 @@ $warning-dark: shade($warning, 30%);
 
 /* Greys */
 $white: #fff;
-$grey: #425363;
+$grey: #687583;
 $black: #2c2c2c;
 
 /* Shades of Grey */
@@ -50,7 +50,7 @@ $dark-grey-3: shade($grey, 60%);
 
 /* Color Vars */
 $default-text-color: $dark-grey-1;
-$quiet-text-color: $light-grey-1;
+$quiet-text-color: $light-grey-0;
 $light-text-color: $white;
 $light-grey-bg: $light-grey-5;
 
@@ -175,7 +175,7 @@ $btn-disabled-dark-border-color: $grey;
 $btn-disabled-dark-background-color: $dark-grey-1;
 
 $tag-color: $dark-grey-2;
-$tag-background-color: $light-grey-4;
+$tag-background-color: $light-grey-5;
 
 /* Header */
 $header-bg-color: #4a4747;

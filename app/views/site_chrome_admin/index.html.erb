@@ -28,12 +28,11 @@
   <% @tab_sections.each_with_index do |section, i| %>
     <div class="<%= tab_section_classnames(i) %>" data-tab-id="<%= section %>">
       <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
-      <%= render(:partial => "site_chrome_admin/tab_content/#{section}",
-        :locals => {
-          :content => @site_chrome.content[section],
-          :locales => @site_chrome.content['locales']['en'], # TODO how do we detect current locale?
-          :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
-        }
+      <%= render(
+        "site_chrome_admin/tab_content/#{section}",
+        :content => @site_chrome.content[section], # TODO - just use @site_chrome, not content and locales?
+        :locales => @site_chrome.content['locales']['en'], # TODO how do we detect current locale?
+        :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
       ) %>
     </div>
   <% end %>

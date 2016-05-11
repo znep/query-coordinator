@@ -1,0 +1,16 @@
+<section class="settings-group list-of-links">
+  <h3><%= title %></h3>
+  <p><%= description %></p>
+
+  <div class="link-row">
+    <label><%= label_title %></label>
+    <label><%= url_title %></label>
+  </div>
+
+  <% links.each_with_index do |link, i| %>
+    <div class="link-row">
+      <%= text_field_tag(nil, link['key'], placeholder: label_placeholder) %>
+      <%= text_field_tag(nil, link['url'], placeholder: url_placeholder) %>
+    </div>
+  <% end %>
+</section>

@@ -2248,9 +2248,10 @@ en:
               menu_links:
                 title: Menu Links
                 description: Display up to 5 links in the Heaader Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
-              link_label: Link Label
-              url: URL
-              link_text: Link Text
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
           footer:
             title: Footer
             fields:

@@ -1,23 +1,17 @@
 <%= form_tag('#') do %>
-  <%
-    # move to helper?
-    [{
-      :locale_name => 'window_or_tab_title_display',
-      :config_key => 'site_title'
-    }, {
-      :locale_name => 'window_or_tab_icon',
-      :config_key => 'favicon'
-    }].each do |field|
-      field_name = field[:locale_name]
-      field_key = field[:config_key]
-  %>
+    <section class="settings-group">
+      <div class="settings-form">
+        <%= label_tag('window_or_tab_title_display', translations[:window_or_tab_title_display][:title]) %>
+        <%= text_field_tag('window_or_tab_title_display', content['site_title'], placeholder: translations[:window_or_tab_title_display][:placeholder]) %>
+      </div>
+      <aside><p><%= translations[:window_or_tab_title_display][:description] %></p></aside>
+    </section>
 
-      <section class="settings-group">
-        <div class="settings-form">
-          <%= label_tag(field_name, translations[field_name.to_sym][:title]) %>
-          <%= text_field_tag(field_name, content[field_key], placeholder: translations[field_name.to_sym][:placeholder]) %>
-        </div>
-        <aside><p><%= translations[field_name.to_sym][:description] %></p></aside>
-      </section>
-  <% end %>
+    <section class="settings-group">
+      <div class="settings-form">
+        <%= label_tag('window_or_tab_icon', translations[:window_or_tab_icon][:title]) %>
+        <%= text_field_tag('window_or_tab_icon', content['favicon'], placeholder: translations[:window_or_tab_icon][:placeholder]) %>
+      </div>
+      <aside><p><%= translations[:window_or_tab_icon][:description] %></p></aside>
+    </section>
 <% end %>

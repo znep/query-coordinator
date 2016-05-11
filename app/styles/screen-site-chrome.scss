@@ -146,6 +146,45 @@ $dark-grey: #7a7a7a;
           margin: 22px 0;
         }
       }
+
+      &.list-of-links {
+
+        > h3 {
+          font-size: 19px;
+          font-weight: 600;
+        }
+
+        > p {
+          margin: 24px 0;
+          font-size: 14px;
+        }
+
+        div.link-row {
+          overflow: hidden;
+          label {
+            width: calc(50% - 1rem - 16px);
+            float: left;
+            font-size: 15px;
+            padding: 8px;
+            &:first-of-type {
+              margin-right: 1rem;
+            }
+          }
+          input {
+            width: calc(50% - 1rem - 16px);
+            float: left;
+            border: solid 1px #c2c2c2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            font-size: 15px;
+            padding: 8px;
+            margin-bottom: 12px;
+            &:first-of-type {
+              margin-right: 1rem;
+            }
+          }
+        }
+      }
     }
   }
 

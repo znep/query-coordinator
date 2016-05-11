@@ -28,4 +28,16 @@
     <aside><p><%= translations[:bar_background_color][:description] %></p></aside>
   </section>
 
+  <%= render(
+    'list_of_links',
+    :links => content['links'],
+    :translations => translations,
+    :title => translations[:menu_links][:title],
+    :description => translations[:menu_links][:description],
+    :label_title => translations[:link_title_label],
+    :label_placeholder => translations[:link_title_placeholder],
+    :url_title => translations[:url_label],
+    :url_placeholder => translations[:url_placeholder]
+  ) %>
+
 <% end %>

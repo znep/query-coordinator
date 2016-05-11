@@ -9,7 +9,7 @@ $(document).ready(function() {
 
   var MISSING_PROP_VALUE = 'N/A';
 
-  // This is duplicated in angular/common/values.js
+  // This is duplicated in angular/common/values.js and datasetLandingPage/lib/mixpanelTracking.js
   var MIXPANEL_EVENTS = [
     'Changed Render Type Options',
     'Chose Visualization Type',
@@ -24,16 +24,25 @@ $(document).ready(function() {
     'Clicked Sidebar Option',
     'Clicked Socrata News Link',
     'Clicked Pane in Sidebar',
+    'Clicked a Related View',
+    'Clicked to Show More Views',
     'Closed Tour',
+    'Contacted Dataset Owner',
+    'Copied API Link',
+    'Copied OData Link',
+    'Downloaded Data',
     'Encountered Error Message',
+    'Expanded Column Info',
     'Ingress: Started Wizard Page',
     'Ingress: Left Wizard Page',
+    'Navigated to Gridpage',
     'Opened Goal Chart',
+    'Shared Dataset',
     'Used Search Facets',
     'Used Search Field'
   ];
 
-  // This is duplicated in angular/common/values.js
+  // This is duplicated in angular/common/values.js and datasetLandingPage/lib/mixpanelTracking.js
   var MIXPANEL_PROPERTIES = [
     'Catalog Version',
     'Chart/Map Type',
@@ -58,7 +67,10 @@ $(document).ready(function() {
     'On Page',
     'Product',
     'Properties',
+    'Provider',
     'Query',
+    'Related View Id',
+    'Related View Type',
     'Render Type',
     'Result Ids',
     'Result Number',

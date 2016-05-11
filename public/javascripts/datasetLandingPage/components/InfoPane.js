@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DownloadDropdown from './DownloadDropdown';
 import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
+import { emitMixpanelEvent } from '../actions';
 
 export var InfoPane = React.createClass({
   propTypes: {
@@ -32,7 +33,7 @@ export var InfoPane = React.createClass({
   },
 
   render: function() {
-    var { view } = this.props;
+    var { view, onClickGrid } = this.props;
     var { descriptionHeight } = this.state;
 
     var privateIcon;
@@ -52,7 +53,7 @@ export var InfoPane = React.createClass({
       <span className="tag-category">{_.capitalize(view.category)}</span> : null;
 
     viewDataButton = (
-      <a href={view.gridUrl} className="btn btn-default btn-sm grid">
+      <a href={view.gridUrl} className="btn btn-default btn-sm grid" onClick={onClickGrid}>
         {I18n.action_buttons.data}
       </a>
     );
@@ -156,4 +157,16 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(InfoPane);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickGrid: function() {
+      var payload = {
+        name: 'Navigated to Gridpage'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InfoPane);

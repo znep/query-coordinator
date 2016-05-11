@@ -3,7 +3,8 @@ import _ from 'lodash';
 import {
   RECEIVE_DATASET_METADATA,
   HANDLE_DATASET_METADATA_ERROR,
-  SET_DIMENSION
+  SET_DIMENSION,
+  SET_MEASURE
 } from '../actions';
 
 import defaultVif from '../defaultVif';
@@ -31,6 +32,12 @@ export default function vif(state, action) {
     case SET_DIMENSION:
       _.each(state.series, function(series) {
         series.dataSource.dimension.columnName = action.dimension;
+      });
+      break;
+
+    case SET_MEASURE:
+      _.each(state.series, function(series) {
+        series.dataSource.measure.columnName = action.measure;
       });
       break;
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { setDatasetUid, setDimension } from './actions';
+import { setDatasetUid, setDimension, setMeasure } from './actions';
 
 export var AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -24,6 +24,7 @@ export var AuthoringWorkflow = React.createClass({
     var datasetMetadata = this.props.datasetMetadata;
     var datasetMetadataInfo;
     var dimensionDropdown;
+    var measureDropdown;
 
     if (datasetMetadata.hasError) {
       datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
@@ -32,11 +33,20 @@ export var AuthoringWorkflow = React.createClass({
     }
 
     if (datasetMetadata.hasData) {
-      var options = datasetMetadata.data.columns.map(function(column) {
+      var dimensionOptions = datasetMetadata.data.columns.map(function(column) {
         return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
       });
 
-      dimensionDropdown = <select onChange={this.props.onChangeDimension}>{options}</select>;
+      dimensionDropdown = <select onChange={this.props.onChangeDimension}>{dimensionOptions}</select>;
+
+      var measureOptions = _.chain(datasetMetadata.data.columns).
+        filter({ dataTypeName: 'number' }).
+        map(function(column) {
+          return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
+        }).
+        value();
+
+      measureDropdown = <select onChange={this.props.onChangeMeasure}>{measureOptions}</select>;
     }
 
     return (
@@ -48,7 +58,14 @@ export var AuthoringWorkflow = React.createClass({
         </div>
 
         {datasetMetadataInfo}
-        {dimensionDropdown}
+
+        <div>
+          Dimension: {dimensionDropdown}
+        </div>
+
+        <div>
+          Measure: {measureDropdown}
+        </div>
 
         <div className="actions">
           <button className="done" onClick={this.onComplete}>Done</button>
@@ -75,6 +92,11 @@ function mapDispatchToProps(dispatch) {
     onChangeDimension: function(event) {
       var dimension = event.target.value;
       dispatch(setDimension(dimension));
+    },
+
+    onChangeMeasure: function(event) {
+      var measure = event.target.value;
+      dispatch(setMeasure(measure));
     }
   };
 }

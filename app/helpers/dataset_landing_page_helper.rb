@@ -173,7 +173,7 @@ module DatasetLandingPageHelper
       :columns => columns,
       :isPrivate => !@view.is_public?,
       :isGeospatial => @view.is_geospatial?,
-      :gridUrl => data_grid_path(@view),
+      :gridUrl => data_grid_path(@view.route_params),
       :downloadOverride => @view.downloadOverride,
       :exportFormats => transformed_formats,
       :lastUpdatedAt => @view.time_last_updated_at,

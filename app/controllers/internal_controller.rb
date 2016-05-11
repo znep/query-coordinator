@@ -588,6 +588,17 @@ private
         notices << "Added account module `#{feature}` successfully."
       end
       config = ::Configuration.find_by_type('feature_set', true, domain_cname)[0]
+
+      if config.nil?
+        # This problem can honestly just be fixed by creating the feature_set config.
+        # If you have encountered this issue, verify that everything that's normally added
+        # upon domain creation has been done with this domain.
+        #
+        # Consider dynamically creating this config in the future?
+        errors << 'Config `feature_set` does not exist! Please ask Engineering to investigate.'
+        break
+      end
+
       if config.properties.keys.include? feature
         config.update_proeprty(feature, enabled)
         notices << "Updated feature `#{feature}` as `#{enabled}` successfully."

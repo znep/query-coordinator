@@ -23,7 +23,7 @@ class SiteChrome < OpenStruct
   def self.default_values
     {
       name: 'Site Chrome',
-      default: false,
+      default: true,
       domainCName: 'localhost',
       type: SiteChrome.core_configuration_type,
       properties: []
@@ -32,13 +32,14 @@ class SiteChrome < OpenStruct
 
   # NOTE: obviously this is local to my dev box while I'm developing this and it changes frequently
   def self.local_dev_box_auth_cookies
-    { "remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "logged_in"=>"true", "mp_mixpanel__c"=>"7", "mp_mixpanel__c3"=>"12706", "mp_mixpanel__c4"=>"9207", "mp_mixpanel__c5"=>"64", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q" }.
-      map { |k, v| "#{k}=#{v}" }.join(';')
+    # { "remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "logged_in"=>"true", "mp_mixpanel__c"=>"7", "mp_mixpanel__c3"=>"12706", "mp_mixpanel__c4"=>"9207", "mp_mixpanel__c5"=>"64", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q" }.
+      # map { |k, v| "#{k}=#{v}" }.join(';')
+      '_ga=GA1.1.905389133.1459815701; _chrome_session=QWtuWXk4VCtXbGV5ZG5acXRWUjV2V1BlSFFQYnhsbk9KdmloYldIWlZLUkdkNTUxajhGQ0loM2tjdjI3elF4dnNORktvWGI4QjE3M1prc1MrLzhtTE9zOGFnUVd6NU50VjJ0cHpwYWdCZi9QZmpNNTJQZzRMbzBaUUh1aDZ0TGRVTHhrU25JcTRxVENlLzk3THptTWh3PT0tLXdqTFdHeEhvQ3ljZFF1enZsdzkrVGc9PQ%3D%3D--ff3c878beafcf36a72a219729278e3251c10aa3f; logged_in=true; _chrome_example_session=T09YN251MlJoWFNka09sZWFVUnBBYjFoUmVEWDRvSWJKUGozcisreEo3b3hjeC9tYmwvbWVhRGs5MnJKb0tpejlPam1lLys2UVlrSjRNNnd6UUpVZHpteTJzU3dqOEhOTHRXY2FQUzJiZ1gvUEFHelVIMjlEbktBcXJJNGFUbElZQkVtSzFuUUZBUGc3VjlKdW4zMFdnPT0tLVMzSVByMEtzcHZWS1NWdG04TDFVNGc9PQ%3D%3D--08c0faae12389071dd858b088a4a93fc30ecaf10; mp_mixpanel__c=57; mp_mixpanel__c3=43993; mp_mixpanel__c4=43409; mp_mixpanel__c5=257; socrata-csrf-token=DPCTUZHtpVaNtUzIsBdaFeQWm00PWNOA34iPgyUilxQ%3D; _core_session_id=dHVnZy1pa2NlIDE0NjI4NjQ1OTAgZWUyNTBiODc0ODBiIDc0MzZjOTA3YTYzMzZlYjE3MzQ5NGM2NTIwNGMzZTA2ZTQwMjg2OTc%3D; _socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlMzUzOTJkMDg3YjYxMWM3OTQ2ZTRkOTJjNGU2NzY0MGZJIhBfY3NyZl90b2tlbgY7AEZJIjFEUENUVVpIdHBWYU50VXpJc0JkYUZlUVdtMDBQV05PQTM0aVBneVVpbHhRPQY7AEY%3D--52c771e095a6a877f06c9599856447be2ecc02bc'
   end
 
   def initialize(hash = {})
     clear_errors
-    @cookies = nil # SiteChrome.local_dev_box_auth_cookies
+    @cookies = SiteChrome.local_dev_box_auth_cookies
     super(SiteChrome.default_values.merge(hash))
   end
 
@@ -83,6 +84,10 @@ class SiteChrome < OpenStruct
     path = "#{core_configurations_path}/#{id}"
     res = get(path, timeout: 5)
     new(res) if res.success? && res['type'] == core_configuration_type
+  end
+
+  def self.find_default
+    SiteChrome.all.find(&:default)
   end
 
   #######################################################

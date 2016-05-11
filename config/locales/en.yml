@@ -2213,12 +2213,53 @@ en:
         site_appearance: Site Appearance
         preview_changes: Preview Changes
         save_changes: Save Changes
+        save: Save
+        cancel: Cancel
         tabs:
-          general_settings: General Settings
-          header_bar: Header Bar
-          footer: Footer
-          homepage: Homepage
-          social_sharing: Social Sharing
+          general:
+            title: General Settings
+            fields:
+              window_or_tab_title_display:
+                title: Window or Tab Title Display
+                description: Name displayed in the window or tab title.
+                placeholder: Evergreen Open Data
+              window_or_tab_icon:
+                title: Window or Tab Icon (favicon)
+                description: URL reference to the icon displayed in the window, tab, and browser URL field.
+                placeholder: URL
+          header:
+            title: Header Bar
+            fields:
+              header_bar_logo:
+                title: Header Bar Logo
+                description: URL reference to the header bar logo. Recommended minium size is 100 x 40px. This logo will be displayed at a small size.
+                placeholder: URL
+              site_display_name:
+                title: Site Display Name
+                description: Name displayed in the Header Bar. Usually set to your organizations name.
+                placeholder: Evergreen Open Data
+              bar_background_color:
+                title: Bar Background Color
+                description: Background color of the header bar and the color of text and links that sit atop the bar.
+                placeholder: '#123456'
+              bar_text_link_color:
+                title: Bar Text & Link Color
+                placeholder: '#ffffff'
+              menu_links:
+                title: Menu Links
+                description: Display up to 5 links in the Heaader Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+              link_label: Link Label
+              url: URL
+              link_text: Link Text
+          footer:
+            title: Footer
+            fields:
+          homepage:
+            title: Homepage
+            fields:
+          social:
+            title: Social Sharing
+            fields:
       users:
         actions: Actions
         all: All

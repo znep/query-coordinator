@@ -175,7 +175,7 @@ Frontend::Application.routes do
     end
 
     resources :site_chrome
-
+    # TODO - condense with site_chrome_controller
     get '/site_chrome_admin', :controller => 'site_chrome_admin', :action => :index
 
     get '/templates/:id', :controller => 'remote_partials', :action => :templates

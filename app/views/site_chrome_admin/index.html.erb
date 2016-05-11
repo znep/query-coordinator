@@ -8,28 +8,40 @@
 <div class="site-chrome-admin">
   <div class="admin-header">
     <div class="header-title">
-      <h1><%= t('controls.admin.site_chrome.site_appearance') %></h1>
+      <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
     </div>
 
     <div class="header-controls">
-      <button><%= t('controls.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
-      <button><%= t('controls.admin.site_chrome.save_changes') %></button>
+      <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
+      <button><%= t('screens.admin.site_chrome.save_changes') %></button>
     </div>
   </div>
 
   <ul class="tabs">
-    <li class="tab-link current" data-tab-id="general"><a href="#"><%= t('controls.admin.site_chrome.tabs.general_settings') %></a></li>
-    <li class="tab-link" data-tab-id="header"><a href="#" class=""><%= t('controls.admin.site_chrome.tabs.header_bar') %></a></li>
-    <li class="tab-link" data-tab-id="footer"><a href="#"><%= t('controls.admin.site_chrome.tabs.footer') %></a></li>
-    <li class="tab-link" data-tab-id="homepage"><a href="#"><%= t('controls.admin.site_chrome.tabs.homepage') %></a></li>
-    <li class="tab-link" data-tab-id="social"><a href="#"><%= t('controls.admin.site_chrome.tabs.social_sharing') %></a></li>
+    <% @tab_sections.each_with_index do |section, i| %>
+      <li class="<%= tab_link_classnames(i) %>" data-tab-id="<%= section %>">
+        <a href="#"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></a>
+      </li>
+    <% end %>
   </ul>
 
-  <% for section in %w(general header footer homepage social) %>
-    <div class="tab-content">
-      <%= render(:partial => "site_chrome_admin/tab_content/#{section}") %>
+  <% @tab_sections.each_with_index do |section, i| %>
+    <div class="<%= tab_section_classnames(i) %>" data-tab-id="<%= section %>">
+      <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
+      <%= render(:partial => "site_chrome_admin/tab_content/#{section}",
+        :locals => {
+          :content => @site_chrome.content[section],
+          :locales => @site_chrome.content['locales']['en'], # TODO how do we detect current locale?
+          :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
+        }
+      ) %>
     </div>
   <% end %>
+
+  <div class="page-controls">
+    <button class="primary"><%= t("screens.admin.site_chrome.save") %></button>
+    <button><%= t("screens.admin.site_chrome.cancel") %></button>
+  </div>
 
 </div>
 

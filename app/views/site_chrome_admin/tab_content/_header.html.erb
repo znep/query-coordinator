@@ -1,1 +1,31 @@
-header
+<%= form_tag('#') do %>
+
+  <section class="settings-group">
+    <div class="settings-form">
+      <%= label_tag('header_bar_logo', translations[:header_bar_logo][:title]) %>
+      <%= text_field_tag('header_bar_logo', content['logo']['src'], placeholder: translations[:header_bar_logo][:placeholder]) %>
+    </div>
+    <aside><p><%= translations[:header_bar_logo][:description] %></p></aside>
+  </section>
+
+  <section class="settings-group">
+    <div class="settings-form">
+      <%= label_tag('site_display_name', translations[:site_display_name][:title]) %>
+      <%= text_field_tag('site_display_name', locales['general']['site_name'], placeholder: translations[:site_display_name][:placeholder]) %>
+    </div>
+    <aside><p><%= translations[:site_display_name][:description] %></p></aside>
+  </section>
+
+  <section class="settings-group">
+    <div class="settings-form half">
+      <%= label_tag('bar_background_color', translations[:bar_background_color][:title]) %>
+      <%= text_field_tag('bar_background_color', content['styles']['bg_color'], placeholder: translations[:bar_background_color][:placeholder]) %>
+    </div>
+    <div class="settings-form half">
+      <%= label_tag('bar_text_link_color', translations[:bar_text_link_color][:title]) %>
+      <%= text_field_tag('bar_text_link_color', content['styles']['fg_color'], placeholder: translations[:bar_text_link_color][:placeholder]) %>
+    </div>
+    <aside><p><%= translations[:bar_background_color][:description] %></p></aside>
+  </section>
+
+<% end %>

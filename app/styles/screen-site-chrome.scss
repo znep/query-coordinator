@@ -5,6 +5,11 @@ $dark-grey: #7a7a7a;
   max-width: 68rem;
   margin: 24px auto 0;
 
+  h1, h2, h3, h4, h5 {
+    letter-spacing: -0.5px;
+    font-weight: 600;
+  }
+
   button {
     color: $dark-grey;
     background-color: #fff;
@@ -17,11 +22,20 @@ $dark-grey: #7a7a7a;
     text-decoration: none;
     letter-spacing: 0;
     margin-right: 0;
-    transition: color 0.2s, background-color 0.2s;
+    @include transition(0.2s, color);
+    @include transition(0.2s, background-color);
     border-radius: 1px;
     &:hover {
       color: $dark-grey;
       background-color: #e6e6e6;
+    }
+    &.primary {
+      color: #fff;
+      background-color: #288DC1;
+      border-color: #288DC1;
+      &:hover {
+        background-color: #20719a;
+      }
     }
   }
 
@@ -34,9 +48,7 @@ $dark-grey: #7a7a7a;
       display: block;
 
       h1 {
-        letter-spacing: -0.5px;
         font-size: 27px;
-        font-weight: 600;
       }
     }
 
@@ -78,9 +90,72 @@ $dark-grey: #7a7a7a;
 
   .tab-content {
     display: none;
+    padding: 1rem;
 
     &.current {
       display: block;
+    }
+
+    h2.section-title {
+      margin-top: 27px;
+      font-size: 23px;
+    }
+
+    section.settings-group {
+      display: block;
+      padding-top: 27px;
+      overflow: hidden;
+
+      div.settings-form {
+        float: left;
+        width: 65%;
+
+        &.half {
+          width: calc(32.5% - 1rem);
+          &:first-of-type {
+            margin-right: 2rem;
+          }
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5em;
+          font-size: 15px;
+          font-weight: 600;
+        }
+        input {
+          width: calc(100% - 16px);
+          border: solid 1px #c2c2c2;
+          border-radius: 1px;
+          box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+          font-size: 15px;
+          padding: 8px;
+          margin-bottom: 12px;
+        }
+      }
+
+      aside {
+        display: block;
+        float: right;
+        width: calc(35% - 1rem);
+        padding-left: 1rem;
+
+        p {
+          font-size: 14px;
+          line-height: 1.4em;
+          margin: 22px 0;
+        }
+      }
+    }
+  }
+
+  .page-controls {
+    border-top: 1px solid #ebebeb;
+    padding: 20px 0;
+    margin-bottom: 20px;
+
+    button:first-of-type {
+      margin-right: 9px;
     }
   }
 

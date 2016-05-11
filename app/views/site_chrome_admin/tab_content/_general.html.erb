@@ -1,1 +1,23 @@
-General
+<%= form_tag('#') do %>
+  <%
+    # move to helper?
+    [{
+      :locale_name => 'window_or_tab_title_display',
+      :config_key => 'site_title'
+    }, {
+      :locale_name => 'window_or_tab_icon',
+      :config_key => 'favicon'
+    }].each do |field|
+      field_name = field[:locale_name]
+      field_key = field[:config_key]
+  %>
+
+      <section class="settings-group">
+        <div class="settings-form">
+          <%= label_tag(field_name, translations[field_name.to_sym][:title]) %>
+          <%= text_field_tag(field_name, content[field_key], placeholder: translations[field_name.to_sym][:placeholder]) %>
+        </div>
+        <aside><p><%= translations[field_name.to_sym][:description] %></p></aside>
+      </section>
+  <% end %>
+<% end %>

@@ -184,7 +184,7 @@ function SoqlDataProvider(config) {
   //   soqlError: response JSON
   // }
   function _makeSoqlGetRequestWithSalt(url) {
-    return Promise.resolve($.get(_withSalt(url))).
+    return Promise.resolve($.get(url)).
       catch(function(error) {
         return Promise.reject({
           status: parseInt(error.status, 10),
@@ -259,24 +259,6 @@ function SoqlDataProvider(config) {
     }
 
     return table;
-  }
-
-  /**
-   * Transforms a URL to include a salt on the end.
-   * https://socrata.atlassian.net/browse/CHART-204
-   *
-   * @param {string} url
-   * @return {string} salted url
-   */
-  function _withSalt(url) {
-    var hasQuery = _.includes(url, '?');
-    var formatVars = { url: url, salt: new Date().getTime() };
-
-    if (hasQuery) {
-      return '{url}&_={salt}'.format(formatVars);
-    } else {
-      return '{url}?_={salt}'.format(formatVars);
-    }
   }
 }
 

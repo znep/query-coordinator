@@ -1,6 +1,6 @@
 .alert {
-  background-color: $light-grey-4;
-  border: 1px solid $light-grey-1;
+  background-color: $light-grey-6;
+  border: 1px solid $light-grey-3;
   font-size: ms(0);
   padding: ms(-2);
   border-radius: 1px;
@@ -21,7 +21,7 @@
   &.warning {
     background-color: $warning-light;
     border-color: $warning;
-    color: $warning-dark;
+    color: $warning-text;
   }
 
   &.error {

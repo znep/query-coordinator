@@ -25,12 +25,14 @@
   margin: 0 ms(-1) 0 0;
   white-space: nowrap;
 
-  .result-card & a {
+  .result-card & a,
+  a {
     color: $black;
     text-decoration: none;
 
     &:hover {
       text-decoration: underline;
+      color: $black;
     }
   }
   .domain {

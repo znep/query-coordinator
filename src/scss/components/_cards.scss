@@ -8,7 +8,7 @@ $tablet: 749px;
   margin-bottom: ms(0);
 
   a {
-    color: $primary;
+    color: $primary-text;
     text-decoration: none;
 
     &:hover {
@@ -34,7 +34,7 @@ $tablet: 749px;
       @include span-columns(9);
 
       .entry-name {
-        font-weight: 200;
+        font-weight: 400;
         display: inline-block;
         margin-right: ms(-2);
         font-size: ms(2);

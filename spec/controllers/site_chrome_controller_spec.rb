@@ -34,7 +34,7 @@ describe SiteChromeController do
 
   # If you re-record the VCR tapes from your local dev box, you'll likely need to change this
   def site_chrome_id
-    61
+    @site_chrome_id ||= 61
   end
 
   describe 'index' do
@@ -158,8 +158,8 @@ describe SiteChromeController do
 
       VCR.use_cassette('site_chrome_controller_create') do
         post :create, site_chrome: site_chrome
-        # Q: How to get assignes and then infer redirect path?
-        # expect(response).to redirect_to(site_chrome_path(id: site_chrome_id))
+        new_site_chrome = assigns['site_chrome']
+        expect(response).to redirect_to(site_chrome_path(id: new_site_chrome.id))
       end
     end
   end
@@ -204,7 +204,8 @@ describe SiteChromeController do
   # Let's keep destroy from existing
   describe 'destroy' do
     it 'is unimplemented' do
-      expect { delete site_chrome_path(site_chrome_id) }.to raise_error(ActionController::RoutingError)
+      expect { delete site_chrome_path(site_chrome_id) }.
+        to raise_error(ActionController::RoutingError)
     end
   end
 

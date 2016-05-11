@@ -42,11 +42,11 @@ An example of a bare-bones layout is shown below:
 <html>
   <head>
     <title>Chrome</title>
-    <%= chrome_meta_viewport_tag %>
+    <%= site_chrome_meta_viewport_tag %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= chrome_stylesheet_tag %>
+    <%= site_chrome_stylesheet_tag %>
     <%= javascript_include_tag 'application' %>
-    <%= chrome_javascript_tag %>
+    <%= site_chrome_javascript_tag %>
     <%= csrf_meta_tags %>
   </head>
 

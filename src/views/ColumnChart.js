@@ -102,7 +102,7 @@ function ColumnChart(element, vif) {
     var chartScroll = $(
       '<div>',
       {
-        'class': 'chart-scroll'
+        'class': 'chart-scroll{0}'.format(vif.configuration.isMobile ? ' mobile' : ' desktop')
       }
     ).append([
       chartWrapper,
@@ -466,13 +466,7 @@ function ColumnChart(element, vif) {
       'height': chartScrollHeight
     });
 
-    if (vif.configuration.isMobile) {
-      var marginTop = _chartScroll.parent().height() - chartScrollHeight - 36;
-
-      _chartScroll.css({
-        'margin-top': marginTop
-      });
-    } else {
+    if (!vif.configuration.isMobile) {
       _chartScroll.css({
         'top': 'initial',
         'padding-bottom': bottomMargin
@@ -524,14 +518,23 @@ function ColumnChart(element, vif) {
           return tick;
         }
       );
-      var ticksStyle = 'top: {0}px; width: {1}px; height: {2}px;'.format(
-        chartScrollTop + topMargin,
-        chartWidth,
-        innerHeight + topMargin
-      );
+
+      var ticksStyle;
+      if (vif.configuration.isMobile) {
+        ticksStyle = 'width: {0}px; height: {1}px;'.format(
+          chartWidth,
+          innerHeight + topMargin
+        );
+      } else {
+        ticksStyle = 'top: {0}px; width: {1}px; height: {2}px;'.format(
+          chartScrollTop + topMargin,
+          chartWidth,
+          innerHeight + topMargin
+        );
+      }
 
       return $('<div>', {
-        'class': 'ticks',
+        'class': 'ticks{0}'.format(vif.configuration.isMobile ? ' mobile' : ' desktop'),
         style: ticksStyle
       }).append(tickMarks);
     };

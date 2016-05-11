@@ -422,6 +422,8 @@ $.fn.socrataColumnChart = function(vif) {
    */
 
   function _updateData(vifToRender) {
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
     var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
     var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
     var unfilteredQueryString = BASE_QUERY.format(
@@ -474,6 +476,7 @@ $.fn.socrataColumnChart = function(vif) {
         );
 
         _render(vifToRender);
+        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
       })
       ['catch'](function(error) {
         _logError(error);

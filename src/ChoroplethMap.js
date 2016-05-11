@@ -213,6 +213,8 @@ $.fn.socrataChoroplethMap = function(vif) {
    * Fetches SOQL data and aggregates with shapefile geoJSON
    */
   function _updateData(vifToRender) {
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
     var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
     var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
     var unfilteredQueryString = BASE_QUERY.format(
@@ -280,6 +282,8 @@ $.fn.socrataChoroplethMap = function(vif) {
           aggregatedData,
           _getRenderOptions(_lastRenderedVif)
         );
+
+        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
       })
       ['catch'](function(error) {
         _logError(error);

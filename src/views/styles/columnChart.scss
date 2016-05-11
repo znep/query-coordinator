@@ -94,6 +94,30 @@
     .ticks {
       position: absolute;
 
+      &.mobile {
+        z-index: 1;
+        bottom: 14px;
+        width: 100%;
+
+        .tick {
+          color: #666;
+          text-align: left;
+          font-size: 12px;
+          font-weight: 400;
+          padding-left: 2px;
+
+          &.origin {
+            border: none;
+            font-weight: 400;
+          }
+
+          &.below {
+            border-bottom: 1px solid #bbb;
+            border-top: none;
+          }
+        }
+      }
+
       .tick {
         position: absolute;
         width: 100%;
@@ -127,10 +151,17 @@
     .chart-scroll {
       position: absolute;
       left: 0;
-      top: 0;
       overflow-x: auto;
       overflow-y: hidden;
       box-sizing: content-box; /* javascript adds height and padding that should stack */
+
+      &.mobile {
+        bottom: 0;
+      }
+
+      &.desktop {
+        top: 0;
+      }
 
       .column-chart-wrapper {
 

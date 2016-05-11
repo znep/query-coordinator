@@ -82,6 +82,7 @@ DistributionChart.prototype.updateData = function() {
   // this. This override is stored in the vif's configuration.
   var bucketTypeOverride = _.get(this.props.vif, 'configuration.bucketType');
 
+  $(this.element).trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
   // First, fetch the min and max of the column
   return this.fetchColumnDomain().
@@ -95,6 +96,7 @@ DistributionChart.prototype.updateData = function() {
 
     // Update data and scale on props
     then(function(data) {
+      $(this.element).trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
       this.props.data = data;
       this.props.scale = DistributionChartHelpers.getScaleForData(data);
     }.bind(this))

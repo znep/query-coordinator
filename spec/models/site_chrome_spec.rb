@@ -54,7 +54,7 @@ describe SiteChrome do
       VCR.use_cassette('site_chrome_reload_from_core') do
         site_chrome = SiteChrome.find_one(site_chrome_id)
         reloaded = site_chrome.reload
-        expect(site_chrome).to be(reloaded)
+        expect(site_chrome).to eq(reloaded)
       end
     end
 
@@ -85,9 +85,9 @@ describe SiteChrome do
     it 'can reload properties' do
       VCR.use_cassette('site_chrome_reload_properties') do
         site_chrome = SiteChrome.find_one(site_chrome_id)
-        before = site_chrome.marshal_dump
-        after = site_chrome.reload_properties.marshal_dump
-        expect(after).to be(before)
+        before = site_chrome.attributes
+        after = site_chrome.reload_properties.attributes
+        expect(after).to eq(before)
       end
     end
 
@@ -121,9 +121,9 @@ describe SiteChrome do
           )
 
         # Property order is not guaranteed but here we have only one property
-        before = site_chrome.marshal_dump
-        after = site_chrome.reload_properties.marshal_dump
-        expect(after).to be(before)
+        before = site_chrome.attributes
+        after = site_chrome.reload_properties.attributes
+        expect(after).to eq(before)
       end
     end
   end

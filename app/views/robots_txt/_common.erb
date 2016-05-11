@@ -33,8 +33,9 @@ prefixes.product(filters).map { |prefix, filter| "Disallow: #{prefix}?*&#{filter
 Disallow: */edit$
 Disallow: /*/*/*/widget_preview
 Disallow: /OData.svc/
-Disallow: /analytics/add
 Disallow: /browse/embed
 Disallow: /login
 Disallow: /reset_password/
 Disallow: /views/INLINE/rows.json?*method=clustered2*
+
+<%= 'Disallow: /analytics/add' if FeatureFlags.derive(nil, request).robots_txt_disallow_analytics_add %>

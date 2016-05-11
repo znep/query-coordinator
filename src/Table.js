@@ -372,6 +372,8 @@ $.fn.socrataTable = function(vif) {
       );
     }
 
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
     _updateState({ busy: true });
 
     return getMemoizedDatasetMetadata(
@@ -404,6 +406,8 @@ $.fn.socrataTable = function(vif) {
             soqlDataPromise
           ]).then(
             function(resolutions) {
+              $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+
               var rowCount = resolutions[0];
               var soqlData = resolutions[1];
 

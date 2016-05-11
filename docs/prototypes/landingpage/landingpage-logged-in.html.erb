@@ -279,7 +279,7 @@ $(document).ready(function(){
   </div>
   <div class="page-content">
     <div class="lp-section">
-      <h2 class="section-header">Popular Content Using this Data</h2>
+      <h2 class="section-header">Featured Content Using this Data</h2>
 
       <div class="alert default featured-assets-msg">
         <div>
@@ -289,132 +289,105 @@ $(document).ready(function(){
         </div>
       </div>
 
-      <div class="alert default" hidden="hidden">
-        <b>Hmm...</b> Looks like there is no public content using this data.</a>
-      </div>
-    </div>
+    </div><!-- /.lp-section -->
 
-    <div class="lp-section">
-      <div class="media-results">
-        <div class="result-card media no-meta">
 
-          <div class="entry-header">
-            <div class="entry-title">
-              <h2 class="entry-name"><a href="#">How to Apply for a Liquor Licence</a></h2>
-            </div>
-            <div class="entry-view-type"><span class="icon-story"></span></div>
-          </div>
+    <div class="lp-section featured-content hidden">
 
-          <div class="entry-meta">
-            <div class="first">
-              <span class="date">Mar. 12, 2016</span>
-            </div>
-            <div class="second">
-              <span class="date">12,235 Views</span>
-            </div>
-          </div>
+      <!-- Featured story -->
+      <div class="result-card media featured-story" hidden="hidden">
 
-          <div class="entry-content">
-            <div class="entry-main">
-              <div class="img-wrapper chart">
-                 <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
               </div>
-              <div class="entry-description">
-                Story explaining the procedure for applying for a license, as well as some general trends around current licensing.
+              <div class="entry-view-type"><span class="icon-story"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">12,235 Views</span>
               </div>
             </div>
-          </div>
 
-        </div><!-- /.result-card -->
-
-        <div class="result-card media no-meta">
-
-          <div class="entry-header">
-            <div class="entry-title">
-              <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
-            </div>
-            <div class="entry-view-type"><span class="icon-map"></span></div>
-          </div>
-
-          <div class="entry-meta">
-            <div class="first">
-              <span class="date">Mar. 12, 2016</span>
-            </div>
-            <div class="second">
-              <span class="date">12,234 Views</span>
-            </div>
-          </div>
-
-          <div class="entry-content">
-            <div class="entry-main">
-              <div class="img-wrapper map">
-                <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
-                 <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
-              </div>
-              <div class="entry-description">
-                Map showing the number of approved licenses for each neighborhood in the city.
+            <div class="entry-content">
+              <div class="entry-main">
+                <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt="BOTTELS">
+                <div class="entry-description">
+                  Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+                </div>
               </div>
             </div>
-          </div>
 
-        </div><!-- /.result-card -->
+          </div><!-- featured story card -->
 
-        <div class="result-card media no-meta last">
 
-          <div class="entry-header">
-            <div class="entry-title">
-              <h2 class="entry-name"><span class="icon-private" title="Private Asset"></span><a href="#">Licenses by Type</a></h2>
-            </div>
-            <div class="entry-view-type"><span class="icon-cards"></span></div>
-          </div>
+          <!-- featured external thing -->
+          <div class="result-card media featured-ext hidden">
 
-          <div class="entry-meta">
-            <div class="first">
-              <span class="date">Mar. 12, 2016</span>
-            </div>
-            <div class="second">
-              <span class="date">1,234 Views</span>
-            </div>
-          </div>
-
-          <div class="entry-content">
-            <div class="entry-main">
-              <div class="img-wrapper data-lens">
-                <!-- <span class="icon-cards x-large-icon"></span> --> <!-- MVP -->
-                 <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a id="ext-asset-title" href="#"></a></h2>
               </div>
-              <div class="entry-description">
-                Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
+              <div class="entry-view-type"><span class="icon-external-square"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">External Content</span>
+              </div>
+
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <img id="ext-asset-image" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="">
+                <div id="ext-asset-description" class="entry-description"></span>
+                </div>
               </div>
             </div>
-          </div>
 
-        </div><!-- /.result-card -->
+          </div><!-- featured external thing -->
 
 
-        <div class="result-card media no-meta loading-card">
-
-          <div class="entry-content">
-            <div class="entry-main">
-              <div class="img-wrapper spinner">
-                <span class="spinner-default x-large-spinner"></span> <!-- MVP -->
-<!--                 <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />-->
+          <!-- featured viz -->
+          <div class="result-card media featured-viz hidden">
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
               </div>
-              <div class="entry-description"></span>
+              <div class="entry-view-type"><span class="icon-map"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">12,234 Views</span>
               </div>
             </div>
-          </div>
 
-        </div><!-- /.result-card -->
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper map">
+                  <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
+                   <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+                </div>
+                <div class="entry-description">
+                  Map showing the number of approved licenses for each neighborhood in the city.
+                </div>
+              </div>
+            </div>
 
+          </div><!-- /.result-card featured viz-->
 
-      </div><!-- /.media-results -->
-
-      <div class="media-results footer">
-        <div class="footer-action"><a href="../catalog/catalog-derived.html">View all content created from <i>Current Liquor Licenses</i></em> </a></div>
-      </div>
 
     </div><!-- /.lp-section -->
+
 
     <div class='lp-section'>
       <h2 class="section-header editable">About this Dataset</h2>
@@ -1114,6 +1087,129 @@ $(document).ready(function(){
 
       </div> <!-- /.lp-section -->
 
+      <div class="lp-section">
+        <h2 class="section-header">Popular Content Using this Data</h2>
+        <div class="media-results">
+          <div class="result-card media no-meta">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">How to Apply for a Liquor Licence</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-story"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">12,235 Views</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper chart">
+                   <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />
+                </div>
+                <div class="entry-description">
+                  Story explaining the procedure for applying for a license, as well as some general trends around current licensing.
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.result-card -->
+
+          <div class="result-card media no-meta">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-map"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">12,234 Views</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper map">
+                  <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
+                   <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+                </div>
+                <div class="entry-description">
+                  Map showing the number of approved licenses for each neighborhood in the city.
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.result-card -->
+
+          <div class="result-card media no-meta last">
+
+            <div class="entry-header">
+              <div class="entry-title">
+                <h2 class="entry-name"><span class="icon-private" title="Private Asset"></span><a href="#">Licenses by Type</a></h2>
+              </div>
+              <div class="entry-view-type"><span class="icon-cards"></span></div>
+            </div>
+
+            <div class="entry-meta">
+              <div class="first">
+                <span class="date">Mar. 12, 2016</span>
+              </div>
+              <div class="second">
+                <span class="date">1,234 Views</span>
+              </div>
+            </div>
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper data-lens">
+                  <!-- <span class="icon-cards x-large-icon"></span> --> <!-- MVP -->
+                   <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />
+                </div>
+                <div class="entry-description">
+                  Interactive experience showing licenses by type, filterable by neighborhood and business type. This data is based on the last 4 years...</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.result-card -->
+
+
+          <div class="result-card media no-meta loading-card">
+
+            <div class="entry-content">
+              <div class="entry-main">
+                <div class="img-wrapper spinner">
+                  <span class="spinner-default x-large-spinner"></span> <!-- MVP -->
+  <!--                 <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />-->
+                </div>
+                <div class="entry-description"></span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.result-card -->
+
+
+        </div><!-- /.media-results -->
+
+        <div class="media-results footer">
+          <div class="footer-action"><a href="../catalog/catalog-derived.html">View all content created from <i>Current Liquor Licenses</i></em> </a></div>
+        </div>
+
+      </div><!-- /.lp-section -->
+
     </div><!-- /.page-content -->
 
 
@@ -1448,6 +1544,218 @@ $(document).ready(function(){
     </header>
 
     <section class="modal-content">
+
+      <div class="media-results">
+
+        <div class="result-card media">
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">How to Apply for a Liquor Licence</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-story"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+            <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />
+              <div class="entry-description">
+                Story explaining the procedure for applying for a license, as well as some general trends around current licensing.<span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.result-card -->
+
+
+        <div class="result-card media">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Licensing trends by neighborhood</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-map"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+              <div class="entry-description">
+                Licensing trends by neighborhood. Number of approved licenses per ... <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.result-card -->
+
+
+        <div class="result-card media">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Licenses by Type</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-cards"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />
+              <div class="entry-description">
+                Map showing the number of approved licenses for each neighborhood in the city. <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.result-card -->
+
+      </div><!-- /.media-results -->
+
+
+      <div class="media-results">
+
+        <div class="result-card media">
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-map"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/boundaryMap.png" alt=" " />
+              <div class="entry-description">
+                Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.result-card -->
+
+
+        <div class="result-card media">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-map"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens2.png" alt=" " />
+              <div class="entry-description">
+                Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.result-card -->
+
+        <div class="result-card media">
+
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Housing Dashboard</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-cards"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/linechart.png" alt=" " />
+              <div class="entry-description">
+                Dashboard displays a variety of measures and current information about housing programs in the city. <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.result-card -->
+
+
+      </div><!-- /.media-results -->
+
+      <div class="media-results">
+
+        <div class="result-card media">
+          <div class="entry-header">
+            <div class="entry-title">
+              <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+            </div>
+            <div class="entry-view-type"><span class="icon-map"></span></div>
+          </div>
+
+          <div class="entry-meta">
+            <div class="first">
+              <span class="date">Mar. 12, 2016</span>
+            </div>
+            <div class="second">
+              <span class="date">12,235 Views</span>
+            </div>
+          </div>
+
+          <div class="entry-content">
+            <div class="entry-main">
+              <img src="https://dl.dropboxusercontent.com/u/4235130/pointMap.png" alt=" " />
+              <div class="entry-description">
+                Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.result-card -->
+      </div>
 
     </section>
 

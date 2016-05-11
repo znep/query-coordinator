@@ -232,7 +232,15 @@ a {
 		}
 
 
+
 		//featured content
+
+		.featured-content {
+			&.hidden, .hidden {
+				display: none;
+			}
+		}
+
 		.result-card {
 
 			.img-wrapper:hover {
@@ -1036,7 +1044,7 @@ a {
 	}
 }
 
-#manage-featured-content-modal, #story-modal, #external-asset-modal {
+#manage-featured-content-modal, #story-modal, #external-asset-modal, #socrata-viz-modal {
 
 	.modal-header-title, .modal-content {
 		padding-left: 11%;
@@ -1106,6 +1114,16 @@ a {
 		  }
 	  }
 	}
+}
+
+#socrata-viz-modal {
+	.modal-content {
+		padding-right: 5%;
+	}
+	.result-card {
+		@include span-columns(3);
+	}
+
 }
 
 #story-modal, #external-asset-modal {

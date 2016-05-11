@@ -3,6 +3,7 @@ require 'ostruct'
 
 module Chrome
   class SiteChrome
+
     attr_reader :id, :content, :updated_at, :domain_cname
 
     def initialize(config = {})
@@ -40,11 +41,11 @@ module Chrome
     # to get a _core_session_id. Then add that cookie to your web page for the Site Chrome app.
     # Enter in the browser console: `document.cookie="_core_session_id=xxxxxx"`
     def current_user(request)
-      url = localhost?(request.host) ?
-        'http://localhost:8080/users.json?method=getCurrent' : '/api/users.json?method=getCurrent'
-      cookies = request.headers['Cookie'].to_s
       begin
-        response = HTTParty.get(url, :headers => { 'Cookie' => cookies })
+        response = HTTParty.get(
+          "#{request.host}/api/users.json?method=getCurrent",
+          :headers => { 'Cookie' => request.headers['Cookie'].to_s }
+        )
         if response.code == 200 && response.body
           JSON.parse(response.body)
         end
@@ -59,10 +60,6 @@ module Chrome
     # end
 
     private
-
-    def localhost?(host = nil)
-      %w(local.dev localhost).include?(host.downcase) || ENV['LOCALHOST'].to_s.downcase == 'true'
-    end
 
   end
 end

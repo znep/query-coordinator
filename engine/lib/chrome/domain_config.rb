@@ -3,27 +3,27 @@ require 'httparty'
 module Chrome
   class DomainConfig
 
-    attr_reader :config, :localhost
+    attr_reader :domain
 
-    alias :localhost? :localhost
-
-    def initialize(domain, localhost = false)
+    def initialize(domain)
       @domain = domain
-      @localhost = localhost
-      @config = get_domain_config
     end
 
     # Convert domain_config to data structure needed for Site Chrome
-    def to_site_chrome_config
-      return if @config.nil?
+    def site_chrome_config
+      raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
       site_chrome_config = newest_published_site_chrome
       {
-        id: @config[:id],
+        id: config[:id],
         content: site_chrome_config[:content],
-        updated_at: site_chrome_config[:updatedAt] || @config[:updatedAt],
-        domain_cname: @config[:domainCName]
+        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
+        domain_cname: config[:domainCName]
       }
+    end
+
+    def config
+      @config ||= get_domain_config
     end
 
     private
@@ -31,8 +31,8 @@ module Chrome
     # Config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
     def newest_published_site_chrome
-      if @config.has_key?(:properties)
-        site_chrome_config = @config[:properties].detect do |config|
+      if config.has_key?(:properties)
+        site_chrome_config = config[:properties].detect do |config|
           config[:name] == 'siteChromeConfigVars'
         end
 
@@ -47,31 +47,30 @@ module Chrome
       uri = domain_config_uri
       begin
         response = HTTParty.get(uri)
-        case response.code
-          when 200
-            body = JSON.parse(response.body)
-            raise "Configuration is empty on #{uri}" if body.nil? || body.empty?
-            ActiveSupport::HashWithIndifferentAccess.new(body[0])
-          else
-            raise "#{response.code}: #{response.body}"
-        end
+        body = response.code == 200 ? response.body : nil
+        ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
       rescue HTTParty::ResponseError => e
-        raise "Failed to get domain configuration for #{@domain}: #{e}"
+        raise "Failed to get domain configuration for #{domain}: #{e}"
       end
     end
 
     def domain_config_uri
-      uri = localhost? ? 'http://localhost:8080/configurations.json' : "#{domain_with_scheme}/api/configurations.json"
-      "#{uri}?type=site_chrome&defaultOnly=true"
+      "#{domain_with_scheme}/api/configurations.json?type=site_chrome&defaultOnly=true"
     end
 
     def domain_with_scheme
-      uri = URI.parse(@domain)
-      if uri.scheme
-        uri.to_s
-      else
-        "https://#{uri}"
-      end
+      uri = URI.parse(domain)
+      uri.scheme ? uri.to_s : "https://#{uri}"
+    end
+
+    def configuration_or_default(configuration_response)
+      configuration = configuration_response.to_s
+      result = JSON.parse(configuration).first rescue nil
+      JSON.parse(default_configuration).first unless result
+    end
+
+    def default_configuration
+      File.read("#{Chrome::Engine.root}/config/default_site_chrome.json")
     end
 
   end

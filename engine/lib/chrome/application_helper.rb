@@ -34,13 +34,9 @@ module Chrome
       locales['en'].dig(*locale_key.split('.'))
     end
 
-    def localhost?(host = defined?(:request) ? request.host : nil)
-      %w(local.dev localhost).include?(host.to_s.downcase) || ENV['LOCALHOST'].to_s.downcase == 'true'
-    end
-
     def get_site_chrome
       # This is just temporary caching. This approach should not be used in production.
-      @get_site_chrome ||= Chrome::SiteChrome.new(Chrome::DomainConfig.new(ENV['DOMAIN'], localhost?).to_site_chrome_config)
+      @get_site_chrome ||= Chrome::SiteChrome.new(Chrome::DomainConfig.new(ENV['DOMAIN']).site_chrome_config)
     end
 
   end

@@ -1,0 +1,191 @@
+[{
+  "id": -1,
+  "name": "SiteChrome",
+  "default": true,
+  "domainCName": "localhost",
+  "type": "site_chrome",
+  "updatedAt": 1460507059,
+  "properties": [
+    {
+      "name": "siteChromeConfigVars",
+      "value": {
+        "versions": {
+          "0.1": {
+            "published": {
+              "content": {
+                "footer": {
+                  "logo": {
+                    "src": "http://i.imgur.com/rF2EJ4P.gif",
+                    "href": "#"
+                  },
+                  "links": [
+                    {
+                      "url": "/",
+                      "key": "home"
+                    },
+                    {
+                      "url": "http://www.socrata.com/terms-of-service",
+                      "key": "terms_of_service"
+                    },
+                    {
+                      "url": "http://www.socrata.com/privacy",
+                      "key": "privacy"
+                    },
+                    {
+                      "url": "http://www.socrata.com/accessibility",
+                      "key": "accessibility"
+                    },
+                    {
+                      "url": "http://www.socrata.com/contact-us",
+                      "key": "contact_us"
+                    },
+                    {
+                      "url": "#a",
+                      "key": "a"
+                    },
+                    {
+                      "url": "#b",
+                      "key": "b"
+                    },
+                    {
+                      "url": "#c",
+                      "key": "c"
+                    },
+                    {
+                      "url": "#d",
+                      "key": "d"
+                    },
+                    {
+                      "url": "#e",
+                      "key": "e"
+                    },
+                    {
+                      "url": "#f",
+                      "key": "f"
+                    },
+                    {
+                      "url": "#g",
+                      "key": "g"
+                    },
+                    {
+                      "url": "#h",
+                      "key": "h"
+                    },
+                    {
+                      "url": "#i",
+                      "key": "i"
+                    },
+                    {
+                      "url": "#j",
+                      "key": "j"
+                    }
+                  ]
+                },
+                "locales": {
+                  "en": {
+                    "footer": {
+                      "logo_alt": "Evergreen!",
+                      "links": {
+                        "f": "Link F",
+                        "home": "Home Page",
+                        "g": "Link G with a super long title!!!",
+                        "d": "Link D",
+                        "e": "Link E",
+                        "b": "Link B",
+                        "c": "Link C",
+                        "a": "Link A",
+                        "privacy": "Privacy Policy",
+                        "terms_of_service": "Terms of Service",
+                        "j": "Link J",
+                        "h": "Link H",
+                        "i": "Link I",
+                        "contact_us": "Contact Us",
+                        "accessibility": "Accessibility"
+                      }
+                    },
+                    "general": {
+                      "social_shares": {
+                        "twitter": "Follow us on Twitter",
+                        "facebook": "Like us on Facebook"
+                      },
+                      "site_name": "City of Evergreen"
+                    },
+                    "header": {
+                      "logo_alt": "Evergreen!",
+                      "links": {
+                        "home": "Home Page",
+                        "support": "Support",
+                        "catalog": "Browse",
+                        "evergreen": "City of Evergreen",
+                        "developers": "Developers"
+                      }
+                    }
+                  }
+                },
+                "header": {
+                  "logo": {
+                    "src": "http://i.imgur.com/E8wtc6d.png",
+                    "href": "#"
+                  },
+                  "styles": {
+                    "fg_color": "#eee",
+                    "bg_color": "#5D7365"
+                  },
+                  "links": [
+                    {
+                      "url": "/",
+                      "key": "home"
+                    },
+                    {
+                      "url": "/browse",
+                      "key": "catalog"
+                    },
+                    {
+                      "url": "http://dev.socrata.com",
+                      "key": "developers"
+                    },
+                    {
+                      "url": "http://support.socrata.com",
+                      "key": "support"
+                    },
+                    {
+                      "url": "http://data.evergreen.gov",
+                      "key": "evergreen"
+                    }
+                  ]
+                },
+                "general": {
+                  "social_shares": [
+                    {
+                      "type": "facebook",
+                      "url": "http://facebook.com"
+                    },
+                    {
+                      "type": "twitter",
+                      "url": "http://twitter.com"
+                    }
+                  ],
+                  "link_text_color": "grey",
+                  "favicon": "http://foo.png",
+                  "default_locale": "en",
+                  "locales": [
+                    "en",
+                    "es",
+                    "fr"
+                  ],
+                  "styles": {
+                    "fg_color": "#eee",
+                    "bg_color": "#2c97de",
+                    "font_family": "Open Sans"
+                  },
+                  "site_title": "Evergreen"
+                }
+              },
+              "updatedAt": 1458946330
+            }
+          }
+        }
+      }
+    }
+  ]
+}]

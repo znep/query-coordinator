@@ -13,16 +13,14 @@ describe Chrome::ThemesHelper do
   end
 
   describe '#cache_key_for_site_chrome' do
-    it 'returns nil if @site_chrome is nil' do
-      @site_chrome = nil
-      expect(helper.cache_key_for_site_chrome(@site_chrome)).to eq(nil)
+    it 'returns nil if site_chrome is nil' do
+      expect(helper.cache_key_for_site_chrome(nil)).to eq(nil)
     end
 
     it 'returns a cache key with the site_chrome updated_at timestamp' do
       allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
-      dc = Chrome::DomainConfig.new('data.seattle.gov')
-      @site_chrome = Chrome::SiteChrome.new(dc.to_site_chrome_config)
-      expect(helper.cache_key_for_site_chrome(@site_chrome)).to eq('/config/custom-123546789')
+      site_chrome_config = Chrome::SiteChrome.new(Chrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
+      expect(helper.cache_key_for_site_chrome(site_chrome_config)).to eq('/config/custom-123546789')
     end
   end
 
@@ -50,4 +48,5 @@ describe Chrome::ThemesHelper do
     end
 
   end
+
 end

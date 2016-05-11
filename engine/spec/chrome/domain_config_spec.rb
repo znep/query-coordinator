@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'webmock/rspec'
 
 describe Chrome::DomainConfig do
-  let(:helper) { Chrome::DomainConfig }
   let(:domain) { 'data.seattle.gov' }
   let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
   let(:core_config) do
@@ -17,64 +16,65 @@ describe Chrome::DomainConfig do
     stub_request(:get, uri).to_return(status: response[:status], body: response[:body])
   end
 
-  describe '#to_site_chrome_config' do
-    it 'returns nil if domain config is nil' do
-      allow_any_instance_of(helper).to receive(:get_domain_config) { nil }
-      domain_config = helper.new(domain, false)
-      expect(domain_config.to_site_chrome_config).to eq(nil)
+  describe '#site_chrome_config' do
+    it 'raises RuntimeError if domain config is nil' do
+      allow_any_instance_of(Chrome::DomainConfig).to receive(:config) { nil }
+      expect { Chrome::DomainConfig.new(domain).site_chrome_config }.to raise_error(RuntimeError)
     end
   end
 
   describe '#get_domain_config' do
-    it 'raises if HTTParty cannot GET the domain configuration' do
+    it 'provides default site_chrome_config if cannot GET the domain configuration' do
       stub_configurations(status: 404, body: 'Page not found')
-      expect { helper.new(domain) }.to raise_error('404: Page not found')
+      configuration = Chrome::DomainConfig.new(domain).config
+      expect(JSON.parse(Chrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
     end
 
-    it 'raises if response status is 200 but the body is empty' do
+    it 'provides default site_chrome_config if domain configuration is an empty JSON array' do
       stub_configurations(status: 200, body: '[]')
-      expect { helper.new(domain) }.to raise_error(
-        'Configuration is empty on https://data.seattle.gov/api/configurations.json?type=site_chrome&defaultOnly=true'
-      )
+      configuration = Chrome::DomainConfig.new(domain).config
+      expect(JSON.parse(Chrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
+    end
+
+    it 'provides default site_chrome_config if domain configuration is an empty string' do
+      stub_configurations(status: 200, body: '')
+      configuration = Chrome::DomainConfig.new(domain).config
+      expect(JSON.parse(Chrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
     end
   end
 
   describe '#domain_config_uri' do
-    it 'returns the uri for a non-localhost domain' do
+    it 'returns the uri for a domain name' do
       stub_configurations
-      domain_config = helper.new(domain, false)
       uri = 'https://data.seattle.gov/api/configurations.json?type=site_chrome&defaultOnly=true'
-      expect(domain_config.send(:domain_config_uri)).to eq(uri)
+      expect(Chrome::DomainConfig.new(domain).send(:domain_config_uri)).to eq(uri)
     end
 
-    it 'returns a special localhost uri for "localhost" domain' do
-      localhost_uri = 'http://localhost:8080/configurations.json?type=site_chrome&defaultOnly=true'
+    it 'returns a the uri for localhost' do
+      localhost_uri = 'https://localhost/api/configurations.json?type=site_chrome&defaultOnly=true'
       stub_request(:get, localhost_uri).to_return(status: 200, body: '[{ "stuff": true }]')
-      localhost_domain_config = helper.new(domain, true)
-      expect(localhost_domain_config.send(:domain_config_uri)).to eq(localhost_uri)
+      expect(Chrome::DomainConfig.new('localhost').send(:domain_config_uri)).to eq(localhost_uri)
     end
   end
 
   describe '#domain_with_scheme' do
     it 'adds "https://" to a uri without a scheme' do
       stub_configurations
-      domain_config = helper.new(domain)
-      result = domain_config.send(:domain_with_scheme)
+      result = Chrome::DomainConfig.new(domain).send(:domain_with_scheme)
       expect(result).to eq('https://data.seattle.gov')
     end
 
     it 'does not add anything to a uri that already has a scheme' do
       stub_configurations
-      domain_config = helper.new("https://#{domain}")
-      result = domain_config.send(:domain_with_scheme)
+      result = Chrome::DomainConfig.new("https://#{domain}").send(:domain_with_scheme)
       expect(result).to eq('https://data.seattle.gov')
     end
   end
 
   describe '#newest_published_site_chrome' do
     it 'returns an empty hash if core_config does not have properties' do
-      allow_any_instance_of(helper).to receive(:get_domain_config) { {} }
-      domain_config = helper.new(domain, false)
+      allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config) { {} }
+      domain_config = Chrome::DomainConfig.new(domain)
       result = domain_config.send(:newest_published_site_chrome)
       expect(result).to eq({})
     end
@@ -96,9 +96,8 @@ describe Chrome::DomainConfig do
             'published' => { 'value' => 'c' }
           }
         }
-      allow_any_instance_of(helper).to receive(:get_domain_config) { core_config_with_various_versions }
-      domain_config = helper.new(domain, false)
-      result = domain_config.send(:newest_published_site_chrome)
+      allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config) { core_config_with_various_versions }
+      result = Chrome::DomainConfig.new(domain).send(:newest_published_site_chrome)
       expect(result).to eq({ 'value' => 'b' })
     end
   end

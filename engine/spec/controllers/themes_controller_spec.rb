@@ -29,5 +29,7 @@ RSpec.describe Chrome::ThemesController, type: :controller do
       assert_template 'custom'
       assert_template layout: nil
     end
+
   end
+
 end

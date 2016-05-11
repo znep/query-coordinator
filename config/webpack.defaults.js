@@ -34,6 +34,8 @@ module.exports = {
       'jQuery-sidebar': path.resolve('.', 'node_modules/jquery-sidebar/src/jquery.sidebar.js'),
       'jQuery-ujs': path.resolve('.', 'node_modules/jquery-ujs/src/rails.js'),
       'L': path.resolve('.', 'node_modules/leaflet/dist/leaflet.js'),
+      'React': path.resolve('.', 'node_modules/react/react.js'),
+      'ReactDOM': path.resolve('.', 'node_modules/react-dom/dist/react-dom.js'),
       'socrata-utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
       'socrata.utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
       'socrata-visualizations': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.js'),

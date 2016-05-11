@@ -8,10 +8,10 @@
     <%= javascript_include_tag 'application' %>
     <%= chrome_javascript_tag %>
     <%= csrf_meta_tags %>
-    <%= render 'site_chrome/header' %>
   </head>
 
   <body>
+    <%= render 'site_chrome/header' %>
     <%= yield %>
     <%= render 'site_chrome/footer' %>
   </body>

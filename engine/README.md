@@ -34,16 +34,28 @@ Then execute:
 
 ## Usage
 
-In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following to the bottom of the `<head>` section:
+In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following inside the *top* of `<body>` section:
+
+An example of a bare-bones layout is shown below:
 
 ```erb
-<%= render 'header' %>
-```
+<html>
+  <head>
+    <title>Chrome</title>
+    <%= chrome_meta_viewport_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= chrome_stylesheet_tag %>
+    <%= javascript_include_tag 'application' %>
+    <%= chrome_javascript_tag %>
+    <%= csrf_meta_tags %>
+  </head>
 
-In the `<body>` section, add the following to the bottom of the section:
-
-```erb
-<%= render 'footer' %>
+  <body>
+    <%= render 'site_chrome/header' %>
+    <%= yield %>
+    <%= render 'site_chrome/footer' %>
+  </body>
+</html>
 ```
 
 Add the following to `config/routes.rb` to mount the engine:
@@ -336,7 +348,22 @@ export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby
 ```
 
 Build gem locally and push to artifactory server:
+
 ```
 gem build chrome.gemspec
 gem push chrome-0.0.1.gem --host https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local
+```
+
+## Running tests
+
+Run RSPec tests from within the `engine` directory with:
+
+```
+bundle exec rspec
+```
+
+You can also watch the specs for changes and re-run them automatically with:
+
+```
+bundle exec guard
 ```

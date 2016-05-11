@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
 import datasetLandingPage from './reducers';
-import App from './app';
+import App from './App';
 
 var store = createStore(datasetLandingPage, window.initialState);
 

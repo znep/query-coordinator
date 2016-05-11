@@ -215,6 +215,7 @@ class InternalController < ApplicationController
       notices << 'Successfully updated name.'
     end
 
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
     prepare_to_render_flashes!
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end

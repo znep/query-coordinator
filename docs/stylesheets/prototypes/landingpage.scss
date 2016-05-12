@@ -1107,9 +1107,16 @@ a {
 
 #socrata-viz-modal {
 	.modal-content {
+		max-width: 900px;
+		margin-top: ms(6);
 	}
 	.result-card {
-		@include span-columns(3);
+		width: 30%;
+	}
+	.chosen-viz-button {
+  	position: relative;
+    top: -90px;
+    left: 95px;
 	}
 
 }

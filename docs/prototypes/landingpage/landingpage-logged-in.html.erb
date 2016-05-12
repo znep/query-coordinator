@@ -66,7 +66,7 @@ layout: prototype
     $(this).next(".btn-group-vertical").removeClass("hidden");
   })
 
-  //remove featured story
+  //remove featured item
   $(".remove-item").on("click", function() {
     $(this).parent().parent().parent().parent().parent('.actual-content').hide();
   });
@@ -78,6 +78,16 @@ $('body').on('click',function(event){
      $(".btn-group-vertical.type-menu").addClass("hidden");
    }
 });
+
+
+
+  //add featured viz
+  $(".chosen-viz-button").on("click", function() {
+    //$(this).parent().parent().parent().parent().parent('.actual-content').hide();
+    $("#featured-item-3 .actual-content").show();
+    $('.lp-section .featured-viz').removeClass('hidden');
+    $('.lp-section.featured-content').removeClass('hidden');
+  });
 
 
  // Enable the add button with a 'proper' stories link
@@ -1520,10 +1530,19 @@ $(document).ready(function(){
 
             <div class="entry-content">
               <div class="entry-main">
-                <div class="img-wrapper map">
-                  <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
-                   <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+               <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+
+                <div class="btn-group-vertical" role="group">
+                  <button class="btn btn-primary-alt-3" data-modal="socrata-viz-modal">
+                    <span class="icon-edit"></span>
+                    Change
+                  </button>
+                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
+                    <span class="icon-close"></span>
+                    Remove
+                  </button>
                 </div>
+
                 <div class="entry-description">
                   Map showing the number of approved licenses for each neighborhood in the city.
                 </div>
@@ -1581,7 +1600,9 @@ $(document).ready(function(){
 
           <div class="entry-content">
             <div class="entry-main">
-            <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" " />
+              <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt=" "/>
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
+
               <div class="entry-description">
                 Story explaining the procedure for applying for a license, as well as some general trends around current licensing.<span class="more-link"></span>
               </div>
@@ -1612,6 +1633,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button" data-modal-dismiss>Choose</button>
               <div class="entry-description">
                 Licensing trends by neighborhood. Number of approved licenses per ... <span class="more-link"></span>
               </div>
@@ -1641,6 +1663,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
               <div class="entry-description">
                 Map showing the number of approved licenses for each neighborhood in the city. <span class="more-link"></span>
               </div>
@@ -1673,6 +1696,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/boundaryMap.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
               <div class="entry-description">
                 Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
               </div>
@@ -1703,6 +1727,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/dataLens2.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
               <div class="entry-description">
                 Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
               </div>
@@ -1732,6 +1757,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/linechart.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
               <div class="entry-description">
                 Dashboard displays a variety of measures and current information about housing programs in the city. <span class="more-link"></span>
               </div>
@@ -1764,6 +1790,7 @@ $(document).ready(function(){
           <div class="entry-content">
             <div class="entry-main">
               <img src="https://dl.dropboxusercontent.com/u/4235130/pointMap.png" alt=" " />
+              <button class="btn btn-primary chosen-viz-button">Choose</button>
               <div class="entry-description">
                 Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"></span>
               </div>

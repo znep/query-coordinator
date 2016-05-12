@@ -23,7 +23,7 @@ module Chrome
     end
 
     def config
-      @config ||= get_domain_config
+      @config = Hash.new(@config).empty? ? get_domain_config : @domain
     end
 
     private
@@ -59,14 +59,14 @@ module Chrome
     end
 
     def domain_with_scheme
-      uri = URI.parse(domain)
+      uri = URI.parse(domain) rescue domain
       uri.scheme ? uri.to_s : "https://#{uri}"
     end
 
     def configuration_or_default(configuration_response)
       configuration = configuration_response.to_s
       result = JSON.parse(configuration).first rescue nil
-      JSON.parse(default_configuration).first unless result
+      result || JSON.parse(default_configuration).first
     end
 
     def default_configuration

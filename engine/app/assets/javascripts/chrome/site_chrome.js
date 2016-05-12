@@ -1,9 +1,10 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
 
-$(document).ready(function() {
+setTimeout(function() {
+  $(document).ready(function() {
   mobileMenuFlyout();
-});
+})}, 1000); // TODO HACK Don't do this.
 
 function mobileMenuFlyout() {
   var $menu = $('#chrome-header .mobile-menu');

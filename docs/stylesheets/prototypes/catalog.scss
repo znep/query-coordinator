@@ -130,7 +130,7 @@ body {
 }
 
 a {
-  color: $primary;
+  color: $primary-text;
   text-decoration: none;  
   &:hover {
     text-decoration: underline;
@@ -165,45 +165,40 @@ a {
 
 .search {
   width: 100%;
+  margin-bottom: -10px;
   
-  .container {
-    max-width: 100%;
-    
+.container {
+  max-width: 100%;
     @include media($tablet) {
       max-width: 54em !important;
       margin: 0px auto;
       padding: 0;
-
-
     }
   }
+}
 
-  form {
-    margin-bottom: 0 !important;
-  }
-  
-  .input-group {
+form {
+  margin-bottom: 0 !important;
+}
 
-    .text-input {
-      border-left: none;
-    }
-    .input-group-btn .btn-default {
-      border-right: none;
-    }
+.input-group {
+  .text-input {
+    border-left: none;
   }
+  .input-group-btn .btn-default {
+    border-right: none;
+  }
+}
 
   @include media($tablet) {
     @include span-columns(10);
     @include shift(1);
     padding: ms(8) 0;
-
-
     .input-group .text-input {
       border-left: 1px solid $light-grey-2;
     }
   }
 
-}
 
 .search-result-meta {
   display: none;

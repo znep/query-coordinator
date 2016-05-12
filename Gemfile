@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
 
 ruby File.read('.ruby-version').strip
 

@@ -14,10 +14,18 @@ Ensure the `ruby-local` artifactory source is in your Gemfile:
 source 'https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/'
 ```
 
-Then add `chrome` to your Gemfile:
+> Note: Sometimes bundler will complain if there is more than one `source` in the `Gemfile`. If that is the case, use the `source` property in the second example.
+
+Then add the `chrome` gem to your Gemfile:
 
 ```ruby
-gem 'chrome', '~> 0.0.1'
+gem 'chrome', '~> 0.0.4'
+```
+
+Or specify the source directly:
+
+```ruby
+gem 'chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/'
 ```
 
 ### From Source
@@ -25,16 +33,34 @@ gem 'chrome', '~> 0.0.1'
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'chrome', '~> 0.0.1', :path => 'path-to-local-copy-of-gem'
+gem 'chrome', '~> 0.0.4', :path => 'engine/chrome' # Where 'engine/chrome' is the correct directory path
 ```
 
 Then execute:
 
     bundle install
 
+
+## Prerequisites
+
+### jQuery
+
+The engine requires that jQuery be available on the page in order to support the mobile drop-down menu in the header. It relies on general functions such as `$()`, `ready()`, `css()`, `toggleClass()`, and `hasClass()`.
+
+### SSL Certificate Validation
+
+When connecting to localhost, or other domains without valid SSL certificates, the OpenSSL library will complain. One must disable certficate validation with the code shown below. In an ideal world, we would only do this when the domain in question is known to be a development host; i.e. IP address `127.0.0.1`.
+
+```ruby
+OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+```
+
 ## Usage
 
-In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section. Next within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.
+In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section.
+
+Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.
 
 An example layout is shown below:
 
@@ -350,11 +376,19 @@ Ensure $RUBYGEMS_HOST is set in environment:
 export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local
 ```
 
-Build gem locally and push to artifactory server:
+Build them gem and push it to artifactory:
 
 ```
-gem build chrome.gemspec
-gem push chrome-0.0.1.gem --host https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local
+rake gem
+```
+
+Alternatively you can run each step individually
+```
+rake gem:build
+```
+
+```
+rake gem:publish
 ```
 
 ## Running tests

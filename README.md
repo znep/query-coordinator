@@ -8,10 +8,6 @@ The "Chrome" is the header (including navigation bar) and footer of a customer s
 
 See [engine/README.md](file:///engine/README.md)
 
-## Prerequisites
-
-The engine requires that jQuery be loaded on the page in order to support the mobile drop-down menu in the header.
-
 ## Usage
 
 To run on your local development machine:

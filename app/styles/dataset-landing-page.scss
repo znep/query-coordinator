@@ -77,6 +77,10 @@ body {
 
       .btn-default {
         background: $light-grey-5;
+
+        &:hover {
+          background: $light-grey-4;
+        }
       }
 
       .dropdown:after {

@@ -6,8 +6,9 @@ module Chrome
         :style => Rails.env.development? ? :nested : :compressed,
         :syntax => :scss,
         :load_paths => [
-          "#{Rails.root}/app/assets/stylesheets",
-          "#{Rails.root}/app/views/config"
+          "#{Chrome::Engine.root}/app/assets/stylesheets",
+          "#{Chrome::Engine.root}/app/assets/stylesheets/chrome",
+          "#{Chrome::Engine.root}/app/views/config"
         ]
       }
     end

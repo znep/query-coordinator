@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'chrome', '0.0.1', :path => 'engine'
+gem 'chrome', '0.0.2', :path => 'engine'
 gem 'httparty'
 gem 'hashie'
 gem 'rails', '4.2.6'

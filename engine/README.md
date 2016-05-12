@@ -34,20 +34,23 @@ Then execute:
 
 ## Usage
 
-In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following inside the *top* of `<body>` section:
+In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section. Next within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.
 
-An example of a bare-bones layout is shown below:
+An example layout is shown below:
 
 ```erb
 <html>
   <head>
-    <title>Chrome</title>
-    <%= site_chrome_meta_viewport_tag %>
+    <title>Your Application Title</title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= site_chrome_stylesheet_tag %>
     <%= javascript_include_tag 'application' %>
-    <%= site_chrome_javascript_tag %>
     <%= csrf_meta_tags %>
+
+	...
+
+   <%= site_chrome_meta_viewport_tag %>
+   <%= site_chrome_stylesheet_tag %>
+   <%= site_chrome_javascript_tag %>
   </head>
 
   <body>

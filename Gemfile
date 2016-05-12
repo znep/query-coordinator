@@ -8,6 +8,7 @@ gem 'httparty'
 gem 'hashie'
 gem 'rails', '4.2.6'
 gem 'sass-rails', '~> 5.0'
+gem 'jquery-rails'
 
 group :test do
   gem 'webmock'

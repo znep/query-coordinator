@@ -5,7 +5,7 @@
 - Collaboration and sharing of UI components and patterns.
 
 ## Usage
-Switch to the appropriate [release](https://github.com/socrata/styleguide/releases) branch, and use the files in `dist`, a folder in the project's root directory.
+Switch to the appropriate [release](https://github.com/socrata/styleguide/releases) branch, and use the files in `dist`, a folder in this project's root directory.
 
 ## Setup
 This library uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.
@@ -18,14 +18,11 @@ This library uses the Middleman static site generator to to provide an asset pip
 6. Open your favorite browser to look at [http://localhost:4567](http://localhost:4567).
 
 ### Adding icons to the Socrata-Icons font
-In order to compile and update the icon font, additional setup is required. We are using the [fontcustom](https://github.com/FontCustom/fontcustom) gem, which in turn requires you to install _fontforge_ and _eot-utils_ to generate the font. **Review the fontcustom setup documentation before attempting to update the icon font**.
+There is a Sketch file located in `src/fonts`, `socrata-icons.sketch`. You can add new SVG icons to that file and then proceed to export each as individual SVGs. Keep in mind that the dimensions you should work within are 1024px by 1024px.
 
-#### Updating the icon
-1. Make sure you've installed the fontcustom required utilities
-2. Add/remove/update the `.svg` file(s) in the `/src/fonts/svg/` folder
-3. Open a terminal and cd to `styleguide/src/fonts`
-4. Run `fontcustom compile -c .`
-5. Restart middleman
+If you have Middleman running, then the icons will automatically update. To read more about what is involved in that task, see `tasks/font.js`.
+
+If you'd like to update the font directly, simply run `gulp font`.
 
 ## Contributions
 Anyone and everyone is welcome to submit a pull request with code and documentation. Fork the repository and work through the Setup section.
@@ -52,4 +49,4 @@ When a PR is successfully merged, an admin must run – from `master` — the de
 2. [Modular Scale](https://github.com/modularscale/modularscale-sass)
 3. [Bourbon](http://bourbon.io/) and [Neat](http://neat.bourbon.io) (for layout grids)
 4. [Prism](http://prismjs.com/) (for syntax highlighting)
-5. [FontCustom](https://github.com/FontCustom/fontcustom)
+5. See our `package.json` for all of the JavaScript goodies.

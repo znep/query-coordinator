@@ -192,7 +192,7 @@
             {
               id: 'topDownloads', displayName: 'Top Downloads',
               heading: 'Downloads', renderTo: 'rightColumn',
-              callback: blist.metrics.topDatasetsCallback, top: 'DOWNLOADS'
+              callback: blist.metrics.topViewsCallbackNoFilter, top: 'DOWNLOADS'
             }
           )
         }));

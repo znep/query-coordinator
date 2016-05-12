@@ -109,7 +109,7 @@ export var MetadataTable = React.createClass({
       var tagLinks = _.map(view.tags, function(tag, i) {
         return (
           <span key={i}>
-            <a href={`/browse?tag=${tag}`}>{tag}</a>
+            <a href={`/browse?tags=${tag}`}>{tag}</a>
             {i === view.tags.length - 1 ? '' : ', '}
           </span>
         );

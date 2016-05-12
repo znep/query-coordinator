@@ -24,3 +24,4 @@ after_configuration do
   FileUtils.mkdir_p('./docs/javascripts/vendor')
   FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './docs/javascripts/vendor')
 end
+

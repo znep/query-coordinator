@@ -89,6 +89,8 @@ setTimeout( function(){
       $('.url-error').hide();
       $('#story-modal .actual-content').show();
       $('#featured-item-1 .actual-content').show();
+      $('.lp-section .featured-story').removeClass('hidden');
+      $('.lp-section.featured-content').removeClass('hidden');
       $('#add-story-button').prop('disabled', false);
     }
 
@@ -109,6 +111,8 @@ setTimeout( function(){
     if ($(this).val() == 'external link' ) {
       $('.url-error').hide();
       $('#featured-item-2 .actual-content').show();
+      $('.lp-section .featured-ext').removeClass('hidden');
+      $('.lp-section.featured-content').removeClass('hidden');
       $('#add-external-button').prop('disabled', false);
     }
 
@@ -124,14 +128,12 @@ setTimeout( function(){
 //show text in preview
 $(function() {
   $('#ext-title-input').keyup(function() {
-    $('#ext-title-preview').text($(this).val());
-    $('#ext-asset-title').text($(this).val());
+    $('#ext-title-preview, #ext-asset-title').text($(this).val());
   });
 });
 $(function() {
   $('#ext-description-input').keyup(function() {
-    $('#ext-description-preview').text($(this).val());
-    $('#ext-asset-description').text($(this).val());
+    $('#ext-description-preview, #ext-asset-description').text($(this).val());
   });
 });
 
@@ -143,8 +145,7 @@ function readURL(input) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            $('#image-preview').attr('src', e.target.result);
-            $('#ext-asset-image').attr('src', e.target.result);
+            $('#image-preview, #ext-asset-image').attr('src', e.target.result);
         }
 
         reader.readAsDataURL(input.files[0]);
@@ -283,7 +284,8 @@ $(document).ready(function(){
 
       <div class="alert default featured-assets-msg">
         <div>
-          <div class="two-thirds">Choose to promote assets that use this data. By default Socrata visualizations or Stories with the highest number of views will be shown.</div>
+          <div class="two-thirds">Choose to prominently promote up to 3 Socrata assets that use this data, or feature any relevant external resources.
+          </div>
           <button id="manage-featured-content" class="btn btn-default btn-sm" data-modal="manage-featured-content-modal">Manage Featured Content</button>
           <div class="self-clear"></div>
         </div>
@@ -293,106 +295,116 @@ $(document).ready(function(){
 
 
     <div class="lp-section featured-content hidden">
+      <div class="media-results">
 
-      <!-- Featured story -->
-      <div class="result-card media featured-story" hidden="hidden">
+        <!-- Featured story -->
+        <div class="result-card media featured-story hidden">
 
-            <div class="entry-header">
-              <div class="entry-title">
-                <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+              <div class="entry-header">
+                <div class="entry-title">
+                  <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+                </div>
+                <div class="entry-view-type"><span class="icon-story"></span></div>
               </div>
-              <div class="entry-view-type"><span class="icon-story"></span></div>
-            </div>
 
-            <div class="entry-meta">
-              <div class="first">
-                <span class="date">Mar. 12, 2016</span>
-              </div>
-              <div class="second">
-                <span class="date">12,235 Views</span>
-              </div>
-            </div>
-
-            <div class="entry-content">
-              <div class="entry-main">
-                <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt="BOTTELS">
-                <div class="entry-description">
-                  Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+              <div class="entry-meta">
+                <div class="first">
+                  <span class="date">Mar. 12, 2016</span>
+                </div>
+                <div class="second">
+                  <span class="date">12,235 Views</span>
                 </div>
               </div>
-            </div>
 
-          </div><!-- featured story card -->
-
-
-          <!-- featured external thing -->
-          <div class="result-card media featured-ext hidden">
-
-            <div class="entry-header">
-              <div class="entry-title">
-                <h2 class="entry-name"><a id="ext-asset-title" href="#"></a></h2>
-              </div>
-              <div class="entry-view-type"><span class="icon-external-square"></span></div>
-            </div>
-
-            <div class="entry-meta">
-              <div class="first">
-                <span class="date">External Content</span>
-              </div>
-
-            </div>
-
-            <div class="entry-content">
-              <div class="entry-main">
-                <img id="ext-asset-image" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="">
-                <div id="ext-asset-description" class="entry-description"></span>
+              <div class="entry-content">
+                <div class="entry-main">
+                  <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt="BOTTELS">
+                  <div class="entry-description">
+                    Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-          </div><!-- featured external thing -->
+            </div><!-- featured story card -->
 
 
-          <!-- featured viz -->
-          <div class="result-card media featured-viz hidden">
-            <div class="entry-header">
-              <div class="entry-title">
-                <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
-              </div>
-              <div class="entry-view-type"><span class="icon-map"></span></div>
-            </div>
+            <!-- featured external thing -->
+            <div class="result-card media featured-ext hidden">
 
-            <div class="entry-meta">
-              <div class="first">
-                <span class="date">Mar. 12, 2016</span>
-              </div>
-              <div class="second">
-                <span class="date">12,234 Views</span>
-              </div>
-            </div>
-
-            <div class="entry-content">
-              <div class="entry-main">
-                <div class="img-wrapper map">
-                  <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
-                   <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+              <div class="entry-header">
+                <div class="entry-title">
+                  <h2 class="entry-name"><a id="ext-asset-title" href="#"></a></h2>
                 </div>
-                <div class="entry-description">
-                  Map showing the number of approved licenses for each neighborhood in the city.
+                <div class="entry-view-type"><span class="icon-external-square"></span></div>
+              </div>
+
+              <div class="entry-meta">
+                <div class="first">
+                  <span class="date">External Content</span>
+                </div>
+
+              </div>
+
+              <div class="entry-content">
+                <div class="entry-main">
+                  <img id="ext-asset-image" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="">
+                  <div id="ext-asset-description" class="entry-description"></span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-          </div><!-- /.result-card featured viz-->
+            </div><!-- featured external thing -->
 
+
+            <!-- featured viz -->
+            <div class="result-card media featured-viz hidden">
+              <div class="entry-header">
+                <div class="entry-title">
+                  <h2 class="entry-name"><a href="#">Licensing trends by neighborhood. Number of approved licenses per ...</a></h2>
+                </div>
+                <div class="entry-view-type"><span class="icon-map"></span></div>
+              </div>
+
+              <div class="entry-meta">
+                <div class="first">
+                  <span class="date">Mar. 12, 2016</span>
+                </div>
+                <div class="second">
+                  <span class="date">12,234 Views</span>
+                </div>
+              </div>
+
+              <div class="entry-content">
+                <div class="entry-main">
+                  <div class="img-wrapper map">
+                    <!-- <span class="icon-map x-large-icon"></span> --> <!-- MVP -->
+                     <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
+                  </div>
+                  <div class="entry-description">
+                    Map showing the number of approved licenses for each neighborhood in the city.
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.result-card featured viz-->
+          </div><!-- /.media-results -->
 
     </div><!-- /.lp-section -->
 
 
     <div class='lp-section'>
-      <h2 class="section-header editable">About this Dataset</h2>
-      <button class="btn btn-default btn-sm edit-button"><a href="https://dataspace.demo.socrata.com/dataset/Liquor-Authority-Quarterly-List-of-Active-Licenses/nnb5-m2k4/edit_metadata">Edit Metadata</a></button>
+      <h2 class="section-header">About this Dataset</h2>
 
+
+      <div class="alert default featured-assets-msg">
+        <div class="two-thirds">
+        Edit the dataset metadata, eg. title, description, category and attachments.
+        </div>
+        <button class="btn btn-default btn-sm edit-button"><a href="https://dataspace.demo.socrata.com/dataset/Liquor-Authority-Quarterly-List-of-Active-Licenses/nnb5-m2k4/edit_metadata">Edit Metadata</a></button>
+        <div class="self-clear"></div>
+      </div>
+    </div>
+    <div class='lp-section'>
       <div class="card-frame">
 
         <div class="fancy-metadata">
@@ -482,8 +494,10 @@ $(document).ready(function(){
           <table class="table-condensed table-borderless table-discrete table-striped">
             <tbody>
                 <tr>
-                  <td scope="row"> Data Dictionary</td>
-                  <td><span class="icon-copy-document"></span><a href="#"> dictionary.pdf</td></a>
+                  <td><span class="icon-copy-document"></span><a href="#"> data_dictionary.pdf</td></a>
+                </tr>
+                <tr>
+                  <td><span class="icon-copy-document"></span><a href="#"> Another attachment with a prettier name</td></a>
                 </tr>
             </tbody>
           </table><!-- /.metadata-table -->
@@ -1367,7 +1381,7 @@ $(document).ready(function(){
 
 
 
-<div id="manage-featured-content-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+<div id="manage-featured-content-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
       <h1 class="h5 modal-header-title">Manage Featured Content</h1>
@@ -1378,9 +1392,6 @@ $(document).ready(function(){
 
     <section class="modal-content">
       <p>Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources.</p>
-    </section>
-
-    <section class="modal-content">
 
       <div id="featured-item-1" class="content-placeholder">
         <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
@@ -1526,24 +1537,28 @@ $(document).ready(function(){
       </div>
     </section>
 
-    <footer class="modal-actions">
-      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
-      <button class="btn btn-primary btn-sm" data-modal-dismiss>Save</button>
+    <footer class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+        <button class="btn btn-primary btn-sm" data-modal-dismiss>Save</button>
+      </div>
     </footer>
   </div>
 </div>
 
 
-<div id="socrata-viz-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+<div id="socrata-viz-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Feature a Socrata Visualization</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
-    <section class="modal-content">
+    <section class="modal-title modal-content">
+      <h2>Feature a Socrata Visualization</h2>
+
 
       <div class="media-results">
 
@@ -1759,22 +1774,26 @@ $(document).ready(function(){
 
     </section>
 
-    <footer class="modal-actions">
-      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+    <footer class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+      </div>
     </footer>
   </div>
 </div>
 
-<div id="story-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+<div id="story-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Feature a Socrata Story</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
-    <section class="modal-content">
+    <section class="modal-title modal-content">
+      <h2>Feature a Socrata Story</h2>
+
       <div class="asset-info">
         <form>
           <label class="block-label">Link to Story</label>
@@ -1820,24 +1839,28 @@ $(document).ready(function(){
 
     </section>
 
-    <footer class="modal-actions">
-      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
-      <button id="add-story-button" class="btn btn-primary btn-sm" disabled data-modal-dismiss>Add</button>
+    <footer class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+        <button id="add-story-button" class="btn btn-primary btn-sm" disabled data-modal-dismiss>Add</button>
+      </div>
     </footer>
   </div>
 </div>
 
 
-<div id="external-asset-modal" class="modal modal-overlay modal-hidden fullscreen-modal" data-modal-dismiss>
+<div id="external-asset-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Feature an External Resource</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
-    <section class="modal-content">
+    <section class="modal-title modal-content">
+      <h2>Feature an External Resource</h2>
+
       <div class="asset-info">
 
         <form>
@@ -1895,9 +1918,11 @@ $(document).ready(function(){
 
     </section>
 
-    <footer class="modal-actions">
-      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
-      <button id="add-external-button" class="btn btn-primary btn-sm" data-modal-dismiss>Add</button>
+    <footer class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+        <button id="add-external-button" class="btn btn-primary btn-sm" data-modal-dismiss>Add</button>
+      </div>
     </footer>
   </div>
 </div>

@@ -171,7 +171,6 @@ a {
 		.edit-button {
 			float: right;
 			margin-right: 0;
-			margin-top: ms(-2);
 			a {
 				color: $btn-default-color;
 			}
@@ -186,6 +185,15 @@ a {
 				max-width: 21%;
 			}
 		}
+
+		//featured content
+
+		&.featured-content {
+			&.hidden, .result-card.hidden {
+				display: none;
+			}
+		}
+
 
 		.media-results {
 			//display: flex;
@@ -233,13 +241,6 @@ a {
 
 
 
-		//featured content
-
-		.featured-content {
-			&.hidden, .hidden {
-				display: none;
-			}
-		}
 
 		.result-card {
 
@@ -1025,34 +1026,15 @@ a {
 }
 
 
-
-.fullscreen-modal {
-	.modal-container {
-		max-width: 100%;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		margin: 0;
-	}
-	.modal-content {
-		max-height: 100%;
-	}
-	.modal-actions {
-		position: fixed;
-		bottom: ms(0);
-		right: ms(0);
-	}
-}
-
 #manage-featured-content-modal, #story-modal, #external-asset-modal, #socrata-viz-modal {
 
-	.modal-header-title, .modal-content {
-		padding-left: 11%;
+	.modal-header {
+		margin-bottom: 0;
 	}
-	.modal-header-title {
-		padding-top: 6%;
+	.modal-content {
+		margin-right: auto;
+		margin-left: auto;
 	}
-
 
 	.alert.hidden {
 	  display: none;
@@ -1099,6 +1081,13 @@ a {
 }
 
 #manage-featured-content-modal {
+	.modal-content {
+		max-width: 985px;
+	  position: relative;
+	  top: 33%;
+	  transform: translateY(-50%);
+	}
+
 	.actual-content {
     top: -278px;
     position: relative;
@@ -1118,7 +1107,6 @@ a {
 
 #socrata-viz-modal {
 	.modal-content {
-		padding-right: 5%;
 	}
 	.result-card {
 		@include span-columns(3);
@@ -1127,6 +1115,14 @@ a {
 }
 
 #story-modal, #external-asset-modal {
+	.modal-content {
+		max-width: 785px;
+
+	  position: relative;
+	  top: 33%;
+	  transform: translateY(-50%);
+	}
+
 	.asset-info {
 		float: left;
 		margin-right: ms(5);

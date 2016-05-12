@@ -2,6 +2,7 @@
 $primary: #288dc1;
 $primary-text: shade($primary, 11%);
 $primary-alt-1: #e28432;
+$primary-alt-1-text: shade($primary-alt-1, 11%);
 $primary-alt-2: #00a1af;
 $primary-alt-3: #00be9b;
 $secondary: tint(#425363, 40%);
@@ -33,7 +34,7 @@ $warning-dark: shade($warning, 30%);
 
 /* Greys */
 $white: #fff;
-$grey: #687583;
+$grey: #767676;
 $black: #2c2c2c;
 
 /* Shades of Grey */
@@ -67,6 +68,11 @@ $btn-default-border-color: $light-grey-3;
 $btn-default-hover-color: $dark-grey-0;
 $btn-default-hover-background-color: $light-grey-5;
 $btn-default-active-border-color: shade($white, 20%);
+
+$btn-simple-color: $dark-grey-1;
+$btn-simple-background-color: $light-grey-5;
+$btn-simple-hover-color: $dark-grey-1;
+$btn-simple-hover-background-color: $light-grey-4;
 
 $btn-default-dark-color: $white;
 $btn-default-dark-background-color: $grey;

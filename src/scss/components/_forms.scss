@@ -173,3 +173,22 @@ form {
   }
 }
 
+::-webkit-input-placeholder {
+  color: $light-grey-3;
+  opacity: 1;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  color: $light-grey-3;
+  opacity: 1;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  color: $light-grey-3;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: $light-grey-3;
+  opacity: 1;
+}

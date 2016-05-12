@@ -89,10 +89,6 @@
   background-color: $btn-default-background-color;
   border-color: $btn-default-border-color;
 
-  &.btn-simple {
-    background-color: $light-grey-5;
-  }
-
   &:hover {
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;
@@ -147,6 +143,16 @@
   &.btn-busy span {
     border-color: $btn-default-busy-border-color;
     border-right-color: $btn-default-busy-border-right-color;
+  }
+}
+
+.btn-simple {
+  @extend .btn-default;
+  color: $btn-simple-color;
+  background-color: $btn-simple-background-color;
+  &:hover {
+    background-color: $btn-simple-hover-background-color;
+    color: $btn-simple-hover-color;
   }
 }
 

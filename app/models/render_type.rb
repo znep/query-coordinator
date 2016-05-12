@@ -156,7 +156,7 @@ class RenderType
   end
 
   def self.table_html(t_id, vis_cols, rows, ds, page_adjust = 0, aggregates = nil)
-    return unless vis_cols
+    return unless vis_cols && rows
     t = '<table class="dataTable" id="' + t_id + '" summary="The data in the table can be sorted, filtered, searched, and saved using the form controls located below the table."><thead><tr>'
     t << '<th scope="col" id="' + t_id + '_header_row_number" class="rowNumber">Row number</th>'
     vis_cols.each do |column|

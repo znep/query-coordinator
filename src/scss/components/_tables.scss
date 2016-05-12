@@ -5,18 +5,19 @@ table {
 
   thead {
     tr {
-      background-color: $light-grey-4;
+      background-color: $light-grey-6;
     }
 
     th {
       text-align: left;
-      font-weight: 700;
+      font-weight: 600;
+      color: $dark-grey-0;
     }
   }
 
   th,
   td {
-    border: 1px solid $grey;
+    border: 1px solid $light-grey-3;
     padding: 1.5rem;
   }
 
@@ -44,7 +45,7 @@ table {
 
       th {
         border-top: 0;
-        font-weight: 700;
+        font-weight: 600;
       }
     }
   }
@@ -59,8 +60,8 @@ table {
 .table-discrete {
   thead {
     tr th {
-      color: $grey;
-      font-weight: 100;
+      color: $dark-grey-0;
+      font-weight: 200;
     }
   }
 
@@ -79,13 +80,13 @@ table {
 
 .table-striped {
   > tbody > tr:nth-of-type(odd) {
-    background-color: $light-grey-4;
+    background-color: $light-grey-6;
   }
 }
 
 .table-striped.table-discrete {
   > tbody > tr:nth-of-type(odd) {
-    background-color: $light-grey-7;
+    background-color: $light-grey-6;
   }
 }
 

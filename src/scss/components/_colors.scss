@@ -1,22 +1,26 @@
 /* Base Palette Colors */
 $primary: #288dc1;
+$primary-text: shade($primary, 11%);
 $primary-alt-1: #e28432;
+$primary-alt-1-text: shade($primary-alt-1, 11%);
 $primary-alt-2: #00a1af;
 $primary-alt-3: #00be9b;
 $secondary: tint(#425363, 40%);
 $success: lighten(#218649, 10%);
+$success-text: #009000;
 $error: #ce6565;
-$warning: shade(#fabe00, 5%);
+$warning: shade(#fabe00, 8%);
+$warning-text: shade($warning, 40%);
 
 /* Colors light version */
-$primary-light: tint($primary, 80%);
-$primary-alt-1-light: tint($primary-alt-1, 80%);
-$primary-alt-2-light: tint($primary-alt-2, 80%);
-$primary-alt-3-light: tint($primary-alt-3, 80%);
-$secondary-light: tint($secondary, 80%);
-$success-light: tint($success, 80%);
-$error-light: tint($error, 80%);
-$warning-light: tint($warning, 80%);
+$primary-light: tint($primary, 90%);
+$primary-alt-1-light: tint($primary-alt-1, 90%);
+$primary-alt-2-light: tint($primary-alt-2, 90%);
+$primary-alt-3-light: tint($primary-alt-3, 90%);
+$secondary-light: tint($secondary, 90%);
+$success-light: tint($success, 90%);
+$error-light: tint($error, 90%);
+$warning-light: tint($warning, 93%);
 
 /* Colors dark version */
 $primary-dark: shade($primary, 30%);
@@ -30,7 +34,7 @@ $warning-dark: shade($warning, 30%);
 
 /* Greys */
 $white: #fff;
-$grey: #999;
+$grey: #767676;
 $black: #2c2c2c;
 
 /* Shades of Grey */
@@ -42,6 +46,7 @@ $light-grey-4: tint($grey, 80%);
 $light-grey-5: tint($grey, 90%);
 $light-grey-6: tint($grey, 93.3%);
 $light-grey-7: tint($grey, 95%);
+$light-grey-8: tint($grey, 97%);
 
 $dark-grey-0: shade($grey, 10%);
 $dark-grey-1: shade($grey, 20%);
@@ -50,19 +55,24 @@ $dark-grey-3: shade($grey, 60%);
 
 /* Color Vars */
 $default-text-color: $dark-grey-1;
-$quiet-text-color: $light-grey-1;
+$quiet-text-color: $light-grey-0;
 $light-text-color: $white;
 $light-grey-bg: $light-grey-5;
 
 /* Button Colors */
 $btn-active-box-shadow-color: $black;
 
-$btn-default-color: $dark-grey-1;
+$btn-default-color: $grey;
 $btn-default-background-color: $white;
-$btn-default-border-color: $light-grey-2;
-$btn-default-hover-color: $dark-grey-1;
-$btn-default-hover-background-color: shade($white, 10%);
+$btn-default-border-color: $light-grey-3;
+$btn-default-hover-color: $dark-grey-0;
+$btn-default-hover-background-color: $light-grey-5;
 $btn-default-active-border-color: shade($white, 20%);
+
+$btn-simple-color: $dark-grey-1;
+$btn-simple-background-color: $light-grey-5;
+$btn-simple-hover-color: $dark-grey-1;
+$btn-simple-hover-background-color: $light-grey-4;
 
 $btn-default-dark-color: $white;
 $btn-default-dark-background-color: $grey;
@@ -79,14 +89,14 @@ $btn-default-inverse-hover-background-color: white;
 $btn-default-inverse-hover-border-color: transparent;
 
 $btn-primary-color: $white;
-$btn-primary-background-color: $primary;
+$btn-primary-background-color: $primary-text;
 $btn-primary-border-color: $primary;
-$btn-primary-hover-background-color: shade($primary, 20%);
+$btn-primary-hover-background-color: shade($primary, 27%);
 $btn-primary-active-border-color: shade($primary, 10%);
-$btn-primary-inverse-color: $primary;
+$btn-primary-inverse-color: $primary-text;
 $btn-primary-inverse-background-color: $white;
 $btn-primary-inverse-hover-color: $white;
-$btn-primary-inverse-hover-background-color: $primary;
+$btn-primary-inverse-hover-background-color: $primary-text;
 $btn-primary-busy-border-right-color: tint($primary, 20%);
 
 $btn-primary-alt-1-color: $white;
@@ -149,7 +159,7 @@ $btn-success-background-color: $success;
 $btn-success-border-color: $success;
 $btn-success-hover-background-color: shade($success, 20%);
 $btn-success-active-border-color: shade($success, 10%);
-$btn-success-inverse-color: $success;
+$btn-success-inverse-color: $success-text;
 $btn-success-inverse-background-color: $white;
 $btn-success-inverse-hover-color: $white;
 $btn-success-inverse-hover-background-color: $success;
@@ -175,7 +185,7 @@ $btn-disabled-dark-border-color: $grey;
 $btn-disabled-dark-background-color: $dark-grey-1;
 
 $tag-color: $dark-grey-2;
-$tag-background-color: $light-grey-4;
+$tag-background-color: $light-grey-5;
 
 /* Header */
 $header-bg-color: #4a4747;

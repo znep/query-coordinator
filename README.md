@@ -17,13 +17,13 @@ The engine requires that jQuery be loaded on the page in order to support the mo
 To run on your local development machine:
 
 ```sh
-LOCALHOST=true bundle exec rails s
+DOMAIN=localhost rails s -p 4000
 ```
 
 To start a Rails console to experiment:
 
 ```sh
-LOCALHOST=true bundle exec rails c
+DOMAIN=localhost rails c
 ```
 >Note: If the console hangs, try running this first `bin/spring stop`
 
@@ -32,14 +32,12 @@ LOCALHOST=true bundle exec rails c
 By default the feature flag is off, so in order to see the unified header/footer, you can enable it either in `config/feature_flags.yml` or you can set it on the URL by visiting:
 
 ```
-http://localhost:3000/?enable_unified_header_footer=true
+http://localhost:4000/?enable_unified_header_footer=true
 ```
 
 ## Development
 
 After checking out the repo, run `bundle install`.
-
-Run `bundle exec rake templates` to generate the dist HTML/CSS from your src ERB/SCSS.
 
 ## License
 

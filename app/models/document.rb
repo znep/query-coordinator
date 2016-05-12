@@ -34,9 +34,11 @@ class Document < ActiveRecord::Base
   #
   EXPECTED_UPLOAD_URL_FORMAT = %r{
     \A
-    https:\/\/
-    #{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com\/
-    (?<path>uploads\/.+\/(?<filename>.+))
+    (
+      https://#{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com/(?<path>uploads\/.+\/(?<filename>.+))
+    )|(
+      https://delivery\.gettyimages\.com/.+\/.+\.(jpg|png|gif)\?.*
+    )
     \z
   }x.freeze
 
@@ -46,6 +48,16 @@ class Document < ActiveRecord::Base
 
   validates :direct_upload_url, presence: true, format: { with: EXPECTED_UPLOAD_URL_FORMAT }
   validates_attachment_content_type :upload, content_type: /\A(image|text\/html)/
+
+  before_post_process :set_content_type
+
+  # When requesting images from Getty Images, the Download API returns a content type of
+  # application/x-download. We convert the image to its relevant MIME type here before
+  # sending it off to Paperclip and S3.
+  def set_content_type
+    extension = File.extname(URI.parse(self.upload.url).path)[1..-1]
+    self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
+  end
 
   def as_json(options=nil)
     {

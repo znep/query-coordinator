@@ -147,7 +147,7 @@ a {
   }
 
   @include media($tablet) {
-    padding: 0 0.5em;
+    padding: 15px 0.5em 0;
     max-width: 80em;
     margin: 0 auto;
   
@@ -157,7 +157,7 @@ a {
 
 .wrapper {
   @include media($tablet) {
-      margin-top: 112px;
+      margin-top: 80px;
       border-top: 1px solid $light-grey-3;
     padding-top: 21px;
   }
@@ -167,38 +167,42 @@ a {
   width: 100%;
   margin-bottom: -10px;
   
-.container {
-  max-width: 100%;
+  .container {
+    max-width: 100%;
+    
     @include media($tablet) {
       max-width: 54em !important;
       margin: 0px auto;
       padding: 0;
+      margin-bottom: 15px
     }
   }
-}
 
-form {
-  margin-bottom: 0 !important;
-}
-
-.input-group {
-  .text-input {
-    border-left: none;
+  form {
+    margin-bottom: 0 !important;
   }
-  .input-group-btn .btn-default {
-    border-right: none;
+  
+  .input-group {
+    .text-input {
+      border-left: none;
+    }
+    .input-group-btn .btn-default {
+      border-right: none;
+    }
   }
-}
 
   @include media($tablet) {
     @include span-columns(10);
     @include shift(1);
     padding: ms(8) 0;
+
+
     .input-group .text-input {
       border-left: 1px solid $light-grey-2;
     }
   }
 
+}
 
 .search-result-meta {
   display: none;

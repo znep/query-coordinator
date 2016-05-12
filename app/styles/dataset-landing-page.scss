@@ -677,6 +677,7 @@ section.landing-page-section.schema-preview {
   letter-spacing: 0;
   text-align: left;
   width: 420px;
+  max-width: 100%; // mobile
 
   h4, h6 {
     font-weight: 400;
@@ -740,7 +741,7 @@ section.landing-page-section.schema-preview {
     }
   }
 
-  @media(max-width: 420px) {
+  @media(max-width: $small) {
     .documentation-link {
       display: block;
       width: 100%;

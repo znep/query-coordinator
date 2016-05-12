@@ -33,8 +33,18 @@ module.exports = [
       'lodash': '_',
       'moment': 'moment',
       'leaflet': 'L',
-      'react': 'React',
-      'react-dom': 'ReactDOM'
+      'react': {
+        root: 'React',
+        commonjs2: 'react',
+        commonjs: 'react',
+        amd: 'react'
+      },
+      'react-dom': {
+        root: 'ReactDOM',
+        commonjs2: 'react-dom',
+        cmmonjs: 'react-dom',
+        amd: 'react-dom'
+      }
     },
     output: {
       path: __dirname + '/dist',

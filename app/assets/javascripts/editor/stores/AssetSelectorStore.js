@@ -786,6 +786,18 @@ export default function AssetSelectorStore() {
             )
           );
 
+          if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
+            _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
+          } else if (self.getStep() === WIZARD_STEP.CONFIGURE_VISUALIZATION) {
+            _state.step = WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION;
+          } else if (self.getStep() === WIZARD_STEP.TABLE_PREVIEW) {
+            _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
+          } else {
+            _state.step = WIZARD_STEP.SELECT_ASSET_PROVIDER;
+          }
+
+          self._emitChange();
+
           exceptionNotifier.notify(errorObj);
           alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
         }

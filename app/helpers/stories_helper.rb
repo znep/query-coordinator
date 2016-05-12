@@ -26,7 +26,9 @@ module StoriesHelper
       block['components'].each do |component|
         if component['type'] == 'socrata.visualization.classic'
           component['value']['visualization'] = CoreServer.get_view(component['value']['originalUid'])
-          component['value']['visualization']['metadata']['renderTypeConfig']['visible']['table'] = false
+          if component['value']['visualization']
+            component['value']['visualization']['metadata']['renderTypeConfig']['visible']['table'] = false
+          end
         end
       end
     end

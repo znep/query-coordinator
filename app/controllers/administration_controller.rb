@@ -19,14 +19,12 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   def datasets
-    if CurrentDomain.feature_flags[:asset_inventory]
-      unless AssetInventory.find.present?
-        Airbrake.notify(:error_class => "Asset Inventory missing for domain",
-          :error_message => "Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.",
-          :session => {:domain => CurrentDomain.cname},
-          :request => { :params => params })
-         Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
-      end
+    unless AssetInventory.find.present?
+      Airbrake.notify(:error_class => 'Asset Inventory missing for domain',
+        :error_message => 'Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.',
+        :session => {:domain => CurrentDomain.cname},
+        :request => { :params => params })
+       Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
     end
 
     vtf = view_types_facet
@@ -1180,9 +1178,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:asset_inventory] do |c|
-    c.check_feature_flag(:asset_inventory)
-  end
   def asset_inventory
     asset_inventory = AssetInventory.find
 

@@ -17,9 +17,6 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
-asset_inventory:
-  description: Controls asset inventory controls and buttons are shown
-  defaultValue: false
 bubble:
   description: D3 Bubble Charts
   defaultValue: old

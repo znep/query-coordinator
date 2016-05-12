@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    chrome (0.0.2)
+    chrome (0.0.3)
       rails (~> 4.2, >= 4.2.6)
 
 GEM
@@ -161,7 +161,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  chrome (= 0.0.2)!
+  chrome (= 0.0.3)!
   hashie
   httparty
   jquery-rails

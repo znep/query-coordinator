@@ -284,18 +284,21 @@ class InternalController < ApplicationController
   def set_features
     config = ::Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
     if !params['new-feature_name'].blank?
-      config.create_property(params['new-feature_name'].strip,
-                             params['new-feature_enabled'] == 'enabled')
+      new_feature_name = params['new-feature_name'].strip
+      config.create_property(new_feature_name, params['new-feature_enabled'] == 'enabled')
+      notices << "Added module `#{new_feature_name}` successfully."
     else
       CoreServer::Base.connection.batch_request do |batch_id|
         params[:features][:name].each do |key, name|
-          config.update_property(name,
-                              (params[:features][:enabled] || {})[name] == 'enabled', batch_id)
+          enabled = (params[:features][:enabled] || {})[name] == 'enabled'
+          config.update_property(name, enabled, batch_id)
+          notices << "Updated module `#{name}` to `#{enabled ? 'enabled' : 'disabled'}` successfully."
         end
       end
     end
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
+    prepare_to_render_flashes!
 
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
@@ -316,7 +319,7 @@ class InternalController < ApplicationController
       module_features = params['features_to_add']
       enabled = true
     else
-      flash[:error] = 'Did not add any modules; none passed.'
+      flash[:error] = 'Did not add any modules; no modules passed in.'
       redirect_to show_domain_path(domain_id: params[:domain_id])
       return
     end

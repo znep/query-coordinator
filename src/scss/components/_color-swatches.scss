@@ -14,17 +14,25 @@
   }
 
   .box {
-    width: 5em;
-    height: 5em;
+    width: 6em;
+    height: 6em;
     float: left;
     display: block;
     margin-bottom: 2em;
   }
 
   .small-box {
-    height: 2.5em;
-    width: 2.5em;
+    height: 3em;
+    width: 3em;
     float: left;
+    span.icon-text {
+      height: 3em;
+      margin: 0 auto;
+      text-align: center;
+      display: block;
+      font-size: 1.6em;
+      margin-top: 3px;
+    }
   }
 
   .color-group {
@@ -48,6 +56,10 @@
   }
 }
 
+.text {
+  font-size: 1px;
+}
+
 .primary {
   background-color: $primary;
 
@@ -58,53 +70,73 @@
   &.dark {
     background-color: $primary-dark;
   }
-}
 
-.secondary {
-  background-color: $secondary;
-
-  &.light {
-    background-color: $secondary-light;
-  }
-
-  &.dark {
-    background-color: $secondary-dark;
+  & .text {
+    color: $primary-text;
   }
 }
 
-.primary-alt-1 {
-  background-color: $primary-alt-1;
+.alternate-1 {
+  background-color: $alternate-1;
 
   &.light {
-    background-color: $primary-alt-1-light;
+    background-color: $alternate-1-light;
   }
 
   &.dark {
-    background-color: $primary-alt-1-dark;
+    background-color: $alternate-1-dark;
+  }
+
+  & .text {
+    color: $alternate-1-text;
   }
 }
 
-.primary-alt-2 {
-  background-color: $primary-alt-2;
+.alternate-2 {
+  background-color: $alternate-2;
 
   &.light {
-    background-color: $primary-alt-2-light;
+    background-color: $alternate-2-light;
   }
 
   &.dark {
-    background-color: $primary-alt-2-dark;
+    background-color: $alternate-2-dark;
+  }
+
+  & .text {
+    color: $alternate-2-text;
   }
 }
 
-.primary-alt-3 {
-  background-color: $primary-alt-3;
+.alternate-3 {
+  background-color: $alternate-3;
 
   &.light {
-    background-color: $primary-alt-3-light;
+    background-color: $alternate-3-light;
   }
 
   &.dark {
-    background-color: $primary-alt-3-dark;
+    background-color: $alternate-3-dark;
+  }
+
+  & .text {
+    color: $alternate-3-text;
+  }
+}
+
+.alternate-4 {
+  background-color: $alternate-4;
+
+  &.light {
+    background-color: $alternate-4-light;
+  }
+
+  &.dark {
+    background-color: $alternate-4-dark;
+  }
+
+  & .text {
+    color: $alternate-4-text;
   }
 }
 
@@ -118,6 +150,10 @@
   &.dark {
     background-color: $success-dark;
   }
+
+  & .text {
+    color: $success-text;
+  }
 }
 
 .error {
@@ -130,6 +166,10 @@
   &.dark {
     background-color: $error-dark;
   }
+
+  & .text {
+    color: $error-text;
+  }
 }
 
 .warning {
@@ -141,6 +181,10 @@
 
   &.dark {
     background-color: $warning-dark;
+  }
+
+  & .text {
+    color: $warning-text;
   }
 }
 

@@ -12,14 +12,14 @@
 }
 
 .tag-official {
-  color: $primary-alt-1-text;
+  color: $alternate-1-text;
   font-size: ms(-1);
   margin: 0 ms(-1) 0 0;
   text-transform: uppercase;
   white-space: nowrap;
 
   span[class*='icon-'] {
-    color: $primary-alt-1;
+    color: $alternate-1;
   }
 
 }

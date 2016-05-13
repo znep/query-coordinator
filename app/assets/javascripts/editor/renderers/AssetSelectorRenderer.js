@@ -1030,8 +1030,13 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { class: 'alert info getty-image-info hidden' }
     ).append(
-      $('<span>', {class: 'icon-info-inverse'}),
-      I18n.t('editor.asset_selector.image_upload.getty_image_info')
+      $('<p>').append(
+        $('<span>', {class: 'icon-info-inverse'}),
+        I18n.t('editor.asset_selector.image_upload.getty_image_info')
+      ),
+      $('<p>').append(
+        StorytellerUtils.format(I18n.t('editor.asset_selector.image_upload.getty_image_terms'), _insertButtonText())
+      )
     );
 
     var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });

@@ -14,7 +14,11 @@ function exportImpl(thing, as) {
 var utils = _.merge({}, SocrataUtils, VifUtils, {
   export: exportImpl,
   format: function(string) {
-    return String.prototype.format.apply(string, _.tail(arguments));
+    if (_.isString(string)) {
+      return String.prototype.format.apply(string, _.tail(arguments));
+    } else {
+      return '';
+    }
   },
 
   /**

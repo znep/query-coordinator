@@ -75,7 +75,7 @@ function SoqlDataProvider(config) {
       '';
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(
-      '$select=count(*){0}&$$$$$read_from_nbe=true&$$$$$version=UNSTABLE'.format(whereClause)
+      '$select=count(*){0}&$$$read_from_nbe=true'.format(whereClause)
       )).then(function(data) {
         return parseInt(_.get(data, '[0].count'), 10);
       });
@@ -154,10 +154,10 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    // Note: The five $ signs are eventually collapsed down to two $ signs, because
+    // Note: The 3 (not 5) $ signs are eventually collapsed down to two $ signs, because
     // of strange corner-casey behavior of String.format.
     var queryString =
-      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$$$read_from_nbe=true&$$$$$version=UNSTABLE'.
+      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$read_from_nbe=true'.
       format(
         columnNames.map(_escapeColumnName).join(','),
         order[0].columnName,

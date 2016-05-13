@@ -37,8 +37,9 @@ module Chrome
     end
 
     def get_site_chrome
-      # This is just temporary caching. This approach should not be used in production.
-      @get_site_chrome ||= Chrome::SiteChrome.new(Chrome::DomainConfig.new(ENV['DOMAIN']).site_chrome_config)
+      RequestStore.store[:site_chrome] ||=
+        Chrome::SiteChrome.new(Chrome::DomainConfig.new(request.host).site_chrome_config)
+    end
 
     def current_user
       unless RequestStore.store.has_key?(:current_user)

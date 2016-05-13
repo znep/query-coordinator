@@ -78,6 +78,7 @@
       color: $warning-bar-color;
       font-size: 1.5rem;
       font-weight: normal;
+      line-height: 1.4;
       opacity: 1;
 
       .icon-warning {
@@ -88,6 +89,7 @@
       button {
         border: none;
         outline: none;
+        padding: 0;
         color: $warning-bar-color;
         background-color: transparent;
         text-decoration: underline;
@@ -169,3 +171,8 @@
   }
 }
 
+#error-modal-container {
+  .modal-title {
+    color: $warning-bar-color;
+  }
+}

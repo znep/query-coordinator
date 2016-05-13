@@ -28,6 +28,10 @@ body {
   background-color: $body-bg-color;
 }
 
+a {
+  color: $link-color;
+}
+
 body .header-main {
   @include unselectable();
   @include clearfix();
@@ -198,10 +202,12 @@ body .header-main {
 }
 
 #story-save-error-bar {
+  display: inline-flex;
   position: fixed;
   top: 6rem;
   left: 0;
   right: 0;
+  min-height: $story-save-error-bar-reserved-height;
   text-align: center;
   font-size: 1.5rem;
   z-index: $story-save-error-z-index;
@@ -220,41 +226,16 @@ body .header-main {
   }
 
   .container {
+    margin: auto;
     pointer-events: all;
-
-    &.story-save-error-bar-trying-again {
-      $spinner-size: 1.1rem;
-
-      .trying-again-spinner {
-        @include spinner;
-        width: $spinner-size;
-        height: $spinner-size;
-        margin-left: 0.5rem;
-      }
-
-      button.try-again.available {
-        display: none;
-      }
-    }
 
     .message {
       color: $story-save-error-bar-color;
-      padding-left: 0.6rem;
+      padding: 0 0.6rem;
     }
 
-    button.try-again {
-      border: none;
-      outline: none;
-      color: $story-save-error-bar-color;
-      background-color: transparent;
-      text-decoration: underline;
-      font-weight: bold;
-      display: none;
-      line-height: 1; // Our two CSS resets are fighting :(
-
-      &.available {
-        display: inline-block;
-      }
+    .btn-busy {
+      vertical-align: middle;
     }
   }
 }

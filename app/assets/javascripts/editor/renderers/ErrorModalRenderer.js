@@ -10,7 +10,6 @@ import { userSessionStore } from '../stores/UserSessionStore';
 export default function ErrorModalRenderer() {
   var $modal = $('#error-modal-container');
   var $warningMessage = $modal.find('.error-warning-message');
-  var $okButton = $modal.find('.btn-ok');
   var $reloadButton = $modal.find('.btn-reload');
   var $modalContents = $modal.children();
 
@@ -20,7 +19,10 @@ export default function ErrorModalRenderer() {
   userSessionStore.addChangeListener(render);
 
   $modal.modal({
-    title: I18n.t('editor.generic_error'),
+    title: StorytellerUtils.format(
+      '<span class="icon-warning"></span> {0}',
+      I18n.t('editor.generic_error')
+    ),
     content: $modalContents
   });
 
@@ -28,21 +30,14 @@ export default function ErrorModalRenderer() {
     $modal.trigger('modal-close');
   });
 
-  $okButton.click(function() {
-    $modal.trigger('modal-close');
-    if (reasonForBeingOpen() === 'EXPIRED_SESSION') {
-      dispatcher.dispatch({
-        action: Actions.LOGIN_BUTTON_CLICK
-      });
-    }
-  });
-
   $reloadButton.click(function() {
     window.document.location.reload();
   });
 
   // The only button in the warning message is a login button.
-  $warningMessage.on('click', 'button', function() {
+  $warningMessage.on('click', 'a', function(event) {
+    event.preventDefault();
+
     dispatcher.dispatch({
       action: Actions.LOGIN_BUTTON_CLICK
     });
@@ -64,11 +59,9 @@ export default function ErrorModalRenderer() {
     // Always update, regardless of whether or not the modal needs to be opened.
     if (reason === 'EXPIRED_SESSION') {
       $warningMessage.empty().append(
-        I18n.t('editor.user_session_timeout'),
-        ' ',
-        I18n.t('editor.login_phrase_1_good_manners'),
-        $('<button>').text(I18n.t('editor.login_phrase_2_link_text'))
+        I18n.t('editor.user_session_timeout')
       );
+
       $reloadButton.hide();
     } else if (reason === 'CONFLICT') {
       // User details are loaded async, show a placeholder while that is in flight.
@@ -89,6 +82,7 @@ export default function ErrorModalRenderer() {
         ' ',
         I18n.t('editor.story_save_error_conflict_detail_2')
       );
+
       $reloadButton.show();
     }
 

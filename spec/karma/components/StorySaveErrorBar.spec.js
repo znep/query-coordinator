@@ -13,7 +13,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
   var autosave;
 
   function tryAgainButtonAvailable() {
-    return $errorBar.find('button.try-again').hasClass('available');
+    return $errorBar.find('.btn-try-again').hasClass('available');
   }
 
   beforeEach(function() {
@@ -103,8 +103,13 @@ describe('storySaveErrorBar jQuery plugin', function() {
       describe('try again button', function() {
         it('should call autosave.saveASAP when clicked', function() {
           sinon.assert.notCalled(autosave.saveASAP);
-          $errorBar.find('button.try-again').click();
+          $errorBar.find('.btn-try-again').click();
           sinon.assert.calledOnce(autosave.saveASAP);
+        });
+
+        it('should convert to a btn-busy when clicked', function() {
+          $errorBar.find('.btn-try-again').click();
+          assert.isTrue($errorBar.find('.btn-try-again').hasClass('btn-busy'));
         });
 
         it('should be available', function() {
@@ -124,7 +129,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
           }
 
           assert.isFalse(isTryAgainShown());
-          $errorBar.find('button.try-again').click();
+          $errorBar.find('.btn-try-again').click();
           assert.isTrue(isTryAgainShown());
           mockStore._emitChange();
           assert.isTrue(isTryAgainShown());
@@ -193,16 +198,9 @@ describe('storySaveErrorBar jQuery plugin', function() {
         assert.isTrue($errorBar.hasClass('visible'));
       });
 
-      it('login message should be visible', function() {
-        assert.equal($errorBar.find('.login.message').css('display'), 'inline');
-      });
-
       it('should place the correct text in the message', function() {
         assert.include($errorBar.find('.message').text(), 'Translation for: editor.user_session_timeout');
-        assert.include($errorBar.find('.message').text(), 'Translation for: editor.login_phrase_1_good_manners');
-        assert.include($errorBar.find('.message').text(), 'Translation for: editor.login_phrase_2_link_text');
       });
-
     });
   });
 });

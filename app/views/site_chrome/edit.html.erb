@@ -1,3 +1,47 @@
-<h1>Editing Site Chrome</h1>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <%= rendered_stylesheet_tag 'administration-site-chrome' %>
+  <title>Editing Site Chrome | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
 
-<%= render 'form' %>
+<div class="site-chrome-admin">
+  <div class="admin-header">
+    <div class="header-title">
+      <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
+    </div>
+
+    <div class="header-controls">
+      <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
+      <button><%= t('screens.admin.site_chrome.save_changes') %></button>
+    </div>
+  </div>
+
+  <ul class="tabs">
+    <% @tab_sections.each_with_index do |section, i| %>
+      <li class="<%= tab_link_classnames(i) %>" data-tab-id="<%= section %>">
+        <a href="#"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></a>
+      </li>
+    <% end %>
+  </ul>
+
+  <% @tab_sections.each_with_index do |section, i| %>
+    <div class="<%= tab_section_classnames(i) %>" data-tab-id="<%= section %>">
+      <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
+      <%= render(
+        "site_chrome_admin/tab_content/#{section}",
+        :content => @site_chrome.content[section], # TODO - just use @site_chrome, not content and locales?
+        :locales => @site_chrome.content['locales']['en'], # TODO how do we detect current locale?
+        :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
+      ) %>
+    </div>
+  <% end %>
+
+  <div class="page-controls">
+    <button class="primary"><%= t("screens.admin.site_chrome.save") %></button>
+    <button><%= t("screens.admin.site_chrome.cancel") %></button>
+  </div>
+
+</div>
+
+<%= include_javascripts 'admin-site-chrome' %>

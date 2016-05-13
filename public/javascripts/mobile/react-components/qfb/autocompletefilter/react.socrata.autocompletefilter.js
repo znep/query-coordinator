@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
+import _ from 'lodash';
 import FlannelUtils from '../../flannel/flannel';
 import './autocompletefilter.scss';
 
@@ -298,7 +299,7 @@ class SocrataAutocompletefilter extends React.Component {
     }
 
     var footnote;
-    if (this.state.options.length === 0 && ReactDOM.findDOMNode(this.refs.searchinput).value !== '') {
+    if (this.state.options.length === 0 && !_.isEmpty(_.get(this.refs, 'searchinput.value'))) {
       footnote = 'No matching results.';
     }
 

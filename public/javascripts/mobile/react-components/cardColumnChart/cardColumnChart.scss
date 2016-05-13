@@ -1,11 +1,9 @@
 .column-chart-upper-container {
-  height: calc(60vh + 60px);
-  overflow: hidden;
-
   .column-chart-upper-wrapper {
     background-color: #ECEBE9;
     width: 100%;
-    height: calc(100% - 65px);
+    height: calc(60vh - 60px);
+    position: relative;
 
     .column-chart-container {
       display: flex;
@@ -71,43 +69,13 @@
       }
 
       .chart-scroll {
-        padding-left: 40px;
+        padding-left: 50px;
         overflow-x: scroll;
-      }
-    }
-
-    .ticks {
-      z-index: 1;
-      width: 100% !important;
-
-      .tick {
-        color: #666;
-        text-align: left;
-        font-size: 12px;
-        font-weight: 400;
-        padding-left: 2px;
-        line-height: 0.75rem;
-
-        &.below {
-          line-height: 1.25rem;
-          border-bottom: 1px solid #bbb;
-          border-top: hidden !important;
-        }
-
-        &.origin {
-          border: hidden !important;
-        }
       }
     }
   }
 
   div.mobile-flyout {
-    height: 60px;
-    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
-    bottom: 0;
-    z-index: 11;
-    position: absolute;
-    padding: 3px 10px 3px 10px;
-    width: 100%;
+    margin-top: -15px;
   }
 }

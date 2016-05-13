@@ -1,12 +1,6 @@
 .distribution-chart-upper-container {
-  height: 60vh;
-
-  &.expanded {
-    height: calc(60vh + 60px);
-  }
-
   .distribution-chart-upper-wrapper {
-    height: calc(100% - 60px);
+    height: calc(60vh - 60px);
 
     path {
       &.filtered {
@@ -44,13 +38,6 @@
   }
 
   div.mobile-flyout {
-    margin-top: -60px;
-    height: 60px;
-    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.6);
-    bottom: 0;
-    z-index: 11;
-    position: absolute;
-    padding: 3px 10px 3px 10px;
-    width: 100%;
+    margin-top: 6px;
   }
 }

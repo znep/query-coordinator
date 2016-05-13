@@ -1,8 +1,10 @@
 .socrata-table-container {
-  height: 535px;
+  .socrata-table-wrapper {
+    height: 80vh;
+  }
 
   tr {
-    height: 39px !important;
+    height: 20px !important;
   }
 
   .socrata-pager button {

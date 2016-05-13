@@ -1,4 +1,4 @@
-/* global pageMetadata, datasetMetadata, socrataConfig */
+/* global pageMetadata, datasetMetadata */
 
 /* Dependencies */
 import _ from 'lodash';
@@ -6,22 +6,15 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
-/* QFB components */
+/* Components */
+require('./components/headerSetup');
+require('./components/metaContainerSetup');
 import FilterContainer from './react-components/qfb/filtercontainer/FilterContainer';
-
-/* Visualizations components */
-var mobileColumnChart = require('./mobile.columnchart.js');
-var mobileTimelineChart = require('./mobile.timelinechart.js');
-var mobileFeatureMap = require('./mobile.featuremap.js');
-var mobileChoroplethMap = require('./mobile.choroplethmap.js');
-var mobileTable = require('./mobile.table.js');
-var mobileDistributionChart = require('./mobile.distribution-chart.js');
-
+import PageContainer from './react-components/pageContainer/pageContainer';
 import Visualizations from 'socrata-visualizations';
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
-import './styles/mobile-general.scss';
 
 (function() {
   'use strict';
@@ -29,175 +22,15 @@ import './styles/mobile-general.scss';
   var $dlName = $('.dl-name');
   $dlName.html(datasetMetadata.name);
 
-  const TABLE_UNSORTABLE_PHYSICAL_DATATYPES = ['geo_entity', 'point'];
   const LARGE_DATASET_ROW_COUNT = 100000;
   const LARGE_DATASET_COLUMN_COUNT = 50;
-
-  var firstCard = _.sortBy(
-    _.filter(datasetMetadata.columns, function(column) {
-      return TABLE_UNSORTABLE_PHYSICAL_DATATYPES.indexOf(column.physicalDatatype) < 0;
-    }), 'position')[0];
 
   var soqlDataProvider = new Visualizations.dataProviders.SoqlDataProvider({
     datasetUid: datasetMetadata.id,
     domain: datasetMetadata.domain
   });
 
-  function getPageTemplate() {
-
-    var intro;
-    var hasLongVersion;
-
-    if (datasetMetadata.description.length > 85) {
-      intro = datasetMetadata.description.substring(0, 85);
-      hasLongVersion = true;
-    } else {
-      hasLongVersion = false;
-    }
-
-    if (hasLongVersion) {
-      return $(
-        [
-          '<p class="intro padding">',
-            '<span class="dl-description intro-short">' + intro + '</span>',
-            '<span class="text-link">Show more</span>',
-          '</p>',
-          '<div class="all hidden">',
-            '<p class="padding">',
-              '<span class="dl-description">' + datasetMetadata.description + '</span>',
-              '<span class="text-link">Collapse details</span>',
-            '</p>',
-          '</div>'
-        ].join('')
-      );
-    } else {
-      return $(
-        [
-          '<p class="intro padding">',
-            '<span class="dl-description">' + datasetMetadata.description + '</span>',
-          '</p>'
-        ].join('')
-      );
-    }
-  }
-
-  function getTemplate(options) {
-
-    var intro;
-    var hasLongVersion;
-    if (options.metaData.description.length > 85) {
-      intro = options.metaData.description.substring(0,85);
-      hasLongVersion = true;
-    } else {
-      hasLongVersion = false;
-    }
-
-    if (hasLongVersion) {
-      return $(
-        [
-          '<div class="component-container ' + options.containerClass + '">',
-          '<article class="intro-text">',
-            '<h5>' + options.metaData.name + '</h5>',
-            '<p class="intro padding">',
-            '<span class="desc intro-short">' + intro + '</span>',
-            '<span class="text-link">Show more</span>',
-            '</p>',
-          '<div class="all hidden">',
-            '<p class="padding">',
-            '<span class="desc">' + options.metaData.description + '</span>',
-            '<span class="text-link">Collapse details</span>',
-            '</p>',
-          '</div>',
-          '</article>',
-          '<div class="' + options.componentClass + '"></div>',
-          '</div>'
-        ].join('')
-      );
-    } else {
-      return $(
-        [
-          '<div class="component-container ' + options.containerClass + '">',
-          '<article class="intro-text">',
-            '<h5>' + options.metaData.name + '</h5>',
-            '<p class="intro padding">',
-            '<span class="desc">' + options.metaData.description + '</span>',
-            '</p>',
-          '</article>',
-          '<div class="' + options.componentClass + '"></div>',
-          '</div>'
-        ].join('')
-      );
-    }
-  }
-
-  function mobileCardViewer() {
-
-    var $intro = $('.intro');
-    var $all = $('.all');
-    var $metadataContent = $('#metadata-content');
-
-    $intro.find('.text-link').on('click', function() {
-      // show all desc
-      $(this).parents('.intro-text').find('.all').removeClass('hidden');
-      $(this).parent('.intro').addClass('hidden');
-    });
-
-    $all.find('.text-link').on('click', function() {
-      // show intro desc
-      $(this).parents('.intro-text').find('.intro').removeClass('hidden');
-      $(this).parents('.all').addClass('hidden');
-    });
-
-    $('#button-toggle-metadata').on('click', function() {
-      var showing = $(this).data('open');
-      var self = $(this);
-
-      if (showing) {
-        self.html('show metadata');
-        self.data('open', false);
-      } else {
-        self.html('hide metadata');
-        self.data('open', true);
-      }
-      $metadataContent.toggleClass('hidden');
-    });
-
-    $('.meta-go-link').on('click', function() {
-      var url = window.location.href;
-      var aUrlParts = url.split('/mobile');
-      window.location = aUrlParts[0];
-    });
-
-    var $window = $(window);
-    var $navbar = $('.navbar');
-    var lastScrollTop = 0;
-    var wasScrollingDown = false;
-
-    $window.scroll(function() {
-      var stp = $window.scrollTop();
-
-      if ((stp + 20) > lastScrollTop && stp > 0) {
-        if (!wasScrollingDown) {
-          wasScrollingDown = true;
-
-          $navbar.removeClass('navbar-visible').addClass('navbar-hidden');
-          $('#navbar').removeClass('in').attr('aria-expanded','false');
-        }
-      } else {
-        if (wasScrollingDown) {
-          wasScrollingDown = false;
-
-          $navbar.removeClass('navbar-hidden').addClass('navbar-visible');
-        }
-      }
-
-      lastScrollTop = stp;
-    });
-  }
-
   function renderCards() {
-    var $cardContainer;
-    var values;
     var aPredefinedFilters = [];
     var vifFilters = [];
 
@@ -422,149 +255,29 @@ import './styles/mobile-general.scss';
 
     });
 
-    var _cardsWithTables = _.filter(pageMetadata.cards, { cardType: 'table' });
-    var _cardsExpanded = _.filter(pageMetadata.cards, { expanded: true });
-    var _cardsOther = _.reject(pageMetadata.cards, function(card) {
-      return card.cardType == 'table' || card.expanded;
-    });
-    var allCardsWithOrder = _cardsExpanded.concat(_cardsOther).concat(_cardsWithTables);
-    var unit = {
-      one: _.get(datasetMetadata, 'rowDisplayUnit', 'row'),
-      other: socrata.utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
-    };
-
-    _.each(allCardsWithOrder, function(card) {
-      var cardOptions = {
-        componentClass: '',
-        metaData: datasetMetadata.columns[card.fieldName],
-        containerClass: ''
-      };
-
-      switch (card.cardType) {
-        case 'search':
-          var position = _.get(cardOptions, 'metadata.position', '-1').toString();
-
-          if (!_.find(aPredefinedFilters, { name: card.fieldName })) {
-            var filterObj = {
-              id: card.fieldName,
-              type: 'string',
-              name: card.fieldName,
-              displayName: _.get(cardOptions, 'metaData.name'),
-              data: null,
-              startWithClosedFlannel: true
-            };
-            aPredefinedFilters.push(filterObj);
-          }
-          break;
-        case 'timeline':
-          cardOptions.componentClass = 'timeline-chart-upper-wrapper';
-          cardOptions.containerClass = 'timeline-chart-upper-container';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            unitLabel: datasetMetadata.columns[(card.aggregationField || card.fieldName)].name,
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileTimelineChart(values, $cardContainer.find('.' + cardOptions.componentClass));
-          break;
-        case 'feature':
-          cardOptions.componentClass = 'feature-map-wrapper';
-          cardOptions.containerClass = 'map-container';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileFeatureMap(values, $($cardContainer.find('.' + cardOptions.componentClass)));
-          break;
-        case 'choropleth':
-          cardOptions.containerClass = 'choropleth-upper-container';
-          cardOptions.componentClass = 'choropleth-upper-wrapper';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            computedColumnName: card.computedColumn,
-            geojsonUid: datasetMetadata.columns[card.computedColumn].computationStrategy.parameters.region.substring(1),
-            mapExtent: (card.cardOptions) ? card.cardOptions.mapExtent || {} : {},
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileChoroplethMap(values, $cardContainer.find('.' + cardOptions.componentClass));
-          break;
-        case 'column':
-          cardOptions.containerClass = 'column-chart-upper-container';
-          cardOptions.componentClass = 'column-chart-upper-wrapper';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileColumnChart(values, $cardContainer.find('.' + cardOptions.componentClass));
-          break;
-        case 'table':
-          cardOptions.id = 'table';
-          cardOptions.componentClass = 'socrata-table-container';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileTable(values, $cardContainer.find('.' + cardOptions.componentClass));
-          break;
-        case 'histogram':
-          cardOptions.componentClass = 'distribution-chart-upper-wrapper';
-          cardOptions.containerClass = 'distribution-chart-upper-container';
-          $cardContainer = getTemplate(cardOptions).appendTo('#mobile-components');
-          values = {
-            domain: datasetMetadata.domain,
-            datasetUid: datasetMetadata.id,
-            columnName: card.fieldName,
-            orderColumnName: _.findKey(datasetMetadata.columns, firstCard),
-            aggregationFunction: card.aggregationFunction,
-            aggregationField: card.aggregationField,
-            filters: vifFilters,
-            unit: unit
-          };
-
-          mobileDistributionChart(values, $($cardContainer.find('.' + cardOptions.componentClass)));
-          break;
-        default:
-          break;
+    // Process search cards only
+    var searchCardsOnly = _.filter(pageMetadata.cards, { cardType: 'search' });
+    _.each(searchCardsOnly, function(card) {
+      if (!_.find(aPredefinedFilters, { name: card.fieldName })) {
+        var filterObj = {
+          id: card.fieldName,
+          type: 'string',
+          name: card.fieldName,
+          displayName: _.get(datasetMetadata.columns[card.fieldName], 'metadata.name'),
+          data: null,
+          startWithClosedFlannel: true
+        };
+        aPredefinedFilters.push(filterObj);
       }
     });
 
-    $('.meta-container').before(getPageTemplate());
-    mobileCardViewer();
+    // Exclude search cards from the rest
+    var _rawCardsExceptSearch = _.reject(pageMetadata.cards, { cardType: 'search' });
+
+    ReactDOM.render(<PageContainer
+      cards={ _rawCardsExceptSearch }
+      filters={ vifFilters }/>, document.getElementById('mobile-components'));
+
     setupQfb(aPredefinedFilters);
   }
 
@@ -971,37 +684,4 @@ import './styles/mobile-general.scss';
 
   document.title = datasetMetadata.name;
   renderCards();
-
-  (function() {
-    // Header
-
-    var $navbar = $('.navbar');
-    var $logo = $('.navbar-brand img');
-    var $navigation = $('.navbar ul.nav');
-
-    var theme = socrataConfig.themeV3 || {};
-    var routes = {
-      user: [{
-        title: 'Sign Out',
-        url: '/logout'
-      }],
-      visitor: [{
-        title: 'Sign In',
-        url: '/login?referer_redirect=1'
-      }, {
-        title: 'Sign Up',
-        url: '/signup?referer_redirect=1'
-      }]
-    };
-
-    $navbar.css('background-color', theme.header_background_color || 'white');
-    $logo.attr('src', theme.logo_url);
-
-    (currentUser ? routes.user : routes.visitor).forEach(function(route) {
-      $navigation.append(
-        '<li><a href="' + route.url + '">' + route.title + '</a></li>'
-      );
-    });
-  })();
-
 })(window);

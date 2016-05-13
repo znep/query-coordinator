@@ -107,7 +107,9 @@
     "saveAs": true,
     "socrata": true,
     "ss": true,
+    "UserSnap": true,
     "VBArray": true,
-    "VectorTile": true
+    "VectorTile": true,
+    "zE": true
   }
 }

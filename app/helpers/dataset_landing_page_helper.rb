@@ -46,6 +46,12 @@ module DatasetLandingPageHelper
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
   end
 
+  def render_current_user
+    if current_user
+      javascript_tag("var currentUser = #{json_escape(current_user.to_json)};")
+    end
+  end
+
   def share_facebook_url
     "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
   end

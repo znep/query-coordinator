@@ -349,18 +349,20 @@ $text_padding: 11px;
 ### Deploy to Socrata Artifactory
 
 To deploy gem to Artifactory Online ([See Artifactory OpsDoc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#)), follow
-the directions to setup your access to artifactory.
+the directions to setup your access to artifactory. If this doesn't work, perhaps artifactory changed its API. Click on `Set Me Up` on the [ruby-local repository page](https://socrata.artifactoryonline.com/socrata/webapp/#/artifacts/browse/tree/General/ruby-local) for official instructions.
 
-Update `~./gemrc` to include artifactory source.
+Update `~./gemrc` to include artifactory source. You will need to grab the encrypted password like [this](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#heading=h.4hnxvstj4v5v).
+NOTE! If your username contains an @, replace it with %40.
 
 ```
-gem source -a http://<USERNAME>:<API_KEY>@socrata.artifactoryonline.com/artifactory/api/gems/ruby-local/
+gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.com/socrata/api/gems/ruby-local/
 ```
 
 Add `API_KEY` to `~/.gem/credentials` file:
 
 ```
-curl -u<USERNAME>:<API_KEY> https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/api/v1/api_key.yaml > ~/.gem/credentials
+curl -u<USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/api/v1/api_key.yaml
+cat ~/.gem/credentials
 chmod 0600 ~/.gem/credentials
 ```
 
@@ -371,6 +373,7 @@ export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby
 ```
 
 Build them gem and push it to artifactory:
+NOTE! Ensure you are in the `engine` directory.
 
 ```
 rake gem

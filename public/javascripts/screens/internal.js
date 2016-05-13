@@ -80,10 +80,6 @@
     }
   }, 200));
 
-  if ($('body').is('action_internal_show_config')) {
-
-  }
-
   $.fn.formatWithMoment = function(format) {
     var text = this.text();
     var asMoment = moment(text);

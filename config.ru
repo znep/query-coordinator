@@ -2,6 +2,5 @@
 
 require ::File.expand_path('../config/environment', __FILE__)
 use CurrentDomainMiddleware
-map Chrome::Engine.config.relative_url_root = '/stories' do
-  run Rails.application
-end
+
+run Rails.application

@@ -93,6 +93,18 @@ Add the following to `config/routes.rb` to mount the engine:
 mount Chrome::Engine => '/chrome'
 ```
 
+To run the engine on a given route:
+1. add this to `application.rb`
+  ```ruby
+  config.relative_url_root = '/your-route'
+  ```
+2. add this to `config.ru`
+  ```ruby
+  map Chrome::Engine.config.relative_url_root = '/your-route' do
+    run Rails.application # remove the other instance of this line
+  end
+  ```
+
 ### Runtime Dependencies
 
 The host app must provide a value for `:current_user` in `RequestStore.store`. If there is a signed in user, the value must be a hash containing all properties from the current user object (typically obtained via a call to `/api/users/current.json`). The keys are expected to be strings. If there is no signed in user, the value must be set to nil in the request store. If `:current_user` is not set, an error will be thrown.

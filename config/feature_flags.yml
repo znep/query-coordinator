@@ -156,7 +156,7 @@ enable_synthetic_spatial_lens_id:
 enable_unified_header_footer:
   description: Enable the new unified header / footer on this domain.
   category: homepage
-  defaultValue: false
+  defaultValue: true
 stories_enabled:
   description: Enable the Storyteller application.
   category: storyteller

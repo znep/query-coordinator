@@ -2,78 +2,87 @@ require 'rails_helper'
 
 describe SiteChrome do
   describe 'site chrome model' do
-    # A subset of these are necessary when you want to change something in core
-    def cookies
-      {
-        'remember_token' => 'eR9ZWVZCdcvcpTOw8ouyJA',
-        'logged_in' => 'true',
-        'mp_mixpanel__c' => '7',
-        'mp_mixpanel__c3' => '12706',
-        'mp_mixpanel__c4' => '9207',
-        'mp_mixpanel__c5' => '64',
-        '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa',
-        'socrata-csrf-token' => 'R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=',
-        '_core_session_id' => 'ODNueS13OXplIDE0NjI4Mzc4NzUgYjE2YjUxZDk3NWY0IDBiMTRjNTc4ZmQ5NDZhMjdjNGUyZDUwYjRkMzI1ZjFkZjRiOTIyY2Q'
-      }.map { |k, v| "#{k}=#{v}" }.join(';')
-    end
-
-    # If you re-record the VCR cassettes, this will likely change along with the auth cookies above
-    def site_chrome_id
-      86
-    end
+    # NOTE: To re-record the VCR cassettes:
+    # * Log in to FE locally against local core
+    # * Copy the cookies to SiteChrome.local_dev_box_SiteChrome.local_dev_box_auth_cookies
+    # * Delete the spec/fixtures/vcr_cassettes/site_chrome/model*.yml
+    # * Delete any site chrome configs from your local core (sorry, no test db)
+    # * Re-run this test file (i.e., rspec spec/models/site_chrome_spec.rb)
 
     it 'can instantiate' do
       expect { SiteChrome.new }.to_not raise_error(Exception)
     end
 
-    it 'can create in core' do
-      VCR.use_cassette('site_chrome_create_to_core') do
+    it 'can create' do
+      VCR.use_cassette('site_chrome/model/create_in_core') do
         site_chrome = SiteChrome.new(
           name: 'Site Chrome',
-          default: true,
+          default: false, # so that find_default won't find this
           domainCName: 'localhost',
           type: 'site_chrome'
         )
-        site_chrome.cookies = cookies
+        site_chrome.cookies = SiteChrome.local_dev_box_auth_cookies
 
-        expect(site_chrome.create).to be_instance_of(SiteChrome)
+        res = site_chrome.create
+        expect(res).to be_instance_of(SiteChrome)
+        expect(site_chrome.id).not_to be_nil
+        expect(site_chrome.default).to be false # find_default should not find us
         expect(site_chrome.properties).to be_empty
         expect(site_chrome.updatedAt).not_to be_nil
       end
     end
 
-    it 'can load from core' do
-      VCR.use_cassette('site_chrome_load_from_core') do
-        site_chrome = SiteChrome.find_one(site_chrome_id)
-        expect(site_chrome.create).to be_instance_of(SiteChrome)
+    it 'can find or create default' do
+      VCR.use_cassette('site_chrome/model/find_or_create_default') do
+        site_chrome = SiteChrome.find_or_create_default
+        expect(site_chrome).to be_instance_of(SiteChrome)
+        expect(site_chrome.id).not_to be_nil
+        expect(site_chrome.default).to be true # should be default
         expect(site_chrome.updatedAt).not_to be_nil
       end
     end
 
-    it 'can reload from core' do
-      VCR.use_cassette('site_chrome_reload_from_core') do
-        site_chrome = SiteChrome.find_one(site_chrome_id)
-        reloaded = site_chrome.reload
-        expect(site_chrome).to eq(reloaded)
+    it 'can find_default and find_one' do
+      VCR.use_cassette('site_chrome/model/find_default_and_find_one') do
+        # SiteChrome#find_default
+        default_site_chrome = SiteChrome.find_default
+        expect(default_site_chrome).to be_instance_of(SiteChrome)
+        expect(default_site_chrome.default).to be true
+        expect(default_site_chrome.id).not_to be_nil
+        expect(default_site_chrome.updatedAt).not_to be_nil
+
+        # SiteChrome#find_one
+        site_chrome = SiteChrome.find_one(default_site_chrome.id)
+        expect(site_chrome).to be_instance_of(SiteChrome)
+        expect(site_chrome.attributes).to eq(default_site_chrome.attributes)
+      end
+    end
+
+    it 'can load and reload' do
+      VCR.use_cassette('site_chrome/model/find_default_and_reload') do
+        site_chrome = SiteChrome.find_default
+        before_reload = site_chrome.attributes
+        after_reload = site_chrome.reload.attributes
+        expect(after_reload).to eq(before_reload)
       end
     end
 
     it 'can create a property' do
-      VCR.use_cassette('site_chrome_create_property') do
-        site_chrome = SiteChrome.find_one(site_chrome_id)
-        site_chrome.cookies = cookies
+      VCR.use_cassette('site_chrome/model/find_default_and_create_property') do
+        site_chrome = SiteChrome.find_default
+        site_chrome.cookies = SiteChrome.local_dev_box_auth_cookies
 
-        expect(site_chrome.property('propertyName')).to be_nil
+        expect(site_chrome.property('newnewPropertyName')).to be_nil
         site_chrome.create_property(
-          'propertyName',
+          'newPropertyName',
           'some key' => 'some value', 'some other key' => 'some other value'
         )
         expect(site_chrome.properties).not_to be_nil
         expect(site_chrome.properties).not_to be_empty
 
-        expect(site_chrome.property('propertyName')).
+        expect(site_chrome.property('newPropertyName')).
           to eq(
-            'name' => 'propertyName',
+            'name' => 'newPropertyName',
             'value' => {
               'some key' => 'some value',
               'some other key' => 'some other value'
@@ -83,8 +92,8 @@ describe SiteChrome do
     end
 
     it 'can reload properties' do
-      VCR.use_cassette('site_chrome_reload_properties') do
-        site_chrome = SiteChrome.find_one(site_chrome_id)
+      VCR.use_cassette('site_chrome/model/find_default_and_reload_properties') do
+        site_chrome = SiteChrome.find_default
         before = site_chrome.attributes
         after = site_chrome.reload_properties.attributes
         expect(after).to eq(before)
@@ -93,13 +102,13 @@ describe SiteChrome do
 
     # Updates are full-body all-or-nothing
     it 'can update a property' do
-      VCR.use_cassette('site_chrome_update_property') do
-        site_chrome = SiteChrome.find_one(site_chrome_id)
-        site_chrome.cookies = cookies
+      VCR.use_cassette('site_chrome/model/find_default_and_update_property') do
+        site_chrome = SiteChrome.find_default
+        site_chrome.cookies = SiteChrome.local_dev_box_auth_cookies # for auth
 
-        expect(site_chrome.property('propertyName')).
+        expect(site_chrome.property('newPropertyName')).
           to eq(
-            'name' => 'propertyName',
+            'name' => 'newPropertyName',
             'value' => {
               'some key' => 'some value',
               'some other key' => 'some other value'
@@ -107,13 +116,13 @@ describe SiteChrome do
           )
 
         site_chrome.update_property(
-          'propertyName',
+          'newPropertyName',
           'some key' => 'another value', 'new key' => 'new value'
         )
 
-        expect(site_chrome.property('propertyName')).
+        expect(site_chrome.property('newPropertyName')).
           to eq(
-            'name' => 'propertyName',
+            'name' => 'newPropertyName',
             'value' => {
               'some key' => 'another value',
               'new key' => 'new value'
@@ -124,6 +133,19 @@ describe SiteChrome do
         before = site_chrome.attributes
         after = site_chrome.reload_properties.attributes
         expect(after).to eq(before)
+      end
+    end
+
+    # Update published content works when published content does not yet exist
+    it 'can update published content when siteChromeConfigVars does not exist' do
+      VCR.use_cassette('site_chrome/model/find_or_create_default_and_update_published_content') do
+        site_chrome = SiteChrome.find_or_create_default
+        site_chrome.cookies = SiteChrome.local_dev_box_auth_cookies
+
+        fancy_new_property = { 'evenNewerPropertyName' => { 'first key' => 'first value' } }
+        site_chrome.update_published_content(fancy_new_property)
+
+        expect(site_chrome.content).to include(fancy_new_property)
       end
     end
   end

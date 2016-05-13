@@ -1,0 +1,618 @@
+--- 
+http_interactions: 
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations?type=site_chrome
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: 
+      Accept: 
+      - "*/*"
+      User-Agent: 
+      - Ruby
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 2bdrs3581rwo2uhno3sbyzozq
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        [ {
+          "id" : 69,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578356,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 71,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578379,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 74,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578581,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 76,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578846,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 79,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578912,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 82,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462579031,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 84,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462579089,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 86,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462832656,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          }, {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 64,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462583666,
+          "properties" : [ {
+            "name" : "some_prop",
+            "value" : "pants"
+          } ]
+        }, {
+          "id" : 80,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462816427,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "pants" : "fun"
+            }
+          } ]
+        }, {
+          "id" : 63,
+          "name" : "Another Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462820377,
+          "properties" : [ {
+            "name" : "pants",
+            "value" : 12
+          } ]
+        }, {
+          "id" : 62,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462829656,
+          "properties" : [ {
+            "name" : "swallysss",
+            "value" : "sssboatss"
+          }, {
+            "name" : "wallys",
+            "value" : "boats"
+          }, {
+            "name" : "new_prop",
+            "value" : "hi_man"
+          }, {
+            "name" : "wally",
+            "value" : "boats"
+          }, {
+            "name" : "pantsss",
+            "value" : "hi"
+          }, {
+            "name" : "pants",
+            "value" : "hello"
+          }, {
+            "name" : "wallyss",
+            "value" : "boats"
+          }, {
+            "name" : "wallysss",
+            "value" : "sboats"
+          }, {
+            "name" : "fun",
+            "value" : "ffdsa"
+          } ]
+        }, {
+          "id" : 78,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462831255,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "a" : 1
+            }
+          }, {
+            "name" : "propertyName2",
+            "value" : {
+              "b" : 2,
+              "c" : 3
+            }
+          } ]
+        }, {
+          "id" : 102,
+          "name" : "Site Chrome",
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463168595,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          }, {
+            "name" : "new_property",
+            "value" : {
+              "a" : 1
+            }
+          }, {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.1" : {
+                  "published" : {
+                    "content" : {
+                      "fun_new_param" : "make it very green!"
+                    }
+                  }
+                }
+              }
+            }
+          } ]
+        }, {
+          "id" : 61,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462907760,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.1" : {
+                  "published" : {
+                    "content" : {
+                      "footer" : {
+                        "logo" : {
+                          "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                          "href" : "#"
+                        },
+                        "links" : [ {
+                          "key" : "home",
+                          "url" : "/"
+                        }, {
+                          "key" : "terms_of_service",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "privacy",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "accessibility",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "contact_us",
+                          "url" : "http://www.socrata.com/contact-us"
+                        }, {
+                          "key" : "a",
+                          "url" : "#a"
+                        }, {
+                          "key" : "b",
+                          "url" : "#b"
+                        }, {
+                          "key" : "c",
+                          "url" : "#c"
+                        }, {
+                          "key" : "d",
+                          "url" : "#d"
+                        }, {
+                          "key" : "e",
+                          "url" : "#e"
+                        }, {
+                          "key" : "f",
+                          "url" : "#f"
+                        }, {
+                          "key" : "g",
+                          "url" : "#g"
+                        }, {
+                          "key" : "h",
+                          "url" : "#h"
+                        }, {
+                          "key" : "i",
+                          "url" : "#i"
+                        }, {
+                          "key" : "j",
+                          "url" : "#j"
+                        } ]
+                      },
+                      "pants" : "fun",
+                      "some_key" : "some_fine_value",
+                      "locales" : {
+                        "en" : {
+                          "footer" : {
+                            "logo_alt" : "Evergreen!",
+                            "links" : {
+                              "f" : "Link F",
+                              "home" : "Home Page",
+                              "g" : "Link G with a super long title!!!",
+                              "d" : "Link D",
+                              "e" : "Link E",
+                              "b" : "Link B",
+                              "c" : "Link C",
+                              "a" : "Link A",
+                              "privacy" : "Privacy Policy",
+                              "terms_of_service" : "Terms of Service",
+                              "j" : "Link J",
+                              "h" : "Link H",
+                              "contact_us" : "Contact Us",
+                              "i" : "Link I",
+                              "accessibility" : "Accessibility"
+                            }
+                          },
+                          "header" : {
+                            "logo_alt" : "Evergreen!",
+                            "links" : {
+                              "home" : "Home Page",
+                              "support" : "Support",
+                              "catalog" : "Browse",
+                              "developers" : "Developers",
+                              "evergreen" : "City of Evergreen"
+                            }
+                          },
+                          "general" : {
+                            "social_shares" : {
+                              "twitter" : "Follow us on Twitter",
+                              "facebook" : "Like us on Facebook"
+                            },
+                            "site_name" : "City of Evergreen"
+                          }
+                        }
+                      },
+                      "superpants" : "happy walking",
+                      "general" : {
+                        "social_shares" : [ {
+                          "type" : "facebook",
+                          "url" : "http://facebook.com"
+                        }, {
+                          "type" : "twitter",
+                          "url" : "http://twitter.com"
+                        } ],
+                        "favicon" : "http://foo.png",
+                        "link_text_color" : "grey",
+                        "locales" : [ "en", "es", "fr" ],
+                        "default_locale" : "en",
+                        "styles" : {
+                          "fg_color" : "#eee",
+                          "bg_color" : "#2c97de",
+                          "font_family" : "Open Sans"
+                        },
+                        "site_title" : "Evergreen"
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "http://i.imgur.com/E8wtc6d.png",
+                          "href" : "#"
+                        },
+                        "styles" : {
+                          "fg_color" : "#eee",
+                          "bg_color" : "#5D7365"
+                        },
+                        "links" : [ {
+                          "key" : "home",
+                          "url" : "/"
+                        }, {
+                          "key" : "catalog",
+                          "url" : "/browse"
+                        }, {
+                          "key" : "developers",
+                          "url" : "http://dev.socrata.com"
+                        }, {
+                          "key" : "support",
+                          "url" : "http://support.socrata.com"
+                        }, {
+                          "key" : "evergreen",
+                          "url" : "http://data.evergreen.gov"
+                        } ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } ]
+        }, {
+          "id" : 98,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463093857,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          } ]
+        }, {
+          "id" : 99,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463093903,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          } ]
+        }, {
+          "id" : 100,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463093989,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          } ]
+        }, {
+          "id" : 101,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463094348,
+          "properties" : [ {
+            "name" : "propertyName",
+            "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          } ]
+        }, {
+          "id" : 72,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578378
+        }, {
+          "id" : 83,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462579031
+        }, {
+          "id" : 77,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578846
+        }, {
+          "id" : 73,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578558
+        }, {
+          "id" : 96,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462907413
+        }, {
+          "id" : 65,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462575815
+        }, {
+          "id" : 85,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462579089
+        }, {
+          "id" : 68,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578311
+        }, {
+          "id" : 94,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462822054
+        }, {
+          "id" : 95,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462835840
+        }, {
+          "id" : 97,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463092616
+        }, {
+          "id" : 67,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462575912
+        }, {
+          "id" : 81,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462579007
+        }, {
+          "id" : 90,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462822029
+        }, {
+          "id" : 103,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1463170454
+        }, {
+          "id" : 70,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578356
+        }, {
+          "id" : 75,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462578581
+        }, {
+          "id" : 87,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1462581573
+        } ]
+
+    http_version: 
+  recorded_at: Fri, 13 May 2016 20:23:44 GMT
+recorded_with: VCR 3.0.1

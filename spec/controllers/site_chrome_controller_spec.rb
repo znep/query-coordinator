@@ -19,157 +19,45 @@ describe SiteChromeController do
   # * with wipe the site_chrome*yml files
   # * and re-run.
   def auth_cookies
-    {
-      'remember_token' => 'eR9ZWVZCdcvcpTOw8ouyJA',
-      'mp_mixpanel__c' => '31',
-      'mp_mixpanel__c3' => '39199',
-      'mp_mixpanel__c4' => '32017',
-      'mp_mixpanel__c5' => '218',
-      'logged_in' => 'true',
-      'socrata-csrf-token' => 'R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=',
-      '_socrata_session_id' => 'BAh7CEkiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEZJIgl1c2VyBjsARmkH--453acf9420884d37b8603df38e14142985922fec',
-      '_core_session_id' => 'ODNueS13OXplIDE0NjI5MjY2MDAgMzVlNzMwMzFjMGEyIDVlM2JmZDZhN2FlYjAzMDA0M2NmMTU5ZDIyMTBhYWM3Y2NiNWMwZjE='
-    }
-  end
-
-  # If you re-record the VCR tapes from your local dev box, you'll likely need to change this
-  def site_chrome_id
-    @site_chrome_id ||= 61
-  end
-
-  describe 'index' do
-    it 'redirects if not logged in' do
-      get :index
-      expect(response).to redirect_to(login_url)
-    end
-
-    it 'is forbidden to non-admins' do
-      init_current_user(@controller)
-      stub_normal_user
-      get :index
-      expect(response).to have_http_status(:forbidden)
-    end
-
-    it 'loads if admin' do
-      init_current_user(@controller)
-      stub_superadmin_user
-      VCR.use_cassette('site_chrome_index') do
-        get :index
-        expect(response).to be_success
-      end
-    end
-  end
-
-  describe 'show' do
-    it 'redirects if not logged in' do
-      get :show, id: site_chrome_id
-      expect(response).to redirect_to(login_url)
-    end
-
-    it 'is forbidden to non-admins' do
-      init_current_user(@controller)
-      stub_normal_user
-      get :show, id: site_chrome_id
-      expect(response).to have_http_status(:forbidden)
-    end
-
-    it 'loads if admin' do
-      init_current_user(@controller)
-      stub_superadmin_user
-      VCR.use_cassette('site_chrome_show') do
-        get :show, id: site_chrome_id
-        expect(response).to be_success
-      end
-    end
-  end
-
-  describe 'new' do
-    it 'redirects if not logged in' do
-      get :new
-      expect(response).to redirect_to(login_url)
-    end
-
-    it 'is forbidden to non-admins' do
-      init_current_user(@controller)
-      stub_normal_user
-      get :new
-      expect(response).to have_http_status(:forbidden)
-    end
-
-    it 'loads if admin' do
-      init_current_user(@controller)
-      stub_superadmin_user
-      VCR.use_cassette('site_chrome_new') do
-        get :new
-        expect(response).to be_success
-      end
-    end
+    {"remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "mp_mixpanel__c"=>"10", "mp_mixpanel__c3"=>"15026", "mp_mixpanel__c4"=>"11567", "mp_mixpanel__c5"=>"76", "logged_in"=>"true", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjMxODI5MTggNWE4ZGRmZTViOTUwIGY3ZmM3MTc4NjNhYzMzYTA3ODNlNjhkYTkzYmFhOWUyOTE3MTBlYzg"}
   end
 
   # The main page admins will typically access
   describe 'edit' do
     it 'redirects if not logged in' do
-      get :edit, id: site_chrome_id
+      get :edit
       expect(response).to redirect_to(login_url)
     end
 
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      get :edit, id: site_chrome_id
+      get :edit
       expect(response).to have_http_status(:forbidden)
     end
+
+    # TODO: add these tests:
+    # 1) site_theme created if does not already exist
+    # 2) site_theme loaded if already exists
+    # 3) site_theme.property siteChromeConfigVars created if does not already exist
+    # 4) site_theme.property siteChromeConfigVars loaded if already exists
 
     it 'loads if admin' do
       init_current_user(@controller)
       stub_superadmin_user
-      VCR.use_cassette('site_chrome_edit') do
-        get :edit, id: site_chrome_id
+      VCR.use_cassette('site_chrome/controller/edit') do
+        get :edit
         expect(response).to be_success
       end
     end
   end
 
-  #####################
-  # Destructive actions
-  #####################
-
-  describe 'create' do
-    site_chrome = { properties: { 'some_key' => 'some_value' } }
-
-    it 'redirects if not logged in' do
-      post :create, site_chrome: site_chrome
-      expect(response).to redirect_to(login_url)
-    end
-
-    it 'is forbidden to non-admins' do
-      init_current_user(@controller)
-      stub_normal_user
-      post :create, site_chrome: site_chrome
-      expect(response).to have_http_status(:forbidden)
-    end
-
-    it 'works if admin' do
-      init_current_user(@controller)
-      stub_superadmin_user # auth for FE
-
-      # now we get auth for core
-      auth_cookies.each { |key, value| @request.cookies[key] = value }
-
-      VCR.use_cassette('site_chrome_controller_create') do
-        post :create, site_chrome: site_chrome
-        new_site_chrome = assigns['site_chrome']
-        expect(response).to redirect_to(site_chrome_path(id: new_site_chrome.id))
-      end
-    end
-  end
-
   describe 'update' do
-    site_chrome = { properties: { 'some_key' => 'some_fine_value' } }
+    new_content = { 'new_batch_of_properties' => { 'some_key' => 'some_fine_value' } }
 
     it 'redirects if not logged in' do
-      VCR.use_cassette('site_controller_update_not_logged_in') do
-        put :update, id: site_chrome_id, site_chrome: site_chrome
+      VCR.use_cassette('site_chrome/controller/update_redirect_to_login') do
+        put :update, content: new_content
         expect(response).to redirect_to(login_url)
       end
     end
@@ -177,9 +65,13 @@ describe SiteChromeController do
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
-      put :update, id: site_chrome_id, site_chrome: site_chrome
+      put :update, content: new_content
       expect(response).to have_http_status(:forbidden)
     end
+
+    # TODO: add these tests:
+    # 1) site theme does not exist
+    # 2) site theme exists but siteChromeConfigVars does not
 
     it 'works if admin' do
       init_current_user(@controller)
@@ -188,23 +80,46 @@ describe SiteChromeController do
       # now we get auth for core
       auth_cookies.each { |key, value| @request.cookies[key] = value }
 
-      VCR.use_cassette('site_chrome_controller_update') do
-        sc_before_update = SiteChrome.find_one(site_chrome_id)
-        expect(sc_before_update.content).not_to include('some_key' => 'some_fine_value')
+      VCR.use_cassette('site_chrome/controller/update') do
+        site_chrome = SiteChrome.find_default
+        expect(site_chrome.content).not_to include(new_content)
 
-        put :update, id: site_chrome_id, site_chrome: site_chrome
-        expect(response).to redirect_to(site_chrome_path(id: site_chrome_id))
+        put :update, content: new_content
+        expect(response).to redirect_to(site_chrome_path)
 
-        sc_after_update = SiteChrome.find_one(site_chrome_id)
-        expect(sc_after_update.content).to include('some_key' => 'some_fine_value')
+        after_update = site_chrome.reload
+        expect(after_update.content).to include(new_content)
       end
     end
   end
 
-  # Let's keep destroy from existing
+  #########################
+  # Routes that don't exist
+
+  describe 'index' do
+    it 'is unimplemented' do
+      expect { get :index }.
+        to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe 'show' do
+    it 'is unimplemented' do
+      expect { get :show, id: 123 }.
+        to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe 'create' do
+    it 'is unimplemented' do
+      expect { post :create, site_chrome: {} }.
+        to raise_error(ActionController::RoutingError)
+    end
+  end
+
   describe 'destroy' do
     it 'is unimplemented' do
-      expect { delete site_chrome_path(site_chrome_id) }.
+      expect { delete site_chrome_path(456) }.
         to raise_error(ActionController::RoutingError)
     end
   end
@@ -217,7 +132,7 @@ describe SiteChromeController do
     allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
   end
 
-  # a la spec/controllers/administration_controller_spec.rb
+  # a la spec/controllers/administration_controller/spec.rb
   def stub_superadmin_user
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(true)

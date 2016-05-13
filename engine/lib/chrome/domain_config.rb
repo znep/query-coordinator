@@ -17,8 +17,7 @@ module Chrome
       {
         id: config[:id],
         content: site_chrome_config[:content],
-        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
-        domain_cname: config[:domainCName]
+        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt]
       }
     end
 

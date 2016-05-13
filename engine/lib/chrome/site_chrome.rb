@@ -4,13 +4,12 @@ require 'ostruct'
 module Chrome
   class SiteChrome
 
-    attr_reader :id, :content, :updated_at, :domain_cname
+    attr_reader :id, :content, :updated_at
 
     def initialize(config = {})
       @id = config[:id]
       @content = config[:content] || {}
       @updated_at = config[:updated_at] || 0
-      @domain_cname = config[:domain_cname]
     end
 
     def header

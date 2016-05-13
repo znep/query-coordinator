@@ -99,6 +99,8 @@ The host app must provide a value for `:current_user` in `RequestStore.store`. I
 
 ## Site Configuration & Styling
 
+The site configuration is domain-specific. The configuration is fetched from core using the domain of the current request. The current domain is obtained from the request environment (`HTTP_HOST`). Given how we implement multitenancy, this value must be set by middleware in the hosting application. If this is not done, Rack will set the host to an unexpected or useless value. See [request_host.rb](https://github.com/socrata/storyteller/blob/master/lib/request_host.rb) in Storyteller for an example.
+
 Create a **Configuration** in the Internal Panel of type `site_chrome` (you can name it whatever you like). Within this configuration, add a property called `siteChromeConfigVars`, into which you can copy the configuration information shown below.
 
 The values specified in the configuration file are used in the following files to generate the CSS that defines the theme.
@@ -113,7 +115,7 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
 
 1. `open-sans`
 2. `socrata-icons`
- 
+
 #### Sample `siteChromeConfigVars` configuration:
 
 ```
@@ -295,18 +297,6 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
     }
   }
 }
-```
-
-## Dependencies
-
-Chrome requires access to the _current domain_ in order to fetch the domain configuration from the metadb. It currently expects this information to be set by `CurrentDomainMiddleware` and stored in `Thread.current[:current_domain]`.
-
-## Localhost
-
-In order to run / test the engine on your local development environment, you'll need to set `LOCALHOST=true` when launching your Rails application.
-
-```sh
-LOCALHOST=true rails s
 ```
 
 ## What it does

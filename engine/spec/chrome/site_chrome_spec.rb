@@ -10,8 +10,7 @@ describe Chrome::SiteChrome do
     {
       id: id,
       content: site_chrome_config_vars['content'],
-      updated_at: updated_at,
-      domain_cname: domain_cname
+      updated_at: updated_at
     }
   end
 
@@ -31,9 +30,5 @@ describe Chrome::SiteChrome do
 
   it 'sets updated_at from properties' do
     expect(helper.updated_at).to eq(updated_at)
-  end
-
-  it 'sets domain_cname from properties' do
-    expect(helper.domain_cname).to eq(domain_cname)
   end
 end

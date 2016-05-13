@@ -13,13 +13,13 @@ See [engine/README.md](file:///engine/README.md)
 To run on your local development machine:
 
 ```sh
-DOMAIN=localhost rails s -p 4000
+rails s -p 4000
 ```
 
 To start a Rails console to experiment:
 
 ```sh
-DOMAIN=localhost rails c
+rails c
 ```
 >Note: If the console hangs, try running this first `bin/spring stop`
 

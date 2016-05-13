@@ -15,6 +15,8 @@ configure :build do
   activate :relative_assets
 end
 
+activate :livereload
+
 activate :external_pipeline,
   name: :gulp,
   command: build? ? './node_modules/.bin/gulp dist' : './node_modules/.bin/gulp watch',

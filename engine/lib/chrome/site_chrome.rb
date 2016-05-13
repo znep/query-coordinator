@@ -37,21 +37,6 @@ module Chrome
       }
     end
 
-    # Note: If in development you are getting 403 unauthorized, you may have to log in to Frontend
-    # to get a _core_session_id. Then add that cookie to your web page for the Site Chrome app.
-    # Enter in the browser console: `document.cookie="_core_session_id=xxxxxx"`
-    def current_user(request)
-      begin
-        response = HTTParty.get(
-          "#{request.host}/api/users.json?method=getCurrent",
-          :headers => { 'Cookie' => request.headers['Cookie'].to_s }
-        )
-        if response.code == 200 && response.body
-          JSON.parse(response.body)
-        end
-      end
-    end
-
     # TODO - this method is one way the gem could handle rendering the HTML
     # def get_html(section_content)
     #   # Returns template with content hash passed in as variables

@@ -1,3 +1,5 @@
+require 'request_store'
+
 module Chrome
   module ApplicationHelper
 
@@ -10,11 +12,11 @@ module Chrome
     end
 
     def logged_in?
-      !!request.cookies['logged_in']
+      current_user.present?
     end
 
     def username
-      (@current_user && @current_user['displayName'].present?) ? @current_user['displayName'] : 'Profile'
+      (current_user && current_user['displayName'].present?) ? current_user['displayName'] : 'Profile'
     end
 
     def copyright
@@ -37,6 +39,13 @@ module Chrome
     def get_site_chrome
       # This is just temporary caching. This approach should not be used in production.
       @get_site_chrome ||= Chrome::SiteChrome.new(Chrome::DomainConfig.new(ENV['DOMAIN']).site_chrome_config)
+
+    def current_user
+      unless RequestStore.store.has_key?(:current_user)
+        raise 'Site Chrome: Host app must provide current_user key in RequestStore (even if nil)'
+      end
+
+      RequestStore.store[:current_user]
     end
 
   end

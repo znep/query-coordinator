@@ -93,6 +93,10 @@ Add the following to `config/routes.rb` to mount the engine:
 mount Chrome::Engine => '/chrome'
 ```
 
+### Runtime Dependencies
+
+The host app must provide a value for `:current_user` in `RequestStore.store`. If there is a signed in user, the value must be a hash containing all properties from the current user object (typically obtained via a call to `/api/users/current.json`). The keys are expected to be strings. If there is no signed in user, the value must be set to nil in the request store. If `:current_user` is not set, an error will be thrown.
+
 ## Site Configuration & Styling
 
 Create a **Configuration** in the Internal Panel of type `site_chrome` (you can name it whatever you like). Within this configuration, add a property called `siteChromeConfigVars`, into which you can copy the configuration information shown below.

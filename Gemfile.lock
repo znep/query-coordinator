@@ -107,6 +107,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.1.2)
+    request_store (1.2.1)
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -161,11 +162,12 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  chrome (= 0.0.3)!
+  chrome!
   hashie
   httparty
   jquery-rails
   rails (= 4.2.6)
+  request_store
   rspec-rails
   sass-rails (~> 5.0)
   spring
@@ -173,5 +175,8 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock
 
+RUBY VERSION
+   ruby 2.3.0p0
+
 BUNDLED WITH
-   1.11.2
+   1.12.3

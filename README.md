@@ -23,6 +23,8 @@ DOMAIN=localhost rails c
 ```
 >Note: If the console hangs, try running this first `bin/spring stop`
 
+To view the demo page, visit http://localhost:4000/stories?enable_unified_header_footer=true
+
 ## Feature flag
 
 By default the feature flag is off, so in order to see the unified header/footer, you can enable it either in `config/feature_flags.yml` or you can set it on the URL by visiting:

@@ -3,16 +3,17 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'chrome', '0.0.3', :path => 'engine'
-gem 'httparty'
+gem 'chrome', :path => 'engine'
 gem 'hashie'
-gem 'rails', '4.2.6'
-gem 'sass-rails', '~> 5.0'
+gem 'httparty'
 gem 'jquery-rails'
+gem 'rails', '4.2.6'
+gem 'request_store'
+gem 'sass-rails', '~> 5.0'
 
 group :test do
-  gem 'webmock'
   gem 'sqlite3'
+  gem 'webmock'
 end
 
 group :development, :test do
@@ -21,6 +22,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'web-console', '~> 2.0'
   gem 'spring'
+  gem 'web-console', '~> 2.0'
 end

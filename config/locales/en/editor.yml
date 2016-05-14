@@ -183,7 +183,7 @@ en:
         show_more: 'Show More'
         thats_everything: "That's everything!"
         getty_image_info: When you publish this story, the photo preview will be replaced by a full-resolution image.
-        getty_image_terms: By clicking {0} below, you are agreeing to Socrata's <a href="https://www.socrata.com/terms-of-service/#getty" title="Stock Media Terms" target="_blank">stock media terms</a>.
+        getty_image_terms: By clicking <em>{0}</em> below, you are agreeing to Socrata's <a href="https://www.socrata.com/terms-of-service/#getty" title="Stock Media Terms" target="_blank">stock media terms</a>.
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'

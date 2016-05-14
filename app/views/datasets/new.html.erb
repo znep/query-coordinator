@@ -395,7 +395,11 @@
     blist.namespace.fetch('blist.licenses');
     blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
   </script>
-  <%= include_javascripts 'dataset-new' %>
+  <% if FeatureFlags.derive(@view, request).ingress_reenter %>
+    <%= include_javascripts 'dataset-new' %>
+  <% else %>
+    <%= include_javascripts 'dataset-new-old' %>
+  <% end %>
 <% end %>
 <%= render_translations LocalePart.screens.import_pane %>
 <%= render_translations LocalePart.screens.wizard %>

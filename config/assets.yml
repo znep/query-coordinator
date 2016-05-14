@@ -410,6 +410,19 @@ javascripts:
     - public/javascripts/screens/import-pane.js
     - public/javascripts/screens/dataset-new.js
     - public/javascripts/screens/edit-license.js
+  # TODO(vilterp): remove this once `ingress_reenter` feature flag is turned on
+  dataset-new-old:
+    - public/javascripts/util/serialize.js
+    - public/javascripts/util/datasync.js
+    - public/javascripts/plugins/ajaxupload.js
+    - public/javascripts/plugins/fileuploader.js
+    - public/javascripts/plugins/blist.fileuploader.js
+    - public/javascripts/plugins/jquery.awesomereorder.js
+    - public/javascripts/controls/attachments-editor.js
+    - public/javascripts/controls/wizard.js
+    - public/javascripts/screens/import-pane-old.js
+    - public/javascripts/screens/dataset-new-old.js
+    - public/javascripts/screens/edit-license.js
   dataset-edit:
     - public/javascripts/util/datasync.js
     - public/javascripts/plugins/ajaxupload.js
@@ -417,7 +430,7 @@ javascripts:
     - public/javascripts/plugins/blist.fileuploader.js
     - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/controls/wizard.js
-    - public/javascripts/screens/import-pane.js
+    - public/javascripts/screens/import-pane-old.js
     - public/javascripts/screens/dataset-edit.js
   dataset-metrics:
     - public/javascripts/screens/dataset-metrics.js

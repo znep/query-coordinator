@@ -2269,6 +2269,10 @@ en:
               menu_links:
                 title: Footer Menu Links
                 description: Display up to 15 links in the Footer. We automatically place these links in columns.
+              copyright_notice:
+                title: Copyright Notice
+                description: Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.
+                label: Show Copyright Notice
               link_title_label: Link Label
               link_title_placeholder: Link Text
               url_label: URL

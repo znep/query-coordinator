@@ -34,4 +34,15 @@
     :url_placeholder => translations[:url_placeholder]
   ) %>
 
+  <section class="settings-group">
+    <div class="settings-form full">
+      <h3><%= translations[:copyright_notice][:title] %></h3>
+      <p><%= translations[:copyright_notice][:description] %></p>
+      <%= label_tag 'show_copyright_notice' do %>
+        <%= check_box_tag('show_copyright_notice', 1, true) %>
+        <%= translations[:copyright_notice][:label] %>
+      <% end %>
+    </div>
+  </section>
+
 <% end %>

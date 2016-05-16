@@ -81,25 +81,6 @@ class Model
     self.class == other.class && data_hash == other.data_hash
   end
 
-  #
-  # Find a cached model, delegating to cached_user_user if there is a user
-  # find* provides much of the user-level permissioning we need for things
-  # so find_cached should be used sparingly where there are clear advantages
-  #
-  def self.find_cached(options = nil, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_model)
-    return find_cached_under_user(options, cache_ttl) if !User.current_user.nil?
-    cache_string = options.nil? ? "none" : options.to_json
-    cache_string += ':anon' if is_anon
-    do_cached(method(:find), options, cache_string, is_anon, cache_ttl)
-  end
-
-  def self.find_cached_under_user(options = nil, cache_ttl = Rails.application.config.cache_ttl_model)
-    user_id = get_user_id(options) || ""
-    cache_string = options.nil? ? "" : options.to_json
-    cache_string = cache_string + ":" + user_id
-    do_cached(method(:find_under_user), options, cache_string, cache_ttl)
-  end
-
   def method_missing(method_symbol, *args)
     method_name = method_symbol.to_s
     predicate_method = false
@@ -392,7 +373,7 @@ class Model
     end
   end
 
-protected
+  protected
 
   def self.parse_tags(val)
     if val.is_a?(String)
@@ -427,13 +408,12 @@ protected
       (!@deleted_flags.nil? && @deleted_flags.length > 0)
   end
 
-protected
   # Turn class name into core server service name
   def self.service_name
     return self.name.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.gsub(/^_/, '').pluralize
   end
 
-private
+  private
 
   # Mark one or more attributes as non-serializable -- that is, they shouldn't be
   # serialized back to the core server
@@ -447,30 +427,6 @@ private
   def self.non_serializable_attributes
     # read_inheritable_attribute("non_serializable") || Array.new
     Array.new
-  end
-
-  def self.do_cached(finder, options, cache_string, is_anon = false, cache_ttl=Rails.application.config.cache_ttl_model)
-    #
-    # If the model is requesting a simple string id; lookup the modification time in
-    # memcached and return a model which is cached by the core server-set mtime.
-    # If the core server has not set a modification time for this resource, check the
-    # default cache key. We only cache for 15 minutes so it's not the end of the world
-    # if the core server has not blessed us.
-    #
-    check_time = 0
-    if options.is_a?(String)
-      check_time = VersionAuthority.resource(options) || 0
-    end
-    model_cache_key = "model:" + Digest::MD5.hexdigest(cache_string + ":" + check_time.to_s)
-    model_cache_key += ':anon' if is_anon
-    result = cache.read(model_cache_key)
-    if result.nil?
-      result = finder.call(options, {}, false, is_anon)
-      cache.write(model_cache_key, result, :expires_in => cache_ttl)
-    end
-    result.model_cache_key = model_cache_key
-    result.check_time = check_time == 0 ? Time.now.to_i : check_time
-    result
   end
 
   def self.cache

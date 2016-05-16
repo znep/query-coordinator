@@ -12,15 +12,21 @@
     </div>
 
     <div class="header-controls">
-      <a href="#"><button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button></a>
-      <a href="#"><button><%= t('screens.admin.site_chrome.save_changes') %></button></a>
+      <%= link_to('#') do %>
+        <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
+      <% end %>
+      <%= link_to('#') do %>
+        <button><%= t('screens.admin.site_chrome.save_changes') %></button>
+      <% end %>
     </div>
   </div>
 
   <ul class="tabs">
     <% @tab_sections.each_with_index do |section, i| %>
       <li class="<%= tab_link_classnames(i) %>" data-tab-id="<%= section %>">
-        <a href="#"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></a>
+        <%= link_to('#') do %>
+          <%= t("screens.admin.site_chrome.tabs.#{section}.title") %>
+        <% end %>
       </li>
     <% end %>
   </ul>
@@ -36,8 +42,12 @@
   <% end %>
 
   <div class="page-controls">
-    <a href="#"><button class="primary"><%= t("screens.admin.site_chrome.save") %></button></a>
-    <a href="#"><button><%= t("screens.admin.site_chrome.cancel") %></button></a>
+    <%= link_to('#') do %>
+      <button class="primary"><%= t("screens.admin.site_chrome.save") %></button>
+    <% end %>
+    <%= link_to('#') do %>
+      <button><%= t("screens.admin.site_chrome.cancel") %></button>
+    <% end %>
   </div>
 
 </div>

@@ -3,8 +3,8 @@
   <p><%= description %></p>
 
   <div class="link-row">
-    <label><%= label_title %></label>
-    <label><%= url_title %></label>
+    <%= label_tag(nil, label_title) %>
+    <%= label_tag(nil, url_title) %>
   </div>
 
   <% links.each do |link| %>

@@ -28,7 +28,7 @@ $faint-border-color: #ebebeb;
     @include transition(0.2s, background-color);
     border-radius: 1px;
     &:hover {
-      color: $grey;
+      color: $dark-grey;
       background-color: #e6e6e6;
     }
     &.primary {

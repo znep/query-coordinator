@@ -30,7 +30,7 @@ class CoreServer
     creation_options = {
       verb: :post,
       path: view_url,
-      body: view_with_title(title),
+      body: story_view_with_title(title),
       query_params: query_params
     }
 
@@ -423,24 +423,40 @@ class CoreServer
     response
   end
 
-  def self.view_with_title(title)
+  # EN-5496 - Published stories are 404ing
+  #
+  # I am not certain that this is the root cause, but the fact that copies
+  # of stories are created with the HREF view type by nature of our not passing
+  # the `isStorytellerAsset: true` metadata property was causing many of our
+  # customers' assets to not conform to our expectation that all stories are
+  # of view type Story. We now include the `isStorytellerAsset: true` metadata
+  # property when creating new story views in the Rails code base in addition to
+  # in the frontend/js code base (where we were already doing the right thing).
+  def self.story_view_with_title(title)
     {
-      name: title,
+      displayFormat: {},
+      displayType: 'story',
       metadata: {
+        availableDisplayTypes: ['story'],
+        # Since Storyteller has its own datastore, we will need to treat this
+        # asynchonously. Tagging the metadata with `initialized: false` should
+        # at least allow us to understand how many of the two-phase story
+        # creation actions fail, and should also allow us to do some garbage
+        # collection down the road.
+        initialized: false,
+        # Because of an unfortunate legacy in Core Server, the way that we
+        # ensure that the newly-created asset is of viewType 'story' is by
+        # putting a property called 'isStorytellerAsset' on the metadata
+        # object.
+        isStorytellerAsset: true,
+        jsonQuery: {},
         renderTypeConfig: {
           visible: {
-            href: true
+            story: true
           }
-        },
-        accessPoints: {
-          story: 'https://www.socrata.com/'
-        },
-        availableDisplayTypes: ['story'],
-        jsonQuery: {},
-        initialized: false
+        }
       },
-      displayType: 'story',
-      displayFormat: {},
+      name: title,
       query: {}
     }
   end

@@ -9,4 +9,31 @@ describe('components/RowDetails', function() {
 
     expect(element).to.exist;
   });
+
+  describe('row label', function() {
+    var view;
+
+    beforeEach(function() {
+      view = mockView;
+    });
+
+    it('renders for a non-default value', function() {
+      view.rowLabel = 'thingamabob';
+      var element = renderComponent(RowDetails, {
+        view: view
+      });
+
+      expect(element.querySelectorAll('.metadata-pair')).to.have.length(3);
+    });
+
+    it('does not render for a default value', function() {
+      view.rowLabel = 'Row';
+      var element = renderComponent(RowDetails, {
+        view: view
+      });
+
+      expect(element.querySelectorAll('.metadata-pair')).to.have.length(2);
+    });
+  });
+
 });

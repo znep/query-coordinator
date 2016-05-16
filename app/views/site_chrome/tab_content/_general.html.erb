@@ -2,7 +2,8 @@
     <section class="settings-group">
       <div class="settings-form">
         <%= label_tag('window_or_tab_title_display', translations[:window_or_tab_title_display][:title]) %>
-        <%= text_field_tag('window_or_tab_title_display', content['site_title'], placeholder: translations[:window_or_tab_title_display][:placeholder]) %>
+        <%= text_field_tag('window_or_tab_title_display', @site_chrome.content['general']['site_title'],
+          placeholder: translations[:window_or_tab_title_display][:placeholder]) %>
       </div>
       <aside><p><%= translations[:window_or_tab_title_display][:description] %></p></aside>
     </section>
@@ -10,7 +11,8 @@
     <section class="settings-group">
       <div class="settings-form">
         <%= label_tag('window_or_tab_icon', translations[:window_or_tab_icon][:title]) %>
-        <%= text_field_tag('window_or_tab_icon', content['favicon'], placeholder: translations[:window_or_tab_icon][:placeholder]) %>
+        <%= text_field_tag('window_or_tab_icon', @site_chrome.content['general']['favicon'],
+          placeholder: translations[:window_or_tab_icon][:placeholder]) %>
       </div>
       <aside><p><%= translations[:window_or_tab_icon][:description] %></p></aside>
     </section>

@@ -1,3 +1,5 @@
+<% content = @site_chrome.content['header'] %>
+
 <%= form_tag('#') do %>
 
   <section class="settings-group">
@@ -11,7 +13,8 @@
   <section class="settings-group">
     <div class="settings-form">
       <%= label_tag('site_display_name', translations[:site_display_name][:title]) %>
-      <%= text_field_tag('site_display_name', locales['general']['site_name'], placeholder: translations[:site_display_name][:placeholder]) %>
+      <%= text_field_tag('site_display_name', @site_chrome.content['locales'][@current_locale]['general']['site_name'],
+        placeholder: translations[:site_display_name][:placeholder]) %>
     </div>
     <aside><p><%= translations[:site_display_name][:description] %></p></aside>
   </section>

@@ -1,0 +1,19 @@
+<%= form_tag('#') do %>
+
+  <section class="settings-group">
+    <div class="settings-form">
+      <%= label_tag('facebook_profile_link', translations[:facebook_profile_link][:title]) %>
+      <%= text_field_tag('facebook_profile_link', social_share_link('facebook'), placeholder: translations[:facebook_profile_link][:placeholder]) %>
+    </div>
+    <aside><p><%= translations[:facebook_profile_link][:description] %></p></aside>
+  </section>
+
+  <section class="settings-group">
+    <div class="settings-form">
+      <%= label_tag('twitter_profile_link', translations[:twitter_profile_link][:title]) %>
+      <%= text_field_tag('twitter_profile_link', social_share_link('twitter'), placeholder: translations[:twitter_profile_link][:placeholder]) %>
+    </div>
+    <aside><p><%= translations[:twitter_profile_link][:description] %></p></aside>
+  </section>
+
+<% end %>

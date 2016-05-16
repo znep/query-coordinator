@@ -30,8 +30,6 @@
       <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
       <%= render(
         "site_chrome/tab_content/#{section}",
-        :content => @site_chrome.content[section], # TODO - just use @site_chrome, not content and locales?
-        :locales => @site_chrome.content['locales']['en'], # TODO how do we detect current locale?
         :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
       ) %>
     </div>

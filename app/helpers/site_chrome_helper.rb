@@ -8,4 +8,7 @@ module SiteChromeHelper
     "tab-content#{' current' if index == 0}"
   end
 
+  def social_share_link(type)
+    @site_chrome.content['general']['social_shares'].detect{ |x| x['type'] == type }['url']
+  end
 end

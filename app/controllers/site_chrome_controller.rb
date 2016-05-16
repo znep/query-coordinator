@@ -10,6 +10,7 @@ class SiteChromeController < ApplicationController
   def edit
     @tab_sections = %w(general header footer homepage social)
     @site_chrome = SiteChrome.find_or_create_default
+    @current_locale = 'en' # TODO
   end
 
   def update

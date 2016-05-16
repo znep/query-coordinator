@@ -2279,6 +2279,14 @@ en:
           social:
             title: Social Sharing
             fields:
+              facebook_profile_link:
+                title: Facebook Profile Link
+                description: Displays Facebook profile link link in Header and Footer when present.
+                placeholder: http://www.facebook.com/
+              twitter_profile_link:
+                title: Twitter Profile Link
+                description: Displays Twitter profile link in Header and Footer when present.
+                placeholder: http://www.twitter.com/
       users:
         actions: Actions
         all: All

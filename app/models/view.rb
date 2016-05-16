@@ -373,12 +373,6 @@ class View < Model
     vc
   end
 
-  # While we still have datasets in both OBE and NBE, prefer the NBE
-  # visible columns when possible.
-  def preferred_visible_columns
-    (nbe_view || self).visible_columns
-  end
-
   def html
     if is_tabular?
       CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +

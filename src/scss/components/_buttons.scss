@@ -89,7 +89,8 @@
   background-color: $btn-default-background-color;
   border-color: $btn-default-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: $btn-default-hover-color;
     background-color: $btn-default-hover-background-color;
 
@@ -150,7 +151,8 @@
   @extend .btn-default;
   color: $btn-simple-color;
   background-color: $btn-simple-background-color;
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-simple-hover-background-color;
     color: $btn-simple-hover-color;
   }
@@ -161,7 +163,8 @@
   background-color: $btn-primary-background-color;
   border-color: $btn-primary-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-primary-hover-background-color;
 
     &.btn-inverse {
@@ -198,7 +201,8 @@
   background-color: $btn-alternate-1-background-color;
   border-color: $btn-alternate-1-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-alternate-1-hover-background-color;
     color: $btn-alternate-1-hover-color;
 
@@ -236,7 +240,8 @@
   background-color: $btn-alternate-2-background-color;
   border-color: $btn-alternate-2-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-alternate-2-hover-background-color;
     color: $btn-alternate-2-hover-color;
 
@@ -274,7 +279,8 @@
   background-color: $btn-alternate-3-background-color;
   border-color: $btn-alternate-3-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-alternate-3-hover-background-color;
 
     &.btn-inverse {
@@ -311,7 +317,8 @@
   background-color: $btn-alternate-4-background-color;
   border-color: $btn-alternate-4-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-alternate-4-hover-background-color;
 
     &.btn-inverse {
@@ -349,7 +356,8 @@
   background-color: $btn-warning-background-color;
   border-color: $btn-warning-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-warning-hover-background-color;
 
     &.btn-inverse {
@@ -384,7 +392,8 @@
   background-color: $btn-success-background-color;
   border-color: $btn-success-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-success-hover-background-color;
 
     &.btn-inverse {
@@ -419,7 +428,8 @@
   background-color: $btn-error-background-color;
   border-color: $btn-error-border-color;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $btn-error-hover-background-color;
 
     &.btn-inverse {
@@ -446,7 +456,7 @@
   &.btn-inverse {
     color: $btn-error-inverse-color;
     background-color: $btn-error-inverse-background-color;
-  }
+ }
 }
 
 .btn-transparent,

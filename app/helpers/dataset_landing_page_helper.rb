@@ -118,8 +118,9 @@ module DatasetLandingPageHelper
       @view.metadata.attachments.map do |attachment_data|
         attachment = Attachment.set_up_model(attachment_data)
         {
-          :name => attachment.name,
-          :link => link_to(attachment.filename, attachment.href(@view.id), :target => '_blank')
+          :name => attachment.displayName,
+          :href => attachment.href(@view.id),
+          :link => link_to(attachment.displayName, attachment.href(@view.id), :target => '_blank')
         }
       end
     end

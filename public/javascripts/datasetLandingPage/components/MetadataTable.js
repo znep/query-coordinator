@@ -76,7 +76,6 @@ export var MetadataTable = React.createClass({
       var attachmentRows = _.map(view.attachments, function(attachment, i) {
         return (
           <tr key={i}>
-            <td className="attachment">{attachment.name}</td>
             <td className="attachment">
               <span className="icon-copy-document"></span>
               <span dangerouslySetInnerHTML={{__html: attachment.link}}></span>

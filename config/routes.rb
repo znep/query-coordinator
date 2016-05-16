@@ -238,7 +238,7 @@ Frontend::Application.routes do
       get 'w/:id', :action => 'show', :as => 'themeless_widget'
     end
 
-    resources :datasets, :only => [ :show, :new ] do
+    resources :datasets, :only => [ :show, :new, :create ] do
       collection do
         get :upload
         get :external

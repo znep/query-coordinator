@@ -408,7 +408,6 @@ $(function() {
         }
     });
 
-
     // general validation. here because once a validator
     // for a form is created, you can't set a new validator.
     /* eslint-disable no-unused-vars */

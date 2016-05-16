@@ -14,7 +14,7 @@ class DatasetsController < ApplicationController
       controller.action_name == 'validate_contact_owner'
     }
 
-# collection actions
+  # collection actions
   def new
     if (!CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) &&
         !CurrentDomain.module_enabled?(:community_creation))
@@ -22,9 +22,19 @@ class DatasetsController < ApplicationController
       render 'shared/error', :status => :not_found
       return nil
     end
+    @view = nil # the templates expect a @view var (for reentrancy)
+  end
+
+  def create
+    view = View.create(:name => params[:new_dataset_name], :owner => current_user, :displayType => 'draft')
+
+    respond_to do |format|
+      format.html { redirect_to(view_path(view)) }
+    end
   end
 
 # member actions
+
   def show
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])
@@ -33,6 +43,18 @@ class DatasetsController < ApplicationController
     end
 
     return if @view.nil?
+
+    if FeatureFlags.derive(nil, request).ingress_reenter
+      if @view.displayType == 'draft'
+        unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
+               CurrentDomain.module_enabled?(:community_creation)
+          # User doesn't have access to create new datasets
+          return render 'shared/error', :status => :not_found
+        end
+
+        render 'new'
+      end
+    end
 
     if dataset_landing_page_is_default? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect

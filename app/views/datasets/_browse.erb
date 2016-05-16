@@ -282,7 +282,7 @@ end
 
                 <%- else -%>
 
-                  <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+                  <a class="button createLink"><%= t('controls.browse.actions.create_dataset_short') %></a>
 
                 <%- end -%>
               <%- end -%>
@@ -330,7 +330,7 @@ end
 
                 <%- else -%>
 
-                  <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+                  <a class="button createLink"><%= t('controls.browse.actions.create_dataset_short') %></a>
 
                 <%- end -%>
               <%- end -%>
@@ -451,6 +451,23 @@ end
   <%= modal :class => 'browseOptionsDialog' do %>
     <div class="optionsContent"></div>
   <%- end -%>
+
+  <%= modal :class => 'newDatasetModal' do %>
+    <h2><%= t('screens.widget.create_new_dataset.title') %></h2>
+
+    <%= form_tag '/datasets', :method => 'post', :class => 'newDatasetForm commonForm' do %>
+      <p class="prompt"><%= t('screens.widget.create_new_dataset.prompt') %></p>
+      <div class="line clearfix">
+        <input type="text" id="newDatasetName" name="new_dataset_name" class="required" size="67"/>
+      </div>
+      <p class="explanation"><%= html_safe(t('screens.widget.create_new_dataset.explanation_html')) %></p>
+      <ul class="submitActions clearfix">
+        <li><a class="submitButton button"><%= t('core.dialogs.save') %></a></li>
+        <li><a class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>
+      </ul>
+    <% end %>
+  <%- end -%>
+
 
   <%= modal :class => 'externalDomainNotice' do %>
     <h2>

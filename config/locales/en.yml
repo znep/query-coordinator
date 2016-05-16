@@ -3644,6 +3644,10 @@ en:
       create_new:
         name: New Template Name
         title: Create a new Template
+      create_new_dataset:
+        title: Create a New Dataset
+        prompt: Please give your new dataset a name.
+        explanation_html: When you press <strong>Save</strong>, your new <strong>Draft Dataset</strong> will be visible in your personal catalog. Nobody else will be able to see it until you complete the New Dataset Wizard.
     wizard:
       cancel: Cancel
       finish: Finish

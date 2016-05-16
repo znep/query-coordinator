@@ -97,9 +97,6 @@ class Model
       if assign_key == 'flags'
         raise TypeError.new("Flags can only be set through set_flag and unset_flag")
       end
-      if self.class.non_serializable_attributes.include?(assign_key)
-        raise "Cannot set non-serializeable attribute"
-      end
       if args.length != 1
         raise ArgumentError.new("Wrong number of arguments: #{args.length} for 1")
       else
@@ -268,7 +265,6 @@ class Model
   end
 
   def self.update_attributes!(id, attributes)
-    attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     attributes.each do |key, value|
       if value.nil? || value == '""' ||
         (value.respond_to?(:empty?) && value.empty?) ||
@@ -293,7 +289,6 @@ class Model
   end
 
   def self.create(attributes, custom_headers = {})
-    attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
@@ -414,20 +409,6 @@ class Model
   end
 
   private
-
-  # Mark one or more attributes as non-serializable -- that is, they shouldn't be
-  # serialized back to the core server
-  def self.non_serializable(*attributes)
-    # write_inheritable_attribute("non_serializable",
-    #                             Set.new(attributes.map(&:to_s)) +
-    #                               (non_serializable_attributes || []))
-  end
-
-  # Obtain a list of all non-serializable attributes
-  def self.non_serializable_attributes
-    # read_inheritable_attribute("non_serializable") || Array.new
-    Array.new
-  end
 
   def self.cache
     @@cache ||= Rails.cache

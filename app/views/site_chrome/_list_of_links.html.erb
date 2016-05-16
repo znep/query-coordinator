@@ -7,7 +7,7 @@
     <label><%= url_title %></label>
   </div>
 
-  <% links.each_with_index do |link, i| %>
+  <% links.each do |link| %>
     <div class="link-row">
       <%= text_field_tag(nil, link['key'], placeholder: label_placeholder) %>
       <%= text_field_tag(nil, link['url'], placeholder: url_placeholder) %>

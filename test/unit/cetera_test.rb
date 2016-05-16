@@ -2,6 +2,7 @@ require 'test_helper'
 
 include Cetera
 
+# TODO port be over to rspec, probably *after* the Rails 4 upgrade
 class CeteraTest < MiniTest::Unit::TestCase
   describe 'Cetera' do
     def sample_search_options
@@ -171,6 +172,34 @@ class CeteraTest < MiniTest::Unit::TestCase
 
         # Unsuccessful response returns false, just sayin'
         assert_equal false, Cetera.search_views(query, cookies, request_id)
+      end
+
+      def test_for_user_param_gets_passed_along_to_cetera
+        domain = 'data.redmond.gov'
+        CurrentDomain.stubs(:cname).returns(domain)
+        query = {
+          domains: [domain],
+          for_user: '7kqh-9s5a'
+        }
+
+        cetera_soql_params = Cetera.cetera_soql_params(query)
+        assert_includes cetera_soql_params, :for_user
+
+        response = {
+          'results' => [],
+          'resultSetSize' => 0,
+          'timings' => { 'serviceMillis' => 118, 'searchMillis' => [2, 2] }
+        }
+
+        stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+          with(query: cetera_soql_params).
+          to_return(status: 200, body: response.to_json)
+
+        res = Cetera.search_views(query, {}, 'funnyId')
+
+        assert_equal 0, res.count
+        assert_equal response, res.data.to_hash
+        assert_empty res.results
       end
     end
   end

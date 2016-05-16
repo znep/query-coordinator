@@ -388,7 +388,7 @@ a {
           border-left-color: $light-grey-2;
         }
         &.active {
-          border-left-color: $secondary;
+          border-left-color: $alternate-4;
 
           &:after {
             @extend .icon-close-2:before;
@@ -398,7 +398,7 @@ a {
             right: 1.89em;
             top: 30%;
             line-height: 2.2;
-            color: $secondary;
+            color: $alternate-4;
 
             @include media($tablet) {
               right: 1.85;

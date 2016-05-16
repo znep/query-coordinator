@@ -200,6 +200,7 @@
 
   &:hover {
     background-color: $btn-alternate-1-hover-background-color;
+    color: $btn-alternate-1-hover-color;
 
     &.btn-inverse {
       color: $btn-alternate-1-inverse-hover-color;
@@ -237,6 +238,7 @@
 
   &:hover {
     background-color: $btn-alternate-2-hover-background-color;
+    color: $btn-alternate-2-hover-color;
 
     &.btn-inverse {
       color: $btn-alternate-2-inverse-hover-color;

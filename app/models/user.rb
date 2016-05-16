@@ -4,8 +4,6 @@ class User < Model
   cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :csv_columns
   attr_accessor :session_token
 
-  non_serializable :displayName
-
   def self.find_profile(id)
     parse(CoreServer::Base.connection.get_request("/users/#{id}.json?method=getProfile"))
   end
@@ -87,7 +85,7 @@ class User < Model
 
   def to_csv_row(options = nil)
     User.csv_columns.keys.map { |column|
-      @data[column] 
+      @data[column]
     }
   end
 

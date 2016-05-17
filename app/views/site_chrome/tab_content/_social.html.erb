@@ -1,19 +1,26 @@
-<%= form_tag('#') do %>
+<%= form_tag site_chrome_path, method: :put, remote: true do %>
+
+  <% form_field_prefix = 'content[general][social_shares][]' %>
+  <% form_field_url = "#{form_field_prefix}[url]" %>
+  <% form_field_type = "#{form_field_prefix}[type]" %>
 
   <section class="settings-group">
     <div class="settings-form">
-      <%= label_tag('facebook_profile_link', translations[:facebook_profile_link][:title]) %>
-      <%= text_field_tag('facebook_profile_link', social_share_link('facebook'), placeholder: translations[:facebook_profile_link][:placeholder]) %>
+      <%= label_tag(form_field_url, translations[:facebook_profile_link][:title]) %>
+      <%= text_field_tag(form_field_url, social_share_link('facebook'), placeholder: translations[:facebook_profile_link][:placeholder]) %>
+      <%= hidden_field_tag(form_field_type, 'facebook') %>
     </div>
     <aside><p><%= translations[:facebook_profile_link][:description] %></p></aside>
   </section>
 
   <section class="settings-group">
     <div class="settings-form">
-      <%= label_tag('twitter_profile_link', translations[:twitter_profile_link][:title]) %>
-      <%= text_field_tag('twitter_profile_link', social_share_link('twitter'), placeholder: translations[:twitter_profile_link][:placeholder]) %>
+      <%= label_tag(form_field_url, translations[:twitter_profile_link][:title]) %>
+      <%= text_field_tag(form_field_url, social_share_link('twitter'), placeholder: translations[:twitter_profile_link][:placeholder]) %>
+      <%= hidden_field_tag(form_field_type, 'twitter') %>
     </div>
     <aside><p><%= translations[:twitter_profile_link][:description] %></p></aside>
   </section>
 
+  <%= submit_tag 'put_social', id: 'social' %>
 <% end %>

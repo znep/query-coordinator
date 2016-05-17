@@ -1,19 +1,12 @@
-<%= form_tag('#') do %>
-    <section class="settings-group">
-      <div class="settings-form">
-        <%= label_tag('window_or_tab_title_display', translations[:window_or_tab_title_display][:title]) %>
-        <%= text_field_tag('window_or_tab_title_display', @site_chrome.content['general']['site_title'],
-          placeholder: translations[:window_or_tab_title_display][:placeholder]) %>
-      </div>
-      <aside><p><%= translations[:window_or_tab_title_display][:description] %></p></aside>
-    </section>
+<%= form_tag site_chrome_path, method: :put, remote: true do %>
 
-    <section class="settings-group">
-      <div class="settings-form">
-        <%= label_tag('window_or_tab_icon', translations[:window_or_tab_icon][:title]) %>
-        <%= text_field_tag('window_or_tab_icon', @site_chrome.content['general']['favicon'],
-          placeholder: translations[:window_or_tab_icon][:placeholder]) %>
-      </div>
-      <aside><p><%= translations[:window_or_tab_icon][:description] %></p></aside>
-    </section>
+  <%= render(partial: 'site_chrome/tab_content/form_field',
+             locals: { fields: [:general, :window_or_tab_title_display],
+                       translation: translations[:window_or_tab_title_display] }) %>
+
+  <%= render(partial: 'site_chrome/tab_content/form_field',
+             locals: { fields: [:general, :window_or_tab_icon],
+                       translation: translations[:window_or_tab_icon] }) %>
+
+  <%= submit_tag 'put_general', id: 'general' %>
 <% end %>

@@ -5,8 +5,9 @@ class SiteChrome
   include HTTParty
   base_uri CORESERVICE_URI.to_s
   format :json
+  default_timeout 5 # seconds
 
-  # For talking with core
+  # For authenticating with and talking to core
   attr_accessor :cookies, :errors, :request_id
 
   # Attribute fields of Configuration as surfaced by core.
@@ -49,8 +50,8 @@ class SiteChrome
 
   # NOTE: use for local development to authenticate from console
   def self.local_dev_box_auth_cookies
-    {"remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "mp_mixpanel__c"=>"10", "mp_mixpanel__c3"=>"15026", "mp_mixpanel__c4"=>"11567", "mp_mixpanel__c5"=>"76", "logged_in"=>"true", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjMxODI5MTggNWE4ZGRmZTViOTUwIGY3ZmM3MTc4NjNhYzMzYTA3ODNlNjhkYTkzYmFhOWUyOTE3MTBlYzg"}.
-      map { |key, value| "#{key}=#{value}" }.join(';')
+    {}
+      .map { |key, value| "#{key}=#{value}" }.join(';')
   end
 
   def initialize(attributes = nil)
@@ -63,6 +64,7 @@ class SiteChrome
 
   ####################
   # Shortcut accessors
+  # TODO: rewrite with `dig` after Ruby upgrade
 
   def property(property_name)
     properties.find { |key, _| key['name'] == property_name.to_s }
@@ -75,7 +77,7 @@ class SiteChrome
   def published
     # TODO: these things:
     # * Factor out paths
-    # * Rewrite as inject
+    # * Rewrite as inject (or dig in >= 2.3)
     # * Rewrite update_published_content to use paths as well
     config.
       try(:[], 'value').
@@ -86,6 +88,7 @@ class SiteChrome
 
   # Use like s.content['some_key'] = 'some_value' or s.content.merge!('key' => 'value')
   # But, s.content = { 'key' => 'value', 'thing' => 'other_thing' } will not work!
+  # Q: with_indifferent_access ?
   def content
     published.try(:[], 'content')
   end
@@ -122,20 +125,19 @@ class SiteChrome
   # The Calls to Cthorehu
 
   def self.all
-    options = { query: { type: core_configuration_type }, timeout: 5 }
+    options = { query: { type: core_configuration_type } }
     res = get(core_configurations_path, options)
     res.map { |site_chrome| new(site_chrome) }
   end
 
   def self.find_one(id)
     path = "#{core_configurations_path}/#{id}"
-    res = get(path, timeout: 5)
+    res = get(path)
     new(res) if res.success? && res['type'] == core_configuration_type
   end
 
   def self.find_default
-    #all.find(&:default)
-    all.reverse.find(&:default) # because I have multiple defaults locally
+    all.reverse.find(&:default) # in case of multiple defaults, take latest
   end
 
   def self.find_or_create_default
@@ -155,8 +157,7 @@ class SiteChrome
     res = SiteChrome.post(
       SiteChrome.core_configurations_path,
       headers: request_headers,
-      body: attributes.to_json,
-      timeout: 5
+      body: attributes.to_json
     )
 
     handle_configuration_response(res)
@@ -168,8 +169,7 @@ class SiteChrome
     res = SiteChrome.post(
       properties_path,
       headers: request_headers,
-      body: { name: property_name, value: property_value }.to_json,
-      timeout: 5
+      body: { name: property_name, value: property_value }.to_json
     )
 
     handle_property_response(res)
@@ -181,21 +181,21 @@ class SiteChrome
       properties_path,
       headers: request_headers,
       query: { method: :update }, # WARN: Necessary for Core to accept a put
-      body: { name: property_name, value: property_value }.to_json,
-      timeout: 5
+      body: { name: property_name, value: property_value }.to_json
     )
 
     handle_property_response(res)
   end
 
+  # WARN: deep merge!
   def update_published_content(new_content_hash)
-    new_content = (content || {}).merge(new_content_hash)
+    new_content = (content || {}).deep_merge(new_content_hash)
     wrapped_up = { 'versions' => { '0.1' => { 'published' => { 'content' => new_content } } } }
     create_or_update_property(SiteChrome.core_configuration_property_name, wrapped_up)
   end
 
   def reload_properties
-    res = SiteChrome.get(properties_path, timeout: 5)
+    res = SiteChrome.get(properties_path)
     if res.success?
       self.properties = res.to_a
       self
@@ -206,7 +206,7 @@ class SiteChrome
 
   def reload
     path = "#{SiteChrome.core_configurations_path}/#{id}"
-    res = SiteChrome.get(path, timeout: 5)
+    res = SiteChrome.get(path)
     handle_configuration_response(res)
   end
 
@@ -219,7 +219,7 @@ class SiteChrome
     if res.success?
       clear_errors
       res.each do |key, value|
-        send("#{key}=", value) # because of OStruct
+        send("#{key}=", value) # TODO: this cleanly
       end
       self
     else

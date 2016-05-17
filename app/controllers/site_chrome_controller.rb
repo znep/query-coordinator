@@ -5,16 +5,15 @@ class SiteChromeController < ApplicationController
 
   # TODO: rename to before_action with Rails upgrade
   before_filter :ensure_admin
-  before_filter :create_site_chrome_if_nil
+  before_filter :find_or_create_default_site_chrome
 
   def edit
     @tab_sections = %w(general header footer homepage social)
-    @site_chrome = SiteChrome.find_or_create_default
     @current_locale = 'en' # TODO
   end
 
   def update
-    @site_chrome = SiteChrome.find_default
+    STDOUT.puts "\n\nparams: #{params.inspect}\n\n"
 
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
@@ -42,10 +41,7 @@ class SiteChromeController < ApplicationController
   end
 
   # If site chrome doesn't yet exist, create a new one
-  def create_site_chrome_if_nil
-    unless SiteChrome.find_default.present?
-      new_site_chrome = SiteChrome.new(site_chrome_default_values)
-      new_site_chrome.create
-    end
+  def find_or_create_default_site_chrome
+    @site_chrome = SiteChrome.find_or_create_default
   end
 end

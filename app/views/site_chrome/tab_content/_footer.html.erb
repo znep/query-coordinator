@@ -1,48 +1,33 @@
 <% content = @site_chrome.content['footer'] %>
 
-<%= form_tag('#') do %>
+<%= form_tag site_chrome_path, method: :put, remote: true do %>
 
-  <section class="settings-group">
-    <div class="settings-form">
-      <%= label_tag('footer_logo', translations[:footer_logo][:title]) %>
-      <%= text_field_tag('footer_logo', content['logo']['src'], placeholder: translations[:footer_logo][:placeholder]) %>
-    </div>
-    <aside><p><%= translations[:footer_logo][:description] %></p></aside>
-  </section>
+  <%= render(partial: 'site_chrome/tab_content/form_field',
+             locals: { fields: [:footer, :logo, :src],
+                       translation: translations[:footer_logo] }) %>
 
-  <section class="settings-group">
-    <div class="settings-form half">
-      <%= label_tag('footer_background_color', translations[:footer_background_color][:title]) %>
-      <%= text_field_tag('footer_background_color', content['styles']['bg_color'], placeholder: translations[:footer_background_color][:placeholder]) %>
-    </div>
-    <div class="settings-form half">
-      <%= label_tag('footer_text_link_color', translations[:footer_text_link_color][:title]) %>
-      <%= text_field_tag('footer_text_link_color', content['styles']['fg_color'], placeholder: translations[:footer_text_link_color][:placeholder]) %>
-    </div>
-    <aside><p><%= translations[:footer_background_color][:description] %></p></aside>
-  </section>
+  <%= render(partial: 'site_chrome/tab_content/form_field_pair',
+             locals: { left: { fields: [:footer, :styles, :bg_color],
+                               translation: translations[:footer_background_color] },
+                       right: { fields: [:footer, :styles, :fg_color],
+                                translation: translations[:footer_text_link_color] } }) %>
 
-  <%= render(
-    'list_of_links',
-    :links => content['links'],
-    :translations => translations,
-    :title => translations[:menu_links][:title],
-    :description => translations[:menu_links][:description],
-    :label_title => translations[:link_title_label],
-    :label_placeholder => translations[:link_title_placeholder],
-    :url_title => translations[:url_label],
-    :url_placeholder => translations[:url_placeholder]
-  ) %>
+  <%= render('list_of_links',
+             :links => content['links'],
+             :content_key => :footer,
+             :translations => translations) %>
 
   <section class="settings-group">
     <div class="settings-form full">
       <h3><%= translations[:copyright_notice][:title] %></h3>
       <p><%= translations[:copyright_notice][:description] %></p>
-      <%= label_tag 'show_copyright_notice' do %>
-        <%= check_box_tag('show_copyright_notice', 1, true) %>
+      <% form_field = 'content[footer][show_copyright_notice]' %>
+      <%= label_tag form_field do %>
+        <%= check_box_tag(form_field, 1, true) %>
         <%= translations[:copyright_notice][:label] %>
       <% end %>
     </div>
   </section>
 
+  <%= submit_tag 'put_footer', id: 'footer' %>
 <% end %>

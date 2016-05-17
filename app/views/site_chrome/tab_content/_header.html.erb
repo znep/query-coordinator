@@ -1,46 +1,26 @@
 <% content = @site_chrome.content['header'] %>
 
-<%= form_tag('#') do %>
+<%= form_tag site_chrome_path, method: :put, remote: true do %>
 
-  <section class="settings-group">
-    <div class="settings-form">
-      <%= label_tag('header_bar_logo', translations[:header_bar_logo][:title]) %>
-      <%= text_field_tag('header_bar_logo', content['logo']['src'], placeholder: translations[:header_bar_logo][:placeholder]) %>
-    </div>
-    <aside><p><%= translations[:header_bar_logo][:description] %></p></aside>
-  </section>
+  <% #TODO: factor these out into a single lookup table %>
+  <%= render(partial: 'site_chrome/tab_content/form_field',
+             locals: { fields: [:header, :logo, :src],
+                       translation: translations[:header_bar_logo] }) %>
 
-  <section class="settings-group">
-    <div class="settings-form">
-      <%= label_tag('site_display_name', translations[:site_display_name][:title]) %>
-      <%= text_field_tag('site_display_name', @site_chrome.content['locales'][@current_locale]['general']['site_name'],
-        placeholder: translations[:site_display_name][:placeholder]) %>
-    </div>
-    <aside><p><%= translations[:site_display_name][:description] %></p></aside>
-  </section>
+  <%= render(partial: 'site_chrome/tab_content/form_field',
+             locals: { fields: [:locales, @current_locale, :general, :site_name],
+                       translation: translations[:site_display_name] }) %>
 
-  <section class="settings-group">
-    <div class="settings-form half">
-      <%= label_tag('bar_background_color', translations[:bar_background_color][:title]) %>
-      <%= text_field_tag('bar_background_color', content['styles']['bg_color'], placeholder: translations[:bar_background_color][:placeholder]) %>
-    </div>
-    <div class="settings-form half">
-      <%= label_tag('bar_text_link_color', translations[:bar_text_link_color][:title]) %>
-      <%= text_field_tag('bar_text_link_color', content['styles']['fg_color'], placeholder: translations[:bar_text_link_color][:placeholder]) %>
-    </div>
-    <aside><p><%= translations[:bar_background_color][:description] %></p></aside>
-  </section>
+  <%= render(partial: 'site_chrome/tab_content/form_field_pair',
+             locals: { left: { fields: [:header, :styles, :bg_color],
+                               translation: translations[:bar_background_color] },
+                       right: { fields: [:header, :styles, :fg_color],
+                                translation: translations[:bar_text_link_color] } }) %>
 
-  <%= render(
-    'list_of_links',
-    :links => content['links'],
-    :translations => translations,
-    :title => translations[:menu_links][:title],
-    :description => translations[:menu_links][:description],
-    :label_title => translations[:link_title_label],
-    :label_placeholder => translations[:link_title_placeholder],
-    :url_title => translations[:url_label],
-    :url_placeholder => translations[:url_placeholder]
-  ) %>
+  <%= render('list_of_links',
+             :links => content['links'],
+             :content_key => :header,
+             :translations => translations) %>
 
+  <%= submit_tag 'put_header', id: 'header' %>
 <% end %>

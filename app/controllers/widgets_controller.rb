@@ -3,6 +3,7 @@ class WidgetsController < ApplicationController
   include ApplicationHelper
 
   skip_before_filter :require_user, :disable_frame_embedding
+
   layout 'widgets'
 
   def show
@@ -38,20 +39,20 @@ class WidgetsController < ApplicationController
       @view = ::View.find(params[:id]) # Leading :: to prevent class reloading error in development
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
-      return (render 'shared/error', :status => :not_found)
+      return render 'shared/error', :status => :not_found
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
         flash.now[:error] = 'This dataset is currently private.'
-        return (render 'shared/error', :status => :unauthorized )
+        return render 'shared/error', :status => :unauthorized
       else
         flash.now[:error] = e.error_message
-        return (render 'shared/error', :status => :internal_server_error)
+        return render 'shared/error', :status => :internal_server_error
       end
     end
     if !@view.is_public? && !is_mobile? && !@view.can_read?
       flash.now[:error] = 'This dataset is currently private.'
-      return (render 'shared/error', :status => :unauthorized)
+      return render 'shared/error', :status => :unauthorized
     end
 
     @display = @view.display

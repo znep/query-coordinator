@@ -5,3 +5,5 @@ public/javascripts/tiny_mce
 public/javascripts/controls
 public/javascripts/util
 public/javascripts/mobile/app-bundle.js
+
+!public/javascripts/controls/wizard.js

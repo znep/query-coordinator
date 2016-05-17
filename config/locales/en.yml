@@ -1312,6 +1312,7 @@ en:
       title: About this Dataset
       topics: Topics
       views: Views
+      view_statistics: View all statistics for this Dataset
     more: Show More
     multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:

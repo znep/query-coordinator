@@ -28,6 +28,7 @@ export var MetadataTable = React.createClass({
     var customMetadataFieldsets;
     var license;
     var tags;
+    var statsSection;
 
     if (view.attribution) {
       attribution = (
@@ -146,6 +147,14 @@ export var MetadataTable = React.createClass({
       attributionLink = <td className="empty">{I18n.metadata.no_value}</td>;
     }
 
+    if (view.statsUrl) {
+      statsSection = (
+        <div className="metadata-row middle">
+          <a className="metadata-detail-group-value" href={view.statsUrl}>{I18n.metadata.view_statistics}</a>
+        </div>
+      );
+    }
+
     return (
       <section className="landing-page-section">
         <h2 className="landing-page-section-header">
@@ -226,6 +235,7 @@ export var MetadataTable = React.createClass({
                   </h3>
                 </div>
               </div>
+              {statsSection}
             </div>
 
             <hr />

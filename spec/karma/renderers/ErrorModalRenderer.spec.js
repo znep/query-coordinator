@@ -5,6 +5,7 @@ import Actions from '../../../app/assets/javascripts/editor/Actions';
 import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
 import ErrorModalRenderer, {__RewireAPI__ as ErrorModalRendererAPI} from '../../../app/assets/javascripts/editor/renderers/ErrorModalRenderer';
+import I18nMocker from '../I18nMocker';
 
 describe('ErrorModalRenderer', function() {
 
@@ -47,6 +48,15 @@ describe('ErrorModalRenderer', function() {
 
     ErrorModalRendererAPI.__Rewire__('storySaveStatusStore', storySaveStatusStore);
     ErrorModalRendererAPI.__Rewire__('userSessionStore', userSessionStore);
+    ErrorModalRendererAPI.__Rewire__('I18n', {
+      t: function(key) {
+        if (key === 'editor.user_session_timeout') {
+          return '<a></a>';
+        } else {
+          return I18nMocker.t(key);
+        }
+      }
+    });
 
     sinon.stub($.fn, 'modal', _.noop);
 
@@ -107,7 +117,7 @@ describe('ErrorModalRenderer', function() {
         }
       });
 
-      $modal.find('.error-warning-message button').click();
+      $modal.find('.error-warning-message a').click();
     });
   });
 

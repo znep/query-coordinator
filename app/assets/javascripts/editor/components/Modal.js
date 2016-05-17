@@ -81,7 +81,7 @@ export default function Modal(options) {
     this.trigger('modal-close');
   }
 
-  this.find('.modal-title').text(options.title);
+  this.find('.modal-title').html(options.title);
   this.find('.modal-dialog').toggleClass('modal-dialog-wide', !!options.wide);
 
   if (this.data('modal-rendered-content') !== options.content) {

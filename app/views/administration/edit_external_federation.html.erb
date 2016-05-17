@@ -1,0 +1,102 @@
+<%- prefix = 'screens.admin.external_federation' %>
+
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-federation' %>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<%= include_webpack_bundle 'admin/edit-federation' %>
+
+<div id="federationContent" class="contentBox withLeftNavigation">
+  <div class="adminHeader federation">
+    <span class="icon"></span>
+    <h1><%= t("#{prefix}.edit_federation", url: @server.url) %></h1>
+  </div>
+
+  <div class="selective-federation">
+    <h2><%= t("#{prefix}.selective_federation") %></h2>
+
+    <%= display_standard_flashes %>
+
+    <%= form_tag({:action => 'update_external_federation'}, :method => 'post', :class => 'commonForm') %>
+    <fieldset class="line">
+      <div class="valueBox">
+        <input type="radio" id="federateAll" class="serverSync"
+          name="server[sync_type]" value="catalog"
+          <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+        <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
+      </div>
+
+      <div class="valueBox">
+        <input type="radio" id="federateSome" class="serverSync"
+          name="server[sync_type]" value="ignored"
+          <%= @server.federate_all? ? '' : 'checked="checked"' %> />
+        <label for="federateAll"><%= t("#{prefix}.some_assets") %></label>
+      </div>
+
+    <%= form_tag({:action => 'update_external_federation'}, {:method => 'post', :class => 'commonForm'}) %>
+      <fieldset class="line">
+
+        <div class="filter-assets">
+          <input
+            type="text"
+            title="<%= t("#{prefix}.search") %>"
+            class="textPrompt searchBox prompt"/>
+        </div>
+
+        <div class="esri-tree">
+          <%- @tree['folders'].each do |folder| -%>
+            <div class="item folder search-item">
+              <div class="editItem">
+                <%= folder_check_box(@server, folder) %>
+                  <%= truncate(folder['name'], length: 120) %>
+              </div>
+
+              <%- folder['services'].each do |service| -%>
+                <div class="item child service search-item">
+                  <div class="editItem">
+                    <%= service_check_box(folder, service) %>
+                    <a target="_blank" href="<%= service['url'] %>"
+                      name="<%= service_display_string(service) %>">
+                      <%= truncate(service_display_string(service), length: 120) %>
+                    </a>
+                  </div>
+
+                  <%- service['layers'].each do |layer| -%>
+                    <div class="item child layer search-item">
+                      <div class="editItem">
+                        <%= layer_check_box(folder, service, layer) %>
+                        <a target="_blank" href="<%= layer['url'] %>">
+                          <%- if layer['name'].blank? -%>
+                            <%= layer['url'] %>
+                          <%- else -%>
+                            <%= truncate(layer['name'], length: 120) %>
+                          <%- end -%>
+                        </a>
+                      </div>
+                    </div>
+                  <%- end -%>
+                </div>
+              <%- end -%>
+            </div>
+          <%- end -%>
+        </div>
+
+        <div class="line clearfix">
+          <input type="submit" value="Save" class="button"/>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<%= render_admin_userzoom %>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js].present? -%>
+    <%= include_javascripts 'admin-federation' %>
+  <%- end -%>
+<%- end -%>

@@ -1,4 +1,5 @@
 class Federation < Model
+
   def self.find( options = nil, custom_headers = {})
     if options.nil?
       options = Hash.new

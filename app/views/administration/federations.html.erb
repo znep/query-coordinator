@@ -1,8 +1,9 @@
-<%- prefix = 'screens.admin.federation' %>
+<%- socrata_federation = 'screens.admin.federation' %>
+<%- external_federation = 'screens.admin.external_federation' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-federation' %>
-  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{socrata_federation}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -10,43 +11,43 @@
 <div id="federationContent" class="contentBox withLeftNavigation">
   <div class="adminHeader federation">
     <span class="icon"></span>
-    <h1><%= t("#{prefix}.title") %></h1>
+    <h1><%= t("#{socrata_federation}.title") %></h1>
   </div>
 
   <%= display_standard_flashes %>
 
   <div class="searchFields">
     <form class="search domainsSearch" method="get">
-      <label for="domain"><%= t("#{prefix}.search_prompt") %></label>
+      <label for="domain"><%= t("#{socrata_federation}.search_prompt") %></label>
       <input type="text" class="textPrompt searchField" name="domain" id="domain"
-        title="<%= t("#{prefix}.search_prompt") %>"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
-      <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
+        title="<%= t("#{socrata_federation}.search_prompt") %>"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
+      <input type="submit" class="submit" alt="<%= t("#{socrata_federation}.search") %>" value="<%= t("#{socrata_federation}.search") %>" />
     </form>
 
     <%# We don't have a UI for federating individual datasets yet, so this is less than helpful %>
     <%- if false -%>
       <form class="search datasetsSearch" method="get">
-        <label for="dataset"><%= t("#{prefix}.search_pub_datasets") %></label>
+        <label for="dataset"><%= t("#{socrata_federation}.search_pub_datasets") %></label>
         <input type="text" class="textPrompt searchField" name="dataset" id="dataset"
-         title="<%= t("#{prefix}.search_pub_datasets") %>"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
-        <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
+         title="<%= t("#{socrata_federation}.search_pub_datasets") %>"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
+        <input type="submit" class="submit" alt="<%= t("#{socrata_federation}.search") %>" value="<%= t("#{socrata_federation}.search") %>" />
       </form>
     <%- end -%>
   </div>
 
   <%- if (!@search_domain.blank?) && @domains.blank? -%>
-    <p class="noAvailableTargets"><%= t("#{prefix}.no_domains", :name => @search_domain) %></p>
+    <p class="noAvailableTargets"><%= t("#{socrata_federation}.no_domains", :name => @search_domain) %></p>
   <%- end -%>
 
   <%- unless @domains.blank? -%>
    <div class="availableTargetDomains">
-     <p class="explanation"><%= t("#{prefix}.list_domains") %></p>
+     <p class="explanation"><%= t("#{socrata_federation}.list_domains") %></p>
      <%- @domains.each do |d| -%>
       <%= form_tag({:action => 'create_federation'}, {:method => 'post', :class => 'newFederationForm'}) do %>
         <label class="domain"><%= d.cname %></label>
         <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
-        <label for="search_boost" class="boost" ><%= t("#{prefix}.search_boost") %>:</label><%= text_field_tag('new_federation[search_boost]', '0.8', :title => t("#{prefix}.search_boost_explain")) %>
-        <%= submit_tag t("#{prefix}.publish"), :class => 'button' %>
+        <label for="search_boost" class="boost"><%= t("#{socrata_federation}.search_boost") %>:</label><%= text_field_tag('new_federation[search_boost]', '0.8', :title => t("#{socrata_federation}.search_boost_explain")) %>
+        <%= submit_tag t("#{socrata_federation}.publish"), :class => 'button' %>
       <% end %>
      <%- end -%>
    </div>
@@ -66,13 +67,14 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="source" scope="col"><div><%= t("#{prefix}.source_domain") %></div><span class="icon"></span></th>
-            <th class="target" scope="col"><div><%= t("#{prefix}.target_domain") %></div><span class="icon"></span></th>
-            <th class="dataset" scope="col"><div><%= t("#{prefix}.dataset") %></div><span class="icon"></span></th>
-            <th class="boost" scope="col"><div><%= t("#{prefix}.search_boost") %></div><span class="icon"></span></th>
-            <th class="acceptedBy" scope="col"><div><%= t("#{prefix}.accepted_by") %></div><span class="icon"></span></th>
-            <th class="status" scope="col"><div><%= t("#{prefix}.status") %></div><span class="icon"></span></th>
-            <th class="delete" scope="col"><div><%= t("#{prefix}.terminate") %></div><span class="icon"></span></th>
+            <%# Check for removing 'div' element here %>
+            <th class="source" scope="col"><div><%= t("#{socrata_federation}.source_domain") %></div><span class="icon"></span></th>
+            <th class="target" scope="col"><div><%= t("#{socrata_federation}.target_domain") %></div><span class="icon"></span></th>
+            <th class="dataset" scope="col"><div><%= t("#{socrata_federation}.dataset") %></div><span class="icon"></span></th>
+            <th class="boost" scope="col"><div><%= t("#{socrata_federation}.search_boost") %></div><span class="icon"></span></th>
+            <th class="acceptedBy" scope="col"><div><%= t("#{socrata_federation}.accepted_by") %></div><span class="icon"></span></th>
+            <th class="status" scope="col"><div><%= t("#{socrata_federation}.status") %></div><span class="icon"></span></th>
+            <th class="delete" scope="col"><div><%= t("#{socrata_federation}.terminate") %></div><span class="icon"></span></th>
           </tr>
         </thead>
         <tbody>
@@ -86,7 +88,7 @@
               </td>
               <td class="dataset">
                 <%- if f.lensId.nil? %>
-                  <em><%= t("#{prefix}.all") %></em>
+                  <em><%= t("#{socrata_federation}.all") %></em>
                 <%- else -%>
                   <span class="cellInner"><%= f.lensName %></span>
                 <%- end -%>
@@ -102,18 +104,18 @@
               <td class="status">
                 <span class="loading"></span>
                 <%- accepted = f.acceptedUserId.present? -%>
-                <span class="cellInner"><%= t("#{prefix}.#{accepted ? 'accepted' : 'pending'}") %></span>
+                <span class="cellInner"><%= t("#{socrata_federation}.#{accepted ? 'accepted' : 'pending'}") %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
                   <div class="acceptRejectButtons">
-                    <%= form_button({:action => :accept_federation, :id => f.id}, t("#{prefix}.accept"),
+                    <%= form_button({:action => :accept_federation, :id => f.id}, t("#{socrata_federation}.accept"),
                          {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
-                    <%= form_button({:action => :reject_federation, :id => f.id}, t("#{prefix}.reject"),
+                    <%= form_button({:action => :reject_federation, :id => f.id}, t("#{socrata_federation}.reject"),
                          {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
                   </div>
                 <%- end -%>
               </td>
               <td class="delete">
-                <%= form_button({:action => :delete_federation, :id => f.id}, t("#{prefix}.terminate"),
+                <%= form_button({:action => :delete_federation, :id => f.id}, t("#{socrata_federation}.terminate"),
                      {:method => :delete}) %>
               </td>
             </tr>
@@ -125,21 +127,105 @@
   <%- else -%>
     <p class="noFederations">
       <%- if @search_dataset.present? -%>
-        <%= t("#{prefix}.no_pub_datasets") %>
+        <%= t("#{socrata_federation}.no_pub_datasets") %>
       <%- else -%>
-        <%= t("#{prefix}.no_federations") %>
+        <%= t("#{socrata_federation}.no_federations") %>
       <%- end -%>
     </p>
   <%- end -%>
-
-
 </div>
+
+<%- if FeatureFlags.derive(nil, request).external_federation && !@failed_esri_connection -%>
+  <div id="external-federation-content" class="contentBox withLeftNavigation">
+
+    <div class="adminHeader externalFederation">
+      <span class="icon"></span>
+      <h1><%= t("#{external_federation}.title") %></h1>
+      <div class="buttonArea">
+        <%= link_to(
+          t("#{external_federation}.add_new"),
+          :external_federation,
+          :class => "button",
+          :title => t("#{external_federation}.add_new")
+        )%>
+      </div>
+    </div>
+    <%- if @external_federations.present? %>
+      <div class="gridListWrapper">
+        <table class="gridList templatesList" cellspacing="0">
+          <colgroup>
+            <col class="name" />
+            <col class="federatedAssets" />
+            <col class="status" />
+            <col class="endedAt" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="domain" scope="col"><span><%= t("#{external_federation}.source_domain") %> </span></th>
+              <th class="federatedAssets" scope="col"><span><%= t("#{external_federation}.federated_assets") %></span></th>
+              <th class="status" scope="col"><span><%= t("#{external_federation}.current_status") %></span></th>
+              <th class="endedAt" scope="col"><span><%= t("#{external_federation}.last_synced") %></span></th>
+              <th class="actions" scope="col"><span><%= t("#{external_federation}.actions") %></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @external_federations.each do |server| -%>
+              <tr>
+                <td class="name" scope="row"><%= server.url %></td>
+                <td class="federatedAssets" scope="row"> <%= t("#{external_federation}.assets_federated", count: server.layer_count) %></td>
+                <td class="status" scope="row">
+                  <p class="curent-status">
+                    <span class="external-federation-icon external-federation-icon-<%=server.status_key.dasherize %> icon-<%= external_federation_icon(server.status_key)%>"></span>
+
+                    <%= t("#{external_federation}.#{server.status_key}") %>
+                  </p>
+                </td>
+                <td class="endedAt" scope="row">
+                  <%- if server.job -%>
+                    <%= server.last_synced %>
+                  <%- else -%>
+                    <%= t("#{external_federation}.not_yet") %>
+                  <%- end -%>
+                </td>
+                <td class="actions" scope="row">
+                  <% if server.job -%>
+                    <%= form_button(
+                      {:action => :delete_external_federation, :server_id => server.id},
+                      t("#{socrata_federation}.terminate"),
+                      {:method => :delete},
+                      :class => "button buttonArea"
+                    )%>
+
+                    <%- if FeatureFlags.derive(nil, request).edit_external_federation -%>
+                      <%= link_to(
+                        t("#{external_federation}.edit"),
+                        {:action => :edit_external_federation,
+                        :server_id => server.id},
+                        {:class => 'button buttonArea'}
+                      )%>
+                    <%- end -%>
+
+                  <%- else -%>
+                    <%= t("#{external_federation}.not_synced_yet_edit") %>
+                  <%- end -%>
+                </td>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+        <%- else -%>
+          <p class="noResultsMessage"> <%= t("#{external_federation}.no_external_federations") %> </p>
+        <%- end -%>
+    </div>
+
+  </div>
+<%- end %>
 
 <%= render_admin_userzoom %>
 
 <%- content_for :js_footer do -%>
   <%- unless params[:no_js].present? -%>
-
   <%= include_javascripts 'admin-federation' %>
   <%- end -%>
 <%- end -%>

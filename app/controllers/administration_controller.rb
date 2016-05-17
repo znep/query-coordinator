@@ -5,6 +5,7 @@ class AdministrationController < ApplicationController
   include CommonSocrataMethods
   include GeoregionsHelper
   include JobsHelper
+  include ExternalFederationHelper
 
   # To learn why we include AdministrationHelper manually, see
   # the comment at the top of AdministrationHelper's implementation.
@@ -617,17 +618,117 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level(UserRights::FEDERATIONS)}
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module_available('federations')}
+
+  before_filter :only => [:external_federation, :delete_external_federation, :create_external_federation, :edit_external_federation, :update_external_federation] {|c| c.check_auth_level(UserRights::FEDERATIONS)}
+  before_filter :only => [:external_federation, :delete_external_federation, :create_external_federation, :edit_external_federation, :update_external_federation] {|c| c.check_module_available('federations')}
+  before_filter :only => [:external_federation, :delete_external_federation, :create_external_federation, :edit_external_federation, :update_external_federation] {|c| c.check_feature_flag('external_federation')}
+  before_filter :only => [:edit_external_federation, :update_external_federation] {|c| c.check_feature_flag('edit_external_federation')}
+
   def federations
-    if (params[:dataset].nil?)
+    if params[:dataset].nil?
       @federations = Federation.find
     else
       @search_dataset = params[:dataset]
       @federations = Federation.find(:dataset => params[:dataset])
     end
 
-    if (!params[:domain].nil?)
+    if !params[:domain].nil?
       @search_domain = params[:domain]
       @domains = Domain.find(:method => 'findAvailableFederationTargets', :domain => params[:domain])
+    end
+
+    if FeatureFlags.derive(nil, request).external_federation
+      begin
+        @external_federations = ExternalFederation.servers
+      rescue EsriCrawler::ServerError => error
+        display_external_error(error, :federations)
+      rescue StandardError => ex
+        Rails.logger.warn("Encountered error while trying to access Esri Crawler Service: #{ex}")
+        flash[:notice] = t('screens.admin.external_federation.service_unavailable')
+        @failed_esri_connection = true
+      end
+    end
+  end
+
+  def external_federation
+    @server = {}
+  end
+
+  def display_external_error(error, redirection)
+    begin
+      reason = error.body['error']['reason']
+      params = error.body['error']['params'].symbolize_keys
+      flash[:error] = t("screens.admin.external_federation.errors.#{reason}") % params
+    rescue
+      flash[:error] = t("screens.admin.external_federation.errors.problem_with_errors")
+    end
+    redirect_to :action => redirection
+  end
+
+  def create_external_federation
+    @server = params[:server] || {}
+    begin
+      response = ExternalFederation.create(params[:server][:esri_domain])
+    rescue EsriCrawler::ServerError => error
+      return display_external_error(error, :external_federation)
+    rescue StandardError => error
+      flash[:notice] = t('screens.admin.external_federation.service_unavailable')
+      return redirect_to :action => :federations
+    end
+
+    respond_to do |format|
+      format.html do
+        flash[:notice] = t('screens.admin.external_federation.flashes.created')
+        redirect_to :action => :federations
+      end
+      format.data { render :json => { :success => true } }
+    end
+  end
+
+  def edit_external_federation
+    @sync_types = Hash[['ignore', 'catalog', 'data'].map do |k|
+      [t("screens.admin.external_federation.#{k}"), k]
+    end]
+    begin
+      @tree = ExternalFederation.tree(params[:server_id])
+      @server = ExternalFederation.server(params[:server_id])
+    rescue EsriCrawler::ResourceNotFound => error
+      flash[:error] = t('screens.admin.federation.flashes.invalid_domain')
+      redirect_to :action => :federations
+    rescue EsriCrawler::ServerError => error
+      display_external_error(error, :federations)
+    rescue StandardError => error
+      flash[:notice] = t('screens.admin.external_federation.service_unavailable')
+      redirect_to :action => :federations
+    end
+  end
+
+  def update_external_federation
+    begin
+      @response = ExternalFederation.update_server(params[:server_id], params['server'])
+      @server = ExternalFederation.server(params[:server_id])
+      @tree = ExternalFederation.tree(params[:server_id])
+    rescue EsriCrawler::ServerError => error
+      return display_external_error(error, :edit_external_federation)
+    end
+    respond_to do |format|
+      format.html do
+        flash[:notice] = t('screens.admin.external_federation.flashes.updated')
+        redirect_to :action => :edit_external_federation
+      end
+      format.data { render :json => { :success => true } }
+    end
+  end
+
+  def delete_external_federation
+    begin
+      @response = ExternalFederation.delete_server(params[:server_id])
+      respond_to do |format|
+        format.html { redirect_federation(t('screens.admin.external_federation.flashes.deleted')) }
+        format.data { render :json => { :success => true } }
+      end
+    rescue EsriCrawler::ServerError => error
+      return display_external_error(error, :federations)
     end
   end
 
@@ -933,7 +1034,7 @@ class AdministrationController < ApplicationController
 
     activity_type = params[:activity_type]
     activity_type = activity_type == 'All' ? nil : activity_type
-    
+
     # parse start/end date from params
     date_string = params[:date_range]
     start_date = nil
@@ -959,17 +1060,17 @@ class AdministrationController < ApplicationController
     })
     @activities = activities_response[:activities]
     count = activities_response[:count]
-    
+
     # preserve URL parameters across pages
     pager_params = {}
     if activity_type.present?
       pager_params[:activity_type] = activity_type
     end
-    
+
     if date_string.present?
       pager_params[:date_range] = date_string
     end
-    
+
     @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => pager_params })
   end
 

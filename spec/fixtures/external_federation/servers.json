@@ -1,0 +1,20 @@
+{
+  "items" : [
+    {
+      "sync_type" : "ignored",
+      "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/",
+      "most_recent_job" : {
+        "status" : "success",
+        "server_id" : 2,
+        "ended_at" : "2016-05-09T23 : 15 : 21.355328",
+        "details" : null,
+        "internal_details" : null,
+        "started_at" : "2016-05-09T23 : 14 : 50.475911",
+        "id" : 4
+      },
+      "layer_count" : 7,
+      "socrata_domain" : "localhost",
+      "id" : 2
+    }
+  ]
+}

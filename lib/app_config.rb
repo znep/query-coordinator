@@ -40,6 +40,10 @@ class AppConfig < Hashie::Dash
   property :import_status_service_hostname
   property :import_status_service_port
 
+  # Esri Crawler service
+  property :esri_crawler_hostname
+  property :esri_crawler_port
+
   # Metrics
   property :metrics_dir
   property :statsd_enabled

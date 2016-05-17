@@ -175,49 +175,62 @@ class DatasetsControllerTest < ActionController::TestCase
   end
 
   context 'with DSLP fully enabled' do
-    should 'display the DSLP on the show path' do
+    setup do
       FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
         feature_flags.stubs(
           enable_dataset_landing_page: true,
           default_to_dataset_landing_page: true
         )
       end)
-      @controller.stubs(:get_view => @test_view)
-      @test_view.stubs(find_dataset_landing_page_related_content: [])
+    end 
 
-      get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('#app').any?
-      assert_response 200
+    context 'if the view is a dataset' do
+      should 'display the DSLP on the show path' do
+        @controller.stubs(:get_view => @test_view)
+        @test_view.stubs(find_dataset_landing_page_related_content: [])
+
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+        assert_select_quiet('#app').any?
+        assert_response 200
+      end
+
+      should 'display the DSLP when /about is appended to the show path' do
+        @controller.stubs(:get_view => @test_view)
+        @test_view.stubs(find_dataset_landing_page_related_content: [])
+
+        get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+        assert_select '#app', 1
+        assert_response 200
+      end
+
+      should 'display the grid view when /data is appended to the show path' do
+        setup_nbe_dataset_test
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data', :bypass_dslp => true
+        assert_select_quiet('#app', 0)
+        assert_response 302 # we know this is not the authoritative path
+      end
     end
 
-    should 'display the DSLP when /about is appended to the show path' do
-      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
-        feature_flags.stubs(
-          enable_dataset_landing_page: true,
-          default_to_dataset_landing_page: true
-        )
-      end)
-      @controller.stubs(:get_view => @test_view)
-      @test_view.stubs(find_dataset_landing_page_related_content: [])
+      context 'if the view is not a dataset' do
+        setup do
+          @controller.stubs(:get_view => @test_view)
+          @test_view.stubs(dataset?: false)
+        end
 
-      get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-      assert_select_quiet('#app').any?
-      assert_response 200
-    end
+        should 'does not show the dslp at /about' do
+          get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+          assert_select '#app', 0
+          assert_response 200
+        end
 
-    should 'display the grid view when /data is appended to the show path' do
-      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
-        feature_flags.stubs(
-          enable_dataset_landing_page: true,
-          default_to_dataset_landing_page: true
-        )
-      end)
+        should 'show the normal display view at show' do
+          get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+          assert_select '#infoBox'
+          assert_response 200
+        end
+      end
 
-      setup_nbe_dataset_test
-      get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data', :bypass_dslp => true
-      assert_select_quiet('.result-card', 0)
-      assert_response 302 # we know this is not the authoritative path
-    end
+    
   end
 
   test 'renders page meta content over https and not http' do

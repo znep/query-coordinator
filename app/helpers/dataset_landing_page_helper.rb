@@ -131,6 +131,13 @@ module DatasetLandingPageHelper
       row_count = @view.row_count
     end
 
+    columns = @view.columns.reject do |column|
+      # disregard system columns that aren't hidden, i.e. computed columns
+      column.fieldName.start_with?(':') ||
+      # disregard columns hidden by user
+      column.flag?('hidden')
+    end
+
     {
       :id => @view.id,
       :name => @view.name,
@@ -138,7 +145,7 @@ module DatasetLandingPageHelper
       :category => @view.category,
       :attribution => @view.attribution,
       :rowLabel => @view.row_label,
-      :columns => @view.columns,
+      :columns => columns,
       :isPrivate => !@view.is_public?,
       :isGeospatial => @view.is_geospatial?,
       :gridUrl => data_grid_path(@view),

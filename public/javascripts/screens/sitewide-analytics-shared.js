@@ -1,8 +1,6 @@
 blist.namespace.fetch('blist.metrics');
 
-$(function()
-{
-    var t = function(str, props) { return $.t('screens.stats.' + str, props); };
+$(function() {
     var datasetsMetricName,
         datasetsListHeader,
         pageViewsName;
@@ -351,7 +349,7 @@ $(function()
         storiesEnabled ? {
           id: 'topStories', displayName: 'Top Stories',
           heading: datasetsListHeader, renderTo: 'leftColumn',
-          callback: blist.metrics.topDatasetsCallback, top: 'STORIES'
+          callback: blist.metrics.topStoriesCallback, top: 'STORIES'
         } : null,
         storiesEnabled ? {
           id: 'topStoryReferrers', displayName: 'Top Story Referrers',

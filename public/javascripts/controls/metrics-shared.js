@@ -149,35 +149,49 @@
   };
 
 // Need to do some extra work here because only UIDs are returned from balboa
-  metricsNS.topDatasetsCallback = function($context) {
-    metricsNS.updateTopListWrapper($context,
-      $context.data(metricsNS.DATA_KEY),
-      function(key, value, results) {
-        $.socrataServer.makeRequest({
-          url: '/views/' + key + '.json?method=getNoConditional',
-          type: 'get',
-          batch: true,
-          success: function(responseData) {
-            // sanitize to prevent javascript injection attack
-            results.push({
-              linkText: sanitizer.sanitizeHtmlRestrictive(responseData.name),
-              value: value,
-              textValue: Highcharts.numberFormat(value, 0),
-              href: new Dataset(responseData).url + (metricsNS.datasetPostfix || '')
-            });
-          }
-        });
-      },
-      function(data, $mappingContext) {
-        var render = function() {
-          metricsNS.renderTopList(data, $mappingContext);
-        };
-        // Some of the batch may have resulted in error, just
-        // process what we have
-        ServerModel.sendBatch(render, render);
-      }
-    );
+  metricsNS.topViewsCallback = function(isIncluded) {
+    return function($context) {
+      metricsNS.updateTopListWrapper($context,
+        $context.data(metricsNS.DATA_KEY),
+        function(key, value, results) {
+          $.socrataServer.makeRequest({
+            url: '/views/' + key + '.json?method=getNoConditional',
+            type: 'get',
+            batch: true,
+            success: function(responseData) {
+              // sanitize to prevent javascript injection attack
+              if (isIncluded(responseData)) {
+                results.push({
+                  linkText: sanitizer.sanitizeHtmlRestrictive(responseData.name),
+                  value: value,
+                  textValue: Highcharts.numberFormat(value, 0),
+                  href: new Dataset(responseData).url + (metricsNS.datasetPostfix || '')
+                });
+              }
+            }
+          });
+        },
+        function(data, $mappingContext) {
+          var render = function() {
+            metricsNS.renderTopList(data, $mappingContext);
+          };
+          // Some of the batch may have resulted in error, just
+          // process what we have
+          ServerModel.sendBatch(render, render);
+        }
+      );
+    };
   };
+
+  metricsNS.topStoriesCallback = metricsNS.topViewsCallback(function(responseData) {
+    return responseData.viewType == 'story';
+  });
+
+  metricsNS.topDatasetsCallback = metricsNS.topViewsCallback(function(responseData) {
+    return responseData.viewType == 'tabular' && responseData.displayType != 'data_lens';
+  });
+
+  metricsNS.topViewsCallbackNoFilter = metricsNS.topViewsCallback(function() { return true; });
 
 // This one's pretty easy
   metricsNS.topQueryStringsCallback = function($context) {
@@ -475,7 +489,7 @@
     '.deltaBox@aria-label': 'deltaText',
     '.deltaBox@class+': function(v) {
       if (_.isString(v.context.delta) && v.context.delta != '0') {
-        return v.context.deltaClass
+        return v.context.deltaClass;
       } else {
         return 'hide';
       }

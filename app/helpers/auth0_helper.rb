@@ -105,11 +105,26 @@ module Auth0Helper
       :sso => true,
       :client_id => AUTH0_ID,
       :redirect_uri => callback_uri
-    };
+    }
 
     URI::escape(
       "https://#{AUTH0_URI}/authorize?" <<
       parameters.map { |key, value| "#{key}=#{value}" }.join('&')
     )
+  end
+
+  # Documentation for Auth0 logout API is here: https://auth0.com/docs/logout
+  def generate_auth0_logout_uri
+    parameters = {
+      :client_id => AUTH0_ID,
+      :returnTo => url_for(
+        :action => 'new',
+        :controller => 'user_sessions',
+        :only_path => false,
+        :protocol => 'https'
+      )
+    }
+
+    "https://#{AUTH0_URI}/v2/logout?" << parameters.to_param
   end
 end

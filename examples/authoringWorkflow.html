@@ -3,6 +3,16 @@
   <head>
     <title>Example Usage: AuthoringWorkflow</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
+
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <style>
+      #chart {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+      }
+    </style>
   </head>
 
   <body>
@@ -11,6 +21,7 @@
     <div id="authoring-workflow"></div>
 
     <pre id="output" style="white-space: pre-wrap;"></pre>
+    <div id="chart"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -23,15 +34,28 @@
     var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
     var container = document.querySelector('#authoring-workflow');
     var output = document.querySelector('#output');
+    var $chart = $('#chart');
 
     $('#launch').click(function() {
       output.innerHTML = '';
+      $chart.empty();
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
         vif: null,
 
         onComplete: function(result) {
-          output.innerHTML = JSON.stringify(result.vif);
+          output.innerHTML = JSON.stringify(result.vif, null, 4);
+          $chart.empty();
+
+          switch (result.vif.series[0].type) {
+            case 'columnChart':
+              $chart.socrataSvgColumnChart(result.vif);
+              break;
+            case 'timelineChart':
+              $chart.socrataSvgTimelineChart(result.vif);
+              break;
+          }
+
           authoringWorkflow.destroy();
         },
 

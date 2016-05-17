@@ -1,12 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { setDatasetUid, setDimension, setMeasure } from './actions';
+import { setDatasetUid, setDimension, setMeasure, setChartType } from './actions';
 
 export var AuthoringWorkflow = React.createClass({
+  getDefaultProps: function() {
+    return {
+      defaultOptionKey: '__unselectable__',
+      chartTypes: [
+        {type: 'columnChart', name: 'Column Chart'},
+        {type: 'timelineChart', name: 'Timeline Chart'}
+      ]
+    };
+  },
+
   propTypes: {
     vif: React.PropTypes.object,
-    datasetMetadata: React.PropTypes.object
+    datasetMetadata: React.PropTypes.object,
+    defaultOptionKey: React.PropTypes.string,
+    chartTypes: React.PropTypes.array
   },
 
   onComplete: function() {
@@ -19,12 +31,58 @@ export var AuthoringWorkflow = React.createClass({
     this.props.onCancel();
   },
 
+  dimensionDropdown: function() {
+    var datasetMetadata = this.props.datasetMetadata;
+    var defaultOptionKey = this.props.defaultOptionKey;
+    var dimensionOptions = [
+      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a dimension...</option>,
+      ...datasetMetadata.data.columns.map(column => {
+        return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
+      })
+    ];
+
+    return <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey}>{dimensionOptions}</select>;
+  },
+
+  measureDropdown: function() {
+    var datasetMetadata = this.props.datasetMetadata;
+    var defaultOptionKey = this.props.defaultOptionKey;
+    var numberColumns = _.chain(datasetMetadata.data.columns).
+        filter({ dataTypeName: 'number' }).
+        value();
+
+    var measureOptions = [
+      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,
+      ...numberColumns.map(numberColumn => {
+        return <option value={numberColumn.fieldName} key={numberColumn.fieldName}>{numberColumn.name}</option>;
+      })
+    ];
+
+    return <select onChange={this.props.onChangeMeasure} defaultValue={defaultOptionKey}>{measureOptions}</select>;
+  },
+
+  chartTypeDropdown: function() {
+    var datasetMetadata = this.props.datasetMetadata;
+    var defaultOptionKey = this.props.defaultOptionKey;
+    var types = this.props.chartTypes;
+
+    var chartTypeOptions = [
+      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a chart type...</option>,
+      ...types.map(chartType => {
+        return <option value={chartType.type} key={chartType.type}>{chartType.name}</option>;
+      })
+    ];
+
+    return <select onChange={this.props.onChangeChartType} defaultValue={defaultOptionKey}>{chartTypeOptions}</select>;
+  },
+
   render: function() {
     var vif = this.props.vif;
     var datasetMetadata = this.props.datasetMetadata;
     var datasetMetadataInfo;
     var dimensionDropdown;
     var measureDropdown;
+    var chartTypeDropdown;
 
     if (datasetMetadata.hasError) {
       datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
@@ -33,20 +91,9 @@ export var AuthoringWorkflow = React.createClass({
     }
 
     if (datasetMetadata.hasData) {
-      var dimensionOptions = datasetMetadata.data.columns.map(function(column) {
-        return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
-      });
-
-      dimensionDropdown = <select onChange={this.props.onChangeDimension}>{dimensionOptions}</select>;
-
-      var measureOptions = _.chain(datasetMetadata.data.columns).
-        filter({ dataTypeName: 'number' }).
-        map(function(column) {
-          return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
-        }).
-        value();
-
-      measureDropdown = <select onChange={this.props.onChangeMeasure}>{measureOptions}</select>;
+      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
+      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
+      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
     }
 
     return (
@@ -59,13 +106,9 @@ export var AuthoringWorkflow = React.createClass({
 
         {datasetMetadataInfo}
 
-        <div>
-          Dimension: {dimensionDropdown}
-        </div>
-
-        <div>
-          Measure: {measureDropdown}
-        </div>
+        {dimensionDropdown}
+        {measureDropdown}
+        {chartTypeDropdown}
 
         <div className="actions">
           <button className="done" onClick={this.onComplete}>Done</button>
@@ -97,6 +140,11 @@ function mapDispatchToProps(dispatch) {
     onChangeMeasure: function(event) {
       var measure = event.target.value;
       dispatch(setMeasure(measure));
+    },
+
+    onChangeChartType: function(event) {
+      var chartType = event.target.value;
+      dispatch(setChartType(chartType));
     }
   };
 }

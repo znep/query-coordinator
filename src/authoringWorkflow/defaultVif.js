@@ -1,5 +1,9 @@
 // A skeleton vif used if none is provided
 module.exports = {
+  format: {
+    type: 'visualization_interchange_format',
+    version: 2
+  },
   configuration: {
 
   },
@@ -13,7 +17,7 @@ module.exports = {
           columnName: null,
           aggregationFunction: null
         },
-        domain: '',
+        domain: 'localhost', // TODO: Remove this.
         measure: {
           columnName: null,
           aggregationFunction: null

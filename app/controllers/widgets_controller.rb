@@ -35,7 +35,7 @@ class WidgetsController < ApplicationController
     end
 
     begin
-      @view = View.find(params[:id])
+      @view = ::View.find(params[:id]) # Leading :: to prevent class reloading error in development
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
       return (render 'shared/error', :status => :not_found)

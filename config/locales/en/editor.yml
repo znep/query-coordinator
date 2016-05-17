@@ -185,7 +185,7 @@ en:
         getty_image_terms: By clicking <em>{0}</em> below, you are agreeing to Socrata's <a href="https://www.socrata.com/terms-of-service/#getty" title="Stock Media Terms" target="_blank">stock media terms</a>.
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
-          validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
+          validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png.'
           upload_timeout: 'Looks like the uploading is taking longer than it should. Try re-uploading and ensuring the your file is an acceptable size and file type.'
           exception: "We're really sorry! There was an unexpected problem with your upload. Please try again."
           image_search: "We can't complete your search right now. Try different keywords."

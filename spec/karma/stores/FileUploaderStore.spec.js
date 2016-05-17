@@ -196,13 +196,6 @@ describe('FileUploaderStore', function() {
       var server;
 
       function behavesLikeAnExceptionHandler() {
-        it('notifies an exceptionNotifier', function(done) {
-          _.defer(function() {
-            sinon.assert.called(exceptionNotifierMock.notify);
-            done();
-          });
-        });
-
         it('changes file status', function(done) {
           _.defer(function() {
             assert.propertyVal(fileUploaderStore.fileById(1), 'status', STATUS.ERRORED);

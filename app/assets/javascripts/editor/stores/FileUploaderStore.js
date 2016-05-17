@@ -82,7 +82,7 @@ export default function FileUploaderStore() {
 
   function errorFile(id, message) {
     files[id].status = STATUS.ERRORED;
-    files[id].message = message || I18n.t('editor.asset_selector.image_upload.errors.exception');
+    files[id].message = message;
 
     self._emitChange();
   }
@@ -157,8 +157,15 @@ export default function FileUploaderStore() {
         }
       }).
       catch(function(error) {
-        exceptionNotifier.notify(error);
-        errorFile(id, error);
+        var message = _.isString(error) ?
+          error :
+          I18n.t('editor.asset_selector.image_upload.errors.exception');
+
+        errorFile(id, message);
+
+        if (message instanceof Error) {
+          exceptionNotifier.notify(error);
+        }
       });
   }
 

@@ -5,8 +5,12 @@ class Api::V1::UploadsController < ApplicationController
   force_ssl
 
   def create
-    @pending_upload = PendingUpload.new(create_params[:filename])
-    render json: @pending_upload, status: :created
+    begin
+      @pending_upload = PendingUpload.new(create_params[:filename])
+      render json: @pending_upload, status: :created
+    rescue UnsupportedFileTypeError => error
+      render json: {message: error.message}, status: :bad_request
+    end
   end
 
   private

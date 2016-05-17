@@ -9,10 +9,10 @@ describe WhatsNewHelper do
       { 'updated_at' => '1992-03-23T10:10:10Z' }
     ]
 
-    WhatsNewHelper.parse_dates(news)
+    parse_dates(news)
 
-    expect(news['articles'][0]['parsed_datetime']).to eq '1 May 2016'
-    expect(news['articles'][1]['parsed_datetime']).to eq '1 January 2250'
-    expect(news['articles'][2]['parsed_datetime']).to eq '23 March 1992'
+    expect(news['articles'][0]['parsed_datetime']).to eq ' 1 May 2016'
+    expect(news['articles'][1]['parsed_datetime']).to eq ' 1 Jan 2250'
+    expect(news['articles'][2]['parsed_datetime']).to eq '23 Mar 1992'
   end
 end

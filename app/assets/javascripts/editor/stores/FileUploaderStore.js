@@ -177,7 +177,7 @@ export default function FileUploaderStore() {
     var file = self.fileById(id);
 
     var isNotValidFileSize = file.raw.size > MAX_FILE_SIZE_BYTES;
-    var isNotValidFileType = !_.some(_.invoke(Constants.VALID_FILE_TYPES, 'test', file.raw.type));
+    var isNotValidFileType = !_.include(Constants.VALID_FILE_TYPES, file.raw.type);
 
     if (isNotValidFileSize) {
       return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.validation_file_size'));

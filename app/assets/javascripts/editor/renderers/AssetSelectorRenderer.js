@@ -860,7 +860,8 @@ export default function AssetSelectorRenderer(options) {
       {
         'class': 'asset-selector-text-input hidden',
         'data-asset-selector-validate-field': 'imageUpload',
-        'type': 'file'
+        'type': 'file',
+        'name': 'image-file'
       }
     );
 

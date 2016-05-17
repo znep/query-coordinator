@@ -700,6 +700,44 @@ export default function AssetSelectorRenderer(options) {
     return [search, searchError, galleryResults, navGroup];
   }
 
+  function _getBestColumnForImagePlacement(imageElement) {
+    var columns = $('.gallery-column').map(function() {
+      var $this = $(this);
+      var heights = $this.find('.gallery-result').map(function() {
+        return $(this).data('height');
+      });
+
+      var heightWithNewImage = _.reduce(
+        heights,
+        function(previousHeight, nextHeight) {
+          return previousHeight + nextHeight;
+        },
+        imageElement.height
+      );
+
+      return {
+        element: $this,
+        height: heightWithNewImage
+      };
+    });
+
+    var smallestEffectiveColumn = _.reduce(columns, function(previousColumn, nextColumn) {
+      var minimum = Math.min(previousColumn.height, nextColumn.height);
+
+      return minimum === previousColumn.height ?
+        previousColumn :
+        nextColumn;
+    }, {height: Infinity});
+
+    var width = smallestEffectiveColumn.element.width();
+
+    smallestEffectiveColumn.adjustedImageHeight = width * (
+      imageElement.height / imageElement.width
+    );
+
+    return smallestEffectiveColumn;
+  }
+
   function _renderChooseImageGalleryPreviewData() {
     var results = assetSelectorStore.getImageSearchResults();
     var hasImages = assetSelectorStore.hasImageSearchResults();
@@ -708,10 +746,11 @@ export default function AssetSelectorRenderer(options) {
 
     if (hasImages) {
       var renderedSources = _.indexBy(_.pluck(_container.find('.gallery-result img'), 'src'));
-      var promises = results.map(function(image, index) {
+      var promises = results.map(function(image) {
         var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
+        var alreadyInSources = renderedSources.hasOwnProperty(uri);
 
-        if (renderedSources.hasOwnProperty(uri)) {
+        if (alreadyInSources) {
           return Promise.resolve();
         } else {
           var id = image.id;
@@ -720,9 +759,17 @@ export default function AssetSelectorRenderer(options) {
 
             imageElement.src = uri;
             imageElement.onerror = reject;
+            imageElement.onclick = function() {
+              dispatcher.dispatch({
+                action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
+                id: id
+              });
+            };
             imageElement.onload = function() {
-              $('.gallery-column:nth-child(' + ((index % 3) + 1) + ')').append(
-                $('<div>', {class: 'gallery-result'}).append(
+              var column = _getBestColumnForImagePlacement(imageElement);
+
+              column.element.append(
+                $('<div>', {class: 'gallery-result', 'data-height': column.adjustedImageHeight}).append(
                   imageElement,
                   $('<div>', {class: 'gallery-result-cover'}),
                   $('<span>', {class: 'icon-checkmark3'})
@@ -730,12 +777,6 @@ export default function AssetSelectorRenderer(options) {
               );
 
               resolve();
-            };
-            imageElement.onclick = function() {
-              dispatcher.dispatch({
-                action: Actions.ASSET_SELECTOR_IMAGE_SELECTED,
-                id: id
-              });
             };
           });
 
@@ -819,7 +860,8 @@ export default function AssetSelectorRenderer(options) {
       {
         'class': 'asset-selector-text-input hidden',
         'data-asset-selector-validate-field': 'imageUpload',
-        'type': 'file'
+        'type': 'file',
+        'name': 'image-file'
       }
     );
 
@@ -1030,12 +1072,16 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { class: 'alert info getty-image-info hidden' }
     ).append(
-      $('<p>').append(
-        $('<span>', {class: 'icon-info-inverse'}),
-        I18n.t('editor.asset_selector.image_upload.getty_image_info')
+      $('<div>', { class: 'alert-icon' }).append(
+        $('<span>', {class: 'icon-info-inverse'})
       ),
-      $('<p>').append(
-        StorytellerUtils.format(I18n.t('editor.asset_selector.image_upload.getty_image_terms'), _insertButtonText())
+      $('<div>', { class: 'alert-content' }).append(
+        $('<p>').append(
+          I18n.t('editor.asset_selector.image_upload.getty_image_info')
+        ),
+        $('<p>').append(
+          StorytellerUtils.format(I18n.t('editor.asset_selector.image_upload.getty_image_terms'), _insertButtonText())
+        )
       )
     );
 

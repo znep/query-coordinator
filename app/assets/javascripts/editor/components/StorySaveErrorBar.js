@@ -19,23 +19,15 @@ export default function StorySaveErrorBar() {
   var $this = $(this);
   var $container = $('<span>', { 'class': 'container' });
   var $message = $('<span>', { 'class': 'message' });
-  var $tryAgainButton = $('<button>', { 'class': 'try-again' });
-  var $tryingAgainSpinner = $('<span>', { 'class': 'trying-again-spinner' });
+  var $tryAgainButton = $('<button>', { 'class': 'btn-try-again btn-secondary btn-small' });
 
-  var $loginMessage = $('<span>', { 'class': 'message login' }).
-    append(
-      $('<span>').text(I18n.t('editor.login_phrase_1_good_manners'))
-    ).
-    append(
-      $('<button>').text(I18n.t('editor.login_phrase_2_link_text'))
-    );
-  $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
+  $tryAgainButton.append(
+    $('<span>').text(I18n.t('editor.story_save_error_try_again'))
+  );
 
   $container.append($('<span>', { 'class': 'icon-warning' }));
   $container.append($message);
   $container.append($tryAgainButton);
-  $container.append($tryingAgainSpinner);
-  $container.append($loginMessage);
   $this.append($container);
 
   function render() {
@@ -50,8 +42,10 @@ export default function StorySaveErrorBar() {
       hasError &&
       !saveError.conflict;
 
-    $tryAgainButton.toggleClass('available', showTryAgainButton);
-    $loginMessage.toggle(!hasValidUserSession);
+    $tryAgainButton.
+      toggle(showTryAgainButton).
+      toggleClass('available', showTryAgainButton);
+
     $(document.body).toggleClass('story-save-error', hasError);
 
     if (hasError) {
@@ -63,12 +57,19 @@ export default function StorySaveErrorBar() {
           'editor.story_save_error_generic'
         );
       }
-      $message.text(text);
+
+      $message.empty().append(text);
+      $message.find('button').on('click', function() {
+        dispatcher.dispatch({
+          action: Actions.LOGIN_BUTTON_CLICK
+        });
+      });
     }
 
     if (hasError && !$this.hasClass('visible')) {
       // Was closed, now opening
       $container.removeClass('story-save-error-bar-trying-again');
+      $tryAgainButton.removeClass('btn-busy');
     }
 
     $this.toggleClass('visible', hasError);
@@ -76,13 +77,9 @@ export default function StorySaveErrorBar() {
 
   $tryAgainButton.on('click', function() {
     $container.addClass('story-save-error-bar-trying-again');
-    autosave.saveASAP();
-  });
+    $tryAgainButton.addClass('btn-busy');
 
-  $loginMessage.find('button').on('click', function() {
-    dispatcher.dispatch({
-      action: Actions.LOGIN_BUTTON_CLICK
-    });
+    autosave.saveASAP();
   });
 
   storySaveStatusStore.addChangeListener(render);

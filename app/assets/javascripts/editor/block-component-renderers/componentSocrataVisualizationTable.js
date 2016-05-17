@@ -101,6 +101,7 @@ function _renderTemplate($element, componentData, options) {
 function _updateVisualization($element, componentData) {
   var $componentContent = $element.find('.component-content');
   var renderedVif = $element.attr('data-rendered-vif') || '{}';
+  var link;
   var vif;
 
   // Today, socrata visualizations can't be updated by providing a new VIF
@@ -120,6 +121,12 @@ function _updateVisualization($element, componentData) {
 
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
+    link = StorytellerUtils.format(
+      '<a href="https://{0}/d/{1}" target="_blank">underlying dataset</a>',
+      vif.domain,
+      vif.datasetUid
+    );
+
     vif.configuration = vif.configuration || {};
     vif.configuration.localization = {
       'PREVIOUS': 'Previous',// TODO actually get from I18n
@@ -129,7 +136,11 @@ function _updateVisualization($element, componentData) {
       'MANY_ROWS': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
       'LATITUDE': 'Latitude',
       'LONGITUDE': 'Longitude',
-      'NO_COLUMN_DESCRIPTION': 'No description provided.'
+      'NO_COLUMN_DESCRIPTION': 'No description provided.',
+      'UNABLE_TO_RENDER': StorytellerUtils.format(
+        'We\'re having trouble displaying this table. Check to make sure the {0} hasn\'t been deleted or unpublished.',
+        link
+      )
     };
 
     vif.unit = {

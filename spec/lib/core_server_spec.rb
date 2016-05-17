@@ -232,7 +232,7 @@ describe CoreServer do
     }
 
     let(:view_request) {
-      { path: '/views', verb: :post, body: CoreServer.view_with_title(title), query_params: nil }
+      { path: '/views', verb: :post, body: CoreServer.story_view_with_title(title), query_params: nil }
     }
 
     let(:publication_request) {

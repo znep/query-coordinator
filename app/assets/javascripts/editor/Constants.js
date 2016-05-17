@@ -24,7 +24,7 @@ export default {
   CHECK_DOCUMENT_PROCESSED_MAX_RETRY_SECONDS: 30,
   CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL: 1000,
   MAX_FILE_SIZE_BYTES: 5 * 1024 * 1024,  // 5 MB
-  VALID_FILE_TYPES: [/jpg$/, /png$/, /gif$/, /html$/],
+  VALID_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'text/html'],
   EMBEDDED_FRAGMENT_FILE_NAME: 'embedded_fragment.html',
 
   HISTORY_MAX_UNDO_COUNT: 99,

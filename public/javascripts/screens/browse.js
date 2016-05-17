@@ -139,6 +139,40 @@ $(function() {
             var publicGrant = _.detect(v.context.grants || [], function(grant) {
               return _.include(grant.flags || [], 'public');
             });
+            // EN-5496 - Published stories are 404ing
+            //
+            // Our hypothesis for why 'published' stories are 404ing is that
+            // users are actually clicking the 'Make Public' button on catalog
+            // assets expecting it to trigger a Stories publishing cycle. This
+            // is not actually the case, but it does manage to get the view
+            // metadata in Core Server into a state where we think there should
+            // be a published story asset (it is a public view) when there is
+            // no corresponding published story asset (we never created a row
+            // in the `PublishedStories` table, an action that is handled by
+            // Stories' own publishing endpoint (which sets the view to public
+            // as a second step contingent on the 'PublishedStories' row being
+            // created).
+            //
+            // Our proposed solution is to adjust the Core Server API by which
+            // the public/private status of a view is toggled such that it will
+            // fail if a user attempts to trigger a private -> public
+            // transition on a Core Server view and there does not exist a
+            // corresponding row in the `PublishedStories` table; while that
+            // work is in progress we will be disabling the ability for users
+            // to toggle the private/public state of a Core Server view from
+            // 'browse' experiences by hiding the button that does this if
+            // the asset in question is a Story.
+            var viewType = _.get(v, 'context.viewType', false);
+            var displayType = _.get(v, 'context.displayType', false);
+            var isStory = (
+              (viewType === 'story' || viewType === 'href') &&
+              displayType === 'story'
+            );
+
+            if (isStory) {
+              return 'hide';
+            }
+
             return v.context.hasRight(blist.rights.view.UPDATE_VIEW) && !v.context.isFederated() &&
               (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
           },
@@ -210,7 +244,7 @@ $(function() {
     });
 
     var aboutUrl = (ds.type === 'story') ?
-      ds.domainUrl + '/d/' + ds.id + '/about':
+      ds.domainUrl + '/d/' + ds.id + '/about' :
       ds.fullUrl + ((ds.type == 'blob' || ds.type == 'href') ? '' : '/about');
 
     $content.find('.button.about:not(.hide)').

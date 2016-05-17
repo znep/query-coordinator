@@ -36,7 +36,7 @@ export var ODataModal = React.createClass({
             {title}
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={subview.odataUrl} readOnly/>
+                <input className="endpoint-input text-input text-input-sm" type="text" value={subview.odataUrl} readOnly />
                 <span className="input-group-btn">
                   <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
                     {I18n.copy}

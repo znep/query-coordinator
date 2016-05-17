@@ -255,6 +255,7 @@ Frontend::Application.routes do
       member do
         get :about
         post :validate_contact_owner
+        post :contact_dataset_owner
         post :save_filter
         post :modify_permission
         post :post_comment

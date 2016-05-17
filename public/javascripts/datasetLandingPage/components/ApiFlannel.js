@@ -93,7 +93,7 @@ export var ApiFlannel = React.createClass({
             <h6 className="endpoint-title">{I18n.api_flannel.endpoint_title}</h6>
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput}/>
+                <input className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput} />
                 {endpointFormatSelector}
                 <span className="input-group-btn">
                   <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>

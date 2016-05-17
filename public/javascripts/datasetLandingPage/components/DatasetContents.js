@@ -23,8 +23,8 @@ export var DatasetContents = React.createClass({
 
     views = views.map(function(subview) {
       return [
-        <RowDetails view={subview} showAsLayer={showAsLayer}/>,
-        <SchemaPreview view={subview} showAsLayer={showAsLayer}/>
+        <RowDetails view={subview} showAsLayer={showAsLayer} />,
+        <SchemaPreview view={subview} showAsLayer={showAsLayer} />
       ];
     });
 

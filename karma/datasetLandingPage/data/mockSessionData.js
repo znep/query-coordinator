@@ -4,5 +4,6 @@ export default {
   userOwnsDataset: true,
   socrataEmployee: false,
   userRoleName: 'N/A',
-  viewId: 'peng-uins'
+  viewId: 'peng-uins',
+  email: 'space@pandas.com'
 };

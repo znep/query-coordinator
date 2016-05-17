@@ -24,7 +24,10 @@
 
     <%= render_mixpanel_config %>
     <%= render_session_data %>
+    <%= render_contact_form_data %>
 
     <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
   </body>
 </html>

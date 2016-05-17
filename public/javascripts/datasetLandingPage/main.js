@@ -1,13 +1,14 @@
 import 'script!jquery';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { render } from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import datasetLandingPage from './reducers';
 import App from './App';
 
-var store = createStore(datasetLandingPage, window.initialState);
+var store = createStore(datasetLandingPage, applyMiddleware(thunk));
 
 render(
   <Provider store={store}>

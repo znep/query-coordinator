@@ -54,6 +54,7 @@ class AppConfig < Hashie::Dash
   property :opendata_ga_tracking_code
   property :standard_ga_tracking_code
   property :airbrake_api_key
+  property :recaptcha_2_site_key
   property :mixpanel_token
 
   # Auth0

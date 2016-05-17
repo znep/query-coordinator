@@ -6,6 +6,8 @@ import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
 import { emitMixpanelEvent } from '../actions';
 
+var contactFormData = window.contactFormData;
+
 export var InfoPane = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
@@ -47,7 +49,7 @@ export var InfoPane = React.createClass({
     var descriptionStyle;
 
     privateIcon = view.isPrivate ?
-      <span className="icon-private" title="Private Dataset"/> : null;
+      <span className="icon-private" title="Private Dataset" /> : null;
 
     categoryBadge = view.category ?
       <span className="tag-category">{_.capitalize(view.category)}</span> : null;
@@ -58,7 +60,7 @@ export var InfoPane = React.createClass({
       </a>
     );
 
-    downloadDropdown = <DownloadDropdown view={view}/>;
+    downloadDropdown = <DownloadDropdown view={view} />;
 
     apiButton = (
       <button className="btn btn-default btn-sm api" data-flannel="api-flannel" data-toggle>
@@ -72,11 +74,16 @@ export var InfoPane = React.createClass({
       </button>
     );
 
+    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+    var contactFormButton = contactFormData.contactFormEnabled ?
+      <li><a className="option" data-modal="contact-modal">{I18n.action_buttons.contact_owner}</a></li> :
+      null;
+
     moreActions = (
       <button className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span className="icon-waiting"></span>
         <ul className="dropdown-options">
-          <li><a className="option">{I18n.action_buttons.contact_owner}</a></li>
+          {contactFormButton}
           <li><a className="option" data-modal="odata-modal">{I18n.action_buttons.odata}</a></li>
         </ul>
       </button>

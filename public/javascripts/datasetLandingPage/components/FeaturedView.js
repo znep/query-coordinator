@@ -41,7 +41,7 @@ export var FeaturedView = React.createClass({
     var icon = getIconClassForDisplayType(displayType);
 
     var privateIcon = this.props.isPrivate ?
-      <span className="icon icon-private"/> : null;
+      <span className="icon icon-private" /> : null;
 
     return (
       <div className="result-card media" data-id={id} data-type={displayType}>
@@ -52,7 +52,7 @@ export var FeaturedView = React.createClass({
             </h3>
           </div>
           <div className="entry-view-type">
-            <span className={icon}/>
+            <span className={icon} />
           </div>
         </div>
         <div className="entry-meta">
@@ -70,7 +70,7 @@ export var FeaturedView = React.createClass({
                 <span className={icon + ' x-large-icon'}></span>
               </a>
             </div>
-            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}}/>
+            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}} />
           </div>
         </div>
       </div>

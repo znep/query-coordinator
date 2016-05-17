@@ -114,11 +114,11 @@ export var FeedbackPanel = React.createClass({
           <header className="flannel-header">
             <h5>{t('panel_title')}</h5>
             <button className="btn btn-transparent flannel-header-dismiss" onClick={this.onDismissFeedback}>
-              <span className="icon-close-2"/>
+              <span className="icon-close-2" />
             </button>
           </header>
           <section className="flannel-content">
-            <p className="small" dangerouslySetInnerHTML={{__html: t('panel_details_html')}}/>
+            <p className="small" dangerouslySetInnerHTML={{__html: t('panel_details_html')}} />
             <div className="desktop">
               <button className="btn btn-primary" onClick={this.onClickUsersnap}>
                 {t('screenshot_yes')}

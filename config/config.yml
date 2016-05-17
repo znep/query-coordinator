@@ -91,6 +91,7 @@ development: &development
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
+  recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 
   # auth alternatives
   esri_crawler_hostname: localhost

@@ -5,7 +5,7 @@ class DatasetsController < ApplicationController
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
@@ -518,6 +518,38 @@ class DatasetsController < ApplicationController
       end
       format.data { render :json => { :success => success } }
     end
+  end
+
+  # This method sends a request to Core's ViewsService#flag, which in turn sends an
+  # email to either the view's contact email or the dataset owner if no contact email
+  # is available. Unlike the DatasetsController#validate_contact_owner, this validates
+  # the form's Recaptcha browser-side (see Dataset Landing Page's Contact Modal).
+  def contact_dataset_owner
+    @view = get_view(params[:id])
+
+    # Return early if we can't find this view
+    return render :json => {
+      :success => false,
+      :message => "Can't find view: #{params[:id]}"
+    }, :status => :bad_request if @view.nil?
+
+    # Return early if there are any missing params
+    flag_params = {}
+    keys = [:id, :type, :subject, :message, :from_address]
+    keys.each do |key|
+      if params[key].nil?
+        return render :json => {
+          :success => false,
+          :message => "Missing key: #{key}"
+        }, :status => :bad_request
+      else
+        flag_params[key] = params[key]
+      end
+    end
+
+    # Pass the request on to Core to actually send the email
+    @view.flag(flag_params)
+    render :json => { :success => true }
   end
 
   def widget_preview

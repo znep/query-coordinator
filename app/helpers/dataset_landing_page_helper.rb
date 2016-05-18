@@ -93,6 +93,18 @@ module DatasetLandingPageHelper
     "mailto:?subject=#{subject}&body=#{body}"
   end
 
+  def stats_url
+    if (@view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
+      view_stats_path(@view)
+    end
+  end
+
+  def edit_metadata_url
+    if @view.has_rights?(ViewRights::UPDATE_VIEW) && FeatureFlags.derive(@view, request).default_to_dataset_landing_page
+      edit_view_metadata_path(@view)
+    end
+  end
+
   def transformed_formats
     if @view.is_geospatial? || @view.is_api_geospatial?
       return [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
@@ -184,14 +196,9 @@ module DatasetLandingPageHelper
       :tags => @view.tags,
       :licenseName => @view.license.try(:name),
       :attributionLink => @view.attributionLink,
-      :statsUrl => stats_url
+      :statsUrl => stats_url,
+      :editMetadataUrl => edit_metadata_url
     }
-  end
-
-  def stats_url
-    if (@view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
-      view_stats_path(@view)
-    end
   end
 
   def transformed_featured_views

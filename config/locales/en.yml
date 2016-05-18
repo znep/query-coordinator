@@ -1319,6 +1319,7 @@ en:
       data_provided_by: Data Provided by
       dataset_owner: Dataset Owner
       downloads: Downloads
+      edit_metadata: Edit Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated

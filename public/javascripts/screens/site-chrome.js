@@ -5,7 +5,7 @@ $(document).ready(function() {
   if (activeTabId) {
     showTab(activeTabId);
   } else {
-    // TODO - No tab specified, show first tab
+    // No tab specified, show first tab
     var firstTabId = $('ul.tabs li').first().data()['tabId'] || 'general';
     showTab(firstTabId);
   }

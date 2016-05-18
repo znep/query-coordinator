@@ -96,7 +96,7 @@ export default function StoryCopierRenderer(options) {
     }).text(I18n.t('editor.make_a_copy.copy_warning'));
 
     var cancelButton = $('<button>', {
-      'class': 'btn-default btn-inverse back-btn',
+      'class': 'btn-default back-btn',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_CANCEL,
       'type': 'button'
     }).text(I18n.t('editor.make_a_copy.cancel'));

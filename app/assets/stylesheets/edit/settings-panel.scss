@@ -84,12 +84,13 @@
       @include thin-hr();
 
       border-bottom: 1px solid $settings-panel-hr-color;
+      margin: 1rem;
     }
 
     .settings-main-title {
       padding-top: 4rem;
       line-height: 4rem;
-      font-size: 2em;
+      font-size: 2rem;
       font-weight: lighter;
     }
 
@@ -193,10 +194,12 @@
 
   h2, h3 {
     font-weight: lighter;
+    font-size: 1.5rem;
   }
 
   h3 {
     margin-top: 0.25rem;
+    font-size: 1.2rem;
     color: $settings-panel-visibility-status-state-color;
   }
 

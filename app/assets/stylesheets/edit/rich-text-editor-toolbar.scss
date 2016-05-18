@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'lib/socrata-icons';
+@import 'src/scss/socrata-icons';
 @import 'bourbon';
 
 body.story-save-error #rich-text-editor-toolbar-wrapper {
@@ -88,7 +88,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
   }
 
   .rich-text-editor-toolbar-btn-link:before {
-    @extend .icon-link2:before;
+    @extend .icon-link:before;
   }
 
   .rich-text-editor-toolbar-btn-orderedList:before {

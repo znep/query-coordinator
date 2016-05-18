@@ -1,3 +1,7 @@
 <button class="btn btn-default" data-flannel="generic-flannel" data-toggle>Open Flannel</button>
-<%= partial 'components/flannel' %>
-<%= partial 'components/code_sample', locals: { component: 'components/flannel' } %>
+<%= partial 'components/code_sample', locals: {
+  component: 'components/flannel',
+  partial_locals: {
+    flannel_id: 'generic-flannel'
+  }
+} %>

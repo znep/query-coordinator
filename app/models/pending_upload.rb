@@ -12,7 +12,12 @@ class PendingUpload
   #
   def initialize(filename)
     @filename = filename
-    @content_type = MIME::Types.type_for(filename).first.content_type
+
+    mime_type = MIME::Types.type_for(filename).first
+
+    raise UnsupportedFileTypeError.new('File type is unsupported.') unless mime_type.present?
+
+    @content_type = mime_type.content_type
 
     # Firefox appends 'charset=UTF-8' to content-type on xhr requests. We need to match that
     # tomfoolery because the presigned url we generate in #url uses the content_type to
@@ -39,4 +44,7 @@ class PendingUpload
       }
     }
   end
+end
+
+class UnsupportedFileTypeError < StandardError
 end

@@ -47,9 +47,7 @@ export var AuthoringWorkflow = React.createClass({
   measureDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
     var defaultOptionKey = this.props.defaultOptionKey;
-    var numberColumns = _.chain(datasetMetadata.data.columns).
-        filter({ dataTypeName: 'number' }).
-        value();
+    var numberColumns = _.filter(datasetMetadata.data.columns, { dataTypeName: 'number' });
 
     var measureOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,

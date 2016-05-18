@@ -41,6 +41,7 @@ export default function vif(state, action) {
         series.dataSource.measure.columnName = action.measure;
       });
       break;
+
     case SET_CHART_TYPE:
       _.each(state.series, function(series) {
         series.type = action.chartType;

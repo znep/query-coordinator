@@ -19,9 +19,6 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 (function() {
   'use strict';
 
-  var $dlName = $('.dl-name');
-  $dlName.html(datasetMetadata.name);
-
   const LARGE_DATASET_ROW_COUNT = 100000;
   const LARGE_DATASET_COLUMN_COUNT = 50;
 
@@ -682,6 +679,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
     }
   }
 
-  document.title = datasetMetadata.name;
+  $('.dl-name').html(pageMetadata.name);
+  document.title = pageMetadata.name;
   renderCards();
 })(window);

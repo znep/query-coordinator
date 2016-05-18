@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import 'dotdotdot';
 
 var velocity = require('velocity-animate');
@@ -9,6 +10,7 @@ module.exports = function(el, options) {
   var parent = el.parentElement;
   var collapsedHeight = null;
   var originalHeight = parent.getBoundingClientRect().height;
+  var expandedCallback = options.expandedCallback;
 
   var dotdotdotOptions = {
     after: '.collapse-toggle.more',
@@ -50,6 +52,10 @@ module.exports = function(el, options) {
       velocity(parent, {
         height: originalHeight
       });
+
+      if (_.isFunction(expandedCallback)) {
+        expandedCallback();
+      }
     } else {
       velocity(parent, {
         height: collapsedHeight

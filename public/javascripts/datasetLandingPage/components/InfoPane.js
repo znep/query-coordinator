@@ -24,7 +24,8 @@ export var InfoPane = React.createClass({
     }
 
     collapsible(this.description, {
-      height: 4 * 24 + 2 * 11
+      height: 4 * 24 + 2 * 11,
+      expandedCallback: this.props.onExpandDescription
     });
   },
 
@@ -169,6 +170,17 @@ function mapDispatchToProps(dispatch) {
     onClickGrid: function() {
       var payload = {
         name: 'Navigated to Gridpage'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onExpandDescription: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Descripton'
+        }
       };
 
       dispatch(emitMixpanelEvent(payload));

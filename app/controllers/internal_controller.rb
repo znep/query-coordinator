@@ -199,7 +199,12 @@ class InternalController < ApplicationController
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
-      return (render 'shared/error', :status => :internal_server_error)
+      status =
+        case e.error_message
+        when /Validation failed/ then :bad_request
+        else :internal_server_error
+        end
+      return (render 'shared/error', :status => status)
     end
     redirect_to show_domain_path(org_id: params[:org_id], domain_id: domain.cname)
   end

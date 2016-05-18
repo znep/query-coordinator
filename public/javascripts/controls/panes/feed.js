@@ -22,7 +22,7 @@
 
                             var comments;
                             var views = [];
-                            doRender = _.after(2, function()
+                            doRender = _.after(3, function()
                             {
                                 cpObj._finishProcessing();
 

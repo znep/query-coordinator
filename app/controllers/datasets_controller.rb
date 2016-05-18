@@ -722,7 +722,7 @@ class DatasetsController < ApplicationController
 protected
   def get_view(id)
     begin
-      view = View.find(id)
+      view = ::View.find(id)
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
       render 'shared/error', :status => :not_found

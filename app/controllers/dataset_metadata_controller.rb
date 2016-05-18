@@ -120,7 +120,7 @@ class DatasetMetadataController < ApplicationController
   private
 
   def dataset(id = nil)
-    View.find(id || json_parameter(:datasetMetadata)['id'])
+    ::View.find(id || json_parameter(:datasetMetadata)['id'])
   end
 
   def can_read_dataset_data?(dataset_id)

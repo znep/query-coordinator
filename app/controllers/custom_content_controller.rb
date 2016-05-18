@@ -463,7 +463,7 @@ class CustomContentController < ApplicationController
               end
             elsif properties.type == 'uid'
               begin
-                binding.views = View.find(properties.viewUid)
+                binding.views = ::View.find(properties.viewUid)
               rescue CoreServer::ResourceNotFound
                 binding.views = []
               rescue CoreServer::CoreServerError

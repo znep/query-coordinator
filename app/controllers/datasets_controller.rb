@@ -580,7 +580,7 @@ class DatasetsController < ApplicationController
     if !params[:view].nil?
       begin
         if parse_attachments() && parse_meta(@view) && parse_external_sources() && parse_image()
-          @view = View.update_attributes!(params[:id], params[:view])
+          @view = ::View.update_attributes!(params[:id], params[:view])
 
           # if this is a data lens or standalone viz, update the inner metadata blob too
           # so that name/description changes aren't out of sync
@@ -648,7 +648,7 @@ class DatasetsController < ApplicationController
 
   def form_success
     begin
-      @view = View.find(params[:id])
+      @view = ::View.find(params[:id])
     rescue
       # Do nothing; if there is no view, render a generic message
     end
@@ -659,7 +659,7 @@ class DatasetsController < ApplicationController
   end
 
   def form_error
-    @view = View.find(params[:id])
+    @view = ::View.find(params[:id])
     @error_message = params[:errorMessage]
     respond_to do |format|
       format.html { render(:layout => "plain") }

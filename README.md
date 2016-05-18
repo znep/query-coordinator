@@ -114,77 +114,6 @@ and uses the mocha reporter:
 bundle exec rake test:js:dataCards[true,chrome,mocha]
 ```
 
-#### To generate coverage results
-
-Just run `bundle exec rake test:karma`, the karma test task will run karma
- configured to compute coverage. Coverage results will live in
-  frontend/karma/coverage-reports/ for all tested projects.
-
-#### To run tests in SauceLabs
-
-Karma knows how to launch tests against browsers specified in supported_browsers.json
-(see karma/dataCards/karma.conf.js to see how we teach this to Karma).
-
-Our current SOP is to support two major versions back from a browser's latest version.
-To speed up testing, we define a set of critical browsers (defined as the latest version
-of all browsers, plus all supported versions of IE).
-
-Please be judicious in your use of SauceLabs - we are limited in usage (see
-the SauceLabs dashboard using the creds in LastPass to see how much we have
-remaining for the month).
-
-The rake task is
-
-```sh
-rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
-```
-
-CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers.
-It defaults to false (run on all browsers).
-
-BROWSER_FAMILIES limits the run to a comma-separated list of browser names (chrome, internet explorer, etc)
-
-Examples:
-- To launch on _all_ supported browsers: `rake test:karma_sauce`
-- To launch on only critical browsers: `rake test:karma_sauce CRITICAL_BROWSERS_ONLY=true`
-- To launch on only a particular set of browser families: `rake test:karma_sauce BROWSER_FAMILIES="safari, internet explorer"`
-- To launch only a particular browser, run `karma start` manually and specify a browser name formatted like:
-  "saucelabs {browser name} {browser version} {platform}
-
-  So for instance to run tests on Safari 7 on Mavericks, do:
-
-  ```sh
-  (cd karma/dataCards && karma start karma.conf.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)
-  ```
-
-  See supported_browsers.json for a list of values we support. You can add new
-  browsers to this file - see https://saucelabs.com/platforms/webdriver for a
-  list of browsers SauceLabs supports.
-
-When running tests on SauceLabs through a Sauce Connect tunnel that is started
-manually (through the Sauce OSX App or the Sauce Connect Jenkins Plugin), and a
-tunnel identifier is specified, you must make sure to provide the same
-`SAUCE_TUNNEL_IDENTIFIER` as an environment variable so that the Karma sauce
-test runner will use the identified tunnel.
-
-If using a Sauce Connect tunnel without a tunnel identifier, the karma sauce
-test runner will default to using the unnamed tunnel.
-
-#### To exclude groups of tests
-
-NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS
-When launching karma directly, you may pass an --exclude-groups flag to not run
-a certain subset of tests. Groups are defined in karma.conf.js and as of this
-writing are: controllers directives filters integration services models util.
-
-Example:
-
-```sh
-(cd karma/dataCards && karma start karma.conf.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")
-```
-
-This only works for Data Lens/Angular component tests (not old UX).
-
 #### To run a specific Ruby unit test
     ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
 
@@ -204,7 +133,8 @@ only an issue for on-demand loading.
 
 ### Webpack
 
-Assets for data lens and some old UX pages are packaged using [webpack](http://webpack.io).
+Assets for data lens, dataset landing page, and some old UX pages are packaged
+using [webpack](http://webpack.io).
 
 Webpack provides ES2015 w/ JSX transpilation through [Babel](http://babeljs.io),
 source map generation, hot module reloading for Babel, angular module annotation

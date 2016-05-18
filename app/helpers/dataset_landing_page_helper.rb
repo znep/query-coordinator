@@ -183,8 +183,15 @@ module DatasetLandingPageHelper
       :attachments => attachments,
       :tags => @view.tags,
       :licenseName => @view.license.try(:name),
-      :attributionLink => @view.attributionLink
+      :attributionLink => @view.attributionLink,
+      :statsUrl => stats_url
     }
+  end
+
+  def stats_url
+    if (@view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
+      view_stats_path(@view)
+    end
   end
 
   def transformed_featured_views

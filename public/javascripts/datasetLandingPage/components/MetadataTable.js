@@ -31,6 +31,7 @@ export var MetadataTable = React.createClass({
     var customMetadataFieldsets;
     var license;
     var tags;
+    var statsSection;
 
     // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
     contactFormButton = contactFormData.contactFormEnabled ?
@@ -156,6 +157,14 @@ export var MetadataTable = React.createClass({
       attributionLink = <td className="empty">{I18n.metadata.no_value}</td>;
     }
 
+    if (view.statsUrl) {
+      statsSection = (
+        <div className="metadata-row middle">
+          <a className="metadata-detail-group-value" href={view.statsUrl}>{I18n.metadata.view_statistics}</a>
+        </div>
+      );
+    }
+
     return (
       <section className="landing-page-section">
         <h2 className="landing-page-section-header">
@@ -236,6 +245,7 @@ export var MetadataTable = React.createClass({
                   </h3>
                 </div>
               </div>
+              {statsSection}
             </div>
 
             <hr />

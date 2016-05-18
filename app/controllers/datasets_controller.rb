@@ -682,12 +682,13 @@ class DatasetsController < ApplicationController
 
   def about
     @view = get_view(params[:id])
+    return if @view.nil?
 
     if dataset_landing_page_enabled? && view_has_landing_page?
       related_views = @view.try(:find_dataset_landing_page_related_content) || []
       @featured_views = related_views.slice(0, 3)
 
-      render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
+      render 'dataset_landing_page', :layout => 'dataset_landing_page'
       return
     end
 

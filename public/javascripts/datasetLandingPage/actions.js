@@ -88,7 +88,7 @@ export function submitContactForm() {
       },
       body: JSON.stringify({
         id: viewId,
-        type: 'Dataset Landing Page',
+        type: 'other',
         subject: fields.subject,
         message: fields.message,
         from_address: fields.email

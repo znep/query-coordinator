@@ -174,8 +174,54 @@ d3base.seriesGrouping = {
 
         if (vizObj._fixedColumns[0])
         {
-            var categoryGroupBys = (sortedView.metadata.jsonQuery.group || []).concat([
-                { columnFieldName: vizObj._fixedColumns[0].fieldName } ]);
+            var categoryGroupBys = (sortedView.metadata.jsonQuery.group || []);
+            // EN-4731 - Preparing Data Error when adding Data Series Grouping
+            // to Chart
+            //
+            // In some cases, creating a Data Series Grouping visualization on
+            // top of a dataset that has been rolled-up and/or filtered can
+            // lead to a situation where the first fixedColumn on the vizObj is
+            // already present in the view's groupBy collection. This code
+            // block previously just pushed an additional groupBy onto the
+            // collection that represented the first vizObj fixedColumn,
+            // presumably to ensure that the first vizObj fixedColumn was
+            // always represented in the view's groupBy collection. This ended
+            // up interacting with the column `format.group_function` property
+            // such that we would overwrite a valid `group_function` on some
+            // columns with `undefined`, which caused SOME (but not all)
+            // queries to be made with no `group_function` aggregation while
+            // some were made with the aggregation in-place.
+            //
+            // Ultimately this caused the Data Series Grouping step wherein
+            // values are mapped back to category buckets to fail, as the
+            // buckets themselves were using un-aggregated values while the
+            // rows to be bucketed were using aggregated values, which
+            // caused the Data Series Grouping code to be unable to bucket
+            // any of the values it was processing, which manifested as it
+            // saying that it still had n values to finish processing,
+            // where n never went down to zero.
+            //
+            // The solution is to simply not append the additional groupBy
+            // to the view if the first vizObj fixedColumn is already
+            // represented (which, in turn, prevents the `group_function`
+            // from being overwritten with `undefined` by accident, etc.
+            var firstFixedColumnFieldName = vizObj._fixedColumns[0].fieldName;
+            var fixedColumnAlreadyInGroupBys = _.find(
+                categoryGroupBys,
+                function(groupBy)
+                {
+                    var fieldName = groupBy.columnFieldName;
+
+                    return fieldName === firstFixedColumnFieldName;
+                }
+            );
+
+            if (!fixedColumnAlreadyInGroupBys)
+            {
+                categoryGroupBys.push({
+                    columnFieldName: firstFixedColumnFieldName
+                });
+            }
 
             var md = $.extend(true, {}, sortedView.metadata);
             md.jsonQuery.group = categoryGroupBys;

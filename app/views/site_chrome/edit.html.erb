@@ -24,8 +24,8 @@
 
   <ul class="tabs">
     <% @tab_sections.each_with_index do |section, i| %>
-      <li class="<%= tab_link_classnames(i) %>" data-tab-id="<%= section %>">
-        <%= link_to('#') do %>
+      <li class="tab-link" data-tab-id="<%= section %>">
+        <%= link_to("#tab=#{section}") do %>
           <%= t("screens.admin.site_chrome.tabs.#{section}.title") %>
         <% end %>
       </li>
@@ -33,7 +33,7 @@
   </ul>
 
   <% @tab_sections.each_with_index do |section, i| %>
-    <div class="<%= tab_section_classnames(i) %>" data-tab-id="<%= section %>">
+    <div class="tab-content" data-tab-id="<%= section %>">
       <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
       <%= render(
         "site_chrome/tab_content/#{section}",

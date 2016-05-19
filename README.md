@@ -35,8 +35,8 @@ According to the rules of [semver](http://semver.org/), take these steps:
 0. Fetch remote sources: `git fetch --all --prune`.
 1. Check out the master branch: `git checkout master && git pull --rebase origin master`.
 3. Update `package.json` with the new semantic version.
-4. Commit the changes: `git commit -am "Major.Minor.Patch;" && git push origin release`.
-5. Tag the release, push it: `git tag Major.Minor.Patch && git push --tags`.
+4. Commit the changes: `git commit -am "Major.Minor.Patch;"`.
+5. Tag the release, push it: `git tag Major.Minor.Patch && git push --tags origin master`.
 6. Publish: `npm publish`. (This step requires [Artifactory](https://github.com/socrata/frontend#dependencies).)
 
 ### Deploying to socrata.github.io/styleguide

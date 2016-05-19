@@ -622,7 +622,8 @@ class InternalController < ApplicationController
     # If the cname is different, then this is a merged parent domain's config and
     # consequently means we'd be setting the properties on the wrong config object.
     # If `config` is wrong in any way, that means it doesn't exist and we should create it.
-    if config.try(:domainCName) != domain.cname
+
+    if config && config.domainCName != domain.cname
       begin
         config = ::Configuration.create(
           'name' => 'Feature Flags',

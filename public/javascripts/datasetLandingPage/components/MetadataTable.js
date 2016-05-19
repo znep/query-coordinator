@@ -32,6 +32,7 @@ export var MetadataTable = React.createClass({
     var license;
     var tags;
     var statsSection;
+    var editMetadata;
 
     // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
     contactFormButton = contactFormData.contactFormEnabled ?
@@ -165,11 +166,18 @@ export var MetadataTable = React.createClass({
       );
     }
 
+    if (view.editMetadataUrl) {
+      editMetadata = <a href={view.editMetadataUrl} className="btn btn-default">{I18n.metadata.edit_metadata}</a>;
+    }
+
     return (
       <section className="landing-page-section">
-        <h2 className="landing-page-section-header">
-          {I18n.metadata.title}
-        </h2>
+        <div className="landing-page-header-wrapper">
+          <h2 className="landing-page-section-header">
+            {I18n.metadata.title}
+          </h2>
+          {editMetadata}
+        </div>
 
         <div className="section-content">
           <div className="metadata-column fancy">

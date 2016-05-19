@@ -1765,7 +1765,7 @@ en:
         skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Asset Inventory
-        unpublished_datasets: Unpublished Datasets
+        unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
       federation:
         accept: Accept

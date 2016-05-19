@@ -336,7 +336,7 @@
             # is a result from Cetera or Clytemnestra/Core Server
             if using_cetera?
               result_link = result.link
-              result_categories = (result.categories || []).reject(&:empty?)
+              result_categories = result.categories.map(&View.method(:category_display)).compact.first
               result_topics = (result.tags || []).reject(&:empty?)
               result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).strftime('%B %-d, %Y') : nil
               result_created_at = result.createdAt.present? ? Time.iso8601(result.createdAt).strftime('%B %-d, %Y') : nil

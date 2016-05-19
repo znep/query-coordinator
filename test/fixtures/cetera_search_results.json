@@ -26,7 +26,7 @@
       {
         "categories" : [],
         "tags" : [],
-        "domain_category" : "Public Safety",
+        "domain_category" : [ "Public Safety" ],
         "domain_tags" :
         [
           "police",
@@ -73,7 +73,7 @@
       {
         "categories" : [ "infrastructure", "housing & development" ],
         "tags" : [ "construction" ],
-        "domain_category" : "City Business",
+        "domain_category" : [ "City Business" ],
         "domain_tags" :
         [ "fleet", "equipment", "auction", "cars", "trucks", "surplus" ],
         "domain_metadata" :

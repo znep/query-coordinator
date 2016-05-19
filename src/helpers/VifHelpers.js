@@ -110,10 +110,28 @@ function migrateVif1ToVif2(vifToMigrate) {
   }
 
   // 2a. Create a series
+  //
+  // Note that the legacy AddVisualization workflow in the DataLens app will
+  // sometimes not include an aggregation property on VIFs that it exports.
+  //
+  // This is blatantly incorrect behavior, but it does not seem economical to
+  // attempt to fix it since that workflow will be replaced soon (as of May
+  // 2015).
+  //
+  // Accordingly, we fetch the aggregation field and function ahead of time
+  // and default to sane values if the properties or the root-level aggregation
+  // property doesn't exist.
+  var aggregationField = _.get(
+    vifToMigrate,
+    'aggregation.field',
+    null
+  );
+  var aggregationFunction = _.get(
+    vifToMigrate,
+    'aggregation.function',
+    'count'
+  );
   var series = {
-    // color: {
-    //   secondary: null
-    // },
     dataSource: {
       datasetUid: vifToMigrate.datasetUid,
       dimension: {
@@ -122,10 +140,10 @@ function migrateVif1ToVif2(vifToMigrate) {
       },
       domain: vifToMigrate.domain,
       measure: {
-        columnName: (!_.isUndefined(vifToMigrate.aggregation.field)) ?
-          vifToMigrate.aggregation.field :
+        columnName: (aggregationField !== null) ?
+          aggregationField :
           null,
-        aggregationFunction: vifToMigrate.aggregation.function
+        aggregationFunction: aggregationFunction
       },
       filters: _.cloneDeep(vifToMigrate.filters),
       type: 'socrata.soql'

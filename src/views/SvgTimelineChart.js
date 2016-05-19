@@ -463,7 +463,29 @@ function SvgTimelineChart($element, vif) {
       svg.
         axis().
           scale(d3XScale).
-            orient('bottom');
+            orient('bottom').
+            // The value 4 is somewhat arbitrary, but was chosen to coax d3
+            // into not drawing too many ticks when the interval between data
+            // is only a day or two.
+            //
+            // Values of 3 or less caused d3 to draw too few ticks (and
+            // sometimes none at all) whereas values higher than 7 caused no
+            // discernible change from the default behavior resulting from not
+            // calling `ticks()` at all for the baseline visualization width of
+            // 640px.
+            //
+            // I understand this value as representing the number of ticks
+            // that d3 should attempt to fit into the VIEWPORT, not the entire
+            // domain of the chart. Given that, 4 ticks across the viewport
+            // seems pretty reasonable; it will likely look the worst on very
+            // wide visualizations, but the flyouts will still provide precise
+            // date values to help users orient data in terms of time.
+            //
+            // More robust solutions to this issue such as wrapping tick label
+            // text to the width of the datum (bl.ocks.org/mbostock/7555321)
+            // would introduce significant complexity, and I'm not convinced
+            // that the payoff justifies the cost at the moment.
+            ticks(4);
 
     d3YAxis = d3.
       svg.

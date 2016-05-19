@@ -54,76 +54,6 @@ RSpec.describe StoriesHelper, type: :helper do
     end
   end
 
-  describe '#update_classic_visualization' do
-    let(:story_with_classic_viz) do
-      {
-        'blocks' => [
-          'components' => [
-            {
-              'type' => 'socrata.visualization.classic',
-              'value' => {
-                'originalUid' => 'clas-sicv',
-                'visualization' => {
-                  'metadata' => { 'renderTypeConfig' => { 'visible' => { 'table' => 'something' } } }
-                }
-              }
-            }
-          ]
-        ]
-      }
-    end
-
-    let(:story_without_classic_viz) do
-      {
-        'blocks' => [
-          'components' => [
-            {
-              'type' => 'html',
-              'value' => {
-                'originalUid' => 'clas-sicv',
-                'visualization' => {
-                  'metadata' => { 'renderTypeConfig' => { 'visible' => { 'table' => 'something' } } }
-                }
-              }
-            }
-          ]
-        ]
-      }
-    end
-
-    before :each do
-      stub_visualization_component_view
-    end
-
-    context 'given a story with classic viz components' do
-      it 'updates the component visualization' do
-        classic_viz_component = update_classic_visualization(story_with_classic_viz)[0]['components'][0]
-
-        expect(classic_viz_component['value']['visualization']).to eq(
-          'metadata' => {
-            'renderTypeConfig' => {
-              'visible' => { 'table' => false }
-            }
-          }
-        )
-      end
-    end
-
-    context 'given a story without classic viz components' do
-      it 'does not update the component' do
-        component = update_classic_visualization(story_without_classic_viz)[0]['components'][0]
-
-        expect(component['value']['visualization']).to eq(
-          'metadata' => {
-            'renderTypeConfig' => {
-              'visible' => { 'table' => 'something' }
-            }
-          }
-        )
-      end
-    end
-  end
-
   describe '#google_font_code_embed' do
     let(:story_json) { JSON.parse(fixture('story_theme.json').read).first }
     let(:id) { story_json['id'] }
@@ -176,37 +106,6 @@ RSpec.describe StoriesHelper, type: :helper do
 
         expect(settings_panel_story_stats_link).to eq('<a class="menu-list-item-header" role="button" target="_blank"></a>')
       end
-    end
-  end
-
-  describe '#component_json' do
-    let(:view) { {} }
-    let(:component) {
-      {'type' => 'html'}
-    }
-
-    context 'when encountering a socrata.visualization.classic' do
-      let(:visualization) { 'visualization' }
-
-      let(:view) do
-        {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true}}}}
-      end
-
-      let(:component) do
-        {'type' => 'socrata.visualization.classic', 'value' => {'visualization' => 'visualization'}}
-      end
-
-      before do
-        allow(CoreServer).to receive(:get_view).and_return(view)
-      end
-
-      it 'returns a modified JSON representation of the component' do
-        expect(component_json(component)).to match(/"table":false/)
-      end
-    end
-
-    it 'returns a JSON representation of the component' do
-      expect(component_json(component)).to eq(component.to_json)
     end
   end
 

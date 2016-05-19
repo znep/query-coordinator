@@ -1,5 +1,5 @@
 <div class="<%= component_container_classes(layout_columns[index]) %>">
-  <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component_json(component) %>">
+  <div class="<%= component_classes(component['type']) %>" data-component-data="<%= component.to_json %>">
     <%=
       render(
         partial: component_partial_name(component['type']),

@@ -57,6 +57,31 @@ RSpec.describe Block, type: :model do
         expect(new_block.components[0]['value']['vif']['filters'].is_a?(Array)).to eq(true)
       end
     end
+
+    context 'when the block contains a classic visualization' do
+      let(:view) {
+        {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true}}}}
+      }
+
+      before do
+        allow(CoreServer).to receive(:get_view).and_return(view)
+      end
+
+      it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
+        test_components = [
+          {
+            type: 'socrata.visualization.classic',
+            value: {
+              originalUid: 'four-four'
+            }
+          }
+        ]
+
+        new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+
+        expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+      end
+    end
   end
 
   describe 'immutability' do

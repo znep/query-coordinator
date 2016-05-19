@@ -104,6 +104,13 @@ class Block < ActiveRecord::Base
             SANITIZE_CONFIG['html']
           )
         end
+
+        if component['type'] == 'socrata.visualization.classic'
+          view = CoreServer.get_view(component['value']['originalUid'])
+          view['metadata']['renderTypeConfig']['visible']['table'] = false if view
+
+          component['value']['visualization'] = view
+        end
       end
     end
   end

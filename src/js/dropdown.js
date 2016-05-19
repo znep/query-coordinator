@@ -29,7 +29,7 @@ Dropdown.prototype = {
     positionDropdown();
 
     obj.dd.addEventListener('click', function(event) {
-      event.stopPropagation();
+      event.preventDefault();
       positionDropdown();
       obj.dd.classList.toggle('active');
       return false;
@@ -57,10 +57,14 @@ Dropdown.prototype = {
       });
     }
 
-    document.addEventListener('click', function() {
-      var dropdowns = document.querySelectorAll('.dropdown');
-      for (var i = 0; i < dropdowns.length; i++) {
-        dropdowns[i].classList.remove('active');
+    document.addEventListener('click', function(event) {
+      var node = event.target;
+      while (node.parentElement && !node.classList.contains('dropdown')) {
+        node = node.parentElement;
+      }
+
+      if (node !== obj.dd) {
+        obj.dd.classList.remove('active');
       }
     });
 

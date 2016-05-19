@@ -938,7 +938,6 @@ var RowSet = ServerModel.extend({
         args.isSODA = true;
         args.url = args.url || '/api/id/{0}.json'.format(viewId);
         args.params = args.params || {};
-        args.params['$$version'] = '2.0';
 
         var baseQuery = rs._dataset._queryBase.metadata.jsonQuery;
         var hasGroups = !_.isEmpty(rs._jsonQuery.group);

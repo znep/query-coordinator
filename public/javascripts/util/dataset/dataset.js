@@ -3365,7 +3365,6 @@ var Dataset = ServerModel.extend({
         var rd = req.rowData;
         if (ds._useSODA2)
         {
-            url += '?$$version=2.0';
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }

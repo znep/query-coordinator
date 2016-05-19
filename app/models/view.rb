@@ -439,7 +439,6 @@ class View < Model
         deep_merge(conditions)
       if use_soda2?
         soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
-        params['$$version'] = '2.0'
         params['$$row_count'] = 'approximate'
         params.merge! soql_obj.to_soql_parts
 
@@ -545,7 +544,6 @@ class View < Model
 
     soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
 
-    params['$$version'] = '2.0'
     params['$$row_count'] = 'approximate'
     params.merge! soql_obj.to_soql_parts
 

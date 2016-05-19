@@ -53,6 +53,19 @@ describe('AuthoringWorkflow reducer', function() {
         expect(newState.vif.series[0].dataSource.datasetUid).to.equal(null);
       });
     });
+
+    describe('SET_CHART_TYPE', function() {
+      it('sets the chart type', function() {
+        var chartType = 'columnChart';
+        var state = {
+          vif: defaultVif
+        };
+
+        var action = actions.setChartType(chartType);
+        var newState = reducer(state, action);
+        expect(newState.vif.series[0].type).to.equal(chartType);
+      });
+    });
   });
 
   describe('datasetMetadata', function() {

@@ -4,7 +4,8 @@ import {
   RECEIVE_DATASET_METADATA,
   HANDLE_DATASET_METADATA_ERROR,
   SET_DIMENSION,
-  SET_MEASURE
+  SET_MEASURE,
+  SET_CHART_TYPE
 } from '../actions';
 
 import defaultVif from '../defaultVif';
@@ -40,6 +41,11 @@ export default function vif(state, action) {
         series.dataSource.measure.columnName = action.measure;
       });
       break;
+
+    case SET_CHART_TYPE:
+      _.each(state.series, function(series) {
+        series.type = action.chartType;
+      });
   }
 
   return state;

@@ -64,3 +64,11 @@ export function setMeasure(measure) {
     measure: measure
   };
 }
+
+export var SET_CHART_TYPE = 'SET_CHART_TYPE';
+export function setChartType(chartType) {
+  return {
+    type: SET_CHART_TYPE,
+    chartType: chartType
+  };
+}

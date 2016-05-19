@@ -962,7 +962,7 @@ class DatasetsController < ApplicationController
   def canonical_path(with_query_string = true)
     path = canonical_path_proc.call(locale: current_locale)
     if with_query_string
-      path += "?#{request.query_string}" unless request.query_string.empty?
+      path << "?#{request.query_string}" unless request.query_string.empty?
     end
     path
   end

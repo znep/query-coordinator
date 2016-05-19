@@ -172,9 +172,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
-              },
-              fetch_page_metadata: {
-                status: '200'
               }
             )
             @controller.stubs(:default_page_accessible => true)
@@ -192,9 +189,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp' }, { pageId: 'last-page', version: '1' }], user: [] }
-              },
-              fetch_page_metadata: {
-                status: '200'
               },
               update_dataset_metadata: {
                 status: '200'

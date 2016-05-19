@@ -339,48 +339,6 @@ class Phidippides < SocrataHttp
     end
   end
 
-  # Page Metadata requests
-
-  def fetch_page_metadata(page_id, options = {})
-
-    # Log Access to Page Object
-    log_datalens_access(page_id)
-
-    issue_request(
-      :verb => :get,
-      :path => "v1/pages/#{page_id}",
-      :request_id => options[:request_id],
-      :cookies => options[:cookies]
-    )
-  end
-
-  def update_page_metadata(page_metadata, options = {})
-    raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
-    raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
-
-    # Overwrite version to enforce that Phidippides backed pages are V1.
-    # This is necessary if saving v1 page from a page that is v2.
-    page_metadata['version'] = 1
-
-    issue_request(
-      :verb => :put,
-      :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
-      :data => page_metadata,
-      :request_id => options[:request_id],
-      :cookies => options[:cookies]
-    )
-  end
-
-  def delete_page_metadata(page_id, options = {})
-    issue_request(
-      :verb => :delete,
-      :path => "v1/pages/#{page_id}",
-      :request_id => options[:request_id],
-      :cookies => options[:cookies],
-      :follow_redirect => true
-    )
-  end
-
   def create_dataset_metadata(data, options = {})
     raise ArgumentError.new('id is required') unless data.key?('id')
     issue_request(

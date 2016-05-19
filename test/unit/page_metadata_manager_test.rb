@@ -190,7 +190,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
-    Phidippides.any_instance.expects(:update_page_metadata).times(0)
 
     result = manager.create(data_lens_page_metadata)
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
@@ -198,9 +197,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { body: nil, status: '200' }
-    )
 
     assert_raises(Phidippides::NoDatasetIdException) do
       manager.update(data_lens_page_metadata.except('datasetId'))
@@ -209,9 +205,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_update_raises_an_error_if_page_id_is_not_present_in_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { body: nil, status: '200' }
-    )
 
     assert_raises(Phidippides::NoPageIdException) do
       manager.update(data_lens_page_metadata.except('pageId'))
@@ -686,7 +679,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table)
 
     Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     DataLensManager.any_instance.expects(:create).returns('data-lens')
@@ -707,7 +699,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table)
 
     Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     DataLensManager.any_instance.expects(:create).returns('data-lens')
@@ -775,16 +766,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: body }
     )
-  end
-
-  def stub_update_page_metadata(body)
-    Phidippides.any_instance.
-      expects(:update_page_metadata).
-      times(1).
-      returns(
-        status: '200',
-        body: body
-      )
   end
 
   def assert_page_has_table_card(page_metadata)

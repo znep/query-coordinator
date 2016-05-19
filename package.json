@@ -97,7 +97,7 @@
     "react-dom": "0.14.6",
     "socrata-styleguide": "1.0.5",
     "socrata-utils": "1.3.0",
-    "socrata-visualizations": "9.1.0",
+    "socrata-visualizations": "10.4.1",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

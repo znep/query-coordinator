@@ -4,8 +4,16 @@ import _ from 'lodash';
 import '../componentBase';
 import I18n from '../I18n';
 import Constants from '../Constants';
+import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
+
+var FLYOUT_EVENT = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+  'SOCRATA_VISUALIZATION_FLYOUT' :
+  'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT';
+var VISUALIZATION_IMPLEMENTATION = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+  'socrataSvgColumnChart' :
+  'socrataColumnChart';
 
 $.fn.componentSocrataVisualizationColumnChart = componentSocrataVisualizationColumnChart;
 
@@ -47,8 +55,8 @@ function _renderTemplate($element, componentData) {
 
   $element.
     addClass(className).
-    on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', function(event) {
+    on('destroy', function() { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
+    on(FLYOUT_EVENT, function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {
@@ -86,6 +94,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataColumnChart(vif);
+    $componentContent[VISUALIZATION_IMPLEMENTATION](vif);
   }
 }

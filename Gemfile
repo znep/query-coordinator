@@ -49,8 +49,6 @@ group :test do
   gem 'timecop'
   gem 'webmock'
   gem 'rspec-rails', '~> 3.1.0'
-  gem 'simplecov'
-  gem 'simplecov-cobertura'
 end
 
 group :development, :test do

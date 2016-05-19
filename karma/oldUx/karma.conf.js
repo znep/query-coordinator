@@ -1,26 +1,6 @@
 var path = require('path');
 var fs = require('fs');
-var sprintf = require('sprintf');
 var _ = require('lodash');
-
-// Parse supported_browsers.json to generate SauceLabs launcher definitions.
-var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
-var customLaunchers = {};
-_.forIn(supportedBrowsers, function(browserInstances, browserName) {
-  _.each(browserInstances, function(instance) {
-    instance.browserName = browserName;
-    var launcherName = sprintf('saucelabs %(browserName)s %(version)s %(platform)s', instance).toLowerCase();
-    customLaunchers[launcherName] = {
-      base: 'SauceLabs',
-      browserName: browserName,
-      version: instance.version,
-      platform: instance.platform
-    };
-  });
-});
-
-var startSauceConnect = _.contains(['true', '1', 1], process.env.SAUCE_START_SAUCE_CONNECT);
-var tunnelIdentifier = process.env.SAUCE_TUNNEL_IDENTIFIER || undefined;
 
 var projectRoot = path.resolve(__dirname, '../..');
 
@@ -32,7 +12,6 @@ module.exports = function ( karma ) {
     basePath: '../../',
 
      preprocessors: {
-       'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage'],
        'karma/oldUx/**/*-test.js': ['webpack'],
        'karma/helpers/chai-dom-assertions.js': ['webpack']
     },
@@ -94,16 +73,6 @@ module.exports = function ( karma ) {
       '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
     },
 
-    sauceLabs: {
-      testName: 'oldUx Unit Tests',
-      username: 'socrata-saucelabs',
-      accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc',
-      tunnelIdentifier: tunnelIdentifier,
-      startConnect: startSauceConnect
-    },
-
-    customLaunchers: customLaunchers,
-
     // Options for phantomJS launcher
     phantomjsLauncher: {
       options: {
@@ -122,44 +91,17 @@ module.exports = function ( karma ) {
       'karma-firefox-launcher',
       'karma-chrome-launcher',
       'karma-phantomjs-launcher',
-      'karma-sauce-launcher',
-      'karma-coverage',
       'karma-mocha-reporter',
       'karma-webpack'
     ],
 
     logLevel:  'WARN',
+
     /**
      * How to report, by default.
-     * Note, not including coverage here as the instrumentation process
-     * makes the code completely unreadable and undebuggable. The rake
-     * test task manually enables coverage. See lib/tasks/karma_tests.rake
      */
-    reporters: ['dots', 'saucelabs'],
+    reporters: ['dots'],
 
-    coverageReporter: {
-      reporters: [
-        {
-          type : 'html',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.'
-        },
-        {
-          type: 'text',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.',
-          file: 'coverage.txt'
-        },
-        {
-          type: 'cobertura',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.'
-        },
-        {
-          type: 'text-summary'
-        }
-      ]
-    },
     /**
      * On which port should the browser connect, on which port is the test runner
      * operating, and what is the URL path for the browser to use.

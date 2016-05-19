@@ -4,9 +4,6 @@ require 'rails/test_help'
 require 'minitest/autorun'
 require 'minitest/reporters'
 require 'webmock/minitest'
-require 'simplecov_custom_profile'
-
-SimpleCov.start 'filtered'
 
 # Don't allow any network connections
 WebMock.disable_net_connect!

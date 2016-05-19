@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'autotest/restart'
-require 'autotest/rcov' if ENV['RCOV']
 
 Autotest.add_hook :initialize do |at|
   at.testlib = 'minitest/autorun'
@@ -25,7 +24,4 @@ Autotest.add_hook :initialize do |at|
       at.extra_class_map[klass] = file
     end
   end
-
-  at.add_exception 'coverage.info'
-  at.add_exception 'coverage'
 end

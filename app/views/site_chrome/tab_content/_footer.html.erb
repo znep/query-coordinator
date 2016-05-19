@@ -1,19 +1,19 @@
-<% content = @site_chrome.content['footer'] %>
+<% footer = @site_chrome.content['footer'] %>
 
-<%= form_tag site_chrome_path, method: :put, remote: true do %>
+<%= form_tag site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
 
-  <%= render(partial: 'site_chrome/tab_content/form_field',
-             locals: { fields: [:footer, :logo, :src],
-                       translation: translations[:footer_logo] }) %>
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:footer, :logo, :src],
+             translation: translations[:footer_logo]) %>
 
-  <%= render(partial: 'site_chrome/tab_content/form_field_pair',
-             locals: { left: { fields: [:footer, :styles, :bg_color],
-                               translation: translations[:footer_background_color] },
-                       right: { fields: [:footer, :styles, :fg_color],
-                                translation: translations[:footer_text_link_color] } }) %>
+  <%= render('site_chrome/tab_content/form_field_pair',
+             left: { fields: [:footer, :styles, :bg_color],
+                     translation: translations[:footer_background_color] },
+             right: { fields: [:footer, :styles, :fg_color],
+                      translation: translations[:footer_text_link_color] }) %>
 
   <%= render('list_of_links',
-             :links => content['links'],
+             :links => footer['links'],
              :content_key => :footer,
              :translations => translations) %>
 
@@ -29,5 +29,5 @@
     </div>
   </section>
 
-  <%= submit_tag 'put_footer', id: 'footer' %>
+  <%= submit_tag 'put_footer', id: 'submit_footer', style: 'display: none;' %>
 <% end %>

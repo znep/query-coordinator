@@ -1,6 +1,5 @@
 @import 'lib/variables';
-@import 'lib/socrata-icons';
-@import 'edit/button';
+@import 'src/scss/socrata-icons';
 
 #collaborators-modal {
   z-index: 15;
@@ -171,6 +170,7 @@
     background-color: $collaborators-select-background-color;
     border: 1px solid $collaborators-select-border-color;
     color: $collaborators-select-color;
+    line-height: normal;
 
     &:disabled {
       color: $collaborators-select-disabled-color;

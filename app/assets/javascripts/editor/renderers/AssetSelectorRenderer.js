@@ -979,12 +979,12 @@ export default function AssetSelectorRenderer(options) {
 
     var tryAgainButton = $(
       '<button>',
-      { 'class': 'btn-default btn-inverse hidden asset-selector-try-again' }
+      { 'class': 'btn-default hidden asset-selector-try-again' }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
     var uploadCancelButton = $(
       '<button>',
-      { 'class': 'btn-default btn-inverse asset-selector-cancel-upload' }
+      { 'class': 'btn-default asset-selector-cancel-upload' }
     ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
     tryAgainButton.on('click', cancel);
@@ -999,7 +999,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = $(
       '<button>',
-      { class: 'btn-default btn-inverse back-btn' }
+      { class: 'btn-default back-btn' }
     ).text(I18n.t('editor.asset_selector.back_button_text'));
 
     backButton.on('click', cancel);
@@ -2186,7 +2186,7 @@ export default function AssetSelectorRenderer(options) {
     return $(
       '<button>',
       {
-        'class': 'btn-default btn-inverse back-btn',
+        'class': 'btn-default back-btn',
         'data-resume-from-step': fromStep
       }
     ).text(

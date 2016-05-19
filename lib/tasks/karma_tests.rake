@@ -23,7 +23,7 @@ namespace :test do
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
       browser = args.browser || 'PhantomJS'
-      reporter = args.reporter || 'dots,coverage'
+      reporter = args.reporter || 'dots'
 
       if browser =~ /^phantom/i then
         browser = 'PhantomJS'

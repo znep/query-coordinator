@@ -1,11 +1,3 @@
-if ENV['COVERAGE']
-  require 'simplecov'
-  require 'simplecov-cobertura'
-  SimpleCov.start do
-    add_filter { |src| !(src.filename =~ /soql_duct_tape/) }
-  end
-end
-
 require_relative '../test_helper'
 require 'soql_duct_tape'
 require 'pry'
@@ -720,7 +712,7 @@ class SoqlFromJsonQueryTest < Test::Unit::TestCase
     #    'operator' => 'EQUALS'
     #  }
     #end
-    
+
     #soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$having']
     #correct_soql = %{(max_thingies=5)}
     #assert soql == correct_soql, failure_message(correct_soql, soql)

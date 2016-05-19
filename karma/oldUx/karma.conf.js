@@ -12,7 +12,6 @@ module.exports = function ( karma ) {
     basePath: '../../',
 
      preprocessors: {
-       'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage'],
        'karma/oldUx/**/*-test.js': ['webpack'],
        'karma/helpers/chai-dom-assertions.js': ['webpack']
     },
@@ -92,43 +91,17 @@ module.exports = function ( karma ) {
       'karma-firefox-launcher',
       'karma-chrome-launcher',
       'karma-phantomjs-launcher',
-      'karma-coverage',
       'karma-mocha-reporter',
       'karma-webpack'
     ],
 
     logLevel:  'WARN',
+
     /**
      * How to report, by default.
-     * Note, not including coverage here as the instrumentation process
-     * makes the code completely unreadable and undebuggable. The rake
-     * test task manually enables coverage. See lib/tasks/karma_tests.rake
      */
     reporters: ['dots'],
 
-    coverageReporter: {
-      reporters: [
-        {
-          type : 'html',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.'
-        },
-        {
-          type: 'text',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.',
-          file: 'coverage.txt'
-        },
-        {
-          type: 'cobertura',
-          dir : 'karma/coverage-reports/oldUx/',
-          subdir: '.'
-        },
-        {
-          type: 'text-summary'
-        }
-      ]
-    },
     /**
      * On which port should the browser connect, on which port is the test runner
      * operating, and what is the URL path for the browser to use.

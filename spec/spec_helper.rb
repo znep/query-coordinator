@@ -1,7 +1,4 @@
 require 'webmock/rspec'
-require 'simplecov_custom_profile'
-
-SimpleCov.start 'filtered'
 
 Dir['./spec/support/**/*.rb'].sort.each {|f| require f}
 

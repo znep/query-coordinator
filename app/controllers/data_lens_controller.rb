@@ -153,7 +153,7 @@ class DataLensController < ActionController::Base
     unless request.path =~ %r'/view/\w{4}-\w{4}'
       begin
         view = View.find(params[:id])
-        href = Proc.new { |params| view_path(view.route_params.merge(params || {})) }
+        href = Proc.new { |params| view_path(view, params || {}) }
         unless request.path.gsub(/\/mobile$/, '') == href.call(locale: nil)
           locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
           canonical_path = href.call(locale: locale)

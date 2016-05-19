@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
-    <link rel="canonical" href="<%= view_path(@view.route_params) %>"/>
+    <link rel="canonical" href="<%= view_path(@view) %>"/>
   <%- end -%>
 
   <%- if is_mobile? -%>
@@ -15,7 +15,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-    <a href="<%= alt_view_path(@view.route_params) %>" rel="external" target="_blank">Go to an accessible version of this page</a>
+    <a href="<%= alt_view_path(@view) %>" rel="external" target="_blank">Go to an accessible version of this page</a>
 <% end %>
 
 <div class="widgetWrapper">
@@ -31,11 +31,11 @@
           <%- if @view.is_tabular? -%>
           <div data-renderType="table" class="gridRenderType fullHeight renderTypeNode">
             <noscript>
-              <h3><a href="<%= view_path(@view.route_params) %>"><%= @view.name %></a></h3>
+              <h3><a href="<%= view_path(@view) %>"><%= @view.name %></a></h3>
 
               <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) %></p>
 
-              <a href="<%= view_path(@view.route_params) %>">Visit the full page to view this data.</a>
+              <a href="<%= view_path(@view) %>">Visit the full page to view this data.</a>
             </noscript>
           </div>
           <%- end -%>
@@ -54,7 +54,7 @@
             <%- if current_user && (current_user.id == @view.owner.id) -%>
             <div class="viewError"><%= @view.display.invalid_message %></div>
             <ul class="invalidActions">
-              <li><a href="<%= view_path(@view.route_params) %>" rel="external"
+              <li><a href="<%= view_path(@view) %>" rel="external"
                   class="editView button">Edit View</a></li>
             </ul>
             <%- else -%>
@@ -97,7 +97,7 @@
 
 <div class="mobileNotice">
   You are viewing a mobile version of this dataset. To access the full
-  dataset, <a href="<%= view_path(@view.route_params.merge( no_mobile: true )) %>">tap here</a>.
+  dataset, <a href="<%= view_path(@view, no_mobile: true) %>">tap here</a>.
 </div>
 
 <%= modal :class => 'actionInterstitial' do %>
@@ -110,7 +110,7 @@
       <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>
     </li>
     <li>
-      <a class="noInterstitial button accept" href="<%= view_path(@view.route_params) %>" rel="external">
+      <a class="noInterstitial button accept" href="<%= view_path(@view) %>" rel="external">
         <span class="icon"></span>
         Yes
       </a>

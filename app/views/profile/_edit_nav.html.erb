@@ -3,7 +3,7 @@
     <li class="basicInfo">
       <%= link_to \
         raw('<span class="icon"></span>' + t('screens.profile.edit.info.title')),
-          edit_profile_path(current_user.route_params) %>
+          edit_profile_path(current_user) %>
     </li>
     <li class="profileImage">
       <%= link_to \

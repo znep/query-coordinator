@@ -319,7 +319,7 @@ module Canvas2
       params = Util.page_params.clone
       path += '?' + params.merge('data_component' => id).to_query
       t += Util.app_helper.create_pagination(row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
-      t += %Q{<a href="#{alt_view_path(ds.route_params)}" class="altViewLink">Accessibly explore the data</a>}
+      t += %Q{<a href="#{alt_view_path(ds)}" class="altViewLink">Accessibly explore the data</a>}
       t += '</div></noscript>'
       [t, false]
     end

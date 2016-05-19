@@ -21,7 +21,7 @@
     <div class="toolbarAboutBox">
       <dl>
         <dt>Author</dt>
-        <dd><a href="<%= profile_path(@view.owner.route_params) %>"><%= @view.owner.displayName %></a></dd>
+        <dd><a href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a></dd>
         <dt>Description</dt>
         <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) || '(none)' %></dd>
         <%- if @view.category -%>

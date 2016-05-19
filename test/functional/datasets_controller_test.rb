@@ -339,7 +339,7 @@ class DatasetsControllerTest < ActionController::TestCase
 #    dsmtime = 12345
 #    VersionAuthority.stubs(:get_core_dataset_mtime => { 'four-four' => dsmtime })
 #    @request.env['HTTP_IF_NONE_MATCH'] = "#{dsmtime + 1000}-ANONYMOUS"
-#    @request.stubs(:path => view_path(@view.route_params)) # Please stop 302ing.
+#    @request.stubs(:path => view_path(@view)) # Please stop 302ing.
 #    get :show, { :id => 'four-four' }
 #    assert_response :success
 #  end

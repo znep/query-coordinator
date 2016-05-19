@@ -5,7 +5,7 @@
   <%- if !@current_user.nil? && @current_user.has_right?(UserRights::CREATE_DATASETS) &&
         !@view.nil? && @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? -%>
     <li class="edit"><a class="button"
-      href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'richList' )) %>">
+      href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>">
       Edit Layout
     </a></li>
     <%- end -%>

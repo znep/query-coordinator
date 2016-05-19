@@ -25,8 +25,8 @@ module ProfileHelper
       return preview_story_url(view) if view.can_preview_story?(current_user)
     end
 
-    super
-  end
+      super
+    end
 
   def profile_item(klass, inner_content, help_text, editable)
     content_tag(:div, :class => klass) do
@@ -46,7 +46,7 @@ module ProfileHelper
   def edit_link(user, extraClass=nil, text='Edit', url='edit', include_icon=true)
     if user == current_user
       content_tag :div, :class => 'editLink' do
-        content_tag :a, {:href => "#{profile_path(user.route_params)}/#{url}", # i don't like this.
+        content_tag :a, {:href => "#{profile_path(user)}/#{url}", # i don't like this.
           :class => "editProfileLink iconLink" + (extraClass.nil? ? '' : " #{extraClass}")} do
             link = ''
             if (include_icon)
@@ -69,4 +69,4 @@ module ProfileHelper
     @user.id != current_user.id
   end
 
-end
+  end

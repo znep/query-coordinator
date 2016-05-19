@@ -12,7 +12,7 @@
 <%= render :partial => 'edit_nav' %>
 
 <div class="contentBox withLeftNavigation editProfile editAppTokens">
-  <% link_to profile_path(current_user.route_params), :class => 'button backButton leftArrowNoHover' do %>
+  <% link_to profile_path(current_user), :class => 'button backButton leftArrowNoHover' do %>
     <span class="icon"></span>
     <%= t('screens.profile.edit.back_link') %>
   <% end %>
@@ -36,7 +36,7 @@
 
     <%- unless params[:no_js].present? -%>
       <%= render :partial => 'edit_account_form' %>
-      <%= form_tag(profile_path(current_user.route_params), :id => "editProfileForm", :multipart => true,
+      <%= form_tag(profile_path(current_user), :id => "editProfileForm", :multipart => true,
                   :class => 'commonForm', :method => :put) do %>
       <%= render :partial => 'edit_form' %>
       <%= render :partial => 'edit_image_form' %>

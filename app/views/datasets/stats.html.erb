@@ -12,7 +12,7 @@
 <div id="analyticsDataContainer" class="datasetMetrics">
   <div class="contentBox">
     <div>
-      <h1><%= link_to @view.name, view_path(@view.route_params) %></h1>
+      <h1><%= link_to @view.name, view_path(@view) %></h1>
       <%= render :partial => 'shared/metrics_timing' %>
     </div>
 

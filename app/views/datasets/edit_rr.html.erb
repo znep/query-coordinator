@@ -6,7 +6,7 @@
 
 <div class="contentBox" id="datasetEditRR">
   <div class="header clearfix">
-    <a href="<%= view_path(@view.route_params) %>" class="returnLink">Return to Dataset</a>
+    <a href="<%= view_path(@view) %>" class="returnLink">Return to Dataset</a>
 
     <h1>Modifying <span class="displayName"></span> View for <%= @view.name %></h1>
 
@@ -18,12 +18,12 @@
     <a href="#Clear" class="clearLayout button">New Layout</a>
 
     <ul id="renderTypeOptions" class="pillButtons">
-      <li><a href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'richList' )) %>"
+      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>"
         class="fatrow noRedirPrompt" title="Edit rich list layout"
         data-displayName="Rich List">
         <span class="icon"></span>
       </a></li>
-      <li><a href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'page' )) %>"
+      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'page') %>"
         class="page noRedirPrompt" title="Edit single row layout"
         data-displayName="Page">
         <span class="icon"></span>

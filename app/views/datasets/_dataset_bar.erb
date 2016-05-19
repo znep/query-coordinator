@@ -2,7 +2,7 @@
   <%= @view.can_modify_data? ? 'isEditable' : '' %>
   <%= local_assigns[:sidebar_position].present? ? 'sidebar-' + sidebar_position : '' %>">
   <%- if local_assigns[:link_back].present? -%>
-    <a href="<%= view_path(@view.route_params) %>" class="button leftArrowNoHover backToDatasetButton">
+    <a href="<%= view_path(@view) %>" class="button leftArrowNoHover backToDatasetButton">
       <span class="icon"></span>
       <%= t('controls.browse.back_to_dataset') %>
     </a>

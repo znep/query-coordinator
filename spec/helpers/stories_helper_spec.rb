@@ -179,6 +179,37 @@ RSpec.describe StoriesHelper, type: :helper do
     end
   end
 
+  describe '#component_json' do
+    let(:view) { {} }
+    let(:component) {
+      {'type' => 'html'}
+    }
+
+    context 'when encountering a socrata.visualization.classic' do
+      let(:visualization) { 'visualization' }
+
+      let(:view) do
+        {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true}}}}
+      end
+
+      let(:component) do
+        {'type' => 'socrata.visualization.classic', 'value' => {'visualization' => 'visualization'}}
+      end
+
+      before do
+        allow(CoreServer).to receive(:get_view).and_return(view)
+      end
+
+      it 'returns a modified JSON representation of the component' do
+        expect(component_json(component)).to match(/"table":false/)
+      end
+    end
+
+    it 'returns a JSON representation of the component' do
+      expect(component_json(component)).to eq(component.to_json)
+    end
+  end
+
   describe '#component_partial_name' do
     it 'returns a mapping for valid component types' do
       valid_component_types = [

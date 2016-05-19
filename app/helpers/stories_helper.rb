@@ -25,10 +25,7 @@ module StoriesHelper
     story['blocks'].each do |block|
       block['components'].each do |component|
         if component['type'] == 'socrata.visualization.classic'
-          component['value']['visualization'] = CoreServer.get_view(component['value']['originalUid'])
-          if component['value']['visualization']
-            component['value']['visualization']['metadata']['renderTypeConfig']['visible']['table'] = false
-          end
+          component['value']['visualization'] = get_classic_visualization(component['value']['originalUid'])
         end
       end
     end
@@ -47,6 +44,22 @@ module StoriesHelper
       target: '_blank') do
 
       yield if block_given?
+    end
+  end
+
+  def get_classic_visualization(view_uid)
+    view = CoreServer.get_view(view_uid)
+    view['metadata']['renderTypeConfig']['visible']['table'] = false if view
+    view
+  end
+
+  def component_json(component)
+    case component['type']
+      when 'socrata.visualization.classic'
+        component['value']['visualization'] = get_classic_visualization(component['value']['originalUid'])
+        component.to_json
+      else
+        component.to_json
     end
   end
 

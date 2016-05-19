@@ -11,7 +11,7 @@
   padding: 1rem;
 
   &.flannel-hidden {
-    visibility: hidden;
+    display: none;
   }
 
   &::before,

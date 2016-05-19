@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Socrata's Product Styleguide",
   "main": "dist/js/styleguide.js",
   "publishConfig": {
@@ -16,9 +16,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "gulp": "gulp dist",
-    "postinstall": "npm run gulp",
-    "prepublish": "npm run gulp",
-    "lint": "gulp lint"
+    "lint": "gulp lint",
+    "prepublish": "npm run gulp"
   },
   "repository": {
     "type": "git",

@@ -30,14 +30,14 @@ Anyone and everyone is welcome to submit a pull request with code and documentat
 Once your bug fix or component is ready, open a PR, and we'll get to it as soon as possible.
 
 ### Cutting a new release
-When a significant amount of changes have been made, according to the rules of [semver](http://semver.org/), take these steps:
+According to the rules of [semver](http://semver.org/), take these steps:
 
-1. Checkout master: `git checkout master && git pull origin master`.
-2. Update `package.json` with the new semver version.
-3. Run `gulp dist` to update `/dist`.
-4. Commit the changes: `git commit -am "Major.Minor.Patch;" && git push origin master`.
+0. Fetch remote sources: `git fetch --all --prune`.
+1. Check out the master branch: `git checkout master && git pull --rebase origin master`.
+3. Update `package.json` with the new semantic version.
+4. Commit the changes: `git commit -am "Major.Minor.Patch;" && git push origin release`.
 5. Tag the release, push it: `git tag Major.Minor.Patch && git push --tags`.
-6. Publish: `npm publish`
+6. Publish: `npm publish`. (This step requires [Artifactory](https://github.com/socrata/frontend#dependencies).)
 
 ### Deploying to socrata.github.io/styleguide
 When a PR is successfully merged, an admin must run – from `master` — the deploy script at the base of the project.

@@ -3,6 +3,7 @@ import velocity from 'velocity-animate';
 import recaptcha from '../lib/recaptcha';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 
 var contactFormData = window.contactFormData;
 var mobileBreakpoint = 420;
@@ -161,7 +162,10 @@ export var ContactModal = React.createClass({
       <div className="spinner-default" />;
 
     var isSending = _.isEqual(status, 'sending');
-    var sendButtonClasses = `btn btn-primary btn-sm ${isSending ? 'sending' : ''}`;
+    var sendButtonClasses = classNames('btn btn-primary btn-sm', {
+      sending: isSending
+    });
+
     var sendButtonContent = isSending ?
       <span className="spinner-default" /> :
       I18n.contact_dataset_owner_modal.send;

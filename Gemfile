@@ -1,4 +1,5 @@
 source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
+
 ruby '2.3.0'
 
 gem 'actionpack-page_caching'
@@ -59,12 +60,8 @@ group :test do
 end
 
 group :development, :test do
-  gem 'foreman'
   gem 'byebug'
-  gem 'pry'
-  gem 'pry-byebug'
-  gem 'pry-nav'
-  gem 'pry-remote'
+  gem 'foreman'
   gem 'rb-readline'
   gem 'reek', '~> 2.2.1'
   gem 'thin'

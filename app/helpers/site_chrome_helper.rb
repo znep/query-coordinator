@@ -1,7 +1,7 @@
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
   def social_share_link(type)
-    @site_chrome.content['general']['social_shares'].detect{ |x| x['type'] == type }['url']
+    @site_chrome.content['general']['social_shares'].detect { |x| x['type'] == type }['url']
   end
 
   # TODO: replace with `dig` after the Ruby upgrade
@@ -24,6 +24,8 @@ module SiteChromeHelper
     ].exclude?(content)
   end
 
+  # This tells the form how to format an input field for the call to update
+  # fields is a path, like [:footer, :logo, :src]
   def form_field(fields)
     "content[#{fields.join('][')}]"
   end

@@ -104,9 +104,9 @@ $btn-primary-inverse-hover-background-color: $primary-text;
 $btn-primary-busy-border-right-color: tint($primary, 20%);
 
 $btn-alternate-1-color: $white;
-$btn-alternate-1-background-color: shade($alternate-1, 14%);
+$btn-alternate-1-background-color: shade($alternate-1, 23%);
 $btn-alternate-1-border-color: $alternate-1;
-$btn-alternate-1-hover-background-color: shade($alternate-1, 24%);
+$btn-alternate-1-hover-background-color: shade($alternate-1, 31%);
 $btn-alternate-1-hover-color: $white;
 $btn-alternate-1-active-border-color: shade($alternate-1, 10%);
 $btn-alternate-1-inverse-color: $alternate-1-text;
@@ -116,9 +116,9 @@ $btn-alternate-1-inverse-hover-background-color: $alternate-1;
 $btn-alternate-1-busy-border-right-color: tint($alternate-1, 20%);
 
 $btn-alternate-2-color: $white;
-$btn-alternate-2-background-color: $alternate-2;
+$btn-alternate-2-background-color: shade($alternate-2, 19%);
 $btn-alternate-2-border-color: $alternate-2;
-$btn-alternate-2-hover-background-color: shade($alternate-2, 20%);
+$btn-alternate-2-hover-background-color: shade($alternate-2, 29%);
 $btn-alternate-2-hover-color: $white;
 $btn-alternate-2-active-border-color: shade($alternate-2, 10%);
 $btn-alternate-2-inverse-color: $alternate-2;

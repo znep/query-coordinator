@@ -236,6 +236,10 @@ robots_txt_disallow_analytics_add:
 see_socrata_news:
   description: Enable the "What's New" news widget and updated profile page
   defaultValue: true
+send_soql_version:
+  description: We want to remove the $$version argument from frontend soql calls. This is a wrapper just in case we think this is a bad idea.
+  defaultValue: false
+  expectedValues: true false
 show_admin_processes:
   description: Enable the "Jobs" section of the admin interface, which allows users to monitor the status of ingress jobs
   defaultValue: true

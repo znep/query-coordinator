@@ -12,11 +12,11 @@ $(document).ready(function() {
   // Submit the form from the active tab when save button is clicked
   $('button.primary#site_chrome_save').click(function() {
     var activeTabId = getActiveTabId();
-    var formToSubmit = $("form#tab_form_" + activeTabId);
+    var formToSubmit = $('form#tab_form_' + activeTabId);
     if (formToSubmit.length) {
       formToSubmit.submit();
     } else {
-      alert("Could not find form to submit! Try submitting by pressing return in an input field instead.");
+      alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
     }
   });
 });

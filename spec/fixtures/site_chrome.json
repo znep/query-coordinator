@@ -81,14 +81,14 @@
                 },
                 "general": {
                   "default_locale": "en",
-                  "favicon": "http://foo.png",
+                  "window_or_tab_icon": "http://foo.png",
                   "link_text_color": "grey",
                   "locales": [
                     "en",
                     "es",
                     "fr"
                   ],
-                  "site_title": "Evergreen",
+                  "window_or_tab_title_display": "Evergreen",
                   "social_shares": [
                     {
                       "type": "facebook",

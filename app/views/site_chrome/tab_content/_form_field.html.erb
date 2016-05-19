@@ -1,9 +1,7 @@
 <section class="settings-group">
   <div class="settings-form">
-    <% form_field = "content[#{fields.join('][')}]" %>
-
-    <%= label_tag(form_field, translation[:title]) %>
-    <%= text_field_tag(form_field, fetch_content(fields), placeholder: translation[:placeholder]) %>
+    <%= label_tag(form_field(fields), translation[:title]) %>
+    <%= text_field_tag(form_field(fields), fetch_content(fields), placeholder: translation[:placeholder]) %>
   </div>
   <aside><p><%= translation[:description] %></p></aside>
 </section>

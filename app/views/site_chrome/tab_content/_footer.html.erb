@@ -19,12 +19,13 @@
 
   <section class="settings-group">
     <div class="settings-form full">
-      <h3><%= translations[:copyright_notice][:title] %></h3>
-      <p><%= translations[:copyright_notice][:description] %></p>
-      <% form_field = 'content[footer][show_copyright_notice]' %>
-      <%= label_tag form_field do %>
-        <%= check_box_tag(form_field, 1, true) %>
-        <%= translations[:copyright_notice][:label] %>
+      <% fields = [:footer, :copyright_notice] %>
+      <% translation = translations[:copyright_notice] %>
+      <h3><%= translation[:title] %></h3>
+      <p><%= translation[:description] %></p>
+      <%= label_tag form_field(fields) do %>
+        <%= check_box(form_field(fields[0..-2]), fields.last, checked: fetch_boolean(fields)) %>
+        <%= translation[:label] %>
       <% end %>
     </div>
   </section>

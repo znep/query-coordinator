@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
+import { emitMixpanelEvent } from '../actions';
 
 var contactFormData = window.contactFormData;
 
@@ -366,7 +367,8 @@ export var MetadataTable = React.createClass({
       wrap: 'children',
       lastCharacter: {
         remove: [ ' ', ';', '.', '!', '?' ]
-      }
+      },
+      expandedCallback: this.props.onExpandTags
     });
   },
 
@@ -376,6 +378,7 @@ export var MetadataTable = React.createClass({
     var tableColumn = el.querySelector('.metadata-column.tables');
     var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
     var shouldHideToggles = true;
+    var { onExpandMetadataTable } = this.props;
 
     // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
     // shown and hidden as the tableColumn is expanded and collapsed.
@@ -418,6 +421,8 @@ export var MetadataTable = React.createClass({
           }, function() {
             tableColumn.style.height = '';
           });
+
+          onExpandMetadataTable();
         } else {
           tableColumn.classList.remove('collapsed');
 
@@ -448,4 +453,30 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(MetadataTable);
+function mapDispatchToProps(dispatch) {
+  return {
+    onExpandTags: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Tags'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onExpandMetadataTable: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Metadata Table'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MetadataTable);

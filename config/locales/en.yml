@@ -1965,6 +1965,7 @@ en:
           publish: Publish
           replace: Replace
           type: Type
+          upsert: Upsert
           working_copy: Working Copy
         index_page:
           action: Action

@@ -1,6 +1,6 @@
 source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
 
-ruby '2.3.0'
+ruby '2.3.1'
 
 gem 'actionpack-page_caching'
 gem 'addressable'
@@ -35,7 +35,7 @@ gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'zip'
 gem 'zk', '~> 1.9.2'
 gem 'zookeeper', '~> 1.4.9'
-gem 'zendesk2', '~> 1.7.5'
+gem 'zendesk2', '~> 1.8.1'
 
 group :test do
   gem 'factory_girl'

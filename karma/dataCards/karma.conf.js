@@ -49,7 +49,9 @@ module.exports = function ( karma ) {
       'public/javascripts/bower/socrata.utils.js',
 
       'karma/dataCards/test-data/**/*.json',
-      { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
+      // https://github.com/karma-runner/karma/issues/1532
+      { pattern: 'public/images/dataCards/**/*.???', watched: false, included: false, served: true },
+      { pattern: 'public/stylesheets/images/common/*', watched: false, included: false, served: true },
 
       // Tests
       'karma/dataCards/index.js'
@@ -57,7 +59,8 @@ module.exports = function ( karma ) {
 
     proxies: {
       '/images/dataCards': 'http://localhost:7019/base/public/images/dataCards',
-      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/'
+      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
+      '/stylesheets/images/common/': 'http://localhost:7019/base/public/stylesheets/images/common/'
     },
 
     preprocessors: {

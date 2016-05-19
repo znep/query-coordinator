@@ -66,11 +66,14 @@ module.exports = function ( karma ) {
 
       // Test Files
       'karma/oldUx/**/*.js',
-      { pattern: 'public/stylesheets/images/**/*.+{gif,jpg,png}', watched: false, included: false, served: true } // https://github.com/karma-runner/karma/issues/1532
+      // https://github.com/karma-runner/karma/issues/1532
+      { pattern: 'public/stylesheets/images/*', watched: false, included: false, served: true },
+      { pattern: 'public/stylesheets/images/common/*', watched: false, included: false, served: true }
     ],
 
     proxies: {
-      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
+      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/',
+      '/stylesheets/images/common/': 'http://localhost:7019/base/public/stylesheets/images/common/'
     },
 
     // Options for phantomJS launcher

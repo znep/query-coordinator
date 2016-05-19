@@ -155,6 +155,15 @@
                   ]
                 },
                 "general": {
+                  "default_locale": "en",
+                  "window_or_tab_icon": "http://foo.png",
+                  "link_text_color": "grey",
+                  "locales": [
+                    "en",
+                    "es",
+                    "fr"
+                  ],
+                  "window_or_tab_title_display": "Evergreen",
                   "social_shares": [
                     {
                       "type": "facebook",
@@ -165,20 +174,11 @@
                       "url": "http://twitter.com"
                     }
                   ],
-                  "link_text_color": "grey",
-                  "favicon": "http://foo.png",
-                  "default_locale": "en",
-                  "locales": [
-                    "en",
-                    "es",
-                    "fr"
-                  ],
                   "styles": {
-                    "fg_color": "#eee",
                     "bg_color": "#2c97de",
+                    "fg_color": "#eee",
                     "font_family": "Open Sans"
-                  },
-                  "site_title": "Evergreen"
+                  }
                 }
               },
               "updatedAt": 1458946330

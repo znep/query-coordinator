@@ -463,20 +463,10 @@ export default function AssetSelectorRenderer(options) {
     var storyTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.story_tile.description'));
 
-    var goalTileHeader;
-    var goalTileDescription;
-    var $goalTileProvider;
-
-    if (Environment.ENABLE_GOAL_TILES) {
-
-      goalTileHeader = $('<h3>').
-        text(I18n.t('editor.asset_selector.goal_tile.name'));
-      goalTileDescription = $('<p>').
-        text(I18n.t('editor.asset_selector.goal_tile.description'));
-      $goalTileProvider = $('<li>', {
-        'data-provider': 'GOAL_TILE'
-      }).append(goalTileHeader, goalTileDescription);
-    }
+    var goalTileHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.goal_tile.name'));
+    var goalTileDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.goal_tile.description'));
 
     var embedCodeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.embed_code.name'));
@@ -490,9 +480,9 @@ export default function AssetSelectorRenderer(options) {
       $('<li>', {
         'data-provider': 'STORY_TILE'
       }).append(storyTileHeader, storyTileDescription),
-      // TODO: Bring the feature-flag-enabled code path back here to conform
-      // with local style once feature flag is removed.
-      $goalTileProvider,
+      $('<li>', {
+        'data-provider': 'GOAL_TILE'
+      }).append(goalTileHeader, goalTileDescription),
       $('<li>', {
         'data-provider': 'YOUTUBE'
       }).append(youtubeHeader, youtubeDescription),

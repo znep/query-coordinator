@@ -686,10 +686,11 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     if dataset_landing_page_enabled? && view_has_landing_page?
-      related_views = @view.try(:find_dataset_landing_page_related_content) || []
-      @featured_views = related_views.slice(0, 3)
+      dataset_landing_page = DatasetLandingPage.new
+      @featured_views = dataset_landing_page.get_featured_views(params[:id], 4)
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
+
       return
     end
 

@@ -1,5 +1,5 @@
 import { getDefaultStore } from 'testStore';
-import reducer from 'reducers';
+import reducer from 'reducers/contactForm';
 import {
   handleContactFormFailure,
   handleContactFormSuccess,
@@ -11,65 +11,64 @@ import {
   resetContactForm
 } from 'actions';
 
-describe('reducers/contactModal', function() {
+describe('reducers/contactForm', function() {
   var state;
 
   beforeEach(function() {
-    var store = getDefaultStore();
-    state = store.getState();
+    state = reducer();
   });
 
   describe('SET_CONTACT_FORM_FIELD', function() {
     it('sets the value of the specified field', function() {
-      state.contactForm.fields.message = 'pandas';
+      state.fields.message = 'pandas';
 
       var result = reducer(state, setContactFormField('message', 'wombats'));
-      expect(result.contactForm.fields.message).to.equal('wombats');
+      expect(result.fields.message).to.equal('wombats');
     });
   });
 
   describe('SET_CONTACT_FORM_RECAPTCHA_LOADED', function() {
     it('sets the value of recaptchaLoaded', function() {
-      state.contactForm.recaptchaLoaded = false;
+      state.recaptchaLoaded = false;
 
       var result = reducer(state, setContactFormRecaptchaLoaded(true));
-      expect(result.contactForm.recaptchaLoaded).to.equal(true);
+      expect(result.recaptchaLoaded).to.equal(true);
     });
   });
 
   describe('SET_CONTACT_FORM_ERRORS', function() {
     it('sets the value of the errors array', function() {
-      state.contactForm.errors = [];
+      state.errors = [];
 
       var result = reducer(state, setContactFormErrors(['bad', 'errors']));
-      expect(result.contactForm.errors).to.deep.equal(['bad', 'errors']);
+      expect(result.errors).to.deep.equal(['bad', 'errors']);
     });
   });
 
   describe('SEND_CONTACT_FORM', function() {
     it('sets status to "sending"', function() {
-      state.contactForm.status = '';
+      state.status = '';
 
       var result = reducer(state, sendContactForm());
-      expect(result.contactForm.status).to.equal('sending');
+      expect(result.status).to.equal('sending');
     });
   });
 
   describe('HANDLE_CONTACT_FORM_SUCCESS', function() {
     it('sets status to "success"', function() {
-      state.contactForm.status = '';
+      state.status = '';
 
       var result = reducer(state, handleContactFormSuccess());
-      expect(result.contactForm.status).to.equal('success');
+      expect(result.status).to.equal('success');
     });
   });
 
   describe('HANDLE_CONTACT_FORM_FAILURE', function() {
     it('sets status to "failure"', function() {
-      state.contactForm.status = '';
+      state.status = '';
 
       var result = reducer(state, handleContactFormFailure());
-      expect(result.contactForm.status).to.equal('failure');
+      expect(result.status).to.equal('failure');
     });
   });
 });

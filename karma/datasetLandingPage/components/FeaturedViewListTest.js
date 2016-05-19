@@ -2,14 +2,18 @@ import { FeaturedViewList } from 'components/FeaturedViewList';
 import mockFeaturedView from 'data/mockFeaturedView';
 
 describe('components/FeaturedViewList', function() {
-  var defaultProps = {
-    list: _.fill(Array(3), mockFeaturedView),
-    hasMore: false,
-    hasError: false,
-    isLoading: false,
-    isCollapsed: false,
-    isDesktop: true
-  };
+  var defaultProps;
+
+  beforeEach(function() {
+    defaultProps = {
+      list: _.fill(Array(3), mockFeaturedView),
+      hasMore: false,
+      hasError: false,
+      isLoading: false,
+      isCollapsed: false,
+      isDesktop: true
+    };
+  });
 
   it('renders an element with the expected structure', function() {
     var element = renderComponent(FeaturedViewList, defaultProps);
@@ -43,6 +47,15 @@ describe('components/FeaturedViewList', function() {
       }));
 
       expect(element.querySelector('.load-more-button')).to.exist;
+    });
+
+    it('does not render a button to load more featured views on a mobile device', function() {
+      var element = renderComponent(FeaturedViewList, _.merge(defaultProps, {
+        hasMore: true,
+        isDesktop: false
+      }));
+
+      expect(element.querySelector('.load-more-button')).to.not.exist;
     });
 
     it('renders an error alert if hasError is true', function() {
@@ -127,6 +140,16 @@ describe('components/FeaturedViewList', function() {
       }));
 
       expect(element.querySelector('.collapse-button')).to.exist;
+    });
+
+    it('does not render the button on a mobile device', function() {
+      var element = renderComponent(FeaturedViewList, _.merge(defaultProps, {
+        hasMore: false,
+        list: _.fill(Array(4), mockFeaturedView),
+        isDesktop: false
+      }));
+
+      expect(element.querySelector('.collapse-button')).to.not.exist;
     });
 
     it('dispatches an action to toggle isCollapsed when the button is clicked', function() {

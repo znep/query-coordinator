@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import FeaturedView from './FeaturedView';
 import { VelocityComponent } from 'velocity-react';
+import { FEATURED_VIEWS_CHUNK_SIZE } from '../lib/constants';
 
 export var FeaturedViewList = React.createClass({
   propTypes: {
@@ -17,7 +18,7 @@ export var FeaturedViewList = React.createClass({
   },
 
   renderContents: function() {
-    var { list, hasMore, onClickWidget, onScrollList, isDesktop } = this.props;
+    var { list, hasMore, isCollapsed, onClickWidget, onScrollList, isDesktop } = this.props;
 
     if (_.isEmpty(list)) {
       var alertMessage = I18n.featured_views.no_content_alert_html;
@@ -25,10 +26,18 @@ export var FeaturedViewList = React.createClass({
     }
 
     var featuredViews = _.map(list, function(featuredView, i) {
-      var animation = { opacity: 1 };
+      var opacity;
+
+      if (isDesktop) {
+        opacity = (i > 2 && isCollapsed) ? 0 : 1;
+      } else {
+        opacity = 1;
+      }
+
+      var animation = { opacity: opacity };
 
       return (
-        <VelocityComponent key={i} animation={animation} runOnMount={i > 2}>
+        <VelocityComponent key={i} animation={animation} runOnMount={i > 2} duration={400}>
           <FeaturedView {...featuredView} onClick={onClickWidget} />
         </VelocityComponent>
       );
@@ -50,7 +59,7 @@ export var FeaturedViewList = React.createClass({
   },
 
   renderLoadMoreButton: function() {
-    var { hasMore, hasError, isLoading, loadMore, dismissError, isDesktop } = this.props;
+    var { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
     if (!hasMore || !isDesktop) {
       return null;
@@ -65,23 +74,24 @@ export var FeaturedViewList = React.createClass({
     // Keep button height the same regardless of whether or not it has a spinner inside of it.
     var style = isLoading ? { paddingTop: '6px', paddingBottom: '3px' } : null;
 
-    var errorAlert;
-    if (hasError) {
-      errorAlert = (
-        <div className="alert error">
-          {I18n.featured_views.load_more_error}
-          <span className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
-        </div>
-      );
+    return (
+      <button onClick={onClick} className={className} style={style}>
+        {contents}
+      </button>
+    );
+  },
+
+  renderError: function() {
+    var { hasError, dismissError } = this.props;
+
+    if (!hasError) {
+      return;
     }
 
     return (
-      <div>
-        <button onClick={onClick} className={className} style={style}>
-          {contents}
-        </button>
-
-        {errorAlert}
+      <div className="alert error">
+        {I18n.featured_views.load_more_error}
+        <span className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
   },
@@ -89,7 +99,7 @@ export var FeaturedViewList = React.createClass({
   renderCollapseButton: function() {
     var { list, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
-    if (hasMore || list.length <= 3 || !isDesktop) {
+    if (hasMore || list.length <= FEATURED_VIEWS_CHUNK_SIZE || !isDesktop) {
       return;
     }
 
@@ -112,10 +122,11 @@ export var FeaturedViewList = React.createClass({
       };
     }
 
-    var visibleCount = isCollapsed ? 3 : list.length;
+    var visibleCount = isCollapsed ? FEATURED_VIEWS_CHUNK_SIZE : list.length;
+    var rowCount = Math.ceil(visibleCount / FEATURED_VIEWS_CHUNK_SIZE);
 
     return {
-      height: (featuredViewHeight + featuredViewMargin) * Math.ceil(visibleCount / 3)
+      height: (featuredViewHeight + featuredViewMargin) * rowCount - 1
     };
   },
 
@@ -132,6 +143,7 @@ export var FeaturedViewList = React.createClass({
 
         {this.renderLoadMoreButton()}
         {this.renderCollapseButton()}
+        {this.renderError()}
       </section>
     );
   }

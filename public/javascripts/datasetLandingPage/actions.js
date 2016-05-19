@@ -1,3 +1,16 @@
+import { FEATURED_VIEWS_CHUNK_SIZE } from './lib/constants';
+
+// Used to throw errors from non-200 responses when using fetch.
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    var error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+  }
+}
+
 export const EMIT_MIXPANEL_EVENT = 'EMIT_MIXPANEL_EVENT';
 export function emitMixpanelEvent(data) {
   return {
@@ -60,16 +73,6 @@ export function handleContactFormFailure() {
 }
 
 export function submitContactForm() {
-  function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return response;
-    } else {
-      var error = new Error(response.statusText);
-      error.response = response;
-      throw error;
-    }
-  }
-
   return function(dispatch, getState) {
     var state = getState();
     var viewId = state.view.id;
@@ -146,11 +149,12 @@ export function loadMoreFeaturedViews() {
 
     var viewId = state.view.id;
     var offset = _.get(state, 'featuredViews.list.length', 0);
-    var limit = 4;
+    var limit = FEATURED_VIEWS_CHUNK_SIZE + 1;
 
     dispatch(requestFeaturedViews());
 
     fetch(`/dataset_landing_page/${viewId}/featured_views?limit=${limit}&offset=${offset}`).
+      then(checkStatus).
       then(response => response.json()).
       then(featuredViews => dispatch(receiveFeaturedViews(featuredViews)))
       ['catch'](() => dispatch(handleFeaturedViewsError()));

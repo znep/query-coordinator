@@ -15,7 +15,10 @@ var Responsive = React.createClass({
   },
 
   updateState: function() {
-    this.setState(this.getState());
+    var newState = this.getState();
+    if (!_.isEqual(newState, this.state)) {
+      this.setState(newState);
+    }
   },
 
   getState: function() {

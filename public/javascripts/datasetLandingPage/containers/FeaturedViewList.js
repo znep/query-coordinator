@@ -13,10 +13,16 @@ function mapStateToProps(state) {
   return state.featuredViews;
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     loadMore: function() {
       dispatch(loadMoreFeaturedViews());
+
+      var mixpanelPayload = {
+        name: 'Clicked to Show More Views'
+      };
+
+      dispatch(emitMixpanelEvent(mixpanelPayload));
     },
 
     toggleList: function() {
@@ -42,7 +48,7 @@ function mapDispatchToProps(dispatch) {
 
     onScrollList: _.throttle(function(event) {
       var el = event.target;
-      var isDesktop = document.body.offsetWidth > breakpoints.tablet;
+      var isDesktop = ownProps.isDesktop;
       var hasMore = event.target.querySelector('.loading-card');
       var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
 
@@ -53,6 +59,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-var FeaturedViewListContainer = connect(mapStateToProps, mapDispatchToProps)(FeaturedViewList);
-
-export default FeaturedViewListContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(FeaturedViewList);

@@ -36,15 +36,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-var options = {
-  pure: false
-};
-
-var ContactModalContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  options
-)(ContactModal);
-
-export default ContactModalContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(ContactModal);

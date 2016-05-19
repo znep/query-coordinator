@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { FEATURED_VIEWS_CHUNK_SIZE } from '../lib/constants';
+
 import {
   REQUEST_FEATURED_VIEWS,
   RECEIVE_FEATURED_VIEWS,
@@ -8,15 +10,18 @@ import {
   TOGGLE_FEATURED_VIEWS
 } from '../actions';
 
+var initialFeaturedViews = _.get(window.initialState, 'featuredViews', []);
+var initialState = {
+  list: _.take(initialFeaturedViews, FEATURED_VIEWS_CHUNK_SIZE),
+  hasMore: initialFeaturedViews.length > FEATURED_VIEWS_CHUNK_SIZE,
+  hasError: false,
+  isLoading: false,
+  isCollapsed: false
+};
+
 export default function(state, action) {
   if (_.isUndefined(state)) {
-    return {
-      list: _.take(window.initialState.featuredViews, 3),
-      hasMore: window.initialState.featuredViews.length > 3,
-      hasError: false,
-      isLoading: false,
-      isCollapsed: false
-    };
+    return initialState;
   }
 
   state = _.cloneDeep(state);
@@ -27,8 +32,9 @@ export default function(state, action) {
       return state;
 
     case RECEIVE_FEATURED_VIEWS:
-      state.list = state.list.concat(_.take(action.featuredViews, 3));
-      state.hasMore = action.featuredViews.length > 3;
+      state.list = state.list.concat(_.take(action.featuredViews, FEATURED_VIEWS_CHUNK_SIZE));
+      state.hasMore = action.featuredViews.length > FEATURED_VIEWS_CHUNK_SIZE;
+      state.hasError = false;
       state.isLoading = false;
       return state;
 

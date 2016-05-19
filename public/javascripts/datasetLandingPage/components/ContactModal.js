@@ -4,16 +4,13 @@ import recaptcha from '../lib/recaptcha';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import breakpoints from '../lib/breakpoints';
 
 var contactFormData = window.contactFormData;
 var animationDuration = 300;
 var animationEasing = [0.645, 0.045, 0.355, 1];
 
 export var ContactModal = React.createClass({
-  contextTypes: {
-    isMobile: PropTypes.bool
-  },
-
   propTypes: {
     fields: PropTypes.object.isRequired,
     errors: PropTypes.array.isRequired,
@@ -122,13 +119,14 @@ export var ContactModal = React.createClass({
 
   closeModal: function() {
     var self = this;
-    var { isMobile } = this.context;
     var element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
+    var windowWidth = document.body.offsetWidth;
+    var isMobile = windowWidth <= breakpoints.mobile;
 
     _.delay(function() {
       if (isMobile) {
         velocity(element, {
-          left: document.body.offsetWidth
+          left: windowWidth
         }, {
           duration: animationDuration,
           easing: animationEasing,

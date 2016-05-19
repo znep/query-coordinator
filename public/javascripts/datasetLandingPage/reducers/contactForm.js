@@ -10,19 +10,21 @@ import {
   HANDLE_CONTACT_FORM_FAILURE
 } from '../actions';
 
+var initialState = {
+  errors: [],
+  fields: {
+    email: _.get(window.sessionData, 'email', ''),
+    subject: '',
+    message: ''
+  },
+  recaptchaLoaded: false,
+  status: '',
+  token: _.get(window.contactFormData, 'token', '')
+};
+
 export default function(state, action) {
-  if (_.isUndefined(state) || action.type === RESET_CONTACT_FORM) {
-    return {
-      errors: [],
-      fields: {
-        email: _.get(window.sessionData, 'email', ''),
-        subject: '',
-        message: ''
-      },
-      recaptchaLoaded: false,
-      status: '',
-      token: _.get(window.contactFormData, 'token', '')
-    };
+  if (_.isUndefined(state)) {
+    return initialState;
   }
 
   state = _.cloneDeep(state);
@@ -43,6 +45,9 @@ export default function(state, action) {
     case SEND_CONTACT_FORM:
       state.status = 'sending';
       return state;
+
+    case RESET_CONTACT_FORM:
+      return initialState;
 
     case HANDLE_CONTACT_FORM_SUCCESS:
       state.status = 'success';

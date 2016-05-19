@@ -88,6 +88,8 @@ body {
       }
 
       .dropdown.download {
+        z-index: 10;
+
         .geo-layer-heading {
           overflow: hidden;
           white-space: nowrap;
@@ -197,9 +199,11 @@ main.container.landing-page-container {
       flex: 0 0 auto;
       width: 32%;
       margin-right: 2%;
+      opacity: 0;
 
       &.loading-card {
         display: flex;
+        opacity: 1;
 
         .spinner-default {
           width: 64px;
@@ -288,14 +292,6 @@ main.container.landing-page-container {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       -ms-overflow-style: -ms-autohiding-scrollbar;
-
-      .result-card {
-        opacity: 0;
-
-        &.loading-card {
-          opacity: 1;
-        }
-      }
     }
   }
 

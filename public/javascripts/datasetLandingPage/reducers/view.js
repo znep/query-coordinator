@@ -1,3 +1,3 @@
 export default function() {
-  return window.initialState.view;
+  return _.get(window.initialState, 'view', {});
 }

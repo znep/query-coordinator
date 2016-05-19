@@ -43,6 +43,10 @@ React components).
 The webpack dev server serves its packaged assets from memory.  For production
 builds, see the [webpack](#webpack) section.
 
+## Running the app _without_ the local stack
+
+See: https://github.com/socrata/docs/blob/master/connect_local_frontend_to_staging_services.md
+
 ## Dependencies
 
 Dependencies are stored in artifactoryonline.com.  A shared username and

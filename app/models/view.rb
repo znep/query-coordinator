@@ -301,16 +301,23 @@ class View < Model
     return top_level_cats.reject { |k, c| c[:value].nil? }
   end
 
-  def category_display
+  def self.category_display(category)
+    return nil if category.blank?
+
     categories = CurrentDomain.configuration('view_categories').properties
     cat_obj = nil
     categories.each do |c, o|
-      cat_obj = o if c == self.category || c.titleize_if_necessary == self.category
+      cat_obj = o if c == category || c.titleize_if_necessary == category
     end
-    return self.category if cat_obj.nil?
+    return category if cat_obj.nil?
+
     c = (cat_obj['locale_strings'] || {})[I18n.locale]
-    c = self.category if c.blank?
+    c = category if c.blank?
     c
+  end
+
+  def category_display
+    View.category_display(category)
   end
 
   def module_enabled?(name)

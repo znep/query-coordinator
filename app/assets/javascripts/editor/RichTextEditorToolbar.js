@@ -314,6 +314,10 @@ export default function RichTextEditorToolbar(selector, formats) {
     var buttonOptions;
     var $button;
 
+    toolbarButtons.push(
+      $('<span>', {class: 'rich-text-editor-toolbar-divider'})
+    );
+
     for (var i = 0; i < group.length; i++) {
 
       buttonClass = StorytellerUtils.format(
@@ -374,7 +378,15 @@ export default function RichTextEditorToolbar(selector, formats) {
       }
     }
 
-    return $('<div>', { 'class': 'rich-text-editor-toolbar-btn-group' }).
+    var isTextColor = toolbarButtons.some(function(toolbarButton) {
+      return toolbarButton.find('.rich-text-editor-toolbar-btn-textColor').length > 0;
+    });
+
+    var className = isTextColor ?
+      'rich-text-editor-toolbar-btn-group rich-text-editor-toolbar-btn-group-with-block-elements' :
+      'rich-text-editor-toolbar-btn-group';
+
+    return $('<div>', {class: className}).
       append(toolbarButtons);
   }
 

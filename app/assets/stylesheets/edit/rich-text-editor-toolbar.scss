@@ -43,8 +43,17 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
     }
   }
 
+  .rich-text-editor-toolbar-btn-group {
+    &.rich-text-editor-toolbar-btn-group-with-block-elements {
+      .rich-text-editor-toolbar-divider {
+        top: 7px;
+      }
+    }
+  }
+
   .rich-text-editor-toolbar-btn-panel-group {
     position: relative;
+    float: right;
   }
 
   &:last-child {
@@ -158,6 +167,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
 
     .rich-text-editor-toolbar-btn-textColor {
       position: relative;
+      float: right;
 
       .rich-text-editor-toolbar-text-color-swatch {
         position: absolute;

@@ -441,7 +441,7 @@ module BrowseActions
         browse_options[:view_request_error] = true
         browse_options[:view_results] = []
 
-      rescue TimeoutError # Cetera calls just uses HTTParty
+      rescue Timeout::Error # Cetera calls just uses HTTParty
         Rails.logger.warn("Timeout on Cetera request for #{abridged_browse_options}")
         browse_options[:view_request_error] = true
         browse_options[:view_request_timed_out] = true

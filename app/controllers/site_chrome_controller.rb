@@ -13,19 +13,19 @@ class SiteChromeController < ApplicationController
   end
 
   def update
-    STDOUT.puts "\n\nparams: #{params.inspect}\n\n"
+    # STDOUT.puts "\n\nparams: #{params.inspect}\n\n"
 
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
 
     if @site_chrome.update_published_content(params[:content])
-      flash[:success] = 'Site theme updated'
+      flash[:notice] = 'Site theme updated'
       redirect_to site_chrome_path
     elsif @site_chrome.errors.any?
-      flash[:success] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
+      flash[:error] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
       render 'edit', status: :unprocessable_entity
     else
-      flash[:success] = "Something went wrong, we're not sure what. Try re-saving."
+      flash[:error] = "Something went wrong, we're not sure what. Try re-saving."
       render 'edit', status: :internal_server_error
     end
   end

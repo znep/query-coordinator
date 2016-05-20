@@ -93,6 +93,14 @@ describe SiteChromeController do
     end
   end
 
+  describe '#find_or_create_default_site_chrome' do
+    it 'creates content with necessary keys to render views' do
+      allow(SiteChrome).to receive(:find_or_create_default).and_return(empty_site_chrome)
+      result = @controller.instance_eval { find_or_create_default_site_chrome }
+      expect(result).to match_array(%w(header footer general locales))
+    end
+  end
+
   #########################
   # Routes that don't exist
 
@@ -137,5 +145,9 @@ describe SiteChromeController do
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(true)
     allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+  end
+
+  def empty_site_chrome
+    SiteChrome.new
   end
 end

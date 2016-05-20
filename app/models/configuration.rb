@@ -51,14 +51,15 @@ class Configuration < Model
     props = Hashie::Mash.new
     return props if data['properties'].nil?
 
-    data['properties'].each do |p|
-      props[p['name']] = p['value']
+    data['properties'].each do |property|
+      props[property['name']] = property['value']
     end
 
+    props
   end
 
   def has_property?(name)
-    properties.has_key? name.to_s
+    properties.has_key?(name.to_s)
   end
 
   def create_property(name, value, batch_id = nil)

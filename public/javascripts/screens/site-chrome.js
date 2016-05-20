@@ -1,7 +1,6 @@
 $(document).ready(function() {
   // Show appropriate tab given the url hash. Ex: /site_chrome#tab=general
-  var activeTabId = getActiveTabId;
-  showTab(activeTabId);
+  showTab(getActiveTabId());
 
   // Change active tab and tab-content on click
   $('ul.tabs li').click(function() {
@@ -11,8 +10,7 @@ $(document).ready(function() {
 
   // Submit the form from the active tab when save button is clicked
   $('button.primary#site_chrome_save').click(function() {
-    var activeTabId = getActiveTabId();
-    var formToSubmit = $('form#tab_form_' + activeTabId);
+    var formToSubmit = $('form#tab_form_' + getActiveTabId());
     if (formToSubmit.length) {
       formToSubmit.submit();
     } else {

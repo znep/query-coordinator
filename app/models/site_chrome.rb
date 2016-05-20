@@ -141,7 +141,7 @@ class SiteChrome
   end
 
   def self.find_or_create_default
-    find_default || SiteTheme.new(default_values).create
+    find_default || SiteChrome.new(default_values).create
   end
 
   def create_or_update_property(property_name, property_value)

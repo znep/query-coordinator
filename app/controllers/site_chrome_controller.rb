@@ -43,5 +43,10 @@ class SiteChromeController < ApplicationController
   # If site chrome doesn't yet exist, create a new one
   def find_or_create_default_site_chrome
     @site_chrome = SiteChrome.find_or_create_default
+    # Ensure site_chrome has content necessary for rendering plain views
+    @content = @site_chrome.content || {}
+    %w(header footer general locales).each do |key|
+      @content[key] ||= {}
+    end
   end
 end

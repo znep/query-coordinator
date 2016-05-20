@@ -1,4 +1,4 @@
-<% footer = @site_chrome.content['footer'] %>
+<% footer = @content['footer'] %>
 
 <%= form_tag site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
 
@@ -13,6 +13,7 @@
                       translation: translations[:footer_text_link_color] }) %>
 
   <%= render('list_of_links',
+             :link_count => 15,
              :links => footer['links'],
              :content_key => :footer,
              :translations => translations) %>

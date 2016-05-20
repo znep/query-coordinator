@@ -16,10 +16,19 @@
     <%= label_tag(nil, url_title) %>
   </div>
 
-  <% links.each do |link| %>
+  <% links.to_a.each_with_index do |link, i| %>
+    <% if i < link_count %>
+      <div class="link-row">
+        <%= text_field_tag("content[#{content_key}]links[][key]", link['key'] || '', placeholder: label_placeholder) %>
+        <%= text_field_tag("content[#{content_key}]links[][url]", link['url'] || '', placeholder: url_placeholder) %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% for i in 0...(link_count - links.to_a.length) %>
     <div class="link-row">
-      <%= text_field_tag("content[#{content_key}]links[][key]", link['key'], placeholder: label_placeholder) %>
-      <%= text_field_tag("content[#{content_key}]links[][url]", link['url'], placeholder: url_placeholder) %>
+      <%= text_field_tag("content[#{content_key}]links[][key]", '', placeholder: label_placeholder) %>
+      <%= text_field_tag("content[#{content_key}]links[][url]", '', placeholder: url_placeholder) %>
     </div>
   <% end %>
 </section>

@@ -105,7 +105,7 @@ describe('componentStoryTile jQuery plugin', function() {
     stubTileJsonApiWith(validStoryTileDataWithoutImage, 404);
 
     it('should render an error message, then clear when adding a valid tile', function(done) {
-      assert.isTrue($component.hasClass('error'));
+      assert.isTrue($component.hasClass('component-error'));
 
       var dataWithNewUrl = _.cloneDeep(validStoryTileDataWithoutImage);
       dataWithNewUrl.url = 'https://example.com/stories/s/test-what';
@@ -117,7 +117,7 @@ describe('componentStoryTile jQuery plugin', function() {
 
       setTimeout(function() {
         server.restore();
-        assert.isFalse($component.hasClass('error'));
+        assert.isFalse($component.hasClass('component-error'));
         done();
       }, 1000);
     });

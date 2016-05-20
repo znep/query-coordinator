@@ -207,7 +207,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
 function _removeStoryTile($element) {
 
   $element.
-    removeClass('error').
+    removeClass('component-error').
     children().
     // Don't accidentally remove the edit control when trying to clear the
     // component's DOM tree in order to re-render it.
@@ -218,7 +218,7 @@ function _removeStoryTile($element) {
 function _renderStoryTileError($element) {
 
   $element.
-    addClass('error').
+    addClass('component-error').
     append([
       $('<p>').text(I18n.t('editor.story_tile.invalid_permissions'))
     ]);

@@ -1267,7 +1267,23 @@ en:
       foundry_button: API Docs
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
+    cancel: Cancel
     contact_dataset_owner: Contact Dataset Owner
+    contact_dataset_owner_modal:
+      description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
+      email: Your Email
+      email_description: (Your email address will be shared with the dataset owner so they can get back to you)
+      error_empty_email: Please fill in your email so the data owner can get back to you.
+      error_empty_message: Please fill in the message form.
+      error_empty_recaptcha: Please confirm you are not a robot by checking the box above.
+      error_empty_subject: Please fill in your message subject.
+      error_invalid_email: Please enter a valid email address.
+      failure_html: "<b>Oh no!</b> Something went wrong. Please try again later."
+      message: Message
+      send: Send
+      subject: Subject
+      success_html: "<b>Thank you!</b> Your message has been sent."
+      title: Send a Message to the Owner of this Dataset
     copy: Copy
     copy_success: Copied!
     dataset_contents:
@@ -1287,6 +1303,12 @@ en:
       no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
       title: Popular Content Using this Data
       view: View
+    feedback:
+      panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
+      panel_title: Do you want to include an annotated screenshot of the current page?
+      screenshot_no: No thanks
+      screenshot_yes: Yes, include a screenshot
+      title: Feedback
     less: Show Less
     manage_prompt: Click here to manage permissions
     metadata:
@@ -1297,6 +1319,7 @@ en:
       data_provided_by: Data Provided by
       dataset_owner: Dataset Owner
       downloads: Downloads
+      edit_metadata: Edit Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
@@ -1306,6 +1329,7 @@ en:
       title: About this Dataset
       topics: Topics
       views: Views
+      view_statistics: View all statistics for this Dataset
     more: Show More
     multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
@@ -1741,7 +1765,7 @@ en:
         skip_to_dataset_listing: Skip to dataset listing
         table_description: Datasets
         title: Asset Inventory
-        unpublished_datasets: Unpublished Datasets
+        unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
       federation:
         accept: Accept
@@ -1772,6 +1796,51 @@ en:
         target_domain: Target Domain
         terminate: Terminate
         title: Open Data Federation
+      external_federation:
+        actions: Actions
+        add_new: Add new
+        add_new_federation: Add External Federation
+        all_assets: Federate all assets
+        arcgis_server_address: ArcGIS Server Address
+        assets_federated:
+          one: 1 asset federated
+          other: '%{count} assets federated'
+        catalog: Catalog
+        current_status: Current Status
+        data: Data
+        edit: Edit
+        edit_federation: 'Edit Federation: %{url}'
+        errors:
+          duplicate_server_error: That Esri Server has already been federated on this domain.
+          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
+          json_format_error: Your JSON was malformed.
+          missing_attributes_error: 'These parameters were missing: %{missing}.'
+          not_found_error: That resource was not found.
+          problem_with_errors: 'We were unable to process your request.'
+          server_ping_error: 'Could not connect to server: %{url}'
+          unknown_error: 'Your request failed for the following reason: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS Server address
+        failing: Failing
+        federated_assets: Federated assets
+        flashes:
+          created: Success! We reached your server.
+          deleted: Your federation has been marked for deletion.
+          updated: Your federation settings have been saved.
+        ignore: Ignored
+        last_synced: Last synced
+        not_synced_yet_edit: You may edit the federation settings once we have synced the ArcGIS catalog.
+        no_external_federations: There are no current External Federations. If you wish to connect an external source to your catalog, click Add New above.
+        not_yet: Not yet synced
+        search: Search the domain
+        selective_federation: Selective Federation
+        service_unavailable: 'External federation is currently unavailable.'
+        source: Federation source
+        source_domain: Source Domain
+        some_assets: Federate only these assets
+        title: External Federation
+        working: Working
+        save: Save
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer
@@ -1896,6 +1965,7 @@ en:
           publish: Publish
           replace: Replace
           type: Type
+          upsert: Upsert
           working_copy: Working Copy
         index_page:
           action: Action
@@ -3721,6 +3791,10 @@ en:
       create_new:
         name: New Template Name
         title: Create a new Template
+      create_new_dataset:
+        title: Create a New Dataset
+        prompt: Please give your new dataset a name.
+        explanation_html: When you press <strong>Save</strong>, your new <strong>Draft Dataset</strong> will be visible in your personal catalog. Nobody else will be able to see it until you complete the New Dataset Wizard.
     wizard:
       cancel: Cancel
       finish: Finish

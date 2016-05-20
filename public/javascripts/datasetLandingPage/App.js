@@ -6,25 +6,30 @@ import FeaturedViewList from './containers/FeaturedViewList';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import ApiFlannel from './components/ApiFlannel';
+import ContactModal from './containers/ContactModal';
 import ShareModal from './components/ShareModal';
 import ODataModal from './components/ODataModal';
+import FeedbackPanel from './components/FeedbackPanel';
 
 export default React.createClass({
+
   render: function() {
     return (
       <div>
-        <Navbar/>
-        <PrivateNotice/>
-        <InfoPane/>
+        <Navbar />
+        <PrivateNotice />
+        <InfoPane />
         <main className="container landing-page-container">
-          <FeaturedViewList/>
-          <MetadataTable/>
-          <DatasetContents/>
+          <FeaturedViewList />
+          <MetadataTable />
+          <DatasetContents />
         </main>
 
-        <ApiFlannel/>
-        <ShareModal/>
-        <ODataModal/>
+        <ApiFlannel />
+        <ContactModal />
+        <ShareModal />
+        <ODataModal />
+        <FeedbackPanel />
       </div>
     );
   }

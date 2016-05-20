@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { emitMixpanelEvent } from '../actions';
 
 export var ShareModal = React.createClass({
   propTypes: {
@@ -7,14 +8,14 @@ export var ShareModal = React.createClass({
   },
 
   render: function() {
-    var { view } = this.props;
+    var { view, onClickOption } = this.props;
 
     var privateNotice = null;
     if (view.isPrivate) {
       privateNotice = (
         <section className="modal-content">
           <div className="alert info">
-            <span dangerouslySetInnerHTML={{__html: I18n.share.visibility_alert_html}}/>
+            <span dangerouslySetInnerHTML={{__html: I18n.share.visibility_alert_html}} />
             {' '}
             <a href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`} target="_blank">
               {I18n.manage_prompt}
@@ -38,21 +39,21 @@ export var ShareModal = React.createClass({
 
           <section className="modal-content">
             <div className="facebook">
-              <a href={view.facebookShareUrl} target="_blank">
+              <a href={view.facebookShareUrl} data-share-option="Facebook" target="_blank" onClick={onClickOption}>
                 <span className="icon-facebook"></span>
                 {I18n.share.facebook}
               </a>
             </div>
 
             <div className="twitter">
-              <a href={view.twitterShareUrl} target="_blank">
+              <a href={view.twitterShareUrl} data-share-option="Twitter" target="_blank" onClick={onClickOption}>
                 <span className="icon-twitter"></span>
                 {I18n.share.twitter}
               </a>
             </div>
 
             <div className="email">
-              <a href={view.emailShareUrl}>
+              <a href={view.emailShareUrl} data-share-option="Email" onClick={onClickOption}>
                 <span className="icon-email"></span>
                 {I18n.share.email}
               </a>
@@ -74,4 +75,19 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(ShareModal);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickOption: function(event) {
+      var payload = {
+        name: 'Shared Dataset',
+        properties: {
+          'Provider': event.currentTarget.dataset.shareOption
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShareModal);

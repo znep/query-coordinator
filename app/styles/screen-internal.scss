@@ -552,6 +552,21 @@ ul.autocomplete {
         white-space: nowrap;
       }
     }
+
+    .line:hover {
+      .alias {
+        font-weight: bold;
+      }
+
+      .oneButtonForm {
+        opacity: 0.2;
+        transition: opacity 0.3s ease-out;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
   }
 }
 

@@ -8,7 +8,8 @@ git rev-parse HEAD > "$WORKSPACE/REVISION"
 bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
 bundle install --without=development --deployment
 npm install --depth 0
-bundle exec rake assets:webpack
+#bundle exec rake assets:webpack
+npm run build:prod
 
 # Dammit Jammit
 if [ ! $COMPRESS_ASSETS = "true" ]; then

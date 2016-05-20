@@ -91,8 +91,11 @@ development: &development
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
+  recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
 
   # auth alternatives
+  esri_crawler_hostname: localhost
+  esri_crawler_port: 8888
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKQmdZMlROdWJrNTlNbEkwTXl2N3Uzb0VLcGFDbVdDSCIsInNjb3BlcyI6eyJjb25uZWN0aW9ucyI6eyJhY3Rpb25zIjpbInJlYWQiXX19LCJpYXQiOjE0MzQzODY4MDgsImp0aSI6ImE3NmU5YTBmZDMzY2M4YTBiN2NlM2FjODM0Mjk3MWI5In0.tcDv8lxJVf0-f6fKBfRnj5ab4F5PerGDIP-6sHtSGIk
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI

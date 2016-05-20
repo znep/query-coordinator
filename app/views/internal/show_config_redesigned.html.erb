@@ -64,11 +64,9 @@
     <%- if @parent_config.present? && @parent_config.data['properties'].present? -%>
       <div class="inheritedProperties expandable">
         <%-
-          link = link_to("#{@parent_config.name} at #{@parent_domain.cname}",
-                         show_config_path(org_id: @parent_domain.organizationId,
-                                          domain_id: @parent_domain.cname,
-                                          config_id: @parent_config.id))
-          link = link.prepend('Inherited Properties (from ')
+          link = link_to("#{@parent_domain.cname}",
+                         show_domain_path(domain_id: @parent_domain.cname))
+          link = link.prepend("Inherited Properties (from #{@parent_config.name} at ")
           link = link.html_safe
           link << ')'
         %>

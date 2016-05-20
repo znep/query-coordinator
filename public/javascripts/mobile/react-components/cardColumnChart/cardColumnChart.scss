@@ -1,0 +1,81 @@
+.column-chart-upper-container {
+  .column-chart-upper-wrapper {
+    background-color: #ECEBE9;
+    width: 100%;
+    height: calc(60vh - 60px);
+    position: relative;
+
+    .column-chart-container {
+      display: flex;
+      height: 100%;
+
+      .column-chart-wrapper {
+        &.filtered {
+          .bar-group {
+            &.active {
+              .bar.filtered {
+                background-color: #21AE8F !important;
+              }
+              .bar.unfiltered {
+                background-color: #D6D4D5;
+              }
+            }
+
+            &.selected {
+              .bar.filtered {
+                background-color: #7FEAD2 !important;
+              }
+              .bar.unfiltered {
+                background-color: #dcdadb !important;
+              }
+            }
+          }
+        }
+
+        &:not(.filtered) {
+          .bar-group {
+            &.selected {
+              .bar.filtered,
+              .bar.unfiltered {
+                background-color: #7FEAD2 !important;
+              }
+            }
+          }
+        }
+
+        .bar-group {
+          .bar.filtered,
+          .bar.unfiltered {
+            background-color: #21AE8F;
+            width: 40px !important;
+          }
+
+          &.active {
+            position: relative !important;
+            width: 50px !important;
+            float: left;
+            left: inherit !important;
+            z-index: 2;
+
+            &.selected {
+              overflow: hidden;
+            }
+          }
+        }
+      }
+
+      .labels {
+        display: none;
+      }
+
+      .chart-scroll {
+        padding-left: 50px;
+        overflow-x: scroll;
+      }
+    }
+  }
+
+  div.mobile-flyout {
+    margin-top: -15px;
+  }
+}

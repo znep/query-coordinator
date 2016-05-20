@@ -1,5 +1,6 @@
 export default {
   name: 'name',
+  id: 'four-four',
   description: 'description',
   url: 'url',
   displayType: 'piechart',

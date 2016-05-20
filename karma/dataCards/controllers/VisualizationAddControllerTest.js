@@ -226,49 +226,6 @@ describe('VisualizationAddController', function() {
     });
   });
 
-  possiblyDescribe('with valid onVisualizationSelected function', function() {
-    beforeEach(function() {
-      window.frameElement.onVisualizationSelected = sinon.spy();
-    });
-    afterEach(function() {
-      delete window.frameElement.onVisualizationSelected;
-    });
-
-    describe('card-model-changed scope event', function() {
-
-      describe('with a null payload', function() {
-        it('should call onVisualizationSelected with null', function() {
-          emitCardModelSelected(null);
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWith(window.frameElement.onVisualizationSelected, null);
-        });
-      });
-
-      describe('with a non-null payload', function() {
-        beforeEach(function() {
-          var cardSelected = Card.deserialize(
-            $scope.page,
-            {
-              aggregationField: null,
-              aggregationFunction: 'count',
-              fieldName: validVIF.columnName,
-              cardSize: 1,
-              expanded: false,
-              cardType: 'column'
-            }
-          );
-
-          emitCardModelSelected(cardSelected);
-        });
-
-        it('should call onVisualizationSelected with the results of VIF synthesis in the payload', function() {
-          sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-          sinon.assert.calledWithMatch(window.frameElement.onVisualizationSelected, validVIF);
-        });
-      });
-    });
-  });
-
   possiblyDescribe('default visualization options', function() {
     function controllerHarnessWithDefaultColumn(column) {
       return makeController({
@@ -353,13 +310,13 @@ describe('VisualizationAddController', function() {
     });
   });
 
-  possiblyDescribe('with no or invalid onVisualizationSelected and no or invalid onVisualizationSelectedV2 function', function() {
+  possiblyDescribe('with no or invalid onVisualizationSelectedV2 function', function() {
     it('should trigger an error on card-model-changed', function() {
       expect(function() {
         emitCardModelSelected(null);
       }).to.throw(/onVisualizationSelected/);
 
-      window.frameElement.onVisualizationSelected = 'notAFunction';
+      window.frameElement.onVisualizationSelectedV2 = 'notAFunction';
       expect(function() {
         emitCardModelSelected(null);
       }).to.throw(/onVisualizationSelected/);

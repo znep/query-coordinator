@@ -995,6 +995,24 @@ $data_lens_icon_color: #80acca;
   }
 }
 
+.modalDialog.newDatasetModal {
+  width: 42em;
+
+  .submitActions li {
+    float: right;
+  }
+
+  p.prompt {
+    padding-bottom: 10px;
+  }
+
+  p.explanation {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+}
+
 .externalDomainNotice {
   .nameDescription {
     padding-top: 1em;

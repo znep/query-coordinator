@@ -17,9 +17,6 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
-asset_inventory:
-  description: Controls asset inventory controls and buttons are shown
-  defaultValue: false
 bubble:
   description: D3 Bubble Charts
   defaultValue: old
@@ -78,6 +75,10 @@ enable_data_lens_mobile_redirect:
   category: data lens
 enable_dataset_landing_page:
   description: Enable the dataset landing page
+  defaultValue: false
+  category: dataset landing page
+enable_dataset_landing_page_contact_form:
+  description: Enable the contact modal on the dataset landing page
   defaultValue: false
   category: dataset landing page
 enable_ingress_geometry_types:
@@ -163,6 +164,12 @@ enable_pdf_download_type:
 enable_xls_download_type:
   description: Control visibility of the "Export > Download dataset as XLS/XLSX" formats.  A reason for disabling these download types is to avoid customer confusion stemming from the fact that there is a hard limit on the number of cells that can be exported for XLS/XLSX downloads.  XLS and XLSX file exports are truncated at 250,000 cells to preserve performance.
   defaultValue: true
+external_federation:
+  description: Enable the external federation pages and section of the admin "federations" page. Allows user to federate data from esri.
+  defaultValue: false
+edit_external_federation:
+  description: Enable the edit_external_federation to selectively choose which resources to federate.
+  defaultValue: false
 eventing_metrics:
   description: Use experimental event-based instead of key-value metrics. If 'both', emit both.
   defaultValue: false
@@ -223,6 +230,9 @@ reenable_ui_for_nbe:
   description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
   defaultValue: false
   category: obe deprecation
+robots_txt_disallow_analytics_add:
+  description: Adds "/analytics/add" to the Disallow list for robots.txt
+  defaultValue: false
 see_socrata_news:
   description: Enable the "What's New" news widget and updated profile page
   defaultValue: true

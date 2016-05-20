@@ -2,6 +2,8 @@
 set -ex
 
 npm install
+npm run build:prod # Verify production build works
+
 MERGE_BASE=$(git merge-base HEAD origin/master)
 
 NEW_PROBLEMS=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3- | xargs node_modules/.bin/eslint --ignore-path .eslintignore -f compact)

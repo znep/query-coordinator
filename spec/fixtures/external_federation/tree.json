@@ -1,0 +1,143 @@
+{
+  "folders" : [
+    {
+      "services" : [],
+      "server_id" : 2,
+      "id" : 19,
+      "sync_type" : "ignored",
+      "name" : "BaseMap"
+    },
+    {
+      "services" : [
+        {
+          "layers" : [
+            {
+              "sync_type" : "catalog",
+              "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/services/CSS/CSS_MDARD_MigrantLaborHousing/FeatureServer/0",
+              "fields" : [
+                {
+                  "fieldName" : "the_geom",
+                  "name" : "the_geom",
+                  "esriName" : "the_geom",
+                  "dataTypeName" : "point"
+                },
+                {
+                  "fieldName" : "o_b_j_e_c_t_i_d",
+                  "name" : "OBJECTID",
+                  "esriName" : "OBJECTID",
+                  "dataTypeName" : "number"
+                },
+                {
+                  "fieldName" : "c_a_m_p__i_d",
+                  "name" : "CAMP_ID",
+                  "esriName" : "CAMP_ID",
+                  "dataTypeName" : "text"
+                }
+              ],
+              "name" : "Closed",
+              "service_id" : 1,
+              "id" : 1,
+              "description" : ""
+            },
+            {
+              "sync_type" : "catalog",
+              "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/services/CSS/CSS_MDARD_MigrantLaborHousing/FeatureServer/1",
+              "fields" : [
+                {
+                  "fieldName" : "the_geom",
+                  "name" : "the_geom",
+                  "esriName" : "the_geom",
+                  "dataTypeName" : "point"
+                }
+              ],
+              "name" : "Inactive",
+              "service_id" : 1,
+              "id" : 2,
+              "description" : ""
+            }
+          ],
+          "kind" : "feature_service",
+          "description" : "",
+          "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/services/CSS/CSS_MDARD_MigrantLaborHousing/FeatureServer",
+          "folder_id" : 13,
+          "sync_type" : "catalog",
+          "service_description" : "Migrant Labor Housing",
+          "id" : 1,
+          "name" : "MLH"
+        }
+      ],
+      "server_id" : 2,
+      "id" : 13,
+      "sync_type" : "catalog",
+      "name" : "CSS"
+    },
+    {
+      "services" : [
+        {
+          "layers" : [
+            {
+              "sync_type" : "catalog",
+              "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/services/DEQ/Critical_Dunes_Parcel_Data/FeatureServer/0",
+              "fields" : [
+                {
+                  "fieldName" : "the_geom",
+                  "name" : "the_geom",
+                  "esriName" : "the_geom",
+                  "dataTypeName" : "polygon"
+                }
+              ],
+              "name" : "Critical Dunes/Parcel Data",
+              "service_id" : 2,
+              "id" : 4,
+              "description" : ""
+            }
+          ],
+          "kind" : "feature_service",
+          "description" : "",
+          "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/services/DEQ/Critical_Dunes_Parcel_Data/FeatureServer",
+          "folder_id" : 16,
+          "sync_type" : "catalog",
+          "service_description" : "",
+          "id" : 2,
+          "name" : ""
+        }
+      ],
+      "server_id" : 2,
+      "id" : 16,
+      "sync_type" : "ignored",
+      "name" : "DEQ"
+    },
+    {
+      "services" : [
+
+      ],
+      "server_id" : 2,
+      "id" : 23,
+      "sync_type" : "ignored",
+      "name" : "OpenData"
+    },
+    {
+      "services" : [
+
+      ],
+      "server_id" : 2,
+      "id" : 25,
+      "sync_type" : "ignored",
+      "name" : "root"
+    }
+  ],
+  "sync_type" : "ignored",
+  "url" : "https : //gisago.mcgi.state.mi.us/arcgis/rest/",
+  "most_recent_job" : {
+    "status" : "success",
+    "server_id" : 2,
+    "ended_at" : "2016-05-09T23 : 15 : 21.355328",
+    "details" : null,
+    "internal_details" : null,
+    "started_at" : "2016-05-09T23 : 14 : 50.475911",
+    "id" : 4
+  },
+  "layer_count" : 7,
+  "socrata_domain" : "localhost",
+  "id" : 2
+}

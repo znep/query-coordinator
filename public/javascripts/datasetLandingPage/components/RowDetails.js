@@ -42,7 +42,7 @@ var RowDetails = React.createClass({
       );
     }
 
-    if (view.rowLabel && view.rowLabel !== I18n.default_row_label) {
+    if (view.rowLabel && view.rowLabel.toLowerCase() !== I18n.default_row_label) {
       rowLabelInfo = (
         <div className="metadata-pair">
           <span className="metadata-pair-key">

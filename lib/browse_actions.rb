@@ -38,7 +38,6 @@ module BrowseActions
     add_data_lens_view_type_if_enabled!(view_types)
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
-    add_draft_display_type_if_enabled!(view_types)
     
     # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
     # because API foundry v1 is deprecated
@@ -514,6 +513,25 @@ module BrowseActions
     browse_options
   end
 
+  def add_draft_display_type_if_enabled!(view_type_list)
+    if draft_dataset_entries_enabled?
+      draft_display_type = {
+        :text => ::I18n.t('controls.browse.facets.view_types.draft'),
+        :value => 'draft',
+        :class => 'typeDraft',
+        :icon_font_class => 'icon-table'
+      }
+
+      # Position the draft dataset above the datasets entry
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
+      view_type_list.insert(datasets_index, draft_display_type)
+    end
+  end
+
+  def draft_dataset_entries_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:ingress_reenter]
+  end
+
   private
 
   def get_title(options, facets)
@@ -657,25 +675,6 @@ module BrowseActions
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, pulse_view_type)
     end
-  end
-
-  def add_draft_display_type_if_enabled!(view_type_list)
-    if draft_dataset_entries_enabled?
-      draft_display_type = {
-        :text => ::I18n.t('controls.browse.facets.view_types.draft'),
-        :value => 'draft',
-        :class => 'typeDraft',
-        :icon_font_class => 'icon-table'
-      }
-
-      # Position the draft dataset above the datasets entry
-      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, draft_display_type)
-    end
-  end
-
-  def draft_dataset_entries_enabled?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:ingress_reenter]
   end
 
   def stories_catalog_entries_enabled?

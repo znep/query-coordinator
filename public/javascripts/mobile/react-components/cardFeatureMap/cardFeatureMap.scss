@@ -1,0 +1,50 @@
+.component-container.map-container {
+  height: calc(60vh - 60px);
+
+  &.semi-expanded {
+    height: calc(60vh + 40px);
+  }
+
+  &.expanded {
+    height: calc(60vh + 100px);
+  }
+
+  .feature-map-locate-user-btn {
+    top: 1em;
+    left: 1em;
+    right: initial;
+    bottom: initial;
+    border-radius: 2px;
+    padding: 0;
+
+    .feature-map-locate-user-icon,
+    .feature-map-locate-user-error-icon {
+      width: 25px;
+      margin: 0 auto;
+    }
+
+    &[data-locate-user-status="success"] {
+      .feature-map-locate-user-icon {
+        display: block;
+        fill: #037AFF;
+      }
+    }
+  }
+
+  .feature-map-wrapper {
+    height: 100%;
+  }
+
+  .feature-map {
+    display: block;
+    position: relative;
+    margin: 0 auto 0;
+    -webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75);
+  }
+
+  .tool-panel-hint {
+    display: none !important;
+  }
+}

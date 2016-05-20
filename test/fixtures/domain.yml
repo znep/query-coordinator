@@ -92,6 +92,10 @@ default_configs:
     data:
       theme: default
 
+  view_categories: !ruby/object:Configuration
+    data:
+      properties:
+
   site_theme: !ruby/object:Configuration 
     data: 
       id: 4

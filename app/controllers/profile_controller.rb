@@ -82,6 +82,9 @@ class ProfileController < ApplicationController
             :value => 'unpublished',
             :class => 'typeUnpublished'
           })
+
+          add_draft_display_type_if_enabled!(vtf[:options])
+
           browse_options[:facets] = [vtf, categories_facet(params)]
         else
           browse_options[:facets] = [view_types_facet, categories_facet(params)]

@@ -28,20 +28,38 @@ class BrowseActionsTest < Test::Unit::TestCase
         'enable pulse feature flag is true, but we do not have a pulse link in the catalog')
     end
 
-    def test_does_not_add_drafts_if_feature_flag_false
+    def test_does_not_add_drafts_by_default_if_feature_flag_false
       stub_feature_flags_with(:ingress_reenter, false)
       view_types_list = @browse_actions_container.send(:view_types_facet)
       refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
-             'new wizard order feature flag is false, but we have a drafts link in the catalog')
+             'The draft dataset is showing up by default on the public catalog')
+    end
+
+    # We only want the facet to show on the profile and admin pages.
+    # Ensure that it's not shown here on the public catalog
+    def test_does_not_add_drafts_by_default_if_feature_flag_true
+      stub_feature_flags_with(:ingress_reenter, true)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
+             'The draft dataset is showing up by default on the public catalog')
+    end
+
+    def test_does_not_add_drafts_if_feature_flag_true
+      stub_feature_flags_with(:ingress_reenter, false)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      @browse_actions_container.send(:add_draft_display_type_if_enabled!,view_types_list)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
+             'The feature flag is set to false, but the drafts icon is showing up')
     end
 
     def test_does_add_drafts_if_feature_flag_true
       stub_feature_flags_with(:ingress_reenter, true)
       view_types_list = @browse_actions_container.send(:view_types_facet)
+      @browse_actions_container.send(:add_draft_display_type_if_enabled!,view_types_list[:options])
       assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
-             'new wizard order feature flag is true, but we do not have a drafts link in the catalog')
+             'The feature flag is set to true, but the drafts dataset facet is not showing up')
     end
-    
+
     def test_does_not_add_stories_if_feature_flag_false
       stub_feature_flags_with(:stories_show_facet_in_catalog, false)
       view_types_list = @browse_actions_container.send(:view_types_facet)

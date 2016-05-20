@@ -1,62 +1,84 @@
-div.mobile-chart-flyout {
+div.mobile-flyout {
   height: 60px;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.2);
+  bottom: 0;
+  z-index: 11;
+  position: relative;
+  padding: 3px 10px 3px 10px;
+  width: 100%;
 
-  $grayColor: #929292;
-  $greenColor: #02B38F;
+  div.mobile-chart-flyout {
+    height: 60px;
 
-  .arrow {
-    width: 33px;
-    height: 12px;
-    top: -11px;
-    background: url(/images/flyout-arrow.png) no-repeat;
-    display: block;
-    position: absolute;
-    background-size: 100%;
-  }
+    $grayColor: #929292;
+    $greenColor: #02B38F;
 
-  .title {
-    width: 50%;
-    padding: 17px 0;
-    font-size: 15px;
-    font-weight: 500;
-    float: left;
-  }
+    .arrow {
+      top: 0;
+      position: absolute;
+      box-sizing: border-box;
+      background: #fff;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 
-  .values {
-    width: 45%;
-    float: right;
+      &:after{
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        box-sizing: border-box;
+        border: 9px solid black;
+        border-color: transparent transparent #fff #fff;
+        transform-origin: 0 0;
+        transform: rotate(135deg);
 
-    &.unfiltered {
-      padding: 18px 0;
+        box-shadow: -2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+      }
+    }
 
-      .total-values {
-        color: $greenColor;
+    .title {
+      width: 50%;
+      padding: 17px 0;
+      font-size: 15px;
+      font-weight: 500;
+      float: left;
+    }
 
-        span.value-title, span.value-unit {
+    .values {
+      width: 45%;
+      float: right;
+
+      &.unfiltered {
+        padding: 18px 0;
+
+        .total-values {
+          color: $greenColor;
+
+          span.value-title, span.value-unit {
+            color: $grayColor;
+          }
+        }
+      }
+
+      &.filtered {
+        padding: 10px 0;
+
+        .total-values {
           color: $grayColor;
+
+          span.value-title, span.value-unit {
+            color: $grayColor;
+          }
+        }
+
+        .filtered-values {
+          color: $greenColor;
+
+          span.value-title, span.value-unit {
+            color: $grayColor;
+          }
         }
       }
     }
 
-    &.filtered {
-      padding: 10px 0;
-
-      .total-values {
-        color: $grayColor;
-
-        span.value-title, span.value-unit {
-          color: $grayColor;
-        }
-      }
-
-      .filtered-values {
-        color: $greenColor;
-
-        span.value-title, span.value-unit {
-          color: $grayColor;
-        }
-      }
-    }
   }
-
 }

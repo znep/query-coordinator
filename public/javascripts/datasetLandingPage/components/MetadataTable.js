@@ -6,6 +6,9 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
+import { emitMixpanelEvent } from '../actions';
+
+var contactFormData = window.contactFormData;
 
 export var MetadataTable = React.createClass({
   propTypes: {
@@ -25,9 +28,19 @@ export var MetadataTable = React.createClass({
     var attribution;
     var attributionLink;
     var category;
+    var contactFormButton;
     var customMetadataFieldsets;
     var license;
     var tags;
+    var statsSection;
+    var editMetadata;
+
+    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+    contactFormButton = contactFormData.contactFormEnabled ?
+      <button className="btn btn-sm btn-primary btn-block contact-dataset-owner" data-modal="contact-modal">
+        {I18n.contact_dataset_owner}
+      </button> :
+      null;
 
     if (view.attribution) {
       attribution = (
@@ -76,7 +89,6 @@ export var MetadataTable = React.createClass({
       var attachmentRows = _.map(view.attachments, function(attachment, i) {
         return (
           <tr key={i}>
-            <td className="attachment">{attachment.name}</td>
             <td className="attachment">
               <span className="icon-copy-document"></span>
               <span dangerouslySetInnerHTML={{__html: attachment.link}}></span>
@@ -109,7 +121,7 @@ export var MetadataTable = React.createClass({
       var tagLinks = _.map(view.tags, function(tag, i) {
         return (
           <span key={i}>
-            <a href={`/browse?tag=${tag}`}>{tag}</a>
+            <a href={`/browse?tags=${tag}`}>{tag}</a>
             {i === view.tags.length - 1 ? '' : ', '}
           </span>
         );
@@ -147,11 +159,26 @@ export var MetadataTable = React.createClass({
       attributionLink = <td className="empty">{I18n.metadata.no_value}</td>;
     }
 
+    if (view.statsUrl) {
+      statsSection = (
+        <div className="metadata-row middle">
+          <a className="metadata-detail-group-value" href={view.statsUrl}>{I18n.metadata.view_statistics}</a>
+        </div>
+      );
+    }
+
+    if (view.editMetadataUrl) {
+      editMetadata = <a href={view.editMetadataUrl} className="btn btn-default">{I18n.metadata.edit_metadata}</a>;
+    }
+
     return (
       <section className="landing-page-section">
-        <h2 className="landing-page-section-header">
-          {I18n.metadata.title}
-        </h2>
+        <div className="landing-page-header-wrapper">
+          <h2 className="landing-page-section-header">
+            {I18n.metadata.title}
+          </h2>
+          {editMetadata}
+        </div>
 
         <div className="section-content">
           <div className="metadata-column fancy">
@@ -227,6 +254,7 @@ export var MetadataTable = React.createClass({
                   </h3>
                 </div>
               </div>
+              {statsSection}
             </div>
 
             <hr />
@@ -251,9 +279,7 @@ export var MetadataTable = React.createClass({
                 </div>
               </div>
 
-              <button className="btn btn-sm btn-primary btn-block contact-dataset-owner">
-                {I18n.contact_dataset_owner}
-              </button>
+              {contactFormButton}
             </div>
           </div>
 
@@ -341,7 +367,8 @@ export var MetadataTable = React.createClass({
       wrap: 'children',
       lastCharacter: {
         remove: [ ' ', ';', '.', '!', '?' ]
-      }
+      },
+      expandedCallback: this.props.onExpandTags
     });
   },
 
@@ -351,6 +378,7 @@ export var MetadataTable = React.createClass({
     var tableColumn = el.querySelector('.metadata-column.tables');
     var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
     var shouldHideToggles = true;
+    var { onExpandMetadataTable } = this.props;
 
     // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
     // shown and hidden as the tableColumn is expanded and collapsed.
@@ -393,6 +421,8 @@ export var MetadataTable = React.createClass({
           }, function() {
             tableColumn.style.height = '';
           });
+
+          onExpandMetadataTable();
         } else {
           tableColumn.classList.remove('collapsed');
 
@@ -423,4 +453,30 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(MetadataTable);
+function mapDispatchToProps(dispatch) {
+  return {
+    onExpandTags: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Tags'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onExpandMetadataTable: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Metadata Table'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MetadataTable);

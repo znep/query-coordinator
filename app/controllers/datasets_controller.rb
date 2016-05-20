@@ -5,7 +5,7 @@ class DatasetsController < ApplicationController
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
@@ -14,7 +14,7 @@ class DatasetsController < ApplicationController
       controller.action_name == 'validate_contact_owner'
     }
 
-# collection actions
+  # collection actions
   def new
     if (!CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) &&
         !CurrentDomain.module_enabled?(:community_creation))
@@ -22,9 +22,19 @@ class DatasetsController < ApplicationController
       render 'shared/error', :status => :not_found
       return nil
     end
+    @view = nil # the templates expect a @view var (for reentrancy)
+  end
+
+  def create
+    view = View.create(:name => params[:new_dataset_name], :owner => current_user, :displayType => 'draft')
+
+    respond_to do |format|
+      format.html { redirect_to(view_path(view)) }
+    end
   end
 
 # member actions
+
   def show
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])
@@ -34,7 +44,19 @@ class DatasetsController < ApplicationController
 
     return if @view.nil?
 
-    if dataset_landing_page_is_default? && !request[:bypass_dslp]
+    if FeatureFlags.derive(nil, request).ingress_reenter
+      if @view.displayType == 'draft'
+        unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
+               CurrentDomain.module_enabled?(:community_creation)
+          # User doesn't have access to create new datasets
+          return render 'shared/error', :status => :not_found
+        end
+
+        render 'new'
+      end
+    end
+
+    if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
         return redirect_to canonical_path
@@ -498,6 +520,38 @@ class DatasetsController < ApplicationController
     end
   end
 
+  # This method sends a request to Core's ViewsService#flag, which in turn sends an
+  # email to either the view's contact email or the dataset owner if no contact email
+  # is available. Unlike the DatasetsController#validate_contact_owner, this validates
+  # the form's Recaptcha browser-side (see Dataset Landing Page's Contact Modal).
+  def contact_dataset_owner
+    @view = get_view(params[:id])
+
+    # Return early if we can't find this view
+    return render :json => {
+      :success => false,
+      :message => "Can't find view: #{params[:id]}"
+    }, :status => :bad_request if @view.nil?
+
+    # Return early if there are any missing params
+    flag_params = {}
+    keys = [:id, :type, :subject, :message, :from_address]
+    keys.each do |key|
+      if params[key].nil?
+        return render :json => {
+          :success => false,
+          :message => "Missing key: #{key}"
+        }, :status => :bad_request
+      else
+        flag_params[key] = params[key]
+      end
+    end
+
+    # Pass the request on to Core to actually send the email
+    @view.flag(flag_params)
+    render :json => { :success => true }
+  end
+
   def widget_preview
     @view = get_view(params[:id])
     return if @view.nil?
@@ -628,12 +682,13 @@ class DatasetsController < ApplicationController
 
   def about
     @view = get_view(params[:id])
+    return if @view.nil?
 
-    if dataset_landing_page_enabled?
+    if dataset_landing_page_enabled? && view_has_landing_page?
       related_views = @view.try(:find_dataset_landing_page_related_content) || []
       @featured_views = related_views.slice(0, 3)
 
-      render 'dataset_landing_page', :layout => 'dataset_landing_page' if @view.present?
+      render 'dataset_landing_page', :layout => 'dataset_landing_page'
       return
     end
 
@@ -926,6 +981,10 @@ protected
   def dataset_landing_page_is_default?
     dataset_landing_page_enabled? &&
       FeatureFlags.derive(nil, request).default_to_dataset_landing_page == true
+  end
+
+  def view_has_landing_page?
+    @view.dataset?
   end
 
   def fetch_layer_info(layer_url)

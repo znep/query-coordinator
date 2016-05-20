@@ -117,7 +117,7 @@ es:
           column_chart: Gráfico de columnas
           distribution_chart: Gráfico de distribución
           feature_map: Mapa de características
-          search_card: Tarjeta de búsqueda
+          search_card: Tarjeta de Búsqueda
           timeline_chart: Gráfico cronológico
         change: Cambiar
         done: Hecho
@@ -547,8 +547,8 @@ es:
         search:
           clear:
             title: Borrar la búsqueda
-          placeholder: Buscar
-          title: Buscar
+          placeholder: Búsqueda
+          title: Búsqueda
         settings:
           label: Configuraciones
           title: Configuraciones
@@ -641,7 +641,7 @@ es:
         rating: Mejor calificado
         relevance: Más relevante
       title:
-        default: Buscar y navegar por los conjuntos de datos y vistas
+        default: Buscar y Navegar por los Conjuntos de Datos y Vistas
         result:
           facet: "%{facet_type} de%{facet_value}"
           facet_main: coincidencia %{body}
@@ -959,7 +959,7 @@ es:
       user_removed: 'un usuario que ya ha sido eliminado '
       user_removed_short: El usuario ha sido eliminado
     upload_dialog:
-      browse: Buscar
+      browse: Navegar
       title_file: Subir un archivo
       title_image: Subir una imagen
       title_photo: Subir una foto
@@ -1522,7 +1522,7 @@ es:
           configuration: Configuración
           configuration_title: Gestionar la configuración de Open Performance
           data: Datos
-          data_title: Buscar y gesionar datos
+          data_title: Navegar y Gesionar Datos
           goals: Objetivos
           goals_title: Crear y seguir objetivos
           home: Inicio
@@ -1764,11 +1764,11 @@ es:
         pending: Pendiente
         publish: Publicar
         reject: Rechazar
-        search: Buscar
-        search_boost: Impulsar búsqueda
+        search: Búsqueda
+        search_boost: Impulsar Búsqueda
         search_boost_explain: Varía de 1 a 0. Un valor mayor hace que sea más probable que los conjuntos de datos se muestren primero.
-        search_prompt: Buscar dominios donde publicar
-        search_pub_datasets: Buscar por conjuntos de datos publicados
+        search_prompt: Buscar Dominios para Publicar
+        search_pub_datasets: Buscar por Conjuntos de Datos Publicados
         source_domain: Dominio fuente
         status: Estado
         target_domain: Dominio objetivo
@@ -2256,8 +2256,8 @@ es:
           publisher_stories:
           viewer: espectador
         search: Búsqueda
-        search_for_users: Buscar usuarios para añadir
-        search_results: Resultados de búsqueda de '%{term}'
+        search_for_users: Buscar Usuarios para Añadir
+        search_results: Resultados de Búsqueda de '%{term}'
         title: Gestionar usuarios
         user_saved: Usuario guardado
         users_table_description:

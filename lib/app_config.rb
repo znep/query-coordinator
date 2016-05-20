@@ -40,6 +40,10 @@ class AppConfig < Hashie::Dash
   property :import_status_service_hostname
   property :import_status_service_port
 
+  # Esri Crawler service
+  property :esri_crawler_hostname
+  property :esri_crawler_port
+
   # Metrics
   property :metrics_dir
   property :statsd_enabled
@@ -50,6 +54,7 @@ class AppConfig < Hashie::Dash
   property :opendata_ga_tracking_code
   property :standard_ga_tracking_code
   property :airbrake_api_key
+  property :recaptcha_2_site_key
   property :mixpanel_token
 
   # Auth0

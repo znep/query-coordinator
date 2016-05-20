@@ -1,0 +1,18 @@
+.choropleth-upper-wrapper {
+  height: calc(60vh - 60px);
+
+  &.filterable {
+    .choropleth-map-container path.leaflet-clickable {
+      cursor: pointer;
+    }
+  }
+
+  path.leaflet-clickable {
+    cursor: default;
+  }
+
+  .card.dragged .choropleth-container .choropleth-map-container path {
+    cursor: grabbing !important;
+    cursor: -webkit-grabbing !important;
+  }
+}

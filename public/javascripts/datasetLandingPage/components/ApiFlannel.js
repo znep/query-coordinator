@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { emitMixpanelEvent } from '../actions';
 import initClipboardControl from '../lib/clipboardControl';
 
 export var ApiFlannel = React.createClass({
@@ -47,7 +48,7 @@ export var ApiFlannel = React.createClass({
 
   render: function() {
     var self = this;
-    var { view } = this.props;
+    var { view, onClickCopy } = this.props;
     var { currentFormats } = this.state;
 
     var multiGeoLayerNotice = view.geospatialChildLayers.length > 1 ?
@@ -92,10 +93,10 @@ export var ApiFlannel = React.createClass({
             <h6 className="endpoint-title">{I18n.api_flannel.endpoint_title}</h6>
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput}/>
+                <input className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput} />
                 {endpointFormatSelector}
                 <span className="input-group-btn">
-                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success}>
+                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
                     {I18n.copy}
                   </button>
                 </span>
@@ -138,4 +139,16 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(ApiFlannel);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickCopy: function() {
+      var payload = {
+        name: 'Copied API Link'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ApiFlannel);

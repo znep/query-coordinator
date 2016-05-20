@@ -1,18 +1,21 @@
+import _ from 'lodash';
 import velocity from 'velocity-animate';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { emitMixpanelEvent } from '../actions';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../lib/dataTypeMetadata';
 
 var SCHEMA_TABLE_COLUMN_COUNT = 7;
 
-var SchemaPreview = React.createClass({
+export var SchemaPreview = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired,
     showAsLayer: PropTypes.bool
   },
 
   componentDidMount: function() {
-    this.collapseTable();
+    this.collapseTable(this.props.onExpandColumn);
   },
 
   render: function() {
@@ -56,7 +59,7 @@ var SchemaPreview = React.createClass({
       if (column.dataTypeName) {
         typeCell = (
           <div>
-            <span className="type-name">{I18n.data_types[column.dataTypeName]}</span>
+            <span className="type-name" data-name={column.dataTypeName}>{I18n.data_types[column.dataTypeName]}</span>
             <span className={getIconClassForDataType(column.dataTypeName)}></span>
           </div>
         );
@@ -156,7 +159,7 @@ var SchemaPreview = React.createClass({
     );
   },
 
-  collapseTable: function() {
+  collapseTable: function(onExpandColumn) {
     var el = ReactDOM.findDOMNode(this).querySelector('.section-content');
     var tableWrapper = el.querySelector('.table-wrapper');
     var tableToggles = Array.prototype.slice.call(el.querySelectorAll('.table-collapse-toggle'));
@@ -205,7 +208,7 @@ var SchemaPreview = React.createClass({
     // information about the column.
     var collapsibleRows = Array.prototype.slice.call(tableWrapper.querySelectorAll('.column-summary'));
     collapsibleRows.forEach(function(row) {
-      row.addEventListener('click', function() {
+      row.addEventListener('click', function(event) {
         var columnId = row.dataset.column;
 
         // Animate the sister row
@@ -233,6 +236,9 @@ var SchemaPreview = React.createClass({
               paddingTop: padding,
               paddingBottom: padding
             });
+
+            // Dispatch Mixpanel tracking
+            onExpandColumn(event);
           } else {
             velocity(detailRowContents, {
               height: 0,
@@ -281,4 +287,22 @@ var SchemaPreview = React.createClass({
   }
 });
 
-export default SchemaPreview;
+function mapDispatchToProps(dispatch) {
+  return {
+    onExpandColumn: function(event) {
+      var row = $(event.target).closest('.column-summary');
+
+      var payload = {
+        name: 'Expanded Column Info',
+        properties: {
+          'Name': row.find('.column-name').text().trim(),
+          'Type': _.capitalize(row.find('.type-name').data('name'))
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(SchemaPreview);

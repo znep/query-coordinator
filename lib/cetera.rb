@@ -2,6 +2,8 @@ require 'forwardable'
 require 'httparty'
 require 'ostruct'
 
+# Interface for Cetera, the new search service https://github.com/socrata/cetera
+# Uses HTTParty. Also, note that cetera_host is misnamed; it is actually a uri not a host.
 module Cetera
   def self.search_views(opts, cookies, request_id)
     cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
@@ -23,6 +25,7 @@ module Cetera
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
+  # NOTE: the camelCase mirrors the FE params
   def self.translate_display_type(limitTo, datasetView)
     if limitTo == 'tables' && datasetView == 'view'
       'filters'
@@ -40,7 +43,7 @@ module Cetera
     end
   end
 
-  # translate FE 'sortBy' values to Cetera 'order'
+  # Translate FE 'sortBy' values to Cetera 'order'
   def self.translate_sort_by(sort_by)
     {
       nil => 'relevance', # Critical that nil is a key
@@ -53,11 +56,14 @@ module Cetera
     }.fetch(sort_by) # For Core/Cly parity, we want no results if sort_by is bogus
   end
 
+  # Translate FE browse_options[:search_options] from lib/browse_actions.rb to Cetera params
+  # Anything not explicitly supported here will be dropped
   def self.cetera_soql_params(opts = {})
     (opts[:metadata_tag] || {}).merge(
       domains: opts[:domains].join(','), # Cetera does not yet support domains[]
       boostDomains: opts[:domain_boosts], # Federated domains have searchBoost values
       search_context: CurrentDomain.cname,
+      for_user: opts[:for_user],
       only: translate_display_type(opts[:limitTo], opts[:datasetView]),
       categories: opts[:categories],
       tags: opts[:tags],

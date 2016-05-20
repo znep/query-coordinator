@@ -5,7 +5,7 @@
 # Meaningful Properties (they do not show up in autocomplete):
 # * `discourage_in_creation_ui`
 #   When you add an `instead`, prefer using the named route, such as :feature_flags_config
-# * `default-config_name`
+# * `default_config_name`
 #   When creating a config, this will be the default.
 # Everything else just gets dumped out for the user to see.
 #
@@ -102,6 +102,7 @@ site_chrome:
   description: Site header/footer configuration, currently only used in Storyteller. Edit it at /stories/admin/site_chrome/edit
   discourage_in_creation_ui:
     reason: :not_intended_for_direct_manipulation
+    instead: /stories/admin/site_chrome/edit
 site_theme:
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/2-editing-an-open-data-site/a-site-configurations
   things_site_theme_controls: favicon
@@ -129,6 +130,9 @@ user_rights:
   - editor
   - publisher
   - viewer
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/users/how-to-manually-set-user-rights-on-a-domain
+  kb_page: https://support.socrata.com/hc/en-us/articles/202950278-Understanding-user-roles
+  short_session: You can configure roles to have a shorter user-session timeout (15 minutes) using the right called `short_session`.
   discourage_in_creation_ui:
     reason: :poorly_understood
 view_categories:

@@ -1,4 +1,4 @@
-import DownloadDropdown from 'components/DownloadDropdown';
+import { DownloadDropdown } from 'components/DownloadDropdown';
 import mockView from 'data/mockView';
 
 describe('components/DownloadDropdown', function() {

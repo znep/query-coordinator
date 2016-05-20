@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import DownloadDropdown from './DownloadDropdown';
 import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
+import { emitMixpanelEvent } from '../actions';
+
+var contactFormData = window.contactFormData;
 
 export var InfoPane = React.createClass({
   propTypes: {
@@ -21,7 +24,8 @@ export var InfoPane = React.createClass({
     }
 
     collapsible(this.description, {
-      height: 4 * 24 + 2 * 11
+      height: 4 * 24 + 2 * 11,
+      expandedCallback: this.props.onExpandDescription
     });
   },
 
@@ -32,7 +36,7 @@ export var InfoPane = React.createClass({
   },
 
   render: function() {
-    var { view } = this.props;
+    var { view, onClickGrid } = this.props;
     var { descriptionHeight } = this.state;
 
     var privateIcon;
@@ -46,18 +50,18 @@ export var InfoPane = React.createClass({
     var descriptionStyle;
 
     privateIcon = view.isPrivate ?
-      <span className="icon-private" title="Private Dataset"/> : null;
+      <span className="icon-private" title="Private Dataset" /> : null;
 
     categoryBadge = view.category ?
       <span className="tag-category">{_.capitalize(view.category)}</span> : null;
 
     viewDataButton = (
-      <a href={view.gridUrl} className="btn btn-default btn-sm grid">
+      <a href={view.gridUrl} className="btn btn-default btn-sm grid" onClick={onClickGrid}>
         {I18n.action_buttons.data}
       </a>
     );
 
-    downloadDropdown = <DownloadDropdown view={view}/>;
+    downloadDropdown = <DownloadDropdown view={view} />;
 
     apiButton = (
       <button className="btn btn-default btn-sm api" data-flannel="api-flannel" data-toggle>
@@ -71,11 +75,16 @@ export var InfoPane = React.createClass({
       </button>
     );
 
+    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+    var contactFormButton = contactFormData.contactFormEnabled ?
+      <li><a className="option" data-modal="contact-modal">{I18n.action_buttons.contact_owner}</a></li> :
+      null;
+
     moreActions = (
       <button className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span className="icon-waiting"></span>
         <ul className="dropdown-options">
-          <li><a className="option">{I18n.action_buttons.contact_owner}</a></li>
+          {contactFormButton}
           <li><a className="option" data-modal="odata-modal">{I18n.action_buttons.odata}</a></li>
         </ul>
       </button>
@@ -156,4 +165,27 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(InfoPane);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickGrid: function() {
+      var payload = {
+        name: 'Navigated to Gridpage'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onExpandDescription: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Descripton'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InfoPane);

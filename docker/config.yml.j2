@@ -25,6 +25,11 @@ default: &default
   import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}
   {%- endif %}
 
+  {% if ESRI_CRAWLER_HOSTNAME is defined and ESRI_CRAWLER_PORT is defined -%}
+  esri_crawler_hostname: {{ ESRI_CRAWLER_HOSTNAME }}
+  esri_crawler_port: {{ ESRI_CRAWLER_PORT }}
+  {%- endif %}
+
   {% if KAFKA_REST_URI is defined -%}
   kafka_rest_uri: {{ KAFKA_REST_URI }}
   {%- endif %}

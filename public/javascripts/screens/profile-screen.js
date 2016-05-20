@@ -1,8 +1,8 @@
+/* eslint dot-location: 0 */
+
 blist.namespace.fetch('blist.profile');
 
-(function($)
-{
-    var user = new User({id: blist.profile.profileUserId});
+(function($) {
 
     // var $feedContainer = $('.newsFeed .feed');
 
@@ -32,28 +32,29 @@ blist.namespace.fetch('blist.profile');
     //   { renderFeed(views); });
 
     // Follow/unfollow a user
-    $('.followButton').click(function(event)
-    {
+    $('.followButton').click(function(event) {
         event.preventDefault();
         var $link = $(event.target).closest('a'),
             newText = $.t('screens.profile.bar.follow_link'),
             origHref = $link.attr('href'),
             isCreate = false;
 
-        if ($link.is('.add'))
-        { newText = $.t('screens.profile.bar.unfollow_link'); isCreate = true; }
+        if ($link.is('.add')) {
+            newText = $.t('screens.profile.bar.unfollow_link');
+            isCreate = true;
+        }
 
         $.ajax({
             url: origHref,
             type: 'GET',
-            success: function(responseText) {
+            success: function() {
                 var newHref = isCreate ?
-                    origHref.replace("create", "delete") :
-                    origHref.replace("delete", "create");
+                    origHref.replace('create', 'delete') :
+                    origHref.replace('delete', 'create');
 
                 $link
                     .find('.linkText')
-                        .text(newText)
+                    .text(newText)
                     .end()
                     .attr('href', newHref)
                     .toggleClass('add remove');
@@ -62,46 +63,48 @@ blist.namespace.fetch('blist.profile');
 
     });
 
-    $('.showMoreContacts').click(function(event)
-    {
+    $('.showMoreContacts').click(function(event) {
         event.preventDefault();
-        var $link    = $(event.target),
+        var $link = $(event.target),
             expanded = $link.text() == $.t('screens.profile.sidebar.all_contacts_link'),
-            newText  = $.t('screens.profile.sidebar.'
-                + (expanded ? 'hide' : 'all') + '_contacts_link');
+            newText = $.t('screens.profile.sidebar.' + (expanded ? 'hide' : 'all') + '_contacts_link');
 
         $link
             .text(newText)
             .closest('.userList')
-                .find('.hiddenContacts')
-                    .slideToggle();
+            .find('.hiddenContacts')
+            .slideToggle();
     });
 
     var $contactDialog = $('.contactUserDialog');
-    var $contactForm   = $contactDialog.find('form');
-    var $contactError  = $contactDialog.find('.mainError');
-    var $mainFlash     = $('.mainFlash .flash');
-    $('.contactUserButton').click(function(event)
-    {
+    var $contactForm = $contactDialog.find('form');
+    var $contactError = $contactDialog.find('.mainError');
+    var $mainFlash = $('.mainFlash .flash');
+    $('.contactUserButton').click(function(event) {
         event.preventDefault();
         $contactForm[0].reset();
         $contactDialog.jqmShow();
     });
-    $contactDialog.find('.submitAction').click(function(event)
-    {
+    $contactDialog.find('.submitAction').click(function(event) {
         event.preventDefault();
 
         $contactError.removeClass('error').text('');
-        if (!$contactForm.valid()) { return; }
+        if (!$contactForm.valid()) {
+            return;
+        }
 
         $.socrataServer.makeRequest({
-            type: 'POST', url: $contactForm.attr('action'),
+            type: 'POST',
+            url: $contactForm.attr('action'),
             data: JSON.stringify($contactForm.serializeObject()),
             success: function() {
                 $contactDialog.jqmHide();
                 $mainFlash.text($.t('screens.profile.edit.account.email.send_success')).addClass('notice');
-                setTimeout(function() { $mainFlash.fadeOut(); }, 5000);
-            }, error: function() {
+                setTimeout(function() {
+                    $mainFlash.fadeOut();
+                }, 5000);
+            },
+            error: function() {
                 $contactError
                     .text($.t('screens.profile.edit.account.email.send_error'))
                     .addClass('error');
@@ -109,11 +112,23 @@ blist.namespace.fetch('blist.profile');
         });
     });
     $contactForm.validate();
+
+    var $newDatasetModal = $('.newDatasetModal');
+    $('.button.createLink').click(function(event) {
+        if (blist.feature_flags.ingress_reenter) {
+            event.preventDefault();
+            $newDatasetModal.jqmShow();
+        }
+    });
+    $newDatasetModal.find('.submitButton').click(function() {
+        $newDatasetModal.find('form').submit();
+    });
+
 })(jQuery);
 
 // mixpanel tracking for clicking "The latest from Socrata" links
 $(window).load(function() {
-    if(blist.mixpanelLoaded) {
+    if (blist.mixpanelLoaded) {
         var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
         mixpanelNS.delegateLinks('.whats-new--post-list--post', 'a', 'Clicked Socrata News Link');

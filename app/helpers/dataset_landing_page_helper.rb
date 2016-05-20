@@ -18,6 +18,53 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
+  def render_mixpanel_config
+    mixpanel_config = {
+      :token => APP_CONFIG.mixpanel_token
+    }
+
+    if CurrentDomain.feature?(:mixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => nil}
+    elsif CurrentDomain.feature?(:fullMixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => 365}
+    else
+      mixpanel_config[:disable] = true
+    end
+    javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
+  end
+
+  def render_session_data
+    session_data = {
+      :userId => current_user.try(:id) || 'N/A',
+      :ownerId => @view.try(:owner).try(:id) || 'N/A',
+      :userOwnsDataset => @view.owned_by?(current_user),
+      :socrataEmployee => current_user.try(:is_admin?) || false,
+      :userRoleName => current_user.try(:roleName) || 'N/A',
+      :viewId => @view.try(:id) || 'N/A',
+      :email => current_user.try(:email)
+    }
+
+    javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+  end
+
+  # TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
+  def render_contact_form_data
+    contact_form_data = {
+      :contactFormEnabled => FeatureFlags.derive(nil, request).enable_dataset_landing_page_contact_form,
+      :token => form_authenticity_token.to_s,
+      :locale => I18n.locale.to_s,
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+    }
+
+    javascript_tag("var contactFormData = #{json_escape(contact_form_data.to_json)};")
+  end
+
+  def render_current_user
+    if current_user
+      javascript_tag("var currentUser = #{json_escape(current_user.to_json)};")
+    end
+  end
+
   def share_facebook_url
     "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
   end
@@ -46,45 +93,16 @@ module DatasetLandingPageHelper
     "mailto:?subject=#{subject}&body=#{body}"
   end
 
-  def export_formats
-    if @view.is_geospatial? || @view.is_api_geospatial?
-      return [
-        { :url => @view.geo_download_path('KML'), :label => 'KML' },
-        { :url => @view.geo_download_path('KMZ'), :label => 'KMZ' },
-        {
-          :url => @view.geo_download_path('Shapefile'),
-          :label => I18n.t('dataset_landing_page.download.shapefile')
-        },
-        {
-          :url => @view.geo_download_path('Original'),
-          :label => I18n.t('dataset_landing_page.download.original')
-        },
-        { :url => @view.geo_download_path('GeoJSON'), :label => 'GeoJSON' }
-      ]
+  def stats_url
+    if (@view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
+      view_stats_path(@view)
     end
+  end
 
-    formats = [
-      { :url => @view.download_path('csv'), :label => 'CSV' },
-      {
-        :url => @view.download_path('csv', :bom => true),
-        :label => I18n.t('dataset_landing_page.download.csv_for_excel')
-      },
-      { :url => @view.download_path('json'), :label => 'JSON' },
-      { :url => @view.download_path('rdf'), :label => 'RDF' },
-      { :url => @view.download_path('rss'), :label => 'RSS' },
-      { :url => @view.download_path('xml'), :label => 'XML' }
-    ]
-
-    if FeatureFlags.derive(nil, request).enable_pdf_download_type
-      formats.push({ :url => @view.download_path('pdf'), :label => 'PDF' })
+  def edit_metadata_url
+    if @view.has_rights?(ViewRights::UPDATE_VIEW) && FeatureFlags.derive(@view, request).default_to_dataset_landing_page
+      edit_view_metadata_path(@view)
     end
-
-    if FeatureFlags.derive(nil, request).enable_xls_download_type
-      formats.push({ :url => @view.download_path('xls'), :label => 'XLS' })
-      formats.push({ :url => @view.download_path('xlsx'), :label => 'XLSX' })
-    end
-
-    formats
   end
 
   def transformed_formats
@@ -125,8 +143,9 @@ module DatasetLandingPageHelper
       @view.metadata.attachments.map do |attachment_data|
         attachment = Attachment.set_up_model(attachment_data)
         {
-          :name => attachment.name,
-          :link => link_to(attachment.filename, attachment.href(@view.id), :target => '_blank')
+          :name => attachment.displayName,
+          :href => attachment.href(@view.id),
+          :link => link_to(attachment.displayName, attachment.href(@view.id), :target => '_blank')
         }
       end
     end
@@ -137,6 +156,13 @@ module DatasetLandingPageHelper
       row_count = @view.row_count
     end
 
+    columns = @view.columns.reject do |column|
+      # disregard system columns that aren't hidden, i.e. computed columns
+      column.fieldName.start_with?(':') ||
+      # disregard columns hidden by user
+      column.flag?('hidden')
+    end
+
     {
       :id => @view.id,
       :name => @view.name,
@@ -144,7 +170,7 @@ module DatasetLandingPageHelper
       :category => @view.category,
       :attribution => @view.attribution,
       :rowLabel => @view.row_label,
-      :columns => @view.columns,
+      :columns => columns,
       :isPrivate => !@view.is_public?,
       :isGeospatial => @view.is_geospatial?,
       :gridUrl => data_grid_path(@view),
@@ -169,7 +195,9 @@ module DatasetLandingPageHelper
       :attachments => attachments,
       :tags => @view.tags,
       :licenseName => @view.license.try(:name),
-      :attributionLink => @view.attributionLink
+      :attributionLink => @view.attributionLink,
+      :statsUrl => stats_url,
+      :editMetadataUrl => edit_metadata_url
     }
   end
 
@@ -177,6 +205,7 @@ module DatasetLandingPageHelper
     @featured_views.map do |featured_view|
       {
         :name => featured_view.name,
+        :id => featured_view.id,
         :description => sanitize(featured_view.description),
         :url => featured_view.seo_friendly_url,
         :displayType => featured_view.display.try(:type),

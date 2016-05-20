@@ -68,7 +68,9 @@
   cursor: pointer;
   height: 1rem;
   position: relative;
-  width: 100%;
+  width: 95%;
+  margin-right: auto;
+  margin-left: auto;
   margin-top: 20px;
 }
 
@@ -88,7 +90,10 @@
 
 .large-dataset,
 .small-dataset {
-  min-width: 280px;
+  min-width: 300px;
+  @media all and (max-width: 320px) {
+    min-width: 280px;
+  }
 }
 
 .range-inputs-container {

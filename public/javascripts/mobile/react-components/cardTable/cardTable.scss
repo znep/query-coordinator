@@ -1,0 +1,21 @@
+.socrata-table-container {
+  .socrata-table-wrapper {
+    height: 80vh;
+  }
+
+  tr {
+    height: 20px !important;
+  }
+
+  .socrata-pager button {
+    font-size: 13px;
+
+    [class*="icon"] {
+      font-size: 11px;
+    }
+  }
+
+  .socrata-pager .pager-label {
+    font-size: 11px;
+  }
+}

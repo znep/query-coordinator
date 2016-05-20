@@ -1,12 +1,15 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
 import formatDate from '../lib/formatDate';
+import { emitMixpanelEvent } from '../actions';
 
-var FeaturedView = React.createClass({
+export var FeaturedView = React.createClass({
   propTypes: {
     name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     description: PropTypes.string,
     url: PropTypes.string.isRequired,
     isPrivate: PropTypes.bool,
@@ -33,23 +36,23 @@ var FeaturedView = React.createClass({
   },
 
   render: function() {
-    var { name, description, url, displayType, updatedAt, viewCount } = this.props;
+    var { name, id, description, url, displayType, updatedAt, viewCount } = this.props;
 
     var icon = getIconClassForDisplayType(displayType);
 
     var privateIcon = this.props.isPrivate ?
-      <span className="icon icon-private"/> : null;
+      <span className="icon icon-private" /> : null;
 
     return (
-      <div className="result-card media">
+      <div className="result-card media" data-id={id} data-type={displayType}>
         <div className="entry-header">
           <div className="entry-title">
             <h3 className="entry-name">
-              {privateIcon} <a href={url}>{name}</a>
+              {privateIcon} <a href={url} onClick={this.props.onClickWidget}>{name}</a>
             </h3>
           </div>
           <div className="entry-view-type">
-            <span className={icon}/>
+            <span className={icon} />
           </div>
         </div>
         <div className="entry-meta">
@@ -63,11 +66,11 @@ var FeaturedView = React.createClass({
         <div className="entry-content">
           <div className="entry-main">
             <div className="img-wrapper">
-              <a href={url}>
+              <a href={url} onClick={this.props.onClickWidget}>
                 <span className={icon + ' x-large-icon'}></span>
               </a>
             </div>
-            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}}/>
+            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}} />
           </div>
         </div>
       </div>
@@ -75,4 +78,21 @@ var FeaturedView = React.createClass({
   }
 });
 
-export default FeaturedView;
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickWidget: function(event) {
+      var resultCard = event.target.closest('.result-card');
+      var payload = {
+        name: 'Clicked a Related View',
+        properties: {
+          'Related View Id': resultCard.dataset.id,
+          'Related View Type': resultCard.dataset.type
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(_.identity, mapDispatchToProps)(FeaturedView);

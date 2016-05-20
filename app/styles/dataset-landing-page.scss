@@ -77,6 +77,10 @@ body {
 
       .btn-default {
         background: $light-grey-5;
+
+        &:hover {
+          background: $light-grey-4;
+        }
       }
 
       .dropdown:after {
@@ -151,6 +155,20 @@ main.container.landing-page-container {
       font-weight: 500;
       margin: 0;
       padding: 11px 0;
+    }
+
+    .landing-page-header-wrapper {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .btn-default {
+        margin-bottom: 8px;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -351,6 +369,7 @@ main.container.landing-page-container {
 
     &:last-child {
       margin-right: 0;
+      max-width: none;
     }
 
     .metadata-pair-key {
@@ -370,23 +389,23 @@ main.container.landing-page-container {
 
   .metadata-detail-groups {
     justify-content: flex-start;
+  }
 
-    .metadata-detail-group {
-      margin-right: 15px;
+  .metadata-detail-group {
+    margin-right: 15px;
+  }
 
-      .metadata-detail-group-title {
-        font-size: 12px;
-        color: $light-grey-1;
-        font-weight: 600;
-      }
+  .metadata-detail-group-title {
+    font-size: 12px;
+    color: $light-grey-1;
+    font-weight: 600;
+  }
 
-      .metadata-detail-group-value {
-        font-size: 12px;
+  .metadata-detail-group-value {
+    font-size: 12px;
 
-        &.empty {
-          font-style: italic;
-        }
-      }
+    &.empty {
+      font-style: italic;
     }
   }
 
@@ -669,10 +688,21 @@ section.landing-page-section.schema-preview {
   }
 }
 
+.modal {
+  h1, h4, h5, h6 {
+    font-weight: 400;
+  }
+
+  .modal-header-title {
+    max-width: 95%;
+  }
+}
+
 #api-flannel {
   letter-spacing: 0;
   text-align: left;
   width: 420px;
+  max-width: 100%; // mobile
 
   h4, h6 {
     font-weight: 400;
@@ -736,7 +766,7 @@ section.landing-page-section.schema-preview {
     }
   }
 
-  @media(max-width: 420px) {
+  @media(max-width: $small) {
     .documentation-link {
       display: block;
       width: 100%;
@@ -787,6 +817,65 @@ section.landing-page-section.schema-preview {
   }
 }
 
+#contact-modal {
+  .modal-container {
+    max-width: 600px;
+    max-height: 600px;
+    overflow-y: scroll;
+
+    .modal-header {
+      .modal-header-title {
+        margin-top: 0;
+      }
+    }
+
+    .modal-content {
+      max-height: none;
+      overflow-y: visible;
+
+      .subject {
+        width: 100%;
+      }
+
+      .message {
+        width: 100%;
+        min-width: auto;
+        resize: vertical;
+        height: 7em;
+      }
+
+      .email {
+        width: 300px;
+      }
+
+      label .quiet {
+        margin-left: 5px;
+      }
+
+      .alert p {
+        margin: 0;
+      }
+    }
+
+    #cancel {
+      text-decoration: none;
+    }
+
+    #send {
+      padding: 10px 12px;
+
+      &.sending {
+        padding: 6px 12px;
+        vertical-align: bottom;
+      }
+    }
+
+    @media(max-width: $small) {
+      max-height: none;
+    }
+  }
+}
+
 a {
   color: $link-color;
   text-decoration: none;
@@ -830,4 +919,89 @@ a {
     color: $light-grey-1;
     cursor: pointer;
   }
+}
+
+.feedback-panel {
+  position: fixed;
+  width: 37rem;
+  bottom: 0;
+  right: 0;
+  @media(max-width: $medium) {
+    height: 0;
+    width: 100%;
+    position: absolute;
+  }
+
+  .feedback-panel-content {
+    z-index: 10000;
+  }
+
+  .feedback-panel-button {
+    background-color: $primary-alt-1-light;
+    border: 1px solid $primary-alt-1-dark;
+    border-bottom: none;
+    color: $primary-alt-1-dark;
+    padding: 0.5rem 1rem 1rem 1rem;
+    position: fixed;
+    bottom: -0.35rem;
+    right: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    @include prefixer(transition, '0.25s');
+
+    &:hover {
+      bottom: 0;
+    }
+  }
+
+  .flannel-header {
+    max-width: 95%;
+
+    h5 {
+      margin: 0.5rem 0 0;
+    }
+  }
+
+  .feedback-panel-content {
+    position: fixed;
+    width: 36rem;
+    padding: 0 1rem 1rem;
+    bottom: -22rem;
+
+    p {
+      margin: 1rem 0;
+    }
+
+    a {
+      font-weight: bold;
+    }
+
+    button:first-child {
+      margin-bottom: 1rem;
+    }
+
+    .desktop {
+      display: block;
+    }
+    .mobile {
+      display: none;
+    }
+
+    @media(max-width: $medium) {
+      height: auto;
+      width: 100%;
+
+      .desktop {
+        display: none;
+      }
+      .mobile {
+        display: block;
+      }
+    }
+  }
+}
+
+// third-party widget overrides
+#us_report_button {
+  display: none !important;
 }

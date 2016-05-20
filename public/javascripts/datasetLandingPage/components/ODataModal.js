@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { emitMixpanelEvent } from '../actions';
 import initClipboardControl from '../lib/clipboardControl';
 
 export var ODataModal = React.createClass({
@@ -15,7 +16,7 @@ export var ODataModal = React.createClass({
   },
 
   render: function() {
-    var { view } = this.props;
+    var { view, onClickCopy } = this.props;
 
     var multipleGeoLayerNotice = view.geospatialChildLayers.length > 1 ?
       <p className="small">{I18n.odata_modal.multiple_geo_layers}</p> : null;
@@ -35,9 +36,9 @@ export var ODataModal = React.createClass({
             {title}
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={subview.odataUrl} readOnly/>
+                <input className="endpoint-input text-input text-input-sm" type="text" value={subview.odataUrl} readOnly />
                 <span className="input-group-btn">
-                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success}>
+                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
                     {I18n.copy}
                   </button>
                 </span>
@@ -94,4 +95,16 @@ function mapStateToProps(state) {
   return _.pick(state, 'view');
 }
 
-export default connect(mapStateToProps)(ODataModal);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickCopy: function() {
+      var payload = {
+        name: 'Copied OData Link'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ODataModal);

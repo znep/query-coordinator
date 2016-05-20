@@ -2410,14 +2410,9 @@ en:
         more_rows: More Rows
         name: Name
         pending_columns: Please wait while we load your columns...
-        reset_to_preset: Reset to preset
-        set: Set
+        reset: Restore Suggested Settings
         source_column: Source Column
         subheadline: Columns to import
-        suggested_alltext: All columns as text
-        suggested_columns: Suggested columns
-        suggested_flat: Suggested columns (no composites)
-        suggested_plus_discrete: Suggested columns (composites and discrete)
         why_choose_now: Why is it important to choose column types now?
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:

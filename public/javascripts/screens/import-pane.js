@@ -860,19 +860,14 @@
     };
 
     // throw in all analysed columns, with location groups
-    var addDefaultColumns = function(flat, duplicateComposites) {
+    var addDefaultColumns = function() {
         // keep track of what we haven't used
         var availableColumns = _.clone(columns);
         var compositeColumns = [];
 
-        // don't run the composites scan if they want it flat
-        if (flat !== true) {
-            if (duplicateComposites === true) {
-                setAsideCompositeColumns(availableColumns, compositeColumns);
-            } else {
-                availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
-            }
-        }
+        // EN-4053: Enable a simplified default where we keep the individual columns
+        // separate when creating the composites
+        setAsideCompositeColumns(availableColumns, compositeColumns);
 
         // now add the ones we haven't used as individual columns, plus our compositeColumns
         $.batchProcess(
@@ -1042,17 +1037,10 @@
         $pane.find('.columnsPresetsButton').click(function(event) {
             event.preventDefault();
 
-            var presetType = $pane.find('.columnsPresetsSelect').val();
-
             emptyColumnsList();
-            if (presetType == 'alltext')
-                addAllColumnsAsText();
-            else if (presetType == 'suggestedFlat')
-                addDefaultColumns(true);
-            else if (presetType == 'suggested')
-                addDefaultColumns();
-            else if (presetType == 'suggestedPlusDiscrete')
-                addDefaultColumns(false, true);
+
+            //Reset the value to the default list of columns
+            addDefaultColumns();
 
             $columnsList.trigger('awesomereorder-listupdated');
         });

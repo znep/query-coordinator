@@ -12,6 +12,15 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 
+function docsStream() {
+  return gulp.src('docs/stylesheets/docs.scss').
+    pipe(sourcemaps.init()).
+      pipe(plumber()).
+      pipe(sass({includePaths}).on('error', sass.logError)).
+      pipe(prepend(banner())).
+      pipe(autoprefixer({browsers}));
+}
+
 function stream() {
   return gulp.src('src/scss/**/*.scss').
     pipe(sourcemaps.init()).
@@ -37,9 +46,17 @@ function compileNanoCSS(callback) {
   on('finish', callback);
 }
 
+function compileDocsCSS(callback) {
+  docsStream().
+    pipe(sourcemaps.write('.')).
+    pipe(gulp.dest('docs/stylesheets')).
+    on('finish', callback);
+}
+
 module.exports = (done) => {
   async.parallel([
     compileCSS,
-    compileNanoCSS
+    compileNanoCSS,
+    compileDocsCSS
   ], done);
 };

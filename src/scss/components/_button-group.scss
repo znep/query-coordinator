@@ -64,12 +64,14 @@
   }
 }
 
-/* TODO: should be isolated, applies only to styleguide, see issue #72 */
-/* may also merit a general styleguide change in the future */
+/* TODO: should be isolated, applies only to styleguide, see issue #72
+ * may also merit a general styleguide change in the future
+ */
+
 .styleguide-section {
   .btn-group.complex-btn-group {
     .dropdown {
-      padding: .45em 15px;
+      padding: 0.45em 15px;
     }
   }
 }

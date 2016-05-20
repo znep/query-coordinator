@@ -1,14 +1,13 @@
 @import "breakpoint";
-@import "vendor/reset";
-//@import "vendor/prism";
 @import "modular-scale";
-
 
 // Style Components
 @import "bourbon";
 @import "neat";
 
-@import "../../../src/scss/socrata-icons";
+@import "socrata-icons";
+@import "variables/colors";
+@import "components/list";
 
 @font-face {
   font-family: "socrata-icons";
@@ -27,28 +26,6 @@
     src: url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
   }
 }
-
-@import "../../../src/scss/components/grid";
-@import "../../../src/scss/components/typography";
-@import "../../../src/scss/components/colors";
-@import "../../../src/scss/components/color-swatches";
-@import "../../../src/scss/components/button-group";
-@import "../../../src/scss/components/buttons";
-@import "../../../src/scss/components/list";
-@import "../../../src/scss/components/loader";
-@import "../../../src/scss/components/forms";
-@import "../../../src/scss/components/modal";
-@import "../../../src/scss/components/tags";
-@import "../../../src/scss/components/alerts";
-@import "../../../src/scss/components/dividers";
-@import "../../../src/scss/components/flyout";
-@import "../../../src/scss/components/flannel";
-@import "../../../src/scss/components/nav-bars";
-@import "../../../src/scss/components/tables";
-@import "../../../src/scss/components/menu";
-@import "../../../src/scss/components/pagination";
-@import "../../../src/scss/components/input-groups";
-@import "../../../src/scss/components/cards";
 
 // Media Queries
 $tablet: 769px;
@@ -79,13 +56,13 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.5px; }
 				border-bottom: 4px solid $primary-dark;
 			}
 		}
-	}	
+	}
 	a {
 		text-decoration: none;
 		color: $dark-grey-1;
 		padding: ms(-8) ms(-4);
 		&.active {
-			border-bottom: 4px solid $primary;		
+			border-bottom: 4px solid $primary;
 		}
 		&:hover {
 			border-bottom: 4px solid $light-grey-3;

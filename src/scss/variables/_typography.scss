@@ -1,0 +1,9 @@
+$ms-base: 15px;
+$ms-ratio: 1.618, 1.25, 1.333;
+
+$default-font-stack: "Open Sans", "Helvetica", Arial, sans-serif;
+$default-font-path: "../fonts/";
+
+@function socrata-icons-path($font-file) {
+  @return $default-font-path + $font-file;
+}

@@ -11,7 +11,8 @@
   height: 100%;
 }
 
-.missing-columns-warning {
+.missing-columns-warning,
+.missing-dataset-error {
   position: absolute;
   top: 0;
   right: 0;
@@ -20,20 +21,35 @@
   z-index: 11;
   background: white;
 
-  .missing-columns-warning-message {
+  .missing-columns-warning-message,
+  .missing-dataset-error-message {
     position: absolute;
     top: 50%;
-    left: 50%;
-    width: 350px;
+    left: 0;
+    right: 0;
+    margin: 0;
+    width: auto;
+    background-color: #faf0f0;
+    border-color: #ce6565;
+    color: #904747;
+    border-radius: 0;
+    font-size: 15px;
+    font-weight: normal;
+
     height: 58px;
     text-align: center;
     padding: 1rem;
-    margin-left: calc((350px + 2rem)/-2);
     margin-top: calc((58px + 2rem)/-2);
     overflow: auto;
 
     p + p {
       margin-top: 1rem;
     }
+  }
+}
+
+.missing-dataset-error {
+  .missing-dataset-error-message {
+    height: auto;
   }
 }

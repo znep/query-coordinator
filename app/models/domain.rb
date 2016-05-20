@@ -77,6 +77,10 @@ class Domain < Model
     return @configs[type]
   end
 
+  def clear_default_configuration!
+    @default_configs = nil
+  end
+
   def default_configuration(type)
     @default_configs ||= Hash.new
 

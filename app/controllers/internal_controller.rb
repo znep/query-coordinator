@@ -670,6 +670,7 @@ class InternalController < ApplicationController
         end
       end
     end
+    domain.clear_default_configuration!
   end
 
   def notices

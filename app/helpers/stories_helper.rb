@@ -17,21 +17,7 @@ module StoriesHelper
       }
     )
 
-    update_classic_visualization(story)
     story.to_json
-  end
-
-  def update_classic_visualization(story)
-    story['blocks'].each do |block|
-      block['components'].each do |component|
-        if component['type'] == 'socrata.visualization.classic'
-          component['value']['visualization'] = CoreServer.get_view(component['value']['originalUid'])
-          if component['value']['visualization']
-            component['value']['visualization']['metadata']['renderTypeConfig']['visible']['table'] = false
-          end
-        end
-      end
-    end
   end
 
   def google_font_code_embed

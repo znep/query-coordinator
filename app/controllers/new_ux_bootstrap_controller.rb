@@ -108,7 +108,12 @@ class NewUxBootstrapController < ActionController::Base
     # controlling for the presence of existing pages, and we also don't want
     # to persist the data lens page automatically.
     if use_ephemeral_bootstrap
-      return instantiate_ephemeral_view(dataset_metadata_response_body)
+      begin
+        return instantiate_ephemeral_view(dataset_metadata_response_body)
+      rescue CoreServer::TimeoutError
+        flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
+        return redirect_to action: 'show', controller: 'datasets'
+      end
     end
 
     # 5. Check to see if any 'new UX' pages already exist.

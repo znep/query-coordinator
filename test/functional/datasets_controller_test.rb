@@ -144,24 +144,20 @@ class DatasetsControllerTest < ActionController::TestCase
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
     FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
-    expectent_flash = stub
-    expectent_flash.expects(:[]=).with(:notice, I18n.t('screens.ds.unable_to_find_dataset_page'))
-    assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
-    @controller.class.any_instance.stubs(:flash => expectent_flash)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/'
+    assert_match(@controller.flash[:notice], I18n.t('screens.ds.unable_to_find_dataset_page'))
+    assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
   end
 
   test 'redirects to home page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
     FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: false ) })
-    expectent_flash = stub
-    expectent_flash.expects(:[]=).with(:notice, I18n.t('screens.ds.unable_to_find_dataset_page'))
-    assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
-    @controller.class.any_instance.stubs(:flash => expectent_flash)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/'
+    assert_match(@controller.flash[:notice], I18n.t('screens.ds.unable_to_find_dataset_page'))
+    assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
   end
 
   test 'special snowflake SF api geo datasets do not die' do

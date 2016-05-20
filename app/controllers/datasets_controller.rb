@@ -59,6 +59,7 @@ class DatasetsController < ApplicationController
     if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
+        flash.keep
         return redirect_to canonical_path
       end
 
@@ -77,6 +78,7 @@ class DatasetsController < ApplicationController
     @suppress_content_wrapper = true
 
     if is_mobile?
+      flash.keep
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
 
@@ -103,6 +105,7 @@ class DatasetsController < ApplicationController
         if destination_url == '/'
           flash[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
         end
+        flash.keep
         return redirect_to destination_url
       end
 

@@ -1,13 +1,20 @@
 require 'rails_helper'
 
+class FakeUser
+  def email
+    'some@user.com'
+  end
+end
+
 describe EsriCrawler do
 
   let(:host) { 'host' }
+  let(:user) { FakeUser.new.email }
   let(:port) { 2030 }
   let(:base_url) { "http://#{host}:#{port}" }
   let(:stub_contents)  do
     {
-      :headers => {'X-Socrata-Host' => host},
+      :headers => {'X-Socrata-Host' => host, 'X-Socrata-User' => user},
       :body => {}
     }
   end
@@ -17,6 +24,7 @@ describe EsriCrawler do
       allow(EsriCrawler).to receive(:hostname).and_return(host)
       allow(EsriCrawler).to receive(:port).and_return(port)
       allow(CurrentDomain).to receive(:cname).and_return(host)
+      allow(User).to receive(:current_user).and_return(FakeUser.new)
     end
 
 

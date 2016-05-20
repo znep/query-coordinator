@@ -51,7 +51,10 @@ module EsriCrawler
   def self.execute
     begin
       base_uri "#{hostname}:#{port}"
-      default_options.update(headers: { 'X-Socrata-Host' => CurrentDomain.cname })
+      default_options.update(headers: {
+        'X-Socrata-Host' => CurrentDomain.cname,
+        'X-Socrata-User' => User.current_user.email
+      })
       response = yield
       case response.code
         when 200..299

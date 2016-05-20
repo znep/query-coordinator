@@ -59,10 +59,7 @@ module InternalHelper
   end
 
   def property_value(value)
-    case value
-    when String then value
-    else value.to_json
-    end
+    value.is_a?(String) ? value : value.to_json
   end
 
   def property_actions_for(property_name)

@@ -95,22 +95,34 @@ export var AuthoringWorkflow = React.createClass({
     }
 
     return (
-      <div>
-        <div>Enter a dataset four by four:</div>
+      <div className="modal modal-full modal-overlay">
+        <div className="modal-container">
 
-        <div>
-          <input type="text" value={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
-        </div>
+          <header className="modal-header">
+            <h3 className="modal-header-title">Create Vizualization</h3>
+          </header>
 
-        {datasetMetadataInfo}
+          <section className="modal-content">
+            <form>
+              <div>
+                <label className="block-label">Enter a dataset four by four:</label>
+                <input className="text-input" type="text" value={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
+              </div>
 
-        {dimensionDropdown}
-        {measureDropdown}
-        {chartTypeDropdown}
+              {datasetMetadataInfo}
 
-        <div className="actions">
-          <button className="done" onClick={this.onComplete}>Done</button>
-          <button className="cancel" onClick={this.onCancel}>Cancel</button>
+              {dimensionDropdown}
+              {measureDropdown}
+              {chartTypeDropdown}
+            </form>
+          </section>
+
+          <footer className="modal-footer">
+            <div className="modal-footer-actions">
+              <button className="btn btn-default cancel" onClick={this.onCancel}>Cancel</button>
+              <button className="btn btn-primary done" onClick={this.onComplete}>Done</button>
+            </div>
+          </footer>
         </div>
       </div>
     );

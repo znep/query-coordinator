@@ -50,7 +50,7 @@
     "semver": "^5.1.0",
     "shelljs": "^0.6.0",
     "sinon": "^1.15.3",
-    "socrata-styleguide": "0.4.2",
+    "socrata-styleguide": "2.0.0",
     "strict-loader": "^1.0.0",
     "webpack": "^1.12.2"
   },

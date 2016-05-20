@@ -8,13 +8,6 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
-var FLYOUT_EVENT = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
-  'SOCRATA_VISUALIZATION_FLYOUT' :
-  'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT';
-var VISUALIZATION_IMPLEMENTATION = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
-  'socrataSvgTimelineChart' :
-  'socrataTimelineChart';
-
 $.fn.componentSocrataVisualizationTimelineChart = componentSocrataVisualizationTimelineChart;
 
 export default function componentSocrataVisualizationTimelineChart(componentData, theme, options) {
@@ -48,15 +41,18 @@ export default function componentSocrataVisualizationTimelineChart(componentData
 }
 
 function _renderTemplate($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
-
   var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   var $componentContent = $('<div>', { class: 'component-content' });
+  var flyoutEvent = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'SOCRATA_VISUALIZATION_FLYOUT' :
+    'SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT';
+
+  StorytellerUtils.assertHasProperty(componentData, 'type');
 
   $element.
     addClass(className).
     on('destroy', function() { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
-    on(FLYOUT_EVENT, function(event) {
+    on(flyoutEvent, function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {
@@ -76,6 +72,9 @@ function _updateVisualization($element, componentData) {
   var renderedVif = $element.attr('data-rendered-vif') || '{}';
   var vif = componentData.value.vif;
   var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  var visualizationImplementation = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'socrataSvgTimelineChart' :
+    'socrataTimelineChart';
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
@@ -94,6 +93,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent[VISUALIZATION_IMPLEMENTATION](vif);
+    $componentContent[visualizationImplementation](vif);
   }
 }

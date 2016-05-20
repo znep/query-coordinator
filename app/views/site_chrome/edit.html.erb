@@ -13,10 +13,10 @@
     </div>
 
     <div class="header-controls">
-      <%= link_to('#') do %>
+      <%= link_to('#', onclick: 'alert("This feature is not yet implemented.");') do %>
         <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
       <% end %>
-      <%= link_to('#') do %>
+      <%= link_to('#', onclick: 'alert("This feature is not yet implemented; please save tabs individually.")') do %>
         <button><%= t('screens.admin.site_chrome.save_changes') %></button>
       <% end %>
     </div>
@@ -48,7 +48,7 @@
         <%= t("screens.admin.site_chrome.save") %>
       </button>
     <% end %>
-    <%= link_to('#') do %>
+    <%= link_to('#', onclick: 'alert("This feature is not yet implemented but should probably just reload the tab.")') do %>
       <button id="site_chrome_cancel">
         <%= t("screens.admin.site_chrome.cancel") %>
       </button>

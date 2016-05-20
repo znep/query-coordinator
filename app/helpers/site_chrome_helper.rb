@@ -1,8 +1,13 @@
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
-  def social_share_link(type)
-    social_shares = fetch_content([:general, :social_shares])
-    social_shares ? social_shares.detect { |x| x['type'] == type }['url'] : nil
+  def social_share_link(type, site_chrome = @site_chrome)
+    social_shares = fetch_content([:general, :social_shares], site_chrome)
+    if social_shares
+      share_type_hash = social_shares.detect { |x| x['type'] == type }
+      if share_type_hash
+        share_type_hash['url']
+      end
+    end
   end
 
   # TODO: replace with `dig` after the Ruby upgrade

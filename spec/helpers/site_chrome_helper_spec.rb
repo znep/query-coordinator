@@ -2,14 +2,25 @@
 require 'rails_helper'
 
 describe SiteChromeHelper do
-  describe 'fetch_content' do
-    let(:site_chrome) do
-      json = JSON.parse(File.read('spec/fixtures/site_chrome.json'))
-      sc = SiteChrome.new(json) # properties will get ignored an initialization
-      sc.properties = json['properties'] # have to add then separately
-      sc
+  let(:site_chrome) do
+    json = JSON.parse(File.read('spec/fixtures/site_chrome.json'))
+    sc = SiteChrome.new(json) # properties will get ignored an initialization
+    sc.properties = json['properties'] # have to add then separately
+    sc
+  end
+
+  describe '#social_share_link' do
+    it 'should return nil if social shares do not exist' do
+      expect(social_share_link('myspace', site_chrome)).to be_nil
     end
 
+    it 'should return the url of the given social share' do
+      expect(social_share_link('facebook', site_chrome)).to eq('http://facebook.com')
+      expect(social_share_link('twitter', site_chrome)).to eq('http://twitter.com')
+    end
+  end
+
+  describe 'fetch_content' do
     # I know, this is all silly when we'll have `dig` after 2.3
 
     it 'should not raise on empty content' do

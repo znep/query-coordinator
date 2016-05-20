@@ -2210,6 +2210,7 @@ en:
         'true': true
         up: Up
       site_chrome:
+        description: Configure the appearance of your Socrata site.
         site_appearance: Site Appearance
         preview_changes: Preview Changes
         save_changes: Save Changes

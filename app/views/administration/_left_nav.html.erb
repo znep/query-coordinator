@@ -52,6 +52,12 @@
         <%= admin_nav_link_to t('screens.admin.georegions.title'), :controller => '/administration', :action => 'georegions' %>
       </li>
     <%- end -%>
+    <%- if FeatureFlags.derive(nil, request).site_chrome_header_and_footer &&
+      current_user && current_user.is_admin? %>
+      <li class="homemgmt">
+        <%= admin_nav_link_to 'Site Appearance', :controller => '/site_chrome', :action => 'edit' %>
+      </li>
+    <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
       <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) ||
               CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||

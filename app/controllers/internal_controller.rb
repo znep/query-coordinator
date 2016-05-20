@@ -641,21 +641,21 @@ class InternalController < ApplicationController
     properties = config.properties
     CoreServer::Base.connection.batch_request do |batch_id|
       (updates['feature_flags'] || []).each do |flag, value|
-        unless FeatureFlags.list.include? flag
+        unless FeatureFlags.list.include?(flag)
           errors << "#{flag} is not a valid feature flag."
           next
         end
         processed_value = FeatureFlags.process_value(value).to_s
         if properties[flag] == processed_value
-          notices << "#{flag} was already set to \"#{processed_value}\"."
+          notices << %Q{#{flag} was already set to "#{processed_value}".}
           next
         end
         if properties.has_key?(flag)
           config.update_property(flag, processed_value, batch_id)
-          notices << "#{flag} was updated with value \"#{processed_value}\"."
+          notices << %Q{"#{flag} was updated with value "#{processed_value}".}
         else
           config.create_property(flag, processed_value, batch_id)
-          notices << "#{flag} was created with value \"#{processed_value}\"."
+          notices << %Q{#{flag} was created with value "#{processed_value}".}
         end
       end
 
@@ -663,10 +663,10 @@ class InternalController < ApplicationController
         if config.has_property?(flag)
           config.delete_property(flag, false, batch_id)
           default_value = FeatureFlags.default_for(flag).to_s
-          notices << "#{flag} was reset to its default value of \"#{default_value}\"."
+          notices << %Q{#{flag} was reset to its default value of "#{default_value}".}
         else
           # Failure is not an error.
-          notices << "#{flag} could not be reset; it was not set in the first place."
+          notices << "#{flag} could not be reset since it was not set in the first place."
         end
       end
     end

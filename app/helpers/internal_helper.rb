@@ -75,26 +75,34 @@ module InternalHelper
     case kind
     when :edit
       content_tag :div, :class => 'propertyAction editAction' do
-        html = link_to('Edit this field alone.',
-                       show_property_path(config_id: @config.id,
-                                          property_id: property_name),
-                       :class => 'editLink')
+        html = link_to(
+          'Edit this field alone.',
+          show_property_path(config_id: @config.id, property_id: property_name),
+          :class => 'editLink'
+        )
       end
     when :delete
       content_tag :div, :class => 'propertyAction deleteAction' do
         id  = "delete_properties[#{property_name}]"
         html = check_box_tag(id, 'delete')
-        html << content_tag(:label, %Q!Delete "#{property_name}"!,
-                            :title => property_name,
-                            :for => sanitize_to_id(id), :class => 'deleteLink')
+        html << content_tag(
+          :label,
+          %Q{Delete "#{property_name}"},
+          :title => property_name,
+          :for => sanitize_to_id(id),
+          :class => 'deleteLink'
+        )
       end
     when :export
       content_tag :div, :class => 'propertyAction exportAction' do
         sanitized_id = sanitize_to_id("export[#{property_name}]")
         html = check_box_tag('', '', false, :class => 'exportCheck', :id => sanitized_id)
-        html << content_tag(:label, %Q!Export "#{property_name}"!,
-                            :title => property_name,
-                            :for => sanitized_id, :class => 'exportLabel')
+        html << content_tag(
+          :label, %Q{Export "#{property_name}"},
+          :title => property_name,
+          :for => sanitized_id,
+          :class => 'exportLabel'
+        )
       end
     end
   end

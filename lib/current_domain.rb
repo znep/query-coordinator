@@ -85,8 +85,7 @@ class CurrentDomain
   def self.needs_refresh_check?(cname)
     @@refresh_times = {} unless defined? @@refresh_times
 
-    @@refresh_times[cname].nil? || \
-      ((Time.now - @@refresh_times[cname]) > REFRESH_CHECK_TIME)
+    @@refresh_times[cname].nil? || (Time.now - @@refresh_times[cname]) > REFRESH_CHECK_TIME
   end
 
   def self.flag_refresh_checked!(cname)
@@ -148,7 +147,8 @@ class CurrentDomain
       @@current_domain[:site_properties] = conf.nil? ?
         Hashie::Mash.new : conf.properties
     end
-    return @@current_domain[:site_properties]
+
+    @@current_domain[:site_properties]
   end
 
   def self.raw_properties
@@ -157,7 +157,8 @@ class CurrentDomain
       @@current_domain[:site_properties_raw] = conf.nil? ?
         Hash.new : conf.raw_properties
     end
-    return @@current_domain[:site_properties_raw]
+
+    @@current_domain[:site_properties_raw]
   end
 
   def self.templates(version = '2b', locale = nil)
@@ -172,9 +173,9 @@ class CurrentDomain
 
   def self.theme(version = '2b')
     if version == 0
-      return self.properties.theme || Hashie::Mash.new
+      self.properties.theme || Hashie::Mash.new
     else
-      return self.properties['theme_v' + version] || Hashie::Mash.new
+      self.properties['theme_v' + version] || Hashie::Mash.new
     end
   end
 
@@ -192,18 +193,18 @@ class CurrentDomain
         computed_merged_with_default[locale] = default_strings.dup.deep_merge!(self.properties.strings[locale] || {})
       end
 
-      return computed_merged_with_default[locale]
+      computed_merged_with_default[locale]
     else
-      return default_strings
+      default_strings
     end
   end
 
   def self.features
-    return @@current_domain[:data].features || Hashie::Mash.new
+    @@current_domain[:data].features || Hashie::Mash.new
   end
 
   def self.feature_flags
-    return @@current_domain[:data].feature_flags || Hashie::Mash.new
+    @@current_domain[:data].feature_flags || Hashie::Mash.new
   end
 
   def self.modules
@@ -227,11 +228,11 @@ class CurrentDomain
   end
 
   def self.default_config
-    return @@current_domain[:data].default_configuration('site_theme')
+    @@current_domain[:data].default_configuration('site_theme')
   end
 
   def self.configuration(name)
-    return @@current_domain[:data].default_configuration(name)
+    @@current_domain[:data].default_configuration(name)
   end
 
   def self.module_available?(name_or_set)
@@ -288,27 +289,19 @@ class CurrentDomain
   end
 
   def self.member?(user)
-    if user.nil?
-      false
-    else
-      user.rights && user.rights.size > 0
-    end
+    user && user.rights && user.rights.size > 0
   end
 
   def self.user_can?(user, action)
-    if user.nil?
-      false
-    else
-      user.has_right?(action)
-    end
+    user && user.has_right?(action)
   end
 
   def self.truthy?(key)
     self.properties[key.to_s].to_s == 'true' # TrueClass.to_s => 'true'
   end
 
+  private
 
-private
   def self.current_theme
     default_config
   end
@@ -316,4 +309,5 @@ private
   def self.generate_cache_key(key)
     "domains.#{key.to_s}.updated_at"
   end
+
 end

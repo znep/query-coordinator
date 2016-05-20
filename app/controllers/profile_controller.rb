@@ -279,9 +279,7 @@ class ProfileController < ApplicationController
           if params[:user][:email] != params[:user][:email_confirm]
             error_msg = t('screens.profile.edit.validation.email_mismatch')
           else
-            updated_attributes.merge!(
-                {:email => params[:user][:email],
-                  :password => params[:user][:email_password]})
+            updated_attributes.merge!(:email => params[:user][:email], :password => params[:user][:email_password])
           end
         end
         if params[:user][:email_subscribe].present? && current_user.emailUnsubscribed

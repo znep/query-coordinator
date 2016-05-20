@@ -52,13 +52,12 @@ class Configuration < Model
 
   def raw_properties
     props = Hashie::Mash.new
-
     return props if data['properties'].nil?
 
     data['properties'].each do |p|
       props[p['name']] = p['value']
     end
-    return props
+
   end
 
   def has_property?(name)

@@ -30,7 +30,7 @@ class UnminifiedAssetsHelperTest < MiniTest::Test
 
     Jammit.stubs(:package_assets => true)
     @object.expects(:unminified_asset_url).with(fake_package, :js).returns(fake_asset_url).once
-    @object.expects(:javascript_include_tag).with([fake_asset_url]).once
+    @object.expects(:javascript_include_tag).with(fake_asset_url).once
     @object.expects(:html_safe).once.returns(:expected_return)
 
     assert_equal(

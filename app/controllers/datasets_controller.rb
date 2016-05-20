@@ -63,7 +63,7 @@ class DatasetsController < ApplicationController
       end
 
       dataset_landing_page = DatasetLandingPage.new
-      @featured_views = dataset_landing_page.get_featured_views(params[:id], 4)
+      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 
@@ -687,7 +687,7 @@ class DatasetsController < ApplicationController
 
     if dataset_landing_page_enabled? && view_has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
-      @featured_views = dataset_landing_page.get_featured_views(params[:id], 4)
+      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 

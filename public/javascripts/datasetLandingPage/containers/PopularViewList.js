@@ -1,22 +1,22 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import FeaturedViewList from '../components/FeaturedViewList';
+import PopularViewList from '../components/PopularViewList';
 import breakpoints from '../lib/breakpoints';
 import {
   emitMixpanelEvent,
-  loadMoreFeaturedViews,
-  dismissFeaturedViewsError,
-  toggleFeaturedViews
+  loadMorePopularViews,
+  dismissPopularViewsError,
+  togglePopularViews
 } from '../actions';
 
 function mapStateToProps(state) {
-  return state.featuredViews;
+  return state.popularViews;
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     loadMore: function() {
-      dispatch(loadMoreFeaturedViews());
+      dispatch(loadMorePopularViews());
 
       var mixpanelPayload = {
         name: 'Clicked to Show More Views'
@@ -26,11 +26,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
 
     toggleList: function() {
-      dispatch(toggleFeaturedViews());
+      dispatch(togglePopularViews());
     },
 
     dismissError: function() {
-      dispatch(dismissFeaturedViewsError());
+      dispatch(dismissPopularViewsError());
     },
 
     onClickWidget: function(event) {
@@ -53,10 +53,10 @@ function mapDispatchToProps(dispatch, ownProps) {
       var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
 
       if (!isDesktop && hasMore && isAtRightEdge) {
-        dispatch(loadMoreFeaturedViews());
+        dispatch(loadMorePopularViews());
       }
     }, 200)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeaturedViewList);
+export default connect(mapStateToProps, mapDispatchToProps)(PopularViewList);

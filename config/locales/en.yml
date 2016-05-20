@@ -1299,7 +1299,7 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
-    featured_views:
+    popular_views:
       no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
       load_more_error: There was a problem loading additional content.
       title: Popular Content Using this Data

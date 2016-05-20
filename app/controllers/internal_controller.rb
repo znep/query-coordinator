@@ -112,7 +112,7 @@ class InternalController < ApplicationController
       config_type = params[:id]
       config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
       return render_404 unless config.present?
-      return redirect_to show_config_path(id: config.id)
+      return redirect_to show_config_path(config)
     end
 
     @domain = Domain.find(params[:domain_id])

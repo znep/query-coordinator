@@ -145,7 +145,7 @@
 <%- if !@conditions.empty? || !params[:search_string].blank? -%>
   <h2>Save this view</h2>
   <%- if current_user -%>
-    <%= form_tag (save_filter_dataset_path(@view.id) + '?' + @state_param) do -%>
+    <%= form_tag (save_filter_dataset_path(@view) + '?' + @state_param) do -%>
       <%= hidden_field_tag 'query_json', @query_json %>
       <%= label_tag "Name" %>
       <%= text_field_tag "name" %>

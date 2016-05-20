@@ -13,11 +13,11 @@ class ProfileController < ApplicationController
   helper :user
 
   def index
-    redirect_to profile_path(current_user.route_params)
+    redirect_to profile_path(current_user)
   end
 
   def generic_account
-    redirect_to profile_account_path(current_user.route_params)
+    redirect_to profile_account_path(current_user)
   end
 
   def show
@@ -30,13 +30,13 @@ class ProfileController < ApplicationController
       return if @user.nil?
       # See if it matches the authoritative URL; if not, redirect
       # we need to explicitly fetch the options and merge no-locale here
-      if request.path != profile_path(@user.route_params.merge(:locale => nil))
+      if request.path != profile_path(@user, :locale => nil)
         # Log redirects in development
         if Rails.env != 'production' &&
           request.path =~ /^\w{4}-\w{4}/
           logger.info("Doing a profile redirect from #{request.referrer}")
         end
-        redirect_to(profile_path(@user.route_params) + '?' + request.query_string, :status => 301)
+        redirect_to(profile_path(@user) + '?' + request.query_string, :status => 301)
       end
       @app_tokens = @user.app_tokens
 
@@ -197,7 +197,7 @@ class ProfileController < ApplicationController
           return (render 'shared/error', :status => :forbidden)
         else
           flash[:notice] = t('screens.profile.edit.success')
-          redirect_to(profile_path(current_user.route_params))
+          redirect_to(profile_path(current_user))
         end
       end
       format.data { render :json => {:error => error_msg,
@@ -214,7 +214,7 @@ class ProfileController < ApplicationController
   # Note: was AccountsController#edit
   def edit_account
     # redirect from generic to fully-qualified url
-    expected_path = profile_account_path(current_user.route_params.merge(:locale => nil))
+    expected_path = profile_account_path(current_user, :locale => nil)
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end
@@ -297,7 +297,7 @@ class ProfileController < ApplicationController
         flash[:notice] = t('screens.profile.edit.success')
       end
     end
-    redirect_to profile_account_path(current_user.route_params)
+    redirect_to profile_account_path(current_user)
   end
 
   def edit_image
@@ -309,7 +309,7 @@ class ProfileController < ApplicationController
   def edit_app_tokens
     # redirect from generic to fully-qualified url
     # (for /profile/app_tokens support from dev.socrata.com)
-    expected_path = app_tokens_path(current_user.route_params.merge(:locale => nil))
+    expected_path = app_tokens_path(current_user, :locale => nil)
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end
@@ -378,7 +378,7 @@ class ProfileController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(profile_path(User.find(user_id).route_params)) }
+      format.html { redirect_to(profile_path(User.find(user_id))) }
       format.data { render :text => 'created' }
     end
   end
@@ -387,7 +387,7 @@ class ProfileController < ApplicationController
     Contact.delete(params[:id])
 
     respond_to do |format|
-      format.html { redirect_to(profile_path(current_user.route_params)) }
+      format.html { redirect_to(profile_path(current_user)) }
       format.data { render :text => 'deleted' }
     end
   end

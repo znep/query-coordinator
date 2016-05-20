@@ -510,7 +510,7 @@ class DatasetsController < ApplicationController
           return redirect_to alt_view_path(@view)
         else
           flash[:error] = 'Please fill in all fields'
-          return redirect_to contact_dataset_path(:id => @view.id)
+          return redirect_to contact_dataset_path(@view)
         end
       end
       format.data { render :json => { :success => success } }

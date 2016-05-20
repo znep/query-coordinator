@@ -152,7 +152,7 @@ describe('componentGoalTile jQuery plugin', function() {
     stubGoalJsonApiAndCreateGoalTile(validComponentData, 404, validGoalData);
 
     it('should render an error message', function() {
-      assert.isTrue($component.hasClass('error'));
+      assert.isTrue($component.hasClass('component-error'));
     });
   });
 

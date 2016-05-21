@@ -1,8 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
-  include BrowseHelper
   include Browse2Helper
+  include BrowseHelper
+  include SocrataUrlHelpers
 
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
@@ -14,25 +15,6 @@ module ApplicationHelper
     end
   end
   alias :t :translate
-
-  def view_url(view)
-    if view.is_api?
-      # use the view's federation resolution but throw away the rest for the resource name instead.
-      developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
-    elsif view.data_lens? || view.standalone_visualization?
-      if view.federated?
-        "//#{view.domainCName}#{locale_url_prefix}/view/#{view.id}"
-      else
-        "#{locale_url_prefix}/view/#{view.id}"
-      end
-    elsif view.story?
-      "/stories/s/#{view.id}"
-    elsif view.pulse?
-      "/pulse/view/#{view.id}"
-    else
-      super
-    end
-  end
 
 # MODULES/FEATURES
   def module_available(name_or_set, &block)
@@ -819,13 +801,6 @@ module ApplicationHelper
     return 'Unavailable' unless req.present?
 
     req.headers['X-Socrata-RequestId'] || req.headers['action_dispatch.req_id']
-  end
-
-  # a snippet that can be included before any non-localized url
-  # to provide a localized url without unnecessary path segments
-  # in the case of the default locale
-  def locale_url_prefix
-    I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
   end
 
   # gets the active locale for the request.

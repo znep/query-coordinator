@@ -6,6 +6,7 @@ describe ImportActivity do
                     'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
 
   before :each do
+    CurrentDomain.stubs(:cname => 'localhost')
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
       JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))

@@ -1,5 +1,6 @@
 class View < Model
   include Rails.application.routes.url_helpers
+  include SocrataUrlHelpers
   extend FindExtensions
 
   cattr_accessor :filter_type1s
@@ -35,13 +36,13 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path,
                                                   {'X-Socrata-Federation' => 'Honey Badger'}))
   end
-  
+
   def self.find_deleted_name(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedNameById', 'id' => id}.to_param
     name = CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'})
-    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it 
+    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it
   end
-  
+
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -1011,11 +1012,11 @@ class View < Model
 
   def route_params
     params =
-      { category: (self.category || 'dataset').convert_to_url,
-        view_name: (self.name || 'dataset').convert_to_url,
-        id: self.id }
+      { category: (category || 'dataset').convert_to_url,
+        view_name: (name || 'dataset').convert_to_url,
+        id: id }
 
-    params[:host] = self.federated? ? self.domainCName : CurrentDomain.cname
+    params[:host] = canonical_domain_name
 
     params
   end
@@ -1031,17 +1032,13 @@ class View < Model
   end
 
   def download_url(ext = 'json')
-    "#{root_url(host: self.domainCName || CurrentDomain.cname)}#{download_path(ext)}"
+    "//#{canonical_domain_name}/#{download_path(ext)}"
   end
 
   def download_path(extension, params = {})
     path = "/api/views/#{self.id}/rows.#{extension}"
     query_string = '?' + params.reverse_merge({ :accessType => 'DOWNLOAD' }).to_query
     path + query_string
-  end
-
-  def geo_download_path(format)
-    "/api/geospatial/#{self.id}?method=export&format=#{format}"
   end
 
   # While we still have datasets in both OBE and NBE, prefer the NBE id
@@ -1057,8 +1054,7 @@ class View < Model
   end
 
   def api_foundry_url
-    domain = self.federated? ? self.domainCName : CurrentDomain.cname
-    "https://dev.socrata.com/foundry/#{domain}/#{preferred_id}"
+    "https://dev.socrata.com/foundry/#{canonical_domain_name}/#{preferred_id}"
   end
 
   def resource_url(request = nil)
@@ -1068,33 +1064,6 @@ class View < Model
   # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
   def odata_url(request = nil)
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"
-  end
-
-  def seo_friendly_url(request = nil)
-    base_url = request.try(:base_url) || "https://#{CurrentDomain.cname}"
-    base_url + locale_url_prefix + view_path(route_params)
-  end
-
-  def encoded_seo_friendly_url(request = nil)
-    ERB::Util.url_encode(seo_friendly_url(request))
-  end
-
-  # Taken from ApplicationHelper#locale_url_prefix
-  # a snippet that can be included before any non-localized url
-  # to provide a localized url without unnecessary path segments
-  # in the case of the default locale
-  def locale_url_prefix
-    I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
-  end
-
-  def tweet
-    # Stories do not use the `short_view_url` helper method, which hard-codes the `/d/` prefix.
-    if self.story?
-      story_domain = self.federated? ? self.domainCName : CurrentDomain.cname
-      I18n.t('controls.common.share.share_story_text', :name => name, :site => CurrentDomain.strings.company) + "//#{story_domain}/stories/s/#{self.id}"
-    else
-      I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
-    end
   end
 
   def allAccessPoints
@@ -1142,9 +1111,12 @@ class View < Model
     end
   end
 
+  def canonical_domain_name
+    federated? ? domainCName : CurrentDomain.cname
+  end
+
   def domain_icon_href
-    cname = federated? ? domainCName : CurrentDomain.cname
-    "/api/domains/#{cname}/icons/smallIcon"
+    "/api/domains/#{canonical_domain_name}/icons/smallIcon"
   end
 
   def user_role(user_id)
@@ -1199,6 +1171,30 @@ class View < Model
 
   def has_rights?(*rights)
     Array[rights].flatten.all? { |right| rights_include?(right) }
+  end
+
+  def has_grant_for?(user, grant_type)
+    users_with_grant(grant_type).include?(user.id)
+  end
+
+  def can_edit_story?(user)
+    raise RuntimeError.new('view is not a story') unless story?
+
+    (
+      user.is_owner?(self) ||
+      has_grant_for?(user, 'owner') || # Co-owner
+      has_grant_for?(user, 'contributor')
+    )
+  end
+
+  def can_preview_story?(user)
+    raise RuntimeError.new('view is not a story') unless story?
+
+    (
+      can_edit_story?(user) ||
+      has_grant_for?(user, 'viewer') ||
+      user.has_right?(UserRights::VIEW_UNPUBLISHED_STORY)
+    )
   end
 
   def users_with_grant(grant_type)
@@ -1570,6 +1566,10 @@ class View < Model
       self.owner.id == user.id ||
         (grants && grants.any? { |p| p.userId == user.id && (p.type || '').downcase == 'owner' })
     end
+  end
+
+  def shared_to?(user)
+    (grants || []).map(&:userId).include?(user.id)
   end
 
   def can_modify_data?

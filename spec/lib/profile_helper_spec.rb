@@ -2,85 +2,73 @@ require 'rails_helper'
 
 RSpec.describe ProfileHelper, type: :helper do
 
-  describe '#view_url_pulse' do
-    let(:view) { double('view', id: 'four-four', pulse?: view_is_pulse, story?: false) }
-    let(:view_is_pulse) { true }
-
-    describe 'when encountering a Pulse view' do
-      it 'Returns a Pulse url' do
-        expect(view_url(view)).to eq('/pulse/view/four-four')
-      end
-    end
-  end
-  
   describe '#view_url' do
-    let(:rights) { [] }
-    let(:current_user_id) { 'four-four' }
-    let(:current_user) { User.new('id' => current_user_id, 'rights' => rights) }
-    let(:grants) { [] }
-    let(:owner_id) { 'rawr-rawr' }
-    let(:owner) { Owner.new('id' => owner_id) }
-    let(:view) { double('view', id: 'four-four', story?: view_is_story, grants: grants, owner: owner) }
-    let(:view_is_story) { true }
-    let(:viewing_self) { true }
+    let(:is_story) { true }
+    let(:is_data_lens) { false }
+    let(:can_edit_story) { true }
+    let(:can_preview_story) { true }
+    let(:viewing_others_profile) { false }
+
+    let(:view) do
+      double(
+        'view',
+        id: 'four-four',
+        name: 'test view name',
+        can_edit_story?: can_edit_story,
+        can_preview_story?: can_preview_story,
+        canonical_domain_name: 'example.com',
+        story?: is_story,
+        data_lens?: false,
+        is_api?: false,
+        standalone_visualization?: false)
+    end
 
     before do
-      allow_any_instance_of(ProfileHelper).to receive(:viewing_self?).and_return(viewing_self)
-      allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(current_user)
+      allow_any_instance_of(ProfileHelper).to receive(:viewing_others_profile?).and_return(viewing_others_profile)
+      allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(nil)
+    end
+
+    describe 'when encountering a non-story view' do
+      let(:is_story) { false }
+      it 'returns the url from SocrataUrlHelpers' do
+        allow_any_instance_of(SocrataUrlHelpers).to receive(:view_url).and_return('mocked')
+        expect(view_url(view)).to eq('mocked')
+      end
     end
 
     describe 'when encountering a story view' do
-      describe 'when the user has contributor access' do
-        let(:grants) {
-          [ Grant.new('userId' => current_user_id, 'type' => 'contributor') ]
-        }
-
-        it 'returns a url with /edit at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four/edit')
+      describe 'when the user is looking at someone else\'s profile' do
+        let(:viewing_others_profile) { true }
+        let(:can_edit_story) { true }
+        let(:can_preview_story) { true }
+        it 'returns the view mode url' do
+          expect(view_url(view)).to eq('//example.com/stories/s/test-view-name/four-four')
         end
       end
-
       describe 'when the user has owner access' do
-        let(:grants) {
-          [ Grant.new('userId' => current_user_id, 'type' => 'owner') ]
-        }
-
+        let(:viewing_others_profile) { false }
+        let(:can_edit_story) { true }
+        let(:can_preview_story) { true }
         it 'returns a url with /edit at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four/edit')
+          expect(view_url(view)).to eq('//example.com/stories/s/test-view-name/four-four/edit')
         end
       end
 
       describe 'when the user has viewer access' do
-        let(:grants) {
-          [ Grant.new('userId' => current_user_id, 'type' => 'viewer') ]
-        }
-
+        let(:viewing_others_profile) { false }
+        let(:can_edit_story) { false }
+        let(:can_preview_story) { true }
         it 'returns a url with /preview at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four/preview')
-        end
-      end
-
-      describe 'when the user is an admin' do
-        before do
-          allow_any_instance_of(User).to receive(:is_admin?).and_return(true)
-        end
-
-        it 'returns a url with /edit at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four/edit')
-        end
-      end
-
-      describe 'when the user owns the view' do
-        let(:owner_id) { current_user_id }
-
-        it 'returns a url with /edit at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four/edit')
+          expect(view_url(view)).to eq('//example.com/stories/s/test-view-name/four-four/preview')
         end
       end
 
       describe 'when the user has no access' do
-        it 'returns a url with nothing at the end' do
-          expect(view_url(view)).to eq('/stories/s/four-four')
+        let(:viewing_others_profile) { false }
+        let(:can_edit_story) { false }
+        let(:can_preview_story) { false }
+        it 'returns the published view url' do
+          expect(view_url(view)).to eq('//example.com/stories/s/test-view-name/four-four')
         end
       end
     end

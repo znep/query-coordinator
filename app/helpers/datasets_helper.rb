@@ -31,11 +31,9 @@ module DatasetsHelper
   end
 
   def socialize_menu_options(view)
-    seo_path = view_url(view)
-
     {
-     :facebook => { 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
-     :twitter  => { 'href' => "http://twitter.com/?status=#{view.tweet}"}
+     :facebook => { 'href' => "http://www.facebook.com/share.php?u=#{h(short_view_url(view))}"},
+     :twitter  => { 'href' => "http://twitter.com/?status=#{tweetable_link(view)}"}
     }
   end
 

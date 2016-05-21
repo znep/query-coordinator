@@ -152,12 +152,6 @@ class ApplicationController < ActionController::Base
     CoreServer::Base.connection = CoreServer::Connection.new(Rails.logger, cookies)
   end
 
-  def default_url_options
-    options = {}
-    options[:locale] = I18n.locale.to_s if I18n.locale.to_s != CurrentDomain.default_locale
-    options
-  end
-
   # +before_filter+
   def disable_frame_embedding
     headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome

@@ -11,7 +11,7 @@ module AdministrationHelper
 
   def view_url(view)
     if view.story?
-      "/stories/s/#{view.id}/edit"
+      edit_story_url(view)
     else
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation

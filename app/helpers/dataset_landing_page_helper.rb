@@ -66,7 +66,7 @@ module DatasetLandingPageHelper
   end
 
   def share_facebook_url
-    "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
+    "http://www.facebook.com/sharer/sharer.php?u=#{encoded_seo_friendly_url(@view, request)}"
   end
 
   def share_twitter_url
@@ -78,7 +78,7 @@ module DatasetLandingPageHelper
 
     text = ERB::Util.url_encode(text)
 
-    "http://twitter.com/share?text=#{text}&url=#{@view.encoded_seo_friendly_url(request)}"
+    "http://twitter.com/share?text=#{text}&url=#{encoded_seo_friendly_url(@view, request)}"
   end
 
   def share_email_url
@@ -87,7 +87,7 @@ module DatasetLandingPageHelper
     body = I18n.t(
       'dataset_landing_page.share.email_body',
       :provider => CurrentDomain.strings.company,
-      :url => @view.encoded_seo_friendly_url(request)
+      :url => encoded_seo_friendly_url(@view, request)
     )
 
     "mailto:?subject=#{subject}&body=#{body}"

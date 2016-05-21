@@ -30,12 +30,12 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding: 0 11px;
-
-    .alert-dismiss {
-      float: right;
-      cursor: pointer;
-    }
   }
+}
+
+.alert-dismiss {
+  float: right;
+  cursor: pointer;
 }
 
 .info-pane {
@@ -88,6 +88,8 @@ body {
       }
 
       .dropdown.download {
+        z-index: 10;
+
         .geo-layer-heading {
           overflow: hidden;
           white-space: nowrap;
@@ -172,13 +174,16 @@ main.container.landing-page-container {
     }
   }
 
+  .alert.error {
+    margin-top: 15px;
+  }
+
   .media-results {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
 
     .alert {
       width: 100%;
@@ -191,12 +196,21 @@ main.container.landing-page-container {
     }
 
     .result-card {
-      margin-right: 2%;
       flex: 0 0 auto;
       width: 32%;
+      margin-right: 2%;
+      opacity: 0;
 
-      &:last-child {
-        margin-right: 0;
+      &.loading-card {
+        display: flex;
+        opacity: 1;
+
+        .spinner-default {
+          width: 64px;
+          height: 64px;
+          border-width: 5px;
+          margin: auto;
+        }
       }
 
       .entry-header {
@@ -263,6 +277,21 @@ main.container.landing-page-container {
           max-height: 150px;
         }
       }
+    }
+
+    @media(min-width: $medium) {
+      .result-card {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
     }
   }
 

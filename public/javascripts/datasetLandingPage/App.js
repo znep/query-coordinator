@@ -1,4 +1,5 @@
 import React from 'react';
+import Responsive from './lib/Responsive';
 import Navbar from './components/Navbar';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
@@ -19,8 +20,12 @@ export default React.createClass({
         <Navbar />
         <PrivateNotice />
         <InfoPane />
+
         <main className="container landing-page-container">
-          <FeaturedViewList />
+          <Responsive>
+            <FeaturedViewList />
+          </Responsive>
+
           <MetadataTable />
           <DatasetContents />
         </main>

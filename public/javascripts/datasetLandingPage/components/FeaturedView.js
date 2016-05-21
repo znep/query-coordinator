@@ -1,12 +1,9 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { connect } from 'react-redux';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
 import formatDate from '../lib/formatDate';
-import { emitMixpanelEvent } from '../actions';
 
-export var FeaturedView = React.createClass({
+var FeaturedView = React.createClass({
   propTypes: {
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
@@ -14,7 +11,8 @@ export var FeaturedView = React.createClass({
     url: PropTypes.string.isRequired,
     isPrivate: PropTypes.bool,
     updatedAt: PropTypes.string.isRequired,
-    viewCount: PropTypes.number.isRequired
+    viewCount: PropTypes.number.isRequired,
+    onClick: PropTypes.func
   },
 
   componentDidMount: function() {
@@ -48,7 +46,7 @@ export var FeaturedView = React.createClass({
         <div className="entry-header">
           <div className="entry-title">
             <h3 className="entry-name">
-              {privateIcon} <a href={url} onClick={this.props.onClickWidget}>{name}</a>
+              {privateIcon} <a href={url} onClick={this.props.onClick}>{name}</a>
             </h3>
           </div>
           <div className="entry-view-type">
@@ -66,7 +64,7 @@ export var FeaturedView = React.createClass({
         <div className="entry-content">
           <div className="entry-main">
             <div className="img-wrapper">
-              <a href={url} onClick={this.props.onClickWidget}>
+              <a href={url} onClick={this.props.onClick}>
                 <span className={icon + ' x-large-icon'}></span>
               </a>
             </div>
@@ -78,21 +76,4 @@ export var FeaturedView = React.createClass({
   }
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onClickWidget: function(event) {
-      var resultCard = event.target.closest('.result-card');
-      var payload = {
-        name: 'Clicked a Related View',
-        properties: {
-          'Related View Id': resultCard.dataset.id,
-          'Related View Type': resultCard.dataset.type
-        }
-      };
-
-      dispatch(emitMixpanelEvent(payload));
-    }
-  };
-}
-
-export default connect(_.identity, mapDispatchToProps)(FeaturedView);
+export default FeaturedView;

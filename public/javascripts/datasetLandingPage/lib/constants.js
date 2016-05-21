@@ -1,0 +1,1 @@
+export const FEATURED_VIEWS_CHUNK_SIZE = 3;

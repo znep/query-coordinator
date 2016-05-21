@@ -1,4 +1,4 @@
-import { FeaturedView } from 'components/FeaturedView';
+import FeaturedView from 'components/FeaturedView';
 import mockFeaturedView from 'data/mockFeaturedView';
 
 describe('components/FeaturedView', function() {

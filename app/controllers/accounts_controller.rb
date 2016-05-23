@@ -62,7 +62,7 @@ class AccountsController < ApplicationController
           format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         end
       else
-        flash.now[:error] = @signup.errors
+        flash.now[:error] = @signup.errors.values.flatten.join(', ')
         @user_session = UserSession.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }

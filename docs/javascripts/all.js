@@ -33,10 +33,14 @@ document.addEventListener('DOMContentLoaded', function() {
   anchors.forEach(function(anchor) {
     anchor.addEventListener('click', function() {
       setTimeout(function() {
-        collapse({pageY: document.scrollingElement.scrollTop});
+        if (document.scrollingElement) {
+          collapse({pageY: document.scrollingElement.scrollTop});
+        }
       });
     });
   });
 
-  collapse({pageY: document.scrollingElement.scrollTop});
+  if (document.scrollingElement) {
+    collapse({pageY: document.scrollingElement.scrollTop});
+  }
 });

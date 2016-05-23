@@ -75,7 +75,7 @@ export var MetadataTable = React.createClass({
               {fieldset.name}
             </h5>
 
-            <table className="table-condensed table-borderless table-discrete table-striped">
+            <table className="table table-condensed table-borderless table-discrete table-striped">
               <tbody>
                 {fields}
               </tbody>
@@ -102,7 +102,7 @@ export var MetadataTable = React.createClass({
           <h5 className="metadata-table-title">
             {I18n.metadata.attachments}
           </h5>
-          <table className="table-condensed table-borderless table-discrete table-striped">
+          <table className="table table-condensed table-borderless table-discrete table-striped">
             <tbody>
               {attachmentRows}
             </tbody>
@@ -295,7 +295,7 @@ export var MetadataTable = React.createClass({
                 {I18n.metadata.topics}
               </h5>
 
-              <table className="table-condensed table-borderless table-discrete table-striped">
+              <table className="table table-condensed table-borderless table-discrete table-striped">
                 <tbody>
                   <tr>
                     <td>{I18n.metadata.category}</td>
@@ -315,7 +315,7 @@ export var MetadataTable = React.createClass({
                 {I18n.metadata.licensing}
               </h5>
 
-              <table className="table-condensed table-borderless table-discrete table-striped">
+              <table className="table table-condensed table-borderless table-discrete table-striped">
                 <tbody>
                   <tr>
                     <td>{I18n.metadata.license}</td>

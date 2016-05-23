@@ -670,7 +670,7 @@ class InternalController < ApplicationController
         end
       end
     end
-    domain.clear_default_configuration!
+    CurrentDomain.clear_feature_flags!
   end
 
   def notices

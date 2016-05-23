@@ -2,10 +2,12 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationColumnChart';
+/* eslint-disable no-unused-vars */
+import componentSocrataVisualizationColumnChart, {__RewireAPI__ as componentSocrataVisualizationColumnChartAPI}
+  from '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationColumnChart';
+/* eslint-enable no-unused-vars */
 
 describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
-
   var $component;
   var validComponentData = {
     type: 'socrata.visualization.columnChart',
@@ -14,10 +16,19 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
         height: 300
       },
       vif: {
-        configuration: {}
+        columnName: 'test',
+        configuration: {},
+        datasetUid: 'test-test',
+        domain: 'example.com',
+        filters: [],
+        type: 'columnChart'
       }
     }
   };
+
+  function useSvgVisualizations(useSvg) {
+    componentSocrataVisualizationColumnChartAPI.__Rewire__('Environment', {ENABLE_SVG_VISUALIZATIONS: useSvg});
+  }
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -46,24 +57,52 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   describe('given a valid component type and value', function() {
     var socrataColumnChartStub;
 
-    beforeEach(function() {
-      socrataColumnChartStub = sinon.stub($.fn, 'socrataColumnChart');
-      $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
+    describe('when using the old (Data Lens) column chart', function() {
+
+      beforeEach(function() {
+        useSvgVisualizations(false);
+        socrataColumnChartStub = sinon.stub($.fn, 'socrataColumnChart');
+        $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
+      });
+
+      afterEach(function() {
+        socrataColumnChartStub.restore();
+      });
+
+      it('should return a jQuery object for chaining', function() {
+        assert.instanceOf($component, $);
+      });
+
+      it('should call into socrataColumnChart with the correct arguments', function() {
+        sinon.assert.calledWithExactly(
+          socrataColumnChartStub,
+          validComponentData.value.vif
+        );
+      });
     });
 
-    afterEach(function() {
-      socrataColumnChartStub.restore();
-    });
+    describe('when using the new (05/2016) column chart', function() {
 
-    it('should return a jQuery object for chaining', function() {
-      assert.instanceOf($component, $);
-    });
+      beforeEach(function() {
+        useSvgVisualizations(true);
+        socrataColumnChartStub = sinon.stub($.fn, 'socrataSvgColumnChart');
+        $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
+      });
 
-    it('should call into socrataColumnChart with the correct arguments', function() {
-      sinon.assert.calledWithExactly(
-        socrataColumnChartStub,
-        validComponentData.value.vif
-      );
+      afterEach(function() {
+        socrataColumnChartStub.restore();
+      });
+
+      it('should return a jQuery object for chaining', function() {
+        assert.instanceOf($component, $);
+      });
+
+      it('should call into socrataColumnChart with the correct arguments', function() {
+        sinon.assert.calledWithExactly(
+          socrataColumnChartStub,
+          validComponentData.value.vif
+        );
+      });
     });
   });
 });

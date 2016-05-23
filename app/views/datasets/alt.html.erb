@@ -51,7 +51,7 @@
     <%- if @view.is_unpublished? && @view.has_rights?(ViewRights::DELETE) -%>
       <li><a href="<%= delete_working_copy_dataset_path(@view) %>">Delete This Working Copy</a></li>
     <%- end -%>
-    <%- if @view.is_tabular? && enable_rss_download_type -%>
+    <%- if @view.is_tabular? -%>
     <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
     <%- end -%>
   <%- socialize_menu_options(@view).each_pair do |network, item| -%>

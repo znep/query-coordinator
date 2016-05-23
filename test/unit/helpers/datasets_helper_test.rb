@@ -18,13 +18,6 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.enable_xls_download_type, 'enable_xls_download_type to be false'
   end
 
-  def test_enable_rss_download_type
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_rss_download_type => true))
-    assert @object.enable_rss_download_type, 'enable_rss_download_type to be true'
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_rss_download_type => false))
-    refute @object.enable_rss_download_type, 'enable_rss_download_type to be false'
-  end
-
   def test_enable_pdf_download_type
     FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_pdf_download_type => true))
     assert @object.enable_pdf_download_type, 'enable_pdf_download_type to be true'
@@ -33,16 +26,10 @@ class DatasetsHelperTest < Test::Unit::TestCase
   end
 
   def test_normal_download_types
-    @object.stubs(:enable_xls_download_type => true, :enable_pdf_download_type => true, :enable_rss_download_type => true)
+    @object.stubs(:enable_xls_download_type => true)
     assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
-    @object.stubs(:enable_xls_download_type => false, :enable_pdf_download_type => true, :enable_rss_download_type => true)
+    @object.stubs(:enable_xls_download_type => false)
     assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XML']
-    @object.stubs(:enable_xls_download_type => true, :enable_pdf_download_type => false, :enable_rss_download_type => true)
-    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
-    @object.stubs(:enable_xls_download_type => true, :enable_pdf_download_type => true, :enable_rss_download_type => false)
-    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'XLS', 'XLSX', 'XML']
-    @object.stubs(:enable_xls_download_type => false, :enable_pdf_download_type => false, :enable_rss_download_type => false)
-    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'XML']
   end
 
   def test_row_identifier_select_tag

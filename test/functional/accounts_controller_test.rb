@@ -6,30 +6,33 @@ class AccountsControllerTest < ActionController::TestCase
     init_core_session
     User.stubs(create: User.new(some_user))
     init_current_domain
+    # stub_feature_flags_with(:enable_new_account_verification_email, false)
   end
 
   def test_create_with_no_special_things
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile')
+    assert(@response.redirect_url.include?(login_path), 'should redirect to login page')
+    assert_equal(@controller.flash[:notice], t('screens.sign_up.email_verification.sent',
+      :email =>'foo@bar.com' ))
   end
 
   def test_create_with_login_path_override
     CurrentDomain.properties.stubs(on_login_path_override: '/goats-are-sexy')
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?('/goats-are-sexy'), 'should redirect to arbitrary path')
+    assert(@response.redirect_url.include?(login_path), 'should redirect to login page')
   end
 
   def test_create_on_govstat_site
     stub_module_enabled_on_current_domain(:govStat)
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile if no session')
+    assert(@response.redirect_url.include?(login_path), 'should redirect to login page')
   end
 
   def test_create_on_govstat_site_after_nav_from
     stub_module_enabled_on_current_domain(:govStat)
     @controller.session[:return_to] = '/some-other-page'
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?('/some-other-page'), 'should redirect to stored location')
+    assert(@response.redirect_url.include?(login_path), 'should redirect to login page')
   end
 
   # Leaving CSRF token validation disabled for signups is not a viable long-term solution. Although
@@ -45,7 +48,10 @@ class AccountsControllerTest < ActionController::TestCase
     @controller.expects(:handle_unverified_request).never
     post(:create, :signup => some_user, :format => :json)
     assert_equal('200', @response.code, 'should be a success response')
-    assert_equal({:user_id => 1}.to_json, @response.body, 'should include a mock user in the JSON response')
+    assert_equal({
+      :notice => 'We sent a verification email to foo@bar.com, please follow the instructions in the email to complete the registration process.',
+      :promptLogin => false
+    }.to_json, @response.body, 'should notify of email verification in the JSON response')
   end
 
   def test_create_signup_with_no_csrf_token_succeeds_as_data
@@ -58,7 +64,10 @@ class AccountsControllerTest < ActionController::TestCase
     @controller.expects(:handle_unverified_request).never
     post(:create, :signup => some_user, :format => :data)
     assert_equal('200', @response.code, 'should be a success response')
-    assert_equal({:user_id => 1}.to_json, @response.body, 'should include a mock user in the JSON response')
+    assert_equal({
+      :notice => 'We sent a verification email to foo@bar.com, please follow the instructions in the email to complete the registration process.',
+      :promptLogin => false
+    }.to_json, @response.body, 'should notify of email verification in the JSON response')
   end
 
   private

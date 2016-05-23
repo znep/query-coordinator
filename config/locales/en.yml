@@ -1962,6 +1962,7 @@ en:
           append: Append
           apply_filters: Go
           data_workflow: Data Workflow
+          delete: Delete
           filter_by: Filter By
           import: Import
           import_activity: Import Activity
@@ -1973,6 +1974,7 @@ en:
         index_page:
           action: Action
           dataset: Dataset
+          deleted: Deleted
           deleted_dataset: Deleted dataset
           deleted_user: User has been deleted
           export_as_csv: Export As CSV

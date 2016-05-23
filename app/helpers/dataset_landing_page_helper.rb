@@ -110,7 +110,7 @@ module DatasetLandingPageHelper
       return [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
     end
 
-    formats = [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
+    formats = [ 'csv', 'csv_for_excel', 'json', 'rdf', 'xml' ]
 
     if FeatureFlags.derive(nil, request).enable_pdf_download_type
       formats.push('pdf')
@@ -119,6 +119,10 @@ module DatasetLandingPageHelper
     if FeatureFlags.derive(nil, request).enable_xls_download_type
       formats.push('xls')
       formats.push('xlsx')
+    end
+
+    if FeatureFlags.derive(nil, request).enable_rss_download_type
+      formats.push('rss')
     end
 
     formats

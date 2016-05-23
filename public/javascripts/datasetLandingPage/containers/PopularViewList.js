@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import PopularViewList from '../components/PopularViewList';
-import breakpoints from '../lib/breakpoints';
 import {
   emitMixpanelEvent,
   loadMorePopularViews,

@@ -1,4 +1,9 @@
 class DatasetLandingPageController < ActionController::Base
+  include UserAuthMethods
+
+  before_filter :hook_auth_controller
+  before_filter :initialize_current_user
+
   def popular_views
     dataset_landing_page = DatasetLandingPage.new
 
@@ -11,5 +16,9 @@ class DatasetLandingPageController < ActionController::Base
     end
 
     render :json => popular_views
+  end
+
+  def initialize_current_user
+    current_user_session
   end
 end

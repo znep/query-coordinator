@@ -1401,10 +1401,11 @@ $(document).ready(function(){
     </header>
 
     <section class="modal-content">
-      <p>Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources.</p>
+      <h2 class="h5 modal-header-title">Featured Content</h2>
+      <p>What would you like people to see when they first look at this dataset? Promote up to three Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.</p>
 
       <div id="featured-item-1" class="content-placeholder">
-        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <button class="btn btn-alternate-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
@@ -1434,11 +1435,11 @@ $(document).ready(function(){
               <div class="entry-main">
                 <img src="https://dl.dropboxusercontent.com/u/4235130/bottles.png" alt="BOTTELS">
                 <div class="btn-group-vertical" role="group">
-                  <button class="btn btn-primary-alt-3" data-modal="story-modal">
+                  <button class="btn btn-alternate-3" data-modal="story-modal">
                     <span class="icon-edit"></span>
                     Change
                   </button>
-                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
+                  <button class="btn btn-alternate-1 btn-inverse remove-item">
                     <span class="icon-close"></span>
                     Remove
                   </button>
@@ -1455,7 +1456,7 @@ $(document).ready(function(){
       </div>
 
       <div id="featured-item-2" class="content-placeholder">
-        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <button class="btn btn-alternate-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
@@ -1483,11 +1484,11 @@ $(document).ready(function(){
               <div class="entry-main">
                 <img id="ext-asset-image" src="https://dl.dropboxusercontent.com/u/4235130/defaultExternalPic.png" alt="">
                 <div class="btn-group-vertical" role="group">
-                  <button class="btn btn-primary-alt-3" data-modal="external-asset-modal">
+                  <button class="btn btn-alternate-3" data-modal="external-asset-modal">
                     <span class="icon-edit"></span>
                     Change
                   </button>
-                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
+                  <button class="btn btn-alternate-1 btn-inverse remove-item">
                     <span class="icon-close"></span>
                     Remove
                   </button>
@@ -1504,7 +1505,7 @@ $(document).ready(function(){
 
 
       <div id="featured-item-3" class="content-placeholder">
-        <button class="btn btn-primary-alt-3 btn-inverse add-button">Add...</button>
+        <button class="btn btn-alternate-3 btn-inverse add-button">Add...</button>
         <div class="btn-group-vertical type-menu hidden" role="group">
           <button class="btn btn-default" data-modal="socrata-viz-modal">Visualization</button>
           <button class="btn btn-default" data-modal="story-modal">Story</button>
@@ -1533,11 +1534,11 @@ $(document).ready(function(){
                <img src="https://dl.dropboxusercontent.com/u/4235130/heatmap.png" alt=" " />
 
                 <div class="btn-group-vertical" role="group">
-                  <button class="btn btn-primary-alt-3" data-modal="socrata-viz-modal">
+                  <button class="btn btn-alternate-3" data-modal="socrata-viz-modal">
                     <span class="icon-edit"></span>
                     Change
                   </button>
-                  <button class="btn btn-primary-alt-1 btn-inverse remove-item">
+                  <button class="btn btn-alternate-1 btn-inverse remove-item">
                     <span class="icon-close"></span>
                     Remove
                   </button>
@@ -1569,15 +1570,18 @@ $(document).ready(function(){
 <div id="socrata-viz-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
+      <h1 class="h5 modal-header-title">
+        Manage Featured Content <span class="icon-arrow-right"></span> Socrata Visualization
+      </h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
     <section class="modal-title modal-content">
+      <button class="btn btn-default btn-simple btn-xs" data-modal-dismiss><span class="icon-arrow-prev"></span> Back</button>
       <h2>Feature a Socrata Visualization</h2>
-
+      <p>Choose a Data Lens, map, chart, or filtered view that you think really represents your dataset, or that is just extra cool or new. This will be one of the frst things your users see when they land on the dataset page.</p>
 
       <div class="media-results">
 
@@ -1812,14 +1816,16 @@ $(document).ready(function(){
 <div id="story-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content <span class="icon-arrow-right"></span> Socrata Story</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
     <section class="modal-title modal-content">
+      <button class="btn btn-default btn-simple btn-xs" data-modal-dismiss><span class="icon-arrow-prev"></span> Back</button>
       <h2>Feature a Socrata Story</h2>
+      <p>Utilize the power of storytelling and Socrata Perspectives. Choose to guide your users to relevant narrative that touches the data. For a full list of public stories on this domain <a href="https://evergreen.data.socrata.com/browse?limitTo=story" target="_blank">click here <span class="icon-external"/></a></p>
 
       <div class="asset-info">
         <form>
@@ -1879,14 +1885,16 @@ $(document).ready(function(){
 <div id="external-asset-modal" class="modal modal-overlay modal-hidden modal-full" data-modal-dismiss>
   <div class="modal-container">
     <header class="modal-header">
-      <h1 class="h5 modal-header-title">Manage Featured Content</h1>
+      <h1 class="h5 modal-header-title">Manage Featured Content <span class="icon-arrow-right"></span> External Resource</h1>
       <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
         <span class="icon-close-2"></span>
       </button>
     </header>
 
     <section class="modal-title modal-content">
+      <button class="btn btn-default btn-simple btn-xs" data-modal-dismiss><span class="icon-arrow-prev"></span> Back</button>
       <h2>Feature an External Resource</h2>
+      <p>Create a link to some external asset relating to this data. It could be an awesome visualization created in a third party tool, a blogpost about how the data was released, or a link to another part of your site. The sky is your limit!</p>
 
       <div class="asset-info">
 

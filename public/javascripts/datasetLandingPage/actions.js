@@ -150,10 +150,13 @@ export function loadMorePopularViews() {
     var viewId = state.view.id;
     var offset = _.get(state, 'popularViews.list.length', 0);
     var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
+    var fetchOptions = {
+      credentials: 'same-origin'
+    };
 
     dispatch(requestPopularViews());
 
-    fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`).
+    fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`, fetchOptions).
       then(checkStatus).
       then(response => response.json()).
       then(popularViews => dispatch(receivePopularViews(popularViews)))

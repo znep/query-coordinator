@@ -146,6 +146,7 @@ body {
 }
 
 main.container.landing-page-container {
+  display: block; // IE11
   max-width: 68em;
   margin-top: 0;
 
@@ -632,14 +633,15 @@ section.landing-page-section.schema-preview {
 
     td {
       padding: 10px 15px;
-      max-width: 7em;
 
       &.column-name {
+        width: auto;
         font-weight: 600;
         color: $link-color;
       }
 
       &.column-description {
+        width: 40%;
         .contents {
           overflow: hidden;
 
@@ -651,7 +653,7 @@ section.landing-page-section.schema-preview {
       }
 
       &.column-type {
-        width: 12em;
+        width: 10em;
         color: $light-link-color;
 
         .icon {
@@ -660,7 +662,7 @@ section.landing-page-section.schema-preview {
       }
 
       &.column-expand {
-        width: auto;
+        width: 8em;
         span {
           float: right;
         }

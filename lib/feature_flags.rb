@@ -34,6 +34,7 @@ module FeatureFlags
 
   def self.process_value(value)
     return nil if value.nil?
+
     begin
       JSON.parse("{\"valueString\": #{value}}")['valueString']
     rescue JSON::ParserError # This means it's a string!

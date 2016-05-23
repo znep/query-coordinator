@@ -86,7 +86,7 @@ function SvgTimelineChart($element, vif) {
   this.destroy = function() {
 
     d3.
-      select(this.element[0]).
+      select(this.$element[0]).
         select('svg').
           remove();
 

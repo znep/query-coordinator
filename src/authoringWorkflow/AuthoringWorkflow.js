@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { setDatasetUid, setDimension, setMeasure, setChartType } from './actions';
+import { Visualization } from './Visualization';
 
 export var AuthoringWorkflow = React.createClass({
   getDefaultProps: function() {
@@ -74,9 +75,14 @@ export var AuthoringWorkflow = React.createClass({
     return <select onChange={this.props.onChangeChartType} defaultValue={defaultOptionKey}>{chartTypeOptions}</select>;
   },
 
+  visualization: function() {
+    return <Visualization {...this.props} />;
+  },
+
   render: function() {
     var vif = this.props.vif;
     var datasetMetadata = this.props.datasetMetadata;
+    var visualization = this.visualization();
     var datasetMetadataInfo;
     var dimensionDropdown;
     var measureDropdown;
@@ -94,12 +100,13 @@ export var AuthoringWorkflow = React.createClass({
       chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
     }
 
+
     return (
       <div className="modal modal-full modal-overlay">
         <div className="modal-container">
 
           <header className="modal-header">
-            <h3 className="modal-header-title">Create Vizualization</h3>
+            <h3 className="modal-header-title">Create Visualization</h3>
           </header>
 
           <section className="modal-content">
@@ -115,6 +122,8 @@ export var AuthoringWorkflow = React.createClass({
               {measureDropdown}
               {chartTypeDropdown}
             </form>
+
+            {visualization}
           </section>
 
           <footer className="modal-footer">

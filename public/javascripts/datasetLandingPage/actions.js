@@ -1,4 +1,4 @@
-import { FEATURED_VIEWS_CHUNK_SIZE } from './lib/constants';
+import { POPULAR_VIEWS_CHUNK_SIZE } from './lib/constants';
 
 // Used to throw errors from non-200 responses when using fetch.
 function checkStatus(response) {
@@ -110,60 +110,60 @@ export function submitContactForm() {
   };
 }
 
-export const REQUEST_FEATURED_VIEWS = 'REQUEST_FEATURED_VIEWS';
-export function requestFeaturedViews() {
+export const REQUEST_POPULAR_VIEWS = 'REQUEST_POPULAR_VIEWS';
+export function requestPopularViews() {
   return {
-    type: REQUEST_FEATURED_VIEWS
+    type: REQUEST_POPULAR_VIEWS
   };
 }
 
-export const RECEIVE_FEATURED_VIEWS = 'RECEIVE_FEATURED_VIEWS';
-export function receiveFeaturedViews(featuredViews) {
+export const RECEIVE_POPULAR_VIEWS = 'RECEIVE_POPULAR_VIEWS';
+export function receivePopularViews(popularViews) {
   return {
-    type: RECEIVE_FEATURED_VIEWS,
-    featuredViews: featuredViews
+    type: RECEIVE_POPULAR_VIEWS,
+    popularViews: popularViews
   };
 }
 
-export const HANDLE_FEATURED_VIEWS_ERROR = 'HANDLE_FEATURED_VIEWS_ERROR';
-export function handleFeaturedViewsError() {
+export const HANDLE_POPULAR_VIEWS_ERROR = 'HANDLE_POPULAR_VIEWS_ERROR';
+export function handlePopularViewsError() {
   return {
-    type: HANDLE_FEATURED_VIEWS_ERROR
+    type: HANDLE_POPULAR_VIEWS_ERROR
   };
 }
 
-export const DISMISS_FEATURED_VIEWS_ERROR = 'DISMISS_FEATURED_VIEWS_ERROR';
-export function dismissFeaturedViewsError() {
+export const DISMISS_POPULAR_VIEWS_ERROR = 'DISMISS_POPULAR_VIEWS_ERROR';
+export function dismissPopularViewsError() {
   return {
-    type: DISMISS_FEATURED_VIEWS_ERROR
+    type: DISMISS_POPULAR_VIEWS_ERROR
   };
 }
 
-export function loadMoreFeaturedViews() {
+export function loadMorePopularViews() {
   return function(dispatch, getState) {
     var state = getState();
 
-    if (_.get(state, 'featuredViews.isLoading', false)) {
+    if (_.get(state, 'popularViews.isLoading', false)) {
       return;
     }
 
     var viewId = state.view.id;
-    var offset = _.get(state, 'featuredViews.list.length', 0);
-    var limit = FEATURED_VIEWS_CHUNK_SIZE + 1;
+    var offset = _.get(state, 'popularViews.list.length', 0);
+    var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
 
-    dispatch(requestFeaturedViews());
+    dispatch(requestPopularViews());
 
-    fetch(`/dataset_landing_page/${viewId}/featured_views?limit=${limit}&offset=${offset}`).
+    fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`).
       then(checkStatus).
       then(response => response.json()).
-      then(featuredViews => dispatch(receiveFeaturedViews(featuredViews)))
-      ['catch'](() => dispatch(handleFeaturedViewsError()));
+      then(popularViews => dispatch(receivePopularViews(popularViews)))
+      ['catch'](() => dispatch(handlePopularViewsError()));
   };
 }
 
-export const TOGGLE_FEATURED_VIEWS = 'TOGGLE_FEATURED_VIEWS';
-export function toggleFeaturedViews() {
+export const TOGGLE_POPULAR_VIEWS = 'TOGGLE_POPULAR_VIEWS';
+export function togglePopularViews() {
   return {
-    type: TOGGLE_FEATURED_VIEWS
+    type: TOGGLE_POPULAR_VIEWS
   };
 }

@@ -277,7 +277,7 @@ Frontend::Application.routes do
     end
 
     scope :controller => 'dataset_landing_page', :path => '/dataset_landing_page', :constraints => { :id => Frontend::UID_REGEXP } do
-      get '/:id/featured_views', :action => 'featured_views'
+      get '/:id/popular_views', :action => 'popular_views'
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do

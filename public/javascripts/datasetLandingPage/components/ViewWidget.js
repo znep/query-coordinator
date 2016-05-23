@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
 import formatDate from '../lib/formatDate';
 
-var FeaturedView = React.createClass({
+var ViewWidget = React.createClass({
   propTypes: {
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
@@ -76,4 +76,4 @@ var FeaturedView = React.createClass({
   }
 });
 
-export default FeaturedView;
+export default ViewWidget;

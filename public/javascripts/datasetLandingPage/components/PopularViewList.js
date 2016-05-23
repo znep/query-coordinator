@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import FeaturedView from './FeaturedView';
+import ViewWidget from './ViewWidget';
 import { VelocityComponent } from 'velocity-react';
-import { FEATURED_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
 
-export var FeaturedViewList = React.createClass({
+export var PopularViewList = React.createClass({
   propTypes: {
     dismissError: PropTypes.func,
     hasError: PropTypes.bool,
@@ -21,11 +21,11 @@ export var FeaturedViewList = React.createClass({
     var { list, hasMore, isCollapsed, onClickWidget, onScrollList, isDesktop } = this.props;
 
     if (_.isEmpty(list)) {
-      var alertMessage = I18n.featured_views.no_content_alert_html;
+      var alertMessage = I18n.popular_views.no_content_alert_html;
       return <div className="alert default" dangerouslySetInnerHTML={{__html: alertMessage}} />;
     }
 
-    var featuredViews = _.map(list, function(featuredView, i) {
+    var popularViews = _.map(list, function(popularView, i) {
       var opacity;
 
       if (isDesktop) {
@@ -38,13 +38,13 @@ export var FeaturedViewList = React.createClass({
 
       return (
         <VelocityComponent key={i} animation={animation} runOnMount={i > 2} duration={400}>
-          <FeaturedView {...featuredView} onClick={onClickWidget} />
+          <ViewWidget {...popularView} onClick={onClickWidget} />
         </VelocityComponent>
       );
     });
 
     if (!isDesktop && hasMore) {
-      featuredViews.push(
+      popularViews.push(
         <div className="result-card loading-card" key="loading">
           <span className="spinner-default" />
         </div>
@@ -53,7 +53,7 @@ export var FeaturedViewList = React.createClass({
 
     return (
       <div className="media-results" onScroll={onScrollList}>
-        {featuredViews}
+        {popularViews}
       </div>
     );
   },
@@ -90,7 +90,7 @@ export var FeaturedViewList = React.createClass({
 
     return (
       <div className="alert error">
-        {I18n.featured_views.load_more_error}
+        {I18n.popular_views.load_more_error}
         <span className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
@@ -99,7 +99,7 @@ export var FeaturedViewList = React.createClass({
   renderCollapseButton: function() {
     var { list, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
-    if (hasMore || list.length <= FEATURED_VIEWS_CHUNK_SIZE || !isDesktop) {
+    if (hasMore || list.length <= POPULAR_VIEWS_CHUNK_SIZE || !isDesktop) {
       return;
     }
 
@@ -113,8 +113,8 @@ export var FeaturedViewList = React.createClass({
   getAnimation: function() {
     var { list, isCollapsed, isDesktop } = this.props;
 
-    var featuredViewHeight = 287;
-    var featuredViewMargin = 18;
+    var popularViewHeight = 287;
+    var popularViewMargin = 18;
 
     if (!isDesktop) {
       return {
@@ -122,11 +122,11 @@ export var FeaturedViewList = React.createClass({
       };
     }
 
-    var visibleCount = isCollapsed ? FEATURED_VIEWS_CHUNK_SIZE : list.length;
-    var rowCount = Math.ceil(visibleCount / FEATURED_VIEWS_CHUNK_SIZE);
+    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
+    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
 
     return {
-      height: (featuredViewHeight + featuredViewMargin) * rowCount - 1
+      height: (popularViewHeight + popularViewMargin) * rowCount - 1
     };
   },
 
@@ -134,7 +134,7 @@ export var FeaturedViewList = React.createClass({
     return (
       <section className="landing-page-section metadata">
         <h2 className="dataset-landing-page-header">
-          {I18n.featured_views.title}
+          {I18n.popular_views.title}
         </h2>
 
         <VelocityComponent animation={this.getAnimation()}>
@@ -149,4 +149,4 @@ export var FeaturedViewList = React.createClass({
   }
 });
 
-export default FeaturedViewList;
+export default PopularViewList;

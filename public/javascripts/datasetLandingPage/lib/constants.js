@@ -1,1 +1,1 @@
-export const FEATURED_VIEWS_CHUNK_SIZE = 3;
+export const POPULAR_VIEWS_CHUNK_SIZE = 3;

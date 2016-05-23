@@ -130,7 +130,7 @@ export var SchemaPreview = React.createClass({
 
         <div className="section-content collapsed">
           <div className="table-wrapper">
-            <table className="table-borderless table-condensed table-discrete schema-table">
+            <table className="table table-borderless table-condensed table-discrete schema-table">
               <thead>
                 <tr>
                   <th scope="col" className="column-name">

@@ -793,6 +793,15 @@ section.landing-page-section.schema-preview {
     .dropdown {
       padding: 6px 12px;
     }
+
+    .input-group .input-group-btn .btn {
+      padding: 8px;
+    }
+  }
+
+  .btn .icon-copy-document:before,
+  .btn .icon-settings:before {
+    padding-right: 11px;
   }
 
   @media(max-width: $small) {

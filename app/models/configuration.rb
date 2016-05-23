@@ -1,4 +1,5 @@
 class Configuration < Model
+
   def self.find_by_type(type, default_only = false, cname = nil, merge = true)
     path = "/#{self.name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only.to_s}&merge=#{merge}"
     headers = cname.nil? ? {} : { 'X-Socrata-Host' => cname }
@@ -14,6 +15,10 @@ class Configuration < Model
   def self.get_or_create(type, opts)
     config = self.find_by_type(type, true, CurrentDomain.cname).first
     config ||= self.create({'type' => type, 'default' => true, 'domainCName' => CurrentDomain.cname}.merge(opts))
+  end
+
+  def route_params
+    {id: id}
   end
 
   def properties

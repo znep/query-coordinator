@@ -6,7 +6,6 @@ import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentGoalTile';
 
 describe('componentGoalTile jQuery plugin', function() {
-
   var $component;
   var validComponentData = {
     type: 'goal.tile',
@@ -37,7 +36,6 @@ describe('componentGoalTile jQuery plugin', function() {
       }
     }
   };
-
   var fakeDomainStrings = {
     open_performance: {
       measure: {
@@ -48,34 +46,26 @@ describe('componentGoalTile jQuery plugin', function() {
     }
   };
 
-
-  function mockGoalServerResponse(componentData, statusCode, responseJson) {
-    var server = sinon.fakeServer.create();
-    server.respondImmediately = true;
-    server.respondWith(
-      'GET',
-      StorytellerUtils.format(
-        'https://example.com/stat/api/v1/goals/{0}.json',
-        componentData.value.goalUid
-      ),
-      [
-        statusCode,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify(responseJson)
-      ]
-    );
-
-    return server;
-  }
-
-  function stubGoalJsonApiAndCreateGoalTile(componentData, statusCode, responseJson) {
+  function stubApiAndCreateComponentWith(statusCode, response, componentData) {
     var server;
 
     beforeEach(function(done) {
+      server = sinon.fakeServer.create();
+      server.respondImmediately = true;
+      server.respondWith(
+        'GET',
+        StorytellerUtils.format(
+          'https://example.com/stat/api/v1/goals/{0}.json',
+          componentData.value.goalUid
+        ),
+        [
+          statusCode,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify(response)
+        ]
+      );
 
-      server = mockGoalServerResponse(componentData, statusCode, responseJson);
-
-      $component.componentGoalTile(componentData);
+      $component = $component.componentGoalTile(componentData);
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -83,7 +73,6 @@ describe('componentGoalTile jQuery plugin', function() {
 
     afterEach(function() {
       server.restore();
-      statusCode = 200;
     });
   }
 
@@ -116,6 +105,7 @@ describe('componentGoalTile jQuery plugin', function() {
 
     it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
+
       delete badData.value.domain;
 
       assert.throws(function() {
@@ -128,6 +118,7 @@ describe('componentGoalTile jQuery plugin', function() {
 
     it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
+
       delete badData.value.goalUid;
 
       assert.throws(function() {
@@ -140,6 +131,7 @@ describe('componentGoalTile jQuery plugin', function() {
 
     it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
+
       delete badData.value.goalFullUrl;
 
       assert.throws(function() {
@@ -148,8 +140,8 @@ describe('componentGoalTile jQuery plugin', function() {
     });
   });
 
-  describe('when the goal tile 404s', function() {
-    stubGoalJsonApiAndCreateGoalTile(validComponentData, 404, validGoalData);
+  describe('when there is no goal with that 4x4', function() {
+    stubApiAndCreateComponentWith(404, {}, validComponentData);
 
     it('should render an error message', function() {
       assert.isTrue($component.hasClass('component-error'));
@@ -157,7 +149,7 @@ describe('componentGoalTile jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    stubGoalJsonApiAndCreateGoalTile(validComponentData, 200, validGoalData);
+    stubApiAndCreateComponentWith(200, validGoalData, validComponentData);
 
     it('should return a jQuery object for chaining', function() {
       assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
@@ -172,49 +164,44 @@ describe('componentGoalTile jQuery plugin', function() {
     });
 
     it('should render the goal title container', function() {
-      assert.lengthOf(
-        $component.find('.goal-tile-title-container'), 1
-      );
+      assert.lengthOf($component.find('.goal-tile-title-container'), 1);
     });
 
     it('should render the goal metric container', function() {
-      assert.lengthOf(
-        $component.find('.goal-tile-metric-container'), 1
-      );
+      assert.lengthOf($component.find('.goal-tile-metric-container'), 1);
     });
 
     describe('for progress values whose translations have not been overridden', function() {
+
       it('should render the goal metric progress with default status strings', function() {
         var $progress = $component.find('.goal-tile-metric-progress');
+
         assert.lengthOf($progress, 1);
         assert.include($progress.text(), 'good');
       });
     });
 
     it('should render the goal metadata container', function() {
-      assert.lengthOf(
-        $component.find('.goal-tile-metadata-container'), 1
-      );
+      assert.lengthOf($component.find('.goal-tile-metadata-container'), 1);
     });
 
     it('should render the story title', function() {
-
-      assert.equal(
-        $component.find('.goal-tile-title').text(),
-        validGoalData.name
-      );
+      assert.equal($component.find('.goal-tile-title').text(), validGoalData.name);
     });
   });
 
   describe('with progress values whose translations have been overridden', function() {
     var validGoalDataWithBadProgress = _.cloneDeep(validGoalData);
-    validGoalDataWithBadProgress.prevailing_measure.computed_values.progress = { progress: 'bad' };
     var validComponentDataWithDifferentUid = _.cloneDeep(validComponentData);
+
+    validGoalDataWithBadProgress.prevailing_measure.computed_values.progress = { progress: 'bad' };
     validComponentDataWithDifferentUid.value.goalUid = 'asdf-fdsa';
 
-    stubGoalJsonApiAndCreateGoalTile(validComponentDataWithDifferentUid, 200, validGoalDataWithBadProgress);
+    stubApiAndCreateComponentWith(200, validGoalDataWithBadProgress, validComponentDataWithDifferentUid);
+
     it('should render the goal metric progress with the overriden status strings', function() {
       var $progress = $component.find('.goal-tile-metric-progress');
+
       assert.lengthOf($progress, 1);
       assert.include($progress.text(), 'test override string');
     });

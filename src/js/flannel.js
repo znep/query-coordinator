@@ -81,24 +81,23 @@ module.exports = function FlannelFactory() {
     });
 
     hoverable.addEventListener('click', function(event) {
-      event.stopPropagation();
+      event.preventDefault();
 
       flannel.classList.toggle('flannel-hidden');
       positionFlannel(flannel, hoverable);
     });
 
     document.body.addEventListener('click', function(event) {
-      if (flannel.classList.contains('flannel-hidden')) {
+      var node = event.target;
+
+      if (node === hoverable || flannel.classList.contains('flannel-hidden')) {
         return;
       }
-
-      var node = event.target;
 
       while (node.parentElement) {
         if (node.id === flannelId) {
           return;
         }
-
         node = node.parentElement;
       }
 

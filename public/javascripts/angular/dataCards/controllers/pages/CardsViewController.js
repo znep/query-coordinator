@@ -107,6 +107,7 @@ module.exports = function CardsViewController(
   $log,
   $q,
   $scope,
+  $rootScope,
   $window,
   Filter,
   PageDataService,
@@ -551,6 +552,42 @@ module.exports = function CardsViewController(
   currentPageSaveEvents$.merge($scope.$observe('hasChanges')).subscribe(function() {
     FlyoutService.refreshFlyout();
   });
+
+  /**************************
+  * Image preview capturing *
+  **************************/
+  if ($window._phantom && _.isFunction($window.callPhantom)) {
+    // Sequence of render:complete events.
+    var renderComplete$ = $rootScope.$eventToObservable('render:complete');
+
+    // Sequence of true/false representing whether or not all images on
+    // the page are complete.
+    var imagesComplete$ = Rx.Observable.timer(100, 100).map(function() {
+      // NOTE! The complete property has bugs in Firefox. Fortunately,
+      // this should only be running in PhantomJS, which has no problems
+      // here.
+      return _.all($('img'), 'complete');
+    });
+
+    // Sequence containing a count of all the cards to be rendered
+    var cardCount$ = cardModelsObservable.map(_.size);
+
+    cardCount$.subscribe(function(count) {
+      // Sequence like imagesComplete$, but only begins after the correct number of renderComplete$ have been emitted.
+      var imagesCompleteAfterRenderComplete$ = renderComplete$.
+        first(function(value, index) { return index === count; }).
+        ignoreElements().
+        concat(imagesComplete$);
+
+      // Tell Phantom we're ready, once we get a renderComplete$ AND all images are loaded.
+      imagesCompleteAfterRenderComplete$.
+        delay(500).
+        first(_.identity).
+        subscribe(function() {
+          $window.callPhantom('snapshotReady');
+        });
+    });
+  }
 
   /******************************************
   * Clean up if/when the scope is destroyed *

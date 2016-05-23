@@ -109,6 +109,12 @@ var Dataset = ServerModel.extend({
         this._commentCache = {};
         this._commentByID = {};
 
+        // Set up Polaroid image capturing
+        if (window._phantom && _.isFunction(window.callPhantom)) {
+            this._setupPolaroidImageCapturing();
+        }
+
+        // Set up Snapshotting service, currently defunct
         if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot)
         {
             this.snapshotting = true;
@@ -3685,6 +3691,23 @@ var Dataset = ServerModel.extend({
 
         ds.makeRequest({url: '/api/views/' + ds.id + '.json', pageCache: true, type: 'GET',
                 params: { method: 'getPublicationGroup' }, success: processDS});
+    },
+
+    _setupPolaroidImageCapturing: function(timeout) {
+        this.bind('request_finish', function()
+        {
+            var ds = this;
+            // if there was already a return call, e.g. aggregates
+            if (!$.isBlank(ds._polaroidTimer)) {
+                clearTimeout(ds._polaroidTimer);
+            }
+
+            ds._polaroidTimer = setTimeout(function() {
+                _.defer(function() {
+                    window.callPhantom('snapshotReady');
+                });
+            }, timeout || 5000);
+        });
     },
 
     _setupDefaultSnapshotting: function(delay)

@@ -5,9 +5,7 @@
 -%>
 <header id="chrome-header">
   <div class="banner">
-    <%= link_to(get_site_chrome.header[:logo][:href], class: 'logo') do
-      logo(get_site_chrome.header) << content_tag(:span, site_name, :class => 'site-name')
-    end %>
+    <%= header_logo %>
 
     <nav class="desktop">
       <%= render 'site_chrome/nav_links' %>

@@ -21,20 +21,32 @@
     },
     "locales": {
       "en": {
-        "footer": [
-          "Home Page",
-          "Terms of Service",
-          "Privacy Policy",
-          "Contact Us",
-          "Accessibility"
-        ],
-        "header": [
-          "Home Page",
-          "Support",
-          "Catalog",
-          "Evergreen",
-          "Developers"
-        ]
+        "footer": {
+          "links": {
+            "accessibility": "Accessibility",
+            "contact_us": "Contact Us",
+            "home": "Home Page",
+            "privacy": "Privacy Policy",
+            "terms_of_service": "Terms of Service"
+          },
+          "logo_alt": ""
+        },
+        "general": {
+          "site_name": null,
+          "social_shares": {
+            "facebook": "Like us on Facebook",
+            "twitter": "Follow us on Twitter"
+          }
+        },
+        "header": {
+          "links": {
+            "catalog": "Browse",
+            "developers": "Developers",
+            "home": "Home Page",
+            "support": "Support"
+          },
+          "logo_alt": ""
+        }
       }
     },
     "general": {

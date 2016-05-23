@@ -1,3 +1,3 @@
-<% get_site_chrome.header[:links].each do |nav_link| %>
+<% valid_links(get_site_chrome.header[:links]).each do |nav_link| %>
   <%= link_to(localized("header.links.#{nav_link[:key]}", get_site_chrome.locales), nav_link[:url], :class => 'nav-link') %>
 <% end %>

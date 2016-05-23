@@ -31,4 +31,35 @@ describe Chrome::SiteChrome do
   it 'sets updated_at from properties' do
     expect(helper.updated_at).to eq(updated_at)
   end
+
+  describe '#locales' do
+    let(:default_locales) { JSON.parse(File.read("#{Rails.root}/engine/config/default_site_chrome.json")).
+      first['properties'].first.dig('value', 'versions', '0.1', 'published', 'content', 'locales').with_indifferent_access }
+
+    it 'uses the default locales if there are no user specified locales' do
+      config_vars_without_locales = site_chrome_config_vars['content'].dup.tap do |config_vars|
+        config_vars[:locales] = nil
+      end
+      chrome = Chrome::SiteChrome.new(id: id, content: config_vars_without_locales, updated_at: updated_at)
+      expect(chrome.locales).to eq(default_locales)
+    end
+
+    it 'deep merges the user locales onto the default locales' do
+      config_vars_with_custom_locales = site_chrome_config_vars['content'].dup
+      config_vars_with_custom_locales[:locales][:en][:header][:logo_alt] = 'Batman'
+      chrome = Chrome::SiteChrome.new(id: id, content: config_vars_with_custom_locales, updated_at: updated_at)
+      expect(chrome.locales).not_to eq(default_locales)
+      expect(chrome.locales.dig(:en, :header, :logo_alt)).to eq('Batman')
+    end
+  end
+
+  describe '#default_content' do
+    it 'finds the latest default content and has necessary keys' do
+      content = helper.send(:default_content)
+      expect(content[:general]).not_to be_nil
+      expect(content[:header]).not_to be_nil
+      expect(content[:footer]).not_to be_nil
+      expect(content[:locales]).not_to be_nil
+    end
+  end
 end

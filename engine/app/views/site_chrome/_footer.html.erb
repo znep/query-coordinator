@@ -12,7 +12,7 @@
 
     <div class="links">
       <ul class="links-col">
-        <% get_site_chrome.footer[:links].each do |link| %>
+        <% valid_links(get_site_chrome.footer[:links]).each do |link| %>
           <li>
             <%= link_to(localized("footer.links.#{link[:key]}", get_site_chrome.locales), link[:url], :class => 'footer-link') %>
           </li>
@@ -21,7 +21,9 @@
     </div>
   </div>
 
-  <div class="copyright">
-    <%= copyright %>
-  </div>
+  <%- if show_copyright? -%>
+    <div class="copyright">
+      <%= copyright %>
+    </div>
+  <%- end -%>
 </footer>

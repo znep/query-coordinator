@@ -6,7 +6,6 @@ import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
 import '../../../app/assets/javascripts/editor/block-component-renderers/componentStoryTile';
 
 describe('componentStoryTile jQuery plugin', function() {
-
   var $component;
   var validComponentData = {
     type: 'story.tile',
@@ -26,14 +25,29 @@ describe('componentStoryTile jQuery plugin', function() {
     )
   };
   var validStoryTileDataWithImage = _.clone(validStoryTileDataWithoutImage);
+
   validStoryTileDataWithImage.image = 'about:blank';
 
-  function stubTileJsonApiWith(blob, statusCode) {
+  function stubApiAndCreateComponentWith(statusCode, response, componentData) {
     var server;
-    statusCode = statusCode || 200;
 
     beforeEach(function(done) {
-      server = mockTileServerResponse(blob, statusCode);
+      server = sinon.fakeServer.create();
+      server.respondImmediately = true;
+      server.respondWith(
+        'GET',
+        StorytellerUtils.format(
+          'https://example.com/stories/s/{0}/tile.json',
+          componentData.value.storyUid
+        ),
+        [
+          statusCode,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify(response)
+        ]
+      );
+
+      $component = $component.componentStoryTile(componentData);
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -41,28 +55,7 @@ describe('componentStoryTile jQuery plugin', function() {
 
     afterEach(function() {
       server.restore();
-      statusCode = 200;
     });
-  }
-
-  function mockTileServerResponse(blob, statusCode) {
-    var server = sinon.fakeServer.create();
-    server.respondImmediately = true;
-    server.respondWith(
-      'GET',
-      StorytellerUtils.format(
-        'https://example.com/stories/s/{0}/tile.json',
-        validComponentData.value.storyUid
-      ),
-      [
-        statusCode,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify(blob)
-      ]
-    );
-
-    $component = $component.componentStoryTile(validComponentData);
-    return server;
   }
 
   beforeEach(function() {
@@ -71,6 +64,7 @@ describe('componentStoryTile jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
+
     assert.throws(function() { $component.componentStoryTile(); });
     assert.throws(function() { $component.componentStoryTile(1); });
     assert.throws(function() { $component.componentStoryTile(null); });
@@ -80,8 +74,10 @@ describe('componentStoryTile jQuery plugin', function() {
   });
 
   describe('given a value that does not contain a domain', function() {
+
     it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
+
       delete badData.value.domain;
 
       assert.throws(function() {
@@ -91,8 +87,10 @@ describe('componentStoryTile jQuery plugin', function() {
   });
 
   describe('given a value that does not contain a storyUid', function() {
+
     it('should throw when setting the tile source', function() {
       var badData = _.cloneDeep(validComponentData);
+
       delete badData.value.storyUid;
 
       assert.throws(function() {
@@ -101,32 +99,18 @@ describe('componentStoryTile jQuery plugin', function() {
     });
   });
 
-  describe('when the story tile 404s', function() {
-    stubTileJsonApiWith(validStoryTileDataWithoutImage, 404);
+  describe('when there is no story with that 4x4', function() {
+    stubApiAndCreateComponentWith(404, {}, validComponentData);
 
-    it('should render an error message, then clear when adding a valid tile', function(done) {
+    it('should render an error message', function() {
       assert.isTrue($component.hasClass('component-error'));
-
-      var dataWithNewUrl = _.cloneDeep(validStoryTileDataWithoutImage);
-      dataWithNewUrl.url = 'https://example.com/stories/s/test-what';
-      var storyUid = validComponentData.value.storyUid;
-      validComponentData.value.storyUid = 'test-what';
-
-      var server = mockTileServerResponse(validStoryTileDataWithoutImage, 200);
-      validComponentData.value.storyUid = storyUid;
-
-      setTimeout(function() {
-        server.restore();
-        assert.isFalse($component.hasClass('component-error'));
-        done();
-      }, 1000);
     });
   });
 
   describe('given a valid component type and value', function() {
 
     describe('when there is no image specified', function() {
-      stubTileJsonApiWith(validStoryTileDataWithoutImage);
+      stubApiAndCreateComponentWith(200, validStoryTileDataWithoutImage, validComponentData);
 
       it('should return a jQuery object for chaining', function() {
         assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
@@ -172,7 +156,7 @@ describe('componentStoryTile jQuery plugin', function() {
     });
 
     describe('when there is an image specified', function() {
-      stubTileJsonApiWith(validStoryTileDataWithImage);
+      stubApiAndCreateComponentWith(200, validStoryTileDataWithImage, validComponentData);
 
       it('should render the specified  image', function() {
 

@@ -9,7 +9,7 @@
 # in app/helpers, the override would take place for _all_ views.
 module ProfileHelper
   include UserAuthMethods
-  include SocrataUrlHelpers
+  include Socrata::UrlHelpers
   include Userzoom
 
   # Override view_url helper used by render_browse.

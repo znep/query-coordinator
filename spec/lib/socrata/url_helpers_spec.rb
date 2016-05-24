@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe 'SocrataUrlHelpers' do
+RSpec.describe 'Socrata::UrlHelpers' do
   include TestHelperMethods
 
-  # The contract of the SocrataUrlHelpers module includes calls to super.
+  # The contract of the Socrata::UrlHelpers module includes calls to super.
   # This is a simple way of testing that those calls are made.
   module SuperModule
     def view_url(not_used)
@@ -18,7 +18,7 @@ RSpec.describe 'SocrataUrlHelpers' do
   end
   let(:helpers) { Class.new do
     include SuperModule
-    include SocrataUrlHelpers
+    include Socrata::UrlHelpers
   end.new }
 
   before(:each) do

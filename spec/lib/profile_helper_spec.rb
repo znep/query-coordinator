@@ -30,14 +30,14 @@ RSpec.describe ProfileHelper, type: :helper do
 
     describe 'when encountering a non-story view' do
       let(:is_story) { false }
-      it 'returns the url from SocrataUrlHelpers' do
-        allow_any_instance_of(SocrataUrlHelpers).to receive(:view_url).and_return('mocked')
+      it 'returns the url from Socrata::UrlHelpers' do
+        allow_any_instance_of(Socrata::UrlHelpers).to receive(:view_url).and_return('mocked')
         expect(view_url(view)).to eq('mocked')
       end
     end
 
     describe 'when encountering a story view' do
-      describe 'when the user is looking at someone else\'s profile' do
+      describe "when the user is looking at someone else's profile" do
         let(:viewing_others_profile) { true }
         let(:can_edit_story) { true }
         let(:can_preview_story) { true }

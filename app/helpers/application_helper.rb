@@ -3,7 +3,7 @@ module ApplicationHelper
 
   include Browse2Helper
   include BrowseHelper
-  include SocrataUrlHelpers
+  include Socrata::UrlHelpers
 
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan

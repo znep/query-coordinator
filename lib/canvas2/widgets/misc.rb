@@ -811,7 +811,7 @@ module Canvas2
   end
 
   class Share < CanvasWidget
-    include SocrataUrlHelpers
+    include Socrata::UrlHelpers
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)
@@ -828,8 +828,8 @@ module Canvas2
 
       page_path_or_blank = Util.page_path || ''
       params = Util.page_params.clone
-      page_path_or_blank += '?' + params.map {|k, v| k + '=' + v}.join('&') if !params.empty?
-      page_url = 'http://' + CurrentDomain.cname + page_path_or_blank
+      page_path_or_blank += '?' + params.to_query if !params.empty?
+      page_url = "http://#{CurrentDomain.cname}#{page_path_or_blank}"
       page_name = @@page.name
 
       avail_items = {

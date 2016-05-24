@@ -1,6 +1,6 @@
 class View < Model
   include Rails.application.routes.url_helpers
-  include SocrataUrlHelpers
+  include Socrata::UrlHelpers
   extend FindExtensions
 
   cattr_accessor :filter_type1s

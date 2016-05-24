@@ -162,10 +162,10 @@ function SvgTimelineChart($element, vif) {
     var endDate;
     var maxSeriesLength;
     var lastRenderableDatumIndex;
-    var d3XScaleDomainStartDate;
-    var d3XScaleDomainEndDate;
-    var d3YScaleMinValue;
-    var d3YScaleMaxValue;
+    var domainStartDate;
+    var domainEndDate;
+    var minYValue;
+    var maxYValue;
     var d3XAxis;
     var d3YAxis;
     var d3Series;
@@ -388,8 +388,8 @@ function SvgTimelineChart($element, vif) {
 
     if ((minimumDatumWidth * maxSeriesLength) <= viewportWidth) {
 
-      d3XScaleDomainStartDate = parseDate(startDate);
-      d3XScaleDomainEndDate = parseDate(endDate);
+      domainStartDate = parseDate(startDate);
+      domainEndDate = parseDate(endDate);
     } else {
 
       lastRenderableDatumIndex = Math.floor(
@@ -397,8 +397,8 @@ function SvgTimelineChart($element, vif) {
         minimumDatumWidth
       );
 
-      d3XScaleDomainStartDate = parseDate(startDate);
-      d3XScaleDomainEndDate = parseDate(
+      domainStartDate = parseDate(startDate);
+      domainEndDate = parseDate(
         d3.min(
           dataToRender.
             map(
@@ -414,7 +414,7 @@ function SvgTimelineChart($element, vif) {
       );
     }
 
-    d3YScaleMinValue = d3.min(
+    minYValue = d3.min(
       dataToRender.
         map(
           function(series, seriesIndex) {
@@ -426,7 +426,7 @@ function SvgTimelineChart($element, vif) {
           }
         )
     );
-    d3YScaleMaxValue = d3.max(
+    maxYValue = d3.max(
       dataToRender.
           map(
             function(series, seriesIndex) {
@@ -439,23 +439,21 @@ function SvgTimelineChart($element, vif) {
           )
     );
 
+    // Normalize min and max values so that we always show 0.
+    minYValue = Math.min(minYValue, 0);
+    maxYValue = Math.max(0, maxYValue);
+
     d3XScale = d3.
       time.
         scale.
           utc().
-            domain([d3XScaleDomainStartDate, d3XScaleDomainEndDate]).
+            domain([domainStartDate, domainEndDate]).
             range([0, viewportWidth]);
 
     d3YScale = d3.
       scale.
         linear().
-          domain([
-            Math.min(
-              0,
-              d3YScaleMinValue
-            ),
-            d3YScaleMaxValue
-          ]).
+          domain([minYValue, maxYValue]).
           range([viewportHeight, 0]).
           clamp(true);
 
@@ -536,7 +534,11 @@ function SvgTimelineChart($element, vif) {
                       return d3XScale(parseDate(d[dimensionIndex]));
                     }
                   ).
-                  y0(viewportHeight).
+                  y0(
+                    function(d) {
+                      return d3YScale(0);
+                    }
+                  ).
                   y1(
                     function(d) {
                       return d3YScale(d[measureIndex]);

@@ -116,7 +116,7 @@ function migrateVif1ToVif2(vifToMigrate) {
   //
   // This is blatantly incorrect behavior, but it does not seem economical to
   // attempt to fix it since that workflow will be replaced soon (as of May
-  // 2015).
+  // 2016).
   //
   // Accordingly, we fetch the aggregation field and function ahead of time
   // and default to sane values if the properties or the root-level aggregation

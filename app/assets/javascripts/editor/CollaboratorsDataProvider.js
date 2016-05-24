@@ -1,9 +1,10 @@
-import $ from 'jQuery';
 import _ from 'lodash';
 
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import { storyStore } from './stores/StoryStore';
+import httpRequest from '../services/httpRequest';
+import { exceptionNotifier } from '../services/ExceptionNotifier';
 
 /**
  * @class CollaboratorsDataProvider
@@ -39,8 +40,10 @@ export default function CollaboratorsDataProvider(storyUid) {
    */
   this.getCollaborators = function() {
     return new Promise(function(resolve, reject) {
-      $.getJSON(urls.read).
+
+      httpRequest('GET', urls.read, 'json').
         then(function(grants) {
+          var promises;
 
           // Add the primary owner to the list of grants.
           grants = grants.concat({
@@ -48,44 +51,55 @@ export default function CollaboratorsDataProvider(storyUid) {
             userId: storyStore.getStoryPrimaryOwnerUid()
           });
 
-          var promises = _.chain(grants).
-            filter(function(grant) {
-              return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
-            }).
+          promises = _.chain(grants).
+            filter(
+              function(grant) {
+                return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
+              }
+            ).
             map(getEmailAddress).
             value();
 
           Promise.all(promises).
-            then(function(collaborators) {
-              collaborators = _.map(collaborators, grantToStoreFormat);
-              resolve(collaborators);
-            }, reject);
-        }, reject);
+            then(
+              function(collaborators) {
+                collaborators = _.map(collaborators, grantToStoreFormat);
+
+                resolve(collaborators);
+              },
+              reject
+            );
+        }).
+        catch(exceptionNotifier.notify);
     });
   };
 
   function getEmailAddress(collaborator) {
+    var userUrl;
+
     if (collaborator.userEmail) {
       return Promise.resolve(collaborator);
     } else if (collaborator.userId) {
-      return Promise.resolve(
-        $.ajax({
-          url: StorytellerUtils.format('/api/users/{0}.json', collaborator.userId),
-          dataType: 'json'
-        })
-      ).then(function(json) {
-        collaborator.userEmail = json.email;
-        collaborator.displayName = json.displayName;
-        collaborator.roleName = json.roleName || 'unknown';
 
-        if (collaborator.primary) {
-          collaborator.type = 'owner';
-        } else if (!_.isString(collaborator.type)) {
-          collaborator.type = 'unknown';
-        }
+      userUrl = StorytellerUtils.format('/api/users/{0}.json', collaborator.userId);
 
-        return collaborator;
-      });
+      return httpRequest('GET', userUrl, 'json').
+        then(
+          function(json) {
+            collaborator.userEmail = json.email;
+            collaborator.displayName = json.displayName;
+            collaborator.roleName = json.roleName || 'unknown';
+
+            if (collaborator.primary) {
+              collaborator.type = 'owner';
+            } else if (!_.isString(collaborator.type)) {
+              collaborator.type = 'unknown';
+            }
+
+            return collaborator;
+          }
+        ).
+        catch(exceptionNotifier.notify);
     } else {
       return Promise.reject();
     }
@@ -168,11 +182,19 @@ export default function CollaboratorsDataProvider(storyUid) {
           return resolve(collaborators);
         }
 
-        self.addCollaborator(collaborators[index++]).then(function() {
-          next();
-        }, function() {
-          reject('Failed to save collaborator.');
-        });
+        self.addCollaborator(collaborators[index++]).
+          then(
+            function() {
+              next();
+            }
+          ).
+          catch(
+            function(error) {
+
+              exceptionNotifier.notify(error);
+              reject('Failed to save collaborator.');
+            }
+          );
       };
 
       next();

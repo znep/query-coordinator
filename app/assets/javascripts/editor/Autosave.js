@@ -21,7 +21,6 @@ export default function Autosave(storyUid) {
 
   var autosaveDebounceMsec = Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS * 1000;
   var saveOnceSettled;
-
   // Autosave can be disabled from a URL parameter: autosave.
   // For example: https://example.com?autosave=false
   var disabledByUrlParam = StorytellerUtils.queryParameters().some(function(parameter) {
@@ -29,6 +28,7 @@ export default function Autosave(storyUid) {
   });
 
   function saveASAP() {
+
     if (disabledByUrlParam) {
       return;
     }
@@ -36,16 +36,22 @@ export default function Autosave(storyUid) {
     if (savingRightNow) {
       saveOnceSettled(); // Try again in a bit.
     } else {
+
       if (storySaveStatusStore.isStorySavePossible()) {
+
         savingRightNow = true;
-        StoryDraftCreator.saveDraft(storyUid).then(
-          clearSavingFlag, // success
-          function(error) {
-            // error
-            clearSavingFlag();
-            saveOnceSettled(); // try again
-            exceptionNotifier.notify(error);
-          });
+
+        StoryDraftCreator.
+          saveDraft(storyUid).
+          then(
+            clearSavingFlag, // success
+            function(error) {
+
+              clearSavingFlag();
+              saveOnceSettled(); // try again
+              exceptionNotifier.notify(error);
+            }
+          );
       }
     }
   }

@@ -14,6 +14,7 @@ import { dispatcher } from './Dispatcher';
 import { storyStore } from './stores/StoryStore';
 import { storySaveStatusStore } from './stores/StorySaveStatusStore';
 import { richTextEditorManager } from './RichTextEditorManager';
+import { exceptionNotifier } from '../services/ExceptionNotifier';
 import CollaboratorsDataProvider from './CollaboratorsDataProvider';
 
 dispatcher.register(function(payload) {
@@ -33,16 +34,20 @@ dispatcher.dispatch({
   data: Environment.STORY_DATA
 });
 
+(new ErrorReporter());
+
 (new CollaboratorsDataProvider(Environment.STORY_UID)).
   getCollaborators().
-  then(function(collaborators) {
-    dispatcher.dispatch({
-      action: Actions.COLLABORATORS_LOAD,
-      collaborators: collaborators
-    });
-  });
+    then(
+      function(collaborators) {
 
-(new ErrorReporter());
+        dispatcher.dispatch({
+          action: Actions.COLLABORATORS_LOAD,
+          collaborators: collaborators
+        });
+      }
+    ).
+    catch(exceptionNotifier.notify);
 
 $(document).on('ready', function() {
   /**

@@ -7,6 +7,7 @@ import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import CollaboratorsDataProvider from '../CollaboratorsDataProvider';
+import httpRequest from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { storyStore } from '../stores/StoryStore';
 import { collaboratorsStore } from '../stores/CollaboratorsStore';
@@ -251,9 +252,19 @@ export default function CollaboratorsRenderer() {
   }
 
   function getUserOrNull(email) {
-    return Promise.resolve($.getJSON(StorytellerUtils.format('/api/search/users.json?q={0}', email))).then(function(data) {
-      return _.get(data, 'results[0]', null);
-    });
+    var userUrl = StorytellerUtils.format('/api/search/users.json?q={0}', email);
+
+    return httpRequest('GET', userUrl, 'json').
+      then(
+        function(data) {
+          return _.get(data, 'results[0]', null);
+        },
+        function(error) {
+
+          exceptionNotifier.notify(error);
+          return null;
+        }
+      );
   }
 
   function isStoriesOrAdministratorRole(role) {
@@ -673,7 +684,16 @@ export default function CollaboratorsRenderer() {
     if (/email/i.test(message) && /invalid/i.test(message)) {
       message = t('editor.collaborators.modal.errors.invalid_email');
     } else {
-      exceptionNotifier.notify(response.responseText);
+
+      exceptionNotifier.notify(
+        new Error(
+          _.get(
+            response,
+            'responseText',
+            '<No response text for save collaborators request>'
+          )
+        )
+      );
       message = t('editor.collaborators.modal.errors.unknown_error');
     }
 

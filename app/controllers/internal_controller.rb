@@ -129,7 +129,7 @@ class InternalController < ApplicationController
 
     @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
 
-    if %w(config all).include? FeatureFlags.derive(nil, request).internal_panel_redesign
+    if %w(config all).include?(FeatureFlags.derive(nil, request).internal_panel_redesign)
       render 'show_config_redesigned'
     end
   end
@@ -670,7 +670,6 @@ class InternalController < ApplicationController
         end
       end
     end
-    CurrentDomain.clear_feature_flags!
   end
 
   def notices

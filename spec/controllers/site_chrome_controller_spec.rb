@@ -15,11 +15,18 @@ describe SiteChromeController do
 
   # If you're going to re-record the VCR tapes:
   # * grab a fresh batch of cookies from a valid local session
-  # * change the set_theme_id
-  # * with wipe the site_chrome*yml files
-  # * and re-run.
-  def auth_cookies
-    {"remember_token"=>"eR9ZWVZCdcvcpTOw8ouyJA", "mp_mixpanel__c"=>"10", "mp_mixpanel__c3"=>"15026", "mp_mixpanel__c4"=>"11567", "mp_mixpanel__c5"=>"76", "logged_in"=>"true", "_socrata_session_id"=>"BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa", "socrata-csrf-token"=>"R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=", "_core_session_id"=>"ODNueS13OXplIDE0NjMxODI5MTggNWE4ZGRmZTViOTUwIGY3ZmM3MTc4NjNhYzMzYTA3ODNlNjhkYTkzYmFhOWUyOTE3MTBlYzg"}
+  # * wipe the spec/fixtures/vcr_cassettes/site_chrome/controller/*yml files
+  # * re-run
+  #
+  # These may or may not be duplicates of those in spec/models/site_chrome_spec.rb depending on when
+  # VCR tapes for these tests suites were last recorded
+  def auth_cookies_for_vcr_tapes
+    {
+      'logged_in' => 'true',
+      '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894',
+      'socrata-csrf-token' => 'Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=',
+      '_core_session_id' => 'ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q'
+    }
   end
 
   # The main page admins will typically access
@@ -35,12 +42,6 @@ describe SiteChromeController do
       get :edit
       expect(response).to have_http_status(:forbidden)
     end
-
-    # TODO: add these tests:
-    # 1) site_theme created if does not already exist
-    # 2) site_theme loaded if already exists
-    # 3) site_theme.property siteChromeConfigVars created if does not already exist
-    # 4) site_theme.property siteChromeConfigVars loaded if already exists
 
     it 'loads if admin' do
       init_current_user(@controller)
@@ -69,16 +70,12 @@ describe SiteChromeController do
       expect(response).to have_http_status(:forbidden)
     end
 
-    # TODO: add these tests:
-    # 1) site theme does not exist
-    # 2) site theme exists but siteChromeConfigVars does not
-
     it 'works if admin' do
       init_current_user(@controller)
       stub_superadmin_user # auth for rails but not for core
 
       # now we get auth for core
-      auth_cookies.each { |key, value| @request.cookies[key] = value }
+      auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
 
       VCR.use_cassette('site_chrome/controller/update') do
         site_chrome = SiteChrome.find_default

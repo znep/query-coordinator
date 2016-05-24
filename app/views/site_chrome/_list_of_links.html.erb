@@ -19,16 +19,15 @@
   <% links.to_a.each_with_index do |link, i| %>
     <% if i < link_count %>
       <div class="link-row">
-        <%= text_field_tag("content[#{content_key}]links[][key]", link['key'] || '', placeholder: label_placeholder) %>
-        <%= text_field_tag("content[#{content_key}]links[][url]", link['url'] || '', placeholder: url_placeholder) %>
+        <% key_path = "content[#{content_key}]links[][key]" %>
+        <% translated_label_path = "content[locales][en][#{content_key}]links[#{link['key']}]" %>
+        <% translated_label = fetch_content([:locales, :en, content_key, :links, link['key']]) %>
+        <% url_path = "content[#{content_key}]links[][url]" %>
+
+        <%= hidden_field_tag(key_path, link['key'] || '') %>
+        <%= text_field_tag(translated_label_path, translated_label || '', placeholder: label_placeholder) %>
+        <%= text_field_tag(url_path, link['url'] || '', placeholder: url_placeholder) %>
       </div>
     <% end %>
-  <% end %>
-
-  <% for i in 0...(link_count - links.to_a.length) %>
-    <div class="link-row">
-      <%= text_field_tag("content[#{content_key}]links[][key]", '', placeholder: label_placeholder) %>
-      <%= text_field_tag("content[#{content_key}]links[][url]", '', placeholder: url_placeholder) %>
-    </div>
   <% end %>
 </section>

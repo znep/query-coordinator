@@ -2,7 +2,7 @@
 http_interactions: 
 - request: 
     method: get
-    uri: http://localhost:8080/configurations?type=site_chrome
+    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
     body: 
       encoding: US-ASCII
       string: ""
@@ -17,7 +17,7 @@ http_interactions:
       message: OK
     headers: 
       X-Socrata-Requestid: 
-      - 8bnthxqytcxnkjkckaj2p96ce
+      - dinxiru2505gw426qdbm97cfu
       Access-Control-Allow-Origin: 
       - "*"
       Content-Type: 
@@ -30,219 +30,12 @@ http_interactions:
       encoding: US-ASCII
       string: |
         [ {
-          "id" : 69,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578356,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 71,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578379,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 74,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578581,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 76,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578846,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 79,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578912,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 82,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462579031,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 84,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462579089,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 86,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462832656,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          }, {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 64,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462583666,
-          "properties" : [ {
-            "name" : "some_prop",
-            "value" : "pants"
-          } ]
-        }, {
-          "id" : 80,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462816427,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "pants" : "fun"
-            }
-          } ]
-        }, {
-          "id" : 63,
-          "name" : "Another Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462820377,
-          "properties" : [ {
-            "name" : "pants",
-            "value" : 12
-          } ]
-        }, {
-          "id" : 62,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462829656,
-          "properties" : [ {
-            "name" : "swallysss",
-            "value" : "sssboatss"
-          }, {
-            "name" : "wallys",
-            "value" : "boats"
-          }, {
-            "name" : "new_prop",
-            "value" : "hi_man"
-          }, {
-            "name" : "wally",
-            "value" : "boats"
-          }, {
-            "name" : "pantsss",
-            "value" : "hi"
-          }, {
-            "name" : "pants",
-            "value" : "hello"
-          }, {
-            "name" : "wallyss",
-            "value" : "boats"
-          }, {
-            "name" : "wallysss",
-            "value" : "sboats"
-          }, {
-            "name" : "fun",
-            "value" : "ffdsa"
-          } ]
-        }, {
-          "id" : 78,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462831255,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "a" : 1
-            }
-          }, {
-            "name" : "propertyName2",
-            "value" : {
-              "b" : 2,
-              "c" : 3
-            }
-          } ]
-        }, {
           "id" : 102,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1463171163,
+          "updatedAt" : 1464117561,
           "properties" : [ {
             "name" : "propertyName",
             "value" : {
@@ -257,6 +50,18 @@ http_interactions:
           }, {
             "name" : "newPropertyName",
             "value" : {
+              "some key" : "another value",
+              "new key" : "new value"
+            }
+          }, {
+            "name" : "youMightHaveToChangeThis",
+            "value" : {
+              "some key" : "some value",
+              "some other key" : "some other value"
+            }
+          }, {
+            "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+            "value" : {
               "some key" : "some value",
               "some other key" : "some other value"
             }
@@ -267,31 +72,14 @@ http_interactions:
                 "0.1" : {
                   "published" : {
                     "content" : {
-                      "fun_new_param" : "make it very green!"
-                    }
-                  }
-                }
-              }
-            }
-          } ]
-        }, {
-          "id" : 61,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462907760,
-          "properties" : [ {
-            "name" : "siteChromeConfigVars",
-            "value" : {
-              "versions" : {
-                "0.1" : {
-                  "published" : {
-                    "content" : {
                       "footer" : {
                         "logo" : {
                           "src" : "http://i.imgur.com/rF2EJ4P.gif",
                           "href" : "#"
+                        },
+                        "styles" : {
+                          "fg_color" : "yellow",
+                          "bg_color" : "blue"
                         },
                         "links" : [ {
                           "key" : "home",
@@ -331,17 +119,17 @@ http_interactions:
                           "url" : "#g"
                         }, {
                           "key" : "h",
-                          "url" : "#h"
+                          "url" : "#happy content"
                         }, {
-                          "key" : "i",
-                          "url" : "#i"
+                          "key" : "link text",
+                          "url" : ""
                         }, {
-                          "key" : "j",
-                          "url" : "#j"
-                        } ]
+                          "key" : "jj",
+                          "url" : "#jj"
+                        } ],
+                        "copyright_notice" : "1",
+                        "show_copyright_notice" : "1"
                       },
-                      "pants" : "fun",
-                      "some_key" : "some_fine_value",
                       "locales" : {
                         "en" : {
                           "footer" : {
@@ -349,7 +137,7 @@ http_interactions:
                             "links" : {
                               "f" : "Link F",
                               "home" : "Home Page",
-                              "g" : "Link G with a super long title!!!",
+                              "g" : "Link G with a super long title because I want to see if shit breaks or looks good!!!!11111",
                               "d" : "Link D",
                               "e" : "Link E",
                               "b" : "Link B",
@@ -357,8 +145,10 @@ http_interactions:
                               "a" : "Link A",
                               "privacy" : "Privacy Policy",
                               "terms_of_service" : "Terms of Service",
+                              "link text" : "",
                               "j" : "Link J",
-                              "h" : "Link H",
+                              "h" : "Link H had its name changed",
+                              "jj" : "",
                               "contact_us" : "Contact Us",
                               "i" : "Link I",
                               "accessibility" : "Accessibility"
@@ -367,11 +157,11 @@ http_interactions:
                           "header" : {
                             "logo_alt" : "Evergreen!",
                             "links" : {
-                              "home" : "Home Page",
+                              "home" : "Homey Page",
                               "support" : "Support",
                               "catalog" : "Browse",
                               "developers" : "Developers",
-                              "evergreen" : "City of Evergreen"
+                              "evergreen" : "City of Evergreenie"
                             }
                           },
                           "general" : {
@@ -379,38 +169,40 @@ http_interactions:
                               "twitter" : "Follow us on Twitter",
                               "facebook" : "Like us on Facebook"
                             },
-                            "site_name" : "City of Evergreen"
+                            "site_name" : "City of Evergreenieweeniepolkadotsand stripe"
                           }
                         }
                       },
-                      "superpants" : "happy walking",
+                      "evenNewerPropertyName" : {
+                        "first key" : "first value"
+                      },
                       "general" : {
+                        "window_or_tab_icon" : "test favicon",
                         "social_shares" : [ {
                           "type" : "facebook",
-                          "url" : "http://facebook.com"
+                          "url" : "http://facebook.com/potatoesForQuayle"
                         }, {
                           "type" : "twitter",
-                          "url" : "http://twitter.com"
+                          "url" : "http://twitter.com/pant"
                         } ],
-                        "favicon" : "http://foo.png",
-                        "link_text_color" : "grey",
+                        "link_text_color" : "blue",
                         "locales" : [ "en", "es", "fr" ],
                         "default_locale" : "en",
                         "styles" : {
-                          "fg_color" : "#eee",
+                          "fg_color" : "#fff",
                           "bg_color" : "#2c97de",
                           "font_family" : "Open Sans"
                         },
-                        "site_title" : "Evergreen"
+                        "window_or_tab_title_display" : "test title again"
                       },
                       "header" : {
                         "logo" : {
-                          "src" : "http://i.imgur.com/E8wtc6d.png",
+                          "src" : "http://i.imgur.com/rF2EJ4P.gif",
                           "href" : "#"
                         },
                         "styles" : {
-                          "fg_color" : "#eee",
-                          "bg_color" : "#5D7365"
+                          "fg_color" : "pinky",
+                          "bg_color" : "bluey"
                         },
                         "links" : [ {
                           "key" : "home",
@@ -435,203 +227,21 @@ http_interactions:
               }
             }
           } ]
-        }, {
-          "id" : 98,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463093857,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        }, {
-          "id" : 99,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463093903,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          } ]
-        }, {
-          "id" : 100,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463093989,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          } ]
-        }, {
-          "id" : 101,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463094348,
-          "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          } ]
-        }, {
-          "id" : 72,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578378
-        }, {
-          "id" : 83,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462579031
-        }, {
-          "id" : 77,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578846
-        }, {
-          "id" : 73,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578558
-        }, {
-          "id" : 96,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462907413
-        }, {
-          "id" : 65,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462575815
-        }, {
-          "id" : 85,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462579089
-        }, {
-          "id" : 68,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578311
-        }, {
-          "id" : 94,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462822054
-        }, {
-          "id" : 95,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462835840
-        }, {
-          "id" : 97,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463092616
-        }, {
-          "id" : 67,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462575912
-        }, {
-          "id" : 81,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462579007
-        }, {
-          "id" : 90,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462822029
-        }, {
-          "id" : 103,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1463170454
-        }, {
-          "id" : 70,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578356
-        }, {
-          "id" : 75,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462578581
-        }, {
-          "id" : 87,
-          "name" : "Site Chrome",
-          "default" : false,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1462581573
         } ]
 
     http_version: 
-  recorded_at: Fri, 13 May 2016 20:26:56 GMT
+  recorded_at: Tue, 24 May 2016 19:24:30 GMT
 - request: 
     method: put
     uri: http://localhost:8080/configurations/102/properties?method=update
     body: 
       encoding: US-ASCII
-      string: "{\"name\":\"newPropertyName\",\"value\":{\"some key\":\"another value\",\"new key\":\"new value\"}}"
+      string: "{\"name\":\"youMightNeedToChangeThisIfItAlreadyExists\",\"value\":{\"some other key\":\"a new value here\",\"a new key\":\"a new value\"}}"
     headers: 
       Content-Type: 
       - application/json
       Cookie: 
-      - remember_token=eR9ZWVZCdcvcpTOw8ouyJA;mp_mixpanel__c=10;mp_mixpanel__c3=15026;mp_mixpanel__c4=11567;mp_mixpanel__c5=76;logged_in=true;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNjIyNDc1MGIwMzMwNzJlODhlNTM1MTE1ZDc1MTRkODBJIhBfY3NyZl90b2tlbgY7AEZJIjFSNXVEeWR6b01ZaHFzQjViQWpGbytVWXNVUnhFa3QvNXV0aVgxbGlCaTZrPQY7AEY=--87c50ef28e9e16cf40637e33bd29d821aa9142aa;socrata-csrf-token=R5uDydzoMYhqsB5bAjFo+UYsURxEkt/5utiX1liBi6k=;_core_session_id=ODNueS13OXplIDE0NjMxODI5MTggNWE4ZGRmZTViOTUwIGY3ZmM3MTc4NjNhYzMzYTA3ODNlNjhkYTkzYmFhOWUyOTE3MTBlYzg
+      - logged_in=true;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894;socrata-csrf-token=Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=;_core_session_id=ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q
       X-Socrata-Host: 
       - localhost
   response: 
@@ -640,11 +250,11 @@ http_interactions:
       message: OK
     headers: 
       X-Socrata-Requestid: 
-      - eza7mqnickgqtcv2clqez5pbl
+      - 5vgcssa54mo7kugtcmykkx1bs
       Access-Control-Allow-Origin: 
       - "*"
       Set-Cookie: 
-      - _core_session_id=ODNueS13OXplIDE0NjMxOTI4MTYgNWE4ZGRmZTViOTUwIDJlNTY2NjY5MGFkMTMyODg2NTY3Y2YwODBiYThkNTQzMTE3MTA1Zjg;Path=/
+      - _core_session_id=ODNueS13OXplIDE0NjQxMzk0NzAgNGFhZjZjYjhkYzhiIGQ3NTA3YmE4YjM2NWY0MDRjYWEzMmUxMjY3OTk3MTdmMjViNDU2YTU;Path=/
       Expires: 
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type: 
@@ -657,15 +267,15 @@ http_interactions:
       encoding: US-ASCII
       string: |
         {
-          "name" : "newPropertyName",
+          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
           "value" : {
-            "some key" : "another value",
-            "new key" : "new value"
+            "a new key" : "a new value",
+            "some other key" : "a new value here"
           }
         }
 
     http_version: 
-  recorded_at: Fri, 13 May 2016 20:26:56 GMT
+  recorded_at: Tue, 24 May 2016 19:24:30 GMT
 - request: 
     method: get
     uri: http://localhost:8080/configurations/102/properties
@@ -680,7 +290,7 @@ http_interactions:
       message: OK
     headers: 
       X-Socrata-Requestid: 
-      - 47ps17osati2jzdehh8c71jzj
+      - 56umi9xtk50lp2dababyx5ibl
       Access-Control-Allow-Origin: 
       - "*"
       Content-Type: 
@@ -710,13 +320,173 @@ http_interactions:
             "new key" : "new value"
           }
         }, {
+          "name" : "youMightHaveToChangeThis",
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }, {
+          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "value" : {
+            "a new key" : "a new value",
+            "some other key" : "a new value here"
+          }
+        }, {
           "name" : "siteChromeConfigVars",
           "value" : {
             "versions" : {
               "0.1" : {
                 "published" : {
                   "content" : {
-                    "fun_new_param" : "make it very green!"
+                    "footer" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                        "href" : "#"
+                      },
+                      "styles" : {
+                        "fg_color" : "yellow",
+                        "bg_color" : "blue"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "terms_of_service",
+                        "url" : "http://www.socrata.com/terms-of-service"
+                      }, {
+                        "key" : "privacy",
+                        "url" : "http://www.socrata.com/privacy"
+                      }, {
+                        "key" : "accessibility",
+                        "url" : "http://www.socrata.com/accessibility"
+                      }, {
+                        "key" : "contact_us",
+                        "url" : "http://www.socrata.com/contact-us"
+                      }, {
+                        "key" : "a",
+                        "url" : "#a"
+                      }, {
+                        "key" : "b",
+                        "url" : "#b"
+                      }, {
+                        "key" : "c",
+                        "url" : "#c"
+                      }, {
+                        "key" : "d",
+                        "url" : "#d"
+                      }, {
+                        "key" : "e",
+                        "url" : "#e"
+                      }, {
+                        "key" : "f",
+                        "url" : "#f"
+                      }, {
+                        "key" : "g",
+                        "url" : "#g"
+                      }, {
+                        "key" : "h",
+                        "url" : "#happy content"
+                      }, {
+                        "key" : "link text",
+                        "url" : ""
+                      }, {
+                        "key" : "jj",
+                        "url" : "#jj"
+                      } ],
+                      "copyright_notice" : "1",
+                      "show_copyright_notice" : "1"
+                    },
+                    "locales" : {
+                      "en" : {
+                        "footer" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "f" : "Link F",
+                            "home" : "Home Page",
+                            "g" : "Link G with a super long title because I want to see if shit breaks or looks good!!!!11111",
+                            "d" : "Link D",
+                            "e" : "Link E",
+                            "b" : "Link B",
+                            "c" : "Link C",
+                            "a" : "Link A",
+                            "privacy" : "Privacy Policy",
+                            "terms_of_service" : "Terms of Service",
+                            "link text" : "",
+                            "j" : "Link J",
+                            "h" : "Link H had its name changed",
+                            "jj" : "",
+                            "contact_us" : "Contact Us",
+                            "i" : "Link I",
+                            "accessibility" : "Accessibility"
+                          }
+                        },
+                        "header" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "home" : "Homey Page",
+                            "support" : "Support",
+                            "catalog" : "Browse",
+                            "developers" : "Developers",
+                            "evergreen" : "City of Evergreenie"
+                          }
+                        },
+                        "general" : {
+                          "social_shares" : {
+                            "twitter" : "Follow us on Twitter",
+                            "facebook" : "Like us on Facebook"
+                          },
+                          "site_name" : "City of Evergreenieweeniepolkadotsand stripe"
+                        }
+                      }
+                    },
+                    "evenNewerPropertyName" : {
+                      "first key" : "first value"
+                    },
+                    "general" : {
+                      "window_or_tab_icon" : "test favicon",
+                      "social_shares" : [ {
+                        "type" : "facebook",
+                        "url" : "http://facebook.com/potatoesForQuayle"
+                      }, {
+                        "type" : "twitter",
+                        "url" : "http://twitter.com/pant"
+                      } ],
+                      "link_text_color" : "blue",
+                      "locales" : [ "en", "es", "fr" ],
+                      "default_locale" : "en",
+                      "styles" : {
+                        "fg_color" : "#fff",
+                        "bg_color" : "#2c97de",
+                        "font_family" : "Open Sans"
+                      },
+                      "window_or_tab_title_display" : "test title again"
+                    },
+                    "header" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                        "href" : "#"
+                      },
+                      "styles" : {
+                        "fg_color" : "pinky",
+                        "bg_color" : "bluey"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "catalog",
+                        "url" : "/browse"
+                      }, {
+                        "key" : "developers",
+                        "url" : "http://dev.socrata.com"
+                      }, {
+                        "key" : "support",
+                        "url" : "http://support.socrata.com"
+                      }, {
+                        "key" : "evergreen",
+                        "url" : "http://data.evergreen.gov"
+                      } ]
+                    }
                   }
                 }
               }
@@ -725,5 +495,270 @@ http_interactions:
         } ]
 
     http_version: 
-  recorded_at: Fri, 13 May 2016 20:26:56 GMT
+  recorded_at: Tue, 24 May 2016 19:24:30 GMT
+- request: 
+    method: put
+    uri: http://localhost:8080/configurations/102/properties?method=update
+    body: 
+      encoding: US-ASCII
+      string: "{\"name\":\"youMightNeedToChangeThisIfItAlreadyExists\",\"value\":{\"some key\":\"some value\",\"some other key\":\"some other value\"}}"
+    headers: 
+      Content-Type: 
+      - application/json
+      Cookie: 
+      - logged_in=true;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894;socrata-csrf-token=Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=;_core_session_id=ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q
+      X-Socrata-Host: 
+      - localhost
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 5vrl2g3mppwwlo6vdemb6nvb2
+      Access-Control-Allow-Origin: 
+      - "*"
+      Set-Cookie: 
+      - _core_session_id=ODNueS13OXplIDE0NjQxMzk0NzAgNGFhZjZjYjhkYzhiIGQ3NTA3YmE4YjM2NWY0MDRjYWEzMmUxMjY3OTk3MTdmMjViNDU2YTU;Path=/
+      Expires: 
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }
+
+    http_version: 
+  recorded_at: Tue, 24 May 2016 19:24:30 GMT
+- request: 
+    method: get
+    uri: http://localhost:8080/configurations/102/properties
+    body: 
+      encoding: US-ASCII
+      string: ""
+    headers: {}
+
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 23ydq1zf60fp4yvzcb11rz94j
+      Access-Control-Allow-Origin: 
+      - "*"
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        [ {
+          "name" : "propertyName",
+          "value" : {
+            "some key" : "another value",
+            "new key" : "new value"
+          }
+        }, {
+          "name" : "new_property",
+          "value" : {
+            "a" : 1
+          }
+        }, {
+          "name" : "newPropertyName",
+          "value" : {
+            "some key" : "another value",
+            "new key" : "new value"
+          }
+        }, {
+          "name" : "youMightHaveToChangeThis",
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }, {
+          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }, {
+          "name" : "siteChromeConfigVars",
+          "value" : {
+            "versions" : {
+              "0.1" : {
+                "published" : {
+                  "content" : {
+                    "footer" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                        "href" : "#"
+                      },
+                      "styles" : {
+                        "fg_color" : "yellow",
+                        "bg_color" : "blue"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "terms_of_service",
+                        "url" : "http://www.socrata.com/terms-of-service"
+                      }, {
+                        "key" : "privacy",
+                        "url" : "http://www.socrata.com/privacy"
+                      }, {
+                        "key" : "accessibility",
+                        "url" : "http://www.socrata.com/accessibility"
+                      }, {
+                        "key" : "contact_us",
+                        "url" : "http://www.socrata.com/contact-us"
+                      }, {
+                        "key" : "a",
+                        "url" : "#a"
+                      }, {
+                        "key" : "b",
+                        "url" : "#b"
+                      }, {
+                        "key" : "c",
+                        "url" : "#c"
+                      }, {
+                        "key" : "d",
+                        "url" : "#d"
+                      }, {
+                        "key" : "e",
+                        "url" : "#e"
+                      }, {
+                        "key" : "f",
+                        "url" : "#f"
+                      }, {
+                        "key" : "g",
+                        "url" : "#g"
+                      }, {
+                        "key" : "h",
+                        "url" : "#happy content"
+                      }, {
+                        "key" : "link text",
+                        "url" : ""
+                      }, {
+                        "key" : "jj",
+                        "url" : "#jj"
+                      } ],
+                      "copyright_notice" : "1",
+                      "show_copyright_notice" : "1"
+                    },
+                    "locales" : {
+                      "en" : {
+                        "footer" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "f" : "Link F",
+                            "home" : "Home Page",
+                            "g" : "Link G with a super long title because I want to see if shit breaks or looks good!!!!11111",
+                            "d" : "Link D",
+                            "e" : "Link E",
+                            "b" : "Link B",
+                            "c" : "Link C",
+                            "a" : "Link A",
+                            "privacy" : "Privacy Policy",
+                            "terms_of_service" : "Terms of Service",
+                            "link text" : "",
+                            "j" : "Link J",
+                            "h" : "Link H had its name changed",
+                            "jj" : "",
+                            "contact_us" : "Contact Us",
+                            "i" : "Link I",
+                            "accessibility" : "Accessibility"
+                          }
+                        },
+                        "header" : {
+                          "logo_alt" : "Evergreen!",
+                          "links" : {
+                            "home" : "Homey Page",
+                            "support" : "Support",
+                            "catalog" : "Browse",
+                            "developers" : "Developers",
+                            "evergreen" : "City of Evergreenie"
+                          }
+                        },
+                        "general" : {
+                          "social_shares" : {
+                            "twitter" : "Follow us on Twitter",
+                            "facebook" : "Like us on Facebook"
+                          },
+                          "site_name" : "City of Evergreenieweeniepolkadotsand stripe"
+                        }
+                      }
+                    },
+                    "evenNewerPropertyName" : {
+                      "first key" : "first value"
+                    },
+                    "general" : {
+                      "window_or_tab_icon" : "test favicon",
+                      "social_shares" : [ {
+                        "type" : "facebook",
+                        "url" : "http://facebook.com/potatoesForQuayle"
+                      }, {
+                        "type" : "twitter",
+                        "url" : "http://twitter.com/pant"
+                      } ],
+                      "link_text_color" : "blue",
+                      "locales" : [ "en", "es", "fr" ],
+                      "default_locale" : "en",
+                      "styles" : {
+                        "fg_color" : "#fff",
+                        "bg_color" : "#2c97de",
+                        "font_family" : "Open Sans"
+                      },
+                      "window_or_tab_title_display" : "test title again"
+                    },
+                    "header" : {
+                      "logo" : {
+                        "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                        "href" : "#"
+                      },
+                      "styles" : {
+                        "fg_color" : "pinky",
+                        "bg_color" : "bluey"
+                      },
+                      "links" : [ {
+                        "key" : "home",
+                        "url" : "/"
+                      }, {
+                        "key" : "catalog",
+                        "url" : "/browse"
+                      }, {
+                        "key" : "developers",
+                        "url" : "http://dev.socrata.com"
+                      }, {
+                        "key" : "support",
+                        "url" : "http://support.socrata.com"
+                      }, {
+                        "key" : "evergreen",
+                        "url" : "http://data.evergreen.gov"
+                      } ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } ]
+
+    http_version: 
+  recorded_at: Tue, 24 May 2016 19:24:30 GMT
 recorded_with: VCR 3.0.1

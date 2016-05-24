@@ -1,6 +1,16 @@
 require 'httparty'
 
 # SiteChrome is the styled header/footer available from configurations.json?type=site_chrome
+#
+# NOTE: Posting and putting to Core requires authentication. If you want to use the model locally in
+# your console, you'll need to set the site cookie. Here is one approach:
+#   Fetch the cookies from a valid session
+#     Add `STDOUT.puts cookies.inspect` somewhere (e.g., lib/user_auth_methods.rb)
+#     Run the server locally and log in with your dev account
+#     Copy the cookies into a file, environment variable, or the model class
+#   Set the cookies on your SiteChrome instance
+#     sc.cookies = {cookies hash}.map { |key, value| "#{key}=#{value}" }.join(';')
+#
 class SiteChrome
   include HTTParty
   base_uri CORESERVICE_URI.to_s
@@ -8,6 +18,7 @@ class SiteChrome
   default_timeout 5 # seconds
 
   # For authenticating with and talking to core
+  # cookies is a string e.g., "cookie_name=cookie_value;other_cookie=other_value"
   attr_accessor :cookies, :errors, :request_id
 
   # Attribute fields of Configuration as surfaced by core.
@@ -21,7 +32,7 @@ class SiteChrome
   end
 
   def self.host
-    cname = CurrentDomain.cname
+    cname = CurrentDomain.cname # CurrentDomain can be "" on local box
     cname.present? ? cname : 'localhost'
   end
 
@@ -31,7 +42,7 @@ class SiteChrome
       default: true,
       domainCName: SiteChrome.host,
       type: SiteChrome.core_configuration_type,
-      properties: []
+      properties: [] # separate db records, must be created later
     }
   end
 
@@ -48,14 +59,8 @@ class SiteChrome
     end
   end
 
-  # NOTE: use for local development to authenticate from console
-  def self.local_dev_box_auth_cookies
-    {}
-      .map { |key, value| "#{key}=#{value}" }.join(';')
-  end
-
   def initialize(attributes = nil)
-    @cookies = nil
+    @cookies = nil # Remember to set you cookies if you want to do any posting/putting!
     clear_errors
     initial_attributes = SiteChrome.default_values
     initial_attributes.merge!(attributes) if attributes
@@ -88,7 +93,6 @@ class SiteChrome
 
   # Use like s.content['some_key'] = 'some_value' or s.content.merge!('key' => 'value')
   # But, s.content = { 'key' => 'value', 'thing' => 'other_thing' } will not work!
-  # Q: with_indifferent_access ?
   def content
     published.try(:[], 'content')
   end
@@ -108,7 +112,7 @@ class SiteChrome
     "#{SiteChrome.core_configurations_path}/#{id}/properties"
   end
 
-  # I live in properties[] where properties[x]['name'] == 'siteChromeConfigVars'
+  # I live in properties[] where properties[x]['name'] ==
   def self.core_configuration_property_name
     'siteChromeConfigVars'
   end
@@ -124,8 +128,8 @@ class SiteChrome
   #######################
   # The Calls to Cthorehu
 
-  def self.all
-    options = { query: { type: core_configuration_type } }
+  def self.all(opts = {})
+    options = { query: { type: core_configuration_type }.merge(opts) }
     res = get(core_configurations_path, options)
     res.map { |site_chrome| new(site_chrome) }
   end
@@ -137,11 +141,15 @@ class SiteChrome
   end
 
   def self.find_default
-    all.reverse.find(&:default) # in case of multiple defaults, take latest
+    all(defaultOnly: true).find(&:default)
   end
 
-  def self.find_or_create_default
-    find_default || SiteChrome.new(default_values).create
+  def self.find_or_create_default(cookies)
+    find_default || begin
+      sc = SiteChrome.new(default_values)
+      sc.cookies = cookies
+      sc.create
+    end
   end
 
   def create_or_update_property(property_name, property_value)

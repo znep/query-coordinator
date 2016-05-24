@@ -13,8 +13,6 @@ class SiteChromeController < ApplicationController
   end
 
   def update
-    # STDOUT.puts "\n\nparams: #{params.inspect}\n\n"
-
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
 
@@ -42,7 +40,8 @@ class SiteChromeController < ApplicationController
 
   # If site chrome doesn't yet exist, create a new one
   def find_or_create_default_site_chrome
-    @site_chrome = SiteChrome.find_or_create_default
+    @site_chrome = SiteChrome.find_or_create_default(forwardable_session_cookies)
+
     # Ensure site_chrome has content necessary for rendering plain views
     @content = @site_chrome.content || {}
     %w(header footer general locales).each do |key|

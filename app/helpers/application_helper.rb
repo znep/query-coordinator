@@ -298,22 +298,27 @@ module ApplicationHelper
       end
       cookies.delete 'js_flash'
     end
-    flash_to_display, level = nil, nil
-    FLASH_MESSAGE_TYPES.each do |type|
-      if flash_obj[type]
-        flash_to_display, level = flash_obj[type], type.to_s
-        flash_to_display = flash_to_display.join(' ') if flash_to_display.is_a? Array
-        if flash_to_display.include?('|')
-          pieces = flash_to_display.split('|').map { |piece| content_tag(:span, piece) }
-          flash_to_display = pieces.inject(pieces.shift) do |safe_html, html|
-            safe_html << tag('br')
-            safe_html << html
-          end
-        end
-        break
+
+    flash_html = flash_obj.map do |level, message|
+      next unless FLASH_MESSAGE_TYPES.include? level
+
+      if message.is_a? Array
+        message = message.join('<br />').html_safe
       end
-    end
-    content_tag 'div', flash_to_display, :class => "flash #{level}"
+
+      if message.include?('|')
+        # Todo: consider replacing places we rely on | with normal <br> tags
+        pieces = message.split('|').map { |piece| content_tag(:span, piece.html_safe) }
+        message = pieces.inject(pieces.shift) do |safe_html, html|
+          safe_html << tag('br')
+          safe_html << html
+        end
+      end
+
+      content_tag('div', message, :class => "flash #{level}")
+    end.join
+
+    flash_html.html_safe
   end
 
   def display_homepage_flashes

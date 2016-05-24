@@ -81,13 +81,13 @@ export var InfoPane = React.createClass({
       null;
 
     moreActions = (
-      <button className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
+      <div className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span className="icon-waiting"></span>
         <ul className="dropdown-options">
           {contactFormButton}
           <li><a className="option" data-modal="odata-modal">{I18n.action_buttons.odata}</a></li>
         </ul>
-      </button>
+      </div>
     );
 
     if (view.attribution) {

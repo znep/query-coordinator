@@ -4,9 +4,9 @@ import recaptcha from '../lib/recaptcha';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import breakpoints from '../lib/breakpoints';
 
 var contactFormData = window.contactFormData;
-var mobileBreakpoint = 420;
 var animationDuration = 300;
 var animationEasing = [0.645, 0.045, 0.355, 1];
 
@@ -120,21 +120,21 @@ export var ContactModal = React.createClass({
   closeModal: function() {
     var self = this;
     var element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
+    var windowWidth = document.body.offsetWidth;
+    var isMobile = windowWidth <= breakpoints.mobile;
 
     _.delay(function() {
-      var windowWidth = document.body.offsetWidth;
-
-      if (windowWidth > mobileBreakpoint) {
-        velocity(element, 'fadeOut', {
-          duration: 500,
-          complete: self.cleanUpAfterClose
-        });
-      } else {
+      if (isMobile) {
         velocity(element, {
           left: windowWidth
         }, {
           duration: animationDuration,
           easing: animationEasing,
+          complete: self.cleanUpAfterClose
+        });
+      } else {
+        velocity(element, 'fadeOut', {
+          duration: 500,
           complete: self.cleanUpAfterClose
         });
       }

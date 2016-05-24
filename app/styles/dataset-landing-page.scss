@@ -30,12 +30,12 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding: 0 11px;
-
-    .alert-dismiss {
-      float: right;
-      cursor: pointer;
-    }
   }
+}
+
+.alert-dismiss {
+  float: right;
+  cursor: pointer;
 }
 
 .info-pane {
@@ -88,6 +88,8 @@ body {
       }
 
       .dropdown.download {
+        z-index: 10;
+
         .geo-layer-heading {
           overflow: hidden;
           white-space: nowrap;
@@ -144,6 +146,7 @@ body {
 }
 
 main.container.landing-page-container {
+  display: block; // IE11
   max-width: 68em;
   margin-top: 0;
 
@@ -172,13 +175,16 @@ main.container.landing-page-container {
     }
   }
 
+  .alert.error {
+    margin-top: 15px;
+  }
+
   .media-results {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
 
     .alert {
       width: 100%;
@@ -191,12 +197,21 @@ main.container.landing-page-container {
     }
 
     .result-card {
-      margin-right: 2%;
       flex: 0 0 auto;
       width: 32%;
+      margin-right: 2%;
+      opacity: 0;
 
-      &:last-child {
-        margin-right: 0;
+      &.loading-card {
+        display: flex;
+        opacity: 1;
+
+        .spinner-default {
+          width: 64px;
+          height: 64px;
+          border-width: 5px;
+          margin: auto;
+        }
       }
 
       .entry-header {
@@ -263,6 +278,21 @@ main.container.landing-page-container {
           max-height: 150px;
         }
       }
+    }
+
+    @media(min-width: $medium) {
+      .result-card {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
     }
   }
 
@@ -603,14 +633,15 @@ section.landing-page-section.schema-preview {
 
     td {
       padding: 10px 15px;
-      max-width: 7em;
 
       &.column-name {
+        width: auto;
         font-weight: 600;
         color: $link-color;
       }
 
       &.column-description {
+        width: 40%;
         .contents {
           overflow: hidden;
 
@@ -622,7 +653,7 @@ section.landing-page-section.schema-preview {
       }
 
       &.column-type {
-        width: 12em;
+        width: 10em;
         color: $light-link-color;
 
         .icon {
@@ -631,7 +662,7 @@ section.landing-page-section.schema-preview {
       }
 
       &.column-expand {
-        width: auto;
+        width: 8em;
         span {
           float: right;
         }
@@ -764,6 +795,15 @@ section.landing-page-section.schema-preview {
     .dropdown {
       padding: 6px 12px;
     }
+
+    .input-group .input-group-btn .btn {
+      padding: 8px;
+    }
+  }
+
+  .btn .icon-copy-document:before,
+  .btn .icon-settings:before {
+    padding-right: 11px;
   }
 
   @media(max-width: $small) {

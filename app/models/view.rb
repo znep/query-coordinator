@@ -35,7 +35,13 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path,
                                                   {'X-Socrata-Federation' => 'Honey Badger'}))
   end
-
+  
+  def self.find_deleted_name(id)
+    path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedNameById', 'id' => id}.to_param
+    name = CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'})
+    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it 
+  end
+  
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -446,7 +452,7 @@ class View < Model
         deep_merge(conditions)
       if use_soda2?
         soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
-        params['$$version'] = '2.0'
+        params['$$version'] = '2.0' if FeatureFlags.derive(self).send_soql_version
         params['$$row_count'] = 'approximate'
         params.merge! soql_obj.to_soql_parts
 
@@ -552,7 +558,7 @@ class View < Model
 
     soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
 
-    params['$$version'] = '2.0'
+    params['$$version'] = '2.0' if FeatureFlags.derive(self).send_soql_version
     params['$$row_count'] = 'approximate'
     params.merge! soql_obj.to_soql_parts
 

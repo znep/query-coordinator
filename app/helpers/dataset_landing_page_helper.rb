@@ -201,21 +201,6 @@ module DatasetLandingPageHelper
     }
   end
 
-  def transformed_featured_views
-    @featured_views.map do |featured_view|
-      {
-        :name => featured_view.name,
-        :id => featured_view.id,
-        :description => sanitize(featured_view.description),
-        :url => featured_view.seo_friendly_url,
-        :displayType => featured_view.display.try(:type),
-        :updatedAt => featured_view.time_last_updated_at,
-        :viewCount => featured_view.viewCount,
-        :isPrivate => !featured_view.is_public?
-      }
-    end
-  end
-
   def transformed_child_layers
     @view.geospatial_child_layers.map do |child_layer|
       {

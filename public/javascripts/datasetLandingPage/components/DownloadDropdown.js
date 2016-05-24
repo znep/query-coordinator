@@ -103,12 +103,12 @@ export var DownloadDropdown = React.createClass({
     }
 
     return (
-      <button className="dropdown btn btn-default download btn-sm" data-dropdown data-orientation="bottom">
+      <div className="dropdown btn btn-default download btn-sm" data-dropdown data-orientation="bottom">
         {I18n.action_buttons.download}
         <ul className="dropdown-options">
           {exportLinks}
         </ul>
-      </button>
+      </div>
     );
   }
 });

@@ -86,8 +86,7 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'shows old UX for datasets that are on the NBE and user is admin' do
     setup_nbe_dataset_test(true)
     Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
-      fetch_page_metadata: { status: '200' }
+      fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
     )
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     notice_matcher = lambda { |element|
@@ -103,8 +102,7 @@ class DatasetsControllerTest < ActionController::TestCase
   # test 'redirects to default page for NBE datasets for non-admin users' do
   #   setup_nbe_dataset_test(false, false)
   #   Phidippides.any_instance.stubs(
-  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
-  #     fetch_page_metadata: { status: '200' }
+  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
   #   )
   #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
   #   assert_redirected_to '/view/page-xist'
@@ -182,7 +180,7 @@ class DatasetsControllerTest < ActionController::TestCase
           default_to_dataset_landing_page: true
         )
       end)
-    end 
+    end
 
     context 'if the view is a dataset' do
       should 'display the DSLP on the show path' do
@@ -230,7 +228,7 @@ class DatasetsControllerTest < ActionController::TestCase
         end
       end
 
-    
+
   end
 
   test 'renders page meta content over https and not http' do
@@ -254,8 +252,7 @@ class DatasetsControllerTest < ActionController::TestCase
   # test 'redirects to home page for NBE datasets with inaccessible default page for non-admin users' do
   #   setup_nbe_dataset_test(false, false)
   #   Phidippides.any_instance.stubs(
-  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
-  #     fetch_page_metadata: { status: '404' }
+  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
   #   )
   #   DataLensManager.any_instance.expects(:fetch).raises(DataLensManager::ViewAccessDenied)
   #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'

@@ -138,6 +138,11 @@ Dataset.modules['map'] =
         return _.include(['bing', 'google', 'esri'], this.displayFormat.type);
     },
 
+    _setupPolaroidImageCapturing: function() {
+        var polaroidDelay = this.viewType === 'geo' ? 20000 : 10000;
+        this._super(polaroidDelay);
+    },
+
     _checkValidity: function()
     {
         if (!this._super()) { return false; }

@@ -8,7 +8,7 @@ var user = {};
 var onClose = _.noop;
 
 // Configuration for UserSnap, which will be bound to window.
-function generateConfig(options) {
+function generateConfig() {
   return {
     emailBox: true,
     emailBoxPlaceholder: 'Please enter your email in case we need to ask you clarifying questions',

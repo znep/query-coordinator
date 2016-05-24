@@ -1,8 +1,9 @@
 import React from 'react';
+import Responsive from './lib/Responsive';
 import Navbar from './components/Navbar';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
-import FeaturedViewList from './containers/FeaturedViewList';
+import PopularViewList from './containers/PopularViewList';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import ApiFlannel from './components/ApiFlannel';
@@ -19,10 +20,14 @@ export default React.createClass({
         <Navbar />
         <PrivateNotice />
         <InfoPane />
+
         <main className="container landing-page-container">
-          <FeaturedViewList />
           <MetadataTable />
           <DatasetContents />
+
+          <Responsive>
+            <PopularViewList />
+          </Responsive>
         </main>
 
         <ApiFlannel />

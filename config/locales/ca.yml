@@ -2247,11 +2247,11 @@ ca:
         roles:
           administrator: administrador
           designer: dissenyador
-          editor: administrador
-          editor_stories:
+          editor: editor
+          editor_stories: editor + perspectives
           none: cap
-          publisher: editor
-          publisher_stories:
+          publisher: publicador
+          publisher_stories: publicador + perspectives
           viewer: espectador
         search: Cercar
         search_for_users: Cercar Usuaris per a Afegir a

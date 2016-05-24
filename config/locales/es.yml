@@ -2250,10 +2250,10 @@ es:
           administrator: Administrador
           designer: diseñador
           editor: editor
-          editor_stories:
+          editor_stories: editor + perspectives
           none: ninguno
-          publisher: editor
-          publisher_stories:
+          publisher: publicador
+          publisher_stories: publicador + perspectives
           viewer: espectador
         search: Búsqueda
         search_for_users: Buscar Usuarios para Añadir

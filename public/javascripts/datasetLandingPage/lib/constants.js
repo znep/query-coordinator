@@ -1,0 +1,1 @@
+export const POPULAR_VIEWS_CHUNK_SIZE = 3;

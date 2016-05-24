@@ -1,3 +1,16 @@
+import { POPULAR_VIEWS_CHUNK_SIZE } from './lib/constants';
+
+// Used to throw errors from non-200 responses when using fetch.
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    var error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+  }
+}
+
 export const EMIT_MIXPANEL_EVENT = 'EMIT_MIXPANEL_EVENT';
 export function emitMixpanelEvent(data) {
   return {
@@ -60,16 +73,6 @@ export function handleContactFormFailure() {
 }
 
 export function submitContactForm() {
-  function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return response;
-    } else {
-      var error = new Error(response.statusText);
-      error.response = response;
-      throw error;
-    }
-  }
-
   return function(dispatch, getState) {
     var state = getState();
     var viewId = state.view.id;
@@ -104,5 +107,63 @@ export function submitContactForm() {
           dispatch(handleContactFormFailure());
         }
       })['catch'](() => dispatch(handleContactFormFailure()));
+  };
+}
+
+export const REQUEST_POPULAR_VIEWS = 'REQUEST_POPULAR_VIEWS';
+export function requestPopularViews() {
+  return {
+    type: REQUEST_POPULAR_VIEWS
+  };
+}
+
+export const RECEIVE_POPULAR_VIEWS = 'RECEIVE_POPULAR_VIEWS';
+export function receivePopularViews(popularViews) {
+  return {
+    type: RECEIVE_POPULAR_VIEWS,
+    popularViews: popularViews
+  };
+}
+
+export const HANDLE_POPULAR_VIEWS_ERROR = 'HANDLE_POPULAR_VIEWS_ERROR';
+export function handlePopularViewsError() {
+  return {
+    type: HANDLE_POPULAR_VIEWS_ERROR
+  };
+}
+
+export const DISMISS_POPULAR_VIEWS_ERROR = 'DISMISS_POPULAR_VIEWS_ERROR';
+export function dismissPopularViewsError() {
+  return {
+    type: DISMISS_POPULAR_VIEWS_ERROR
+  };
+}
+
+export function loadMorePopularViews() {
+  return function(dispatch, getState) {
+    var state = getState();
+
+    if (_.get(state, 'popularViews.isLoading', false)) {
+      return;
+    }
+
+    var viewId = state.view.id;
+    var offset = _.get(state, 'popularViews.list.length', 0);
+    var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
+
+    dispatch(requestPopularViews());
+
+    fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`).
+      then(checkStatus).
+      then(response => response.json()).
+      then(popularViews => dispatch(receivePopularViews(popularViews)))
+      ['catch'](() => dispatch(handlePopularViewsError()));
+  };
+}
+
+export const TOGGLE_POPULAR_VIEWS = 'TOGGLE_POPULAR_VIEWS';
+export function togglePopularViews() {
+  return {
+    type: TOGGLE_POPULAR_VIEWS
   };
 }

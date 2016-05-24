@@ -78,7 +78,10 @@ module Frontend
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :expires_in => 1.day, :compress => true }
+    # Can't use dalli_store since Dalli uses memcached binary protocol which is not supported by nutcracker.
+    # Unfortunately this means we're stuck using a memcached gem that is unsupported since ca. 2010
+    # config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :expires_in => 1.day, :compress => true }
+    config.cache_store = :memcache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :expires_in => 1.day, :compress => true }
 
     # TTL for fragment caching, currently only used for DataSlate
     config.cache_ttl_fragment = 24.hours

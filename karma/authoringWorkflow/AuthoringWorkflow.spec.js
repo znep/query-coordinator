@@ -24,6 +24,11 @@ describe('AuthoringWorkflow', function() {
     expect(element).to.contain('button.cancel');
   });
 
+  it('renders the modal close button', function() {
+    var element = renderComponent(AuthoringWorkflow, defaultProps);
+    expect(element).to.contain('.modal-header-dismiss');
+  });
+
   it('calls the onComplete callback when the done button is clicked', function() {
     var onComplete = sinon.spy();
 

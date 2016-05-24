@@ -1,10 +1,8 @@
 allow_debugging:        on          # (on, off)
 compress_assets:        on          # (on, off)
-compressor_options:
-  compilation_level: ADVANCED_OPTIMIZATIONS
 embed_assets:           off         # (on, off, datauri)
 gzip_assets:            on          # (on, off)
-javascript_compressor:  closure     # (yui, closure, uglify)
+javascript_compressor:  yui         # (yui, closure, uglify)
 package_assets:         on          # (on, off, always)
 package_path:           packages    # (defaults to assets)
 template_function:      on          # (on, off, _.template, new Template. defaults to on)

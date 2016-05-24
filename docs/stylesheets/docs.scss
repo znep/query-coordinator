@@ -1,0 +1,313 @@
+@import "modular-scale";
+@import "bourbon";
+@import "neat";
+
+@import "variables/colors";
+@import "variables/typography";
+
+.container {
+  @include outer-container();
+
+  margin-top: 80px;
+
+  &.main {
+    margin-top: ms(8);
+  }
+
+  > .menu {
+    @include span-columns(4);
+
+    margin-top: 0;
+    z-index: 1999;
+
+    .menu-header {
+      .menu-header-title {
+        margin-top: 3rem;
+      }
+      .menu-header-dismiss {
+        text-align: right;
+        &:hover {
+          background-color: #3a3a3a;
+        }
+      }
+    }
+
+  }
+
+  > .content {
+    @include span-columns(12);
+  }
+}
+
+/* Guide Home. TODO: This shouldn't be in here. */
+.jumbotron {
+  min-height: 400px;
+  background-color: $primary-light;
+  background-image: url("../images/stuart-engineer.png");
+  background-position: right 200px;
+  background-repeat: no-repeat;
+
+  .container {
+    margin-top: 30px;
+
+    body.index & {
+      padding: 80px 0;
+    }
+
+    .page-header {
+      font-size: ms(12);
+    }
+
+    p.intro {
+      font-weight: 200;
+      font-size: ms(4);
+      color: $dark-grey-2;
+    }
+  }
+}
+
+body > .responsive-navbar {
+  @include transition(all 0.15s);
+
+  background-color: $primary;
+
+  &.responsive-navbar-collapsed {
+    height: 40px;
+    line-height: 36px;
+
+    img {
+      margin-top: 0;
+    }
+
+    .site-controls {
+      font-size: ms(0);
+    }
+  }
+
+  img {
+    margin-top: -4px;
+  }
+
+  span {
+    opacity: 1;
+  }
+
+  .btn {
+    @include transition(width 0.15s);
+  }
+}
+
+.responsive-navbar {
+  .home,
+  .menu-link {
+    text-decoration: none;
+    color: $white;
+    font-weight: 300;
+  }
+
+  .home {
+    padding-left: ms(-2);
+  }
+
+  .menu-link {
+    border-right: 1px solid lighten($primary, 30%);
+    padding-right: ms(0);
+    transition: color 0.5s;
+    &:hover {
+      cursor: pointer;
+      color: darken($white, 10%);
+    }
+  }
+
+}
+
+.page-header {
+  font-weight: 200;
+}
+
+section.styleguide-section {
+  @include row();
+  border-top: 1px solid $light-grey-4;
+  padding-top: ms(2);
+  margin-bottom: ms(2);
+}
+
+.meta {
+  @include span-columns(3);
+}
+
+.example {
+  @include span-columns(8);
+  @include shift(1);
+
+  .usage.language-markup {
+    margin-bottom: ms(12);
+  }
+}
+
+.logo-sample {
+  margin-bottom: ms(2);
+}
+
+.logo-download {
+  margin-bottom: ms(10);
+}
+
+.powered-by-sample {
+  margin-top: ms(4);
+  span.powered-by-socrata {
+    display: block;
+    margin-bottom: ms(10);
+  }
+}
+
+.dark-context {
+  background-color: $black;
+  padding: ms(-3);
+}
+
+.medium-context {
+  background-color: $dark-grey-2;
+  padding: ms(-3);
+}
+
+.primary-context {
+  background-color: $primary;
+  padding: ms(-3);
+}
+
+.medium-dark-context {
+  background-color: $light-grey-bg;
+  padding-top: ms(-3);
+  padding-bottom: 200px;
+  padding-left: ms(-3);
+  padding-right: ms(-3);
+}
+
+.styleguide-title {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 300;
+
+  img {
+    width: 100px;
+    vertical-align: sub;
+    margin-right: 0.5rem;
+  }
+}
+
+.styleguide-header {
+  font-weight: 300;
+  color: $quiet-text-color;
+}
+
+.styleguide-subheader {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.modal-section {
+  .button-wrapper {
+    max-width: 250px;
+  }
+
+  .btn-secondary {
+    margin-top: 1rem;
+  }
+}
+
+.specimen,
+.speciment-meta {
+  display: block;
+}
+
+.specimen {
+  font-size: ms(2);
+
+  &.italic {
+    font-style: italic;
+  }
+
+  &.light {
+    font-weight: 200;
+
+  }
+
+  &.semibold {
+    font-weight: 600;
+  }
+
+  &.bold {
+    font-weight: 700;
+  }
+}
+
+.specimen-meta {
+  font-size: ms(-1);
+  margin-bottom: ms(2);
+}
+
+.usage {
+  background-color: $light-grey-5;
+  font-size: ms(-1);
+  padding: ms(-2);
+  border-radius: 1px;
+  color: $grey;
+}
+
+/* Sample Grids for Styleguide */
+.inline-container {
+  @include row();
+}
+
+.one {
+  @include span-columns(1);
+}
+
+.third {
+  @include span-columns(4);
+}
+
+.half {
+  @include span-columns(6);
+}
+
+.two-thirds {
+  @include span-columns(8);
+}
+
+.blockgrid {
+  @include outer-container;
+  padding: 0;
+
+  li {
+    @include span-columns(1);
+    @include omega(4n);
+    margin-bottom: ms(5);
+    padding-left: 0;
+
+    &.icon-sample {
+
+      width: 20%;
+      background-color: $light-grey-5;
+      font-size: ms(3);
+      text-align: center;
+      padding-top: ms(-2);
+    }
+  }
+}
+
+/* Responsive Images in the guide? */
+img {
+  max-width: 100%;
+}
+.usage {
+  input {
+    width: 100%;
+  }
+}

@@ -4,27 +4,41 @@ var gulp = require('gulp');
 var consolidate = require('gulp-consolidate');
 var iconfont = require('gulp-iconfont');
 
-function compileCSS(stream) {
+var fontName = 'socrata-icons';
+
+function compileIconStyles(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
       var className = 'icon';
       var selector = glyphs.map((glyph) => {
-        return `.${className}-${glyph.name}:before`;
+        return `.${className}-${glyph.name}::before`;
       }).join(',\n');
 
       var locals = {
         className,
         selector,
         glyphs,
-        fontName: 'socrata-icons',
-        fontPath: '../fonts/'
+        fontName
       };
 
-      gulp.src('src/fonts/templates/socrata-icons.css').
+      gulp.src('src/fonts/templates/socrata-icons.scss').
         pipe(consolidate('lodash', locals)).
-        pipe(gulp.dest('src/scss')).
+        pipe(gulp.dest('dist/fonts')).
         on('finish', callback);
     });
+  };
+}
+
+function compileFontFamily() {
+  return (callback) => {
+    var locals = {
+      fontName
+    };
+
+    gulp.src('src/fonts/templates/socrata-icons-font-family.scss').
+      pipe(consolidate('lodash', locals)).
+      pipe(gulp.dest('dist/fonts')).
+      on('finish', callback);
   };
 }
 
@@ -48,7 +62,8 @@ module.exports = (done) => {
     pipe(iconfont(settings));
 
   async.parallel([
-    compileCSS(stream),
+    compileFontFamily(),
+    compileIconStyles(stream),
     compileStream(stream)
   ], done);
 };

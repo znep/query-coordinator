@@ -1,5 +1,3 @@
-@import "grid";
-
 .modal {
   position: fixed;
   top: 0;
@@ -60,6 +58,10 @@
 
 .modal-header {
   position: relative;
+
+  .modal-header-title {
+    margin: 0;
+  }
 
   .modal-full & {
     min-height: 52px;

@@ -16,7 +16,7 @@ module.exports = (done) => {
       pipe(sass({includePaths}).on('error', sass.logError)).
       pipe(prepend(banner())).
       pipe(autoprefixer({browsers})).
-    pipe(sourcemaps.write()).
+    pipe(sourcemaps.write('.')).
     pipe(gulp.dest('dist/prototypes')).
     on('finish', done);
 };

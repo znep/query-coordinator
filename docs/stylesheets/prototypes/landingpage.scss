@@ -1,12 +1,8 @@
-@import "breakpoint";
-@import "vendor/reset";
-//@import "vendor/prism";
-
 // Style Components
 @import "bourbon";
 @import "neat";
 
-@import "../../../src/scss/socrata-icons";
+@import "variables/colors";
 
 @font-face {
   font-family: "socrata-icons";
@@ -26,34 +22,10 @@
   }
 }
 
-@import "../../../src/scss/components/grid";
-@import "../../../src/scss/components/typography";
-@import "../../../src/scss/components/colors";
-@import "../../../src/scss/components/color-swatches";
-@import "../../../src/scss/components/button-group";
-@import "../../../src/scss/components/buttons";
-@import "../../../src/scss/components/list";
-@import "../../../src/scss/components/loader";
-@import "../../../src/scss/components/forms";
-@import "../../../src/scss/components/modal";
-@import "../../../src/scss/components/tags";
-@import "../../../src/scss/components/alerts";
-@import "../../../src/scss/components/dividers";
-@import "../../../src/scss/components/flyout";
-@import "../../../src/scss/components/flannel";
-@import "../../../src/scss/components/nav-bars";
-@import "../../../src/scss/components/tables";
-@import "../../../src/scss/components/menu";
-@import "../../../src/scss/components/pagination";
-@import "../../../src/scss/components/input-groups";
-@import "../../../src/scss/components/cards";
-@import "../../../src/scss/components/nav-tabs";
-
 // Media Queries
 $lgmobile: 468px;
 $tablet: 767px;
 $desktop: 992px;
-
 
 //Special Color Vars
 $expanded-row-bg: transparent;
@@ -89,7 +61,7 @@ a {
 	margin: 0px auto 0;
 
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		//padding: 0 0.5em;
 		margin: 0 auto;
 
@@ -141,7 +113,7 @@ a {
 		display: none;
 	}
 
-	@include breakpoint($desktop) {
+	@include media($desktop) {
 		.more-link {
 			display: inline;
 		}
@@ -163,7 +135,7 @@ a {
 				float: left;
 			}
 		}
-		@include breakpoint($tablet) {
+		@include media($tablet) {
 			.section-header {
 				font-size: ms(2);
 			}
@@ -255,7 +227,7 @@ a {
 				}
 			}
 
-			@include breakpoint($desktop) {
+			@include media($desktop) {
 				&.loading-card {
 					display: none;
 				}
@@ -294,7 +266,7 @@ a {
 
 		}
 		.result-card {
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				@include span-columns(4);
 				.entry-main .img-wrapper{
 					display: flex;
@@ -342,7 +314,7 @@ a {
 				margin-top: ms(0);
 			}
 
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				@include span-columns(4);
 				.row.middle {
 					margin: ms(0) 0;
@@ -387,7 +359,7 @@ a {
 				margin-bottom: ms(0);
 			}
 
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				@include span-columns(8);
 				margin-right: 0;
 				//width: 95%;
@@ -405,14 +377,14 @@ a {
 				line-height: ms(5);
 				color: $primary-dark;
 				font-size: ms(2);
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					font-size: ms(4);
 				}
 
 			}
 			.small-label {
 				font-size: ms(-1);
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					font-size: ms(0);
 				}
 			}
@@ -566,7 +538,7 @@ a {
 		  			}
 		  		}
 			}
-			@include breakpoint($tablet) {
+			@include media($tablet) {
 				// show only the Type-icon on tablets
 				.schema-preview {
 					th:nth-child(3) {
@@ -617,7 +589,7 @@ a {
 
 			}
 
-			@include breakpoint($desktop) {
+			@include media($desktop) {
 				.more-button.btn-block {
 					display: none;
 				}
@@ -692,7 +664,7 @@ a {
 		max-width: 100%;
 	}
 
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		.results-pagination-controls {
 			width: 70%;
 			margin-left: ms(0);
@@ -720,7 +692,7 @@ a {
 }
 .date {
 	font-size: ms(-1);
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		display: block;
 	}
 }
@@ -748,7 +720,7 @@ a {
 				color: $warning;
 			}
 
-			@include breakpoint($desktop) {
+			@include media($desktop) {
 				@include span-columns(8);
 					.infopane-name {
 
@@ -806,7 +778,7 @@ a {
 			//     }
 			// }
 
-			@include breakpoint($desktop) {
+			@include media($desktop) {
 				@include span-columns(4);
 				text-align: right;
 				font-size: ms(0);
@@ -823,8 +795,8 @@ a {
 
 
 		.infopane-main {
-			@include breakpoint($tablet) {
-				@include span-columns(8, collapse);
+			@include media($tablet) {
+				@include span-columns(8, block-collapse);
 				border-right: 1px solid $light-grey-4;
 
 
@@ -857,7 +829,7 @@ a {
 				overflow: hidden;
 				padding: ms(-4) ms(-2);
 
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					border-bottom: none;
 					border-top: 1px solid $light-grey-5;
 
@@ -867,7 +839,7 @@ a {
 				.topics {
 					@include span-columns(12);
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(9);
 					}
 				}
@@ -875,7 +847,7 @@ a {
 				.api {
 					display: none !important;
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(3);
 						text-align: right;
 					}
@@ -889,7 +861,7 @@ a {
 				padding: ms(-4) ms(-2);
 				border-bottom: 1px solid $light-grey-5;
 
-				@include breakpoint($tablet) {
+				@include media($tablet) {
 					@include span-columns(4);
 					border-bottom: none;
 					.meta-title {
@@ -902,7 +874,7 @@ a {
 					//margin-top: ms(-12);
 					margin-bottom: 0;
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(12);
 
 						.meta-title,
@@ -917,7 +889,7 @@ a {
 					@include span-columns(6);
 					text-align: right;
 
-					@include breakpoint($tablet) {
+					@include media($tablet) {
 						@include span-columns(12);
 						text-align: left;
 
@@ -1082,7 +1054,7 @@ a {
 		width: 300px;
 		min-width: 300px;
 	}
-	@include breakpoint($tablet) {
+	@include media($tablet) {
 		.link-form {
 			width: 400px;
 		}

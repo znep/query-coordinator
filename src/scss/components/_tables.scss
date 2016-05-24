@@ -1,4 +1,5 @@
 .table {
+  border-collapse: collapse;
   border-spacing: 0;
   margin: ms(2) 0;
   min-width: 100%;
@@ -17,6 +18,7 @@
 
   th,
   td {
+    vertical-align: baseline;
     border: 1px solid $light-grey-3;
     padding: 1.5rem;
   }
@@ -28,7 +30,7 @@
       font-size: ms(-1);
     }
 
-    @include breakpoint($medium) {
+    @include media($medium) {
       th,
       td {
         padding: ms(-3);
@@ -98,21 +100,6 @@
   overflow-y: hidden;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   border: 1px solid $light-grey-4;
-
-  > .table {
-    margin-bottom: 0;
-
-    > thead,
-    > tbody,
-    > tfoot {
-      > tr {
-        > th,
-        > td {
-          white-space: nowrap;
-        }
-      }
-    }
-  }
 
   @include media($small) {
     border: none;

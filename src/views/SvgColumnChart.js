@@ -494,6 +494,10 @@ function SvgColumnChart($element, vif) {
         )
     );
 
+    // Normalize min and max values so that we always show 0.
+    minYValue = Math.min(minYValue, 0);
+    maxYValue = Math.max(0, maxYValue);
+
     d3DimensionXScale = d3.
       scale.
         ordinal().

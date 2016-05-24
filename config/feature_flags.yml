@@ -247,6 +247,9 @@ show_admin_processes:
   description: Enable the "Jobs" section of the admin interface, which allows users to monitor the status of ingress jobs
   defaultValue: true
   category: admin
+show_federated_site_name_instead_of_cname:
+  description: EN-2774. Turning this on will cause the current domain's catalog to show its federated sources by the value for their Site Theme "site_title" property. Note that this is simply "Socrata" by default, so double check the federation sources site_title's before turning this on.
+  defaultValue: false
 show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true

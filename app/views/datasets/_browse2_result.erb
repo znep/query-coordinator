@@ -32,13 +32,13 @@
             <a class="browse2-result-federated-link browse2-result-header-section"
               href="<%= result_federated_origin_url %>"
               rel="<%= result_link_rel_type %>"
-              title="<%= t('controls.browse.browse2.federation.label_with_source', :source => result_federated_origin) %>">
+              title="<%= t('controls.browse.browse2.federation.label_with_source', :source => federated_site_title) %>">
               <img class="browse2-result-federated-image"
                 src="<%= result_domain_icon_href %>"
                 onerror="this.src='images/federated.svg'; this.onerror=null; this.className = this.className + ' default_icon';"
-                alt="<%= result_federated_origin %>" />
+                alt="<%= federated_site_title %>" />
               <%= t('controls.browse.browse2.federation.label') %>
-              <span class="browse2-result-federated-source"><%= result_federated_origin %></span>
+              <span class="browse2-result-federated-source"><%= federated_site_title %></span>
             </a>
           <%- end -%>
         </div>

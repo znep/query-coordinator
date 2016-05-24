@@ -106,7 +106,10 @@ export var AuthoringWorkflow = React.createClass({
         <div className="modal-container">
 
           <header className="modal-header">
-            <h3 className="modal-header-title">Create Visualization</h3>
+            <h5 className="modal-header-title">Create Visualization</h5>
+            <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+              <span className="icon-close-2"></span>
+            </button>
           </header>
 
           <section className="modal-content">

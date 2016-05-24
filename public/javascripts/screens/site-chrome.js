@@ -37,3 +37,10 @@ function showTab(tabId) {
   $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.
     format(tabId)).addClass('current');
 }
+
+function confirmReload() {
+  var confirmation = confirm("Cancelling will reload the page and erase any current changes.");
+  if (confirmation) {
+    location.reload();
+  }
+}

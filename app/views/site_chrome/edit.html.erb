@@ -48,7 +48,7 @@
         <%= t("screens.admin.site_chrome.save") %>
       </button>
     <% end %>
-    <%= link_to('#', onclick: 'alert("This feature is not yet implemented but should probably just reload the tab.")') do %>
+    <%= link_to('#', onclick: 'return confirmReload();') do %>
       <button id="site_chrome_cancel">
         <%= t("screens.admin.site_chrome.cancel") %>
       </button>

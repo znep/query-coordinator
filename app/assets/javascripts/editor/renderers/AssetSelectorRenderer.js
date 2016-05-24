@@ -1184,7 +1184,7 @@ export default function AssetSelectorRenderer(options) {
       {
         'class': 'asset-selector-text-input',
         'data-asset-selector-validate-field': 'storyUrl',
-        'placeholder': 'https://www.example.com/stories/s/abcd-efgh',
+        'placeholder': 'https://www.example.com/stories/s/story-title/abcd-efgh',
         'type': 'text'
       }
     );

@@ -125,7 +125,7 @@ module BrowseActions
     all_feds = Federation.federations.sort_by(&:text).map do |fed|
       cname = fed.sourceDomainCName
       {
-        text: cname,
+        text: federated_site_title(cname),
         value: fed.sourceDomainId.to_s, # must be string or view doesn't notice it
         icon: {
           type: 'static',

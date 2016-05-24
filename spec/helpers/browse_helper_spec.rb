@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe BrowseHelper do
 
-  before do
-    feature_flag_mock = double('feature_flag_mock')
+  let(:feature_flag_mock) { double('feature_flag_mock') }
 
+  before do
     allow(FeatureFlags).
       to receive(:derive).
       and_return(feature_flag_mock)
@@ -110,6 +110,26 @@ describe BrowseHelper do
       view = double('View', :federated? => false, :domainCName => 'federated.example.com')
       current_domain_cname = 'example.com'
       expect(helper.view_img_alt(view, current_domain_cname)).to eql('example.com')
+    end
+  end
+
+  describe '#federated_site_title' do
+    it 'should return the cname when the feature flag is false' do
+      allow(feature_flag_mock).to receive(:[]).with(:show_federated_site_name_instead_of_cname).and_return(false)
+
+      result = helper.federated_site_title('data.seattle.gov')
+      expect(result).to eq('data.seattle.gov')
+    end
+
+    it 'should return the site_title when the feature flag is true' do
+      allow(feature_flag_mock).to receive(:[]).with(:show_federated_site_name_instead_of_cname).and_return(true)
+      test_hash = { 'strings' => { 'site_title' => 'Seattle Open Data' } }
+      allow(Configuration).
+        to receive(:find_by_type).
+        and_return([ Hashie::Mash.new(test_hash) ])
+
+      result = helper.federated_site_title('data.seattle.gov')
+      expect(result).to eq('Seattle Open Data')
     end
   end
 

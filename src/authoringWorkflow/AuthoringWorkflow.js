@@ -121,26 +121,49 @@ export var AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="modal-content">
-            <form>
-              <div>
-                <label className="block-label">Enter a dataset four by four:</label>
-                <input className="text-input" type="text" defaultValue={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
-              </div>
+            <ul className="nav-tabs">
+              <li className="tab-link current">
+                <a href="">Data</a>
+              </li>
+              <li className="tab-link">
+                <a href="">Title &amp; Description</a>
+              </li>
+              <li className="tab-link">
+                <a href="">Colors &amp; Style</a>
+              </li>
+              <li className="tab-link">
+                <a href="">Axis &amp; Scale</a>
+              </li>
+              <li className="tab-link">
+                <a href="">Labels</a>
+              </li>
+              <li className="tab-link">
+                <a href="">Flyouts</a>
+              </li>
+            </ul>
 
-              {datasetMetadataInfo}
+            <div className="authoring-controls">
+              <form>
+                <div>
+                  <label className="block-label">Enter a dataset four by four:</label>
+                  <input className="text-input" type="text" defaultValue={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
+                </div>
 
-              {dimensionDropdown}
-              {measureDropdown}
-              {chartTypeDropdown}
-            </form>
+                {datasetMetadataInfo}
 
-            {visualization}
+                {dimensionDropdown}
+                {measureDropdown}
+                {chartTypeDropdown}
+              </form>
+
+              {visualization}
+            </div>
           </section>
 
           <footer className="modal-footer">
             <div className="modal-footer-actions">
               <button className="btn btn-default cancel" onClick={this.onCancel}>Cancel</button>
-              <button className="btn btn-primary done" onClick={this.onComplete}>Done</button>
+              <button className="btn btn-primary done" onClick={this.onComplete}>Insert</button>
             </div>
           </footer>
         </div>

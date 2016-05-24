@@ -37,8 +37,8 @@ describe('Visualization', function() {
   it('renders an empty <div>', function() {
     var element = renderComponent(Visualization, defaultProps());
 
-    expect(element).to.be.empty;
-    expect(element).to.have.class('authoring-workflow-visualization-preview');
+    expect(element.querySelector('.visualization-preview')).to.be.empty;
+    expect(element).to.have.class('visualization-preview-container');
   });
 
   describe('with a valid vif', function() {

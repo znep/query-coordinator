@@ -18,23 +18,30 @@ export var Visualization = React.createClass({
 
   renderVisualization: function() {
     var chartType = _.get(this.props.vif, 'series[0].type', null);
-    var $visualization = $(ReactDOM.findDOMNode(this));
+    var $visualizationPreview = $(ReactDOM.findDOMNode(this)).
+      find('.visualization-preview');
 
-    $visualization.
-      trigger('SOCRATA_VISUALIZATION_DESTROY').
-      empty();
+    $visualizationPreview.
+      trigger('SOCRATA_VISUALIZATION_DESTROY');
 
     switch (chartType) {
       case 'columnChart':
-        $visualization.socrataSvgColumnChart(this.props.vif);
+        $visualizationPreview.socrataSvgColumnChart(this.props.vif);
         break;
       case 'timelineChart':
-        $visualization.socrataSvgTimelineChart(this.props.vif);
+        $visualizationPreview.socrataSvgTimelineChart(this.props.vif);
         break;
     }
   },
 
   render: function() {
-    return <div className="authoring-workflow-visualization-preview"></div>;
+    return (
+      <div className="visualization-preview-container">
+        <div className="visualization-toggler">
+          <small>Visualization</small>
+        </div>
+        <div className="visualization-preview"></div>
+      </div>
+    );
   }
 });

@@ -4,5 +4,20 @@
 <h4 class="h6 styleguide-subheader">Default</h4>
 <%= partial "components/code_sample", locals: { component: "components/spinner" } %>
 
+
+<h4 class="h6 styleguide-subheader">On a Dark Background</h4>
+<div class="dark-context">
+  <%= partial "components/spinner_dark", locals: { component: "components/spinner_dark" } %>
+</div>
+<pre class="usage">
+  <code class="language-markup">
+    <%= escape_html(partial "components/spinner_dark", locals: { component: "components/spinner_dark" }) %>
+  </code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Large variation</h4>
+<%= partial "components/code_sample", locals: { component: "components/spinner_large" } %>
+
 <h4 class="h6 styleguide-subheader">In a Button</h4>
 <%= partial "components/code_sample", locals: { component: "components/buttons/button_primary_block_spinner" } %>

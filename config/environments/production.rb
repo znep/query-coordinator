@@ -19,8 +19,13 @@ Rails.application.configure do
   # For large-scale production use, consider using a caching reverse proxy like
   # NGINX, varnish or squid.
   # config.action_dispatch.rack_cache = true
-
-  config.cache_store = :mem_cache_store, '127.0.0.1:22121', { :namespace => 'webapp', :check_size => false }
+  # '10.1.0.68:11211:1', '10.1.0.69:11211:1', '10.1.0.70:11211:1', '10.1.0.71:11211:1', '10.1.0.72:11211:1', '10.1.0.73:11211:1'
+  config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'], {
+    :namespace => 'webapp',
+    :check_size => false,
+    :expires_in => 1.day,
+    :compress => true
+  }
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.

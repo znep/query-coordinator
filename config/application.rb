@@ -78,7 +78,12 @@ module Frontend
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :expires_in => 1.day, :compress => true }
+    config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'], {
+      :namespace => 'webapp',
+      :check_size => false,
+      :expires_in => 1.day,
+      :compress => true
+    }
 
     # TTL for fragment caching, currently only used for DataSlate
     config.cache_ttl_fragment = 24.hours

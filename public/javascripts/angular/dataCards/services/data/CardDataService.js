@@ -569,10 +569,11 @@ ${JSON.stringify(errors)}`
         }
       });
 
-      // If the feature flag specifying a custom polygon for the regions exists, immediately fetch
-      // all regions contained completely in this region and return.
+      // If the configuration specifying a custom polygon for the regions exists, and the feature flag
+      // to use it is turned on, fetch all regions contained completely in this region and return.
+      var useCustomBoundary = ServerConfig.get('useDataLensChoroplethCustomBoundary');
       var customBoundary = ServerConfig.get('choroplethCustomBoundary');
-      if (customBoundary) {
+      if (useCustomBoundary && customBoundary) {
         geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);
         geoJsonUrl.searchParams.set('$select', '*');
         geoJsonUrl.searchParams.set('$where', `within_polygon(the_geom,'${customBoundary}')`);

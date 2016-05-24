@@ -268,6 +268,9 @@ timeline:
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
+use_data_lens_choropleth_custom_boundary:
+  description: If this is true and you have filled out choropleth_custom_boundary in the data_lens_config configuration, then choropleths will be limited to the boundary entered in choropleth_custom_boundary.
+  defaultValue: false
 use_ephemeral_bootstrap:
   description: When true, bootstrapping a Data Lens page is ephemeral — that is, the page is not immediately persisted in the catalog.
   defaultValue: true

@@ -1100,12 +1100,19 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
-    it('uses the custom polygon to fetch regions if it is present', function() {
-      ServerConfig.override('choroplethCustomBoundary', 'asdf');
-      $httpBackend.expectGET(/where=within_polygon\(the_geom%2C\'asdf\'\)/).respond([]);
-      CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
-      $httpBackend.flush();
-      ServerConfig.override('dataLensChoroplethCustomBoundary', null);
+    describe('when a custom polygon is set', function() {
+      beforeEach(function() {
+        ServerConfig.override('choroplethCustomBoundary', 'asdf');
+      });
+
+      it('uses the custom polygon to fetch regions useDataLensChoroplethCustomBoundary is true', function() {
+        ServerConfig.override('useDataLensChoroplethCustomBoundary', true);
+        $httpBackend.expectGET(/where=within_polygon\(the_geom%2C\'asdf\'\)/).respond([]);
+        CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
+        $httpBackend.flush();
+        ServerConfig.override('dataLensChoroplethCustomBoundary', null);
+      });
+
     });
   });
 

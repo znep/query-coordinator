@@ -402,7 +402,7 @@ a {
 			}
 
 			.schema-preview {
-				table {
+				.table {
 				margin-top: ms(0);
 
 				}
@@ -640,7 +640,7 @@ a {
 	.table-wrapper {
 		display: block;
 		overflow-x: auto;
-		table {
+		.table {
 			margin-top: 0;
 			tbody tr td {
 				white-space: nowrap;

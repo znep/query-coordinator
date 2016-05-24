@@ -1888,11 +1888,11 @@ en:
         enabled?: Enabled?
         flashes:
           add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a></div>
-          service_unavailable_html: <div>We are experiencing technical issues with some services related to Spatial Lens. Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</div>
+          service_unavailable_html: <p>We are experiencing technical issues with some services related to Spatial Lens.</p><p>Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</p>
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.
         page_title: Manage Spatial Lens
-        picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
+        picker_explanation_html: <p>Choose a geospatial layer that you want to use as the basis for your Spatial Lens.</p><p>You can click on the name to preview the layer in a new browser tab.</p>
         picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
         remove: Remove

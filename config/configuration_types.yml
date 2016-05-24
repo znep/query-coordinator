@@ -24,6 +24,13 @@ catalog:
   holy_shit: There is a lot of magic in this config.
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/catalog-options
   new_catalog_info: https://sites.google.com/a/socrata.com/client-services/4-adding-additional-site-features/enabling-new-catalog
+  known_properties:
+  - sortBy
+  - limit
+  - limitTo
+  - facet_cutoffs
+  - view_types_facet
+  - federation_filter
   property_type_checking:
     custom_facets: Array
 catalog_federations:

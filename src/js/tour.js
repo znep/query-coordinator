@@ -33,7 +33,10 @@ var TourFactory = module.exports = function(element) {
     this.openers = Array.prototype.slice.apply(element.querySelectorAll('[data-tour-opener]'));
 
     var tourOverlayElement = document.createElement('div');
-    tourOverlayElement.classList.add('tour-overlay', 'overlay-hidden');
+
+    tourOverlayElement.classList.add('tour-overlay');
+    tourOverlayElement.classList.add('overlay-hidden');
+
     this.tourOverlay = element.body.appendChild(tourOverlayElement);
 
     this.initialize();
@@ -195,7 +198,7 @@ TourFactory.prototype = {
     this.currentTourName = tourObject.name;
 
     tourObject.tour.start();
-    this.tourOverlay.classList.remove('tour-overlay-hidden');
+    this.tourOverlay.classList.remove('overlay-hidden');
   },
   clickNext: function(tourName) {
     var tourObject = this.tours[tourName];

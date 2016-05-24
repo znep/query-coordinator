@@ -77,7 +77,6 @@ GEM
     diplomat (0.15.0)
       faraday (~> 0.9)
       json (~> 1.8)
-    docile (1.1.5)
     equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.9.1)
@@ -136,7 +135,6 @@ GEM
     json (1.8.3)
     jwt (1.5.2)
     kgio (2.10.0)
-    libxml-ruby (2.8.0)
     listen (3.0.5)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -284,14 +282,6 @@ GEM
     semver2 (3.4.2)
     shellany (0.0.1)
     shoulda-context (1.2.1)
-    simplecov (0.11.1)
-      docile (~> 1.1.0)
-      json (~> 1.8)
-      simplecov-html (~> 0.10.0)
-    simplecov-cobertura (1.0.2)
-      libxml-ruby (~> 2.7)
-      simplecov (~> 0.8)
-    simplecov-html (0.10.0)
     slop (3.6.0)
     snappy (0.0.12)
     sprockets (2.2.3)
@@ -385,8 +375,6 @@ DEPENDENCIES
   sass (~> 3.2)
   semver2
   shoulda-context
-  simplecov
-  simplecov-cobertura
   snappy
   statsd-ruby!
   thin
@@ -402,4 +390,4 @@ DEPENDENCIES
   zookeeper (~> 1.4.9)
 
 BUNDLED WITH
-   1.11.2
+   1.12.1

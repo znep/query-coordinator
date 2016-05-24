@@ -75,6 +75,10 @@ body {
       padding-top: 8px;
       text-align: right;
 
+      .btn-group > .btn {
+        line-height: 1.25;
+      }
+
       .btn-default {
         background: $light-grey-5;
 
@@ -83,12 +87,15 @@ body {
         }
       }
 
-      .dropdown:after {
-        display: none;
+      .dropdown {
+        z-index: 10;
+
+        &:after {
+          display: none;
+        }
       }
 
       .dropdown.download {
-        z-index: 10;
 
         .geo-layer-heading {
           overflow: hidden;
@@ -109,8 +116,6 @@ body {
 
       .grid {
         color: $dark-grey-1;
-        letter-spacing: normal;
-        line-height: 1.25;
 
         &:hover {
           text-decoration: none;
@@ -1044,4 +1049,11 @@ a {
 // third-party widget overrides
 #us_report_button {
   display: none !important;
+}
+
+// firefox-specific issue
+@-moz-document url-prefix() {
+  .info-pane .entry-header .entry-actions .btn-group > button.btn {
+    line-height: 1.1;
+  }
 }

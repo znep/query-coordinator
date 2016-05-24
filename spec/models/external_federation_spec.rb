@@ -45,12 +45,21 @@ describe ExternalFederation do
     }
   end
 
+
+  class FakeUser
+    def email
+      'some@user.com'
+    end
+  end
+
+
   let(:host) { 'host' }
   let(:port) { 2030 }
+  let(:user) { FakeUser.new.email }
   let(:base_url) { "http://#{host}:#{port}" }
   let(:stub_contents) do
     {
-      :headers => {'X-Socrata-Host' => host},
+      :headers => {'X-Socrata-Host' => host, 'X-Socrata-User' => user},
       :body => {}
     }
   end
@@ -60,6 +69,7 @@ describe ExternalFederation do
     allow(EsriCrawler).to receive(:port).and_return(port)
     allow(EsriCrawler).to receive(:patch_request) { |path, body| body }
     allow(CurrentDomain).to receive(:cname) { host }
+    allow(User).to receive(:current_user).and_return(FakeUser.new)
   end
 
   context '#self.update_server' do

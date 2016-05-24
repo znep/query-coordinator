@@ -7,8 +7,20 @@ module Chrome
       @site_name ||= localized('general.site_name', get_site_chrome.locales)
     end
 
-    def logo(source)
-      image_tag(source['logo']['src'], :alt => source['logo']['alt'] || site_name)
+    def logo(img)
+      img_src = img.dig('logo', 'src')
+      if img_src.present?
+        image_tag(img_src, :alt => img.dig('logo', 'alt') || site_name,
+          :onerror => 'this.style.display="none"')
+      end
+    end
+
+    def header_logo
+      link_to('/', class: 'logo') do
+        img = logo(get_site_chrome.header)
+        span = content_tag(:span, site_name, :class => 'site-name')
+        img.present? ? img << span : span
+      end
     end
 
     def logged_in?
@@ -24,11 +36,27 @@ module Chrome
       site_name ? "#{copy_with_year}, #{site_name}" : copy_with_year
     end
 
+    def show_copyright?
+      get_site_chrome.footer[:copyright_notice] && get_site_chrome.footer[:copyright_notice].to_i == 1
+    end
+
     def social_link_classname(type)
       {
         'facebook' => 'icon-facebook',
         'twitter' => 'icon-twitter'
       }[type.to_s.downcase]
+    end
+
+    def valid_social_links(links)
+      links.to_a.select do |link|
+        link && link[:url].present?
+      end
+    end
+
+    def valid_links(links)
+      links.to_a.select do |link|
+        link && link[:url].present? && link[:key].present?
+      end
     end
 
     def localized(locale_key, locales)

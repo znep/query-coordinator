@@ -1,7 +1,18 @@
 require 'rails_helper'
 
 describe Chrome::ApplicationHelper do
+  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
+  let(:site_chrome_config) do { content: site_chrome_config_vars['content'] }
+  end
+
   describe'#logo' do
+    it 'returns nil if there is not an image src present' do
+      @site_name = ''
+      source = {}
+      result = helper.logo(source)
+      expect(result).to eq(nil)
+    end
+
     it 'returns an image tag with the a src and alt attribute' do
       source = {
         'logo' => {
@@ -10,7 +21,7 @@ describe Chrome::ApplicationHelper do
         }
       }
       result = helper.logo(source)
-      expect(result).to eq('<img alt="Goats" src="http://myimage.png" />')
+      expect(result).to eq('<img alt="Goats" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
 
     it 'falls back to the site_name if there is no source logo alt' do
@@ -21,7 +32,24 @@ describe Chrome::ApplicationHelper do
         }
       }
       result = helper.logo(source)
-      expect(result).to eq('<img alt="Goldfinger" src="http://myimage.png" />')
+      expect(result).to eq('<img alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+    end
+  end
+
+  describe '#header_logo' do
+    it 'returns only the site title if the header image is not present' do
+      site_chrome = Chrome::SiteChrome.new(site_chrome_config)
+      RequestStore.store[:site_chrome] = site_chrome
+      allow(helper).to receive(:logo).and_return(nil)
+      result = helper.header_logo
+      expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
+    end
+
+    it 'returns both the site title and the header image' do
+      site_chrome = Chrome::SiteChrome.new(site_chrome_config)
+      RequestStore.store[:site_chrome] = site_chrome
+      result = helper.header_logo
+      expect(result).to eq('<a class="logo" href="/"><img alt="test header" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/rF2EJ4P.gif" /><span class="site-name"></span></a>')
     end
   end
 
@@ -92,6 +120,38 @@ describe Chrome::ApplicationHelper do
       result2 = helper.social_link_classname(:facebook)
       expect(result).to eq(result2)
       expect(result).to eq('icon-facebook')
+    end
+  end
+
+  describe '#valid_social_links' do
+    it 'returns only links with a url present' do
+      test_links = [
+        { 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' },
+        { 'type': 'twitter', 'url': '' }
+      ]
+
+      result = helper.valid_social_links(test_links)
+      expect(result).to match_array([{ 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' }])
+    end
+  end
+
+  describe '#valid_links' do
+    it 'returns only links with a key and url present' do
+      test_links = [
+        { 'key': 'a', 'url': 'http://google.com' },
+        { 'key': 'b', 'url': 'http://bing.com' },
+        { 'key': '', 'url': 'http://facebook.com' },
+        { 'key': 'd', 'url': '' },
+        { 'key': '', 'url': '' }
+      ]
+
+      valid_links = [
+        { 'key': 'a', 'url': 'http://google.com' },
+        { 'key': 'b', 'url': 'http://bing.com' }
+      ]
+
+      result = helper.valid_links(test_links)
+      expect(result).to match_array(valid_links)
     end
   end
 

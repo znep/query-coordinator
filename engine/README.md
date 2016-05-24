@@ -105,6 +105,14 @@ To run the engine on a given route:
   end
   ```
 
+### Site Title and Favicon
+
+The Chrome admin panel allows users to set the "Window or Tab Title Display" and "Window or Tab Icon (favicon)".
+However the Chrome gem does not have access to the parent application's <head>. It is the responsibility of
+the parent application to make use of these properties on the proper pages.
+
+TODO: Once this is done in Frontend, document the steps here.
+
 ### Runtime Dependencies
 
 The host app must provide a value for `:current_user` in `RequestStore.store`. If there is a signed in user, the value must be a hash containing all properties from the current user object (typically obtained via a call to `/api/users/current.json`). The keys are expected to be strings. If there is no signed in user, the value must be set to nil in the request store. If `:current_user` is not set, an error will be thrown.
@@ -209,19 +217,9 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
               "footer": {
                 "logo_alt": "Evergreen!",
                 "links": {
-                  "f": "Link F",
                   "home": "Home Page",
-                  "g": "Link G with a super long title!!!",
-                  "d": "Link D",
-                  "e": "Link E",
-                  "b": "Link B",
-                  "c": "Link C",
-                  "a": "Link A",
                   "privacy": "Privacy Policy",
                   "terms_of_service": "Terms of Service",
-                  "j": "Link J",
-                  "h": "Link H",
-                  "i": "Link I",
                   "contact_us": "Contact Us",
                   "accessibility": "Accessibility"
                 }
@@ -252,7 +250,7 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
             },
             "styles": {
               "fg_color": "#eee",
-              "bg_color": "#5D7365"
+              "bg_color": "#22b479"
             },
             "links": [
               {
@@ -289,19 +287,14 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
               }
             ],
             "link_text_color": "grey",
-            "favicon": "http://foo.png",
+            "window_or_tab_icon": "http://foo.png",
             "default_locale": "en",
-            "locales": [
-              "en",
-              "es",
-              "fr"
-            ],
             "styles": {
               "fg_color": "#eee",
               "bg_color": "#2c97de",
               "font_family": "Open Sans"
             },
-            "site_title": "Evergreen"
+            "window_or_tab_title_display": "Evergreen"
           }
         },
         "updatedAt": 1458946330

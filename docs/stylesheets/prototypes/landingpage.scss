@@ -47,14 +47,6 @@ body {
 	background: $light-grey-6;
 }
 
-a {
-	color: $primary;
-	text-decoration: none;
-	&:hover {
-		text-decoration: underline;
-	}
-}
-
 .container {
 	@include outer-container();
 	max-width: 100%;
@@ -89,6 +81,7 @@ a {
 
 		a {
 			font-size: ms(-2);
+			color: $primary-dark;
 		}
 		.icon-close-2 {
 			float: right;
@@ -305,7 +298,6 @@ a {
 				}
 				.small-link {
 					font-size: ms(-1);
-					color: $primary;
 					display: block;
 					margin-top: ms(0);
 				}
@@ -402,7 +394,7 @@ a {
 			}
 
 			.schema-preview {
-				table {
+				.table {
 				margin-top: ms(0);
 
 				}
@@ -418,6 +410,7 @@ a {
 		  			overflow: hidden;
 					text-overflow: ellipsis;
 					padding: ms(-5) ms(0);
+					color: $black;
 					> span {
 						float: right;
 						&.icon-arrow-down {
@@ -431,12 +424,14 @@ a {
 				.column-name {
 					font-size: ms(-1);
 					font-weight: 800;
-					color: $primary;
+					color: $primary-text;
 				}
 				td:nth-child(3) {
-					color: $grey;
-					span {
-						color: lighten($primary, 20%);
+					span.type {
+						color: $grey;
+					}
+					span.icon {
+						color: $primary;
 					}
 				}
 				// hide the Type-column on mobile
@@ -497,7 +492,7 @@ a {
 
 		  				.title {
 		  					font-size: ms(-1);
-							color: $light-grey-1;
+							color: $grey;
 							text-align: left;
 							font-weight: 600;
 		  				}
@@ -600,7 +595,7 @@ a {
 						float: right;
 						display: inline-block;
 						white-space: nowrap;
-						color: $light-grey-1;
+						color: $primary-text;
 						text-decoration: underline;
 						margin: ms(-10);
 
@@ -640,7 +635,7 @@ a {
 	.table-wrapper {
 		display: block;
 		overflow-x: auto;
-		table {
+		.table {
 			margin-top: 0;
 			tbody tr td {
 				white-space: nowrap;
@@ -687,7 +682,7 @@ a {
 
 .meta-title {
 		font-size: ms(-1);
-		color: $light-grey-0;
+		color: $grey;
 		font-weight: 600;
 }
 .date {
@@ -808,10 +803,10 @@ a {
 
 				.more-link {
 					white-space: nowrap;
-					color: $light-grey-1;
+					color: $primary-text;
 					text-decoration: underline;
 					&:hover {
-						color: $light-grey-0;
+						text-decoration: none;
 					}
 
 				}
@@ -943,6 +938,9 @@ a {
 	}
 	.email a {
 		color: $dark-grey-3;
+		.icon-email {
+			color: $alternate-1;
+		}
 	}
 	.alert {
 		font-size: ms(-1);

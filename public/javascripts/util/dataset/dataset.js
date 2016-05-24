@@ -3371,7 +3371,9 @@ var Dataset = ServerModel.extend({
         var rd = req.rowData;
         if (ds._useSODA2)
         {
-            url += '?$$version=2.0';
+            if (blist.feature_flags.send_soql_version) {
+              url += '?$$version=2.0';
+            }
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }

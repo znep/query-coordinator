@@ -18,7 +18,9 @@ module ActionController
           content = content.html_safe.to_str if content.respond_to?(:html_safe)
           snapped = Snappy.deflate(Marshal.dump(content))
           success = cache_store.write(key, snapped, options)
-          Rails.logger.info("Error writing fragment; too large? Cache unavailable?") unless success.nil? || success
+          # The write method return value is not guaranteed and should not be relied upon for success / fail.
+          # Though a nil value is very like indicative of failure, so the warning below can be inaccurate.
+          Rails.logger.info('Error writing fragment; too large? Cache unavailable?') unless success.nil? || success
         end
 
         return_value
@@ -33,11 +35,13 @@ module ActionController
           # optimistically read the compressed version
           result = cache_store.read(compressed_cache_key(key), options)
 
-          # Support uncompressed versions: After 24hrs we should be able to reliably kill the following block
-          if result.nil?
-            result = cache_store.read(key, options)
-          else
+          begin
             result = Marshal.load(Snappy.inflate(result))
+          rescue => e
+            Airbrake.notify(
+              :error_class => 'ActionController::Caching::Fragments',
+              :error_message => "read_fragment failed for key #{key.inspect}, exception: #{e}"
+            )
           end
 
           if result.is_a?(Hash)

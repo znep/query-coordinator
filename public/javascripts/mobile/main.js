@@ -260,7 +260,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           id: card.fieldName,
           type: 'string',
           name: card.fieldName,
-          displayName: _.get(datasetMetadata.columns[card.fieldName], 'metadata.name'),
+          displayName: _.get(datasetMetadata.columns[card.fieldName], 'name'),
           data: null,
           startWithClosedFlannel: true
         };

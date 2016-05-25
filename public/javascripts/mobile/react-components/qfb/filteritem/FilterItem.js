@@ -34,6 +34,8 @@ class FilterItem extends React.Component {
     this.onClickCancel = this.onClickCancel.bind(this);
     this.onClickApply = this.onClickApply.bind(this);
 
+    this.handleKeyboardEvents = this.handleKeyboardEvents.bind(this);
+
     this.handleFilterData = this.handleFilterData.bind(this);
     this.handleFilterLabel = this.handleFilterLabel.bind(this);
     this.handleWarning = this.handleWarning.bind(this);
@@ -75,6 +77,16 @@ class FilterItem extends React.Component {
     }
 
     FlannelUtils.closeAll();
+  }
+
+  handleKeyboardEvents(e) {
+    if (e.keyCode == 13) {
+      if (this.state.isApplicable) {
+        this.props.additionHandler(this.props.filter.id, this.state.pendingData );
+        this.setState({ label: this.state.pendingLabel });
+        FlannelUtils.closeAll();
+      }
+    }
   }
 
   onClickApply() {
@@ -190,7 +202,7 @@ class FilterItem extends React.Component {
     if (!this.state.showWarning) { warningClasses += ' hidden'; }
 
     return (
-      <div id={ 'qf-{0}'.format(this.props.filter.name) } className="qfb-filter-item">
+      <div id={ 'qf-{0}'.format(this.props.filter.name) } className="qfb-filter-item" onKeyDown={ this.handleKeyboardEvents }>
         <div className="qfb-filter-item-main">
           <button className="qfb-filter-item-mobile-btn visible-xs" onClick={ this.onClickDeleteFilter }>
             <i className="icon-close-circle"></i>

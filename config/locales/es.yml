@@ -519,7 +519,7 @@ es:
           header:
             filter: Filtrar
             filtered_by: Filtrado por
-            result: Resulta
+            result: Resultado
           hint: Filtrar o Busqueda de Resultados
           mobile:
             back: Volver

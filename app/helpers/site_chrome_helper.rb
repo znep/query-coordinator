@@ -20,14 +20,7 @@ module SiteChromeHelper
   # Forms will default to "1" and "0" but manual configurations could vary
   def fetch_boolean(array_of_path_elements, site_chrome = @site_chrome)
     content = fetch_content(array_of_path_elements, site_chrome)
-    # True unless...
-    [
-      nil,
-      '0',
-      'false',
-      0,
-      false
-    ].exclude?(content)
+    ['1', 'true', 1, true].include?(content) # default to false
   end
 
   # This tells the form how to format an input field for the call to update

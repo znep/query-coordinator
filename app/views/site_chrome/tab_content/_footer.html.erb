@@ -25,7 +25,7 @@
       <h3><%= translation[:title] %></h3>
       <p><%= translation[:description] %></p>
       <%= label_tag form_field(fields) do %>
-        <%= check_box(form_field(fields[0..-2]), fields.last, checked: fetch_boolean(fields)) %>
+        <%= check_box(form_field(fields[0..-2]), fields.last, { checked: fetch_boolean(fields) }, "true", "false") %>
         <%= translation[:label] %>
       <% end %>
     </div>

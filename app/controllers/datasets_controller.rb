@@ -128,8 +128,23 @@ class DatasetsController < ApplicationController
     end
 
     if !params[:row_id].nil? || !params[:row_index].nil?
-      @row = !params[:row_id].nil? ? @view.get_row(params[:row_id]) :
-        @view.get_row_by_index(params[:row_index])
+      # EN-6285 - Address Frontend app Airbrake errors
+      #
+      # This fix wraps the pre-existing code so that we can rescue potential
+      # CoreServerErrors leaking from @view.get_row and/or
+      # @view.get_row_by_index and cut down on the number of non-actionable
+      # exceptions that get sent to Airbrake.
+      #
+      # In this instance, we also assign nil to @row in case the behavior here
+      # does not match what we expect based on testing using the Rails console.
+      begin
+        @row = !params[:row_id].nil? ?
+          @view.get_row(params[:row_id]) :
+          @view.get_row_by_index(params[:row_index])
+      rescue CoreServer::CoreServerError
+        @row = nil
+      end
+
       if @row.nil?
         flash.now[:error] = 'This row cannot be found, or has been deleted.'
         render 'shared/error', :status => :not_found
@@ -758,7 +773,18 @@ protected
     unless params[:filter].nil?
       filters = []
       params[:filter].each do |column_id, filter|
-        next if filter.try(:[], :operator).blank?
+        # EN-6285 - Address Frontend app Airbrake errors
+        #
+        # It appears that filter can sometimes be a non-object (maybe a number
+        # or a string?) and this caused the expression filter.try(...) to raise
+        # an error that eventually ended up in Airbrake. Based on the user
+        # agents associated with these notifications, it appears that this code
+        # path is usually executed as a result of a robot request.
+        #
+        # This change adds the 'rescue true' clause to the end of the line,
+        # which I believe is consistent with the original intent of the code
+        # (which I assume to be "skip things that we cannot process").
+        next if filter.try(:[], :operator).blank? rescue true
         filter_condition = {
           'type' => 'operator',
           'value' => filter[:operator],

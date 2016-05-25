@@ -205,7 +205,16 @@ class ApplicationController < ActionController::Base
       @meta.merge!(additional_meta)
     end
 
-    logo_square = CurrentDomain.theme[:images][:logo_square]
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # This change attempts to read :logo_square using a .try() chain as opposed
+    # to CurrentDomain.theme[:images][:logo_square], which will hopefully
+    # prevent future NoMethodErrors from reaching Airbrake.
+    #
+    # The fact that the very next line checks if logo_square is present gives
+    # me confidence that this change is consistent with the original intent of
+    # the code.
+    logo_square = CurrentDomain.theme.try(:[], :images).try(:[], :logo_square)
     if logo_square.present?
       @link_image_src = if logo_square[:type].to_s == "static"
         logo_square[:href]

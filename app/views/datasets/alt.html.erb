@@ -102,7 +102,18 @@
   <%= form_tag alt_view_path(@view), :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
-      <%- @viewable_columns.each do |column| -%>
+      <%-
+      # EN-6285 - Address Frontend app Airbrake errors
+      #
+      # As of 5/24/2016 have recorded 4104 instances of
+      # "NoMethodError: undefined method `each' for nil:NilClass" tracing back
+      # to the @viewable_columns.each call below.
+      #
+      # This fix defaults to an empty array if @viewable_columns is somehow not
+      # defined, which should ensure that we always call .each on something for
+      # which is is defined.
+      -%>
+      <%- (@viewable_columns || []).each do |column| -%>
         <%- unless column.possible_filter_conditions.nil? -%>
           <li>
             <%= label_tag "filter_#{column.id}_operator", "Operator for #{column.name}" %>

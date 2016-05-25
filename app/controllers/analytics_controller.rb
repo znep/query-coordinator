@@ -11,9 +11,14 @@ class AnalyticsController < ApplicationController
   end
 
   def add_all
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # This code was already rescuing JSON::ParserError, but the error that was
+    # actually being raised was MultiJSON::ParseError. This discrepancy seems
+    # to originate from within ActiveSupport, so \_(ツ)_/¯.
     data = begin
       ActiveSupport::JSON.decode(request.body)
-    rescue JSON::ParserError
+    rescue MultiJson::ParseError, JSON::ParserError
       nil
     end
     return render_metric_error("No metrics provided") if data.nil?

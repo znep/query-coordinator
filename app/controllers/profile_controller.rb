@@ -326,6 +326,17 @@ class ProfileController < ApplicationController
     prepare_profile
     return if @user.nil?
     @token = AppToken.find_by_id(params[:id], params[:token_id])
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # If AppToken.find_by_id() returns nil, the subsequent call to the view
+    # template will result in NoMethodErrors, since the view assumes that
+    # @token exists and is of the expected form.
+    #
+    # This change renders a 404 error if the token is not found and as such
+    # is set to nil, and renders the expected view template
+    # (show_app_token.html.erb) if @token is not nil (presumably it will only
+    # be not nil if it was found and is of the expected form).
+    return render 'shared/error', :status => :not_found if @token.nil?
   end
 
   def edit_app_token

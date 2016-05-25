@@ -302,10 +302,24 @@ private
         # be chivalrous
         Thread.pass
 
-        Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
-                        :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{item.path}",
-                       :session => {:domain => CurrentDomain.cname},
-                       :parameters => {:duplicate_config => item})
+        # EN-6285 - Address Frontend app Airbrake errors
+        #
+        # Starting on 04/22/2016 we started to see this error come up on a
+        # variety of domains on a regular basis. After some discussion with
+        # Michael Chui, who referred me to EN-1673, we came to the conclusion
+        # that this notification is not directly actionable and as such
+        # should not be notifying Airbrake. We will continue to log, however.
+        #
+        # The notification code is, in this case, left in place in case someone
+        # else can use it for context when investigating the underlying cause.
+        #
+        # The entire thread thing is probably now unnecessary, but I'm hesitant
+        # to make changes to this file beyond what is minimally necessary. :-(
+        #
+        # Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
+        #                 :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{item.path}",
+        #                :session => {:domain => CurrentDomain.cname},
+        #                :parameters => {:duplicate_config => item})
       end
     else
       cur_obj[key] = item

@@ -39,8 +39,19 @@ function showTab(tabId) {
 }
 
 function confirmReload() {
+  var href = window.location.href; // store href with the hash of the current tab
   var confirmation = confirm("Cancelling will reload the page and erase any current changes.");
   if (confirmation) {
-    location.reload();
+    // `confirm` wipes away the hash after we set the new location. We need to use _.defer which
+    // lets the location.href run a frame after `confirm` wipes the hash out of the URL.
+    _.defer(function() {
+      window.location.href = href;
+      location.reload();
+    });
+  } else {
+    // If the user clicks "Cancel" in the `confirm`, it still wipes away the hash. Replace it.
+    _.defer(function() {
+      window.location.href = href;
+    });
   }
 }

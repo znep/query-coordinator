@@ -32,8 +32,13 @@ class SignupPresenter < Presenter
     end
     if @errors.empty?
       if FeatureFlags.derive[:enable_new_account_verification_email]
-        user.create(inviteToken, authToken)
-        return true
+        begin
+          user.create(inviteToken, authToken)
+          return true
+        rescue CoreServer::CoreServerError => e
+          @errors << e.error_message
+          return false
+        end
       else
         return (create_user && login!)
       end

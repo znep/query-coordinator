@@ -801,7 +801,7 @@ module ApplicationHelper
   # The intention here is to provide an opaque session id for metrics tracking purposes
   # that is derived from, but not fungible with, the session id used by the application.
   def safe_session_id
-    Digest::SHA256.hexdigest(session['session_id'] + Frontend::SESSION_SALT) if session['session_id'].present?
+    Digest::SHA256.hexdigest(session['session_id'] + Frontend::Application.config.session_salt) if session['session_id'].present?
   end
 
   def request_id(_request = request)

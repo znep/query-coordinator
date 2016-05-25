@@ -94,6 +94,7 @@ class AppConfig < Hashie::Dash
 
   # Misc
   property :session_store_secret
+  property :session_salt
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier
 

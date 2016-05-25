@@ -19,7 +19,7 @@ export var SchemaPreview = React.createClass({
   },
 
   render: function() {
-    var { view, showAsLayer } = this.props;
+    var { onExpandSchemaTable, view, showAsLayer } = this.props;
 
     var title;
     var toggles;
@@ -42,7 +42,7 @@ export var SchemaPreview = React.createClass({
     if (_.isArray(view.columns) && view.columns.length > SCHEMA_TABLE_COLUMN_COUNT) {
       toggles = (
         <div className="table-collapse-toggles">
-          <a className="table-collapse-toggle more">
+          <a className="table-collapse-toggle more" onClick={onExpandSchemaTable}>
             {I18n.schema_preview.show_all} ({view.columns.length})
           </a>
 
@@ -297,6 +297,17 @@ function mapDispatchToProps(dispatch) {
         properties: {
           'Name': row.find('.column-name').text().trim(),
           'Type': _.capitalize(row.find('.type-name').data('name'))
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onExpandSchemaTable: function() {
+      var payload = {
+        name: 'Expanded Details',
+        properties: {
+          'Expanded Target': 'Schema Preview Table'
         }
       };
 

@@ -1298,6 +1298,9 @@ export default function AssetSelectorRenderer(options) {
         // we can synthesize a valid URL for the component and set the value
         // of the text input control to reflect that.
         if (_.isEmpty($inputControl.val().replace(/\s/g, ''))) {
+          // We don't know the story title at this point so we can't generate the SEO-friendly
+          // component of the URL. This is OK though, as the story tile will generate its own
+          // SEO-friendly URLs when it renders.
           $inputControl.val(
             StorytellerUtils.format(
               'https://{0}/stories/s/{1}',

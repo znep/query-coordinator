@@ -511,7 +511,7 @@ export default function AssetSelectorStore() {
       // Fetch additional data needed for UI.
       _getView(domain, datasetUid).
         then(_setComponentPropertiesFromViewData).
-        then(self._emitChange());
+        then(self._emitChange);
     } else {
       self._emitChange();
     }
@@ -1048,7 +1048,7 @@ export default function AssetSelectorStore() {
     var parsedUrl = _parseUrl(url);
     if (!parsedUrl) { return {}; }
 
-    if(parsedUrl.pathname.indexOf(Constants.VIEW_PREFIX_PATH) === 0) {
+    if (parsedUrl.pathname.indexOf(Constants.VIEW_PREFIX_PATH) === 0) {
       // Find the last thing in the url that looks like a uid (4x4).
       // We can't take the first thing because our story title may look
       // like a 4x4, and it comes first.

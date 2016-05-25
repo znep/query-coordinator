@@ -422,7 +422,7 @@
                 :show_official_badge =>
                   result.respond_to?(:show_official_badge_in_catalog?) &&
                   result.show_official_badge_in_catalog?, # not implemented for Cetera results
-                :result_federated_origin => result.domainCName,
+                :federated_site_title => federated_site_title(result.domainCName),
                 :result_federated_origin_url => result_federated_origin_url,
                 :result_domain_icon_href => result.domain_icon_href,
                 :result_odn_link => result_odn_link,

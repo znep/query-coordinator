@@ -38,6 +38,16 @@ module BrowseHelper
     end
   end
 
+  def federated_site_title(result_cname)
+    if FeatureFlags.derive(nil, request)[:show_federated_site_name_instead_of_cname]
+      site_theme = Configuration.find_by_type('site_theme', true, result_cname, true).first
+      if site_theme.present?
+        site_title = site_theme.strings.site_title
+      end
+    end
+    site_title || result_cname
+  end
+
   def link_for_facet(facet, facet_option, options, params)
     link_options = {}
     link_options[:class] = 'active' if facet_option[:value] == options[facet[:param]]

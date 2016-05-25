@@ -37,7 +37,7 @@ module Chrome
     end
 
     def show_copyright?
-      get_site_chrome.footer[:copyright_notice] && get_site_chrome.footer[:copyright_notice].to_i == 1
+      get_site_chrome.footer[:copyright_notice] == 'true'
     end
 
     def social_link_classname(type)

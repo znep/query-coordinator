@@ -274,7 +274,7 @@ class StylesController < ApplicationController
   def get_includes_recurse(hash, definition, path = '')
     result = ''
     unless hash.nil?
-      hash.each do |key, value|
+      hash.with_indifferent_access.each do |key, value|
         if definition[key.to_sym] == 'string'
           result += "$#{path}#{key}: \"#{value}\";\n"
         elsif definition[key.to_sym] == 'number'

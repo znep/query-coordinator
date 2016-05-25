@@ -8,6 +8,7 @@ describe AdministrationController do
   describe 'georegions' do
     before(:each) do
       init_current_user(controller)
+      init_current_domain
       allow_any_instance_of(ApplicationController).to receive(:default_url_options).and_return({})
       allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
       allow_any_instance_of(ApplicationController).to receive(:set_user)

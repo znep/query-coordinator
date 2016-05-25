@@ -811,6 +811,7 @@ module Canvas2
   end
 
   class Share < CanvasWidget
+    include Socrata::UrlHelpers
     def initialize(props, parent = nil, resolver_context = nil)
       @needs_own_context = true
       super(props, parent, resolver_context)
@@ -825,10 +826,10 @@ module Canvas2
       vis_items = vis_items.reject { |item| hidden_items.include?(item) ||
         @properties['currentPage'] && item == 'subscribe' }
 
-      page_url = Util.page_path || ''
+      page_path_or_blank = Util.page_path || ''
       params = Util.page_params.clone
-      page_url += '?' + params.map {|k, v| k + '=' + v}.join('&') if !params.empty?
-      page_url = 'http://' + CurrentDomain.cname + page_url
+      page_path_or_blank += '?' + params.to_query if !params.empty?
+      page_url = "http://#{CurrentDomain.cname}#{page_path_or_blank}"
       page_name = @@page.name
 
       avail_items = {
@@ -857,14 +858,14 @@ module Canvas2
               '&name=' + CGI::escape(page_name) + '">' +
             '<span class="icon">Share on Facebook</span></a></li>',
 
-      twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +
-        '" data-name="twitter">' +
-          '<a class="twitter" rel="external" title="Share on Twitter"' +
-              'href="http://twitter.com/?status=' +
-              (@properties['currentPage'] ?
-               CGI::escape("Check out #{page_name} on #{CurrentDomain.strings.company}: #{page_url}") :
-                ds.tweet) + '">' +
-            '<span class="icon">Share on Twitter</span></a></li>'
+        twitter: '<li class="twitter' + (vis_items.include?('twitter') ? '' : ' hide') +
+          '" data-name="twitter">' +
+            '<a class="twitter" rel="external" title="Share on Twitter"' +
+                'href="http://twitter.com/?status=' +
+                (@properties['currentPage'] ?
+                 CGI::escape("Check out #{page_name} on #{CurrentDomain.strings.company}: #{page_url}") :
+                  tweetable_link(ds)) + '">' +
+              '<span class="icon">Share on Twitter</span></a></li>'
       }
 
       t = '<ul>'

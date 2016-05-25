@@ -191,6 +191,133 @@ class ViewTest < Test::Unit::TestCase
     refute view.user_granted?(mock_user), 'Expected user_granted? to be false'
   end
 
+  def test_shared_to
+    stub_core_server_connection
+    mock_user_grant = mock.tap { |mock| mock.stubs(
+      :userId => 'aaaa-aaaa'
+    )}
+    mock_user_shared = mock.tap { |mock| mock.stubs(:id => 'aaaa-aaaa') }
+    mock_user_unshared = mock.tap { |mock| mock.stubs(:id => 'xxxx-xxxx') }
+    View.any_instance.stubs(:grants => [mock_user_grant])
+    view = View.new
+
+    assert view.shared_to?(mock_user_shared)
+    refute view.shared_to?(mock_user_unshared)
+  end
+
+  def test_has_grant_for
+    stub_core_server_connection
+    mock_user_grant = mock.tap { |mock| mock.stubs(
+      :flag? => false,
+      :type => 'grant_type',
+      :userId => 'aaaa-aaaa',
+      :userEmail => nil
+    )}
+
+    mock_user_granted = mock.tap { |mock| mock.stubs(:id => 'aaaa-aaaa') }
+    mock_user_ungranted = mock.tap { |mock| mock.stubs(:id => 'xxxx-xxxx') }
+
+    View.any_instance.stubs(:grants => [mock_user_grant])
+    view = View.new
+    assert view.has_grant_for?(mock_user_granted, 'grant_type')
+    refute view.has_grant_for?(mock_user_ungranted, 'grant_type')
+
+    refute view.has_grant_for?(mock_user_granted, 'this_grant_does_not_exist')
+    refute view.has_grant_for?(mock_user_ungranted, 'this_grant_does_not_exist')
+  end
+
+  def test_can_edit_story_and_can_preview_story
+    stub_core_server_connection
+    owner_grant = mock.tap { |mock| mock.stubs(
+      :flag? => false,
+      :type => 'owner',
+      :userId => '2ond-ownr',
+      :userEmail => nil
+    )}
+    contributor_grant = mock.tap { |mock| mock.stubs(
+      :flag? => false,
+      :type => 'contributor',
+      :userId => 'cont-ribr',
+      :userEmail => nil
+    )}
+    viewer_grant = mock.tap { |mock| mock.stubs(
+      :flag? => false,
+      :type => 'viewer',
+      :userId => 'view-errr',
+      :userEmail => nil
+    )}
+
+    owner = mock.tap { |mock| mock.stubs(:id => 'real-ownr', :is_owner? => true) }
+    co_owner = mock.tap { |mock| mock.stubs(:id => '2ond-ownr', :is_owner? => false) }
+    contributor = mock.tap { |mock| mock.stubs(:id => 'cont-ribr', :is_owner? => false) }
+    viewer = mock.tap { |mock| mock.stubs(:id => 'view-errr', :is_owner? => false) }
+    has_view_unpublished_user_right = mock.tap { |mock| mock.stubs(:id => 'yyyy-yyyy', :is_owner? => false) }
+    some_random_human = mock.tap { |mock| mock.stubs(:id => 'xxxx-xxxx', :is_owner? => false) }
+
+    has_view_unpublished_user_right.stubs(:has_right?).with do |right|
+      return right == UserRights::VIEW_UNPUBLISHED_STORY
+    end
+
+    owner.stubs(:has_right?) { false }
+    co_owner.stubs(:has_right?) { false }
+    viewer.stubs(:has_right?) { false }
+    some_random_human.stubs(:has_right?) { false }
+
+    View.any_instance.stubs(
+      :story? => true,
+      :grants => [owner_grant, contributor_grant, viewer_grant]
+    )
+
+    view = View.new
+    view.stubs(:owner => owner)
+
+    assert(
+      view.can_edit_story?(owner),
+      'owner should be granted edit permission'
+    )
+    assert(
+      view.can_edit_story?(co_owner),
+      'co-owner should be granted edit permission'
+    )
+    assert(
+      view.can_edit_story?(contributor),
+      'contributor should be granted edit permission'
+    )
+    refute(
+      view.can_edit_story?(has_view_unpublished_user_right),
+      'random humans should not be granted edit permission, even if they have VIEW_UNPUBLISHED_STORY rights'
+    )
+    refute(
+      view.can_edit_story?(some_random_human),
+      'random humans should not be granted edit permission'
+    )
+
+    assert(
+      view.can_preview_story?(owner),
+      'owner should be granted preview permission'
+    )
+    assert(
+      view.can_preview_story?(co_owner),
+      'co-owner should be granted preview permission'
+    )
+    assert(
+      view.can_preview_story?(contributor),
+      'contributor should be granted preview permission'
+    )
+    assert(
+      view.can_preview_story?(has_view_unpublished_user_right),
+      'users with VIEW_UNPUBLISHED_STORY rights should be granted preview permission'
+    )
+    refute(
+      view.can_preview_story?(some_random_human),
+      'random humans should not be granted preview permission'
+    )
+
+    View.any_instance.stubs(:story? => false)
+    assert_raises(RuntimeError) { view.can_edit_story?(owner) }
+    assert_raises(RuntimeError) { view.can_preview_story?(owner) }
+  end
+
   def test_users_with_grant_returns_user_email
     stub_core_server_connection
     mock_user_grant = mock.tap { |mock| mock.stubs(
@@ -756,6 +883,20 @@ class ViewTest < Test::Unit::TestCase
     assert_equal('https://dev.socrata.com/foundry/wombats/1234-1234', view.api_foundry_url)
   end
 
+  def test_canonical_domain_name_no_federation
+    CurrentDomain.stubs(:cname => 'giraffes')
+    view = View.new('id' => '1234-1234')
+    view.stubs(:federated? => false)
+    assert_equal('giraffes', view.canonical_domain_name)
+  end
+
+  def test_canonical_domain_name_with_federation
+    CurrentDomain.stubs(:cname => 'giraffes')
+    view = View.new('id' => '1234-1234')
+    view.stubs(:federated? => true, :domainCName => 'wombats')
+    assert_equal('wombats', view.canonical_domain_name)
+  end
+
   def test_resource_url_uses_proper_scheme
     View.any_instance.stubs(:preferred_id => '1234-1234')
     view = View.new('id' => '1234-1234')
@@ -785,27 +926,6 @@ class ViewTest < Test::Unit::TestCase
     view = View.new('id' => '1234-1234')
 
     refute_equal('https://localhost/OData.svc/abcd-abcd', view.odata_url)
-  end
-
-  def test_seo_friendly_url
-    view = View.new('id' => '1234-1234', 'name' => 'wombat friends')
-
-    assert_equal('https://localhost/dataset/wombat-friends/1234-1234', view.seo_friendly_url)
-    I18n.stubs('locale' => 'ca')
-    assert_equal('https://localhost/ca/dataset/wombat-friends/1234-1234', view.seo_friendly_url)
-  end
-
-  # Taken from ApplicationHelperTest#test_locale_url_prefix
-  def test_locale_url_prefix
-    view = View.new
-
-    I18n.stubs(:locale => :foo)
-    CurrentDomain.stubs(:default_locale => 'foo')
-    assert_equal view.locale_url_prefix, ''
-
-    I18n.stubs(:locale => :bar)
-    CurrentDomain.stubs(:default_locale => 'foo')
-    assert_equal view.locale_url_prefix, '/bar'
   end
 
   private

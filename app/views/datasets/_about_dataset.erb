@@ -224,10 +224,6 @@
                 :rel => 'external',
                 :title=> 'Permanent link, opens in new window' %></span></dd>
 
-      <%-
-        # Stories do not use the `short_view_url` helper method, which hard-codes the `/d/` prefix.
-        if !@view.story?
-      -%>
         <dt><%= t('screens.about.short_url') %></dt>
         <dd><span class="hardWrap"><%=
           short_url = short_view_url(@view)
@@ -235,9 +231,6 @@
                       short_url,
                       :rel => 'external',
                       :title=> 'Short link, opens in new window' %></span></dd>
-      <%-
-        end
-      -%>
     </dl>
   </div>
 

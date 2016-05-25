@@ -6,15 +6,11 @@ import {
   HANDLE_DATASET_METADATA_ERROR
 } from '../actions';
 
+import defaultDatasetMetadata from '../defaultDatasetMetadata';
+
 export default function datasetMetadata(state, action) {
   if (_.isUndefined(state)) {
-    return {
-      isLoading: false,
-      hasData: false,
-      hasError: false,
-      data: null,
-      error: null
-    };
+    return defaultDatasetMetadata;
   }
 
   state = _.cloneDeep(state);

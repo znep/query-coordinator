@@ -22,6 +22,15 @@ export var AuthoringWorkflow = React.createClass({
     chartTypes: React.PropTypes.array
   },
 
+  componentDidMount: function() {
+    var datasetUid = _.get(this.props.vif, 'series[0].dataSource.datasetUid');
+    var hasDatasetUid = _.isString(datasetUid);
+
+    if (hasDatasetUid) {
+      this.props.changeDatasetUid(datasetUid);
+    }
+  },
+
   onComplete: function() {
     this.props.onComplete({
       vif: this.props.vif
@@ -100,14 +109,13 @@ export var AuthoringWorkflow = React.createClass({
       chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
     }
 
-
     return (
       <div className="modal modal-full modal-overlay">
         <div className="modal-container">
 
           <header className="modal-header">
             <h5 className="modal-header-title">Create Visualization</h5>
-            <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+            <button className="btn btn-transparent modal-header-dismiss" onClick={this.onCancel}>
               <span className="icon-close-2"></span>
             </button>
           </header>
@@ -116,7 +124,7 @@ export var AuthoringWorkflow = React.createClass({
             <form>
               <div>
                 <label className="block-label">Enter a dataset four by four:</label>
-                <input className="text-input" type="text" value={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
+                <input className="text-input" type="text" defaultValue={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
               </div>
 
               {datasetMetadataInfo}
@@ -149,9 +157,14 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
+  function changeDatasetUid(datasetUid) {
+    dispatch(setDatasetUid(datasetUid));
+  }
+
+  var dispatchers = {
+    changeDatasetUid: changeDatasetUid,
     onChangeDatasetUid: function(event) {
-      dispatch(setDatasetUid(event.target.value));
+      changeDatasetUid(event.target.value);
     },
 
     onChangeDimension: function(event) {
@@ -169,6 +182,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setChartType(chartType));
     }
   };
+
+  return dispatchers;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflow);

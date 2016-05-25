@@ -8,7 +8,7 @@
     <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
 
     <style>
-      #chart, .authoring-workflow-visualization-preview {
+      #chart {
         display: block;
         position: relative;
         width: 640px;
@@ -18,7 +18,7 @@
   </head>
 
   <body>
-    <button id="launch">Launch Authoring Workflow</button>
+    <button id="launch" class="btn btn-primary btn-block">Launch Authoring Workflow</button>
 
     <div id="authoring-workflow"></div>
 
@@ -44,7 +44,16 @@
       $chart.empty();
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
-        vif: null,
+        vif: {
+          series: [
+            {
+              dataSource: {
+                domain: 'localhost',
+                datasetUid: 'four-four'
+              }
+            }
+          ]
+        },
 
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);

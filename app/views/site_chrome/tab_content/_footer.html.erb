@@ -1,0 +1,35 @@
+<% footer = @content['footer'] %>
+
+<%= form_tag site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
+
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:footer, :logo, :src],
+             translation: translations[:footer_logo]) %>
+
+  <%= render('site_chrome/tab_content/form_field_pair',
+             left: { fields: [:footer, :styles, :bg_color],
+                     translation: translations[:footer_background_color] },
+             right: { fields: [:footer, :styles, :fg_color],
+                      translation: translations[:footer_text_link_color] }) %>
+
+  <%= render('list_of_links',
+             :link_count => 15,
+             :links => footer['links'],
+             :content_key => :footer,
+             :translations => translations) %>
+
+  <section class="settings-group">
+    <div class="settings-form full">
+      <% fields = [:footer, :copyright_notice] %>
+      <% translation = translations[:copyright_notice] %>
+      <h3><%= translation[:title] %></h3>
+      <p><%= translation[:description] %></p>
+      <%= label_tag form_field(fields) do %>
+        <%= check_box(form_field(fields[0..-2]), fields.last, { checked: fetch_boolean(fields) }, "true", "false") %>
+        <%= translation[:label] %>
+      <% end %>
+    </div>
+  </section>
+
+  <%= submit_tag 'put_footer', id: 'submit_footer', style: 'display: none;' %>
+<% end %>

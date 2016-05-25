@@ -182,6 +182,10 @@ Frontend::Application.routes do
       get '/asset_inventory', :action => 'asset_inventory'
     end
 
+    # Site Chrome is the custom header/footer (chrome like a car bumper, right?)
+    get '/admin/site_chrome', :as => 'site_chrome', :controller => 'site_chrome', :action => 'edit'
+    put '/admin/site_chrome', :as => 'site_chrome', :controller => 'site_chrome', :action => 'update'
+
     get '/templates/:id', :controller => 'remote_partials', :action => :templates
     get '/modals/:id', :controller => 'remote_partials', :action => :modals
 

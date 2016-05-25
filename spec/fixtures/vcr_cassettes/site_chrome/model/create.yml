@@ -1,0 +1,49 @@
+--- 
+http_interactions: 
+- request: 
+    method: post
+    uri: http://localhost:8080/configurations
+    body: 
+      encoding: US-ASCII
+      string: "{\"id\":null,\"name\":\"Site Chrome\",\"default\":false,\"domainCName\":\"localhost\",\"type\":\"site_chrome\",\"updatedAt\":null,\"properties\":[]}"
+    headers: 
+      Content-Type: 
+      - application/json
+      Cookie: 
+      - logged_in=true;_socrata_session_id=BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894;socrata-csrf-token=Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=;_core_session_id=ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q
+      X-Socrata-Host: 
+      - localhost
+  response: 
+    status: 
+      code: 200
+      message: OK
+    headers: 
+      X-Socrata-Requestid: 
+      - 4bk5qprov3jmlc3u1asf3vyrb
+      Access-Control-Allow-Origin: 
+      - "*"
+      Set-Cookie: 
+      - _core_session_id=ODNueS13OXplIDE0NjQxMzY2MjMgNGFhZjZjYjhkYzhiIGViYjlmZjgyMDMxY2RkNjg5MWE0ZWMxYjVlMjVjNjU2M2FkY2E3MWE;Path=/
+      Expires: 
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type: 
+      - application/json; charset=utf-8
+      Transfer-Encoding: 
+      - chunked
+      Server: 
+      - Jetty(7.5.1.v20110908)
+    body: 
+      encoding: US-ASCII
+      string: |
+        {
+          "id" : 109,
+          "name" : "Site Chrome",
+          "default" : false,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1464115023
+        }
+
+    http_version: 
+  recorded_at: Tue, 24 May 2016 18:37:03 GMT
+recorded_with: VCR 3.0.1

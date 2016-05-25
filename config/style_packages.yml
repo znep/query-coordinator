@@ -125,6 +125,8 @@ administration-sdp-template:
 - control-pane
 - grid-sidebar
 - screen-admin-customizer
+administration-site-chrome:
+- screen-site-chrome
 administration-stories-appearance:
 - control-pane
 - grid-sidebar

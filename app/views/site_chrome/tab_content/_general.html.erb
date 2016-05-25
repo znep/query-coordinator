@@ -1,0 +1,12 @@
+<%= form_tag site_chrome_path(anchor: {tab: :general}), id: 'tab_form_general', method: :put, remote: true do %>
+
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:general, :window_or_tab_title_display],
+             translation: translations[:window_or_tab_title_display]) %>
+
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:general, :window_or_tab_icon],
+             translation: translations[:window_or_tab_icon]) %>
+
+  <%= submit_tag 'put_general', id: 'submit_general', style: 'display: none;' %>
+<% end %>

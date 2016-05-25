@@ -1,5 +1,4 @@
 module UserAuthMethods
-
   if respond_to?(:hide_action)
     hide_action :current_user, :current_user_session, :prerendered_fragment_for,
       :require_module!, :require_that
@@ -43,5 +42,4 @@ module UserAuthMethods
     UserSession.controller = self
     UserSession.update_current_user(nil, nil)
   end
-
 end

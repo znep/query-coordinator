@@ -314,6 +314,7 @@ GEM
       equalizer (~> 0.0.9)
       parser (~> 2.2.2)
       procto (~> 0.0.2)
+    vcr (3.0.1)
     webmock (1.22.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -380,6 +381,7 @@ DEPENDENCIES
   timecop
   unicorn
   unparser (= 0.2.4)
+  vcr
   webmock
   xray
   zendesk2 (~> 1.7.5)
@@ -388,4 +390,4 @@ DEPENDENCIES
   zookeeper (~> 1.4.9)
 
 BUNDLED WITH
-   1.11.2
+   1.12.1

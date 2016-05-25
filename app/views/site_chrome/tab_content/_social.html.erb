@@ -1,0 +1,28 @@
+<%= form_tag site_chrome_path(anchor: {tab: :social}), id: 'tab_form_social', method: :put, remote: true do %>
+
+  <% form_field_prefix = 'content[general][social_shares][]' %>
+  <% form_field_url = "#{form_field_prefix}[url]" %>
+  <% form_field_type = "#{form_field_prefix}[type]" %>
+
+  <section class="settings-group">
+    <% translation = translations[:facebook_profile_link] %>
+    <div class="settings-form">
+      <%= label_tag(form_field_url, translation[:title]) %>
+      <%= text_field_tag(form_field_url, social_share_link('facebook'), placeholder: translation[:placeholder]) %>
+      <%= hidden_field_tag(form_field_type, 'facebook') %>
+    </div>
+    <aside><p><%= translation[:description] %></p></aside>
+  </section>
+
+  <section class="settings-group">
+    <% translation = translations[:twitter_profile_link] %>
+    <div class="settings-form">
+      <%= label_tag(form_field_url, translation[:title]) %>
+      <%= text_field_tag(form_field_url, social_share_link('twitter'), placeholder: translation[:placeholder]) %>
+      <%= hidden_field_tag(form_field_type, 'twitter') %>
+    </div>
+    <aside><p><%= translation[:description] %></p></aside>
+  </section>
+
+  <%= submit_tag 'put_social', id: 'submit_social', style: 'display: none;' %>
+<% end %>

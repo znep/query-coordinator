@@ -1,0 +1,60 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <%= rendered_stylesheet_tag 'administration-site-chrome' %>
+  <title>Editing Site Chrome | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="site-chrome">
+
+  <div class="admin-header">
+    <div class="header-title">
+      <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
+    </div>
+
+    <div class="header-controls" style="display: none"> <!-- TODO - once these buttons have functionality, display them -->
+      <%= link_to('#') do %>
+        <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
+      <% end %>
+      <%= link_to('#') do %>
+        <button><%= t('screens.admin.site_chrome.save_changes') %></button>
+      <% end %>
+    </div>
+  </div>
+
+  <ul class="tabs">
+    <% @tab_sections.each_with_index do |section, i| %>
+      <li class="tab-link" data-tab-id="<%= section %>">
+        <%= link_to("#tab=#{section}") do %>
+          <%= t("screens.admin.site_chrome.tabs.#{section}.title") %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <% @tab_sections.each_with_index do |section, i| %>
+    <div class="tab-content" data-tab-id="<%= section %>">
+      <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
+      <%= render(
+        "site_chrome/tab_content/#{section}",
+        :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
+      ) %>
+    </div>
+  <% end %>
+
+  <div class="page-controls">
+    <%= link_to('#') do %>
+      <button class="primary" id="site_chrome_save">
+        <%= t("screens.admin.site_chrome.save") %>
+      </button>
+    <% end %>
+    <%= link_to('#', onclick: 'return confirmReload();') do %>
+      <button id="site_chrome_cancel">
+        <%= t("screens.admin.site_chrome.cancel") %>
+      </button>
+    <% end %>
+  </div>
+
+</div>
+
+<%= include_javascripts 'admin-site-chrome' %>

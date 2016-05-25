@@ -1,0 +1,27 @@
+<% header = @content['header'] %>
+
+<%= form_tag site_chrome_path(anchor: {tab: :header}), id: 'tab_form_header', method: :put, remote: true do %>
+
+  <% #TODO: factor these out into a single lookup table %>
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:header, :logo, :src],
+             translation: translations[:header_bar_logo]) %>
+
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:locales, @current_locale, :general, :site_name],
+             translation: translations[:site_display_name]) %>
+
+  <%= render('site_chrome/tab_content/form_field_pair',
+             left: { fields: [:header, :styles, :bg_color],
+                     translation: translations[:bar_background_color] },
+             right: { fields: [:header, :styles, :fg_color],
+                      translation: translations[:bar_text_link_color] }) %>
+
+  <%= render('list_of_links',
+             :link_count => 5,
+             :links => header['links'],
+             :content_key => :header,
+             :translations => translations) %>
+
+  <%= submit_tag 'put_header', id: 'submit_header', style: 'display: none;' %>
+<% end %>

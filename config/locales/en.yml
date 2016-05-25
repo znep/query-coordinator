@@ -2284,6 +2284,89 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+      site_chrome:
+        description: Configure the appearance of your Socrata site.
+        site_appearance: Site Appearance
+        preview_changes: Preview Changes
+        save_changes: Save Changes
+        save: Save
+        cancel: Cancel
+        tabs:
+          general:
+            title: General Settings
+            fields:
+              window_or_tab_title_display:
+                title: Window or Tab Title Display
+                description: Name displayed in the window or tab title.
+                placeholder: Evergreen Open Data
+              window_or_tab_icon:
+                title: Window or Tab Icon (favicon)
+                description: URL reference to the icon displayed in the window, tab, and browser URL field.
+                placeholder: URL
+          header:
+            title: Header Bar
+            fields:
+              header_bar_logo:
+                title: Header Bar Logo
+                description: URL reference to the header bar logo. Recommended minium size is 100 x 40px. This logo will be displayed at a small size.
+                placeholder: URL
+              site_display_name:
+                title: Site Display Name
+                description: Name displayed in the Header Bar. Usually set to your organizations name.
+                placeholder: Evergreen Open Data
+              bar_background_color:
+                title: Bar Background Color
+                description: Background color of the header bar and the color of text and links that sit atop the bar.
+                placeholder: '#123456'
+              bar_text_link_color:
+                title: Bar Text & Link Color
+                placeholder: '#ffffff'
+              menu_links:
+                title: Menu Links
+                description: Display up to 5 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+          footer:
+            title: Footer
+            fields:
+              footer_logo:
+                title: Footer Logo
+                description: URL reference the footer logo. Recommended minum size is 300px x 200px.
+                placeholder: URL
+              footer_background_color:
+                title: Footer Background Color
+                description: Background color of the footer and the color of the text and links displayed inside the footer.
+                placeholder: '#123456'
+              footer_text_link_color:
+                title: Footer Text & Link Color
+                placeholder: '#ffffff'
+              menu_links:
+                title: Footer Menu Links
+                description: Display up to 15 links in the Footer. We automatically place these links in columns.
+              copyright_notice:
+                title: Copyright Notice
+                description: Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.
+                label: Show Copyright Notice
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+          homepage:
+            title: Homepage
+            fields:
+          social:
+            title: Social Sharing
+            fields:
+              facebook_profile_link:
+                title: Facebook Profile Link
+                description: Displays Facebook profile link link in Header and Footer when present.
+                placeholder: http://www.facebook.com/
+              twitter_profile_link:
+                title: Twitter Profile Link
+                description: Displays Twitter profile link in Header and Footer when present.
+                placeholder: http://www.twitter.com/
       users:
         actions: Actions
         all: All

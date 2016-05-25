@@ -1,0 +1,7 @@
+<section class="settings-group">
+  <div class="settings-form">
+    <%= label_tag(form_field(fields), translation[:title]) %>
+    <%= text_field_tag(form_field(fields), fetch_content(fields), placeholder: translation[:placeholder]) %>
+  </div>
+  <aside><p><%= translation[:description] %></p></aside>
+</section>

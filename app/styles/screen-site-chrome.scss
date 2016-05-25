@@ -1,0 +1,224 @@
+$grey: #7a7a7a;
+$dark-grey: #5e5e5e;
+$faint-border-color: #ebebeb;
+
+.site-chrome {
+  font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+  max-width: 68rem;
+  margin: 24px auto 0;
+
+  h1, h2, h3, h4, h5 {
+    letter-spacing: -0.5px;
+    font-weight: 600;
+  }
+
+  button {
+    color: $grey;
+    background-color: #fff;
+    border: solid 1px #c2c2c2;
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0;
+    margin-right: 0;
+    @include transition(0.2s, color);
+    @include transition(0.2s, background-color);
+    border-radius: 1px;
+    &:hover {
+      color: $dark-grey;
+      background-color: #e6e6e6;
+    }
+    &.primary {
+      color: #fff;
+      background-color: #288DC1;
+      border-color: #288DC1;
+      &:hover {
+        background-color: #20719a;
+      }
+    }
+  }
+
+  .admin-header {
+    margin-bottom: 46px;
+    overflow: hidden;
+
+    .header-title {
+      float: left;
+      display: block;
+
+      h1 {
+        font-size: 27px;
+      }
+    }
+
+    .header-controls {
+      float: right;
+      display: block;
+      text-align: right;
+      button {
+        [class*="icon-"] {
+          position: relative;
+          padding-left: 11px;
+        }
+      }
+    }
+  }
+
+  ul.tabs {
+    border-bottom: 1px solid #d6d6d6;
+    padding-bottom: 10px;
+    li {
+      display: inline-block;
+      padding: 0 11px;
+      a {
+        text-decoration: none;
+        color: $grey;
+        padding: 6px 9px;
+        font-size: 15px;
+        &:hover {
+          border-bottom: 4px solid #d6d6d6;
+          color: #3d3d3d;
+        }
+      }
+      &.current a {
+        border-bottom: 4px solid #288DC1;
+        color: #3d3d3d;
+      }
+    }
+  }
+
+  .tab-content {
+    display: none;
+    padding: 1rem;
+
+    &.current {
+      display: block;
+    }
+
+    h2.section-title {
+      margin-top: 27px;
+      font-size: 23px;
+      color: $dark-grey;
+    }
+
+    section.settings-group {
+      display: block;
+      padding-top: 27px;
+      overflow: hidden;
+
+      h3 {
+        color: $dark-grey;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 24px 0;
+        font-size: 15px;
+        line-height: 1.4em;
+        color: $dark-grey;
+      }
+
+      div.settings-form {
+        float: left;
+        width: 65%;
+
+        &.half {
+          width: calc(32.5% - 1rem);
+          &:first-of-type {
+            margin-right: 2rem;
+          }
+        }
+
+        &.full {
+          width: 100%;
+          float: none;
+          border-top: 1px solid $faint-border-color;
+          padding-top: 20px;
+
+          label {
+            display: inline-block;
+            input[type="checkbox"] {
+              width: 12px;
+              margin: 0 0.5em 0 0;
+            }
+          }
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5em;
+          font-size: 16px;
+          font-weight: 400;
+          color: $grey;
+        }
+        input {
+          width: calc(100% - 16px);
+          border: solid 1px #c2c2c2;
+          border-radius: 1px;
+          box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+          font-size: 15px;
+          padding: 8px;
+          margin-bottom: 12px;
+        }
+      }
+
+      aside {
+        display: block;
+        float: right;
+        width: calc(35% - 1rem);
+        padding-left: 1rem;
+
+        p {
+          font-size: 15px;
+          line-height: 1.4em;
+          margin: 22px 0;
+          color: $dark-grey;
+        }
+      }
+
+      &.list-of-links {
+
+        div.link-row {
+          overflow: hidden;
+          &:first-of-type {
+            border-bottom: 1px solid $faint-border-color;
+            margin-bottom: 0.25rem;
+          }
+          label, input {
+            margin: 0.5rem;
+            width: calc(50% - 1rem);
+            float: left;
+            box-sizing: border-box;
+          }
+          label {
+            line-height: 1.5rem;
+            font-size: 16px;
+            color: $grey;
+          }
+          input {
+            padding: 0.5rem;
+            font-size: 15px;
+            border: solid 1px #c2c2c2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  .page-controls {
+    border-top: 1px solid $faint-border-color;
+    padding: 20px 0;
+    margin-bottom: 20px;
+
+    button:first-of-type {
+      margin-right: 9px;
+    }
+  }
+
+}

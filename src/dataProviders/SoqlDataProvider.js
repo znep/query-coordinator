@@ -67,7 +67,7 @@ function SoqlDataProvider(config) {
         return _mapRowsResponseToTable([ nameAlias, valueAlias ], data);
       }
     );
-  };
+  }
 
   this.getRowCount = function(whereClauseComponents) {
     var whereClause = (whereClauseComponents) ?
@@ -75,7 +75,7 @@ function SoqlDataProvider(config) {
       '';
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(
-      '$select=count(*){0}&$$$read_from_nbe=true'.format(whereClause)
+      '$select=count(*){0}&$$$read_from_nbe=true&$$$version=2.1'.format(whereClause)
       )).then(function(data) {
         return parseInt(_.get(data, '[0].count'), 10);
       });
@@ -154,10 +154,10 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    // Note: The 3 (not 5) $ signs are eventually collapsed down to two $ signs, because
+    // Note: The 3 $ signs are eventually collapsed down to two $ signs, because
     // of strange corner-casey behavior of String.format.
     var queryString =
-      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$read_from_nbe=true'.
+      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$read_from_nbe=true&$$$version=2.1'.
       format(
         columnNames.map(_escapeColumnName).join(','),
         order[0].columnName,

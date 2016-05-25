@@ -50,7 +50,6 @@ class CardChoroplethMap extends React.Component {
             filtered: '__SOCRATA_FILTERED_VALUE__',
             selected: '__SOCRATA_FEATURE_SELECTED__'
           },
-          geometryLabel: 'ward',
           primaryKey: '_feature_id',
           uid: this.props.values.geojsonUid
         }

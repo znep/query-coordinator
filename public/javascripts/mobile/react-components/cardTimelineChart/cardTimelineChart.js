@@ -106,10 +106,18 @@ class CardTimelineChart extends React.Component {
     var filteredValue = payload.filteredValue ? payload.filteredValue.split(' ')[0] : false;
     var unFilteredValue = payload.unfilteredValue.split(' ')[0];
 
-    var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
-    var dotTop = flyoutPosition.vertical +
-      this.state.$component.parent().find('.intro-text').height() +
-      parseInt($('.timeline-chart-upper-container').css('border-width')) + 5;
+    var dotContent;
+    if (!payload.isIntervalFlyout) {
+      var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
+      var dotTop = flyoutPosition.vertical +
+        this.state.$component.parent().find('.intro-text').height() +
+        parseInt($('.timeline-chart-upper-container').css('border-width')) + 5;
+
+      dotContent = {
+        left: dotLeft,
+        top: dotTop
+      };
+    }
 
     this.props.controlMobileFlyout({
       title: payload.title,
@@ -119,10 +127,7 @@ class CardTimelineChart extends React.Component {
       unit: this.getVIF().unit
     });
 
-    this.props.controlMobileFlyoutDot({
-      left: dotLeft,
-      top: dotTop
-    });
+    this.props.controlMobileFlyoutDot(dotContent);
   }
 
   render() {

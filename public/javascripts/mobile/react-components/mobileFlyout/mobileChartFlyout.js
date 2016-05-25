@@ -38,11 +38,12 @@ class MobileChartFlyout extends React.Component {
     };
 
     let mainClassName = classNames('mobile-flyout', { hidden: !this.props.visible });
+    let titleClassName = classNames('title', { italic: this.props.title == '(No Value)' });
 
     return <div className={ mainClassName }>
       <div className="mobile-chart-flyout">
         <div className="arrow" style={ arrowStyle }></div>
-        <div className="title">{ this.props.title }</div>
+        <div className={ titleClassName }>{ this.props.title }</div>
         <div className={ valuesStyleClass }>
           <this.unFilteredLine value={ this.props.unFilteredValue } unit={ this.props.unit } />
           <this.filteredLine value={ this.props.filteredValue } unit={ this.props.unit } />

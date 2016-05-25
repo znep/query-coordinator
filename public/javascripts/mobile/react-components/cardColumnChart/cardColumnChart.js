@@ -125,7 +125,7 @@ class CardColumnChart extends React.Component {
     var arrowMarginLeft = selectedBar.offset().left  - 8;
 
     this.props.controlMobileFlyout({
-      title: barName,
+      title: barName == 'undefined' ? '(No Value)' : barName,
       filteredValue: filteredValue,
       unFilteredValue: unFilteredValue,
       arrowPosition: arrowMarginLeft,

@@ -120,7 +120,7 @@ class CardChoroplethMap extends React.Component {
     var arrowMarginLeft = parseFloat(payload.flyoutOffset.left) - 16.5;
 
     this.props.controlMobileFlyout({
-      title: payload.title,
+      title: payload.title == 'undefined' ? '(No Value)' : payload.title,
       filteredValue: payload.filtered === '(No Value)' ? 0 : payload.filtered,
       unFilteredValue: payload.unfiltered === '(No Value)' ? 0 : payload.unfiltered,
       arrowPosition: arrowMarginLeft,

@@ -5,7 +5,7 @@ module ActionController
     module Fragments
 
       def compressed_cache_key(key)
-        key + '-compressed'
+        "#{key}-compressed"
       end
 
       def write_fragment(key, content, options = nil)
@@ -44,12 +44,11 @@ module ActionController
             )
           end
 
+          safe_html = lambda { |arg| arg.respond_to?(:html_safe) ? arg.html_safe : arg }
           if result.is_a?(Hash)
-            safe_result = {}
-            result.each { |k, v| safe_result[k] = v.respond_to?(:html_safe) ? v.html_safe : v }
-            safe_result
+            Hash[result.map { |key, value| [key, safe_html.call(value)] }]
           else
-            result.respond_to?(:html_safe) ? result.html_safe : result
+            safe_html.call(result)
           end
         end
       end

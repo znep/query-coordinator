@@ -244,13 +244,13 @@
       <%= " and shared with #{pluralize(shares.length, 'friend')}" if @view.is_shared? %>
     </p>
     <%- if can_share -%>
-    <%= form_tag(url_for(:controller => :datasets,
-      :action => :modify_permission)) do %>
-    <%= hidden_field_tag 'permission_type', @view.is_public? ?
-      'private' : 'public.' + @view.display.public_perm_type %>
-    <%= submit_tag 'Make it ' + (@view.is_public? ?
-      'private' : 'public') %>
-    <% end %>
+      <%= form_tag(url_for(:controller => :datasets, :action => :modify_permission)) do %>
+        <%= hidden_field_tag(
+          'permission_type',
+           @view.is_public? ? 'private' : 'public.' + @view.display.public_perm_type
+        ) %>
+        <%= submit_tag("Make it #{@view.public_private_text(invert = true)}") %>
+      <% end %>
     <%- end -%>
 
     <%- if shares.length > 0 -%>

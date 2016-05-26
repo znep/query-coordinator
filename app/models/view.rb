@@ -972,6 +972,10 @@ class View < Model
     grants.nil? || grants.length == 0
   end
 
+  def public_private_text(invert = false)
+    invert ^ is_public? ? 'public' : 'private'
+  end
+
   def is_shared?
     grants && grants.any? {|p| !p.flag?('public')}
   end

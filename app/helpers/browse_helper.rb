@@ -55,7 +55,9 @@ module BrowseHelper
       if facet_option[:icon]
         concat(image_tag(theme_image_url(facet_option[:icon]), :alt => 'icon', :class => 'customIcon'))
       end
-      concat(facet_option[:text]) if facet_option[:text]
+      if facet_option[:text]
+        concat(facet_option[:text])
+      end
     end
   end
 

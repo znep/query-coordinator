@@ -18,7 +18,7 @@ class SiteChromeController < ApplicationController
 
     if @site_chrome.update_published_content(params[:content])
       flash[:notice] = 'Site theme updated'
-      redirect_to site_chrome_path
+      redirect_to edit_site_chrome_path
     elsif @site_chrome.errors.any?
       flash[:error] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
       render 'edit', status: :unprocessable_entity

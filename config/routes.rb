@@ -184,8 +184,8 @@ Rails.application.routes.draw do
     end
 
     # Site Chrome is the custom header/footer (chrome like a car bumper, right?)
-    get '/admin/site_chrome', :as => 'site_chrome', :controller => 'site_chrome', :action => 'edit'
-    put '/admin/site_chrome', :as => 'site_chrome', :controller => 'site_chrome', :action => 'update'
+    get '/admin/site_chrome', :as => 'edit_site_chrome', :controller => 'site_chrome', :action => 'edit'
+    put '/admin/site_chrome', :as => 'update_site_chrome', :controller => 'site_chrome', :action => 'update'
 
     get '/templates/:id', :controller => 'remote_partials', :action => :templates
     get '/modals/:id', :controller => 'remote_partials', :action => :modals

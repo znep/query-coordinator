@@ -1,6 +1,6 @@
 <% footer = @content['footer'] %>
 
-<%= form_tag site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
+<%= form_tag update_site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
 
   <%= render('site_chrome/tab_content/form_field',
              fields: [:footer, :logo, :src],

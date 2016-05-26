@@ -128,6 +128,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
   var $tileViewStory;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperty(componentData, 'value');
 
   // If there is no story tile data provided we just want to re-ellipsify
   // the text (which we can do by mutating rather than wiping out the entire
@@ -151,7 +152,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
     '<a>',
     {
       'href': storyTileData.url,
-      'target': '_blank',
+      'target': componentData.value.openInNewWindow ? '_blank' : '_self',
       'class': 'story-tile-container'
     }
   );

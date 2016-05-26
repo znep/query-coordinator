@@ -134,6 +134,10 @@ export default function AssetSelectorStore() {
         _updateStoryUrl(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET:
+        _updateStoryWindowTarget();
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_GOAL_URL:
         _updateGoalUrl(payload);
         break;
@@ -988,7 +992,20 @@ export default function AssetSelectorStore() {
   function _updateStoryUrl(payload) {
     _state.componentType = 'story.tile';
 
-    _state.componentProperties = _componentPropertiesFromStoryUrl(payload.url);
+    var openInNewWindow = _.get(_state.componentProperties, 'openInNewWindow', false);
+
+    _state.componentProperties = _.merge(
+      _componentPropertiesFromStoryUrl(payload.url),
+      { openInNewWindow: openInNewWindow }
+    );
+
+    self._emitChange();
+  }
+
+  function _updateStoryWindowTarget() {
+    StorytellerUtils.assertEqual(_state.componentType, 'story.tile');
+
+    _state.componentProperties.openInNewWindow = !_state.componentProperties.openInNewWindow;
 
     self._emitChange();
   }

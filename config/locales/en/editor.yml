@@ -203,6 +203,7 @@ en:
         invalid_message_title_2: 'Something went wrong.'
         invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
         invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
+        open_in_new_window: 'Open in New Window'
       goal_tile:
         name: 'Socrata Open Performance Goal Tile'
         description: 'Insert a preview of a Socrata Open Performance Goal.'

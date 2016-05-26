@@ -59,16 +59,14 @@ group :test do
   gem 'mocha', :require => false
   gem 'rails-dom-testing'
   gem 'rb-fsevent'
-  gem 'shoulda-context'
-  gem 'timecop'
   gem 'rspec', '~> 3.4'
   gem 'rspec-core', '~> 3.4', '>= 3.4.3'
   gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
-  gem 'simplecov'
-  gem 'simplecov-cobertura'
+  gem 'shoulda-context'
+  gem 'timecop'
   gem 'test-unit'
-  gem 'webmock'
   gem 'vcr'
+  gem 'webmock'
 end
 
 group :development, :test do

@@ -79,7 +79,6 @@ GEM
     diplomat (0.18.0)
       faraday (~> 0.9)
       json
-    docile (1.1.5)
     equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
@@ -274,13 +273,6 @@ GEM
     semver2 (3.4.2)
     shellany (0.0.1)
     shoulda-context (1.2.1)
-    simplecov (0.11.2)
-      docile (~> 1.1.0)
-      json (~> 1.8)
-      simplecov-html (~> 0.10.0)
-    simplecov-cobertura (1.1.0)
-      simplecov (~> 0.8)
-    simplecov-html (0.10.0)
     slop (3.6.0)
     snappy (0.0.15)
     sprockets (3.6.0)
@@ -381,8 +373,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   semver2
   shoulda-context
-  simplecov
-  simplecov-cobertura
   snappy
   statsd-ruby!
   test-unit

@@ -943,7 +943,7 @@
                     // submit what we have.
                     return scanColumns[scanIdx++];
                 } else {
-                    var scanColumn = scanColumns[scanIdx];
+                    var currentScanColumn = scanColumns[scanIdx];
                     if ($.isBlank(scanColumns[scanIdx])) {
                         return null;
                     }
@@ -951,22 +951,22 @@
                     if ((scanColumns.length - scanIdx) >= (dsColumns.length - dsIdx)) {
                         // if we're in crunch time we have no choice
                         scanIdx++;
-                        return scanColumn;
+                        return currentScanColumn;
                     }
 
                     // next see if column header name analysis might help. do a
                     // rough levenshtein with a ~50% difference allowance
-                    if (dsColumn.name.heuristicDistance(scanColumn.name) < (dsColumn.name.length * 0.5)) {
+                    if (dsColumn.name.heuristicDistance(currentScanColumn.name) < (dsColumn.name.length * 0.5)) {
                         scanIdx++;
-                        return scanColumn;
+                        return currentScanColumn;
                     }
 
                     // next see if we have an exact column type match, and that match
                     // isn't text. if so, maybe we can accept this result.
-                    if ((dsColumn.dataTypeName === scanColumn.suggestion) &&
+                    if ((dsColumn.dataTypeName === currentScanColumn.suggestion) &&
                         (dsColumn.dataTypeName != 'text')) {
                         scanIdx++;
-                        return scanColumn;
+                        return currentScanColumn;
                     }
 
                     // otherwise we're not too sure about this. let's punt on the

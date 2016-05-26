@@ -71,8 +71,12 @@ private
     end
     if APP_CONFIG.statsd_enabled
       current_requests.each do |request|
-        next unless request[:name].end_with? "-time"
-        Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
+        next unless request[:name].end_with?('-time')
+        if Frontend.statsd.present?
+          Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
+        else
+          Rails.logger.error('Unable to report timing to statsd because it is not configured properly.')
+        end
       end
     end
   end

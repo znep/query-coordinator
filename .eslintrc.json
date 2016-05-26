@@ -105,6 +105,7 @@
     "pageMetadata": true,
     "pbf": true,
     "saveAs": true,
+    "serverConfig": true,
     "socrata": true,
     "ss": true,
     "UserSnap": true,

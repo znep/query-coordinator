@@ -803,10 +803,10 @@ module ApplicationHelper
     Digest::SHA256.hexdigest(session['session_id'] + Frontend::SESSION_SALT) if session['session_id'].present?
   end
 
-  def request_id(req = request)
-    return 'Unavailable' unless req.present?
+  def request_id(_request = request)
+    return 'Unavailable' unless _request.present?
 
-    request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
+    _request.headers['X-Socrata-RequestId'] || _request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
   end
 
   # gets the active locale for the request.

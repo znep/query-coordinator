@@ -249,7 +249,7 @@
             # FORMS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "form"),
             # APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api"),
             # PREDEPLOY_APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api-predeploy"),
-      	    # DRAFT(ViewFinderConst.COLUMN_DISPLAY_TYPE, "draft");
+            # DRAFT(ViewFinderConst.COLUMN_DISPLAY_TYPE, "draft");
 
             case result.display.type
             # 'blist' appears to be the default in case no other type matches.
@@ -326,11 +326,11 @@
               result_display_type_icon_class = 'icon-data'
               result_display_title = t('controls.browse.browse2.display_types.predeploy_api')
 
-      	    #DRAFTS
-      	    when 'draft'
+            # DRAFTS
+            when 'draft'
               result_display_type_icon_class = 'icon-table'
-      	      result_display_title = t('controls.browse.browse2.display_types.draft')
-      	    end
+              result_display_title = t('controls.browse.browse2.display_types.draft')
+            end
 
             # Certain values must be derived differently based on whether this
             # is a result from Cetera or Clytemnestra/Core Server

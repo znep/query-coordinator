@@ -74,7 +74,8 @@ module DatasetLandingPageHelper
     ]
 
     server_config = {
-      :featureFlags => feature_flags
+      :featureFlags => feature_flags,
+      :environment => Rails.env
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

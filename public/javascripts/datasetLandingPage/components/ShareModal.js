@@ -30,7 +30,7 @@ export var ShareModal = React.createClass({
         <div className="modal-container">
           <header className="modal-header">
             <h5 className="h5 modal-header-title">{I18n.share.title}</h5>
-            <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+            <button aria-label={I18n.close} className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
               <span className="icon-close-2"></span>
             </button>
           </header>

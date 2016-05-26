@@ -52,10 +52,10 @@ export var InfoPane = React.createClass({
     var descriptionStyle;
 
     privateIcon = view.isPrivate ?
-      <span className="icon-private" title="Private Dataset" /> : null;
+      <span className="icon-private" aria-label={I18n.private_notice} title={I18n.private_notice} /> : null;
 
     categoryBadge = view.category ?
-      <span className="tag-category">{_.capitalize(view.category)}</span> : null;
+      <span className="tag-category" aria-label={I18n.metadata.category}>{_.capitalize(view.category)}</span> : null;
 
     viewDataButton = (
       <a href={view.gridUrl} className="btn btn-default btn-sm grid" onClick={onClickGrid}>

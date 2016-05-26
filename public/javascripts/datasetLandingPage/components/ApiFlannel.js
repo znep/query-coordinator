@@ -90,10 +90,10 @@ export var ApiFlannel = React.createClass({
             </a>
           </section>
           <section className="flannel-content">
-            <h6 className="endpoint-title">{I18n.api_flannel.endpoint_title}</h6>
+            <h6 id={`api-endpoint-${i}`} className="endpoint-title">{I18n.api_flannel.endpoint_title}</h6>
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput} />
+                <input aria-labelledby={`api-endpoint-${i}`} className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput} />
                 {endpointFormatSelector}
                 <span className="input-group-btn">
                   <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
@@ -111,16 +111,16 @@ export var ApiFlannel = React.createClass({
     if (view.geospatialChildLayers.length > 1) {
       endpoints = view.geospatialChildLayers.map(_.partial(renderEndpoint, _, true, _));
     } else if (view.geospatialChildLayers.length === 1) {
-      endpoints = renderEndpoint(view.geospatialChildLayers[0], false);
+      endpoints = renderEndpoint(view.geospatialChildLayers[0], false, 0);
     } else {
-      endpoints = renderEndpoint(view, false);
+      endpoints = renderEndpoint(view, false, 0);
     }
 
     return (
       <div id="api-flannel" className="flannel flannel-hidden">
         <header className="flannel-header">
           <h4 className="flannel-header-title">{I18n.api_flannel.title}</h4>
-          <button className="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+          <button aria-label={I18n.close} className="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
             <span className="icon-close-2"></span>
           </button>
         </header>

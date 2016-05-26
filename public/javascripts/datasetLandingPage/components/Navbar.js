@@ -2,7 +2,7 @@ import React from 'react';
 
 var Navbar = React.createClass({
   render: function() {
-    return <div className="responsive-navbar">Site Header</div>;
+    return <div role="navigation" className="responsive-navbar">Site Header</div>;
   }
 });
 

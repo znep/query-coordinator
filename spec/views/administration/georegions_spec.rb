@@ -113,7 +113,7 @@ describe 'administration/georegions.html.erb' do
       render
       expect(rendered).to include('My Curated Region')
       expect(rendered).to include('Ready to use')
-      expect(rendered).to include('Curated-Region')
+      expect(rendered).to include('My &quot;Other&quot; %name&#39;s Curated-Region')
       expect(rendered).to include('Not enabled')
       expect(rendered).to include('Curated Region Job in Progress')
       expect(rendered).to include('Processing')

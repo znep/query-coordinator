@@ -48,14 +48,6 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  # def extend
-  #   # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
-  #   # purpose; but phusion passenger requires "".
-  #   response.headers['ETag'] = ''
-  #   session_response = current_user.nil? ? {:expired => 'expired' } : current_user_session.extend
-  #   render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
-  # end
-
   def expire_if_idle
     session_response = current_user.nil? ? {:expired => 'expired' } : UserSession.find_seconds_until_timeout
     render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
@@ -81,7 +73,7 @@ class UserSessionsController < ApplicationController
 
         if auth0_properties.present?
           restricted_roles = auth0_properties.try(:require_sso_for_rights)
-          
+
           if restricted_roles.present? &&
              restricted_roles.any? { |role| @user_session.user.has_right?(role) }
             # user has a role that requires auth0... fail
@@ -223,7 +215,7 @@ class UserSessionsController < ApplicationController
           Rails.logger.error(error)
           Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
         end
-        
+
         @auth0_message = properties.try(:auth0_message)
       end
     end

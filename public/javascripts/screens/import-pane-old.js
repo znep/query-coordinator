@@ -943,6 +943,7 @@
                     // submit what we have.
                     return scanColumns[scanIdx++];
                 } else {
+                    var scanColumn = scanColumns[scanIdx];
                     if ($.isBlank(scanColumns[scanIdx])) {
                         return null;
                     }

@@ -1489,7 +1489,30 @@ class View < Model
         display_class = Displays::Page
       else
         begin
-          display_class = Displays.const_get(dt.camelize)
+          # EN-6285 - Address Frontend app Airbrake errors
+          #
+          # (This was not actually causing Airbrake errors but was a constant
+          # annoyance so we fixed it while we were looking at bugs).
+          #
+          # That second argument is really important.
+          #
+          # Pages with a catalog view will sometimes fail to load because of a
+          # load-order issue. Basically what happens is that when called
+          # without the second argument or when the second argument is true it
+          # will look for ancestor classes that also match the given name.
+          #
+          # Because there exist two 'Story' classes (one in app/models/story.rb
+          # and one in app/models/displays/story.rb) and because Rails will
+          # apparently load them in an indeteminate order in Development mode,
+          # we sometimes treated the non-display Story model as a display model,
+          # which caused it to raise errors when we attempted to call methods
+          # that exist on the display model on the non-display model.
+          #
+          # Passing false here prevents const_get() from looking for ancestor
+          # classes of the same name, which causes display_class to always
+          # be assigned with the display Story model when the display is of
+          # the 'Story' type.
+          display_class = Displays.const_get(dt.camelize, false)
         rescue NameError
           Rails.logger.info "Ignoring invalid display type #{dt}"
         end

@@ -17,7 +17,7 @@ module.exports = {
           columnName: null,
           aggregationFunction: null
         },
-        domain: 'localhost', // TODO: Remove this.
+        domain: '',
         measure: {
           columnName: null,
           aggregationFunction: null

@@ -325,6 +325,7 @@ function SvgVisualization($element, vif) {
 
     // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
     self.$element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+      self.$element.find('.visualization').remove();
       detachEvents();
     });
 

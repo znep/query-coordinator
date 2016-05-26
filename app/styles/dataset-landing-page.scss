@@ -20,6 +20,10 @@ body {
   background: $light-grey-6;
 }
 
+.container {
+  margin: 0 auto;
+}
+
 .alert.private-notice {
   border-top: 0;
   border-left: 0;
@@ -467,6 +471,8 @@ main.container.landing-page-container {
 
       tr {
         td {
+          vertical-align: middle;
+
           padding: 3px;
 
           &:first-child {
@@ -618,6 +624,7 @@ section.landing-page-section.schema-preview {
       display: none;
 
       td {
+        vertical-align: middle;
         padding: 0;
 
         .contents.schema-detail-groups {

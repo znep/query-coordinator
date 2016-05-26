@@ -8,6 +8,7 @@ import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import {fileUploaderStore, STATUS} from './FileUploaderStore';
+import httpRequest from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 // The step in the asset selection flow the user is in.
@@ -621,9 +622,11 @@ export default function AssetSelectorStore() {
       }
       self._emitChange();
     }).catch(function(error) {
+
       if (window.console && console.error) {
         console.error('Error selecting dataset: ', error);
       }
+
       exceptionNotifier.notify(error);
     });
   }
@@ -742,18 +745,19 @@ export default function AssetSelectorStore() {
   }
 
   function _getNbeView(domain, obeUid) {
-    return Promise.resolve($.get(
-      StorytellerUtils.format(
-        'https://{0}/api/migrations/{1}.json',
-        domain,
-        obeUid
-      )
-    )).then(
-      function(migrationData) {
-        return _getView(domain, migrationData.nbeId);
-      }
+    var migrationsUrl = StorytellerUtils.format(
+      'https://{0}/api/migrations/{1}.json',
+      domain,
+      obeUid
     );
 
+    return httpRequest('GET', migrationsUrl, 'json').
+      then(
+        function(migrationData) {
+          return _getView(domain, migrationData.nbeId);
+        }
+      ).
+      catch(exceptionNotifier.notify);
   }
 
   function _getView(domain, uid) {
@@ -768,23 +772,17 @@ export default function AssetSelectorStore() {
       uid
     );
 
-    return Promise.resolve($.get(viewUrl)).
-      then(function(viewData) {
-        // Retcon the domain into the view data.
-        // We'd have to pass it around like 5 methods
-        // otherwise.
-        viewData.domain = domain;
-        return viewData;
-      }).
-      catch(
-        function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
-          var errorObj = new Error(
-            StorytellerUtils.format(
-              'Could not retrieve "{0}" in _getView(): {1}',
-              viewUrl,
-              jqXhr.responseText
-            )
-          );
+    return httpRequest('GET', viewUrl, 'json').
+      then(
+        function(viewData) {
+          // Retcon the domain into the view data.
+          // We'd have to pass it around like 5 methods
+          // otherwise.
+          viewData.domain = domain;
+
+          return viewData;
+        },
+        function(error) {
 
           if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
             _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
@@ -798,8 +796,10 @@ export default function AssetSelectorStore() {
 
           self._emitChange();
 
-          exceptionNotifier.notify(errorObj);
-          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
+          exceptionNotifier.notify(error);
+          /* eslint-disable no-alert */
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error'));
+          /* eslint-enable no-alert */
         }
       );
   }

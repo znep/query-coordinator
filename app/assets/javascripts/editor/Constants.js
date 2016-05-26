@@ -37,6 +37,7 @@ export default {
   IMAGE_SEARCH_PAGE_SIZE: 15,
   VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN: /\/stories\/api\/v1\/getty-images\/(.+)/,
 
+  VIEW_PREFIX_PATH: '/stories/s/',
   API_PREFIX_PATH: '/stories/api/v1/',
 
   // This doesn't set the base font size for the scss

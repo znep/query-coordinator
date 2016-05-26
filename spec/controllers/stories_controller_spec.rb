@@ -300,6 +300,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(response_json_as_hash['image']).to eq(nil)
           expect(response_json_as_hash['description']).to eq(tile_description)
           expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+          expect(response_json_as_hash['url']).to eq('https://test.host/s/Tile-Test/test-test')
         end
 
         it 'responds when authenticated' do
@@ -311,6 +312,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(response_json_as_hash['image']).to eq(nil)
           expect(response_json_as_hash['description']).to eq(tile_description)
           expect(response_json_as_hash['theme']).to eq(story_revision['theme'])
+          expect(response_json_as_hash['url']).to eq('https://test.host/s/Tile-Test/test-test')
         end
 
         it 'sets Access-Control-Allow-Origin' do

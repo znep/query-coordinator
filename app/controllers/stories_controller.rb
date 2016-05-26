@@ -35,6 +35,7 @@ class StoriesController < ApplicationController
       StoryAccessLogger.log_story_view_access(@story, embedded: true)
 
       core_attributes = CoreServer.get_view(@story.uid) || {}
+      title = title_from_core_attributes(core_attributes)
 
       respond_to do |format|
         format.html { render 'stories/tile', layout: 'tile' }
@@ -42,11 +43,11 @@ class StoriesController < ApplicationController
 
           render(
             json: {
-              title: core_attributes['name'] || t('default_page_title'),
+              title: title,
               description: core_attributes['description'] || nil,
               image: @story.block_images.first || nil,
               theme: @story.theme,
-              url: story_url(uid: @story.uid)
+              url: story_url(uid: @story.uid, vanity_text: title_to_vanity_text(title))
             }
           )
         }
@@ -174,6 +175,10 @@ class StoriesController < ApplicationController
         )
       }
 
+      core_attributes = CoreServer.get_view(params[:uid])
+      vanity_text = title_to_vanity_text(title_from_core_attributes(core_attributes))
+
+      @story_view_url = story_url(uid: params[:uid], vanity_text: vanity_text)
       @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
@@ -181,7 +186,7 @@ class StoriesController < ApplicationController
       @default_themes = theme_list
       @custom_themes = theme_list.custom_themes
       @published_story = PublishedStory.find_by_uid(params[:uid])
-      @primary_owner_uid = CoreServer.get_view(params[:uid])['owner']['id']
+      @primary_owner_uid = core_attributes['owner']['id']
 
       respond_to do |format|
         format.html do
@@ -204,6 +209,10 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def title_from_core_attributes(core_attributes)
+    core_attributes['name'] || t('default_page_title')
+  end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
   # somewhere, but that clearly won't work with an embeddable tile so we
@@ -313,4 +322,10 @@ class StoriesController < ApplicationController
 
     redirect_to "/stories/s/#{uid}/edit"
   end
+
+  def title_to_vanity_text(title)
+    c = title.gsub(/\s+/, '-').gsub(/[^a-zA-Z0-9_\-]/, '-').gsub(/\-+/, '-')
+    c.blank? ? '-' : c.slice(0, 50)
+  end
+
 end

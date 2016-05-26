@@ -511,7 +511,7 @@ export default function AssetSelectorStore() {
       // Fetch additional data needed for UI.
       _getView(domain, datasetUid).
         then(_setComponentPropertiesFromViewData).
-        then(self._emitChange());
+        then(self._emitChange);
     } else {
       self._emitChange();
     }
@@ -986,15 +986,9 @@ export default function AssetSelectorStore() {
   }
 
   function _updateStoryUrl(payload) {
-    var storyDomain = _extractDomainFromStoryUrl(payload.url);
-    var storyUid = _extractStoryUidFromStoryUrl(payload.url);
-
     _state.componentType = 'story.tile';
 
-    _state.componentProperties = {
-      domain: storyDomain,
-      storyUid: storyUid
-    };
+    _state.componentProperties = _componentPropertiesFromStoryUrl(payload.url);
 
     self._emitChange();
   }
@@ -1040,26 +1034,38 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _extractDomainFromStoryUrl(storyUrl) {
-    var match = storyUrl.match(/^https\:\/\/(.*)\/stories\/s\/\w{4}\-\w{4}/i);
-    var storyDomain = null;
-
-    if (match !== null) {
-      storyDomain = match[1];
+  function _parseUrl(url) {
+    if (url.match(/https?:\/\//)) {
+      var a = document.createElement('a');
+      a.href = url;
+      return a;
+    } else {
+      return null;
     }
-
-    return storyDomain;
   }
 
-  function _extractStoryUidFromStoryUrl(storyUrl) {
-    var match = storyUrl.match(/^https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
-    var storyUid = null;
+  function _componentPropertiesFromStoryUrl(url) {
+    var parsedUrl = _parseUrl(url);
+    if (!parsedUrl) { return {}; }
 
-    if (match !== null) {
-      storyUid = match[1];
+    if (parsedUrl.pathname.indexOf(Constants.VIEW_PREFIX_PATH) === 0) {
+      // Find the last thing in the url that looks like a uid (4x4).
+      // We can't take the first thing because our story title may look
+      // like a 4x4, and it comes first.
+      var uid = _(
+        parsedUrl.pathname.substring(Constants.VIEW_PREFIX_PATH.length).split('/')
+      ).
+      compact(). // Removes blank strings.
+      findLast(function(c) {
+        return c.match(Constants.FOUR_BY_FOUR_PATTERN);
+      });
+
+      if (uid) {
+        return { domain: parsedUrl.hostname, storyUid: uid };
+      }
     }
 
-    return storyUid;
+    return {};
   }
 
   function _extractDomainFromGoalUrl(goalUrl) {

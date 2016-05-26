@@ -28,8 +28,7 @@ Dropdown.prototype = {
     // the dropdown making the window larger than we wanted
     positionDropdown();
 
-    obj.dd.addEventListener('click', function(event) {
-      event.preventDefault();
+    obj.dd.addEventListener('click', function() {
       positionDropdown();
       obj.dd.classList.toggle('active');
       return false;

@@ -69,7 +69,7 @@ export var PopularViewList = React.createClass({
   renderLoadMoreLink: function() {
     var { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
-    if (!hasMore || !isDesktop) {
+    if (!hasMore || !isDesktop || !serverConfig.featureFlags.defaultToDatasetLandingPage) {
       return null;
     }
 

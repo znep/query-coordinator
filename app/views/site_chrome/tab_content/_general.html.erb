@@ -1,4 +1,5 @@
 <%= form_tag update_site_chrome_path(anchor: {tab: :general}), id: 'tab_form_general', method: :put, remote: true do %>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
   <%= render('site_chrome/tab_content/form_field',
              fields: [:general, :window_or_tab_title_display],

@@ -24,13 +24,13 @@ describe Services::DataLens::RegionCoder do
 
     it 'raises an error if the curated API request fails' do
       allow(CuratedRegion).to receive(:find_by_view_id).and_throw
-      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error(RuntimeError)
+      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_exception(RuntimeError)
     end
 
     it 'raises an error if the region job queue request fails' do
       expect(CuratedRegion).to receive(:find_by_view_id).and_return(test_curated_region)
       expect_any_instance_of(CuratedRegionJobQueue).to receive(:enqueue_job).and_throw
-      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_error(RuntimeError)
+      expect { subject.initiate(shapefile_id, dataset_id, source_column, cookies) }.to raise_exception(RuntimeError)
     end
 
     it 'enqueues the job and returns a job id if successful' do

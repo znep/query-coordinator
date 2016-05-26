@@ -67,7 +67,7 @@ function SoqlDataProvider(config) {
         return _mapRowsResponseToTable([ nameAlias, valueAlias ], data);
       }
     );
-  }
+  };
 
   this.getRowCount = function(whereClauseComponents) {
     var whereClause = (whereClauseComponents) ?

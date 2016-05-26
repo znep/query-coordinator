@@ -16,7 +16,7 @@ class DatasetsController < ApplicationController
 
   # collection actions
   def new
-    unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) && !CurrentDomain.module_enabled?(:community_creation)
+    unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) || CurrentDomain.module_enabled?(:community_creation)
       # User doesn't have access to create new datasets
       return render_forbidden('You do not have permission to create new datasets')
     end

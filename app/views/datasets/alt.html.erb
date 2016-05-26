@@ -12,14 +12,13 @@
   <a href="#dataGrid">Skip to data grid</a>
   <a href="#search">Skip to search within this dataset</a>
   <a href="#views">Skip to other views of this data</a>
-  <% if @view.module_enabled? :allow_comments %>
+  <% if @view.module_enabled?(:allow_comments) %>
     <a href="#comments">Skip to comments</a>
   <% end %>
   <a href="#sharing">Skip to sharing</a>
   <%- if @view.display.can_publish? -%>
-  <a href="#publishing">Skip to publishing</a>
+    <a href="#publishing">Skip to publishing</a>
   <%- end -%>
-
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -71,7 +70,10 @@
 
   <h2><%= @view.name %></h2>
   <% if @view.parent_dataset && (@view.parent_dataset != @view) %>
-    <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, alt_view_path(@view.parent_dataset) %>.</p>
+    <p>
+      This is a <%= @view.display.name.downcase %> based on
+      <%= link_to @view.parent_dataset.name, alt_view_path(@view.parent_dataset) %>.
+    </p>
   <% end %>
 
   <%- if is_grid -%>
@@ -81,28 +83,27 @@
   <%- end -%>
   <div class="dataGridWrapper">
     <%- if is_grid -%>
-      <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, (@page - 1) * @per_page, @aggregates) %>
+      <%== RenderType.table_html('dataGrid', @viewable_columns, @data, @view, (@page - 1) * @per_page, @aggregates) %>
       <%- if @row_count == 0 -%>
         <span class='noDataMessage'><%= t('controls.grid.no_rows') =%></span>
       <%- end -%>
     <%- elsif is_form -%>
-      <%= render(:partial => 'displays/form_view') %>
+      <%= render 'displays/form_view' %>
     <%- else -%>
-      <%= render(:partial => 'displays/blob') %>
+      <%= render 'displays/blob' %>
     <%- end -%>
   </div>
 
   <h2>About</h2>
   <div class="altMeta">
-    <%= render(:partial => 'about_dataset',
-               :locals => {:static_links => true}) %>
+    <%= render 'about_dataset', :static_links => true %>
   </div>
 
 <%- if is_grid -%>
   <%= form_tag alt_view_path(@view), :method => :get, :id => 'queryForm' do -%>
     <h2>Filter</h2>
     <ul>
-      <%-
+      <%#
       # EN-6285 - Address Frontend app Airbrake errors
       #
       # As of 5/24/2016 have recorded 4104 instances of
@@ -116,34 +117,42 @@
       <%- (@viewable_columns || []).each do |column| -%>
         <%- unless column.possible_filter_conditions.nil? -%>
           <li>
-            <%= label_tag "filter_#{column.id}_operator", "Operator for #{column.name}" %>
-            <%= select_tag "filter[#{column.id}][operator]",
-                           options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator])) %>;
-             <%- unless ['photo', 'document', 'photo_obsolete', 'document_obsolete'].include?(column.dataTypeName) -%>
-            <%= label_tag "filter_#{column.id}_value", "Value for #{column.name}" %>
-            <%= text_field_tag "filter[#{column.id}][value]", params.deep_value_at([:filter, column.id.to_s.to_sym, :value]) %>
+            <%= label_tag("filter_#{column.id}_operator", "Operator for #{column.name}") %>
+            <%= select_tag(
+              "filter[#{column.id}][operator]",
+              options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator]))
+            ) %>;
+             <%- unless %w(photo document photo_obsolete document_obsolete).include?(column.dataTypeName) -%>
+            <%= label_tag("filter_#{column.id}_value", "Value for #{column.name}") %>
+            <%= text_field_tag(
+              "filter[#{column.id}][value]",
+              params.deep_value_at([:filter, column.id.to_s.to_sym, :value])
+            ) %>
             <%- end -%>
           </li>
         <%- end -%>
       <%- end -%>
     </ul>
-    <%= submit_tag "Apply Filter" %>
+    <%= submit_tag 'Apply Filter' %>
 
     <h2>Sort</h2>
     <ul>
       <%- 1.upto(@viewable_columns.select{ |column| column.is_sortable? }.size) do |n| -%>
         <li>
-          <%= label_tag "sort_#{n}_field", "Sort field #{n.to_s} column" %>
-          <%= select_tag "sort[#{n}][field]",
-                         options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i) %>;
-          <%= label_tag "sort_#{n}_direction", "sort field #{n.to_s} direction" %>
-          <%= select_tag "sort[#{n}][direction]",
-                         options_for_select(["Ascending", "Descending"],
-                                            params.deep_value_at([:sort, n.to_s.to_sym, :direction]) || "Ascending") %>
+          <%= label_tag("sort_#{n}_field", "Sort field #{n.to_s} column") %>
+          <%= select_tag(
+            "sort[#{n}][field]",
+            options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i)
+          ) %>;
+          <%= label_tag("sort_#{n}_direction", "sort field #{n.to_s} direction") %>
+          <%= select_tag(
+            "sort[#{n}][direction]",
+            options_for_select(%w(Ascending Descending), params.deep_value_at([:sort, n.to_s.to_sym, :direction]) || 'Ascending')
+          ) %>
         </li>
       <% end %>
     </ul>
-    <%= submit_tag "Apply Sort" %>
+    <%= submit_tag 'Apply Sort' %>
 
     <a name="search" tabindex="-1"></a>
     <h2>Search</h2>
@@ -153,17 +162,17 @@
   <%- end -%>
 <%- end -%>
 
-<%- if !@conditions.empty? || !params[:search_string].blank? -%>
+<%- if @conditions.present? || params[:search_string].present? -%>
   <h2>Save this view</h2>
   <%- if current_user -%>
-    <%= form_tag (save_filter_dataset_path(@view) + '?' + @state_param) do -%>
+    <%= form_tag(save_filter_dataset_path(@view) + '?' + @state_param) do -%>
       <%= hidden_field_tag 'query_json', @query_json %>
-      <%= label_tag "Name" %>
-      <%= text_field_tag "name" %>
-      <%= submit_tag "Submit" %>
+      <%= label_tag 'Name' %>
+      <%= text_field_tag 'name' %>
+      <%= submit_tag 'Submit' %>
     <% end %>
   <%- else -%>
-    <p><%= link_to "Sign in to save this view.", "#{alt_view_path(@view)}?force_login=true&#{@state_param}" %></p>
+    <p><%= link_to 'Sign in to save this view.', "#{alt_view_path(@view)}?force_login=true&#{@state_param}" %></p>
   <%- end -%>
 <%- end -%>
 
@@ -184,25 +193,24 @@
     <a name="comments" tabindex="-1"></a>
     <h2>Post a Comment</h2>
     <%= form_tag(post_comment_dataset_path(@view)) do -%>
-    <%= hidden_field_tag 'redirect_to', '/alt#comments' %>
+    <%= hidden_field_tag('redirect_to', '/alt#comments') %>
       <% field_set_tag do %>
-        <%= label_tag "comment[viewRating]", "My Rating" %>
-        <%= select_tag("comment[viewRating]",
-        options_for_select([['No Rating', 0], ['5', 5], ['4', 4], ['3', 3],
-          ['2', 2], ['1', 1]])) %>
+        <%= label_tag('comment[viewRating]', 'My Rating') %>
+        <%= select_tag('comment[viewRating]',
+        options_for_select([['No Rating', 0], ['5', 5], ['4', 4], ['3', 3], ['2', 2], ['1', 1]])) %>
       <% end %>
 
       <% field_set_tag do %>
-        <%= label_tag "comment[title]", "Title" %>
-        <%= text_field_tag("comment[title]") %>
+        <%= label_tag('comment[title]', 'Title') %>
+        <%= text_field_tag('comment[title]') %>
       <% end %>
 
       <% field_set_tag do %>
-        <%= label_tag "comment[body]", "Body" %>
-        <%= text_area_tag("comment[body]") %>
+        <%= label_tag('comment[body]', 'Body') %>
+        <%= text_area_tag('comment[body]') %>
       <% end %>
 
-      <%= submit_tag "Submit this comment" %>
+      <%= submit_tag('Submit this comment') %>
     <%- end -%>
 
     <h2>Comments</h2>
@@ -216,7 +224,7 @@
       <div class="comment">
         <h3><%= comment.title %></h3>
         <ul class="metaDataList">
-          <li><em>Rating:</em> <%= comment.viewRating.nil? ? "No rating" : "#{comment.viewRating.to_i} out of 5" %></li>
+          <li><em>Rating:</em> <%= comment.viewRating.nil? ? 'No rating' : "#{comment.viewRating.to_i} out of 5" %></li>
           <li><em>Author:</em> <%= user_name %></li>
           <li><em>Posted:</em> <%= HumaneDateHelper.humane_date(comment.createdAt) %></li>
         </ul>
@@ -228,16 +236,12 @@
   <a name="sharing" tabindex="-1"></a>
   <div id="sharingBlock">
     <h2>Sharing</h2>
-    <%-
-    shares = @view.shares
-    can_share = @view.owned_by?(current_user) &&
-      @view.parent_dataset.owned_by?(current_user)
-    -%>
+    <%- shares = @view.shares -%>
+    <%- can_share = @view.owned_by?(current_user) && @view.parent_dataset.owned_by?(current_user) -%>
 
-    <p>This <%= @view.is_blist? ? "dataset" : "view" %> is
-      <%= @view.is_public? ?  "public" : "private" %>
-      <%= ' and shared with ' + pluralize(shares.length, 'friend') if
-        @view.is_shared? %>
+    <p>This <%= @view.is_blist? ? 'dataset' : 'view' %> is
+      <%= @view.public_private_text %>
+      <%= " and shared with #{pluralize(shares.length, 'friend')}" if @view.is_shared? %>
     </p>
     <%- if can_share -%>
     <%= form_tag(url_for(:controller => :datasets,
@@ -251,16 +255,14 @@
 
     <%- if shares.length > 0 -%>
     <ul class="metaDataList">
-      <%- shares.sort {|a,b|
-        a.type <=> b.type ||
-        a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
+      <%- shares.sort {|a, b| a.type <=> b.type || a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
         <li>
         <%- if s.member_id -%>
-        <a href="<%= profile_path(profile_name: s.member_name.convert_to_url, id: s.member_id) %>">
-          <%= s.member_name %>
-        </a>
+          <a href="<%= profile_path(profile_name: s.member_name.convert_to_url, id: s.member_id) %>">
+            <%= s.member_name %>
+          </a>
         <%- else -%>
-        <%= s.member_name %>
+          <%= s.member_name %>
         <%- end -%>
         (<%= s.type %>)
         </li>
@@ -270,32 +272,39 @@
   </div>
 
   <%- if @view.display.can_publish? -%>
-  <a name="publishing" tabindex="-1"></a>
-  <div id="publishingBlock">
-    <h2>Publishing</h2>
+    <a name="publishing" tabindex="-1"></a>
+    <div id="publishingBlock">
+      <h2>Publishing</h2>
 
-    <%- if @view.is_private? -%>
-    <p>
-    This <%= @view.is_blist? ? 'dataset' : 'view' %> is
-    currently private.  Private <%= @view.is_blist? ?
-      'datasets' : 'views' %>
-    cannot be viewed in the Social Data Player.  Please
-    set the privacy to public or shared before publishing.
-    </p>
-    <%- else -%>
-    <p>
-      <%= label_tag "publishCodeTemplate", "You can publish this dataset  and its views on your blog or website by embedding it in a Social Data Player.  You can do so by simply copying and pasting the below HTML into your site." %>
-    </p>
-    <%= text_area_tag("publishCodeTemplate",
-      String.new(get_publish_embed_code_for_view(@view,
-      {:dimensions => { :width => '500',  :height => '425' }},
-      CurrentDomain.default_widget_customization_id)), :rows => 10, :cols => 60) %>
+      <%- if @view.is_private? -%>
+        <p>
+          This <%= @view.is_blist? ? 'dataset' : 'view' %> is currently private.
+          Private <%= @view.is_blist? ? 'datasets' : 'views' %> cannot be viewed in the
+          Social Data Player. Please set the privacy to public or shared before publishing.
+        </p>
+      <%- else -%>
+        <p>
+          <%= label_tag(
+            'publishCodeTemplate',
+            'You can publish this dataset and its views on your blog or website by embedding it in a ' \
+            'Social Data Player. You can do so by simply copying and pasting the below HTML into your site.'
+          ) %>
+        </p>
+        <%= text_area_tag(
+          'publishCodeTemplate',
+          get_publish_embed_code_for_view(
+            @view,
+            { :dimensions => { :width => '500',  :height => '425' } },
+            CurrentDomain.default_widget_customization_id
+          ).to_s,
+          :rows => 10,
+          :cols => 60
+        ) %>
 
-    <a id="previewWidgetLink" href="<%= preview_view_widget_path(@view, width: 500, height: 425, variation: CurrentDomain.default_widget_customization_id) %>">
-      See Preview
-    </a>
-    <%- end -%>
-  </div>
+        <a id="previewWidgetLink" href="<%= preview_view_widget_path(@view, width: 500, height: 425, variation: CurrentDomain.default_widget_customization_id) %>">
+          See Preview
+        </a>
+      <%- end -%>
+    </div>
   <%- end -%>
 </div>
-

@@ -36,13 +36,13 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path,
                                                   {'X-Socrata-Federation' => 'Honey Badger'}))
   end
-  
+
   def self.find_deleted_name(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedNameById', 'id' => id}.to_param
     name = CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'})
-    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it 
+    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it
   end
-  
+
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -939,7 +939,7 @@ class View < Model
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers
-  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
+  @@default_meta_tags = %w(public data statistics dataset)
   def meta_keywords
     (self.tags.nil? ? @@default_meta_tags : self.tags + @@default_meta_tags).sort_by {rand}
   end
@@ -947,7 +947,7 @@ class View < Model
   # Return the description we'll use in the meta description header
   def meta_description
     if self.description.blank?
-      desc = "View this dataset"
+      desc = 'View this dataset'
       updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt, true)
       if updated_at
         desc += ", last updated #{updated_at}"
@@ -959,11 +959,11 @@ class View < Model
   end
 
   def is_blist?
-    flag?("default") && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
+    flag?('default') && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
   end
 
   def is_public?
-    @_is_public ||= display.is_public?
+    @is_public ||= display.is_public?
   end
 
   # This represents whether or not the view is accessible exclusively to the current user.

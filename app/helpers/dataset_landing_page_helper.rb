@@ -65,6 +65,21 @@ module DatasetLandingPageHelper
     end
   end
 
+  def render_server_config
+    feature_flags = Hash[
+      FeatureFlags.derive(nil, request).slice(*[
+        :enable_dataset_landing_page,
+        :default_to_dataset_landing_page
+      ]).map { |k, v| [ k.camelize(:lower), v ] }
+    ]
+
+    server_config = {
+      :featureFlags => feature_flags
+    }
+
+    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
+  end
+
   def share_facebook_url
     "http://www.facebook.com/sharer/sharer.php?u=#{@view.encoded_seo_friendly_url(request)}"
   end

@@ -632,6 +632,7 @@ describe('SoqlDataProvider', function() {
           soqlDataProvider.getTableData.apply(soqlDataProvider, args);
           assert.lengthOf($getStub.getCalls(), 1);
           assert.include($getStub.getCalls()[0].args[0], '$$read_from_nbe=true');
+          assert.include($getStub.getCalls()[0].args[0], '$$version=2.1');
         });
 
         resultantQueryParts.map(function(queryPart) {
@@ -835,6 +836,10 @@ describe('SoqlDataProvider', function() {
       assert.include(
         server.requests[0].url,
         '$$read_from_nbe=true'
+      );
+      assert.include(
+        server.requests[0].url,
+        '$$version=2.1'
       );
     });
 

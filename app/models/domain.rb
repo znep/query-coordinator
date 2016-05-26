@@ -81,7 +81,7 @@ class Domain < Model
     @default_configs ||= Hash.new
 
     if @default_configs[type].nil?
-      @default_configs[type] = Configuration.find_by_type(type, true, cname)[0]
+      @default_configs[type] = Configuration.find_by_type(type, true, cname).first
     end
 
     @default_configs[type]

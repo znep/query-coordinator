@@ -451,7 +451,7 @@ class BrowseActionsTest < Minitest::Test
 
     def test_topics_facet_without_param
       stub_request(:get, "http://localhost:8080/tags?method=viewsTags").
-        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:headers => request_headers).
         to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
       @browse_actions_container.unstub(:topics_facet)
       facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
@@ -462,7 +462,7 @@ class BrowseActionsTest < Minitest::Test
 
     def test_topics_facet_with_matching_param
       stub_request(:get, "http://localhost:8080/tags?method=viewsTags").
-        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:headers => request_headers).
         to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
       @browse_actions_container.unstub(:topics_facet)
       facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
@@ -473,7 +473,7 @@ class BrowseActionsTest < Minitest::Test
 
     def test_topics_facet_with_non_matching_param
       stub_request(:get, "http://localhost:8080/tags?method=viewsTags").
-        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:headers => request_headers).
         to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
       @browse_actions_container.unstub(:topics_facet)
       expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access

@@ -45,7 +45,7 @@ class DowntimeConfig < ExternalConfig
   private
 
   def use_consul?
-    !APP_CONFIG.consul_host.to_s.blank?
+    APP_CONFIG.consul_host.to_s.present?
   end
 
   def consul_key

@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 describe View do
+  include TestHelperMethods
+
+  before(:each) do
+    init_current_domain
+  end
 
   describe 'draft display types' do
     let(:fake_views) do
@@ -86,9 +91,7 @@ describe View do
       CurrentDomain.stubs(:cname => 'localhost')
 
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3').
-         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                          'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
-                          'X-Socrata-Host'=>'localhost'}).
+         with(request_headers).
          to_return(
            :status => 200,
            :headers => {},
@@ -104,9 +107,7 @@ describe View do
 
     it 'puts a nil entry in the result if that id is not included in the API response' do
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3&ids%5B%5D=fake-fak5').
-         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                          'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger',
-                          'X-Socrata-Host'=>'localhost'}).
+         with(request_headers).
          to_return(
            :status => 200,
            :headers => {},

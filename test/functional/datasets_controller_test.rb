@@ -359,7 +359,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
     setup do
       stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
-        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:body => "{}", :headers => request_headers).
         to_return(:status => 200, :body => "", :headers => {})
     end
 
@@ -376,7 +376,7 @@ class DatasetsControllerTest < ActionController::TestCase
   context 'contacting dataset owner' do
     setup do
       stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
-        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:body => "{}", :headers => request_headers).
         to_return(:status => 200, :body => "", :headers => {})
     end
 

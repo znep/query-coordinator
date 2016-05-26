@@ -1,16 +1,12 @@
 require 'rails_helper'
 
 describe ImportActivityEvent do
+  include TestHelperMethods
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
-  let(:headers) do
-    { 'Accept'=>'*/*', 'User-Agent'=>'Ruby',
-      'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      'X-Socrata-Host'=>'localhost' }
-  end
 
   before :each do
-    CurrentDomain.stubs(:cname => 'localhost')
+    init_current_domain
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
       JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
@@ -21,15 +17,15 @@ describe ImportActivityEvent do
     )
 
     stub_request(:get, "http://localhost:8080/users/tugg-ikce.json?method=getProfile").
-       with(:headers => headers).
+       with(request_headers).
        to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/dzuq-scr8.json").
-         with(:headers => headers).
+         with(request_headers).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/copy-four.json").
-      with(:headers => headers).
+      with(request_headers).
       to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
 
   end

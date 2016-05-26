@@ -31,8 +31,7 @@ class FederationTest < Minitest::Test
     def setup
       init_current_domain
       stub_request(:get, "http://localhost:8080/federations.json")
-        .with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'})
-        .to_return(:status => 200, :body => federations_json_response, :headers => {})
+        .with(request_headers).to_return(:status => 200, :body => federations_json_response, :headers => {})
     end
 
     def test_federations

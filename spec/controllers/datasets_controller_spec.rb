@@ -42,7 +42,7 @@ describe DatasetsController do
 
       before do
         stub_request(:get, 'http://localhost:8080/manifest_version.json?uid=test-data').
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+          with(request_headers).
           to_return(:status => 200, :body => view_json, :headers => {})
       end
 
@@ -50,7 +50,7 @@ describe DatasetsController do
 
         before do
           stub_request(:get, 'http://localhost:8080/views/test-data.json').
-            with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>''}).
+            with(request_headers).
             to_return(:status => 200, :body => '', :headers => {})
         end
 
@@ -65,7 +65,7 @@ describe DatasetsController do
 
         before do
           stub_request(:get, 'http://localhost:8080/views/test-data.json').
-            with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>''}).
+            with(request_headers).
             to_return(:status => 200, :body => '', :headers => {})
         end
 

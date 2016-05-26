@@ -2,10 +2,10 @@ require File.expand_path('../boot', __FILE__)
 
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
-require 'sprockets/railtie'
-require 'rails/test_unit/railtie'
 require 'active_support/core_ext/numeric/time'
+require 'rails/test_unit/railtie'
 require 'semver'
+require 'sprockets/railtie'
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line

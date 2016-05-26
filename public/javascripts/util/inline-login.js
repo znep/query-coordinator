@@ -162,35 +162,54 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
             $signup.find('span.icon').socrataTip({ content: $content, onModal: true });
         }
 
+        var getOrCreateFlashMessage = function($container) {
+            var $flashMessage = $container.find('.flash');
+            if ($flashMessage.length === 0) {
+                $flashMessage = $('<div/>', { 'class': 'flash' }).insertAfter($container.find('h2'));
+            }
+            return $flashMessage;
+        };
+
         var signupSuccess = function(responseData)
         {
-            if (responseData && responseData.error)
-            {
-                if (_.isArray(responseData.error))
-                {
-                    responseData.error = responseData.error
-                        .join(' ').split('|')
-                        .map(function(line) { return '<p>' + line + '</p>'; })
-                        .join('');
-                }
+            if (responseData) {
+                if( responseData.error) {
+                    if (_.isArray(responseData.error)) {
+                        responseData.error = responseData.error
+                          .join(' ').split('|')
+                          .map(function(line) {
+                              return '<p>' + line + '</p>';
+                          })
+                          .join('');
+                    }
 
-                if (responseData.promptLogin)
-                {
-                    $signup.jqmHide();
-                    _.defer(function()
-                    {
-                        $login.jqmShow()
-                            .find('.flash')
-                                .html(responseData.error)
-                                .addClass('error')
-                            .end()
-                            .find(':text:first').focus();
-                    });
-                }
-                else
-                {
-                    $signup.find('.flash').html(responseData.error).addClass('error');
-                    $signup.find(':text:first').focus().select();
+                    if (responseData.promptLogin) {
+                        $signup.jqmHide();
+                        _.defer(function() {
+                            $login.jqmShow()
+                              .find(':text:first').focus();
+                            getOrCreateFlashMessage($login)
+                              .html(responseData.error)
+                              .addClass('error');
+                        });
+                    }
+                    else {
+                        getOrCreateFlashMessage($signup)
+                          .html(responseData.error)
+                          .addClass('error');
+                        $signup.find(':text:first').focus().select();
+                    }
+                } else {
+                    if (responseData.notice) {
+                        $signup.jqmHide();
+                        _.defer(function() {
+                            $login.jqmShow()
+                              .find(':text:first').focus();
+                            getOrCreateFlashMessage($login)
+                              .html(responseData.notice)
+                              .addClass('notice');
+                        });
+                    }
                 }
             }
             else

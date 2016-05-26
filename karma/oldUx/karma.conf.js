@@ -46,14 +46,6 @@ module.exports = function ( karma ) {
       'public/javascripts/util/dataset/row-set.js',
       'public/javascripts/util/view-cache.js',
       'public/javascripts/util/filter.js',
-      // 'public/javascripts/controls/base-control.js',
-      // 'public/javascripts/controls/full-screen.js',
-      // 'public/javascripts/controls/dataset-controls.js',
-      // 'public/javascripts/controls/render-type-manager.js',
-      // 'public/javascripts/controls/grid-sidebar.js',
-      // 'public/javascripts/screens/dataset-show.js',
-      // 'public/javascripts/screens/admin-jobs.js',
-      // 'public/javascripts/screens/admin-show-job.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',

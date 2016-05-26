@@ -16,6 +16,8 @@ export var InfoPane = React.createClass({
   componentDidMount: function() {
     var metadataHeight = this.metadataPane.getBoundingClientRect().height;
     var descriptionHeight = this.description.getBoundingClientRect().height;
+    var descriptionLineHeight = 24;
+    var descriptionPadding = 11;
 
     if (descriptionHeight < metadataHeight) {
       this.setState({
@@ -24,7 +26,7 @@ export var InfoPane = React.createClass({
     }
 
     collapsible(this.description, {
-      height: 4 * 24 + 2 * 11,
+      height: 4 * descriptionLineHeight + 2 * descriptionPadding,
       expandedCallback: this.props.onExpandDescription
     });
   },
@@ -36,7 +38,7 @@ export var InfoPane = React.createClass({
   },
 
   render: function() {
-    var { view, onClickGrid } = this.props;
+    var { view, onClickGrid, onDownloadData } = this.props;
     var { descriptionHeight } = this.state;
 
     var privateIcon;
@@ -62,7 +64,7 @@ export var InfoPane = React.createClass({
       </a>
     );
 
-    downloadDropdown = <DownloadDropdown view={view} />;
+    downloadDropdown = <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
 
     apiButton = (
       <button className="btn btn-default btn-sm api" data-flannel="api-flannel" data-toggle>
@@ -81,11 +83,16 @@ export var InfoPane = React.createClass({
       <li><a className="option" data-modal="contact-modal">{I18n.action_buttons.contact_owner}</a></li> :
       null;
 
+    var commentLink = serverConfig.featureFlags.defaultToDatasetLandingPage ?
+      <li><a className="option" href={`${view.gridUrl}?pane=feed`}>{I18n.action_buttons.comment}</a></li> :
+      null;
+
     moreActions = (
       <div className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span className="icon-waiting"></span>
         <ul className="dropdown-options">
           {contactFormButton}
+          {commentLink}
           <li><a className="option" data-modal="odata-modal">{I18n.action_buttons.odata}</a></li>
         </ul>
       </div>
@@ -171,6 +178,17 @@ function mapDispatchToProps(dispatch) {
     onClickGrid: function() {
       var payload = {
         name: 'Navigated to Gridpage'
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onDownloadData: function(event) {
+      var payload = {
+        name: 'Downloaded Data',
+        properties: {
+          'Type': event.target.dataset.type
+        }
       };
 
       dispatch(emitMixpanelEvent(payload));

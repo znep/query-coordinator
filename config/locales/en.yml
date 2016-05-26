@@ -1257,6 +1257,7 @@ en:
   dataset_landing_page:
     action_buttons:
       api: API
+      comment: Comment on this Dataset
       contact_owner: Contact Dataset Owner
       data: View Data
       download: Download

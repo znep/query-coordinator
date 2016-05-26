@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { findDOMNode } from 'react-dom';
-import { emitMixpanelEvent } from '../actions';
 
-function generateDownloadLink(view, format, className) {
+function generateDownloadLink(view, format, className, callback) {
   var extension = format;
   var type = format.toUpperCase();
   var params = {
@@ -32,39 +29,34 @@ function generateDownloadLink(view, format, className) {
 
   return (
     <li key={format} className={className}>
-      <a href={url} data-type={type}>
+      <a href={url} data-type={type} onClick={callback}>
         {label}
       </a>
     </li>
   );
 }
 
-function generateGeoDownloadLink(view, format) {
+function generateGeoDownloadLink(view, format, callback) {
   var url = `/api/geospatial/${view.id}?method=export&format=${format}`;
   var label = I18n.download[format.toLowerCase()] || format;
 
   return (
     <li key={format}>
-      <a href={url} data-type={format}>
+      <a href={url} data-type={format} onClick={callback}>
         {label}
       </a>
     </li>
   );
 }
 
-export var DownloadDropdown = React.createClass({
+var DownloadDropdown = React.createClass({
   propTypes: {
+    onDownloadData: PropTypes.func,
     view: PropTypes.object.isRequired
   },
 
-  componentDidMount: function() {
-    // We unfortunately have to watch for clicks here because the styleguide breaks
-    // React's onClick handler when it turns this component into a dropdown.
-    $(findDOMNode(this)).find('a').click(this.props.onClickOption);
-  },
-
   render: function() {
-    var { view } = this.props;
+    var { onDownloadData, view } = this.props;
 
     if (view.downloadOverride) {
       return (
@@ -82,23 +74,23 @@ export var DownloadDropdown = React.createClass({
 
       if (view.geospatialChildLayers.length === 1) {
         exportLinks = exportLinks.concat([
-          generateDownloadLink(view, 'csv_without_geo'),
-          generateDownloadLink(view, 'json_without_geo')
+          generateDownloadLink(view, 'csv_without_geo', null, onDownloadData),
+          generateDownloadLink(view, 'json_without_geo', null, onDownloadData)
         ]);
       } else if (view.geospatialChildLayers.length > 1) {
         exportLinks = exportLinks.concat(view.geospatialChildLayers.map(function(childLayer) {
           return [
             <div>
               <li className="geo-layer-heading">{childLayer.name}</li>
-              {generateDownloadLink(childLayer, 'csv_without_geo', 'geo-layer-export')}
-              {generateDownloadLink(childLayer, 'json_without_geo', 'geo-layer-export')}
+              {generateDownloadLink(childLayer, 'csv_without_geo', 'geo-layer-export', onDownloadData)}
+              {generateDownloadLink(childLayer, 'json_without_geo', 'geo-layer-export', onDownloadData)}
             </div>
           ];
         }));
       }
     } else {
       exportLinks = _.map(view.exportFormats, function(format) {
-        return generateDownloadLink(view, format);
+        return generateDownloadLink(view, format, null, onDownloadData);
       });
     }
 
@@ -113,19 +105,4 @@ export var DownloadDropdown = React.createClass({
   }
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onClickOption: function(event) {
-      var payload = {
-        name: 'Downloaded Data',
-        properties: {
-          'Type': event.target.dataset.type
-        }
-      };
-
-      dispatch(emitMixpanelEvent(payload));
-    }
-  };
-}
-
-export default connect(_.identity, mapDispatchToProps)(DownloadDropdown);
+export default DownloadDropdown;

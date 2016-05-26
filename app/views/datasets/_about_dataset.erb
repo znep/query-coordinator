@@ -226,7 +226,7 @@
 
         <dt><%= t('screens.about.short_url') %></dt>
         <dd><span class="hardWrap"><%=
-          short_url = short_view_url(id: @view.id)
+          short_url = short_view_url(@view)
           link_to "".html_safe + short_url + "<span class='accessible'>Opens in new window.</span>".html_safe,
                       short_url,
                       :rel => 'external',

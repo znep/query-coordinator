@@ -27,11 +27,6 @@ done
 # Run tests
 bundle exec rake test
 
-# Sauce tests
-if $RUN_SAUCE_TESTS; then
-  (unset http_proxy; unset https_proxy; bundle exec rake test:karma_sauce CRITICAL_BROWSERS_ONLY=true)
-fi
-
 # Remove certain javascript files from public/javascripts (BUT WHY)
 if [ ! $COMPRESS_ASSETS = "true" ] ; then
   bundle exec rake deploy:move_resources

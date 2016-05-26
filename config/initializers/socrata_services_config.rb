@@ -26,3 +26,6 @@ Rails.application.config.send_new_page_views_metric = (ENV['SEND_NEW_PAGE_VIEWS_
 
 # Enable or disable Getty Images gallery
 Rails.application.config.enable_getty_images_gallery = (ENV['ENABLE_GETTY_IMAGES_GALLERY'].to_s.downcase == 'true')
+
+# Enable or disable visualization Authoring Workflow
+Rails.application.config.enable_visualization_authoring_workflow = (ENV['ENABLE_VISUALIZATION_AUTHORING_WORKFLOW'].to_s.downcase == 'true')

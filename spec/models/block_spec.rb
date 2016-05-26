@@ -58,6 +58,34 @@ RSpec.describe Block, type: :model do
       end
     end
 
+    context 'when Rails has deeply munged VIF2 filters from an empty array to nil' do
+      it 'correctly resets the filters to an empty array' do
+        test_components = [
+          {
+            type: 'socrata.visualization.columnChart',
+            value: {
+              vif: {
+                format: {
+                  version: 2
+                },
+                series: [
+                  {
+                    dataSource: {
+                      filters: nil
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+
+        new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+
+        expect(new_block.components[0]['value']['vif']['series'][0]['dataSource']['filters'].is_a?(Array)).to eq(true)
+      end
+    end
+
     context 'when the block contains a classic visualization' do
       let(:view) {
         {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true}}}}

@@ -433,7 +433,7 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-move-up-btn btn-secondary icon-arrow-up',
+          'class': 'block-edit-controls-move-up-btn btn btn-secondary icon-arrow-up',
           'data-block-id': blockId,
           'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
         }
@@ -442,7 +442,7 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-move-down-btn btn-secondary icon-arrow-down',
+          'class': 'block-edit-controls-move-down-btn btn btn-secondary icon-arrow-down',
           'data-block-id': blockId,
           'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
         }
@@ -451,7 +451,7 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-delete-btn btn-secondary icon-cross2',
+          'class': 'block-edit-controls-delete-btn btn btn-secondary icon-cross2',
           'data-block-id': blockId,
           'data-block-delete-action': Actions.STORY_DELETE_BLOCK
         }

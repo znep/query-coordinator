@@ -6,5 +6,6 @@ export default {
   validBlockId: 'blockId',
   validBlockData1: DataGenerators.generateBlockData(),
   firstBlockId: 'rawr-rawr',
-  secondBlockId: 'like-your'
+  secondBlockId: 'like-your',
+  vifBlockId: 'viff-iess'
 };

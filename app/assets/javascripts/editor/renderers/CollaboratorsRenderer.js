@@ -89,7 +89,7 @@ export default function CollaboratorsRenderer() {
                 '</li>',
               '</ul>',
             '</div>',
-            StorytellerUtils.format('<button class="btn-default" data-action="{0}" disabled>{1}</button>', Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')),
+            StorytellerUtils.format('<button class="btn btn-default" data-action="{0}" disabled>{1}</button>', Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')),
           '</div>',
         '</div>',
         '<div>',
@@ -106,8 +106,8 @@ export default function CollaboratorsRenderer() {
           '</table>',
         '</div>',
         '<div class="modal-button-group r-to-l">',
-          StorytellerUtils.format('<button class="btn-default" data-action="{0}">{1}</button>', Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
-          StorytellerUtils.format('<button class="btn-primary" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
+          StorytellerUtils.format('<button class="btn btn-default" data-action="{0}">{1}</button>', Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
+          StorytellerUtils.format('<button class="btn btn-primary" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
         '</div>',
       '</div>'
     ].join('').format({
@@ -135,7 +135,7 @@ export default function CollaboratorsRenderer() {
     /* eslint-disable indent */
     return [
       '<button ',
-        'class="btn-default"',
+        'class="btn btn-default"',
         StorytellerUtils.format('data-action="{0}"', Actions.COLLABORATORS_REMOVE),
       StorytellerUtils.format('>{0}</button>', t('editor.collaborators.modal.remove'))
     ].join('');

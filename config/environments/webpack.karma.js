@@ -8,7 +8,7 @@ module.exports = {
     filename: '[name].[hash].js',
     path: 'public/js'
   },
-  devtool: 'cheap-module-inline-source-map',
+  devtool: 'eval',
   watch: true,
   module: {
     loaders: [

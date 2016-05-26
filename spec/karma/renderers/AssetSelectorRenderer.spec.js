@@ -23,10 +23,16 @@ describe('AssetSelectorRenderer', function() {
   var assetSelectorStoreMock;
   var fileUploaderStoreMock;
   var server;
+  var environment;
   var dispatcher;
 
   beforeEach(function() {
     server = sinon.fakeServer.create();
+    environment = {
+      ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true,
+      ENABLE_SVG_VISUALIZATIONS: true,
+      ENABLE_FILTERED_TABLE_CREATION: true
+    };
 
     container = $('<div>', { 'class': 'asset-selector-container' });
     $transient.append(container);
@@ -45,6 +51,7 @@ describe('AssetSelectorRenderer', function() {
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
+    AssetSelectorStoreAPI.__Rewire__('Environment', environment);
     AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
     AssetSelectorStoreAPI.__Rewire__('storyStore', {
       getBlockComponentAtIndex: _.constant({
@@ -56,6 +63,7 @@ describe('AssetSelectorRenderer', function() {
 
     AssetSelectorRendererAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
+    AssetSelectorRendererAPI.__Rewire__('Environment', environment);
 
     dispatcher.dispatch({
       action: Actions.STORY_CREATE,
@@ -505,9 +513,10 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('renders visualziation options', function() {
-        assert.equal(container.find('.visualization-options').length, 1);
-        assert.equal(container.find('[data-visualization-option="INSERT_VISUALIZATION"]').length, 1);
-        assert.equal(container.find('[data-visualization-option="CREATE_VISUALIZATION"]').length, 1);
+        assert.lengthOf(container.find('.visualization-options'), 1);
+        assert.lengthOf(container.find('[data-visualization-option="INSERT_VISUALIZATION"]'), 1);
+        assert.lengthOf(container.find('[data-visualization-option="CREATE_VISUALIZATION"]'), 1);
+        assert.lengthOf(container.find('[data-visualization-option="AUTHOR_VISUALIZATION"]'), 1);
       });
 
       describe('the modal', function() {
@@ -563,6 +572,66 @@ describe('AssetSelectorRenderer', function() {
             container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
             1
           );
+        });
+      });
+    });
+
+    describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = AUTHOR_VISUALIZATION is fired', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+          visualizationOption: 'AUTHOR_VISUALIZATION'
+        });
+      });
+
+      it('renders an iframe', function() {
+        assert.lengthOf(container.find('.asset-selector-dataset-chooser-iframe'), 1);
+      });
+    });
+
+    describe('when within the Authoring Workflow', function() {
+      beforeEach(function() {
+        $(document.body).append($('<div>', {id: 'authoring-workflow'}));
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+          visualizationOption: 'AUTHOR_VISUALIZATION'
+        });
+      });
+
+      afterEach(function() {
+        $('#authoring-workflow').remove();
+      });
+
+      describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+        beforeEach(function(done) {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            domain: 'example.com',
+            newBackend: true
+          });
+
+          server.respond([
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify({
+              id: 'fooo-baar',
+              domain: 'foo',
+              columns: [{
+                'fieldName': 'foo'
+              }],
+              newBackend: true
+            })
+          ]);
+
+          setTimeout(function() {
+            done();
+          });
+        });
+
+        it('should render the AuthoringWorkflow', function() {
+          assert.isAbove($('#authoring-workflow *').length, 0);
         });
       });
     });

@@ -35,7 +35,7 @@ function _renderSelector($element, componentData) {
   $controlsInsertButton = $(
     '<button>',
     {
-      'class': 'btn-primary asset-selector-insert-btn'
+      'class': 'btn btn-primary asset-selector-insert-btn'
     }
   ).text(I18n.t('editor.components.asset_selector.insert_btn'));
 

@@ -85,15 +85,12 @@ class Block < ActiveRecord::Base
         # In practice, we determine if this 'migration' is necessary by
         # asserting that the 'vif' property of the value exists and has a
         # 'filters' key, but the value of the 'filters' key value is nil.
-        vif_or_nil = component.try(:[], 'value').try(:[], 'vif')
+        vif = component.try(:[], 'value').try(:[], 'vif')
 
-        if (
-          vif_or_nil.present? &&
-          vif_or_nil.is_a?(Hash) &&
-          vif_or_nil.has_key?('filters') &&
-          vif_or_nil['filters'].nil?
-        )
+        if vif && vif['format']['version'] == 1 && vif['filters'].nil?
           component['value']['vif']['filters'] = []
+        elsif vif && vif['format']['version'] == 2 && vif['series'][0]['dataSource']['filters'].nil?
+          component['value']['vif']['series'][0]['dataSource']['filters'] = []
         end
 
         # We had some old code where blocks were not saved properly.

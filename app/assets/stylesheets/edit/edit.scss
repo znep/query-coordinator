@@ -339,6 +339,10 @@ a[role="button"] {
   }
 }
 
+#authoring-workflow {
+  line-height: 1.618; // Styleguide expects this.
+}
+
 // Developer mode Rack Mini Profiler.
 // Positioned under the header.
 .profiler-results {

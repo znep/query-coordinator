@@ -121,7 +121,7 @@ describe('AssetSelectorStore', function() {
     server.respond([200, { 'Content-Type': 'application/json' }, JSON.stringify(viewData) ]);
   }
 
-  beforeEach(function() {
+  function bootstrap() {
     dispatcher = new Dispatcher();
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
@@ -154,6 +154,10 @@ describe('AssetSelectorStore', function() {
 
     server = sinon.fakeServer.create();
     assetSelectorStore = new AssetSelectorStore();
+  }
+
+  beforeEach(function() {
+    bootstrap();
   });
 
   afterEach(function() {
@@ -558,6 +562,42 @@ describe('AssetSelectorStore', function() {
 
         respondToMetadataRequestWith(nbeView);
       });
+
+      describe('when in the Authoring Workflow', function() {
+        beforeEach(function() {
+          AssetSelectorStoreAPI.__Rewire__('Environment', {
+            ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true,
+            ENABLE_SVG_VISUALIZATIONS: true
+          });
+
+          bootstrap();
+        });
+
+        it('should step to the authoring workflow page', function(done) {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
+            visualizationOption: 'AUTHOR_VISUALIZATION'
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            domain: 'example.com',
+            isNewBackend: true
+          });
+
+          assetSelectorStore.addChangeListener(function() {
+            assert.equal(
+              assetSelectorStore.getStep(),
+              WIZARD_STEP.AUTHOR_VISUALIZATION
+            );
+
+            done();
+          });
+
+          respondToMetadataRequestWith(nbeView);
+        });
+      });
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
@@ -831,9 +871,13 @@ describe('AssetSelectorStore', function() {
     describe('non-linear workflows', function() {
       var blockIdBeingEdited;
 
-      function editComponent(blockId, type) {
+      function editComponent(blockId, type, value) {
         blockIdBeingEdited = blockId;
         blockComponentAtIndex = {type: type};
+
+        if (value) {
+          blockComponentAtIndex.value =  value;
+        }
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
@@ -928,20 +972,39 @@ describe('AssetSelectorStore', function() {
         });
 
         describe('socrata.visualization.columnChart', function() {
-          beforeEach(function() { editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart'); });
-          verifyStepIs('CONFIGURE_VISUALIZATION');
-          verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is true', function() {
+            beforeEach(function() {
+              AssetSelectorStoreAPI.__Rewire__('Environment', {
+                ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
+              });
 
-          describe('then jump to SELECT_VISUALIZATION_OPTION', function() {
-            jumpToStep('SELECT_VISUALIZATION_OPTION');
-            verifyStepIs('SELECT_VISUALIZATION_OPTION');
+              bootstrap();
+              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 2}}});
+            });
+
+            verifyStepIs('AUTHOR_VISUALIZATION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
 
-          describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG', function() {
-            jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
-            verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
+          describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is false', function() {
+            beforeEach(function() {
+              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart');
+            });
+
+            verifyStepIs('CONFIGURE_VISUALIZATION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+
+            describe('then jump to SELECT_VISUALIZATION_OPTION', function() {
+              jumpToStep('SELECT_VISUALIZATION_OPTION');
+              verifyStepIs('SELECT_VISUALIZATION_OPTION');
+              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+            });
+
+            describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG', function() {
+              jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
+              verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
+              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+            });
           });
         });
 

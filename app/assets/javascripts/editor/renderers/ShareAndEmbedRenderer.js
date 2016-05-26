@@ -50,7 +50,7 @@ export default function ShareAndEmbedRenderer() {
           StorytellerUtils.format('<h2 class="modal-input-label input-label">{0}</h2>', t('editor.share_and_embed.modal.preview_label')) +
           '<iframe src="about:blank" class="share-and-embed-preview-iframe"></iframe>' +
           '<div class="modal-button-group r-to-l">' +
-            StorytellerUtils.format('<button class="btn-default" data-action="{0}">{1}</button>', Actions.SHARE_AND_EMBED_MODAL_CLOSE, t('editor.modal.buttons.done')) +
+            StorytellerUtils.format('<button class="btn btn-default" data-action="{0}">{1}</button>', Actions.SHARE_AND_EMBED_MODAL_CLOSE, t('editor.modal.buttons.done')) +
           '</div>' +
         '</div>'
     );

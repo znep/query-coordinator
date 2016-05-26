@@ -19,7 +19,7 @@ export default function StorySaveErrorBar() {
   var $this = $(this);
   var $container = $('<span>', { 'class': 'container' });
   var $message = $('<span>', { 'class': 'message' });
-  var $tryAgainButton = $('<button>', { 'class': 'btn-try-again btn-secondary btn-small' });
+  var $tryAgainButton = $('<button>', { 'class': 'btn btn-try-again btn-alternate-2 btn-xs' });
 
   $tryAgainButton.append(
     $('<span>').text(I18n.t('editor.story_save_error_try_again'))

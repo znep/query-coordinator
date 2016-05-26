@@ -1,5 +1,6 @@
 import $ from 'jQuery';
 import _ from 'lodash';
+import SocrataVisualizations from 'socrata-visualizations';
 
 import '../components/Modal';
 import I18n from '../I18n';
@@ -329,6 +330,10 @@ export default function AssetSelectorRenderer(options) {
           selectorWideDisplay = true;
           break;
 
+        case WIZARD_STEP.AUTHOR_VISUALIZATION:
+          selectorContent = _renderAuthorVisualizationTemplate();
+          break;
+
         case WIZARD_STEP.CONFIGURE_VISUALIZATION:
           selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
           selectorContent = _renderConfigureVisualizationTemplate();
@@ -376,7 +381,7 @@ export default function AssetSelectorRenderer(options) {
 
       if (selectorContent) {
         _showSelectorWith({
-          title: selectorTitle,
+          title: selectorTitle + (Environment.ENVIRONMENT === 'development' ? ' [' + step + ']' : ''),
           content: selectorContent,
           wide: selectorWideDisplay
         });
@@ -513,6 +518,11 @@ export default function AssetSelectorRenderer(options) {
     var createVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
+    var authorVisualizationHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.visualization.choose_author_visualization_heading'));
+    var authorVisualizationDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
+
     var visualizationOptions =
       $(
         '<ul>',
@@ -534,6 +544,15 @@ export default function AssetSelectorRenderer(options) {
             {'data-visualization-option': 'CREATE_VISUALIZATION'}
           ).append(createVisualizationHeader, createVisualizationDescription)
         ]);
+
+    if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
+      visualizationOptions.append(
+          $(
+            '<li>',
+            {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
+          ).append(authorVisualizationHeader, authorVisualizationDescription)
+      );
+    }
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
@@ -1816,6 +1835,52 @@ export default function AssetSelectorRenderer(options) {
     return [ loadingButton, mapOrChartChooserIframe, buttonGroup ];
   }
 
+  function _renderAuthorVisualizationTemplate() {
+    var element = document.getElementById('authoring-workflow');
+    var value = assetSelectorStore.getComponentValue();
+    var vif = {
+      series: [{
+        dataSource: {
+          domain: value.dataset.domain,
+          datasetUid: value.dataset.datasetUid
+        }
+      }]
+    };
+    var vifDatasetUid = _.get(value, 'vif.series[0].dataSource.datasetUid');
+    var selectedDatasetUid = _.get(value, 'dataset.datasetUid');
+
+    if (vifDatasetUid === selectedDatasetUid) {
+      vif = value.vif;
+    }
+
+    var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
+      vif: vif,
+      onComplete: function(state) {
+        var datasetUid = _.get(state.vif, 'series[0].dataSource.datasetUid');
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          visualization: {
+            data: state.vif,
+            format: 'vif2',
+            originalUid: datasetUid
+          }
+        });
+
+        authoringWorkflow.destroy();
+        _saveAndClose();
+      },
+      onCancel: function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.SELECT_VISUALIZATION_OPTION
+        });
+
+        authoringWorkflow.destroy();
+      }
+    });
+  }
+
   function _renderConfigureVisualizationTemplate() {
     var configureVisualizationIframe = $(
       '<iframe>',
@@ -1830,7 +1895,7 @@ export default function AssetSelectorRenderer(options) {
     // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
     // into shared function
     var loadingButton = $('<button>', {
-      'class': 'btn-transparent btn-busy visualization-busy',
+      'class': 'btn btn-transparent btn-busy visualization-busy',
       'disabled': true
     }).append($('<span>'));
 
@@ -1934,7 +1999,7 @@ export default function AssetSelectorRenderer(options) {
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG);
 
     var loadingButton = $('<button>', {
-      'class': 'btn-transparent btn-busy visualization-busy',
+      'class': 'btn btn-transparent btn-busy visualization-busy',
       'disabled': true
     }).append($('<span>'));
 
@@ -2075,7 +2140,7 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseEmbedCodeTemplate() {
     var loadingButton = $('<button>', {
-      'class': 'btn-transparent btn-busy hidden',
+      'class': 'btn btn-transparent btn-busy hidden',
       disabled: true
     }).append($('<span>'));
 
@@ -2179,7 +2244,7 @@ export default function AssetSelectorRenderer(options) {
     return $(
       '<button>',
       {
-        'class': 'btn-default back-btn',
+        'class': 'btn btn-default back-btn',
         'data-resume-from-step': fromStep
       }
     ).text(
@@ -2203,7 +2268,7 @@ export default function AssetSelectorRenderer(options) {
 function _renderModalInsertButton(options) {
   return $(
     '<button>',
-    { 'class': 'btn-primary btn-apply' }
+    { 'class': 'btn btn-primary btn-apply' }
   ).
   text(_insertButtonText()).
   attr('disabled', _.get(options, 'disabled', false));

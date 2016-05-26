@@ -6,7 +6,7 @@ html, body {
 .siteInnerWrapper {
   max-width: 100%;
   padding-bottom: 0;
-  .flash.notice, .flash.warning {
+  .flash.notice, .flash.warning, .flash.error {
     margin: 1em;
   }
 }

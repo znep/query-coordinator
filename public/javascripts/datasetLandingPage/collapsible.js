@@ -7,6 +7,7 @@ velocity.defaults.duration = 320;
 velocity.defaults.easing = [.645, .045, .355, 1];
 
 module.exports = function(el, options) {
+  var $el = $(el);
   var parent = el.parentElement;
   var collapsedHeight = null;
   var originalHeight = parent.getBoundingClientRect().height;
@@ -34,17 +35,17 @@ module.exports = function(el, options) {
   }
 
   function collapse() {
-    $(el).dotdotdot(dotdotdotOptions);
+    $el.dotdotdot(dotdotdotOptions);
   }
 
-  $(el).find('.collapse-toggle').click(function(event) {
+  $el.find('.collapse-toggle').click(function(event) {
     event.preventDefault();
 
     if (parent.dataset.collapsed) {
       delete parent.dataset.collapsed;
 
       // Reset dotdotdot
-      el.dispatchEvent(new Event('destroy'));
+      $el.trigger('destroy');
       el.style.height = 'auto';
 
       parent.style.height = collapsedHeight + 'px';

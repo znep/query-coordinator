@@ -140,7 +140,14 @@
           </ul>
           <div class="columnsToolbar clearfix">
             <div class="presets">
-              <a class="columnsPresetsButton button" href="#reset"><%= t("#{prefix}.reset") %></a>
+              <label for="columnsPresetsSelect"><%= t("#{prefix}.reset_to_preset") %>:</label>
+              <select class="columnsPresetsSelect">
+                <option value="suggested"><%= t("#{prefix}.suggested_columns") %></option>
+                <option value="suggestedFlat"><%= t("#{prefix}.suggested_flat") %></option>
+                <option value="suggestedPlusDiscrete"><%= t("#{prefix}.suggested_plus_discrete") %></option>
+                <option value="alltext"><%= t("#{prefix}.suggested_alltext") %></option>
+              </select>
+              <a class="columnsPresetsButton button" href="#set"><%= t("#{prefix}.set") %></a>
             </div>
             <div class="actions">
               <a class="clearColumnsButton button" href="#clear"><%= t("#{prefix}.clear_all") %></a>

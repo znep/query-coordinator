@@ -1,4 +1,7 @@
 class DatasetLandingPage
+  include Rails.application.routes.url_helpers
+  include Socrata::UrlHelpers
+
   def get_popular_views(uid, limit = nil, offset = 0)
     view = View.find(uid)
 
@@ -17,7 +20,7 @@ class DatasetLandingPage
       :name => popular_view.name,
       :id => popular_view.id,
       :description => popular_view.description,
-      :url => popular_view.seo_friendly_url,
+      :url => seo_friendly_url(popular_view),
       :displayType => popular_view.display.try(:type),
       :updatedAt => popular_view.time_last_updated_at,
       :viewCount => popular_view.viewCount,

@@ -79,7 +79,7 @@ bin/start
 
 To run the webpack-dev-server:
 ```
-npm run webpack-dev-server
+npm run watch
 ```
 - You *must* run the NGINX configuration in [frontend](https://github.com/socrata/frontend) for the dev-server to work.
 

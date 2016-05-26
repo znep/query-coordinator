@@ -56,11 +56,19 @@ ol {
   padding-left: ms(2);
 }
 
+
 a {
   color: $primary-text;
-
   &:hover {
-    color: $primary-dark;
+    text-decoration: none;
+  }
+}
+
+a.unstyled-link {
+  color: $primary-text;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
   }
 }
 

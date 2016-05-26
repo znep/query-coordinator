@@ -20,11 +20,17 @@ class UserSessionsController < ApplicationController
   end
 
   def index
-    Airbrake.notify(
-      :error_class => 'Deprecation',
-      :error_message => 'Called UserSessionsController#index - deprecated function',
-      :request => { :params => params }
-    )
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # We were previously notifying Airbrake of a deprecation notice on
+    # UserSessionsController#index, a notification which was created in 2009
+    # and has presumably been notifying Airbrake ever since. The frequency with
+    # which this notification happens (5.5k times over the past 3 months) leads
+    # me to be believe that if this method was deprecated, we never told
+    # anybody about it.
+    #
+    # The notification is now gone, but interested parties can find it in
+    # commit ec208d81875d511c87196b8c986d1d0b1deb50a0.
     respond_to do |format|
       format.data { render :json => {:user_id => current_user.nil? ? nil : current_user.id} }
     end

@@ -23,16 +23,7 @@ describe DatasetsController do
       init_current_domain
       init_current_user(controller)
       login
-      # allow_any_instance_of(ApplicationController).to receive(:default_url_options).and_return({})
-      # allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
-      # allow_any_instance_of(ApplicationController).to receive(:set_user)
-      # allow_any_instance_of(ApplicationController).to receive(:set_meta)
-      # allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
-      # strings = Hashie::Mash.new
-      # strings.site_title = 'My Site'
-      # allow(CurrentDomain).to receive(:strings).and_return(strings)
       allow(subject).to receive(:get_view).and_return(view)
-      # allow(subject).to receive(:view_redirection_url).and_return('/')
       allow(subject).to receive(:using_canonical_url?).and_return(true)
       subject.instance_variable_set('@meta', {})
       allow(FeatureFlags).to receive(:derive).and_return(OpenStruct.new(:dataset_landing_page_enabled? => true))

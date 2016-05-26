@@ -209,15 +209,38 @@ In order to allow clearer management of dependencies, Bower was (eventually) int
 
 There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.
 
+> Note: The Jammit gem will silently fail to use configured compressors if the gem(s) are not installed or fail to load. For example it reverts to using `jsmin` by default (the documentation lies). `jsmin` is known to generate invalid Javascript code.
+
 ```sh
 tools/verify_compression.rb --all
 ```
-## Dev Proxy
+## Dev Proxy (DEPRECATED)
 
 The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
 
 ```sh
 dev-server/dev-proxy.js
+```
+
+## Tools in `bin` directory
+
+These tools can be used to run commands like `rails`, `rake`, `bundler` and so on, when on the application is deployed in a development environment. 
+
+An example of starting up the `rails` console on a production host is:
+
+```sh
+sudo -u blist RAILS_ENV=production bundle exec bin/rails c
+```
+
+An example of running `bundler` on a prouction host:
+
+```sh
+sudo -u blist RAILS_ENV=production bundle install --without=development --deployment
+```
+An example of running `rake` on a production host:
+
+```sh
+sudo -u blist RAILS_ENV=productionbundle exec bin/rake routes
 ```
 
 You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. That may change in the future.

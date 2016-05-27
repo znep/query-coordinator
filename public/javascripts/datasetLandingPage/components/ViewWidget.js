@@ -1,3 +1,4 @@
+import utils from 'socrata-utils';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
@@ -58,7 +59,7 @@ var ViewWidget = React.createClass({
             <span className="date">{formatDate(updatedAt)}</span>
           </div>
           <div className="second">
-            <span className="date">{viewCount} views</span>
+            <span className="date">{utils.formatNumber(viewCount)} views</span>
           </div>
         </div>
         <div className="entry-content">

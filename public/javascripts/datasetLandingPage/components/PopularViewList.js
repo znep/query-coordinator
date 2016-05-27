@@ -46,7 +46,15 @@ export var PopularViewList = React.createClass({
     if (!isDesktop && hasMore) {
       popularViews.push(
         <div className="result-card loading-card" key="loading">
-          <span className="spinner-default" />
+          <span className="spinner-default spinner-large" />
+        </div>
+      );
+    }
+
+    if (isDesktop && hasMore) {
+      popularViews.push(
+        <div className="desktop-spinner" key="loading">
+          <span className="spinner-default spinner-large" />
         </div>
       );
     }
@@ -58,27 +66,14 @@ export var PopularViewList = React.createClass({
     );
   },
 
-  renderLoadMoreButton: function() {
+  renderLoadMoreLink: function() {
     var { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
-    if (!hasMore || !isDesktop) {
+    if (!hasMore || !isDesktop || !serverConfig.featureFlags.defaultToDatasetLandingPage) {
       return null;
     }
 
-    var contents = isLoading ?
-     <span className="spinner-default spinner-btn-default spinner-btn-sm" /> : I18n.more;
-
-    var onClick = isLoading ? null : loadMore;
-    var className = 'btn btn-default btn-sm load-more-button';
-
-    // Keep button height the same regardless of whether or not it has a spinner inside of it.
-    var style = isLoading ? { paddingTop: '6px', paddingBottom: '3px' } : null;
-
-    return (
-      <button onClick={onClick} className={className} style={style}>
-        {contents}
-      </button>
-    );
+    return <a onClick={isLoading ? null : loadMore} className="load-more-button">{I18n.more}</a>;
   },
 
   renderError: function() {
@@ -96,7 +91,7 @@ export var PopularViewList = React.createClass({
     );
   },
 
-  renderCollapseButton: function() {
+  renderCollapseLink: function() {
     var { list, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
     if (hasMore || list.length <= POPULAR_VIEWS_CHUNK_SIZE || !isDesktop) {
@@ -104,14 +99,14 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <button onClick={toggleList} className="btn btn-default btn-sm collapse-button">
+      <a onClick={toggleList} className="collapse-button">
         {isCollapsed ? I18n.more : I18n.less}
-      </button>
+      </a>
     );
   },
 
   getAnimation: function() {
-    var { list, isCollapsed, isDesktop } = this.props;
+    var { list, isCollapsed, isDesktop, isLoading } = this.props;
 
     var popularViewHeight = 287;
     var popularViewMargin = 18;
@@ -124,6 +119,11 @@ export var PopularViewList = React.createClass({
 
     var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
     var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
+
+    // While loading on desktop, we immediately expand the container to make room for the new views.
+    if (isLoading) {
+      rowCount += 1;
+    }
 
     return {
       height: (popularViewHeight + popularViewMargin) * rowCount - 1
@@ -141,8 +141,8 @@ export var PopularViewList = React.createClass({
           {this.renderContents()}
         </VelocityComponent>
 
-        {this.renderLoadMoreButton()}
-        {this.renderCollapseButton()}
+        {this.renderLoadMoreLink()}
+        {this.renderCollapseLink()}
         {this.renderError()}
       </section>
     );

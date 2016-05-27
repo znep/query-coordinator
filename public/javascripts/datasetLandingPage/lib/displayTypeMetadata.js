@@ -4,7 +4,7 @@ function getIconClassForDisplayType(displayType) {
   }
 
   switch (displayType) {
-    case 'group':
+    case 'grouped':
     case 'filter':
       return 'icon-filter';
 

@@ -131,6 +131,15 @@
             <%- end %>
             <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
           </dd>
+          <dt>Flush Cache</dt>
+          <dd>
+            <%- if CurrentDomain.last_refresh(@domain.cname).nil? %>
+              <p>Dev Mode does not cache domain data.</p>
+            <%- else %>
+              <%= one_button_form(url: flush_cache_path(format: :data), text: 'Flush cache') %>
+            <%- end %>
+            <p>This informs frontend that it should re-fetch domain data (including configurations) from core.</p>
+          </dd>
         </dl>
       <%- end %>
     </div>

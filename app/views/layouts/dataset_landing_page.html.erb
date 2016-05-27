@@ -7,10 +7,16 @@
     <%= rendered_stylesheet_tag("dataset-landing-page") %>
     <link rel="stylesheet" href="/stylesheets/styleguide/css/styleguide.css"/>
     <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
+
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+    <%= site_chrome_javascript_tag %>
   </head>
 
   <body>
+    <%= render 'site_chrome/header' %>
     <%= yield %>
+    <%= render 'site_chrome/footer' %>
 
     <script>
       var initialState = {

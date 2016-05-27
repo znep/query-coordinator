@@ -1,6 +1,5 @@
 import React from 'react';
 import Responsive from './lib/Responsive';
-import Navbar from './components/Navbar';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
 import PopularViewList from './containers/PopularViewList';

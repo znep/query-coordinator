@@ -101,7 +101,7 @@ function TileserverDataProvider(config) {
       url += '$limit={0}'.format(featuresPerTile);
 
       if (!_.isEmpty(whereClause)) {
-        url += '&$WHERE={0}'.format(whereClause);
+        url += '&$where={0}'.format(whereClause);
       }
 
       return _getArrayBuffer(

@@ -5,7 +5,7 @@ set -ev
 export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
 export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 
-# Trun verbose output OFF so we don't echo the output of the secrets file
+# Turn verbose output OFF so we don't echo the output of the secrets file
 set +ev
 if [ -f /dev/shm/frontend_secrets.sh ]; then
   source /dev/shm/frontend_secrets.sh

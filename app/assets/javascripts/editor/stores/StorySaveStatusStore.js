@@ -1,4 +1,3 @@
-import $ from 'jQuery';
 import _ from 'lodash';
 
 import Store from './Store';
@@ -7,6 +6,8 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
 import { storyStore } from './StoryStore';
+import httpRequest from '../../services/httpRequest';
+import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 export var storySaveStatusStore = StorytellerUtils.export(
   new StorySaveStatusStore(Environment.STORY_UID),
@@ -20,7 +21,6 @@ export var storySaveStatusStore = StorytellerUtils.export(
  */
 export default function StorySaveStatusStore(forStoryUid) {
   var self = this;
-
   var _lastSerializedStory = null;
   var _saveInProgress = false;
   // If a conflict ever happens, disable save for the entire life of this page :(
@@ -35,15 +35,19 @@ export default function StorySaveStatusStore(forStoryUid) {
 
   this.register(function(payload) {
     var action = payload.action;
+    var userUrl;
 
     switch (action) {
+
       case Actions.STORY_CREATE:
         _lastSerializedStory = storyStore.serializeStory(forStoryUid);
         _storySavedSuccessfully();
         break;
+
       case Actions.STORY_SAVED:
         _storySavedSuccessfully();
         break;
+
       case Actions.STORY_SAVE_FAILED:
         _saveInProgress = false;
         _poisonedWithSaveConflictForever = _poisonedWithSaveConflictForever || payload.conflict;
@@ -53,10 +57,18 @@ export default function StorySaveStatusStore(forStoryUid) {
         self._emitChange();
 
         if (payload.conflict) {
-          $.get(StorytellerUtils.format('/api/users/{0}.json', payload.conflictingUserId)).then(function(userData) {
-            _userCausingConflict = userData;
-            self._emitChange();
-          });
+
+          userUrl = StorytellerUtils.format('/api/users/{0}.json', payload.conflictingUserId);
+
+          httpRequest('GET', userUrl, 'json').
+            then(
+              function(userData) {
+
+                _userCausingConflict = userData;
+                self._emitChange();
+              }
+            ).
+            catch(exceptionNotifier.notify);
         }
         break;
 

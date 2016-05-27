@@ -74,13 +74,12 @@ ActiveRecord::Schema.define(version: 20160421190934) do
   add_index "draft_stories", ["uid"], name: "index_draft_stories_on_uid", using: :btree
 
   create_table "getty_images", force: :cascade do |t|
-    t.string   "getty_id",                    null: false
-    t.integer  "domain_id",                   null: false
-    t.boolean  "downloading", default: false
-    t.string   "created_by",                  null: false
+    t.string   "getty_id",    null: false
+    t.integer  "domain_id",   null: false
+    t.string   "created_by",  null: false
     t.integer  "document_id"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "published_stories", force: :cascade do |t|

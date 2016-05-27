@@ -373,16 +373,20 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
     var defaultThemesStyleElement = makeStyleElement(_defaultThemesCss);
     var customThemesStyleElement = makeStyleElement(_customThemesCss);
 
-    defaultThemesStyleElement.onload = function() {
-      _.delay(function() {
-        _updateContentHeight();
-        _broadcastHeightChange();
-        $(document.body).css('opacity', '');
-      }, 10);
-    };
-
     document.head.appendChild(defaultThemesStyleElement);
     document.head.appendChild(customThemesStyleElement);
+
+    // It takes the browser a few extra frames to render the styles that are
+    // applied above with appendChild. If we update the content height
+    // willy nilly, we end up with something unrepresentative of the desired
+    // height (an unstyled height, if you will). To avoid this, we wait for
+    // a seemingly arbitrary amount of time (10ms has been determined
+    // sufficient through casual testing) before recalculating the height.
+    setTimeout(function() {
+      _updateContentHeight();
+      _broadcastHeightChange();
+      $(document.body).css('opacity', '');
+    }, 10);
   }
 
   /**

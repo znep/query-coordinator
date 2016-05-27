@@ -463,20 +463,10 @@ export default function AssetSelectorRenderer(options) {
     var storyTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.story_tile.description'));
 
-    var goalTileHeader;
-    var goalTileDescription;
-    var $goalTileProvider;
-
-    if (Environment.ENABLE_GOAL_TILES) {
-
-      goalTileHeader = $('<h3>').
-        text(I18n.t('editor.asset_selector.goal_tile.name'));
-      goalTileDescription = $('<p>').
-        text(I18n.t('editor.asset_selector.goal_tile.description'));
-      $goalTileProvider = $('<li>', {
-        'data-provider': 'GOAL_TILE'
-      }).append(goalTileHeader, goalTileDescription);
-    }
+    var goalTileHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.goal_tile.name'));
+    var goalTileDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.goal_tile.description'));
 
     var embedCodeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.embed_code.name'));
@@ -490,9 +480,9 @@ export default function AssetSelectorRenderer(options) {
       $('<li>', {
         'data-provider': 'STORY_TILE'
       }).append(storyTileHeader, storyTileDescription),
-      // TODO: Bring the feature-flag-enabled code path back here to conform
-      // with local style once feature flag is removed.
-      $goalTileProvider,
+      $('<li>', {
+        'data-provider': 'GOAL_TILE'
+      }).append(goalTileHeader, goalTileDescription),
       $('<li>', {
         'data-provider': 'YOUTUBE'
       }).append(youtubeHeader, youtubeDescription),
@@ -979,12 +969,12 @@ export default function AssetSelectorRenderer(options) {
 
     var tryAgainButton = $(
       '<button>',
-      { 'class': 'btn-default btn-inverse hidden asset-selector-try-again' }
+      { 'class': 'btn-default hidden asset-selector-try-again' }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
     var uploadCancelButton = $(
       '<button>',
-      { 'class': 'btn-default btn-inverse asset-selector-cancel-upload' }
+      { 'class': 'btn-default asset-selector-cancel-upload' }
     ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
     tryAgainButton.on('click', cancel);
@@ -999,7 +989,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = $(
       '<button>',
-      { class: 'btn-default btn-inverse back-btn' }
+      { class: 'btn-default back-btn' }
     ).text(I18n.t('editor.asset_selector.back_button_text'));
 
     backButton.on('click', cancel);
@@ -1194,7 +1184,7 @@ export default function AssetSelectorRenderer(options) {
       {
         'class': 'asset-selector-text-input',
         'data-asset-selector-validate-field': 'storyUrl',
-        'placeholder': 'https://www.example.com/stories/s/abcd-efgh',
+        'placeholder': 'https://www.example.com/stories/s/story-title/abcd-efgh',
         'type': 'text'
       }
     );
@@ -1308,6 +1298,9 @@ export default function AssetSelectorRenderer(options) {
         // we can synthesize a valid URL for the component and set the value
         // of the text input control to reflect that.
         if (_.isEmpty($inputControl.val().replace(/\s/g, ''))) {
+          // We don't know the story title at this point so we can't generate the SEO-friendly
+          // component of the URL. This is OK though, as the story tile will generate its own
+          // SEO-friendly URLs when it renders.
           $inputControl.val(
             StorytellerUtils.format(
               'https://{0}/stories/s/{1}',
@@ -2186,7 +2179,7 @@ export default function AssetSelectorRenderer(options) {
     return $(
       '<button>',
       {
-        'class': 'btn-default btn-inverse back-btn',
+        'class': 'btn-default back-btn',
         'data-resume-from-step': fromStep
       }
     ).text(

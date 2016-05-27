@@ -407,7 +407,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
 function _removeGoalTile($element) {
 
   $element.
-    removeClass('error').
+    removeClass('component-error').
     children().
     // Don't accidentally remove the edit control when trying to clear the
     // component's DOM tree in order to re-render it.
@@ -420,7 +420,7 @@ function _renderGoalTileError($element) {
   _removeGoalTile($element);
 
   $element.
-    addClass('error').
+    addClass('component-error').
     append([
       $('<p>').text(I18n.t('editor.goal_tile.render_error'))
     ]);

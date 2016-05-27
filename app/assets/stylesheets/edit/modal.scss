@@ -96,6 +96,7 @@
         font-weight: bold;
       }
     }
+
     .modal-input-group {
       display: block;
       position: relative;
@@ -168,6 +169,11 @@
         }
       }
     }
+  }
+
+  .modal-content {
+    max-height: none;
+    overflow: hidden;
   }
 }
 

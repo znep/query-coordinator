@@ -242,7 +242,7 @@ export default function RichTextEditorFormatController(editor, formats) {
       }
 
       if (!anchor || anchor.nodeName !== 'A') {
-        return exceptionNotifier.notify('An anchor tag could not be selected.');
+        return exceptionNotifier.notify(new Error('An anchor tag could not be selected.'));
       }
 
       if (inside) {

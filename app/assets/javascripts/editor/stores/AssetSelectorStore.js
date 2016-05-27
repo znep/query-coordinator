@@ -8,6 +8,7 @@ import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import {fileUploaderStore, STATUS} from './FileUploaderStore';
+import httpRequest from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 // The step in the asset selection flow the user is in.
@@ -511,7 +512,7 @@ export default function AssetSelectorStore() {
       // Fetch additional data needed for UI.
       _getView(domain, datasetUid).
         then(_setComponentPropertiesFromViewData).
-        then(self._emitChange());
+        then(self._emitChange);
     } else {
       self._emitChange();
     }
@@ -621,9 +622,11 @@ export default function AssetSelectorStore() {
       }
       self._emitChange();
     }).catch(function(error) {
+
       if (window.console && console.error) {
         console.error('Error selecting dataset: ', error);
       }
+
       exceptionNotifier.notify(error);
     });
   }
@@ -742,18 +745,19 @@ export default function AssetSelectorStore() {
   }
 
   function _getNbeView(domain, obeUid) {
-    return Promise.resolve($.get(
-      StorytellerUtils.format(
-        'https://{0}/api/migrations/{1}.json',
-        domain,
-        obeUid
-      )
-    )).then(
-      function(migrationData) {
-        return _getView(domain, migrationData.nbeId);
-      }
+    var migrationsUrl = StorytellerUtils.format(
+      'https://{0}/api/migrations/{1}.json',
+      domain,
+      obeUid
     );
 
+    return httpRequest('GET', migrationsUrl, 'json').
+      then(
+        function(migrationData) {
+          return _getView(domain, migrationData.nbeId);
+        }
+      ).
+      catch(exceptionNotifier.notify);
   }
 
   function _getView(domain, uid) {
@@ -768,23 +772,17 @@ export default function AssetSelectorStore() {
       uid
     );
 
-    return Promise.resolve($.get(viewUrl)).
-      then(function(viewData) {
-        // Retcon the domain into the view data.
-        // We'd have to pass it around like 5 methods
-        // otherwise.
-        viewData.domain = domain;
-        return viewData;
-      }).
-      catch(
-        function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
-          var errorObj = new Error(
-            StorytellerUtils.format(
-              'Could not retrieve "{0}" in _getView(): {1}',
-              viewUrl,
-              jqXhr.responseText
-            )
-          );
+    return httpRequest('GET', viewUrl, 'json').
+      then(
+        function(viewData) {
+          // Retcon the domain into the view data.
+          // We'd have to pass it around like 5 methods
+          // otherwise.
+          viewData.domain = domain;
+
+          return viewData;
+        },
+        function(error) {
 
           if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
             _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
@@ -798,8 +796,10 @@ export default function AssetSelectorStore() {
 
           self._emitChange();
 
-          exceptionNotifier.notify(errorObj);
-          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error')); //eslint-disable-line no-alert
+          exceptionNotifier.notify(error);
+          /* eslint-disable no-alert */
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error'));
+          /* eslint-enable no-alert */
         }
       );
   }
@@ -986,15 +986,9 @@ export default function AssetSelectorStore() {
   }
 
   function _updateStoryUrl(payload) {
-    var storyDomain = _extractDomainFromStoryUrl(payload.url);
-    var storyUid = _extractStoryUidFromStoryUrl(payload.url);
-
     _state.componentType = 'story.tile';
 
-    _state.componentProperties = {
-      domain: storyDomain,
-      storyUid: storyUid
-    };
+    _state.componentProperties = _componentPropertiesFromStoryUrl(payload.url);
 
     self._emitChange();
   }
@@ -1040,26 +1034,38 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  function _extractDomainFromStoryUrl(storyUrl) {
-    var match = storyUrl.match(/^https\:\/\/(.*)\/stories\/s\/\w{4}\-\w{4}/i);
-    var storyDomain = null;
-
-    if (match !== null) {
-      storyDomain = match[1];
+  function _parseUrl(url) {
+    if (url.match(/https?:\/\//)) {
+      var a = document.createElement('a');
+      a.href = url;
+      return a;
+    } else {
+      return null;
     }
-
-    return storyDomain;
   }
 
-  function _extractStoryUidFromStoryUrl(storyUrl) {
-    var match = storyUrl.match(/^https\:\/\/.*\/stories\/s\/(\w{4}\-\w{4})/i);
-    var storyUid = null;
+  function _componentPropertiesFromStoryUrl(url) {
+    var parsedUrl = _parseUrl(url);
+    if (!parsedUrl) { return {}; }
 
-    if (match !== null) {
-      storyUid = match[1];
+    if (parsedUrl.pathname.indexOf(Constants.VIEW_PREFIX_PATH) === 0) {
+      // Find the last thing in the url that looks like a uid (4x4).
+      // We can't take the first thing because our story title may look
+      // like a 4x4, and it comes first.
+      var uid = _(
+        parsedUrl.pathname.substring(Constants.VIEW_PREFIX_PATH.length).split('/')
+      ).
+      compact(). // Removes blank strings.
+      findLast(function(c) {
+        return c.match(Constants.FOUR_BY_FOUR_PATTERN);
+      });
+
+      if (uid) {
+        return { domain: parsedUrl.hostname, storyUid: uid };
+      }
     }
 
-    return storyUid;
+    return {};
   }
 
   function _extractDomainFromGoalUrl(goalUrl) {

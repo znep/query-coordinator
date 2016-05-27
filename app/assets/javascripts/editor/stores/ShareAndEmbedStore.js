@@ -1,16 +1,23 @@
+import $ from 'jQuery';
 import _ from 'lodash';
 
 import Store from '../stores/Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { coreSavingStore } from '../stores/CoreSavingStore';
 
 export var shareAndEmbedStore = new ShareAndEmbedStore();
 export default function ShareAndEmbedStore() {
   _.extend(this, new Store());
 
-  var _currentOpenState = false;
   var self = this;
+
+  var _currentOpenState = false;
+  // View URL for the story. Initialized from the environment,
+  // but updates come from the embed tile API if the user changes
+  // the story title.
+  var _storyViewUrl = Environment.STORY_VIEW_URL;
 
   this.register(function(payload) {
     StorytellerUtils.assertHasProperty(payload, 'action');
@@ -30,6 +37,16 @@ export default function ShareAndEmbedStore() {
     }
   });
 
+  coreSavingStore.addChangeListener(function() {
+    if (!coreSavingStore.isSaveInProgress()) {
+      //TODO port to new httpRequest helper once it is merged.
+      Promise.resolve($.getJSON(self.getStoryTileApiUrl())).then(function(data) {
+        _storyViewUrl = _.get(data, 'url', _storyViewUrl);
+        self._emitChange();
+      });
+    }
+  });
+
   /**
    * Public methods
    */
@@ -39,15 +56,15 @@ export default function ShareAndEmbedStore() {
   };
 
   this.getStoryUrl = function() {
-    return StorytellerUtils.format(
-      '{0}/stories/s/{1}',
-      window.location.protocol + '//' + window.location.hostname,
-      Environment.STORY_UID
-    );
+    return _storyViewUrl;
   };
 
   this.getStoryTileUrl = function() {
     return StorytellerUtils.format('{0}/tile', this.getStoryUrl());
+  };
+
+  this.getStoryTileApiUrl = function() {
+    return this.getStoryTileUrl() + '.json';
   };
 
   this.getStoryEmbedCode = function() {

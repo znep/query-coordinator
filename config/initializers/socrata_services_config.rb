@@ -16,7 +16,7 @@ Rails.application.config.consul_service_uri = ENV['CONSUL_SERVICE_URI'] || 'http
 Rails.application.config.consul_service_timeout = (ENV['CONSUL_SERVICE_TIMEOUT_SECONDS'] || 2).to_i
 
 # Enable or disable Goal Tiles
-Rails.application.config.enable_goal_tiles = (ENV['ENABLE_GOAL_TILES'].to_s.downcase == 'true')
+Rails.application.config.enable_svg_visualizations = (ENV['ENABLE_SVG_VISUALIZATIONS'].to_s.downcase == 'true')
 
 # Enable or disable creating new tables off of filtered views.
 Rails.application.config.enable_filtered_table_creation = (ENV['ENABLE_FILTERED_TABLE_CREATION'].to_s.downcase == 'true')

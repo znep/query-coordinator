@@ -630,7 +630,7 @@ export default function StoryRenderer(options) {
       } catch (e) {
         if (exceptionNotifier) {
           exceptionNotifier.notify(e);
-        } else {
+        } else if (console && console.error) {
           console.error(e);
         }
       }

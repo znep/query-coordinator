@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'lib/socrata-icons';
+@import 'src/scss/socrata-icons';
 @import 'bourbon';
 
 body.story-save-error #rich-text-editor-toolbar-wrapper {
@@ -43,8 +43,17 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
     }
   }
 
+  .rich-text-editor-toolbar-btn-group {
+    &.rich-text-editor-toolbar-btn-group-with-block-elements {
+      .rich-text-editor-toolbar-divider {
+        top: 7px;
+      }
+    }
+  }
+
   .rich-text-editor-toolbar-btn-panel-group {
     position: relative;
+    float: right;
   }
 
   &:last-child {
@@ -88,7 +97,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
   }
 
   .rich-text-editor-toolbar-btn-link:before {
-    @extend .icon-link2:before;
+    @extend .icon-link:before;
   }
 
   .rich-text-editor-toolbar-btn-orderedList:before {
@@ -158,6 +167,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
 
     .rich-text-editor-toolbar-btn-textColor {
       position: relative;
+      float: right;
 
       .rich-text-editor-toolbar-text-color-swatch {
         position: absolute;

@@ -10,8 +10,7 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require lib/normalize
- *= require lib/socrata-icons
+ *= require dist/css/styleguide
  *= require leaflet
  *= require socrata-visualizations
  *= require_tree ./lib

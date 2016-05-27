@@ -531,6 +531,8 @@ function TimelineChart(element, vif) {
 
     var isIntervalFlyout = $target.
       is(flyoutIntervalTopSelectors.concat([flyoutIntervalPathSelector]).join(', '));
+    payload.isIntervalFlyout = isIntervalFlyout;
+
     var isSelectionRendered = !_.isNull(selectionStartDate) &&
       !_.isNull(selectionEndDate) &&
       selectionIsCurrentlyRendered;

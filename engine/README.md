@@ -56,6 +56,18 @@ OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 ```
 
+### Asset Pipeline Prefix
+
+You must set the `config.assets.prefix` to be `asset_pipeline` instead of the default `assets`:
+
+```ruby
+# In application.rb
+
+config.assets.prefix = '/asset_pipeline'
+```
+
+This is because the default `/assets` is currently reserved in `frontend` for a route in `core`.
+
 ## Usage
 
 In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section.

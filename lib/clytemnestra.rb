@@ -1,10 +1,4 @@
 module Clytemnestra
-  def self.search_users(opts)
-    path = "/search/users.json?#{opts.to_core_param}"
-    result = CoreServer::Base.connection.get_request(path, {})
-    UserSearchResult.from_result(result)
-  end
-
   # We may want to enable caching by default in the future; but for now
   # we only want to enable it in a few key locations
   def self.search_cached_views(opts, use_batch = false, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_search)
@@ -22,7 +16,6 @@ module Clytemnestra
     search_result.id = cache_key
     search_result
   end
-
 
   def self.search_views(opts, batch_id = nil, is_anon = false, timeout = 25)
     path = "/search/views.json?#{opts.to_core_param}"

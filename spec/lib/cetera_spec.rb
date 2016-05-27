@@ -87,6 +87,42 @@ describe Cetera do
       expect(sample_result_row.icon_class).to eq('icon')
       expect(sample_result_row.story?).to eq(false)
     end
+
+    it 'should support expected display types or fallback to base' do
+      type_expected = {
+        'api' => Cetera::Displays::Api,
+        'calendar' => Cetera::Displays::Calendar,
+        'chart' => Cetera::Displays::Chart,
+        'datalens' => Cetera::Displays::DataLens,
+        'dataset' => Cetera::Displays::Dataset,
+        'draft' => Cetera::Displays::Draft,
+        'file' => Cetera::Displays::File,
+        'filter' => Cetera::Displays::Filter,
+        'form' => Cetera::Displays::Form,
+        'link' => Cetera::Displays::Link,
+        'map' => Cetera::Displays::Map,
+        'pulse' => Cetera::Displays::Pulse,
+        'story' => Cetera::Displays::Story,
+
+        'href' => Cetera::Displays::Link, # deprecated
+
+        'missing' => Cetera::Displays::Base,
+        :pants => Cetera::Displays::Base,
+        [] => Cetera::Displays::Base,
+        nil => Cetera::Displays::Base
+      }
+
+      type_expected.each do |type, expected|
+        mini_response = {
+          'resource' => { 'type' => type },
+          'metadata' => { 'domain' => 'pants.com' },
+          'classification' => { 'domain_category' => 'pants',
+                                'domain_tags' => %w(tubes, legs) }
+        }
+        actual = Cetera::CeteraResultRow.new(mini_response)
+        expect(actual.display).to eq(expected)
+      end
+    end
   end
 
   it 'should test_cetera_sort_order_translator' do
@@ -116,18 +152,20 @@ describe Cetera do
         with(query: Cetera.cetera_soql_params(query)).
         to_timeout
 
-      expect { Cetera.search_views(query, {}, 'Unvailable') }.to raise_error(Timeout::Error)
+      expect { Cetera.search_views(query, nil, 'Unvailable') }.to raise_error(Timeout::Error)
     end
 
     it 'should test_cookies_and_request_id_get_passed_along_to_cetera' do
       query = { domains: ['example.com'] }
-      cookies = { 'i am a cookie' => 'of oatmeal and raisins',
-                  'i am also a cookie' => 'of chocolate chips' }
+      cookies = {
+        'i am a cookie' => 'of oatmeal and raisins',
+        'i am also a cookie' => 'of chocolate chips'
+      }.map { |key, value| "#{key}=#{value}" }.join('; ')
+
       request_id = 'iAmProbablyUnique'
 
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(headers: { 'Cookie' => cookies.map { |key, val| "#{key}=#{val}" }.join('; '),
-                        'X-Socrata-RequestId' => request_id },
+        with(headers: { 'Cookie' => cookies, 'X-Socrata-RequestId' => request_id },
              query: Cetera.cetera_soql_params(query)).
         to_return(status: 500, body: 'I cannot be parsed!')
 
@@ -157,10 +195,49 @@ describe Cetera do
         with(query: cetera_soql_params).
         to_return(status: 200, body: response.to_json)
 
-      res = Cetera.search_views(query, {}, 'funnyId')
+      res = Cetera.search_views(query, nil, 'funnyId')
 
       expect(res.data.to_hash).to eq(response)
       expect(res.results).to be_empty
+    end
+  end
+
+  describe 'Cetera user search' do
+    search_query = 'socrata.com'
+
+    # NOTE: If you re-record the cassette, you'll need to replace this with whatever is getting
+    # passed to Cetera & Core. Check the Cetera debug logs or puts forwardable_session_cookies.
+    cookie_string = 'logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWFiYjg5NWJjZTdiYzMwNGM0YTA4MDQ2YjNhYzk1MjJlBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMVpjblBZUm9uYllOQTFkS3NFSjMwdTk2a1A1djNmSlgrVk9mcUdnK1R5OVk9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYw--542ee4041debe2e56bb7b670253193a91b7f0b9e; _core_session_id=ODNueS13OXplIDE0NjcwODc1NTUgNmU4MGU2N2FlYWYyIGU2YzE0NmIzNDRjZTcxM2ZlNTdmMmNlNWMwYzEzMzNiYjExMTVhOGQ; socrata-csrf-token=FaLWHLnxbMVDIPEnQn+SIQbDxpikR9bGm7EZAQj9XfNwaxl9o9YBRgP1I4tS4maa2Gf5A1M7QzjPVvMbB26WJQ=='
+
+    request_id = '55c8a53595d246c6ac8e20dd2a9bcb71'
+
+    it 'should call to Cetera and parse some responses' do
+      VCR.use_cassette('cetera/user_search') do
+        search_result = Cetera.search_users(search_query, cookie_string, request_id)
+        expect(search_result).to be_a(Cetera::SearchResult)
+
+        results = search_result.results
+        expect(results.size).to eq(200) # old Core limit, let's not OOM
+
+        # Documenting behavior, may not be desired:
+        # Cetera's /whitepages resultSetSize is inconsistent with Cetera's /catalog resultSetSize
+        # /whitepage's means total in payload, /catalog's means total matching query
+        expect(results.count).to eq(200)
+
+        results.each do |user|
+          expect(user).to be_a(User)
+          expect(user.id).to be_present
+          expect(user.email).to be_present
+          expect(user.screen_name).to be(user.displayName) # needed by FE view
+        end
+      end
+    end
+
+    it 'should not return results when authentication fails' do
+      VCR.use_cassette('cetera/user_search_bad_auth') do
+        search_result = Cetera.search_users(search_query, cookie_string.reverse, request_id)
+        expect(search_result.results).to be_empty
+      end
     end
   end
 

@@ -36,6 +36,11 @@ RSpec.configure do |config|
     # ...rather than:
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+    expectations.syntax = [:should, :expect]
+  end
+
+  config.mock_with :rspec do |mock|
+    mock.syntax = [:should, :expect]
   end
 
   # rspec-mocks config goes here. You can use an alternate test double
@@ -45,6 +50,14 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+
+  config.around(:each, verify_stubs: false) do |example|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      example.run
+      mocks.verify_partial_doubles = true
+    end
   end
 
 # The settings below are suggested to provide a good initial experience
@@ -91,6 +104,13 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+def rspec_stub_feature_flags_with(key, value) # todo rename
+  feature_flags = Hashie::Mash.new
+  feature_flags[key.to_s] = value
+  allow(CurrentDomain).to receive(:feature_flags).and_return(feature_flags)
+  allow(FeatureFlags).to receive(:derive).and_return(feature_flags)
 end
 
 def stub_logged_in

@@ -229,8 +229,7 @@ module Canvas2
 
 
     def self.odysseus_request(path, opts = {}, is_anon = false)
-      uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port,
-                            path: path, query: opts.to_param })
+      uri = URI::HTTP.build(host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port, path: path, query: opts.to_param)
       req = Net::HTTP::Get.new(uri.request_uri)
 
       req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
@@ -250,17 +249,15 @@ module Canvas2
         raise CoreServer::ResourceNotFound.new(res)
       end
 
-      if !res.is_a?(Net::HTTPSuccess)
-        raise CoreServer::CoreServerError.new(
-          uri.to_s,
-          res.code,
-          res.body
-        )
+      unless res.is_a?(Net::HTTPSuccess)
+        raise CoreServer::CoreServerError.new(uri.to_s, res.code, res.body)
       end
+
       JSON.parse(res.body)
     end
 
-  private
+    private
+
     class AppHelper
       include ActionView::Helpers::TagHelper
       include ActionView::Helpers::UrlHelper
@@ -357,7 +354,6 @@ module Canvas2
       end
 
       @@transforms_cache[str] = p
-      p
     end
 
     def self.process_transforms(v, transforms, helpers)
@@ -373,10 +369,11 @@ module Canvas2
           end
         end
       end
+
       { value: v, fallback_result: fb_result }
     end
 
-    Default_Precison = 2
+    DEFAULT_PRECISION = 2
 
     @@apply_expr = {
       'regex' => lambda do |v, transf, helpers|
@@ -400,7 +397,7 @@ module Canvas2
         commaify = transf[:format].include?(',')
         if transf[:format].include?('h')
           # Humane
-          v = app_helper.number_to_human(v, :precision => prec.blank? ? Default_Precison : prec,
+          v = app_helper.number_to_human(v, :precision => prec.blank? ? DEFAULT_PRECISION : prec,
                               :significant => false,
                               :strip_insignificant_zeros => !use_padding,
                               :delimiter => commaify ? ',' : '',

@@ -18,7 +18,7 @@ class SignupPresenter < Presenter
     @inviteToken = inviteToken
     @authToken = authToken
 
-    @errors = []
+    @errors = {}
 
     super(params)
   end
@@ -55,7 +55,7 @@ protected
     @user.password = temp_password
     true
   rescue CoreServer::CoreServerError => e
-    @errors << e.error_message
+    (@errors[:core] ||= []) << e.error_message
     false
   end
 

@@ -69,11 +69,9 @@ class InternalControllerTest < ActionController::TestCase
   test '#set_feature_flags does not make changes to a config with the wrong cname' do
     init_for_feature_flags
 
-    @domain.instance_variable_get(:@default_configs)['feature_flags'].
-      data['domainCName'] = 'not.localhost'
+    @domain.instance_variable_get(:@default_configs)['feature_flags'].data['domainCName'] = 'not.localhost'
 
-    Configuration.expects(:create).once.
-      returns(Hashie::Mash.new.tap { |hashie| hashie.properties = {} })
+    Configuration.expects(:create).once.returns(Hashie::Mash.new.tap { |hashie| hashie.properties = {} })
     post(:set_feature_flags, domain_id: 'localhost', format: 'data')
   end
 
@@ -87,32 +85,71 @@ class InternalControllerTest < ActionController::TestCase
   test '#set_feature_flags does not require feature_flags param' do
     init_for_feature_flags
 
-    post(:set_feature_flags, domain_id: 'localhost',
-                             reset_to_default: { 'new_charts' => true },
-                             format: 'data')
+    post(:set_feature_flags, domain_id: 'localhost', reset_to_default: { 'new_charts' => true }, format: 'data')
     assert(JSON.parse(@response.body)['errors'].empty?)
   end
 
   test '#set_feature_flags does not require reset_to_default param' do
     init_for_feature_flags
 
-    post(:set_feature_flags, domain_id: 'localhost',
-                             format: 'data')
+    post(:set_feature_flags, domain_id: 'localhost', format: 'data')
     assert(JSON.parse(@response.body)['errors'].empty?)
   end
 
+  test 'clears cached values on save' do
+    init_for_feature_flags
+
+    stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=locales').
+      with(request_headers).to_return(:status => 200, :body => ['en'].to_json, :headers => {})
+
+    stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=feature_flags').
+      with(request_headers).to_return(:status => 200, :body => mock_feature_flags_response, :headers => {})
+
+    post(:set_feature_flags, domain_id: 'localhost', feature_flags: { 'enable_new_account_verification_email' => false }, format: 'data')
+    assert(JSON.parse(@response.body)['errors'].empty?)
+    refute(FeatureFlags.derive['enable_new_account_verification_email'])
+
+    stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=feature_flags').
+      with(request_headers).to_return(:status => 200, :body => mock_feature_flags_response(true), :headers => {})
+
+    post(:set_feature_flags, domain_id: 'localhost', feature_flags: { 'enable_new_account_verification_email' => true }, format: 'data')
+    assert(JSON.parse(@response.body)['errors'].empty?)
+    assert(FeatureFlags.derive['enable_new_account_verification_email'])
+  end
+
   private
+
   def init_for_feature_flags
     init_current_domain
     Domain.stubs(:find => @domain)
     pretend_to_be_superadmin
 
-    stub_request(:post, "http://localhost:8080/batches").
+    stub_request(:post, 'http://localhost:8080/batches').
       to_return(:status => 200, :body => [{ no_idea: 'what goes here' }].to_json, :headers => {})
   end
 
   def pretend_to_be_superadmin
     init_current_user(@controller)
     @controller.current_user.stubs(:flag? => true)
+    @controller.stubs(:check_auth => true)
   end
+
+  def mock_feature_flags_response(state = false)
+    %Q([{
+      "id" : 16,
+      "name" : "Feature Flags",
+      "default" : true,
+      "domainCName" : "localhost",
+      "type" : "feature_flags",
+      "updatedAt" : 1463760268,
+      "properties" : [{
+        "name" : "zealous_dataslate_cache_expiry",
+        "value" : "false"
+      }, {
+        "name" : "enable_new_account_verification_email",
+        "value" : "#{state}"
+      }]
+    }])
+  end
+
 end

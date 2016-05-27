@@ -40,7 +40,7 @@
     <%- if !@current_user.nil? && @current_user.has_right?(UserRights::CREATE_DATASETS) &&
       !@view.nil? && @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? -%>
     <li class="edit"><a class="button"
-      href="<%= edit_view_rr_path(@view.route_params.merge( defaultRender: 'page' )) %>">Edit Layout</a></li>
+      href="<%= edit_view_rr_path(@view, defaultRender: 'page') %>">Edit Layout</a></li>
     <%- end -%>
     <li><a href="#start" title="<%= t('controls.grid.view_first_row') %>" class="start button">
       <span class="icon"></span>

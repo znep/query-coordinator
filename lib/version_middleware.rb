@@ -10,7 +10,7 @@ class VersionMiddleware
   # Host: header to be set, but the /version.json is just a plain JSON response, we return it here directly.
   # See also CurrentDomainMiddleware for further details.
   def call(env)
-    if VersionRequestHelper.is_version_json_request?(env['REQUEST_URI'])
+    if ::VersionRequestHelper.is_version_json_request?(env['REQUEST_URI'])
       ['200', {'Content-Type' => 'application/json'}, [version.to_json]]
     else
       @app.call(env)

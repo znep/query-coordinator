@@ -5,7 +5,7 @@ class AppConfig < Hashie::Dash
   include Hashie::Extensions::IgnoreUndeclared
   include Hashie::Extensions::IndifferentAccess
 
-  as_int = ->(val) { val.to_i }
+  as_int = lambda(&:to_i)
 
   # Services and service coordination
   property :coreservice_uri
@@ -84,6 +84,9 @@ class AppConfig < Hashie::Dash
 
   # What's New configuration
   property :whats_new, default: {}
+
+  # Canary declaration
+  property :canary, default: false
 
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int

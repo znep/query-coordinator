@@ -30,6 +30,16 @@ class DatasetsControllerTest < ActionController::TestCase
     default_url_options[:host] = @request.host
   end
 
+  def teardown
+    @controller.unstub(:current_user)
+    @controller.stubs(:phidippides)
+    View.unstub(:new_backend?)
+    View.unstub(:category_display)
+    Phidippides.unstub(:fetch_pages_for_dataset)
+    CurrentDomain.unstub(:user_can?)
+    CurrentDomain.unstub(:default_widget_customization_id)
+  end
+
   # https://opendata.test-socrata.com/dataset/28-Formwidtest/zwjk-24g6.json?text=1
   # should redirect to https://opendata.test-socrata.com/resource/zwjk-24g6.json?text=1
   test 'redirects to format URLs include query string parameters' do
@@ -90,9 +100,9 @@ class DatasetsControllerTest < ActionController::TestCase
     )
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     notice_matcher = lambda { |element|
-      element.match(/#{I18n.t('screens.ds.new_ux_nbe_warning')}/i)
+      element =~ /#{I18n.t('screens.ds.new_ux_nbe_warning')}/i
     }
-    assert_select_quiet('.flash.notice').any?(&notice_matcher)
+    assert_select('.flash.notice').any?(&notice_matcher)
     assert_response 200
   end
 
@@ -235,7 +245,7 @@ class DatasetsControllerTest < ActionController::TestCase
     setup_nbe_dataset_test(true)
     @request.env['HTTPS'] = 'on'
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_select_quiet 'meta' do |elements|
+    assert_select 'meta' do |elements|
       elements.each do |element|
         element.attributes.values.each do |value|
           value.to_s.scan(/http.?:\/\//).each do |match|
@@ -275,12 +285,12 @@ class DatasetsControllerTest < ActionController::TestCase
     end
   end
 
-# These tests don't work because it 302 is returned for non-authoritative URLs.
+# These tests don't work because 302 is returned for non-authoritative URLs.
 #  test 'returns 200 if changes have occurred for unsigned user' do
 #    dsmtime = 12345
 #    VersionAuthority.stubs(:get_core_dataset_mtime => { 'four-four' => dsmtime })
 #    @request.env['HTTP_IF_NONE_MATCH'] = "#{dsmtime + 1000}-ANONYMOUS"
-#    @request.stubs(:path => view_path(@view.route_params)) # Please stop 302ing.
+#    @request.stubs(:path => view_path(@view)) # Please stop 302ing.
 #    get :show, { :id => 'four-four' }
 #    assert_response :success
 #  end
@@ -294,13 +304,13 @@ class DatasetsControllerTest < ActionController::TestCase
 #  end
 
   # Leaving CSRF token validation disabled for email is not without some risk. It could allow
-  # mallicious attackers to attempt to use the site as an email relay, among other things.
+  # malicious attackers to attempt to use the site as an email relay, among other things.
   # However, the risk is somewhat mitgated by the fact that a captcha is included on the form.
   context 'without a valid request forgery token' do
 
     setup do
       stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
-        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:body => "{}", :headers => request_headers).
         to_return(:status => 200, :body => "", :headers => {})
     end
 
@@ -317,7 +327,7 @@ class DatasetsControllerTest < ActionController::TestCase
   context 'contacting dataset owner' do
     setup do
       stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
-        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        with(:body => "{}", :headers => request_headers).
         to_return(:status => 200, :body => "", :headers => {})
     end
 

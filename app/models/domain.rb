@@ -74,18 +74,17 @@ class Domain < Model
       @configs[type] = Configuration.find_by_type(type, false, cname)
     end
 
-    return @configs[type]
+    @configs[type]
   end
 
   def default_configuration(type)
     @default_configs ||= Hash.new
 
     if @default_configs[type].nil?
-      @default_configs[type] =
-        Configuration.find_by_type(type, true, cname)[0]
+      @default_configs[type] = Configuration.find_by_type(type, true, cname).first
     end
 
-    return @default_configs[type]
+    @default_configs[type]
   end
 
   def modules
@@ -98,8 +97,8 @@ class Domain < Model
   end
 
   def feature?(name_or_set)
-    if name_or_set.is_a? Array
-      name_or_set.any?{|mod| features[mod.to_s] }
+    if name_or_set.is_a?(Array)
+      name_or_set.any? { |mod| features[mod.to_s] }
     else
       features[name_or_set.to_s]
     end

@@ -164,12 +164,12 @@ module SodaCan
 
     def self.contains(operands)
       operands.size == 2 or fail("Invalid number of operands for contains, expected 2, got #{operands.size} => #{operands}", operands, true)
-      !operands[0].nil? && !operands[1].nil? &&operands[0].include?(operands[1])
+      !operands[0].nil? && !operands[1].nil? && operands[0].include?(operands[1])
     end
 
     def self.starts_with(operands)
       operands.size == 2 or fail("Invalid number of operands for starts_with, expected 2, got #{operands.size} => #{operands}", operands, true)
-      !operands[0].nil? && operands[0].starts_with?(operands[1])
+      operands[0..1].all?(&:present?) && operands[0].starts_with?(operands[1])
     end
 
     def self.greater_than_or_equals(operands)

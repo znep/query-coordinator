@@ -226,9 +226,8 @@ module CommonMetadataMethods
     end
 
     # Filter metadb_response on only published v2 data lenses
-    metadb_result = JSON.parse(metadb_response.select { |view|
-      view.data_lens? && view.is_published?
-    }.to_s, :symbolize_names => true)
+    metadb_result = metadb_response.select { |view| view.data_lens? && view.is_published? }.
+      map { |view| view.as_json.with_indifferent_access }
 
     combined_statuses = [phiddy_result[:status], metadb_status]
 

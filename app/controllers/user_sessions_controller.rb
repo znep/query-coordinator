@@ -20,11 +20,17 @@ class UserSessionsController < ApplicationController
   end
 
   def index
-    Airbrake.notify(
-      :error_class => 'Deprecation',
-      :error_message => 'Called UserSessionsController#index - deprecated function',
-      :request => { :params => params }
-    )
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # We were previously notifying Airbrake of a deprecation notice on
+    # UserSessionsController#index, a notification which was created in 2009
+    # and has presumably been notifying Airbrake ever since. The frequency with
+    # which this notification happens (5.5k times over the past 3 months) leads
+    # me to be believe that if this method was deprecated, we never told
+    # anybody about it.
+    #
+    # The notification is now gone, but interested parties can find it in
+    # commit ec208d81875d511c87196b8c986d1d0b1deb50a0.
     respond_to do |format|
       format.data { render :json => {:user_id => current_user.nil? ? nil : current_user.id} }
     end
@@ -46,14 +52,6 @@ class UserSessionsController < ApplicationController
       # If specifying a return_to param, let that override request.referer
       session[:return_to] ||= params[:return_to] || request.referer
     end
-  end
-
-  def extend
-    # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
-    # purpose; but phusion passenger requires "".
-    response.headers['ETag'] = ''
-    session_response = current_user.nil? ? {:expired => 'expired' } : current_user_session.extend
-    render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
   end
 
   def expire_if_idle
@@ -81,7 +79,7 @@ class UserSessionsController < ApplicationController
 
         if auth0_properties.present?
           restricted_roles = auth0_properties.try(:require_sso_for_rights)
-          
+
           if restricted_roles.present? &&
              restricted_roles.any? { |role| @user_session.user.has_right?(role) }
             # user has a role that requires auth0... fail
@@ -223,7 +221,7 @@ class UserSessionsController < ApplicationController
           Rails.logger.error(error)
           Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
         end
-        
+
         @auth0_message = properties.try(:auth0_message)
       end
     end

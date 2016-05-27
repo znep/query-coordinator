@@ -4,6 +4,9 @@
 class ApplicationController < ActionController::Base
   include ActionControllerExtensions
   include UserAuthMethods
+  include ActionController::Caching::Pages
+
+  self.page_cache_directory = "#{Rails.root}/public/page_cache"
 
   def current_domain
     CurrentDomain
@@ -25,9 +28,13 @@ class ApplicationController < ActionController::Base
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
   rescue_from ActionView::MissingTemplate, :with => :render_406
 
-  # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  protect_from_forgery # :secret => 'e231a1e478cd7112967644be164e057e'
+  # Prevent CSRF attacks by raising an exception.
+  protect_from_forgery with: :exception
+
+  def valid_authenticity_token?(session, encoded_masked_token)
+    session['init'] = true unless session.loaded?
+    super
+  end
 
   def handle_unverified_request
     # As of Rails 2.3.11 (and in 3.0.4), the CSRF protection behavior
@@ -199,7 +206,16 @@ class ApplicationController < ActionController::Base
       @meta.merge!(additional_meta)
     end
 
-    logo_square = CurrentDomain.theme[:images][:logo_square]
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # This change attempts to read :logo_square using a .try() chain as opposed
+    # to CurrentDomain.theme[:images][:logo_square], which will hopefully
+    # prevent future NoMethodErrors from reaching Airbrake.
+    #
+    # The fact that the very next line checks if logo_square is present gives
+    # me confidence that this change is consistent with the original intent of
+    # the code.
+    logo_square = CurrentDomain.theme.try(:[], :images).try(:[], :logo_square)
     if logo_square.present?
       @link_image_src = if logo_square[:type].to_s == "static"
         logo_square[:href]

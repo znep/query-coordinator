@@ -1,4 +1,8 @@
-Frontend::Application.configure do
+# Note: Despite its name, this file is actually written to config/environments/production.rb
+# Also, there is an analogue of this file stored in chef for non-dockerized deployments in:
+#   webapp-cookbook/templates/default/config/environments.rb.erb
+
+Rails.application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
   # The production environment is meant for finished, "live" apps.
@@ -16,9 +20,6 @@ Frontend::Application.configure do
   # However, in AWS this must be set to true until we figure out the routing story for
   # static assets and docker containers.
   config.serve_static_assets = {{ SERVE_STATIC_ASSETS | default('true') }}
-
-  # Use a different cache store in production
-  config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :value_max_bytes => {{ MEMCACHE_VALUE_MAX_BYTES | default(2000000) }} }
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"

@@ -1,4 +1,4 @@
-ENV['RAILS_ENV'] = 'test'
+ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/autorun'
@@ -12,7 +12,7 @@ if ENV['RM_INFO']
   MiniTest::Reporters.use!
 end
 
-[Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|
+[Minitest::Test, MiniTest::Test].each do |klass|
   klass.send(:include, TestHelperMethods)
 end
 
@@ -40,11 +40,10 @@ class ActionController::TestCase
       }
     end
   end
-
 end
 
 # assert_select doesn't like the formatting of our HTML... this adds a quieter version
-ActionDispatch::Assertions::SelectorAssertions.class_eval do
+Rails::Dom::Testing::Assertions::SelectorAssertions.class_eval do
   def assert_select_quiet(*args, &block)
     original_verbosity = $-v # store original output value
     $-v = nil # set to nil

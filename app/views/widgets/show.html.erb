@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
-    <link rel="canonical" href="<%= view_path(@view) %>" />
+    <link rel="canonical" href="<%= view_path(@view) %>"/>
   <%- end -%>
 
   <%- if is_mobile? -%>
@@ -97,7 +97,7 @@
 
 <div class="mobileNotice">
   You are viewing a mobile version of this dataset. To access the full
-  dataset, <a href="<%= view_path(@view.route_params.merge( no_mobile: true )) %>">tap here</a>.
+  dataset, <a href="<%= view_path(@view, no_mobile: true) %>">tap here</a>.
 </div>
 
 <%= modal :class => 'actionInterstitial' do %>

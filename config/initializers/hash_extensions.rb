@@ -1,5 +1,3 @@
-# Add all of these  R E C U R S I V E  methods to Hash!
-
 class Hash
 
   # Recursively merges two hashes. When trying to merge two values that are not
@@ -49,13 +47,14 @@ class Hash
       end
     end
 
-    return result
+    result
   end
 
+  # TODO This can probably be deprecated in favor of Hash#dig
   def deep_value_at(keys)
     current = self
-    keys.each{ |key| current = current[key] unless current.nil? }
-    return current
+    keys.each { |key| current = current[key] unless current.nil? }
+    current
   end
 
   def to_core_param(namespace = nil)
@@ -65,15 +64,15 @@ class Hash
   end
 
   def except(*blacklist)
-    self.reject{ |key| blacklist.include?(key) }
+    self.reject { |key| blacklist.include?(key) }
   end
 
   def only(*whitelist)
-    self.reject{ |key| !whitelist.include?(key) }
+    self.reject { |key| !whitelist.include?(key) }
   end
 
   def fix_get_encoding!
-    self.each{ |_, v| v.fix_get_encoding! }
+    self.each { |_, v| v.fix_get_encoding! }
   end
 
   def fix_key_encoding
@@ -81,7 +80,7 @@ class Hash
     self.each_pair do |k, v|
       unless k.is_a? Symbol
         key = k.dup
-        key.force_encoding("UTF-8").encode!
+        key.force_encoding('UTF-8').encode!
       else
         key = k
       end
@@ -104,11 +103,4 @@ class Hash
     end
   end
 
-  # NOTE: I can be removed after Rails 4.1
-  unless instance_methods.include?(:compact)
-    # File activesupport/lib/active_support/core_ext/hash/compact.rb, line 8
-    def compact
-      self.select { |_, value| !value.nil? }
-    end
-  end
 end

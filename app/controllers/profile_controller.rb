@@ -5,7 +5,7 @@ class ProfileController < ApplicationController
   # the comment at the top of ProfileHelper's implementation.
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
-  
+
   include WhatsNewHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
@@ -30,7 +30,7 @@ class ProfileController < ApplicationController
       return if @user.nil?
       # See if it matches the authoritative URL; if not, redirect
       # we need to explicitly fetch the options and merge no-locale here
-      if request.path != profile_path(@user.route_params.merge(:locale => nil))
+      if request.path != profile_path(@user, :locale => nil)
         # Log redirects in development
         if Rails.env != 'production' &&
           request.path =~ /^\w{4}-\w{4}/
@@ -111,7 +111,7 @@ class ProfileController < ApplicationController
           :tag_cloud => true
         }
       end
-      
+
       @news = retrieve_news
 
       @processed_browse = process_browse(request, browse_options)
@@ -214,7 +214,7 @@ class ProfileController < ApplicationController
   # Note: was AccountsController#edit
   def edit_account
     # redirect from generic to fully-qualified url
-    expected_path = profile_account_path(current_user.route_params.merge(:locale => nil))
+    expected_path = profile_account_path(current_user, :locale => nil)
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end
@@ -279,9 +279,7 @@ class ProfileController < ApplicationController
           if params[:user][:email] != params[:user][:email_confirm]
             error_msg = t('screens.profile.edit.validation.email_mismatch')
           else
-            updated_attributes.merge!(
-                {:email => params[:user][:email],
-                  :password => params[:user][:email_password]})
+            updated_attributes.merge!(:email => params[:user][:email], :password => params[:user][:email_password])
           end
         end
         if params[:user][:email_subscribe].present? && current_user.emailUnsubscribed
@@ -311,7 +309,7 @@ class ProfileController < ApplicationController
   def edit_app_tokens
     # redirect from generic to fully-qualified url
     # (for /profile/app_tokens support from dev.socrata.com)
-    expected_path = app_tokens_path(current_user.route_params.merge(:locale => nil))
+    expected_path = app_tokens_path(current_user, :locale => nil)
     if request.path != expected_path
       return redirect_to(expected_path, :status => 301)
     end
@@ -326,6 +324,17 @@ class ProfileController < ApplicationController
     prepare_profile
     return if @user.nil?
     @token = AppToken.find_by_id(params[:id], params[:token_id])
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # If AppToken.find_by_id() returns nil, the subsequent call to the view
+    # template will result in NoMethodErrors, since the view assumes that
+    # @token exists and is of the expected form.
+    #
+    # This change renders a 404 error if the token is not found and as such
+    # is set to nil, and renders the expected view template
+    # (show_app_token.html.erb) if @token is not nil (presumably it will only
+    # be not nil if it was found and is of the expected form).
+    return render 'shared/error', :status => :not_found if @token.nil?
   end
 
   def edit_app_token
@@ -376,23 +385,21 @@ class ProfileController < ApplicationController
   def create_friend
     user_id = params[:id]
     if user_id != current_user.id
-      user = { :id => user_id }
-      Contact.create(user)
+      Contact.create(:id => user_id)
     end
 
     respond_to do |format|
-      format.html { redirect_to(profile_path(user_id)) }
-      format.data { render :text => "created" }
+      format.html { redirect_to(profile_path(User.find(user_id))) }
+      format.data { render :text => 'created' }
     end
   end
 
   def delete_friend
-    user_id = params[:id]
-    Contact.delete(user_id)
+    Contact.delete(params[:id])
 
     respond_to do |format|
       format.html { redirect_to(profile_path(current_user)) }
-      format.data { render :text => "deleted" }
+      format.data { render :text => 'deleted' }
     end
   end
 
@@ -405,14 +412,12 @@ private
   # Pipe the file upload back to the core server
   def accessible_image_change(post_url)
     if params[:new_image]
-      unless ['image/png','image/x-png','image/gif','image/jpeg','image/pjpeg']
-        .include? params[:new_image].content_type
+      unless %w(image/png image/x-png image/gif image/jpeg image/pjpeg').include?(params[:new_image].content_type)
         flash[:error] = t('screens.profile.edit.validation.image_format')
         return
       end
       begin
-        resp = CoreServer::Base.connection.multipart_post_file(
-          post_url, params[:new_image])
+        resp = CoreServer::Base.connection.multipart_post_file(post_url, params[:new_image])
         flash[:notice] = t('screens.profile.edit.image.success')
       rescue => ex
         flash[:error] = t('screens.profile.edit.image.error', message: ex.message)
@@ -423,7 +428,7 @@ private
   def prepare_profile
     user_id = params[:id]
     begin
-      if (!current_user || user_id != current_user.id)
+      if current_user.blank? || user_id != current_user.id
         @is_user_current = false
         @user = User.find_profile(user_id)
       else
@@ -448,7 +453,7 @@ private
       end
     end
 
-    @current_state = {'user' => @user.try(:id), 'domain' => CurrentDomain.cname, 'locale' => I18n.locale}
+    @current_state = { 'user' => @user.try(:id), 'domain' => CurrentDomain.cname, 'locale' => I18n.locale }
 
     # Don't make a core server request for friends and followers every time
     unless @friends_rendered = read_fragment(app_helper.cache_key('profile-friends-list', @current_state))
@@ -459,24 +464,24 @@ private
     @stat_displays = []
 
     # Also, we can probably make these _views vars local, not @ accessible
-    unless (@view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state)))
-      base_req = {:limit => 1, :for_user => @user.id, :nofederate => true}
+    @view_summary_cached = read_fragment(app_helper.cache_key('profile-view-summary', @current_state))
+    unless @view_summary_cached
+      base_req = { :limit => 1, :for_user => @user.id, :nofederate => true }
       stats = [
         {:params => {:datasetView => 'dataset'}, :name => t('controls.browse.facets.view_types.datasets')},
-        {:params => {:limitTo => 'tables', :datasetView => 'view'},
-          :name => t('controls.browse.facets.view_types.filters')},
+        {:params => {:limitTo => 'tables', :datasetView => 'view'}, :name => t('controls.browse.facets.view_types.filters')},
         {:params => {:limitTo => 'charts'}, :name => t('controls.browse.facets.view_types.charts')},
         {:params => {:limitTo => 'maps'}, :name => t('controls.browse.facets.view_types.maps')},
         {:params => {:limitTo => 'calendars'}, :name => t('controls.browse.facets.view_types.calendars')},
         {:params => {:limitTo => 'forms'}, :name => t('controls.browse.facets.view_types.forms')}
       ]
       CoreServer::Base.connection.batch_request do |batch_id|
-        stats.each do |s|
-          Clytemnestra.search_views(base_req.merge(s[:params]), batch_id)
+        stats.each do |stat|
+          Clytemnestra.search_views(base_req.merge(stat[:params]), batch_id)
         end
-      end.each_with_index do |r, i|
-        p = JSON.parse(r['response'], {:max_nesting => 25})
-        @stat_displays << [stats[i][:name], p['count']]
+      end.each_with_index do |request, index|
+        json = JSON.parse(request['response'], :max_nesting => 25)
+        @stat_displays << [stats[index][:name], json['count']]
       end
     end
   end

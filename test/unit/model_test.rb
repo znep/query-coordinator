@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ModelTest < MiniTest::Unit::TestCase
+class ModelTest < MiniTest::Test
 
   describe 'predicate method' do
 

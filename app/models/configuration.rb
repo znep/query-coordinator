@@ -1,9 +1,10 @@
 class Configuration < Model
+
   def self.find_by_type(type, default_only = false, cname = nil, merge = true)
-    path = "/#{self.name.pluralize.downcase}.json?type=#{type}&" +
-      "defaultOnly=#{default_only.to_s}&merge=#{merge}"
-    headers = cname.nil? ? {} : { "X-Socrata-Host" => cname }
-    parse(CoreServer::Base.connection.get_request(path, headers))
+    path = "/#{self.name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only.to_s}&merge=#{merge}"
+    headers = cname.nil? ? {} : { 'X-Socrata-Host' => cname }
+    response = CoreServer::Base.connection.get_request(path, headers)
+    parse(response) || []
   end
 
   def self.find_unmerged(id)
@@ -13,28 +14,29 @@ class Configuration < Model
 
   def self.get_or_create(type, opts)
     config = self.find_by_type(type, true, CurrentDomain.cname).first
-    if config.nil?
-      config = self.create({'type' => type, 'default' => true,
-        'domainCName' => CurrentDomain.cname}.merge(opts))
-    end
-    config
+    config ||= self.create({'type' => type, 'default' => true, 'domainCName' => CurrentDomain.cname}.merge(opts))
+  end
+
+  def route_params
+    {id: id}
   end
 
   def properties
     props = Hashie::Mash.new
     return props if data['properties'].nil?
 
-    data['properties'].each do |p|
-      name_parts = p['name'].split('.')
-      p_hash = props
+    data['properties'].each do |property|
+      name_parts = property['name'].split('.')
+      property_hash = props
       while name_parts.length > 1 do
-        n = name_parts.shift
-        p_hash[n] = Hashie::Mash.new if p_hash[n].nil?
-        p_hash = p_hash[n]
+        name = name_parts.shift
+        property_hash[name] = Hashie::Mash.new if property_hash[name].nil?
+        property_hash = property_hash[name]
       end
-      p_hash[name_parts[0]] = p['value']
+      property_hash[name_parts[0]] = property['value']
     end
-    return props
+
+    props
   end
 
   # Copied from CurrentDomain.strings.
@@ -52,17 +54,17 @@ class Configuration < Model
 
   def raw_properties
     props = Hashie::Mash.new
-
     return props if data['properties'].nil?
 
-    data['properties'].each do |p|
-      props[p['name']] = p['value']
+    data['properties'].each do |property|
+      props[property['name']] = property['value']
     end
-    return props
+
+    props
   end
 
   def has_property?(name)
-    properties.has_key? name.to_s
+    properties.has_key?(name.to_s)
   end
 
   def create_property(name, value, batch_id = nil)

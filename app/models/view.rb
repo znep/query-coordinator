@@ -939,7 +939,7 @@ class View < Model
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers
-  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
+  @@default_meta_tags = %w(public data statistics dataset)
   def meta_keywords
     (self.tags.nil? ? @@default_meta_tags : self.tags + @@default_meta_tags).sort_by {rand}
   end
@@ -947,7 +947,7 @@ class View < Model
   # Return the description we'll use in the meta description header
   def meta_description
     if self.description.blank?
-      desc = "View this dataset"
+      desc = 'View this dataset'
       updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt, true)
       if updated_at
         desc += ", last updated #{updated_at}"
@@ -959,17 +959,21 @@ class View < Model
   end
 
   def is_blist?
-    flag?("default") && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
+    flag?('default') && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
   end
 
   def is_public?
-    @_is_public ||= display.is_public?
+    @is_public ||= display.is_public?
   end
 
   # This represents whether or not the view is accessible exclusively to the current user.
   # Importantly, note that is_private? is not the opposite of is_public?
   def is_private?
     grants.nil? || grants.length == 0
+  end
+
+  def public_private_text(invert = false)
+    invert ^ is_public? ? 'public' : 'private'
   end
 
   def is_shared?
@@ -1489,7 +1493,30 @@ class View < Model
         display_class = Displays::Page
       else
         begin
-          display_class = Displays.const_get(dt.camelize)
+          # EN-6285 - Address Frontend app Airbrake errors
+          #
+          # (This was not actually causing Airbrake errors but was a constant
+          # annoyance so we fixed it while we were looking at bugs).
+          #
+          # That second argument is really important.
+          #
+          # Pages with a catalog view will sometimes fail to load because of a
+          # load-order issue. Basically what happens is that when called
+          # without the second argument or when the second argument is true it
+          # will look for ancestor classes that also match the given name.
+          #
+          # Because there exist two 'Story' classes (one in app/models/story.rb
+          # and one in app/models/displays/story.rb) and because Rails will
+          # apparently load them in an indeteminate order in Development mode,
+          # we sometimes treated the non-display Story model as a display model,
+          # which caused it to raise errors when we attempted to call methods
+          # that exist on the display model on the non-display model.
+          #
+          # Passing false here prevents const_get() from looking for ancestor
+          # classes of the same name, which causes display_class to always
+          # be assigned with the display Story model when the display is of
+          # the 'Story' type.
+          display_class = Displays.const_get(dt.camelize, false)
         rescue NameError
           Rails.logger.info "Ignoring invalid display type #{dt}"
         end

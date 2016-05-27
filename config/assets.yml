@@ -1,4 +1,11 @@
-package_path: packages
+allow_debugging:        on          # (on, off)
+compress_assets:        on          # (on, off)
+embed_assets:           off         # (on, off, datauri)
+gzip_assets:            on          # (on, off)
+javascript_compressor:  yui         # (yui, closure, uglify)
+package_assets:         on          # (on, off, always)
+package_path:           packages    # (defaults to assets)
+template_function:      on          # (on, off, _.template, new Template. defaults to on)
 
 javascripts:
   base:

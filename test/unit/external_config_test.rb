@@ -13,7 +13,7 @@ class TestConfig < ExternalConfig
   def update!; end
 end
 
-class ExternalConfigTest < Test::Unit::TestCase
+class ExternalConfigTest < Minitest::Test
 
   def test_config_requires_overriding_subclass_methods
     assert_raises(NotImplementedError) { TestEmptyConfig.new }

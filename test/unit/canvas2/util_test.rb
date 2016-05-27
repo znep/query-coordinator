@@ -1,6 +1,6 @@
 require_relative '../../test_helper'
 
-class Canvas2UtilTest < Test::Unit::TestCase
+class Canvas2UtilTest < Minitest::Test
 
   def setup
     init_current_domain
@@ -285,7 +285,7 @@ class Canvas2UtilTest < Test::Unit::TestCase
 
   def test_known_infinite_loop
     # agtj-bhhn.3.0
-    fixed_assert_raises(TimeoutError, fixed: true) do
+    fixed_assert_raises(Timeout::Error, fixed: true) do
       parsed_result = Canvas2::Util.parse_transforms(' /Northshore%20S_D_%20No_%20417/Northshore%20School%20District%20No_%20417%20Proposition%20No_%202%20General%20Obligation%20Bonds%20-%20%24177%2C500%2C000 ')
       assert parsed_result['transforms'].empty?
     end
@@ -293,7 +293,7 @@ class Canvas2UtilTest < Test::Unit::TestCase
     # enei-9eai.0.18
     # fhdy-ykrf.0.96
     # r3t4-u8fj.0.96
-    fixed_assert_raises(TimeoutError, fixed: true) do
+    fixed_assert_raises(Timeout::Error, fixed: true) do
       parsed_result = Canvas2::Util.parse_transforms(%q{ // Do some manual magic on our location column (this is a column I created from the original camp column) // long/lat in Socrata is formatted as a string of: (long, lat) // we want to switch it to an array of type: [long, lat] camp = d['RELOCATION PROJECT LOCATION']; camps = camp.split(', '); camps[0] = camps[0].replace('(', ''); camps[1] = camps[1].replace(')', ''); d.campLoc = camps; })
       assert parsed_result['transforms'].empty?
     end

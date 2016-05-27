@@ -40,6 +40,36 @@ require 'action_dispatch/middleware/session/abstract_store'
 class SocrataCookieStore
   include ActionDispatch::Session::StaleSessionCheck
 
+  class SocrataSessionHash < Hash #:nodoc:
+    # Using a splat here because it could be initialized without any args
+    def initialize(*args)
+      if args.length == 3
+        by, env, default_options = args
+        @by = by
+        @env = env
+        @session_id_loaded = false
+        merge!(default_options)
+      end
+    end
+
+    def [](key)
+      load_session_id! if key == :id && session_id_not_loaded?
+      super
+    end
+
+    private
+
+    def session_id_not_loaded?
+      !key?(:id) && !@session_id_loaded
+    end
+
+    def load_session_id!
+      self[:id] = @by.send(:extract_session_id, @env)
+      @session_id_loaded = true
+    end
+  end
+
+
   # Cookies can typically store 4096 bytes.
   MAX = 4096
   SECRET_MIN_LENGTH = 30 # characters
@@ -153,7 +183,7 @@ class SocrataCookieStore
     # who knows where in the labyrinth this could be called?
     def prepare!(env)
       env[ENV_SESSION_KEY] = Rack::Session::Abstract::SessionHash.new(self, env)
-      env[ENV_SESSION_OPTIONS_KEY] = Rack::Session::Abstract::OptionsHash.new(self, env, @default_options)
+      env[ENV_SESSION_OPTIONS_KEY] = SocrataSessionHash.new(self, env, @default_options)
       env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
     end
 
@@ -179,7 +209,7 @@ class SocrataCookieStore
     end
 
     def current_session_id(env)
-      env[ENV_SESSION_OPTIONS_KEY][:id]
+      env.fetch(:ENV_SESSION_OPTIONS_KEY, {})[:id]
     end
 
     def session_exists?(env)

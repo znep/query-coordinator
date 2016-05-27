@@ -1,12 +1,15 @@
+require 'rails_helper'
+
 describe ImportActivity do
+
+  include TestHelperMethods
 
   let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
 
-  let(:headers) { {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456',
-                    'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'} }
-
   before :each do
     CurrentDomain.stubs(:cname => 'localhost')
+
+    init_current_domain
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
       JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
@@ -21,15 +24,15 @@ describe ImportActivity do
     )
 
     stub_request(:get, "http://localhost:8080/users/tugg-ikce.json?method=getProfile").
-       with(:headers => headers).
+       with(request_headers).
        to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/dzuq-scr8.json").
-      with(:headers => headers).
+      with(request_headers).
       to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/copy-four.json").
-      with(:headers => headers).
+      with(request_headers).
       to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
 
   end
@@ -44,15 +47,13 @@ describe ImportActivity do
       )
 
       # batched request for views
-      stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=dzuq-scr8&ids%5B%5D=d9fh-q64b&ids%5B%5D=copy-four&ids%5B%5D=cop2-four').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
-                           'X-Socrata-Federation'=>'Honey Badger', 'X-Socrata-Host'=>'localhost'}).
+      stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=cop2-four&ids%5B%5D=copy-four&ids%5B%5D=d9fh-q64b&ids%5B%5D=dzuq-scr8').
+         with(request_headers).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/views_batch_response.json"), :headers => {})
 
       # batched request for users
       stub_request(:get, 'http://localhost:8080/users.json?ids%5B%5D=tugg-ikce&ids%5B%5D=tugg-ikcu').
-         with(:headers => {'Accept'=>'*/*', 'Cookie'=>'_core_session_id=123456', 'User-Agent'=>'Ruby',
-                           'X-Socrata-Host'=>'localhost'}).
+         with(request_headers).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/users_batch_response.json"), :headers => {})
     end
 

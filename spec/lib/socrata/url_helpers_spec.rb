@@ -22,12 +22,9 @@ RSpec.describe 'Socrata::UrlHelpers' do
   end.new }
 
   before(:each) do
-    CurrentDomain.stubs(:default_locale => 'the_default_locale', :cname => 'example.com')
-    I18n.stubs(:locale => :the_default_locale)
-  end
-  after(:each) do
-    CurrentDomain.unstub
-    I18n.unstub
+    init_current_domain
+    CurrentDomain.stub(:default_locale => 'the_default_locale', :cname => 'example.com')
+    I18n.stub(:locale => :the_default_locale)
   end
 
   describe '#seo_friendly_url' do
@@ -39,14 +36,13 @@ RSpec.describe 'Socrata::UrlHelpers' do
 
     describe 'non-default locale' do
       before(:each) do
-        I18n.stubs(:locale => :ca)
+        I18n.stub(:locale => :ca)
       end
       it 'does include the locale component' do
         expect(helpers.seo_friendly_url(fake: 'view')).to eq('https://example.com/ca/path/from/super/')
       end
     end
   end
-
 
   describe 'view URL generators' do
     let(:view_name) { 'test view name' }

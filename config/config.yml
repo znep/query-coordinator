@@ -6,7 +6,6 @@
 #
 ###
 
-
 ###############################################################################
 # NOTE! All configuration information in this file are overwritten by chef when
 # the app is deployed. If you wish to ensure that new configuration information
@@ -69,6 +68,7 @@ default: &default
   shape_file_region_query_limit: 5000
 
   # other behaviors
+  canary: false
   whats_new:
     article_count: 3
     zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'

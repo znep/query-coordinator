@@ -5,8 +5,7 @@ class DowntimeConfig < ExternalConfig
   def_delegator :@downtimes, :each
 
   def filename
-    return nil if use_consul?
-    @filename ||= "#{Rails.root}/config/downtime.yml"
+    @filename ||= "#{Rails.root}/config/downtime.yml" if use_consul?
   end
 
   def update!
@@ -43,9 +42,10 @@ class DowntimeConfig < ExternalConfig
     600.seconds
   end
 
-private
+  private
+
   def use_consul?
-    return !APP_CONFIG.consul_host.to_s.blank?
+    APP_CONFIG.consul_host.to_s.present?
   end
 
   def consul_key

@@ -1,4 +1,5 @@
 require 'cgi'
+require 'active_model'
 
 # Model class for representing a user's session in an ActiveRecord-like way,
 # without actually using ActiveRecord.

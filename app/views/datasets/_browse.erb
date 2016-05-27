@@ -17,6 +17,7 @@ end
 <div data-view-type="<%= opts[:view_type] %>" class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
   <%= opts[:custom_class] || '' %>
   <%= opts[:browse_in_container] ? 'inContainer' : '' %> <%= opts[:disable][:sort] ? 'noSort' : '' %>">
+
   <%- if opts[:facets].length > 0 -%>
     <div class="browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>">
       <%= raw opts[:sidebar_config].header if opts[:sidebar_config] && opts[:sidebar_config].header %>
@@ -356,8 +357,7 @@ end
         <%- else -%>
           <table
             class="gridList<%= ' hasFederations' if opts[:use_federations] %>"
-            summary="<%= a11y_browse_summary(opts) %>"
-          >
+            summary="<%= a11y_browse_summary(opts) %>">
             <colgroup>
               <%- if opts[:grid_items][:index] -%>
                 <col class="index" />

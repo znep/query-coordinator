@@ -366,13 +366,13 @@
     <dl class="sectionContent contactOwnerLinks">
       <dt class="widenedItem">
       <%= link_to t('screens.about.flag_dataset'), local_assigns[:static_links] ?
-        contact_dataset_path(@view.id) : '#flag',
+        contact_dataset_path(@view) : '#flag',
         :class => 'contactButton', 'data-select' => '' %>
       </dt>
       <dd>&nbsp;</dd>
       <dt class="widenedItem">
       <%= link_to t('screens.about.contact_dataset_owner'), local_assigns[:static_links] ?
-        contact_dataset_path(@view.id) : '#contact',
+        contact_dataset_path(@view) : '#contact',
             {:class => 'contactButton', 'data-select' => 'other'} %>
       </dt>
       <dd>&nbsp;</dd>

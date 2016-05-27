@@ -2,7 +2,7 @@ require 'test_helper'
 
 require_relative '../../../app/helpers/unminified_assets_helper'
 
-class UnminifiedAssetsHelperTest < MiniTest::Unit::TestCase
+class UnminifiedAssetsHelperTest < MiniTest::Test
 
   def setup
     @object = Object.new.tap { |object| object.extend(UnminifiedAssetsHelper) }
@@ -30,7 +30,7 @@ class UnminifiedAssetsHelperTest < MiniTest::Unit::TestCase
 
     Jammit.stubs(:package_assets => true)
     @object.expects(:unminified_asset_url).with(fake_package, :js).returns(fake_asset_url).once
-    @object.expects(:javascript_include_tag).with([fake_asset_url]).once
+    @object.expects(:javascript_include_tag).with(fake_asset_url).once
     @object.expects(:html_safe).once.returns(:expected_return)
 
     assert_equal(

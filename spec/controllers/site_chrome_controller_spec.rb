@@ -82,7 +82,7 @@ describe SiteChromeController do
         expect(site_chrome.content).not_to include(new_content)
 
         put :update, content: new_content
-        expect(response).to redirect_to(site_chrome_path)
+        expect(response).to redirect_to(edit_site_chrome_path)
 
         after_update = site_chrome.reload
         expect(after_update.content).to include(new_content)
@@ -104,28 +104,28 @@ describe SiteChromeController do
   describe 'index' do
     it 'is unimplemented' do
       expect { get :index }.
-        to raise_error(ActionController::RoutingError)
+        to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'show' do
     it 'is unimplemented' do
       expect { get :show, id: 123 }.
-        to raise_error(ActionController::RoutingError)
+        to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'create' do
     it 'is unimplemented' do
       expect { post :create, site_chrome: {} }.
-        to raise_error(ActionController::RoutingError)
+        to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'destroy' do
     it 'is unimplemented' do
-      expect { delete site_chrome_path(456) }.
-        to raise_error(ActionController::RoutingError)
+      expect { delete site_chrome: {id: 456} }.
+        to raise_error(ActionController::UrlGenerationError)
     end
   end
 

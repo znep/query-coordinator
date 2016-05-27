@@ -46,14 +46,6 @@ module.exports = function ( karma ) {
       'public/javascripts/util/dataset/row-set.js',
       'public/javascripts/util/view-cache.js',
       'public/javascripts/util/filter.js',
-      // 'public/javascripts/controls/base-control.js',
-      // 'public/javascripts/controls/full-screen.js',
-      // 'public/javascripts/controls/dataset-controls.js',
-      // 'public/javascripts/controls/render-type-manager.js',
-      // 'public/javascripts/controls/grid-sidebar.js',
-      // 'public/javascripts/screens/dataset-show.js',
-      'public/javascripts/screens/admin-jobs.js',
-      'public/javascripts/screens/admin-show-job.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',
@@ -66,11 +58,14 @@ module.exports = function ( karma ) {
 
       // Test Files
       'karma/oldUx/**/*.js',
-      { pattern: 'public/stylesheets/images/**/*.+{gif,jpg,png}', watched: false, included: false, served: true } // https://github.com/karma-runner/karma/issues/1532
+      // https://github.com/karma-runner/karma/issues/1532
+      { pattern: 'public/stylesheets/images/*', watched: false, included: false, served: true },
+      { pattern: 'public/stylesheets/images/common/*', watched: false, included: false, served: true }
     ],
 
     proxies: {
-      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
+      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/',
+      '/stylesheets/images/common/': 'http://localhost:7019/base/public/stylesheets/images/common/'
     },
 
     // Options for phantomJS launcher

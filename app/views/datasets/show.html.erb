@@ -10,7 +10,7 @@
   <%- end -%>
 
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
-  <link rel="canonical" href="<%= view_path(@view) %>" />
+  <link rel="canonical" href="<%= view_path(@view) %>"/>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -62,7 +62,7 @@
           <%- @view.available_display_types.clone.
             push('template').each do |type| -%>
           <li><a
-            href="<%= view_path(@view.route_params.merge( defaultRender: url_types[type] || type )) %>"
+            href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
             class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
             title="<%= t('screens.ds.bar.view_type', type: t('screens.ds.bar.view_types.' + type)) %>">
             <span class="icon"></span>
@@ -153,7 +153,7 @@
       <%- if @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
         <%# SEO links for individual rows %>
         <%- next_index = !@row_index.nil? ? (@row_index+1) : 0 -%>
-        <a href="<%= view_path(@view.route_params.merge( row_index: next_index )) %>" class="rowLink">
+        <a href="<%= view_path(@view, row_index: next_index) %>" class="rowLink">
           <%= next_index == 0 ? 'First' : 'Next' %> row
         </a>
       <%- end -%>

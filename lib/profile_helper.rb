@@ -25,8 +25,8 @@ module ProfileHelper
       return preview_story_url(view) if view.can_preview_story?(current_user)
     end
 
-    super
-  end
+      super
+    end
 
   def profile_item(klass, inner_content, help_text, editable)
     content_tag(:div, :class => klass) do
@@ -69,4 +69,4 @@ module ProfileHelper
     @user.id != current_user.id
   end
 
-end
+  end

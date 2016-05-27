@@ -23,7 +23,7 @@ http://www.socrata.com
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <%= meta_tags @meta unless @meta.blank? %>
   <%= csrf_meta_tags %>
-
+  <%= canary_warning %>
   <%- if is_mobile? -%>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <%- end -%>
@@ -96,9 +96,11 @@ http://www.socrata.com
             <%= render_text_template('{{main_logo}}') %>
             <ul class="siteUserNav">
               <li class="accountLink hide">
-                <a href="<%= profile_path(current_user) %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
-                  <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
-                </a>
+                <%- if current_user -%>
+                  <a href="<%= profile_path(current_user) %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
+                    <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
+                  </a>
+                <%- end -%>
               </li>
               <li class="accountLikeLink hide myGoalsLink">
                 <a href="<%= govstat_my_goals_path %>" title="<%= t('govstat.chrome.header.links.my_goals_tooltip') %>">

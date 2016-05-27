@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 describe CuratedRegion, :type => :model do
+  include TestHelperMethods
+
   let(:cname) { 'socrata.dev' }
   before(:each) do
-    domain = YAML::load(File.open('test/fixtures/domain.yml'))
-    CurrentDomain.set_domain(domain)
+    init_current_domain
     allow(CurrentDomain).to receive(:cname).and_return(cname)
   end
 
@@ -45,7 +46,7 @@ describe CuratedRegion, :type => :model do
   describe 'all' do
     it 'finds all curated regions' do
       stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json?defaultOnly=false&enabledOnly=false').
-        with(:headers => {'X-Socrata-Host'=>'socrata.dev'}).
+        with(:headers => {'X-Socrata-Host' => 'socrata.dev'}).
         to_return(:status => 200, :body => '', :headers => {})
       CuratedRegion.all
       expect(stubbed_request).to have_been_made.once

@@ -773,6 +773,12 @@ module ApplicationHelper
   def using_cetera?
     return false unless APP_CONFIG.cetera_host.present?
 
+    uri = URI(APP_CONFIG.cetera_host)
+    unless uri.host.present? && uri.scheme.present?
+      Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')
+      return false
+    end
+
     req = request if defined?(request)
 
     # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things
@@ -802,10 +808,10 @@ module ApplicationHelper
     Digest::SHA256.hexdigest(session['session_id'] + Frontend::SESSION_SALT) if session['session_id'].present?
   end
 
-  def request_id(req = request)
-    return 'Unavailable' unless req.present?
+  def request_id(_request = request)
+    return 'Unavailable' unless _request.present?
 
-    req.headers['X-Socrata-RequestId'] || req.headers['action_dispatch.req_id']
+    _request.headers['X-Socrata-RequestId'] || _request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
   end
 
   # gets the active locale for the request.
@@ -845,6 +851,21 @@ module ApplicationHelper
   # Stolen from https://github.com/rails/rails/blob/b6c1ee0dfcb7ea8bfcac9daff0162876990665a3/actionview/lib/action_view/helpers/form_tag_helper.rb#L908-L910
   def sanitize_to_id(name)
     name.to_s.delete(']').tr('^-a-zA-Z0-9:.', "_")
+  end
+
+  def canary_warning
+    return unless APP_CONFIG.canary
+    content_tag(:style, :type => 'text/css') do
+      %q[body:before {
+        font-weight: bold;
+        color: white;
+        background-color: red;
+        content: "CANARY!";
+        display: block;
+        font-size: 32px;
+        padding: 5px;
+      }].html_safe
+    end
   end
 
 end

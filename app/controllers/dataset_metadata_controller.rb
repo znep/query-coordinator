@@ -120,7 +120,7 @@ class DatasetMetadataController < ApplicationController
   private
 
   def dataset(id = nil)
-    View.find(id || json_parameter(:datasetMetadata)['id'])
+    ::View.find(id || json_parameter(:datasetMetadata)['id'])
   end
 
   def can_read_dataset_data?(dataset_id)
@@ -140,6 +140,16 @@ class DatasetMetadataController < ApplicationController
         response[0]['_0'] == '0'
       end
     rescue CoreServer::Error
+      false
+    # EN-6285 - Address Frontend app Airbrake errors
+    #
+    # Reading response[0]['_0'] would occasionally raise a NoMethodError with
+    # the message "undefined method `[]' for nil:NilClass".
+    #
+    # This fix rescues the NoMethodError and assumes that the dataset data is
+    # not readable, which is what I interpret as the intent of this code given
+    # that it returns false in response to CoreServer::Errors as well.
+    rescue NoMethodError
       false
     end
   end

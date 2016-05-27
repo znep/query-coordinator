@@ -15,7 +15,7 @@ module UnminifiedAssetsHelper
       tags = packages.map do |pack|
         unminified_asset_url(pack, :js)
       end
-      html_safe(javascript_include_tag(tags.flatten))
+      html_safe(javascript_include_tag(*tags.flatten))
     end
   end
 

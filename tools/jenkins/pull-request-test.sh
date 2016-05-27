@@ -12,7 +12,7 @@ bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORY
 
 bundle install
 npm install --depth 0
-bundle exec rake test --trace
+bundle exec rake test
 EXIT_CODE=$?
 echo "The exit code was ${EXIT_CODE}"
 exit ${EXIT_CODE}

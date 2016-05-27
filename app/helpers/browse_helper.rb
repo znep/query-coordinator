@@ -105,15 +105,12 @@ module BrowseHelper
   end
 
   def a11y_browse_summary(browse_opts)
-    if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
-      return t('table.no_summary_available')
-    end
-    columns = browse_opts[:grid_items].select { |_, val| val }.map { |key, _| %("#{key.to_s}") }
+    return t('table.no_summary_available') if browse_opts[:grid_items].empty? || browse_opts[:view_results].empty?
+
+    columns = browse_opts[:grid_items].map { | k, v | k if v }.compact.map(&:to_s).map(&:inspect)
     rows = browse_opts[:view_results].map { |row| %("#{row.name}") }
     row_headings = ''
-    if rows.size < 5
-      row_headings = rows.join(', ')
-    end
+    row_headings = rows.join(', ') if rows.size < 5
 
     template_opts = {
       :data_description => browse_opts[:a11y_table_description],

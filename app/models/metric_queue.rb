@@ -10,19 +10,19 @@ class MetricQueue
     at_exit do
       flush_requests(true)
       # Yes, @, not @@, because we're in the class scope now
-      @client.close unless @client.nil?
+      @client.close if @client.present?
     end
   end
 
   def push_metric(entityId, metricName, count = 1)
     Rails.logger.info("Pushing client-side metric, #{entityId}/#{metricName} = #{count}")
-    push_request({
+    push_request(
       :timestamp => Time.now.to_i * 1000,
       :entityId => entityId,
       :name => metricName,
       :value => count,
       :type => :aggregate
-    })
+    )
   end
 
   def push_request(data)
@@ -30,9 +30,10 @@ class MetricQueue
     flush_requests if @@requests.size >= BATCH_REQUESTS_BY
   end
 
-private
+  private
+
   def flush_requests(synchronous = false)
-    return if @@requests.empty?
+    return if @@requests.blank?
 
     current_requests = @@requests
     @@requests = []
@@ -51,14 +52,14 @@ private
   def do_flush_requests(current_requests)
     targetdir = APP_CONFIG.metrics_dir
     FileUtils.mkdir_p(targetdir)
-    lockfilename = targetdir + "/ruby-metrics.lock"
-    File.open(lockfilename, "wb") do |lockfile|
+    lockfilename = "#{targetdir}/ruby-metrics.lock"
+    File.open(lockfilename, 'wb') do |lockfile|
       lockfile.flock(File::LOCK_EX) # Cross-process locking wooo!
       now = Time.now.to_i
       now -= now % 120
-      now *= 1000
-      filename = targetdir + sprintf("/metrics2012.%016x.data", now)
-      File.open(filename, "ab") do |metricfile|
+      now *= 1_000
+      filename = "#{targetdir}#{sprintf('/metrics2012.%016x.data', now)}"
+      File.open(filename, 'ab') do |metricfile|
         current_requests.each do |request|
           write_start_of_record(metricfile)
           write_field(metricfile, request[:timestamp].to_s)
@@ -71,8 +72,12 @@ private
     end
     if APP_CONFIG.statsd_enabled
       current_requests.each do |request|
-        next unless request[:name].end_with? "-time"
-        Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
+        next unless request[:name].end_with?('-time')
+        if Frontend.statsd.present?
+          Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
+        else
+          Rails.logger.error('Unable to report timing to statsd because it is not configured properly.')
+        end
       end
     end
   end
@@ -82,7 +87,7 @@ private
   end
 
   def write_field(file, s)
-    file.write(s.force_encoding("utf-8"))
+    file.write(s.force_encoding('utf-8'))
     file.write(END_OF_FIELD)
   end
 
@@ -90,7 +95,7 @@ private
     @logger ||= Rails.logger || Logger.new
   end
 
-  START_OF_RECORD = [255].pack("C").force_encoding("iso-8859-1")
-  END_OF_FIELD = [254].pack("C").force_encoding("iso-8859-1")
+  START_OF_RECORD = [255].pack('C').force_encoding('iso-8859-1')
+  END_OF_FIELD = [254].pack('C').force_encoding('iso-8859-1')
   BATCH_REQUESTS_BY = Rails.env.development? ? 1 : 100
 end

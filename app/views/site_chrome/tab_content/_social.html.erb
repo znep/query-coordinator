@@ -1,4 +1,5 @@
-<%= form_tag site_chrome_path(anchor: {tab: :social}), id: 'tab_form_social', method: :put, remote: true do %>
+<%= form_tag update_site_chrome_path(anchor: {tab: :social}), id: 'tab_form_social', method: :put, remote: true do %>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
   <% form_field_prefix = 'content[general][social_shares][]' %>
   <% form_field_url = "#{form_field_prefix}[url]" %>

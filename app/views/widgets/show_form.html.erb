@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
-    <link rel="canonical" href="<%= view_path(@view) %>" />
+    <link rel="canonical" href="<%= view_path(@view) %>"/>
   <%- end -%>
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>

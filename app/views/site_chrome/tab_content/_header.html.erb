@@ -1,6 +1,7 @@
 <% header = @content['header'] %>
 
-<%= form_tag site_chrome_path(anchor: {tab: :header}), id: 'tab_form_header', method: :put, remote: true do %>
+<%= form_tag update_site_chrome_path(anchor: {tab: :header}), id: 'tab_form_header', method: :put, remote: true do %>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
   <% #TODO: factor these out into a single lookup table %>
   <%= render('site_chrome/tab_content/form_field',

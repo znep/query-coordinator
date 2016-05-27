@@ -1,9 +1,25 @@
 class InternalController < ApplicationController
+
   before_filter :check_auth
-  before_filter :redirect_to_current_domain,
-                :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
-  before_filter :redirect_to_default_config_id_from_type,
-                :only => [ :show_config, :show_property ]
+  before_filter :redirect_to_current_domain, :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
+  before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
+
+  KNOWN_FEATURES = [
+    { name: 'view_moderation', description: 'Allows Publishers and Admin to moderate views.' },
+    { name: 'public_site_metrics', description: 'Adds a public analytics page at /analytics. See data.seattle.gov/analytics for an example; ONLY add if customer requests it.' },
+    { name: 'staging_lockdown', description: 'Frontend lockdown; prevents non-superadmin users without a domain role from viewing the UX.' },
+    { name: 'staging_api_lockdown', description: 'API lockdown; prevents non-superadmin users without a domain role from using the API, including the Frontend.' },
+    { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
+    { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
+  ]
+
+  FLAG_SETS = {
+    'data lens' => ['data_lens_transition_state'] # just an example
+  }.merge(FeatureFlags.categories)
+
+  DOMAIN_SETS = {
+    'yeah i dunno' => [ 'localhost' ] # just an example
+  }
 
   def index
   end
@@ -21,19 +37,10 @@ class InternalController < ApplicationController
       return
     end
 
-    @org = Organization.find(params[:org_id])
-    domains = Organization.find.collect {|o| o.domains}.flatten.compact
-    @default_domain = domains.detect(&:default?)
+    @org = Organization.find(params[:id])
+    @default_domain = Organization.find.map(&:domains).flatten.compact.detect(&:default?)
   end
 
-  KNOWN_FEATURES = [
-    { name: 'view_moderation', description: 'Allows Publishers and Admin to moderate views.' },
-    { name: 'public_site_metrics', description: 'Adds a public analytics page at /analytics. See data.seattle.gov/analytics for an example; ONLY add if customer requests it.' },
-    { name: 'staging_lockdown', description: 'Frontend lockdown; prevents non-superadmin users without a domain role from viewing the UX.' },
-    { name: 'staging_api_lockdown', description: 'API lockdown; prevents non-superadmin users without a domain role from using the API, including the Frontend.' },
-    { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
-    { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
-  ]
   def show_domain
     @domain = Domain.find(params[:domain_id])
     @organizations = Organization.find
@@ -43,16 +50,15 @@ class InternalController < ApplicationController
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
     unless @configs.detect { |config| config.type == 'feature_flags' }
-      @configs << Struct.new(:type, :name, :default).
-        new('feature_flags', 'Feature Flags', true)
+      @configs << Struct.new(:type, :name, :default).new('feature_flags', 'Feature Flags', true)
     end
     @configs.reject! { |config| config.type == 'feature_set' }
     @configs.sort! do |a, b|
       type_for_sort = lambda do |type|
         case type
-        when 'site_theme';    '0'
-        when 'feature_flags'; '1'
-        else;                 type
+          when 'site_theme' then '0'
+          when 'feature_flags' then '1'
+          else type
         end
       end
       sort_delta = type_for_sort.call(a.type) <=> type_for_sort.call(b.type)
@@ -83,7 +89,7 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @domain.data.to_json }
-      if %w(domain all).include? FeatureFlags.derive(nil, request).internal_panel_redesign
+      if %w(domain all).include?(FeatureFlags.derive(nil, request).internal_panel_redesign)
         format.html { render 'show_domain_redesigned' }
       else
         format.html { render }
@@ -93,7 +99,7 @@ class InternalController < ApplicationController
 
   def config_info
     # Include subset of ENV list, as most of it is useless. Add more as you need them
-    env_variable_list = %w{ RBENV_VERSION RAILS_ENV LANG }
+    env_variable_list = %w(RBENV_VERSION RAILS_ENV LANG)
     @config_variables_to_output = ENV.select { | key, value | env_variable_list.include?(key) }
 
     # Filter secret auth things
@@ -101,6 +107,14 @@ class InternalController < ApplicationController
   end
 
   def show_config
+    # If you put in a config type into the :id, it'll redirect you to the default config!
+    if /^\d+$/ !~ params[:id]
+      config_type = params[:id]
+      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
+      return render_404 unless config.present?
+      return redirect_to show_config_path(config)
+    end
+
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:config_id])
     if @config.parentId.present?
@@ -115,9 +129,8 @@ class InternalController < ApplicationController
 
     @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
 
-    if %w(config all).include? FeatureFlags.derive(nil, request).internal_panel_redesign
+    if %w(config all).include?(FeatureFlags.derive(nil, request).internal_panel_redesign)
       render 'show_config_redesigned'
-      return
     end
   end
 
@@ -125,7 +138,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:config_id])
     @property_key = params[:property_id]
-    @property = @config.data['properties'].detect {|p| p['name'] == @property_key}['value']
+    @property = @config.data['properties'].detect { |p| p['name'] == @property_key }['value']
   end
 
   def index_modules
@@ -138,9 +151,8 @@ class InternalController < ApplicationController
   end
 
   def show_tier
-    @tier = AccountTier.find().select {|at| at.name == params[:name]}[0]
+    @tier = AccountTier.find().select {|at| at.name == params[:name]}.first
   end
-
 
   def create_org
     begin
@@ -149,9 +161,9 @@ class InternalController < ApplicationController
       org = Organization.create(params[:org])
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
-      return (render 'shared/error', :status => :internal_server_error)
+      return render 'shared/error', :status => :internal_server_error
     end
-    redirect_to '/internal/orgs/' + org.id.to_s
+    redirect_to "/internal/orgs/#{org.id}"
   end
 
   def create_domain
@@ -164,8 +176,7 @@ class InternalController < ApplicationController
       if parentConfigId.blank?
         parentConfigId = nil
       else
-        parentConfigId = ::Configuration.find_by_type('site_theme', true,
-                                                    parentConfigId)[0].id
+        parentConfigId = ::Configuration.find_by_type('site_theme', true, parentConfigId).first.id
       end
 
       ::Configuration.create(
@@ -190,10 +201,7 @@ class InternalController < ApplicationController
         'domainCName' => domain.cname
       )
 
-      module_features_on_by_default = %w(
-        canvas2 geospatial
-        staging_lockdown staging_api_lockdown
-      )
+      module_features_on_by_default = %w(canvas2 geospatial staging_lockdown staging_api_lockdown)
       enabled = true
       add_module_features(module_features_on_by_default, enabled, domain.cname)
 
@@ -206,6 +214,7 @@ class InternalController < ApplicationController
         end
       return (render 'shared/error', :status => status)
     end
+
     redirect_to show_domain_path(org_id: params[:org_id], domain_id: domain.cname)
   end
 
@@ -239,22 +248,24 @@ class InternalController < ApplicationController
 
       parent_id = params[:config][:parentId]
       parent_id = nil if parent_id.blank?
-      config = ::Configuration.create({'name' => conf_name,
+      config = ::Configuration.create(
+        'name' => conf_name,
         'default' => true,
-        'type' => params[:config][:type], 'parentId' => parent_id,
-        'domainCName' => params[:domain_id]})
+        'type' => params[:config][:type],
+        'parentId' => parent_id,
+        'domainCName' => params[:domain_id]
+      )
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
     end
 
-    redirect_to show_config_path(domain_id: params[:domain_id],
-                                 config_id: config.id)
+    redirect_to show_config_path(domain_id: params[:domain_id], config_id: config.id)
   end
 
   def rename_site_config
     if params['rename-config-to'].present?
-      ::Configuration.update_attributes!(params[:config_id], { 'name' => params['rename-config-to'] })
+      ::Configuration.update_attributes!(params[:config_id], 'name' => params['rename-config-to'])
       flash[:notice] = 'Renamed config successfully.'
 
       CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -266,8 +277,7 @@ class InternalController < ApplicationController
   end
 
   def set_default_site_config
-    ::Configuration.update_attributes!(params['default-site-config'],
-                                     {'default' => true})
+    ::Configuration.update_attributes!(params['default-site-config'], 'default' => true)
     flash[:notice] = 'Set this config to be default for its type successfully.'
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
@@ -287,8 +297,8 @@ class InternalController < ApplicationController
   end
 
   def set_features
-    config = ::Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
-    if !params['new-feature_name'].blank?
+    config = ::Configuration.find_by_type('feature_set', true, params[:domain_id]).first
+    if params['new-feature_name'].present?
       new_feature_name = params['new-feature_name'].strip
       config.create_property(new_feature_name, params['new-feature_enabled'] == 'enabled')
       notices << "Added module `#{new_feature_name}` successfully."
@@ -399,10 +409,9 @@ class InternalController < ApplicationController
   def set_property
     config = ::Configuration.find(params[:config_id])
 
-    if !params['new-property_name'].blank?
+    if params['new-property_name'].present?
       new_feature_name = params['new-feature_name']
-      config.create_property(params['new-property_name'],
-                           get_json_or_string(params['new-property_value']))
+      config.create_property(params['new-property_name'], get_json_or_string(params['new-property_value']))
       notices << "Created property #{new_feature_name} successfully."
     else
       begin
@@ -455,28 +464,18 @@ class InternalController < ApplicationController
     end
   end
 
-  FLAG_SETS = {
-    'data lens' => ['data_lens_transition_state'] # just an example
-  }.merge(FeatureFlags.categories)
-
-  DOMAIN_SETS = {
-    'yeah i dunno' => [ 'localhost' ] # just an example
-  }
-
   def feature_flags_across_domains
     domains = (params[:domains].try(:split, ',') || []).
-      collect { |domain| DOMAIN_SETS[domain] || domain }.
-      flatten.
-      collect { |domain| Domain.find(domain) rescue nil }.
-      compact
+      collect { |domain| DOMAIN_SETS[domain] || domain }.flatten.
+      collect { |domain| Domain.find(domain) rescue nil }.compact
 
     domains << CurrentDomain.domain if domains.empty?
 
     category = params[:flag_set].try(:gsub, '+', ' ')
-    @category = category if FeatureFlags.categories.keys.include? category
+    @category = category if FeatureFlags.categories.keys.include?(category)
 
     @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
-    @flags.select! { |flag| FeatureFlags.has? flag }
+    @flags.select! { |flag| FeatureFlags.has?(flag) }
 
     @sets = FLAG_SETS
 
@@ -490,7 +489,7 @@ class InternalController < ApplicationController
     end
 
     @domains = domains.inject({}) do |memo, domain|
-      memo[domain] = domain.feature_flags.keep_if { |k, _| @flags.include? k }
+      memo[domain] = domain.feature_flags.select { |k, _| @flags.include?(k) }
       memo
     end
   end
@@ -515,15 +514,13 @@ class InternalController < ApplicationController
 
   def set_feature_flags
     update_feature_flags(params, params[:domain_id])
-
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     prepare_to_render_flashes!
 
     respond_to do |format|
       format.html do
-        redirect_to feature_flags_config_path(domain_id: params[:domain_id],
-                                              category: params[:category])
+        redirect_to feature_flags_config_path(domain_id: params[:domain_id], category: params[:category])
       end
 
       json_response = { :success => errors.empty?, :errors => errors, :infos => notices }
@@ -549,13 +546,14 @@ class InternalController < ApplicationController
     end
   end
 
-private
+  private
+
   def check_auth
-    if current_user.nil?
-      return require_user(true)
-    elsif !current_user.flag?('admin')
-      flash.now[:error] = "You do not have permission to view this page"
-      return (render 'shared/error', :status => :forbidden)
+    return require_user(true) unless current_user.present?
+
+    unless current_user.is_admin?
+      flash.now[:error] = 'You do not have permission to view this page'
+      render 'shared/error', :status => :forbidden
     end
   end
 
@@ -567,7 +565,7 @@ private
     rescue JSON::ParserError
       new_value = value.gsub(/(\\u000a)|(\\+n)/, "\n") # avoid double-escaping
     end
-    return new_value
+    new_value
   end
 
   ##
@@ -583,7 +581,7 @@ private
   end
 
   def editing_this_page_is_dangerous?(domain = @domain)
-    !Rails.env.development? && [ 'default', 'socrata' ].include?(domain.shortName)
+    !Rails.env.development? && %w(default socrata).include?(domain.shortName)
   end
   helper_method :editing_this_page_is_dangerous?
 
@@ -595,7 +593,7 @@ private
         Domain.add_account_module(domain_cname, feature)
         notices << "Added account module `#{feature}` successfully."
       end
-      config = ::Configuration.find_by_type('feature_set', true, domain_cname)[0]
+      config = ::Configuration.find_by_type('feature_set', true, domain_cname).first
 
       if config.nil?
         # This problem can honestly just be fixed by creating the feature_set config.
@@ -624,7 +622,8 @@ private
     # If the cname is different, then this is a merged parent domain's config and
     # consequently means we'd be setting the properties on the wrong config object.
     # If `config` is wrong in any way, that means it doesn't exist and we should create it.
-    if config.try(:domainCName) != domain.cname
+
+    if config && config.domainCName != domain.cname
       begin
         config = ::Configuration.create(
           'name' => 'Feature Flags',
@@ -642,21 +641,21 @@ private
     properties = config.properties
     CoreServer::Base.connection.batch_request do |batch_id|
       (updates['feature_flags'] || []).each do |flag, value|
-        unless FeatureFlags.list.include? flag
+        unless FeatureFlags.list.include?(flag)
           errors << "#{flag} is not a valid feature flag."
           next
         end
         processed_value = FeatureFlags.process_value(value).to_s
         if properties[flag] == processed_value
-          notices << "#{flag} was already set to \"#{processed_value}\"."
+          notices << %Q{#{flag} was already set to "#{processed_value}".}
           next
         end
         if properties.has_key?(flag)
           config.update_property(flag, processed_value, batch_id)
-          notices << "#{flag} was updated with value \"#{processed_value}\"."
+          notices << %Q{"#{flag} was updated with value "#{processed_value}".}
         else
           config.create_property(flag, processed_value, batch_id)
-          notices << "#{flag} was created with value \"#{processed_value}\"."
+          notices << %Q{#{flag} was created with value "#{processed_value}".}
         end
       end
 
@@ -664,10 +663,10 @@ private
         if config.has_property?(flag)
           config.delete_property(flag, false, batch_id)
           default_value = FeatureFlags.default_for(flag).to_s
-          notices << "#{flag} was reset to its default value of \"#{default_value}\"."
+          notices << %Q{#{flag} was reset to its default value of "#{default_value}".}
         else
           # Failure is not an error.
-          notices << "#{flag} could not be reset; it was not set in the first place."
+          notices << "#{flag} could not be reset since it was not set in the first place."
         end
       end
     end
@@ -705,7 +704,7 @@ private
     config_type = params[:config_id]
     unless config_type.match /^\d+$/
       config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      return render_404 if config.nil? 
+      return render_404 if config.nil?
       redirect_to url_for(params.merge(config_id: config.id))
     end
   end

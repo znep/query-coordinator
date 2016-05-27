@@ -16,11 +16,9 @@ class DatasetsController < ApplicationController
 
   # collection actions
   def new
-    if (!CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) &&
-        !CurrentDomain.module_enabled?(:community_creation))
+    unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) || CurrentDomain.module_enabled?(:community_creation)
       # User doesn't have access to create new datasets
-      render 'shared/error', :status => :not_found
-      return nil
+      return render_forbidden('You do not have permission to create new datasets')
     end
     @view = nil # the templates expect a @view var (for reentrancy)
   end
@@ -81,7 +79,7 @@ class DatasetsController < ApplicationController
     end
 
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
-    user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
+    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
 
     if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url
@@ -111,13 +109,12 @@ class DatasetsController < ApplicationController
     etag = "#{dsmtime}-#{user}"
     ConditionalRequestHandler.set_etag(response, etag)
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
-    if @current_user.nil?
+    unless current_user
       if ConditionalRequestHandler.etag_matches_hash?(request, etag)
         render :nothing => true, :status => 304
         return true
       end
     end
-
 
     # We definitely don't want to have to look up the row index
     # ever again, as that causes a full scan. Persist the
@@ -128,8 +125,23 @@ class DatasetsController < ApplicationController
     end
 
     if !params[:row_id].nil? || !params[:row_index].nil?
-      @row = !params[:row_id].nil? ? @view.get_row(params[:row_id]) :
-        @view.get_row_by_index(params[:row_index])
+      # EN-6285 - Address Frontend app Airbrake errors
+      #
+      # This fix wraps the pre-existing code so that we can rescue potential
+      # CoreServerErrors leaking from @view.get_row and/or
+      # @view.get_row_by_index and cut down on the number of non-actionable
+      # exceptions that get sent to Airbrake.
+      #
+      # In this instance, we also assign nil to @row in case the behavior here
+      # does not match what we expect based on testing using the Rails console.
+      begin
+        @row = !params[:row_id].nil? ?
+          @view.get_row(params[:row_id]) :
+          @view.get_row_by_index(params[:row_index])
+      rescue CoreServer::CoreServerError
+        @row = nil
+      end
+
       if @row.nil?
         flash.now[:error] = 'This row cannot be found, or has been deleted.'
         render 'shared/error', :status => :not_found
@@ -139,9 +151,8 @@ class DatasetsController < ApplicationController
 
     # If a user sticks .json or similar at the end of a URL, redirect them to the API endpoint
     if params[:format].present?
-      return redirect_to(resource_url(
-        { :id => @view.id, :format => params[:format] }.merge(params.except('controller')))
-      )
+      return redirect_to(resource_url({ :id => @view.id, :format => params[:format] }.
+        merge(params.except('controller')).symbolize_keys))
     end
 
     @view.searchString = params[:q] if params[:q]
@@ -149,7 +160,7 @@ class DatasetsController < ApplicationController
     @user_session = UserSession.new unless current_user
 
     # See if the user is accessing the canonical URL; if not, redirect
-    unless request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
+    unless using_canonical_url?
       # Log redirects in production
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
@@ -230,8 +241,7 @@ class DatasetsController < ApplicationController
       if @view.geoParent.nil?
         Rails.logger.error("Unable to fetch parent geo dataset #{@view.metadata.geo['parentUid']} from child layer #{@view.id}")
         flash.now[:error] = 'This layer has been dissociated from its parent geospatial dataset.'
-        render 'shared/error', :status => :not_found
-        return nil
+        return render 'shared/error', :status => :not_found
       end
     end
 
@@ -258,6 +268,7 @@ class DatasetsController < ApplicationController
   def bare
     @view = get_view(params[:id])
     return if @view.nil?
+
     # if the core server requests a specific timeout, rather than
     # letting the js decide when it's rendered
     if params[:timeout].present?
@@ -314,7 +325,7 @@ class DatasetsController < ApplicationController
         case e.error_code
         when 'invalid_request'
           flash.now[:error] = e.error_message
-          return (render 'shared/error', :status => :invalid_request)
+          return render 'shared/error', :status => :invalid_request
         when 'permission_denied'
           return render_forbidden
         else
@@ -342,7 +353,7 @@ class DatasetsController < ApplicationController
     view = View.find_external(params[:id])
 
     if !view.blank?
-      redirect_to view_path(view[0])
+      redirect_to view_path(view.first)
     else
       render_404
     end
@@ -353,7 +364,7 @@ class DatasetsController < ApplicationController
     type = params[:type]
 
     if !view.blank? && !type.blank?
-      redirect_to metric_redirect_path(:type => type.upcase, :id => view[0].id)
+      redirect_to metric_redirect_path(:type => type.upcase, :id => view.first.id)
     else
       render_404
     end
@@ -364,7 +375,7 @@ class DatasetsController < ApplicationController
       @view = View.find(params[:id])
     rescue
       flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
-      return (render 'shared/error')
+      return render 'shared/error'
     end
 
     conditions = parse_alt_conditions(params)
@@ -377,7 +388,7 @@ class DatasetsController < ApplicationController
       else
         flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
       end
-      return (render 'shared/error')
+      return render 'shared/error'
     end
     redirect_to alt_view_path(@result)
   end
@@ -490,7 +501,7 @@ class DatasetsController < ApplicationController
   # before the 'respond_to' block, but without the CSRF token, this is our only protection.
   def validate_contact_owner
     @view = get_view(params[:id])
-    return (render :nothing => true) if @view.nil?
+    return render :nothing => true if @view.nil?
 
     success = false
     # When CSRF token validation is skipped for this method (see skip_before_filter above), this
@@ -511,10 +522,10 @@ class DatasetsController < ApplicationController
       format.html do
         if success
           flash[:notice] = 'Your message has been sent'
-          return (redirect_to alt_view_path(@view))
+          return redirect_to alt_view_path(@view)
         else
           flash[:error] = 'Please fill in all fields'
-          return (redirect_to contact_dataset_path(@view.id))
+          return redirect_to contact_dataset_path(@view)
         end
       end
       format.data { render :json => { :success => success } }
@@ -567,20 +578,21 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    return render_404 if (@view.is_published? && @view.is_blist?)
+    return render_404 if @view.is_published? && @view.is_blist?
 
     unless @view.can_replace?
-      return render_forbidden("You do not have permission to modify this dataset.")
+      return render_forbidden('You do not have permission to modify this dataset.')
     end
   end
 
   def edit_metadata
     @view = get_view(params[:id])
     return if @view.nil?
-    if !params[:view].nil?
+
+    if params[:view].present?
       begin
         if parse_attachments() && parse_meta(@view) && parse_external_sources() && parse_image()
-          @view = View.update_attributes!(params[:id], params[:view])
+          @view = ::View.update_attributes!(params[:id], params[:view])
 
           # if this is a data lens or standalone viz, update the inner metadata blob too
           # so that name/description changes aren't out of sync
@@ -631,38 +643,37 @@ class DatasetsController < ApplicationController
       return render_forbidden
     end
 
-    needs_view_js @view.id, @view
+    needs_view_js(@view.id, @view)
   end
 
   def stats
     @view = get_view(params[:id])
     return if @view.nil?
 
-    if !(@view.user_granted?(current_user) || \
-        CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
+    unless @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
       return render_forbidden
     end
 
-    needs_view_js @view.id, @view
+    needs_view_js(@view.id, @view)
   end
 
   def form_success
     begin
-      @view = View.find(params[:id])
+      @view = ::View.find(params[:id])
     rescue
       # Do nothing; if there is no view, render a generic message
     end
 
     respond_to do |format|
-      format.html { render(:layout => "plain") }
+      format.html { render(:layout => 'plain') }
     end
   end
 
   def form_error
-    @view = View.find(params[:id])
+    @view = ::View.find(params[:id])
     @error_message = params[:errorMessage]
     respond_to do |format|
-      format.html { render(:layout => "plain") }
+      format.html { render(:layout => 'plain') }
     end
   end
 
@@ -712,41 +723,36 @@ class DatasetsController < ApplicationController
 
   # Convert a wkt to a wkid.
   def wkt_to_wkid
-    json = JSON.parse(Net::HTTP.get(
-      URI("http://prj2epsg.org/search.json?mode=wkt&terms=#{CGI.escape params[:wkt]}")))
+    json = JSON.parse(Net::HTTP.get(URI("http://prj2epsg.org/search.json?mode=wkt&terms=#{CGI.escape params[:wkt]}")))
     respond_to do |format|
       format.data { render :json => json }
     end
   end
 
-protected
+  protected
+
   def get_view(id)
     begin
-      view = View.find(id)
+      view = ::View.find(id)
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
-      render 'shared/error', :status => :not_found
-      return nil
+      return render 'shared/error', :status => :not_found
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required'
-        require_user(true)
-        return nil
+        return require_user(true)
       elsif e.error_code == 'permission_denied'
-        render_forbidden(e.error_message)
-        return nil
+        return render_forbidden(e.error_message)
       else
         flash.now[:error] = e.error_message
-        render 'shared/error', :status => :internal_server_error
-        return nil
+        return render 'shared/error', :status => :internal_server_error
       end
     end
 
-    if (view.is_form? ? !view.can_add? : !view.can_read?)
-      render_forbidden("You do not have permission to view this dataset")
-      return nil
+    if (view.is_form? && !view.can_add?) || !view.can_read?
+      return render_forbidden('You do not have permission to view this dataset')
     end
 
-    return view
+    view
   end
 
   def parse_alt_conditions(params)
@@ -758,7 +764,18 @@ protected
     unless params[:filter].nil?
       filters = []
       params[:filter].each do |column_id, filter|
-        next if filter.try(:[], :operator).blank?
+        # EN-6285 - Address Frontend app Airbrake errors
+        #
+        # It appears that filter can sometimes be a non-object (maybe a number
+        # or a string?) and this caused the expression filter.try(...) to raise
+        # an error that eventually ended up in Airbrake. Based on the user
+        # agents associated with these notifications, it appears that this code
+        # path is usually executed as a result of a robot request.
+        #
+        # This change adds the 'rescue true' clause to the end of the line,
+        # which I believe is consistent with the original intent of the code
+        # (which I assume to be "skip things that we cannot process").
+        next if filter.try(:[], :operator).blank? rescue true
         filter_condition = {
           'type' => 'operator',
           'value' => filter[:operator],
@@ -787,13 +804,13 @@ protected
       params[:sort].each do |idx, sort|
         next if sort[:field].blank?
         next unless sort[:direction].respond_to? :to_str
-        sorts.push({
-          'ascending' => (sort[:direction].downcase == 'ascending'),
+        sorts.push(
+          'ascending' => sort[:direction].downcase == 'ascending',
           'expression' => {
             'type' => 'column',
             'columnId' => sort[:field]
           }
-        })
+        )
       end
       @conditions['orderBys'] = sorts unless sorts.empty?
     end
@@ -804,8 +821,8 @@ protected
   end
 
   def file_extension(url)
-      base = url[/\.([^\.\/]+)$/]
-      base[1..-1] if base
+    base = url[/\.([^\.\/]+)$/]
+    base[1..-1] if base
   end
 
   def parse_meta(view)
@@ -971,7 +988,7 @@ protected
   def canonical_path(with_query_string = true)
     path = canonical_path_proc.call(locale: current_locale)
     if with_query_string
-      path += "?#{request.query_string}" unless request.query_string.empty?
+      path << "?#{request.query_string}" unless request.query_string.empty?
     end
     path
   end
@@ -1116,6 +1133,10 @@ protected
     Rails.cache.fetch(cache_key, expires_in: 1.day, race_condition_ttl: 15.seconds) do
       soda_fountain.get_extent(options)
     end
+  end
+
+  def using_canonical_url?
+    request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
   end
 
 end

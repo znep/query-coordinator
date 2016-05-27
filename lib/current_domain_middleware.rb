@@ -26,7 +26,7 @@ class CurrentDomainMiddleware
     # /version.html are only accessed via load balancer which injects the Host: header. The json endpoint is
     # accessed directly on each node by Decima, which doesn't set the Host: header, so we exit early here to
     # avoid any imperial entanglements. See also VersionMiddleware to see how we build the JSON response.
-    if VersionRequestHelper.is_version_json_request?(env['REQUEST_URI'])
+    if ::VersionRequestHelper.is_version_json_request?(env['REQUEST_URI'])
       return @app.call(env)
     end
 
@@ -36,13 +36,26 @@ class CurrentDomainMiddleware
     host = request.host if host.blank?
 
     if !host.blank?
-      current_domain = CurrentDomain.set(host)
+      current_domain = ::CurrentDomain.set(host)
 
-      # Check every n minutes if the current domain needs to be refreshed
-      if CurrentDomain.needs_refresh_check?(host)
+      # EN-6285 - Address Frontend app Airbrake errors
+      #
+      # CurrentDomain.set() will return false if we do not know about the host
+      # in question. If this happens, we don't want to cehck if the domain
+      # needs a refresh.
+      #
+      # This is because CurrentDomain.check_for_theme_update calls
+      # CurrentDomain.reload, which will raise an error that goes unhandled if
+      # it is called before CurrentDomain.set() succeeds and that error gets
+      # sent to Airbrake.
+      #
+      # Meanwhile, if CurrentDomain.set() did not return false (which indicates
+      # that it succeeded) then check every n minutes if the current domain
+      # needs to be refreshed.
+      if current_domain && ::CurrentDomain.needs_refresh_check?(host)
         logger.debug("Checking memcache to see if domain '#{host}' needs update")
-        CurrentDomain.check_for_theme_update(host)
-        CurrentDomain.flag_refresh_checked!(host)
+        ::CurrentDomain.check_for_theme_update(host)
+        ::CurrentDomain.flag_refresh_checked!(host)
       end
     else
       logger.warn "Unable to determine domain for request."

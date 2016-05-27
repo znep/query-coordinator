@@ -127,6 +127,7 @@ GEM
     json (1.8.3)
     jwt (1.5.1)
     kgio (2.10.0)
+    libv8 (3.16.14.15)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -233,6 +234,7 @@ GEM
       parser (~> 2.2)
       rainbow (~> 2.0)
       unparser (~> 0.2.2)
+    ref (2.0.0)
     rinku (2.0.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -284,6 +286,9 @@ GEM
       sprockets (>= 3.0.0)
     test-unit (3.1.9)
       power_assert
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thin (1.6.4)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -376,6 +381,7 @@ DEPENDENCIES
   snappy
   statsd-ruby!
   test-unit
+  therubyracer
   thin
   timecop
   uglifier

@@ -26,13 +26,13 @@ describe('reducers/popularViews', function() {
   describe('RECEIVE_POPULAR_VIEWS', function() {
     beforeEach(function() {
       this.state.isLoading = true;
-      this.state.list = _.fill(Array(3), mockViewWidget);
+      this.state.viewList = _.fill(Array(3), mockViewWidget);
     });
 
-    it('appends up to 3 elements to the list', function() {
+    it('appends up to 3 elements to the viewList', function() {
       var payload = _.fill(Array(4), mockViewWidget);
       var result = reducer(this.state, receivePopularViews(payload));
-      expect(result.list).to.have.length(6);
+      expect(result.viewList).to.have.length(6);
     });
 
     it('sets hasMore to true if there are more than 3 elements in the payload', function() {

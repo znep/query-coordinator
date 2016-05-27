@@ -6,15 +6,16 @@ import formatDate from '../lib/formatDate';
 
 var ViewWidget = React.createClass({
   propTypes: {
-    name: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
+    children: PropTypes.node,
     description: PropTypes.string,
     displayType: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     isPrivate: PropTypes.bool,
+    name: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
     updatedAt: PropTypes.string.isRequired,
-    viewCount: PropTypes.number.isRequired,
-    onClick: PropTypes.func
+    url: PropTypes.string.isRequired,
+    viewCount: PropTypes.number.isRequired
   },
 
   componentDidMount: function() {
@@ -35,6 +36,16 @@ var ViewWidget = React.createClass({
     });
   },
 
+  renderOverlay: function() {
+    if (React.Children.count(this.props.children) > 0) {
+      return (
+        <div className="view-widget-overlay">
+          {this.props.children}
+        </div>
+      );
+    }
+  },
+
   render: function() {
     var { name, id, description, url, displayType, updatedAt, viewCount } = this.props;
 
@@ -46,7 +57,7 @@ var ViewWidget = React.createClass({
     var ariaLabel = `${I18n.popular_views.view} ${name}`;
 
     return (
-      <div className="result-card media" data-id={id} data-type={displayType}>
+      <div className="result-card media view-widget" data-id={id} data-type={displayType}>
         <div className="entry-header">
           <div className="entry-title">
             <h3 className="entry-name">
@@ -78,6 +89,8 @@ var ViewWidget = React.createClass({
             <div className="entry-description" dangerouslySetInnerHTML={{ __html: description }} />
           </div>
         </div>
+
+        {this.renderOverlay()}
       </div>
     );
   }

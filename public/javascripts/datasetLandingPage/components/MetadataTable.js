@@ -268,7 +268,7 @@ export var MetadataTable = React.createClass({
 
     if (view.editMetadataUrl) {
       editMetadata = (
-        <a href={view.editMetadataUrl} className="btn btn-default">
+        <a href={view.editMetadataUrl} className="btn btn-sm btn-default">
           {I18n.metadata.edit_metadata}
         </a>
       );

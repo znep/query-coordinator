@@ -1264,6 +1264,7 @@ en:
       download: Download
       odata: Access Data via OData
       share: Share
+    add: Add
     api_flannel:
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.
       developer_portal_button: Developer Portal
@@ -1305,11 +1306,18 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
-    popular_views:
-      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
-      load_more_error: There was a problem loading additional content.
-      title: Popular Content Using this Data
-      view: View
+    edit: Edit
+    featured_content:
+      title: Featured Content Using this Data
+      manage_prompt:
+        message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
+        button: Manage Featured Items
+    featured_content_modal:
+      title: Manage Featured Content
+      introduction: Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources.
+      visualization: Visualization
+      story: Story
+      external: External Resource
     feedback:
       panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
       panel_title: Do you want to include an annotated screenshot of the current page?
@@ -1346,8 +1354,14 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
+    popular_views:
+      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
+      load_more_error: There was a problem loading additional content.
+      title: Popular Content Using this Data
+      view: View
     private_notice: You are looking at a private dataset.
     published_by: Published by
+    remove: Remove
     schema_preview:
       api_field_name: API Field Name
       column_name: Column Name

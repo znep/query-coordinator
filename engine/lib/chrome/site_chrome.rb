@@ -40,7 +40,7 @@ module Chrome
     private
 
     def default_content
-      JSON.parse(File.read("#{Chrome::Engine.root}/engine/config/default_site_chrome.json")).first['properties'].
+      JSON.parse(File.read("#{Chrome::Engine.root}/config/default_site_chrome.json")).first['properties'].
         first.dig('value', 'versions', '0.1', 'published', 'content').with_indifferent_access
     end
   end

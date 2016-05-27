@@ -75,7 +75,7 @@ function SoqlDataProvider(config) {
       '';
 
     return _makeSoqlGetRequestWithSalt(_queryUrl(
-      '$select=count(*){0}&$$$read_from_nbe=true&$$$version=2.1'.format(whereClause)
+      '$select=count(*) as count{0}&$$$read_from_nbe=true&$$$version=2.1'.format(whereClause)
       )).then(function(data) {
         return parseInt(_.get(data, '[0].count'), 10);
       });

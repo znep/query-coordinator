@@ -82,7 +82,7 @@ class FilterItem extends React.Component {
   handleKeyboardEvents(e) {
     if (e.keyCode == 13) {
       if (this.state.isApplicable) {
-        this.props.additionHandler(this.props.filter.id, this.state.pendingData );
+        this.props.additionHandler(this.props.filter.id, this.state.pendingData);
         this.setState({ label: this.state.pendingLabel });
         FlannelUtils.closeAll();
       }
@@ -91,7 +91,7 @@ class FilterItem extends React.Component {
 
   onClickApply() {
     if (this.state.isApplicable) {
-      this.props.additionHandler(this.props.filter.id, this.state.pendingData );
+      this.props.additionHandler(this.props.filter.id, this.state.pendingData);
       this.setState({ label: this.state.pendingLabel });
       FlannelUtils.closeAll();
     }

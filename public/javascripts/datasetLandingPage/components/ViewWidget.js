@@ -64,11 +64,11 @@ var ViewWidget = React.createClass({
         </div>
         <div className="entry-content">
           <div className="entry-main">
-            <div className="img-wrapper">
-              <a href={url} onClick={this.props.onClick}>
+            <a href={url} onClick={this.props.onClick}>
+              <div className="img-wrapper">
                 <span className={icon + ' x-large-icon'}></span>
-              </a>
-            </div>
+              </div>
+            </a>
             <div className="entry-description" dangerouslySetInnerHTML={{__html: description}} />
           </div>
         </div>

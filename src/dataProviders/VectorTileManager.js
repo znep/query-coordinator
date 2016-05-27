@@ -719,6 +719,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     var mapMouseupCallback;
     var mapMousemoveCallback;
     var mapClickCallback;
+    var mapTapCallback;
     var mapMouseoutCallback;
 
     var mapDragstartCallback;
@@ -978,6 +979,20 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       map.on('click', mapClickCallback);
     }
 
+    if (_.isFunction(this.options.onTap)) {
+
+      mapTapCallback = function(e) {
+
+        injectTileInfo(e);
+
+        highlightClickedPoints(e.points);
+        self.options.onTap(e);
+
+      };
+
+      map.on('click', mapTapCallback);
+    }
+
     if (self.options.hover) {
       mapMouseoutCallback = function() {
         self.clearHoverPointHighlights();
@@ -1042,6 +1057,10 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
 
         if (_.isFunction(self.options.onClick)) {
           map.off('click', mapClickCallback);
+        }
+
+        if (_.isFunction(self.options.onTap)) {
+          map.off('click', mapTapCallback);
         }
 
         if (self.options.hover) {

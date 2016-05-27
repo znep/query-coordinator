@@ -687,10 +687,12 @@ function FeatureMap(element, vif) {
       }
     }
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
-      payload
-    );
+    if (!_.get(vif, 'configuration.isMobile') || _.get(vif, 'configuration.isMobile') && (manyRows || denseData)) {
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
+        payload
+      );
+    }
   }
 
   function _showPanZoomDisabledWarningFlyout() {
@@ -887,7 +889,8 @@ function FeatureMap(element, vif) {
       onRenderStart: _handleVectorTileRenderStart,
       onRenderComplete: _handleVectorTileRenderComplete,
       onMousemove: _handleVectorTileMousemove,
-      onClick: _handleVectorTileClick
+      onClick: _handleVectorTileClick,
+      onTap: _.get(vif, 'configuration.isMobile') ? _handleVectorTileMousemove : null
     };
 
     // Don't create duplicate layers.

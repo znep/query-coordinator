@@ -23,7 +23,7 @@
         <%- end -%>
       </div>
     <%- end -%>
-  <%- elsif @view.geospatial_child_layer_count == 1 -%>
+  <%- elsif @view.geospatial_child_layer_count == 1 && @view.geospatial_child_layers[0] -%>
     <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.geospatial_child_layers[0].api_foundry_url) %></p>
     <ul class="finishButtons actionButtons clearfix">
       <li><%= api_foundry_url_tag(@view.geospatial_child_layers[0].api_foundry_url) %></li>
@@ -42,7 +42,7 @@
         <%- end -%>
       </dl>
     <%- end -%>
-  <%- else -%>
+  <%- elsif @view.geospatial_child_layer_count == 0 -%>
     <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.api_foundry_url ) %></p>
     <ul class="finishButtons actionButtons clearfix">
       <li><%= api_foundry_url_tag(@view.api_foundry_url) %></li>
@@ -61,5 +61,7 @@
         <%- end -%>
       </dl>
     <%- end -%>
+  <%- else -%>
+    <p><%= t('screens.ds.grid_sidebar.api.no_endpoints_available') %></p>
   <%- end -%>
 </div>

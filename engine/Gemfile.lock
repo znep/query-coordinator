@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chrome (0.0.5)
+    chrome (0.0.7)
       rails (~> 4.2, >= 4.2.6)
 
 GEM
@@ -189,4 +189,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.12.3
+   1.12.5

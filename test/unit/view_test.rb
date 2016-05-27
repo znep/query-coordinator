@@ -32,6 +32,7 @@ class ViewTest < Minitest::Test
   end
 
   def test_multiple_queries_same_prefetched_data
+    init_current_domain
     load_sample_data("test/fixtures/sample-data.json")
     view = View.find("does-not-matter")
     view.prefetch(300)

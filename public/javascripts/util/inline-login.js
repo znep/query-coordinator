@@ -172,7 +172,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 
         var signupSuccess = function(responseData)
         {
-            if (responseData) {
+            if (responseData && (responseData.error || responseData.notice)) {
                 if( responseData.error) {
                     if (_.isArray(responseData.error)) {
                         responseData.error = responseData.error

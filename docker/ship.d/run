@@ -1,14 +1,20 @@
 #!/bin/bash
+# Turn verbose output on for troubleshooting
 set -ev
 
 export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
 export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 
+# Trun verbose output OFF so we don't echo the output of the secrets file
+set +ev
 if [ -f /dev/shm/frontend_secrets.sh ]; then
   source /dev/shm/frontend_secrets.sh
 else
-  echo "frontend_secrets not found. Check your Clortho config."
+  echo "/dev/shm/frontend_secrets.sh not found. Check your Clortho config."
 fi
+
+# Turn verbose output back on
+set -ev
 
 /bin/env_parse ${APP_DIR}/docker/config.yml.j2 ${APP_DIR}/config/config.yml
 

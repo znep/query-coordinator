@@ -108,7 +108,7 @@ class CardTimelineChart extends React.Component {
 
     var dotContent;
     if (!payload.isIntervalFlyout) {
-      var dotLeft = ((flyoutBounds.left - 15) + (highlightedBarWidth / 2));
+      var dotLeft = (flyoutBounds.left - 15) + (highlightedBarWidth / 2);
       var dotTop = flyoutPosition.vertical +
         this.state.$component.parent().find('.intro-text').height() +
         parseInt($('.timeline-chart-upper-container').css('border-width')) + 5;

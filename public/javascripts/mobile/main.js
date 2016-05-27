@@ -435,7 +435,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
             unfilteredSoqlQuery.then(function(response) {
               var thisDate;
-              var allLabels = [];
+              var allDateLabels = [];
 
               _.each(response.rows, function(value, i) {
                 if (i === 0) {
@@ -446,22 +446,22 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                 switch (precision) {
                   case 'DECADE':
                     if (thisDate.getFullYear() % 10 === 0) {
-                      allLabels.push(thisDate);
+                      allDateLabels.push(thisDate);
                     }
                     break;
                   case 'YEAR':
-                    allLabels.push(thisDate.setMonth(0));
+                    allDateLabels.push(thisDate.setMonth(0));
                     break;
                   case 'MONTH':
-                    allLabels.push(thisDate.setDate(1));
+                    allDateLabels.push(thisDate.setDate(1));
                     break;
                   case 'DAY':
-                    allLabels.push(thisDate);
+                    allDateLabels.push(thisDate);
                     break;
                 }
               });
 
-              allLabels = _(allLabels).
+              allDateLabels = _(allDateLabels).
                 uniq().
                 map((label) => { return new Date(label); }).
                 sortBy().
@@ -472,7 +472,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
                 name: _.findKey(datasetMetadata.columns, { position: column.position }),
                 id: column.position,
                 type: 'calendar_date',
-                scale: allLabels
+                scale: allDateLabels
               });
 
             });

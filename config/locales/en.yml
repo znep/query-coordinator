@@ -2703,6 +2703,7 @@ en:
           endpoint_title: 'API Endpoint:'
           intro_html: The <a href="http://dev.socrata.com/" target="external">Socrata Open Data API (SODA)</a> provides programmatic access to this dataset including the ability to <a href="http://dev.socrata.com/docs/filtering.html" target="external">filter</a>, <a href="http://dev.socrata.com/docs/queries.html">query</a>, and <a href="http://dev.socrata.com/docs/aggregation.html" target="external">aggregate</a> data. For more more information, view the <a href="%{view_foundry_url}" target="external">API docs for this dataset</a> or visit our <a href="http://dev.socrata.com" target="external">developer portal</a>
           multiple_endpoints_intro_html: The <a href="http://dev.socrata.com/" target="external">Socrata Open Data API (SODA)</a> provides programmatic access to this dataset including the ability to <a href="http://dev.socrata.com/docs/filtering.html" target="external">filter</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">query</a>, and <a href="http://dev.socrata.com/docs/aggregation.html" target="external">aggregate</a> data. For more more information, view the API docs for this dataset below or visit our <a href="http://dev.socrata.com" target="external">developer portal</a>
+          no_endpoints_available: No available endpoints.
           reference_html: To start accessing this dataset programmatically, use the API endpoint provided below. For more information and examples on how to use the Socrata Open Data API, reference our <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.
           subtitle: Access this %{view_type} via SODA
           title: SODA API
@@ -3192,6 +3193,7 @@ en:
           endpoint_action: 'OData Endpoint:'
           intro_html1: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
           intro_html2: Use Microsoft Excel 2010, Microsoft Excel 2013 or Microsoft Power Query. Follow the instructions here, using <a href="%{doc_link}">Socrata's OData documentation</a>.
+          no_endpoints_available: No available endpoints.
           subtitle: Access this dataset via OData
           title: OData
         ownership:

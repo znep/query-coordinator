@@ -86,7 +86,7 @@
     format = format || 'llll Z';
 
     if (asMoment.isValid()) {
-      this.text(asMoment.format(format));
+      this.text(asMoment.lang('en').format(format));
     }
   };
 })(jQuery);

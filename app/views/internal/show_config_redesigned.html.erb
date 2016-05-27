@@ -66,8 +66,7 @@
         <%-
           link = link_to("#{@parent_domain.cname}",
                          show_domain_path(domain_id: @parent_domain.cname))
-          link = link.prepend("Inherited Properties (from #{@parent_config.name} at ")
-          link = link.html_safe
+          link.prepend("Inherited Properties (from #{@parent_config.name} at ")
           link << ')'
         %>
         <%= expandable_section(link, collapsed: true) do %>

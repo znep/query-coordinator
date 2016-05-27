@@ -113,7 +113,7 @@
     "redux-thunk": "2.1.0",
     "socrata-styleguide": "2.0.3",
     "socrata-utils": "1.3.0",
-    "socrata-visualizations": "10.8.4",
+    "socrata-visualizations": "10.8.5",
     "tether-shepherd": "1.2.0",
     "velocity-animate": "1.2.3",
     "velocity-react": "1.1.5",

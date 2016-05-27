@@ -96,13 +96,13 @@ export default function StoryCopierRenderer(options) {
     }).text(I18n.t('editor.make_a_copy.copy_warning'));
 
     var cancelButton = $('<button>', {
-      'class': 'btn-default back-btn',
+      'class': 'btn btn-default back-btn',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_CANCEL,
       'type': 'button'
     }).text(I18n.t('editor.make_a_copy.cancel'));
 
     var copyButton = $('<button>', {
-      'class': 'btn-primary',
+      'class': 'btn btn-primary',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_SUBMIT,
       'type': 'submit'
     }).text(I18n.t('editor.make_a_copy.make_copy'));

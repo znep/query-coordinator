@@ -155,7 +155,7 @@ describe('StoryPermissionsRenderer', function() {
             assert.equal($visibilityLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.public'));
             assert.equal($visibilityButtonText.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
             assert($visibilityButton.hasClass('btn-default'));
-            assert(!$visibilityButton.hasClass('btn-secondary'));
+            assert(!$visibilityButton.hasClass('btn-alternate-2'));
             assert.equal($updatePublicButton.prop('disabled'), true);
             assert.equal($updatePublicLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.status.published'));
             assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.has_been_published'));
@@ -187,7 +187,7 @@ describe('StoryPermissionsRenderer', function() {
 
             assert.equal($visibilityLabel.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.private'));
             assert.equal($visibilityButtonText.text(), I18nMocker.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
-            assert.isTrue($visibilityButton.hasClass('btn-secondary'));
+            assert.isTrue($visibilityButton.hasClass('btn-alternate-2'));
             assert.equal($updatePublicButton.prop('disabled'), true);
             assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly'));
           });

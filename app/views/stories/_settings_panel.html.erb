@@ -48,7 +48,7 @@
               <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>
               <div class="settings-save-failure-message-details"></div>
             </div>
-            <button class="settings-save-btn btn-default btn-dark">
+            <button class="btn btn-default btn-dark settings-save-btn">
               <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
             </button>
           </div>
@@ -99,7 +99,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
               </div>
               <div>
-                <button class="btn-secondary btn-dark" <%= ' disabled' unless can_manage_story_visibility? %>>
+                <button class="btn btn-alternate-2 btn-dark" <%= ' disabled' unless can_manage_story_visibility? %>>
                   <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
                 </button>
               </div>
@@ -113,7 +113,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
               </div>
               <div>
-                <button class="btn-primary btn-dark" disabled>
+                <button class="btn btn-primary btn-dark" disabled>
                   <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
                 </button>
               </div>

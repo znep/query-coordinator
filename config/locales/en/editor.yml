@@ -20,7 +20,7 @@ en:
     story_save_error_conflict_generic_user_name: 'another user'
     story_save_error_conflict_detail_2: 'in another window. Any changes you make here will not be saved. Reload this page to see the latest version of the story.'
     story_save_error_reload: 'Reload your story'
-    user_session_timeout: Oh no! It appears that you're offline. Make sure you're <a class="btn btn-secondary btn-small">logged in</a> and check your Internet connection.
+    user_session_timeout: Oh no! It appears that you're offline. Make sure you're <a class="btn btn-alternate-2 btn-xs">logged in</a> and check your Internet connection.
     modal:
       buttons:
         cancel: 'Cancel'
@@ -168,6 +168,7 @@ en:
         choose_insert_table_description: 'Create a table built on a public dataset or filtered view'
         choose_create_visualization_heading: 'Create New Visualization'
         choose_create_visualization_description: 'Create a new chart or map based on a public dataset'
+        choose_author_visualization_heading: 'Create New Visualization (Authoring Workflow)'
       image_upload:
         name: 'Image'
         description: 'Upload an image from your computer up to 5MB.'

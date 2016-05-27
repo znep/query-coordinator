@@ -114,7 +114,7 @@ export default function StoryPermissionsRenderer() {
 
       _$visibilityLabel.text(i18n('visibility.public'));
       _$visibilityButtonText.text(i18n('visibility.make_story_private'));
-      _$visibilityButton.addClass('btn-default').removeClass('btn-secondary');
+      _$visibilityButton.addClass('btn-default').removeClass('btn-alternate-2');
       _$updatePublicButton.prop('disabled', true);
       _$updatePublicLabel.text(i18n('status.published'));
       _$publishingHelpText.text(i18n('messages.has_been_published'));
@@ -127,7 +127,7 @@ export default function StoryPermissionsRenderer() {
     } else {
       _$visibilityLabel.text(i18n('visibility.private'));
       _$visibilityButtonText.text(i18n('visibility.make_story_public'));
-      _$visibilityButton.removeClass('btn-default').addClass('btn-secondary');
+      _$visibilityButton.removeClass('btn-default').addClass('btn-alternate-2');
       _$updatePublicButton.prop('disabled', true);
       _$publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
     }

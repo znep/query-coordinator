@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'src/scss/socrata-icons';
+@import 'dist/fonts/socrata-icons';
 
 #collaborators-modal {
   z-index: 15;
@@ -148,11 +148,10 @@
     font-size: 1.5rem;
 
     &::after {
-      @extend .icon-arrow-down:before;
+      @extend .icon-arrow-down::before;
 
       display: block;
       position: absolute;
-      font-family: 'socrata-icons';
       color: $collaborators-select-arrow-color;
       right: 1rem;
       top: calc(2.5rem / 2);

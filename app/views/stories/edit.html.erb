@@ -7,24 +7,24 @@
   <div class="header-right">
     <ul class="quick-action-menu">
       <li>
-        <button class="btn-transparent undo-btn" disabled="disabled" title="undo">
+        <button class="btn btn-transparent undo-btn" disabled="disabled" title="undo">
           <span class="icon-undo"></span>
         </button>
       </li>
       <li>
-        <button class="btn-transparent redo-btn" disabled="disabled" title="redo">
+        <button class="btn btn-transparent redo-btn" disabled="disabled" title="redo">
           <span class="icon-redo"></span>
         </button>
       </li>
       <li class="menu-divider"></li>
       <li>
-        <button class="btn-transparent preview-btn" role="button" data-href="/stories/s/<%= @story.uid %>/preview" target="_blank">Preview <span class="icon-preview"></span></button>
+        <button class="btn btn-transparent preview-btn" role="button" data-href="/stories/s/<%= @story.uid %>/preview" target="_blank">Preview <span class="icon-preview"></span></button>
       </li>
       <li>
-        <button class="btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel">Add Content</button>
+        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel">Add Content</button>
       </li>
       <li>
-        <button class="btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
+        <button class="btn btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
       </li>
     </ul>
   </div>
@@ -56,7 +56,7 @@
     <span class="error-warning-message"></span>
   </div>
   <div class="modal-button-group r-to-l">
-    <button class="btn-reload btn-primary"><%= t('editor.story_save_error_reload') %></button>
+    <button class="btn btn-reload btn-primary"><%= t('editor.story_save_error_reload') %></button>
   </div>
 </div>
 
@@ -87,9 +87,10 @@
   </div>
 
   <div class="modal-button-group r-to-l">
-    <button class="btn-default" data-action="LINK_MODAL_CLOSE"><%= t('editor.modal.buttons.cancel') %></button>
-    <button class="btn-primary" data-action="LINK_MODAL_ACCEPT"><%= t('editor.modal.buttons.ok') %></button>
+    <button class="btn btn-default" data-action="LINK_MODAL_CLOSE"><%= t('editor.modal.buttons.cancel') %></button>
+    <button class="btn btn-primary" data-action="LINK_MODAL_ACCEPT"><%= t('editor.modal.buttons.ok') %></button>
   </div>
 </div>
 
 <div id="block-ghost" class="block hidden"></div>
+<div id="authoring-workflow"></div>

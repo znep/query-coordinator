@@ -5,6 +5,7 @@ import I18n from '../I18n';
 import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
+import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import {fileUploaderStore, STATUS} from './FileUploaderStore';
@@ -32,6 +33,8 @@ export var WIZARD_STEP = {
   SELECT_TABLE_FROM_CATALOG: 'SELECT_TABLE_FROM_CATALOG',
   // You choose a map or chart visualization.
   SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
+  // You walk through the new authorship workflow.
+  AUTHOR_VISUALIZATION: 'AUTHOR_VISUALIZATION',
   // You chose some other visualization. Use Data Lens embed to configure it.
   CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
@@ -187,6 +190,11 @@ export default function AssetSelectorStore() {
             _visualizeAsTable();
             break;
           case 'CREATE_VISUALIZATION':
+            _state.isAuthoringVisualization = false;
+            _chooseCreateVisualization();
+            break;
+          case 'AUTHOR_VISUALIZATION':
+            _state.isAuthoringVisualization = true;
             _chooseCreateVisualization();
             break;
         }
@@ -445,7 +453,10 @@ export default function AssetSelectorStore() {
    * the step the wizard should start from given the user is updating
    * a component.
    */
-  function _stepForUpdate(type) {
+  function _stepForUpdate(component) {
+    var type = component.type;
+    var value = component.value;
+
     switch (type) {
       case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
       case 'image': return WIZARD_STEP.IMAGE_PREVIEW;
@@ -462,6 +473,10 @@ export default function AssetSelectorStore() {
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
+      if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && _.get(value, 'vif.format.version') === 2) {
+        return WIZARD_STEP.AUTHOR_VISUALIZATION;
+      }
+
       return WIZARD_STEP.CONFIGURE_VISUALIZATION;
     }
 
@@ -497,7 +512,7 @@ export default function AssetSelectorStore() {
     );
 
     _state = {
-      step: _stepForUpdate(component.type),
+      step: _stepForUpdate(component),
       blockId: payload.blockId,
       componentIndex: payload.componentIndex,
       componentType: component.type,
@@ -617,6 +632,8 @@ export default function AssetSelectorStore() {
       if (isCreatingTable) {
         _setUpTableFromSelectedDataset();
         _state.step = WIZARD_STEP.TABLE_PREVIEW;
+      } else if (_state.isAuthoringVisualization && Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
+        _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
       } else {
         _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
       }
@@ -837,6 +854,13 @@ export default function AssetSelectorStore() {
       };
 
       self._emitChange();
+    } else if (payload.visualization.format === 'vif2') {
+      _state.componentType = StorytellerUtils.format('socrata.visualization.{0}', visualization.series[0].type);
+      _state.componentProperties = {
+        vif: visualization,
+        dataset: _state.componentProperties.dataset,
+        originalUid: payload.visualization.originalUid
+      };
     }
   }
 

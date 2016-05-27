@@ -133,7 +133,7 @@ function templateUnconfiguredHero() {
       templateHeroText(),
       '<div class="hero-add-controls">',
         '<img src="{coverImageUrl}" alt="Add Cover Image">',
-        '<button class="btn-primary">{coverImage}</button>',
+        '<button class="btn btn-primary">{coverImage}</button>',
       '</div>',
     '</div>'
   ].join('');

@@ -160,7 +160,7 @@ stories_show_facet_in_catalog:
   defaultValue: false
 enable_new_account_verification_email:
   description: When enabled, causes new accounts to receive an email with verification link that must be validated before account can be used.
-  defaultValue: true
+  defaultValue: false
 enable_pdf_download_type:
   description: Control visibility of the "Export > Download dataset as PDF" format. See enable_xls_download_type for more background.
   defaultValue: true

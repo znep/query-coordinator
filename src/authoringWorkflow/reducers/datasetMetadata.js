@@ -8,6 +8,18 @@ import {
 
 import defaultDatasetMetadata from '../defaultDatasetMetadata';
 
+export var datasetMetadataPredicates = {
+  isLoading: function(state) {
+    return _.get(state, 'isLoading', false);
+  },
+  hasData: function(state) {
+    return !_.isNull(_.get(state, 'data', null));
+  },
+  hasError: function(state) {
+    return !_.isNull(_.get(state, 'error', null));
+  }
+};
+
 export default function datasetMetadata(state, action) {
   if (_.isUndefined(state)) {
     return defaultDatasetMetadata;
@@ -20,30 +32,21 @@ export default function datasetMetadata(state, action) {
       state.isLoading = true;
 
       state.error = null;
-      state.hasError = false;
-
       state.data = null;
-      state.hasData = false;
       break;
 
     case RECEIVE_DATASET_METADATA:
       state.isLoading = false;
 
       state.data = action.datasetMetadata;
-      state.hasData = true;
-
       state.error = null;
-      state.hasError = false;
       break;
 
     case HANDLE_DATASET_METADATA_ERROR:
       state.isLoading = false;
 
       state.data = null;
-      state.hasData = false;
-
       state.error = action.error;
-      state.hasError = true;
       break;
   }
 

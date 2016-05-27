@@ -1,7 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { datasetMetadataPredicates } from './reducers/datasetMetadata';
 import { setDatasetUid, setDimension, setMeasure, setChartType } from './actions';
+
+import { CustomizationTabs } from './CustomizationTabs';
+import { CustomizationTabPanes } from './CustomizationTabPanes';
 import { Visualization } from './Visualization';
 
 export var AuthoringWorkflow = React.createClass({
@@ -12,6 +16,12 @@ export var AuthoringWorkflow = React.createClass({
         {type: 'columnChart', name: 'Column Chart'},
         {type: 'timelineChart', name: 'Timeline Chart'}
       ]
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      currentTabSelection: '#authoring-data'
     };
   },
 
@@ -39,6 +49,110 @@ export var AuthoringWorkflow = React.createClass({
 
   onCancel: function() {
     this.props.onCancel();
+  },
+
+  onTabNavigation: function(event) {
+    var href = event.target.getAttribute('href');
+
+    if (href) {
+      event.preventDefault();
+      this.setState({currentTabSelection: href});
+    }
+  },
+
+  tabs: function() {
+    var datasetMetadataInfo;
+    var dimensionDropdown;
+    var measureDropdown;
+    var chartTypeDropdown;
+
+    var vif = this.props.vif;
+    var datasetMetadata = this.props.datasetMetadata;
+    var datasetUid = _.get(this.props, 'vif.series[0].datasetSource.datasetUid', '');
+
+    if (datasetMetadataPredicates.hasError(datasetMetadata)) {
+      datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
+    } else if (datasetMetadataPredicates.isLoading(datasetMetadata)) {
+      datasetMetadataInfo = <div>Loading dataset metadata</div>;
+    }
+
+    if (datasetMetadataPredicates.hasData(datasetMetadata)) {
+      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
+      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
+      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
+    }
+
+    return [
+      {
+        id: 'authoring-data',
+        title: 'Data',
+        content: (
+          <form>
+            <label className="block-label">Enter a dataset four by four:</label>
+            <input className="text-input" type="text" defaultValue={datasetUid} onChange={this.props.onChangeDatasetUid} />
+
+            {datasetMetadataInfo}
+
+            {dimensionDropdown}
+            {measureDropdown}
+            {chartTypeDropdown}
+          </form>
+        )
+      },
+
+      {
+        id: 'authoring-title-and-description',
+        title: 'Title & Description',
+        content: (
+          <form>
+            <label className="block-label">Title:</label>
+            <input className="text-input" type="text" />
+            <label className="block-label">Description:</label>
+            <textarea className="text-input text-area"></textarea>
+          </form>
+        )
+      },
+
+      {
+        id: 'authoring-colors-and-style',
+        title: 'Colors & Style',
+        content: (
+          <form>
+            <p>Colors and Style</p>
+          </form>
+        )
+      },
+
+      {
+        id: 'authoring-axis-and-scale',
+        title: 'Axis & Scale',
+        content: (
+          <form>
+            <p>Axis and scale</p>
+          </form>
+        )
+      },
+
+      {
+        id: 'authoring-labels',
+        title: 'Labels',
+        content: (
+          <form>
+            <p>Labels</p>
+          </form>
+        )
+      },
+
+      {
+        id: 'authoring-flyouts',
+        title: 'Flyouts',
+        content: (
+          <form>
+            <p>Flyouts</p>
+          </form>
+        )
+      }
+    ];
   },
 
   dimensionDropdown: function() {
@@ -89,28 +203,11 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   render: function() {
-    var vif = this.props.vif;
-    var datasetMetadata = this.props.datasetMetadata;
     var visualization = this.visualization();
-    var datasetMetadataInfo;
-    var dimensionDropdown;
-    var measureDropdown;
-    var chartTypeDropdown;
-
-    if (datasetMetadata.hasError) {
-      datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
-    } else if (datasetMetadata.isLoading) {
-      datasetMetadataInfo = <div>Loading dataset metadata</div>;
-    }
-
-    if (datasetMetadata.hasData) {
-      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
-      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
-      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
-    }
+    var tabs = this.tabs();
 
     return (
-      <div className="modal modal-full modal-overlay">
+      <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>
         <div className="modal-container">
 
           <header className="modal-header">
@@ -121,41 +218,10 @@ export var AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="modal-content">
-            <ul className="nav-tabs">
-              <li className="tab-link current">
-                <a href="">Data</a>
-              </li>
-              <li className="tab-link">
-                <a href="">Title &amp; Description</a>
-              </li>
-              <li className="tab-link">
-                <a href="">Colors &amp; Style</a>
-              </li>
-              <li className="tab-link">
-                <a href="">Axis &amp; Scale</a>
-              </li>
-              <li className="tab-link">
-                <a href="">Labels</a>
-              </li>
-              <li className="tab-link">
-                <a href="">Flyouts</a>
-              </li>
-            </ul>
+            <CustomizationTabs tabs={tabs} currentTabSelection={this.state.currentTabSelection} onTabNavigation={this.onTabNavigation} />
 
             <div className="authoring-controls">
-              <form>
-                <div>
-                  <label className="block-label">Enter a dataset four by four:</label>
-                  <input className="text-input" type="text" defaultValue={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
-                </div>
-
-                {datasetMetadataInfo}
-
-                {dimensionDropdown}
-                {measureDropdown}
-                {chartTypeDropdown}
-              </form>
-
+              <CustomizationTabPanes tabs={tabs} currentTabSelection={this.state.currentTabSelection} />
               {visualization}
             </div>
           </section>

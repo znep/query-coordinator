@@ -107,14 +107,6 @@ class InternalController < ApplicationController
   end
 
   def show_config
-    # If you put in a config type into the :id, it'll redirect you to the default config!
-    if /^\d+$/ !~ params[:id]
-      config_type = params[:id]
-      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
-      return render_404 unless config.present?
-      return redirect_to show_config_path(config)
-    end
-
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:config_id])
     if @config.parentId.present?

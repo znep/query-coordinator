@@ -18,9 +18,17 @@ export default function() {
       <PrivateNotice />
       <InfoPane />
 
+<<<<<<< HEAD
       <main className="container landing-page-container">
         <MetadataTable />
         <DatasetContents />
+=======
+  render: function() {
+    return (
+      <div>
+        <PrivateNotice />
+        <InfoPane />
+>>>>>>> 7ba80b8... EN-5244: Use unified header/footer in DSLP;
 
         <Responsive>
           <PopularViewList />

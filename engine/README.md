@@ -52,6 +52,7 @@ The engine requires that jQuery be available on the page in order to support the
 When connecting to localhost, or other domains without valid SSL certificates, the OpenSSL library will complain. One must disable certficate validation with the code shown below. In an ideal world, we would only do this when the domain in question is known to be a development host; i.e. IP address `127.0.0.1`.
 
 ```ruby
+# Put the following in `config/boot.rb` or your local equivalent
 OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 ```

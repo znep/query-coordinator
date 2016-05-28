@@ -131,7 +131,7 @@ class PageContainer extends React.Component {
           one: _.get(datasetMetadata, 'rowDisplayUnit', 'row'),
           other: socrata.utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
         },
-        id: '{0}-{1}'.format(card.cardType, (card.aggregationField || card.fieldName)),
+        id: _.uniqueId('{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName))),
         metadata: datasetMetadata.columns[card.fieldName],
         unitLabel: datasetMetadata.columns[(card.aggregationField || card.computedColumn || card.fieldName)].name,
         columnName: card.fieldName,

@@ -19,6 +19,7 @@
  * Socrata changelog:
  *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
  *  08.25.2014 take initial dates from settings, handle text/previous/previousText on ranges, format with range name
+ *  05.31.2016 fix formatting breaking when dates are blank by default
  */
 jQuery.fn.daterangepicker = function(settings) {
   var rangeInput = jQuery(this);
@@ -227,7 +228,7 @@ jQuery.fn.daterangepicker = function(settings) {
 
   //function to format a date string
   function fDate(date) {
-    if (!date.getDate()) {
+    if (date && !date.getDate()) {
       return '';
     }
     var dateFormat = options.dateFormat;

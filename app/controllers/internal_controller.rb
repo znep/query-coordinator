@@ -37,7 +37,7 @@ class InternalController < ApplicationController
       return
     end
 
-    @org = Organization.find(params[:id])
+    @org = Organization.find(params[:org_id])
     @default_domain = Organization.find.map(&:domains).flatten.compact.detect(&:default?)
   end
 

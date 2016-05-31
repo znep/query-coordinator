@@ -7,6 +7,5 @@ marathon.properties
 *.swp
 npm-debug.log
 .idea
-.npmrc
 examples/vendor.js
 dist/

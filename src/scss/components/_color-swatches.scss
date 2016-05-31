@@ -45,6 +45,10 @@
   .black {
     padding-left: 10px;
   }
+
+  .text {
+    font-size: 1px;
+  }
 }
 
 .color-label {
@@ -54,10 +58,6 @@
   &.light {
     color: $white;
   }
-}
-
-.text {
-  font-size: 1px;
 }
 
 .primary {

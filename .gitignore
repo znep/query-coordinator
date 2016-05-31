@@ -13,7 +13,6 @@ marathon.properties
 *.log
 .sass-cache
 public/js
-.npmrc
 webpack-assets.json
 
 # Ignore local database settings

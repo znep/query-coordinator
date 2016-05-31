@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 import { POPULAR_VIEWS_CHUNK_SIZE } from './lib/constants';
 
 // Used to throw errors from non-200 responses when using fetch.

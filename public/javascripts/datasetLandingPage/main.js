@@ -17,7 +17,7 @@ var store = createStore(datasetLandingPage, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <App />
   </Provider>,
   document.querySelector('#app')
 );

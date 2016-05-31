@@ -22,9 +22,8 @@ const FormControls = React.createClass({
         <button
           className={className}
           disabled={disabled}
-          onClick={ () => { this.props[handlerName](); } }
-          type="button"
-          >
+          onClick={() => { this.props[handlerName](); }}
+          type="button">
           {label}
         </button>
       );

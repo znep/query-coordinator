@@ -54,13 +54,8 @@ const FormButton = React.createClass({
       <form
         acceptCharset="UTF-8"
         onSubmit={this.handleSubmit}
-        style={{ display: 'inline' }}
-        >
-        <LoadingButton
-          isLoading={isLoading}
-          type="submit"
-          {...buttonProps}
-          >
+        style={{ display: 'inline' }}>
+        <LoadingButton isLoading={isLoading} type="submit" {...buttonProps}>
           {value}
         </LoadingButton>
       </form>

@@ -260,6 +260,7 @@ rake tasks:
 rake lint:js:all       # Lint the whole javascript codebase
 rake lint:js:oldUx     # Lint the old ux
 rake lint:js:dataCards # Lint data lens
+rake lint:js:datasetLandingPage # Lint dataset landing page
 rake lint:js:diff      # Lint javascript files changed on this branch
 rake lint:ruby         # Lint ruby code
 rake lint              # Lint all the things

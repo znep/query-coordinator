@@ -12,6 +12,8 @@ var contactFormData = window.contactFormData;
 
 export var MetadataTable = React.createClass({
   propTypes: {
+    onExpandMetadataTable: PropTypes.func.isRequired,
+    onExpandTags: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
   },
 
@@ -19,6 +21,99 @@ export var MetadataTable = React.createClass({
     this.collapseTags();
     this.collapseTable();
     this.applyFirefoxHack();
+  },
+
+  // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
+  applyFirefoxHack: function() {
+    var el = ReactDOM.findDOMNode(this);
+    Array.prototype.slice.call(el.querySelectorAll('td.attachment a')).forEach(function(link) {
+      link.style.display = 'none';
+      link.offsetHeight;
+      link.style.display = '';
+    });
+  },
+
+  collapseTags: function() {
+    if (_.isEmpty(this.props.view.tags)) {
+      return;
+    }
+
+    var el = ReactDOM.findDOMNode(this);
+
+    collapsible(el.querySelector('.tag-list'), {
+      height: 2 * 24,
+      wrap: 'children',
+      lastCharacter: {
+        remove: [ ' ', ';', '.', '!', '?' ]
+      },
+      expandedCallback: this.props.onExpandTags
+    });
+  },
+
+  collapseTable: function() {
+    var el = ReactDOM.findDOMNode(this);
+    var leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
+    var tableColumn = el.querySelector('.metadata-column.tables');
+    var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
+    var shouldHideToggles = true;
+    var { onExpandMetadataTable } = this.props;
+
+    // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
+    // shown and hidden as the tableColumn is expanded and collapsed.
+    tables.forEach(function(table) {
+      if (table.offsetTop > leftColumnHeight) {
+        table.classList.add('hidden');
+        shouldHideToggles = false;
+      }
+    });
+
+    var columnToggles = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle'));
+
+    // If there is not enough content in the tableColumn, hide the toggles and avoid binding event
+    // handlers, as no collapsing is necessary.
+    if (shouldHideToggles) {
+      var toggleGroups = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle-group'));
+      toggleGroups.forEach(function(group) {
+        group.style.display = 'none';
+      });
+
+      tableColumn.classList.remove('collapsed');
+      tableColumn.style.paddingBottom = 0;
+
+      return;
+    }
+
+    columnToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        var wasCollapsed = tableColumn.classList.contains('collapsed');
+        var originalHeight = tableColumn.getBoundingClientRect().height;
+        tableColumn.classList.toggle('collapsed');
+        var targetHeight = tableColumn.getBoundingClientRect().height;
+        tableColumn.style.height = originalHeight + 'px';
+
+        if (wasCollapsed) {
+          velocity(tableColumn, {
+            height: targetHeight
+          }, function() {
+            tableColumn.style.height = '';
+          });
+
+          onExpandMetadataTable();
+        } else {
+          tableColumn.classList.remove('collapsed');
+
+          tableColumn.style.height = originalHeight + 'px';
+          velocity(tableColumn, {
+            height: targetHeight
+          }, function() {
+            tableColumn.style.height = '';
+            tableColumn.classList.add('collapsed');
+          });
+        }
+      });
+    });
   },
 
   render: function() {
@@ -353,99 +448,6 @@ export var MetadataTable = React.createClass({
         </div>
       </section>
     );
-  },
-
-  collapseTags: function() {
-    if (_.isEmpty(this.props.view.tags)) {
-      return;
-    }
-
-    var el = ReactDOM.findDOMNode(this);
-
-    collapsible(el.querySelector('.tag-list'), {
-      height: 2 * 24,
-      wrap: 'children',
-      lastCharacter: {
-        remove: [ ' ', ';', '.', '!', '?' ]
-      },
-      expandedCallback: this.props.onExpandTags
-    });
-  },
-
-  collapseTable: function() {
-    var el = ReactDOM.findDOMNode(this);
-    var leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
-    var tableColumn = el.querySelector('.metadata-column.tables');
-    var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
-    var shouldHideToggles = true;
-    var { onExpandMetadataTable } = this.props;
-
-    // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
-    // shown and hidden as the tableColumn is expanded and collapsed.
-    tables.forEach(function(table) {
-      if (table.offsetTop > leftColumnHeight) {
-        table.classList.add('hidden');
-        shouldHideToggles = false;
-      }
-    });
-
-    var columnToggles = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle'));
-
-    // If there is not enough content in the tableColumn, hide the toggles and avoid binding event
-    // handlers, as no collapsing is necessary.
-    if (shouldHideToggles) {
-      var toggleGroups = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle-group'));
-      toggleGroups.forEach(function(group) {
-        group.style.display = 'none';
-      });
-
-      tableColumn.classList.remove('collapsed');
-      tableColumn.style.paddingBottom = 0;
-
-      return;
-    }
-
-    columnToggles.forEach(function(toggle) {
-      toggle.addEventListener('click', function(event) {
-        event.preventDefault();
-
-        var wasCollapsed = tableColumn.classList.contains('collapsed');
-        var originalHeight = tableColumn.getBoundingClientRect().height;
-        tableColumn.classList.toggle('collapsed');
-        var targetHeight = tableColumn.getBoundingClientRect().height;
-        tableColumn.style.height = originalHeight + 'px';
-
-        if (wasCollapsed) {
-          velocity(tableColumn, {
-            height: targetHeight
-          }, function() {
-            tableColumn.style.height = '';
-          });
-
-          onExpandMetadataTable();
-        } else {
-          tableColumn.classList.remove('collapsed');
-
-          tableColumn.style.height = originalHeight + 'px';
-          velocity(tableColumn, {
-            height: targetHeight
-          }, function() {
-            tableColumn.style.height = '';
-            tableColumn.classList.add('collapsed');
-          });
-        }
-      });
-    });
-  },
-
-  // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
-  applyFirefoxHack: function() {
-    var el = ReactDOM.findDOMNode(this);
-    Array.prototype.slice.call(el.querySelectorAll('td.attachment a')).forEach(function(link) {
-      link.style.display = 'none';
-      link.offsetHeight;
-      link.style.display = '';
-    });
   }
 });
 

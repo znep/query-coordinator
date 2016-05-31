@@ -245,8 +245,7 @@ function showConfigureModal(id) {
       onCancel={closeConfigureModal}
       onSave={onSave}
       requiredFields={['name', 'geometryLabel']}
-      title={t('configure_boundary.configure_boundary')}
-      />,
+      title={t('configure_boundary.configure_boundary')} />,
     $reactModal.get(0)
   );
   $reactModal.jqmShow();
@@ -341,8 +340,7 @@ function showInitialConfigureModal(uid, name) {
       onSave={onSave}
       requiredFields={requiredFields}
       shouldConfirm
-      title={t('configure_boundary.configure_boundary')}
-      />,
+      title={t('configure_boundary.configure_boundary')} />,
     $reactModal.get(0)
   );
   $reactModal.jqmShow();

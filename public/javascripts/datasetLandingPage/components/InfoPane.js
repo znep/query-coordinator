@@ -10,6 +10,9 @@ var contactFormData = window.contactFormData;
 
 export var InfoPane = React.createClass({
   propTypes: {
+    onClickGrid: PropTypes.func.isRequired,
+    onDownloadData: PropTypes.func.isRequired,
+    onExpandDescription: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
   },
 
@@ -20,9 +23,7 @@ export var InfoPane = React.createClass({
     var descriptionPadding = 11;
 
     if (descriptionHeight < metadataHeight) {
-      this.setState({
-        descriptionHeight: metadataHeight
-      });
+      this.description.style.height = metadataHeight + 'px';
     }
 
     collapsible(this.description, {
@@ -31,15 +32,8 @@ export var InfoPane = React.createClass({
     });
   },
 
-  getInitialState: function() {
-    return {
-      descriptionHeight: null
-    };
-  },
-
   render: function() {
     var { view, onClickGrid, onDownloadData } = this.props;
-    var { descriptionHeight } = this.state;
 
     var privateIcon;
     var viewDataButton;
@@ -49,7 +43,6 @@ export var InfoPane = React.createClass({
     var shareButton;
     var moreActions;
     var attributionInfo;
-    var descriptionStyle;
 
     privateIcon = view.isPrivate ?
       <span className="icon-private" aria-label={I18n.private_notice} title={I18n.private_notice} /> : null;
@@ -108,10 +101,6 @@ export var InfoPane = React.createClass({
       );
     }
 
-    descriptionStyle = {
-      height: descriptionHeight
-    };
-
     return (
       <div className="info-pane result-card">
         <div className="container">
@@ -144,7 +133,7 @@ export var InfoPane = React.createClass({
           <div className="entry-content">
             <div className="entry-main">
               <div className="entry-description-container collapsible">
-                <div className="entry-description" ref={(ref) => this.description = ref} style={descriptionStyle}>
+                <div className="entry-description" ref={(ref) => this.description = ref}>
                   {view.description}
 
                   <a className="collapse-toggle more">{I18n.more}</a>

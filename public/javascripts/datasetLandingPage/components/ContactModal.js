@@ -35,6 +35,12 @@ export var ContactModal = React.createClass({
     }
   },
 
+  onFieldChange: function(event) {
+    var { id, value } = event.target;
+
+    this.props.setFormField(id, value);
+  },
+
   initializeRecaptcha: function() {
     var { setRecaptchaLoaded } = this.props;
 
@@ -46,12 +52,6 @@ export var ContactModal = React.createClass({
       setRecaptchaLoaded(true);
       this.recaptchaId = id;
     }.bind(this));
-  },
-
-  onFieldChange: function(event) {
-    var { id, value } = event.target;
-
-    this.props.setFormField(id, value);
   },
 
   validateForm: function() {
@@ -82,22 +82,6 @@ export var ContactModal = React.createClass({
   isRecaptchaInvalid: function() {
     var response = recaptcha.verify(this.recaptchaId);
     return _.isEmpty(response);
-  },
-
-  renderErrorMessages: function() {
-    var { errors } = this.props;
-
-    if (!_.isEmpty(errors)) {
-      var messages = _.map(errors, function(error, i) {
-        return <p key={i}>{error}</p>;
-      });
-
-      return (
-        <section className="modal-content">
-          <div className="alert error">{messages}</div>
-        </section>
-      );
-    }
   },
 
   cleanUpAfterClose: function() {
@@ -151,6 +135,19 @@ export var ContactModal = React.createClass({
       setErrors(errors);
     } else {
       sendForm();
+    }
+  },
+
+  contentToRender: function() {
+    var { status } = this.props;
+
+    switch (status) {
+      case 'success':
+        return this.renderSuccessMessage();
+      case 'failure':
+        return this.renderFailureMessage();
+      default:
+        return this.renderInitialContent();
     }
   },
 
@@ -257,16 +254,19 @@ export var ContactModal = React.createClass({
     );
   },
 
-  contentToRender: function() {
-    var { status } = this.props;
+  renderErrorMessages: function() {
+    var { errors } = this.props;
 
-    switch (status) {
-      case 'success':
-        return this.renderSuccessMessage();
-      case 'failure':
-        return this.renderFailureMessage();
-      default:
-        return this.renderInitialContent();
+    if (!_.isEmpty(errors)) {
+      var messages = _.map(errors, function(error, i) {
+        return <p key={i}>{error}</p>;
+      });
+
+      return (
+        <section className="modal-content">
+          <div className="alert error">{messages}</div>
+        </section>
+      );
     }
   },
 

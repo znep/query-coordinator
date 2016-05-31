@@ -7,6 +7,7 @@ import initClipboardControl from '../lib/clipboardControl';
 
 export var ApiFlannel = React.createClass({
   propTypes: {
+    onClickCopy: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
   },
 

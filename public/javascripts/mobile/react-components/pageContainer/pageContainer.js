@@ -1,8 +1,13 @@
 /* global datasetMetadata */
+
+// Note: no-unused-vars is disabled for this file because eslint thinks
+// some of the files that are being imported aren't being used.
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import classNames from 'classnames/bind';
 import _ from 'lodash';
 import CardContainer from '../cardContainer/cardContainer';
+/* eslint-enable no-unused-vars */
 
 const TABLE_UNSORTABLE_PHYSICAL_DATATYPES = ['geo_entity', 'point'];
 

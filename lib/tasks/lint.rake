@@ -13,6 +13,10 @@ namespace :lint do
       run_eslint('public/javascripts/angular', args[:format])
     end
 
+    task :datasetLandingPage, :format do |task, args|
+      run_eslint('public/javascripts/datasetLandingPage', args[:format])
+    end
+
     task :oldUx, :format do |task, args|
       old_ux_dirs = [
         'public/javascripts/component',

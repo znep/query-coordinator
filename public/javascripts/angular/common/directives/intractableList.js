@@ -89,7 +89,7 @@ module.exports = function($document, rx) {
         var isLastItem = ($scope.activeEntryIndex === lastItemIndex());
         if (!isLastItem) {
           $scope.setActive($scope.activeEntryIndex + 1);
-        }else if ($scope.canPage('next')) {
+        } else if ($scope.canPage('next')) {
           $scope.changePage('next');
           $scope.setActive(0);
         }

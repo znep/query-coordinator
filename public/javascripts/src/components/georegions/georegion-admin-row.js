@@ -38,8 +38,7 @@ const GeoregionAdminRow = React.createClass({
       <RowStatusWidget
         status={status}
         onSuccess={onEnableSuccess}
-        {...props}
-        />
+        {...props} />
     );
   },
   renderRowDefaultWidget() {
@@ -57,8 +56,7 @@ const GeoregionAdminRow = React.createClass({
             <RowDefaultWidget
               enabledStatus={status}
               onSuccess={onDefaultSuccess}
-              {...props}
-              />
+              {...props} />
           </td>
         );
       case Status.PROGRESS:

@@ -9,6 +9,7 @@ var ViewWidget = React.createClass({
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     description: PropTypes.string,
+    displayType: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     isPrivate: PropTypes.bool,
     updatedAt: PropTypes.string.isRequired,

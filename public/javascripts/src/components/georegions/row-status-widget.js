@@ -42,14 +42,22 @@ const RowStatusWidget = React.createClass({
       onSuccess,
       method: 'put'
     };
+    const disabledFormButtonProps = _.merge(defaultButtonProps, {
+      action: `${action}/enable`,
+      value: t('enable')
+    });
+    const enabledFormButtonProps = _.merge(defaultButtonProps, {
+      action: `${action}/disable`,
+      disabled: false,
+      title: null,
+      value: t('disable')
+    });
+    const failurePrompt = {
+      __html: t('substatus_failed_html', {code: id})
+    };
 
     switch (status) {
       case Status.DISABLED:
-        const disabledFormButtonProps = _.merge(defaultButtonProps, {
-          action: `${action}/enable`,
-          value: t('enable')
-        });
-
         return (
           <div>
             <span className="icon-failed status-icon-disabled" />
@@ -60,13 +68,6 @@ const RowStatusWidget = React.createClass({
         );
 
       case Status.ENABLED:
-        const enabledFormButtonProps = _.merge(defaultButtonProps, {
-          action: `${action}/disable`,
-          disabled: false,
-          title: null,
-          value: t('disable')
-        });
-
         return (
           <div>
             <span className="icon-check status-icon-enabled" />
@@ -90,9 +91,6 @@ const RowStatusWidget = React.createClass({
         );
 
       case Status.FAILED:
-        const failurePrompt = {
-          __html: t('substatus_failed_html', {code: id})
-        };
         return (
           <div>
             <span className="icon-failed status-icon-failed" />

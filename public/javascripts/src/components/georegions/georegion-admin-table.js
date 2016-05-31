@@ -59,7 +59,6 @@ const GeoregionAdminTable = React.createClass({
         defaultFlag,
         enabledFlag,
         featurePk,
-        status, // slice out and replace in rowProps
         ...itemProps
       } = row;
 
@@ -119,28 +118,28 @@ const GeoregionAdminTable = React.createClass({
         <colgroup>
           <col className="name" />
           <col className="status" />
-          { renderActions ? (<col className="default" />) : null }
-          { renderActions ? (<col className="date-added" />) : null }
-          { renderActions ? (<col className="edit-action" />) : null }
+          {renderActions ? (<col className="default" />) : null}
+          {renderActions ? (<col className="date-added" />) : null}
+          {renderActions ? (<col className="edit-action" />) : null}
         </colgroup>
         <thead>
-        <tr>
-          <th className="name"><div>{ t('region_name') }</div></th>
-          <th className="status"><div>{ t('enabled?') }</div></th>
-          { renderActions ? (
-          <th className="default">
-            <div>
-              { t('default_georegions', { count: String(defaultCount), limit: String(defaultLimit) }) }
-              <span className="icon-info"></span>
-            </div>
-          </th>
-          ) : null }
-          { renderActions ? (<th className="date-added"><div>{ t('date_added') }</div></th>) : null }
-          { renderActions ? (<th className="edit-action"><div>{ t('actions') }</div></th>) : null }
-        </tr>
+          <tr>
+            <th className="name"><div>{t('region_name')}</div></th>
+            <th className="status"><div>{t('enabled?')}</div></th>
+            {renderActions ? (
+              <th className="default">
+                <div>
+                  {t('default_georegions', { count: String(defaultCount), limit: String(defaultLimit) })}
+                  <span className="icon-info"></span>
+                </div>
+              </th>
+            ) : null}
+            {renderActions ? (<th className="date-added"><div>{t('date_added')}</div></th>) : null}
+            {renderActions ? (<th className="edit-action"><div>{t('actions')}</div></th>) : null}
+          </tr>
         </thead>
         <tbody>
-        {this.renderRows(rows, authenticityToken)}
+          {this.renderRows(rows, authenticityToken)}
         </tbody>
       </table>
     );

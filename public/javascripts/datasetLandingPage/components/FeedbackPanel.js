@@ -10,27 +10,18 @@ function t(key) {
 }
 
 export var FeedbackPanel = React.createClass({
-  // Various helpers to manage fancy UI transitions.
-  resetButtonHover: function() {
-    // Velocity doesn't allow animation to initial state, so everything is an
-    // inline style override — hence the need to forcibly reset for hover style.
-    this.refs.button.style.bottom = null;
-  },
+  componentDidMount: function() {
+    // Copy some of the close behavior of styleguide flannels because they don't
+    // support the behavior we want for the feedback panel yet.
+    const self = this;
+    document.body.addEventListener('keyup', function(event) {
+      var key = event.which || event.keyCode;
 
-  showButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-0.35rem' }, _.callback(cb));
-  },
-
-  showContent: function(cb) {
-    velocity(this.refs.content, { bottom: 0 }, _.callback(cb));
-  },
-
-  hideButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-10rem' }, _.callback(cb));
-  },
-
-  hideContent: function(cb) {
-    velocity(this.refs.content, { bottom: '-22rem' }, _.callback(cb));
+      // ESC
+      if (key === 27) {
+        self.onDismissFeedback();
+      }
+    });
   },
 
   // Bring up the feedback panel when the button is clicked.
@@ -94,18 +85,27 @@ export var FeedbackPanel = React.createClass({
     onActivate();
   },
 
-  componentDidMount: function() {
-    // Copy some of the close behavior of styleguide flannels because they don't
-    // support the behavior we want for the feedback panel yet.
-    const self = this;
-    document.body.addEventListener('keyup', function(event) {
-      var key = event.which || event.keyCode;
+  // Various helpers to manage fancy UI transitions.
+  resetButtonHover: function() {
+    // Velocity doesn't allow animation to initial state, so everything is an
+    // inline style override — hence the need to forcibly reset for hover style.
+    this.refs.button.style.bottom = null;
+  },
 
-      // ESC
-      if (key === 27) {
-        self.onDismissFeedback();
-      }
-    });
+  showButton: function(cb) {
+    velocity(this.refs.button, { bottom: '-0.35rem' }, _.callback(cb));
+  },
+
+  showContent: function(cb) {
+    velocity(this.refs.content, { bottom: 0 }, _.callback(cb));
+  },
+
+  hideButton: function(cb) {
+    velocity(this.refs.button, { bottom: '-10rem' }, _.callback(cb));
+  },
+
+  hideContent: function(cb) {
+    velocity(this.refs.content, { bottom: '-22rem' }, _.callback(cb));
   },
 
   render: function() {

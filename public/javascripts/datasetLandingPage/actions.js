@@ -161,8 +161,7 @@ export function loadMorePopularViews() {
     fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`, fetchOptions).
       then(checkStatus).
       then(response => response.json()).
-      then(popularViews => dispatch(receivePopularViews(popularViews)))
-      ['catch'](() => dispatch(handlePopularViewsError()));
+      then(popularViews => dispatch(receivePopularViews(popularViews)))['catch'](() => dispatch(handlePopularViewsError()));
   };
 }
 

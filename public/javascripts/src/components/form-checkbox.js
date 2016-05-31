@@ -53,7 +53,7 @@ const FormCheckbox = React.createClass({
           className={`form-checkbox ${disabledClass}`}
           onClick={this.handleSelect}
           title={title}>
-          { !disabled ? <span className={`icon-check ${checkedClass}`}></span> : null }
+          {!disabled ? <span className={`icon-check ${checkedClass}`}></span> : null}
         </span>
       </form>
     );

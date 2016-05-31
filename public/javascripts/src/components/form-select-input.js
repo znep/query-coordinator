@@ -90,8 +90,7 @@ const FormSelectInput = React.createClass({
           id={id}
           onChange={this.handleChange}
           ref="select"
-          value={value}
-          >
+          value={value}>
           {initialOptionFragment}
           {this.renderOptions(options)}
         </select>

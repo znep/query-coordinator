@@ -6,15 +6,42 @@ import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
 
 export var PopularViewList = React.createClass({
   propTypes: {
-    dismissError: PropTypes.func,
-    hasError: PropTypes.bool,
-    hasMore: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    isCollapsed: PropTypes.bool,
+    dismissError: PropTypes.func.isRequired,
+    hasError: PropTypes.bool.isRequired,
+    hasMore: PropTypes.bool.isRequired,
+    isDesktop: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    isCollapsed: PropTypes.bool.isRequired,
     list: PropTypes.arrayOf(PropTypes.object).isRequired,
-    loadMore: PropTypes.func,
-    onScrollList: PropTypes.func,
-    toggleList: PropTypes.func
+    loadMore: PropTypes.func.isRequired,
+    onClickWidget: PropTypes.func.isRequired,
+    onScrollList: PropTypes.func.isRequired,
+    toggleList: PropTypes.func.isRequired
+  },
+
+  getAnimation: function() {
+    var { list, isCollapsed, isDesktop, isLoading } = this.props;
+
+    var popularViewHeight = 287;
+    var popularViewMargin = 18;
+
+    if (!isDesktop) {
+      return {
+        height: '100%'
+      };
+    }
+
+    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
+    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
+
+    // While loading on desktop, we immediately expand the container to make room for the new views.
+    if (isLoading) {
+      rowCount += 1;
+    }
+
+    return {
+      height: (popularViewHeight + popularViewMargin) * rowCount - 1
+    };
   },
 
   renderContents: function() {
@@ -103,31 +130,6 @@ export var PopularViewList = React.createClass({
         {isCollapsed ? I18n.more : I18n.less}
       </a>
     );
-  },
-
-  getAnimation: function() {
-    var { list, isCollapsed, isDesktop, isLoading } = this.props;
-
-    var popularViewHeight = 287;
-    var popularViewMargin = 18;
-
-    if (!isDesktop) {
-      return {
-        height: '100%'
-      };
-    }
-
-    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
-    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
-
-    // While loading on desktop, we immediately expand the container to make room for the new views.
-    if (isLoading) {
-      rowCount += 1;
-    }
-
-    return {
-      height: (popularViewHeight + popularViewMargin) * rowCount - 1
-    };
   },
 
   render: function() {

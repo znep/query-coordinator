@@ -420,7 +420,7 @@ module.exports = function tableCard(
                 cells.push([
                   `<div class="cell ${dataType}" data-index="${index}" style="width: ${width}px;">`,
                     `<div class="cell-content">${formatCellText(dataType, cellContent, column)}</div>`,
-                  `</div>`
+                  '</div>'
                 ].join(''));
               });
 
@@ -432,7 +432,7 @@ module.exports = function tableCard(
             var $block = $([
               `<div class="row-block" data-block-id="${block}" style="top: ${top}px; display: none;">`,
                 `${rows.join('')}`,
-              `</div>`
+              '</div>'
             ].join(''));
 
             $block.appendTo($expander).fadeIn();

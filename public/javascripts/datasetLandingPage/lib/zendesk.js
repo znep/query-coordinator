@@ -12,26 +12,30 @@ function loadAsyncScript() {
 }
 
 // Export the locked-down loader.
-module.exports = function(options) {
-  if (!loaded) {
-    options = options || {};
-
-    if (_.isPlainObject(options.user)) {
-      user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
-      user.name = user.name || user.displayName || user.screenName;
-      delete user.displayName;
-      delete user.screenName;
+module.exports = {
+  activate: function() {
+    if (!loaded) {
+      console.error('Attempted to open Zendesk without initialization!');
+    } else {
+      zE.identify(user);
+      zE.activate({
+        hideOnClose: true
+      });
     }
+  },
+  init: function(options) {
+    if (!loaded) {
+      options = options || {};
 
-    loadAsyncScript();
-    loaded = true;
+      if (_.isPlainObject(options.user)) {
+        user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
+        user.name = user.name || user.displayName || user.screenName;
+        delete user.displayName;
+        delete user.screenName;
+      }
+
+      loadAsyncScript();
+      loaded = true;
+    }
   }
-
-  // Open the widget automatically.
-  zE(function() {
-    zE.identify(user);
-    zE.activate({
-      hideOnClose: true
-    });
-  });
 };

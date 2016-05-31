@@ -19,10 +19,6 @@ function generateConfig() {
     commentRequired: true,
     tools: ['note', 'pen', 'arrow'],
     loadHandler: function() {
-      // Loading is triggered by the first request to open the widget;
-      // the load handler should fulfill this request immediately.
-      UserSnap.openReportWindow();
-
       // Fill in some additional info which we can't expose via the widget.
       UserSnap.on('beforeSend', function(message) {
         message.addInfo = user;
@@ -50,25 +46,32 @@ function loadAsyncScript() {
 }
 
 // Export the locked-down loader.
-module.exports = function(options) {
-  if (!loaded) {
-    options = options || {};
-
-    if (_.isPlainObject(options.user)) {
-      user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
-      user.name = user.name || user.displayName || user.screenName;
-      delete user.displayName;
-      delete user.screenName;
+module.exports = {
+  activate: function() {
+    if (!loaded) {
+      console.error('Attempted to open UserSnap without initialization!');
+    } else {
+      UserSnap.openReportWindow();
     }
+  },
+  init: function(options) {
+    if (!loaded) {
+      options = options || {};
 
-    if (_.isFunction(options.onClose)) {
-      onClose = options.onClose;
+      if (_.isPlainObject(options.user)) {
+        user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
+        user.name = user.name || user.displayName || user.screenName;
+        delete user.displayName;
+        delete user.screenName;
+      }
+
+      if (_.isFunction(options.onClose)) {
+        onClose = options.onClose;
+      }
+
+      window._usersnapconfig = generateConfig(options);
+      loadAsyncScript();
+      loaded = true;
     }
-
-    window._usersnapconfig = generateConfig(options);
-    loadAsyncScript();
-    loaded = true;
-  } else {
-    UserSnap.openReportWindow();
   }
 };

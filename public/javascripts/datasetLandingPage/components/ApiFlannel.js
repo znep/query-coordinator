@@ -63,11 +63,23 @@ export var ApiFlannel = React.createClass({
       if (subview.isGeospatial) {
         endpointFormatSelector = (
           <span className="input-group-btn">
-            <div className="btn btn-default btn-simple btn-sm dropdown endpoint-format-selector" data-dropdown data-selectable data-orientation="bottom">
+            <div
+              className="btn btn-default btn-simple btn-sm dropdown endpoint-format-selector"
+              data-dropdown
+              data-selectable
+              data-orientation="bottom">
               <span>JSON</span><span className="icon-arrow-down"></span>
               <ul className="dropdown-options">
-                <li><a className="option" data-value="json" onMouseUp={formatToggleHandler}>JSON</a></li>
-                <li><a className="option" data-value="geojson" onMouseUp={formatToggleHandler}>GeoJSON</a></li>
+                <li>
+                  <a className="option" data-value="json" onMouseUp={formatToggleHandler}>
+                    JSON
+                  </a>
+                </li>
+                <li>
+                  <a className="option" data-value="geojson" onMouseUp={formatToggleHandler}>
+                    GeoJSON
+                  </a>
+                </li>
               </ul>
             </div>
           </span>
@@ -81,23 +93,42 @@ export var ApiFlannel = React.createClass({
         <div className="endpoint api-endpoint" key={i}>
           <section className="flannel-content">
             {showAsLayer ? <h6 className="layer-name">{subview.name}</h6> : null}
-            <a className="btn btn-default btn-sm documentation-link" href={subview.apiFoundryUrl} target="_blank">
+            <a
+              className="btn btn-default btn-sm documentation-link"
+              href={subview.apiFoundryUrl}
+              target="_blank">
               <span className="icon-copy-document"></span>
               {I18n.api_flannel.foundry_button}
             </a>
-            <a className="btn btn-default btn-sm documentation-link" href="https://dev.socrata.com" target="_blank">
+            <a
+              className="btn btn-default btn-sm documentation-link"
+              href="https://dev.socrata.com"
+              target="_blank">
               <span className="icon-settings"></span>
               {I18n.api_flannel.developer_portal_button}
             </a>
           </section>
           <section className="flannel-content">
-            <h6 id={`api-endpoint-${i}`} className="endpoint-title">{I18n.api_flannel.endpoint_title}</h6>
+            <h6 id={`api-endpoint-${i}`} className="endpoint-title">
+              {I18n.api_flannel.endpoint_title}
+            </h6>
             <form>
               <span className="input-group">
-                <input aria-labelledby={`api-endpoint-${i}`} className="endpoint-input text-input text-input-sm" type="text" value={currentUrl} readOnly onFocus={self.onFocusInput} onMouseUp={self.onMouseUpInput} />
+                <input
+                  aria-labelledby={`api-endpoint-${i}`}
+                  className="endpoint-input text-input text-input-sm"
+                  type="text"
+                  value={currentUrl}
+                  readOnly
+                  onFocus={self.onFocusInput}
+                  onMouseUp={self.onMouseUpInput} />
                 {endpointFormatSelector}
                 <span className="input-group-btn">
-                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm copy"
+                    data-confirmation={I18n.copy_success}
+                    onClick={onClickCopy}>
                     {I18n.copy}
                   </button>
                 </span>
@@ -118,10 +149,17 @@ export var ApiFlannel = React.createClass({
     }
 
     return (
-      <div id="api-flannel" className="flannel flannel-hidden">
+      <div
+        role="dialog"
+        aria-labelledby="api-flannel-title"
+        id="api-flannel"
+        className="flannel flannel-hidden">
         <header className="flannel-header">
-          <h4 className="flannel-header-title">{I18n.api_flannel.title}</h4>
-          <button aria-label={I18n.close} className="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+          <h4 id="api-flannel-title" className="flannel-header-title">{I18n.api_flannel.title}</h4>
+          <button
+            aria-label={I18n.close}
+            className="btn btn-transparent flannel-header-dismiss"
+            data-flannel-dismiss>
             <span className="icon-close-2"></span>
           </button>
         </header>

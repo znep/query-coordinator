@@ -4,6 +4,7 @@ import velocity from 'velocity-animate';
 
 import usersnap from '../lib/usersnap';
 import zendesk from '../lib/zendesk';
+import { ESCAPE_KEY_CODE } from '../lib/constants';
 
 function t(key) {
   return I18n.feedback[key];
@@ -18,7 +19,7 @@ export var FeedbackPanel = React.createClass({
       var key = event.which || event.keyCode;
 
       // ESC
-      if (key === 27) {
+      if (key === ESCAPE_KEY_CODE) {
         self.onDismissFeedback();
       }
     });
@@ -119,12 +120,15 @@ export var FeedbackPanel = React.createClass({
         <div className="feedback-panel-content flannel" ref="content">
           <header className="flannel-header">
             <h5>{t('panel_title')}</h5>
-            <button className="btn btn-transparent flannel-header-dismiss" onClick={this.onDismissFeedback}>
+            <button
+              aria-label={I18n.close}
+              className="btn btn-transparent flannel-header-dismiss"
+              onClick={this.onDismissFeedback}>
               <span className="icon-close-2" />
             </button>
           </header>
           <section className="flannel-content">
-            <p className="small" dangerouslySetInnerHTML={{__html: t('panel_details_html')}} />
+            <p className="small" dangerouslySetInnerHTML={{ __html: t('panel_details_html') }} />
             <div className="desktop">
               <button className="btn btn-primary" onClick={this.onClickUsersnap}>
                 {t('screenshot_yes')}

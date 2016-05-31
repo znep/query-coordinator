@@ -4,7 +4,7 @@ import 'dotdotdot';
 var velocity = require('velocity-animate');
 
 velocity.defaults.duration = 320;
-velocity.defaults.easing = [.645, .045, .355, 1];
+velocity.defaults.easing = [0.645, 0.045, 0.355, 1];
 
 module.exports = function(el, options) {
   var $el = $(el);
@@ -22,7 +22,7 @@ module.exports = function(el, options) {
         parent.dataset.collapsed = true;
         collapsedHeight = collapsedHeight || parentHeight;
       } else {
-        var toggles = Array.prototype.slice.call(el.querySelectorAll('.collapse-toggle'));
+        var toggles = _.toArray(el.querySelectorAll('.collapse-toggle'));
         toggles.forEach(function(toggle) {
           toggle.style.display = 'none';
         });
@@ -48,7 +48,7 @@ module.exports = function(el, options) {
       $el.trigger('destroy');
       el.style.height = 'auto';
 
-      parent.style.height = collapsedHeight + 'px';
+      parent.style.height = `${collapsedHeight}px`;
 
       velocity(parent, {
         height: originalHeight

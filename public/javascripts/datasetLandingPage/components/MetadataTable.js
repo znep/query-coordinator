@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
 import { emitMixpanelEvent } from '../actions';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 var contactFormData = window.contactFormData;
 
@@ -26,9 +27,9 @@ export var MetadataTable = React.createClass({
   // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
   applyFirefoxHack: function() {
     var el = ReactDOM.findDOMNode(this);
-    Array.prototype.slice.call(el.querySelectorAll('td.attachment a')).forEach(function(link) {
+    _.toArray(el.querySelectorAll('td.attachment a')).forEach(function(link) {
       link.style.display = 'none';
-      link.offsetHeight;
+      link.offsetHeight; // eslint-disable-line no-unused-expressions
       link.style.display = '';
     });
   },
@@ -44,7 +45,7 @@ export var MetadataTable = React.createClass({
       height: 2 * 24,
       wrap: 'children',
       lastCharacter: {
-        remove: [ ' ', ';', '.', '!', '?' ]
+        remove: [' ', ';', '.', '!', '?']
       },
       expandedCallback: this.props.onExpandTags
     });
@@ -54,12 +55,11 @@ export var MetadataTable = React.createClass({
     var el = ReactDOM.findDOMNode(this);
     var leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
     var tableColumn = el.querySelector('.metadata-column.tables');
-    var tables = Array.prototype.slice.call(tableColumn.querySelectorAll('.metadata-table'));
+    var tables = _.toArray(tableColumn.querySelectorAll('.metadata-table'));
     var shouldHideToggles = true;
-    var { onExpandMetadataTable } = this.props;
 
-    // Add a 'hidden' class to tables whose top is below the bottom of the left column.  These will be
-    // shown and hidden as the tableColumn is expanded and collapsed.
+    // Add a 'hidden' class to tables whose top is below the bottom of the left column.
+    // These will be shown and hidden as the tableColumn is expanded and collapsed.
     tables.forEach(function(table) {
       if (table.offsetTop > leftColumnHeight) {
         table.classList.add('hidden');
@@ -67,12 +67,10 @@ export var MetadataTable = React.createClass({
       }
     });
 
-    var columnToggles = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle'));
-
-    // If there is not enough content in the tableColumn, hide the toggles and avoid binding event
-    // handlers, as no collapsing is necessary.
+    // If there is not enough content in the tableColumn, hide the toggles and avoid
+    // binding event handlers, as no collapsing is necessary.
     if (shouldHideToggles) {
-      var toggleGroups = Array.prototype.slice.call(el.querySelectorAll('.metadata-table-toggle-group'));
+      var toggleGroups = _.toArray(el.querySelectorAll('.metadata-table-toggle-group'));
       toggleGroups.forEach(function(group) {
         group.style.display = 'none';
       });
@@ -82,38 +80,40 @@ export var MetadataTable = React.createClass({
 
       return;
     }
+  },
 
-    columnToggles.forEach(function(toggle) {
-      toggle.addEventListener('click', function(event) {
-        event.preventDefault();
+  toggleTable: function(event) {
+    event.preventDefault();
 
-        var wasCollapsed = tableColumn.classList.contains('collapsed');
-        var originalHeight = tableColumn.getBoundingClientRect().height;
-        tableColumn.classList.toggle('collapsed');
-        var targetHeight = tableColumn.getBoundingClientRect().height;
-        tableColumn.style.height = originalHeight + 'px';
+    var { onExpandMetadataTable } = this.props;
+    var el = ReactDOM.findDOMNode(this);
+    var tableColumn = el.querySelector('.metadata-column.tables');
 
-        if (wasCollapsed) {
-          velocity(tableColumn, {
-            height: targetHeight
-          }, function() {
-            tableColumn.style.height = '';
-          });
+    var wasCollapsed = tableColumn.classList.contains('collapsed');
+    var originalHeight = tableColumn.getBoundingClientRect().height;
+    tableColumn.classList.toggle('collapsed');
+    var targetHeight = tableColumn.getBoundingClientRect().height;
+    tableColumn.style.height = `${originalHeight}px`;
 
-          onExpandMetadataTable();
-        } else {
-          tableColumn.classList.remove('collapsed');
-
-          tableColumn.style.height = originalHeight + 'px';
-          velocity(tableColumn, {
-            height: targetHeight
-          }, function() {
-            tableColumn.style.height = '';
-            tableColumn.classList.add('collapsed');
-          });
-        }
+    if (wasCollapsed) {
+      velocity(tableColumn, {
+        height: targetHeight
+      }, function() {
+        tableColumn.style.height = '';
       });
-    });
+
+      onExpandMetadataTable();
+    } else {
+      tableColumn.classList.remove('collapsed');
+
+      tableColumn.style.height = `${originalHeight}px`;
+      velocity(tableColumn, {
+        height: targetHeight
+      }, function() {
+        tableColumn.style.height = '';
+        tableColumn.classList.add('collapsed');
+      });
+    }
   },
 
   render: function() {
@@ -132,22 +132,24 @@ export var MetadataTable = React.createClass({
 
     // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
     contactFormButton = contactFormData.contactFormEnabled ?
-      <button className="btn btn-sm btn-primary btn-block contact-dataset-owner" data-modal="contact-modal">
+      <button
+        className="btn btn-sm btn-primary btn-block contact-dataset-owner"
+        data-modal="contact-modal">
         {I18n.contact_dataset_owner}
       </button> :
       null;
 
     if (view.attribution) {
       attribution = (
-        <div className="metadata-detail-group-value">
+        <dd className="metadata-detail-group-value">
           {view.attribution}
-        </div>
+        </dd>
       );
     } else {
       attribution = (
-        <div className="metadata-detail-group-value empty">
+        <dd className="metadata-detail-group-value empty">
           {I18n.metadata.no_value}
-        </div>
+        </dd>
       );
     }
 
@@ -186,7 +188,7 @@ export var MetadataTable = React.createClass({
           <tr key={i}>
             <td className="attachment">
               <span className="icon-copy-document"></span>
-              <span dangerouslySetInnerHTML={{__html: attachment.link}}></span>
+              <span dangerouslySetInnerHTML={{ __html: attachment.link }}></span>
             </td>
           </tr>
         );
@@ -228,8 +230,8 @@ export var MetadataTable = React.createClass({
             <div className="tag-list">
               {tagLinks}
 
-              <a className="collapse-toggle more">{I18n.more}</a>
-              <a className="collapse-toggle less">{I18n.less}</a>
+              <button className="collapse-toggle more">{I18n.more}</button>
+              <button className="collapse-toggle less">{I18n.less}</button>
             </div>
           </div>
         </td>
@@ -257,13 +259,19 @@ export var MetadataTable = React.createClass({
     if (view.statsUrl) {
       statsSection = (
         <div className="metadata-row middle">
-          <a className="metadata-detail-group-value" href={view.statsUrl}>{I18n.metadata.view_statistics}</a>
+          <a className="metadata-detail-group-value" href={view.statsUrl}>
+            {I18n.metadata.view_statistics}
+          </a>
         </div>
       );
     }
 
     if (view.editMetadataUrl) {
-      editMetadata = <a href={view.editMetadataUrl} className="btn btn-default">{I18n.metadata.edit_metadata}</a>;
+      editMetadata = (
+        <a href={view.editMetadataUrl} className="btn btn-default">
+          {I18n.metadata.edit_metadata}
+        </a>
+      );
     }
 
     return (
@@ -276,107 +284,107 @@ export var MetadataTable = React.createClass({
         </div>
 
         <div className="section-content">
-          <div className="metadata-column fancy">
+          <dl className="metadata-column fancy">
             <div className="metadata-section">
               <div className="metadata-row">
                 <div className="metadata-pair">
-                  <span className="metadata-pair-key">
+                  <dt className="metadata-pair-key">
                     {I18n.updated}
-                  </span>
+                  </dt>
 
-                  <h3 className="metadata-pair-value">
+                  <dd className="metadata-pair-value">
                     {formatDate(view.lastUpdatedAt)}
-                  </h3>
+                  </dd>
                 </div>
               </div>
 
               <div className="metadata-row middle metadata-flex metadata-detail-groups">
                 <div className="metadata-detail-group">
-                  <div className="metadata-detail-group-title">
+                  <dt className="metadata-detail-group-title">
                     {I18n.metadata.data_last_updated}
-                  </div>
+                  </dt>
 
-                  <div className="metadata-detail-group-value">
+                  <dd className="metadata-detail-group-value">
                     {formatDate(view.dataLastUpdatedAt)}
-                  </div>
+                  </dd>
                 </div>
 
                 <div className="metadata-detail-group">
-                  <div className="metadata-detail-group-title">
+                  <dt className="metadata-detail-group-title">
                     {I18n.metadata.metadata_last_updated}
-                  </div>
+                  </dt>
 
-                  <div className="metadata-detail-group-value">
+                  <dd className="metadata-detail-group-value">
                     {formatDate(view.metadataLastUpdatedAt)}
-                  </div>
+                  </dd>
                 </div>
               </div>
 
               <div className="metadata-row metadata-detail-groups">
                 <div className="metadata-detail-group">
-                  <div className="metadata-detail-group-title">
+                  <dt className="metadata-detail-group-title">
                     {I18n.metadata.creation_date}
-                  </div>
+                  </dt>
 
-                  <div className="metadata-detail-group-value">
+                  <dd className="metadata-detail-group-value">
                     {formatDate(view.createdAt)}
-                  </div>
+                  </dd>
                 </div>
               </div>
             </div>
 
-            <hr />
+            <hr aria-hidden />
 
             <div className="metadata-section">
               <div className="metadata-row metadata-flex">
                 <div className="metadata-pair">
-                  <span className="metadata-pair-key">
+                  <dt className="metadata-pair-key">
                     {I18n.metadata.views}
-                  </span>
+                  </dt>
 
-                  <h3 className="metadata-pair-value">
+                  <dd className="metadata-pair-value">
                     {utils.formatNumber(view.viewCount)}
-                  </h3>
+                  </dd>
                 </div>
 
                 <div className="metadata-pair">
-                  <span className="metadata-pair-key">
+                  <dt className="metadata-pair-key">
                     {I18n.metadata.downloads}
-                  </span>
+                  </dt>
 
-                  <h3 className="metadata-pair-value">
+                  <dd className="metadata-pair-value">
                     {utils.formatNumber(view.downloadCount)}
-                  </h3>
+                  </dd>
                 </div>
               </div>
               {statsSection}
             </div>
 
-            <hr />
+            <hr aria-hidden />
 
             <div className="metadata-section">
               <div className="metadata-row metadata-flex metadata-detail-groups">
                 <div className="metadata-detail-group">
-                  <div className="metadata-detail-group-title">
+                  <dt className="metadata-detail-group-title">
                     {I18n.metadata.data_provided_by}
-                  </div>
+                  </dt>
                   {attribution}
                 </div>
 
                 <div className="metadata-detail-group">
-                  <div className="metadata-detail-group-title">
+                  <dt className="metadata-detail-group-title">
                     {I18n.metadata.dataset_owner}
-                  </div>
+                  </dt>
 
-                  <div className="metadata-detail-group-value">
+                  <dd className="metadata-detail-group-value">
                     {view.ownerName}
-                  </div>
+                  </dd>
                 </div>
               </div>
 
               {contactFormButton}
             </div>
-          </div>
+          </dl>
 
           <div className="metadata-column tables collapsed">
             {customMetadataFieldsets}
@@ -390,7 +398,8 @@ export var MetadataTable = React.createClass({
                 {I18n.metadata.topics}
               </h5>
 
-              <table className="table table-condensed table-borderless table-discrete table-striped">
+              <table
+                className="table table-condensed table-borderless table-discrete table-striped">
                 <tbody>
                   <tr>
                     <td>{I18n.metadata.category}</td>
@@ -410,7 +419,8 @@ export var MetadataTable = React.createClass({
                 {I18n.metadata.licensing}
               </h5>
 
-              <table className="table table-condensed table-borderless table-discrete table-striped">
+              <table
+                className="table table-condensed table-borderless table-discrete table-striped">
                 <tbody>
                   <tr>
                     <td>{I18n.metadata.license}</td>
@@ -426,21 +436,37 @@ export var MetadataTable = React.createClass({
             </div>
 
             <div className="metadata-table-toggle-group desktop">
-              <a className="metadata-table-toggle more">
+              <a
+                className="metadata-table-toggle more"
+                tabIndex="0"
+                role="button"
+                onClick={this.toggleTable}
+                onKeyDown={handleKeyPress(this.toggleTable)}>
                 {I18n.more}
               </a>
 
-              <a className="metadata-table-toggle less">
+              <a
+                className="metadata-table-toggle less"
+                tabIndex="0"
+                role="button"
+                onClick={this.toggleTable}
+                onKeyDown={handleKeyPress(this.toggleTable)}>
                 {I18n.less}
               </a>
             </div>
 
             <div className="metadata-table-toggle-group mobile">
-              <button className="btn btn-block btn-default metadata-table-toggle more mobile">
+              <button
+                className="btn btn-block btn-default metadata-table-toggle more mobile"
+                onClick={this.toggleTable}
+                onKeyDown={handleKeyPress(this.toggleTable)}>
                 {I18n.more}
               </button>
 
-              <button className="btn btn-block btn-default metadata-table-toggle less mobile">
+              <button
+                className="btn btn-block btn-default metadata-table-toggle less mobile"
+                onClick={this.toggleTable}
+                onKeyDown={handleKeyPress(this.toggleTable)}>
                 {I18n.less}
               </button>
             </div>

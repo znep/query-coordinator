@@ -29,7 +29,7 @@ function generateDownloadLink(view, format, className, callback) {
 
   return (
     <li key={format} className={className}>
-      <a href={url} data-type={type} onClick={callback}>
+      <a role="menuitem" href={url} data-type={type} onClick={callback}>
         {label}
       </a>
     </li>
@@ -42,7 +42,7 @@ function generateGeoDownloadLink(view, format, callback) {
 
   return (
     <li key={format}>
-      <a href={url} data-type={format} onClick={callback}>
+      <a role="menuitem" href={url} data-type={format} onClick={callback}>
         {label}
       </a>
     </li>
@@ -79,11 +79,24 @@ var DownloadDropdown = React.createClass({
         ]);
       } else if (view.geospatialChildLayers.length > 1) {
         exportLinks = exportLinks.concat(view.geospatialChildLayers.map(function(childLayer) {
+          var csvLink = generateDownloadLink(
+            childLayer,
+            'csv_without_geo',
+            'geo-layer-export',
+            onDownloadData
+          );
+          var jsonLink = generateDownloadLink(
+            childLayer,
+            'json_without_geo',
+            'geo-layer-export',
+            onDownloadData
+          );
+
           return [
             <div>
               <li className="geo-layer-heading">{childLayer.name}</li>
-              {generateDownloadLink(childLayer, 'csv_without_geo', 'geo-layer-export', onDownloadData)}
-              {generateDownloadLink(childLayer, 'json_without_geo', 'geo-layer-export', onDownloadData)}
+              {csvLink}
+              {jsonLink}
             </div>
           ];
         }));
@@ -95,9 +108,12 @@ var DownloadDropdown = React.createClass({
     }
 
     return (
-      <div tabIndex="0" className="dropdown btn btn-default download btn-sm" data-dropdown data-orientation="bottom">
-        {I18n.action_buttons.download}
-        <ul className="dropdown-options">
+      <div
+        className="dropdown btn btn-default download btn-sm"
+        data-dropdown
+        data-orientation="bottom">
+        <span aria-hidden>{I18n.action_buttons.download}</span>
+        <ul role="menu" aria-label={I18n.action_buttons.download} className="dropdown-options">
           {exportLinks}
         </ul>
       </div>

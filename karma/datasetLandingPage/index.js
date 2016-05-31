@@ -12,6 +12,7 @@ window.contactFormData = require('./data/mockContactFormData').default;
 window.serverConfig = require('./data/mockServerConfig').default;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
+window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 
 function requireAll(context) {
   context.keys().forEach(context);

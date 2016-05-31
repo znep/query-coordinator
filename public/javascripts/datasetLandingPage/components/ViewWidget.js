@@ -50,10 +50,13 @@ var ViewWidget = React.createClass({
         <div className="entry-header">
           <div className="entry-title">
             <h3 className="entry-name">
-              {privateIcon} <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>{name}</a>
+              {privateIcon}
+              <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
+                {name}
+              </a>
             </h3>
           </div>
-          <div className="entry-view-type">
+          <div aria-hidden className="entry-view-type">
             <span className={icon} />
           </div>
         </div>
@@ -69,10 +72,10 @@ var ViewWidget = React.createClass({
           <div className="entry-main">
             <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
               <div className="img-wrapper">
-                <span className={icon + ' x-large-icon'}></span>
+                <span className={`${icon} x-large-icon`}></span>
               </div>
             </a>
-            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}} />
+            <div className="entry-description" dangerouslySetInnerHTML={{ __html: description }} />
           </div>
         </div>
       </div>

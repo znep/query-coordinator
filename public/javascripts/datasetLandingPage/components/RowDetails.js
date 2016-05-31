@@ -11,13 +11,13 @@ var RowDetails = function(props) {
   if (_.isNumber(view.rowCount)) {
     rowCountInfo = (
       <div className="metadata-pair">
-        <span className="metadata-pair-key">
+        <dt className="metadata-pair-key">
           {I18n.dataset_contents.rows}
-        </span>
+        </dt>
 
-        <h3 className="metadata-pair-value">
+        <dd className="metadata-pair-value">
           {utils.formatNumber(view.rowCount)}
-        </h3>
+        </dd>
       </div>
     );
   }
@@ -25,13 +25,13 @@ var RowDetails = function(props) {
   if (_.isArray(view.columns)) {
     columnCountInfo = (
       <div className="metadata-pair">
-        <span className="metadata-pair-key">
+        <dt className="metadata-pair-key">
           {I18n.dataset_contents.columns}
-        </span>
+        </dt>
 
-        <h3 className="metadata-pair-value">
+        <dd className="metadata-pair-value">
           {utils.formatNumber(view.columns.length)}
-        </h3>
+        </dd>
       </div>
     );
   }
@@ -39,13 +39,13 @@ var RowDetails = function(props) {
   if (view.rowLabel && view.rowLabel.toLowerCase() !== I18n.default_row_label) {
     rowLabelInfo = (
       <div className="metadata-pair">
-        <span className="metadata-pair-key">
+        <dt className="metadata-pair-key">
           {I18n.dataset_contents.row_display_unit}
-        </span>
+        </dt>
 
-        <h3 className="metadata-pair-value">
+        <dd className="metadata-pair-value">
           {view.rowLabel}
-        </h3>
+        </dd>
       </div>
     );
   }
@@ -58,11 +58,11 @@ var RowDetails = function(props) {
 
       <div className="section-content">
         <div className="metadata-section">
-          <div className="metadata-row">
+          <dl className="metadata-row">
             {rowCountInfo}
             {columnCountInfo}
             {rowLabelInfo}
-          </div>
+          </dl>
         </div>
       </div>
     </section>

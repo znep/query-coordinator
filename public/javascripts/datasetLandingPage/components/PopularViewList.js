@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ViewWidget from './ViewWidget';
 import { VelocityComponent } from 'velocity-react';
 import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 export var PopularViewList = React.createClass({
   propTypes: {
@@ -49,7 +50,7 @@ export var PopularViewList = React.createClass({
 
     if (_.isEmpty(list)) {
       var alertMessage = I18n.popular_views.no_content_alert_html;
-      return <div className="alert default" dangerouslySetInnerHTML={{__html: alertMessage}} />;
+      return <div className="alert default" dangerouslySetInnerHTML={{ __html: alertMessage }} />;
     }
 
     var popularViews = _.map(list, function(popularView, i) {
@@ -100,7 +101,18 @@ export var PopularViewList = React.createClass({
       return null;
     }
 
-    return <a onClick={isLoading ? null : loadMore} className="load-more-button">{I18n.more}</a>;
+    var clickHandler = isLoading ? null : loadMore;
+
+    return (
+      <a
+        role="button"
+        tabIndex="0"
+        onClick={clickHandler}
+        onKeyDown={handleKeyPress(clickHandler)}
+        className="load-more-button">
+        {I18n.more}
+      </a>
+    );
   },
 
   renderError: function() {
@@ -113,7 +125,7 @@ export var PopularViewList = React.createClass({
     return (
       <div className="alert error">
         {I18n.popular_views.load_more_error}
-        <span className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
+        <span role="button" className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
   },
@@ -126,7 +138,12 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <a onClick={toggleList} className="collapse-button">
+      <a
+        role="button"
+        tabIndex="0"
+        onClick={toggleList}
+        onKeyDown={handleKeyPress(toggleList)}
+        className="collapse-button">
         {isCollapsed ? I18n.more : I18n.less}
       </a>
     );

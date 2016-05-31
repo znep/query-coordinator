@@ -10,9 +10,11 @@ export var ShareModal = function(props) {
     privateNotice = (
       <section className="modal-content">
         <div className="alert info">
-          <span dangerouslySetInnerHTML={{__html: I18n.share.visibility_alert_html}} />
+          <span dangerouslySetInnerHTML={{ __html: I18n.share.visibility_alert_html }} />
           {' '}
-          <a href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`} target="_blank">
+          <a
+            href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`}
+            target="_blank">
             {I18n.manage_prompt}
           </a>
         </div>
@@ -21,11 +23,19 @@ export var ShareModal = function(props) {
   }
 
   return (
-    <div id="share-modal" className="modal modal-overlay modal-hidden" data-modal-dismiss>
+    <div
+      role="dialog"
+      aria-labelledby="share-modal-title"
+      id="share-modal"
+      className="modal modal-overlay modal-hidden"
+      data-modal-dismiss>
       <div className="modal-container">
         <header className="modal-header">
-          <h5 className="h5 modal-header-title">{I18n.share.title}</h5>
-          <button aria-label={I18n.close} className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+          <h5 id="share-modal-title" className="h5 modal-header-title">{I18n.share.title}</h5>
+          <button
+            aria-label={I18n.close}
+            className="btn btn-transparent modal-header-dismiss"
+            data-modal-dismiss>
             <span className="icon-close-2"></span>
           </button>
         </header>
@@ -34,14 +44,22 @@ export var ShareModal = function(props) {
 
         <section className="modal-content">
           <div className="facebook">
-            <a href={view.facebookShareUrl} data-share-option="Facebook" target="_blank" onClick={onClickOption}>
+            <a
+              href={view.facebookShareUrl}
+              data-share-option="Facebook"
+              target="_blank"
+              onClick={onClickOption}>
               <span className="icon-facebook"></span>
               {I18n.share.facebook}
             </a>
           </div>
 
           <div className="twitter">
-            <a href={view.twitterShareUrl} data-share-option="Twitter" target="_blank" onClick={onClickOption}>
+            <a
+              href={view.twitterShareUrl}
+              data-share-option="Twitter"
+              target="_blank"
+              onClick={onClickOption}>
               <span className="icon-twitter"></span>
               {I18n.share.twitter}
             </a>

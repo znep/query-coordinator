@@ -95,7 +95,8 @@ body {
       .btn-default {
         background: $light-grey-5;
 
-        &:hover {
+        &:hover,
+        &:focus {
           background: $light-grey-4;
         }
       }
@@ -130,7 +131,8 @@ body {
       .grid {
         color: $dark-grey-1;
 
-        &:hover {
+        &:hover,
+        &:focus {
           text-decoration: none;
         }
 
@@ -202,7 +204,8 @@ main.container.landing-page-container {
       .btn-default {
         margin-bottom: 8px;
 
-        &:hover {
+        &:hover,
+        &:focus {
           text-decoration: none;
         }
       }
@@ -365,6 +368,7 @@ main.container.landing-page-container {
 
     &.fancy {
       flex: 0 1 32%;
+      margin: 0;
     }
 
     &.tables {
@@ -440,7 +444,7 @@ main.container.landing-page-container {
   .metadata-pair {
     display: inline-block;
     max-width: 160px;
-    margin-right: 45px;
+    margin: 0 45px 0 0;
 
     &:last-child {
       margin-right: 0;
@@ -478,6 +482,7 @@ main.container.landing-page-container {
 
   .metadata-detail-group-value {
     font-size: 12px;
+    margin: 0;
 
     &.empty {
       font-style: italic;
@@ -558,7 +563,7 @@ main.container.landing-page-container {
 
           .metadata-detail-group-title {
             display: inline-block;
-            margin-right: 4px;
+            margin: 0 4px 0 0;
           }
 
           .metadata-detail-group-value {
@@ -647,9 +652,11 @@ section.landing-page-section.schema-preview {
     }
 
     tbody {
-      tr.column-summary:hover {
+      tr.column-summary:hover,
+      tr.column-summary:focus {
         background: $light-grey-7;
         cursor: pointer;
+        outline: none;
       }
     }
 
@@ -662,17 +669,22 @@ section.landing-page-section.schema-preview {
 
         .contents.schema-detail-groups {
           padding: 0 15px;
+          margin: 0;
           overflow: hidden;
           display: flex;
 
           .schema-detail-group {
             min-width: 140px;
-            margin-right: 20px;
+            margin: 0 20px 0 0;
 
             .schema-detail-group-title {
               margin: 0;
               color: $light-grey-1;
               font-weight: 600;
+            }
+
+            .schema-detail-group-value {
+              margin: 0;
             }
           }
         }
@@ -969,7 +981,8 @@ a {
   text-decoration: none;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: underline;
   }
 }
@@ -1002,10 +1015,13 @@ a {
   }
 
   .collapse-toggle {
+    padding: 0;
     margin-left: 4px;
     text-decoration: underline;
     color: $light-grey-1;
     cursor: pointer;
+    border: none;
+    background-color: #fff;
   }
 }
 
@@ -1037,7 +1053,8 @@ a {
     cursor: pointer;
     @include prefixer(transition, '0.25s');
 
-    &:hover {
+    &:hover,
+    &:focus {
       bottom: 0;
     }
   }

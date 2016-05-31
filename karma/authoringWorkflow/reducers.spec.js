@@ -66,14 +66,40 @@ describe('AuthoringWorkflow reducer', function() {
         expect(newState.vif.series[0].type).to.equal(chartType);
       });
     });
+
+    describe('SET_TITLE', function() {
+      it('sets the title', function() {
+        var title = 'Oh, yeah!';
+        var state = {
+          vif: defaultVif
+        };
+
+        var action = actions.setTitle(title);
+        var newState = reducer(state, action);
+
+        expect(newState.vif.title).to.equal(title);
+      });
+    });
+
+    describe('SET_DESCRIPTION', function() {
+      it('sets the description', function() {
+        var description = 'Oh, no!';
+        var state = {
+          vif: defaultVif
+        };
+
+        var action = actions.setDescription(description);
+        var newState = reducer(state, action);
+
+        expect(newState.vif.description).to.equal(description);
+      });
+    });
   });
 
   describe('datasetMetadata', function() {
     it('returns the default state if the input state is undefined', function() {
       var datasetMetadata = getDefaultState().datasetMetadata;
       expect(datasetMetadata.isLoading).to.equal(false);
-      expect(datasetMetadata.hasData).to.equal(false);
-      expect(datasetMetadata.hasError).to.equal(false);
       expect(datasetMetadata.data).to.equal(null);
       expect(datasetMetadata.error).to.equal(null);
     });
@@ -93,10 +119,6 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('clears the data key', function() {
         expect(newState.datasetMetadata.data).to.equal(null);
-      });
-
-      it('sets hasData to false', function() {
-        expect(newState.datasetMetadata.hasData).to.equal(false);
       });
     });
 
@@ -124,10 +146,6 @@ describe('AuthoringWorkflow reducer', function() {
       it('sets the data key', function() {
         expect(newState.datasetMetadata.data).to.deep.equal({ id: 'asdf-qwer' });
       });
-
-      it('sets hasData to true', function() {
-        expect(newState.datasetMetadata.hasData).to.equal(true);
-      });
     });
 
     describe('HANDLE_DATASET_METADATA_ERROR', function() {
@@ -150,10 +168,6 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('sets the error key', function() {
         expect(newState.datasetMetadata.error).to.equal('error!');
-      });
-
-      it('sets hasError to true', function() {
-        expect(newState.datasetMetadata.hasError).to.equal(true);
       });
     });
   });

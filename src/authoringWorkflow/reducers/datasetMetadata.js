@@ -8,18 +8,6 @@ import {
 
 import defaultDatasetMetadata from '../defaultDatasetMetadata';
 
-export var datasetMetadataPredicates = {
-  isLoading: function(state) {
-    return _.get(state, 'isLoading', false);
-  },
-  hasData: function(state) {
-    return !_.isNull(_.get(state, 'data', null));
-  },
-  hasError: function(state) {
-    return !_.isNull(_.get(state, 'error', null));
-  }
-};
-
 export default function datasetMetadata(state, action) {
   if (_.isUndefined(state)) {
     return defaultDatasetMetadata;

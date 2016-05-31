@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { datasetMetadataPredicates } from './reducers/datasetMetadata';
-import { setDatasetUid, setDimension, setMeasure, setChartType } from './actions';
+import { isLoading, hasData, hasError } from './selectors/datasetMetadata';
+import { setDatasetUid, setDimension, setMeasure, setChartType, setTitle, setDescription } from './actions';
 
 import { CustomizationTabs } from './CustomizationTabs';
 import { CustomizationTabPanes } from './CustomizationTabPanes';
@@ -70,13 +70,13 @@ export var AuthoringWorkflow = React.createClass({
     var datasetMetadata = this.props.datasetMetadata;
     var datasetUid = _.get(this.props, 'vif.series[0].datasetSource.datasetUid', '');
 
-    if (datasetMetadataPredicates.hasError(datasetMetadata)) {
+    if (hasError(datasetMetadata)) {
       datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
-    } else if (datasetMetadataPredicates.isLoading(datasetMetadata)) {
+    } else if (isLoading(datasetMetadata)) {
       datasetMetadataInfo = <div>Loading dataset metadata</div>;
     }
 
-    if (datasetMetadataPredicates.hasData(datasetMetadata)) {
+    if (hasData(datasetMetadata)) {
       dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
       measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
       chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
@@ -106,9 +106,9 @@ export var AuthoringWorkflow = React.createClass({
         content: (
           <form>
             <label className="block-label">Title:</label>
-            <input className="text-input" type="text" />
+            <input className="text-input" type="text" onChange={this.props.onChangeTitle} />
             <label className="block-label">Description:</label>
-            <textarea className="text-input text-area"></textarea>
+            <textarea className="text-input text-area" onChange={this.props.onChangeDescription}></textarea>
           </form>
         )
       },
@@ -157,10 +157,11 @@ export var AuthoringWorkflow = React.createClass({
 
   dimensionDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
+    var columns = _.get(datasetMetadata, 'data.columns', []);
     var defaultOptionKey = this.props.defaultOptionKey;
     var dimensionOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a dimension...</option>,
-      ...datasetMetadata.data.columns.map(column => {
+      ...columns.map(column => {
         return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
       })
     ];
@@ -171,7 +172,8 @@ export var AuthoringWorkflow = React.createClass({
   measureDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
     var defaultOptionKey = this.props.defaultOptionKey;
-    var numberColumns = _.filter(datasetMetadata.data.columns, { dataTypeName: 'number' });
+    var columns = _.get(datasetMetadata, 'data.columns', []);
+    var numberColumns = _.filter(columns, { dataTypeName: 'number' });
 
     var measureOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,
@@ -269,6 +271,16 @@ function mapDispatchToProps(dispatch) {
     onChangeChartType: function(event) {
       var chartType = event.target.value;
       dispatch(setChartType(chartType));
+    },
+
+    onChangeTitle: function(event) {
+      var title = event.target.value;
+      dispatch(setTitle(title));
+    },
+
+    onChangeDescription: function(event) {
+      var description = event.target.value;
+      dispatch(setDescription(description));
     }
   };
 

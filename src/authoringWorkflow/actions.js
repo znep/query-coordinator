@@ -72,3 +72,19 @@ export function setChartType(chartType) {
     chartType: chartType
   };
 }
+
+export var SET_TITLE = 'SET_TITLE';
+export function setTitle(title) {
+  return {
+    type: SET_TITLE,
+    title: title
+  };
+}
+
+export var SET_DESCRIPTION = 'SET_DESCRIPTION';
+export function setDescription(description) {
+  return {
+    type: SET_DESCRIPTION,
+    description: description
+  };
+}

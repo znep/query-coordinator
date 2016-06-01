@@ -129,6 +129,12 @@ class Model
     end
   end
 
+  def respond_to_missing?(name, include_private = false)
+    responds_to = super(name, include_private)
+    responds_to ||= data_hash.key?(name.to_s.sub(/[?=]$/, '')) if @data.respond_to?(:keys)
+    responds_to
+  end
+
   def define_predicate_method(method)
     self.class.send(:define_method, method) do
       attribute_name = method.to_s.chop

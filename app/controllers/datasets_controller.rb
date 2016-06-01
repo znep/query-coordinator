@@ -736,20 +736,25 @@ class DatasetsController < ApplicationController
       view = ::View.find(id)
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
-      return render 'shared/error', :status => :not_found
+      render 'shared/error', :status => :not_found
+      return
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required'
-        return require_user(true)
+        require_user(true)
+        return
       elsif e.error_code == 'permission_denied'
-        return render_forbidden(e.error_message)
+        render_forbidden(e.error_message)
+        return
       else
         flash.now[:error] = e.error_message
-        return render 'shared/error', :status => :internal_server_error
+        render 'shared/error', :status => :internal_server_error
+        return
       end
     end
 
     if (view.is_form? && !view.can_add?) || !view.can_read?
-      return render_forbidden('You do not have permission to view this dataset')
+      render_forbidden('You do not have permission to view this dataset')
+      return
     end
 
     view

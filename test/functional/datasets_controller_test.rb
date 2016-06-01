@@ -8,7 +8,6 @@ class DatasetsControllerTest < ActionController::TestCase
     load_sample_data('test/fixtures/sample-data.json')
     @test_view = View.find('test-data')
     View.any_instance.stubs(
-      :find => @test_view,
       :find_related => [@test_view],
       :user_granted? => false
     )
@@ -31,6 +30,7 @@ class DatasetsControllerTest < ActionController::TestCase
   end
 
   def teardown
+    @controller.unstub(:get_view)
     @controller.unstub(:current_user)
     @controller.stubs(:phidippides)
     View.unstub(:new_backend?)
@@ -85,12 +85,71 @@ class DatasetsControllerTest < ActionController::TestCase
     end
   end
 
-  test 'returns 304 if no changes have occurred for unsigned user' do
+  test 'returns 304 if no changes have occurred for anonymous user' do
     dsmtime = 12345
     VersionAuthority.stubs(:get_core_dataset_mtime => { 'four-four' => dsmtime })
     @request.env['HTTP_IF_NONE_MATCH'] = "#{dsmtime}-ANONYMOUS"
     get :show, :id => 'four-four'
     assert_response 304
+  end
+
+  test 'get_view method returns nil when ResourceNotFound' do
+    @controller.unstub(:get_view)
+    View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
+  end
+
+  test 'get_view method returns nil when CoreServerError - authentication_required' do
+    @controller.unstub(:get_view)
+    UserSession.controller = @controller
+    View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'authentication_required', 'error message'))
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
+  end
+
+  test 'get_view method returns nil when CoreServerError - permission_denied' do
+    @controller.unstub(:get_view)
+    UserSession.controller = @controller
+    View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'permission_denied', 'error message'))
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
+  end
+
+  test 'get_view method returns nil when CoreServerError - other error' do
+    @controller.unstub(:get_view)
+    UserSession.controller = @controller
+    View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'other error', 'error message'))
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
+  end
+
+  test 'get_view method returns nil when View#is_form? is true and View#can_add? is false' do
+    @controller.unstub(:get_view)
+    UserSession.controller = @controller
+    mock_view = stub
+    mock_view.expects(:is_form? => true)
+    mock_view.expects(:can_add? => false)
+    View.stubs(:find => mock_view)
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
+  end
+
+  test 'get_view method returns nil when View#can_read? is false' do
+    @controller.unstub(:get_view)
+    UserSession.controller = @controller
+    mock_view = stub
+    mock_view.expects(:is_form? => false)
+    mock_view.expects(:can_read? => false)
+    View.stubs(:find => mock_view)
+    @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+    value = @controller.send(:get_view, 'igno-reme')
+    refute(value)
   end
 
   test 'shows old UX for datasets that are on the NBE and user is admin' do

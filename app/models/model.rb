@@ -49,8 +49,8 @@ class Model
     # Ref: https://socrata.airbrake.io/projects/6553/groups/1697160411655803097
     begin
       batch ? nil : result = parse(result)
-    rescue JSON::ParserError => e
-      if e.to_s =~ /service unavailable/i
+    rescue JSON::ParserError
+      if result.to_s =~ /service unavailable/i
         result = nil
       end
     end

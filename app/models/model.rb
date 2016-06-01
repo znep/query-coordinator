@@ -43,7 +43,19 @@ class Model
       Rails.logger.debug("CoreServer::Base.connection.get_request ERROR: #{e.inspect}")
       raise e
     end
-    batch ? nil : parse(result)
+
+    # This is to deal with Core returning the following HTML error response instead of JSON:
+    # <html><body><h1>503 Service Unavailable</h1> No server is available to handle this request. </body></html>
+    # Ref: https://socrata.airbrake.io/projects/6553/groups/1697160411655803097
+    begin
+      batch ? nil : result = parse(result)
+    rescue JSON::ParserError => e
+      if e.to_s =~ /service unavailable/i
+        result = nil
+      end
+    end
+
+    result
   end
 
   def self.find_under_user(options = nil, custom_headers = {}, batch = false, is_anon = false)

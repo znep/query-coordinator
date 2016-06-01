@@ -167,6 +167,28 @@ $th-headings: (
     &:hover {
       color: $link-hover;
     }
+
+    // Goal: textual hyperlinks should break at word/hyphen boundaries, but raw URLs
+    // should wrap whenever needed instead of escaping their containers.
+    //
+    // Chrome: requires any one of overflow-wrap, word-wrap, or word-break property set to break-word.
+    //  * hyphens property not yet supported.
+    // Firefox: requires word-wrap property set to break-word.
+    //  * doesn't yet support overflow-wrap as newer alias for word-wrap.
+    //  * hyphens property is supported but ineffectual here.
+    // IE 11: fails to wrap raw URLs except with hyphens property.
+    //  * unlike Firefox, hyphens property seems to take precedence over word-wrap.
+    // Edge: fails to wrap raw URLs except with hyphens property.
+    //  * unlike Firefox, hyphens property seems to take precedence over word-wrap.
+    //
+    // References:
+    // http://caniuse.com/#search=word
+    // http://caniuse.com/#search=hyphens
+    //
+    // NOTE - Bourbon explicitly changes break-word to break-all for the word-wrap property:
+    // https://github.com/thoughtbot/bourbon/blob/master/core/bourbon/library/_word-wrap.scss#L25
+    word-wrap: break-word; // for Chrome and Firefox
+    -ms-hyphens: auto; // for IE11 and Edge
   }
 
 

@@ -122,6 +122,10 @@ describe('componentStoryTile jQuery plugin', function() {
           $component.find('.story-tile-container').attr('href'),
           validStoryTileDataWithoutImage.url
         );
+        assert.equal(
+          $component.find('.story-tile-container').attr('target'),
+          '_self'
+        );
       });
 
       it('should render the story title container', function() {
@@ -163,6 +167,32 @@ describe('componentStoryTile jQuery plugin', function() {
         assert.equal(
           $component.find('.story-tile-image').css('background-image'),
           'url(about:blank)'
+        );
+      });
+    });
+
+    describe('when the new window behavior is enabled', function() {
+      var componentData = _.cloneDeep(validComponentData);
+      componentData.value.openInNewWindow = true;
+      stubApiAndCreateComponentWith(200, validStoryTileDataWithImage, componentData);
+
+      it('should set target="_blank"', function() {
+        assert.equal(
+          $component.find('.story-tile-container').attr('target'),
+          '_blank'
+        );
+      });
+    });
+
+    describe('when the new window behavior is disabled', function() {
+      var componentData = _.cloneDeep(validComponentData);
+      componentData.value.openInNewWindow = false;
+      stubApiAndCreateComponentWith(200, validStoryTileDataWithImage, componentData);
+
+      it('should set target="_self"', function() {
+        assert.equal(
+          $component.find('.story-tile-container').attr('target'),
+          '_self'
         );
       });
     });

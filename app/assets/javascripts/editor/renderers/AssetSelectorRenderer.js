@@ -131,6 +131,17 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'change',
+      '#open-story-in-new-window',
+      function() {
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET
+        });
+      }
+    );
+
+    _container.on(
       'input',
       '[data-asset-selector-validate-field="goalUrl"]',
       function(event) {
@@ -294,7 +305,7 @@ export default function AssetSelectorRenderer(options) {
 
         case WIZARD_STEP.ENTER_STORY_URL:
           selectorTitle = I18n.t('editor.asset_selector.story_tile.heading');
-          selectorContent = _renderChooseStoryTemplate(componentValue);
+          selectorContent = _renderChooseStoryTemplate();
           break;
 
         case WIZARD_STEP.ENTER_GOAL_URL:
@@ -1261,32 +1272,44 @@ export default function AssetSelectorRenderer(options) {
       previewContainer
     ]);
 
+    var newWindowControl = $(
+      '<div>', { 'class': 'modal-input-group' }
+    ).append([
+      $('<input>', { type: 'checkbox', id: 'open-story-in-new-window', 'class': 'modal-input' }),
+      $('<label>', { 'for': 'open-story-in-new-window', 'class': 'modal-input-label' }).append([
+        $('<span>', { 'class': 'icon-checkmark3' }),
+        I18n.t('editor.asset_selector.story_tile.open_in_new_window')
+      ])
+    ]);
+
     var buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
       }).append([ backButton, _renderModalInsertButton() ]);
 
-    return [ content, buttonGroup ];
+    return [ content, newWindowControl, buttonGroup ];
   }
 
   function _renderChooseStoryData(componentProperties) {
     var $previewContainer = _container.find('.asset-selector-story-tile-preview-container');
     var $storyTilePreviewContainer = _container.find('.asset-selector-story-tile-embed-component');
     var $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
+    var $newWindowCheckbox = _container.find('#open-story-in-new-window');
     var $insertButton = _container.find('.btn-apply');
     var storyDomain = null;
     var storyUid = null;
+    var openInNewWindow = false;
     var renderedStoryDomain = $storyTilePreviewContainer.attr('data-rendered-story-domain');
     var renderedStoryUid = $storyTilePreviewContainer.attr('data-rendered-story-uid');
     var componentData;
 
-    if (componentProperties !== null &&
-      _.has(componentProperties, 'domain') &&
-      _.has(componentProperties, 'storyUid')) {
+    if (_.isPlainObject(componentProperties)) {
 
-      storyDomain = componentProperties.domain;
-      storyUid = componentProperties.storyUid;
+      storyDomain = _.get(componentProperties, 'domain', null);
+      storyUid = _.get(componentProperties, 'storyUid', null);
+      openInNewWindow = _.get(componentProperties, 'openInNewWindow', false);
+
     }
 
     if (storyDomain !== null && storyUid !== null) {
@@ -1351,6 +1374,8 @@ export default function AssetSelectorRenderer(options) {
 
       $insertButton.prop('disabled', true);
     }
+
+    $newWindowCheckbox.prop('checked', openInNewWindow);
   }
 
   function _renderChooseGoalTemplate() {

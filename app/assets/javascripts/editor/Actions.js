@@ -189,6 +189,9 @@ export default {
   // {string} url
   ASSET_SELECTOR_UPDATE_STORY_URL: 'ASSET_SELECTOR_UPDATE_STORY_URL',
 
+  // No payload
+  ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET: 'ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET',
+
   /**
    * Goal tile embed flow
    */

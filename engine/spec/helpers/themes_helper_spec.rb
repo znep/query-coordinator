@@ -49,4 +49,21 @@ describe Chrome::ThemesHelper do
 
   end
 
+  describe '#prevent_font_render?', verify_stubs: false do
+    it 'returns true if Chrome::Engine.config.render_fonts is false' do
+      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(false)
+      expect(helper.prevent_font_render?).to eq(true)
+    end
+
+    it 'returns false if Chrome::Engine.config.render_fonts is true' do
+      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(true)
+      expect(helper.prevent_font_render?).to eq(false)
+    end
+
+    it 'returns false if Chrome::Engine.config.render_fonts is not set' do
+      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(nil)
+      expect(helper.prevent_font_render?).to eq(false)
+    end
+  end
+
 end

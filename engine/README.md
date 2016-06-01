@@ -149,6 +149,14 @@ There are two fonts that included in the engine, though only `socrata-icons` is 
 1. `open-sans`
 2. `socrata-icons`
 
+By default, `socrata-icons` is included in the rendered CSS through the engine.
+However, if you know your hosting app is already using the styleguide icons and you want
+to prevent the engine from rendering the fonts, add the following to `application.rb`:
+
+```ruby
+config.render_fonts = false
+```
+
 #### Sample `siteChromeConfigVars` configuration:
 
 ```

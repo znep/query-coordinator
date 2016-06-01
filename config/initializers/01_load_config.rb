@@ -43,6 +43,7 @@ AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG.auth0_jwt
 AUTH0_CONFIGURED = AUTH0_URI.present? && AUTH0_ID.present? && AUTH0_SECRET.present? && AUTH0_JWT.present?
 
 RECAPTCHA_2_SITE_KEY = ENV['RECAPTCHA_2_SITE_KEY'] || APP_CONFIG.recaptcha_2_site_key
+RECAPTCHA_2_SECRET_TOKEN = ENV['RECAPTCHA_2_SECRET_TOKEN'] || APP_CONFIG.recaptcha_2_secret_token
 
 if Rails.env.development?
   OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)

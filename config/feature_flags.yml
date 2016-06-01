@@ -74,10 +74,6 @@ enable_dataset_landing_page:
   description: Enable the dataset landing page
   defaultValue: false
   category: dataset landing page
-enable_dataset_landing_page_contact_form:
-  description: Enable the contact modal on the dataset landing page
-  defaultValue: false
-  category: dataset landing page
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

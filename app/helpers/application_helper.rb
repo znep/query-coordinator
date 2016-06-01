@@ -265,7 +265,7 @@ module ApplicationHelper
   # <div class="flash warning">Your error text</flash>
   #
   # Adapted from http://snippets.dzone.com/posts/show/2348
-  FLASH_MESSAGE_TYPES = [:error, :warning, :notice]
+  FLASH_MESSAGE_TYPES = %i[error warning notice]
   def display_standard_flashes
     flash_obj = flash
     if request.cookies['js_flash']
@@ -282,19 +282,15 @@ module ApplicationHelper
     end
 
     flash_html = flash_obj.map do |level, message|
-      next unless FLASH_MESSAGE_TYPES.include? level
+      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
 
-      if message.is_a? Array
-        message = message.join('<br />').html_safe
+      if message.is_a?(Array)
+        message = safe_join(message, tag('br'))
       end
 
       if message.include?('|')
         # Todo: consider replacing places we rely on | with normal <br> tags
-        pieces = message.split('|').map { |piece| content_tag(:span, piece.html_safe) }
-        message = pieces.inject(pieces.shift) do |safe_html, html|
-          safe_html << tag('br')
-          safe_html << html
-        end
+        message = safe_join(message.split('|').map { |piece| content_tag(:span, piece.html_safe) }, tag('br'))
       end
 
       content_tag('div', message, :class => "flash #{level}")

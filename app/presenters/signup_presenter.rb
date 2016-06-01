@@ -18,17 +18,17 @@ class SignupPresenter < Presenter
     @inviteToken = inviteToken
     @authToken = authToken
 
-    @errors = {}
+    @errors = Hash.new { |h, k| h[k] = [] } # Note: This hash cannot be Marshal#dump'd with this default proc.
 
     super(params)
   end
 
   def create
     if password != passwordConfirm
-      @errors << t('account.common.validation.mismatch')
+      @errors[:password] << t('account.common.validation.mismatch')
     end
     if !accept_terms
-      @errors << t('account.common.validation.terms')
+      @errors[:terms] << t('account.common.validation.terms')
     end
     if @errors.empty?
       if FeatureFlags.derive[:enable_new_account_verification_email]
@@ -36,7 +36,7 @@ class SignupPresenter < Presenter
           user.create(inviteToken, authToken)
           return true
         rescue CoreServer::CoreServerError => e
-          @errors << e.error_message
+          @errors[:core] << e.error_message
           return false
         end
       else
@@ -47,7 +47,7 @@ class SignupPresenter < Presenter
     false
   end
 
-protected
+  protected
 
   def create_user
     temp_password = user.password
@@ -55,7 +55,7 @@ protected
     @user.password = temp_password
     true
   rescue CoreServer::CoreServerError => e
-    (@errors[:core] ||= []) << e.error_message
+    @errors[:core] << e.error_message
     false
   end
 

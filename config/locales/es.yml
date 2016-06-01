@@ -3233,7 +3233,7 @@ es:
       data_provided_by: Datos Ofrecidos Por
       data_provided_prompt: Individuo u Organización
       data_provider_required: Debe especificar el proveedor de datos (atribución).
-      dataset_title: Titulo de Metadatos
+      dataset_title: Título de Conjunto de Datos
       dataset_title_error: El conjunto de datos debe tener título.
       dataset_title_prompt: Introduzca un título
       dataset_url: URL del conjunto de datos
@@ -3275,8 +3275,8 @@ es:
       row_class: Fila de Clase
       row_identifier: Identificador de Fila
       row_identifier_help_text: El identificador de fila no se puede cambiar una vez se haya publicado una vista.
-      row_label:
-      row_label_help:
+      row_label: Título de Fila
+      row_label_help: Describe que representa cada fila (si aplica).
       row_label_prompt:
       save: Guardar
       save_changes: Guardar cambios

@@ -8,6 +8,7 @@ import Actions from '../Actions';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { dispatcher } from '../Dispatcher';
 import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
 import { fileUploaderStore } from '../stores/FileUploaderStore';
@@ -2026,12 +2027,22 @@ export default function AssetSelectorRenderer(options) {
 
       if (savedDatasetMatchesSelectedDataset || isEditingWithoutSavedDataset) {
         dataset = componentProperties.visualization;
+        if (dataset === null) {
+          return exceptionNotifier.notify(
+            'componentProperties.visualization was unexpectedly null'
+          );
+        }
       } else {
         dataset = JSON.parse(JSON.stringify(assetSelectorStoreDataset));
+        if (dataset === null) {
+          return exceptionNotifier.notify(
+            'assetSelectorStoreDataset was unexpectedly null'
+          );
+        }
       }
 
       // If the visualization has a table, make sure it does not display.
-      dataset.metadata.renderTypeConfig.visible.table = false;
+      _.set(dataset, 'metadata.renderTypeConfig.visible.table', false);
 
       mapChartIframe.hide();
 

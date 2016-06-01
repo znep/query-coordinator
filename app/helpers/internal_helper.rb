@@ -11,8 +11,8 @@ module InternalHelper
         else
           submit_tag(options.fetch(:text))
         end
-      html = html.prepend extra_html unless extra_html.nil?
-      html.html_safe
+      html.prepend extra_html unless extra_html.nil?
+      html
     end
   end
 

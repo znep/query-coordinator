@@ -133,8 +133,11 @@ class PageContainer extends React.Component {
         },
         id: _.uniqueId('{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName))),
         metadata: datasetMetadata.columns[card.fieldName],
-        unitLabel: datasetMetadata.columns[(card.aggregationField || card.computedColumn || card.fieldName)].name,
+        aggregationMetadata: _.get(datasetMetadata.columns,
+          card.aggregationField || card.computedColumn || card.fieldName),
+        computedColumnMetadata: _.get(datasetMetadata.columns, card.computedColumn, {}),
         columnName: card.fieldName,
+        computedColumn: card.computedColumn,
         aggregationFunction: card.aggregationFunction,
         aggregationField: card.aggregationField
       };

@@ -14,7 +14,7 @@ module WhatsNewHelper
   # you can pass in a mocked client; eventually, we might
   # want to write better tests to check that things work
   # properly
-  def query_zendesk(zendesk_client = Zendesk2::Client.new(
+  def query_zendesk(zendesk_client = Zendesk2.new(
     url: 'https://support.socrata.com', username: '', token: ''
   ))
     begin

@@ -36,6 +36,21 @@ export var FeedbackPanel = React.createClass({
   // Bring up the feedback panel when the button is clicked.
   onClickFeedback: function() {
     this.hideButton(this.showContent);
+
+    // Initialize UserSnap.
+    usersnap.init({
+      // Restore the feedback button after the user quits UserSnap.
+      // UserSnap politely exposes event listeners.
+      onClose: _.partial(this.showButton, this.resetButtonHover),
+      // Inject the user so we can auto-fill some information.
+      user: window.currentUser
+    });
+
+    // Initialize Zendesk.
+    zendesk.init({
+      // Inject the user so we can auto-fill some information.
+      user: window.currentUser
+    });
   },
 
   // Dismiss the feedback panel as if this were a true flannel.
@@ -45,47 +60,38 @@ export var FeedbackPanel = React.createClass({
 
   // Load the UserSnap widget when the user wants to include a screenshot.
   onClickUsersnap: function() {
-    usersnap({
-      // Restore the feedback button after the user quits UserSnap.
-      // UserSnap politely exposes event listeners.
-      onClose: _.partial(this.showButton, this.resetButtonHover),
-      // Inject the user so we can auto-fill some information.
-      user: window.currentUser
-    });
-    this.hideContent(this.hideButton);
+    this.hideContent(usersnap.activate);
   },
 
   // Load the Zendesk widget when the user doesn't want to include a screenshot.
   onClickZendesk: function() {
-    zendesk({
-      // Inject the user so we can auto-fill some information.
-      user: window.currentUser
-    });
-    this.hideContent(this.hideButton);
+    this.hideContent(zendesk.activate);
 
     // Restore the feedback button after the user quits Zendesk.
     // The Zendesk Web Widget API is extremely limited, so we detect a change
     // in state on the iframe as a signal for completion.
-    // There's also different behavior across browsers which we guard against;
-    // Firefox doesn't actually respond to the `activate` API call properly, so
-    // we have to track activation transitions ourselves.
-    // (A bug has been filed and accepted for the Firefox problem, and the
-    // lack of close signal has been routed to the Zendesk product team.)
-    let activated = false;
-    let frame = $('.zEWidget-ticketSubmissionForm');
     const self = this;
-    const reset = setInterval(function() {
-      if (frame.length === 0) {
-        frame = $('.zEWidget-ticketSubmissionForm');
-      }
-      let active = frame.hasClass('zEWidget-ticketSubmissionForm--active');
-      if (activated && !active) {
-        self.showButton(self.resetButtonHover);
-        clearInterval(reset);
-      } else if (!activated && active) {
-        activated = true;
-      }
-    }, 200);
+    const isFrameActive = function() {
+      return $('.zEWidget-ticketSubmissionForm--active').length === 1;
+    };
+    const handleClose = function() {
+      const reset = setInterval(function() {
+        if (!isFrameActive()) {
+          clearInterval(reset);
+          self.showButton(self.resetButtonHover);
+        }
+      }, 100);
+    };
+    const onActivate = function() {
+      const getFrame = setInterval(function() {
+        if (isFrameActive()) {
+          clearInterval(getFrame);
+          handleClose();
+        }
+      }, 50);
+    };
+
+    onActivate();
   },
 
   componentDidMount: function() {

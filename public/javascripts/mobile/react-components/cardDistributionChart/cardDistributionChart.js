@@ -27,7 +27,7 @@ class CardDistributionChart extends React.Component {
       configuration: {
         isMobile: true
       },
-      filters: this.props.values.filters,
+      filters: _.get(this, 'state.filters', this.props.values.filters),
       type: 'distributionChart',
       unit: this.props.values.unit
     };
@@ -51,17 +51,14 @@ class CardDistributionChart extends React.Component {
       'SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.eq(nextProps.filters, this.state.filters)) {
+  componentDidUpdate() {
+    if (!_.eq(this.props.filters, this.state.filters)) {
       this.setState({
-        filters: nextProps.filters
+        filters: this.props.filters
       }, () => {
-        var vif = this.getVIF();
-        vif.filters = nextProps.filters;
-
         var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
         changeEvent.originalEvent = {
-          detail: vif
+          detail: this.getVIF()
         };
 
         this.state.$component.trigger(changeEvent);

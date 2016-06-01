@@ -40,7 +40,7 @@ class CardColumnChart extends React.Component {
           'FLYOUT_SELECTED_NOTICE': 'This column is selected'
         }
       },
-      filters: this.props.values.filters,
+      filters: _.get(this, 'state.filters', this.props.values.filters),
       type: 'columnChart',
       unit: this.props.values.unit
     };
@@ -68,17 +68,14 @@ class CardColumnChart extends React.Component {
     this.state.$component.off('click', '.bar-group, .labels .label .contents span');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.eq(nextProps.filters, this.state.filters)) {
+  componentDidUpdate() {
+    if (!_.eq(this.props.filters, this.state.filters)) {
       this.setState({
-        filters: nextProps.filters
+        filters: this.props.filters
       }, () => {
-        var vif = this.getVIF();
-        vif.filters = nextProps.filters;
-
         var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
         changeEvent.originalEvent = {
-          detail: vif
+          detail: this.getVIF()
         };
 
         this.state.$component.trigger(changeEvent);

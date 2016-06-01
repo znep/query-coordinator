@@ -78,7 +78,7 @@ class CardFeatureMap extends React.Component {
         tileserverHosts: this.state.domainBasedTileServerList,
         useOriginHost: false
       },
-      filters: this.props.values.filters,
+      filters: _.get(this, 'state.filters', this.props.values.filters),
       type: 'featureMap',
       unit: this.props.values.unit
     };
@@ -107,17 +107,14 @@ class CardFeatureMap extends React.Component {
       'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDDEN SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.eq(nextProps.filters, this.state.filters)) {
+  componentDidUpdate() {
+    if (!_.eq(this.props.filters, this.state.filters)) {
       this.setState({
-        filters: nextProps.filters
+        filters: this.props.filters
       }, () => {
-        var vif = this.getVIF();
-        vif.filters = nextProps.filters;
-
         var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
         changeEvent.originalEvent = {
-          detail: vif
+          detail: this.getVIF()
         };
 
         this.state.$component.trigger(changeEvent);

@@ -32,7 +32,7 @@ export default function ExceptionNotifier(options) {
 
   function setup() {
 
-    if (typeof _airbrakeOptions.PROJECT_ID !== 'string') {
+    if (!_.isString(_airbrakeOptions.PROJECT_ID)) {
       return;
     }
 
@@ -70,7 +70,6 @@ export default function ExceptionNotifier(options) {
    * @param {Any} error - Anything that should be logged in Airbrake/console.
    */
   this.notify = function(error) {
-    var message;
 
     // EN-5600 - Tons of Airbrake errors recently
     //
@@ -105,6 +104,10 @@ export default function ExceptionNotifier(options) {
             error.getAllResponseHeaders()
           )
       );
+    } else if (_.isPlainObject(error)) {
+      error = new Error(JSON.stringify(error));
+    } else if (!_.isError(error)) {
+      error = new Error(error);
     }
 
     if (!_.isUndefined(_airbrake)) {
@@ -113,14 +116,12 @@ export default function ExceptionNotifier(options) {
 
     console.error(error);
 
-    if (typeof window.ga === 'function') {
-      message = error.message || error;
-
+    if (_.isFunction(window.ga)) {
       window.ga(
         'send',
         'exception',
         {
-          'exDescription': StorytellerUtils.format('Airbrake notification: {0}', message),
+          'exDescription': StorytellerUtils.format('Airbrake notification: {0}', error.message),
           'exFatal': false
         }
       );

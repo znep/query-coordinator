@@ -41,4 +41,17 @@ AirbrakeNotifier.report_error(
 
 ## frontend (javascript)
 
-TODO - fill this out
+A wrapper around Airbrake has been provided in `ExceptionNotifier`. The exported object
+has a `notify` method which can be used to broadcast errors to Airbrake, Google Analytics,
+and the JS console all at the same time. Example usage:
+
+```
+import { exceptionNotifier } from '../services/ExceptionNotifier';
+
+if (1 > 2) {
+  exceptionNotifier.notify(new Error('Mathematics is broken'));
+
+  // a non-Error argument will be converted to an Error
+  exceptionNotifier.notify('Mathematics is broken');
+}
+```

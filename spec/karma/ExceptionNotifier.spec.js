@@ -69,6 +69,9 @@ describe('ExceptionNotifier', function() {
 
     describe('when airbrake is defined', function() {
       var error = 'hello';
+      var wrappedErrorMatcher = sinon.match(function(arg) {
+        return typeof arg === 'object' && arg.message === error;
+      });
 
       beforeEach(function() {
         exceptionNotifier = new ExceptionNotifier({PROJECT_ID: 'werdz'});
@@ -76,16 +79,19 @@ describe('ExceptionNotifier', function() {
       });
 
       it('calls Client.notify with the error', function() {
-        assert.isTrue(notifyStub.calledWith(error));
+        assert.isTrue(notifyStub.calledWithMatch(wrappedErrorMatcher));
       });
 
       it('calls console.error', function() {
-        assert.isTrue(consoleErrorStub.calledWith(error));
+        assert.isTrue(consoleErrorStub.calledWithMatch(wrappedErrorMatcher));
       });
     });
 
     describe('when airbrake is undefined', function() {
       var error = 'from the other side';
+      var wrappedErrorMatcher = sinon.match(function(arg) {
+        return typeof arg === 'object' && arg.message === error;
+      });
 
       beforeEach(function() {
         exceptionNotifier = new ExceptionNotifier({});
@@ -93,11 +99,11 @@ describe('ExceptionNotifier', function() {
       });
 
       it('does not call Client.notify with the error', function() {
-        assert.isFalse(notifyStub.calledWith(error));
+        assert.isFalse(notifyStub.calledWithMatch(wrappedErrorMatcher));
       });
 
       it('calls console.error', function() {
-        assert.isTrue(consoleErrorStub.calledWith(error));
+        assert.isTrue(consoleErrorStub.calledWithMatch(wrappedErrorMatcher));
       });
     });
 

@@ -615,7 +615,7 @@ class InternalController < ApplicationController
     # consequently means we'd be setting the properties on the wrong config object.
     # If `config` is wrong in any way, that means it doesn't exist and we should create it.
 
-    if config && config.domainCName != domain.cname
+    if config.nil? || (config && config.domainCName != domain.cname)
       begin
         config = ::Configuration.create(
           'name' => 'Feature Flags',

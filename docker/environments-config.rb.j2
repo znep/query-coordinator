@@ -9,8 +9,14 @@ Rails.application.configure do
   # Code is not reloaded between requests
   config.cache_classes = {{ CACHE_CLASSES | default('true') }}
 
-  # Enable threaded mode
-  # config.threadsafe!
+  # Eager load code on boot. This eager loads most of Rails and
+  # your application in memory, allowing both threaded web servers
+  # and those relying on copy on write to perform better.
+  # Rake tasks automatically ignore this option for performance.
+  config.eager_load = true
+
+  # Full error reports are disabled and caching is turned on.
+  config.consider_all_requests_local = false
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local = {{ CONSIDER_ALL_REQUESTS_LOCAL | default('false') }}
@@ -19,7 +25,14 @@ Rails.application.configure do
   # Ordinarily this should be turned off in staging, rc, and production environments
   # However, in AWS this must be set to true until we figure out the routing story for
   # static assets and docker containers.
-  config.serve_static_assets = {{ SERVE_STATIC_ASSETS | default('true') }}
+  config.serve_static_files = {{ RAILS_SERVE_STATIC_FILES | default('true') }}
+
+  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  config.assets.compile = false
+
+  # Asset digests allow you to set far-future HTTP expiration dates on all assets,
+  # yet still be able to expire them through the digest params.
+  config.assets.digest = true
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -28,8 +41,15 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Logging options
-  config.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
+  config.log_level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
 
-  # Rails deprecation notice delivery (can be :log, :notify, :stderr)
+  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+  # the I18n.default_locale when a translation cannot be found).
+  config.i18n.fallbacks = true
+
+  # Send deprecation notices to registered listeners. (can be :log, :notify, :stderr)
   config.active_support.deprecation = :log
+
+  # Use default logging formatter so that PID and timestamp are not suppressed.
+  config.log_formatter = ::Logger::Formatter.new
 end

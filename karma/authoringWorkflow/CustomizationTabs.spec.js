@@ -3,18 +3,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
+import renderComponent from './renderComponent';
 import { CustomizationTabs } from 'src/authoringWorkflow/CustomizationTabs';
 import defaultVif from 'src/authoringWorkflow/defaultVif';
-
-var renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 
 function defaultProps() {
   return {
     tabs: [
-      {id: 'hello-world', title: 'Hello World', content: <div></div>},
-      {id: 'hello-you', title: 'Hello You', content: <div></div>}
+      {id: 'hello-world', title: 'Hello World', paneComponent: 'span'},
+      {id: 'hello-you', title: 'Hello You', paneComponent: 'span'}
     ],
-    currentTabSelection: 'hello-you',
+    selection: 'hello-you',
     onTabNavigation: sinon.stub()
   }
 };
@@ -87,11 +86,11 @@ describe('CustomizationTabs', function() {
   });
 
   describe('props', function() {
-    it('should respond to a change to currentTabSelection', function() {
+    it('should respond to a change to selection', function() {
       var id = 'hello-world';
 
       var modifiedProps = defaultProps();
-      modifiedProps.currentTabSelection = id;
+      modifiedProps.selection = id;
 
       var component = renderComponent(CustomizationTabs, modifiedProps);
       var listItem = component.querySelector('li.current');

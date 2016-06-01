@@ -3,10 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
+import renderComponent from './renderComponent';
 import { CustomizationTabPanes } from 'src/authoringWorkflow/CustomizationTabPanes';
 import defaultVif from 'src/authoringWorkflow/defaultVif';
-
-var renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 
 var hiddenClass = 'customization-tab-pane_hidden';
 var showingSelector = `div:not(.${hiddenClass})`;
@@ -14,10 +13,10 @@ var showingSelector = `div:not(.${hiddenClass})`;
 function defaultProps() {
   return {
     tabs: [
-      {id: 'hello-world', title: 'Hello World', content: <span></span>},
-      {id: 'hello-you', title: 'Hello You', content: <span></span>}
+      {id: 'hello-world', title: 'Hello World', paneComponent: 'span'},
+      {id: 'hello-you', title: 'Hello You', paneComponent: 'span'}
     ],
-    currentTabSelection: 'hello-you'
+    selection: 'hello-you'
   }
 };
 
@@ -76,9 +75,9 @@ describe('CustomizationTabPanes', function() {
   });
 
   describe('props', function() {
-    it('should select the currentTabSelection', function() {
+    it('should select the selection', function() {
       var props = defaultProps();
-      props.currentTabSelection = 'hello-world';
+      props.selection = 'hello-world';
 
       var component = renderComponent(CustomizationTabPanes, props);
       var showingPane = component.querySelector(showingSelector);

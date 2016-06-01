@@ -54,45 +54,23 @@ describe('AuthoringWorkflow reducer', function() {
       });
     });
 
-    describe('SET_CHART_TYPE', function() {
-      it('sets the chart type', function() {
-        var chartType = 'columnChart';
-        var state = {
-          vif: defaultVif
-        };
+    describe('vif setters', function() {
+      function shouldSetVif(actionName, value, vifPath) {
+        it(`sets ${vifPath} to ${value} using ${actionName}`, function() {
+          var state = { vif: defaultVif };
+          var action = actions[actionName](value);
+          var newState = reducer(state, action);
 
-        var action = actions.setChartType(chartType);
-        var newState = reducer(state, action);
-        expect(newState.vif.series[0].type).to.equal(chartType);
-      });
-    });
+          expect(_.get(newState, vifPath)).to.equal(value);
+        });
+      }
 
-    describe('SET_TITLE', function() {
-      it('sets the title', function() {
-        var title = 'Oh, yeah!';
-        var state = {
-          vif: defaultVif
-        };
-
-        var action = actions.setTitle(title);
-        var newState = reducer(state, action);
-
-        expect(newState.vif.title).to.equal(title);
-      });
-    });
-
-    describe('SET_DESCRIPTION', function() {
-      it('sets the description', function() {
-        var description = 'Oh, no!';
-        var state = {
-          vif: defaultVif
-        };
-
-        var action = actions.setDescription(description);
-        var newState = reducer(state, action);
-
-        expect(newState.vif.description).to.equal(description);
-      });
+      shouldSetVif('setChartType', 'columnChart', 'vif.series[0].type');
+      shouldSetVif('setTitle', 'Oh, yeah!', 'vif.title');
+      shouldSetVif('setDescription', 'columnChart', 'vif.description');
+      shouldSetVif('setPrimaryColor', '#00F', 'vif.series[0].color.primary');
+      shouldSetVif('setSecondaryColor', '#F00', 'vif.series[0].color.secondary');
+      shouldSetVif('setHighlightColor', '#F00', 'vif.series[0].color.highlight');
     });
   });
 

@@ -45,3 +45,5 @@ export var Visualization = React.createClass({
     );
   }
 });
+
+export default Visualization;

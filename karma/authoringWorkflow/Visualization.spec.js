@@ -1,15 +1,11 @@
 import $ from 'jquery';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
 
 import 'src/SvgColumnChart';
 import 'src/SvgTimelineChart';
 
+import renderComponent from './renderComponent';
 import { Visualization } from 'src/authoringWorkflow/Visualization';
 import defaultVif from 'src/authoringWorkflow/defaultVif';
-
-var renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 
 function defaultProps() {
   return {

@@ -1,9 +1,10 @@
 <!doctype html>
 <html>
   <head>
-    <title><%= @view.name %> | Socrata</title>
     <meta name="description" content="<%= meta_description %>">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title><%= @view.name %> | Socrata</title>
+
     <%= rendered_stylesheet_tag("dataset-landing-page") %>
     <link rel="stylesheet" href="/stylesheets/styleguide/css/styleguide.css"/>
     <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />

@@ -98,14 +98,39 @@ class CardContainer extends React.Component {
     this.setState({ filters: nextProps.filters });
   }
 
+  renderAggregationTitle() {
+    let title;
+
+    switch (_.get(this.state, 'chartValues.aggregationFunction', '')) {
+      case 'sum':
+        title = 'Sum of {0} by'.format(socrata.utils.pluralize(this.state.chartValues.aggregationMetadata.name));
+        break;
+      case 'mean':
+        title = 'Average {0} by'.format(this.state.chartValues.aggregationMetadata.name);
+        break;
+      case 'count':
+      default:
+        title = _.contains(['feature', 'table'], this.state.cardType) ?
+          '' : 'Number of {0} by'.format(this.state.chartValues.unit.other);
+        break;
+    }
+
+    return <h6>{ title }</h6>;
+  }
+
   renderDescription() {
+    let title = this.state.cardType == 'choropleth' ?
+      '{0} - {1}'.format(this.state.chartValues.metadata.name, this.state.chartValues.computedColumnMetadata.name) :
+      this.state.chartValues.metadata.name;
+
     if (this.state.chartValues.metadata.description.length > 60) {
       let intro = this.state.chartValues.metadata.description.substring(0, 50);
       let shortDescriptionClass = classNames('intro', { hidden: this.state.shortDescriptionHidden });
       let longDescriptionClass = classNames('all', { hidden: this.state.longDescriptionHidden });
 
       return <article className="intro-text">
-        <h5>{ this.state.chartValues.unitLabel }</h5>
+        { this.renderAggregationTitle() }
+        <h5>{ title }</h5>
         <p className={ shortDescriptionClass }>
           <span className="desc intro-short">{ intro }</span>
           <span onClick={ this.onClickShowMore.bind(this) } className="text-link">Show more</span>
@@ -119,14 +144,16 @@ class CardContainer extends React.Component {
       </article>;
     } else if (this.state.chartValues.metadata.description.length > 0) {
       return <article className="intro-text">
-        <h5>{ this.state.chartValues.unitLabel }</h5>
+        { this.renderAggregationTitle() }
+        <h5>{ title }</h5>
         <p className="intro">
           <span className="desc">{ this.state.chartValues.metadata.description }</span>
         </p>
       </article>;
     } else {
       return <article className="intro-text">
-        <h5>{ this.state.chartValues.unitLabel }</h5>
+        { this.renderAggregationTitle() }
+        <h5>{ title }</h5>
       </article>;
     }
   }

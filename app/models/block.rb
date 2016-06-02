@@ -23,7 +23,7 @@ class Block < ActiveRecord::Base
     where(id: story.block_ids)
   end
 
-  # Searches the json blog for components with the specified type and only returns those blocks
+  # Searches the json blob for components with the specified type and only returns those blocks
   #
   # Takes one or more component_types as parameters
   # Example:
@@ -42,7 +42,7 @@ class Block < ActiveRecord::Base
     queries = types_to_query.map { |type| [{ type: type }].to_json }
     query_string = Array.new(queries.length, "components @> ?").join(" OR ")
 
-    # At this point, if there are more than one types, the query will end up looking like:
+    # At this point, if there is more than one type, the query will end up looking like:
     # => where("components @> ? OR components @> ?", '[{"type":"image"}]', '[{"type":"hero"}]')
     where(query_string, *queries)
   end

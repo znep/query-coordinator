@@ -269,8 +269,8 @@ RSpec.describe Block, type: :model do
 
   describe '#with_component_type' do
     let(:component_type) { 'blah' }
-    let!(:block) { FactoryGirl.create(:block) }
-    let!(:block_with_image) { FactoryGirl.create(:block_with_image) }
+    let!(:block) { FactoryGirl.create(:block, components: [{type: 'fakeType'}]) }
+    let!(:block_with_another_fake_type) { FactoryGirl.create(:block, components: [{type: 'anotherFakeType'}]) }
     let(:result) { Block.with_component_type(component_type) }
 
     it 'returns ActiveRecord::Relation' do
@@ -286,30 +286,29 @@ RSpec.describe Block, type: :model do
     end
 
     context 'for component_type in blocks' do
-      let(:component_type) { 'image' }
+      let(:component_type) { 'fakeType' }
 
-      it 'returns blocks containing image' do
+      it 'returns blocks containing fakeType' do
         expect(result.size).to eq(1)
-        expect(result.first).to eq(block_with_image)
+        expect(result.first).to eq(block)
       end
     end
 
     context 'when passing multiple component types' do
-      let(:result) { Block.with_component_type('image', 'missing') }
+      let(:result) { Block.with_component_type('fakeType', 'missing') }
 
       it 'returns blocks containing image' do
         expect(result.size).to eq(1)
-        expect(result.first).to eq(block_with_image)
+        expect(result.first).to eq(block)
       end
 
       context 'when all component types exist in blocks' do
-        let!(:block_with_hero) { FactoryGirl.create(:block_with_hero) }
-        let(:result) { Block.with_component_type('image', 'hero') }
+        let(:result) { Block.with_component_type('fakeType', 'anotherFakeType') }
 
-        it 'returns blocks containing image or hero' do
+        it 'returns blocks containing fakeType and anotherFakeType' do
           expect(result.size).to eq(2)
-          expect(result.first).to eq(block_with_image)
-          expect(result.second).to eq(block_with_hero)
+          expect(result.first).to eq(block)
+          expect(result.second).to eq(block_with_another_fake_type)
         end
       end
     end

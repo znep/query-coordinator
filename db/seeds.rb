@@ -90,6 +90,20 @@ block_8 = Block.create(
   created_by: 'good-doer'
 )
 
+block_9 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'hero',
+      'value': {
+        'html': 'Hello World'
+      }
+    }
+  ],
+  created_by: 'good-doer'
+)
+
+
 published_story = PublishedStory.create(
   uid: 'test-test',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
@@ -142,6 +156,13 @@ draft_story = DraftStory.create(
 embedded_html_story = DraftStory.create(
   uid: 'embd-html',
   block_ids: [block_8.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+hero_image_story = DraftStory.create(
+  uid: 'hero-that',
+  block_ids: [block_9.id],
   created_by: 'good-doer',
   theme: 'serif'
 )

@@ -40,7 +40,7 @@ class CardTable extends React.Component {
       },
       datasetUid: this.props.values.datasetUid,
       domain: this.props.values.domain,
-      filters: this.props.values.filters,
+      filters: _.get(this, 'state.filters', this.props.values.filters),
       format: {
         type: 'visualization_interchange_format',
         version: 1
@@ -66,17 +66,14 @@ class CardTable extends React.Component {
     this.state.$component.off('SOCRATA_VISUALIZATION_DATA_LOAD_START SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.eq(nextProps.filters, this.state.filters)) {
+  componentDidUpdate() {
+    if (!_.eq(this.props.filters, this.state.filters)) {
       this.setState({
-        filters: nextProps.filters
+        filters: this.props.filters
       }, () => {
-        var vif = this.getVIF();
-        vif.filters = nextProps.filters;
-
         var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
         changeEvent.originalEvent = {
-          detail: vif
+          detail: this.getVIF()
         };
 
         this.state.$component.trigger(changeEvent);

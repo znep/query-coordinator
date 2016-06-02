@@ -123,6 +123,13 @@ class PageContainer extends React.Component {
 
     var self = this;
     _.each(allCardsWithOrder, (card) => {
+      var idSelector = new RegExp('{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName)));
+      var idNumber = _(cardComponents).
+        sortBy('props.chartValues.id').
+        filter((thisCard) => { return idSelector.test(_.get(thisCard, 'props.chartValues.id)')); }).
+        value().
+        length;
+
       var baseValues = {
         domain: datasetMetadata.domain,
         datasetUid: datasetMetadata.id,
@@ -131,7 +138,7 @@ class PageContainer extends React.Component {
           one: _.get(datasetMetadata, 'rowDisplayUnit', 'row'),
           other: socrata.utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
         },
-        id: _.uniqueId('{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName))),
+        id: '{0}_{1}_{2}'.format(card.cardType, (card.aggregationField || card.fieldName), idNumber),
         metadata: datasetMetadata.columns[card.fieldName],
         unitLabel: datasetMetadata.columns[(card.aggregationField || card.computedColumn || card.fieldName)].name,
         columnName: card.fieldName,
@@ -141,8 +148,7 @@ class PageContainer extends React.Component {
 
       if (!_.isUndefined(_addToComponentListFunctions[card.cardType])) {
         cardComponents.push(
-          _addToComponentListFunctions[card.cardType].
-            bind(this)(_.cloneDeep(baseValues), card, cardComponents)
+          _addToComponentListFunctions[card.cardType].bind(this)(_.cloneDeep(baseValues), card)
         );
       }
     });
@@ -175,6 +181,8 @@ class PageContainer extends React.Component {
   }
 
   render() {
+    let cardList = this.prepareCardList();
+
     if (datasetMetadata.description.length > 85) {
       let intro = datasetMetadata.description.substring(0, 85);
 
@@ -192,14 +200,14 @@ class PageContainer extends React.Component {
             <span onClick={ this.onClickShowLess.bind(this) } className="text-link">Collapse details</span>
           </p>
         </div>
-        { this.prepareCardList() }
+        { cardList }
       </div>;
     } else {
       return <div>
         <p className="intro padding">
           <span className="dl-description">{ datasetMetadata.description }</span>
         </p>
-        { this.prepareCardList() }
+        { cardList }
       </div>;
     }
   }

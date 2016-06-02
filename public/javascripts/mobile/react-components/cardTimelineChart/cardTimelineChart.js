@@ -33,7 +33,7 @@ class CardTimelineChart extends React.Component {
       },
       datasetUid: this.props.values.datasetUid,
       domain: this.props.values.domain,
-      filters: this.props.values.filters,
+      filters: _.get(this, 'state.filters', this.props.values.filters),
       format: {
         type: 'visualization_interchange_format',
         version: 1
@@ -63,17 +63,14 @@ class CardTimelineChart extends React.Component {
       'SOCRATA_VISUALIZATION_TIMELINE_FLYOUT SOCRATA_VISUALIZATION_TIMELINE_CHART_CLEAR');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.eq(nextProps.filters, this.state.filters)) {
+  componentDidUpdate() {
+    if (!_.eq(this.props.filters, this.state.filters)) {
       this.setState({
-        filters: nextProps.filters
+        filters: this.props.filters
       }, () => {
-        var vif = this.getVIF();
-        vif.filters = nextProps.filters;
-
         var changeEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF'); // eslint-disable-line
         changeEvent.originalEvent = {
-          detail: vif
+          detail: this.getVIF()
         };
 
         this.state.$component.trigger(changeEvent);

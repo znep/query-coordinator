@@ -125,6 +125,11 @@ class ApplicationController < ActionController::Base
     return render('shared/error', :status => :forbidden)
   end
 
+  def render_invalid
+    flash.now[:error] = 'Invalid request'
+    render('shared/bad_request', :status => 400, :layout => 'error')
+  end
+
   # We use a custom page_cache_directory based on the theme of the site.
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...

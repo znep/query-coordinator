@@ -245,6 +245,10 @@ class DatasetsControllerTest < ActionController::TestCase
           default_to_dataset_landing_page: true
         )
       end)
+
+      # Site chrome
+      stub_request(:get, "https://test.host/api/configurations.json?defaultOnly=true&type=site_chrome").
+        to_return(:status => 200, :body => "{}", :headers => {})
     end
 
     context 'if the view is a dataset' do

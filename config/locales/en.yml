@@ -1272,6 +1272,7 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     cancel: Cancel
+    close: Close
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
@@ -1284,6 +1285,7 @@ en:
       error_invalid_email: Please enter a valid email address.
       failure_html: "<b>Oh no!</b> Something went wrong. Please try again later."
       message: Message
+      recaptcha_loading: Recaptcha is loading
       send: Send
       subject: Subject
       success_html: "<b>Thank you!</b> Your message has been sent."

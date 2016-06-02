@@ -11,7 +11,8 @@ export default function(state, action) {
         action.data.name,
         action.data.properties
       );
+      return null;
+    default:
+      return null;
   }
-
-  return null;
 }

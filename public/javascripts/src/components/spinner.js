@@ -3,12 +3,12 @@ import React, { PropTypes } from 'react';
 
 const Spinner = ({className, isLoading}) => (
   <div className={classNames(className)} style={{ display: isLoading ? 'block' : 'none' }}>
-    <img src="/stylesheets/images/common/BrandedSpinner.gif"/>
+    <img src="/stylesheets/images/common/BrandedSpinner.gif" role="presentation" />
   </div>
 );
 
 Spinner.propTypes = {
-  classNames: PropTypes.string,
+  className: PropTypes.string,
   isLoading: PropTypes.bool
 };
 

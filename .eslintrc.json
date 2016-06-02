@@ -68,9 +68,9 @@
       2,
       "always"
     ],
-    "space-after-keywords": [
+    "keyword-spacing": [
       2,
-      "always"
+      { "after": true }
     ],
     "space-before-blocks": [
       2,

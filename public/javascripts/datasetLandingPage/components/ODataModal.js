@@ -7,6 +7,7 @@ import initClipboardControl from '../lib/clipboardControl';
 
 export var ODataModal = React.createClass({
   propTypes: {
+    onClickCopy: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
   },
 
@@ -25,9 +26,17 @@ export var ODataModal = React.createClass({
       var title;
 
       if (showAsLayer) {
-        title = <h6 className="layer-name">{subview.name} {I18n.odata_modal.endpoint_title}</h6>;
+        title = (
+          <h6 id={`odata-endpoint-${i}`} className="layer-name">
+            {subview.name} {I18n.odata_modal.endpoint_title}
+          </h6>
+        );
       } else {
-        title = <h6 className="endpoint-title">{I18n.odata_modal.endpoint_title}</h6>;
+        title = (
+          <h6 id={`odata-endpoint-${i}`} className="endpoint-title">
+            {I18n.odata_modal.endpoint_title}
+          </h6>
+        );
       }
 
       return (
@@ -36,9 +45,18 @@ export var ODataModal = React.createClass({
             {title}
             <form>
               <span className="input-group">
-                <input className="endpoint-input text-input text-input-sm" type="text" value={subview.odataUrl} readOnly />
+                <input
+                  aria-labelledby={`odata-endpoint-${i}`}
+                  className="endpoint-input text-input text-input-sm"
+                  type="text"
+                  value={subview.odataUrl}
+                  readOnly />
                 <span className="input-group-btn">
-                  <button type="button" className="btn btn-primary btn-sm copy" data-confirmation={I18n.copy_success} onClick={onClickCopy}>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm copy"
+                    data-confirmation={I18n.copy_success}
+                    onClick={onClickCopy}>
                     {I18n.copy}
                   </button>
                 </span>
@@ -53,9 +71,9 @@ export var ODataModal = React.createClass({
     if (view.geospatialChildLayers.length > 1) {
       endpoints = view.geospatialChildLayers.map(_.partial(renderEndpoint, _, true, _));
     } else if (view.geospatialChildLayers.length === 1) {
-      endpoints = renderEndpoint(view.geospatialChildLayers[0], false);
+      endpoints = renderEndpoint(view.geospatialChildLayers[0], false, 0);
     } else {
-      endpoints = renderEndpoint(view, false);
+      endpoints = renderEndpoint(view, false, 0);
     }
 
     return (
@@ -63,7 +81,10 @@ export var ODataModal = React.createClass({
         <div className="modal-container">
           <header className="modal-header">
             <h5 className="h5 modal-header-title">{I18n.odata_modal.title}</h5>
-            <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+            <button
+              aria-label={I18n.close}
+              className="btn btn-transparent modal-header-dismiss"
+              data-modal-dismiss>
               <span className="icon-close-2"></span>
             </button>
           </header>
@@ -72,7 +93,10 @@ export var ODataModal = React.createClass({
             {multipleGeoLayerNotice}
           </section>
           <section className="modal-content">
-            <a className="btn btn-default btn-sm documentation-link" href="https://dev.socrata.com/odata" target="_blank">
+            <a
+              className="btn btn-default btn-sm documentation-link"
+              href="https://dev.socrata.com/odata"
+              target="_blank">
               <span className="icon-copy-document"></span>
               {I18n.odata_modal.developer_portal_button}
             </a>

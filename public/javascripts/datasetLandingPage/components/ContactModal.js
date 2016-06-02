@@ -35,6 +35,12 @@ export var ContactModal = React.createClass({
     }
   },
 
+  onFieldChange: function(event) {
+    var { id, value } = event.target;
+
+    this.props.setFormField(id, value);
+  },
+
   initializeRecaptcha: function() {
     var { setRecaptchaLoaded } = this.props;
 
@@ -46,12 +52,6 @@ export var ContactModal = React.createClass({
       setRecaptchaLoaded(true);
       this.recaptchaId = id;
     }.bind(this));
-  },
-
-  onFieldChange: function(event) {
-    var { id, value } = event.target;
-
-    this.props.setFormField(id, value);
   },
 
   validateForm: function() {
@@ -82,22 +82,6 @@ export var ContactModal = React.createClass({
   isRecaptchaInvalid: function() {
     var response = recaptcha.verify(this.recaptchaId);
     return _.isEmpty(response);
-  },
-
-  renderErrorMessages: function() {
-    var { errors } = this.props;
-
-    if (!_.isEmpty(errors)) {
-      var messages = _.map(errors, function(error, i) {
-        return <p key={i}>{error}</p>;
-      });
-
-      return (
-        <section className="modal-content">
-          <div className="alert error">{messages}</div>
-        </section>
-      );
-    }
   },
 
   cleanUpAfterClose: function() {
@@ -154,12 +138,27 @@ export var ContactModal = React.createClass({
     }
   },
 
+  contentToRender: function() {
+    var { status } = this.props;
+
+    switch (status) {
+      case 'success':
+        return this.renderSuccessMessage();
+      case 'failure':
+        return this.renderFailureMessage();
+      default:
+        return this.renderInitialContent();
+    }
+  },
+
   renderInitialContent: function() {
     var { fields, status, recaptchaLoaded } = this.props;
 
     var recaptchaPlaceholderSpinner = recaptchaLoaded ?
       '' :
-      <div className="spinner-default" />;
+      <div
+        aria-label={I18n.contact_dataset_owner_modal.recaptcha_loading}
+        className="spinner-default" />;
 
     var isSending = _.isEqual(status, 'sending');
     var sendButtonClasses = classNames('btn btn-primary btn-sm', {
@@ -171,10 +170,15 @@ export var ContactModal = React.createClass({
       I18n.contact_dataset_owner_modal.send;
 
     return (
-      <div>
+      <div role="dialog" aria-labelledby="contact-owner-title">
         <header className="modal-header">
-          <h1 className="h5 modal-header-title">{I18n.contact_dataset_owner_modal.title}</h1>
-          <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+          <h1 id="contact-owner-title" className="h5 modal-header-title">
+            {I18n.contact_dataset_owner_modal.title}
+          </h1>
+          <button
+            aria-label={I18n.close}
+            className="btn btn-transparent modal-header-dismiss"
+            data-modal-dismiss>
             <span className="icon-close-2"></span>
           </button>
         </header>
@@ -183,31 +187,40 @@ export var ContactModal = React.createClass({
           <section className="modal-content">
             <p className="small">{I18n.contact_dataset_owner_modal.description}</p>
 
-            <label htmlFor="subject" className="block-label">{I18n.contact_dataset_owner_modal.subject}</label>
+            <label id="subject-label" htmlFor="subject" className="block-label">
+              {I18n.contact_dataset_owner_modal.subject}
+            </label>
             <input
               id="subject"
               className="text-input subject"
               type="text"
               value={fields.subject}
+              aria-labelledby="subject-label"
               onChange={this.onFieldChange} />
 
-            <label htmlFor="message" className="block-label">{I18n.contact_dataset_owner_modal.message}</label>
+            <label id="message-label" htmlFor="message" className="block-label">
+              {I18n.contact_dataset_owner_modal.message}
+            </label>
             <textarea
               id="message"
               className="text-input text-area message"
               type="text"
               value={fields.message}
+              aria-labelledby="message-label"
               onChange={this.onFieldChange}></textarea>
 
-            <label htmlFor="email" className="block-label">
+            <label id="email-label" htmlFor="email" className="block-label">
               {I18n.contact_dataset_owner_modal.email}
-              <span className="x-small quiet">{I18n.contact_dataset_owner_modal.email_description}</span>
+              <span className="x-small quiet">
+                {I18n.contact_dataset_owner_modal.email_description}
+              </span>
             </label>
             <input
               id="email"
               className="text-input email"
               type="text"
               value={fields.email}
+              aria-labelledby="email-label"
               onChange={this.onFieldChange} />
 
             <div className="recaptcha-container">
@@ -242,7 +255,7 @@ export var ContactModal = React.createClass({
       <section className="modal-content">
         <div
           className="alert success"
-          dangerouslySetInnerHTML={{__html: I18n.contact_dataset_owner_modal.success_html}} />
+          dangerouslySetInnerHTML={{ __html: I18n.contact_dataset_owner_modal.success_html }} />
       </section>
     );
   },
@@ -252,21 +265,24 @@ export var ContactModal = React.createClass({
       <section className="modal-content">
         <div
           className="alert error"
-          dangerouslySetInnerHTML={{__html: I18n.contact_dataset_owner_modal.failure_html}} />
+          dangerouslySetInnerHTML={{ __html: I18n.contact_dataset_owner_modal.failure_html }} />
       </section>
     );
   },
 
-  contentToRender: function() {
-    var { status } = this.props;
+  renderErrorMessages: function() {
+    var { errors } = this.props;
 
-    switch (status) {
-      case 'success':
-        return this.renderSuccessMessage();
-      case 'failure':
-        return this.renderFailureMessage();
-      default:
-        return this.renderInitialContent();
+    if (!_.isEmpty(errors)) {
+      var messages = _.map(errors, function(error, i) {
+        return <p key={i}>{error}</p>;
+      });
+
+      return (
+        <section className="modal-content">
+          <div className="alert error">{messages}</div>
+        </section>
+      );
     }
   },
 

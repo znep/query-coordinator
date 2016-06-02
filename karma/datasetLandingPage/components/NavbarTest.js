@@ -3,10 +3,7 @@ import mockView from 'data/mockView';
 
 describe('components/Navbar', function() {
   it('renders an element', function() {
-    var element = renderComponent(Navbar, {
-      view: mockView
-    });
-
+    var element = renderPureComponent(Navbar());
     expect(element).to.exist;
   });
 });

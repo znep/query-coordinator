@@ -85,8 +85,7 @@ const FormTextInput = React.createClass({
           onChange={this.handleChange}
           ref="input"
           type="text"
-          value={value}
-          />
+          value={value} />
       </FormInput>
     );
   }

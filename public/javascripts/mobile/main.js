@@ -1,8 +1,12 @@
 /* global pageMetadata, datasetMetadata */
 
+// Note: no-unused-vars is disabled for this file because eslint thinks
+// FilterContainer, PageContainer, and Visualizations aren't being used.
+/* eslint-disable no-unused-vars */
+
 /* Dependencies */
 import _ from 'lodash';
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
@@ -15,6 +19,8 @@ import Visualizations from 'socrata-visualizations';
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
+
+/* eslint-enable no-unused-vars */
 
 (function() {
   'use strict';
@@ -362,8 +368,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
         Promise.
           all(filterOptionsPromises).
-          then(resolve)
-          ['catch'](function(error) {
+          then(resolve)['catch'](function(error) {
             console.error(error);
           });
       });

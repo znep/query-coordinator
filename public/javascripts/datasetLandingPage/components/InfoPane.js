@@ -10,6 +10,9 @@ var contactFormData = window.contactFormData;
 
 export var InfoPane = React.createClass({
   propTypes: {
+    onClickGrid: PropTypes.func.isRequired,
+    onDownloadData: PropTypes.func.isRequired,
+    onExpandDescription: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
   },
 
@@ -20,9 +23,7 @@ export var InfoPane = React.createClass({
     var descriptionPadding = 11;
 
     if (descriptionHeight < metadataHeight) {
-      this.setState({
-        descriptionHeight: metadataHeight
-      });
+      this.description.style.height = `${metadataHeight}px`;
     }
 
     collapsible(this.description, {
@@ -31,15 +32,8 @@ export var InfoPane = React.createClass({
     });
   },
 
-  getInitialState: function() {
-    return {
-      descriptionHeight: null
-    };
-  },
-
   render: function() {
     var { view, onClickGrid, onDownloadData } = this.props;
-    var { descriptionHeight } = this.state;
 
     var privateIcon;
     var viewDataButton;
@@ -49,10 +43,12 @@ export var InfoPane = React.createClass({
     var shareButton;
     var moreActions;
     var attributionInfo;
-    var descriptionStyle;
 
     privateIcon = view.isPrivate ?
-      <span className="icon-private" title="Private Dataset" /> : null;
+      <span
+        className="icon-private"
+        aria-label={I18n.private_notice}
+        title={I18n.private_notice} /> : null;
 
     categoryBadge = view.category ?
       <span className="tag-category">{_.capitalize(view.category)}</span> : null;
@@ -80,20 +76,32 @@ export var InfoPane = React.createClass({
 
     // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
     var contactFormButton = contactFormData.contactFormEnabled ?
-      <li><a className="option" data-modal="contact-modal">{I18n.action_buttons.contact_owner}</a></li> :
+      <li>
+        <a tabIndex="0" role="button" className="option" data-modal="contact-modal">
+          {I18n.action_buttons.contact_owner}
+        </a>
+      </li> :
       null;
 
     var commentLink = serverConfig.featureFlags.defaultToDatasetLandingPage ?
-      <li><a className="option" href={`${view.gridUrl}?pane=feed`}>{I18n.action_buttons.comment}</a></li> :
+      <li>
+        <a className="option" href={`${view.gridUrl}?pane=feed`}>
+          {I18n.action_buttons.comment}
+        </a>
+      </li> :
       null;
 
     moreActions = (
       <div className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
-        <span className="icon-waiting"></span>
+        <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
           {contactFormButton}
           {commentLink}
-          <li><a className="option" data-modal="odata-modal">{I18n.action_buttons.odata}</a></li>
+          <li>
+            <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
+              {I18n.action_buttons.odata}
+            </a>
+          </li>
         </ul>
       </div>
     );
@@ -108,10 +116,6 @@ export var InfoPane = React.createClass({
       );
     }
 
-    descriptionStyle = {
-      height: descriptionHeight
-    };
-
     return (
       <div className="info-pane result-card">
         <div className="container">
@@ -123,7 +127,7 @@ export var InfoPane = React.createClass({
               </h1>
 
               <span className="tag-official">
-                <span className="icon-official"></span>
+                <span aria-hidden className="icon-official"></span>
                 {I18n.official}
               </span>
 
@@ -144,11 +148,11 @@ export var InfoPane = React.createClass({
           <div className="entry-content">
             <div className="entry-main">
               <div className="entry-description-container collapsible">
-                <div className="entry-description" ref={(ref) => this.description = ref} style={descriptionStyle}>
+                <div className="entry-description" ref={(ref) => this.description = ref}>
                   {view.description}
 
-                  <a className="collapse-toggle more">{I18n.more}</a>
-                  <a className="collapse-toggle less">{I18n.less}</a>
+                  <button className="collapse-toggle more">{I18n.more}</button>
+                  <button className="collapse-toggle less">{I18n.less}</button>
                 </div>
               </div>
             </div>

@@ -145,15 +145,15 @@ module.exports = function FeatureMapService(DataTypeFormatService, linkyFilter) 
           formattedColumnData = formatContentByType(subColumns[0], column, isTitle);
         }
         break;
-      case 'phone':
+      case 'phone': // eslint-disable-line no-fallthrough
         // Just return the phone number, not its type
         // Given that this is stored with the parent column, it will be the
         // first subcolumn stored
-      case 'url':
+      case 'url': // eslint-disable-line no-fallthrough
         // Just return the url, not its description
         // Given that this is stored with the parent column, it will be the
         // first subcolumn stored.
-      default:
+      default: // eslint-disable-line no-fallthrough
         // If an unexpected subcolumn comes up, format and display
         // the value of its parent column only, not its subcolumns.
         formattedColumnData = formatContentByType(subColumns[0].value, subColumns[0], isTitle);

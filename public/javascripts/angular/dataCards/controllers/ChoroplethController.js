@@ -116,7 +116,7 @@ module.exports = function ChoroplethController(
           // the computed column doesn't exist on the dataset.  We will show an error.  The user
           // must re-add the card to the page to retry the job.
           if (status === 'failed' || status === 'unknown') {
-            var description = `Detect failed state in region coding job for shapefile `
+            var description = 'Detect failed state in region coding job for shapefile '
               + `${shapefileId} and dataset ${datasetId}`;
             return Rx.Observable['throw'](new Error(description));
           }
@@ -249,11 +249,12 @@ module.exports = function ChoroplethController(
     tap(trackPromiseFlightStatus).
     switchLatest().
     share().
-    safeApplyOnError($scope, function() { $scope.choroplethRenderError = true; })
-    ['catch'](Rx.Observable.returnValue({
-      geometryLabel: null,
-      featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
-    }));
+    safeApplyOnError($scope, function() { $scope.choroplethRenderError = true; })['catch'](
+      Rx.Observable.returnValue({
+        geometryLabel: null,
+        featurePk: Constants.INTERNAL_DATASET_FEATURE_ID
+      })
+    );
 
   var primaryKey$ = regionMetadata$.pluck('featurePk');
 

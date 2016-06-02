@@ -3,18 +3,46 @@ import React, { PropTypes } from 'react';
 import ViewWidget from './ViewWidget';
 import { VelocityComponent } from 'velocity-react';
 import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 export var PopularViewList = React.createClass({
   propTypes: {
-    dismissError: PropTypes.func,
-    hasError: PropTypes.bool,
-    hasMore: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    isCollapsed: PropTypes.bool,
+    dismissError: PropTypes.func.isRequired,
+    hasError: PropTypes.bool.isRequired,
+    hasMore: PropTypes.bool.isRequired,
+    isDesktop: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    isCollapsed: PropTypes.bool.isRequired,
     list: PropTypes.arrayOf(PropTypes.object).isRequired,
-    loadMore: PropTypes.func,
-    onScrollList: PropTypes.func,
-    toggleList: PropTypes.func
+    loadMore: PropTypes.func.isRequired,
+    onClickWidget: PropTypes.func.isRequired,
+    onScrollList: PropTypes.func.isRequired,
+    toggleList: PropTypes.func.isRequired
+  },
+
+  getAnimation: function() {
+    var { list, isCollapsed, isDesktop, isLoading } = this.props;
+
+    var popularViewHeight = 287;
+    var popularViewMargin = 18;
+
+    if (!isDesktop) {
+      return {
+        height: '100%'
+      };
+    }
+
+    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
+    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
+
+    // While loading on desktop, we immediately expand the container to make room for the new views.
+    if (isLoading) {
+      rowCount += 1;
+    }
+
+    return {
+      height: (popularViewHeight + popularViewMargin) * rowCount - 1
+    };
   },
 
   renderContents: function() {
@@ -22,7 +50,7 @@ export var PopularViewList = React.createClass({
 
     if (_.isEmpty(list)) {
       var alertMessage = I18n.popular_views.no_content_alert_html;
-      return <div className="alert default" dangerouslySetInnerHTML={{__html: alertMessage}} />;
+      return <div className="alert default" dangerouslySetInnerHTML={{ __html: alertMessage }} />;
     }
 
     var popularViews = _.map(list, function(popularView, i) {
@@ -73,7 +101,18 @@ export var PopularViewList = React.createClass({
       return null;
     }
 
-    return <a onClick={isLoading ? null : loadMore} className="load-more-button">{I18n.more}</a>;
+    var clickHandler = isLoading ? null : loadMore;
+
+    return (
+      <a
+        role="button"
+        tabIndex="0"
+        onClick={clickHandler}
+        onKeyDown={handleKeyPress(clickHandler)}
+        className="load-more-button">
+        {I18n.more}
+      </a>
+    );
   },
 
   renderError: function() {
@@ -86,7 +125,7 @@ export var PopularViewList = React.createClass({
     return (
       <div className="alert error">
         {I18n.popular_views.load_more_error}
-        <span className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
+        <span role="button" className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
   },
@@ -99,35 +138,15 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <a onClick={toggleList} className="collapse-button">
+      <a
+        role="button"
+        tabIndex="0"
+        onClick={toggleList}
+        onKeyDown={handleKeyPress(toggleList)}
+        className="collapse-button">
         {isCollapsed ? I18n.more : I18n.less}
       </a>
     );
-  },
-
-  getAnimation: function() {
-    var { list, isCollapsed, isDesktop, isLoading } = this.props;
-
-    var popularViewHeight = 287;
-    var popularViewMargin = 18;
-
-    if (!isDesktop) {
-      return {
-        height: '100%'
-      };
-    }
-
-    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
-    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
-
-    // While loading on desktop, we immediately expand the container to make room for the new views.
-    if (isLoading) {
-      rowCount += 1;
-    }
-
-    return {
-      height: (popularViewHeight + popularViewMargin) * rowCount - 1
-    };
   },
 
   render: function() {

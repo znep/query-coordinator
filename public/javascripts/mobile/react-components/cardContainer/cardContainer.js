@@ -1,3 +1,6 @@
+// Note: no-unused-vars is disabled for this file because eslint thinks
+// some of the files that are being imported aren't being used.
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import classNames from 'classnames/bind';
 import MobileChartFlyout from '../mobileFlyout/mobileChartFlyout';
@@ -10,6 +13,7 @@ import CardFeatureMap from '../cardFeatureMap/cardFeatureMap';
 import CardTable from '../cardTable/cardTable';
 
 import './cardContainer.scss';
+/* eslint-enable no-unused-vars */
 
 class CardContainer extends React.Component {
   constructor(props) {

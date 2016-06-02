@@ -17,7 +17,9 @@ export var PrivateNotice = React.createClass({
     var hasDismissedPrivateNotice = true;
 
     try {
-      var privateNoticesClosed = JSON.parse(window.sessionStorage.getItem('dismissedPrivateNotices'));
+      var privateNoticesClosed = JSON.parse(
+        window.sessionStorage.getItem('dismissedPrivateNotices')
+      );
       hasDismissedPrivateNotice = privateNoticesClosed[this.props.view.id];
     } catch (e) {
       hasDismissedPrivateNotice = false;
@@ -30,10 +32,15 @@ export var PrivateNotice = React.createClass({
 
   onClickDismiss: function() {
     try {
-      var privateNoticesClosed = JSON.parse(window.sessionStorage.getItem('dismissedPrivateNotices'));
+      var privateNoticesClosed = JSON.parse(
+        window.sessionStorage.getItem('dismissedPrivateNotices')
+      );
       privateNoticesClosed = privateNoticesClosed || {};
       privateNoticesClosed[this.props.view.id] = true;
-      window.sessionStorage.setItem('dismissedPrivateNotices', JSON.stringify(privateNoticesClosed));
+      window.sessionStorage.setItem(
+        'dismissedPrivateNotices',
+        JSON.stringify(privateNoticesClosed)
+      );
     } finally {
       this.setState({
         isHidden: true
@@ -53,7 +60,9 @@ export var PrivateNotice = React.createClass({
         <div className="alert-container">
           {I18n.private_notice}
           {' '}
-          <a href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`} target="_blank">
+          <a
+            href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`}
+            target="_blank">
             {I18n.manage_prompt}
           </a>
           <span className="icon-close-2 alert-dismiss" onClick={this.onClickDismiss}></span>

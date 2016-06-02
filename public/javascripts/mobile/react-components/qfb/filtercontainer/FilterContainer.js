@@ -265,7 +265,6 @@ class FilterContainer extends React.Component {
             data-scale={ filter.scale }
             data-islarge={ filter.largeDataset }>{ filter.filterName }</option>;
         }
-        break;
       case 'calendar_date':
         if (isApplied) {
           return <option id={ filter.id }
@@ -284,7 +283,6 @@ class FilterContainer extends React.Component {
             data-displayname={ filter.filterName }
             data-scale={ filter.scale }>{ filter.filterName }</option>;
         }
-        break;
       default:
         if (isApplied) {
           return <option id={ filter.id }

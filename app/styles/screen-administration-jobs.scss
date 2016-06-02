@@ -25,6 +25,15 @@ $warning-icon-color: #debb1e;
   color: darkred;
 }
 
+.restore-dataset {
+  float: right;
+  margin-right: 33%;
+}
+
+.restore-dataset:hover {
+  cursor: pointer;
+}
+
 .import-status-icon-success-with-data-errors:before {
   color: $warning-icon-color;
 }
@@ -165,6 +174,10 @@ $warning-icon-color: #debb1e;
 
   .job-row td {
     font-size: 1rem;
+  }
+  
+  .job-row:hover {
+    background-color: #EFEFEF;
   }
 
   .started-time-stamp {

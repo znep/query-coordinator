@@ -159,6 +159,12 @@ default: &default
     article_count: 3
     zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
     zendesk_section: 203977877
+    
+  {% if RESTORE_DATASET_DAYS is defined -%}
+  restore_dataset_days: {{ RESTORE_DATASET_DAYS }}
+  {% else %}
+  restore_dataset_days: 5
+  {%- endif %}
 
 development:
   <<: *default

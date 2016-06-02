@@ -38,6 +38,25 @@ function dateRangeFromParams() {
   };
 }
 
+function confirmDatasetRestore(source) {
+  const datasetName = source.dataset.datasetName;
+  const datasetId = source.dataset.datasetId;
+
+  if (!datasetName || ! datasetId) {
+    console.error(`ERROR: Couldn't find dataset name and/or dataset id when clicking restore button (got name: ${datasetName} and id: ${datasetId})`);
+    return;
+  }
+
+  if (confirm(`Are you sure you want to restore the dataset ${datasetName}?`)) {
+    $.ajax({
+      url: `/views/${datasetId}.json?method=undelete`,
+      type: 'PATCH'
+    })
+    .done(() => location.reload())
+    .fail(() => alert("Failed to restore dataset!"));
+  }
+}
+
 $(() => {
   replaceTimestamps($(document.body));
 
@@ -86,4 +105,6 @@ $(() => {
   if (!$.urlParam(window.location.href, 'date_range')) {
     $timecontrol.val('');
   }
+
+  $('.restore-dataset').click((event) => confirmDatasetRestore(event.srcElement));
 });

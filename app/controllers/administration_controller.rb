@@ -1060,7 +1060,7 @@ class AdministrationController < ApplicationController
       :activityType => activity_type,
       :startDate => start_date,
       :endDate => end_date
-    }, FeatureFlags.derive(nil, request).data_jobs_show_deleted)
+    })
     @activities = activities_response[:activities]
     count = activities_response[:count]
 

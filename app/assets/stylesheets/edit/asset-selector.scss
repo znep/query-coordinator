@@ -393,6 +393,7 @@
 
 .images-search {
   position: relative;
+  padding: 0 0.5rem;
 
   .btn-busy {
     position: absolute;
@@ -438,7 +439,6 @@
 .gallery-results {
   @include clearfix;
 
-  margin: -4px;
   max-height: 65rem;
   position: relative;
   overflow-x: hidden;

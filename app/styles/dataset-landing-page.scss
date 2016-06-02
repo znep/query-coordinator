@@ -66,18 +66,27 @@ body {
     }
   }
 
-  .entry-header {
+  .entry-header.dataset-landing-page-header {
+    display: flex;
+    flex-wrap: wrap;
+
     .entry-title {
-      margin-right: 20px !important;
+      flex: 1 1 auto;
+      width: auto;
+      margin-right: 20px;
 
       .icon-official {
         margin-right: 4px;
       }
+
+      .tag-category {
+        margin-right: 0;
+      }
     }
 
     .entry-actions {
+      flex: 0 1 auto;
       padding-top: 8px;
-      text-align: right;
 
       .btn-group > .btn {
         line-height: 1.25;
@@ -145,15 +154,27 @@ body {
     }
   }
 
-  @media(min-width: $medium) {
-    .entry-main {
-      width: 68% !important;
-    }
-  }
-
   .entry-content {
     .entry-meta.updated .meta-title {
       padding-top: 0;
+    }
+  }
+
+  @media(max-width: $small) {
+    .entry-header.dataset-landing-page-header {
+      .entry-actions {
+        flex: 1 0;
+
+        .btn-group {
+          width: 100%;
+          display: flex;
+
+          > .btn {
+            flex: 1 0 auto;
+            text-align: center;
+          }
+        }
+      }
     }
   }
 }

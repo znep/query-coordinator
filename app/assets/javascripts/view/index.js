@@ -149,12 +149,7 @@ $(document).on('ready', function() {
   if (Environment.IS_STORY_PUBLISHED) {
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-story', 1);
-
-    if (Environment.SEND_NEW_PAGE_VIEWS_METRIC) {
-      analytics.sendMetric('domain', 'page-views', 1);
-    } else {
-      analytics.sendMetric('domain', 'page-view', 1);
-    }
+    analytics.sendMetric('domain', 'page-views', 1);
 
     analytics.flushMetrics();
   }

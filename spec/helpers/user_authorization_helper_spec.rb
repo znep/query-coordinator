@@ -1,16 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe UserAuthorizationHelper, type: :helper do
+  let(:super_admin) { false }
   let(:domain_rights) { [] }
   let(:domain_role) { '' }
   let(:view_role) { '' }
-  let(:user_authorization) {
+  let(:user_authorization) do
     {
       'viewRole' => view_role,
       'domainRole' => domain_role,
       'domainRights' => domain_rights
-    }
-  }
+    }.tap do |auth|
+      auth['superAdmin'] = true if super_admin
+    end
+  end
 
   before do
     allow(CoreServer).to receive(:current_user_story_authorization).and_return(user_authorization)
@@ -83,7 +86,7 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       let(:domain_rights) { ['edit_story'] }
 
       describe 'when the user is a super admin' do
-        let(:domain_role) { 'unknown' }
+        let(:super_admin) { true }
 
         it 'returns true' do
           expect(admin?).to be(true)
@@ -96,6 +99,22 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
         it 'returns false' do
           expect(admin?).to be(false)
         end
+      end
+    end
+  end
+
+  describe '#super_admin?' do
+    describe 'when the user is a super admin' do
+      let(:super_admin) { true }
+
+      it 'returns true' do
+        expect(super_admin?).to be(true)
+      end
+    end
+
+    describe 'when the user is not a super admin' do
+      it 'returns false' do
+        expect(super_admin?).to be(false)
       end
     end
   end

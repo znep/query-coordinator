@@ -122,3 +122,6 @@
 - id: OGL_NOVA_SCOTIA
   name: Nova Scotia Open Government Licence
   terms_link: http://novascotia.ca/opendata/licence.asp
+- id: OGL_CANADA
+  name: Canada Open Government Licence
+  terms_link: http://open.canada.ca/en/open-government-licence-canada

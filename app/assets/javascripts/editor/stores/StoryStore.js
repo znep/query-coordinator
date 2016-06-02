@@ -37,16 +37,20 @@ export default function StoryStore() {
         _importStory(payload.data);
         break;
 
-      case Actions.STORY_SET_TITLE:
-        _setStoryTitle(payload);
-        break;
-
       case Actions.STORY_SAVED:
         _setStoryDigest(payload);
         break;
 
+      case Actions.STORY_SET_TITLE:
+        _setStoryTitle(payload);
+        break;
+
       case Actions.STORY_SET_DESCRIPTION:
         _setStoryDescription(payload);
+        break;
+
+      case Actions.STORY_SET_TILE_CONFIG:
+        _setStoryTileDetails(payload);
         break;
 
       case Actions.STORY_SET_PERMISSIONS:
@@ -118,6 +122,18 @@ export default function StoryStore() {
     var story = _getStory(storyUid);
 
     return story.description;
+  };
+
+  this.getStoryTileTitle = function(storyUid) {
+    var story = _getStory(storyUid);
+
+    return _.has(story, 'tileConfig.title') ? story.tileConfig.title : story.title;
+  };
+
+  this.getStoryTileDescription = function(storyUid) {
+    var story = _getStory(storyUid);
+
+    return _.has(story, 'tileConfig.description') ? story.tileConfig.description : story.description;
   };
 
   this.getStoryTheme = function(storyUid) {
@@ -285,6 +301,21 @@ export default function StoryStore() {
     var storyUid = payload.storyUid;
 
     _getStory(storyUid).description = payload.description;
+
+    self._emitChange();
+  }
+
+  function _setStoryTileDetails(payload) {
+
+    StorytellerUtils.assertIsOneOfTypes(payload, 'object');
+    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
+    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig, 'object');
+    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig.title, 'string');
+    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig.description, 'string');
+
+    var storyUid = payload.storyUid;
+
+    _getStory(storyUid).tileConfig = payload.tileConfig;
 
     self._emitChange();
   }
@@ -536,6 +567,7 @@ export default function StoryStore() {
       uid: storyUid,
       title: storyData.title,
       description: storyData.description,
+      tileConfig: storyData.tileConfig,
       theme: storyData.theme,
       blockIds: blockIds,
       digest: storyData.digest,
@@ -589,6 +621,7 @@ export default function StoryStore() {
       'uid',
       'title',
       'description',
+      'tileConfig',
       'blocks',
       'permissions'
     );

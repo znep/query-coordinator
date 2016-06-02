@@ -8,9 +8,22 @@ module StoriesHelper
     @core_attributes ||= CoreServer.get_view(@story.uid) || {}
   end
 
+  def title_from_core_attributes
+    core_attributes['name'] || t('default_page_title')
+  end
+
+  def description_from_core_attributes
+    core_attributes['description'] || ''
+  end
+
+  def tile_config
+    @tile_config ||= core_attributes['metadata'].try(:[], 'tileConfig') || {}
+  end
+
   def user_story_json
     story = @story.as_json.merge(
       {
+        :tileConfig => tile_config,
         :title => core_attributes['name'] || '',
         :description => core_attributes['description'] || '',
         :permissions => determine_permissions_from_core_attributes

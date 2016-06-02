@@ -125,9 +125,20 @@ RSpec.describe 'settings panel', type: :feature, js: true do
       expect(page).to have_selector('#share-and-embed-modal', visible: true)
     end
 
-    context 'when you click done' do
+    context 'when you click save & close' do
       before do
-        page.find('#share-and-embed-modal .modal-button-group [data-action="SHARE_AND_EMBED_MODAL_CLOSE"]').click
+        page.find('#share-and-embed-modal .modal-button-group .btn-primary').click
+      end
+
+      it 'hides the modal' do
+        expect_settings_panel_to_be_open
+        expect(page).to have_selector('#share-and-embed-modal', visible: false)
+      end
+    end
+
+    context 'when you click cancel' do
+      before do
+        page.find('#share-and-embed-modal .modal-button-group .btn-default').click
       end
 
       it 'hides the modal' do

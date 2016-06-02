@@ -20,6 +20,128 @@ describe('StorytellerUtils', function() {
     });
   });
 
+  describe('event binding functions', function() {
+    var spy;
+    beforeEach(function() {
+      spy = sinon.spy();
+      $transient.append('<input class="child-1">');
+      $transient.append('<input class="child-2">');
+    });
+
+    describe('bindEvents', function() {
+      it('should bind a handler for a non-delegated event', function() {
+        var events = {
+          'custom-event': [
+            [spy]
+          ]
+        };
+
+        StorytellerUtils.bindEvents($transient, events);
+        $transient.trigger('custom-event');
+
+        sinon.assert.calledOnce(spy);
+      });
+
+      it('should bind a handler for a delegated event', function() {
+        var events = {
+          'custom-event': [
+            ['.child-1', spy]
+          ]
+        };
+
+        StorytellerUtils.bindEvents($transient, events);
+        $transient.find('.child-1').trigger('custom-event');
+
+        sinon.assert.calledOnce(spy);
+      });
+
+      it('should bind multiple handlers for multiple events', function() {
+        var events = {
+          'custom-event': [
+            ['.child-1', spy],
+            ['.child-2', spy]
+          ],
+          'other-custom-event': [
+            [spy]
+          ]
+        };
+
+        StorytellerUtils.bindEvents($transient, events);
+        $transient.find('.child-1').trigger('custom-event');
+        $transient.find('.child-2').trigger('custom-event');
+        $transient.trigger('other-custom-event');
+
+        sinon.assert.calledThrice(spy);
+      });
+    });
+
+    describe('unbindEvents', function() {
+      beforeEach(function() {
+        var events = {
+          'custom-event': [
+            ['.child-1', spy],
+            ['.child-2', spy]
+          ],
+          'other-custom-event': [
+            [spy]
+          ]
+        };
+
+        StorytellerUtils.bindEvents($transient, events);
+      });
+
+      it('should unbind a handler for a non-delegated event', function() {
+        var events = {
+          'other-custom-event': [
+            [spy]
+          ]
+        };
+
+        StorytellerUtils.unbindEvents($transient, events);
+        $transient.trigger('other-custom-event');
+
+        sinon.assert.notCalled(spy);
+      });
+
+      it('should unbind a handler for a delegated event', function() {
+        var events = {
+          'custom-event': [
+            ['.child-1', spy]
+          ]
+        };
+
+        StorytellerUtils.unbindEvents($transient, events);
+        $transient.find('.child-1').trigger('custom-event');
+
+        sinon.assert.notCalled(spy);
+
+        // doesn't unbind all delegated handlers for the events
+        $transient.find('.child-2').trigger('custom-event');
+
+        sinon.assert.calledOnce(spy);
+      });
+
+      it('should unbind multiple handlers for multiple events', function() {
+        var events = {
+          'custom-event': [
+            ['.child-1', spy],
+            ['.child-2', spy]
+          ],
+          'other-custom-event': [
+            [spy]
+          ]
+        };
+
+        StorytellerUtils.unbindEvents($transient, events);
+        $transient.find('.child-1').trigger('custom-event');
+        $transient.find('.child-2').trigger('custom-event');
+        $transient.trigger('other-custom-event');
+
+        sinon.assert.notCalled(spy);
+      });
+    });
+  });
+
   describe('DOM traversal functions', function() {
 
     var validElement;

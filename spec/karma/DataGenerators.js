@@ -28,6 +28,10 @@ export default {
       uid: 'test-test',
       title: 'Test Story',
       description: 'Test Story Description',
+      tileConfig: {
+        title: 'Test Story',
+        description: 'Test Story Description'
+      },
       blocks: [ this.generateBlockData() ],
       publishedStory: {},
       digest: 'digest',

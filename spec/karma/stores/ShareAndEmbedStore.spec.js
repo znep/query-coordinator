@@ -12,7 +12,6 @@ describe('ShareAndEmbedStore', function() {
   var MOCK_STORY_VIEW_URL = 'https://example.com/stories/s/Test-Story/xxxx-xxxx';
 
   var coreSavingStoreMock;
-  var resolveTilesPromise;
 
   beforeEach(function() {
     dispatcher = new Dispatcher();
@@ -31,13 +30,6 @@ describe('ShareAndEmbedStore', function() {
     ShareAndEmbedStoreAPI.__Rewire__('Environment', {
       STORY_VIEW_URL: MOCK_STORY_VIEW_URL
     });
-    ShareAndEmbedStoreAPI.__Rewire__('$', {
-      getJSON: function() {
-        return new Promise(function(resolve) {
-          resolveTilesPromise = resolve;
-        });
-      }
-    });
 
     shareAndEmbedStore = new ShareAndEmbedStore();
   });
@@ -47,7 +39,7 @@ describe('ShareAndEmbedStore', function() {
     ShareAndEmbedStoreAPI.__ResetDependency__('dispatcher');
     ShareAndEmbedStoreAPI.__ResetDependency__('coreSavingStore');
     ShareAndEmbedStoreAPI.__ResetDependency__('Environment');
-    ShareAndEmbedStoreAPI.__ResetDependency__('jQuery');
+    ShareAndEmbedStoreAPI.__ResetDependency__('httpRequest');
   });
 
   describe('isOpen', function() {
@@ -73,6 +65,16 @@ describe('ShareAndEmbedStore', function() {
   });
 
   describe('story URL methods', function() {
+    var resolveTilesPromise;
+
+    beforeEach(function() {
+      ShareAndEmbedStoreAPI.__Rewire__('httpRequest', function() {
+        return new Promise(function(resolve) {
+          resolveTilesPromise = resolve;
+        });
+      });
+    });
+
     describe('on page load', function() {
       it('bases on Environment.STORY_VIEW_URL', function() {
         assert.equal(shareAndEmbedStore.getStoryUrl(), MOCK_STORY_VIEW_URL);
@@ -84,6 +86,7 @@ describe('ShareAndEmbedStore', function() {
     describe('after a CoreSavingStore change', function() {
       beforeEach(function() {
         coreSavingStoreMock.isSaveInProgress = _.constant(false);
+        coreSavingStoreMock.lastRequestSaveErrorForStory = _.constant(null);
         coreSavingStoreMock._emitChange();
       });
       describe('hit to tile endpoint succeeds', function() {

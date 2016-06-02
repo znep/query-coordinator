@@ -11,6 +11,10 @@ export default {
   STORY_SET_TITLE: 'STORY_SET_TITLE',
 
   // {string} storyUid
+  // {object} tile
+  STORY_SET_TILE_CONFIG: 'STORY_SET_TILE_CONFIG',
+
+  // {string} storyUid
   // {string} theme
   STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 

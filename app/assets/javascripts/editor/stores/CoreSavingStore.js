@@ -1,4 +1,3 @@
-import $ from 'jQuery';
 import _ from 'lodash';
 
 import I18n from '../I18n';
@@ -7,6 +6,7 @@ import Actions from '../Actions';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import httpRequest from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { storyStore } from './StoryStore';
 
@@ -117,7 +117,11 @@ export default function CoreSavingStore() {
     var metadata = {
       storyUid: storyUid,
       storyTitle: storyStore.getStoryTitle(storyUid),
-      storyDescription: storyStore.getStoryDescription(storyUid)
+      storyDescription: storyStore.getStoryDescription(storyUid),
+      storyTileConfig: {
+        title: storyStore.getStoryTileTitle(storyUid),
+        description: storyStore.getStoryTileDescription(storyUid)
+      }
     };
 
     var error = _findMetadataError(metadata);
@@ -155,43 +159,68 @@ export default function CoreSavingStore() {
       return;
     }
 
-    metadataToSave = _storyMetadataPendingSave.shift();
-
     _setSaveInProgress(true);
 
+    metadataToSave = _storyMetadataPendingSave.shift();
+
     _putViewMetadataToCore(metadataToSave).
-      done(function() {
+      then(function() {
         _setLastSaveError(metadataToSave.storyUid, null);
       }).
-      fail(function(failure) {
+      catch(function(error) {
         _setLastSaveError(
           metadataToSave.storyUid,
-          _.get(failure, 'responseJSON.message', failure.statusText)
+          error.message
         );
       }).
-      always(_makeRequests); // Process the next request if needed.
+      then(_makeRequests, _makeRequests); // Process the next request if needed.
   }
 
   /**
-   * Returns a promise for PUTing the provided core view
-   * metadata blob back to the servers.
+   * Returns a promise for PUTing the provided core view metadata blob.
+   *
+   * Requires an initial GET in order to avoid clobbering the `metadata` field
+   * (since core doesn't handle diffing sub-objects).
    *
    * @param metadata {object} The core view metadata fields to PUT.
    * @return {promise<object>} The response from the server.
    */
   function _putViewMetadataToCore(metadata) {
-    StorytellerUtils.assertHasProperties(metadata, 'storyUid', 'storyTitle', 'storyDescription');
+    StorytellerUtils.assertHasProperties(
+      metadata,
+      'storyUid',
+      'storyTitle',
+      'storyDescription',
+      'storyTileConfig'
+    );
 
-    return $.ajax({
-      type: 'PUT',
-      contentType: 'application/json',
-      headers: _coreRequestHeaders(),
-      dataType: 'json',
-      url: StorytellerUtils.format('/api/views/{0}.json', metadata.storyUid),
-      data: JSON.stringify({
+    var url = StorytellerUtils.format('/api/views/{0}.json', metadata.storyUid);
+
+    return httpRequest(
+      'GET',
+      url,
+      {
+        headers: _coreRequestHeaders()
+      }
+    ).then(function(response) {
+
+      var payload = {
         name: metadata.storyTitle,
-        description: metadata.storyDescription
-      })
+        description: metadata.storyDescription,
+        metadata: _.extend(
+          response.metadata || {},
+          { tileConfig: metadata.storyTileConfig }
+        )
+      };
+
+      return httpRequest(
+        'PUT',
+        url,
+        {
+          data: JSON.stringify(payload),
+          headers: _coreRequestHeaders()
+        }
+      );
     });
   }
 
@@ -199,11 +228,9 @@ export default function CoreSavingStore() {
     var headers = {};
 
     if (_.isEmpty(Environment.CORE_SERVICE_APP_TOKEN)) {
-      exceptionNotifier.notify({
-        error: {
-          message: '`Environment.CORE_SERVICE_APP_TOKEN` not configured.'
-        }
-      });
+      exceptionNotifier.notify(new Error(
+        '`Environment.CORE_SERVICE_APP_TOKEN` not configured.'
+      ));
     }
 
     headers['X-App-Token'] = Environment.CORE_SERVICE_APP_TOKEN;

@@ -1,5 +1,5 @@
-def run_eslint(dir)
-  all_ok = system("npm run lint --silent -- #{dir}")
+def run_eslint
+  all_ok = system('npm run lint --silent')
   unless all_ok
     STDERR.puts("Lint pass failed with exit code: #{$?.exitstatus}")
     if ($?.exitstatus == 127)
@@ -10,7 +10,6 @@ end
 
 namespace :lint do
   task :js do
-    run_eslint('app/assets/javascripts')
-    run_eslint('spec/karma')
+    run_eslint
   end
 end

@@ -10,18 +10,24 @@ import CoreSavingStore, {__RewireAPI__ as CoreSavingStoreAPI} from 'editor/store
 describe('CoreSavingStore', function() {
 
   var server;
+  var errorSpy;
   var dispatcher;
   var coreSavingStore;
   var storyTitle;
-  var storyUid = 'test-test';
   var storyDescription;
+  var storyTileTitle;
+  var storyTileDescription;
+  var storyUid = 'test-test';
 
   beforeEach(function() {
     storyTitle = 'title';
     storyDescription = 'description';
+    storyTileTitle = 'override title';
+    storyTileDescription = 'override description';
 
     dispatcher = new Dispatcher();
     server = sinon.fakeServer.create();
+    errorSpy = sinon.spy(console, 'error');
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
 
@@ -34,6 +40,14 @@ describe('CoreSavingStore', function() {
 
       this.getStoryDescription = function() {
         return storyDescription;
+      };
+
+      this.getStoryTileTitle = function() {
+        return storyTileTitle;
+      };
+
+      this.getStoryTileDescription = function() {
+        return storyTileDescription;
       };
     };
 
@@ -49,6 +63,7 @@ describe('CoreSavingStore', function() {
 
   afterEach(function() {
     server.restore();
+    errorSpy.restore();
 
     StoreAPI.__ResetDependency__('dispatcher');
     CoreSavingStoreAPI.__ResetDependency__('dispatcher');
@@ -112,15 +127,12 @@ describe('CoreSavingStore', function() {
     });
 
     describe('with app token undefined', function() {
-      var errorSpy;
-
       beforeEach(function() {
         CoreSavingStoreAPI.__Rewire__('Environment', {
           CORE_SERVICE_APP_TOKEN: undefined
         });
 
         coreSavingStore = new CoreSavingStore();
-        errorSpy = sinon.spy(console, 'error');
       });
 
       it('immediately reports an error', function() {
@@ -137,7 +149,7 @@ describe('CoreSavingStore', function() {
       var viewUrl;
       var cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // '=' encoded
 
-      beforeEach(function() {
+      beforeEach(function(done) {
         document.cookie = cookie;
 
         dispatcher.dispatch({
@@ -149,6 +161,17 @@ describe('CoreSavingStore', function() {
           '/api/views/{0}.json',
           storyUid
         );
+
+        server.respondWith(
+          viewUrl,
+          [
+            200,
+            { 'Content-Type': 'application/json' },
+            '{"name":"old title","description":"old description","metadata":{"foo":"bar"}}'
+          ]
+        );
+        server.respond();
+        setTimeout(function() { done(); }, 0);
       });
 
       afterEach(function() {
@@ -156,17 +179,16 @@ describe('CoreSavingStore', function() {
         document.cookie = cookie + 'expires=Thu, 01 Jan 1970 00:00:01 GMT';
       });
 
-
       it('should indicate a save in progress', expectSaveInProgress);
 
       it('should indicate no error', expectNoError);
 
-      it('should make one request', function() {
-        assert.lengthOf(server.requests, 1);
+      it('should make two requests', function() {
+        assert.lengthOf(server.requests, 2);
       });
 
       it('should PUT correct json to /api/views/<4x4>.json', function() {
-        var request = server.requests[0];
+        var request = server.requests[1];
         assert.equal(request.method, 'PUT');
         assert.equal(request.url, viewUrl);
         assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token');
@@ -175,6 +197,9 @@ describe('CoreSavingStore', function() {
         var body = JSON.parse(request.requestBody);
         assert.propertyVal(body, 'name', storyTitle);
         assert.propertyVal(body, 'description', storyDescription);
+        assert.deepPropertyVal(body, 'metadata.tileConfig.title', storyTileTitle);
+        assert.deepPropertyVal(body, 'metadata.tileConfig.description', storyTileDescription);
+        assert.deepPropertyVal(body, 'metadata.foo', 'bar'); // doesn't obliterate other metadata
       });
 
       describe('and the PUT succeeds', function() {

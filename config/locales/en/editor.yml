@@ -33,6 +33,7 @@ en:
         ok: 'OK'
         save: 'Save'
         saved: 'Saved!'
+        save_and_close: 'Save & Close'
         done: 'Done'
         reload: 'Reload'
     collaborators:
@@ -61,10 +62,18 @@ en:
           unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
     share_and_embed:
       modal:
+        embed_and_preview:
+          preview_label: 'Preview'
+          tab_title: 'Embed and Preview'
+        errors:
+          unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
         heading: 'Share and Embed Your Story'
+        options:
+          description_label: 'Embed Description'
+          notice: 'These options override the default story title and description when the story is embedded. Text is truncated to fit the story title.'
+          tab_title: 'Options'
+          title_label: 'Embed Headline'
         story_url_label: 'Story URL'
-        embed_code_label: 'Embed Code'
-        preview_label: 'Preview'
     rich_text_toolbar:
       link_modal:
         heading: 'Add a Link'

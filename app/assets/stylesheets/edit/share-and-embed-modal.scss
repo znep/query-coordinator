@@ -6,8 +6,22 @@
     top: 2.5%;
   }
 
-  .share-and-embed-story-url {
+  .modal-error {
+    display: none;
+  }
 
+  .nav-tabs {
+    // TODO: fix styleguide so that the bottom padding doesn't have to change
+    // in tandem with line-height
+    padding-bottom: 12px;
+  }
+
+  .share-and-embed-pane {
+    display: none;
+
+    &.current {
+      display: block;
+    }
   }
 
   hr {
@@ -20,6 +34,7 @@
     height: 8.25rem;
     font-size: 1.5rem;
     line-height: 1.75rem;
+    margin-top: 1rem;
     resize: none;
   }
 
@@ -30,7 +45,24 @@
     border: 1px solid $input-element-border-color;
   }
 
+  .modal-input-label {
+    margin: 2rem 0 1rem;
+  }
+
   .modal-button-group {
     padding: 1rem 0 0 0;
+
+    button {
+      vertical-align: middle;
+    }
+  }
+
+  .alert.info {
+    margin: 2rem 0 1rem;
+  }
+
+  // TODO: integrate into styleguide
+  .alert.error:focus {
+    outline-color: $btn-error-border-color;
   }
 }

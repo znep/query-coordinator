@@ -1,10 +1,10 @@
-import $ from 'jQuery';
 import _ from 'lodash';
 
 import Store from '../stores/Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import httpRequest from '../../services/httpRequest';
 import { coreSavingStore } from '../stores/CoreSavingStore';
 
 export var shareAndEmbedStore = new ShareAndEmbedStore();
@@ -14,6 +14,7 @@ export default function ShareAndEmbedStore() {
   var self = this;
 
   var _currentOpenState = false;
+  var _currentSavingState = false;
   // View URL for the story. Initialized from the environment,
   // but updates come from the embed tile API if the user changes
   // the story title.
@@ -38,12 +39,24 @@ export default function ShareAndEmbedStore() {
   });
 
   coreSavingStore.addChangeListener(function() {
-    if (!coreSavingStore.isSaveInProgress()) {
-      //TODO port to new httpRequest helper once it is merged.
-      Promise.resolve($.getJSON(self.getStoryTileApiUrl())).then(function(data) {
+    var saveInProgress = coreSavingStore.isSaveInProgress();
+    var lastSaveError = coreSavingStore.lastRequestSaveErrorForStory(
+      Environment.STORY_UID
+    );
+
+    if (!saveInProgress) {
+      httpRequest('GET', self.getStoryTileApiUrl()).then(function(data) {
         _storyViewUrl = _.get(data, 'url', _storyViewUrl);
         self._emitChange();
       });
+
+      if (_currentSavingState && !lastSaveError) {
+        _closeDialog();
+      } else {
+        _currentSavingState = false;
+      }
+    } else {
+      _currentSavingState = true;
     }
   });
 
@@ -96,6 +109,7 @@ export default function ShareAndEmbedStore() {
 
   function _closeDialog() {
     _currentOpenState = false;
+    _currentSavingState = false;
 
     self._emitChange();
   }

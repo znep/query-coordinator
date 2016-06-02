@@ -29,6 +29,14 @@ RSpec.configure do |config|
     # ...rather than:
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+
+    config.around(:each, verify_stubs: false) do |example|
+      config.mock_with :rspec do |mocks|
+        mocks.verify_partial_doubles = false
+        example.run
+        mocks.verify_partial_doubles = true
+      end
+    end
   end
 
   # rspec-mocks config goes here. You can use an alternate test double

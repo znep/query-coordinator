@@ -33,5 +33,9 @@ module Chrome
       key == 'font_family' ? %Q{"#{value}"} : value
     end
 
+    def prevent_font_render?
+      Chrome::Engine.config.respond_to?(:render_fonts) && Chrome::Engine.config.render_fonts == false
+    end
+
   end
 end

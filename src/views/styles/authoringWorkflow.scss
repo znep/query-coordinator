@@ -1,6 +1,29 @@
-.authoring-workflow-visualization-preview {
-  display: block;
-  position: relative;
-  width: 640px;
-  height: 490px;
+.authoring-controls {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  > div {
+    width: 38%;
+  }
+
+  .visualization-preview-container {
+    width: 60%;
+    border-left: solid 1px #f2f2f2;
+    padding-left: 2%;
+
+    .visualization-toggler {
+      margin-bottom: 0.25rem;
+    }
+
+    .visualization-preview {
+      background-color: #f2f2f2;
+      width: 100%;
+      height: 490px;
+    }
+  }
+
+  .customization-tab-pane_hidden {
+    display: none;
+  }
 }

@@ -1,34 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { setDatasetUid, setDimension, setMeasure, setChartType } from './actions';
-import { Visualization } from './Visualization';
+import CustomizationTabs from './CustomizationTabs';
+import CustomizationTabPanes from './CustomizationTabPanes';
+import Visualization from './Visualization';
+
+import DataPane from './panes/DataPane';
+import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
+import ColorsAndStylePane from './panes/ColorsAndStylePane';
+import AxisAndScalePane from './panes/AxisAndScalePane';
+import LabelsPane from './panes/LabelsPane';
+import FlyoutsPane from './panes/FlyoutsPane';
 
 export var AuthoringWorkflow = React.createClass({
+  getInitialState: function() {
+    return {
+      currentTabSelection: 'authoring-data'
+    };
+  },
+
   getDefaultProps: function() {
     return {
-      defaultOptionKey: '__unselectable__',
-      chartTypes: [
-        {type: 'columnChart', name: 'Column Chart'},
-        {type: 'timelineChart', name: 'Timeline Chart'}
+      tabs: [
+        {id: 'authoring-data', title: 'Data', paneComponent: DataPane},
+        {id: 'authoring-title-and-description', title: 'Tile & Description', paneComponent: TitleAndDescriptionPane},
+        {id: 'authoring-colors-and-style', title: 'Colors & Style', paneComponent: ColorsAndStylePane},
+        {id: 'authoring-axis-and-scale', title: 'Axis & Scale', paneComponent: AxisAndScalePane},
+        {id: 'authoring-labels', title: 'Labels', paneComponent: LabelsPane},
+        {id: 'authoring-flyouts', title: 'Flyouts', paneComponent: FlyoutsPane}
       ]
     };
   },
 
   propTypes: {
-    vif: React.PropTypes.object,
-    datasetMetadata: React.PropTypes.object,
-    defaultOptionKey: React.PropTypes.string,
-    chartTypes: React.PropTypes.array
-  },
-
-  componentDidMount: function() {
-    var datasetUid = _.get(this.props.vif, 'series[0].dataSource.datasetUid');
-    var hasDatasetUid = _.isString(datasetUid);
-
-    if (hasDatasetUid) {
-      this.props.changeDatasetUid(datasetUid);
-    }
+    vif: React.PropTypes.object
   },
 
   onComplete: function() {
@@ -41,76 +46,18 @@ export var AuthoringWorkflow = React.createClass({
     this.props.onCancel();
   },
 
-  dimensionDropdown: function() {
-    var datasetMetadata = this.props.datasetMetadata;
-    var defaultOptionKey = this.props.defaultOptionKey;
-    var dimensionOptions = [
-      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a dimension...</option>,
-      ...datasetMetadata.data.columns.map(column => {
-        return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
-      })
-    ];
+  onTabNavigation: function(event) {
+    var href = event.target.getAttribute('href');
 
-    return <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey}>{dimensionOptions}</select>;
-  },
-
-  measureDropdown: function() {
-    var datasetMetadata = this.props.datasetMetadata;
-    var defaultOptionKey = this.props.defaultOptionKey;
-    var numberColumns = _.filter(datasetMetadata.data.columns, { dataTypeName: 'number' });
-
-    var measureOptions = [
-      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,
-      ...numberColumns.map(numberColumn => {
-        return <option value={numberColumn.fieldName} key={numberColumn.fieldName}>{numberColumn.name}</option>;
-      })
-    ];
-
-    return <select onChange={this.props.onChangeMeasure} defaultValue={defaultOptionKey}>{measureOptions}</select>;
-  },
-
-  chartTypeDropdown: function() {
-    var datasetMetadata = this.props.datasetMetadata;
-    var defaultOptionKey = this.props.defaultOptionKey;
-    var types = this.props.chartTypes;
-
-    var chartTypeOptions = [
-      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a chart type...</option>,
-      ...types.map(chartType => {
-        return <option value={chartType.type} key={chartType.type}>{chartType.name}</option>;
-      })
-    ];
-
-    return <select onChange={this.props.onChangeChartType} defaultValue={defaultOptionKey}>{chartTypeOptions}</select>;
-  },
-
-  visualization: function() {
-    return <Visualization {...this.props} />;
+    if (href) {
+      event.preventDefault();
+      this.setState({currentTabSelection: href.slice(1)});
+    }
   },
 
   render: function() {
-    var vif = this.props.vif;
-    var datasetMetadata = this.props.datasetMetadata;
-    var visualization = this.visualization();
-    var datasetMetadataInfo;
-    var dimensionDropdown;
-    var measureDropdown;
-    var chartTypeDropdown;
-
-    if (datasetMetadata.hasError) {
-      datasetMetadataInfo = <div>Problem fetching dataset metadata</div>;
-    } else if (datasetMetadata.isLoading) {
-      datasetMetadataInfo = <div>Loading dataset metadata</div>;
-    }
-
-    if (datasetMetadata.hasData) {
-      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
-      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
-      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
-    }
-
     return (
-      <div className="modal modal-full modal-overlay">
+      <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>
         <div className="modal-container">
 
           <header className="modal-header">
@@ -121,26 +68,18 @@ export var AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="modal-content">
-            <form>
-              <div>
-                <label className="block-label">Enter a dataset four by four:</label>
-                <input className="text-input" type="text" defaultValue={vif.series[0].dataSource.datasetUid} onChange={this.props.onChangeDatasetUid}/>
-              </div>
+            <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
 
-              {datasetMetadataInfo}
-
-              {dimensionDropdown}
-              {measureDropdown}
-              {chartTypeDropdown}
-            </form>
-
-            {visualization}
+            <div className="authoring-controls">
+              <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+              <Visualization {...this.props} />
+            </div>
           </section>
 
           <footer className="modal-footer">
             <div className="modal-footer-actions">
               <button className="btn btn-default cancel" onClick={this.onCancel}>Cancel</button>
-              <button className="btn btn-primary done" onClick={this.onComplete}>Done</button>
+              <button className="btn btn-primary done" onClick={this.onComplete}>Insert</button>
             </div>
           </footer>
         </div>
@@ -151,39 +90,12 @@ export var AuthoringWorkflow = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif,
-    datasetMetadata: state.datasetMetadata
+    vif: state.vif
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  function changeDatasetUid(datasetUid) {
-    dispatch(setDatasetUid(datasetUid));
-  }
-
-  var dispatchers = {
-    changeDatasetUid: changeDatasetUid,
-    onChangeDatasetUid: function(event) {
-      changeDatasetUid(event.target.value);
-    },
-
-    onChangeDimension: function(event) {
-      var dimension = event.target.value;
-      dispatch(setDimension(dimension));
-    },
-
-    onChangeMeasure: function(event) {
-      var measure = event.target.value;
-      dispatch(setMeasure(measure));
-    },
-
-    onChangeChartType: function(event) {
-      var chartType = event.target.value;
-      dispatch(setChartType(chartType));
-    }
-  };
-
-  return dispatchers;
+function mapDispatchToProps() {
+  return {};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflow);

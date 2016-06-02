@@ -72,3 +72,43 @@ export function setChartType(chartType) {
     chartType: chartType
   };
 }
+
+export var SET_TITLE = 'SET_TITLE';
+export function setTitle(title) {
+  return {
+    type: SET_TITLE,
+    title: title
+  };
+}
+
+export var SET_DESCRIPTION = 'SET_DESCRIPTION';
+export function setDescription(description) {
+  return {
+    type: SET_DESCRIPTION,
+    description: description
+  };
+}
+
+export var SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
+export function setPrimaryColor(primaryColor) {
+  return {
+    type: SET_PRIMARY_COLOR,
+    primaryColor: primaryColor
+  };
+}
+
+export var SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
+export function setSecondaryColor(secondaryColor) {
+  return {
+    type: SET_SECONDARY_COLOR,
+    secondaryColor: secondaryColor
+  };
+}
+
+export var SET_HIGHLIGHT_COLOR = 'SET_HIGHLIGHT_COLOR';
+export function setHighlightColor(highlightColor) {
+  return {
+    type: SET_HIGHLIGHT_COLOR,
+    highlightColor: highlightColor
+  };
+}

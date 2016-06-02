@@ -1,15 +1,11 @@
 import $ from 'jquery';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
 
 import 'src/SvgColumnChart';
 import 'src/SvgTimelineChart';
 
+import renderComponent from './renderComponent';
 import { Visualization } from 'src/authoringWorkflow/Visualization';
 import defaultVif from 'src/authoringWorkflow/defaultVif';
-
-var renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 
 function defaultProps() {
   return {
@@ -37,8 +33,8 @@ describe('Visualization', function() {
   it('renders an empty <div>', function() {
     var element = renderComponent(Visualization, defaultProps());
 
-    expect(element).to.be.empty;
-    expect(element).to.have.class('authoring-workflow-visualization-preview');
+    expect(element.querySelector('.visualization-preview')).to.be.empty;
+    expect(element).to.have.class('visualization-preview-container');
   });
 
   describe('with a valid vif', function() {

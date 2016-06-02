@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import vif from './vif';
+import vifAuthoring from './vifAuthoring';
 import datasetMetadata from './datasetMetadata';
 
 module.exports = combineReducers({
-  vif: vif,
+  vifAuthoring: vifAuthoring,
   datasetMetadata: datasetMetadata
 });

@@ -8,7 +8,7 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import reducer from './reducers';
-import defaultVif from './defaultVif';
+import vifs from './vifs';
 import defaultDatasetMetadata from './defaultDatasetMetadata';
 import AuthoringWorkflow from './AuthoringWorkflow';
 
@@ -16,9 +16,26 @@ import AuthoringWorkflow from './AuthoringWorkflow';
 module.exports = function(element, configuration) {
   var self = this;
   var logger = createLogger();
-  var vif = _.merge({}, defaultVif, _.get(configuration, 'vif', {}));
+
+  var configurationVif = _.get(configuration, 'vif', {});
+  var vifType = _.get(configurationVif, 'series[0].type');
+  var clonedVifs = _.cloneDeep(vifs);
+
+  _.each(clonedVifs, function(vif) {
+    if (_.isPlainObject(vif)) {
+      vif.title = _.get(configurationVif, 'title', null);
+      vif.description = _.get(configurationVif, 'description', null);
+      vif.series[0].dataSource.datasetUid = _.get(configurationVif, 'series[0].dataSource.datasetUid', null);
+      vif.series[0].dataSource.domain = _.get(configurationVif, 'series[0].dataSource.domain', null);
+    }
+  });
+
+  if (vifType) {
+    clonedVifs[vifType] = _.merge({}, clonedVifs[vifType], configurationVif);
+  }
+
   var initialState = {
-    vif: vif,
+    vifAuthoring: { vifs: clonedVifs, selectedVisualizationType: vifType },
     datasetMetadata: defaultDatasetMetadata
   };
 

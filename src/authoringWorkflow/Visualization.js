@@ -2,6 +2,9 @@ import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+
+import { isValidColumnChartVif, getCurrentVif } from './selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
   componentDidMount: function() {
@@ -26,10 +29,22 @@ export var Visualization = React.createClass({
 
     switch (chartType) {
       case 'columnChart':
-        $visualizationPreview.socrataSvgColumnChart(this.props.vif);
+        if (isValidColumnChartVif(this.props.vifAuthoring)) {
+          $visualizationPreview.socrataSvgColumnChart(this.props.vif);
+        }
+
         break;
       case 'timelineChart':
-        $visualizationPreview.socrataSvgTimelineChart(this.props.vif);
+        if (isValidTimelineChartVif(this.props.vifAuthoring)) {
+          $visualizationPreview.socrataSvgTimelineChart(this.props.vif);
+        }
+
+        break;
+      case 'featureMap':
+        if (isValidFeatureMapVif(this.props.vifAuthoring)) {
+          $visualizationPreview.socrataFeatureMap(this.props.vif);
+        }
+
         break;
     }
   },
@@ -46,4 +61,15 @@ export var Visualization = React.createClass({
   }
 });
 
-export default Visualization;
+function mapStateToProps(state) {
+  return {
+    vifAuthoring: state.vifAuthoring,
+    vif: getCurrentVif(state.vifAuthoring)
+  };
+}
+
+function mapDispatchToProps() {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Visualization);

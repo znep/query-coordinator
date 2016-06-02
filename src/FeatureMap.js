@@ -8,6 +8,7 @@ var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
+var VifHelpers = require('./helpers/VifHelpers');
 
 var DEFAULT_TILESERVER_HOSTS = [
   'https://tileserver1.api.us.socrata.com',
@@ -29,24 +30,17 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  */
 $.fn.socrataFeatureMap = function(vif) {
 
+  vif = VifHelpers.migrateVif(vif);
+
   utils.assertHasProperties(
     vif,
-    'columnName',
     'configuration',
-    'datasetUid',
-    'domain',
-    'unit'
-  );
-
-  utils.assertHasProperties(
-    vif.unit,
-    'one',
-    'other'
-  );
-
-  utils.assertHasProperties(
-    vif.configuration,
-    'localization'
+    'configuration.localization',
+    'series[0].dataSource.dimension.columnName',
+    'series[0].dataSource.datasetUid',
+    'series[0].dataSource.domain',
+    'series[0].unit.one',
+    'series[0].unit.other'
   );
 
   utils.assertHasProperties(
@@ -68,11 +62,15 @@ $.fn.socrataFeatureMap = function(vif) {
   var $element = $(this);
   var datasetMetadata;
 
+  var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+  var domain = _.get(vif, 'series[0].dataSource.domain');
+  var datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+
   // Geospace has knowledge of the extents of a column, which
   // we use to modify point data queries with a WITHIN_BOX clause.
   var geospaceDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.datasetUid
+    domain: domain,
+    datasetUid: datasetUid
   };
   var geospaceDataProvider = new GeospaceDataProvider(
     geospaceDataProviderConfig
@@ -82,9 +80,9 @@ $.fn.socrataFeatureMap = function(vif) {
   // format. It returns protocol buffers containing point offsets from
   // the tile origin (top left).
   var tileserverDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.datasetUid,
-    columnName: vif.columnName,
+    domain: domain,
+    datasetUid: datasetUid,
+    columnName: columnName,
     featuresPerTile: DEFAULT_FEATURES_PER_TILE,
     tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
   };
@@ -94,8 +92,8 @@ $.fn.socrataFeatureMap = function(vif) {
 
   // SoQL returns row results for display in the row inspector
   var soqlDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.datasetUid
+    domain: domain,
+    datasetUid: datasetUid
   };
   var soqlDataProvider = new SoqlDataProvider(
     soqlDataProviderConfig
@@ -113,8 +111,8 @@ $.fn.socrataFeatureMap = function(vif) {
     // specified dataset so that we can use its column definitions when
     // formatting data for the row inspector.
     var metadataProviderConfig = {
-      domain: vif.domain,
-      datasetUid: vif.datasetUid
+      domain: domain,
+      datasetUid: datasetUid
     };
     var metadataProvider = new MetadataProvider(
       metadataProviderConfig
@@ -159,7 +157,7 @@ $.fn.socrataFeatureMap = function(vif) {
   // individual tile requests more performant (through the use of a
   // WITHIN_BOX query clause).
   geospaceDataProvider.
-    getFeatureExtent(vif.columnName).
+    getFeatureExtent(columnName).
     then(
       handleFeatureExtentQuerySuccess,
       handleFeatureExtentQueryError
@@ -337,10 +335,10 @@ $.fn.socrataFeatureMap = function(vif) {
     var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}{5}'.
       format(
         payload.rowCount,
-        vif.columnName,
+        columnName,
         payload.latLng.lng,
         payload.latLng.lat,
-        generateWithinBoxClause(vif.columnName, payload.queryBounds),
+        generateWithinBoxClause(columnName, payload.queryBounds),
         whereClause ? ' AND ' + whereClause : ''
       );
 
@@ -409,7 +407,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
     attachEvents();
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif), vif.configuration.useOriginHost);
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0), vif.configuration.useOriginHost);
 
     renderIfReady();
   }

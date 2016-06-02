@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { getCurrentVif } from '../selectors/vifAuthoring';
 import { setTitle, setDescription } from '../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
@@ -25,7 +26,7 @@ export var TitleAndDescriptionPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif,
+    vif: getCurrentVif(state.vifAuthoring),
     datasetMetadata: state.datasetMetadata
   };
 }

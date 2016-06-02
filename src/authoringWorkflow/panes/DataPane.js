@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { getCurrentVif, getSelectedVisualizationType } from '../selectors/vifAuthoring';
 import CustomizationTabPane from '../CustomizationTabPane';
 import { setDimension, setMeasure, setChartType, setDatasetUid } from '../actions';
 import { isLoading, hasData, hasError } from '../selectors/datasetMetadata';
@@ -22,7 +23,8 @@ export var DataPane = React.createClass({
       defaultOptionKey: '__unselectable__',
       chartTypes: [
         {type: 'columnChart', name: 'Column Chart'},
-        {type: 'timelineChart', name: 'Timeline Chart'}
+        {type: 'timelineChart', name: 'Timeline Chart'},
+        {type: 'featureMap', name: 'Feature Map'}
       ]
     }
   },
@@ -53,8 +55,19 @@ export var DataPane = React.createClass({
   measureDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
     var defaultOptionKey = this.props.defaultOptionKey;
+
     var columns = _.get(datasetMetadata, 'data.columns', []);
     var numberColumns = _.filter(columns, { dataTypeName: 'number' });
+
+    var chartType = _.get(this.props.vif, 'series[0].type');
+    var isFeatureMap = chartType === 'featureMap';
+
+    var selectAttributes = {
+      onChange: this.props.onChangeMeasure,
+      defaultValue: defaultOptionKey,
+      name: "measure-selection",
+      disabled: isFeatureMap
+    };
 
     var measureOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,
@@ -63,22 +76,26 @@ export var DataPane = React.createClass({
       })
     ];
 
-    return <select onChange={this.props.onChangeMeasure} defaultValue={defaultOptionKey} name="measure-selection">{measureOptions}</select>;
+    return <select {...selectAttributes}>{measureOptions}</select>;
   },
 
   chartTypeDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
-    var defaultOptionKey = this.props.defaultOptionKey;
     var types = this.props.chartTypes;
+    var selectedVisualizationType = _.get(
+      this.props,
+      'vifAuthoring.selectedVisualizationType',
+      this.props.defaultOptionKey
+    );
 
     var chartTypeOptions = [
-      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a chart type...</option>,
+      <option key={this.props.defaultOptionKey} value={this.props.defaultOptionKey} disabled>Select a chart type...</option>,
       ...types.map(chartType => {
         return <option value={chartType.type} key={chartType.type}>{chartType.name}</option>;
       })
     ];
 
-    return <select onChange={this.props.onChangeChartType} defaultValue={defaultOptionKey} name="chart-type-selection">{chartTypeOptions}</select>;
+    return <select onChange={this.props.onChangeChartType} defaultValue={selectedVisualizationType} name="chart-type-selection">{chartTypeOptions}</select>;
   },
 
   render: function() {
@@ -118,7 +135,8 @@ export var DataPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif,
+    vifAuthoring: state.vifAuthoring,
+    vif: getCurrentVif(state.vifAuthoring),
     datasetMetadata: state.datasetMetadata
   };
 }

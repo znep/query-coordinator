@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { getCurrentVif } from '../selectors/vifAuthoring';
 import CustomizationTabPane from '../CustomizationTabPane';
 import { setPrimaryColor, setSecondaryColor, setHighlightColor } from '../actions';
 
@@ -21,7 +22,7 @@ export var ColorsAndStylePane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif,
+    vif: getCurrentVif(state.vifAuthoring),
     datasetMetadata: state.datasetMetadata
   };
 }

@@ -9,7 +9,7 @@ export function setDatasetUid(datasetUid) {
     }
 
     var datasetMetadataProvider = new MetadataProvider({
-      domain: 'localhost',
+      domain: 'dataspace.demo.socrata.com',
       datasetUid: datasetUid
     });
 
@@ -20,6 +20,7 @@ export function setDatasetUid(datasetUid) {
         dispatch(receiveDatasetMetadata(datasetMetadata, null));
       }).
       catch(function(error) {
+        console.error(error);
         dispatch(handleDatasetMetadataError(null, error));
       });
   };

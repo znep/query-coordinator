@@ -258,8 +258,17 @@ show_share_dataset_by_email_button_for_general_users:
   description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
   defaultValue: true
 site_chrome_header_and_footer:
-  description: WARNING! If turned on, this will prevent the old custom header/footer from displaying on customer pages. Instead, users will see the new configurable Site Chrome header and footer, which are editable (currently only for superadmins) under Admin > Site Appearance.
+  description: WARNING! If turned on, this will prevent the old custom header/footer from displaying on customer pages. Instead, users will see the new configurable Site Chrome header and footer, which are editable (currently only for superadmins) under Admin > Site Appearance. Note that there are additional feature flags to enable site chrome for the homepage and dataslate pages.
   defaultValue: false
+  category: site chrome
+site_chrome_header_and_footer_for_homepage:
+  description: Turns on site chrome header/footer for Homepage.
+  defaultValue: false
+  category: site chrome
+site_chrome_header_and_footer_for_dataslate:
+  description: Turns on site chrome header/footer for (non-homepage) dataslate pages.
+  defaultValue: false
+  category: site chrome
 swap_in_nbe_view:
   description: "Utility flag to make frontend views use their NBE counterparts. NOTE: This is intended to be used for NBE Go testing; it may cause errors if enabled for general use."
   defaultValue: false

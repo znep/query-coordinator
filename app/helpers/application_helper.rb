@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  attr_reader :using_dataslate, :on_homepage
 
   include Browse2Helper
   include BrowseHelper
@@ -79,8 +80,21 @@ module ApplicationHelper
     !!current_user.try(:is_admin?)
   end
 
+  # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.
+  # Note that the order of these checks is important. For example, if the user is on the homepage,
+  # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    FeatureFlags.derive(nil, request).site_chrome_header_and_footer
+    if on_homepage
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage
+    elsif using_dataslate
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_dataslate
+    else
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer
+    end
+  end
+
+  def using_govstat_header?
+    module_enabled?(:govStat) && !suppress_govstat?
   end
 
 # PAGE-HEADER

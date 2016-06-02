@@ -130,6 +130,11 @@ class CustomContentController < ApplicationController
       request.format = page_ext.to_sym if !page_ext.blank? && !@debug && !@edit_mode
     end
 
+    # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
+    # whether to render the site chrome header/footer based on the corresponding feature flags.
+    @using_dataslate = true
+    @on_homepage = full_path == '/'
+
     ####### FETCH PAGE ########
     Canvas2::DataContext.reset
     Canvas2::Util.reset

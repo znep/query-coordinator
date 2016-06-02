@@ -311,12 +311,27 @@ class DatasetsController < ApplicationController
 
     @conditions = parse_alt_conditions(params)
 
+    # EN-6665 - Prevent query strings with invalid column ids from 500ing
+    #
+    # See method implementation for why we do this.
+    if request_includes_non_existent_column_ids
+      return render_invalid
+    end
+
+    # EN-6665 - Prevent query strings with invalid column ids from 500ing
+    #
+    # See method implementation for why we do this one too.
+    if request_includes_url_filter_value_on_unsupported_column
+      return render_invalid
+    end
+
     # build state for the sake of the pager
     @state_param = {}
     [:filter, :sort, :search_string].each{ |key| @state_param[key] = params[key] unless params[key].nil? }
     @state_param = @state_param.to_param
 
     if @view.is_tabular? && !@view.is_form?
+
       begin
         # get rows
         @per_page = 50
@@ -325,7 +340,7 @@ class DatasetsController < ApplicationController
         case e.error_code
         when 'invalid_request'
           flash.now[:error] = e.error_message
-          return render 'shared/error', :status => :invalid_request
+          return render_invalid
         when 'permission_denied'
           return render_forbidden
         else
@@ -823,6 +838,107 @@ class DatasetsController < ApplicationController
     @conditions['searchString'] = params[:search_string] unless params[:search_string].blank?
 
     return @conditions
+  end
+
+  # EN-6665 - Prevent query strings with invalid values from 500ing
+  #
+  # If there are column ids in the query string that do not exist in the actual
+  # view, then we should consider this request to be bogus and not bother
+  # passing it along to Core Server.
+  def request_includes_non_existent_column_ids
+    column_ids_from_filter_condition = []
+    column_ids_from_order_bys = []
+    view_column_ids = []
+
+    if @conditions['filterCondition']
+      filter_condition_children = (@conditions.try(:dig, 'filterCondition', 'children') || [])
+
+      column_ids_from_filter_condition = filter_condition_children.flat_map do |child|
+        (child['children'] || []).map do |grandchild|
+          grandchild.is_a?(Hash) ? grandchild['columnId'] : nil
+        end.compact
+      end.compact
+    end
+
+    if @conditions['orderBys']
+      order_bys = @conditions['orderBys'].is_a?(Array) ? @conditions['orderBys'] : []
+      column_ids_from_order_bys = order_bys.map do |order_by|
+        order_by.is_a?(Hash) ? order_by.dig('expression', 'columnId') : nil
+      end.compact
+    end
+
+    query_string_column_ids = column_ids_from_filter_condition.
+      concat(column_ids_from_order_bys).
+      map(&:to_i)
+
+    view_column_ids = @view.columns.map {|column| column.id }
+
+    # Subtraction on arrays is overloaded to act as the difference between
+    # elements in the respective sets.
+    #
+    # If there are column ids in the query string that do not exist in the
+    # dataset to which we are applying the filter/sort, we want to return
+    # early and respond with a 400 error.
+    (query_string_column_ids - view_column_ids).present?
+  end
+
+  # EN-6665 - Prevent query strings with invalid values from 500ing
+  #
+  # As of June 2016 we are receiving thousands of requests per day that
+  # appear to be coming from bots inserting 'helpful' urls into form fields on
+  # the datasets_controller#alt page. When such a url is pasted into a field
+  # that maps to a filter condition for a non-text column, this causes Core
+  # Server to fail to validate the filter condition.
+  #
+  # Since we already have sufficient information to determine if this will
+  # happen before we make the Core Server request we can just skip the request
+  # and immediately render a 400 error to the client.
+  #
+  # In the interests of not rewriting a bunch of validation code that already
+  # exists in Core Server, however, this fix just detects filter conditions
+  # that contains URLs and renders a 400 error if the user is attempting to
+  # apply that filter condition to a non-text column (e.g. if a bot is filling
+  # in form fields with urls indiscriminately).
+  def request_includes_url_filter_value_on_unsupported_column
+    # A url would not be outright invalid in the following types of columns.
+    valid_column_types_for_url = ['text', 'html', 'url', 'dataset_link']
+
+    if @conditions['filterCondition']
+      filter_condition_children = (@conditions.try(:dig, 'filterCondition', 'children') || [])
+
+      # Essentially all this code does is pair up column ids with filter values
+      # but the level of nesting in the data structure makes it a little rough
+      # to do so.
+      column_ids_and_filter_values = filter_condition_children.flat_map do |child|
+        column_id = (child['children'] || []).map do |grandchild|
+          grandchild.is_a?(Hash) ? grandchild['columnId'] : nil
+        end.compact.first
+
+        filter_value = (child['children'] || []).map do |grandchild|
+          grandchild.is_a?(Hash) && grandchild['type'] == 'literal' ? grandchild['value'] : nil
+        end.compact.first
+
+        { 'column_id' => column_id, 'filter_value' => filter_value }
+      end.compact
+
+      # Once we know which filter values are associated with which columns, we
+      # can check if things that look like URLs are not being supplied as
+      # filter values for non-text columns. If they are, then there is a good
+      # enough chance that this is a spamming attempt by a bot that we are
+      # willing to preemptivly respond with a 400 error before asking Core
+      # Server to attempt to do the filtering operation.
+      column_ids_and_filter_values.select do |column_id_and_filter_value|
+        column = @view.column_by_id(column_id_and_filter_value['column_id'].to_i)
+        column_type = column.dataTypeName
+
+        filter_value_contains_url = column_id_and_filter_value['filter_value'] =~ /http(s?):\/\//i
+
+        # If the column's type is not one of the ones that can contain strings
+        # and the filter value looks like a URL, we want to quit early and
+        # respond with a 400 error.
+        valid_column_types_for_url.exclude?(column_type) && filter_value_contains_url ? true : nil
+      end.any?
+    end
   end
 
   def file_extension(url)

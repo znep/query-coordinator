@@ -100,17 +100,17 @@ class InternalControllerTest < ActionController::TestCase
     init_for_feature_flags
 
     stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=locales').
-      with(request_headers).to_return(:status => 200, :body => ['en'].to_json, :headers => {})
+      with(:headers => request_headers).to_return(:status => 200, :body => ['en'].to_json, :headers => {})
 
     stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=feature_flags').
-      with(request_headers).to_return(:status => 200, :body => mock_feature_flags_response, :headers => {})
+      with(:headers => request_headers).to_return(:status => 200, :body => mock_feature_flags_response, :headers => {})
 
     post(:set_feature_flags, domain_id: 'localhost', feature_flags: { 'enable_new_account_verification_email' => false }, format: 'data')
     assert(JSON.parse(@response.body)['errors'].empty?)
     refute(FeatureFlags.derive['enable_new_account_verification_email'])
 
     stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=feature_flags').
-      with(request_headers).to_return(:status => 200, :body => mock_feature_flags_response(true), :headers => {})
+      with(:headers => request_headers).to_return(:status => 200, :body => mock_feature_flags_response(true), :headers => {})
 
     post(:set_feature_flags, domain_id: 'localhost', feature_flags: { 'enable_new_account_verification_email' => true }, format: 'data')
     assert(JSON.parse(@response.body)['errors'].empty?)

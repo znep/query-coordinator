@@ -451,6 +451,25 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
+  def test_enable_site_chrome_admin_panel_is_false_if_nil_user
+    application_helper.stubs(:current_user => nil)
+    refute application_helper.enable_site_chrome_admin_panel?
+  end
+
+  def test_enable_site_chrome_admin_panel_is_false_if_user_is_not_a_superadmin
+    user = stub
+    user.stubs(:is_admin? => false)
+    application_helper.stubs(:current_user => user)
+    refute application_helper.enable_site_chrome_admin_panel?
+  end
+
+  def test_enable_site_chrome_admin_panel_is_true_if_user_is_a_superadmin
+    user = stub
+    user.stubs(:is_admin? => true)
+    application_helper.stubs(:current_user => user)
+    assert application_helper.enable_site_chrome_admin_panel?
+  end
+
   def test_meta_keywords
     assert application_helper.meta_keywords(nil) == nil
 

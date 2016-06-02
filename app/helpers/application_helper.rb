@@ -72,6 +72,17 @@ module ApplicationHelper
     block.call
   end
 
+# SITE CHROME (header and footer)
+  def enable_site_chrome_admin_panel?
+    # We will want to create a separate feature flag for this once we open the feature up to admins.
+    # Currently we always show it, but only to superadmins.
+    !!current_user.try(:is_admin?)
+  end
+
+  def enable_site_chrome?
+    FeatureFlags.derive(nil, request).site_chrome_header_and_footer
+  end
+
 # PAGE-HEADER
 
 # meta

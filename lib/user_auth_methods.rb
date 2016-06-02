@@ -23,6 +23,7 @@ module UserAuthMethods
 
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
+    RequestStore[:current_user] = @current_user
   end
 
   def basic_auth

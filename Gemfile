@@ -7,7 +7,7 @@ gem 'addressable'
 gem 'airbrake', '4.3.0'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
-gem 'chrome', '~> 0.0.6'
+gem 'chrome', '~> 0.0.7'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'

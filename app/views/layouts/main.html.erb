@@ -73,6 +73,12 @@ http://www.socrata.com
 
   <%= render :partial => 'templates/mixpanel_tracking' %>
 
+  <%- if enable_site_chrome? -%>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+    <%= site_chrome_javascript_tag %>
+  <%- end -%>
+
 </head>
 
 <body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''} locale_#{I18n.locale} #{@body_class}" %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
@@ -90,46 +96,50 @@ http://www.socrata.com
     <div class="siteInnerWrapper">
 
       <%- if !@suppress_chrome -%>
-      <div id="siteHeader" class="clearfix" role="banner">
-        <%- if module_enabled?(:govStat) && !suppress_govstat? -%>
-          <div class="clearfix">
-            <%= render_text_template('{{main_logo}}') %>
-            <ul class="siteUserNav">
-              <li class="accountLink hide">
-                <%- if current_user -%>
-                  <a href="<%= profile_path(current_user) %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
-                    <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
-                  </a>
-                <%- end -%>
-              </li>
-              <li class="accountLikeLink hide myGoalsLink">
-                <a href="<%= govstat_my_goals_path %>" title="<%= t('govstat.chrome.header.links.my_goals_tooltip') %>">
-                  <span class="text"><%= t('govstat.chrome.header.links.my_goals') %></span>
-                </a>
-              </li>
-              <%= render_text_template('{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}') %>
-            </ul>
-          </div>
-          <ul class="manageActions">
-            <%- prefix = 'govstat.chrome.header.links' %>
-            <li class="home"><a href="<%= govstat_root_path %>" class="ss-home" title="<%= t("#{prefix}.home_title") %>"><%= t("#{prefix}.home") %></a></li>
-            <li class="data"><a href="<%= govstat_data_path %>" class="ss-hdd"
-              title="<%= t("#{prefix}.data_title") %>"><%= t("#{prefix}.data") %></a></li>
-            <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
-              title="<%= t("#{prefix}.reports_title") %>"><%= t("#{prefix}.reports") %></a></li>
-            <li class="goals"><a href="<%= govstat_goals_path %>" class="ss-checkclipboard"
-              title="<%= t("#{prefix}.goals_title") %>"><%= t("#{prefix}.goals") %></a></li>
-            <li class="config"><a href="<%= manage_site_config_path %>" class="ss-wrench"
-              title="<%= t("#{prefix}.configuration_title") %>"><%= t("#{prefix}.configuration") %></a></li>
-          </ul>
+        <%- if enable_site_chrome? -%>
+          <%= render 'site_chrome/header' %>
         <%- else -%>
-          <%= render_domain_template(@page_custom_header || 'header_full') %>
+          <div id="siteHeader" class="clearfix" role="banner">
+            <%- if module_enabled?(:govStat) && !suppress_govstat? -%>
+              <div class="clearfix">
+                <%= render_text_template('{{main_logo}}') %>
+                <ul class="siteUserNav">
+                  <li class="accountLink hide">
+                    <%- if current_user -%>
+                      <a href="<%= profile_path(current_user) %>" title="<%= t('govstat.chrome.header.links.account_tooltip') %>">
+                        <span class="text"><%= t('govstat.chrome.header.links.account') %></span>
+                      </a>
+                    <%- end -%>
+                  </li>
+                  <li class="accountLikeLink hide myGoalsLink">
+                    <a href="<%= govstat_my_goals_path %>" title="<%= t('govstat.chrome.header.links.my_goals_tooltip') %>">
+                      <span class="text"><%= t('govstat.chrome.header.links.my_goals') %></span>
+                    </a>
+                  </li>
+                  <%= render_text_template('{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}') %>
+                </ul>
+              </div>
+              <ul class="manageActions">
+                <%- prefix = 'govstat.chrome.header.links' %>
+                <li class="home"><a href="<%= govstat_root_path %>" class="ss-home" title="<%= t("#{prefix}.home_title") %>"><%= t("#{prefix}.home") %></a></li>
+                <li class="data"><a href="<%= govstat_data_path %>" class="ss-hdd"
+                  title="<%= t("#{prefix}.data_title") %>"><%= t("#{prefix}.data") %></a></li>
+                <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
+                  title="<%= t("#{prefix}.reports_title") %>"><%= t("#{prefix}.reports") %></a></li>
+                <li class="goals"><a href="<%= govstat_goals_path %>" class="ss-checkclipboard"
+                  title="<%= t("#{prefix}.goals_title") %>"><%= t("#{prefix}.goals") %></a></li>
+                <li class="config"><a href="<%= manage_site_config_path %>" class="ss-wrench"
+                  title="<%= t("#{prefix}.configuration_title") %>"><%= t("#{prefix}.configuration") %></a></li>
+              </ul>
+            <%- else -%>
+              <%= render_domain_template(@page_custom_header || 'header_full') %>
+            <%- end -%>
+          </div>
         <%- end -%>
-      </div>
 
-      <div id="noticeContainer">
-        <%== display_homepage_flashes %>
-      </div>
+        <div id="noticeContainer">
+          <%== display_homepage_flashes %>
+        </div>
 
       <%- end -%>
 
@@ -146,10 +156,14 @@ http://www.socrata.com
   </div>
 
   <%- if !@suppress_chrome -%>
-  <div id="siteFooter" role="contentinfo">
-    <a name="footerLinks" tabindex="-1"></a>
-    <%= render_domain_template(@page_custom_footer || 'footer_full') %>
-  </div>
+    <%- if enable_site_chrome? -%>
+      <%= render 'site_chrome/footer' %>
+    <%- else -%>
+      <div id="siteFooter" role="contentinfo">
+        <a name="footerLinks" tabindex="-1"></a>
+        <%= render_domain_template(@page_custom_footer || 'footer_full') %>
+      </div>
+    <%- end -%>
   <%- end -%>
 
   <%# socrata modal fragment to supercede jqm %>

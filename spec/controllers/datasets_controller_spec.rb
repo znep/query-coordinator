@@ -33,7 +33,7 @@ describe DatasetsController do
 
       before do
         stub_request(:get, 'http://localhost:8080/manifest_version.json?uid=test-data').
-          with(request_headers).
+          with(:headers => request_headers).
           to_return(:status => 200, :body => view_json, :headers => {})
       end
 
@@ -41,7 +41,7 @@ describe DatasetsController do
 
         before do
           stub_request(:get, 'http://localhost:8080/views/test-data.json').
-            with(request_headers).
+            with(:headers => request_headers).
             to_return(:status => 200, :body => '', :headers => {})
         end
 
@@ -56,7 +56,7 @@ describe DatasetsController do
 
         before do
           stub_request(:get, 'http://localhost:8080/views/test-data.json').
-            with(request_headers).
+            with(:headers => request_headers).
             to_return(:status => 200, :body => '', :headers => {})
         end
 

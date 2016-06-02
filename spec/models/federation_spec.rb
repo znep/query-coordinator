@@ -6,7 +6,7 @@ describe Federation do
   before(:each) do
     init_current_domain
     stub_request(:get, 'http://localhost:8080/federations.json')
-      .with(request_headers).to_return(:status => 200, :body => federations_json_response, :headers => {})
+      .with(:headers => request_headers).to_return(:status => 200, :body => federations_json_response, :headers => {})
   end
 
   it 'should consider only the first two federations to be valid' do

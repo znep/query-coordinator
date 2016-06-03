@@ -21,9 +21,6 @@ Rails.application.config.enable_svg_visualizations = (ENV['ENABLE_SVG_VISUALIZAT
 # Enable or disable creating new tables off of filtered views.
 Rails.application.config.enable_filtered_table_creation = (ENV['ENABLE_FILTERED_TABLE_CREATION'].to_s.downcase == 'true')
 
-# Change to metrics, which relies on a frontend fix
-Rails.application.config.send_new_page_views_metric = (ENV['SEND_NEW_PAGE_VIEWS_METRIC'].to_s.downcase == 'true')
-
 # Enable or disable Getty Images gallery
 Rails.application.config.enable_getty_images_gallery = (ENV['ENABLE_GETTY_IMAGES_GALLERY'].to_s.downcase == 'true')
 

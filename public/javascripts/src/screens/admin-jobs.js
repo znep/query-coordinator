@@ -48,14 +48,15 @@ function confirmDatasetRestore(source) {
     return;
   }
 
-  if (confirm(`Are you sure you want to restore the dataset ${datasetName}?`)) {
+  prettyConfirm($.t('screens.admin.jobs.index_page.restore_deleted_dataset_confirm', { dataset: datasetName }),
+    () =>
     $.ajax({
       url: `/views/${datasetId}.json?method=undelete`,
       type: 'PATCH'
     }).
     done(() => location.reload()).
-    fail(() => alert('Failed to restore dataset!'));
-  }
+    fail(() => alert('Failed to restore dataset!'))
+  );
 }
 
 $(() => {

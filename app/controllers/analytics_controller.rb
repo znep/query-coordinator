@@ -119,7 +119,6 @@ module ClientAnalyticsHelper
 
   STATIC_MARK_METRICS = %w(domain/js-page-view
                            domain/js-page-view-story
-                           domain/page-view
                            domain/page-views
                            domain-intern/js-page-load-samples
                            domain-intern/js-dom-load-samples).freeze
@@ -127,7 +126,6 @@ module ClientAnalyticsHelper
 
   STATIC_ALLOWED_METRICS = %w(domain/js-page-view
                               domain/js-page-view-story
-                              domain/page-view
                               domain/page-views
                               domain-intern/js-cardsview-api-explorer-time
                               domain-intern/js-cardsview-bar-filter-time

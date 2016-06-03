@@ -5,7 +5,6 @@ import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from './renderComponent';
 import { CustomizationTabPanes } from 'src/authoringWorkflow/CustomizationTabPanes';
-import defaultVif from 'src/authoringWorkflow/defaultVif';
 
 var hiddenClass = 'customization-tab-pane_hidden';
 var showingSelector = `div:not(.${hiddenClass})`;

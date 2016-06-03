@@ -19,7 +19,7 @@ module.exports = function(element, configuration) {
 
   var configurationVif = _.get(configuration, 'vif', {});
   var vifType = _.get(configurationVif, 'series[0].type');
-  var clonedVifs = _.cloneDeep(vifs);
+  var clonedVifs = vifs();
 
   _.each(clonedVifs, function(vif) {
     if (_.isPlainObject(vif)) {

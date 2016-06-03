@@ -3,12 +3,16 @@ import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from '../renderComponent';
 import { DataPane } from 'src/authoringWorkflow/panes/DataPane';
-import defaultVif from 'src/authoringWorkflow/defaultVif';
 import defaultDatasetMetadata from 'src/authoringWorkflow/defaultDatasetMetadata';
+import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {
   return {
-    vif: defaultVif,
+    vif: vifs().columnChart,
+    vifAuthoring: {
+      vifs: vifs(),
+      selectedVisualizationType: vifs().columnChart.series[0].type
+    },
     datasetMetadata: defaultDatasetMetadata,
     onChangeDatasetUid: sinon.stub(),
     onChangeDimension: sinon.stub(),

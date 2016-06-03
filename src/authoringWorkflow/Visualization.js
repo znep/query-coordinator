@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import { isValidColumnChartVif, getCurrentVif } from './selectors/vifAuthoring';
+import { isValidTimelineChartVif, isValidFeatureMapVif, isValidColumnChartVif, getCurrentVif } from './selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
   componentDidMount: function() {

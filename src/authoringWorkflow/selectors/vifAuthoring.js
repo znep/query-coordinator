@@ -4,7 +4,7 @@ export const getCurrentVif = (state) => {
   return state.vifs[state.selectedVisualizationType];
 };
 
-export const isValidChoroplethMapVif = (state) => {};
+export const isValidChoroplethMapVif = (state) => true;
 export const isValidColumnChartVif = (state) => {
   var columnChart = state.vifs.columnChart;
 
@@ -16,5 +16,5 @@ export const isValidColumnChartVif = (state) => {
   return hasDimension && hasMeasure && hasDatasetUid && hasDomain;
 };
 
-export const isValidFeatureMapVif = (state) => {};
-export const isValidTimelineChartVif = (state) => {};
+export const isValidFeatureMapVif = (state) => true;
+export const isValidTimelineChartVif = (state) => true;

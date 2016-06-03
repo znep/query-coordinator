@@ -18,7 +18,7 @@ export default function vifAuthoring(state, action) {
   if (_.isUndefined(state)) {
     return {
       selectedVisualizationType: 'columnChart',
-      vifs: _.cloneDeep(vifs)
+      vifs: vifs()
     };
   }
 

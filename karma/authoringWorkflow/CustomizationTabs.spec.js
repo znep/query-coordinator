@@ -5,7 +5,6 @@ import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from './renderComponent';
 import { CustomizationTabs } from 'src/authoringWorkflow/CustomizationTabs';
-import defaultVif from 'src/authoringWorkflow/defaultVif';
 
 function defaultProps() {
   return {

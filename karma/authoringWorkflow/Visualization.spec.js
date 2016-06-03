@@ -5,33 +5,35 @@ import 'src/SvgTimelineChart';
 
 import renderComponent from './renderComponent';
 import { Visualization } from 'src/authoringWorkflow/Visualization';
-import defaultVif from 'src/authoringWorkflow/defaultVif';
+import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {
+  var vifsCloned = vifs();
   return {
     datasetMetadata: {
       id: 'asdf-qwer'
     },
-    vif: defaultVif
+    vifAuthoring: {
+      vifs: vifsCloned,
+      selectedVisualizationType: vifsCloned.columnChart.series[0].type
+    },
+    vif: vifsCloned.columnChart
   }
 };
 
-function rendersChartType(type, jqueryFunctionName) {
+function rendersChartType(props, jqueryFunctionName) {
+  var type = _.get(props.vif, 'series[0].type');
   it(`calls $.fn.${type}`, function() {
     var spy = sinon.stub($.fn, jqueryFunctionName);
-    var props = defaultProps();
-
-    _.set(props.vif, 'series[0].type', type);
-
     var element = renderComponent(Visualization, props);
 
-    expect(spy.called).to.be.true
+    sinon.assert.calledOnce(spy);
   });
 }
 
 describe('Visualization', function() {
-  it('renders an empty <div>', function() {
-    var element = renderComponent(Visualization, defaultProps());
+  it('with an invalid vif renders an empty <div>', function() {
+    var element = renderComponent(Visualization, _.set(defaultProps(), 'vif', {}));
 
     expect(element.querySelector('.visualization-preview')).to.be.empty;
     expect(element).to.have.class('visualization-preview-container');
@@ -39,11 +41,19 @@ describe('Visualization', function() {
 
   describe('with a valid vif', function() {
     describe('when rendering a columnChart', function() {
-      rendersChartType('columnChart', 'socrataSvgColumnChart');
+      var props = defaultProps();
+      _.set(props, 'vif.series[0].type','columnChart');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName','example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName','example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid','exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain','example.com');
+      rendersChartType(props, 'socrataSvgColumnChart');
     });
 
     describe('when rendering a timelineChart', function() {
-      rendersChartType('timelineChart', 'socrataSvgTimelineChart');
+      var props = defaultProps();
+      _.set(props, 'vif.series[0].type','timelineChart');
+      rendersChartType(props, 'socrataSvgTimelineChart');
     });
   });
 });

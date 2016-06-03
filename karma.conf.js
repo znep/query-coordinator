@@ -41,11 +41,7 @@ module.exports = function(config) {
       'node_modules/socrata-utils/dist/socrata.utils.js',
       'node_modules/simple-statistics/src/simple_statistics.js',
       'node_modules/chroma-js/chroma.js',
-      'src/views/styles/*.scss',
-      'karma/testData.js',
-      'karma/**/*spec.js',
-      'karma/choroplethTestData/*.js',
-      'karma/timelineTestData/*.js'
+      'karma/authoringWorkflow/**/*spec.js'
     ],
 
 
@@ -59,7 +55,7 @@ module.exports = function(config) {
     preprocessors: {
       'node_modules/lodash/index.js': ['webpack'],
       'src/views/styles/*.scss': ['scss'],
-      'karma/**/*spec.js': ['webpack', 'sourcemap']
+      'karma/authoringWorkflow/**/*spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

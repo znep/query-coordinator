@@ -62,7 +62,7 @@ describe CoreServer do
     end
 
     context 'when the view is accessible' do
-      let(:view) { {uid: 'four-four'} }
+      let(:view) { {uid: 'four-four' } }
 
       it 'returns false' do
         expect(CoreServer.view_inaccessible?('four-four')).to be(false)
@@ -76,8 +76,8 @@ describe CoreServer do
     let(:user_id) { 'here-iams' }
     let(:user_role) { 'user_role' }
     let(:user_rights) { ['user_rights'] }
-    let(:user) { {'id' => user_id, 'roleName' => user_role, 'rights' => user_rights } }
-    let(:view) { {'owner' => {'id' => 'here-iams'}, 'grants' => grants, 'rights' => view_rights} }
+    let(:user) { { 'id' => user_id, 'roleName' => user_role, 'rights' => user_rights } }
+    let(:view) { { 'owner' => { 'id' => 'here-iams' }, 'grants' => grants, 'rights' => view_rights} }
     let(:subject) { CoreServer.current_user_story_authorization }
 
     before do
@@ -90,6 +90,21 @@ describe CoreServer do
       CoreServer.current_user_story_authorization
       CoreServer.current_user_story_authorization
       expect(CoreServer).to have_received(:current_user).once
+    end
+
+    describe 'super admin' do
+      describe 'if the user has no admin flag' do
+        it 'returns an object with no superAdmin key' do
+          expect(subject).to_not have_key('superAdmin')
+        end
+      end
+      describe 'if the user has the admin flag' do
+        let(:user) { { 'id' => user_id, 'roleName' => user_role, 'rights' => user_rights, 'flags' => [ 'admin' ] } }
+
+        it 'returns an object with superAdmin = true' do
+          expect(subject['superAdmin']).to eql(true)
+        end
+      end
     end
 
     describe 'when a user without a role or rights' do
@@ -121,7 +136,7 @@ describe CoreServer do
 
     describe 'when a shared contributor' do
       let(:user_id) { 'share-user' }
-      let(:grants) { [{'userId' => 'share-user', 'type' => 'contributor'}] }
+      let(:grants) { [{ 'userId' => 'share-user', 'type' => 'contributor' }] }
 
       it 'returns role, rights' do
         expect(subject).to eql({
@@ -381,7 +396,7 @@ describe CoreServer do
 
   describe '#generate_query_params' do
     it 'should return a string containing a URL-safe parameterized string when given a Hash' do
-      result = CoreServer.generate_query_params({param1: 'rawr', param2: 'something'})
+      result = CoreServer.generate_query_params({param1: 'rawr', param2: 'something' })
       expect(result).to eq('param1=rawr&param2=something')
     end
 
@@ -400,7 +415,7 @@ describe CoreServer do
     context 'when user is logged in' do
       before do
         stub_request(:get, "#{coreservice_uri}/users/current.json").
-          to_return(status: 200, body: fixture('current_user.json'), headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: fixture('current_user.json'), headers: { 'Content-Type': 'application/json' })
       end
 
       it 'returns user json' do
@@ -536,7 +551,7 @@ describe CoreServer do
     context 'when no configurations exist' do
       before do
         stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: '[]', headers: { 'Content-Type': 'application/json' })
       end
 
       it 'is empty' do
@@ -548,7 +563,7 @@ describe CoreServer do
     context 'when one story config' do
       before do
         stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: fixture('story_theme.json'), headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: fixture('story_theme.json'), headers: { 'Content-Type': 'application/json' })
       end
 
       it 'returns story config' do
@@ -562,7 +577,7 @@ describe CoreServer do
         theme_json = JSON.parse(fixture('story_theme.json').read) # this is an array of one theme
         two_themes = theme_json + theme_json
         stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=false&merge=false&type=story_theme").
-          to_return(status: 200, body: two_themes.to_json, headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: two_themes.to_json, headers: { 'Content-Type': 'application/json' })
       end
 
       it 'returns all story configs' do
@@ -576,7 +591,7 @@ describe CoreServer do
 
     before do
       stub_request(:get, "#{coreservice_uri}/domains").
-        to_return(status: 200, body: domain_json, headers: {'Content-Type': 'application/json'})
+        to_return(status: 200, body: domain_json, headers: { 'Content-Type': 'application/json' })
     end
 
     it 'returns domain json' do
@@ -589,7 +604,7 @@ describe CoreServer do
     context 'when no configurations exist' do
       before do
         stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
-          to_return(status: 200, body: '[]', headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: '[]', headers: { 'Content-Type': 'application/json' })
       end
 
       it 'is empty' do
@@ -601,7 +616,7 @@ describe CoreServer do
     context 'when one config exists' do
       before do
         stub_request(:get, "#{coreservice_uri}/configurations.json?defaultOnly=true&merge=false&type=site_chrome").
-          to_return(status: 200, body: fixture('site_chrome_config.json'), headers: {'Content-Type': 'application/json'})
+          to_return(status: 200, body: fixture('site_chrome_config.json'), headers: { 'Content-Type': 'application/json' })
       end
 
       it 'returns site_chrome config' do

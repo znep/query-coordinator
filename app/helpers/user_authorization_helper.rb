@@ -12,8 +12,12 @@ module UserAuthorizationHelper
   end
 
   def admin?
-    has_domain_role?('administrator') ||
-    (has_domain_role?('unknown') && has_domain_right?('edit_story'))
+    super_admin? ||
+    has_domain_role?('administrator')
+  end
+
+  def super_admin?
+    authorization['superAdmin'] == true
   end
 
   def storyteller_role?

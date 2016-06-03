@@ -108,8 +108,10 @@ class CoreServer
         'domainRole' => domain_role,
         'domainRights' => domain_rights,
         'viewRole' => 'unknown',
-        'viewRights' => [],
+        'viewRights' => []
       }
+
+      authorization['superAdmin'] = true if (user['flags'] || []).include?('admin')
 
       if uid.present?
         view = CoreServer.get_view(uid)

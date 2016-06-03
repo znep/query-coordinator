@@ -227,6 +227,9 @@ reenable_ui_for_nbe:
   description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
   defaultValue: false
   category: obe deprecation
+restore_dataset_button:
+  description: Show the Restore Dataset button on the data jobs page
+  defaultValue: false
 robots_txt_disallow_analytics_add:
   description: Adds "/analytics/add" to the Disallow list for robots.txt
   defaultValue: false

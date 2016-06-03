@@ -88,8 +88,8 @@
               <%= activity.dataset.name %> <span class="import-status-deleted"><%= "(#{t("#{jobs_prefix}.index_page.deleted")})" %></span>
               
               <%# If activity is a delete and within the last X days, show button to restore dataset %>
-              <% if activity.activity_type == 'delete' && (Date.today - activity.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days %>
-                <button class="restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>">Restore</button>
+              <% FeatureFlags.derive(@view, request).restore_dataset_button && if activity.activity_type == 'delete' && (Date.today - activity.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days %>
+                <button class="restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>"><%= t("#{jobs_prefix}.index_page.restore_deleted_dataset") %></button>
               <% end %>
             <% else %>
               <%= link_to activity.dataset.name, view_path(activity.dataset) %>

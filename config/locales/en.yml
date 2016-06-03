@@ -1983,6 +1983,7 @@ en:
           initiated_by: Initiated by
           no_jobs: No jobs to show
           page_title: Data Jobs
+          restore_deleted_dataset: Restore
           showing_all_so_far: Showing all jobs which have been recorded so far
           showing_most_recent: Showing the most recent %{limit} jobs
           started: Started

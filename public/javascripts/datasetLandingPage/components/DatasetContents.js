@@ -12,12 +12,14 @@ export var DatasetContents = React.createClass({
   render: function() {
     var { view } = this.props;
 
-    var views, showAsLayer;
+    var views;
+    var showAsLayer;
+
     if (view.isGeospatial) {
       views = view.geospatialChildLayers;
       showAsLayer = view.geospatialChildLayers.length > 1;
     } else {
-      views = [ view ];
+      views = [view];
       showAsLayer = false;
     }
 

@@ -39,8 +39,7 @@ const FormInput = React.createClass({
           <label
             className="error"
             htmlFor={id}
-            generated="true"
-            >
+            generated="true">
             {showValidationError ? validationError : ''}
           </label>
         </div>

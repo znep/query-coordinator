@@ -85,7 +85,7 @@ const ConfigureBoundaryForm = React.createClass({
     };
 
     const complete = () => {
-      if (this.isMounted()) {
+      if (this.isMounted()) { // eslint-disable-line react/no-is-mounted
         this.setState({isLoading: false});
       }
     };
@@ -157,16 +157,15 @@ const ConfigureBoundaryForm = React.createClass({
     if (allowPrimaryKeySelection) {
       return (
         <FormSelectInput
-          description={ t('configure_boundary.primary_key_column_description') }
+          description={t('configure_boundary.primary_key_column_description')}
           id="shape_label"
           initialValue={primaryKey}
           initialOption={"Choose a column..."}
-          label={ t('configure_boundary.primary_key_column') }
+          label={t('configure_boundary.primary_key_column')}
           onChange={handleChange}
           options={this.makeFormSelectInputOptions(primaryKeyColumns)}
           required
-          validationError={ t('configure_boundary.primary_key_column_missing_field_error') }
-          />
+          validationError={t('configure_boundary.primary_key_column_missing_field_error')} />
       );
     }
   },
@@ -187,15 +186,14 @@ const ConfigureBoundaryForm = React.createClass({
 
     return (
       <FormTextInput
-        description={ t('configure_boundary.boundary_name_description') }
+        description={t('configure_boundary.boundary_name_description')}
         id="boundary_name"
         initialValue={name}
-        label={ t('configure_boundary.boundary_name') }
+        label={t('configure_boundary.boundary_name')}
         onChange={handleChange}
         required
-        requiredFieldValidationError={ t('configure_boundary.boundary_name_required_field_error') }
-        contentValidator={contentValidator}
-        />
+        requiredFieldValidationError={t('configure_boundary.boundary_name_required_field_error')}
+        contentValidator={contentValidator} />
     );
   },
 
@@ -204,7 +202,7 @@ const ConfigureBoundaryForm = React.createClass({
 
     if (!_.isUndefined(errorMessage)) {
       return (
-        <FlashMessage messages={[{ type: 'error', message: errorMessage }]}/>
+        <FlashMessage messages={[{ type: 'error', message: errorMessage }]} />
       );
     }
   },
@@ -226,8 +224,7 @@ const ConfigureBoundaryForm = React.createClass({
         onCancel={this.handleCancel}
         onSave={this.handleSave}
         saveDisabled={!this.validateForm()}
-        saveLabel={saveLabel}
-        />
+        saveLabel={saveLabel} />
     );
   },
 
@@ -243,16 +240,15 @@ const ConfigureBoundaryForm = React.createClass({
 
     return (
       <FormSelectInput
-        description={ t('configure_boundary.shape_label_description') }
+        description={t('configure_boundary.shape_label_description')}
         id="shape_label"
         initialValue={geometryLabel}
         initialOption={"Choose a column..."}
-        label={ t('configure_boundary.shape_label') }
+        label={t('configure_boundary.shape_label')}
         onChange={handleChange}
         options={this.makeFormSelectInputOptions(geometryLabelColumns)}
         required
-        validationError={ t('configure_boundary.boundary_geometry_label_field_error') }
-        />
+        validationError={t('configure_boundary.boundary_geometry_label_field_error')} />
     );
   },
 
@@ -268,7 +264,7 @@ const ConfigureBoundaryForm = React.createClass({
       return (
         <div>
           <div className="confirmation">
-            <h2>{ t('configure_boundary.confirm_title') }</h2>
+            <h2>{t('configure_boundary.confirm_title')}</h2>
             <img src="/images/admin/geo/spatial-lens-icon.png" alt="" height="200" className="spatial-lens-icon" />
             <div dangerouslySetInnerHTML={confirmation} />
           </div>

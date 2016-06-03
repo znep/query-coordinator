@@ -151,7 +151,7 @@ function registerUserProperties() {
   if (!_.isUndefined(mixpanel)) {
     mixpanel.register(properties);
 
-    //set user ID to mixpanels user ID if not logged in
+    // Set user ID to mixpanels user ID if not logged in
     var userId = sessionData.userId;
     mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
   }

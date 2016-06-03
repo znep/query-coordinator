@@ -6,7 +6,7 @@ describe('containers/PopularViewList', function() {
     var store = getDefaultStore();
 
     var renderer = TestUtils.createRenderer();
-    renderer.render(<PopularViewList store={store} />);
+    renderer.render(<PopularViewList isDesktop={true} store={store} />);
     this.state = store.getState();
     this.output = renderer.getRenderOutput();
   });

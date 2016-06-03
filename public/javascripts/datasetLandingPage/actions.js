@@ -6,11 +6,11 @@ import { POPULAR_VIEWS_CHUNK_SIZE } from './lib/constants';
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else {
-    var error = new Error(response.statusText);
-    error.response = response;
-    throw error;
   }
+
+  var error = new Error(response.statusText);
+  error.response = response;
+  throw error;
 }
 
 export const EMIT_MIXPANEL_EVENT = 'EMIT_MIXPANEL_EVENT';
@@ -152,17 +152,19 @@ export function loadMorePopularViews() {
     var viewId = state.view.id;
     var offset = _.get(state, 'popularViews.list.length', 0);
     var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
+    var fetchUrl = `/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`;
     var fetchOptions = {
       credentials: 'same-origin'
     };
 
     dispatch(requestPopularViews());
 
-    fetch(`/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`, fetchOptions).
+    fetch(fetchUrl, fetchOptions).
       then(checkStatus).
       then(response => response.json()).
-      then(popularViews => dispatch(receivePopularViews(popularViews)))
-      ['catch'](() => dispatch(handlePopularViewsError()));
+      then(
+        popularViews => dispatch(receivePopularViews(popularViews))
+      )['catch'](() => dispatch(handlePopularViewsError()));
   };
 }
 

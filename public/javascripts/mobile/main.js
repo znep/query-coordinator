@@ -1,8 +1,12 @@
 /* global pageMetadata, datasetMetadata */
 
+// Note: no-unused-vars is disabled for this file because eslint thinks
+// FilterContainer, PageContainer, and Visualizations aren't being used.
+/* eslint-disable no-unused-vars */
+
 /* Dependencies */
 import _ from 'lodash';
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 
@@ -15,6 +19,8 @@ import Visualizations from 'socrata-visualizations';
 
 import 'leaflet/dist/leaflet.css';
 import 'socrata-visualizations/dist/socrata-visualizations.css';
+
+/* eslint-enable no-unused-vars */
 
 (function() {
   'use strict';
@@ -290,8 +296,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
     _determineDatasetSize().
       then(_generateFilterOptions).
       then(_rejectFailedOptions).
-      then(_renderFilterContainer)
-      ['catch'](handleError);
+      then(_renderFilterContainer)['catch'](handleError);
 
     $('#btn-close, #btn-proceed').on('click', function() {
       $(document).trigger('appliedFilters.qfb.socrata', _latestFilterObject);
@@ -360,8 +365,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
         Promise.
           all(_.map(filterOptionsPromises, __reflectPromise)).
-          then(resolve)
-          ['catch'](handleError);
+          then(resolve)['catch'](handleError);
       });
 
       function __reflectPromise(promise) {
@@ -690,6 +694,11 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
     function _renderFilterContainer(filterOptions) {
       var filterOps = _.sortBy(filterOptions, function(o) {
         return o.filterName;
+      });
+
+      preloadedFilters = _.map(preloadedFilters, (thisFilter) => {
+        thisFilter.scale = _.find(filterOptions, { name: thisFilter.name }).scale;
+        return thisFilter;
       });
 
       ReactDOM.render(<FilterContainer

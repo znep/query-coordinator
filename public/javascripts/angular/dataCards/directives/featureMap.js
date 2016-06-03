@@ -446,8 +446,7 @@ module.exports = function featureMap(
        */
       function vectorTileGetterPromise(vectorTileGetter) {
         return function() {
-          return vectorTileGetter.apply(this, Array.prototype.slice.call(arguments))
-            ['catch'](function() {
+          return vectorTileGetter.apply(this, Array.prototype.slice.call(arguments))['catch'](function() {
               $scope.$safeApply(function() {
 
                 // CORE-5208: PhantomJS always produces an error here even

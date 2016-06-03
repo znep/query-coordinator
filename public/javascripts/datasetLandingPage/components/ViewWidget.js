@@ -9,6 +9,7 @@ var ViewWidget = React.createClass({
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     description: PropTypes.string,
+    displayType: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     isPrivate: PropTypes.bool,
     updatedAt: PropTypes.string.isRequired,
@@ -42,15 +43,20 @@ var ViewWidget = React.createClass({
     var privateIcon = this.props.isPrivate ?
       <span className="icon icon-private" /> : null;
 
+    var ariaLabel = `${I18n.popular_views.view} ${name}`;
+
     return (
       <div className="result-card media" data-id={id} data-type={displayType}>
         <div className="entry-header">
           <div className="entry-title">
             <h3 className="entry-name">
-              {privateIcon} <a href={url} onClick={this.props.onClick}>{name}</a>
+              {privateIcon}
+              <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
+                {name}
+              </a>
             </h3>
           </div>
-          <div className="entry-view-type">
+          <div aria-hidden className="entry-view-type">
             <span className={icon} />
           </div>
         </div>
@@ -64,12 +70,12 @@ var ViewWidget = React.createClass({
         </div>
         <div className="entry-content">
           <div className="entry-main">
-            <a href={url} onClick={this.props.onClick}>
+            <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
               <div className="img-wrapper">
-                <span className={icon + ' x-large-icon'}></span>
+                <span className={`${icon} x-large-icon`}></span>
               </div>
             </a>
-            <div className="entry-description" dangerouslySetInnerHTML={{__html: description}} />
+            <div className="entry-description" dangerouslySetInnerHTML={{ __html: description }} />
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ module.exports = function customizeBar(FlyoutService, ServerConfig, I18n, rx) {
       function renderCustomizeButtonFlyout() {
         var flyoutContent = '';
 
-        if (Boolean($scope.expandedCard)) {
+        if ($scope.expandedCard) {
 
           flyoutContent = `<div class="flyout-title">${I18n.customizeBar.collapseCard}</div>`;
 

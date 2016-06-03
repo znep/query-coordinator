@@ -1,8 +1,14 @@
+// Note: no-unused-vars is disabled for this file because eslint thinks
+// some of the files that are being imported aren't being used.
+/* eslint-disable no-unused-vars */
+
 import React from 'react';
 
-import $ from 'jquery'; // eslint-disable-line
+import $ from 'jquery';
 import InputRange from 'react-input-range';
 import './rangefilter.scss';
+
+/* eslint-enable no-unused-vars */
 
 class SocrataRangeFilter extends React.Component {
 

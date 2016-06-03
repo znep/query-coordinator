@@ -11,7 +11,12 @@ describe('components/PopularViewList', function() {
       hasError: false,
       isLoading: false,
       isCollapsed: false,
-      isDesktop: true
+      isDesktop: true,
+      dismissError: _.noop,
+      loadMore: _.noop,
+      onClickWidget: _.noop,
+      onScrollList: _.noop,
+      toggleList: _.noop
     };
   });
 
@@ -24,17 +29,17 @@ describe('components/PopularViewList', function() {
 
   describe('contents', function() {
     it('renders an alert if the list of featured views is empty', function() {
-      var element = renderComponent(PopularViewList, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         list: []
-      });
+      }));
 
       expect(element.querySelector('.alert.default')).to.exist;
     });
 
     it('renders a result-card for each featured view', function() {
-      var element = renderComponent(PopularViewList, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         list: _.take(defaultProps.list, 2)
-      });
+      }));
 
       expect(element.querySelectorAll('.result-card')).to.have.length(2);
     });
@@ -42,7 +47,7 @@ describe('components/PopularViewList', function() {
 
   describe('load more button', function() {
     it('renders a button to load more featured views if hasMore is true', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true
       }));
 
@@ -50,7 +55,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render a button to load more featured views on a mobile device', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true,
         isDesktop: false
       }));
@@ -59,7 +64,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('renders an error alert if hasError is true', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasError: true
       }));
 
@@ -69,7 +74,7 @@ describe('components/PopularViewList', function() {
     it('dispatches an action to dismiss the error when the close icon is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasError: true,
         dismissError: spy
       }));
@@ -80,7 +85,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render a button to load more featured views if hasMore is false', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false
       }));
 
@@ -90,7 +95,7 @@ describe('components/PopularViewList', function() {
     it('dispatches an action to load more featured views if the button is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true,
         loadMore: spy
       }));
@@ -103,7 +108,7 @@ describe('components/PopularViewList', function() {
     it('does not dispatch an action to load more featured views if a request is in progress', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true,
         isLoading: true,
         loadMore: spy
@@ -117,7 +122,7 @@ describe('components/PopularViewList', function() {
 
   describe('collapse button', function() {
     it('does not render the button if there are still views to load', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true
       }));
 
@@ -125,7 +130,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render the button if there are at most 3 views', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
         list: _.fill(Array(3), mockViewWidget)
       }));
@@ -134,7 +139,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('renders the button if all views are loaded and there are at least 4 views', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
         list: _.fill(Array(4), mockViewWidget)
       }));
@@ -143,7 +148,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render the button on a mobile device', function() {
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
         list: _.fill(Array(4), mockViewWidget),
         isDesktop: false
@@ -155,7 +160,7 @@ describe('components/PopularViewList', function() {
     it('dispatches an action to toggle isCollapsed when the button is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.merge(defaultProps, {
+      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
         list: _.fill(Array(4), mockViewWidget),
         toggleList: spy

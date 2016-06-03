@@ -1,7 +1,0 @@
-{
-  "extends": "eslint-config-airbnb",
-  "rules": {
-    "comma-dangle": [2, "never"],
-    "no-use-before-define": [2, "nofunc"]
-  }
-}

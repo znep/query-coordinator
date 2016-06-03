@@ -17,15 +17,15 @@ describe ImportActivityEvent do
     )
 
     stub_request(:get, "http://localhost:8080/users/tugg-ikce.json?method=getProfile").
-       with(request_headers).
+       with(:headers => request_headers).
        to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/dzuq-scr8.json").
-         with(request_headers).
+         with(:headers => request_headers).
          to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
 
     stub_request(:get, "http://localhost:8080/views/copy-four.json").
-      with(request_headers).
+      with(:headers => request_headers).
       to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
 
   end

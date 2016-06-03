@@ -845,6 +845,7 @@ en:
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
         something_went_wrong: Looks like something went wrong. Please refresh this page.
+        timeout_on_bootstrap: A timeout occured, but we're still generating your Data Lens in the background. Please try again in a few minutes.
       filter_this_column: Filter This Column
       geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column
@@ -1271,6 +1272,7 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     cancel: Cancel
+    close: Close
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
@@ -1283,6 +1285,7 @@ en:
       error_invalid_email: Please enter a valid email address.
       failure_html: "<b>Oh no!</b> Something went wrong. Please try again later."
       message: Message
+      recaptcha_loading: Recaptcha is loading
       send: Send
       subject: Subject
       success_html: "<b>Thank you!</b> Your message has been sent."

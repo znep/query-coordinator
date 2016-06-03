@@ -1,5 +1,5 @@
 Recaptcha.configure do |config|
-  config.public_key  = '6Lc9KuoSAAAAAAYcF4Ug8hJh-ta4tz88l1lokcoV'
-  config.private_key = '6Lc9KuoSAAAAAENydmvOO8b53QFNPXl7u30UV22m'
+  config.public_key  = ENV['RECAPTCHA_PUBLIC_KEY'] || APP_CONFIG.recaptcha_public_key
+  config.private_key = ENV['RECAPTCHA_PRIVATE_KEY'] || APP_CONFIG.recaptcha_private_key
   config.use_ssl_by_default = true
 end

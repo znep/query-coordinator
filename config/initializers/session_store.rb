@@ -4,7 +4,7 @@ Rails.application.config.session_store :socrata_cookie_store, {
   :core_key => ::CoreServer::Connection.cookie_name,
   :cookie_only => false,
   :session_http_only => true,
-  :secret      => ')c)]? ?+7?BpJ4qbKi8@-D)T`@]])x'
+  :secret => Rails.application.secrets.session_store_secret
 }
 
 # Use the database for sessions instead of the cookie-based default,

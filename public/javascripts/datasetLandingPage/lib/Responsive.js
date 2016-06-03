@@ -1,7 +1,11 @@
-import React, { Children } from 'react';
+import React, { Children, PropTypes } from 'react';
 import breakpoints from './breakpoints';
 
 var Responsive = React.createClass({
+  propTypes: {
+    children: PropTypes.object.isRequired
+  },
+
   getInitialState: function() {
     return this.getState();
   },
@@ -12,13 +16,6 @@ var Responsive = React.createClass({
 
   componentWillUnmount: function() {
     window.removeEventListener('resize', this.updateState);
-  },
-
-  updateState: function() {
-    var newState = this.getState();
-    if (!_.isEqual(newState, this.state)) {
-      this.setState(newState);
-    }
   },
 
   getState: function() {
@@ -43,6 +40,13 @@ var Responsive = React.createClass({
       isTablet: false,
       isMobile: false
     };
+  },
+
+  updateState: function() {
+    var newState = this.getState();
+    if (!_.isEqual(newState, this.state)) {
+      this.setState(newState);
+    }
   },
 
   render: function() {

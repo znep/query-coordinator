@@ -83,7 +83,7 @@ describe('RowStatusWidget', function() {
     });
 
     it('says "Processing"', function() {
-      var actual = findByClass(this.node, 'row-status-widget-label').childNodes[0].textContent;
+      var actual = findByClass(this.node, 'row-status-widget-label').childNodes[1].textContent;
       expect(actual).to.eq('Translation for: screens.admin.georegions.status_progress');
     });
 
@@ -100,7 +100,7 @@ describe('RowStatusWidget', function() {
     });
 
     it('says "Something went wrong..."', function() {
-      var actual = findByClass(this.node, 'row-status-widget-label').childNodes[0].textContent;
+      var actual = findByClass(this.node, 'row-status-widget-label').childNodes[1].textContent;
       expect(actual).to.eq('Translation for: screens.admin.georegions.status_failed');
     });
 

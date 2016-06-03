@@ -142,8 +142,6 @@ class FilterItem extends React.Component {
         break;
       case 'float':
       case 'int':
-        var scaleArray = this.props.filter.scale.split(',');
-
         if (this.props.isLarge) {
           filter = <SocrataRangefilter
             key={ 'qf-{0}'.format(this.props.filter.name) }
@@ -151,11 +149,11 @@ class FilterItem extends React.Component {
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
             isLarge={ true }
-            scale={ scaleArray }
+            scale={ this.props.filter.scale }
             dataHandler={ this.handleFilterData }/>;
         } else {
-          var rangeMin = Number(scaleArray[0]);
-          var rangeMax = Number(scaleArray[scaleArray.length - 1]);
+          var rangeMin = Number(_.first(this.props.filter.scale));
+          var rangeMax = Number(_.last(this.props.filter.scale));
 
           filter = <SocrataRangefilter
             key={ 'qf-{0}'.format(this.props.filter.name) }

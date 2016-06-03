@@ -4,7 +4,7 @@ import mockViewWidget from 'data/mockViewWidget';
 describe('components/FeaturedContentModal', function() {
   var defaultProps = {
     isEditingFeaturedContent: true,
-    list: [null, null, null],
+    contentList: [null, null, null],
     onClickAddFeaturedItem: _.noop,
     onClickEditFeaturedItem: _.noop,
     onClickRemoveFeaturedItem: _.noop
@@ -22,7 +22,7 @@ describe('components/FeaturedContentModal', function() {
 
   it('renders placeholders for featured items that are null', function() {
     var element = renderComponent(FeaturedContentModal, _.assign({}, defaultProps, {
-      list: [null, { featuredView: mockViewWidget }, null]
+      contentList: [null, { featuredView: mockViewWidget }, null]
     }));
 
     expect(element.querySelectorAll('.featured-item.placeholder')).to.have.length(2);

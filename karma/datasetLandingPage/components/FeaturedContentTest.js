@@ -10,7 +10,7 @@ describe('components/FeaturedContent', function() {
   afterEach(resetServerConfig);
 
   var defaultProps = {
-    list: [{}, {}, {}]
+    contentList: [{}, {}, {}]
   };
 
   describe('feature flag', function() {
@@ -27,11 +27,11 @@ describe('components/FeaturedContent', function() {
     });
   });
 
-  it('does not render anything if the list is empty and the user is not logged in', function() {
+  it('does not render anything if the contentList is empty and the user is not logged in', function() {
     serverConfig.currentUser = null;
 
     var element = renderComponent(FeaturedContent, {
-      list: [null, null, null]
+      contentList: [null, null, null]
     });
 
     expect(element).to.not.exist;

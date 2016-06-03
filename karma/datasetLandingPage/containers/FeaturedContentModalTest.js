@@ -11,8 +11,8 @@ describe('containers/FeaturedContentModal', function() {
     this.output = renderer.getRenderOutput();
   });
 
-  it('sets list prop', function() {
-    expect(this.output.props.list).to.deep.equal(this.state.featuredContent.list);
+  it('sets contentList prop', function() {
+    expect(this.output.props.contentList).to.deep.equal(this.state.featuredContent.contentList);
   });
 
   it('sets isEditingFeaturedItem prop', function() {

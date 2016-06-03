@@ -11,8 +11,8 @@ describe('containers/PopularViewList', function() {
     this.output = renderer.getRenderOutput();
   });
 
-  it('sets list prop', function() {
-    expect(this.output.props.list).to.deep.equal(this.state.popularViews.list);
+  it('sets viewList prop', function() {
+    expect(this.output.props.viewList).to.deep.equal(this.state.popularViews.viewList);
   });
 
   it('sets hasMore prop', function() {

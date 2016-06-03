@@ -295,7 +295,8 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
     _attachModalEvents();
     _determineDatasetSize().
       then(_generateFilterOptions).
-      then(_renderFilterContainer);
+      then(_rejectFailedOptions).
+      then(_renderFilterContainer)['catch'](handleError);
 
     $('#btn-close, #btn-proceed').on('click', function() {
       $(document).trigger('appliedFilters.qfb.socrata', _latestFilterObject);
@@ -343,23 +344,19 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
     function _generateFilterOptions(isLargeDataset) {
       return new Promise(function(resolve) {
-        // TODO: rewrite this with _.pickBy when we update to lodash 4 so we can preserve object keys.
-        var columns = isLargeDataset ?
-          _.filter(datasetMetadata.columns, function(column, fieldName) {
-            return _.find(pageMetadata.cards, { fieldName: fieldName });
-          }) : datasetMetadata.columns;
+        var columns = isLargeDataset ? _.pick(datasetMetadata.columns, __isFieldInCards) : datasetMetadata.columns;
 
         var filterOptionsPromises = [];
-        _.each(columns, function(column) {
-          switch (column.dataTypeName) {
+        _.each(columns, function(column, key) {
+          switch (column.dataTypeName || column.physicalDatatype) {
             case 'text':
-              filterOptionsPromises.push(__textTypeFilter(column));
+              filterOptionsPromises.push(__textTypeFilter(key, column));
               break;
             case 'number':
-              filterOptionsPromises.push(__numberTypeFilter(column, isLargeDataset));
+              filterOptionsPromises.push(__numberTypeFilter(key, column, isLargeDataset));
               break;
             case 'calendar_date':
-              filterOptionsPromises.push(__dateTypeFilter(column));
+              filterOptionsPromises.push(__dateTypeFilter(key, column));
               break;
             default:
               break;
@@ -367,27 +364,40 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
         });
 
         Promise.
-          all(filterOptionsPromises).
-          then(resolve)['catch'](function(error) {
-            console.error(error);
-          });
+          all(_.map(filterOptionsPromises, __reflectPromise)).
+          then(resolve)['catch'](handleError);
       });
 
-      function __textTypeFilter(column) {
+      function __reflectPromise(promise) {
+        return promise.then((value) => {
+            return {value: value, status: 'resolved'};
+          },
+          (error) => {
+            return {error: error, status: 'rejected'};
+          });
+      }
+
+      function __isFieldInCards(column, fieldName) {
+        return _.find(pageMetadata.cards, (card) => {
+          return card.fieldName == fieldName ||
+            card.computedColumn == fieldName ||
+            card.aggregationField == fieldName;
+        });
+      }
+
+      function __textTypeFilter(fieldName, column) {
         return new Promise(function(resolve) {
           resolve({
             filterName: column.name,
-            name: _.findKey(datasetMetadata.columns, { position: column.position }),
-            id: column.position,
+            name: fieldName,
+            id: _.uniqueId(fieldName),
             type: 'string'
           });
         });
       }
 
-      function __numberTypeFilter(column, isLargeData) {
-        return new Promise(function(resolve) {
-          var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
-
+      function __numberTypeFilter(fieldName, column, isLargeData) {
+        return new Promise(function(resolve, reject) {
           __queryLimits(fieldName).
             then(__getBuckets).
             then(function(buckets) {
@@ -400,16 +410,16 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
               resolve({
                 filterName: column.name,
                 name: fieldName,
-                id: column.position,
+                id: _.uniqueId(fieldName),
                 type: 'int',
                 scale: scaleArray,
                 largeDataset: isLargeData
               });
-            });
+            })['catch'](reject);
         });
       }
 
-      function __dateTypeFilter(column) {
+      function __dateTypeFilter(fieldName, column) {
         var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
         var SOQL_DATA_PROVIDER_NAME_ALIAS = '__NAME_ALIAS__';
         var SOQL_DATA_PROVIDER_VALUE_ALIAS = '__VALUE_ALIAS__';
@@ -417,8 +427,6 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
         var DATA_QUERY_SUFFIX = 'GROUP BY {0}';
         var DATA_QUERY_WHERE_CLAUSE_PREFIX = 'WHERE';
         var DATA_QUERY_WHERE_CLAUSE_SUFFIX = "`{0}` IS NOT NULL AND `{0}` < '{1}' AND (1=1)";
-
-        var fieldName = _.findKey(datasetMetadata.columns, { position: column.position });
 
         return new Promise(function(resolve) {
           __queryLimits(fieldName).then(function(promiseArguments) {
@@ -474,8 +482,8 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
 
               resolve({
                 filterName: column.name,
-                name: _.findKey(datasetMetadata.columns, { position: column.position }),
-                id: column.position,
+                name: fieldName,
+                id: _.uniqueId(fieldName),
                 type: 'calendar_date',
                 scale: allDateLabels
               });
@@ -573,14 +581,18 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
       }
 
       function __queryLimits(fieldName) {
-        return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
           var columnNames = [ 'min', 'max' ];
           var query = '$query=SELECT min({column}) as `min`, max({column}) as `max`'.format({
             column: fieldName
           });
 
-          soqlDataProvider.getRows(columnNames, query).then(function(data) {
-            resolve([data, fieldName]);
+          soqlDataProvider.getRows(columnNames, query).then((data) => {
+            if (_.isUndefined(_.get(data, 'rows[0][0]')) || _.isUndefined(_.get(data, 'rows[0][1]'))) {
+              reject('Failed to get limits of {0}'.format(fieldName));
+            } else {
+              resolve([data, fieldName]);
+            }
           });
         });
       }
@@ -663,9 +675,30 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
       }
     }
 
+    function _rejectFailedOptions(options) {
+      return new Promise((resolve) => {
+        let filteredOptions = [];
+
+        _.each(options, (option) => {
+          if (_.isUndefined(option.error)) {
+            filteredOptions.push(option.value);
+          } else {
+            handleError(option.error);
+          }
+        });
+
+        resolve(filteredOptions);
+      });
+    }
+
     function _renderFilterContainer(filterOptions) {
       var filterOps = _.sortBy(filterOptions, function(o) {
         return o.filterName;
+      });
+
+      preloadedFilters = _.map(preloadedFilters, (thisFilter) => {
+        thisFilter.scale = _.find(filterOptions, { name: thisFilter.name }).scale;
+        return thisFilter;
       });
 
       ReactDOM.render(<FilterContainer
@@ -684,6 +717,12 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
             Object.keys(datasetMetadata.columns).length > LARGE_DATASET_COLUMN_COUNT);
         });
       });
+    }
+  }
+
+  function handleError(error) {
+    if (console && _.isFunction(console.error)) {
+      console.error(error);
     }
   }
 

@@ -128,12 +128,10 @@ class PageContainer extends React.Component {
 
     var self = this;
     _.each(allCardsWithOrder, (card) => {
-      var idSelector = new RegExp('{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName)));
-      var idNumber = _(cardComponents).
-        sortBy('props.chartValues.id').
-        filter((thisCard) => { return idSelector.test(_.get(thisCard, 'props.chartValues.id)')); }).
-        value().
-        length;
+      var idSelector = new RegExp('^{0}_{1}_'.format(card.cardType, (card.aggregationField || card.fieldName)));
+      var idNumber = _.filter(cardComponents, (thisCard) => {
+        return idSelector.test(_.get(thisCard, 'props.chartValues.id'));
+      }).length;
 
       var baseValues = {
         domain: datasetMetadata.domain,

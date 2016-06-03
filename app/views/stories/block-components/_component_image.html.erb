@@ -8,4 +8,9 @@
 #   }
 # }
 %>
-<%= image_tag(component['value']['url'], alt: component['value']['alt']) %>
+<%= image_tag(
+      component['value']['url'],
+      alt: component['value']['alt'],
+      srcset: image_srcset_from_component(component['value']),
+      sizes: image_sizes_from_number_of_columns(columns)
+    ) %>

@@ -59,8 +59,26 @@ RSpec.describe GettyImage, type: :model do
 
   describe '#url' do
     describe 'with a valid document' do
-      it 'returns a URL' do
-        expect(subject.url).to eq(document.upload.url)
+      context 'when enable_responsive_images feature flag is enabled' do
+        before do
+          allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
+        end
+
+        it 'returns an xlarge thumbnail url' do
+          expect(subject.document.upload).to receive(:url).with(:xlarge).and_return(:xlarge_url)
+          expect(subject.url).to eq(:xlarge_url)
+        end
+      end
+
+      context 'when enable_responsive_images feature flag is disabled' do
+        before do
+          allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
+        end
+
+        it 'returns a URL without specified size' do
+          expect(subject.document.upload).to receive(:url).with(nil).and_return(:original_url)
+          expect(subject.url).to eq(:original_url)
+        end
       end
     end
 

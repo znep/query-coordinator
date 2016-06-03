@@ -69,7 +69,6 @@ RSpec.describe Document, type: :model do
   end
 
   describe '#as_json' do
-
     subject { FactoryGirl.create(:document) }
 
     it 'returns json representing document' do
@@ -81,10 +80,62 @@ RSpec.describe Document, type: :model do
           upload_file_size: subject.upload_file_size,
           status: subject.status,
           created_at: subject.created_at,
-          url: subject.upload.url
+          url: subject.upload.url(:xlarge)
         }
       }
       expect(subject.as_json).to eq(expected)
+    end
+
+    context 'when enable_responsive_images feature flag is enabled' do
+      before do
+        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
+      end
+
+      it 'gets :xlarge upload url' do
+        expect(subject.upload).to receive(:url).with(:xlarge)
+        subject.as_json
+      end
+    end
+
+    context 'when enable_responsive_images feature flag is disabled' do
+      before do
+        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
+      end
+
+      it 'gets upload url without specifying size' do
+        expect(subject.upload).to receive(:url).with(nil)
+        subject.as_json
+      end
+    end
+  end
+
+  describe '#check_content_type_is_image' do
+    it 'is true when upload_content_type is jpeg' do
+      document = FactoryGirl.build(:document, upload_content_type: 'image/jpg')
+      expect(document.check_content_type_is_image).to eq(true)
+    end
+
+    it 'is true when upload_content_type is jpeg' do
+      document = FactoryGirl.build(:document, upload_content_type: 'image/png')
+      expect(document.check_content_type_is_image).to eq(true)
+    end
+
+    it 'is false when upload_content_type is html' do
+      document = FactoryGirl.build(:document, upload_content_type: 'text/html')
+      expect(document.check_content_type_is_image).to eq(false)
+    end
+  end
+
+  describe '#attachment_styles_from_thumbnail_sizes' do
+    it 'returns a hash of thumbnail sizes' do
+      expected = {
+        small: "346x346>",
+        medium: "650x650>",
+        large: "1300x1300>",
+        xlarge: "2180x2180>"
+      }
+      document = FactoryGirl.build(:document)
+      expect(subject.attachment_styles_from_thumbnail_sizes).to eq(expected)
     end
   end
 end

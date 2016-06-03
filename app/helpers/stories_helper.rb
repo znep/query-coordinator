@@ -152,6 +152,41 @@ module StoriesHelper
     ).join(' ')
   end
 
+  def image_srcset_from_component(component)
+    return nil unless Rails.application.config.enable_responsive_images
+
+    document = document_from_component(component)
+    if document.present? && document.processed?
+      Document::THUMBNAIL_SIZES.map {|size, pixels| "#{document.upload.url(size)} #{pixels}w"}.join(', ')
+    end
+  end
+
+  # component value will look like:
+  #   value: {
+  #     documentId: "1234",
+  #     url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+  #   }
+  # For getty images, 'documentId' will be null.
+  def document_from_component(component)
+    if component['documentId'].present?
+      Document.find_by_id(component['documentId'])
+    elsif component['url'] =~ %r{getty-images/(.+)}
+      GettyImage.find_by_getty_id($1).try(:document)
+    end
+  end
+
+  def image_sizes_from_number_of_columns(columns)
+    # accounting for media blocks that are in a multiple column layout
+    column_width = columns.to_f / 12
+
+    [
+      "(min-width: 1400px) calc(#{column_width} * 1090px)",
+      "(min-width: 1200px) calc(#{column_width} * 910px)",
+      "(min-width: 800px) calc(#{column_width} * 650px)",
+      '94vw' # the smallest breakpoint has images at 94% of the viewport
+    ].join(', ')
+  end
+
   private
 
   def determine_permissions_from_core_attributes

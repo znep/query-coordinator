@@ -60,19 +60,25 @@ class FilterContainer extends React.Component {
 
   // LOGIC
   onChangeAddFilter(e) {
-
     var options = e.target.options;
 
     for (var i = 0, l = options.length; i < l; i++) {
       if (options[i].selected && $(options[i]).attr('id')) {
         var $selectedOption = $(options[i]);
 
+        var scale;
+        try {
+          scale = JSON.parse('[{0}]'.format($selectedOption.data('scale')));
+        } catch (exception) {
+          scale = [];
+        }
+
         var newFilterObj = {
           id: $selectedOption.attr('id'),
           type: $selectedOption.data('type'),
           name: $selectedOption.data('name'),
           displayName: $selectedOption.data('displayname'),
-          scale: $selectedOption.data('scale'),
+          scale: scale,
           isLarge: $selectedOption.data('islarge'),
           data: null
         };
@@ -302,7 +308,6 @@ class FilterContainer extends React.Component {
     }
   }
 
-  // RENDERING
   render() {
     var filterOptions = this.state.filterOps.map((filter, index) => {
 
@@ -321,11 +326,10 @@ class FilterContainer extends React.Component {
       }
     });
 
-
     var selectedFilters = this.state.filters.map((filter) => {
       if (filter.type == 'int') {
         return <FilterItem
-          key={ 'qf-{0}'.format(filter.name) }
+          key={ 'qf-{0}'.format(filter.id) }
           filter={ filter }
           isLarge={ filter.isLarge }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
@@ -341,7 +345,7 @@ class FilterContainer extends React.Component {
         }
 
         return <FilterItem
-          key={ 'qf-' + filter.id }
+          key={ 'qf-{0}'.format(filter.id) }
           filter={ filter }
           isLarge={ filter.isLarge }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
@@ -351,7 +355,7 @@ class FilterContainer extends React.Component {
           additionHandler={ this.handleFilterAddition }/>;
       } else {
         return <FilterItem
-          key={ 'qf-{0}'.format(filter.name) }
+          key={ 'qf-{0}'.format(filter.id) }
           filter={ filter }
           startWithClosedFlannel={ filter.startWithClosedFlannel }
           domain={ this.domain }

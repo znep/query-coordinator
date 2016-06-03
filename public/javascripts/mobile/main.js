@@ -323,6 +323,10 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
           $('#modal-container').removeClass('hidden').on('click', function() {
             $(this).addClass('hidden');
           });
+
+          // This hides mobile browser on-screen keyboards.
+          document.activeElement.blur();
+          $('input').blur();
         }
       });
     }

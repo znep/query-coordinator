@@ -35,13 +35,13 @@ export var FeedbackPanel = React.createClass({
       // UserSnap politely exposes event listeners.
       onClose: _.partial(this.showButton, this.resetButtonHover),
       // Inject the user so we can auto-fill some information.
-      user: window.currentUser
+      user: window.serverConfig.currentUser
     });
 
     // Initialize Zendesk.
     zendesk.init({
       // Inject the user so we can auto-fill some information.
-      user: window.currentUser
+      user: window.serverConfig.currentUser
     });
   },
 
@@ -111,7 +111,7 @@ export var FeedbackPanel = React.createClass({
 
   render: function() {
     // Feedback panel is not available unless user is logged in.
-    if (!window.currentUser) {
+    if (!window.serverConfig.currentUser) {
       return null;
     }
 

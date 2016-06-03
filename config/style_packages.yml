@@ -26,7 +26,7 @@ angular-app-dataCards:
 - dataCards/_leaflet
 
 dataset-landing-page:
-- dataset-landing-page
+- dataset-landing-page/dataset-landing-page
 
 ie9:
 - dataCards/ie9

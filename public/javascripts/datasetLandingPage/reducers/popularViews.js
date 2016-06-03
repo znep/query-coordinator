@@ -12,7 +12,7 @@ import {
 
 var initialPopularViews = _.get(window.initialState, 'popularViews', []);
 var initialState = {
-  list: _.take(initialPopularViews, POPULAR_VIEWS_CHUNK_SIZE),
+  viewList: _.take(initialPopularViews, POPULAR_VIEWS_CHUNK_SIZE),
   hasMore: initialPopularViews.length > POPULAR_VIEWS_CHUNK_SIZE,
   hasError: false,
   isLoading: false,
@@ -32,7 +32,7 @@ export default function(state, action) {
       return state;
 
     case RECEIVE_POPULAR_VIEWS:
-      state.list = state.list.concat(_.take(action.popularViews, POPULAR_VIEWS_CHUNK_SIZE));
+      state.viewList = state.viewList.concat(_.take(action.popularViews, POPULAR_VIEWS_CHUNK_SIZE));
       state.hasMore = action.popularViews.length > POPULAR_VIEWS_CHUNK_SIZE;
       state.hasError = false;
       state.isLoading = false;

@@ -59,12 +59,6 @@ module DatasetLandingPageHelper
     javascript_tag("var contactFormData = #{json_escape(contact_form_data.to_json)};")
   end
 
-  def render_current_user
-    if current_user
-      javascript_tag("var currentUser = #{json_escape(current_user.to_json)};")
-    end
-  end
-
   def render_server_config
     feature_flags = Hash[
       FeatureFlags.derive(nil, request).slice(*[
@@ -75,6 +69,7 @@ module DatasetLandingPageHelper
 
     server_config = {
       :featureFlags => feature_flags,
+      :currentUser => current_user,
       :environment => Rails.env
     }
 

@@ -2,9 +2,11 @@ import React from 'react';
 import Responsive from './lib/Responsive';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
-import PopularViewList from './containers/PopularViewList';
+import FeaturedContent from './containers/FeaturedContent';
+import FeaturedContentModal from './containers/FeaturedContentModal';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
+import PopularViewList from './containers/PopularViewList';
 import ApiFlannel from './components/ApiFlannel';
 import ContactModal from './containers/ContactModal';
 import ShareModal from './components/ShareModal';
@@ -18,6 +20,7 @@ export default function() {
       <InfoPane />
 
       <main className="container landing-page-container">
+        <FeaturedContent />
         <MetadataTable />
         <DatasetContents />
 
@@ -28,9 +31,10 @@ export default function() {
 
       <ApiFlannel />
       <ContactModal />
-      <ShareModal />
-      <ODataModal />
+      <FeaturedContentModal />
       <FeedbackPanel />
+      <ODataModal />
+      <ShareModal />
     </div>
   );
 }

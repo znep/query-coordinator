@@ -1,4 +1,4 @@
-source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 
 ruby '2.3.1'
 
@@ -7,6 +7,7 @@ gem 'addressable'
 gem 'airbrake', '4.3.0'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
+gem 'chrome', '~> 0.0.9'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'
@@ -24,6 +25,7 @@ gem 'rack'
 gem 'rails', '~> 4.2.6', :require => nil
 gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'
 gem 'redcarpet'
+gem 'request_store'
 gem 'rinku', :require => 'rails_rinku'
 gem 'sanitize' # Note that this is in addition to the default Rails implementation.
 gem 'sass-rails', '~> 5.0'

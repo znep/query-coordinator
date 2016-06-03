@@ -64,6 +64,8 @@ class DatasetsController < ApplicationController
       dataset_landing_page = DatasetLandingPage.new
       @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
 
+      RequestStore[:current_user] = current_user
+
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 
       return
@@ -717,6 +719,8 @@ class DatasetsController < ApplicationController
     if dataset_landing_page_enabled? && view_has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
       @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+
+      RequestStore[:current_user] = current_user
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   # puts Rails.application.routes.url_helpers.methods.sort
   # Also, one can test the helpers with the Applications instance. e.g. app.view_url
 
+  mount Chrome::Engine => '/chrome'
+
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
     get '/individual/:path.css', :action => 'individual',

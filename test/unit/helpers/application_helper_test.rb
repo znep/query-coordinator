@@ -451,6 +451,91 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
+  def test_enable_site_chrome_admin_panel_is_false_if_nil_user
+    application_helper.stubs(:current_user => nil)
+    refute application_helper.enable_site_chrome_admin_panel?
+  end
+
+  def test_enable_site_chrome_admin_panel_is_false_if_user_is_not_a_superadmin
+    user = stub
+    user.stubs(:is_admin? => false)
+    application_helper.stubs(:current_user => user)
+    refute application_helper.enable_site_chrome_admin_panel?
+  end
+
+  def test_enable_site_chrome_admin_panel_is_true_if_user_is_a_superadmin
+    user = stub
+    user.stubs(:is_admin? => true)
+    application_helper.stubs(:current_user => user)
+    assert application_helper.enable_site_chrome_admin_panel?
+  end
+
+  def test_enable_site_chrome_is_false_if_no_site_chrome_feature_flags_are_true
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(
+      :site_chrome_header_and_footer => false,
+      :site_chrome_header_and_footer_for_homepage => false,
+      :site_chrome_header_and_footer_for_dataslate => false
+    ))
+    refute application_helper.enable_site_chrome?
+  end
+
+  def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_flags_are_true_but_the_other_conditions_are_not_met
+    # "Other conditions" meaning we are not on the homepage and not using dataslate
+    # (these are the two args passed to enable_site_chrome?, which default to false)
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(
+      :site_chrome_header_and_footer => false,
+      :site_chrome_header_and_footer_for_homepage => true,
+      :site_chrome_header_and_footer_for_dataslate => true
+    ))
+    refute application_helper.enable_site_chrome?
+  end
+
+  def test_enable_site_chrome_is_true_for_homepage
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(
+      :site_chrome_header_and_footer => false,
+      :site_chrome_header_and_footer_for_homepage => true,
+      :site_chrome_header_and_footer_for_dataslate => false
+    ))
+    application_helper.stubs(:on_homepage => false)
+    application_helper.stubs(:using_dataslate => false)
+    refute application_helper.enable_site_chrome?
+    application_helper.stubs(:on_homepage => true)
+    application_helper.stubs(:using_dataslate => false)
+    assert application_helper.enable_site_chrome?
+  end
+
+  def test_enable_site_chrome_is_true_for_dataslate
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(
+      :site_chrome_header_and_footer => false,
+      :site_chrome_header_and_footer_for_homepage => false,
+      :site_chrome_header_and_footer_for_dataslate => true
+    ))
+    application_helper.stubs(:on_homepage => false)
+    application_helper.stubs(:using_dataslate => false)
+    refute application_helper.enable_site_chrome?
+    application_helper.stubs(:on_homepage => false)
+    application_helper.stubs(:using_dataslate => true)
+    assert application_helper.enable_site_chrome?
+  end
+
+  def test_using_govstat_header_is_true_when_govstat_module_enabled_and_not_suppressing_govstat
+    application_helper.stubs(:module_enabled? => true)
+    application_helper.stubs(:suppress_govstat? => false)
+    assert application_helper.using_govstat_header?
+  end
+
+  def test_using_govstat_header_is_false_when_govstat_module_disabled
+    application_helper.stubs(:module_enabled? => false)
+    application_helper.stubs(:suppress_govstat? => false)
+    refute application_helper.using_govstat_header?
+  end
+
+  def test_using_govstat_header_is_false_when_suppressing_govstat
+    application_helper.stubs(:module_enabled? => true)
+    application_helper.stubs(:suppress_govstat? => true)
+    refute application_helper.using_govstat_header?
+  end
+
   def test_meta_keywords
     assert application_helper.meta_keywords(nil) == nil
 

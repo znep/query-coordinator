@@ -1,6 +1,5 @@
 import React from 'react';
 import Responsive from './lib/Responsive';
-import Navbar from './components/Navbar';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
 import FeaturedContent from './containers/FeaturedContent';
@@ -17,7 +16,6 @@ import FeedbackPanel from './components/FeedbackPanel';
 export default function() {
   return (
     <div>
-      <Navbar />
       <PrivateNotice />
       <InfoPane />
 

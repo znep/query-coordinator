@@ -13,7 +13,6 @@ $twitter-blue: #55acee;
 body {
   margin: 0;
   padding: 0;
-  padding-bottom: 20px;
   background: $light-grey-6;
 }
 
@@ -1044,6 +1043,14 @@ a {
 // third-party widget overrides
 #us_report_button, .zEWidget-launcher {
   display: none !important;
+}
+
+#chrome-header .mobile-menu {
+  z-index: 1000 !important;
+}
+
+#chrome-footer {
+  margin-top: 20px;
 }
 
 // firefox-specific issue

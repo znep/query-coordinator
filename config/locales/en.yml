@@ -2326,7 +2326,7 @@ en:
             fields:
               header_bar_logo:
                 title: Header Bar Logo
-                description: URL reference to the header bar logo. Recommended minium size is 100 x 40px. This logo will be displayed at a small size.
+                description: URL reference to the header bar logo. Recommended minimum size is 100 x 40px. This logo will be displayed at a small size.
                 placeholder: URL
               site_display_name:
                 title: Site Display Name

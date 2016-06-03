@@ -1,9 +1,13 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  attr_reader :using_dataslate, :on_homepage
 
   include Browse2Helper
   include BrowseHelper
   include Socrata::UrlHelpers
+  # Note: SiteChromeHelper is included automatically due to the naming coinciding with
+  # SiteChromeController, but here anyways for posterity
+  include SiteChromeHelper
 
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
@@ -70,6 +74,30 @@ module ApplicationHelper
     return if @_allowed_blocks.include? signature
     @_allowed_blocks << signature
     block.call
+  end
+
+# SITE CHROME (header and footer)
+  def enable_site_chrome_admin_panel?
+    # We will want to create a separate feature flag for this once we open the feature up to admins.
+    # Currently we always show it, but only to superadmins.
+    !!current_user.try(:is_admin?)
+  end
+
+  # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.
+  # Note that the order of these checks is important. For example, if the user is on the homepage,
+  # we enable site chrome only if the homepage flag is true (regardless of the other flags).
+  def enable_site_chrome?
+    if on_homepage
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage
+    elsif using_dataslate
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_dataslate
+    else
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer
+    end
+  end
+
+  def using_govstat_header?
+    module_enabled?(:govStat) && !suppress_govstat?
   end
 
 # PAGE-HEADER

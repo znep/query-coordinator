@@ -117,5 +117,9 @@ module Frontend
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
+
+    # Used for asset pipeline (we can't use the default /assets because core uses that route).
+    # There is also an entry in dev-server/nginx.conf so that we don't clash with a govstat route.
+    config.assets.prefix = '/asset_pipeline'
   end
 end

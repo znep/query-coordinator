@@ -1,6 +1,6 @@
 # The purpose of this module is to add helper methods to the host Rails application.
 
-module ApplicationHelper
+module SiteChromeHelper
 
   def site_chrome_meta_viewport_tag
     raw('<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">')

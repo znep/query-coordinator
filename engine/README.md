@@ -71,6 +71,13 @@ This is because the default `/assets` is currently reserved in `frontend` for a 
 
 ## Usage
 
+In order to use the `*_tag` helper methods below, you will have to include SiteChromeHelper.
+You should most likely do this in your `ApplicationHelper.rb`.
+
+```ruby
+include SiteChromeHelper
+```
+
 In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section.
 
 Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.

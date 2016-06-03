@@ -12,7 +12,7 @@ import {
   submitContactForm,
   resetContactForm,
   handleContactFormRecaptchaReset
-} from '../actions';
+} from '../actions/contactForm';
 import ConfirmationMessage from './ContactForm/ConfirmationMessage';
 import TextInput from './ContactForm/TextInput';
 import TextArea from './ContactForm/TextArea';

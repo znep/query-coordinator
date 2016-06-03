@@ -250,6 +250,11 @@ class View < Model
       end
   end
 
+  def featured_content
+    path = "/views/#{self.id}/featured_content.json"
+    JSON.parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def find_api_throttles()
     path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewThrottles'}.to_param
     View.parse(CoreServer::Base.connection.get_request(path))

@@ -21,7 +21,8 @@
     <script>
       var initialState = {
         view: <%= raw transformed_view.to_json %>,
-        popularViews: <%= raw @popular_views.to_json %>
+        popularViews: <%= raw @popular_views.to_json %>,
+        featuredContent: <%= raw @featured_content.to_json %>
       };
     </script>
 

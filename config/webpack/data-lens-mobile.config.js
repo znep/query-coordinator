@@ -1,4 +1,4 @@
-/*eslint-env node */
+/* eslint-env node */
 var path = require('path');
 var _ = require('lodash');
 

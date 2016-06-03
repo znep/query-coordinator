@@ -6,6 +6,16 @@
 
   .modal-content {
     margin: 0 auto;
+    width: 960px;
+    overflow: visible;
+
+    .back-button {
+      margin-bottom: 11px;
+
+      .icon-arrow-prev {
+        margin-right: 4px;
+      }
+    }
 
     .featured-content {
       display: flex;
@@ -13,6 +23,25 @@
       .featured-item {
         & + .featured-item {
           margin-left: 15px;
+        }
+
+        .btn-wide {
+          min-width: 165px;
+        }
+
+        .edit-button, .remove-button {
+          width: 110px;
+          visibility: hidden;
+
+          [class^="icon"] {
+            margin-right: 6px;
+          }
+        }
+
+        &:hover {
+          .edit-button, .remove-button {
+            visibility: visible;
+          }
         }
 
         &.placeholder {
@@ -28,6 +57,45 @@
           }
         }
       }
+    }
+
+    .external-resource-contents {
+      display: flex;
+
+      form.external-resource-form {
+        flex: 1 0 auto;
+        padding-right: 22px;
+
+        input[type="text"] {
+          width: 100%
+        }
+
+        .label-url {
+          margin-top: 11px;
+        }
+      }
+
+      .external-resource-preview {
+        flex: 0 0 300px;
+        height: 314px;
+        overflow: hidden;
+
+        .view-widget {
+          border: 2px $light-grey-1 dashed;
+        }
+      }
+    }
+
+    .alert.error {
+      margin-top: 22px;
+    }
+  }
+
+  .modal-footer {
+    .btn-sm .spinner-default {
+      border-width: 2px;
+      width: 12px;
+      height: 12px;
     }
   }
 }

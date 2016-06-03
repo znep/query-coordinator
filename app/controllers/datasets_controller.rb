@@ -67,7 +67,18 @@ class DatasetsController < ApplicationController
       end
 
       dataset_landing_page = DatasetLandingPage.new
-      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+
+      begin
+        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+      rescue CoreServer::CoreServerError => e
+        @popular_views = []
+      end
+
+      begin
+        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+      rescue CoreServer::CoreServerError => e
+        @featured_content = []
+      end
 
       RequestStore[:current_user] = current_user
 
@@ -733,7 +744,18 @@ class DatasetsController < ApplicationController
 
     if dataset_landing_page_enabled? && view_has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
-      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+
+      begin
+        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+      rescue CoreServer::CoreServerError => e
+        @popular_views = []
+      end
+
+      begin
+        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+      rescue CoreServer::CoreServerError => e
+        @featured_content = []
+      end
 
       RequestStore[:current_user] = current_user
 

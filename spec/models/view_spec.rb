@@ -96,7 +96,7 @@ describe View do
            :status => 200,
            :headers => {},
            :body => JSON::dump(fake_views)
-          )
+         )
 
       expect(View.find_multiple_dedup(%w(fake-fak1 fake-fak2 fake-fak1 fake-fak3 fake-fak2))).to eq({
         'fake-fak1' => View.new(fake_views[0]),
@@ -124,4 +124,18 @@ describe View do
 
   end
 
+  describe '.featured_content' do
+    it 'returns the parsed response from the core endpoint' do
+      stub_request(:get, 'http://localhost:8080/views/1234-5679/featured_content.json').
+         with(:headers => request_headers).
+         to_return(
+           :status => 200,
+           :headers => {},
+           :body => JSON::dump([1, 2, 3])
+         )
+
+      view_data = { 'id' => '1234-5679' }
+      expect(View.new(view_data).featured_content).to eq([1, 2, 3])
+    end
+  end
 end

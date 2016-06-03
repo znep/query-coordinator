@@ -8,6 +8,9 @@ function getIconClassForDisplayType(displayType) {
     case 'filter':
       return 'icon-filter';
 
+    case 'href':
+      return 'icon-external';
+
     case 'data_lens':
       return 'icon-cards';
 

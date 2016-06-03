@@ -9,7 +9,7 @@ import {
   HANDLE_CONTACT_FORM_FAILURE,
   HANDLE_CONTACT_FORM_RECAPTCHA_ERROR,
   HANDLE_CONTACT_FORM_RECAPTCHA_RESET
-} from '../actions';
+} from '../actionTypes';
 
 var currentUserEmail = _.get(window.sessionData, 'email', '');
 

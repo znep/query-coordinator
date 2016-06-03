@@ -10,7 +10,7 @@ import {
   setContactFormRecaptchaLoaded,
   submitContactForm,
   resetContactForm
-} from 'actions';
+} from 'actions/contactForm';
 
 describe('reducers/contactForm', function() {
   var state;

@@ -150,7 +150,7 @@
   <div id="renderTypeContainer" class="innerContainer">
     <div class="aboutLoad">
       <%= render :partial => 'about_dataset' %>
-      <%- if @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
+      <%- if !@view.new_backend? && @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
         <%# SEO links for individual rows %>
         <%- next_index = !@row_index.nil? ? (@row_index+1) : 0 -%>
         <a href="<%= view_path(@view, row_index: next_index) %>" class="rowLink">

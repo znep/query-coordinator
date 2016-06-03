@@ -1,3 +1,6 @@
+/* global prettyConfirm */
+/* eslint-disable no-alert */
+
 import { timeControl } from '../lib/admin-time-control';
 
 export function replaceTimestamps($parent) {

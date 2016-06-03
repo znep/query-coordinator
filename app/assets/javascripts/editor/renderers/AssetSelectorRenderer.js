@@ -873,7 +873,7 @@ export default function AssetSelectorRenderer(options) {
     );
 
     var inputButton = $('<button>', {
-      'class': 'image-choose-upload-now btn-default'
+      'class': 'image-choose-upload-now btn btn-default'
     }).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
 
     var inputControl = $(
@@ -894,7 +894,7 @@ export default function AssetSelectorRenderer(options) {
       backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
     } else {
       // Not so for other image-using components - they're locked to what they are (hero, author).
-      backButton = $('<button>', {class: 'btn-default', 'data-action': Actions.ASSET_SELECTOR_CLOSE});
+      backButton = $('<button>', {class: 'btn btn-default', 'data-action': Actions.ASSET_SELECTOR_CLOSE});
       backButton.text(I18n.t('editor.modal.buttons.cancel'));
     }
 
@@ -1000,12 +1000,12 @@ export default function AssetSelectorRenderer(options) {
 
     var tryAgainButton = $(
       '<button>',
-      { 'class': 'btn-default hidden asset-selector-try-again' }
+      { 'class': 'btn btn-default hidden asset-selector-try-again' }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
     var uploadCancelButton = $(
       '<button>',
-      { 'class': 'btn-default asset-selector-cancel-upload' }
+      { 'class': 'btn btn-default asset-selector-cancel-upload' }
     ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
     tryAgainButton.on('click', cancel);
@@ -1020,7 +1020,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = $(
       '<button>',
-      { class: 'btn-default back-btn' }
+      { class: 'btn btn-default back-btn' }
     ).text(I18n.t('editor.asset_selector.back_button_text'));
 
     backButton.on('click', cancel);

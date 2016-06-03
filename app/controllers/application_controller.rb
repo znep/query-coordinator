@@ -314,8 +314,24 @@ class ApplicationController < ActionController::Base
       object
     end
     force_encoding = lambda do |o|
-      if o.respond_to?(:encode)
-        o.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      if o.respond_to?(:encode!)
+        # EN-6382 - Handle invalid UTF-8 in URL parameters
+        #
+        # Sometimes (looks like usually when a BugCrowder is doing a 'pen
+        # test') we get requests with invalid UTF-8 sequences in the URL. This
+        # causes rather a lot of Airbrake errors.
+        #
+        # Sadly, it seems that we have tried to fix this issue at least twice
+        # in the past but ultimately the implementation was flawed because it
+        # was never reassigning the newly-created string (encode without the !
+        # returns a new object that was getting lost in this lambda) so this
+        # method effectively did nothing.
+        #
+        # Now that we are mutating the params, we should see a significant
+        # drop in the number of Invalid UTF-8 Encoding errors, although this
+        # change may expose other bugs which were previously never encountered
+        # because this one would halt execution.
+        o.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       end
     end
     traverse.call(params, force_encoding)

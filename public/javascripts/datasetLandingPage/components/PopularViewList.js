@@ -13,7 +13,7 @@ export var PopularViewList = React.createClass({
     isDesktop: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
-    list: PropTypes.arrayOf(PropTypes.object).isRequired,
+    viewList: PropTypes.arrayOf(PropTypes.object).isRequired,
     loadMore: PropTypes.func.isRequired,
     onClickWidget: PropTypes.func.isRequired,
     onScrollList: PropTypes.func.isRequired,
@@ -21,9 +21,9 @@ export var PopularViewList = React.createClass({
   },
 
   getAnimation: function() {
-    var { list, isCollapsed, isDesktop, isLoading } = this.props;
+    var { viewList, isCollapsed, isDesktop, isLoading } = this.props;
 
-    var popularViewHeight = 287;
+    var popularViewHeight = 284;
     var popularViewMargin = 18;
 
     if (!isDesktop) {
@@ -32,7 +32,7 @@ export var PopularViewList = React.createClass({
       };
     }
 
-    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : list.length;
+    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : viewList.length;
     var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
 
     // While loading on desktop, we immediately expand the container to make room for the new views.
@@ -46,14 +46,14 @@ export var PopularViewList = React.createClass({
   },
 
   renderContents: function() {
-    var { list, hasMore, isCollapsed, onClickWidget, onScrollList, isDesktop } = this.props;
+    var { viewList, hasMore, isCollapsed, onClickWidget, onScrollList, isDesktop } = this.props;
 
-    if (_.isEmpty(list)) {
+    if (_.isEmpty(viewList)) {
       var alertMessage = I18n.popular_views.no_content_alert_html;
       return <div className="alert default" dangerouslySetInnerHTML={{ __html: alertMessage }} />;
     }
 
-    var popularViews = _.map(list, function(popularView, i) {
+    var popularViews = _.map(viewList, function(popularView, i) {
       var opacity;
 
       if (isDesktop) {
@@ -131,9 +131,9 @@ export var PopularViewList = React.createClass({
   },
 
   renderCollapseLink: function() {
-    var { list, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
+    var { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
-    if (hasMore || list.length <= POPULAR_VIEWS_CHUNK_SIZE || !isDesktop) {
+    if (hasMore || viewList.length <= POPULAR_VIEWS_CHUNK_SIZE || !isDesktop) {
       return;
     }
 

@@ -6,7 +6,7 @@ describe('components/PopularViewList', function() {
 
   beforeEach(function() {
     defaultProps = {
-      list: _.fill(Array(3), mockViewWidget),
+      viewList: _.fill(Array(3), mockViewWidget),
       hasMore: false,
       hasError: false,
       isLoading: false,
@@ -28,9 +28,9 @@ describe('components/PopularViewList', function() {
   });
 
   describe('contents', function() {
-    it('renders an alert if the list of featured views is empty', function() {
+    it('renders an alert if the viewList of featured views is empty', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
-        list: []
+        viewList: []
       }));
 
       expect(element.querySelector('.alert.default')).to.exist;
@@ -38,7 +38,7 @@ describe('components/PopularViewList', function() {
 
     it('renders a result-card for each featured view', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
-        list: _.take(defaultProps.list, 2)
+        viewList: _.take(defaultProps.viewList, 2)
       }));
 
       expect(element.querySelectorAll('.result-card')).to.have.length(2);
@@ -132,7 +132,7 @@ describe('components/PopularViewList', function() {
     it('does not render the button if there are at most 3 views', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
-        list: _.fill(Array(3), mockViewWidget)
+        viewList: _.fill(Array(3), mockViewWidget)
       }));
 
       expect(element.querySelector('.collapse-button')).to.not.exist;
@@ -141,7 +141,7 @@ describe('components/PopularViewList', function() {
     it('renders the button if all views are loaded and there are at least 4 views', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
-        list: _.fill(Array(4), mockViewWidget)
+        viewList: _.fill(Array(4), mockViewWidget)
       }));
 
       expect(element.querySelector('.collapse-button')).to.exist;
@@ -150,7 +150,7 @@ describe('components/PopularViewList', function() {
     it('does not render the button on a mobile device', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
-        list: _.fill(Array(4), mockViewWidget),
+        viewList: _.fill(Array(4), mockViewWidget),
         isDesktop: false
       }));
 
@@ -162,7 +162,7 @@ describe('components/PopularViewList', function() {
 
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false,
-        list: _.fill(Array(4), mockViewWidget),
+        viewList: _.fill(Array(4), mockViewWidget),
         toggleList: spy
       }));
 

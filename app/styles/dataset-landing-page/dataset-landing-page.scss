@@ -1,17 +1,14 @@
-@import "styleguide-colors";
+@import "dataset-landing-page/styleguide-colors";
+@import "dataset-landing-page/breakpoints";
+@import "dataset-landing-page/view-widget";
+@import "dataset-landing-page/featured-content-modal";
 
 // Miscellaneous colors not in styleguide
-$data-lens-blue: #288dc1;
 $facebook-blue: #3b5998;
 $light-blue: #5aafe1;
 $light-link-color: #84c2ec;
 $link-color: #2c97de;
-$map-green: #218649;
 $twitter-blue: #55acee;
-
-// Mobile breakpoints
-$small: 420px;
-$medium: 768px;
 
 body {
   margin: 0;
@@ -66,27 +63,18 @@ body {
     }
   }
 
-  .entry-header.dataset-landing-page-header {
-    display: flex;
-    flex-wrap: wrap;
-
+  .entry-header {
     .entry-title {
-      flex: 1 1 auto;
-      width: auto;
-      margin-right: 20px;
+      margin-right: 20px !important;
 
       .icon-official {
         margin-right: 4px;
       }
-
-      .tag-category {
-        margin-right: 0;
-      }
     }
 
     .entry-actions {
-      flex: 0 1 auto;
       padding-top: 8px;
+      text-align: right;
 
       .btn-group > .btn {
         line-height: 1.25;
@@ -156,27 +144,15 @@ body {
     }
   }
 
-  .entry-content {
-    .entry-meta.updated .meta-title {
-      padding-top: 0;
+  @media(min-width: $medium) {
+    .entry-main {
+      width: 68% !important;
     }
   }
 
-  @media(max-width: $small) {
-    .entry-header.dataset-landing-page-header {
-      .entry-actions {
-        flex: 1 0;
-
-        .btn-group {
-          width: 100%;
-          display: flex;
-
-          > .btn {
-            flex: 1 0 auto;
-            text-align: center;
-          }
-        }
-      }
+  .entry-content {
+    .entry-meta.updated .meta-title {
+      padding-top: 0;
     }
   }
 }
@@ -203,6 +179,7 @@ main.container.landing-page-container {
 
       .btn-default {
         margin-bottom: 8px;
+        align-self: flex-end;
 
         &:hover,
         &:focus {
@@ -255,6 +232,7 @@ main.container.landing-page-container {
     .result-card {
       flex: 0 0 auto;
       width: 32%;
+      height: 287px;
       margin-right: 2%;
       opacity: 0;
 
@@ -267,70 +245,11 @@ main.container.landing-page-container {
         }
       }
 
-      .entry-header {
-        .icon-private {
-          color: $warning-base;
-          font-size: 18px;
-        }
-
-        .entry-title {
-          margin-right: 2%;
-
-          h3 {
-            margin: 0;
-          }
-        }
-      }
-
-      .img-wrapper {
-        background-color: $light-grey-5;
-        display: flex;
-        justify-content: center;
-        padding: 1.5em 0;
-
-        .x-large-icon {
-          font-size: 72px;
-          color: $dark-grey-1;
-          line-height: 1;
-        }
-
-        .icon-story {
-          &.x-large-icon {
-            color: $primary-alt-2-base;
-          }
-        }
-
-        .icon-map {
-          &.x-large-icon {
-            color: $map-green;
-          }
-        }
-
-        .icon-cards {
-          &.x-large-icon {
-            color: $data-lens-blue;
-          }
-        }
-
-        .icon-bar-chart {
-          &.x-large-icon {
-            color: $primary-alt-1-base;
-          }
-        }
-      }
-
       @media(max-width: $medium) {
         flex: 0 0 260px;
-
-        .img-wrapper {
-          display: flex;
-          max-height: 150px;
-        }
       }
-    }
 
-    @media(min-width: $medium) {
-      .result-card {
+      @media(min-width: $medium) {
         &:nth-child(3n) {
           margin-right: 0;
         }
@@ -583,6 +502,22 @@ main.container.landing-page-container {
           display: block;
         }
       }
+    }
+  }
+}
+
+section.landing-page-section.featured-content {
+  .manage-prompt {
+    display: flex;
+
+    .manage-prompt-message {
+      flex: 0 1 auto;
+    }
+
+    .manage-prompt-button {
+      flex: 1 0 auto;
+      margin-left: 10px;
+      align-self: flex-start;
     }
   }
 }
@@ -1021,7 +956,7 @@ a {
     color: $light-grey-1;
     cursor: pointer;
     border: none;
-    background-color: #fff;
+    background-color: $white;
   }
 }
 

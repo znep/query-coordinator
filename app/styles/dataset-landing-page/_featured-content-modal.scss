@@ -1,0 +1,33 @@
+#featured-content-modal {
+  h1 {
+    font-weight: 400;
+    font-size: 19px;
+  }
+
+  .modal-content {
+    margin: 0 auto;
+
+    .featured-content {
+      display: flex;
+
+      .featured-item {
+        & + .featured-item {
+          margin-left: 15px;
+        }
+
+        &.placeholder {
+          position: relative;
+          width: 300px;;
+          height: 314px;
+
+          background: $light-grey-6;
+          border: 2px dashed $light-grey-1;
+
+          &:hover {
+            background: $light-grey-4;
+          }
+        }
+      }
+    }
+  }
+}

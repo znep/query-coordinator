@@ -150,7 +150,7 @@ export function loadMorePopularViews() {
     }
 
     var viewId = state.view.id;
-    var offset = _.get(state, 'popularViews.list.length', 0);
+    var offset = _.get(state, 'popularViews.viewList.length', 0);
     var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
     var fetchUrl = `/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`;
     var fetchOptions = {
@@ -173,4 +173,33 @@ export function togglePopularViews() {
   return {
     type: TOGGLE_POPULAR_VIEWS
   };
+}
+
+export const ADD_FEATURED_ITEM = 'ADD_FEATURED_ITEM';
+export function addFeaturedItem(position, contentType) {
+  return {
+    type: ADD_FEATURED_ITEM,
+    position: position,
+    contentType: contentType
+  };
+}
+
+export const EDIT_FEATURED_ITEM = 'EDIT_FEATURED_ITEM';
+export function editFeaturedItem(position) {
+  return {
+    type: EDIT_FEATURED_ITEM,
+    position: position
+  };
+}
+
+export const REMOVE_FEATURED_ITEM = 'REMOVE_FEATURED_ITEM';
+export function removeFeaturedItem(position) {
+  return {
+    type: REMOVE_FEATURED_ITEM,
+    position: position
+  };
+}
+
+export function saveFeaturedItem() {
+  // idk I'll thunk about what I want to put here
 }

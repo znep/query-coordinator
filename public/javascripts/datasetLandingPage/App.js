@@ -11,27 +11,29 @@ import ShareModal from './components/ShareModal';
 import ODataModal from './components/ODataModal';
 import FeedbackPanel from './components/FeedbackPanel';
 
-export default function() {
-  return (
-    <div>
-      <Navbar />
-      <PrivateNotice />
-      <InfoPane />
+export default React.createClass({
 
-      <main className="container landing-page-container">
-        <MetadataTable />
-        <DatasetContents />
+  render: function() {
+    return (
+      <div>
+        <PrivateNotice />
+        <InfoPane />
 
-        <Responsive>
-          <PopularViewList />
-        </Responsive>
-      </main>
+        <main className="container landing-page-container">
+          <MetadataTable />
+          <DatasetContents />
 
-      <ApiFlannel />
-      <ContactModal />
-      <ShareModal />
-      <ODataModal />
-      <FeedbackPanel />
-    </div>
-  );
-}
+          <Responsive>
+            <PopularViewList />
+          </Responsive>
+        </main>
+
+        <ApiFlannel />
+        <ContactModal />
+        <ShareModal />
+        <ODataModal />
+        <FeedbackPanel />
+      </div>
+    );
+  }
+});

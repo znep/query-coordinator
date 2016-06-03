@@ -316,7 +316,7 @@ GEM
       parser (~> 2.3.0)
       procto (~> 0.0.2)
     vcr (3.0.3)
-    webmock (2.0.3)
+    webmock (2.1.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff

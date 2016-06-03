@@ -42,8 +42,9 @@ function confirmDatasetRestore(source) {
   const datasetName = source.dataset.datasetName;
   const datasetId = source.dataset.datasetId;
 
-  if (!datasetName || ! datasetId) {
+  if (!(datasetName || datasetId)) {
     console.error(`ERROR: Couldn't find dataset name and/or dataset id when clicking restore button (got name: ${datasetName} and id: ${datasetId})`);
+    alert('Failed to restore dataset!');
     return;
   }
 
@@ -51,9 +52,9 @@ function confirmDatasetRestore(source) {
     $.ajax({
       url: `/views/${datasetId}.json?method=undelete`,
       type: 'PATCH'
-    })
-    .done(() => location.reload())
-    .fail(() => alert("Failed to restore dataset!"));
+    }).
+    done(() => location.reload()).
+    fail(() => alert('Failed to restore dataset!'));
   }
 }
 

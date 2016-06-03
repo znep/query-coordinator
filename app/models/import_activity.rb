@@ -13,11 +13,9 @@ class ImportActivity
     views = View.find_multiple_dedup(view_ids + working_copy_ids)
     
     # get names of deleted datasets
-    views.keys.each do |uid|
-      if views[uid].nil?
-        views[uid] = View.new({ 'id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true })
-      end
-    end
+    views = Hash[views.map do |uid, value|
+      [uid, value ? value : View.new('id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true)]
+    end]
     
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)

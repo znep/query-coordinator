@@ -11,6 +11,6 @@ module Chrome
   require 'chrome/version'
   require 'chrome/application_helper'
 
-  require 'application_helper' # ApplicationHelper methods for the host application, not the engine
+  require 'site_chrome_helper' # ApplicationHelper methods for the host application, not the engine
 
 end

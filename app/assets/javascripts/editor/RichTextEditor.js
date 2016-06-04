@@ -174,6 +174,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
 
     _callWithContentDocumentIfPresent(
       function(contentDocument) {
+        var selection;
 
         // IE supports .selection, while everything else
         // supports .getSelection.
@@ -184,9 +185,10 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
             clear();
         } else if (contentDocument.getSelection) {
 
-          contentDocument.
-            getSelection().
-            removeAllRanges();
+          selection = contentDocument.getSelection();
+          if (selection.rangeCount > 0) {
+            selection.removeAllRanges();
+          }
         }
       }
     );

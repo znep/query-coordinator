@@ -9,7 +9,7 @@ class GettyImage < ActiveRecord::Base
 
   def url
     if document.present? && document.processed?
-      document.upload.url
+      document.upload.url(Rails.application.config.enable_responsive_images ? :xlarge : nil)
     else
       preview_url
     end

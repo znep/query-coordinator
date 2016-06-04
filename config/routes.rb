@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       put 'stories/:uid/permissions' => 'permissions#update'
 
       get 'getty-images/search' => 'getty_images#search'
-      get 'getty-images/:id' => 'getty_images#show'
+      get 'getty-images/:id' => 'getty_images#show', as: 'getty_image'
     end
   end
 

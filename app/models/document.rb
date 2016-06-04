@@ -67,7 +67,7 @@ class Document < ActiveRecord::Base
   # application/x-download. We convert the image to its relevant MIME type here before
   # sending it off to Paperclip and S3.
   def set_content_type
-    extension = File.extname(URI.parse(self.upload.url).path)[1..-1]
+    extension = File.extname(URI.parse(self.upload.url).path)[1..-1].downcase
     self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
   end
 

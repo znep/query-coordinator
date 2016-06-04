@@ -138,4 +138,30 @@ RSpec.describe Document, type: :model do
       expect(subject.attachment_styles_from_thumbnail_sizes).to eq(expected)
     end
   end
+
+  describe '#set_content_type' do
+    let(:subject) { FactoryGirl.build(:document) }
+    let(:extension) { 'jpg' }
+    let(:upload_url) { "http://example.com/path/to/file/file.#{extension}" }
+
+    before do
+      allow(subject.upload).to receive(:url).and_return(upload_url)
+    end
+
+    it 'sets content type on document' do
+      expect(subject.upload.content_type).to eq('image/png')
+      subject.set_content_type
+      expect(subject.upload.content_type).to eq('image/jpeg')
+    end
+
+    context 'when extension is in all caps' do
+      let(:extension) { 'JPG' }
+
+      it 'sets content type correctly' do
+        expect(subject.upload.content_type).to eq('image/png')
+        subject.set_content_type
+        expect(subject.upload.content_type).to eq('image/jpeg')
+      end
+    end
+  end
 end

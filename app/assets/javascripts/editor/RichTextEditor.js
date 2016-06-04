@@ -108,15 +108,12 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
 
     _callWithContentDocumentIfPresent(
       function(contentDocument) {
-        var headElement;
-        var $theme;
-        var href;
-
-        headElement = contentDocument.querySelector('head');
-        $theme = $(theme);
-        href = $theme.attr('href');
-
-        if (!_(headElement.children).invoke('getAttribute', 'href').contains(href)) {
+        // See if any of the elements in <head> have our theme's href.
+        // If not, we need to load our theme.
+        // Querying this via a css selector (i.e., [href="foobar"]) is expensive.
+        var headElement = contentDocument.querySelector('head');
+        var hrefsInHead = _.invoke(headElement.children, 'getAttribute', 'href');
+        if (!_.contains(hrefsInHead, $(theme).attr('href'))) {
           $(headElement).append($(theme));
         }
       }
@@ -134,6 +131,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
 
         htmlElement = contentDocument.documentElement;
         currentClasses = htmlElement ? htmlElement.getAttribute('class') : null;
+        var newClasses;
 
         if (currentClasses) {
 
@@ -148,8 +146,11 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
             StorytellerUtils.format('theme-{0}', theme)
           );
 
-          htmlElement.setAttribute('class', newClassList.join(' '));
-          _updateContentHeight();
+          newClasses = newClassList.join(' ');
+          if (htmlElement.getAttribute('class') !== newClasses) {
+            htmlElement.setAttribute('class', newClasses);
+            _updateContentHeight();
+          }
         }
       }
     );

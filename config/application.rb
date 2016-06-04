@@ -77,7 +77,7 @@ module Frontend
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'], {
+    config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
       :namespace => 'webapp',
       :check_size => false,
       :expires_in => 1.day,

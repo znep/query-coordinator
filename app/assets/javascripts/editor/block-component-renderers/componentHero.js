@@ -55,6 +55,8 @@ export default function componentHero(componentData, theme, options) {
     } else if (notEmpty(newComponentData)) {
       renderHero($this, newComponentData);
     }
+
+    updateHeight();
   }
 
   function onFirstRender() {
@@ -107,8 +109,6 @@ export default function componentHero(componentData, theme, options) {
     onFirstRender,
     onDataChanged
   );
-
-  updateHeight();
 
   // Delegate to child components.
   if (getOptions(componentData).editMode && this.find('.hero-text').length > 0) {

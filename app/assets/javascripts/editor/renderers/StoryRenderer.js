@@ -188,14 +188,19 @@ export default function StoryRenderer(options) {
       var componentIndex = StorytellerUtils.findClosestAttribute(event.target, 'data-component-index');
 
       var blockContent = event.originalEvent.detail.content;
+      var editor = event.originalEvent.detail.editor;
 
-      dispatcher.dispatch({
-        action: Actions.BLOCK_UPDATE_COMPONENT,
-        blockId: blockId,
-        componentIndex: componentIndex,
-        type: 'html',
-        value: blockContent
-      });
+      var currentContent = _.get(storyStore.getBlockComponentAtIndex(blockId, componentIndex), 'value');
+
+      if (editor.contentDiffersFrom(currentContent)) {
+        dispatcher.dispatch({
+          action: Actions.BLOCK_UPDATE_COMPONENT,
+          blockId: blockId,
+          componentIndex: componentIndex,
+          type: 'html',
+          value: blockContent
+        });
+      }
     });
 
     $container.on('rich-text-editor::height-change', _renderStory);

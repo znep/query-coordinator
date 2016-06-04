@@ -110,6 +110,10 @@ class Block < ActiveRecord::Base
         # We had some old code where blocks were not saved properly.
         # This prevents breakage if loading those blocks' components
         if component['type'] == 'html' && component.has_key?('value')
+          # WARNING: This will convert character entities that have no
+          # semantic meaning in HTML (like &raquo; and &nbsp') into their
+          # UTF-8 counterparts. Things like &amp; and &lt; will be left
+          # alone, as they do have semantic meaning in HTML.
           component['value'] = Sanitize.fragment(
             component['value'],
             SANITIZE_CONFIG['html']

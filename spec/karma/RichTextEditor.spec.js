@@ -288,6 +288,25 @@ describe('RichTextEditor', function() {
       });
     });
 
+    describe('contentDiffersFrom', function() {
+      it('returns false for identical content', function() {
+        editor.setContent('foobar');
+        assert.isFalse(editor.contentDiffersFrom('foobar'));
+      });
+      it('returns false for content that differs only in how special characters are represented', function() {
+        editor.setContent('foobar&nbsp;baz');
+        assert.isFalse(editor.contentDiffersFrom('foobar\xa0baz'));
+        assert.isFalse(editor.contentDiffersFrom('foobar&nbsp;baz'));
+        editor.setContent('foobar\xa0baz');
+        assert.isFalse(editor.contentDiffersFrom('foobar\xa0baz'));
+        assert.isFalse(editor.contentDiffersFrom('foobar&nbsp;baz'));
+      });
+      it('returns true for content differing in letter content', function() {
+        editor.setContent('foobar');
+        assert.isTrue(editor.contentDiffersFrom('baz'));
+      });
+    });
+
     describe('content height', function() {
       var body;
       beforeEach(function() {

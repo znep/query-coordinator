@@ -72,25 +72,28 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
    * user-initiated action is that any sanitization will not be
    * re-broadcast as a content change (so it doesn't end up in undo-redo).
    */
-  this.setContent = function(content) {
+  this.setContent = function(newContent) {
 
     if (_editor === null) {
       // Our iframe hasn't loaded yet.
       // Save the content so it is preloaded
       // once the iframe loads.
-      _contentToPreload = content;
+      _contentToPreload = newContent;
       return;
     }
 
-    var contentIsDifferent = (
-      _editor.getHTML().replace(/<br>/g, '') !==
-      content.replace(/<br>/g, '')
-    );
-
-    if (_editor && contentIsDifferent) {
-      _editor.setHTML(content);
+    if (_editor && this.contentDiffersFrom(newContent)) {
+      _editor.setHTML(newContent);
       _handleContentChange();
     }
+  };
+
+  this.contentDiffersFrom = function(otherContent) {
+    function uniformify(html) {
+      return _.unescape(html).replace(/<div>|<\/div>|<br>/g, '').replace(/&nbsp;/g, '\xa0');
+    }
+
+    return uniformify(_editor.getHTML()) !== uniformify(otherContent);
   };
 
   this.getContentHeight = function() {
@@ -113,7 +116,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
         $theme = $(theme);
         href = $theme.attr('href');
 
-        if ($(headElement).find('link[href="{0}"]'.format(href)).length === 0) {
+        if (!_(headElement.children).invoke('getAttribute', 'href').contains(href)) {
           $(headElement).append($(theme));
         }
       }
@@ -531,7 +534,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   function _broadcastContentChangeNow() {
     _emitEvent(
       'rich-text-editor::content-change',
-      { content: _editor.getHTML() }
+      { content: _editor.getHTML(), editor: _self }
     );
   }
 

@@ -63,12 +63,10 @@ class GettyImage < ActiveRecord::Base
 
     metadata = images_sdk.with_ids([getty_id]).execute
 
-    # We want to grab an image that is close to 2088 for now.
-    # This is in line with the largest screen resolution that we care to support
-    # for fullbleed images.
+    # Get the largest image we can get from getty since we generate thumbnails.
     download_metadata = metadata['images'][0]['download_sizes'].
       sort { |a, b| b['width'] <=> a['width'] }.
-      detect { |image| image['width'] < 2088 }
+      first
     mime_type = download_metadata['media_type']
 
     download_sdk = connect_sdk.download

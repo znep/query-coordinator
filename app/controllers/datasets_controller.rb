@@ -21,6 +21,11 @@ class DatasetsController < ApplicationController
       return render_forbidden('You do not have permission to create new datasets')
     end
     @view = nil # the templates expect a @view var (for reentrancy)
+    if FeatureFlags.derive(nil, request).ingress_reenter
+      render 'new'
+    else
+      render 'new-old'
+    end
   end
 
   def create

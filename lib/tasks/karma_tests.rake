@@ -46,6 +46,10 @@ namespace :test do
       run_karma('datasetLandingPage', args)
     end
 
+    task :importWizard, [:watch, :browser, :reporter] do |task, args|
+      run_karma('importWizard', args)
+    end
+
     task :oldUx, [:watch, :browser, :reporter] do |task, args|
       run_karma('oldUx', args)
     end

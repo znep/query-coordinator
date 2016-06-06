@@ -40,7 +40,7 @@
     &:first-child {
       padding-left: 0;
     }
-    a {
+    a, div {
       @include new-dataset-icons;
       @include border-radius(0.3em);
       background-color: #f7f7f7;
@@ -638,6 +638,19 @@
         width: 0.6em;
       }
     }
+  }
+
+}
+
+#reactWizard {
+  .importList {
+    display: block;
+  }
+  .uploadThrobber {
+    display: block;
+  }
+  .uploadFileFormats .type {
+    display: block;
   }
 }
 

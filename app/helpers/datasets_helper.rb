@@ -16,11 +16,14 @@ module DatasetsHelper
     options_for_select(options, current)
   end
 
-  def category_select_options(selected_category = nil)
-    cats = View.category_tree.values.sort_by { |o| o[:text] }.
+  def flatten_category_tree
+    View.category_tree.values.sort_by { |o| o[:text] }.
       map { |o| [o].concat((o[:children] || []).map { |cc|
         { text: ' -- ' + cc[:text], value: cc[:value] } }) }.flatten.map { |o| [o[:text], o[:value]] }
-    options_for_select(cats, selected_category)
+  end
+
+  def category_select_options(selected_category = nil)
+    options_for_select(flatten_category_tree, selected_category)
   end
 
   def license_options(selected_license = '')

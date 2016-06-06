@@ -2514,6 +2514,7 @@ en:
         headers: Headers
         headers_instructions: Headers should be ignored and not imported as data. Please indicate how many rows of your source file are headers
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
+        headline_interpolate: Specify how "{0}" should be imported.
         help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
         more_rows: More Rows
         name: Name
@@ -2533,6 +2534,7 @@ en:
         abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
         crs: Coordinate Reference System
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
+        headline_interpolate: Specify how "{0}" should be imported.
         layers_list: Layers to import
         name: Name
         pending: Please wait while we load your layers...

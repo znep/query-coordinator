@@ -17,6 +17,7 @@ if [ ! $COMPRESS_ASSETS = "true" ]; then
 fi
 bundle exec tools/unfukd_jammit
 bundle exec rake assets:unminified
+bundle exec rake assets:precompile
 for asset in public/packages/*.js; do
   if [ ! -s $asset ]; then
     echo "Jammit-built asset $asset has zero size. Something strange is brewin'."

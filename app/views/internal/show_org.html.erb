@@ -28,7 +28,7 @@
                   show_domain_path(domain_id: domain.cname)
                 )
               # Invalid CNAMEs will not resolve the route path.
-              rescue ActionController::RoutingError
+              rescue ActionController::RoutingError, ActionController::UrlGenerationError
                 content_tag :span, "#{domain.name} (#{domain.cname})", :class => 'invalidCname'
               end%></li>
           <%- end -%>

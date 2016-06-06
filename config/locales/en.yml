@@ -3413,6 +3413,7 @@ en:
       contact_information: Contact Information
       custom: Custom
       custom_error: Custom semantic class must be url.
+      described_by: Data Dictionary
       data_provided_by: Data Provided By
       data_provided_prompt: Individual or Organization
       data_provider_required: You must specify the data provider (attribution).
@@ -3423,6 +3424,7 @@ en:
       dataset_url_prompt: Enter the location of your external dataset
       default_row_label: Row
       delete: Delete
+      described_by_prompt: Enter a data dictionary link
       email_address: Email Address
       email_help: This address will not be displayed publicly. If left blank, it will default to your address
       existing_attachments: Existing Attachments

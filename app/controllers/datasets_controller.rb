@@ -1020,6 +1020,8 @@ class DatasetsController < ApplicationController
         entry = {}
         entry[:title] = source[:title] if source[:title].present?
         entry[:description] = source[:description] if source[:description].present?
+        entry[:describedBy] = source[:describedBy] if source[:describedBy].present?
+        entry[:describedByType] = source[:describedByType] if source[:describedByType].present?
         entry[:urls] = {}
         if source[:urls].present?
           source[:urls].select { |source_url| source_url[:url].present? }.each do |endpoint|

@@ -70,6 +70,19 @@
                   :id => nil,
                   :class => 'textPrompt') %>
               </div>
+               <%# Described By %>
+              <div class="line clearfix">
+                <%= label_tag('external_sources[][describedBy]', t('screens.edit_metadata.described_by')) %>
+                <%= text_field_tag("external_sources[][describedBy]", entry['describedBy'],
+                  :title => t('screens.edit_metadata.described_by_prompt'),
+                  :id => nil,
+                  :class => 'textPrompt') %>
+                <%= label_tag('external_sources[][describedByType]', t('screens.edit_metadata.file_type'), class: 'fileTypeLabel') %>
+                <%= text_field_tag('external_sources[][describedByType]', entry['describedByType'],
+                  id: nil,
+                  class: 'extensionField textPrompt',
+                  title: t('screens.edit_metadata.optional')) %>
+              </div>
               <%# links %>
               <div class="externalLinkBox">
                 <%- entry['urls'].try(:each_with_index) do |(key, value), link_index| -%>

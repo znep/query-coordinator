@@ -58,6 +58,11 @@
                   <%= format.upcase %> <%= size %>
                 </a>
               <%- end -%>
+              <%- if accessPoint['describedBy'].present? -%>
+              <a class="button" href="<%= accessPoint['describedBy'] %>" target="_blank">
+                <%= t('screens.edit_metadata.described_by') %>
+              </a>
+              <%- end -%>
             </div>
           </li>
         <%- else -%>

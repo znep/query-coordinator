@@ -68,7 +68,7 @@ describe ImportActivity do
         ImportActivity.new(activities_fixtures[1], users[1], views[1], views[2])
       ]
 
-      expect(ImportActivity.find_all_by_created_at_descending({:offset => 0, :limit => 30}, false)[:activities]).to eq(expected_activities)
+      expect(ImportActivity.find_all_by_created_at_descending({:offset => 0, :limit => 30})[:activities]).to eq(expected_activities)
     end
 
   end

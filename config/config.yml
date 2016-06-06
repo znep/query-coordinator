@@ -73,6 +73,9 @@ default: &default
     article_count: 3
     zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
     zendesk_section: 203977877
+  
+  # number of days that can pass until a deleted dataset can't be restored
+  restore_dataset_days: 5
 
 # Local development
 development: &development

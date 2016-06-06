@@ -1,3 +1,6 @@
+/* global prettyConfirm */
+/* eslint-disable no-alert */
+
 import { timeControl } from '../lib/admin-time-control';
 
 export function replaceTimestamps($parent) {
@@ -36,6 +39,27 @@ function dateRangeFromParams() {
     dateStart: () => _.first(range),
     dateEnd: () => _.last(range)
   };
+}
+
+function confirmDatasetRestore(source) {
+  const datasetName = source.dataset.datasetName;
+  const datasetId = source.dataset.datasetId;
+
+  if (!(datasetName || datasetId)) {
+    console.error(`ERROR: Couldn't find dataset name and/or dataset id when clicking restore button (got name: ${datasetName} and id: ${datasetId})`);
+    alert('Failed to restore dataset!');
+    return;
+  }
+
+  prettyConfirm($.t('screens.admin.jobs.index_page.restore_deleted_dataset_confirm', { dataset: datasetName }),
+    () =>
+    $.ajax({
+      url: `/views/${datasetId}.json?method=undelete`,
+      type: 'PATCH'
+    }).
+    done(() => location.reload()).
+    fail(() => alert('Failed to restore dataset!'))
+  );
 }
 
 $(() => {
@@ -86,4 +110,6 @@ $(() => {
   if (!$.urlParam(window.location.href, 'date_range')) {
     $timecontrol.val('');
   }
+
+  $('.restore-dataset').click((event) => confirmDatasetRestore(event.srcElement));
 });

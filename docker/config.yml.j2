@@ -160,6 +160,8 @@ default: &default
     zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
     zendesk_section: 203977877
 
+  restore_dataset_days: {{ RESTORE_DATASET_DAYS | default(5) }}
+
 development:
   <<: *default
 

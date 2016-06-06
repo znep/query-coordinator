@@ -27,7 +27,6 @@ class LogRefererMiddleware
 
       if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
-        logger.info "Attempting to log a page view to the #{domain} domain."
         @queue.push_metric(domain_id, 'page-views')
       end
 
@@ -51,7 +50,6 @@ class LogRefererMiddleware
         else
           # If the referrer and the domain aren't the same thing, we should
           # really tell someone about this by squawking at them over STOMP.
-          logger.info "Attempting to log referrer #{ref} for domain #{domain}."
 
           host = uri.scheme + "-" + uri.host
           path = uri.path

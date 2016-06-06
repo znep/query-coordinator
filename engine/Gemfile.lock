@@ -5,7 +5,7 @@ PATH
       rails (~> 4.2, >= 4.2.6)
 
 GEM
-  remote: https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)

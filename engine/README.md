@@ -8,10 +8,10 @@ A Rails engine that supplies common header, footer, and navigation elements for 
 
 ### From Artifactory
 
-Ensure the `ruby-local` artifactory source is in your Gemfile:
+Ensure the `ruby-virtual` artifactory source is in your Gemfile:
 
 ```ruby
-source 'https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 ```
 
 > Note: Sometimes bundler will complain if there is more than one `source` in the `Gemfile`. If that is the case, use the `source` property in the second example.
@@ -25,7 +25,7 @@ gem 'chrome', '~> 0.0.4'
 Or specify the source directly:
 
 ```ruby
-gem 'chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/'
+gem 'chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 ```
 
 ### From Source
@@ -382,19 +382,19 @@ $text_padding: 11px;
 ### Deploy to Socrata Artifactory
 
 To deploy gem to Artifactory Online ([See Artifactory OpsDoc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#)), follow
-the directions to setup your access to artifactory. If this doesn't work, perhaps artifactory changed its API. Click on `Set Me Up` on the [ruby-local repository page](https://socrata.artifactoryonline.com/socrata/webapp/#/artifacts/browse/tree/General/ruby-local) for official instructions.
+the directions to setup your access to artifactory. If this doesn't work, perhaps artifactory changed its API. Click on `Set Me Up` on the [ruby-virtual repository page](https://socrata.artifactoryonline.com/socrata/webapp/#/artifacts/browse/tree/General/ruby-virtual) for official instructions.
 
 Update `~/.gemrc` to include artifactory source. You will need to grab the encrypted password like [this](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#heading=h.4hnxvstj4v5v).
 NOTE! If your username contains an @, replace it with %40.
 
 ```
-gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.com/socrata/api/gems/ruby-local/
+gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual/
 ```
 
 Add `API_KEY` to `~/.gem/credentials` file:
 
 ```
-curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/api/v1/api_key.yaml
+curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual/api/v1/api_key.yaml
 cat ~/.gem/credentials
 chmod 0600 ~/.gem/credentials
 ```
@@ -402,7 +402,7 @@ chmod 0600 ~/.gem/credentials
 Ensure $RUBYGEMS_HOST is set in environment:
 
 ```
-export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local
+export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual
 ```
 
 Build them gem and push it to artifactory:

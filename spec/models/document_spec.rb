@@ -163,5 +163,14 @@ RSpec.describe Document, type: :model do
         expect(subject.upload.content_type).to eq('image/jpeg')
       end
     end
+
+    context 'when extension cannot be read' do
+      let(:upload_url) { "http://example.com/path/to/file/file_without_extension" }
+
+      it 'raises an exception' do
+        expect { subject.set_content_type }.to raise_error(MissingContentTypeError)
+        expect(subject.upload.content_type).to eq('image/png') # doesn't change after raising
+      end
+    end
   end
 end

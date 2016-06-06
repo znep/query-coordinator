@@ -18,6 +18,8 @@
 #
 #  index_documents_on_status  (status)
 
+class MissingContentTypeError < StandardError; end
+
 class Document < ActiveRecord::Base
   validates :story_uid, presence: true
   validates :created_by, presence: true, format: FOUR_BY_FOUR_PATTERN
@@ -67,7 +69,8 @@ class Document < ActiveRecord::Base
   # application/x-download. We convert the image to its relevant MIME type here before
   # sending it off to Paperclip and S3.
   def set_content_type
-    extension = File.extname(URI.parse(self.upload.url).path)[1..-1].downcase
+    extension = File.extname(URI.parse(self.upload.url).path)[1..-1].to_s.downcase
+    raise MissingContentTypeError.new if extension.blank?
     self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
   end
 

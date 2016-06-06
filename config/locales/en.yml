@@ -1986,6 +1986,7 @@ en:
           import_activity: Import Activity
           publish: Publish
           replace: Replace
+          restore: Restore
           type: Type
           upsert: Upsert
           working_copy: Working Copy

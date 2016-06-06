@@ -1107,7 +1107,7 @@ class DatasetsController < ApplicationController
   def canonical_path_proc
     Proc.new do |params|
       composite_params = @view.route_params
-      composite_params.merge!(row_id: @row['sid']) unless @row.nil?
+      composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
       composite_params.merge!(params || {})
 
       if @row

@@ -693,10 +693,23 @@ class View < Model
   end
 
   def get_row_by_index(row_index)
+    url =
+      if use_soda2?
+        params = {}
+        params['$$exclude_system_fields'] = false
+        params['$offset'] = row_index
+        params['$limit'] = 1
+        "/id/#{id}.json?#{params.to_param}"
+      else
+        params = {}
+        params['start'] = row_index
+        params['length'] = 1
+        params['method'] = 'getByIds'
+        params['asHashes'] = true
+        "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+      end
     parse_json_with_max_nesting(
-      CoreServer::Base.connection.get_request(
-        "/#{self.class.name.pluralize.downcase}/#{id}/" +
-        "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true",
+      CoreServer::Base.connection.get_request(url,
         { 'X-Socrata-Federation' => 'Honey Badger' }))[0]
   end
 

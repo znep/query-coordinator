@@ -11,7 +11,7 @@ module SiteChromeHelper
   end
 
   def site_chrome_javascript_tag
-    javascript_include_tag('/asset_pipeline/chrome/site_chrome')
+    javascript_include_tag('/asset_pipeline/chrome/application')
   end
 
 end

@@ -62,7 +62,7 @@ GEM
       rubyzip (>= 0.9.5)
     builder (3.2.2)
     byebug (9.0.5)
-    chrome (0.0.9)
+    chrome (0.0.10)
       rails (~> 4.2, >= 4.2.6)
     cistern (2.3.0)
     closure-compiler (1.1.12)
@@ -342,7 +342,7 @@ DEPENDENCIES
   awesome_print
   axlsx (~> 1.3.4)
   byebug
-  chrome (~> 0.0.9)
+  chrome (~> 0.0.10)
   closure-compiler
   dalli (~> 2.7, >= 2.7.6)
   diplomat

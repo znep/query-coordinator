@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    chrome (0.0.9)
+    chrome (0.0.10)
       rails (~> 4.2, >= 4.2.6)
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
@@ -86,9 +86,9 @@ GEM
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     method_source (0.8.2)
-    mime-types (3.0)
+    mime-types (3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0221)
+    mime-types-data (3.2016.0521)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
     multi_xml (0.5.5)

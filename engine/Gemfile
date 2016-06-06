@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/'
 
 # Declare your gem's dependencies in chrome.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and

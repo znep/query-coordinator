@@ -41,7 +41,7 @@ export default function CollaboratorsDataProvider(storyUid) {
   this.getCollaborators = function() {
     return new Promise(function(resolve, reject) {
 
-      httpRequest('GET', urls.read, 'json').
+      httpRequest('GET', urls.read).
         then(function(grants) {
           var promises;
 
@@ -83,7 +83,7 @@ export default function CollaboratorsDataProvider(storyUid) {
 
       userUrl = StorytellerUtils.format('/api/users/{0}.json', collaborator.userId);
 
-      return httpRequest('GET', userUrl, 'json').
+      return httpRequest('GET', userUrl).
         then(
           function(json) {
             collaborator.userEmail = json.email;

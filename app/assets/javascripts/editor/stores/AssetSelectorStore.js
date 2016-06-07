@@ -772,7 +772,7 @@ export default function AssetSelectorStore() {
       obeUid
     );
 
-    return httpRequest('GET', migrationsUrl, 'json').
+    return httpRequest('GET', migrationsUrl).
       then(
         function(migrationData) {
           return _getView(domain, migrationData.nbeId);
@@ -793,7 +793,7 @@ export default function AssetSelectorStore() {
       uid
     );
 
-    return httpRequest('GET', viewUrl, 'json').
+    return httpRequest('GET', viewUrl).
       then(
         function(viewData) {
           // Retcon the domain into the view data.

@@ -40,8 +40,6 @@ class ImageComponent
   end
 
   def document
-    return nil unless component_value.present?
-
     @document ||= if document_id.present?
       Document.find_by_id(document_id)
     elsif image_url =~ %r{getty-images/(.+)}
@@ -49,6 +47,5 @@ class ImageComponent
     else
       nil
     end
-    @document
   end
 end

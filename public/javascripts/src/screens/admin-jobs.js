@@ -82,8 +82,8 @@ $(() => {
     {
       text: $.t('plugins.daterangepicker.last_3_days'),
       previousText: $.t('plugins.daterangepicker.last_3_days'),
-      dateStart: () => Date.today().addDays(-3),
-      dateEnd: () => Date.parse('yesterday'),
+      dateStart: () => Date.today().addDays(-2),
+      dateEnd: () => Date.today(),
       enabled: true
     },
 

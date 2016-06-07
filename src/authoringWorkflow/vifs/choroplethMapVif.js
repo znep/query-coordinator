@@ -7,17 +7,14 @@ export default {
     baseLayerUrl: null,
     baseLayerOpacity: 0.8,
     computedColumnName: null,
-    defaultExtent: {
-      southwest: [Infinity, Infinity],
-      northeast: [Infinity, Infinity]
-    },
+    // defaultExtent: {
+    //   southwest: [Infinity, Infinity],
+    //   northeast: [Infinity, Infinity]
+    // },
     defaultFeatureStrokeWidth: 1,
     highlightFeatureStrokeWidth: 4,
     legend: {
       type: 'continuous',
-      negativeColor: null,
-      positiveColor: null,
-      zeroColor: null
     },
     localization: {
       'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
@@ -30,10 +27,10 @@ export default {
     mapMinZoom: 1,
     mapZoomAnimation: false,
     maxJenksClassBreaks: 7,
-    savedExtent: {
-      southwest: [Infinity, Infinity],
-      northeast: [Infinity, Infinity]
-    },
+    // savedExtent: {
+    //   southwest: [Infinity, Infinity],
+    //   northeast: [Infinity, Infinity]
+    // },
     shapefile: {
       columns: {
         name: '__SOCRATA_HUMAN_READABLE_NAME__',
@@ -59,13 +56,13 @@ export default {
         domain: '',
         measure: {
           columnName: null,
-          aggregationFunction: null
+          aggregationFunction: 'count'
         },
         type: 'socrata.soql',
         filters: []
       },
       label: null,
-      type: 'choropleth',
+      type: 'choroplethMap',
       unit: {
         one: 'One',
         other: 'Other'

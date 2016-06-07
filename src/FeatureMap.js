@@ -203,7 +203,7 @@ $.fn.socrataFeatureMap = function(vif) {
   function _handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif), newVif.configuration.useOriginHost);
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0), newVif.configuration.useOriginHost);
 
     renderIfReady();
   }
@@ -331,7 +331,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
     var payload = event.originalEvent.detail;
 
-    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
     var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}{5}'.
       format(
         payload.rowCount,

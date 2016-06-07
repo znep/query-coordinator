@@ -6,6 +6,7 @@ var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
+var VifHelpers = require('./helpers/VifHelpers');
 
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -22,27 +23,19 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  */
 $.fn.socrataChoroplethMap = function(vif) {
 
-  // Verify important properties got passed in
+  vif = VifHelpers.migrateVif(vif);
+
   utils.assertHasProperties(
     vif,
-    'columnName',
-    'configuration',
-    'datasetUid',
-    'domain',
-    'unit'
-  );
-
-  utils.assertHasProperties(
-    vif.unit,
-    'one',
-    'other'
-  );
-
-  utils.assertHasProperties(
-    vif.configuration,
-    'computedColumnName',
-    'localization',
-    'shapefile'
+    'configuration.localization',
+    'configuration.computedColumnName',
+    'configuration.shapefile.primaryKey',
+    'configuration.shapefile.uid',
+    'series[0].dataSource.dimension.columnName',
+    'series[0].dataSource.domain',
+    'series[0].dataSource.datasetUid',
+    'series[0].unit.one',
+    'series[0].unit.other'
   );
 
   utils.assertHasProperties(
@@ -53,12 +46,6 @@ $.fn.socrataChoroplethMap = function(vif) {
     'FLYOUT_SELECTED_NOTICE'
   );
 
-  utils.assertHasProperties(
-    vif.configuration.shapefile,
-    'primaryKey',
-    'uid'
-  );
-
   /**
    * Setup visualization
    */
@@ -66,9 +53,13 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   var visualization = new ChoroplethMap($element, vif);
 
+  var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+  var domain = _.get(vif, 'series[0].dataSource.domain');
+  var datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+
   // Setup Data Providers
   var shapefileMetadataProviderConfig = {
-    domain: vif.domain,
+    domain: domain,
     datasetUid: vif.configuration.shapefile.uid
   };
 
@@ -77,8 +68,8 @@ $.fn.socrataChoroplethMap = function(vif) {
   );
 
   var datasetGeospaceDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.datasetUid
+    domain: domain,
+    datasetUid: datasetUid
   };
 
   var datasetGeospaceDataProvider = new GeospaceDataProvider(
@@ -86,7 +77,7 @@ $.fn.socrataChoroplethMap = function(vif) {
   );
 
   var shapefileGeospaceDataProviderConfig = {
-    domain: vif.domain,
+    domain: domain,
     datasetUid: vif.configuration.shapefile.uid
   };
 
@@ -95,8 +86,8 @@ $.fn.socrataChoroplethMap = function(vif) {
   );
 
   var soqlDataProviderConfig = {
-    domain: vif.domain,
-    datasetUid: vif.datasetUid
+    domain: domain,
+    datasetUid: datasetUid
   };
 
   var unfilteredSoqlDataProvider = new SoqlDataProvider(
@@ -156,7 +147,7 @@ $.fn.socrataChoroplethMap = function(vif) {
   }
 
   featureExtentRequest = datasetGeospaceDataProvider.
-    getFeatureExtent(vif.columnName).
+    getFeatureExtent(columnName).
     // If the request has succeeded, return the response (using _.identity());
     // if it failed then log the resulting error.
     then(
@@ -197,13 +188,14 @@ $.fn.socrataChoroplethMap = function(vif) {
     );
 
   function _getRenderOptions(vifToRender) {
+    var filters = _.get(vifToRender, 'series[0].filters', []);
 
     return {
       baseLayer: {
         url: vifToRender.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
         opacity: vifToRender.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
       },
-      showFiltered: vifToRender.filters.length > 0,
+      showFiltered: filters > 0,
       vif: vifToRender
     };
   }
@@ -214,8 +206,8 @@ $.fn.socrataChoroplethMap = function(vif) {
   function _updateData(vifToRender) {
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender);
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender);
+    var aggregationClause = SoqlHelpers.aggregationClause(vifToRender, 0, 'measure');
+    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender, 0);
     var unfilteredQueryString = BASE_QUERY.format(
       vifToRender.configuration.computedColumnName,
       NAME_ALIAS,
@@ -322,13 +314,15 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
     var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
-    var ownFilterOperands = vifToRender.
-      filters.
+    var filters = _.get(vifToRender, 'series[0].filters', []);
+
+    var ownFilterOperands = filters.
       filter(
         function(filter) {
+          var columnName = _.get(vifToRender, 'series[0].dataSource.dimension.columnName');
 
           return (
-            (filter.columnName === vifToRender.columnName) &&
+            (filter.columnName === columnName) &&
             (filter.function === 'binaryComputedGeoregionOperator') &&
             (filter.arguments.computedColumnName === vifToRender.configuration.computedColumnName)
           );
@@ -652,13 +646,14 @@ $.fn.socrataChoroplethMap = function(vif) {
   function _handleSelection(event) {
     var payload = event.originalEvent.detail;
     var newVif = _.cloneDeep(_lastRenderedVif);
-    var ownFilterOperands = newVif.
-      filters.
+    var columnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
+    var filters = _.get(newVif, 'series[0].filters', []);
+    var ownFilterOperands = filters.
       filter(
         function(filter) {
 
           return (
-            (filter.columnName === newVif.columnName) &&
+            (filter.columnName === columnName) &&
             (filter.function === 'binaryComputedGeoregionOperator') &&
             (filter.arguments.computedColumnName === newVif.configuration.computedColumnName)
           );
@@ -670,12 +665,11 @@ $.fn.socrataChoroplethMap = function(vif) {
         }
       );
 
-    newVif.filters = newVif.
-      filters.
+    newVif.filters = filters.
       filter(function(filter) {
 
         return (
-          (filter.columnName !== newVif.columnName) &&
+          (filter.columnName !== columnName) &&
           (filter.function !== 'binaryComputedGeoregionOperator') &&
           (filter.arguments.computedColumnName !== newVif.configuration.computedColumnName)
         );
@@ -683,11 +677,10 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
 
-      newVif.
-        filters.
+      filters.
         push(
           {
-            'columnName': newVif.columnName,
+            'columnName': columnName,
             'function': 'binaryComputedGeoregionOperator',
             'arguments': {
               'computedColumnName': newVif.configuration.computedColumnName,
@@ -711,13 +704,12 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   function _handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
+    var type = _.get(newVif, 'series[0].type');
 
-    if (newVif.type !== 'choroplethMap') {
+    if (type !== 'choroplethMap') {
       throw new Error(
         'Cannot update VIF; old type: `choroplethMap`, new type: `{0}`.'.
-          format(
-            newVif.type
-          )
+          format(type)
         );
     }
 

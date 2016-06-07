@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 import {
-  REQUEST_DATASET_METADATA,
-  RECEIVE_DATASET_METADATA,
-  HANDLE_DATASET_METADATA_ERROR
+  REQUEST_METADATA,
+  RECEIVE_METADATA,
+  HANDLE_METADATA_ERROR
 } from '../actions';
 
 import defaultDatasetMetadata from '../defaultDatasetMetadata';
@@ -16,24 +16,27 @@ export default function datasetMetadata(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
-    case REQUEST_DATASET_METADATA:
+    case REQUEST_METADATA:
       state.isLoading = true;
-
       state.error = null;
       state.data = null;
+      state.curatedRegions = null;
+      state.phidippidiesMetadata = null;
       break;
 
-    case RECEIVE_DATASET_METADATA:
+    case RECEIVE_METADATA:
       state.isLoading = false;
-
+      state.error = null;
       state.data = action.datasetMetadata;
-      state.error = null;
+      state.curatedRegions = action.curatedRegions;
+      state.phidippidiesMetadata = action.phidippidiesMetadata;
       break;
 
-    case HANDLE_DATASET_METADATA_ERROR:
+    case HANDLE_METADATA_ERROR:
       state.isLoading = false;
-
       state.data = null;
+      state.curatedRegions = null;
+      state.phidippidiesMetadata = null;
       state.error = action.error;
       break;
   }

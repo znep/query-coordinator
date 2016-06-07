@@ -102,13 +102,13 @@ function aggregationClause(vif, seriesIndex, dimensionOrMeasure) {
     switch (aggregationFunction) {
 
       case 'sum':
-        return 'GROUP BY SUM(`{0}`)'.format(columnName);
+        return 'SUM(`{0}`)'.format(columnName);
 
       case 'count':
-        return 'GROUP BY COUNT(*)';
+        return 'COUNT(*)';
 
       default:
-        return 'GROUP BY `{0}`'.format(columnName);
+        return '`{0}`'.format(columnName);
     }
   }
 }

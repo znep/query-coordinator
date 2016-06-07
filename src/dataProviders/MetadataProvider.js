@@ -34,6 +34,24 @@ function MetadataProvider(config) {
     return Promise.resolve($.get(url));
   };
 
+  this.getCuratedRegions = function() {
+    var url = 'https://{0}/api/curated_regions'.format(
+      this.getConfigurationProperty('domain'),
+      this.getConfigurationProperty('datasetUid')
+    );
+
+    return Promise.resolve($.get(url));
+  };
+
+  this.getPhidippidiesMetadata = function() {
+    var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
+      this.getConfigurationProperty('domain'),
+      this.getConfigurationProperty('datasetUid')
+    );
+
+    return Promise.resolve($.get(url));
+  };
+
   this.getShapefileMetadata = function() {
     function makeRequest(url) {
       return new Promise(function(resolve, reject) {

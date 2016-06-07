@@ -4,7 +4,7 @@ import featureMapVif from './featureMapVif';
 import timelineChartVif from './timelineChartVif';
 
 export default () => _.cloneDeep({
-  choropleth: choroplethMapVif,
+  choroplethMap: choroplethMapVif,
   columnChart: columnChartVif,
   featureMap: featureMapVif,
   timelineChart: timelineChartVif

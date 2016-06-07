@@ -29,7 +29,6 @@
 
   <!-- Include external vendor -->
   <script type="text/javascript" src="./vendor.js"></script>
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
 
   <!-- Include bundle -->
   <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
@@ -44,14 +43,22 @@
       output.innerHTML = '';
       $chart.empty();
 
+      var choroplethDataSource = {
+        domain: 'dataspace.demo.socrata.com',
+        datasetUid: '52my-2pak'
+      };
+
+      var localDataSource = {
+        domain: 'localhost',
+        datasetUid: '8b44-hf5v'
+      };
+
       var authoringWorkflow = new AuthoringWorkflow(container, {
         vif: {
           series: [
             {
-              dataSource: {
-                domain: 'dataspace.demo.socrata.com',
-                datasetUid: 'r6t9-rak2'
-              },
+              // dataSource: choroplethDataSource,
+              dataSource: localDataSource,
               type: 'columnChart'
             }
           ]

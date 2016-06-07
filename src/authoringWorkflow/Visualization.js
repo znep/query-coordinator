@@ -4,7 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import { isValidTimelineChartVif, isValidFeatureMapVif, isValidColumnChartVif, getCurrentVif } from './selectors/vifAuthoring';
+import {
+  isValidTimelineChartVif,
+  isValidFeatureMapVif,
+  isValidColumnChartVif,
+  isValidChoroplethMapVif,
+  getCurrentVif
+} from './selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
   componentDidMount: function() {
@@ -32,17 +38,20 @@ export var Visualization = React.createClass({
         if (isValidColumnChartVif(this.props.vifAuthoring)) {
           $visualizationPreview.socrataSvgColumnChart(this.props.vif);
         }
-
         break;
       case 'timelineChart':
         if (isValidTimelineChartVif(this.props.vifAuthoring)) {
           $visualizationPreview.socrataSvgTimelineChart(this.props.vif);
         }
-
         break;
       case 'featureMap':
         if (isValidFeatureMapVif(this.props.vifAuthoring)) {
           $visualizationPreview.socrataFeatureMap(this.props.vif);
+        }
+        break;
+      case 'choroplethMap':
+        if (isValidChoroplethMapVif(this.props.vifAuthoring)) {
+          $visualizationPreview.socrataChoroplethMap(this.props.vif);
         }
 
         break;

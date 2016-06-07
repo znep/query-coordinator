@@ -4,7 +4,7 @@
  * @param {Object[]} ranges - Array of date-range objects to use for selecting default ranges
  * @param {Object} initialRange - Initial range to put into input; null is allowed and input will default to "today"
  */
-export function timeControl(input, ranges, initialRange) {
+export function timeControl(input, ranges, initialRange, showClearButton) {
   const today = Date.parse('today');
 
   const options = {
@@ -21,7 +21,9 @@ export function timeControl(input, ranges, initialRange) {
     rangeEndTitle: t('end_date'),
     nextLinkText: t('next'),
     prevLinkText: t('prev'),
-    doneButtonText: t('done')
+    doneButtonText: t('done'),
+    clearButtonText: t('clear'),
+    showClearButton: showClearButton
   };
 
   // set this conditionally because it blows up if you set it to undefined or null

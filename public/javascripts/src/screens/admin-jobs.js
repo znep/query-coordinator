@@ -101,7 +101,8 @@ $(() => {
   timeControl(
     $timecontrol,
     DEFAULT_DATE_RANGES,
-    dateRangeFromParams()
+    dateRangeFromParams(),
+    true
   );
 
   // blank out the input field if we don't have URL params for the date,

@@ -30,11 +30,15 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  */
 $.fn.socrataFeatureMap = function(vif) {
 
+  utils.assert(
+    _.isPlainObject(vif),
+    'You must pass in a valid VIF to use socrataFeatureMap'
+  );
+
   vif = VifHelpers.migrateVif(vif);
 
   utils.assertHasProperties(
     vif,
-    'configuration',
     'configuration.localization',
     'series[0].dataSource.dimension.columnName',
     'series[0].dataSource.datasetUid',
@@ -42,6 +46,12 @@ $.fn.socrataFeatureMap = function(vif) {
     'series[0].unit.one',
     'series[0].unit.other'
   );
+
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.dimension.columnName, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.domain, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
 
   utils.assertHasProperties(
     vif.configuration.localization,

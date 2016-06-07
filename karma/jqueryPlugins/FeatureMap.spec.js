@@ -25,6 +25,10 @@ describe('FeatureMap jQuery component', function() {
 
   var $container;
   var featureMapVIF = {
+    format: {
+      type: 'visualization_interchange_format',
+      version: 1
+    },
     domain: 'dataspace.demo.socrata.com',
     datasetUid: 'r6t9-rak2',
     columnName: 'category',

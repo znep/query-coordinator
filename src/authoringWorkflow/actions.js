@@ -36,13 +36,6 @@ export function requestMetadata() {
 }
 
 export var RECEIVE_METADATA = 'RECEIVE_METADATA';
-export function receiveMetadata() {
-  return {
-    type: RECEIVE_METADATA
-  };
-}
-
-export var RECEIVE_METADATA = 'RECEIVE_METADATA';
 export function receiveMetadata(resolutions) {
   return {
     type: RECEIVE_METADATA,

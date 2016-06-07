@@ -64,7 +64,7 @@ export var DataPane = React.createClass({
     var selectAttributes = {
       onChange: this.props.onChangeMeasure,
       defaultValue: defaultOptionKey,
-      name: "measure-selection",
+      name: 'measure-selection',
       disabled: isFeatureMap
     };
 
@@ -88,7 +88,7 @@ export var DataPane = React.createClass({
     var isFeatureMap = chartType === 'featureMap';
     var selectAttributes = {
       onChange: this.props.onChangeMeasureAggregation,
-      name: "measure-selection",
+      name: 'measure-aggregation-selection',
       disabled: isFeatureMap
     };
 

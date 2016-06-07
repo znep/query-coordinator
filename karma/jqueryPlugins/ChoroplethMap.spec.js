@@ -16,6 +16,10 @@ describe('ChoroplethMap jQuery component', function() {
   };
   var $container;
   var choroplethVIF = {
+    format: {
+      type: 'visualization_interchange_format',
+      version: 1
+    },
     aggregation: {
       columnName: null,
       'function': 'count'
@@ -77,7 +81,9 @@ describe('ChoroplethMap jQuery component', function() {
     describe('given invalid arguments', function() {
       it('should throw an error', function() {
 
-        assert.throws(function() { $container.socrataChoroplethMap(); });
+        assert.throws(function() {
+          $container.socrataChoroplethMap();
+        });
 
         // missing columnName
         assert.throws(function() {
@@ -265,7 +271,7 @@ describe('ChoroplethMap jQuery component', function() {
       $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
 
         assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
-        assert.equal(event.originalEvent.detail.filters.length, 1);
+        assert.equal(event.originalEvent.detail.series[0].dataSource.filters.length, 1);
         done();
       });
 

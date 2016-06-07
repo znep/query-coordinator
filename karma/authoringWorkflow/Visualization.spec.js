@@ -1,7 +1,5 @@
+import _ from 'lodash';
 import $ from 'jquery';
-
-import 'src/SvgColumnChart';
-import 'src/SvgTimelineChart';
 
 import renderComponent from './renderComponent';
 import { Visualization } from 'src/authoringWorkflow/Visualization';
@@ -32,6 +30,32 @@ function rendersChartType(props, jqueryFunctionName) {
 }
 
 describe('Visualization', function() {
+  var cachedSvgColumnChart;
+  var cachedSvgTimelineChart;
+  var cachedFeatureMap;
+  var cachedChoroplethMap;
+
+  beforeEach(function() {
+    cachedSvgColumnChart = $.fn.socrataSvgColumnChart;
+    $.fn.socrataSvgColumnChart = _.noop;
+
+    cachedSvgTimelineChart = $.fn.socrataSvgTimelineChart;
+    $.fn.socrataSvgTimelineChart = _.noop;
+
+    cachedFeatureMap = $.fn.socrataFeatureMap;
+    $.fn.socrataFeatureMap = _.noop;
+
+    cachedChoroplethMap = $.fn.socrataChoroplethMap;
+    $.fn.socrataChoroplethMap = _.noop;
+  });
+
+  afterEach(function() {
+    $.fn.socrataSvgColumnChart = cachedSvgColumnChart;
+    $.fn.socrataSvgTimelineChart = cachedSvgTimelineChart;
+    $.fn.socrataFeatureMap = cachedFeatureMap;
+    $.fn.socrataChoroplethMap = cachedChoroplethMap;
+  });
+
   it('with an invalid vif renders an empty <div>', function() {
     var element = renderComponent(Visualization, _.set(defaultProps(), 'vif', {}));
 
@@ -42,18 +66,50 @@ describe('Visualization', function() {
   describe('with a valid vif', function() {
     describe('when rendering a columnChart', function() {
       var props = defaultProps();
+
       _.set(props, 'vif.series[0].type','columnChart');
       _.set(props, 'vif.series[0].dataSource.dimension.columnName','example_dimension');
       _.set(props, 'vif.series[0].dataSource.measure.columnName','example_measure');
       _.set(props, 'vif.series[0].dataSource.datasetUid','exam-ples');
       _.set(props, 'vif.series[0].dataSource.domain','example.com');
+
       rendersChartType(props, 'socrataSvgColumnChart');
     });
 
     describe('when rendering a timelineChart', function() {
       var props = defaultProps();
-      _.set(props, 'vif.series[0].type','timelineChart');
+      _.set(props, 'vif.series[0].type', 'timelineChart');
+
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName', 'example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
+
       rendersChartType(props, 'socrataSvgTimelineChart');
+    });
+
+    describe('when rendering a featureMap', function() {
+      var props = defaultProps();
+      _.set(props, 'vif.series[0].type', 'featureMap');
+
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
+
+      rendersChartType(props, 'socrataFeatureMap');
+    });
+
+    describe('when renderings a choroplethMap', function() {
+      var props = defaultProps();
+
+      _.set(props, 'vif.series[0].type', 'choroplethMap');
+      _.set(props, 'vif.configuration.computedColumnName', '@computed_column');
+      _.set(props, 'vif.configuration.shapefile.uid', 'four-four');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
+
+      rendersChartType(props, 'socrataChoroplethMap');
     });
   });
 });

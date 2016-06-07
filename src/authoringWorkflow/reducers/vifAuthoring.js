@@ -2,8 +2,8 @@ import _ from 'lodash';
 
 import vifs from '../vifs';
 import {
-  RECEIVE_DATASET_METADATA,
-  HANDLE_DATASET_METADATA_ERROR,
+  RECEIVE_METADATA,
+  HANDLE_METADATA_ERROR,
   SET_DIMENSION,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
@@ -27,13 +27,13 @@ export default function vifAuthoring(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
-    case RECEIVE_DATASET_METADATA:
+    case RECEIVE_METADATA:
       forEachSeries(state, series => {
         series.dataSource.datasetUid = action.datasetMetadata.id;
       });
       break;
 
-    case HANDLE_DATASET_METADATA_ERROR:
+    case HANDLE_METADATA_ERROR:
       forEachSeries(state, series => {
         series.dataSource.datasetUid = null;
       });

@@ -13,11 +13,16 @@ function defaultProps() {
       vifs: vifs(),
       selectedVisualizationType: vifs().columnChart.series[0].type
     },
-    datasetMetadata: defaultDatasetMetadata,
+    datasetMetadata: _.merge({}, defaultDatasetMetadata, {
+      data: {},
+      phidippidiesMetadata: {columns: []}
+    }),
     onChangeDatasetUid: sinon.stub(),
     onChangeDimension: sinon.stub(),
     onChangeMeasure: sinon.stub(),
-    onChangeChartType: sinon.stub()
+    onChangeMeasureAggregation: sinon.stub(),
+    onChangeChartType: sinon.stub(),
+    onChangeRegion: sinon.stub()
   };
 }
 
@@ -29,11 +34,13 @@ describe('DataPane', function() {
   });
 
   describe('rendering', function() {
-    it('renders a datasetUid input', function() {
-      expect(component.querySelector('input[type="text"]')).to.exist;
-    });
-
     describe('without data', function() {
+      beforeEach(function() {
+        var props = defaultProps();
+        props.datasetMetadata.data = null;
+        component = renderComponent(DataPane, props);
+      });
+
       it('does not render dropdowns', function() {
         expect(component.querySelectorAll('select').length).to.equal(0);
       });
@@ -47,11 +54,12 @@ describe('DataPane', function() {
         component = renderComponent(DataPane, props);
       });
 
-      it('renders three dropdowns', function() {
-        expect(component.querySelectorAll('select').length).to.equal(3);
+      it('renders four dropdowns', function() {
+        expect(component.querySelectorAll('select').length).to.equal(4);
 
         expect(component.querySelector('[name="dimension-selection"]')).to.exist
         expect(component.querySelector('[name="measure-selection"]')).to.exist
+        expect(component.querySelector('[name="measure-aggregation-selection"]')).to.exist
         expect(component.querySelector('[name="chart-type-selection"]')).to.exist
       });
     });
@@ -60,6 +68,13 @@ describe('DataPane', function() {
   describe('events', function() {
     var props;
     var component;
+    var emitsDropdownEvent = function(selector, eventName) {
+      it(`should emit an ${eventName} event.`, function() {
+        var dropdown = component.querySelector(selector)
+        TestUtils.Simulate.change(dropdown);
+        sinon.assert.calledOnce(props[eventName]);
+      });
+    };
 
     beforeEach(function() {
       props = defaultProps();
@@ -68,39 +83,33 @@ describe('DataPane', function() {
       component = renderComponent(DataPane, props);
     });
 
-    describe('when changing the dataset UID', function() {
-      it('should emit an onChangeDatasetUid event', function() {
-        var input = component.querySelector('input[type="text"]');
-        TestUtils.Simulate.change(input);
-
-        sinon.assert.calledOnce(props.onChangeDatasetUid);
-      });
-    });
-
     describe('when changing the dimension dropdown', function() {
-      it('should emit an onChangeDimension event', function() {
-        var dropdown = component.querySelector('[name="dimension-selection"]')
-        TestUtils.Simulate.change(dropdown);
-
-        sinon.assert.calledOnce(props.onChangeDimension);
-      });
+      emitsDropdownEvent('[name="dimension-selection"]', 'onChangeDimension');
     });
 
     describe('when changing the measure dropdown', function() {
-      it('should emit an onChangeMeasure event', function() {
-        var dropdown = component.querySelector('[name="measure-selection"]')
-        TestUtils.Simulate.change(dropdown);
+      emitsDropdownEvent('[name="measure-selection"]', 'onChangeMeasure');
+    });
 
-        sinon.assert.calledOnce(props.onChangeMeasure);
-      });
+    describe('when changing the measure aggregation dropdown', function() {
+      emitsDropdownEvent('[name="measure-aggregation-selection"]', 'onChangeMeasureAggregation');
     });
 
     describe('when changing the chart type dropdown', function() {
-      it('should emit an onChangeChartType event', function() {
-        var dropdown = component.querySelector('[name="chart-type-selection"]')
-        TestUtils.Simulate.change(dropdown);
+      emitsDropdownEvent('[name="chart-type-selection"]', 'onChangeChartType');
+    });
 
-        sinon.assert.calledOnce(props.onChangeChartType);
+    describe('when rendering a Choropleth map', function() {
+      beforeEach(function() {
+        props = defaultProps();
+        props.datasetMetadata.data = {};
+        props.vifAuthoring.selectedVisualizationType = 'choroplethMap';
+
+        component = renderComponent(DataPane, props);
+      });
+
+      describe('when changing the region dropdown', function() {
+        emitsDropdownEvent('[name="region-selection"]', 'onChangeRegion');
       });
     });
   });

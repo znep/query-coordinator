@@ -35,36 +35,41 @@ function FlyoutRenderer() {
    */
 
   function _renderFlyoutTemplate() {
+    if ($('#socrata-flyout').length === 0) {
+      var flyoutContent = $(
+        '<div>',
+        {
+          'class': 'socrata-flyout-content'
+        }
+      );
 
-    var flyoutContent = $(
-      '<div>',
-      {
-        'class': 'socrata-flyout-content'
-      }
-    );
+      var flyoutHint = $(
+        '<div>',
+        {
+          'class': 'socrata-flyout-hint'
+        }
+      );
 
-    var flyoutHint = $(
-      '<div>',
-      {
-        'class': 'socrata-flyout-hint'
-      }
-    );
+      var flyout = $(
+        '<div>',
+        {
+          id: 'socrata-flyout'
+        }
+      ).append([
+        flyoutContent,
+        flyoutHint
+      ]);
 
-    var flyout = $(
-      '<div>',
-      {
-        id: 'socrata-flyout'
-      }
-    ).append([
-      flyoutContent,
-      flyoutHint
-    ]);
+      _flyout = flyout;
+      _flyoutContent = flyoutContent;
+      _flyoutHint = flyoutHint;
 
-    _flyout = flyout;
-    _flyoutContent = flyoutContent;
-    _flyoutHint = flyoutHint;
-
-    $('body').append(flyout);
+      $('body').append(flyout);
+    } else {
+      _flyout = $('#socrata-flyout');
+      _flyoutContent = _flyout.find('.socrata-flyout-content');
+      _flyoutHint = _flyout.find('.socrata-flyout-hint');
+    }
   }
 
   /**

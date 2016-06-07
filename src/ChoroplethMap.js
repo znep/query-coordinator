@@ -23,6 +23,11 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  */
 $.fn.socrataChoroplethMap = function(vif) {
 
+  utils.assert(
+    _.isPlainObject(vif),
+    'You must pass in a valid VIF to use socrataChoroplethMap'
+  );
+
   vif = VifHelpers.migrateVif(vif);
 
   utils.assertHasProperties(
@@ -37,6 +42,15 @@ $.fn.socrataChoroplethMap = function(vif) {
     'series[0].unit.one',
     'series[0].unit.other'
   );
+
+  utils.assertIsOneOfTypes(vif.configuration.computedColumnName, 'string');
+  utils.assertIsOneOfTypes(vif.configuration.shapefile.primaryKey, 'string');
+  utils.assertIsOneOfTypes(vif.configuration.shapefile.uid, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.dimension.columnName, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.domain, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
+  utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
 
   utils.assertHasProperties(
     vif.configuration.localization,
@@ -188,7 +202,7 @@ $.fn.socrataChoroplethMap = function(vif) {
     );
 
   function _getRenderOptions(vifToRender) {
-    var filters = _.get(vifToRender, 'series[0].filters', []);
+    var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
     return {
       baseLayer: {
@@ -314,7 +328,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
     var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
-    var filters = _.get(vifToRender, 'series[0].filters', []);
+    var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
     var ownFilterOperands = filters.
       filter(
@@ -647,7 +661,7 @@ $.fn.socrataChoroplethMap = function(vif) {
     var payload = event.originalEvent.detail;
     var newVif = _.cloneDeep(_lastRenderedVif);
     var columnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
-    var filters = _.get(newVif, 'series[0].filters', []);
+    var filters = _.get(newVif, 'series[0].dataSource.filters', []);
     var ownFilterOperands = filters.
       filter(
         function(filter) {

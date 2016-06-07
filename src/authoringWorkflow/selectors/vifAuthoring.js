@@ -61,13 +61,6 @@ export const isValidChoroplethMapVif = createSelector(
   }
 );
 
-export const isColumnChart = createSelector(
-  getCurrentVif,
-  (vif) => {
-    return _.get(vif, 'series[0].type') === 'columnChart';
-  }
-);
-
 export const isValidColumnChartVif = createSelector(
   getDimension,
   getMeasure,
@@ -83,5 +76,30 @@ export const isValidColumnChartVif = createSelector(
   }
 );
 
-export const isValidFeatureMapVif = (state) => true;
-export const isValidTimelineChartVif = (state) => true;
+export const isValidFeatureMapVif = createSelector(
+  getDimension,
+  getDatasetUid,
+  getDomain,
+  (dimension, datasetUid, domain) => {
+    var hasDimension = _.isString(dimension.columnName);
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
+  }
+);
+
+export const isValidTimelineChartVif = createSelector(
+  getDimension,
+  getMeasure,
+  getDatasetUid,
+  getDomain,
+  (dimension, measure, datasetUid, domain) => {
+    var hasDimension = _.isString(dimension.columnName);
+    var hasMeasure = _.isString(measure.columnName);
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
+  }
+);

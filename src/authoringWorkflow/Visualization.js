@@ -23,17 +23,16 @@ export var Visualization = React.createClass({
 
   getInitialState: function() {
     return {
-      flyoutRenderer: null,
-      rowInspector: null
+      flyoutRenderer: null
     };
   },
 
   componentDidMount: function() {
     this.setState({
-      flyoutRenderer: new FlyoutRenderer(),
-      rowInspector: RowInspector.setup()
+      flyoutRenderer: new FlyoutRenderer()
     });
 
+    RowInspector.setup();
     this.renderVisualization();
   },
 

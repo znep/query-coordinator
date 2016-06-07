@@ -230,6 +230,9 @@ reenable_ui_for_nbe:
 restore_dataset_button:
   description: Show the Restore Dataset button on the data jobs page
   defaultValue: false
+restore_dataset_filter:
+  description: Whether or not to show the 'Restore' event filter on the data jobs page
+  defaultValue: false
 robots_txt_disallow_analytics_add:
   description: Adds "/analytics/add" to the Disallow list for robots.txt
   defaultValue: false

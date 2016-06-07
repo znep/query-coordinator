@@ -23,7 +23,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@govstories">
   <% block_images = @story.block_images(:large) -%>
-  <% unless block_images.empty? %>
+  <% if block_images.present? %>
     <meta name="twitter:image" content="<%= block_images.first %>">
   <% end %>
   <!-- Open Graph Sharing Metadata -->

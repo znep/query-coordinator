@@ -46,6 +46,8 @@ class ImageComponent
       Document.find_by_id(document_id)
     elsif image_url =~ %r{getty-images/(.+)}
       GettyImage.find_by_getty_id($1).try(:document)
+    else
+      nil
     end
     @document
   end

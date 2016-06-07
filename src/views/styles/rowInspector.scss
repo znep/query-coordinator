@@ -158,6 +158,7 @@ $action-btn-disabled-font-color: #c6c1bf;
   .tool-panel {
     display: inline-block;
     position: absolute;
+    z-index: 10000;
 
     .tool-panel-main {
       position: absolute;
@@ -359,6 +360,7 @@ $action-btn-disabled-font-color: #c6c1bf;
     padding: $pagination-vertical-padding $pagination-horizontal-padding;
     height: $pagination-height;
     line-height: normal;
+    font-size: 12px;
 
     &.visible {
       display: block;

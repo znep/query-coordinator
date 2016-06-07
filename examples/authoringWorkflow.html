@@ -48,9 +48,14 @@
         datasetUid: '52my-2pak'
       };
 
-      var localDataSource = {
-        domain: 'localhost',
-        datasetUid: '8b44-hf5v'
+      var ufoSightingsDataSource = {
+        domain: 'vertex-stories.test-socrata.com',
+        datasetUid: 'k6cs-ww27'
+      };
+
+      var featureMapDataSource = {
+        domain: 'dataspace.demo.socrata.com',
+        datasetUid: 'r6t9-rak2'
       };
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
@@ -58,7 +63,8 @@
           series: [
             {
               // dataSource: choroplethDataSource,
-              dataSource: localDataSource,
+              dataSource: ufoSightingsDataSource,
+              // dataSource: featureMapDataSource,
               type: 'columnChart'
             }
           ]

@@ -25,7 +25,7 @@ export var CustomizationTabPanes = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <div className="visualization-tab-panes">
         {_.map(this.props.tabs, (tab) => { return this.pane(tab); })}
       </div>
     );

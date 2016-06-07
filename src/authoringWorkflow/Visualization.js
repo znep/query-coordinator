@@ -4,6 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
+import RowInspector from '../views/RowInspector';
+import FlyoutRenderer from '../views/FlyoutRenderer';
+
 import {
   isValidTimelineChartVif,
   isValidFeatureMapVif,
@@ -13,7 +16,24 @@ import {
 } from './selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
+  propTypes: {
+    vif: React.PropTypes.object,
+    vifAuthoring: React.PropTypes.object
+  },
+
+  getInitialState: function() {
+    return {
+      flyoutRenderer: null,
+      rowInspector: null
+    };
+  },
+
   componentDidMount: function() {
+    this.setState({
+      flyoutRenderer: new FlyoutRenderer(),
+      rowInspector: RowInspector.setup()
+    });
+
     this.renderVisualization();
   },
 
@@ -25,35 +45,54 @@ export var Visualization = React.createClass({
     return !_.isEqual(this.props.vif, nextProps.vif);
   },
 
+  onFlyout: function(event) {
+    var payload = event.originalEvent.detail;
+
+    // Render/hide a flyout
+    if (payload !== null) {
+      this.state.flyoutRenderer.render(payload);
+    } else {
+      this.state.flyoutRenderer.clear();
+    }
+  },
+
   renderVisualization: function() {
-    var chartType = _.get(this.props.vif, 'series[0].type', null);
-    var $visualizationPreview = $(ReactDOM.findDOMNode(this)).
+    var self = this;
+    var onFlyout = event => this.onFlyout(event);
+    var chartType = _.get(self.props.vif, 'series[0].type', null);
+    var $visualizationPreview = $(ReactDOM.findDOMNode(self)).
       find('.visualization-preview');
 
     $visualizationPreview.
-      trigger('SOCRATA_VISUALIZATION_DESTROY');
+      trigger('SOCRATA_VISUALIZATION_DESTROY').
+      off('SOCRATA_VISUALIZATION_FLYOUT').
+      off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT').
+      off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT');
 
     switch (chartType) {
       case 'columnChart':
-        if (isValidColumnChartVif(this.props.vifAuthoring)) {
-          $visualizationPreview.socrataSvgColumnChart(this.props.vif);
+        if (isValidColumnChartVif(self.props.vifAuthoring)) {
+          $visualizationPreview.socrataSvgColumnChart(self.props.vif);
+          $visualizationPreview.on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
         }
         break;
       case 'timelineChart':
-        if (isValidTimelineChartVif(this.props.vifAuthoring)) {
-          $visualizationPreview.socrataSvgTimelineChart(this.props.vif);
+        if (isValidTimelineChartVif(self.props.vifAuthoring)) {
+          $visualizationPreview.socrataSvgTimelineChart(self.props.vif);
+          $visualizationPreview.on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
         }
         break;
       case 'featureMap':
-        if (isValidFeatureMapVif(this.props.vifAuthoring)) {
-          $visualizationPreview.socrataFeatureMap(this.props.vif);
+        if (isValidFeatureMapVif(self.props.vifAuthoring)) {
+          $visualizationPreview.socrataFeatureMap(self.props.vif);
+          $visualizationPreview.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', onFlyout);
         }
         break;
       case 'choroplethMap':
-        if (isValidChoroplethMapVif(this.props.vifAuthoring)) {
-          $visualizationPreview.socrataChoroplethMap(this.props.vif);
+        if (isValidChoroplethMapVif(self.props.vifAuthoring)) {
+          $visualizationPreview.socrataChoroplethMap(self.props.vif);
+          $visualizationPreview.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', onFlyout);
         }
-
         break;
     }
   },

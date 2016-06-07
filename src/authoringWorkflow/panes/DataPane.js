@@ -46,7 +46,12 @@ export var DataPane = React.createClass({
       })
     ];
 
-    return <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey} name="dimension-selection">{dimensionOptions}</select>;
+    return (
+      <div className="dimension-dropdown-container">
+        <label className="block-label">Dimension:</label>
+        <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey} name="dimension-selection">{dimensionOptions}</select>
+      </div>
+    );
   },
 
   measureDropdown: function() {
@@ -70,7 +75,12 @@ export var DataPane = React.createClass({
       })
     ];
 
-    return <select {...selectAttributes}>{measureOptions}</select>;
+    return (
+      <div className="measure-dropdown-container">
+        <label className="block-label">Measure:</label>
+        <select {...selectAttributes}>{measureOptions}</select>
+      </div>
+    );
   },
 
   measureAggregationDropdown: function() {
@@ -86,10 +96,15 @@ export var DataPane = React.createClass({
       return <option value={aggregationType.type} key={aggregationType.type}>{aggregationType.name}</option>;
     });
 
-    return <select {...selectAttributes}>{measureAggregationOptions}</select>;
+    return (
+      <div className="measure-dropdown-container">
+        <label className="block-label">Measure Aggregation:</label>
+        <select {...selectAttributes}>{measureAggregationOptions}</select>
+      </div>
+    );
   },
 
-  regionsDropdown: function() {
+  regionDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
     var defaultOptionKey = this.props.defaultOptionKey;
     var regions = getValidRegions(datasetMetadata);
@@ -102,7 +117,12 @@ export var DataPane = React.createClass({
       })
     ];
 
-    return <select onChange={this.props.onChangeRegion} defaultValue={defaultOptionKey} name="region-selection">{regionOptions}</select>;
+    return (
+      <div className="region-dropdown-container">
+        <label className="block-label">Region:</label>
+        <select onChange={this.props.onChangeRegion} defaultValue={defaultOptionKey} name="region-selection">{regionOptions}</select>
+      </div>
+    );
   },
 
   chartTypeDropdown: function() {
@@ -121,7 +141,12 @@ export var DataPane = React.createClass({
       })
     ];
 
-    return <select onChange={this.props.onChangeChartType} defaultValue={selectedVisualizationType} name="chart-type-selection">{chartTypeOptions}</select>;
+    return (
+      <div className="chart-type-dropdown-container">
+        <label className="block-label">Chart Type:</label>
+        <select onChange={this.props.onChangeChartType} defaultValue={selectedVisualizationType} name="chart-type-selection">{chartTypeOptions}</select>
+      </div>
+    );
   },
 
   render: function() {
@@ -141,13 +166,13 @@ export var DataPane = React.createClass({
     }
 
     if (hasData(datasetMetadata)) {
-      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
-      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
-      measureAggregationDropdown = <div>Measure Aggregation: {this.measureAggregationDropdown()}</div>;
-      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
+      dimensionDropdown = this.dimensionDropdown();
+      measureDropdown = this.measureDropdown();
+      measureAggregationDropdown = this.measureAggregationDropdown();
+      chartTypeDropdown = this.chartTypeDropdown();
 
       if (isChoroplethMap(this.props.vifAuthoring)) {
-        regionsDropdown = <div>Region: {this.regionsDropdown()}</div>;
+        regionsDropdown = this.regionDropdown();
       }
     }
 

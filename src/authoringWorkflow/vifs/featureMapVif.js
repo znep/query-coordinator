@@ -7,10 +7,10 @@ export default {
     baseLayerUrl: null,
     baseLayerOpacity: 0.8,
     datasetMetadata: false,
-    defaultExtent: {
-      southwest: [Infinity, Infinity],
-      northeast: [Infinity, Infinity]
-    },
+    // defaultExtent: {
+    //   southwest: [Infinity, Infinity],
+    //   northeast: [Infinity, Infinity]
+    // },
     hover: true,
     localization: {
       'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
@@ -28,10 +28,10 @@ export default {
     },
     locateUser: false,
     panAndZoom: true,
-    savedExtent: {
-      southwest: [Infinity, Infinity],
-      northeast: [Infinity, Infinity]
-    },
+    // savedExtent: {
+    //   southwest: [Infinity, Infinity],
+    //   northeast: [Infinity, Infinity]
+    // },
     useOriginHost: false
   },
   description: '',

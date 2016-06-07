@@ -228,68 +228,17 @@ RSpec.describe StoriesHelper, type: :helper do
     end
   end
 
-  describe '#document_from_component' do
-    let(:document) { FactoryGirl.create(:document) }
-
-    context 'when component references an uploaded image' do
-      let(:component) do
-        {
-          'documentId' => document.id,
-          'url' => 'http://downloaded-images/1234.png'
-        }
-      end
-
-      it 'returns the document' do
-        expect(document_from_component(component)).to eq(document)
-      end
-    end
-
-    context 'when document does not exist' do
-      let(:component) do
-        {
-          'documentId' => -1,
-          'url' => 'http://downloaded-images/1234.png'
-        }
-      end
-
-      it 'returns nil' do
-        expect(document_from_component(component)).to be_nil
-      end
-    end
-
-    context 'when component references a getty image' do
-      let(:getty_image) { FactoryGirl.create(:getty_image, document: document) }
-      let(:component) do
-        {
-          'documentId' => nil,
-          'url' => api_v1_getty_image_url(getty_image.getty_id)
-        }
-      end
-
-      context 'when getty_image has document' do
-        it 'returns the document' do
-          expect(document_from_component(component)).to eq(document)
-        end
-      end
-
-      context 'when getty_image has no document' do
-        let(:document) { nil }
-
-        it 'returns nil' do
-          expect(document_from_component(component)).to be_nil
-        end
-      end
-    end
-  end
-
   describe '#image_srcset_from_component' do
     let(:document) { FactoryGirl.create(:document) }
-    let(:component) do
-      {
-        'documentId' => 1234,
-        'url' => 'http://downloaded-images/1234.png'
-      }
-    end
+    let(:image_component) {
+      ImageComponent.new({
+        'type' => 'image',
+        'value' => {
+          'documentId' => 1234,
+          'url' => 'http://downloaded-images/1234.png'
+        }
+      })
+    }
 
     context 'when enable_responsive_images feature flag is disabled' do
       before do
@@ -297,41 +246,35 @@ RSpec.describe StoriesHelper, type: :helper do
       end
 
       it 'returns nil' do
-        expect(image_srcset_from_component(component)).to be_nil
+        expect(image_srcset_from_component(image_component)).to be_nil
       end
     end
 
     context 'when enable_responsive_images feature flag is enabled' do
       before do
         allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
-        allow(self).to receive(:document_from_component).with(component).and_return(document)
       end
 
-      context 'when document is nil' do
-        let(:document) { nil }
+      context 'when image has no thumbnails' do
+        before do
+          allow(image_component).to receive(:has_thumbnails?).and_return(false)
+        end
+
         it 'returns nil' do
-          expect(image_srcset_from_component(component)).to be_nil
+          expect(image_srcset_from_component(image_component)).to be_nil
         end
       end
 
-      context 'when document is processed' do
-        let(:document) { FactoryGirl.create(:document, status: 1) }
-
+      context 'when image has thumbnails' do
         before do
+          allow(image_component).to receive(:has_thumbnails?).and_return(true)
           Document::THUMBNAIL_SIZES.keys.each do |size|
-            allow(document.upload).to receive(:url).with(size).and_return("url-#{size}")
+            allow(image_component).to receive(:url).with(size).and_return("url-#{size}")
           end
         end
 
         it 'returns srcset' do
-          expect(image_srcset_from_component(component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
-        end
-      end
-
-      context 'when document is not processed' do
-        let(:document) { FactoryGirl.create(:document, status: 0) }
-        it 'returns nil' do
-          expect(image_srcset_from_component(component)).to be_nil
+          expect(image_srcset_from_component(image_component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
         end
       end
     end

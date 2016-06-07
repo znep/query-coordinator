@@ -45,7 +45,7 @@ class StoriesController < ApplicationController
             json: {
               title: title,
               description: core_attributes['description'] || nil,
-              image: @story.block_images.first || nil,
+              image: @story.block_images(:large).first || nil,
               theme: @story.theme,
               url: story_url(uid: @story.uid, vanity_text: title_to_vanity_text(title))
             }

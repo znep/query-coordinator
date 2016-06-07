@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
+import * as ImportColumns from './components/importColumns';
 
 import enabledModules from 'enabledModules';
 
@@ -11,8 +12,8 @@ type NewDatasetModel = {
   currentPage: PageName,
   operation: OperationName,
   upload: UploadFile.FileUpload,
-  // transform: Array<ImportColumns.ResultColumn>, // only used in UploadData operation
-  layers: Array<Layer>,                         // only used in UploadGeo operation
+  transform: ImportColumns.Transform, // only used in UploadData operation
+  layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata
 }
 
@@ -94,6 +95,8 @@ export function updateCurrentPage(pageName: PageName = 'SelectType', action): Pa
           console.error('invalid operation name:', action.name);
           return pageName;
       }
+    case UploadFile.FILE_UPLOAD_COMPLETE:
+      return 'ImportColumns';
     default:
       return pageName;
   }
@@ -131,8 +134,10 @@ export function view(props) {
                                       operation={ state.operation } />;
 
             case 'ImportColumns':
-              {/* TODO: call ImportColumns component */}
-              return <span>ImportColumns</span>;
+              // TODO: assert validity of fileUpload
+              return <ImportColumns.view transform={ state.transform }
+                                         summary={ state.upload.progress.summary }
+                                         fileName={ state.upload.fileName } />;
 
             case 'Metadata':
               return <Metadata.view metadata={ state.metadata }

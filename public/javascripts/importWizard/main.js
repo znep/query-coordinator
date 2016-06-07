@@ -9,6 +9,7 @@ import _ from 'lodash';
 import * as Wizard from './Wizard';
 import * as Upload from './components/uploadFile';
 import * as Metadata from './components/metadata';
+import * as ImportColumns from './components/importColumns';
 
 
 const enhancer = compose(
@@ -23,12 +24,22 @@ function identityReducer(model, action) { // eslint-disable-line no-unused-vars
   }
 }
 
+type RootState = {
+  datasetId: string,
+  operation: string,
+  currentPage: string,
+  upload: Upload.FileUpload,
+  transform: ImportColumns.Transform,
+  layers: any,
+  metadata: Metadata.DatasetMetadata
+}
+
 const rootReducer = combineReducers({
   datasetId: identityReducer,
   operation: Wizard.updateOperation,
   currentPage: Wizard.updateCurrentPage,
   upload: Upload.update,
-  transform: identityReducer, // null except in the UploadData operation
+  transform: ImportColumns.update, // null except in the UploadData operation
   layers: identityReducer,
   metadata: Metadata.update
 });

@@ -52,7 +52,7 @@ export function selectFile(file: File) {
     });
     upload.on('end', (xhr) => {
       const response = JSON.parse(xhr.responseText);
-      dispatch(fileUploadComplete(response.fileId, response.summary));
+      dispatch(fileUploadComplete(response.fileId, addColumnIds(response.summary)));
     });
     upload.on('error', (evt) => {
       dispatch(fileUploadError(JSON.stringify(evt)));
@@ -60,6 +60,15 @@ export function selectFile(file: File) {
     dispatch(fileUploadStart(file));
   };
 }
+
+
+function addColumnIds(summary: Summary): Summary {
+  return {
+    ...summary,
+    columns: summary.columns.map((column, index) => ({...column, index: index}))
+  };
+}
+
 
 const FILE_UPLOAD_START = 'FILE_UPLOAD_START';
 export function fileUploadStart(file: File) {
@@ -84,7 +93,7 @@ export function fileUploadAnalyzing() {
   };
 }
 
-const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
+export const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
 export function fileUploadComplete(fileId: FileId, summary: Summary) {
   return {
     type: FILE_UPLOAD_COMPLETE,

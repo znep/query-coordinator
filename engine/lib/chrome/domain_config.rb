@@ -30,16 +30,27 @@ module Chrome
     # Config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
     def newest_published_site_chrome
+      published_site_chrome_config = {}
+
       if config.has_key?(:properties)
         site_chrome_config = config[:properties].detect do |config|
           config[:name] == 'siteChromeConfigVars'
         end
 
-        latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
-        site_chrome_config[:value][:versions][latest_version][:published]
-      else
-        {}
+        if site_chrome_config[:value][:versions].present?
+          latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
+          published_site_chrome_config = site_chrome_config[:value][:versions][latest_version][:published]
+        else
+          message = "Invalid site_chrome configuration in domain: #{domain}"
+          Airbrake.notify(
+            :error_class => 'InvalidSiteChromeConfiguration',
+            :error_message => message
+          )
+          Rails.logger.error(message)
+        end
       end
+
+      published_site_chrome_config
     end
 
     def get_domain_config

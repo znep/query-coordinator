@@ -2,13 +2,13 @@ require 'rails_helper'
 require 'webmock/rspec'
 
 describe Chrome::DomainConfig do
+
   let(:domain) { 'data.seattle.gov' }
   let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
   let(:core_config) do
-    JSON.parse(File.read('spec/fixtures/core_config.json')).with_indifferent_access.
-      tap do |config|
-        config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
-      end
+    JSON.parse(File.read('spec/fixtures/core_config.json')).with_indifferent_access.tap do |config|
+      config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
+    end
   end
 
   def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
@@ -100,5 +100,18 @@ describe Chrome::DomainConfig do
       result = Chrome::DomainConfig.new(domain).send(:newest_published_site_chrome)
       expect(result).to eq({ 'value' => 'b' })
     end
+
+    it 'dispatches an Airbrake notification when invalid site_chrome config is found' do
+      core_config_with_various_versions = core_config.clone
+      core_config_with_various_versions['properties'].first['value']['versions'] = nil
+      allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config) { core_config_with_various_versions }
+      expect(Airbrake).to receive(:notify) do |hash|
+        expect(hash[:error_class]).to eq('InvalidSiteChromeConfiguration')
+        expect(hash[:error_message]).to match(/invalid site_chrome config/i)
+      end
+      result = Chrome::DomainConfig.new(domain).send(:newest_published_site_chrome)
+      expect(result).to eq({})
+    end
   end
+
 end

@@ -48,7 +48,7 @@
               [t("#{jobs_prefix}.filters.replace"), 'Replace'],
               [t("#{jobs_prefix}.filters.upsert"), 'Upsert'],
               [t("#{jobs_prefix}.filters.delete"), 'Delete'],
-              [t("#{jobs_prefix}.filters.restore"), 'Restore']
+              [t("#{jobs_prefix}.filters.restore"), 'Restore', {disabled: !FeatureFlags.derive(@view, request).restore_dataset_filter}]
             ]
           ]
           # TODO once these events are added, uncomment this!

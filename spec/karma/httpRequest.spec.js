@@ -64,7 +64,7 @@ describe('httpRequest', function() {
 
       httpRequest('POST', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -80,7 +80,7 @@ describe('httpRequest', function() {
 
       httpRequest('PUT', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -96,7 +96,7 @@ describe('httpRequest', function() {
 
       httpRequest('DELETE', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -112,7 +112,7 @@ describe('httpRequest', function() {
 
       httpRequest('HEAD', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -128,7 +128,7 @@ describe('httpRequest', function() {
 
       httpRequest('OPTIONS', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -144,7 +144,7 @@ describe('httpRequest', function() {
 
       httpRequest('PATCH', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();
@@ -160,7 +160,7 @@ describe('httpRequest', function() {
 
       httpRequest('TRACE', testUrl, testAcceptType).
         catch(
-          function(error) {
+          function() {
 
             assert.isTrue(true);
             done();

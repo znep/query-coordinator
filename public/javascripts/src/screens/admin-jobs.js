@@ -91,9 +91,9 @@ $(() => {
     {
       text: $.t('plugins.daterangepicker.last_week'),
       previousText: $.t('plugins.daterangepicker.preceding_week'),
-      dateStart: () => Date.parse('1 week ago').moveToDayOfWeek(0, -1),
-      dateEnd: () => Date.parse('1 week ago').moveToDayOfWeek(6, 1),
-      datePrevious: () => Date.parse('2 weeks ago').moveToDayOfWeek(0, -1),
+      dateStart: () => Date.today().addDays(-7),
+      dateEnd: () => Date.today(),
+      datePrevious: () => Date.today().addDays(-14),
       enabled: true
     }
   ];

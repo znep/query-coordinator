@@ -249,7 +249,7 @@ export var MetadataTable = React.createClass({
     if (view.attributionLink) {
       attributionLink = (
         <td>
-          <a href={view.attributionLink}>{view.attributionLink}</a>
+          <a href={view.attributionLink} rel="nofollow external">{view.attributionLink}</a>
         </td>
       );
     } else {

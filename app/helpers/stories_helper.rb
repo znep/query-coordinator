@@ -152,26 +152,11 @@ module StoriesHelper
     ).join(' ')
   end
 
-  def image_srcset_from_component(component)
+  def image_srcset_from_component(image_component)
     return nil unless Rails.application.config.enable_responsive_images
 
-    document = document_from_component(component)
-    if document.present? && document.processed?
-      Document::THUMBNAIL_SIZES.map {|size, pixels| "#{document.upload.url(size)} #{pixels}w"}.join(', ')
-    end
-  end
-
-  # component value will look like:
-  #   value: {
-  #     documentId: "1234",
-  #     url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
-  #   }
-  # For getty images, 'documentId' will be null.
-  def document_from_component(component)
-    if component['documentId'].present?
-      Document.find_by_id(component['documentId'])
-    elsif component['url'] =~ %r{getty-images/(.+)}
-      GettyImage.find_by_getty_id($1).try(:document)
+    if image_component.has_thumbnails?
+      Document::THUMBNAIL_SIZES.map {|size, pixels| "#{image_component.url(size)} #{pixels}w"}.join(', ')
     end
   end
 

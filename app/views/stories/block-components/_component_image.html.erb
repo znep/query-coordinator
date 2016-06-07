@@ -8,9 +8,10 @@
 #   }
 # }
 %>
+<% image_component = ImageComponent.new(component) -%>
 <%= image_tag(
-      component['value']['url'],
-      alt: component['value']['alt'],
-      srcset: image_srcset_from_component(component['value']),
+      image_component.url(:xlarge),
+      alt: image_component.alt_text,
+      srcset: image_srcset_from_component(image_component),
       sizes: image_sizes_from_number_of_columns(columns)
     ) %>

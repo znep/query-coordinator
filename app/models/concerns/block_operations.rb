@@ -9,16 +9,18 @@ module BlockOperations
     end
 
     # Returns a list of urls for all images in all blocks of the story in order or appearance.
-    def block_images
-      image_compontent_types = %w( image hero )
-      image_blocks = Block.for_story(self).with_component_type(*image_compontent_types)
-      ordered_blocks = in_story_order(image_blocks).compact
+    def block_images(size = nil)
+      @block_images ||= begin
+        image_compontent_types = %w( image hero )
+        image_blocks = Block.for_story(self).with_component_type(*image_compontent_types)
+        ordered_blocks = in_story_order(image_blocks).compact
 
-      ordered_blocks.map do |block|
-        block.components.
-          select { |component| image_compontent_types.include?(component['type']) }.
-          map { |component| component['value']['url'] }
-      end.flatten
+        ordered_blocks.map do |block|
+          block.components.
+            select { |component| image_compontent_types.include?(component['type']) }.
+            map { |component| ImageComponent.new(component).url(size) }
+        end.flatten
+      end
     end
 
     private

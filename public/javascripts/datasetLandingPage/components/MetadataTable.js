@@ -211,7 +211,7 @@ export var MetadataTable = React.createClass({
     if (view.category) {
       category = <td>{_.capitalize(view.category)}</td>;
     } else {
-      category = <td className="empty">{I18n.metadata.no_value}</td>;
+      category = <td className="empty">{I18n.metadata.no_category_value}</td>;
     }
 
     if (!_.isEmpty(view.tags)) {
@@ -237,23 +237,24 @@ export var MetadataTable = React.createClass({
         </td>
       );
     } else {
-      tags = <td className="empty">{I18n.metadata.no_value}</td>;
+      tags = <td className="empty">{I18n.metadata.no_tags_value}</td>;
     }
 
     if (view.licenseName) {
       license = <td>{view.licenseName}</td>;
     } else {
-      license = <td className="empty">{I18n.metadata.no_value}</td>;
+      license = <td className="empty">{I18n.metadata.no_license_value}</td>;
     }
 
     if (view.attributionLink) {
       attributionLink = (
-        <td>
-          <a href={view.attributionLink}>{view.attributionLink}</a>
-        </td>
+        <tr>
+          <td>{I18n.metadata.source_link}</td>
+          <td>
+            <a href={view.attributionLink}>{view.attributionLink}</a>
+          </td>
+        </tr>
       );
-    } else {
-      attributionLink = <td className="empty">{I18n.metadata.no_value}</td>;
     }
 
     if (view.statsUrl) {
@@ -427,10 +428,7 @@ export var MetadataTable = React.createClass({
                     {license}
                   </tr>
 
-                  <tr>
-                    <td>{I18n.metadata.source_link}</td>
-                    {attributionLink}
-                  </tr>
+                  {attributionLink}
                 </tbody>
               </table>
             </div>

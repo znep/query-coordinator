@@ -30,11 +30,12 @@ export default function httpRequest(method, url, acceptType) {
 
         reject(
           new Error(
-            'Request "{0} {1}" failed ({2}) {3}'.format(
+            StorytellerUtils.format(
+              'Request "{0} {1}" failed ({2}) {3}',
               method.toUpperCase(),
               url,
               jqXHR.status,
-              JSON.stringify(jqXHR.responseText) || '<No response>'
+              (JSON.stringify(jqXHR.responseText) || '<No response>')
             )
           )
         );

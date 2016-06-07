@@ -9,6 +9,7 @@ import CustomEvent from '../CustomEvent';
 import RichTextEditorFormatController from './RichTextEditorFormatController';
 import { dispatcher } from './Dispatcher';
 import { windowSizeBreakpointStore } from './stores/WindowSizeBreakpointStore';
+import { exceptionNotifier } from '../services/ExceptionNotifier';
 
 /**
  * @constructor
@@ -101,60 +102,90 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
    * Will only add this code if it has not already been added.
    */
   this.applyThemeFont = function(theme) {
-    var headElement = _editorElement[0].contentDocument.querySelector('head');
-    var $theme = $(theme);
-    var href = $theme.attr('href');
 
-    if ($(headElement).find('link[href="{0}"]'.format(href)).length === 0) {
-      $(headElement).append($(theme));
-    }
+    _callWithContentDocumentIfPresent(
+      function(contentDocument) {
+        var headElement;
+        var $theme;
+        var href;
+
+        headElement = contentDocument.querySelector('head');
+        $theme = $(theme);
+        href = $theme.attr('href');
+
+        if ($(headElement).find('link[href="{0}"]'.format(href)).length === 0) {
+          $(headElement).append($(theme));
+        }
+      }
+    );
   };
 
   // Add a `themeName` class to the html root of the iframe
   this.applyThemeClass = function(theme) {
-    var htmlElement = _editorElement[0].contentDocument.documentElement;
-    var currentClasses = htmlElement ? htmlElement.getAttribute('class') : null;
 
-    if (currentClasses) {
-      var newClassList = _.reject(
-        htmlElement.getAttribute('class').split(' '),
-        function(className) {
-          return _.startsWith(className, 'theme-');
+    _callWithContentDocumentIfPresent(
+      function(contentDocument) {
+        var htmlElement;
+        var currentClasses;
+        var newClassList;
+
+        htmlElement = contentDocument.documentElement;
+        currentClasses = htmlElement ? htmlElement.getAttribute('class') : null;
+
+        if (currentClasses) {
+
+          newClassList = _.reject(
+            htmlElement.getAttribute('class').split(' '),
+            function(className) {
+              return _.startsWith(className, 'theme-');
+            }
+          );
+
+          newClassList.push(
+            StorytellerUtils.format('theme-{0}', theme)
+          );
+
+          htmlElement.setAttribute('class', newClassList.join(' '));
+          _updateContentHeight();
         }
-      );
-
-      newClassList.push(
-        StorytellerUtils.format('theme-{0}', theme)
-      );
-
-      htmlElement.setAttribute('class', newClassList.join(' '));
-      _updateContentHeight();
-    }
+      }
+    );
   };
 
   // Adds an extra class to the content body.
   this.addContentClass = function(extraClass) {
-    var body = _editorElement[0].contentDocument.querySelector('body');
-    $(body).addClass(extraClass);
+
+    _callWithContentDocumentIfPresent(
+      function(contentDocument) {
+
+        $(contentDocument.querySelector('body')).addClass(extraClass);
+      }
+    );
   };
 
   /**
    * Deselects the rich text <iframe>.
    */
   this.deselect = function() {
-    var contentDocument = _editorElement[0].contentDocument;
 
-    if (contentDocument) {
-      // IE supports .selection, while everything else
-      // supports .getSelection.
-      if (contentDocument.selection) {
-        contentDocument.selection.clear();
-      } else if (contentDocument.getSelection) {
-        contentDocument.
-          getSelection().
-          removeAllRanges();
+    _callWithContentDocumentIfPresent(
+      function(contentDocument) {
+
+        // IE supports .selection, while everything else
+        // supports .getSelection.
+        if (contentDocument.selection) {
+
+          contentDocument.
+            selection.
+            clear();
+        } else if (contentDocument.getSelection) {
+
+          contentDocument.
+            getSelection().
+            removeAllRanges();
+        }
       }
-    }
+    );
   };
 
   /**
@@ -327,18 +358,20 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
   }
 
   function _applyWindowSizeClass() {
-    var editorDocument = _editorElement[0].contentDocument;
 
-    if (!editorDocument) {
-      return;
-    }
+    _callWithContentDocumentIfPresent(
+      function(contentDocument) {
+        var windowSizeClass;
+        var unusedWindowSizeClasses;
 
-    var windowSizeClass = windowSizeBreakpointStore.getWindowSizeClass();
-    var unusedWindowSizeClasses = windowSizeBreakpointStore.getUnusedWindowSizeClasses();
+        windowSizeClass = windowSizeBreakpointStore.getWindowSizeClass();
+        unusedWindowSizeClasses = windowSizeBreakpointStore.getUnusedWindowSizeClasses();
 
-    $(editorDocument.documentElement).
-      removeClass(unusedWindowSizeClasses.join(' ')).
-      addClass(windowSizeClass);
+        $(contentDocument.documentElement).
+          removeClass(unusedWindowSizeClasses.join(' ')).
+          addClass(windowSizeClass);
+      }
+    );
   }
 
 
@@ -619,5 +652,77 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       // Dispatch the mousemove event on the iframe element
       iframe.dispatchEvent(evt);
     };
+  }
+
+  // EN-6703 - Better handle iFrame contentDocument errors
+  //
+  // We see some evidence in Airbrake of various functions in this file
+  // attempting to get the contentDocument property of an iFrame that has
+  // a different origin than the parent document's. This causes a
+  // SecurityError to be raised, and is potentially breaking the user
+  // experience.
+  //
+  // Since we don't know much about the context in which this is happening we
+  // are adding a bit of logging in the case of the SecurityError only, and
+  // have made all attempts to get the contentDocument property pass through
+  // this function so that our logging can be comprehensive.
+  //
+  // The end result of this is that sometimes we want to proceed with the
+  // content document (which is why we pass a callback) and somteimes we don't.
+  function _callWithContentDocumentIfPresent(callback) {
+    var contentDocument;
+    var errorToNotify;
+
+    function getElementAttributes(el) {
+      var attributes = [];
+      var attribute;
+
+      for (var i = 0; i < el.attributes.length; i++) {
+        attribute = el.attributes[i];
+
+        if (attribute.specified) {
+
+          attributes.push(
+            StorytellerUtils.format(
+              '"{0}"="{1}"',
+              attribute.name,
+              attribute.value
+            )
+          );
+        }
+      }
+
+      return attributes;
+    }
+
+    try {
+      contentDocument = _editorElement[0].contentDocument;
+    } catch (error) {
+
+      if (error.name === 'SecurityError') {
+
+        // We're not yet sure what is going on with this so we are adding some
+        // additional logging around this error.
+        errorToNotify = new Error(
+          StorytellerUtils.format(
+            'SecurityError on iFrame with attributes: "{0}" ' +
+            'and parent node <{1}> with attributes: "{2}".',
+            getElementAttributes(_editorElement[0]).join(', '),
+            _editorElement[0].parentNode.nodeName.toLowerCase(),
+            getElementAttributes(_editorElement[0].parentNode).join(', ')
+          )
+        );
+
+        exceptionNotifier.notify(errorToNotify);
+      } else {
+        throw error;
+      }
+    }
+
+    if (contentDocument) {
+      callback(contentDocument);
+    }
+
+    return;
   }
 }

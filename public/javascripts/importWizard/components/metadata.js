@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
+import * as Working from './working';
+import * as Server from '../server';
+
 import datasetCategories from 'datasetCategories';
 
 // == Metadata
@@ -14,6 +17,16 @@ type DatasetMetadata = {
   privacySettings: string,
   contactEmail: string
 }
+
+
+export function emptyForName(name: string): DatasetMetadata {
+  return {
+    name: name,
+    description: '',
+    privacySettings: 'private'
+  };
+}
+
 
 const MD_UPDATE_NAME = 'MD_UPDATE_NAME';
 export function updateName(newName: string) {
@@ -79,11 +92,10 @@ export function updateContactEmail(newContactEmail: string) {
   };
 }
 
-export function emptyForName(name: string): DatasetMetadata {
+export const METADATA_NEXT = 'METADATA_NEXT';
+export function metadataNext() {
   return {
-    name: name,
-    description: '',
-    privacySettings: 'private'
+    type: METADATA_NEXT
   };
 }
 
@@ -135,8 +147,7 @@ export function update(metadata: DatasetMetadata = emptyForName(''), action): Da
   }
 }
 
-export function view(props) {
-  const { metadata, onMetadataAction } = props;
+export function view({ metadata, onMetadataAction }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
 
   return (
@@ -256,6 +267,7 @@ export function view(props) {
 
         <div className="required">{ I18nPrefixed.required_field }</div>
       </div>
+      { <a className="button nextButton" onClick={ () => onMetadataAction(Server.saveMetadata()) }>Next</a> }
     </div>
   );
 }

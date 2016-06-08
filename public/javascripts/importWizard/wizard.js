@@ -3,6 +3,10 @@ import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
 import * as ImportColumns from './components/importColumns';
+import * as Importing from './components/importing';
+import * as Working from './components/working';
+import * as Finish from './components/finish';
+import * as Server from './server';
 
 import enabledModules from 'enabledModules';
 
@@ -29,6 +33,10 @@ type PageName
   | 'UploadFile'
   | 'ImportColumns'
   | 'Metadata'
+  // can't re-enter to the below pages
+  | 'Working'
+  | 'Importing'
+  | 'Finish'
 
 
 type OperationName
@@ -40,6 +48,7 @@ type OperationName
   | 'CreateFromScratch'
 
 
+// is this even used or is it just the no-args call to the reducer?
 export function initialNewDatasetModel(datasetId: string, datasetName: string): NewDatasetModel {
   return {
     datasetId: datasetId,
@@ -48,7 +57,8 @@ export function initialNewDatasetModel(datasetId: string, datasetName: string): 
     upload: UploadFile.initial(),
     transform: null,
     layers: null,
-    metadata: Metadata.emptyForName(datasetName)
+    metadata: Metadata.emptyForName(datasetName),
+    importStatus: Server.initialImportStatus()
   };
 }
 
@@ -87,7 +97,7 @@ export function updateCurrentPage(pageName: PageName = 'SelectType', action): Pa
         case 'UploadBlob':
         case 'UploadGeospatial':
           return 'UploadFile'; // TODO: select upload type
-        case 'ConnectToEsri': // TODO what is this actually supposed to go to?
+        case 'ConnectToEsri':
         case 'LinkToExternal':
         case 'CreateFromScratch':
           return 'Metadata';
@@ -97,6 +107,15 @@ export function updateCurrentPage(pageName: PageName = 'SelectType', action): Pa
       }
     case UploadFile.FILE_UPLOAD_COMPLETE:
       return 'ImportColumns';
+    case ImportColumns.IMPORT_COLUMNS_NEXT:
+      return 'Metadata';
+    case Metadata.METADATA_NEXT:
+      return 'Working';
+    case Working.WORKING_NEXT:
+      // TODO: this can be 'Finish' depending on the operation
+      return 'Importing';
+    case Server.IMPORT_COMPLETE:
+      return 'Finish';
     default:
       return pageName;
   }
@@ -105,9 +124,7 @@ export function updateCurrentPage(pageName: PageName = 'SelectType', action): Pa
 // view
 
 
-export function view(props) {
-  const { state, dispatch } = props;
-
+export function view({ state, dispatch }) {
   return (
     <div className="contentBox fixedWidth" id="reactWizard">
       <h1>{ I18n.screens.dataset_new.first_page.header }</h1>
@@ -137,11 +154,24 @@ export function view(props) {
               // TODO: assert validity of fileUpload
               return <ImportColumns.view transform={ state.transform }
                                          summary={ state.upload.progress.summary }
-                                         fileName={ state.upload.fileName } />;
+                                         fileName={ state.upload.fileName }
+                                         dispatch={ dispatch } />;
 
             case 'Metadata':
               return <Metadata.view metadata={ state.metadata }
-                                    onMetadataAction={ (action) => { dispatch(action); } } />;
+                                    onMetadataAction={ dispatch } />;
+
+            case 'Working':
+              return <Working.view />;
+
+            case 'Importing':
+              return <Importing.view importStatus={ state.importStatus } />;
+
+            case 'Finish':
+              return <Finish.view />;
+
+            default:
+              console.error('unexpected page:', state.currentPage);
           }
         })()}
       </div>

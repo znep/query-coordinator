@@ -43,7 +43,6 @@ export function selectFile(file: File) {
     const upload = new Upload(file);
     upload.to(url.format(urlAttrs));
     upload.on('progress', (evt) => {
-      console.log('progress', evt);
       if (evt.percent === 100) {
         dispatch(fileUploadAnalyzing());
       } else {

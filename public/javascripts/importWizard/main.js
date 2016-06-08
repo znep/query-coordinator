@@ -10,7 +10,7 @@ import * as Wizard from './Wizard';
 import * as Upload from './components/uploadFile';
 import * as Metadata from './components/metadata';
 import * as ImportColumns from './components/importColumns';
-
+import * as Server from './server';
 
 const enhancer = compose(
   applyMiddleware(createLogger(), thunk)
@@ -24,16 +24,6 @@ function identityReducer(model, action) { // eslint-disable-line no-unused-vars
   }
 }
 
-type RootState = {
-  datasetId: string,
-  operation: string,
-  currentPage: string,
-  upload: Upload.FileUpload,
-  transform: ImportColumns.Transform,
-  layers: any,
-  metadata: Metadata.DatasetMetadata
-}
-
 const rootReducer = combineReducers({
   datasetId: identityReducer,
   operation: Wizard.updateOperation,
@@ -41,7 +31,8 @@ const rootReducer = combineReducers({
   upload: Upload.update,
   transform: ImportColumns.update, // null except in the UploadData operation
   layers: identityReducer,
-  metadata: Metadata.update
+  metadata: Metadata.update,
+  importStatus: Server.update
 });
 
 const store = createStore(rootReducer, Wizard.fakeInitialModel, enhancer);

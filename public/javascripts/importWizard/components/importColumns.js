@@ -42,6 +42,13 @@ type ColumnTransform
   | { type: 'findReplace', find: string, replace: string, regex: boolean, caseInsensitive: boolean }
 
 
+export const IMPORT_COLUMNS_NEXT = 'IMPORT_COLUMNS_NEXT';
+function importColumnsNext() {
+  return {
+    type: IMPORT_COLUMNS_NEXT
+  };
+}
+
 
 export function update(transform: Transform = null, action): Array<ResultColumn> {
   switch (action.type) {
@@ -53,7 +60,7 @@ export function update(transform: Transform = null, action): Array<ResultColumn>
 }
 
 
-export function view({ transform, fileName, summary }) {
+export function view({ transform, fileName, summary, dispatch }) {
   const I18nPrefixed = I18n.screens.dataset_new.import_columns;
   return (
     <div className="importColumnsPane columnsPane">
@@ -138,7 +145,7 @@ export function view({ transform, fileName, summary }) {
         <ul className="columnWarningsList"></ul>
       </div>
       <hr/>
-      {/* <a className="button nextButton" onClick={ onGoToPage('metadata') }>Next</a> */}
+      <a className="button nextButton" onClick={ () => dispatch(importColumnsNext()) }>Next</a>
     </div>
   );
 }
@@ -146,5 +153,6 @@ export function view({ transform, fileName, summary }) {
 view.propTypes = {
   fileName: PropTypes.string.isRequired,
   transform: PropTypes.arrayOf(PropTypes.object).isRequired,
-  summary: PropTypes.object.isRequired
+  summary: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
 };

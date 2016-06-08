@@ -1302,7 +1302,7 @@ en:
       columns: Columns
       row_display_unit: Each row is a
       rows: Rows
-      title: What's in this Dataset
+      title: What's in this Dataset?
     default_row_label: row
     done: Done
     download:
@@ -1342,7 +1342,7 @@ en:
     metadata:
       attachments: Attachments
       category: Category
-      creation_date: Creation Date
+      creation_date: Date Created
       data_last_updated: Data Last Updated
       data_provided_by: Data Provided by
       dataset_owner: Dataset Owner
@@ -1351,6 +1351,9 @@ en:
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
+      no_category_value: This dataset has not been categorized
+      no_license_value: The license for this dataset is unspecified
+      no_tags_value: This dataset does not have any tags
       no_value: "(none)"
       source_link: Source Link
       tags: Tags
@@ -1373,7 +1376,7 @@ en:
       title: Popular Content Using this Data
       view: View
     private_notice: You are looking at a private dataset.
-    published_by: Published by
+    published_by: Data Provided by
     remove: Remove
     save: Save
     saved: Saved

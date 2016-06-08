@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'chrome', :path => 'engine'
+gem 'socrata_site_chrome', :path => 'engine'
 gem 'hashie'
 gem 'httparty'
 gem 'jquery-rails'

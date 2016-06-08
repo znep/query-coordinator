@@ -35,13 +35,39 @@ module ActionController
           # optimistically read the compressed version
           result = cache_store.read(compressed_cache_key(key), options)
 
+          # EN-6747 - Fix ActionController::Caching::Fragments errors
+          #
+          # Quit early if we don't have a cached version.
+          return nil unless result.present?
+
+          # EN-6747 - Fix ActionController::Caching::Fragments errors
+          #
+          # The bigger problem with this area of the code was the fact that
+          # things which had been cached using Rails 3 were being retrieved
+          # from the cache in a format that the version of Snappy used by
+          # Rails 4 did not understand, causing the call to Snappy.inflate
+          # to fail with 'Snappy::Error: INVALID INPUT'.
+          #
+          # Check for this error and invalidate this key if it looks like we
+          # are trying to read something that was written using a different
+          # version of Snappy/Rails.
           begin
             result = Marshal.load(Snappy.inflate(result))
-          rescue => e
+          rescue Snappy::Error => error
+            cache_store.delete(compressed_cache_key(key))
+            # Let's still keep track of how many Snappy version mismatches we
+            # run into so that we can investigate further if the problem does
+            # not resolve itself.
             Airbrake.notify(
-              :error_class => 'ActionController::Caching::Fragments',
-              :error_message => "read_fragment failed for key #{key.inspect}, exception: #{e}"
+              :error_class => 'IncompatibleSnappyVersionError',
+              :error_message => (
+                'Attempted to read fragment cache item written by'\
+                'incompatible version of Snappy.'
+              )
             )
+            # Quit early since we now do not have a cached version because we
+            # just destroyed it.
+            return nil
           end
 
           safe_html = lambda { |arg| arg.respond_to?(:html_safe) ? arg.html_safe : arg }

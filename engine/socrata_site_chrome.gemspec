@@ -5,7 +5,7 @@ require 'chrome/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'chrome'
+  s.name        = 'socrata_site_chrome'
   s.version     = Chrome::VERSION
   s.authors     = ['Randy Antler']
   s.email       = ['randy.antler@socrata.com']

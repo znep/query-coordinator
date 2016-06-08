@@ -16,16 +16,16 @@ source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
 
 > Note: Sometimes bundler will complain if there is more than one `source` in the `Gemfile`. If that is the case, use the `source` property in the second example.
 
-Then add the `chrome` gem to your Gemfile:
+Then add the `socrata_site_chrome` gem to your Gemfile:
 
 ```ruby
-gem 'chrome', '~> 0.0.4'
+gem 'socrata_site_chrome', '~> 0.0.4'
 ```
 
 Or specify the source directly:
 
 ```ruby
-gem 'chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
+gem 'socrata_site_chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 ```
 
 ### From Source
@@ -33,7 +33,7 @@ gem 'chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryonline.com/socr
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'chrome', '~> 0.0.4', :path => 'engine/chrome' # Where 'engine/chrome' is the correct directory path
+gem 'socrata_site_chrome', '~> 0.0.4', :path => 'engine/chrome' # Where 'engine/chrome' is the correct directory path
 ```
 
 Then execute:

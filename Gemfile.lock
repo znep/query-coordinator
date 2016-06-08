@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    chrome (0.0.12)
+    socrata_site_chrome (0.0.12)
       rails (~> 4.2, >= 4.2.6)
 
 GEM
@@ -162,7 +162,6 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  chrome!
   hashie
   httparty
   jquery-rails
@@ -170,6 +169,7 @@ DEPENDENCIES
   request_store
   rspec-rails
   sass-rails (~> 5.0)
+  socrata_site_chrome!
   spring
   sqlite3
   web-console (~> 2.0)

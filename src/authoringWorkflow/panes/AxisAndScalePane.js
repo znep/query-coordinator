@@ -8,12 +8,14 @@ export var AxisAndScalePane = React.createClass({
     return (
       <form>
         <h2>Scale</h2>
-        <label className="block-label">Type:</label>
-        <select>
-          <option>Time</option>
-          <option>Quantitative</option>
-          <option>Ordinal</option>
-        </select>
+        <div className="scale-type-dropdown-container">
+          <label className="block-label">Type:</label>
+          <select>
+            <option>Time</option>
+            <option>Quantitative</option>
+            <option>Ordinal</option>
+          </select>
+        </div>
         <h4>X-Axis Units</h4>
         <label className="block-label">One:</label>
         <input className="text-input" type="text" onChange={this.props.onChangeXAxisUnitOne} />

@@ -2,49 +2,53 @@ var MetadataProvider = require('../dataProviders/MetadataProvider');
 
 // Dispatches REQUEST_DATASET_METADATA when request begins and either RECEIVE_DATASET_METADATA or
 // HANDLE_DATASET_METADATA_ERROR when request completes.
-export function setDatasetUid(datasetUid) {
+export function setDataSource(dataSource) {
   return function(dispatch) {
-    if (!/\w{4}\-\w{4}/.test(datasetUid)) {
+    if (!/\w{4}\-\w{4}/.test(dataSource.datasetUid)) {
       return;
     }
 
     var datasetMetadataProvider = new MetadataProvider({
-      domain: 'localhost',
-      datasetUid: datasetUid
+      domain: dataSource.domain,
+      datasetUid: dataSource.datasetUid
     });
 
-    dispatch(requestDatasetMetadata(datasetUid));
+    dispatch(requestMetadata());
 
-    return datasetMetadataProvider.getDatasetMetadata().
-      then(function(datasetMetadata) {
-        dispatch(receiveDatasetMetadata(datasetMetadata, null));
-      }).
-      catch(function(error) {
-        dispatch(handleDatasetMetadataError(null, error));
-      });
+    return Promise.all([
+      datasetMetadataProvider.getDatasetMetadata(),
+      datasetMetadataProvider.getPhidippidiesMetadata(),
+      datasetMetadataProvider.getCuratedRegions()
+    ]).then(function(resolutions) {
+      dispatch(receiveMetadata(resolutions));
+    }).catch(function(error) {
+      console.error(error);
+      dispatch(handleMetadataError());
+    });
   };
 }
 
-export var REQUEST_DATASET_METADATA = 'REQUEST_DATASET_METADATA';
-export function requestDatasetMetadata(datasetUid) {
+export var REQUEST_METADATA = 'REQUEST_METADATA';
+export function requestMetadata() {
   return {
-    type: REQUEST_DATASET_METADATA,
-    datasetUid: datasetUid
+    type: REQUEST_METADATA
   };
 }
 
-export var RECEIVE_DATASET_METADATA = 'RECEIVE_DATASET_METADATA';
-export function receiveDatasetMetadata(datasetMetadata) {
+export var RECEIVE_METADATA = 'RECEIVE_METADATA';
+export function receiveMetadata(resolutions) {
   return {
-    type: RECEIVE_DATASET_METADATA,
-    datasetMetadata: datasetMetadata
+    type: RECEIVE_METADATA,
+    datasetMetadata: resolutions[0],
+    phidippidiesMetadata: resolutions[1],
+    curatedRegions: resolutions[2]
   };
 }
 
-export var HANDLE_DATASET_METADATA_ERROR = 'HANDLE_DATASET_METADATA_ERROR';
-export function handleDatasetMetadataError(error) {
+export var HANDLE_METADATA_ERROR = 'HANDLE_METADATA_ERROR';
+export function handleMetadataError(error) {
   return {
-    type: HANDLE_DATASET_METADATA_ERROR,
+    type: HANDLE_METADATA_ERROR,
     error: error
   };
 }
@@ -65,11 +69,28 @@ export function setMeasure(measure) {
   };
 }
 
+export var SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
+export function setMeasureAggregation(measureAggregation) {
+  return {
+    type: SET_MEASURE_AGGREGATION,
+    measureAggregation: measureAggregation
+  };
+}
+
 export var SET_CHART_TYPE = 'SET_CHART_TYPE';
 export function setChartType(chartType) {
   return {
     type: SET_CHART_TYPE,
     chartType: chartType
+  };
+}
+
+export var SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
+export function setComputedColumn(computedColumnUid, computedColumnName) {
+  return {
+    type: SET_COMPUTED_COLUMN,
+    computedColumnUid: computedColumnUid,
+    computedColumnName: computedColumnName
   };
 }
 

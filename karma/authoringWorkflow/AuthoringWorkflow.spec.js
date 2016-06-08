@@ -3,14 +3,14 @@ import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from './renderComponent';
 import { AuthoringWorkflow, __RewireAPI__ as AuthoringWorkflowAPI } from 'src/authoringWorkflow/AuthoringWorkflow';
-import defaultVif from 'src/authoringWorkflow/defaultVif';
+import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {
   return {
     datasetMetadata: {
       id: 'asdf-qwer'
     },
-    vif: defaultVif
+    vif: vifs.columnChart
   };
 }
 
@@ -37,9 +37,11 @@ describe('AuthoringWorkflow', function() {
       onComplete: onComplete
     }));
 
-    expect(onComplete.callCount).to.equal(0);
+    sinon.assert.notCalled(onComplete);
     TestUtils.Simulate.click(element.querySelector('button.done'));
-    expect(onComplete.callCount).to.equal(1);
+    sinon.assert.calledOnce(onComplete);
+    sinon.assert.calledWithExactly(onComplete, { vif: vifs.columnChart });
+
   });
 
   it('calls the onCancel callback when the cancel button is clicked', function() {
@@ -49,8 +51,8 @@ describe('AuthoringWorkflow', function() {
       onCancel: onCancel
     }));
 
-    expect(onCancel.callCount).to.equal(0);
+    sinon.assert.notCalled(onCancel);
     TestUtils.Simulate.click(element.querySelector('button.cancel'));
-    expect(onCancel.callCount).to.equal(1);
+    sinon.assert.calledOnce(onCancel);
   });
 });

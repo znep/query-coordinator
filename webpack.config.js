@@ -74,6 +74,6 @@ module.exports = [
     plugins: [
       new Rewire()
     ],
-    devtool: '#cheap-module-eval-source-map'
+    devtool: 'eval'
   }
 ];

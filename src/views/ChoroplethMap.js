@@ -400,15 +400,20 @@ function ChoroplethMap(element, vif) {
       selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
     };
 
-    if (_.get(_lastRenderedVif, 'aggregation.function') === 'sum') {
+    var aggregationField = _.get(_lastRenderOptions, 'vif.series[0].dataSource.measure.columnName');
+    var aggregationFunction = _.get(_lastRenderOptions, 'vif.series[0].dataSource.measure.aggregationFunction');
+    var unitOne = _.get(vif, 'series[0].unit.one');
+    var unitOther = _.get(vif, 'series[0].unit.other');
+
+    if (aggregationFunction === 'sum') {
 
       unfilteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
+        '{0}'.format(aggregationField),
         feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME]
       );
 
       filteredValueUnit = utils.pluralize(
-        '{0}'.format(_.get(_lastRenderOptions, 'vif.aggregation.field')),
+        '{0}'.format(aggregationField),
         feature.properties[FILTERED_GEOJSON_PROPERTY_NAME]
       );
     } else {
@@ -417,26 +422,26 @@ function ChoroplethMap(element, vif) {
 
         unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
           _lastRenderOptions.unit.one :
-          vif.unit.one;
+          unitOne;
 
       } else {
 
         unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
           _lastRenderOptions.unit.other :
-          vif.unit.other;
+          unitOther;
       }
 
       if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
 
         filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
           _lastRenderOptions.unit.one :
-          vif.unit.one;
+          unitOne;
 
       } else {
 
         filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
           _lastRenderOptions.unit.other :
-          vif.unit.other;
+         unitOther;
       }
     }
 

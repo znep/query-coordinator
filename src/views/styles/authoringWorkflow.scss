@@ -1,3 +1,5 @@
+@import "socrata-styleguide/dist/fonts/socrata-icons";
+
 .authoring-controls {
   display: flex;
   flex-direction: row;
@@ -5,6 +7,58 @@
 
   > div {
     width: 38%;
+  }
+
+  .visualization-tab-panes {
+    padding-right: 2%;
+
+    h4 {
+      margin-top: 1rem;
+    }
+
+    .block-label {
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .text-input,
+    textarea {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    textarea {
+      height: 150px;
+    }
+
+    .dimension-dropdown-container,
+    .measure-dropdown-container,
+    .measure-aggregation-dropdown-container,
+    .chart-type-dropdown-container,
+    .region-dropdown-container,
+    .scale-type-dropdown-container {
+      position: relative;
+
+      &::before {
+        @extend .icon-arrow-down::before;
+
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+
+    select {
+      width: 100%;
+      appearance: none;
+      padding: 0.8rem 0.6rem;
+      border-radius: 0;
+      background-color: #fff;
+
+      &:disabled {
+        background-color: #ddd;
+      }
+    }
   }
 
   .visualization-preview-container {

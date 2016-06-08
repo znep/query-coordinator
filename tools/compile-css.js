@@ -25,7 +25,8 @@ var scss = fs.readdirSync(styleDir).
 
 var result = sass.renderSync({
   data: scss,
-  outputStyle: 'compressed'
+  outputStyle: 'compressed',
+  includePaths: [__dirname + '/../node_modules']
 });
 
 postcss([autoprefixer]).process(result.css).then(function(result) {

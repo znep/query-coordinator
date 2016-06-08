@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import CustomizationTabPane from '../CustomizationTabPane';
-import { setDimension, setMeasure, setChartType, setDatasetUid } from '../actions';
-import { isLoading, hasData, hasError } from '../selectors/datasetMetadata';
+import { setDimension, setMeasure, setChartType, setDataSource, setComputedColumn, setMeasureAggregation } from '../actions';
+import { isLoading, hasData, hasError, getValidRegions, getValidMeasures, getValidDimensions } from '../selectors/datasetMetadata';
+import { getCurrentVif, isChoroplethMap } from '../selectors/vifAuthoring';
 
 export var DataPane = React.createClass({
   propTypes: {
@@ -22,69 +23,138 @@ export var DataPane = React.createClass({
       defaultOptionKey: '__unselectable__',
       chartTypes: [
         {type: 'columnChart', name: 'Column Chart'},
+        {type: 'choroplethMap', name: 'Choropleth Map'},
+        {type: 'featureMap', name: 'Feature Map'},
         {type: 'timelineChart', name: 'Timeline Chart'}
+      ],
+      aggregationTypes: [
+        {type: 'none', name: 'No Aggregation'},
+        {type: 'count', name: 'Count'},
+        {type: 'sum', name: 'Sum'}
       ]
     }
   },
 
-  componentDidMount: function() {
-    var datasetUid = _.get(this.props.vif, 'series[0].dataSource.datasetUid');
-
-    if (datasetUid) {
-      this.props.onChangeDatasetUid({target: {value: datasetUid}});
-    }
-  },
-
   dimensionDropdown: function() {
-    var datasetMetadata = this.props.datasetMetadata;
-    var columns = _.get(datasetMetadata, 'data.columns', []);
     var defaultOptionKey = this.props.defaultOptionKey;
+    var dimensions = getValidDimensions(this.props.datasetMetadata);
 
     var dimensionOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a dimension...</option>,
-      ...columns.map(column => {
-        return <option value={column.fieldName} key={column.fieldName}>{column.name}</option>;
+      ...dimensions.map(dimension => {
+        return <option value={dimension.fieldName} key={dimension.fieldName}>{dimension.name}</option>;
       })
     ];
 
-    return <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey} name="dimension-selection">{dimensionOptions}</select>;
+    return (
+      <div className="dimension-dropdown-container">
+        <label className="block-label">Dimension:</label>
+        <select onChange={this.props.onChangeDimension} defaultValue={defaultOptionKey} name="dimension-selection">{dimensionOptions}</select>
+      </div>
+    );
   },
 
   measureDropdown: function() {
-    var datasetMetadata = this.props.datasetMetadata;
     var defaultOptionKey = this.props.defaultOptionKey;
-    var columns = _.get(datasetMetadata, 'data.columns', []);
-    var numberColumns = _.filter(columns, { dataTypeName: 'number' });
+    var measures = getValidMeasures(this.props.datasetMetadata);
+
+    var chartType = _.get(this.props.vif, 'series[0].type');
+    var isFeatureMap = chartType === 'featureMap';
+
+    var selectAttributes = {
+      onChange: this.props.onChangeMeasure,
+      defaultValue: defaultOptionKey,
+      name: 'measure-selection',
+      disabled: isFeatureMap
+    };
 
     var measureOptions = [
       <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a measure...</option>,
-      ...numberColumns.map(numberColumn => {
-        return <option value={numberColumn.fieldName} key={numberColumn.fieldName}>{numberColumn.name}</option>;
+      ...measures.map(measure => {
+        return <option value={measure.fieldName} key={measure.fieldName}>{measure.name}</option>;
       })
     ];
 
-    return <select onChange={this.props.onChangeMeasure} defaultValue={defaultOptionKey} name="measure-selection">{measureOptions}</select>;
+    return (
+      <div className="measure-dropdown-container">
+        <label className="block-label">Measure:</label>
+        <select {...selectAttributes}>{measureOptions}</select>
+      </div>
+    );
+  },
+
+  measureAggregationDropdown: function() {
+    var chartType = _.get(this.props.vif, 'series[0].type');
+    var isFeatureMap = chartType === 'featureMap';
+    var selectAttributes = {
+      onChange: this.props.onChangeMeasureAggregation,
+      name: 'measure-aggregation-selection',
+      disabled: isFeatureMap
+    };
+
+    var measureAggregationOptions = _.map(this.props.aggregationTypes, aggregationType => {
+      return <option value={aggregationType.type} key={aggregationType.type}>{aggregationType.name}</option>;
+    });
+
+    return (
+      <div className="measure-dropdown-container">
+        <label className="block-label">Measure Aggregation:</label>
+        <select {...selectAttributes}>{measureAggregationOptions}</select>
+      </div>
+    );
+  },
+
+  regionDropdown: function() {
+    var datasetMetadata = this.props.datasetMetadata;
+    var defaultOptionKey = this.props.defaultOptionKey;
+    var regions = getValidRegions(datasetMetadata);
+
+    var regionOptions = [
+      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a region...</option>,
+      ...regions.map(region => {
+        var value = `["${region.uid}", "${region.fieldName}"]`;
+        return <option value={value} key={region.uid}>{region.name}</option>
+      })
+    ];
+
+    return (
+      <div className="region-dropdown-container">
+        <label className="block-label">Region:</label>
+        <select onChange={this.props.onChangeRegion} defaultValue={defaultOptionKey} name="region-selection">{regionOptions}</select>
+      </div>
+    );
   },
 
   chartTypeDropdown: function() {
     var datasetMetadata = this.props.datasetMetadata;
-    var defaultOptionKey = this.props.defaultOptionKey;
     var types = this.props.chartTypes;
+    var selectedVisualizationType = _.get(
+      this.props,
+      'vifAuthoring.selectedVisualizationType',
+      this.props.defaultOptionKey
+    );
 
     var chartTypeOptions = [
-      <option key={defaultOptionKey} value={defaultOptionKey} disabled>Select a chart type...</option>,
+      <option key={this.props.defaultOptionKey} value={this.props.defaultOptionKey} disabled>Select a chart type...</option>,
       ...types.map(chartType => {
         return <option value={chartType.type} key={chartType.type}>{chartType.name}</option>;
       })
     ];
 
-    return <select onChange={this.props.onChangeChartType} defaultValue={defaultOptionKey} name="chart-type-selection">{chartTypeOptions}</select>;
+    return (
+      <div className="chart-type-dropdown-container">
+        <label className="block-label">Chart Type:</label>
+        <select onChange={this.props.onChangeChartType} defaultValue={selectedVisualizationType} name="chart-type-selection">{chartTypeOptions}</select>
+      </div>
+    );
   },
 
   render: function() {
     var datasetMetadataInfo;
+    var regionsDropdown;
     var dimensionDropdown;
     var measureDropdown;
+    var measureAggregationDropdown;
     var chartTypeDropdown;
     var datasetMetadata = this.props.datasetMetadata;
     var datasetUid = _.get(this.props.vif, 'series[0].dataSource.datasetUid', null);
@@ -96,21 +166,26 @@ export var DataPane = React.createClass({
     }
 
     if (hasData(datasetMetadata)) {
-      dimensionDropdown = <div>Dimension: {this.dimensionDropdown()}</div>;
-      measureDropdown = <div>Measure: {this.measureDropdown()}</div>;
-      chartTypeDropdown = <div>Chart Type: {this.chartTypeDropdown()}</div>;
+      dimensionDropdown = this.dimensionDropdown();
+      measureDropdown = this.measureDropdown();
+      measureAggregationDropdown = this.measureAggregationDropdown();
+      chartTypeDropdown = this.chartTypeDropdown();
+
+      if (isChoroplethMap(this.props.vifAuthoring)) {
+        regionsDropdown = this.regionDropdown();
+      }
     }
 
     return (
       <form>
-        <label className="block-label">Enter a dataset four by four:</label>
-        <input className="text-input" type="text" defaultValue={datasetUid} onChange={this.props.onChangeDatasetUid} />
-
         {datasetMetadataInfo}
 
         {dimensionDropdown}
         {measureDropdown}
+        {measureAggregationDropdown}
         {chartTypeDropdown}
+
+        {regionsDropdown}
       </form>
     );
   }
@@ -118,18 +193,14 @@ export var DataPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif,
+    vifAuthoring: state.vifAuthoring,
+    vif: getCurrentVif(state.vifAuthoring),
     datasetMetadata: state.datasetMetadata
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeDatasetUid: function(event) {
-      var datasetUid = event.target.value;
-      dispatch(setDatasetUid(datasetUid));
-    },
-
     onChangeDimension: function(event) {
       var dimension = event.target.value;
       dispatch(setDimension(dimension));
@@ -140,9 +211,19 @@ function mapDispatchToProps(dispatch) {
       dispatch(setMeasure(measure));
     },
 
+    onChangeMeasureAggregation: function(event) {
+      var measureAggregation = event.target.value;
+      dispatch(setMeasureAggregation(measureAggregation));
+    },
+
     onChangeChartType: function(event) {
       var chartType = event.target.value;
       dispatch(setChartType(chartType));
+    },
+
+    onChangeRegion: function(event) {
+      var computedColumnMetadata = JSON.parse(event.target.value);
+      dispatch(setComputedColumn(...computedColumnMetadata));
     }
   };
 }

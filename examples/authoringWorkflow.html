@@ -5,6 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
 
     <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
+    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
     <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
 
     <style>
@@ -28,7 +29,6 @@
 
   <!-- Include external vendor -->
   <script type="text/javascript" src="./vendor.js"></script>
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
 
   <!-- Include bundle -->
   <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
@@ -43,14 +43,29 @@
       output.innerHTML = '';
       $chart.empty();
 
+      var choroplethDataSource = {
+        domain: 'dataspace.demo.socrata.com',
+        datasetUid: '52my-2pak'
+      };
+
+      var ufoSightingsDataSource = {
+        domain: 'vertex-stories.test-socrata.com',
+        datasetUid: 'k6cs-ww27'
+      };
+
+      var featureMapDataSource = {
+        domain: 'dataspace.demo.socrata.com',
+        datasetUid: 'r6t9-rak2'
+      };
+
       var authoringWorkflow = new AuthoringWorkflow(container, {
         vif: {
           series: [
             {
-              dataSource: {
-                domain: 'localhost',
-                datasetUid: 'four-four'
-              }
+              //dataSource: choroplethDataSource,
+              //dataSource: ufoSightingsDataSource,
+              dataSource: featureMapDataSource,
+              type: 'columnChart'
             }
           ]
         },

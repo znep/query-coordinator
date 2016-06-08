@@ -1,11 +1,15 @@
-// A skeleton vif used if none is provided
-module.exports = {
+export default {
   format: {
     type: 'visualization_interchange_format',
     version: 2
   },
   configuration: {
-
+    localization: {
+      'NO_VALUE': 'No value',
+      'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+      'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+      'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+    }
   },
   description: '',
   series: [
@@ -26,7 +30,11 @@ module.exports = {
         filters: []
       },
       label: null,
-      type: null
+      type: 'timelineChart',
+      unit: {
+        one: 'One',
+        other: 'Other'
+      }
     }
   ],
   title: ''

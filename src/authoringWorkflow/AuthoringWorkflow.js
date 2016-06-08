@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { getCurrentVif } from './selectors/vifAuthoring';
+
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
 import Visualization from './Visualization';
@@ -72,7 +74,7 @@ export var AuthoringWorkflow = React.createClass({
 
             <div className="authoring-controls">
               <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-              <Visualization {...this.props} />
+              <Visualization />
             </div>
           </section>
 
@@ -90,7 +92,7 @@ export var AuthoringWorkflow = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: state.vif
+    vif: getCurrentVif(state.vifAuthoring)
   };
 }
 

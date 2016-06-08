@@ -3,10 +3,10 @@ var _ = require('lodash');
 var DEFAULT_VIF = {
   configuration: {
     axisLabels: {
-      top: null,
-      right: null,
-      bottom: null,
-      left: null
+      top: false,
+      right: false,
+      bottom: false,
+      left: false
     },
     localization: {}
   },

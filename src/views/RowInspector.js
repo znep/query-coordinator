@@ -207,34 +207,23 @@ function setup(config, $target) {
 
     _$target.append(_$rowInspectorContainer);
 
+    _assignChildren();
+
+    // rowInspectorSetup can be called multiple times
+    // but we only want our bindings set once.
+    _attachEventsOnce();
+
   } else {
 
     _$rowInspectorContainer = _$target.find('#socrata-row-inspector');
-
+    _assignChildren();
   }
-
-  // Grab all children that we run operations on.
-  _$rowInspectorToolPanel = _$rowInspectorContainer.find('.tool-panel');
-  _$rowInspectorContent = _$rowInspectorContainer.find('.row-inspector-content');
-  _$pendingContent = _$rowInspectorContainer.find('.pending-content');
-  _$errorContent = _$rowInspectorContainer.find('.error-content');
-  _$rowInspectorToolPanelHint = _$rowInspectorContainer.find('.tool-panel-hint');
-  _$paginationButtonPrevious = _$rowInspectorContainer.find('.paging-btn.previous');
-  _$paginationButtonNext = _$rowInspectorContainer.find('.paging-btn.next');
-  _$pagingPanel = _$rowInspectorContainer.find('.paging-panel');
-  _$paginationMessage = _$rowInspectorContainer.find('.paging-info .message div:first-child');
-  _$paginationPosition = _$rowInspectorContainer.find('.paging-info .message div + div');
-  _$stickyBorderBottom = _$rowInspectorContainer.find('.sticky-border.bottom');
 
   // Add translations
   if (!_config.isMobile) {
     _$paginationButtonPrevious.find('span').text(_config.localization.previous);
     _$paginationButtonNext.find('span').text(_config.localization.next);
   }
-
-  // rowInspectorSetup can be called multiple times
-  // but we only want our bindings set once.
-  _attachEventsOnce();
 }
 
 var _attachEventsOnce = _.once(function() {
@@ -277,6 +266,21 @@ var _attachEventsOnce = _.once(function() {
   _$paginationButtonPrevious.on('click', _decrementPageByOne);
   _$paginationButtonNext.on('click', _incrementPageByOne);
 });
+
+function _assignChildren() {
+  // Grab all children that we run operations on.
+  _$rowInspectorToolPanel = _$rowInspectorContainer.find('.tool-panel');
+  _$rowInspectorContent = _$rowInspectorContainer.find('.row-inspector-content');
+  _$pendingContent = _$rowInspectorContainer.find('.pending-content');
+  _$errorContent = _$rowInspectorContainer.find('.error-content');
+  _$rowInspectorToolPanelHint = _$rowInspectorContainer.find('.tool-panel-hint');
+  _$paginationButtonPrevious = _$rowInspectorContainer.find('.paging-btn.previous');
+  _$paginationButtonNext = _$rowInspectorContainer.find('.paging-btn.next');
+  _$pagingPanel = _$rowInspectorContainer.find('.paging-panel');
+  _$paginationMessage = _$rowInspectorContainer.find('.paging-info .message div:first-child');
+  _$paginationPosition = _$rowInspectorContainer.find('.paging-info .message div + div');
+  _$stickyBorderBottom = _$rowInspectorContainer.find('.sticky-border.bottom');
+}
 
 function _captureLeftClickAndHide(event) {
   var $target = $(event.target);

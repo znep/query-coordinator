@@ -6,7 +6,7 @@
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="bar-chart-horz" fill="#000000">
-            <path d="M72,955 L292,955 L292,515 L72,515 L72,955 L72,955 L72,955 Z M732,955 L952,955 L952,75 L732,75 L732,955 L732,955 L732,955 Z M402,240 L402,955 L622,955 L622,240 L402,240 L402,240 L402,240 Z" id="Shape" transform="translate(512.000000, 515.000000) scale(-1, 1) rotate(270.000000) translate(-512.000000, -515.000000) "></path>
+            <path d="M72,955 L72,735 L512,735 L512,955 L72,955 L72,955 L72,955 L72,955 Z M72,295 L72,75 L952,75 L952,295 L72,295 L72,295 L72,295 L72,295 Z M787,625 L72,625 L72,405 L787,405 L787,625 L787,625 L787,625 L787,625 Z" id="Shape"></path>
         </g>
     </g>
 </svg>

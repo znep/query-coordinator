@@ -8,7 +8,6 @@
  * - Resizing the content to fit appropriately into the screen size.
  */
 export default function PresentationMode() {
-  var blacklist = ['spacer', 'horizontal-rule'];
   var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
 
   var userStory = document.querySelector('.user-story');
@@ -135,11 +134,6 @@ export default function PresentationMode() {
   }
 
   function notBlacklisted(element) {
-    var component = element.querySelector('.component-container > .component');
-    var classes = Array.prototype.slice.call(component.classList);
-
-    return classes.every(function(value) {
-      return blacklist.indexOf(value.replace('component-', '')) === -1;
-    });
+    return element.dataset.hasOwnProperty('presentable');
   }
 }

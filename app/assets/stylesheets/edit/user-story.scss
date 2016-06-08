@@ -53,8 +53,10 @@ body.story-save-error .user-story-container {
 
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,
-      .block-edit-controls-delete-btn {
+      .block-edit-controls-delete-btn,
+      .block-edit-controls-toggle-presentation-btn {
         color: $block-edit-controls-fg-color;
+        border-color: transparent;
         position: relative;
         display: block;
         width: $block-edit-controls-width;
@@ -67,9 +69,15 @@ body.story-save-error .user-story-container {
         }
       }
 
+      .block-edit-controls-toggle-presentation-btn {
+        position: absolute;
+        bottom: $block-edit-controls-width;
+      }
+
       .block-edit-controls-delete-btn {
         position: absolute;
         bottom: 0px;
+        font-size: 1.3rem;
       }
     }
 

@@ -141,6 +141,20 @@ export default function StoryRenderer(options) {
       }
     );
 
+    $container.on(
+      'click',
+      '[data-block-presentation-action]',
+      function(event) {
+        var blockId = event.target.getAttribute('data-block-id');
+
+        dispatcher.dispatch({
+          action: event.target.getAttribute('data-block-presentation-action'),
+          blockId: blockId,
+          storyUid: storyUid
+        });
+      }
+    );
+
     $container.on('dblclick', '.block', function(event) {
       var blockId = event.currentTarget.getAttribute('data-block-id');
 
@@ -273,7 +287,7 @@ export default function StoryRenderer(options) {
       // relative to the total number of blocks.
       // E.g. disable the 'move up' button for the first block and the
       // 'move down' button for the last block.
-      _updateBlockEditControls($blockElement, i, blockCount);
+      _updateBlockEditControls(blockId, $blockElement, i, blockCount);
 
       // Update the height of the containing iframes to be equal to the
       // height of the iframe document's body.
@@ -423,6 +437,12 @@ export default function StoryRenderer(options) {
 
   function _renderBlockEditControls(blockId) {
 
+    var isPresentable = storyStore.isBlockPresentable(blockId);
+    var togglePresentationClassNames = StorytellerUtils.format(
+      'block-edit-controls-toggle-presentation-btn btn btn-alternate-2 icon-eye-blocked{0}',
+      isPresentable ? '' : ' active'
+    );
+
     return $(
       '<div>',
       {
@@ -433,7 +453,7 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-move-up-btn btn btn-secondary icon-arrow-up',
+          'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 icon-arrow-up',
           'data-block-id': blockId,
           'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
         }
@@ -442,7 +462,7 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-move-down-btn btn btn-secondary icon-arrow-down',
+          'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 icon-arrow-down',
           'data-block-id': blockId,
           'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
         }
@@ -451,7 +471,16 @@ export default function StoryRenderer(options) {
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-delete-btn btn btn-secondary icon-cross2',
+          'class': togglePresentationClassNames,
+          'data-block-id': blockId,
+          'data-block-presentation-action': Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY
+        }
+      ),
+
+      $(
+        '<span>',
+        {
+          'class': 'block-edit-controls-delete-btn btn btn-alternate-2 icon-close-2',
           'data-block-id': blockId,
           'data-block-delete-action': Actions.STORY_DELETE_BLOCK
         }
@@ -460,13 +489,15 @@ export default function StoryRenderer(options) {
     ]);
   }
 
-  function _updateBlockEditControls($blockElement, blockIndex, blockCount) {
+  function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {
 
     var moveUpButton = $blockElement.find('.block-edit-controls-move-up-btn');
     var moveDownButton = $blockElement.find('.block-edit-controls-move-down-btn');
+    var togglePresentationVisibilityButton = $blockElement.find('.block-edit-controls-toggle-presentation-btn');
 
     moveUpButton.prop('disabled', blockIndex === 0);
     moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    togglePresentationVisibilityButton.toggleClass('active', !storyStore.isBlockPresentable(blockId));
   }
 
   function getHTMLComponentHeight($component) {

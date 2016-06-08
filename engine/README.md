@@ -8,7 +8,7 @@ A Rails engine that supplies common header, footer, and navigation elements for 
 
 ### From Artifactory
 
-Ensure the `ruby-virtual` artifactory source is in your Gemfile:
+Ensure the `rubygems-virtual` artifactory source is in your Gemfile:
 
 ```ruby
 source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
@@ -382,19 +382,19 @@ $text_padding: 11px;
 ### Deploy to Socrata Artifactory
 
 To deploy gem to Artifactory Online ([See Artifactory OpsDoc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#)), follow
-the directions to setup your access to artifactory. If this doesn't work, perhaps artifactory changed its API. Click on `Set Me Up` on the [ruby-virtual repository page](https://socrata.artifactoryonline.com/socrata/webapp/#/artifacts/browse/tree/General/ruby-virtual) for official instructions.
+the directions to setup your access to artifactory. If this doesn't work, perhaps artifactory changed its API. Click on `Set Me Up` on the [rubygems-virtual repository page](https://socrata.artifactoryonline.com/socrata/webapp/#/artifacts/browse/tree/General/rubygems-virtual) for official instructions.
 
 Update `~/.gemrc` to include artifactory source. You will need to grab the encrypted password like [this](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit#heading=h.4hnxvstj4v5v).
 NOTE! If your username contains an @, replace it with %40.
 
 ```
-gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual/
+gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
 ```
 
 Add `API_KEY` to `~/.gem/credentials` file:
 
 ```
-curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual/api/v1/api_key.yaml
+curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/api/v1/api_key.yaml
 cat ~/.gem/credentials
 chmod 0600 ~/.gem/credentials
 ```
@@ -402,7 +402,7 @@ chmod 0600 ~/.gem/credentials
 Ensure $RUBYGEMS_HOST is set in environment:
 
 ```
-export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/ruby-virtual
+export RUBYGEMS_HOST=https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual
 ```
 
 Build them gem and push it to artifactory:

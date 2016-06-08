@@ -3,14 +3,14 @@ namespace :gem do
   task :build do
     puts("Building socrata_site_chrome-#{Chrome::VERSION}.gem")
     Dir.chdir("#{Dir.pwd}/engine") unless Dir.pwd.ends_with?('engine')
-    `gem build socrata_site_chrome.gemspec`
+    puts `gem build socrata_site_chrome.gemspec`
   end
 
   desc 'Publish Chrome Gem'
   task :publish do
     puts("Publishing socrata_site_chrome-#{Chrome::VERSION}.gem")
     Dir.chdir("#{Dir.pwd}/engine") unless Dir.pwd.ends_with?('engine')
-    `gem push socrata_site_chrome-#{Chrome::VERSION}.gem --host https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/`
+    puts `gem push socrata_site_chrome-#{Chrome::VERSION}.gem --host https://socrata.artifactoryonline.com/socrata/api/gems/ruby-local/`
   end
 end
 

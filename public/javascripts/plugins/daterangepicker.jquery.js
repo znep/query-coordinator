@@ -17,9 +17,10 @@
  *  01.19.2008 changed presets hash to support different text
  * --------------------------------------------------------------------
  * Socrata changelog:
- *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
+ *  03.21.2011 made it so that month of.. and year of.. queries will autoaccept selection on accept
  *  08.25.2014 take initial dates from settings, handle text/previous/previousText on ranges, format with range name
  *  05.31.2016 fix formatting breaking when dates are blank by default
+ *  06.07.2016 add button to clear selected range
  */
 jQuery.fn.daterangepicker = function(settings) {
   var rangeInput = jQuery(this);
@@ -93,6 +94,8 @@ jQuery.fn.daterangepicker = function(settings) {
     },
     onChange: function() {
     },
+    clearButtonText: 'Clear',
+    showClearButton: false,
     datepickerOptions: null //object containing native UI datepicker API options
   }, settings);
 
@@ -201,6 +204,18 @@ jQuery.fn.daterangepicker = function(settings) {
     }).appendTo(ul);
     x++;
   });
+
+  if (options.showClearButton) {
+    jQuery('<li/>', {
+      'class': [
+        'ui-daterangepicker-Clear',
+        'ui-corner-all',
+        'ui-helper-clearfix',
+        'preset_0' // adds a blank space above the button
+      ].join(' '),
+      html: '<a href="#">' + options.clearButtonText + '</a>'
+    }).appendTo(ul);
+  }
 
   var $menuItems = ul.find('li');
   $menuItems.on('focus', function() {
@@ -377,6 +392,14 @@ jQuery.fn.daterangepicker = function(settings) {
       setTimeout(function() {
         doneBtn.fadeIn();
       }, 400);
+    }
+    else if (jQuery(this).is('.ui-daterangepicker-Clear')) {
+      doneBtn.hide();
+      rpPickers.hide();
+      rp.find('.range-start, .range-end').
+        datepicker('option', { minDate: null, maxDate: null }).
+        find('.ui-datepicker-current-day').trigger('click');
+      $input.val('');
     }
     else {
       //custom date range

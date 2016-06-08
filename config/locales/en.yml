@@ -1652,6 +1652,7 @@ en:
       title: Select Layout
   plugins:
     daterangepicker:
+      clear: Clear
       date_range: Date Range
       done: Done
       end_date: End date

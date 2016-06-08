@@ -56,9 +56,10 @@ class DataLensHelperTest < ActionView::TestCase
         }
       ]
     )
-    Configuration.stubs(:find_by_type => [configuration_model])
+    CurrentDomain.stubs(:configuration => configuration_model)
     result = data_lens_helper.configuration_by_type 'feature_set'
     assert(result['staging_api_lockdown'] != nil, 'result has value')
+    CurrentDomain.unstub(:configuration)
   end
 
   def test_tileserver_hosts_app_config_translated_to_array

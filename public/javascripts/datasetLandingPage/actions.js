@@ -74,6 +74,20 @@ export function handleContactFormFailure() {
   };
 }
 
+export const HANDLE_CONTACT_FORM_RECAPTCHA_ERROR = 'HANDLE_CONTACT_FORM_RECAPTCHA_ERROR';
+export function handleContactFormRecaptchaError() {
+  return {
+    type: HANDLE_CONTACT_FORM_RECAPTCHA_ERROR
+  };
+}
+
+export const HANDLE_CONTACT_FORM_RECAPTCHA_RESET = 'HANDLE_CONTACT_FORM_RECAPTCHA_RESET';
+export function handleContactFormRecaptchaReset() {
+  return {
+    type: HANDLE_CONTACT_FORM_RECAPTCHA_RESET
+  };
+}
+
 export function submitContactForm() {
   return function(dispatch, getState) {
     var state = getState();
@@ -94,21 +108,27 @@ export function submitContactForm() {
       body: JSON.stringify({
         id: viewId,
         type: 'other',
-        subject: fields.subject,
-        message: fields.message,
-        from_address: fields.email
+        subject: fields.subject.value,
+        message: fields.message.value,
+        from_address: fields.email.value,
+        recaptcha_response_token: fields.recaptchaResponseToken
       })
     }).
       then(checkStatus).
       then(response => response.json()).
-      then(function(response) {
-        if (response.success) {
-          dispatch(handleContactFormSuccess());
-          dispatch(emitMixpanelEvent({ name: 'Contacted Dataset Owner' }));
-        } else {
-          dispatch(handleContactFormFailure());
-        }
-      })['catch'](() => dispatch(handleContactFormFailure()));
+      then(function() {
+        dispatch(handleContactFormSuccess());
+        dispatch(emitMixpanelEvent({ name: 'Contacted Dataset Owner' }));
+      })['catch'](function(error) {
+        return error.response.json().
+          then(function(response) {
+            if (response.message === 'Invalid Recaptcha') {
+              dispatch(handleContactFormRecaptchaError());
+            } else {
+              dispatch(handleContactFormFailure());
+            }
+          });
+      });
   };
 }
 

@@ -27,7 +27,8 @@ $warning-icon-color: #debb1e;
 
 .restore-dataset {
   float: right;
-  margin-right: 33%;
+  margin: 0 !important;
+  font-size: 0.7em !important;
 }
 
 .restore-dataset:hover {

@@ -144,7 +144,7 @@ class FilterItem extends React.Component {
       case 'int':
         if (this.props.isLarge) {
           filter = <SocrataRangefilter
-            key={ 'qf-{0}'.format(this.props.filter.name) }
+            key={ 'qf-{0}'.format(this.props.filter.id) }
             type={ this.props.filter.type }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
@@ -156,7 +156,7 @@ class FilterItem extends React.Component {
           var rangeMax = Number(_.last(this.props.filter.scale));
 
           filter = <SocrataRangefilter
-            key={ 'qf-{0}'.format(this.props.filter.name) }
+            key={ 'qf-{0}'.format(this.props.filter.id) }
             type={ this.props.filter.type }
             componentId={ this.props.filter.id }
             name={ this.props.filter.name }
@@ -169,7 +169,7 @@ class FilterItem extends React.Component {
         break;
       case 'string':
         filter = <SocrataAutocompletefilter
-          key={ 'qf-{0}'.format(this.props.filter.name) }
+          key={ 'qf-{0}'.format(this.props.filter.id) }
           componentId={ this.props.filter.id }
           domain={ this.props.domain }
           datasetId={ this.props.datasetId }
@@ -180,7 +180,7 @@ class FilterItem extends React.Component {
         break;
       case 'calendar_date':
         filter = <SocrataRangefilter
-          key={ 'qf-{0}'.format(this.props.filter.name) }
+          key={ 'qf-{0}'.format(this.props.filter.id) }
           type={ this.props.filter.type }
           componentId={ this.props.filter.id }
           name={ this.props.filter.name }
@@ -200,7 +200,7 @@ class FilterItem extends React.Component {
     if (!this.state.showWarning) { warningClasses += ' hidden'; }
 
     return (
-      <div id={ 'qf-{0}'.format(this.props.filter.name) } className="qfb-filter-item" onKeyDown={ this.handleKeyboardEvents }>
+      <div id={ 'qf-{0}'.format(this.props.filter.id) } className="qfb-filter-item" onKeyDown={ this.handleKeyboardEvents }>
         <div className="qfb-filter-item-main">
           <button className="qfb-filter-item-mobile-btn visible-xs" onClick={ this.onClickDeleteFilter }>
             <i className="icon-close-circle"></i>

@@ -74,10 +74,6 @@ enable_dataset_landing_page:
   description: Enable the dataset landing page
   defaultValue: false
   category: dataset landing page
-enable_dataset_landing_page_contact_form:
-  description: Enable the contact modal on the dataset landing page
-  defaultValue: false
-  category: dataset landing page
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
@@ -229,6 +225,9 @@ reenable_ui_for_nbe:
   category: obe deprecation
 restore_dataset_button:
   description: Show the Restore Dataset button on the data jobs page
+  defaultValue: false
+restore_dataset_filter:
+  description: Whether or not to show the 'Restore' event filter on the data jobs page
   defaultValue: false
 robots_txt_disallow_analytics_add:
   description: Adds "/analytics/add" to the Disallow list for robots.txt

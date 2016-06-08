@@ -2,6 +2,7 @@
 @import "dataset-landing-page/breakpoints";
 @import "dataset-landing-page/view-widget";
 @import "dataset-landing-page/featured-content-modal";
+@import "dataset-landing-page/contact-form";
 
 // Miscellaneous colors not in styleguide
 $facebook-blue: #3b5998;
@@ -848,65 +849,6 @@ section.landing-page-section.schema-preview {
 
   .email a {
     color: $dark-grey-3;
-  }
-}
-
-#contact-modal {
-  .modal-container {
-    max-width: 600px;
-    max-height: 600px;
-    overflow-y: scroll;
-
-    .modal-header {
-      .modal-header-title {
-        margin-top: 0;
-      }
-    }
-
-    .modal-content {
-      max-height: none;
-      overflow-y: visible;
-
-      .subject {
-        width: 100%;
-      }
-
-      .message {
-        width: 100%;
-        min-width: auto;
-        resize: vertical;
-        height: 7em;
-      }
-
-      .email {
-        width: 300px;
-      }
-
-      label .quiet {
-        margin-left: 5px;
-      }
-
-      .alert p {
-        margin: 0;
-      }
-    }
-
-    #cancel {
-      text-decoration: none;
-    }
-
-    #send {
-      padding: 10px 12px;
-
-      &.sending {
-        padding: 6px 12px;
-        vertical-align: bottom;
-      }
-    }
-
-    @media(max-width: $small) {
-      max-height: none;
-    }
   }
 }
 

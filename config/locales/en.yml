@@ -1216,6 +1216,7 @@ en:
       dateISO: Please enter a valid date (ISO).
       digits: Please enter only digits.
       email: Please enter a valid email address.
+      email_recipient: Please enter a valid email address or choose a group.
       equalTo: Please enter the same value again.
       max: Please enter a value less than or equal to {0}.
       maxlength: Please enter no more than {0} characters.
@@ -1286,8 +1287,10 @@ en:
       error_invalid_email: Please enter a valid email address.
       failure_html: "<b>Oh no!</b> Something went wrong. Please try again later."
       message: Message
+      recaptcha: Recaptcha challenge
       recaptcha_loading: Recaptcha is loading
       send: Send
+      sending: Form is sending
       subject: Subject
       success_html: "<b>Thank you!</b> Your message has been sent."
       title: Send a Message to the Owner of this Dataset
@@ -1989,6 +1992,7 @@ en:
           import_activity: Import Activity
           publish: Publish
           replace: Replace
+          restore: Restore
           type: Type
           upsert: Upsert
           working_copy: Working Copy

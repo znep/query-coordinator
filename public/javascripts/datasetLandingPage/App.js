@@ -8,7 +8,7 @@ import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import PopularViewList from './containers/PopularViewList';
 import ApiFlannel from './components/ApiFlannel';
-import ContactModal from './containers/ContactModal';
+import ContactForm from './components/ContactForm';
 import ShareModal from './components/ShareModal';
 import ODataModal from './components/ODataModal';
 import FeedbackPanel from './components/FeedbackPanel';
@@ -30,7 +30,7 @@ export default function() {
       </main>
 
       <ApiFlannel />
-      <ContactModal />
+      <ContactForm />
       <FeaturedContentModal />
       <FeedbackPanel />
       <ODataModal />

@@ -208,6 +208,7 @@ $.unescapeQuotes = function(text)
     if (typeof text !== 'string') { return text; }
     return $.htmlUnescape(text)
         .replace(/&apos;/g, "'")
+        .replace(/&#39;/g, "'")
         .replace(/&#x27;/g, "'");
 }
 

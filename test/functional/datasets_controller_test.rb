@@ -392,19 +392,37 @@ class DatasetsControllerTest < ActionController::TestCase
 
     should 'return a JSON failure result if view is missing' do
       @controller.stubs(:get_view => nil)
-      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd'))
       assert_equal('400', @response.code)
       assert_equal({:success => false, :message => 'Can\'t find view: 1234-abcd'}.to_json, @response.body, 'should include a failure JSON response')
     end
 
     should 'return a JSON failure result if missing params' do
-      post(:contact_dataset_owner, {:id => '1234-abcd', :format => :data})
+      post(:contact_dataset_owner, {:id => '1234-abcd'})
       assert_equal('400', @response.code)
       assert_equal({:success => false, :message => 'Missing key: type'}.to_json, @response.body, 'should include a failure JSON response')
     end
 
+    should 'return a JSON failure result if Recaptcha is invalid' do
+      SocrataRecaptcha.stubs(:valid => false)
+
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :recaptcha_response_token => 'wombats-in-top-hats'))
+      assert_equal('400', @response.code)
+      assert_equal({:success => false, :message => 'Invalid Recaptcha'}.to_json, @response.body, 'should include a failure JSON response')
+    end
+
+    should 'return a JSON success result if Recaptcha is valid' do
+      SocrataRecaptcha.stubs(:valid => true)
+
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :recaptcha_response_token => 'wombats-in-top-hats'))
+      assert_equal('200', @response.code)
+      assert_equal({:success => true}.to_json, @response.body, 'should include a success JSON response')
+    end
+
     should 'send email and return a JSON success result if all params present' do
-      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
+      SocrataRecaptcha.stubs(:valid => true)
+
+      post(:contact_dataset_owner, contact_form_data.merge(:id => '1234-abcd', :recaptcha_response_token => 'wombats-in-top-hats'))
       assert_equal('200', @response.code)
       assert_equal({:success => true}.to_json, @response.body, 'should include a success JSON response')
     end

@@ -24,8 +24,8 @@ function init(element, callback) {
 
     // See here for more options: https://developers.google.com/recaptcha/docs/display#render_param
     var id = window.grecaptcha.render('recaptcha', {
-      sitekey: window.contactFormData.recaptchaKey,
-      hl: window.contactFormData.locale
+      sitekey: window.serverConfig.recaptchaKey,
+      hl: window.serverConfig.locale
     });
 
     loaded = true;
@@ -38,7 +38,11 @@ function init(element, callback) {
   }, 100);
 }
 
-function verify(id) {
+// window.grecaptcha.getResponse returns an empty string until the challenge has been
+// completed, when it then returns a token. That tells us that the challenge was
+// completed, but it doesn't tell us what domain it was completed on or if Google
+// considers the response valid, so we need to store the token and verify separately.
+function getResponseToken(id) {
   if (loaded) {
     return window.grecaptcha.getResponse(id);
   }
@@ -52,6 +56,6 @@ function reset(id) {
 
 module.exports = {
   init: init,
-  verify: verify,
+  getResponseToken: getResponseToken,
   reset: reset
 };

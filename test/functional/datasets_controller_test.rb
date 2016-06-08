@@ -255,6 +255,7 @@ class DatasetsControllerTest < ActionController::TestCase
       should 'display the DSLP on the show path' do
         @controller.stubs(:get_view => @test_view)
         @test_view.stubs(find_dataset_landing_page_related_content: [])
+        @test_view.stubs(featured_content: [])
 
         get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
         assert_select_quiet('#app').any?
@@ -264,6 +265,7 @@ class DatasetsControllerTest < ActionController::TestCase
       should 'display the DSLP when /about is appended to the show path' do
         @controller.stubs(:get_view => @test_view)
         @test_view.stubs(find_dataset_landing_page_related_content: [])
+        @test_view.stubs(featured_content: [])
 
         get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
         assert_select '#app', 1
@@ -282,6 +284,7 @@ class DatasetsControllerTest < ActionController::TestCase
         setup do
           @controller.stubs(:get_view => @test_view)
           @test_view.stubs(dataset?: false)
+          @test_view.stubs(featured_content: [])
         end
 
         should 'does not show the dslp at /about' do

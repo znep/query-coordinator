@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
-import { emitMixpanelEvent } from '../actions';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import { handleKeyPress } from '../lib/a11yHelpers';
 
 export var MetadataTable = React.createClass({

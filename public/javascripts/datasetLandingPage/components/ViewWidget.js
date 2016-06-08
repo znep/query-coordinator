@@ -8,14 +8,15 @@ var ViewWidget = React.createClass({
   propTypes: {
     children: PropTypes.node,
     description: PropTypes.string,
-    displayType: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
+    displayType: PropTypes.string,
+    id: PropTypes.string,
+    isExternal: PropTypes.bool,
     isPrivate: PropTypes.bool,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     onClick: PropTypes.func,
-    updatedAt: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    viewCount: PropTypes.number.isRequired
+    updatedAt: PropTypes.string,
+    url: PropTypes.string,
+    viewCount: PropTypes.number
   },
 
   componentDidMount: function() {
@@ -47,11 +48,54 @@ var ViewWidget = React.createClass({
   },
 
   render: function() {
-    var { name, id, description, url, displayType, updatedAt, viewCount } = this.props;
+    var {
+      name,
+      id,
+      isExternal,
+      description,
+      url,
+      displayType,
+      updatedAt,
+      viewCount,
+      isPrivate
+    } = this.props;
 
     var icon = getIconClassForDisplayType(displayType);
+    var metadataRow;
+    var linkProps;
 
-    var privateIcon = this.props.isPrivate ?
+    if (isExternal) {
+      icon = 'icon-external-square';
+
+      metadataRow = (
+        <div className="entry-meta">
+          <span className="date">{I18n.view_widget.external_content}</span>
+        </div>
+      );
+
+      linkProps = {
+        target: '_blank',
+        rel: 'nofollow external'
+      };
+    } else {
+      var viewCountLabel = viewCount ? `${utils.formatNumber(viewCount)} ${I18n.views}` : null;
+      var updatedAtLabel = updatedAt ? formatDate(updatedAt) : null;
+
+      metadataRow = (
+        <div className="entry-meta">
+          <div className="first">
+            <span className="date">{updatedAtLabel}</span>
+          </div>
+          <div className="second">
+            <span className="date">{viewCountLabel}</span>
+          </div>
+        </div>
+      );
+
+      linkProps = {};
+    }
+
+    var privateIcon = isPrivate ?
       <span className="icon icon-private" /> : null;
 
     var ariaLabel = `${I18n.popular_views.view} ${name}`;
@@ -62,7 +106,7 @@ var ViewWidget = React.createClass({
           <div className="entry-title">
             <h3 className="entry-name">
               {privateIcon}
-              <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
+              <a {...linkProps} href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
                 {name}
               </a>
             </h3>
@@ -71,17 +115,12 @@ var ViewWidget = React.createClass({
             <span className={icon} />
           </div>
         </div>
-        <div className="entry-meta">
-          <div className="first">
-            <span className="date">{formatDate(updatedAt)}</span>
-          </div>
-          <div className="second">
-            <span className="date">{utils.formatNumber(viewCount)} views</span>
-          </div>
-        </div>
+
+        {metadataRow}
+
         <div className="entry-content">
           <div className="entry-main">
-            <a href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
+            <a {...linkProps} href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
               <div className="img-wrapper">
                 <span className={`${icon} x-large-icon`}></span>
               </div>

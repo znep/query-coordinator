@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import PopularViewList from '../components/PopularViewList';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import {
-  emitMixpanelEvent,
   loadMorePopularViews,
   dismissPopularViewsError,
   togglePopularViews
-} from '../actions';
+} from '../actions/popularViews';
 
 function mapStateToProps(state) {
   return state.popularViews;

@@ -5,8 +5,6 @@ class DatasetLandingPageController < ActionController::Base
   before_filter :initialize_current_user
 
   def popular_views
-    dataset_landing_page = DatasetLandingPage.new
-
     begin
       popular_views = dataset_landing_page.get_popular_views(params[:id], params[:limit], params[:offset])
     rescue CoreServer::ResourceNotFound
@@ -18,7 +16,33 @@ class DatasetLandingPageController < ActionController::Base
     render :json => popular_views
   end
 
+  def get_featured_content
+    begin
+      featured_content = dataset_landing_page.get_featured_content(params[:id])
+    rescue CoreServer::ResourceNotFound
+      return render :nothing => true, :status => :not_found
+    rescue CoreServer::CoreServerError => e
+      return render :nothing => true, :status => :internal_server_error
+    end
+
+    render :json => featured_content
+  end
+
+  def post_featured_content
+    begin
+      featured_item = dataset_landing_page.add_featured_content(params[:id], request.body.read)
+    rescue CoreServer::CoreServerError => e
+      return render :nothing => true, :status => :internal_server_error
+    end
+
+    render :json => featured_item
+  end
+
   def initialize_current_user
     current_user_session
+  end
+
+  def dataset_landing_page
+    @dataset_landing_page ||= DatasetLandingPage.new
   end
 end

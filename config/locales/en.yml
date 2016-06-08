@@ -1273,7 +1273,9 @@ en:
       foundry_button: API Docs
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
+    back: Back
     cancel: Cancel
+    change: Change
     close: Close
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
@@ -1309,18 +1311,26 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
-    edit: Edit
     featured_content:
       title: Featured Content Using this Data
       manage_prompt:
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
-        button: Manage Featured Items
+        button: Manage Featured Content
     featured_content_modal:
-      title: Manage Featured Content
-      introduction: Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources.
-      visualization: Visualization
-      story: Story
+      header: Manage Featured Content
       external: External Resource
+      external_resource_form:
+        description: Description
+        header:  Feature an External Resource
+        invalid_url_message: This looks like an invalid link. Try adding http:// to the beginning of your link.
+        message: Create a link to some external asset relating to this data. It could be an awesome visualization on the web, a blog post about how the data was released, or a link to another part of your site.
+        save_error_message: Oh no! Something went wrong, please try again.
+        title: Title
+        url: Link to Resource
+      introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
+      story: Story
+      title: Featured Content
+      visualization: Visualization
     feedback:
       panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
       panel_title: Do you want to include an annotated screenshot of the current page?
@@ -1365,6 +1375,8 @@ en:
     private_notice: You are looking at a private dataset.
     published_by: Published by
     remove: Remove
+    save: Save
+    saved: Saved
     schema_preview:
       api_field_name: API Field Name
       column_name: Column Name
@@ -1415,6 +1427,9 @@ en:
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     updated: Updated
+    view_widget:
+      external_content: External Content
+      views: Views
   dataslate:
     component:
       edit: Edit this component

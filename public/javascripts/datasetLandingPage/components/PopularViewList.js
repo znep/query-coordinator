@@ -88,7 +88,7 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <div className="media-results" onScroll={onScrollList}>
+      <div className="media-results popular-views" onScroll={onScrollList}>
         {popularViews}
       </div>
     );

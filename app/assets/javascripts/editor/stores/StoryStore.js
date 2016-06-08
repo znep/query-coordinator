@@ -360,12 +360,9 @@ export default function StoryStore() {
   }
 
   function _toggleBlockPresentationVisibility(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
     StorytellerUtils.assertHasProperty(payload, 'blockId');
     StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
 
-    var storyUid = payload.storyUid;
     var blockId = payload.blockId;
     var block = _getBlock(blockId);
 

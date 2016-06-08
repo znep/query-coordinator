@@ -4,8 +4,8 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
   let(:story_url) { '/s/magic-thing/pres-ents' }
   let(:story) { story_url }
   let(:edit_mode_selector) { '.btn-edit' }
-  let(:presentation_mode_selector) { '.btn-presentation-mode:not(.icon-cross2)' }
-  let(:presentation_mode_selector_enabled) { '.btn-presentation-mode.icon-cross2' }
+  let(:presentation_mode_selector) { '.btn-presentation-mode:not(.icon-close-2)' }
+  let(:presentation_mode_selector_enabled) { '.btn-presentation-mode.icon-close-2' }
   let(:presentation_nav) { '.presentation-navigation' }
   let(:presentation_nav_previous) { '.btn-presentation-previous' }
   let(:presentation_nav_next) { '.btn-presentation-next' }

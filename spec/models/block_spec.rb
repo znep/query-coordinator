@@ -140,7 +140,8 @@ RSpec.describe Block, type: :model do
         'updated_at' => nil,
         'components' => [
           { 'type' => 'html', 'value' => 'Hello, world!' }
-        ]
+        ],
+        'presentable' => true
       )
     end
   end
@@ -156,7 +157,8 @@ RSpec.describe Block, type: :model do
         'updated_at' => nil,
         'components' => [
           { 'type' => 'html', 'value' => 'Hello, world!' }
-        ]
+        ],
+        'presentable' => true
       )
     end
   end

@@ -27,19 +27,23 @@ describe('StoryStore', function() {
     { type: 'image', value: 'fakeImageFile.png' },
     { type: 'html', value: 'First Block' }
   ];
+  var block1Presentable = true;
   var block1Content = {
     'id': block1Id,
     'layout': block1Layout,
-    'components': block1Components
+    'components': block1Components,
+    'presentable': block1Presentable
   };
 
   var block2Id = 'block2';
   var block2Layout = '12';
   var block2Components = [ { type: 'html', value: 'Second Block' } ];
+  var block2Presentable = false;
 
   var block3Id = 'block3';
   var block3Layout = '12';
   var block3Components = [ { type: 'html', value: 'Third Block' } ];
+  var block3Presentable = false;
 
   function dispatch(action) {
     dispatcher.dispatch(action);
@@ -61,11 +65,13 @@ describe('StoryStore', function() {
       blocks: [
         DataGenerators.generateBlockData({
           layout: block1Layout,
-          components: block1Components
+          components: block1Components,
+          presentable: block1Presentable
         }),
         DataGenerators.generateBlockData({
           layout: block2Layout,
-          components: block2Components
+          components: block2Components,
+          presentable: block2Presentable
         })
       ]
     });
@@ -80,7 +86,8 @@ describe('StoryStore', function() {
       blocks: [
         DataGenerators.generateBlockData({
           layout: block3Layout,
-          components: block3Components
+          components: block3Components,
+          presentable: block3Presentable
         })
       ]
     });
@@ -585,6 +592,14 @@ describe('StoryStore', function() {
           });
         });
       });
+
+      describe('.isBlockPresentable()', function() {
+        it('should throw an error', function() {
+          assert.throw(function() {
+            storyStore.isBlockPresentable('does not exist');
+          });
+        });
+      });
     });
 
     describe('given an existing block id', function() {
@@ -642,6 +657,13 @@ describe('StoryStore', function() {
             assert.equal(component.type, block1Components[1].type);
             assert.equal(component.value, block1Components[1].value);
           });
+        });
+      });
+
+      describe('.isBlockPresentable()', function() {
+        it('should return the presentable boolean of the specified block', function() {
+          assert.equal(storyStore.isBlockPresentable(block1Id), block1Presentable);
+          assert.equal(storyStore.isBlockPresentable(block2Id), block2Presentable);
         });
       });
     });
@@ -1276,6 +1298,33 @@ describe('StoryStore', function() {
           });
 
           assert.deepEqual(storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
+        });
+      });
+    });
+
+    describe('STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY', function() {
+      describe('given a non-existent block id', function() {
+        it('should throw an error', function() {
+          assert.throw(function() {
+            dispatch({
+              action: Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY,
+              blockId: 'nothing to see here'
+            });
+          });
+        });
+      });
+
+      describe('given a valid block id', function() {
+        it('should toggle the block\'s presentable attribute', function() {
+
+          assert.isTrue(storyStore.isBlockPresentable(block1Id));
+
+          dispatch({
+            action: Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY,
+            blockId: block1Id
+          });
+
+          assert.isFalse(storyStore.isBlockPresentable(block1Id));
         });
       });
     });

@@ -56,7 +56,7 @@ export default function PresentationMode() {
 
       userStory.classList.add('presentation-mode');
       presentationMode.classList.remove('icon-presentation');
-      presentationMode.classList.add('icon-cross2');
+      presentationMode.classList.add('icon-close-2');
       presentationButtons.previous.classList.remove('hidden');
       presentationButtons.next.classList.remove('hidden');
 
@@ -75,7 +75,7 @@ export default function PresentationMode() {
     if (editButton) { editButton.classList.remove('hidden'); }
 
     userStory.classList.remove('presentation-mode');
-    presentationMode.classList.remove('icon-cross2');
+    presentationMode.classList.remove('icon-close-2');
     presentationMode.classList.add('icon-presentation');
     presentationButtons.previous.classList.add('hidden');
     presentationButtons.next.classList.add('hidden');

@@ -149,8 +149,7 @@ export default function StoryRenderer(options) {
 
         dispatcher.dispatch({
           action: event.target.getAttribute('data-block-presentation-action'),
-          blockId: blockId,
-          storyUid: storyUid
+          blockId: blockId
         });
       }
     );
@@ -435,6 +434,13 @@ export default function StoryRenderer(options) {
     return $blockElement;
   }
 
+  function _templateFlyout(className, content) {
+    return $(StorytellerUtils.format('<div class="{0} flyout flyout-hidden">', className)).
+      append([
+        $('<section class="flyout-content">').append(content)
+      ]);
+  }
+
   function _renderBlockEditControls(blockId) {
 
     var isPresentable = storyStore.isBlockPresentable(blockId);
@@ -443,40 +449,82 @@ export default function StoryRenderer(options) {
       isPresentable ? '' : ' active'
     );
 
-    return $(
+    var $moveUpButton = $(
+      '<span>',
+      {
+        'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 icon-arrow-up',
+        'data-block-id': blockId,
+        'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
+      }
+    );
+
+    var $moveDownButton = $(
+      '<span>',
+      {
+        'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 icon-arrow-down',
+        'data-block-id': blockId,
+        'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
+      }
+    );
+
+    var $moveUpFlyout = _templateFlyout(
+      'block-edit-controls-move-up-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.move_block_up_flyout'))
+    );
+
+    var $moveDownFlyout = _templateFlyout(
+      'block-edit-controls-move-down-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.move_block_down_flyout'))
+    );
+
+    var $presentationFlyout = _templateFlyout(
+      'block-edit-controls-presentation-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.presentation_toggle_flyout'))
+    );
+
+    var $presentationToggleButton = $(
+      '<span>',
+      {
+        'class': togglePresentationClassNames,
+        'data-block-id': blockId,
+        'data-block-presentation-action': Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY,
+        'data-flyout': 'block-edit-controls-presentation-flyout'
+      }
+    );
+
+    $presentationToggleButton.
+      on('mouseover', function() {
+        $presentationFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $presentationFlyout.addClass('flyout-hidden');
+      });
+
+    $moveUpButton.
+      on('mouseover', function() {
+        $moveUpFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $moveUpFlyout.addClass('flyout-hidden');
+      });
+
+    $moveDownButton.
+      on('mouseover', function() {
+        $moveDownFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $moveDownFlyout.addClass('flyout-hidden');
+      });
+
+    var blockEditControls = $(
       '<div>',
       {
         'class': 'block-edit-controls'
       }
     ).append([
-
-      $(
-        '<span>',
-        {
-          'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 icon-arrow-up',
-          'data-block-id': blockId,
-          'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
-        }
-      ),
-
-      $(
-        '<span>',
-        {
-          'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 icon-arrow-down',
-          'data-block-id': blockId,
-          'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
-        }
-      ),
-
-      $(
-        '<span>',
-        {
-          'class': togglePresentationClassNames,
-          'data-block-id': blockId,
-          'data-block-presentation-action': Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY
-        }
-      ),
-
+      $moveUpButton,
+      $moveDownButton,
+      $presentationToggleButton,
       $(
         '<span>',
         {
@@ -484,9 +532,14 @@ export default function StoryRenderer(options) {
           'data-block-id': blockId,
           'data-block-delete-action': Actions.STORY_DELETE_BLOCK
         }
-      )
-
+      ),
+      $presentationFlyout,
+      $moveUpFlyout,
+      $moveDownFlyout
     ]);
+
+
+    return blockEditControls;
   }
 
   function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {

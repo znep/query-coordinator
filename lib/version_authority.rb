@@ -23,6 +23,7 @@ module VersionAuthority
   end
 
   def self.paths_mtime
+    # WARNING: Core also writes to these keys.
     Rails.cache.read(pages_key, :raw => true)
   end
 

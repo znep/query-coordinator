@@ -85,7 +85,7 @@ export var FeaturedItemSelector = React.createClass({
         <button
           className="btn btn-alternate-2 edit-button"
           key="change"
-          onClick={_.partial(onClickEdit, index)}>
+          onClick={_.partial(onClickEdit, contentList[index])}>
           <span className="icon-edit" />
           {I18n.change}
         </button>,
@@ -109,7 +109,7 @@ export var FeaturedItemSelector = React.createClass({
         <div className="modal-footer-actions">
           <button
             key="done"
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm done-button"
             data-modal-dismiss
             onClick={onClickDone}>
             {I18n.done}

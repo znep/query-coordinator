@@ -32,6 +32,11 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     it('renders the featured content', function() {
       expect(element.querySelector('.modal-content > .featured-content')).to.exist;
     });
+
+    it('renders a footer', function() {
+      expect(element.querySelector('footer')).to.exist;
+      expect(element.querySelector('footer .done-button')).to.exist;
+    });
   });
 
   it('renders placeholders for featured items that do not exist', function() {
@@ -72,5 +77,57 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     Simulate.click(button);
 
     expect(element.querySelectorAll('.featured-item:first-child .btn')).to.have.length(3);
+  });
+
+  describe('actions', function() {
+    it('calls onClickDone when the done button is clicked', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickDone: spy
+      }));
+
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.done-button'));
+      expect(spy.callCount).to.equal(1);
+    });
+
+    it('calls onClickAdd when the add button is clicked', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickAdd: spy,
+        contentList: [null, null, null]
+      }));
+
+      Simulate.click(element.querySelector('.featured-item:first-child .btn'));
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.featured-item:first-child .btn-wide'));
+      expect(spy.callCount).to.equal(1);
+    });
+
+    it('calls onClickEdit when the edit button is clicked', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickEdit: spy
+      }));
+
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.featured-item:first-child .edit-button'));
+      expect(spy.callCount).to.equal(1);
+    });
+
+    it('calls onClickRemove when the edit button is clicked', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickRemove: spy
+      }));
+
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.featured-item:first-child .remove-button'));
+      expect(spy.callCount).to.equal(1);
+    });
   });
 });

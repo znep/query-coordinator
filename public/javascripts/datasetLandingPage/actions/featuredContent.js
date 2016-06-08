@@ -4,7 +4,6 @@ import { UID_REGEX } from '../lib/constants';
 import {
   ADD_FEATURED_ITEM,
   EDIT_FEATURED_ITEM,
-  REMOVE_FEATURED_ITEM,
   CANCEL_FEATURED_ITEM_EDIT,
   REQUESTED_FEATURED_ITEM_SAVE,
   HANDLE_FEATURED_ITEM_SAVE_SUCCESS,
@@ -13,8 +12,17 @@ import {
   SET_STORY_URL_FIELD,
   REQUESTED_STORY,
   HANDLE_LOADING_STORY_SUCCESS,
-  HANDLE_LOADING_STORY_ERROR
+  HANDLE_LOADING_STORY_ERROR,
+  REQUESTED_FEATURED_ITEM_REMOVAL,
+  HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
+  HANDLE_FEATURED_ITEM_REMOVAL_ERROR
 } from '../actionTypes';
+
+var defaultHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'X-CSRF-Token': window.serverConfig.csrfToken
+};
 
 // Used to throw errors from non-200 responses when using fetch.
 function checkStatus(response) {
@@ -51,13 +59,6 @@ export function editFeaturedItem(featuredItem) {
   };
 }
 
-export function removeFeaturedItem(position) {
-  return {
-    type: REMOVE_FEATURED_ITEM,
-    position: position
-  };
-}
-
 export function cancelFeaturedItemEdit() {
   return {
     type: CANCEL_FEATURED_ITEM_EDIT
@@ -88,20 +89,12 @@ export function saveFeaturedItem() {
   return function(dispatch, getState) {
     var state = getState();
     var viewId = state.view.id;
-    var csrfToken = state.contactForm.token;
     var featuredContent = state.featuredContent;
     var editType = featuredContent.editType;
     var editPosition = featuredContent.editPosition;
 
-    var headers;
     var payload;
     var fetchOptions;
-
-    headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken
-    };
 
     // The payload differs depending on the type of item that is being featured.
     if (editType === 'visualization') {
@@ -131,7 +124,7 @@ export function saveFeaturedItem() {
     fetchOptions = {
       method: 'POST',
       credentials: 'same-origin',
-      headers: headers,
+      headers: defaultHeaders,
       body: JSON.stringify(payload)
     };
 
@@ -145,6 +138,51 @@ export function saveFeaturedItem() {
         dispatch(handleFeaturedItemSaveSuccess(response, editPosition));
         _.delay(dispatch, 1500, cancelFeaturedItemEdit());
       })['catch'](() => dispatch(handleFeaturedItemSaveError()));
+  };
+}
+
+export function requestedFeaturedItemRemoval(position) {
+  return {
+    type: REQUESTED_FEATURED_ITEM_REMOVAL,
+    position: position
+  };
+}
+
+export function handleFeaturedItemRemovalSuccess(position) {
+  return {
+    type: HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
+    position: position
+  };
+}
+
+export function handleFeaturedItemRemovalError() {
+  return {
+    type: HANDLE_FEATURED_ITEM_REMOVAL_ERROR
+  };
+}
+
+export function removeFeaturedItem(position) {
+  return function(dispatch, getState) {
+    var state = getState();
+    var viewId = state.view.id;
+
+    var fetchOptions;
+
+    fetchOptions = {
+      method: 'DELETE',
+      credentials: 'same-origin',
+      headers: defaultHeaders
+    };
+
+    dispatch(requestedFeaturedItemRemoval(position));
+
+    // Save featured item
+    fetch(`/dataset_landing_page/${viewId}/featured_content/${position + 1}`, fetchOptions).
+      then(checkStatus).
+      then(response => response.json()).
+      then(function() {
+        dispatch(handleFeaturedItemRemovalSuccess(position));
+      })['catch'](() => dispatch(handleFeaturedItemRemovalError()));
   };
 }
 

@@ -12,6 +12,9 @@ import {
   requestedStory,
   handleLoadingStorySuccess,
   handleLoadingStoryError
+  requestedFeaturedItemRemoval,
+  handleFeaturedItemRemovalSuccess,
+  handleFeaturedItemRemovalError
 } from 'actions/featuredContent';
 
 describe('reducers/featuredContent', function() {
@@ -167,10 +170,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaved).to.equal(false);
     });
 
-    it('sets hasError to false', function() {
-      state.hasError = true;
+    it('sets hasSaveError to false', function() {
+      state.hasSaveError = true;
       state = reducer(state, cancelFeaturedItemEdit());
-      expect(state.hasError).to.equal(false);
+      expect(state.hasSaveError).to.equal(false);
     });
   });
 
@@ -181,10 +184,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaving).to.equal(true);
     });
 
-    it('sets hasError to false', function() {
-      state.hasError = true;
+    it('sets hasSaveError to false', function() {
+      state.hasSaveError = true;
       state = reducer(state, requestedFeaturedItemSave());
-      expect(state.hasError).to.equal(false);
+      expect(state.hasSaveError).to.equal(false);
     });
   });
 
@@ -215,10 +218,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaving).to.equal(false);
     });
 
-    it('sets hasError to true', function() {
-      state.hasError = false;
+    it('sets hasSaveError to true', function() {
+      state.hasSaveError = false;
       state = reducer(state, handleFeaturedItemSaveError());
-      expect(state.hasError).to.equal(true);
+      expect(state.hasSaveError).to.equal(true);
     });
   });
 
@@ -255,6 +258,7 @@ describe('reducers/featuredContent', function() {
     });
 
     it('validates the url format', function() {
+
       // empty string
       state = reducer(state, setStoryUrlField(''));
       expect(state.story.hasValidationError).to.equal(true);
@@ -376,6 +380,72 @@ describe('reducers/featuredContent', function() {
 
     it('sets canSave to false', function() {
       expect(state.story.canSave).to.equal(false);
+    });
+  });
+
+  describe('REQUESTED_FEATURED_ITEM_REMOVAL', function() {
+    it('sets isRemoving to true', function() {
+      expect(state.isRemoving).to.equal(false);
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.isRemoving).to.equal(true);
+    });
+
+    it('sets removePosition', function() {
+      expect(state.removePosition).to.equal(null);
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.removePosition).to.equal(6);
+    });
+
+    it('sets hasRemoveError to false', function() {
+      state.hasRemoveError = true;
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.hasRemoveError).to.equal(false);
+    });
+  });
+
+  describe('HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS', function() {
+    it('sets isRemoving to false', function() {
+      state.isRemoving = true;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.isRemoving).to.equal(false);
+    });
+
+    it('sets removePosition to null', function() {
+      state.removePosition = 4;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.removePosition).to.equal(null);
+    });
+
+    it('sets hasRemoveError to false', function() {
+      state.hasRemoveError = true;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.hasRemoveError).to.equal(false);
+    });
+
+    it('removes the item from contentList at the specified index', function() {
+      state.contentList = [ 4, 5, 6 ];
+      state = reducer(state, handleFeaturedItemRemovalSuccess(1));
+      expect(state.contentList).to.deep.equal([4, null, 6]);
+    });
+  });
+
+  describe('HANDLE_FEATURED_ITEM_REMOVAL_ERROR', function() {
+    it('sets isRemoving to false', function() {
+      state.isRemoving = true;
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.isRemoving).to.equal(false);
+    });
+
+    it('sets removePosition to null', function() {
+      state.removePosition = 19;
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.removePosition).to.equal(null);
+    });
+
+    it('sets hasRemoveError to true', function() {
+      expect(state.hasRemoveError).to.equal(false);
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.hasRemoveError).to.equal(true);
     });
   });
 });

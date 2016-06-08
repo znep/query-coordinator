@@ -29,6 +29,12 @@ class DatasetLandingPage
     format_view_widget(View.find(uid))
   end
 
+  def delete_featured_content(uid, item_position)
+    path = "/views/#{uid}/featured_content/#{item_position}"
+    response = JSON.parse(CoreServer::Base.connection.delete_request(path))
+    format_featured_item(response)
+  end
+
   private
 
   def format_view_widget(view)

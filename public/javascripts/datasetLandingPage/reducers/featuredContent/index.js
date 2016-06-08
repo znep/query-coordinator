@@ -10,7 +10,10 @@ import {
   CANCEL_FEATURED_ITEM_EDIT,
   REQUESTED_FEATURED_ITEM_SAVE,
   HANDLE_FEATURED_ITEM_SAVE_SUCCESS,
-  HANDLE_FEATURED_ITEM_SAVE_ERROR
+  HANDLE_FEATURED_ITEM_SAVE_ERROR,
+  REQUESTED_FEATURED_ITEM_REMOVAL,
+  HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
+  HANDLE_FEATURED_ITEM_REMOVAL_ERROR
 } from '../../actionTypes';
 
 var initialState = {
@@ -26,7 +29,12 @@ var initialState = {
   // Saving
   isSaving: false,
   isSaved: false,
-  hasError: false
+  hasSaveError: false,
+
+  // Removing
+  isRemoving: false,
+  removePosition: null,
+  hasRemoveError: false
 };
 
 function assembleInitialFeaturedContent() {
@@ -99,14 +107,17 @@ export default function(state, action) {
         editPosition: null,
         isSaving: false,
         isSaved: false,
-        hasError: false
+        hasSaveError: false,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: false
       };
 
     case REQUESTED_FEATURED_ITEM_SAVE:
       return {
         ...state,
         isSaving: true,
-        hasError: false
+        hasSaveError: false
       };
 
     case HANDLE_FEATURED_ITEM_SAVE_SUCCESS:
@@ -122,7 +133,33 @@ export default function(state, action) {
       return {
         ...state,
         isSaving: false,
-        hasError: true
+        hasSaveError: true
+      };
+
+    case REQUESTED_FEATURED_ITEM_REMOVAL:
+      return {
+        ...state,
+        isRemoving: true,
+        removePosition: action.position,
+        hasRemoveError: false
+      };
+
+    case HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS:
+      state.contentList[action.position] = null;
+
+      return {
+        ...state,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: false
+      };
+
+    case HANDLE_FEATURED_ITEM_REMOVAL_ERROR:
+      return {
+        ...state,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: true
       };
 
     default:

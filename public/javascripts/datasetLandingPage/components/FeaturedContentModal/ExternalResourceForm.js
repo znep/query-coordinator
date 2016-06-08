@@ -14,7 +14,7 @@ export var ExternalResourceForm = React.createClass({
   propTypes: {
     canSave: PropTypes.bool,
     description: PropTypes.string,
-    hasError: PropTypes.bool,
+    hasSaveError: PropTypes.bool,
     isSaved: PropTypes.bool,
     isSaving: PropTypes.bool,
     onChangeDescription: PropTypes.func,
@@ -88,7 +88,7 @@ export var ExternalResourceForm = React.createClass({
   },
 
   renderContent: function() {
-    var { url, hasError, onClickCancel } = this.props;
+    var { url, hasSaveError, onClickCancel } = this.props;
 
     var isUrlInvalid = !_.isEmpty(url) && !VALID_URL_REGEX.test(url);
 
@@ -110,7 +110,7 @@ export var ExternalResourceForm = React.createClass({
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
       null;
 
-    var saveError = hasError ?
+    var saveError = hasSaveError ?
       <div className="alert error">{this.I18n.save_error_message}</div> :
       null;
 

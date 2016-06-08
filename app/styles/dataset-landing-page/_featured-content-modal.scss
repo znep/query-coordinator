@@ -38,7 +38,7 @@
           }
         }
 
-        &:hover {
+        &:hover, &.show-buttons {
           .edit-button, .remove-button {
             visibility: visible;
           }

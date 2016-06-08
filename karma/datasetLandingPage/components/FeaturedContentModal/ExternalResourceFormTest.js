@@ -98,12 +98,12 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
     });
 
     it('renders an error if the save failed', function() {
-      var element = renderComponent(ExternalResourceForm, getProps({ hasError: true }));
+      var element = renderComponent(ExternalResourceForm, getProps({ hasSaveError: true }));
       expect(element.querySelector('.alert.error')).to.exist;
     });
 
     it('does not render an error if the save did not fail', function() {
-      var element = renderComponent(ExternalResourceForm, getProps({ hasError: false }));
+      var element = renderComponent(ExternalResourceForm, getProps({ hasSaveError: false }));
       expect(element.querySelector('.alert.error')).to.not.exist;
     });
   });

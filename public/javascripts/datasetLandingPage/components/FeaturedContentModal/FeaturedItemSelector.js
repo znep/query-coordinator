@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import FeaturedItemWidget from '../FeaturedItemWidget';
@@ -12,10 +13,13 @@ import {
 export var FeaturedItemSelector = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired,
+    hasRemoveError: PropTypes.bool,
+    isRemoving: PropTypes.bool,
     onClickAdd: PropTypes.func,
     onClickDone: PropTypes.func,
     onClickEdit: PropTypes.func,
-    onClickRemove: PropTypes.func
+    onClickRemove: PropTypes.func,
+    removePosition: PropTypes.number
   },
 
   getDefaultProps: function() {
@@ -42,40 +46,77 @@ export var FeaturedItemSelector = React.createClass({
     this.setState({ showPlaceholderDetails });
   },
 
-  renderActionButtons: function(index) {
-    var {
-      contentList,
-      onClickAdd,
-      onClickEdit,
-      onClickRemove
-    } = this.props;
-    var { showPlaceholderDetails } = this.state;
+  renderAddButton: function(index, type, text) {
+    var { onClickAdd } = this.props;
 
-    function renderAddButton(type, text) {
-      var clickHandler = _.partial(onClickAdd, type, index);
+    return (
+      <button
+        className="btn btn-default btn-wide"
+        key={text}
+        onClick={_.partial(onClickAdd, type, index)}>
+        {text}
+      </button>
+    );
+  },
 
-      return (
-        <button
-          className="btn btn-default btn-wide"
-          key={text}
-          onClick={clickHandler}>
-          {text}
-        </button>
-      );
+  renderEditButton: function(index) {
+    var { contentList, onClickEdit } = this.props;
+
+    return (
+      <button
+        className="btn btn-alternate-2 edit-button"
+        key="change"
+        onClick={_.partial(onClickEdit, contentList[index])}>
+        <span className="icon-edit" />
+        {I18n.change}
+      </button>
+    );
+  },
+
+  renderRemoveButton: function(index) {
+    var { isRemoving, removePosition, onClickRemove } = this.props;
+
+    var contents;
+    var onClick;
+    var style;
+
+    if (isRemoving && removePosition === index) {
+      contents = <div className="spinner-default spinner-btn-primary" />;
+      onClick = null;
+      style = { paddingBottom: 6 };
+    } else {
+      contents = <div><span className="icon-close" />{I18n.remove}</div>;
+      onClick = _.partial(onClickRemove, index);
+      style = null;
     }
+
+    return (
+      <button
+        className="btn btn-alternate-1 btn-inverse remove-button"
+        key="remove"
+        onClick={onClick}
+        style={style}>
+        {contents}
+      </button>
+    );
+  },
+
+  renderActionButtons: function(index) {
+    var { contentList } = this.props;
+    var { showPlaceholderDetails } = this.state;
 
     if (_.isNull(contentList[index])) {
       if (showPlaceholderDetails[index]) {
         if (window.serverConfig.featureFlags.storiesEnabled) {
           return ([
-            renderAddButton('visualization', I18n.featured_content_modal.visualization),
-            renderAddButton('story', I18n.featured_content_modal.story),
-            renderAddButton('externalResource', I18n.featured_content_modal.external)
+            this.renderAddButton(index, 'visualization', I18n.featured_content_modal.visualization),
+            this.renderAddButton(index, 'story', I18n.featured_content_modal.story),
+            this.renderAddButton(index, 'externalResource', I18n.featured_content_modal.external)
           ]);
         } else {
           return ([
-            renderAddButton('visualization', I18n.featured_content_modal.visualization),
-            renderAddButton('externalResource', I18n.featured_content_modal.external)
+            this.renderAddButton(index, 'visualization', I18n.featured_content_modal.visualization),
+            this.renderAddButton(index, 'externalResource', I18n.featured_content_modal.external)
           ]);
         }
       } else {
@@ -88,23 +129,7 @@ export var FeaturedItemSelector = React.createClass({
         );
       }
     } else {
-      return ([
-        <button
-          className="btn btn-alternate-2 edit-button"
-          key="change"
-          onClick={_.partial(onClickEdit, contentList[index])}>
-          <span className="icon-edit" />
-          {I18n.change}
-        </button>,
-
-        <button
-          className="btn btn-alternate-1 btn-inverse remove-button"
-          key="remove"
-          onClick={_.partial(onClickRemove, index)}>
-          <span className="icon-close" />
-          {I18n.remove}
-        </button>
-      ]);
+      return [this.renderEditButton(index), this.renderRemoveButton(index)];
     }
   },
 
@@ -127,14 +152,18 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderContent: function() {
-    var { contentList } = this.props;
+    var { contentList, isRemoving, removePosition } = this.props;
 
     var items = _.map(contentList, (featuredItem, i) => {
       var actionButtons = this.renderActionButtons(i);
+      var className = classNames('featured-item', {
+        'placeholder': _.isEmpty(featuredItem),
+        'show-buttons': isRemoving && removePosition === i
+      });
 
       if (!_.isObject(featuredItem)) {
         return (
-          <div className="featured-item placeholder" key={i}>
+          <div className={className} key={i}>
             <div className="view-widget-overlay">
               {actionButtons}
             </div>
@@ -142,7 +171,7 @@ export var FeaturedItemSelector = React.createClass({
         );
       } else {
         return (
-          <div className="featured-item" key={i}>
+          <div className={className} key={i}>
             <FeaturedItemWidget {...featuredItem}>
               {actionButtons}
             </FeaturedItemWidget>
@@ -160,7 +189,23 @@ export var FeaturedItemSelector = React.createClass({
         <div className="featured-content">
           {items}
         </div>
+
+        {this.renderRemoveError()}
       </section>
+    );
+  },
+
+  renderRemoveError: function() {
+    var { hasRemoveError } = this.props;
+
+    if (!hasRemoveError) {
+      return null;
+    }
+
+    return (
+      <div className="alert error remove-error">
+        {I18n.featured_content_modal.remove_error}
+      </div>
     );
   },
 
@@ -193,7 +238,11 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickRemove: function(position) {
-      dispatch(removeFeaturedItem(position));
+      /* eslint-disable no-alert */
+      if (window.confirm(I18n.featured_content_modal.remove_prompt)) {
+        dispatch(removeFeaturedItem(position));
+      }
+      /* eslint-enable no-alert */
     }
   };
 }

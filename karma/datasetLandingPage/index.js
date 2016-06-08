@@ -8,7 +8,6 @@ window.redux = require('redux');
 window.I18n = require('mockTranslations');
 window.mixpanelConfig = require('./data/mockMixpanelConfig').default;
 window.sessionData = require('./data/mockSessionData').default;
-window.contactFormData = require('./data/mockContactFormData').default;
 window.serverConfig = require('./data/mockServerConfig').default;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);

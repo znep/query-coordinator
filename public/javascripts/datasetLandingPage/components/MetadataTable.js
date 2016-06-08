@@ -9,8 +9,6 @@ import utils from 'socrata-utils';
 import { emitMixpanelEvent } from '../actions';
 import { handleKeyPress } from '../lib/a11yHelpers';
 
-var contactFormData = window.contactFormData;
-
 export var MetadataTable = React.createClass({
   propTypes: {
     onExpandMetadataTable: PropTypes.func.isRequired,
@@ -118,6 +116,7 @@ export var MetadataTable = React.createClass({
 
   render: function() {
     var view = this.props.view;
+    var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var attachments;
     var attribution;
@@ -130,11 +129,10 @@ export var MetadataTable = React.createClass({
     var statsSection;
     var editMetadata;
 
-    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
-    contactFormButton = contactFormData.contactFormEnabled ?
+    contactFormButton = defaultToDatasetLandingPage ?
       <button
         className="btn btn-sm btn-primary btn-block contact-dataset-owner"
-        data-modal="contact-modal">
+        data-modal="contact-form">
         {I18n.contact_dataset_owner}
       </button> :
       null;

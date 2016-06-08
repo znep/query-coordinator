@@ -1287,8 +1287,10 @@ en:
       error_invalid_email: Please enter a valid email address.
       failure_html: "<b>Oh no!</b> Something went wrong. Please try again later."
       message: Message
+      recaptcha: Recaptcha challenge
       recaptcha_loading: Recaptcha is loading
       send: Send
+      sending: Form is sending
       subject: Subject
       success_html: "<b>Thank you!</b> Your message has been sent."
       title: Send a Message to the Owner of this Dataset

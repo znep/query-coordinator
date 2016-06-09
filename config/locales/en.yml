@@ -1884,6 +1884,7 @@ en:
         title: External Federation
         working: Working
         save: Save
+        not_yet: In progress
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer

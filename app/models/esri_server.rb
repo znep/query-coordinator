@@ -18,11 +18,9 @@ class EsriServer
  # TODO: move this to a named time presentation
  # in config/initializers/time_formats.rb, when that file becomes available
   def last_synced
-    if @job
+    if @job && @job['ended_at']
       time = Time.parse(@job['ended_at'])
       time.strftime('%d %b %Y %H:%M %Z')
-    else
-      'not_yet'
     end
   end
 
@@ -33,7 +31,6 @@ class EsriServer
         when 'success' then 'working'
         else 'not_yet'
       end
-
     else
       'not_yet'
     end

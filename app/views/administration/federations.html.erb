@@ -182,7 +182,7 @@
                   </p>
                 </td>
                 <td class="endedAt" scope="row">
-                  <%- if server.job -%>
+                  <%- if server.last_synced -%>
                     <%= server.last_synced %>
                   <%- else -%>
                     <%= t("#{external_federation}.not_yet") %>

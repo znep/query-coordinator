@@ -359,7 +359,7 @@ export default function AssetSelectorRenderer(options) {
           break;
 
         case WIZARD_STEP.CONFIGURE_MAP_OR_CHART:
-          selectorTitle = I18n.t('editor.asset_selector.visualization.configure_map_or_chart_heading');
+          selectorTitle = I18n.t('editor.asset_selector.visualization.preview_label');
           selectorContent = _renderConfigureMapOrChartTemplate();
           selectorWideDisplay = true;
           break;

@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getCurrentVif } from '../selectors/vifAuthoring';
+import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
+import { getTitle, getDescription } from '../selectors/vifAuthoring';
 import { setTitle, setDescription } from '../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
@@ -12,13 +13,16 @@ export var TitleAndDescriptionPane = React.createClass({
     onChangeDescription: React.PropTypes.func
   },
 
-  render: function() {
+  render() {
+    var title = getTitle(this.props.vifAuthoring) || null;
+    var description = getDescription(this.props.vifAuthoring) || null;
+
     return (
       <form>
-        <label className="block-label">Title:</label>
-        <input className="text-input" type="text" onChange={this.props.onChangeTitle} />
-        <label className="block-label">Description:</label>
-        <textarea className="text-input text-area" onChange={this.props.onChangeDescription}></textarea>
+        <label className="block-label" htmlFor="title">Title:</label>
+        <input id="title" className="text-input" type="text" onChange={this.props.onChangeTitle} defaultValue={title} />
+        <label className="block-label" htmlFor="description">Description:</label>
+        <textarea id="description" className="text-input text-area" onChange={this.props.onChangeDescription} defaultValue={description} />
       </form>
     );
   }
@@ -26,26 +30,21 @@ export var TitleAndDescriptionPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: getCurrentVif(state.vifAuthoring),
-    datasetMetadata: state.datasetMetadata
+    vifAuthoring: state.vifAuthoring
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  function changeDatasetUid(datasetUid) {
-    dispatch(setDatasetUid(datasetUid));
-  }
-
   return {
-    onChangeTitle: function(event) {
+    onChangeTitle: _.debounce(event => {
       var title = event.target.value;
       dispatch(setTitle(title));
-    },
+    }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeDescription: function(event) {
+    onChangeDescription: _.debounce(event => {
       var description = event.target.value;
       dispatch(setDescription(description));
-    }
+    }, INPUT_DEBOUNCE_MILLISECONDS)
   };
 }
 

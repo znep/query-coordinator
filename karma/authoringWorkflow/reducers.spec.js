@@ -9,7 +9,12 @@ function getDefaultState() {
 }
 
 function getTestState() {
-  return _.set({}, 'vifAuthoring.vifs', vifs());
+  var state = {};
+
+  _.set(state, 'vifAuthoring.vifs', vifs());
+  _.set(state, 'vifAuthoring.authoring.selectedVisualizationType', 'columnChart');
+
+  return state;
 }
 
 function forAllVifs(state, verifier) {
@@ -21,7 +26,7 @@ describe('AuthoringWorkflow reducer', function() {
   describe('vif', function() {
     it('returns the default state if the input state is undefined', function() {
       assert.deepEqual(getDefaultState().vifAuthoring.vifs, getTestState().vifAuthoring.vifs);
-      assert.deepPropertyVal(getDefaultState(), 'vifAuthoring.selectedVisualizationType', 'columnChart');
+      assert.deepPropertyVal(getDefaultState(), 'vifAuthoring.authoring.selectedVisualizationType', null);
     });
 
     it('ignores weird actions', function() {
@@ -32,63 +37,77 @@ describe('AuthoringWorkflow reducer', function() {
       expect(reducer(getTestState(), badAction).vifAuthoring).to.deep.equal(getTestState().vifAuthoring);
     });
 
-    describe('RECEIVE_METADATA', function() {
-      it('sets the datasetUid of the series', function() {
-        var state = getTestState();
-        var action = actions.receiveMetadata([{ id: 'asdf-qwer' }]);
-        var newState = reducer(state, action);
-        forAllVifs(newState, function(vif, type) {
-          assert.equal(
-            vif.series[0].dataSource.datasetUid,
-            'asdf-qwer',
-            `Did not set datasetUid for chart type: ${type}`
-          );
-        });
-      });
-    });
-
-    describe('HANDLE_METADATA_ERROR', function() {
-      it('clears the datasetUid of the series', function() {
-        var state = getTestState();
-        _.each(state.vifAuthoring.vifs, function(vif) {
-          vif.series[0].dataSource.datasetUid = 'asdf-fdsa';
-        });
-
-        var action = actions.handleMetadataError();
-        var newState = reducer(state, action);
-        forAllVifs(newState, function(vif, type) {
-          assert.isNull(
-            vif.series[0].dataSource.datasetUid,
-            `Did not clear datasetUid for chart type: ${type}`
-          );
-        });
-      });
-    });
-
     describe('vif setters', function() {
-      function shouldSetVif(actionName, value, vifPath) {
-        it(`sets ${vifPath} to ${value} using ${actionName}`, function() {
-          var action = actions[actionName](value);
+      function shouldSetVif(actionName, value, vifPath, vifTypes) {
+        it(`sets ${vifPath} to ${value} using ${actionName} for ${vifTypes}`, function() {
+          var action;
+
+          if (_.isArray(value)) {
+            action = actions[actionName].apply(null, value);
+          } else {
+            action = actions[actionName](value);
+          }
+
           var newState = reducer(getTestState(), action);
 
           forAllVifs(newState, function(vif, type) {
-            assert.equal(
-              type,
-              vif.series[0].type,
-              `Mismatch found for chart type: ${type}`
-            );
-            expect(_.get(vif, vifPath)).to.equal(value);
+            if (_.includes(vifTypes, type)) {
+              var newValue = _.get(vif, vifPath);
+
+              if (_.isArray(value)) {
+                expect(value).to.include(newValue);
+              } else {
+                expect(newValue).to.equal(value);
+              }
+            }
           });
         });
       }
 
-      shouldSetVif('setTitle', 'Oh, yeah!', 'title');
-      shouldSetVif('setDescription', 'columnChart', 'description');
-      shouldSetVif('setPrimaryColor', '#00F', 'series[0].color.primary');
-      shouldSetVif('setSecondaryColor', '#F00', 'series[0].color.secondary');
-      shouldSetVif('setHighlightColor', '#F00', 'series[0].color.highlight');
-      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName');
+      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'choroplethMap', 'featureMap', 'timelineChart']);
+      shouldSetVif('setDescription', 'Description', 'description', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+
+      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['choroplethMap', 'columnChart', 'timelineChart']);
       shouldSetVif('setMeasureAggregation', 'count', 'series[0].dataSource.measure.aggregationFunction');
+
+
+      shouldSetVif('setBaseColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart']);
+      shouldSetVif('setBaseColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart']);
+
+      shouldSetVif('setPointColor', '#00F', 'configuration.pointColor', ['featureMap']);
+
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.negativeColor', ['choroplethMap']);
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['choroplethMap']);
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['choroplethMap']);
+
+      shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['choroplethMap', 'featureMap']);
+
+      shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart']);
+      shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart']);
+      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart']);
+      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart']);
+
+      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+
+      shouldSetVif('setFlyoutTitle', 'columnName', 'configuration.flyoutTitleColumnName', ['featureMap']);
+
+      describe('when configuring a Feature map', function() {
+        it('sets configuration.pointOpacity', function() {
+          var action = actions.setPointOpacity('1');
+          var newState = reducer(getTestState(), action);
+
+          expect(_.get(newState.vifAuthoring.vifs.featureMap, 'configuration.pointOpacity')).to.equal(1);
+        });
+
+        it('sets configuration.baseLayerOpacity', function() {
+          var action = actions.setBaseLayerOpacity('0.5');
+          var newState = reducer(getTestState(), action);
+
+          expect(_.get(newState.vifAuthoring.vifs.featureMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+        });
+      });
 
       describe('when configuring a Choropleth map', function() {
         it('sets configuration.shapefile.uid and configuration.computedColumnName', function() {
@@ -100,16 +119,23 @@ describe('AuthoringWorkflow reducer', function() {
           expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.shapefile.uid')).to.equal(shapefileUid);
           expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
         });
+
+        it('sets configuration.baseLayerOpacity', function() {
+          var action = actions.setBaseLayerOpacity('0.5');
+          var newState = reducer(getTestState(), action);
+
+          expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+        });
       });
     });
   });
 
-  describe('datasetMetadata', function() {
+  describe('metadata', function() {
     it('returns the default state if the input state is undefined', function() {
-      var datasetMetadata = getDefaultState().datasetMetadata;
-      expect(datasetMetadata.isLoading).to.equal(false);
-      expect(datasetMetadata.data).to.equal(null);
-      expect(datasetMetadata.error).to.equal(null);
+      var metadata = getDefaultState().metadata;
+      expect(metadata.isLoading).to.equal(false);
+      expect(metadata.data).to.equal(null);
+      expect(metadata.error).to.equal(null);
     });
 
     describe('REQUEST_METADATA', function() {
@@ -122,19 +148,19 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       it('sets isLoading to true', function() {
-        expect(newState.datasetMetadata.isLoading).to.equal(true);
+        expect(newState.metadata.isLoading).to.equal(true);
       });
 
       it('clears the data key', function() {
-        expect(newState.datasetMetadata.data).to.equal(null);
+        expect(newState.metadata.data).to.equal(null);
       });
 
-      it('clears the phidippidiesMetadata key', function() {
-        expect(newState.datasetMetadata.phidippidiesMetadata).to.equal(null);
+      it('clears the phidippidesMetadata key', function() {
+        expect(newState.metadata.phidippidesMetadata).to.equal(null);
       });
 
       it('clears the curatedRegions key', function() {
-        expect(newState.datasetMetadata.curatedRegions).to.equal(null);
+        expect(newState.metadata.curatedRegions).to.equal(null);
       });
     });
 
@@ -143,7 +169,7 @@ describe('AuthoringWorkflow reducer', function() {
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
-          datasetMetadata: {
+          metadata: {
             isLoading: true
           }
         });
@@ -158,13 +184,13 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       it('sets isLoading to false', function() {
-        expect(newState.datasetMetadata.isLoading).to.equal(false);
+        expect(newState.metadata.isLoading).to.equal(false);
       });
 
       it('sets the data key', function() {
-        expect(newState.datasetMetadata.data).to.deep.equal({ id: 'data-sets' });
-        expect(newState.datasetMetadata.phidippidiesMetadata).to.deep.equal({ id: 'phid-miss' });
-        expect(newState.datasetMetadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
+        expect(newState.metadata.data).to.deep.equal({ id: 'data-sets' });
+        expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss' });
+        expect(newState.metadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
       });
     });
 
@@ -173,7 +199,7 @@ describe('AuthoringWorkflow reducer', function() {
 
       beforeEach(function() {
         state = _.merge(getDefaultState(), {
-          datasetMetadata: {
+          metadata: {
             isLoading: true
           }
         });
@@ -183,11 +209,11 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       it('sets isLoading to false', function() {
-        expect(newState.datasetMetadata.isLoading).to.equal(false);
+        expect(newState.metadata.isLoading).to.equal(false);
       });
 
       it('sets the error key', function() {
-        expect(newState.datasetMetadata.error).to.equal('error!');
+        expect(newState.metadata.error).to.equal('error!');
       });
     });
   });

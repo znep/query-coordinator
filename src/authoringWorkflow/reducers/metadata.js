@@ -6,11 +6,11 @@ import {
   HANDLE_METADATA_ERROR
 } from '../actions';
 
-import defaultDatasetMetadata from '../defaultDatasetMetadata';
+import defaultMetadata from '../defaultMetadata';
 
-export default function datasetMetadata(state, action) {
+export default function metadata(state, action) {
   if (_.isUndefined(state)) {
-    return defaultDatasetMetadata;
+    return defaultMetadata;
   }
 
   state = _.cloneDeep(state);
@@ -21,7 +21,7 @@ export default function datasetMetadata(state, action) {
       state.error = null;
       state.data = null;
       state.curatedRegions = null;
-      state.phidippidiesMetadata = null;
+      state.phidippidesMetadata = null;
       break;
 
     case RECEIVE_METADATA:
@@ -29,14 +29,14 @@ export default function datasetMetadata(state, action) {
       state.error = null;
       state.data = action.datasetMetadata;
       state.curatedRegions = action.curatedRegions;
-      state.phidippidiesMetadata = action.phidippidiesMetadata;
+      state.phidippidesMetadata = action.phidippidesMetadata;
       break;
 
     case HANDLE_METADATA_ERROR:
       state.isLoading = false;
       state.data = null;
       state.curatedRegions = null;
-      state.phidippidiesMetadata = null;
+      state.phidippidesMetadata = null;
       state.error = action.error;
       break;
   }

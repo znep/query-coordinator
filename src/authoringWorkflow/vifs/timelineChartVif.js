@@ -14,7 +14,10 @@ export default {
   description: '',
   series: [
     {
-      color: {},
+      color: {
+        primary: '#00a1af',
+        secondary: '#00a1af'
+      },
       dataSource: {
         datasetUid: null,
         dimension: {
@@ -32,8 +35,8 @@ export default {
       label: null,
       type: 'timelineChart',
       unit: {
-        one: 'One',
-        other: 'Other'
+        one: 'Record',
+        other: 'Records'
       }
     }
   ],

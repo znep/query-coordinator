@@ -9,6 +9,7 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var VifHelpers = require('./helpers/VifHelpers');
+var DataTypeFormatter = require('./views/DataTypeFormatter');
 
 var DEFAULT_TILESERVER_HOSTS = [
   'https://tileserver1.api.us.socrata.com',
@@ -405,13 +406,19 @@ $.fn.socrataFeatureMap = function(vif) {
   }
 
   function handleRowInspectorQuerySuccess(data) {
+    var getPageTitle = function(page) {
+      return _.find(page, {column: vif.configuration.flyoutTitleColumnName}).value;
+    };
+    var formattedData = formatRowInspectorData(datasetMetadata, data);
+    var titles = vif.configuration.flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
         'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
         {
           detail: {
-            data: formatRowInspectorData(datasetMetadata, data),
+            data: formattedData,
+            titles: titles,
             error: false,
             message: null
           },
@@ -566,7 +573,7 @@ $.fn.socrataFeatureMap = function(vif) {
             // we should format it slightly differently.
             formattedRowData[columnMetadata.position] = {
               column: columnName,
-              value: _.isObject(columnValue) ? [columnValue] : columnValue,
+              value: DataTypeFormatter.renderCell(columnValue, columnMetadata, vif.configuration.localization),
               format: _.isObject(columnValue) ? undefined : columnMetadata.format,
               physicalDatatype: columnMetadata.physicalDatatype
             };

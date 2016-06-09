@@ -1,22 +1,19 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
+import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { TitleAndDescriptionPane } from 'src/authoringWorkflow/panes/TitleAndDescriptionPane';
-
-function defaultProps() {
-  return {
-    onChangeTitle: sinon.stub(),
-    onChangeDescription: sinon.stub()
-  };
-}
 
 describe('TitleAndDescriptionPane', function() {
   var component;
   var props;
 
   beforeEach(function() {
-    props = defaultProps();
+    props = defaultProps({
+      onChangeTitle: sinon.stub(),
+      onChangeDescription: sinon.stub()
+    });
     component = renderComponent(TitleAndDescriptionPane, props);
   });
 

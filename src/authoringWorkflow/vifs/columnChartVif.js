@@ -8,6 +8,7 @@ export default {
     // to string literals for the purposes of this example.
     localization: {
       'NO_VALUE': 'No value',
+      'NO_LABEL': '(No Label)',
       'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
       'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
       'FLYOUT_SELECTED_NOTICE': 'This column is selected'
@@ -16,7 +17,10 @@ export default {
   description: '',
   series: [
     {
-      color: {},
+      color: {
+        primary: '#00a1af',
+        secondary: '#00a1af'
+      },
       dataSource: {
         datasetUid: null,
         dimension: {
@@ -26,7 +30,7 @@ export default {
         domain: '',
         measure: {
           columnName: null,
-          aggregationFunction: null
+          aggregationFunction: 'count'
         },
         type: 'socrata.soql',
         filters: []
@@ -34,8 +38,8 @@ export default {
       label: null,
       type: 'columnChart',
       unit: {
-        one: 'One',
-        other: 'Other'
+        one: 'Record',
+        other: 'Records'
       }
     }
   ],

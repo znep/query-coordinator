@@ -13,7 +13,9 @@ var ROW_INSPECTOR_DEFAULT_TRANSLATIONS = {
   next: 'Next',
   defaultLabelUnit: 'Row',
   showing: 'Showing {0}',
-  paging: '{0} of {1}'
+  paging: '{0} of {1}',
+  longitude: 'Longitude',
+  latitude: 'Latitude'
 };
 
 var _$rowInspectorContainer;
@@ -424,13 +426,8 @@ function _renderPage() {
 
     utils.assertHasProperties(columnValue, 'column', 'value');
 
-    if (_state.allowUnsafeContent === true) {
-      $name.html(columnValue.column);
-      $value.html(columnValue.value);
-    } else {
-      $name.text(columnValue.column);
-      $value.text(columnValue.value);
-    }
+    $name.html(columnValue.column);
+    $value.html(columnValue.value);
 
     $rowDataItem.append($name).append($value);
     _$rowInspectorContent.append($rowDataItem);
@@ -485,8 +482,7 @@ function _setState(payload) {
     error: payload.error,
     message: payload.message,
     position: payload.position,
-    pageIndex: 0,
-    allowUnsafeContent: payload.allowUnsafeContent === true
+    pageIndex: 0
   };
 
   _render();

@@ -1033,11 +1033,40 @@ function FeatureMap(element, vif) {
   }
 
   /**
-  * Determine point fill color at given zoom level.
-  * Makes points more transparent as map zooms out.
-  */
+   * Determine the point opacity at a given zoom level.
+   * When you zoom in the opacity increases.
+   */
+  function _calculatePointOpacity(zoomLevel) {
+    return (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6);
+  }
+
   function _calculatePointColor(zoomLevel) {
-    return 'rgba(234,105,0,' + (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6) + ')';
+    var rgb = [235, 105, 0];
+    var color = _.get(vif, 'configuration.pointColor', '');
+    var shorthandHexRegex = /^#([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})$/;
+    var hexRegex = /^#([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})$/;
+
+    var toInteger = function(hex) { return parseInt(hex, 16); };
+    var expandShorthandHex = function(hex) { return hex.length === 1 ? hex + hex : hex; };
+    var matches = color.match(shorthandHexRegex) || color.match(hexRegex);
+
+    var opacity = _.get(vif, 'configuration.pointOpacity', null);
+
+    if (_.isNull(opacity)) {
+      opacity = _calculatePointOpacity(zoomLevel);
+    } else {
+      // Clamp to [0, 1].
+      opacity = Math.max(0, Math.min(parseFloat(opacity), 1));
+    }
+
+    if (matches) {
+      rgb = _.chain([matches[1], matches[2], matches[3]]).
+        map(expandShorthandHex).
+        map(toInteger).
+        value();
+    }
+
+    return 'rgba({0}, {1}, {2}, {3})'.format(rgb[0], rgb[1], rgb[2], opacity);
   }
 
   /**

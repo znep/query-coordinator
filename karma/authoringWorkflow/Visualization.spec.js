@@ -8,12 +8,11 @@ import vifs from 'src/authoringWorkflow/vifs';
 function defaultProps() {
   var vifsCloned = vifs();
   return {
-    datasetMetadata: {
-      id: 'asdf-qwer'
-    },
     vifAuthoring: {
       vifs: vifsCloned,
-      selectedVisualizationType: vifsCloned.columnChart.series[0].type
+      authoring: {
+        selectedVisualizationType: vifsCloned.columnChart.series[0].type
+      }
     },
     vif: vifsCloned.columnChart
   }
@@ -106,6 +105,7 @@ describe('Visualization', function() {
       _.set(props, 'vif.configuration.computedColumnName', '@computed_column');
       _.set(props, 'vif.configuration.shapefile.uid', 'four-four');
       _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.aggregationFunction', 'sum');
       _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
       _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 

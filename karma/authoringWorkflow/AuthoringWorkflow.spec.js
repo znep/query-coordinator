@@ -2,15 +2,19 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
 import renderComponent from './renderComponent';
-import { AuthoringWorkflow, __RewireAPI__ as AuthoringWorkflowAPI } from 'src/authoringWorkflow/AuthoringWorkflow';
+import { AuthoringWorkflow } from 'src/authoringWorkflow/AuthoringWorkflow';
 import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {
   return {
-    datasetMetadata: {
-      id: 'asdf-qwer'
-    },
-    vif: vifs.columnChart
+    vifAuthoring: {
+      authoring: {
+        selectedVisualizationType: 'columnChart',
+      },
+      vifs: {
+        columnChart: vifs().columnChart
+      }
+    }
   };
 }
 
@@ -32,15 +36,21 @@ describe('AuthoringWorkflow', function() {
 
   it('calls the onComplete callback when the done button is clicked', function() {
     var onComplete = sinon.spy();
+    var props = defaultProps();
 
-    var element = renderComponent(AuthoringWorkflow, _.merge(defaultProps(), {
+    // Make a valid visualization
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.domain', 'something');
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.datasetUid', 'something');
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.dimension.columnName', 'something');
+
+    var element = renderComponent(AuthoringWorkflow, _.merge(props, {
       onComplete: onComplete
     }));
 
     sinon.assert.notCalled(onComplete);
     TestUtils.Simulate.click(element.querySelector('button.done'));
     sinon.assert.calledOnce(onComplete);
-    sinon.assert.calledWithExactly(onComplete, { vif: vifs.columnChart });
+    sinon.assert.calledWithExactly(onComplete, { vif: props.vif });
 
   });
 

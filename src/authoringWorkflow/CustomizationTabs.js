@@ -8,7 +8,7 @@ export var CustomizationTabs = React.createClass({
     onTabNavigation: React.PropTypes.func
   },
 
-  tabAttributes: function(tab) {
+  tabAttributes(tab) {
     return {
       key: tab.id,
       id: tab.id,
@@ -18,11 +18,11 @@ export var CustomizationTabs = React.createClass({
     };
   },
 
-  tab: function(tab) {
+  tab(tab) {
     return <CustomizationTab {...this.tabAttributes(tab)} />;
   },
 
-  render: function() {
+  render() {
     return (
       <ul className="nav-tabs" onClick={this.props.onTabNavigation}>
         {_.map(this.props.tabs, (tab) => { return this.tab(tab); })}

@@ -1105,6 +1105,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function conditionallyTruncateLabel(label) {
+    label = label || self.getLocalization('NO_LABEL');
 
     return (label.length >= DIMENSION_LABEL_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1377,7 +1378,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function showColumnFlyout(columnElement, datum) {
-    var title = columnElement.getAttribute('data-column-category');
+    var title = columnElement.getAttribute('data-column-category') || self.getLocalization('NO_LABEL');
     var label = datum[0];
     var value = datum[1];
     var seriesIndex = self.getSeriesIndexByLabel(label);

@@ -294,6 +294,11 @@ useSoda2:
   defaultValue: never
   disableTrueFalse: never
   expectedValues: never read-only always
+validate_fragment_cache_before_render:
+  category: data slate
+  description: Validate fragment cache of dataslate pages during page render, instead of relying on core to do it on page save (unreliable). Enabling this flag is the right thing to do, but may cause unexpected load.
+  defaultValue: true
 zealous_dataslate_cache_expiry:
+  category: data slate
   description: 'This flag sets the expiry on three caches for DataSlate: the pages dataset, the manifest, and the fragment cache. `false` means the previous problematic-in-EU expiries; `true` means 5.seconds; and setting a number will set it in SECONDS.'
   defaultValue: false

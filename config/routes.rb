@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   # puts Rails.application.routes.url_helpers.methods.sort
   # Also, one can test the helpers with the Applications instance. e.g. app.view_url
 
-  mount Chrome::Engine => '/chrome'
+  mount SocrataSiteChrome::Engine => 'socrata_site_chrome'
 
   # styling routes
   scope :path => '/styles', :controller => 'styles' do

@@ -7,7 +7,6 @@ gem 'addressable'
 gem 'airbrake', '4.3.0'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
-gem 'chrome', '~> 0.0.10'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'
@@ -30,6 +29,7 @@ gem 'rinku', :require => 'rails_rinku'
 gem 'sanitize' # Note that this is in addition to the default Rails implementation.
 gem 'sass-rails', '~> 5.0'
 gem 'semver2'
+gem 'socrata_site_chrome', '~> 0.0.14'
 gem 'snappy'
 gem 'statsd-ruby', :require => 'statsd', :git => 'https://github.com/socrata-platform/statsd-ruby-fork.git'
 gem 'therubyracer'

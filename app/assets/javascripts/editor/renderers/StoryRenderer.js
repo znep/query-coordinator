@@ -479,7 +479,11 @@ export default function StoryRenderer(options) {
 
     var $presentationFlyout = _templateFlyout(
       'block-edit-controls-presentation-flyout',
-      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.presentation_toggle_flyout'))
+      StorytellerUtils.format('<p>{0}</p>',
+        isPresentable ?
+          I18n.t('editor.block_edit_controls.presentation_hide_flyout') :
+          I18n.t('editor.block_edit_controls.presentation_show_flyout')
+       )
     );
 
     var $presentationToggleButton = $(
@@ -544,13 +548,20 @@ export default function StoryRenderer(options) {
 
   function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {
 
+    var isPresentable = storyStore.isBlockPresentable(blockId);
     var moveUpButton = $blockElement.find('.block-edit-controls-move-up-btn');
     var moveDownButton = $blockElement.find('.block-edit-controls-move-down-btn');
     var togglePresentationVisibilityButton = $blockElement.find('.block-edit-controls-toggle-presentation-btn');
+    var togglePresentationVisibilityFlyout = $blockElement.find('.block-edit-controls-presentation-flyout');
 
     moveUpButton.prop('disabled', blockIndex === 0);
     moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
     togglePresentationVisibilityButton.toggleClass('active', !storyStore.isBlockPresentable(blockId));
+    togglePresentationVisibilityFlyout.find('.flyout-content p').text(
+        isPresentable ?
+          I18n.t('editor.block_edit_controls.presentation_hide_flyout') :
+          I18n.t('editor.block_edit_controls.presentation_show_flyout')
+    );
   }
 
   function getHTMLComponentHeight($component) {

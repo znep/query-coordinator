@@ -85,4 +85,18 @@ describe DatasetLandingPage do
       expect(dataset_landing_page.get_featured_content('view-wooo').length).to eq(3)
     end
   end
+
+  describe '#get_formatted_view_widget_by_id' do
+    it 'makes the appropriate calls to retrieve the view by id' do
+      expect(View).to receive(:find).and_return(view)
+
+      expect(dataset_landing_page).to receive(:format_view_widget).
+        and_return(formatted_featured_item).
+        exactly(1).times
+
+      result = dataset_landing_page.get_formatted_view_widget_by_id('abcd-1234')
+
+      expect(result).to eq(formatted_featured_item)
+    end
+  end
 end

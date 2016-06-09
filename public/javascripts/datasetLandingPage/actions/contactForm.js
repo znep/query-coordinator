@@ -5,7 +5,6 @@ import { emitMixpanelEvent } from './mixpanel';
 import {
   SET_CONTACT_FORM_FIELD,
   SET_CONTACT_FORM_RECAPTCHA_LOADED,
-  SET_CONTACT_FORM_ERRORS,
   SEND_CONTACT_FORM,
   RESET_CONTACT_FORM,
   HANDLE_CONTACT_FORM_SUCCESS,
@@ -37,13 +36,6 @@ export function setContactFormRecaptchaLoaded(value) {
   return {
     type: SET_CONTACT_FORM_RECAPTCHA_LOADED,
     value: value
-  };
-}
-
-export function setContactFormErrors(errors) {
-  return {
-    type: SET_CONTACT_FORM_ERRORS,
-    errors: errors
   };
 }
 

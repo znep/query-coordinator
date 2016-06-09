@@ -16,7 +16,7 @@ import {
 var initialState = {
 
   // Source of truth
-  contentList: _.merge([null, null, null], _.get(window.initialState, 'featuredContent', [])),
+  contentList: assembleInitialFeaturedContent(),
 
   // Editing
   isEditing: false,
@@ -29,6 +29,17 @@ var initialState = {
   hasError: false
 };
 
+function assembleInitialFeaturedContent() {
+  var featuredContent = _.get(window.initialState, 'featuredContent', []);
+  var contentList = [null, null, null];
+
+  featuredContent.forEach(function(item) {
+    contentList[item.position - 1] = item;
+  });
+
+  return contentList;
+}
+
 // Given a featured item, we need to figure out if it's a normal visualization, a story, or an
 // external resource.  Normally the `contentType` would provide this information for us, but
 // currently both stories and visualizations have a contentType of "internal".  We have been told
@@ -38,6 +49,9 @@ function getEditTypeFromFeaturedItem(featuredItem) {
   if (featuredItem.contentType === 'external') {
     return 'externalResource';
   } else if (featuredItem.contentType === 'internal') {
+    if (featuredItem.featuredView.displayType === 'story') {
+      return 'story';
+    }
     return; // TODO Good luck
   }
 }

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ExternalResourceForm from './FeaturedContentModal/ExternalResourceForm';
 import FeaturedItemSelector from './FeaturedContentModal/FeaturedItemSelector';
+import StoryForm from './FeaturedContentModal/StoryForm';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
 export var FeaturedContentModal = React.createClass({
@@ -18,6 +19,8 @@ export var FeaturedContentModal = React.createClass({
       return <FeaturedItemSelector />;
     } else if (editType === 'externalResource') {
       return <ExternalResourceForm />;
+    } else if (editType === 'story') {
+      return <StoryForm />;
     }
   },
 

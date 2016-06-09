@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 
+import { UID_REGEX } from '../lib/constants';
 import {
   ADD_FEATURED_ITEM,
   EDIT_FEATURED_ITEM,
@@ -8,7 +9,11 @@ import {
   REQUESTED_FEATURED_ITEM_SAVE,
   HANDLE_FEATURED_ITEM_SAVE_SUCCESS,
   HANDLE_FEATURED_ITEM_SAVE_ERROR,
-  SET_EXTERNAL_RESOURCE_FIELD
+  SET_EXTERNAL_RESOURCE_FIELD,
+  SET_STORY_URL_FIELD,
+  REQUESTED_STORY,
+  HANDLE_LOADING_STORY_SUCCESS,
+  HANDLE_LOADING_STORY_ERROR
 } from '../actionTypes';
 
 // Used to throw errors from non-200 responses when using fetch.
@@ -20,6 +25,15 @@ function checkStatus(response) {
   var error = new Error(response.statusText);
   error.response = response;
   throw error;
+}
+
+function parseUid(url) {
+  var trimmedUrl = trimEditFromUrl(url);
+  return trimmedUrl.match(UID_REGEX)[0] || '';
+}
+
+function trimEditFromUrl(url) {
+  return url.replace(/\/?edit\/?$/, '');
 }
 
 export function addFeaturedItem(type, position) {
@@ -93,7 +107,12 @@ export function saveFeaturedItem() {
     if (editType === 'visualization') {
       payload = {};
     } else if (editType === 'story') {
-      payload = {};
+      payload = {
+        featuredLensUid: parseUid(featuredContent.story.url),
+        position: editPosition + 1,
+        contentType: 'internal',
+        url: trimEditFromUrl(featuredContent.story.url)
+      };
     } else if (editType === 'externalResource') {
       payload = {
         description: featuredContent.externalResource.description,
@@ -134,5 +153,55 @@ export function setExternalResourceField(field, value) {
     type: SET_EXTERNAL_RESOURCE_FIELD,
     field: field,
     value: value
+  };
+}
+
+export function setStoryUrlField(value) {
+  return {
+    type: SET_STORY_URL_FIELD,
+    value: value
+  };
+}
+
+export function requestedStory() {
+  return {
+    type: REQUESTED_STORY
+  };
+}
+
+export function handleLoadingStoryError() {
+  return {
+    type: HANDLE_LOADING_STORY_ERROR
+  };
+}
+
+export function handleLoadingStorySuccess(story) {
+  return {
+    type: HANDLE_LOADING_STORY_SUCCESS,
+    story: story
+  };
+}
+
+export function loadStory() {
+  return function(dispatch, getState) {
+    var state = getState();
+    var uid = parseUid(state.featuredContent.story.url);
+
+    var fetchOptions = {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    dispatch(requestedStory());
+
+    fetch(`/dataset_landing_page/formatted_view/${uid}`, fetchOptions).
+      then(checkStatus).
+      then(response => response.json()).
+      then(function(response) {
+        dispatch(handleLoadingStorySuccess(response));
+      })['catch'](() => dispatch(handleLoadingStoryError()));
   };
 }

@@ -86,6 +86,51 @@
       }
     }
 
+    .story-contents {
+      display: flex;
+
+      form.story-form {
+        flex: 1 0 auto;
+        padding-right: 22px;
+
+        input.url {
+          width: 100%
+        }
+
+        label.label-url {
+          margin-top: 11px;
+        }
+      }
+
+      .story-preview {
+        flex: 0 0 300px;
+        display: flex;
+        height: 314px;
+        overflow: hidden;
+
+        .view-widget {
+          border: 2px $light-grey-1 dashed;
+        }
+
+        .placeholder {
+          flex: 0 0 300px;
+          background: $light-grey-6;
+          border: 2px $light-grey-1 dashed;
+        }
+
+        .spinner-wrapper {
+          flex: 0 0 300px;
+          display: flex;
+          border: 2px $light-grey-1 dashed;
+
+          // Styleguide polyfill
+          .spinner-large {
+            margin: auto;
+          }
+        }
+      }
+    }
+
     .alert.error {
       margin-top: 22px;
     }

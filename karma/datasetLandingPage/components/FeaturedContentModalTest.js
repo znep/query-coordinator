@@ -43,4 +43,13 @@ describe('components/FeaturedContentModal', function() {
 
     expect(element.querySelector('.external-resource form')).to.exist;
   });
+
+  it('renders StoryForm when isEditing is true and editType is story', function() {
+    var element = renderComponentWithStore(FeaturedContentModal, getProps({
+      isEditing: true,
+      editType: 'story'
+    }));
+
+    expect(element.querySelector('.story form')).to.exist;
+  });
 });

@@ -79,6 +79,26 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     expect(element.querySelectorAll('.featured-item:first-child .btn')).to.have.length(3);
   });
 
+  it('does not render a story button on placeholder when Perspectives is not enabled', function() {
+    window.serverConfig.featureFlags.storiesEnabled = false;
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, null, null]
+    }));
+
+    expect(element.querySelectorAll('.featured-item:first-child .btn')).to.have.length(1);
+
+    var button = element.querySelector('.featured-item:first-child .btn');
+    Simulate.click(button);
+
+    var buttons = element.querySelectorAll('.featured-item:first-child .btn');
+    var hasStoryOption = _.any(buttons, function(button) {
+      return button.innerText === I18n.featured_content_modal.story
+    });
+
+    expect(buttons).to.have.length(2);
+    expect(hasStoryOption).to.be.false;
+  });
+
   describe('actions', function() {
     it('calls onClickDone when the done button is clicked', function() {
       var spy = sinon.spy();

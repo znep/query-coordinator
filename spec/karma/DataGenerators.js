@@ -10,7 +10,8 @@ export default {
           type: 'html',
           value: 'Hello, world!'
         }
-      ]
+      ],
+      presentable: true
     };
 
     for (var prop in options) {

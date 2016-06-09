@@ -30,6 +30,10 @@ export default {
   STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
 
   // {string} storyUid
+  // {string} blockId
+  STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY: 'STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY',
+
+  // {string} storyUid
   // {number} insertAt: Index in block list to insert block.
   // {object} blockContent: Object describing components in block.
   STORY_INSERT_BLOCK: 'STORY_INSERT_BLOCK',

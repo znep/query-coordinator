@@ -124,7 +124,8 @@ class Block < ActiveRecord::Base
     Block.new(
       layout: json_block[:layout],
       components: json_block[:components],
-      created_by: json_block[:created_by]
+      created_by: json_block[:created_by],
+      presentable: json_block[:presentable]
     )
   end
 

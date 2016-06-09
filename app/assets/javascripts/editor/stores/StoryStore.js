@@ -65,6 +65,10 @@ export default function StoryStore() {
         _moveBlockDown(payload);
         break;
 
+      case Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY:
+        _toggleBlockPresentationVisibility(payload);
+        break;
+
       case Actions.STORY_DELETE_BLOCK:
         _deleteBlock(payload);
         break;
@@ -194,6 +198,11 @@ export default function StoryStore() {
     var block = _getBlock(blockId);
 
     return _.cloneDeep(block.components);
+  };
+
+  this.isBlockPresentable = function(blockId) {
+    var block = _getBlock(blockId);
+    return block.presentable;
   };
 
   this.getBlockComponentAtIndex = function(blockId, index) {
@@ -346,6 +355,18 @@ export default function StoryStore() {
     var blockIndex = _getStoryBlockIndexWithId(storyUid, blockId);
 
     _swapStoryBlocksAtIndices(storyUid, blockIndex, blockIndex + 1);
+
+    self._emitChange();
+  }
+
+  function _toggleBlockPresentationVisibility(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'blockId');
+    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+
+    var blockId = payload.blockId;
+    var block = _getBlock(blockId);
+
+    block.presentable = !block.presentable;
 
     self._emitChange();
   }
@@ -539,7 +560,8 @@ export default function StoryStore() {
 
     _blocks[clientSideBlockId] = {
       layout: blockData.layout,
-      components: _cloneBlockComponents(blockData.components)
+      components: _cloneBlockComponents(blockData.components),
+      presentable: blockData.presentable
     };
   }
 
@@ -548,7 +570,8 @@ export default function StoryStore() {
 
     return {
       layout: block.layout,
-      components: _cloneBlockComponents(block.components)
+      components: _cloneBlockComponents(block.components),
+      presentable: block.presentable
     };
   }
 
@@ -672,7 +695,8 @@ export default function StoryStore() {
 
     return {
       layout: block.layout,
-      components: _.clone(block.components)
+      components: _.clone(block.components),
+      presentable: block.presentable
     };
   }
 

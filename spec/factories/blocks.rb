@@ -4,6 +4,7 @@ FactoryGirl.define do
     layout '12'
     components { [ { type: 'html', value: 'Hello, world!' } ] }
     created_by 'test_user@socrata.com'
+    presentable true
   end
 
   factory :block_with_image, class: Block do

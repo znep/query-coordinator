@@ -8,7 +8,6 @@
  * - Resizing the content to fit appropriately into the screen size.
  */
 export default function PresentationMode() {
-  var blacklist = ['spacer', 'horizontal-rule'];
   var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
 
   var userStory = document.querySelector('.user-story');
@@ -57,7 +56,7 @@ export default function PresentationMode() {
 
       userStory.classList.add('presentation-mode');
       presentationMode.classList.remove('icon-presentation');
-      presentationMode.classList.add('icon-cross2');
+      presentationMode.classList.add('icon-close-2');
       presentationButtons.previous.classList.remove('hidden');
       presentationButtons.next.classList.remove('hidden');
 
@@ -76,7 +75,7 @@ export default function PresentationMode() {
     if (editButton) { editButton.classList.remove('hidden'); }
 
     userStory.classList.remove('presentation-mode');
-    presentationMode.classList.remove('icon-cross2');
+    presentationMode.classList.remove('icon-close-2');
     presentationMode.classList.add('icon-presentation');
     presentationButtons.previous.classList.add('hidden');
     presentationButtons.next.classList.add('hidden');
@@ -135,11 +134,6 @@ export default function PresentationMode() {
   }
 
   function notBlacklisted(element) {
-    var component = element.querySelector('.component-container > .component');
-    var classes = Array.prototype.slice.call(component.classList);
-
-    return classes.every(function(value) {
-      return blacklist.indexOf(value.replace('component-', '')) === -1;
-    });
+    return element.dataset.hasOwnProperty('presentable');
   }
 }

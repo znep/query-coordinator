@@ -30,6 +30,22 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       page.evaluate_script("$('.block-edit').css('transition', 'none');")
     end
 
+    context 'hovering over the move up button' do
+      it 'displays a flyout on hover' do
+        @first_block.hover
+        @first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]').hover
+        expect(@first_block).to have_selector('.block-edit-controls-move-up-flyout')
+      end
+    end
+
+    context 'hovering over the move down button' do
+      it 'displays a flyout on hover' do
+        @first_block.hover
+        @first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]').hover
+        expect(@first_block).to have_selector('.block-edit-controls-move-down-flyout')
+      end
+    end
+
     # TODO These tests don't account for the block scrolling into view after moving.
     it 'moves up when "move up" button is clicked' do
       initial_position = @last_block.native.location.y
@@ -61,6 +77,41 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     it 'disables "move down" for the last block' do
       @last_block.hover
       expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]')[:disabled]).to eq("true")
+    end
+  end
+
+  describe 'toggle presentation view' do
+    before do
+      @first_block = @blocks.first
+    end
+
+    context 'when the block is hovered over' do
+      it 'displays a flyout' do
+        @first_block.hover
+        @first_block.find('[data-block-presentation-action]').hover
+        expect(@first_block).to have_selector('.block-edit-controls-presentation-flyout')
+      end
+    end
+
+    context 'when the block is toggled from visible to hidden' do
+      before do
+        @first_block.hover
+        @first_block.find('[data-block-presentation-action]').click
+      end
+
+      it 'adds .active' do
+        expect(@first_block).to have_selector('[data-block-presentation-action].active')
+      end
+    end
+
+    context 'when the block is toggled from hidden to visible' do
+      it 'removes .active' do
+        @first_block.hover
+        @first_block.find('[data-block-presentation-action]').click
+        @first_block.hover
+        @first_block.find('[data-block-presentation-action]').click
+        expect(@first_block).to_not have_selector('[data-block-presentation-action].active')
+      end
     end
   end
 

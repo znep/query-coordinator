@@ -6,7 +6,7 @@
     <% @story.blocks.each do |block| -%>
       <% layout_columns = block.layout.split('-') -%>
 
-      <div class="block">
+      <div class="block" <%= 'data-presentable' if block.presentable %>>
         <% if block.layout == '12-12-12-12' -%>
 
           <!-- Couple two 12's together and wrap them with a .col6 -->

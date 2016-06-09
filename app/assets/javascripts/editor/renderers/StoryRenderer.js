@@ -141,6 +141,19 @@ export default function StoryRenderer(options) {
       }
     );
 
+    $container.on(
+      'click',
+      '[data-block-presentation-action]',
+      function(event) {
+        var blockId = event.target.getAttribute('data-block-id');
+
+        dispatcher.dispatch({
+          action: event.target.getAttribute('data-block-presentation-action'),
+          blockId: blockId
+        });
+      }
+    );
+
     $container.on('dblclick', '.block', function(event) {
       var blockId = event.currentTarget.getAttribute('data-block-id');
 
@@ -273,7 +286,7 @@ export default function StoryRenderer(options) {
       // relative to the total number of blocks.
       // E.g. disable the 'move up' button for the first block and the
       // 'move down' button for the last block.
-      _updateBlockEditControls($blockElement, i, blockCount);
+      _updateBlockEditControls(blockId, $blockElement, i, blockCount);
 
       // Update the height of the containing iframes to be equal to the
       // height of the iframe document's body.
@@ -421,52 +434,123 @@ export default function StoryRenderer(options) {
     return $blockElement;
   }
 
+  function _templateFlyout(className, content) {
+    return $(StorytellerUtils.format('<div class="{0} flyout flyout-hidden">', className)).
+      append([
+        $('<section class="flyout-content">').append(content)
+      ]);
+  }
+
   function _renderBlockEditControls(blockId) {
 
-    return $(
+    var isPresentable = storyStore.isBlockPresentable(blockId);
+    var togglePresentationClassNames = StorytellerUtils.format(
+      'block-edit-controls-toggle-presentation-btn btn btn-alternate-2 icon-eye-blocked{0}',
+      isPresentable ? '' : ' active'
+    );
+
+    var $moveUpButton = $(
+      '<span>',
+      {
+        'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 icon-arrow-up',
+        'data-block-id': blockId,
+        'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
+      }
+    );
+
+    var $moveDownButton = $(
+      '<span>',
+      {
+        'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 icon-arrow-down',
+        'data-block-id': blockId,
+        'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
+      }
+    );
+
+    var $moveUpFlyout = _templateFlyout(
+      'block-edit-controls-move-up-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.move_block_up_flyout'))
+    );
+
+    var $moveDownFlyout = _templateFlyout(
+      'block-edit-controls-move-down-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.move_block_down_flyout'))
+    );
+
+    var $presentationFlyout = _templateFlyout(
+      'block-edit-controls-presentation-flyout',
+      StorytellerUtils.format('<p>{0}</p>', I18n.t('editor.block_edit_controls.presentation_toggle_flyout'))
+    );
+
+    var $presentationToggleButton = $(
+      '<span>',
+      {
+        'class': togglePresentationClassNames,
+        'data-block-id': blockId,
+        'data-block-presentation-action': Actions.STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY,
+        'data-flyout': 'block-edit-controls-presentation-flyout'
+      }
+    );
+
+    $presentationToggleButton.
+      on('mouseover', function() {
+        $presentationFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $presentationFlyout.addClass('flyout-hidden');
+      });
+
+    $moveUpButton.
+      on('mouseover', function() {
+        $moveUpFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $moveUpFlyout.addClass('flyout-hidden');
+      });
+
+    $moveDownButton.
+      on('mouseover', function() {
+        $moveDownFlyout.removeClass('flyout-hidden');
+      }).
+      on('mouseout', function() {
+        $moveDownFlyout.addClass('flyout-hidden');
+      });
+
+    var blockEditControls = $(
       '<div>',
       {
         'class': 'block-edit-controls'
       }
     ).append([
-
+      $moveUpButton,
+      $moveDownButton,
+      $presentationToggleButton,
       $(
         '<span>',
         {
-          'class': 'block-edit-controls-move-up-btn btn btn-secondary icon-arrow-up',
-          'data-block-id': blockId,
-          'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
-        }
-      ),
-
-      $(
-        '<span>',
-        {
-          'class': 'block-edit-controls-move-down-btn btn btn-secondary icon-arrow-down',
-          'data-block-id': blockId,
-          'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
-        }
-      ),
-
-      $(
-        '<span>',
-        {
-          'class': 'block-edit-controls-delete-btn btn btn-secondary icon-cross2',
+          'class': 'block-edit-controls-delete-btn btn btn-alternate-2 icon-close-2',
           'data-block-id': blockId,
           'data-block-delete-action': Actions.STORY_DELETE_BLOCK
         }
-      )
-
+      ),
+      $presentationFlyout,
+      $moveUpFlyout,
+      $moveDownFlyout
     ]);
+
+
+    return blockEditControls;
   }
 
-  function _updateBlockEditControls($blockElement, blockIndex, blockCount) {
+  function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {
 
     var moveUpButton = $blockElement.find('.block-edit-controls-move-up-btn');
     var moveDownButton = $blockElement.find('.block-edit-controls-move-down-btn');
+    var togglePresentationVisibilityButton = $blockElement.find('.block-edit-controls-toggle-presentation-btn');
 
     moveUpButton.prop('disabled', blockIndex === 0);
     moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    togglePresentationVisibilityButton.toggleClass('active', !storyStore.isBlockPresentable(blockId));
   }
 
   function getHTMLComponentHeight($component) {

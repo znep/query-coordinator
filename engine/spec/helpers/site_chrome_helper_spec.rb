@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Chrome::ApplicationHelper do
+describe SocrataSiteChrome::ApplicationHelper do
   let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
   let(:site_chrome_config) do { content: site_chrome_config_vars['content'] }
   end
@@ -38,7 +38,7 @@ describe Chrome::ApplicationHelper do
 
   describe '#header_logo' do
     it 'returns only the site title if the header image is not present' do
-      site_chrome = Chrome::SiteChrome.new(site_chrome_config)
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       RequestStore.store[:site_chrome] = site_chrome
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
@@ -46,7 +46,7 @@ describe Chrome::ApplicationHelper do
     end
 
     it 'returns both the site title and the header image' do
-      site_chrome = Chrome::SiteChrome.new(site_chrome_config)
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       RequestStore.store[:site_chrome] = site_chrome
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img alt="test header" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/rF2EJ4P.gif" /><span class="site-name"></span></a>')

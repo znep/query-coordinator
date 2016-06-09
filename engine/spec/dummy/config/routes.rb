@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount Chrome::Engine => '/chrome'
+  mount SocrataSiteChrome::Engine => 'socrata_site_chrome'
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Chrome::ThemesController, type: :controller do
+RSpec.describe SocrataSiteChrome::ThemesController, type: :controller do
 
   let(:domain) { 'data.seattle.gov' }
 
@@ -15,12 +15,12 @@ RSpec.describe Chrome::ThemesController, type: :controller do
   end
 
   def stub_domain_config
-    allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
+    allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
   end
 
   describe 'GET custom' do
 
-    routes { Chrome::Engine.routes }
+    routes { SocrataSiteChrome::Engine.routes }
 
     it 'renders the custom template' do
       stub_domain_config

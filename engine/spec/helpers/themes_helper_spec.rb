@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Chrome::ThemesHelper do
+describe SocrataSiteChrome::ThemesHelper do
 
   let(:site_chrome_config_vars) do
     JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access
@@ -18,8 +18,8 @@ describe Chrome::ThemesHelper do
     end
 
     it 'returns a cache key with the site_chrome updated_at timestamp' do
-      allow_any_instance_of(Chrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
-      site_chrome_config = Chrome::SiteChrome.new(Chrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
+      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
+      site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
       expect(helper.cache_key_for_site_chrome(site_chrome_config)).to eq('/config/custom-123546789')
     end
   end
@@ -49,20 +49,20 @@ describe Chrome::ThemesHelper do
 
   end
 
-  describe '#prevent_font_render?', verify_stubs: false do
-    it 'returns true if Chrome::Engine.config.render_fonts is false' do
-      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(false)
-      expect(helper.prevent_font_render?).to eq(true)
+  describe '#exclude_styleguide?', verify_stubs: false do
+    it 'returns true if SocrataSiteChrome::Engine.config.styleguide is false' do
+      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(false)
+      expect(helper.exclude_styleguide?).to eq(true)
     end
 
-    it 'returns false if Chrome::Engine.config.render_fonts is true' do
-      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(true)
-      expect(helper.prevent_font_render?).to eq(false)
+    it 'returns false if SocrataSiteChrome::Engine.config.styleguide is true' do
+      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(true)
+      expect(helper.exclude_styleguide?).to eq(false)
     end
 
-    it 'returns false if Chrome::Engine.config.render_fonts is not set' do
-      allow(Chrome::Engine.config).to receive(:render_fonts).and_return(nil)
-      expect(helper.prevent_font_render?).to eq(false)
+    it 'returns false if SocrataSiteChrome::Engine.config.styleguide is not set' do
+      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(nil)
+      expect(helper.exclude_styleguide?).to eq(false)
     end
   end
 

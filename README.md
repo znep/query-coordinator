@@ -12,6 +12,8 @@ See [engine/README.md](file:///engine/README.md)
 
 After checking out the repo, run `bundle install`.
 
+Then `cd engine && npm install`
+
 To run on your local development machine:
 
 ```sh

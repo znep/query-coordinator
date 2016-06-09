@@ -54,9 +54,8 @@ module Chrome
     end
 
     def get_domain_config
-      uri = domain_config_uri
       begin
-        response = HTTParty.get(uri)
+        response = HTTParty.get(domain_config_uri, :verify => false) # todo remove :verify false
         body = response.code == 200 ? response.body : nil
         ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
       rescue HTTParty::ResponseError => e

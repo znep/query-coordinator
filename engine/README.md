@@ -78,7 +78,13 @@ You should most likely do this in your `ApplicationHelper.rb`.
 include SiteChromeHelper
 ```
 
-In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), add the following `site_chrome_*` helpers to the bottom of the `<head>` section.
+In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), you will need to add the following `site_chrome_*` helpers to the bottom of the `<head>` section:
+```erb
+<%= site_chrome_meta_viewport_tag %>
+<%= site_chrome_stylesheet_tag %>
+<%= site_chrome_javascript_tag %>
+```
+
 
 Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.
 
@@ -149,19 +155,14 @@ The values specified in the configuration file are used in the following files t
 * `_footer.scss`
 * `_header.scss`
 
-### Fonts
+### Styleguide icons
 
-There are two fonts that included in the engine, though only `socrata-icons` is required:
-
-1. `open-sans`
-2. `socrata-icons`
-
-By default, `socrata-icons` is included in the rendered CSS through the engine.
-However, if you know your hosting app is already using the styleguide icons and you want
-to prevent the engine from rendering the fonts, add the following to `application.rb`:
+By default, `styleguide` icons are included in the rendered CSS through the engine.
+However, if you know your hosting app is already using the styleguide and you want
+to prevent the engine from rendering it, add the following to `application.rb`:
 
 ```ruby
-config.render_fonts = false
+config.styleguide = false
 ```
 
 #### Sample `siteChromeConfigVars` configuration:

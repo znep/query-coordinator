@@ -1,11 +1,11 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (0.0.12)
+    socrata_site_chrome (0.0.14)
       rails (~> 4.2, >= 4.2.6)
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)

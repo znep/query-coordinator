@@ -7,8 +7,12 @@ class SiteChromeController < ApplicationController
   before_filter :ensure_admin
   before_filter :find_or_create_default_site_chrome
 
+  def tab_sections
+    %w(general header footer homepage social)
+  end
+  helper_method :tab_sections
+
   def edit
-    @tab_sections = %w(general header footer homepage social)
     @current_locale = 'en' # TODO
   end
 
@@ -20,14 +24,10 @@ class SiteChromeController < ApplicationController
       flash[:notice] = 'Site theme updated'
       redirect_to edit_site_chrome_path
     elsif @site_chrome.errors.any?
-      require 'pry'
-      binding.pry
       flash[:error] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
-      edit
       render 'edit', status: :unprocessable_entity
     else
       flash[:error] = "Something went wrong, we're not sure what. Try re-saving."
-      edit
       render 'edit', status: :internal_server_error
     end
   end

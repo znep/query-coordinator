@@ -1,6 +1,6 @@
 require 'httparty'
 
-module Chrome
+module SocrataSiteChrome
   class DomainConfig
 
     attr_reader :domain
@@ -79,7 +79,7 @@ module Chrome
     end
 
     def default_configuration
-      File.read("#{Chrome::Engine.root}/config/default_site_chrome.json")
+      File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json")
     end
 
   end

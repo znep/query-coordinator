@@ -1,6 +1,6 @@
-module Chrome
+module SocrataSiteChrome
   class Engine < ::Rails::Engine
-    isolate_namespace Chrome
+    isolate_namespace SocrataSiteChrome
 
     # Neither of the two configuration directives below appear to be necessary, but leaving them here for the
     # time being so we don't have to go look them up again.

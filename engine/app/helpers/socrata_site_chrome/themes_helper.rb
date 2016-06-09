@@ -1,4 +1,4 @@
-module Chrome
+module SocrataSiteChrome
   module ThemesHelper
 
     def sass_engine_options
@@ -6,9 +6,9 @@ module Chrome
         :style => Rails.env.development? ? :nested : :compressed,
         :syntax => :scss,
         :load_paths => [
-          "#{Chrome::Engine.root}/app/assets/stylesheets",
-          "#{Chrome::Engine.root}/app/assets/stylesheets/chrome",
-          "#{Chrome::Engine.root}/app/views/config"
+          "#{SocrataSiteChrome::Engine.root}/app/assets/stylesheets",
+          "#{SocrataSiteChrome::Engine.root}/app/assets/stylesheets/socrata_site_chrome",
+          "#{SocrataSiteChrome::Engine.root}/app/views/config"
         ]
       }
     end
@@ -34,7 +34,7 @@ module Chrome
     end
 
     def exclude_styleguide?
-      Chrome::Engine.config.respond_to?(:styleguide) && Chrome::Engine.config.styleguide == false
+      SocrataSiteChrome::Engine.config.respond_to?(:styleguide) && SocrataSiteChrome::Engine.config.styleguide == false
     end
 
   end

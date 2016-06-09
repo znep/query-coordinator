@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Chrome::SiteChrome do
+describe SocrataSiteChrome::SiteChrome do
   let(:id) { 2663 }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
@@ -14,10 +14,10 @@ describe Chrome::SiteChrome do
     }
   end
 
-  let(:helper) { Chrome::SiteChrome.new(site_chrome_config) }
+  let(:helper) { SocrataSiteChrome::SiteChrome.new(site_chrome_config) }
 
   it 'does not raise on initialization without parameters' do
-    expect { Chrome::SiteChrome.new() }.to_not raise_error
+    expect { SocrataSiteChrome::SiteChrome.new() }.to_not raise_error
   end
 
   it 'sets id from properties' do
@@ -40,14 +40,14 @@ describe Chrome::SiteChrome do
       config_vars_without_locales = site_chrome_config_vars['content'].dup.tap do |config_vars|
         config_vars[:locales] = nil
       end
-      chrome = Chrome::SiteChrome.new(id: id, content: config_vars_without_locales, updated_at: updated_at)
+      chrome = SocrataSiteChrome::SiteChrome.new(id: id, content: config_vars_without_locales, updated_at: updated_at)
       expect(chrome.locales).to eq(default_locales)
     end
 
     it 'deep merges the user locales onto the default locales' do
       config_vars_with_custom_locales = site_chrome_config_vars['content'].dup
       config_vars_with_custom_locales[:locales][:en][:header][:logo_alt] = 'Batman'
-      chrome = Chrome::SiteChrome.new(id: id, content: config_vars_with_custom_locales, updated_at: updated_at)
+      chrome = SocrataSiteChrome::SiteChrome.new(id: id, content: config_vars_with_custom_locales, updated_at: updated_at)
       expect(chrome.locales).not_to eq(default_locales)
       expect(chrome.locales.dig(:en, :header, :logo_alt)).to eq('Batman')
     end

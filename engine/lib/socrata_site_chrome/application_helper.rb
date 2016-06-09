@@ -1,6 +1,6 @@
 require 'request_store'
 
-module Chrome
+module SocrataSiteChrome
   module ApplicationHelper
 
     def site_name
@@ -66,7 +66,7 @@ module Chrome
 
     def get_site_chrome
       RequestStore.store[:site_chrome] ||=
-        Chrome::SiteChrome.new(Chrome::DomainConfig.new(request.host).site_chrome_config)
+        SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config)
     end
 
     def current_user

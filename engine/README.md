@@ -116,7 +116,7 @@ An example layout is shown below:
 Add the following to `config/routes.rb` to mount the engine:
 
 ```
-mount Chrome::Engine => '/chrome'
+mount SocrataSiteChrome::Engine => '/chrome'
 ```
 
 To run the engine on a given route:
@@ -126,7 +126,7 @@ To run the engine on a given route:
   ```
 2. add this to `config.ru`
   ```ruby
-  map Chrome::Engine.config.relative_url_root = '/your-route' do
+  map SocrataSiteChrome::Engine.config.relative_url_root = '/your-route' do
     run Rails.application # remove the other instance of this line
   end
   ```

@@ -3,18 +3,18 @@
     <%# Note: excluding the actual styleguide CSS for now, because it doesn't currently play nicely
       # with many of the pages we want to use the header/footer on.
       # When that changes, we will want to remove the two font import statements below and only use
-      # @import url("/public/stylesheets/styleguide/css/styleguide.min.css");
+      # @import url("/stylesheets/styleguide/css/styleguide.min.css");
     %>
-    @import url("/public/stylesheets/styleguide/fonts/socrata-icons-font-family.scss");
-    @import url("/public/stylesheets/styleguide/fonts/socrata-icons.scss");
+    @import url("/stylesheets/styleguide/fonts/socrata-icons-font-family.css");
+    @import url("/stylesheets/styleguide/fonts/socrata-icons.css");
   <% end %>
   <% if params.key?(:debug_sass) %>
 ///////////////////////
 //   Unparsed SASS   //
 ///////////////////////
 
-<%== render(:partial => 'theme', :locals => { :custom_themes => get_site_chrome.styles }) %>
+<%== render('theme', :custom_themes => get_site_chrome.styles) %>
   <% else %>
-<%== Sass::Engine.new(render(:partial => 'theme', :locals => { :custom_themes => get_site_chrome.styles }), sass_engine_options).render %>
+<%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles), sass_engine_options).render %>
   <% end %>
 <% end %>

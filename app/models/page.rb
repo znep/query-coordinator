@@ -15,8 +15,8 @@ class Page < Model
 
     # Fetch the cached pages list.
     def self.pages
-      # The pages dataset can easily exceed the 1MB limit of memcached so we use snappy
-      # to get it down to about a tenth the size
+      # The pages dataset can easily exceed the size limit of memcached (4MB as of this writing)
+      # so we use snappy to compress it.
       cache_key = fetch_cache_key
       ds_raw = Rails.cache.read(cache_key, :raw => true)
       Marshal.load(Snappy.inflate(ds_raw)) unless ds_raw.nil?
@@ -26,7 +26,7 @@ class Page < Model
     def self.cache_pages(new_pages)
       cache_data = {}
       new_pages.each { |page| add_page(page, cache_data) }
-      # Beware; there is a minor risk that cache_data may exceed the 1MB limit of memcached
+      # Beware; there is a minor risk that cache_data may exceed the size limit of memcached
       write(cache_data)
 
       cache_data
@@ -331,11 +331,24 @@ class Page < Model
     page = search_result[:page]
 
     if !page.nil? && !page.uid.nil? # TODO what is page.uid.nil? catching?
-      # Cache stale? Re-fetch.
-      if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
-        page = find(method: 'getPageRouting', id: page.uid)
-        PageCache.update_page(page)
-        search_result[:page] = page
+      page = find(method: 'getPageRouting', id: page.uid)
+      search_result[:page] = page
+
+      if (FeatureFlags.value_for(:validate_fragment_cache_before_render))
+        if (VersionAuthority.page_mtime(page.uid).to_i / 1000) <= page.updatedAt
+          PageCache.clear
+          VersionAuthority.set_page_mtime(page.uid, page.updatedAt)
+        end
+      else
+        # Old behavior that won't work if core isn't writing to VersionAuthority.page_mtime.
+        # Delete asap.
+        #
+        # If cache marked stale by core, re-fetch.
+        if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
+          page = find(method: 'getPageRouting', id: page.uid)
+          PageCache.update_page(page)
+          search_result[:page] = page
+        end
       end
 
       # Now check permissions

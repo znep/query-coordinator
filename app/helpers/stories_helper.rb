@@ -185,6 +185,13 @@ module StoriesHelper
     ].join(', ')
   end
 
+  def hero_component_classes(hero_component)
+    classes = ['hero']
+    classes << 'hero-no-image' if hero_component.url(:xlarge).blank?
+    classes << 'hero-default-height' if hero_component.layout.blank?
+    classes.join(' ')
+  end
+
   private
 
   def determine_permissions_from_core_attributes

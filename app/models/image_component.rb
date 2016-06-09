@@ -14,7 +14,7 @@ class ImageComponent
   end
 
   def alt_text
-    component_value['alt']
+    component_value.try(:[], 'alt')
   end
 
   def url(size = nil)
@@ -32,11 +32,11 @@ class ImageComponent
   end
 
   def document_id
-    component_value['documentId'] if component_value.present?
+    component_value.try(:[], 'documentId')
   end
 
   def image_url
-    component_value['url'] if component_value.present?
+    component_value.try(:[], 'url')
   end
 
   def document

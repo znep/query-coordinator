@@ -289,4 +289,45 @@ RSpec.describe StoriesHelper, type: :helper do
       expect(image_sizes_from_number_of_columns(6)).to eq('(min-width: 1400px) calc(0.5 * 1090px), (min-width: 1200px) calc(0.5 * 910px), (min-width: 800px) calc(0.5 * 650px), 94vw')
     end
   end
+
+  describe '#hero_component_classes' do
+    let(:url) { 'url' }
+    let(:layout) { 'layout' }
+    let(:hero_component) { double('hero_component', url: url, layout: layout) }
+
+    let(:result) { hero_component_classes(hero_component) }
+
+    it 'returns list of classes' do
+      expect(result).to eq('hero')
+    end
+
+    context 'when url is blank' do
+      let(:url) { nil }
+
+      it 'includes class `hero`' do
+        expect(result).to match(/\s?hero\s/)
+      end
+
+      it 'includes class `hero-no-image`' do
+        expect(result).to eq('hero hero-no-image')
+      end
+    end
+
+    context 'when layout is blank' do
+      let(:layout) { nil }
+
+      it 'includes class `hero-default-height`' do
+        expect(result).to eq('hero hero-default-height')
+      end
+    end
+
+    context 'when url and layout are both blank' do
+      let(:layout) { nil }
+      let(:url) { nil }
+
+      it 'includes class `hero-no-image` and `hero-default-height`' do
+        expect(result).to eq('hero hero-no-image hero-default-height')
+      end
+    end
+  end
 end

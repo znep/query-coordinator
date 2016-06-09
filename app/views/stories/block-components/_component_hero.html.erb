@@ -1,9 +1,24 @@
+<%
+# Component format:
+# {
+#   type:"hero",
+#   value: {
+#     url: "https://sa-storyteller-cust-us-west-2-rc.s3.amazonaws.com/documents/uploads/000/000/743/original/mcdonalds.jpg?1464390559",
+#     html: "<h1 class=\"align-center\" style=\"text-align: center;\"><br></h1>",
+#     layout: {
+#       height:266
+#     },
+#     documentId: 743
+#   }
+# }
+-%>
 <% if component.present? && component['value'].present? -%>
+  <% hero_component = HeroComponent.new(component) -%>
   <div
-    class="hero<%= ' hero-no-image' if component['value']['url'].blank? %><%= ' hero-default-height' if component['value']['layout'].blank? %>"
-    style="background-image: url('<%= component['value']['url'] %>');">
+    class="<%= hero_component_classes(hero_component) %>"
+    style="background-image: url('<%= hero_component.url(:xlarge) %>');">
     <div class="typeset squire-formatted remove-top-margin">
-      <%= component['value']['html'].to_s.html_safe %>
+      <%= hero_component.html.html_safe %>
     </div>
   </div>
 <% else -%>

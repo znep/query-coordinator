@@ -6,6 +6,7 @@ import externalResourceReducer from './externalResource';
 
 import {
   ADD_FEATURED_ITEM,
+  EDIT_FEATURED_ITEM,
   CANCEL_FEATURED_ITEM_EDIT,
   REQUESTED_FEATURED_ITEM_SAVE,
   HANDLE_FEATURED_ITEM_SAVE_SUCCESS,
@@ -27,6 +28,19 @@ var initialState = {
   isSaved: false,
   hasError: false
 };
+
+// Given a featured item, we need to figure out if it's a normal visualization, a story, or an
+// external resource.  Normally the `contentType` would provide this information for us, but
+// currently both stories and visualizations have a contentType of "internal".  We have been told
+// that eventually we will not special case stories, in which case `contentType` will provide
+// sufficient information and we can remove the concept of `editType` entirely.
+function getEditTypeFromFeaturedItem(featuredItem) {
+  if (featuredItem.contentType === 'external') {
+    return 'externalResource';
+  } else if (featuredItem.contentType === 'internal') {
+    return; // TODO Good luck
+  }
+}
 
 // Handles things that are not specific to any type of featured item.  Actions for other pages of
 // are handled by child reducers.
@@ -53,6 +67,14 @@ export default function(state, action) {
         isEditing: true,
         editType: action.editType,
         editPosition: action.position
+      };
+
+    case EDIT_FEATURED_ITEM:
+      return {
+        ...state,
+        isEditing: true,
+        editType: getEditTypeFromFeaturedItem(action.featuredItem),
+        editPosition: action.featuredItem.position - 1
       };
 
     case CANCEL_FEATURED_ITEM_EDIT:

@@ -30,10 +30,10 @@ export function addFeaturedItem(type, position) {
   };
 }
 
-export function editFeaturedItem(position) {
+export function editFeaturedItem(featuredItem) {
   return {
     type: EDIT_FEATURED_ITEM,
-    position: position
+    featuredItem: featuredItem
   };
 }
 

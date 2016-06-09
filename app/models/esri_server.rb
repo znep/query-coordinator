@@ -31,7 +31,9 @@ class EsriServer
       case @job['status']
         when 'failure' then 'failing'
         when 'success' then 'working'
+        else 'not_yet'
       end
+
     else
       'not_yet'
     end

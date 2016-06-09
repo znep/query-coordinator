@@ -33,7 +33,7 @@ gem 'socrata_site_chrome', '~> 0.0.4', :source => 'https://socrata.artifactoryon
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'socrata_site_chrome', '~> 0.0.4', :path => 'engine/chrome' # Where 'engine/chrome' is the correct directory path
+gem 'socrata_site_chrome', '~> 0.0.4', :path => 'engine' # Where 'engine' is the correct directory path
 ```
 
 Then execute:
@@ -114,9 +114,11 @@ An example layout is shown below:
 ```
 
 Add the following to `config/routes.rb` to mount the engine:
+Note: you must use the `socrata_site_chrome` mount point because the gem references it.
+TODO: Find a way to allow the user the set their own mount point and determine it within the engine.
 
 ```
-mount SocrataSiteChrome::Engine => '/chrome'
+mount SocrataSiteChrome::Engine => 'socrata_site_chrome'
 ```
 
 To run the engine on a given route:

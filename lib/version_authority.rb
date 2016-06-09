@@ -35,6 +35,10 @@ module VersionAuthority
     Rails.cache.read(pages_key(uid), :raw => true)
   end
 
+  def self.set_page_mtime(uid, mtime, cache_ttl = 15)
+    Rails.cache.write(pages_key(uid), mtime, :expires_in => cache_ttl.minutes)
+  end
+
   # Given a path/user find the manifest associated with this domain and
   # return nil if the manifest is invalid or the hash of the retrieved manifest
   # if the manifest is valid. All manifests newer than checkAge are considered

@@ -369,7 +369,35 @@ class Page < Model
 
   def self.parse(data)
     return nil if data.blank?
-    return self.set_up_model(JSON.parse(data, {:max_nesting => 35}))
+
+    json_data = nil
+
+    begin
+      json_data = JSON.parse(data, {:max_nesting => 35})
+    rescue JSON::ParserError
+      # EN-6886 - Fix another JSON::ParserError
+      #
+      # Add more specific logging around this error, which happens when a JSON
+      # response from CoreServer is malformed (it has been observed to be
+      # apparently valid JSON that has been truncated in addition to HTML error
+      # pages from nginx).
+      if data.start_with?('<html>')
+        error_message = "It appears that CoreServer was unreachable: "\
+          "#{data.inspect}"
+      else
+        error_message = "CoreServer responded with truncated and/or "\
+          "invalid JSON: #{data.inspect}"
+      end
+
+      Airbrake.notify(
+        :error_class => "Failed to parse invalid JSON",
+        :error_message => error_message,
+        :session => {:domain => CurrentDomain.cname}
+      )
+      return nil
+    end
+
+    return self.set_up_model(json_data)
   end
 
   def self.path_exists?(cur_path)

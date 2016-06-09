@@ -1,9 +1,10 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import importableTypes from 'importableTypes';
 
+
+const I18nPrefixed = I18n.screens.dataset_new.column_template;
+
 export default ({ resultColumn, sourceColumns }) => {
-  const I18nPrefixed = I18n.screens.dataset_new.column_template;
   return (
     <li className="importColumn">
       <div className="mainLine">
@@ -13,7 +14,7 @@ export default ({ resultColumn, sourceColumns }) => {
         </div>
         <div className="columnTypeCell">
           <select className="columnTypeSelect" value={ resultColumn.chosenType }>
-            {_.map(importableTypes, ([typeName, humanReadableName]) => (
+            {importableTypes.map(([typeName, humanReadableName]) => (
               <option value={ typeName }>{ humanReadableName }</option>
             ))}
           </select>

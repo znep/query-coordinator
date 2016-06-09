@@ -1,11 +1,9 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
 
-export default (props) => {
-  const { isHeader, row } = props;
+export default ({ isHeader, row }) => {
   return (
     <tr className={ isHeader ? 'header' : '' } >
-      {_.map(row, (val) => (
+      {row.map((val) => (
         <td>{ val }</td>
       ))}
     </tr>

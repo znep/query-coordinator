@@ -72,7 +72,7 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
     case IMPORT_START:
       return {
         type: 'InProgress',
-        rowsImported: null // could say 0 here but existing wizard doesn't say anything until we poll
+        rowsImported: 0
       };
 
     case IMPORT_PROGRESS:

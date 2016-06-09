@@ -5,8 +5,6 @@ import ColumnDetail from './importColumns/columnDetail';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 
-const NUM_PREVIEW_ROWS = 5;
-
 /*
 - Blueprint: schema (names & types)
 - Translation: mapping of file columns to dataset columns
@@ -14,12 +12,20 @@ const NUM_PREVIEW_ROWS = 5;
 */
 type Transform = Array<ResultColumn>;
 
+
 type ResultColumn = {
   sourceColumn: SharedTypes.SourceColumn,
   name: String,
   chosenType: SharedTypes.TypeName,
-  transforms: Array<ColumnTransform>
+  transforms: Array<ColumnTransform>,
 }
+
+
+type ColumnTransform
+  = { type: 'upper' }
+  | { type: 'lower' }
+  // TODO: forgetting some
+  | { type: 'findReplace', find: string, replace: string, regex: boolean, caseInsensitive: boolean }
 
 
 function initialTransform(summary: UploadFile.Summary): Transform {
@@ -33,13 +39,6 @@ function initialTransform(summary: UploadFile.Summary): Transform {
     }
   ));
 }
-
-
-type ColumnTransform
-  = { type: 'upper' }
-  | { type: 'lower' }
-  // TODO: forgetting some
-  | { type: 'findReplace', find: string, replace: string, regex: boolean, caseInsensitive: boolean }
 
 
 export const IMPORT_COLUMNS_NEXT = 'IMPORT_COLUMNS_NEXT';
@@ -60,8 +59,11 @@ export function update(transform: Transform = null, action): Array<ResultColumn>
 }
 
 
+const NUM_PREVIEW_ROWS = 5;
+const I18nPrefixed = I18n.screens.dataset_new.import_columns;
+
+
 export function view({ transform, fileName, summary, dispatch }) {
-  const I18nPrefixed = I18n.screens.dataset_new.import_columns;
   return (
     <div className="importColumnsPane columnsPane">
       <div className="flash"></div>
@@ -70,6 +72,35 @@ export function view({ transform, fileName, summary, dispatch }) {
       </div>
       <p className="headline">{ I18nPrefixed.headline_interpolate.format(fileName) }</p>
       <h2>{ I18nPrefixed.subheadline }</h2>
+      <viewColumns transform={ transform } />
+      <viewToolbar />
+
+      <hr/>
+
+      <viewPreview sample={ summary.sample } />
+
+      <div className="warningsSection">
+        <h2>{ I18nPrefixed.errors_warnings }</h2>
+        <p className="warningsHelpMessage">{/* t("#{prefix}.help_message", :common_errors => common_errors_support_link ) */}</p>
+        <ul className="columnWarningsList"></ul>
+      </div>
+      <hr/>
+      <a className="button nextButton" onClick={ () => dispatch(importColumnsNext()) }>Next</a>
+    </div>
+  );
+}
+
+view.propTypes = {
+  fileName: PropTypes.string.isRequired,
+  transform: PropTypes.arrayOf(PropTypes.object).isRequired,
+  summary: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
+};
+
+
+function viewColumns({ transform, summary }) {
+  return (
+    <div>
       <div className="columnsListHeader importListHeader clearfix">
         <div className="columnHandleCell importHandleCell"></div>
         <div className="columnNameCell">{ I18nPrefixed.name }</div>
@@ -90,36 +121,53 @@ export function view({ transform, fileName, summary, dispatch }) {
             )
           )
         }
-        {/* TODO: ^^ initialze model with suggestion, but allow it to change */}
+        {/* TODO: ^^ hook up to model */}
       </ul>
-      <div className="columnsToolbar clearfix">
-        <div className="presets">
-          <label htmlFor="columnsPresetsSelect">{ I18nPrefixed.reset_to_preset }:</label>
-          <select className="columnsPresetsSelect">
-            <option value="suggested">{ I18nPrefixed.suggested_columns }</option>
-            <option value="suggestedFlat">{ I18nPrefixed.suggested_flat }</option>
-            <option value="suggestedPlusDiscrete">{ I18nPrefixed.suggested_plus_discrete }</option>
-            <option value="alltext">{ I18nPrefixed.suggested_alltext }</option>
-          </select>
-          <a className="columnsPresetsButton button" href="#set">{ I18nPrefixed.set }</a>
-        </div>
-        <div className="actions">
-          <a className="clearColumnsButton button" href="#clear">{ I18nPrefixed.clear_all }</a>
-          <a className="addColumnButton add button" href="#add">
-            <span className="icon"></span>
-            { I18nPrefixed.add_new_column }
-          </a>
-        </div>
+    </div>
+  );
+}
+
+viewColumns.propTypes = {
+  transform: PropTypes.arrayOf(PropTypes.object).isRequired,
+  summary: PropTypes.object.isRequired
+};
+
+
+// TODO actually hook up buttons
+function viewToolbar() {
+  return (
+    <div className="columnsToolbar clearfix">
+      <div className="presets">
+        <label htmlFor="columnsPresetsSelect">{ I18nPrefixed.reset_to_preset }:</label>
+        <select className="columnsPresetsSelect">
+          <option value="suggested">{ I18nPrefixed.suggested_columns }</option>
+          <option value="suggestedFlat">{ I18nPrefixed.suggested_flat }</option>
+          <option value="suggestedPlusDiscrete">{ I18nPrefixed.suggested_plus_discrete }</option>
+          <option value="alltext">{ I18nPrefixed.suggested_alltext }</option>
+        </select>
+        <a className="columnsPresetsButton button" href="#set">{ I18nPrefixed.set }</a>
       </div>
+      <div className="actions">
+        <a className="clearColumnsButton button" href="#clear">{ I18nPrefixed.clear_all }</a>
+        <a className="addColumnButton add button" href="#add">
+          <span className="icon"></span>
+          { I18nPrefixed.add_new_column }
+        </a>
+      </div>
+    </div>
+  );
+}
 
-      <hr/>
 
+function viewPreview({ summary }) {
+  return (
+    <div>
       <h2>{ I18nPrefixed.headers }</h2>
       <p className="instructions">{ I18nPrefixed.headers_instructions }</p>
       <div className="headersTableWrapper">
         <table className="headersTable">
           <tbody>
-            {_.map(_.take(summary.sample, NUM_PREVIEW_ROWS), (row, idx) => (
+            {_.take(summary, NUM_PREVIEW_ROWS).map((row, idx) => (
               <SampleRow
                 isHeader={ idx <= summary.headers }
                 row={ row } />
@@ -138,21 +186,10 @@ export function view({ transform, fileName, summary, dispatch }) {
             onUpdateHeadersCount={ onUpdateHeadersCount } />
         */}
       </div>
-
-      <div className="warningsSection">
-        <h2>{ I18nPrefixed.errors_warnings }</h2>
-        <p className="warningsHelpMessage">{/* t("#{prefix}.help_message", :common_errors => common_errors_support_link ) */}</p>
-        <ul className="columnWarningsList"></ul>
-      </div>
-      <hr/>
-      <a className="button nextButton" onClick={ () => dispatch(importColumnsNext()) }>Next</a>
     </div>
   );
 }
 
-view.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  transform: PropTypes.arrayOf(PropTypes.object).isRequired,
-  summary: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+viewPreview.propTypes = {
+  summary: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired
 };

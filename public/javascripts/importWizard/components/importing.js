@@ -7,17 +7,12 @@ export function view({ importStatus }) {
       { (() => {
         switch (importStatus.type) {
           case 'InProgress':
-            if (importStatus.rowsImported !== null) {
-              return (
-                <div>
-                  <span>{ importStatus.rowsImported } rows imported</span>
-                  <a className="button">Notify Me</a>
-                  {/* TODO: I18n; make this actually work */}
-                </div>
-              );
-            } else {
-              return null;
-            }
+            return (
+              <div>
+                <span>{ I18n.screens.import_pane.rows_imported_js.format(importStatus.rowsImported) }</span>
+                <a className="button">{ I18n.screens.dataset_new.notify_me }</a>
+              </div>
+            );
 
           default:
             return null;

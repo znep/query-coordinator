@@ -9,5 +9,5 @@ export function workingNext() {
 }
 
 export function view() {
-  return <span>Working...</span>;
+  return <span>{ I18n.screens.dataset_new.processing }</span>;
 }

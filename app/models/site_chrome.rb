@@ -13,6 +13,7 @@ require 'httparty'
 #
 class SiteChrome
   include HTTParty
+
   base_uri CORESERVICE_URI.to_s
   format :json
   default_timeout 5 # seconds

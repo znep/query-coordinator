@@ -6,7 +6,7 @@ export function view(props) {
   const {enabledModules, currentDomainMemberCurrentUser, onChooseOperation} = props;
 
   const firstSections = [
-    <li>
+    <li key="CreateFromScratch">
       <div
         className="create"
         title={I18nPrefixed.create_explain}
@@ -15,7 +15,7 @@ export function view(props) {
         <p>{I18nPrefixed.create}</p>
       </div>
     </li>,
-    <li>
+    <li key="UploadData">
       <div
         className="upload"
         title={I18nPrefixed.import_explain}
@@ -29,7 +29,7 @@ export function view(props) {
   const esriIntegration =
     _.includes(enabledModules, 'esri_integration')
     ? [
-      <li>
+      <li key="esriIntegration">
         <div className="mapLayer" title={I18nPrefixed.mapLayer_explain}>
           <span className="icon"></span>
           <p>{I18nPrefixed.mapLayer}</p>
@@ -41,7 +41,7 @@ export function view(props) {
   const geoSpatial =
     _.includes(enabledModules, 'geospatial')
     ? [
-      <li>
+      <li key="geoSpatial">
         <div
           className="shapefile"
           title={I18nPrefixed.shapefile_explain}
@@ -54,7 +54,7 @@ export function view(props) {
     : [];
 
   const blobby =
-    (<li>
+    (<li key="blobby">
       <div className="blobby" title={I18nPrefixed.blobby_explain}>
         <span className="icon"></span>
         <p>{I18nPrefixed.blobby}</p>
@@ -64,7 +64,7 @@ export function view(props) {
   const external =
     currentDomainMemberCurrentUser
     ? [
-      <li>
+      <li key="external">
         <div className="external" title={I18nPrefixed.external_explain}>
           <span className="icon"></span>
           <p>{I18nPrefixed.external}</p>

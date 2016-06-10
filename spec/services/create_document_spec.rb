@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CreateDocument do
 
   it 'raises when no params' do
-    expect { CreateDocument.new }.to raise_error(ArgumentError, /0 for 2/)
+    expect { CreateDocument.new }.to raise_error(ArgumentError, /given 0, expected \d/)
   end
 
   # skipping :created_by because it's set manually

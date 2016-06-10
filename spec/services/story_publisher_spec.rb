@@ -25,19 +25,19 @@ RSpec.describe StoryPublisher do
     it 'raises without params' do
       expect {
         StoryPublisher.new(user, user_authorization)
-      }.to raise_error(ArgumentError, /2 for 3/)
+      }.to raise_error(ArgumentError, /given 2, expected \d/)
     end
 
     it 'raises without user_authorization' do
       expect {
         StoryPublisher.new(user)
-      }.to raise_error(ArgumentError, /1 for 3/)
+      }.to raise_error(ArgumentError, /given 1, expected \d/)
     end
 
     it 'raises without user' do
       expect {
         StoryPublisher.new
-      }.to raise_error(ArgumentError, /0 for 3/)
+      }.to raise_error(ArgumentError, /given 0, expected \d/)
     end
 
     it 'raises without user id' do

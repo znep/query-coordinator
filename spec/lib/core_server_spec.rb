@@ -464,7 +464,7 @@ describe CoreServer do
     end
 
     it 'raises when no options do' do
-      expect { CoreServer.configurations_request() }.to raise_error(ArgumentError, /0 for \d/)
+      expect { CoreServer.configurations_request() }.to raise_error(ArgumentError, /given 0, expected \d/)
     end
 
     it 'raises when no type in options' do
@@ -527,7 +527,7 @@ describe CoreServer do
 
   describe '#permissions_request' do
     it 'raises when no options' do
-      expect { CoreServer.permissions_request() }.to raise_error(ArgumentError, /0 for \d/)
+      expect { CoreServer.permissions_request() }.to raise_error(ArgumentError, /given 0, expected \d/)
     end
 
     it 'raises when no uid in options' do

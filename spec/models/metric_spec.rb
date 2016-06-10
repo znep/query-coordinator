@@ -7,7 +7,7 @@ RSpec.describe Metric, type: :model do
   let(:subject) { Metric.new(entity_id, metric_name) }
 
   it 'raises when initialized without parameters' do
-    expect { Metric.new }.to raise_error(ArgumentError, /0 for \d..\d/)
+    expect { Metric.new }.to raise_error(ArgumentError, /given 0, expected \d..\d/)
   end
 
   it 'initializes with entity_id' do

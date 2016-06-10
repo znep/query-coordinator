@@ -1,11 +1,18 @@
 import React, { PropTypes } from 'react';
 
-export default ({ isHeader, row }) => {
+const view = ({ isHeader, row }) => {
   return (
-    <tr className={ isHeader ? 'header' : '' } >
+    <tr className={isHeader ? 'header' : ''} >
       {row.map((val) => (
-        <td>{ val }</td>
+        <td>{val}</td>
       ))}
     </tr>
   );
 };
+
+view.propTypes = {
+    isHeader: PropTypes.bool.isRequired,
+    row: PropTypes.array.isRequired
+};
+
+export default view;

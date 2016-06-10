@@ -182,10 +182,13 @@ export function view({ state, dispatch }) {
 
             case 'ImportColumns':
               // TODO: assert validity of fileUpload
-              return <ImportColumns.view transform={ state.transform }
-                                         summary={ state.upload.progress.summary }
-                                         fileName={ state.upload.fileName }
-                                         dispatch={ dispatch } />;
+              return (
+                <ImportColumns.view
+                  transform={state.transform}
+                  summary={state.upload.progress.summary}
+                  fileName={state.upload.fileName}
+                  dispatch={dispatch} />
+              );
 
             case 'ImportShapefile':
               return (
@@ -207,7 +210,7 @@ export function view({ state, dispatch }) {
               return <Working.view />;
 
             case 'Importing':
-              return <Importing.view importStatus={ state.importStatus } />;
+              return <Importing.view importStatus={state.importStatus} />;
 
             case 'Finish':
               return <Finish.view />;

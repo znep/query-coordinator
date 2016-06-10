@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
   navigation: Wizard.updateNavigation,
   upload: Upload.update,
   transform: ImportColumns.update, // null except in the UploadData operation
-  importStatus: Server.update
+  importStatus: Server.update,
   layers: ImportShapefile.update,
   metadata: Metadata.update
 });

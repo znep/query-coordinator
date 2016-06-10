@@ -290,8 +290,8 @@ export function view({ metadata, onMetadataAction }) {
 
         <div className="required">{I18nPrefixed.required_field}</div>
       </div>
-      <a className="button nextButton" onClick={ () => onMetadataAction(Server.saveMetadata()) }>
-        { I18n.screens.wizard.next }
+      <a className="button nextButton" onClick={() => onMetadataAction(Server.saveMetadata())}>
+        {I18n.screens.wizard.next}
       </a>
     </div>
   );

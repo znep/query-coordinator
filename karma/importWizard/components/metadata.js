@@ -1,5 +1,6 @@
 import {
   update,
+  view,
   emptyForName,
   updateName,
   updateDescription,

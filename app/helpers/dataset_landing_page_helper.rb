@@ -182,6 +182,7 @@ module DatasetLandingPageHelper
       :lastUpdatedAt => @view.time_last_updated_at,
       :dataLastUpdatedAt => @view.time_data_last_updated_at,
       :metadataLastUpdatedAt => @view.time_metadata_last_updated_at,
+      :nbeId => @view.preferred_id,
       :createdAt => @view.time_created_at,
       :geospatialChildLayers => transformed_child_layers,
       :rowCount => row_count,

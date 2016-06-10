@@ -52,6 +52,14 @@ function importColumnsNext() {
   };
 }
 
+export const CHANGE_HEADER_COUNT = 'CHANGE_HEADER_COUNT';
+function changeHeaderCount(change) {
+  return {
+    type: CHANGE_HEADER_COUNT,
+    change
+  };
+}
+
 const UPDATE_COLUMN = 'UPDATE_COLUMN';
 function updateColumn(index, action) {
   return {
@@ -81,6 +89,11 @@ export function update(transform: Transform = null, action): Transform {
       } else {
         return transform;
       }
+    case CHANGE_HEADER_COUNT:
+      return {
+        ...transform,
+        numHeaders: transform.numHeaders + action.change
+      };
     case UPDATE_COLUMN:
       return {
         ...transform,
@@ -101,7 +114,7 @@ const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
 
-export function view({ transform, fileName, dispatch }) {
+export function view({ transform, fileName, dispatch, goToPage }) {
   return (
     <div className="importColumnsPane columnsPane">
       <div className="flash"></div>
@@ -115,7 +128,7 @@ export function view({ transform, fileName, dispatch }) {
 
       <hr />
 
-      <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} />
+      <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} dispatch={dispatch} />
 
       <div className="warningsSection">
         <h2>{I18nPrefixed.errors_warnings}</h2>
@@ -123,7 +136,7 @@ export function view({ transform, fileName, dispatch }) {
         <ul className="columnWarningsList"></ul>
       </div>
       <hr />
-      <a className="button nextButton" onClick={() => dispatch(importColumnsNext())}>
+      <a className="button nextButton" onClick={() => goToPage('Metadata')}>
         {I18n.screens.wizard.next}
       </a>
     </div>
@@ -133,7 +146,8 @@ export function view({ transform, fileName, dispatch }) {
 view.propTypes = {
   transform: PropTypes.object.isRequired,
   fileName: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  goToPage: PropTypes.func.isRequired
 };
 
 function ViewColumns({columns, dispatch}) {
@@ -211,7 +225,7 @@ function ViewToolbar() {
 }
 
 
-function ViewPreview({sample, numHeaderRows}) {
+function ViewPreview({sample, numHeaderRows, dispatch}) {
   return (
     <div>
       <h2>{I18nPrefixed.headers}</h2>
@@ -229,15 +243,13 @@ function ViewPreview({sample, numHeaderRows}) {
         </table>
       </div>
       <div className="headersActions clearfix">
-        {/*
         <span className="headersCount"></span>
-          <UpdateHeadersButton
-            buttonType='more'
-            onUpdateHeadersCount={onUpdateHeadersCount} />
-          <UpdateHeadersButton
-            buttonType='less'
-            onUpdateHeadersCount={onUpdateHeadersCount} />
-        */}
+        <UpdateHeadersButton
+          buttonType='more'
+          onUpdateHeadersCount={(diff) => dispatch(changeHeaderCount(diff))} />
+        <UpdateHeadersButton
+          buttonType='less'
+          onUpdateHeadersCount={(diff) => dispatch(changeHeaderCount(diff))} />
       </div>
     </div>
   );
@@ -245,5 +257,6 @@ function ViewPreview({sample, numHeaderRows}) {
 
 ViewPreview.propTypes = {
   sample: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
-  numHeaderRows: PropTypes.number.isRequired
+  numHeaderRows: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired
 };

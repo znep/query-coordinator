@@ -186,7 +186,8 @@ export function view({ state, dispatch }) {
                 <ImportColumns.view
                   transform={state.transform}
                   fileName={state.upload.fileName}
-                  dispatch={dispatch} />
+                  dispatch={dispatch}
+                  goToPage={(page) => dispatch(goToPage(page))} />
               );
 
             case 'ImportShapefile':

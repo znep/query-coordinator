@@ -73,6 +73,11 @@ RSpec.describe Block, type: :model do
                     dataSource: {
                       filters: nil
                     }
+                  },
+                  {
+                    dataSource: {
+                      filters: nil
+                    }
                   }
                 ]
               }
@@ -83,31 +88,61 @@ RSpec.describe Block, type: :model do
         new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
 
         expect(new_block.components[0]['value']['vif']['series'][0]['dataSource']['filters'].is_a?(Array)).to eq(true)
+        expect(new_block.components[0]['value']['vif']['series'][1]['dataSource']['filters'].is_a?(Array)).to eq(true)
       end
     end
 
     context 'when the block contains a classic visualization' do
-      let(:view) {
-        {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true}}}}
-      }
 
-      before do
-        allow(CoreServer).to receive(:get_view).and_return(view)
+      context 'when the metadata does not include the "renderTypeConfig" subtree' do
+        let(:view) {
+          {'metadata' => {}}
+        }
+
+        before do
+          allow(CoreServer).to receive(:get_view).and_return(view)
+        end
+
+        it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
+          test_components = [
+            {
+              type: 'socrata.visualization.classic',
+              value: {
+                originalUid: 'four-four'
+              }
+            }
+          ]
+
+          new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+
+          expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+        end
       end
 
-      it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
-        test_components = [
-          {
-            type: 'socrata.visualization.classic',
-            value: {
-              originalUid: 'four-four'
+      context 'when the metadata includes the "renderTypeConfig" subtree' do
+        let(:view) {
+          {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true, 'chart' => true}}}}
+        }
+
+        before do
+          allow(CoreServer).to receive(:get_view).and_return(view)
+        end
+
+        it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
+          test_components = [
+            {
+              type: 'socrata.visualization.classic',
+              value: {
+                originalUid: 'four-four'
+              }
             }
-          }
-        ]
+          ]
 
-        new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+          new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
 
-        expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+          expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+          expect(new_block.components[0]['value']['visualization'].to_json).to match(/chart":true/)
+        end
       end
     end
   end

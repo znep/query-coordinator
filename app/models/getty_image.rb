@@ -1,5 +1,7 @@
 require 'ConnectSDK'
 
+class GettyImagesSDKError < StandardError; end
+
 class GettyImage < ActiveRecord::Base
   belongs_to :document
 
@@ -36,10 +38,25 @@ class GettyImage < ActiveRecord::Base
   private
 
   def connect_sdk
-    @connect_sdk ||= ConnectSdk.new(
-      Rails.application.secrets.getty['api_key'],
-      Rails.application.secrets.getty['api_secret']
-    )
+    # EN-6695 - Nil-related errors in Storyteller Ruby code
+    #
+    # We occasionally see connect_sdk raise a "TypeError: no implicit
+    # conversion of nil into String", which looks like it originates from the
+    # Getty Images SDK trying to parse an error response from their server
+    # as JSON or something. This change wraps that TypeError with a Getty-
+    # specific error class so that it stands out from other more actionable
+    # errors in Airbrake. As a side effect this should also give us a way to
+    # measure and/or track how reliable the Getty Images API is.
+    begin
+      @connect_sdk ||= ConnectSdk.new(
+        Rails.application.secrets.getty['api_key'],
+        Rails.application.secrets.getty['api_secret']
+      )
+    rescue TypeError => error
+      error_message = "Unable to instantiate Getty Images SDK: \"#{error.inspect}\"."
+
+      raise GettyImagesSDKError.new(error_message)
+    end
   end
 
   def preview_url
@@ -67,6 +84,19 @@ class GettyImage < ActiveRecord::Base
     download_metadata = metadata['images'][0]['download_sizes'].
       sort { |a, b| b['width'] <=> a['width'] }.
       first
+
+    # EN-6695 - Nil-related errors in Storyteller Ruby code
+    #
+    # If download_metadata is not a hash we will not be able to extract details
+    # which are required to create the upload, so just quit (by raising an
+    # error which we actually want to get picked up by Airbrake).
+    if !download_metadata.is_a?(Hash)
+      error_message = "Unable to extract Getty Images image download "\
+        "metadata from metadata: \"#{metadata.inspect}\"."
+
+      raise GettyImagesSDKError.new(error_message)
+    end
+
     mime_type = download_metadata['media_type']
 
     download_sdk = connect_sdk.download

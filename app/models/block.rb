@@ -87,10 +87,24 @@ class Block < ActiveRecord::Base
         # 'filters' key, but the value of the 'filters' key value is nil.
         vif = component.try(:[], 'value').try(:[], 'vif')
 
-        if vif && vif['format']['version'] == 1 && vif['filters'].nil?
+        # If this is a version 1 VIF but filters is nil, then reset it to an
+        # empty array.
+        if vif && vif.try(:[], 'format').try(:[], 'version') == 1 && vif.try(:[], 'filters').nil?
           component['value']['vif']['filters'] = []
-        elsif vif && vif['format']['version'] == 2 && vif['series'][0]['dataSource']['filters'].nil?
-          component['value']['vif']['series'][0]['dataSource']['filters'] = []
+        elsif vif && vif.try(:[], 'format').try(:[], 'version') == 2
+          # EN-6695 - Nil-related errors in Storyteller Ruby code
+          #
+          # If this is a version 2 VIF, there can be more than one series so we
+          # need to iterate over all of them and replace the empty arrays as
+          # necessary.
+          vif['series'].each do |series|
+            if series['dataSource'].is_a?(Hash) && series['dataSource']['filters'].nil?
+              series['dataSource']['filters'] = []
+            else
+              # A series without a dataSource is invalid, but we're not
+              # concerning ourselves with that at the moment, so pass through.
+            end
+          end
         end
 
         # We had some old code where blocks were not saved properly.
@@ -104,7 +118,39 @@ class Block < ActiveRecord::Base
 
         if component['type'] == 'socrata.visualization.classic'
           view = CoreServer.get_view(component['value']['originalUid'])
-          view['metadata']['renderTypeConfig']['visible']['table'] = false if view
+
+          # EN-6695 - Nil-related errors in Storyteller Ruby code
+          #
+          # Somehow classic visualization view objects sometimes do not include
+          # the entire metadata subtree down to table. Previously we would
+          # attempt to set the table property to false if the view existed, and
+          # if the view existed but did not include the entire subtree that we
+          # expected then it would fail with "NoMethodError: undefined method
+          # `[]' for nil:NilClass".
+          #
+          # This change prevents that from happening by using reverse_merge! to
+          # ensure that the entire subtree exists and then explicitly setting
+          # the path to false. This ensures that the path always exists and is
+          # always set to false (which is what we expect for classic
+          # visualizations that have been added to stories).
+          if view && view.is_a?(Hash)
+            default_metadata_subtree = {
+              'metadata' => {
+                'renderTypeConfig' => {
+                  'visible' => {
+                    'table' => false
+                  }
+                }
+              }
+            }.freeze
+
+            view = default_metadata_subtree.deep_merge(view)
+
+            # Still need to set this path to false in case it already existed
+            # (and as such wasn't set using the reverse_merge!) but is set to
+            # true in the canonical view.
+            view['metadata']['renderTypeConfig']['visible']['table'] = false
+          end
 
           component['value']['visualization'] = view
         end

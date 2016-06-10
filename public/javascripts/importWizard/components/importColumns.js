@@ -104,8 +104,8 @@ export function view({ transform, fileName, dispatch }) {
 }
 
 view.propTypes = {
+  transform: PropTypes.object.isRequired,
   fileName: PropTypes.string.isRequired,
-  transform: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
@@ -181,6 +181,7 @@ function ViewPreview({sample, numHeaderRows}) {
           <tbody>
             {_.take(sample, NUM_PREVIEW_ROWS).map((row, idx) => (
               <SampleRow
+                key={idx}
                 isHeader={idx <= numHeaderRows}
                 row={row} />
             ))}

@@ -15,14 +15,14 @@ const view = ({ resultColumn, sourceColumns }) => {
         <div className="columnTypeCell">
           <select className="columnTypeSelect" value={resultColumn.chosenType}>
             {importableTypes.map(([typeName, humanReadableName]) => (
-              <option value={typeName}>{humanReadableName}</option>
+              <option value={typeName} key={typeName}>{humanReadableName}</option>
             ))}
           </select>
         </div>
         <div className="columnSourceCell">
           <select className="columnTypeSelect" value={resultColumn.sourceColumn.index}>
-            {sourceColumns.map((column) => (
-              <option value={column.index} key={column.index}>{column.name}</option>
+            {sourceColumns.map((column, idx) => (
+              <option value={idx} key={idx}>{column.name}</option>
               ))
            }
           </select>

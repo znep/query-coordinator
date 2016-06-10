@@ -7,10 +7,11 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var VifHelpers = require('./helpers/VifHelpers');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 
+var MAX_ROW_COUNT = 1000;
 var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
 var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
-var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT 10000';
-var AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT 10000';
+var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
+var AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(vif) {
@@ -75,7 +76,10 @@ $.fn.socrataSvgColumnChart = function(vif) {
       console.error(error);
     }
 
-    visualization.renderError();
+    visualization.renderError(
+      'An error was encountered when rendering this chart. ' +
+      'Please try again in a few minutes.'
+    );
   }
 
   function updateData(newVif) {
@@ -106,10 +110,30 @@ $.fn.socrataSvgColumnChart = function(vif) {
       all(dataRequests).
       then(
         function(dataResponses) {
+          var overMaxRowCount;
 
           $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
-          visualization.render(newVif, dataResponses);
+          overMaxRowCount = dataResponses.
+            some(
+              function(dataResponse) {
+                return dataResponse.rows.length > MAX_ROW_COUNT;
+              }
+            );
+
+          if (overMaxRowCount) {
+
+            visualization.renderError(
+              (
+                'For optimal performance and legibility column charts are ' +
+                'limited to {0} columns. Try using filters to render a more ' +
+                'specific chart.'
+              ).
+                format(MAX_ROW_COUNT)
+            );
+          } else {
+            visualization.render(newVif, dataResponses);
+          }
         }
       )
       ['catch'](handleError);
@@ -152,7 +176,8 @@ $.fn.socrataSvgColumnChart = function(vif) {
         measure,
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
-        (ascending) ? 'ASC' : 'DESC'
+        (ascending) ? 'ASC' : 'DESC',
+        MAX_ROW_COUNT + 1
       );
     } else {
 
@@ -163,7 +188,8 @@ $.fn.socrataSvgColumnChart = function(vif) {
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
         aggregationClause,
-        (ascending) ? 'ASC' : 'DESC'
+        (ascending) ? 'ASC' : 'DESC',
+        MAX_ROW_COUNT + 1
       );
     }
 

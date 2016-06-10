@@ -61,6 +61,12 @@ function SvgTimelineChart($element, vif) {
 
   this.render = function(newVif, newData) {
 
+    if (!newData && !dataToRender) {
+      return;
+    }
+
+    this.clearError();
+
     if (newVif) {
       this.updateVif(newVif);
     }
@@ -70,10 +76,6 @@ function SvgTimelineChart($element, vif) {
     }
 
     renderData();
-  };
-
-  this.renderError = function() {
-    // TODO: Some helpful error message.
   };
 
   this.invalidateSize = function() {

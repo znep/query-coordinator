@@ -8,12 +8,13 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var VifHelpers = require('./helpers/VifHelpers');
 
+var MAX_ROW_COUNT = 1000;
 var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
 var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
 var PRECISION_BASE_QUERY = 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\'';
-var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT 10000';
-var AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT 10000';
+var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}';
+var AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}';
 var SOQL_DATE_GUARDS = '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)';
 
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
@@ -91,7 +92,10 @@ $.fn.socrataSvgTimelineChart = function(vif) {
       console.error(error);
     }
 
-    visualization.renderError();
+    visualization.renderError(
+      'An error was encountered when rendering this chart. ' +
+      'Please try again in a few minutes.'
+    );
   }
 
   function updateData(newVif) {
@@ -122,10 +126,30 @@ $.fn.socrataSvgTimelineChart = function(vif) {
       all(dataRequests).
       then(
         function(dataResponses) {
+          var overMaxRowCount;
 
           $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
-          visualization.render(newVif, dataResponses);
+          overMaxRowCount = dataResponses.
+            some(
+              function(dataResponse) {
+                return dataResponse.rows.length > MAX_ROW_COUNT;
+              }
+            );
+
+          if (overMaxRowCount) {
+
+            visualization.renderError(
+              (
+                'For optimal performance and legibility timeline charts are ' +
+                'limited to {0} time measurements. Try using filters to ' +
+                'render a more specific chart.'
+              ).
+                format(MAX_ROW_COUNT)
+            );
+          } else {
+            visualization.render(newVif, dataResponses);
+          }
         }
       )
       ['catch'](handleError);
@@ -451,7 +475,8 @@ $.fn.socrataSvgTimelineChart = function(vif) {
               SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
               measure,
               SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-              whereClause
+              whereClause,
+              MAX_ROW_COUNT + 1
             );
           } else {
 
@@ -461,7 +486,8 @@ $.fn.socrataSvgTimelineChart = function(vif) {
               SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
               measure,
               SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-              whereClause
+              whereClause,
+              MAX_ROW_COUNT + 1
             );
           }
 

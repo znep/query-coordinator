@@ -65,6 +65,12 @@ function SvgColumnChart($element, vif) {
 
   this.render = function(newVif, newData) {
 
+    if (!newData && !dataToRender) {
+      return;
+    }
+
+    this.clearError();
+
     if (newVif) {
       this.updateVif(newVif);
     }
@@ -74,10 +80,6 @@ function SvgColumnChart($element, vif) {
     }
 
     renderData();
-  };
-
-  this.renderError = function() {
-    // TODO: Some helpful error message.
   };
 
   this.invalidateSize = function() {
@@ -204,9 +206,11 @@ function SvgColumnChart($element, vif) {
     //
     // Naturally, these measurements will be invalidated if/when the font or
     // angle of rotation for the dimension labels changes.
-    var dimensionLabelsHeight = (
-      7.19312 * longestTruncatedDimensionLabel
-    ) + 14.3048;
+    var dimensionLabelsHeight = Math.ceil(
+      7.19312 *
+      longestTruncatedDimensionLabel +
+      14.3048
+    );
     var measureIndices = dataToRender.
       map(
         function(series) {
@@ -357,7 +361,7 @@ function SvgColumnChart($element, vif) {
 
       lastRenderedSeriesWidth = xAxisAndSeriesSvg.
         node().
-          getBoundingClientRect().
+          getBBox().
             width;
 
       xAxisAndSeriesSvg.
@@ -406,7 +410,7 @@ function SvgColumnChart($element, vif) {
         0;
       var currentWidth = xAxisAndSeriesSvg.
         node().
-          getBoundingClientRect().
+          getBBox().
             width;
 
       lastRenderedZoomTranslate = clampValue(
@@ -814,8 +818,8 @@ function SvgColumnChart($element, vif) {
     xAxisPanDistance = (
       (
         xAxisAndSeriesSvg.
-          select('.x.axis')[0][0].
-            getBoundingClientRect().
+          node().
+            getBBox().
               width
       ) -
       viewportWidth

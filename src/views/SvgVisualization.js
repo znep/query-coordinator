@@ -162,6 +162,20 @@ function SvgVisualization($element, vif) {
     }
   };
 
+  this.renderError = function(message) {
+    var $container = this.$element.find('.visualization');
+
+    $container.find('.error-message').text(message || 'Error');
+    $container.addClass('error');
+  };
+
+  this.clearError = function() {
+    var $container = this.$element.find('.visualization');
+
+    $container.find('.error-message').text('');
+    $container.removeClass('error');
+  };
+
   this.showPanningNotice = function() {
     var $container = this.$element.find('.visualization');
     var $panningNotice = $container.find('.panning-notice');
@@ -316,6 +330,10 @@ function SvgVisualization($element, vif) {
                   $('<div>', {'class': 'panning-notice'}).text(
                     'Not all values shown: click and drag to pan the chart'
                   )
+                ]),
+              $('<div>', {'class': 'error-container'}).
+                append([
+                  $('<span>', {'class': 'error-message'})
                 ])
             ])
         );

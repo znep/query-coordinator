@@ -8,7 +8,7 @@ const generateButton = (buttonType, onUpdateHeadersCount) => {
         <a
           href="#more"
           className="button downArrow moreRowsButton"
-          onClick={onUpdateHeadersCount(1)} >
+          onClick={() => onUpdateHeadersCount(1)} >
           <span className="icon"></span>
           {I18nPrefixed.more_rows}
         </a>
@@ -18,7 +18,7 @@ const generateButton = (buttonType, onUpdateHeadersCount) => {
         <a
           href="#less"
           className="button upArrow lessRowsButton"
-          onClick={onUpdateHeadersCount(-1)} >
+          onClick={() => onUpdateHeadersCount(-1)} >
           <span className="icon"></span>
           {I18nPrefixed.fewer_rows}
         </a>

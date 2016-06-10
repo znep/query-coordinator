@@ -38,7 +38,7 @@ type NewDatasetModel = {
   datasetId: string,                  // this should never change
   navigation: Navigation,
   upload: UploadFile.FileUpload,
-  transform: Array<string>,           // change back to Transform type only used in UploadData operation
+  transform: ImportColumns.Transform,               // only used in UploadData operation
   layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata
 }
@@ -185,7 +185,6 @@ export function view({ state, dispatch }) {
               return (
                 <ImportColumns.view
                   transform={state.transform}
-                  summary={state.upload.progress.summary}
                   fileName={state.upload.fileName}
                   dispatch={dispatch} />
               );

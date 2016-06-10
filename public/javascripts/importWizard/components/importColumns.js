@@ -10,22 +10,25 @@ import UpdateHeadersButton from './importColumns/updateHeadersButton';
 - Translation: mapping of file columns to dataset columns
 - Transform: encompasses them both
 */
-type Transform = Array<ResultColumn>;
-
-
-type ResultColumn = {
-  sourceColumn: SharedTypes.SourceColumn,
-  name: String,
-  chosenType: SharedTypes.TypeName,
-  transforms: Array<ColumnTransform>,
-}
-
 
 type ColumnTransform
   = { type: 'upper' }
   | { type: 'lower' }
   // TODO: forgetting some
   | { type: 'findReplace', find: string, replace: string, regex: boolean, caseInsensitive: boolean }
+
+type ResultColumn = {
+  sourceColumn: SharedTypes.SourceColumn,
+  name: String,
+  chosenType: SharedTypes.TypeName,
+  transforms: Array<ColumnTransform>
+}
+
+type Transform = {
+  columns: Array<ResultColumn>,
+  numHeaders: number,
+  sample: Array<Array<string>>
+}
 
 
 function initialTransform(summary: UploadFile.Summary): Transform {
@@ -49,10 +52,18 @@ function importColumnsNext() {
 }
 
 
-export function update(transform: Transform = null, action): Array<ResultColumn> {
+export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     case UploadFile.FILE_UPLOAD_COMPLETE:
-      return initialTransform(action.summary);
+      if (!_.isUndefined(action.summary.columns)) {
+        return {
+          columns: initialTransform(action.summary),
+          numHeaders: action.summary.headers,
+          sample: action.summary.sample
+        };
+      } else {
+        return transform;
+      }
     default:
       return transform;
   }
@@ -63,7 +74,7 @@ const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
 
-export function view({ transform, fileName, summary, dispatch }) {
+export function view({ transform, fileName, dispatch }) {
   return (
     <div className="importColumnsPane columnsPane">
       <div className="flash"></div>
@@ -72,12 +83,12 @@ export function view({ transform, fileName, summary, dispatch }) {
       </div>
       <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
       <h2>{I18nPrefixed.subheadline}</h2>
-      <viewColumns transform={transform} />
-      <viewToolbar />
+      <ViewColumns columns={transform.columns} />
+      <ViewToolbar />
 
       <hr />
 
-      <viewPreview sample={summary.sample} />
+      <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} />
 
       <div className="warningsSection">
         <h2>{I18nPrefixed.errors_warnings}</h2>
@@ -95,12 +106,11 @@ export function view({ transform, fileName, summary, dispatch }) {
 view.propTypes = {
   fileName: PropTypes.string.isRequired,
   transform: PropTypes.arrayOf(PropTypes.object).isRequired,
-  summary: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
 
-function viewColumns({transform, summary}) {
+function ViewColumns({columns}) {
   return (
     <div>
       <div className="columnsListHeader importListHeader clearfix">
@@ -116,11 +126,11 @@ function viewColumns({transform, summary}) {
         </div>
       </div>
       <ul className="columnsList importList" >
-        {transform.map((resultColumn, idx) => (
+        {columns.map((resultColumn, idx) => (
           <ColumnDetail
             resultColumn={resultColumn}
             key={idx}
-            sourceColumns={summary.columns} />
+            sourceColumns={columns} />
           )
         )
        }
@@ -130,14 +140,13 @@ function viewColumns({transform, summary}) {
   );
 }
 
-viewColumns.propTypes = {
-  transform: PropTypes.arrayOf(PropTypes.object).isRequired,
-  summary: PropTypes.object.isRequired
+ViewColumns.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 
 // TODO actually hook up buttons
-function viewToolbar() {
+function ViewToolbar() {
   return (
     <div className="columnsToolbar clearfix">
       <div className="presets">
@@ -162,7 +171,7 @@ function viewToolbar() {
 }
 
 
-function viewPreview({summary}) {
+function ViewPreview({sample, numHeaderRows}) {
   return (
     <div>
       <h2>{I18nPrefixed.headers}</h2>
@@ -170,9 +179,9 @@ function viewPreview({summary}) {
       <div className="headersTableWrapper">
         <table className="headersTable">
           <tbody>
-            {_.take(summary, NUM_PREVIEW_ROWS).map((row, idx) => (
+            {_.take(sample, NUM_PREVIEW_ROWS).map((row, idx) => (
               <SampleRow
-                isHeader={idx <= summary.headers}
+                isHeader={idx <= numHeaderRows}
                 row={row} />
             ))}
           </tbody>
@@ -193,6 +202,7 @@ function viewPreview({summary}) {
   );
 }
 
-viewPreview.propTypes = {
-  summary: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired
+ViewPreview.propTypes = {
+  sample: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
+  numHeaderRows: PropTypes.number.isRequired
 };

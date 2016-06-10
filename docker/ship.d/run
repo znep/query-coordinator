@@ -1,20 +1,39 @@
 #!/bin/bash
+
+# Note, unless otherwise specified, commands run in this context are executed as the root user.
+
+# Turn verbose output ON for troubleshooting
 set -ev
 
 export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
 export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 
+# Turn verbose output OFF so we don't echo the output of the secrets file
+set +ev
+
+# Source secrets, app tokens, and other private data into environment variables
 if [ -f /dev/shm/frontend_secrets.sh ]; then
   source /dev/shm/frontend_secrets.sh
 else
-  echo "frontend_secrets not found. Check your Clortho config."
+  echo "/dev/shm/frontend_secrets.sh not found. Check your Clortho config."
 fi
 
-/bin/env_parse ${APP_DIR}/docker/config.yml.j2 ${APP_DIR}/config/config.yml
+# Turn verbose output back ON for troubleshooting
+set -ev
 
-/bin/env_parse ${APP_DIR}/docker/environments-config.rb.j2 ${APP_DIR}/config/environments/${RAILS_ENV}.rb
+# Create config/config.yml with environment variable substitutions applied to the template
+/bin/env_parse "${APP_DIR}/docker/config.yml.j2" "${APP_DIR}/config/config.yml"
 
-cd ${APP_DIR}
+# Create config/environments/production.rb with environment variable substitutions applied to the template
+/bin/env_parse "${APP_DIR}/docker/environments-config.rb.j2" "${APP_DIR}/config/environments/${RAILS_ENV}.rb"
+
+# Start nginx in order to serve static assets instead of hitting unicorn
+if [ -x /usr/sbin/nginx ]; then
+  /usr/sbin/nginx -c "${APP_DIR}/config/nginx.conf"
+else
+  echo "Warning: Unable to start nginx since the executable isn't installed"
+fi
+
 # Using exec to replace the current bash script running with PID1 with Unicorn
 # This allows docker to send signals to unicorn, allowing for graceful shutdown
 # The unicorn -N option ignores unicorn specific middleware to mute redundant logs.

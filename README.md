@@ -2,7 +2,7 @@
 - External name: _Socrata Perspectives_
 
 ### Requirements
-* Ruby 2.2.4
+* Ruby 2.3.1
 * Postgresql 9.3+
 
 ### System dependencies
@@ -21,7 +21,7 @@ Install rbenv and ruby:
 
 ```
 brew install rbenv ruby-build
-rbenv install 2.2.4
+rbenv install 2.3.1
 ```
 
 Install the latest LTS node and npm (https://nodejs.org/download/)

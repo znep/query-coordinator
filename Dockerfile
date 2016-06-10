@@ -1,4 +1,4 @@
-FROM socrata/runit-ruby-2.2
+FROM socrata/runit-ruby-2.3
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller
@@ -11,7 +11,7 @@ ENV SERVICE_DIR_BASE /etc/service
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive && \
   apt-get update -q && \
-  apt-get install -y ruby2.2-dev build-essential libxml2-dev \
+  apt-get install -y ruby2.3-dev build-essential libxml2-dev \
     zlib1g-dev libxslt1-dev libpq-dev nodejs npm git imagemagick && \
   apt-get purge -y --auto-remove software-properties-common && \
   rm -rf /var/lib/apt/lists/*

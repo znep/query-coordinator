@@ -421,7 +421,7 @@ private
     path.split('/').each do |part|
       p = part
       p = ':var' if !cur_obj.has_key?(p)
-      return [nil, nil] if !cur_obj.has_key?(p)
+      return { page: nil, vars: nil } if !cur_obj.has_key?(p)
       cur_obj = cur_obj[p]
       vars.push(part) if p == ':var'
     end

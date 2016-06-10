@@ -93,7 +93,9 @@ class CurrentDomain
   end
 
   def self.last_refresh(cname)
-    Rails.cache.read(generate_cache_key(cname))
+    value = Rails.cache.read(generate_cache_key(cname))
+    value = nil unless value.is_a?(Time)
+    value
   end
 
   def self.check_for_theme_update(cname)

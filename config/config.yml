@@ -35,7 +35,7 @@ default: &default
   cetera_host: 'http://localhost:5704'
   coreservice_uri: http://localhost:8080
   kafka_rest_uri: 'http://localhost:8082'
-  polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
+  polaroid_hostname: polaroid.app.marathon.aws-us-west-2-prod.socrata.net
   polaroid_port: 13379
   secondary_group_identifier: 'spandex'
   statsd_enabled: false
@@ -74,6 +74,9 @@ default: &default
     zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
     zendesk_section: 203977877
 
+  # number of days that can pass until a deleted dataset can't be restored
+  restore_dataset_days: 5
+
 # Local development
 development: &development
   <<: *default
@@ -92,6 +95,7 @@ development: &development
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
   recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+  recaptcha_2_secret_token: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
   # auth alternatives
   esri_crawler_hostname: localhost

@@ -37,7 +37,7 @@ module SocrataSiteChrome
           config[:name] == 'siteChromeConfigVars'
         end
 
-        if site_chrome_config[:value][:versions].present?
+        if site_chrome_config.dig(:value, :versions).present?
           latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
           published_site_chrome_config = site_chrome_config[:value][:versions][latest_version][:published]
         else

@@ -7,7 +7,7 @@ import {
   handlePopularViewsError,
   dismissPopularViewsError,
   togglePopularViews
-} from 'actions';
+} from 'actions/popularViews';
 
 describe('reducers/popularViews', function() {
   beforeEach(function() {

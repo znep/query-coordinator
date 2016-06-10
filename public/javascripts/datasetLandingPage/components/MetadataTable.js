@@ -6,10 +6,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
-import { emitMixpanelEvent } from '../actions';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import { handleKeyPress } from '../lib/a11yHelpers';
-
-var contactFormData = window.contactFormData;
 
 export var MetadataTable = React.createClass({
   propTypes: {
@@ -118,6 +116,7 @@ export var MetadataTable = React.createClass({
 
   render: function() {
     var view = this.props.view;
+    var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var attachments;
     var attribution;
@@ -130,11 +129,10 @@ export var MetadataTable = React.createClass({
     var statsSection;
     var editMetadata;
 
-    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
-    contactFormButton = contactFormData.contactFormEnabled ?
+    contactFormButton = defaultToDatasetLandingPage ?
       <button
         className="btn btn-sm btn-primary btn-block contact-dataset-owner"
-        data-modal="contact-modal">
+        data-modal="contact-form">
         {I18n.contact_dataset_owner}
       </button> :
       null;
@@ -211,7 +209,7 @@ export var MetadataTable = React.createClass({
     if (view.category) {
       category = <td>{_.capitalize(view.category)}</td>;
     } else {
-      category = <td className="empty">{I18n.metadata.no_value}</td>;
+      category = <td className="empty">{I18n.metadata.no_category_value}</td>;
     }
 
     if (!_.isEmpty(view.tags)) {
@@ -237,23 +235,24 @@ export var MetadataTable = React.createClass({
         </td>
       );
     } else {
-      tags = <td className="empty">{I18n.metadata.no_value}</td>;
+      tags = <td className="empty">{I18n.metadata.no_tags_value}</td>;
     }
 
     if (view.licenseName) {
       license = <td>{view.licenseName}</td>;
     } else {
-      license = <td className="empty">{I18n.metadata.no_value}</td>;
+      license = <td className="empty">{I18n.metadata.no_license_value}</td>;
     }
 
     if (view.attributionLink) {
       attributionLink = (
-        <td>
-          <a href={view.attributionLink}>{view.attributionLink}</a>
-        </td>
+        <tr>
+          <td>{I18n.metadata.source_link}</td>
+          <td>
+            <a href={view.attributionLink} rel="nofollow external">{view.attributionLink}</a>
+          </td>
+        </tr>
       );
-    } else {
-      attributionLink = <td className="empty">{I18n.metadata.no_value}</td>;
     }
 
     if (view.statsUrl) {
@@ -427,10 +426,7 @@ export var MetadataTable = React.createClass({
                     {license}
                   </tr>
 
-                  <tr>
-                    <td>{I18n.metadata.source_link}</td>
-                    {attributionLink}
-                  </tr>
+                  {attributionLink}
                 </tbody>
               </table>
             </div>

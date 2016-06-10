@@ -67,7 +67,18 @@ class DatasetsController < ApplicationController
       end
 
       dataset_landing_page = DatasetLandingPage.new
-      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+
+      begin
+        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+      rescue CoreServer::CoreServerError => e
+        @popular_views = []
+      end
+
+      begin
+        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+      rescue CoreServer::CoreServerError => e
+        @featured_content = []
+      end
 
       RequestStore[:current_user] = current_user
 
@@ -559,16 +570,18 @@ class DatasetsController < ApplicationController
 
   # This method sends a request to Core's ViewsService#flag, which in turn sends an
   # email to either the view's contact email or the dataset owner if no contact email
-  # is available. Unlike the DatasetsController#validate_contact_owner, this validates
-  # the form's Recaptcha browser-side (see Dataset Landing Page's Contact Modal).
+  # is available. Like DatasetsController#validate_contact_owner, this validates the
+  # form's recaptcha response and ensures that the response came from one of our domains.
   def contact_dataset_owner
     @view = get_view(params[:id])
 
     # Return early if we can't find this view
-    return render :json => {
-      :success => false,
-      :message => "Can't find view: #{params[:id]}"
-    }, :status => :bad_request if @view.nil?
+    if @view.nil?
+      return render :json => {
+        :success => false,
+        :message => "Can't find view: #{params[:id]}"
+      }, :status => :bad_request
+    end
 
     # Return early if there are any missing params
     flag_params = {}
@@ -582,6 +595,14 @@ class DatasetsController < ApplicationController
       else
         flag_params[key] = params[key]
       end
+    end
+
+    # Return early if the Recaptcha response is invalid
+    if !SocrataRecaptcha.valid(params[:recaptcha_response_token])
+      return render :json => {
+        :success => false,
+        :message => 'Invalid Recaptcha'
+      }, :status => :bad_request
     end
 
     # Pass the request on to Core to actually send the email
@@ -723,7 +744,18 @@ class DatasetsController < ApplicationController
 
     if dataset_landing_page_enabled? && view_has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
-      @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+
+      begin
+        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
+      rescue CoreServer::CoreServerError => e
+        @popular_views = []
+      end
+
+      begin
+        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+      rescue CoreServer::CoreServerError => e
+        @featured_content = []
+      end
 
       RequestStore[:current_user] = current_user
 
@@ -1107,7 +1139,7 @@ class DatasetsController < ApplicationController
   def canonical_path_proc
     Proc.new do |params|
       composite_params = @view.route_params
-      composite_params.merge!(row_id: @row['sid']) unless @row.nil?
+      composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
       composite_params.merge!(params || {})
 
       if @row

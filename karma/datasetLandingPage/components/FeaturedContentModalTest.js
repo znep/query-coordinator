@@ -1,30 +1,46 @@
-import FeaturedContentModal from 'components/FeaturedContentModal';
-import mockViewWidget from 'data/mockViewWidget';
+import { FeaturedContentModal } from 'components/FeaturedContentModal';
+import { Simulate } from 'react-addons-test-utils';
 
 describe('components/FeaturedContentModal', function() {
-  var defaultProps = {
-    isEditingFeaturedContent: true,
-    contentList: [null, null, null],
-    onClickAddFeaturedItem: _.noop,
-    onClickEditFeaturedItem: _.noop,
-    onClickRemoveFeaturedItem: _.noop
-  };
+  function getProps(props) {
+    return _.defaultsDeep({}, props, {
+      onCloseModal: _.noop,
+      isEditing: false,
+      editType: null
+    });
+  }
 
   it('renders an element', function() {
-    var element = renderComponent(FeaturedContentModal, defaultProps);
+    var element = renderComponentWithStore(FeaturedContentModal, getProps());
     expect(element).to.exist;
   });
 
-  it('renders three featured items', function() {
-    var element = renderComponent(FeaturedContentModal, defaultProps);
-    expect(element.querySelectorAll('.featured-item')).to.have.length(3);
-  });
+  it('calls onCloseModal when the close icon is clicked', function() {
+    var spy = sinon.spy();
 
-  it('renders placeholders for featured items that are null', function() {
-    var element = renderComponent(FeaturedContentModal, _.assign({}, defaultProps, {
-      contentList: [null, { featuredView: mockViewWidget }, null]
+    var element = renderComponentWithStore(FeaturedContentModal, getProps({
+      onCloseModal: spy
     }));
 
-    expect(element.querySelectorAll('.featured-item.placeholder')).to.have.length(2);
+    expect(spy.callCount).to.equal(0);
+    Simulate.click(element.querySelector('.btn.modal-header-dismiss'));
+    expect(spy.callCount).to.equal(1);
+  });
+
+  it('renders FeaturedItemSelector when isEditing is false', function() {
+    var element = renderComponentWithStore(FeaturedContentModal, getProps({
+      isEditing: false
+    }));
+
+    expect(element.querySelector('.featured-content')).to.exist;
+  });
+
+  it('renders ExternalResourceForm when isEditing is true and editType is externalResource', function() {
+    var element = renderComponentWithStore(FeaturedContentModal, getProps({
+      isEditing: true,
+      editType: 'externalResource'
+    }));
+
+    expect(element.querySelector('.external-resource form')).to.exist;
   });
 });

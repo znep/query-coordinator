@@ -13,6 +13,7 @@ require 'httparty'
 #
 class SiteChrome
   include HTTParty
+
   base_uri CORESERVICE_URI.to_s
   format :json
   default_timeout 5 # seconds
@@ -117,31 +118,38 @@ class SiteChrome
     'siteChromeConfigVars'
   end
 
-  def request_headers
+  def authorized_request_headers
+    SiteChrome.default_request_headers.merge('Cookie' => @cookies)
+  end
+
+  def self.default_request_headers
     {
-      'Content-Type' => 'application/json',
-      'Cookie' => @cookies,
+      'Content-Type' => 'application/json', # this is necessary despite format :json above
       'X-Socrata-Host' => SiteChrome.host
-    }.compact
+    }
   end
 
   #######################
   # The Calls to Cthorehu
 
   def self.all(opts = {})
-    options = { query: { type: core_configuration_type }.merge(opts) }
+    options = opts.deep_merge(
+      query: { type: core_configuration_type },
+      headers: default_request_headers
+    )
     res = get(core_configurations_path, options)
     res.map { |site_chrome| new(site_chrome) }
   end
 
   def self.find_one(id)
     path = "#{core_configurations_path}/#{id}"
-    res = get(path)
+    res = get(path, default_request_headers)
     new(res) if res.success? && res['type'] == core_configuration_type
   end
 
   def self.find_default
-    all(defaultOnly: true).find(&:default)
+    opts = { query: { defaultOnly: true } }
+    all(opts).find(&:default)
   end
 
   def self.find_or_create_default(cookies)
@@ -164,7 +172,7 @@ class SiteChrome
   def create
     res = SiteChrome.post(
       SiteChrome.core_configurations_path,
-      headers: request_headers,
+      headers: authorized_request_headers,
       body: attributes.to_json
     )
 
@@ -176,7 +184,7 @@ class SiteChrome
     # Q: createdAt shows up on create but never again?
     res = SiteChrome.post(
       properties_path,
-      headers: request_headers,
+      headers: authorized_request_headers,
       body: { name: property_name, value: property_value }.to_json
     )
 
@@ -187,7 +195,7 @@ class SiteChrome
   def update_property(property_name, property_value)
     res = SiteChrome.put(
       properties_path,
-      headers: request_headers,
+      headers: authorized_request_headers,
       query: { method: :update }, # WARN: Necessary for Core to accept a put
       body: { name: property_name, value: property_value }.to_json
     )
@@ -203,7 +211,7 @@ class SiteChrome
   end
 
   def reload_properties
-    res = SiteChrome.get(properties_path)
+    res = SiteChrome.get(properties_path, SiteChrome.default_request_headers)
     if res.success?
       self.properties = res.to_a
       self
@@ -214,7 +222,7 @@ class SiteChrome
 
   def reload
     path = "#{SiteChrome.core_configurations_path}/#{id}"
-    res = SiteChrome.get(path)
+    res = SiteChrome.get(path, SiteChrome.default_request_headers)
     handle_configuration_response(res)
   end
 

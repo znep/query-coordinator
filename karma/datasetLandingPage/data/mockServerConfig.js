@@ -2,7 +2,10 @@ export default {
   environment: 'production',
   currentUser: null,
   featureFlags: {
+    csrfToken: 'supersecuretoken',
+    defaultToDatasetLandingPage: true,
     enableDatasetLandingPage: true,
-    defaultToDatasetLandingPage: true
+    locale: 'en',
+    recaptchaKey: 'superdupersecurekey'
   }
 };

@@ -1,6 +1,6 @@
-import mixpanel from '../lib/mixpanelTracking';
+import mixpanel from 'lib/mixpanelTracking';
 
-import { EMIT_MIXPANEL_EVENT } from '../actions';
+import { EMIT_MIXPANEL_EVENT } from '../actionTypes';
 
 // This reducer does not manage any state but intercepts actions and logs events to mixpanel.
 // Perhaps it could be middleware instead.

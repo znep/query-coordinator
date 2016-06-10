@@ -95,8 +95,9 @@ module DataLensHelper
   end
 
   def configuration_by_type(key)
-    config = ::Configuration.find_by_type(key, true, CurrentDomain.cname)
-    config.first.properties unless config.empty?
+    # returns a hash of properties or nil
+    config = CurrentDomain.configuration(key)
+    config.properties unless config.nil?
   end
 
   def angular_stylesheet_tag

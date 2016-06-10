@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import DownloadDropdown from './DownloadDropdown';
 import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
-import { emitMixpanelEvent } from '../actions';
-
-var contactFormData = window.contactFormData;
+import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var InfoPane = React.createClass({
   propTypes: {
@@ -34,6 +32,7 @@ export var InfoPane = React.createClass({
 
   render: function() {
     var { view, onClickGrid, onDownloadData } = this.props;
+    var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var privateIcon;
     var viewDataButton;
@@ -74,16 +73,15 @@ export var InfoPane = React.createClass({
       </button>
     );
 
-    // TODO: Remove this feature flag check once we've verified recaptcha 2.0 works as expected
-    var contactFormButton = contactFormData.contactFormEnabled ?
+    var contactFormButton = defaultToDatasetLandingPage ?
       <li>
-        <a tabIndex="0" role="button" className="option" data-modal="contact-modal">
+        <a tabIndex="0" role="button" className="option" data-modal="contact-form">
           {I18n.action_buttons.contact_owner}
         </a>
       </li> :
       null;
 
-    var commentLink = serverConfig.featureFlags.defaultToDatasetLandingPage ?
+    var commentLink = defaultToDatasetLandingPage ?
       <li>
         <a className="option" href={`${view.gridUrl}?pane=feed`}>
           {I18n.action_buttons.comment}

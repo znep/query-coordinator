@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   # puts Rails.application.routes.url_helpers.methods.sort
   # Also, one can test the helpers with the Applications instance. e.g. app.view_url
 
-  mount Chrome::Engine => '/chrome'
+  mount SocrataSiteChrome::Engine => 'socrata_site_chrome'
 
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
@@ -285,6 +285,8 @@ Rails.application.routes.draw do
 
     scope :controller => 'dataset_landing_page', :path => '/dataset_landing_page', :constraints => { :id => Frontend::UID_REGEXP } do
       get '/:id/popular_views', :action => 'popular_views'
+      get '/:id/featured_content', :action => 'get_featured_content'
+      post '/:id/featured_content', :action => 'post_featured_content'
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do

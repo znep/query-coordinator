@@ -3,23 +3,36 @@ import _ from 'lodash';
 import {
   SET_CONTACT_FORM_FIELD,
   SET_CONTACT_FORM_RECAPTCHA_LOADED,
-  SET_CONTACT_FORM_ERRORS,
   SEND_CONTACT_FORM,
   RESET_CONTACT_FORM,
   HANDLE_CONTACT_FORM_SUCCESS,
-  HANDLE_CONTACT_FORM_FAILURE
-} from '../actions';
+  HANDLE_CONTACT_FORM_FAILURE,
+  HANDLE_CONTACT_FORM_RECAPTCHA_ERROR,
+  HANDLE_CONTACT_FORM_RECAPTCHA_RESET
+} from '../actionTypes';
+
+var currentUserEmail = _.get(window.sessionData, 'email', '');
 
 var initialState = {
-  errors: [],
   fields: {
-    email: _.get(window.sessionData, 'email', ''),
-    subject: '',
-    message: ''
+    email: {
+      value: currentUserEmail,
+      invalid: _.isEmpty(currentUserEmail)
+    },
+    subject: {
+      value: '',
+      invalid: true
+    },
+    message: {
+      value: '',
+      invalid: true
+    },
+    recaptchaResponseToken: ''
   },
   recaptchaLoaded: false,
+  resetRecaptcha: false,
   status: '',
-  token: _.get(window.contactFormData, 'token', '')
+  token: _.get(window.serverConfig, 'csrfToken', '')
 };
 
 export default function(state, action) {
@@ -38,10 +51,6 @@ export default function(state, action) {
       state.recaptchaLoaded = action.value;
       return state;
 
-    case SET_CONTACT_FORM_ERRORS:
-      state.errors = action.errors;
-      return state;
-
     case SEND_CONTACT_FORM:
       state.status = 'sending';
       return state;
@@ -55,6 +64,16 @@ export default function(state, action) {
 
     case HANDLE_CONTACT_FORM_FAILURE:
       state.status = 'failure';
+      return state;
+
+    case HANDLE_CONTACT_FORM_RECAPTCHA_ERROR:
+      state.status = '';
+      state.fields.recaptchaResponseToken = '';
+      state.resetRecaptcha = true;
+      return state;
+
+    case HANDLE_CONTACT_FORM_RECAPTCHA_RESET:
+      state.resetRecaptcha = false;
       return state;
 
     default:

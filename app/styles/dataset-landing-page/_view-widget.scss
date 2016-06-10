@@ -1,10 +1,12 @@
 $data-lens-blue: #288dc1;
 $map-green: #218649;
+$external-blue: #1c6387;;
 
 .view-widget.result-card.media {
   width: 300px;
   height: 314px;
   flex-basis: auto; // Styleguide override
+  overflow: hidden;
 
   position: relative;
 
@@ -19,6 +21,8 @@ $map-green: #218649;
 
       h3 {
         margin: 0;
+        word-wrap: break-word;
+        word-break: break-all;
       }
     }
   }
@@ -62,6 +66,12 @@ $map-green: #218649;
         color: $primary-alt-1-base;
       }
     }
+
+    .icon-external-square {
+      &.x-large-icon {
+        color: $external-blue;
+      }
+    }
   }
 
   @media(max-width: $medium) {
@@ -84,8 +94,6 @@ $map-green: #218649;
   .btn {
     margin-right: auto;
     margin-left: auto;
-
-    min-width: 165px;
 
     &:first-child {
       margin-top: auto;

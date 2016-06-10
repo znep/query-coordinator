@@ -3,7 +3,7 @@
   <head>
     <meta name="description" content="<%= meta_description %>">
 
-    <title><%= @view.name %> | Socrata</title>
+    <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
     <%= rendered_stylesheet_tag("dataset-landing-page") %>
     <link rel="stylesheet" href="/stylesheets/styleguide/css/styleguide.css"/>
@@ -21,7 +21,8 @@
     <script>
       var initialState = {
         view: <%= raw transformed_view.to_json %>,
-        popularViews: <%= raw @popular_views.to_json %>
+        popularViews: <%= raw @popular_views.to_json %>,
+        featuredContent: <%= raw @featured_content.to_json %>
       };
     </script>
 
@@ -29,7 +30,6 @@
 
     <%= render_mixpanel_config %>
     <%= render_session_data %>
-    <%= render_contact_form_data %>
     <%= render_server_config %>
 
     <%= include_webpack_bundle 'dataset-landing-page/main.js' %>

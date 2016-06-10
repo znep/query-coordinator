@@ -66,6 +66,17 @@ class Domain < Model
   end
 
   def configurations(type)
+    # Note: searching for @configs returns results, but they're typically set
+    # in a controller method instead of here.
+    Airbrake.notify(
+      :error_class => 'Deprecation',
+      :error_message => 'Called Domain#configurations - we hope this is not being used because we should always ask for default_configuration',
+      :parameters => {
+        :type => type,
+        :contact_person => 'Courtney Spurgeon'
+      }
+    )
+
     if @configs.nil?
       @configs = Hash.new
     end
@@ -78,9 +89,15 @@ class Domain < Model
   end
 
   def default_configuration(type)
-    @default_configs ||= Hash.new
+    # If there are no default_configs, cache all set configs to minimize Core calls
+    @default_configs ||= Configuration.find_by_type(nil, true, cname).
+        each_with_object({}) do |config_hash, memo|
+          memo[config_hash.type] = config_hash
+        end
 
-    if @default_configs[type].nil?
+    # If a key didn't come back in api/configurations for the site, make another request
+    # for that type and core will grab it with merged inheritance.
+    if !@default_configs.has_key?(type)
       @default_configs[type] = Configuration.find_by_type(type, true, cname).first
     end
 

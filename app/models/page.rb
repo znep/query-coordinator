@@ -1,5 +1,132 @@
 class Page < Model
-  require 'snappy'
+
+  # Implements an mtime-keyed cache of pages.
+  # The mtime is jointly updated from core and frontend, and lives in memcache.
+  #
+  # There are inherent issues with using memcache as a distributed key-value store,
+  # so we hope to do things better soon. The root issue is that page updates do not
+  # go through frontend (direct PUT to core). We should at least query core for the
+  # pages mtime, not memcache.
+  #
+  # Note that currently core doesn't share memcached instances in certain environments,
+  # so the cache won't always update... resolution pending.
+  class PageCache
+    require 'snappy'
+
+    # Fetch the cached pages list.
+    def self.pages
+      # The pages dataset can easily exceed the size limit of memcached (4MB as of this writing)
+      # so we use snappy to compress it.
+      cache_key = fetch_cache_key
+      ds_raw = Rails.cache.read(cache_key, :raw => true)
+      Marshal.load(Snappy.inflate(ds_raw)) unless ds_raw.nil?
+    end
+
+    # Replace the cached pages list with the given pages.
+    def self.cache_pages(new_pages)
+      cache_data = {}
+      new_pages.each { |page| add_page(page, cache_data) }
+      # Beware; there is a minor risk that cache_data may exceed the size limit of memcached
+      write(cache_data)
+
+      cache_data
+    end
+
+    # Update a particular page in the cache.
+    def self.update_page(page)
+      cache_data = pages
+      unless current_pages.nil?
+        add_page(page, cache_data, true)
+        write(cache_data)
+      end
+    end
+
+    # Invalidate the cache for all pages in this domain.
+    def self.clear
+      # Advance the mtime, so all cache keys generated in the past are no longer referenced.
+      mtime = Time.now.to_i
+
+      # Cache the modification times of the pages dataset for a week; so that
+      # the pages mtime can be used for long-lived cache entires.
+      expiry_time_minutes = 10080
+
+      # Invalidation:
+      #   If the pages dataset gets updated; the generic pages resource mtime
+      #   will change from the core server. On the next call to fetch_cache_key
+      #   the cache_time method will be called and the new maximum age will be
+      #   selected as the mtime; invalidating any existing ds object entries.
+      VersionAuthority.set_paths_mtime((mtime * 1000).to_s, expiry_time_minutes)
+      VersionAuthority.set_resource('pages', mtime.to_s, expiry_time_minutes)
+    end
+
+
+    # The point in time this cache is valid for.
+    def self.mtime
+      [(VersionAuthority.paths_mtime.to_i / 1000).to_s || Time.now.to_i.to_s,
+        VersionAuthority.resource('pages') || Time.now.to_i.to_s].max
+    end
+
+    private
+
+    # mtime-sensitive cache key.
+    # Fetched from memcache because presumably core can update it too,
+    # though this is horrible practice.
+    def self.fetch_cache_key
+      AppHelper.instance.cache_key("page-dataset-v2-snappy", {
+        'domain' => CurrentDomain.cname,
+        'updated' => mtime
+      })
+    end
+
+    def self.write(cache_data)
+      cache_key = fetch_cache_key
+      Rails.logger.info("Writing pages data to cache key: #{cache_key}")
+      snapped = Snappy.deflate(Marshal.dump(cache_data))
+      Rails.logger.info("Compressed size of pages structure #{snapped.size}")
+      expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || 24.hours
+      Rails.cache.write(fetch_cache_key, snapped, :expires_in => expiry, :raw => true)
+    end
+
+    def self.add_page(item, cache_data, is_update = false)
+      cur_obj = cache_data
+      item.path.split('/').each do |part|
+        part = ':var' if part.starts_with?(':')
+        cur_obj[part] ||= {}
+        cur_obj = cur_obj[part]
+      end
+      key = ':' + item.format
+      if cur_obj.has_key?(key) && !is_update
+        Rails.logger.error "***************** Routing collision! #{item.path}"
+        # Shouldn't overload our messaging since it only happens when the
+        # paths are regenerated, which shouldn't be too often
+        Thread.new do
+          # be chivalrous
+          Thread.pass
+
+          # EN-6285 - Address Frontend app Airbrake errors
+          #
+          # Starting on 04/22/2016 we started to see this error come up on a
+          # variety of domains on a regular basis. After some discussion with
+          # Michael Chui, who referred me to EN-1673, we came to the conclusion
+          # that this notification is not directly actionable and as such
+          # should not be notifying Airbrake. We will continue to log, however.
+          #
+          # The notification code is, in this case, left in place in case someone
+          # else can use it for context when investigating the underlying cause.
+          #
+          # The entire thread thing is probably now unnecessary, but I'm hesitant
+          # to make changes to this file beyond what is minimally necessary. :-(
+          #
+          # Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
+          #                 :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{item.path}",
+          #                :session => {:domain => CurrentDomain.cname},
+          #                :parameters => {:duplicate_config => item})
+        end
+      else
+        cur_obj[key] = item
+      end
+    end
+  end
 
   def self.find( options = nil, custom_headers = {}, batch = nil, is_anon = false )
     if options.nil?
@@ -167,57 +294,110 @@ class Page < Model
   end
 
   def self.[](path, ext, user = nil)
-    mtime = cache_time
-    if !(defined? @@path_store) || !(defined? @@path_time) || (mtime > @@path_time)
-      @@path_store = {}
-      @@path_time = mtime
+    # Fetch the mtime from us and/or core. This is not a good idea,
+    # as core does not necessarily use our same page cache.
+    # Fix in discussion.
+    mtime = PageCache.mtime
+
+    # Check the quick path lookup table.
+    # Lookup stale?
+    if (
+      !(defined? @@path_quick_lookup) ||
+      !(defined? @@path_quick_lookup_update_time) ||
+      (mtime > @@path_quick_lookup_update_time)
+    )
+      @@path_quick_lookup = {}
+      @@path_quick_lookup_update_time = mtime
     end
 
-    unless @@path_store[CurrentDomain.cname]
-      ds = pages_data
-      @@path_store[CurrentDomain.cname] = copy_paths(ds)
+    # Have we previously initialized the quick lookup for this domain?
+    unless @@path_quick_lookup[CurrentDomain.cname]
+      # This can be expensive, so hold on to a reference for below.
+      pages = get_pages
+      @@path_quick_lookup[CurrentDomain.cname] = generate_quick_path_lookup_hash(pages)
     end
 
-    unless get_item(@@path_store[CurrentDomain.cname], path, ext)[0]
+    # Is the path in the quick path lookup?
+    unless lookup_page_by_path(@@path_quick_lookup[CurrentDomain.cname], path, ext)[:page]
+      # Nope, bail.
       return nil
     end
 
-    ds = pages_data if ds.blank?
-    results = get_item(ds, path, ext)
-    # look up to see if modified
-    page = results[0]
-    return results if page.nil? || page.uid.nil?
+    # Get the pages if we haven't yet.
+    pages = get_pages if pages.blank?
 
-    if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
+    search_result = lookup_page_by_path(pages, path, ext)
+
+    page = search_result[:page]
+
+    if !page.nil? && !page.uid.nil? # TODO what is page.uid.nil? catching?
       page = find(method: 'getPageRouting', id: page.uid)
-      # Update cache if it exists
-      cache_key = generate_cache_key
-      ds = get_cached_ds(cache_key)
-      if !ds.nil?
-        add_page(page, ds, true)
-        set_cached_ds(cache_key, ds)
+      search_result[:page] = page
+
+      if (FeatureFlags.value_for(:validate_fragment_cache_before_render))
+        if (VersionAuthority.page_mtime(page.uid).to_i / 1000) <= page.updatedAt
+          PageCache.clear
+          VersionAuthority.set_page_mtime(page.uid, page.updatedAt)
+        end
+      else
+        # Old behavior that won't work if core isn't writing to VersionAuthority.page_mtime.
+        # Delete asap.
+        #
+        # If cache marked stale by core, re-fetch.
+        if (VersionAuthority.page_mtime(page.uid).to_i / 1000) > page.updatedAt
+          page = find(method: 'getPageRouting', id: page.uid)
+          PageCache.update_page(page)
+          search_result[:page] = page
+        end
       end
-      results[0] = page
+
+      # Now check permissions
+      case page.permission
+      when 'private'
+        return nil if user.nil? ||
+          (user.id != page.owner_id && !user.has_right?(UserRights::EDIT_PAGES))
+      when 'domain_private'
+        return nil if user.nil? ||
+          (user.id != page.owner_id && !CurrentDomain.member?(user))
+      when 'public'
+        # Yay, they can view it
+      end
     end
 
-    # Now check permissions
-    case page.permission
-    when 'private'
-      return nil if user.nil? ||
-        (user.id != page.owner_id && !user.has_right?(UserRights::EDIT_PAGES))
-    when 'domain_private'
-      return nil if user.nil? ||
-        (user.id != page.owner_id && !CurrentDomain.member?(user))
-    when 'public'
-      # Yay, they can view it
-    end
-
-    results
+    search_result.values_at(:page, :vars)
   end
 
   def self.parse(data)
     return nil if data.blank?
-    return self.set_up_model(JSON.parse(data, {:max_nesting => 35}))
+
+    json_data = nil
+
+    begin
+      json_data = JSON.parse(data, {:max_nesting => 35})
+    rescue JSON::ParserError
+      # EN-6886 - Fix another JSON::ParserError
+      #
+      # Add more specific logging around this error, which happens when a JSON
+      # response from CoreServer is malformed (it has been observed to be
+      # apparently valid JSON that has been truncated in addition to HTML error
+      # pages from nginx).
+      if data.start_with?('<html>')
+        error_message = "It appears that CoreServer was unreachable: "\
+          "#{data.inspect}"
+      else
+        error_message = "CoreServer responded with truncated and/or "\
+          "invalid JSON: #{data.inspect}"
+      end
+
+      Airbrake.notify(
+        :error_class => "Failed to parse invalid JSON",
+        :error_message => error_message,
+        :session => {:domain => CurrentDomain.cname}
+      )
+      return nil
+    end
+
+    return self.set_up_model(json_data)
   end
 
   def self.path_exists?(cur_path)
@@ -232,107 +412,38 @@ class Page < Model
     # Status should eventually start as unpublished
     attributes = {content: { type: 'Container', id: 'pageRoot' }}.merge(attributes)
     path = "/pages.json"
-    parse(CoreServer::Base.connection.
-                 create_request(path, attributes.to_json, custom_headers))
+
+    new_page = parse(CoreServer::Base.connection.
+      create_request(path, attributes.to_json, custom_headers)
+    )
+
+    PageCache.clear
+
+    new_page
   end
 
 private
 
-  # The pages dataset can easily exceed the 1MB limit of memcached so we use snappy
-  # to get it down to about a tenth the size
-  def self.get_cached_ds(cache_key)
-    ds_raw = Rails.cache.read(cache_key, :raw => true)
-    Marshal.load(Snappy.inflate(ds_raw)) unless ds_raw.nil?
-  end
+  def self.get_pages
+    cached = PageCache.pages
 
-  def self.set_cached_ds(cache_key, ds)
-    snapped = Snappy.deflate(Marshal.dump(ds))
-    Rails.logger.info("Compressed size of pages structure #{snapped.size}")
-    expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || 24.hours
-    Rails.cache.write(cache_key, snapped, :expires_in => expiry, :raw => true)
-  end
-
-  def self.cache_time
-    [(VersionAuthority.paths_mtime.to_i / 1000).to_s || Time.now.to_i.to_s,
-      VersionAuthority.resource('pages') || Time.now.to_i.to_s].max
-  end
-
-  def self.pages_data()
-    cache_key = generate_cache_key
-    ds = get_cached_ds(cache_key)
-
-    if ds.nil?
-      ds = {}
-      mtime = Time.now.to_i
-      #
-      # Cache the modification times of the pages dataset for a week; so that
-      # the pages mtime can be used for long-lived cache entires.
-      #
-      # Invalidation:
-      #   If the pages dataset gets updated; the generic pages resource mtime
-      #   will change from the core server. On the next call to generate_cache_key
-      #   the cache_time method will be called and the new maximum age will be
-      #   selected as the mtime; invalidating any existing ds object entries.
-      #
-      #
-      VersionAuthority.set_paths_mtime((mtime * 1000).to_s, 10080)
-      VersionAuthority.set_resource('pages', mtime.to_s, 10080)
-      find(status: 'published', method: 'getRouting').each { |c| add_page(c, ds) }
-      # Beware; there is a minor risk that ds may exceed the 1MB limit of memcached
-      cache_key = generate_cache_key(mtime)
-      Rails.logger.info("Writing pages data to cache key: #{cache_key}")
-      set_cached_ds(cache_key, ds)
-    end
-    return ds
-  end
-
-  def self.add_page(item, cache_obj, is_update = false)
-    cur_obj = cache_obj
-    item.path.split('/').each do |part|
-      part = ':var' if part.starts_with?(':')
-      cur_obj[part] ||= {}
-      cur_obj = cur_obj[part]
-    end
-    key = ':' + item.format
-    if cur_obj.has_key?(key) && !is_update
-      Rails.logger.error "***************** Routing collision! #{item.path}"
-      # Shouldn't overload our messaging since it only happens when the
-      # paths are regenerated, which shouldn't be too often
-      Thread.new do
-        # be chivalrous
-        Thread.pass
-
-        # EN-6285 - Address Frontend app Airbrake errors
-        #
-        # Starting on 04/22/2016 we started to see this error come up on a
-        # variety of domains on a regular basis. After some discussion with
-        # Michael Chui, who referred me to EN-1673, we came to the conclusion
-        # that this notification is not directly actionable and as such
-        # should not be notifying Airbrake. We will continue to log, however.
-        #
-        # The notification code is, in this case, left in place in case someone
-        # else can use it for context when investigating the underlying cause.
-        #
-        # The entire thread thing is probably now unnecessary, but I'm hesitant
-        # to make changes to this file beyond what is minimally necessary. :-(
-        #
-        # Airbrake.notify(:error_class => "Canvas Routing Error on #{CurrentDomain.cname}",
-        #                 :error_message => "Canvas Routing Error on #{CurrentDomain.cname}: Routing collision, skipping #{item.path}",
-        #                :session => {:domain => CurrentDomain.cname},
-        #                :parameters => {:duplicate_config => item})
-      end
+    if cached.nil?
+      PageCache.cache_pages(find(status: 'published', method: 'getRouting'))
     else
-      cur_obj[key] = item
+      cached
     end
   end
 
-  def self.copy_paths(path_hash)
+  def self.generate_quick_path_lookup_hash(path_hash)
     obj = {}
-    path_hash.each { |k, v| obj[k] = (k == ':web' || k == ':export') ? true : copy_paths(v) }
-    return obj
+    path_hash.each do |k, v|
+      obj[k] = (k == ':web' || k == ':export') ? true : generate_quick_path_lookup_hash(v)
+    end
+
+    obj
   end
 
-  def self.get_item(paths, path, ext)
+  def self.lookup_page_by_path(paths, path, ext)
     cur_obj = paths
     vars = []
     path.split('/').each do |part|
@@ -344,19 +455,13 @@ private
     end
     # Currently has an extension iff it is export
     key = ext == 'csv' || ext == 'xlsx' ? ':export' : ':web'
-    [cur_obj[key], vars]
+
+    {
+      page: cur_obj[key],
+      vars: vars
+    }
   end
 
-  def self.generate_cache_key(mtime = cache_time)
-    app_helper.cache_key("page-dataset-v2-snappy", {
-      'domain' => CurrentDomain.cname,
-      'updated' => mtime
-    })
-  end
-
-  def self.app_helper
-    AppHelper.instance
-  end
 end
 
 class AppHelper

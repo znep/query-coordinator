@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { emitMixpanelEvent } from '../actions';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var ShareModal = function(props) {
   var { view, onClickOption } = props;

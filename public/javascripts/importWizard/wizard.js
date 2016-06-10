@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import React, { PropTypes } from 'react';
 import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
@@ -7,53 +7,53 @@ import * as Importing from './components/importing';
 import * as Working from './components/working';
 import * as Finish from './components/finish';
 import * as Server from './server';
+import * as ImportShapefile from './components/importShapefile';
+import * as SharedTypes from './sharedTypes';
 
 import enabledModules from 'enabledModules';
-
-
-type NewDatasetModel = {
-  datasetId: string, // this should never change
-  currentPage: PageName,
-  operation: OperationName,
-  upload: UploadFile.FileUpload,
-  transform: ImportColumns.Transform, // only used in UploadData operation
-  layers: Array<Layer>,               // only used in UploadGeo operation
-  metadata: Metadata.DatasetMetadata
-}
-
 
 type Layer = {
   name: string
 }
-
 
 type PageName
   = 'SelectType'
   | 'SelectUploadType'
   | 'UploadFile'
   | 'ImportColumns'
+  | 'ImportShapefile'
   | 'Metadata'
   // can't re-enter to the below pages
   | 'Working'
   | 'Importing'
   | 'Finish'
 
+type Navigation = {
+  operation: SharedTypes.OperationName,
+  page: PageName,
+  path: Array<PageName>
+}
 
-type OperationName
-  = 'UploadData'
-  | 'UploadBlob'
-  | 'ConnectToEsri'
-  | 'UploadGeospatial'
-  | 'LinkToExternal'
-  | 'CreateFromScratch'
+type NewDatasetModel = {
+  datasetId: string,                  // this should never change
+  navigation: Navigation,
+  upload: UploadFile.FileUpload,
+  transform: Array<string>,           // change back to Transform type only used in UploadData operation
+  layers: Array<Layer>,               // only used in UploadGeo operation
+  metadata: Metadata.DatasetMetadata
+}
 
+const initialNavigation: Navigation = {
+  page: 'SelectType',
+  path: ['SelectType'],
+  operation: null // will be filled in when we click something on the first screen
+};
 
 // is this even used or is it just the no-args call to the reducer?
 export function initialNewDatasetModel(datasetId: string, datasetName: string): NewDatasetModel {
   return {
     datasetId: datasetId,
-    currentPage: 'SelectType',
-    operation: null, // will be filled in when we click something on the first screen
+    navigation: initialNavigation,
     upload: UploadFile.initial(),
     transform: null,
     layers: null,
@@ -70,54 +70,76 @@ export const fakeInitialModel = initialNewDatasetModel('fake-fake', 'Chicago Cri
 // actions
 
 const CHOOSE_OPERATION = 'CHOOSE_OPERATION';
-export function chooseOperation(name: OperationName) {
+export function chooseOperation(name: SharedTypes.OperationName) {
   return {
     type: CHOOSE_OPERATION,
     name: name
   };
 }
 
-
-export function updateOperation(operation: OperationName = null, action): OperationName {
-  switch (action.type) {
-    case CHOOSE_OPERATION:
-      return action.name;
-    default:
-      return operation;
-  }
+const GO_TO_PAGE = 'GO_TO_PAGE';
+export function goToPage(page) {
+  return {
+    type: GO_TO_PAGE,
+    page
+  };
 }
 
-// reducers
+export function updateNavigation(navigation = initialNavigation: Navigation, action): Navigation {
 
-export function updateCurrentPage(pageName: PageName = 'SelectType', action): PageName {
+  let nextPage = navigation.page;
   switch (action.type) {
     case CHOOSE_OPERATION:
       switch (action.name) {
         case 'UploadData':
         case 'UploadBlob':
         case 'UploadGeospatial':
-          return 'UploadFile'; // TODO: select upload type
-        case 'ConnectToEsri':
+          nextPage = 'UploadFile'; // TODO: select upload type
+          break;
+        case 'ConnectToEsri': // TODO what is this actually supposed to go to?
         case 'LinkToExternal':
         case 'CreateFromScratch':
-          return 'Metadata';
+          nextPage = 'Metadata';
+          break;
         default:
           console.error('invalid operation name:', action.name);
-          return pageName;
       }
+
+      return {
+        operation: action.name,
+        page: nextPage,
+        path: [...navigation.path, nextPage]
+      };
+
     case UploadFile.FILE_UPLOAD_COMPLETE:
-      return 'ImportColumns';
-    case ImportColumns.IMPORT_COLUMNS_NEXT:
-      return 'Metadata';
-    case Metadata.METADATA_NEXT:
-      return 'Working';
-    case Working.WORKING_NEXT:
-      // TODO: this can be 'Finish' depending on the operation
-      return 'Importing';
-    case Server.IMPORT_COMPLETE:
-      return 'Finish';
+      switch (navigation.operation) {
+        case 'UploadData':
+          nextPage = 'ImportColumns';
+          break;
+        case 'UploadGeospatial':
+          nextPage = 'ImportShapefile';
+          break;
+        case 'UploadBlob':
+          nextPage = 'Metadata';
+          break;
+        default:
+          console.error('invalid action FILE_UPLOAD_COMPLETE for operation:', navigation.operation);
+      }
+      return {
+        ...navigation,
+        page: nextPage,
+        path: [...navigation.path, nextPage]
+      };
+
+    case GO_TO_PAGE:
+      return {
+        ...navigation,
+        page: action.page,
+        path: [...navigation.path, action.page]
+      };
+
     default:
-      return pageName;
+      return navigation;
   }
 }
 
@@ -125,9 +147,10 @@ export function updateCurrentPage(pageName: PageName = 'SelectType', action): Pa
 
 
 export function view({ state, dispatch }) {
+
   return (
     <div className="contentBox fixedWidth" id="reactWizard">
-      <h1>{ I18n.screens.dataset_new.first_page.header }</h1>
+      <h1>{I18n.screens.dataset_new.first_page.header}</h1>
       <div className="newDatasetWizard wizard" aria-live="polite">
         {(() => {
           // only used by SelectType case, but ESLint won't let me put it there
@@ -136,19 +159,26 @@ export function view({ state, dispatch }) {
               dispatch(chooseOperation(operationName));
             }
           );
-          switch (state.currentPage) {
+
+          switch (state.navigation.page) {
             case 'SelectType':
-              return <SelectType.view enabledModules={ enabledModules }
-                                      currentDomainMemberCurrentUser={ true }
-                                      onChooseOperation={ onChooseOperation } />;
+              return (
+                <SelectType.view
+                  enabledModules={enabledModules}
+                  currentDomainMemberCurrentUser
+                  onChooseOperation={onChooseOperation} />
+              );
 
             case 'SelectUploadType':
               return <span>SelectUploadType</span>;
 
             case 'UploadFile':
-              return <UploadFile.view onFileUploadAction={ dispatch }
-                                      fileUpload={ state.upload }
-                                      operation={ state.operation } />;
+              return (
+                <UploadFile.view
+                  onFileUploadAction={dispatch}
+                  fileUpload={state.upload}
+                  operation={state.navigation.operation} />
+              );
 
             case 'ImportColumns':
               // TODO: assert validity of fileUpload
@@ -157,9 +187,21 @@ export function view({ state, dispatch }) {
                                          fileName={ state.upload.fileName }
                                          dispatch={ dispatch } />;
 
+            case 'ImportShapefile':
+              return (
+                <ImportShapefile.view
+                  layers={state.layers}
+                  fileName={state.upload.fileName}
+                  dispatch={dispatch}
+                  goToPage={(page) => dispatch(goToPage(page))} />
+              );
+
             case 'Metadata':
-              return <Metadata.view metadata={ state.metadata }
-                                    onMetadataAction={ dispatch } />;
+              return (
+                <Metadata.view
+                  metadata={state.metadata}
+                  onMetadataAction={(action) => {dispatch(action);}} />
+              );
 
             case 'Working':
               return <Working.view />;
@@ -171,7 +213,8 @@ export function view({ state, dispatch }) {
               return <Finish.view />;
 
             default:
-              console.error('unexpected page:', state.currentPage);
+              console.error('Unknown page', state.navigation.page);
+
           }
         })()}
       </div>

@@ -1,61 +1,110 @@
 import {
-  updateCurrentPage,
-  updateOperation,
-  chooseOperation
+  updateNavigation,
+  chooseOperation,
+  goToPage
 } from 'wizard';
+import { fileUploadComplete } from 'components/uploadFile';
 
-describe('updateCurrentPage', () => {
+describe('updateNavigation', () => {
+  const initialState = {
+    operation: null,
+    page: 'SelectType',
+    path: [ 'SelectType' ]
+  }
 
   it('sets currentPage to UploadFile when you choose UploadData', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('UploadData'));
-    expect(stateAfter).to.equal('UploadFile');
+    const stateAfter = updateNavigation(initialState, chooseOperation('UploadData'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'UploadData',
+      page: 'UploadFile',
+      path: [ ...initialState.path, 'UploadFile' ]
+    });
   });
 
   it('sets currentPage to UploadFile when you choose UploadBlob', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('UploadBlob'));
-    expect(stateAfter).to.equal('UploadFile');
-  });
-
-  it('sets currentPage to UploadFile when you choose UploadBlob', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('UploadBlob'));
-    expect(stateAfter).to.equal('UploadFile');
+    const stateAfter = updateNavigation(initialState, chooseOperation('UploadBlob'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'UploadBlob',
+      page: 'UploadFile',
+      path: [ ...initialState.path, 'UploadFile' ]
+    });
   });
 
   it('sets currentPage to UploadFile when you choose UploadGeospatial', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('UploadGeospatial'));
-    expect(stateAfter).to.equal('UploadFile');
+    const stateAfter = updateNavigation(initialState, chooseOperation('UploadGeospatial'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'UploadGeospatial',
+      page: 'UploadFile',
+      path: [ ...initialState.path, 'UploadFile']
+    });
   });
 
   it('sets currentPage to Metadata when you choose ConnectToEsri', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('ConnectToEsri'));
-    expect(stateAfter).to.equal('Metadata');
+    const stateAfter = updateNavigation(initialState, chooseOperation('ConnectToEsri'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'ConnectToEsri',
+      page: 'Metadata',
+      path: [ ...initialState.path, 'Metadata']
+    });
   });
 
   it('sets currentPage to Metadata when you choose LinkToExternal', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('LinkToExternal'));
-    expect(stateAfter).to.equal('Metadata');
+    const stateAfter = updateNavigation(initialState, chooseOperation('LinkToExternal'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'LinkToExternal',
+      page: 'Metadata',
+      path: [ ...initialState.path, 'Metadata']
+    });
   });
 
   it('sets currentPage to Metadata when you choose CreateFromScratch', () => {
-    const stateBefore = 'SelectType';
-    const stateAfter = updateCurrentPage(stateBefore, chooseOperation('CreateFromScratch'));
-    expect(stateAfter).to.equal('Metadata');
+    const stateAfter = updateNavigation(initialState, chooseOperation('CreateFromScratch'));
+    expect(stateAfter).to.deep.equal({
+      operation: 'CreateFromScratch',
+      page: 'Metadata',
+      path: [ ...initialState.path, 'Metadata']
+    });
   });
 
-});
+  it('goes to ImportShapefile when a shapefile upload completes', () => {
+    const stateBefore = {
+      operation: 'UploadGeospatial',
+      page: 'UploadFile',
+      path: [ 'SelectType', 'UploadFile' ]
+    };
+    const stateAfter = updateNavigation(
+      stateBefore,
+      fileUploadComplete(
+        'random-file-id',
+        {
+          layers: [
+            { name: 'districts', referenceSystem: 'NAD_1983_Michigan_GeoRef_Meters' }
+          ]
+        }
+      )
+    );
+    expect(stateAfter).to.deep.equal({
+      ...stateBefore,
+      page: 'ImportShapefile',
+      path: [ ...stateBefore.path, 'ImportShapefile' ]
+    });
+  });
 
-describe('updateOperation', () => {
-
-  it('returns the operation given in the action', () => {
-    const stateBefore = null;
-    const stateAfter = updateOperation(stateBefore, chooseOperation('UploadData'));
-    expect(stateAfter).to.equal('UploadData');
+  it('goes to Metadata when next is called in ImportShapefile', () => {
+    const stateBefore = {
+      operation: 'UploadGeospatial',
+      page: 'ImportShapefile',
+      path: [ 'SelectType', 'UploadFile', 'ImportShapefile' ]
+    };
+    const stateAfter = updateNavigation(
+      stateBefore,
+      goToPage('Metadata')
+    );
+    expect(stateAfter).to.deep.equal({
+      ...stateBefore,
+      page: 'Metadata',
+      path: [ ...stateBefore.path, 'Metadata' ]
+    });
   });
 
 });

@@ -3,7 +3,7 @@ import velocity from 'velocity-animate';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { emitMixpanelEvent } from '../actions';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../lib/dataTypeMetadata';
 import { handleKeyPress } from '../lib/a11yHelpers';
 

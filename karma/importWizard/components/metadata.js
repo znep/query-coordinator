@@ -1,5 +1,6 @@
 import {
   update,
+  view,
   emptyForName,
   updateName,
   updateDescription,
@@ -9,7 +10,8 @@ import {
   updateMapLayer,
   updatePrivacySettings,
   updateContactEmail
-} from 'components/metadata';
+}
+from 'components/metadata';
 
 describe("metadata's reducer", function() {
   var state;

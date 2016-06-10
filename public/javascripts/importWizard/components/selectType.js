@@ -3,64 +3,74 @@ import _ from 'lodash';
 
 export function view(props) {
   const I18nPrefixed = I18n.screens.dataset_new.first_page;
-  const { enabledModules, currentDomainMemberCurrentUser, onChooseOperation } = props;
+  const {enabledModules, currentDomainMemberCurrentUser, onChooseOperation} = props;
 
   const firstSections = [
     <li>
-      <div className="create" title={ I18nPrefixed.create_explain }
-         onClick={ onChooseOperation('CreateFromScratch') }>
+      <div
+        className="create"
+        title={I18nPrefixed.create_explain}
+        onClick={onChooseOperation('CreateFromScratch')}>
         <span className="icon"></span>
-        <p>{ I18nPrefixed.create }</p>
+        <p>{I18nPrefixed.create}</p>
       </div>
     </li>,
     <li>
-      <div className="upload" title={ I18nPrefixed.import_explain }
-         onClick={ onChooseOperation('UploadData') }>
+      <div
+        className="upload"
+        title={I18nPrefixed.import_explain}
+        onClick={onChooseOperation('UploadData')}>
         <span className="icon"></span>
-        <p>{ I18nPrefixed['import'] }</p>
+        <p>{I18nPrefixed['import']}</p>
       </div>
     </li>
   ];
 
   const esriIntegration =
     _.includes(enabledModules, 'esri_integration')
-    ? [ <li>
-          <div className="mapLayer" title={ I18nPrefixed.mapLayer_explain }>
-            <span className="icon"></span>
-            <p>{ I18nPrefixed.mapLayer }</p>
-          </div>
-        </li>
-      ]
+    ? [
+      <li>
+        <div className="mapLayer" title={I18nPrefixed.mapLayer_explain}>
+          <span className="icon"></span>
+          <p>{I18nPrefixed.mapLayer}</p>
+        </div>
+      </li>
+    ]
     : [];
 
   const geoSpatial =
     _.includes(enabledModules, 'geospatial')
-    ? [ <li>
-          <div className="shapefile" title={ I18nPrefixed.shapefile_explain }>
-            <span className="icon"></span>
-            <p>{ I18nPrefixed.shapefile }</p>
-          </div>
-        </li>
-      ]
+    ? [
+      <li>
+        <div
+          className="shapefile"
+          title={I18nPrefixed.shapefile_explain}
+          onClick={onChooseOperation('UploadGeospatial')}>
+          <span className="icon"></span>
+          <p>{I18nPrefixed.shapefile}</p>
+        </div>
+      </li>
+    ]
     : [];
 
   const blobby =
-    <li>
-      <div className="blobby" title={ I18nPrefixed.blobby_explain }>
+    (<li>
+      <div className="blobby" title={I18nPrefixed.blobby_explain}>
         <span className="icon"></span>
-        <p>{ I18nPrefixed.blobby }</p>
+        <p>{I18nPrefixed.blobby}</p>
       </div>
-    </li>;
+    </li>);
 
   const external =
     currentDomainMemberCurrentUser
-    ? [ <li>
-          <div className="external" title={ I18nPrefixed.external_explain }>
-            <span className="icon"></span>
-            <p>{ I18nPrefixed.external }</p>
-          </div>
-        </li>
-      ]
+    ? [
+      <li>
+        <div className="external" title={I18nPrefixed.external_explain}>
+          <span className="icon"></span>
+          <p>{I18nPrefixed.external}</p>
+        </div>
+      </li>
+    ]
     : [];
 
   const sections = _(firstSections).concat(esriIntegration, geoSpatial, [blobby], external).value();
@@ -70,7 +80,7 @@ export function view(props) {
 
   return (
     <div>
-      <p className="headline">{ I18nPrefixed.prompt }</p>
+      <p className="headline">{I18nPrefixed.prompt}</p>
       <ul className="newKindList clearfix">
         {firstRow}
       </ul>

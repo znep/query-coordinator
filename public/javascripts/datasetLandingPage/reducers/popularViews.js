@@ -8,7 +8,7 @@ import {
   HANDLE_POPULAR_VIEWS_ERROR,
   DISMISS_POPULAR_VIEWS_ERROR,
   TOGGLE_POPULAR_VIEWS
-} from '../actions';
+} from '../actionTypes';
 
 var initialPopularViews = _.get(window.initialState, 'popularViews', []);
 var initialState = {

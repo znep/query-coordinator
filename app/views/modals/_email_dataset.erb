@@ -21,8 +21,9 @@
             <span class="icon"></span>
           </a>
           <input type="hidden" class="recipientUid" />
+          <input type="hidden" class="groupUid" />
           <div class="textWrapper">
-            <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" />
+            <input type="text" class="emailRecipient" name="emailRecipient0" />
           </div>
           <%- if !@view.nil? && @view.has_rights?(ViewRights::GRANT) -%>
             <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t('core.share_types.' + type.downcase), type ] }),

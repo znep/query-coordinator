@@ -294,18 +294,20 @@ class SocrataRangeFilter extends React.Component {
     this.upperIndex = values.max;
 
     if (this.props.isLarge) {
+      var labelsObject;
+
       if (this.props.type == 'calendar_date') {
         var lowerDate = this.timeStamp(this.domain[values.min]);
         var upperDate = this.timeStamp(this.domain[values.max]);
 
-        var labelsObject = {
+        labelsObject = {
           min: (values.min == 0) ? 'No Min' : lowerDate,
-          max: (values.max == this.domain.length - 1) ? 'No Max' : upperDate
+          max: (values.max == _.last(this.domain)) ? 'No Max' : upperDate
         };
       } else {
         labelsObject = {
-          min: (values.min == this.domain[0]) ? 'No Min' : this.domain[values.min],
-          max: (values.max == this.domain.length - 1) ? 'No Max' : this.domain[values.max]
+          min: (values.min == _.first(this.domain)) ? 'No Min' : this.domain[values.min],
+          max: (values.max == _.last(this.domain)) ? 'No Max' : this.domain[values.max]
         };
       }
 
@@ -314,22 +316,23 @@ class SocrataRangeFilter extends React.Component {
         valueLabels: labelsObject
       });
 
-      if (values.min == 0 && values.max == this.domain.length - 1) {
+      if (values.min == 0 && values.max == _.last(this.domain)) {
         formattedLabel = '(all values)';
         filterObj.dir = null;
       } else if (values.min == 0) {
         filterObj.dir = 'lt';
-        formattedLabel = 'Less than ' + this.formattedLabel(values.max);
-      } else if (values.max == this.domain.length - 1) {
+        formattedLabel = 'Less than {0}'.format(this.formattedLabel(this.domain[values.max]));
+      } else if (values.max == _.last(this.domain)) {
         filterObj.dir = 'gt';
-        formattedLabel = 'More than ' + this.formattedLabel(values.min);
+        formattedLabel = 'More than {0}'.format(this.formattedLabel(this.domain[values.min]));
       } else {
         filterObj.dir = 'bt';
-        formattedLabel = this.formattedLabel(values.min) + ' - ' + this.formattedLabel(values.max);
+        formattedLabel = '{0} - {1}'.format(this.formattedLabel(
+          _.get(this.domain, values.min)), this.formattedLabel(this.domain[values.max]));
       }
 
       filterObj.val1 = values.min == 0 ? null : this.domain[values.min];
-      filterObj.val2 = values.max == this.domain.length - 1 ? null : this.domain[values.max];
+      filterObj.val2 = values.max == _.last(this.domain) ? null : this.domain[values.max];
 
       this.props.dataHandler(formattedLabel, filterObj, true, true);
     } else {
@@ -347,9 +350,8 @@ class SocrataRangeFilter extends React.Component {
           val1: this.timeStamp(this.domain[this.state.values.min]),
           val2: this.timeStamp(this.domain[this.state.values.max])
         };
-        this.props.dataHandler(
-          this.displayDate(this.domain[this.state.values.min]) + ' - ' +
-          this.displayDate(this.domain[this.state.values.max]), filterObj, true, true);
+        this.props.dataHandler('{0} - {1}'.format(this.displayDate(this.domain[this.state.values.min]),
+          this.displayDate(this.domain[this.state.values.max]), filterObj, true, true));
       } else {
         this.setState({
           values: values,
@@ -360,16 +362,16 @@ class SocrataRangeFilter extends React.Component {
         });
 
         if (values.min == this.props.rangeMin && values.max == this.props.rangeMax) {
-            formattedLabel = '(all values)';
-            filterObj.dir = null;
+          formattedLabel = '(all values)';
+          filterObj.dir = null;
         } else if (values.min == this.props.rangeMin) {
-          formattedLabel = 'Less than ' + values.max;
+          formattedLabel = 'Less than {0}'.format(values.max);
           filterObj.dir = 'lt';
         } else if (values.max == this.props.rangeMax) {
-          formattedLabel = 'More than ' + values.min;
+          formattedLabel = 'More than {0}'.format(values.min);
           filterObj.dir = 'gt';
         } else {
-          formattedLabel = values.min + ' - ' + values.max;
+          formattedLabel =  '{0} - {1}'.format(values.min, values.max);
           filterObj.dir = 'bt';
         }
 

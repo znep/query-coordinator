@@ -45,7 +45,12 @@
 
   var completelyAwesome = function(domain) {
     unslideNav();
-    var url = '/internal/orgs/{0}/domains/{1}'.format(domain.organizationId, domain.cname);
+    var url;
+    if (domain.organizationId) {
+      url = '/internal/orgs/{0}/domains/{1}'.format(domain.organizationId, domain.cname);
+    } else {
+      url = '/internal/domains/{0}'.format(domain.cname);
+    }
     window.location = url;
   };
 

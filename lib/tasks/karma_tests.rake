@@ -19,6 +19,13 @@ namespace :test do
     File.write(output_filename, 'module.exports = ' + translations.to_json.html_safe + ';')
   end
 
+  task :update_import_wizard_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma/importWizard/mockTranslations.js'
+    all_translations = YAML.load_file(translations_filename)['en']
+    File.write(output_filename, 'module.exports = ' + all_translations.to_json.html_safe + ';')
+  end
+
   namespace :js do
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
@@ -46,7 +53,7 @@ namespace :test do
       run_karma('datasetLandingPage', args)
     end
 
-    task :importWizard, [:watch, :browser, :reporter] do |task, args|
+    task :importWizard, [:watch, :browser, :reporter] => 'update_import_wizard_translations' do |task, args|
       run_karma('importWizard', args)
     end
 

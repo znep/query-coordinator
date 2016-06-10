@@ -7,8 +7,12 @@ class SiteChromeController < ApplicationController
   before_filter :ensure_admin
   before_filter :find_or_create_default_site_chrome
 
+  def tab_sections
+    %w(general header footer homepage social)
+  end
+  helper_method :tab_sections
+
   def edit
-    @tab_sections = %w(general header footer homepage social)
     @current_locale = 'en' # TODO
   end
 

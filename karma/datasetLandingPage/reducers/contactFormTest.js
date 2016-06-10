@@ -3,13 +3,14 @@ import reducer from 'reducers/contactForm';
 import {
   handleContactFormFailure,
   handleContactFormSuccess,
+  handleContactFormRecaptchaError,
+  handleContactFormRecaptchaReset,
   sendContactForm,
   setContactFormField,
   setContactFormRecaptchaLoaded,
-  setContactFormErrors,
   submitContactForm,
   resetContactForm
-} from 'actions';
+} from 'actions/contactForm';
 
 describe('reducers/contactForm', function() {
   var state;
@@ -20,10 +21,14 @@ describe('reducers/contactForm', function() {
 
   describe('SET_CONTACT_FORM_FIELD', function() {
     it('sets the value of the specified field', function() {
-      state.fields.message = 'pandas';
+      state.fields.message = { value: 'pandas', invalid: false };
 
-      var result = reducer(state, setContactFormField('message', 'wombats'));
-      expect(result.fields.message).to.equal('wombats');
+      var result = reducer(state, setContactFormField('message', {
+        value: 'wombats',
+        invalid: true
+      }));
+      expect(result.fields.message.value).to.equal('wombats');
+      expect(result.fields.message.invalid).to.equal(true);
     });
   });
 
@@ -33,15 +38,6 @@ describe('reducers/contactForm', function() {
 
       var result = reducer(state, setContactFormRecaptchaLoaded(true));
       expect(result.recaptchaLoaded).to.equal(true);
-    });
-  });
-
-  describe('SET_CONTACT_FORM_ERRORS', function() {
-    it('sets the value of the errors array', function() {
-      state.errors = [];
-
-      var result = reducer(state, setContactFormErrors(['bad', 'errors']));
-      expect(result.errors).to.deep.equal(['bad', 'errors']);
     });
   });
 
@@ -69,6 +65,38 @@ describe('reducers/contactForm', function() {
 
       var result = reducer(state, handleContactFormFailure());
       expect(result.status).to.equal('failure');
+    });
+  });
+
+  describe('HANDLE_CONTACT_FORM_RECAPTCHA_ERROR', function() {
+    it('sets status to ""', function() {
+      state.status = 'pending';
+
+      var result = reducer(state, handleContactFormRecaptchaError());
+      expect(result.status).to.equal('');
+    });
+
+    it('resets recaptchaResponseToken to ""', function() {
+      state.fields.recaptchaResponseToken = 'lovely-response-token';
+
+      var result = reducer(state, handleContactFormRecaptchaError());
+      expect(result.fields.recaptchaResponseToken).to.equal('');
+    });
+
+    it('sets resetRecaptcha to true', function() {
+      state.resetRecaptcha = false;
+
+      var result = reducer(state, handleContactFormRecaptchaError());
+      expect(result.resetRecaptcha).to.be.true;
+    });
+  });
+
+  describe('HANDLE_CONTACT_FORM_RECAPTCHA_RESET', function() {
+    it('sets resetRecaptcha to false', function() {
+      state.resetRecaptcha = true;
+
+      var result = reducer(state, handleContactFormRecaptchaReset());
+      expect(result.resetRecaptcha).to.be.false;
     });
   });
 });

@@ -82,8 +82,8 @@ $(() => {
     {
       text: $.t('plugins.daterangepicker.last_3_days'),
       previousText: $.t('plugins.daterangepicker.last_3_days'),
-      dateStart: () => Date.today().addDays(-3),
-      dateEnd: () => Date.parse('yesterday'),
+      dateStart: () => Date.today().addDays(-2),
+      dateEnd: () => Date.today(),
       enabled: true
     },
 
@@ -91,9 +91,9 @@ $(() => {
     {
       text: $.t('plugins.daterangepicker.last_week'),
       previousText: $.t('plugins.daterangepicker.preceding_week'),
-      dateStart: () => Date.parse('1 week ago').moveToDayOfWeek(0, -1),
-      dateEnd: () => Date.parse('1 week ago').moveToDayOfWeek(6, 1),
-      datePrevious: () => Date.parse('2 weeks ago').moveToDayOfWeek(0, -1),
+      dateStart: () => Date.today().addDays(-7),
+      dateEnd: () => Date.today(),
+      datePrevious: () => Date.today().addDays(-14),
       enabled: true
     }
   ];
@@ -101,7 +101,8 @@ $(() => {
   timeControl(
     $timecontrol,
     DEFAULT_DATE_RANGES,
-    dateRangeFromParams()
+    dateRangeFromParams(),
+    true
   );
 
   // blank out the input field if we don't have URL params for the date,

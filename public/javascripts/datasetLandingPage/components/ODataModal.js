@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { emitMixpanelEvent } from '../actions';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import initClipboardControl from '../lib/clipboardControl';
 
 export var ODataModal = React.createClass({

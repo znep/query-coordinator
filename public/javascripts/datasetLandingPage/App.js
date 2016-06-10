@@ -2,13 +2,13 @@ import React from 'react';
 import Responsive from './lib/Responsive';
 import PrivateNotice from './components/PrivateNotice';
 import InfoPane from './components/InfoPane';
-import FeaturedContent from './containers/FeaturedContent';
-import FeaturedContentModal from './containers/FeaturedContentModal';
+import FeaturedContent from './components/FeaturedContent';
+import FeaturedContentModal from './components/FeaturedContentModal';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import PopularViewList from './containers/PopularViewList';
 import ApiFlannel from './components/ApiFlannel';
-import ContactModal from './containers/ContactModal';
+import ContactForm from './components/ContactForm';
 import ShareModal from './components/ShareModal';
 import ODataModal from './components/ODataModal';
 import FeedbackPanel from './components/FeedbackPanel';
@@ -30,7 +30,7 @@ export default function() {
       </main>
 
       <ApiFlannel />
-      <ContactModal />
+      <ContactForm />
       <FeaturedContentModal />
       <FeedbackPanel />
       <ODataModal />

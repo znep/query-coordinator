@@ -74,10 +74,6 @@ enable_dataset_landing_page:
   description: Enable the dataset landing page
   defaultValue: false
   category: dataset landing page
-enable_dataset_landing_page_contact_form:
-  description: Enable the contact modal on the dataset landing page
-  defaultValue: false
-  category: dataset landing page
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
@@ -230,6 +226,9 @@ reenable_ui_for_nbe:
 restore_dataset_button:
   description: Show the Restore Dataset button on the data jobs page
   defaultValue: false
+restore_dataset_filter:
+  description: Whether or not to show the 'Restore' event filter on the data jobs page
+  defaultValue: false
 robots_txt_disallow_analytics_add:
   description: Adds "/analytics/add" to the Disallow list for robots.txt
   defaultValue: false
@@ -295,6 +294,11 @@ useSoda2:
   defaultValue: never
   disableTrueFalse: never
   expectedValues: never read-only always
+validate_fragment_cache_before_render:
+  category: data slate
+  description: Validate fragment cache of dataslate pages during page render, instead of relying on core to do it on page save (unreliable). Enabling this flag is the right thing to do, but may cause unexpected load.
+  defaultValue: true
 zealous_dataslate_cache_expiry:
+  category: data slate
   description: 'This flag sets the expiry on three caches for DataSlate: the pages dataset, the manifest, and the fragment cache. `false` means the previous problematic-in-EU expiries; `true` means 5.seconds; and setting a number will set it in SECONDS.'
   defaultValue: false

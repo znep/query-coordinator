@@ -192,7 +192,7 @@ en:
         errors:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png.'
-          upload_timeout: 'Looks like the uploading is taking longer than it should. Try re-uploading and ensuring the your file is an acceptable size and file type.'
+          upload_timeout: 'Looks like the uploading is taking longer than it should. Try re-uploading and ensuring your file is of an acceptable size and file type.'
           exception: "We're really sorry! There was an unexpected problem with your upload. Please try again."
           image_search: "We can't complete your search right now. Try different keywords."
           cancelled: "Looks like the upload was canceled!"

@@ -29,13 +29,13 @@ RSpec.describe PermissionsUpdater do
     it 'raises without story_uid' do
       expect {
         PermissionsUpdater.new(user, user_authorization)
-      }.to raise_error(ArgumentError, /2 for 3/)
+      }.to raise_error(ArgumentError, /given 2, expected \d/)
     end
 
     it 'raises without user_authorization' do
       expect {
         PermissionsUpdater.new(user)
-      }.to raise_error(ArgumentError, /1 for 3/)
+      }.to raise_error(ArgumentError, /given 1, expected \d/)
     end
   end
 

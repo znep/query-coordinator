@@ -28,4 +28,9 @@ module SiteChromeHelper
   def form_field(fields)
     "content[#{fields.join('][')}]"
   end
+
+  # Return links array trimmed to link_count, and create empty placeholders as needed
+  def links_with_placeholders(links, link_count)
+    Array[*links.to_a[0...link_count] + Array.new(link_count)][0...link_count]
+  end
 end

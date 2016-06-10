@@ -19,10 +19,18 @@ function childrenOf($el) {
   return $(`input[data-parent-id="${id}"][data-parent="${type}"]`);
 }
 
+function matchSync($el, $other) {
+  if ($el.is(':checked')) {
+    $other.attr('checked', $el.attr('checked'));
+  } else {
+    $other.removeAttr('checked');
+  }
+}
+
 function cascadeSyncDown($el) {
   childrenOf($el).each((_index, child) => {
     const $child = $(child);
-    $child.attr('checked', $el.attr('checked'));
+    matchSync($el, $child);
     cascadeSyncDown($child);
   });
 }
@@ -30,7 +38,7 @@ function cascadeSyncDown($el) {
 function cascadeUnsyncUp($el) {
   const $parent = parentOf($el);
   if (!$parent) { return; }
-  $parent.removeAttr('checked');
+  matchSync($el, $parent);
   cascadeUnsyncUp($parent);
 }
 
@@ -41,6 +49,7 @@ function onChecked(event) {
     cascadeSyncDown($target);
   } else {
     cascadeUnsyncUp($target);
+    cascadeSyncDown($target);
   }
 }
 

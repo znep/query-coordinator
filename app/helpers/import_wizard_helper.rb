@@ -3,6 +3,7 @@ module ImportWizardHelper
   def import_wizard_translations
     parts = [
       LocalePart.screens.import_pane,
+      LocalePart.screens.import_common,
       LocalePart.screens.wizard,
       LocalePart.screens.dataset_new,
       LocalePart.screens.edit_metadata,

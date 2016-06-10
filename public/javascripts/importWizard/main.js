@@ -6,9 +6,10 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
 
-import * as Wizard from './Wizard';
+import * as Wizard from './wizard';
 import * as Upload from './components/uploadFile';
 import * as Metadata from './components/metadata';
+import * as ImportShapefile from './components/importShapefile';
 
 
 const enhancer = compose(
@@ -25,11 +26,10 @@ function identityReducer(model, action) { // eslint-disable-line no-unused-vars
 
 const rootReducer = combineReducers({
   datasetId: identityReducer,
-  operation: Wizard.updateOperation,
-  currentPage: Wizard.updateCurrentPage,
+  navigation: Wizard.updateNavigation,
   upload: Upload.update,
   transform: identityReducer, // null except in the UploadData operation
-  layers: identityReducer,
+  layers: ImportShapefile.update,
   metadata: Metadata.update
 });
 

@@ -7,18 +7,6 @@ type FileName = string
 
 type FileId = string
 
-type FileUpload
-	= { type: 'NothingSelected' }
-	| { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
-
-
-type UploadProgress
-	= { type: 'InProgress', percent: number }
-	| { type: 'Failed',  error: string }
-	| { type: 'Analyzing' }
-	| { type: 'Complete', fileId: string, summary: Summary }
-
-
 type Summary = {
   headers: number,
   columns: Array<SharedTypes.SourceColumn>,
@@ -26,22 +14,46 @@ type Summary = {
   sample: Array<Array<string>>,
 }
 
+type UploadProgress
+	= { type: 'InProgress', percent: number }
+	| { type: 'Failed', error: string }
+	| { type: 'Analyzing' }
+	| { type: 'Complete', fileId: string, summary: Summary }
+
+type FileUpload
+	= { type: 'NothingSelected' }
+	| { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
 
 export function initial(): FileUpload {
   return { type: 'NothingSelected' };
 }
 
-
-export function selectFile(file: File) {
-  return (dispatch) => {
-    const urlAttrs = {
-      pathname: '/imports2.txt',
-      query: {
+function scanUrlForOperation(operation: SharedTypes.OperationName) {
+  const urlAttrs = { pathname: '/imports2.txt' };
+  // TODO: NBE? Blobby?
+  // TODO: error handling (extension checking)
+  switch (operation) {
+    case 'UploadData':
+      urlAttrs.query = {
         method: 'scan'
-      }
-    };
+      };
+      break;
+    case 'UploadGeospatial':
+      urlAttrs.query = {
+        method: 'scanShape'
+      };
+      break;
+    default:
+      console.error('Unexpected / not implemented operation', operation);
+  }
+  return url.format(urlAttrs);
+}
+
+
+export function selectFile(file: File, operation: SharedTypes.OperationName) {
+  return (dispatch) => {
     const upload = new Upload(file);
-    upload.to(url.format(urlAttrs));
+    upload.to(scanUrlForOperation(operation));
     upload.on('progress', (evt) => {
       console.log('progress', evt);
       if (evt.percent === 100) {
@@ -84,7 +96,7 @@ export function fileUploadAnalyzing() {
   };
 }
 
-const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
+export const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
 export function fileUploadComplete(fileId: FileId, summary: Summary) {
   return {
     type: FILE_UPLOAD_COMPLETE,
@@ -167,7 +179,7 @@ export function view(props) {
 
   function onSelectFile(event) {
     // TODO: can users deselect a file? may need an action for that
-    onFileUploadAction(selectFile(event.target.files[0]));
+    onFileUploadAction(selectFile(event.target.files[0], operation));
   }
 
   const fileNameDisplay =
@@ -178,14 +190,17 @@ export function view(props) {
   return (
     <div className="uploadFilePane">
       {/* TODO: should sometimes say "upload" instead of "import" (another I18n key) */}
-      <p className="headline">{ I18n.screens.import_pane.headline_import }</p>
+      <p className="headline">{I18n.screens.import_pane.headline_import}</p>
       <div className="uploadFileContainer">
         <div className="uploadFileNameWrapper">
-          <input type="text" className="uploadFileName" readOnly="readonly"
-                 value={ fileNameDisplay }/>
-          <input type="file" onChange={ onSelectFile } />
+          <input
+            type="text"
+            className="uploadFileName"
+            readOnly="readonly"
+            value={fileNameDisplay} />
+          <input type="file" onChange={onSelectFile} />
         </div>
-        { (() => {
+        {(() => {
           switch (fileUpload.type) {
             case 'NothingSelected':
               return null;
@@ -193,10 +208,10 @@ export function view(props) {
             case 'UploadInProgress':
               return renderFileUploadStatus(fileUpload.progress);
           }
-        })() }
+        })()}
         <p className="uploadFileFormats">
           <span className="type">
-            { (() => {
+            {(() => {
               switch (operation) {
                 case 'UploadData':
                   return I18nPrefixed.supported_blist;
@@ -205,7 +220,7 @@ export function view(props) {
                 default:
                   return null;
               }
-          })() }
+            })()}
           </span>
         </p>
       </div>
@@ -224,7 +239,7 @@ export function renderFileUploadStatus(progress: UploadProgress) {
     return (
       <div className="uploadThrobber">
         <span className="icon"></span>
-        <span className="text">{ text }</span>
+        <span className="text">{text}</span>
       </div>
     );
   }
@@ -232,11 +247,11 @@ export function renderFileUploadStatus(progress: UploadProgress) {
   switch (progress.type) {
     case 'InProgress':
       // TODO i18n
-      return withThrobber(`${Math.round(progress.percent) }% uploaded`);
+      return withThrobber(`${Math.round(progress.percent)}% uploaded`);
 
     case 'Failed':
       // TODO i18n
-      return withThrobber(`Error uploading file: ${ progress.error }`);
+      return withThrobber(`Error uploading file: ${progress.error}`);
 
     case 'Analyzing':
       return withThrobber(I18n.screens.import_pane.analyzing);

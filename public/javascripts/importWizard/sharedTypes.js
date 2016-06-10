@@ -7,3 +7,11 @@ type SourceColumn = { // eslint-disable-line no-unused-vars
   numProcessed: number,
   typeCounts: { [key: TypeName]: number }
 }
+
+export type OperationName
+  = 'UploadData'
+  | 'UploadBlob'
+  | 'ConnectToEsri'
+  | 'UploadGeospatial'
+  | 'LinkToExternal'
+  | 'CreateFromScratch'

@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 describe SiteChrome do
+
+  include TestHelperMethods
+
   describe 'site chrome model' do
     # NOTE: To re-record the VCR cassettes:
     # * Log in to FE locally against local core
@@ -44,6 +47,18 @@ describe SiteChrome do
     it 'can find or create default' do
       VCR.use_cassette('site_chrome/model/find_or_create') do
         site_chrome = SiteChrome.find_or_create_default(auth_cookies_for_vcr_tapes)
+        expect(site_chrome).to be_instance_of(SiteChrome)
+        expect(site_chrome.id).not_to be_nil
+        expect(site_chrome.default).to be true # should be default
+        expect(site_chrome.updatedAt).not_to be_nil
+      end
+    end
+
+    it 'can find or create default for CurrentDomain', :verify_stubs => false do
+      VCR.use_cassette('site_chrome/model/find_or_create_mydomain') do
+        init_current_domain
+        allow(CurrentDomain).to receive(:cname).and_return('mydomain.com')
+        site_chrome = SiteChrome.find_or_create_default({})
         expect(site_chrome).to be_instance_of(SiteChrome)
         expect(site_chrome.id).not_to be_nil
         expect(site_chrome.default).to be true # should be default
@@ -164,4 +179,5 @@ describe SiteChrome do
       end
     end
   end
+
 end

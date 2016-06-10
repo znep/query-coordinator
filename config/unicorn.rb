@@ -1,4 +1,4 @@
-listen Integer(ENV['UNICORN_LISTEN_PORT'] || 3000)
+listen Integer(ENV['UNICORN_LISTEN_PORT'] || 3333)
 worker_processes Integer(ENV['UNICORN_WORKER_PROCESSES'] || ENV['WORKER_PROCESSES'] || 4)
 timeout Integer(ENV['UNICORN_TIMEOUT'] || 300)
 

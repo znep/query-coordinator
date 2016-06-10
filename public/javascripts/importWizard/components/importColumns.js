@@ -85,7 +85,9 @@ export function view({ transform, fileName, summary, dispatch }) {
         <ul className="columnWarningsList"></ul>
       </div>
       <hr/>
-      <a className="button nextButton" onClick={ () => dispatch(importColumnsNext()) }>Next</a>
+      <a className="button nextButton" onClick={ () => dispatch(importColumnsNext()) }>
+        { I18n.screens.wizard.next }
+      </a>
     </div>
   );
 }

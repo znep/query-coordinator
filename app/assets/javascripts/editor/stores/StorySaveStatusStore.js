@@ -60,7 +60,7 @@ export default function StorySaveStatusStore(forStoryUid) {
 
           userUrl = StorytellerUtils.format('/api/users/{0}.json', payload.conflictingUserId);
 
-          httpRequest('GET', userUrl, 'json').
+          httpRequest('GET', userUrl).
             then(
               function(userData) {
 

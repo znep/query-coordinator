@@ -2,30 +2,15 @@ import $ from 'jQuery';
 
 import StorytellerUtils from '../StorytellerUtils';
 
-var SUPPORTED_REQUEST_METHODS = ['GET'];
+var SUPPORTED_REQUEST_METHODS = ['GET', 'PUT'];
 
-export default function httpRequest(method, url, acceptType) {
+export default function httpRequest(method, url, options) {
 
   return new Promise(
     function(resolve, reject) {
 
-      if (SUPPORTED_REQUEST_METHODS.indexOf(method.toUpperCase()) === -1) {
-
-        reject(
-          new Error(
-            'Unsupported method "{0}"; supported methods: {1}'.format(
-              method.toUpperCase(),
-              SUPPORTED_REQUEST_METHODS
-            )
-          )
-        );
-      }
-
-      var options = {
-        url: url,
-        method: method
-      };
-
+      // A custom rejection handler that munges httpRequest arguments with
+      // jQuery's XHR properties.
       function handleError(jqXHR) {
 
         reject(
@@ -35,24 +20,43 @@ export default function httpRequest(method, url, acceptType) {
               method.toUpperCase(),
               url,
               jqXHR.status,
-              (JSON.stringify(jqXHR.responseText) || '<No response>')
+              JSON.stringify(jqXHR.responseText) || '<No response>'
             )
           )
         );
       }
 
-      options.success = resolve;
-      options.error = handleError;
+      // Reject unsupported HTTP verbs.
+      if (SUPPORTED_REQUEST_METHODS.indexOf(method.toUpperCase()) === -1) {
 
-      if ((acceptType || '').toLowerCase() === 'json') {
-        // Setting `options.dataType` affects the `Accept` header as well as a
-        // few other response handling things.
-        //
-        // See: http://api.jquery.com/jquery.ajax/
-        options.dataType = 'json';
+        reject(
+          new Error(
+            StorytellerUtils.format(
+              'Unsupported method "{0}"; supported methods: {1}',
+              method.toUpperCase(),
+              SUPPORTED_REQUEST_METHODS.join(', ')
+            )
+          )
+        );
+      } else {
+
+        // Normalize options to jQuery's ajax method, with reasonable defaults.
+        options = options || {};
+
+        $.ajax({
+          // Minimal required parameters.
+          url: url,
+          method: method.toUpperCase(),
+          // Callbacks.
+          success: resolve,
+          error: handleError,
+          // Optional parameters.
+          data: options.data,
+          dataType: options.dataType || 'json',
+          contentType: options.contentType || 'application/json',
+          headers: options.headers || {}
+        });
       }
-
-      $.ajax(options);
     }
   );
 }

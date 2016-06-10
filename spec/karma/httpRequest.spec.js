@@ -3,9 +3,8 @@ import httpRequest, {__RewireAPI__ as httpRequestAPI} from '../../app/assets/jav
 describe('httpRequest', function() {
   var jQueryAjaxStub;
   var request;
-  var testMethod = 'GET';
+  var testMethod;
   var testUrl = 'test.json';
-  var testAcceptType;
 
   beforeEach(function() {
     jQueryAjaxStub = sinon.stub();
@@ -17,155 +16,130 @@ describe('httpRequest', function() {
   });
 
   describe('for GET requests', function() {
-
     beforeEach(function() {
-      request = httpRequest(testMethod, testUrl, testAcceptType);
+      testMethod = 'GET';
+      request = httpRequest(testMethod, testUrl);
     });
 
-    describe('with the JSON type', function() {
-      testAcceptType = 'json';
-
-      it('makes the AJAX request with the correct options', function() {
-        var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
-
-        assert.isTrue(jQueryAjaxStub.called);
-        assert.equal(testMethod, jQueryAjaxStubOptions.method);
-        assert.equal(testUrl, jQueryAjaxStubOptions.url);
-        assert.equal(testAcceptType, jQueryAjaxStubOptions.dataType);
-      });
-
-      it('returns a promise', function() {
-        assert.isTrue(request instanceof Promise);
-      });
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
     });
 
-    describe('with non-JSON types', function() {
-      testAcceptType = undefined;
+    it('makes the AJAX request with the correct options', function() {
+      assert.isTrue(jQueryAjaxStub.called);
 
-      it('makes the AJAX request with the correct options', function() {
-        var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
-
-        assert.isTrue(jQueryAjaxStub.called);
-        assert.equal(testMethod, jQueryAjaxStubOptions.method);
-        assert.equal(testUrl, jQueryAjaxStubOptions.url);
-        assert.equal(testAcceptType, jQueryAjaxStubOptions.dataType);
-      });
-
-      it('returns a promise', function() {
-        assert.isTrue(request instanceof Promise);
-      });
+      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
+      assert.equal(testMethod, jQueryAjaxStubOptions.method);
+      assert.equal(testUrl, jQueryAjaxStubOptions.url);
     });
   });
 
   describe('for POST requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'POST';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('POST', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
   describe('for PUT requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'PUT';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('PUT', testUrl, testAcceptType).
-        catch(
-          function() {
+    it('makes the AJAX request with the correct options', function() {
+      assert.isTrue(jQueryAjaxStub.called);
 
-            assert.isTrue(true);
-            done();
-          }
-        );
+      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
+      assert.equal(testMethod, jQueryAjaxStubOptions.method);
+      assert.equal(testUrl, jQueryAjaxStubOptions.url);
     });
   });
 
   describe('for DELETE requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'DELETE';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('DELETE', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
   describe('for HEAD requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'HEAD';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('HEAD', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
   describe('for OPTIONS requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'OPTIONS';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('OPTIONS', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
   describe('for PATCH requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'PATCH';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('PATCH', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
   describe('for TRACE requests', function() {
-    testAcceptType = undefined;
+    beforeEach(function() {
+      testMethod = 'TRACE';
+      request = httpRequest(testMethod, testUrl);
+    });
 
-    it('rejects the promise with an error', function(done) {
+    it('returns a promise', function() {
+      assert.isTrue(request instanceof Promise);
+    });
 
-      httpRequest('TRACE', testUrl, testAcceptType).
-        catch(
-          function() {
-
-            assert.isTrue(true);
-            done();
-          }
-        );
+    it('makes no AJAX request', function() {
+      assert.isFalse(jQueryAjaxStub.called);
     });
   });
 });

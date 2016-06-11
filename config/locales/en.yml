@@ -3579,6 +3579,7 @@ en:
       problem_uploading: There was a problem uploading that file. Please make sure it is valid.
       replicating: Replicating the dataset.
       rows_imported: "%{num} rows imported so far."
+      rows_imported_js: "{0} rows imported so far."
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file

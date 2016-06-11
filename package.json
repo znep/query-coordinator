@@ -107,6 +107,7 @@
     "component-upload": "0.3.0",
     "dompurify": "0.7.4",
     "dotdotdot": "1.7.0",
+    "form-urlencoded": "1.4.0",
     "leaflet": "0.7.3",
     "lodash": "3.10.1",
     "mixpanel-browser": "2.7.2",

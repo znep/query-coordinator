@@ -17,7 +17,7 @@ describe('importShapefile reducer', () => {
     // TODO: add tests that verify nothing happens for uploading a dataset
     it('saves layers when the file upload is for a shapefile', () => {
       const stateAfter = update(null, fileUploadComplete('random-file-id', { layers: defaultLayers}));
-      expect(stateAfter).to.deep.equal(layers);
+      expect(stateAfter).to.deep.equal(defaultLayers);
     });
   });
 

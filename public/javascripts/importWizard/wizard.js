@@ -2,11 +2,15 @@ import React, { PropTypes } from 'react';
 import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
+import * as ImportColumns from './components/importColumns';
+import * as Importing from './components/importing';
+import * as Working from './components/working';
+import * as Finish from './components/finish';
+import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
 import * as SharedTypes from './sharedTypes';
 
 import enabledModules from 'enabledModules';
-
 
 type Layer = {
   name: string
@@ -19,6 +23,10 @@ type PageName
   | 'ImportColumns'
   | 'ImportShapefile'
   | 'Metadata'
+  // can't re-enter to the below pages
+  | 'Working'
+  | 'Importing'
+  | 'Finish'
 
 type Navigation = {
   operation: SharedTypes.OperationName,
@@ -30,7 +38,7 @@ type NewDatasetModel = {
   datasetId: string,                  // this should never change
   navigation: Navigation,
   upload: UploadFile.FileUpload,
-  transform: Array<string>,           // change back to Transform type only used in UploadData operation
+  transform: ImportColumns.Transform,               // only used in UploadData operation
   layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata
 }
@@ -41,6 +49,7 @@ const initialNavigation: Navigation = {
   operation: null // will be filled in when we click something on the first screen
 };
 
+// is this even used or is it just the no-args call to the reducer?
 export function initialNewDatasetModel(datasetId: string, datasetName: string): NewDatasetModel {
   return {
     datasetId: datasetId,
@@ -48,7 +57,8 @@ export function initialNewDatasetModel(datasetId: string, datasetName: string): 
     upload: UploadFile.initial(),
     transform: null,
     layers: null,
-    metadata: Metadata.emptyForName(datasetName)
+    metadata: Metadata.emptyForName(datasetName),
+    importStatus: Server.initialImportStatus()
   };
 }
 
@@ -94,6 +104,7 @@ export function updateNavigation(navigation = initialNavigation: Navigation, act
         default:
           console.error('invalid operation name:', action.name);
       }
+
       return {
         operation: action.name,
         page: nextPage,
@@ -134,8 +145,8 @@ export function updateNavigation(navigation = initialNavigation: Navigation, act
 
 // view
 
-export function view(props) {
-  const { state, dispatch } = props;
+
+export function view({ state, dispatch }) {
 
   return (
     <div className="contentBox fixedWidth" id="reactWizard">
@@ -170,8 +181,14 @@ export function view(props) {
               );
 
             case 'ImportColumns':
-              {/* TODO: call ImportColumns component */}
-              return <span>ImportColumns</span>;
+              // TODO: assert validity of fileUpload
+              return (
+                <ImportColumns.view
+                  transform={state.transform}
+                  fileName={state.upload.fileName}
+                  dispatch={dispatch}
+                  goToPage={(page) => dispatch(goToPage(page))} />
+              );
 
             case 'ImportShapefile':
               return (
@@ -189,8 +206,18 @@ export function view(props) {
                   onMetadataAction={(action) => {dispatch(action);}} />
               );
 
+            case 'Working':
+              return <Working.view />;
+
+            case 'Importing':
+              return <Importing.view importStatus={state.importStatus} />;
+
+            case 'Finish':
+              return <Finish.view />;
+
             default:
               console.error('Unknown page', state.navigation.page);
+
           }
         })()}
       </div>

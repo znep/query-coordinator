@@ -123,7 +123,11 @@ export function updateLayerAction(layerIndex, layerName) {
 export function update(layers = null, action) {
   switch (action.type) {
     case FILE_UPLOAD_COMPLETE:
-      return action.summary.layers;
+      if (!_.isUndefined(action.summary.layers)) {
+        return action.summary.layers;
+      } else {
+        return layers;
+      }
     case SHAPEFILE_UPDATE_LAYER:
       return Utils.updateAt(layers, action.layerIndex, (layer) => {
         return {

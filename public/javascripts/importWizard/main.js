@@ -9,8 +9,9 @@ import _ from 'lodash';
 import * as Wizard from './wizard';
 import * as Upload from './components/uploadFile';
 import * as Metadata from './components/metadata';
+import * as ImportColumns from './components/importColumns';
+import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
-
 
 const enhancer = compose(
   applyMiddleware(createLogger(), thunk)
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   datasetId: identityReducer,
   navigation: Wizard.updateNavigation,
   upload: Upload.update,
-  transform: identityReducer, // null except in the UploadData operation
+  transform: ImportColumns.update, // null except in the UploadData operation
+  importStatus: Server.update,
   layers: ImportShapefile.update,
   metadata: Metadata.update
 });

@@ -403,7 +403,7 @@ export default function CollaboratorsRenderer() {
   function dispatchActions(event) {
     var email;
     var accessLevel;
-    var $target = $(event.target);
+    var $target = $(event.target).closest('[data-action]');
     var action = $target.attr('data-action');
     var $tr = $target.closest('tr');
     var collaborator = {accessLevel: $tr.attr('data-access-level')};

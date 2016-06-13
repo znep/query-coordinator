@@ -91,9 +91,23 @@ class Document < ActiveRecord::Base
         upload_file_size: self.upload_file_size,
         status: self.status,
         created_at: self.created_at,
-        url: self.upload.url(Rails.application.config.enable_responsive_images ? :xlarge : nil)
+        url: canonical_url
       }
     }
+  end
+
+  # Returns a publicly-accessible URL to the uploaded asset. Will return the url to the default thumbnail size
+  # if it's an image, or the original upload location if it's an html snippet.
+  # Optionally specify one of THUMBNAIL_SIZES to get that thumbnail size.
+  def canonical_url(size = nil)
+    default_thumbnail_size_or_nil = if Rails.application.config.enable_responsive_images && check_content_type_is_image
+      size || :xlarge
+    else
+      # Sending nil to self.upload.url() will return the original uploaded file url
+      nil
+    end
+
+    self.upload.url(default_thumbnail_size_or_nil)
   end
 
   # Images sizes at different breakpoints in the UI.

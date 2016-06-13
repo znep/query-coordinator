@@ -72,12 +72,12 @@ RSpec.describe ImageComponent, type: :model do
         end
 
         it 'returns url from document upload' do
-          expect(document.upload).to receive(:url).with(:huge).and_return('huge-url')
+          expect(document).to receive(:canonical_url).with(:huge).and_return('huge-url')
           expect(subject.url(:huge)).to eq('huge-url')
         end
 
         it 'defaults to nil for size' do
-          expect(document.upload).to receive(:url).with(nil).and_return('default-size-url')
+          expect(document).to receive(:canonical_url).with(nil).and_return('default-size-url')
           expect(subject.url).to eq('default-size-url')
         end
       end
@@ -92,7 +92,7 @@ RSpec.describe ImageComponent, type: :model do
         end
 
         it 'returns url from document upload' do
-          expect(document.upload).to receive(:url).with(:huge).and_return('huge-url')
+          expect(document).to receive(:canonical_url).with(:huge).and_return('huge-url')
           expect(subject.url(:huge)).to eq('huge-url')
         end
       end

@@ -80,32 +80,10 @@ RSpec.describe Document, type: :model do
           upload_file_size: subject.upload_file_size,
           status: subject.status,
           created_at: subject.created_at,
-          url: subject.upload.url(:xlarge)
+          url: subject.canonical_url
         }
       }
       expect(subject.as_json).to eq(expected)
-    end
-
-    context 'when enable_responsive_images feature flag is enabled' do
-      before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
-      end
-
-      it 'gets :xlarge upload url' do
-        expect(subject.upload).to receive(:url).with(:xlarge)
-        subject.as_json
-      end
-    end
-
-    context 'when enable_responsive_images feature flag is disabled' do
-      before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
-      end
-
-      it 'gets upload url without specifying size' do
-        expect(subject.upload).to receive(:url).with(nil)
-        subject.as_json
-      end
     end
   end
 
@@ -170,6 +148,48 @@ RSpec.describe Document, type: :model do
       it 'raises an exception' do
         expect { subject.set_content_type }.to raise_error(MissingContentTypeError)
         expect(subject.upload.content_type).to eq('image/png') # doesn't change after raising
+      end
+    end
+  end
+
+  describe '#canonical_url' do
+    context 'when enable_responsive_images feature flag is enabled' do
+      before do
+        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
+      end
+
+      context 'when content_type is not an image' do
+        subject { FactoryGirl.create(:document, upload_content_type: 'text/html') }
+
+        it 'gets original upload url' do
+          expect(subject.upload).to receive(:url).with(nil).and_return('original-url')
+          expect(subject.canonical_url).to eq('original-url')
+        end
+      end
+
+      context 'when content_type is image' do
+        subject { FactoryGirl.create(:document, upload_content_type: 'image/png') }
+
+        it 'gets :xlarge upload url by default' do
+          expect(subject.upload).to receive(:url).with(:xlarge).and_return('xlarge-url')
+          expect(subject.canonical_url).to eq('xlarge-url')
+        end
+
+        it 'gets thumbnail size specified by parameter' do
+          expect(subject.upload).to receive(:url).with(:humungous).and_return('humungous-url')
+          expect(subject.canonical_url(:humungous)).to eq('humungous-url')
+        end
+      end
+    end
+
+    context 'when enable_responsive_images feature flag is disabled' do
+      before do
+        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
+      end
+
+      it 'gets upload url without specifying size' do
+        expect(subject.upload).to receive(:url).with(nil).and_return('original-url')
+        expect(subject.canonical_url(:example)).to eq('original-url')
       end
     end
   end

@@ -18,7 +18,7 @@ class ImageComponent
   end
 
   def url(size = nil)
-    has_thumbnails? ? document.upload.url(size) : image_url
+    has_thumbnails? ? document.canonical_url(size) : image_url
   end
 
   def has_thumbnails?

@@ -219,6 +219,10 @@ function _removeStoryTile($element) {
 function _renderStoryTileError($element) {
 
   $element.
+    children(':not(.component-edit-controls)').
+    remove();
+
+  $element.
     addClass('component-error').
     append([
       $('<p>').text(I18n.t('editor.story_tile.invalid_permissions'))

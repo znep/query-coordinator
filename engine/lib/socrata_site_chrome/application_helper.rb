@@ -2,15 +2,18 @@ require 'request_store'
 
 module SocrataSiteChrome
   module ApplicationHelper
+    def header_title
+      localized('header.site_name', get_site_chrome.locales)
+    end
 
-    def site_name
-      @site_name ||= localized('general.site_name', get_site_chrome.locales)
+    def footer_title
+      localized('footer.site_name', get_site_chrome.locales)
     end
 
     def logo(img)
       img_src = img.dig('logo', 'src')
       if img_src.present?
-        image_tag(img_src, :alt => img.dig('logo', 'alt') || site_name,
+        image_tag(img_src, :alt => img.dig('logo', 'alt') || header_title,
           :onerror => 'this.style.display="none"')
       end
     end
@@ -18,7 +21,7 @@ module SocrataSiteChrome
     def header_logo
       link_to('/', class: 'logo') do
         img = logo(get_site_chrome.header)
-        span = content_tag(:span, site_name, :class => 'site-name')
+        span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
       end
     end
@@ -33,7 +36,7 @@ module SocrataSiteChrome
 
     def copyright
       copy_with_year = "\u00A9 #{Time.now.year}"
-      site_name ? "#{copy_with_year}, #{site_name}" : copy_with_year
+      footer_title ? "#{copy_with_year}, #{footer_title}" : copy_with_year
     end
 
     def show_copyright?

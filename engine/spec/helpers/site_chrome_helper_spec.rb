@@ -7,7 +7,7 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe'#logo' do
     it 'returns nil if there is not an image src present' do
-      @site_name = ''
+      allow(helper).to receive(:header_title).and_return('')
       source = {}
       result = helper.logo(source)
       expect(result).to eq(nil)
@@ -24,8 +24,8 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(result).to eq('<img alt="Goats" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
 
-    it 'falls back to the site_name if there is no source logo alt' do
-      @site_name = 'Goldfinger'
+    it 'falls back to the header_title if there is no source logo alt' do
+      allow(helper).to receive(:header_title).and_return('Goldfinger')
       source = {
         'logo' => {
           'src' => 'http://myimage.png'
@@ -100,14 +100,14 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe '#copyright' do
     it 'returns only the copyright and year if there is no site name' do
-      allow(helper).to receive(:site_name).and_return(nil)
+      allow(helper).to receive(:footer_title).and_return(nil)
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
       expect(helper.copyright).to eq("\u00A9 1984")
     end
 
     it 'returns the copyright and year and site name' do
-      allow(helper).to receive(:site_name).and_return(%Q(Seattle's silly data!))
+      allow(helper).to receive(:footer_title).and_return(%Q(Seattle's silly data!))
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
       expect(helper.copyright).to eq(%Q(\u00A9 1984, Seattle's silly data!))

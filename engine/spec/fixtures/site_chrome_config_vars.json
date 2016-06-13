@@ -7,6 +7,7 @@
         "src": "http://i.imgur.com/rF2EJ4P.gif",
         "href": "#"
       },
+      "footer_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "yellow",
         "bg_color": "blue"
@@ -63,7 +64,6 @@
         }
       ],
       "link_text_color": "blue",
-      "site_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "#fff",
         "bg_color": "#2c97de",
@@ -76,6 +76,7 @@
         "src": "http://i.imgur.com/rF2EJ4P.gif",
         "href": "#"
       },
+      "header_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "pink",
         "bg_color": "blue"

@@ -151,6 +151,8 @@ view.propTypes = {
 };
 
 function ViewColumns({columns, dispatch}) {
+  const sourceColumns = columns.map(c => c.sourceColumn);
+
   return (
     <div>
       <div className="columnsListHeader importListHeader clearfix">
@@ -181,13 +183,13 @@ function ViewColumns({columns, dispatch}) {
               <ColumnDetail.view
                 key={idx}
                 resultColumn={resultColumn}
-                sourceColumns={columns}
+                sourceColumns={sourceColumns}
                 dispatchUpdate={dispatchUpdateColumn}
                 dispatchRemove={dispatchRemoveColumn} />
             );
           })
        }
-        {/* TODO: ^^ hook up to model */}
+       {/* TODO: ^^ hook up to model */}
       </ul>
     </div>
   );

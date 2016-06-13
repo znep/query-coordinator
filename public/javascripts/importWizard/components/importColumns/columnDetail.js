@@ -69,7 +69,8 @@ export function view({ resultColumn, sourceColumns, dispatchUpdate, dispatchRemo
           <select
             className="columnTypeSelect"
             value={resultColumn.sourceColumn.index}
-            onChange={(event) => dispatchUpdate(updateSourceColumn(sourceColumns[_.parseInt(event.target.value)].sourceColumn))} >
+            onChange={(event) => dispatchUpdate(
+                updateSourceColumn(sourceColumns[_.parseInt(event.target.value)]))} >
             {
               sourceColumns.map((column, idx) => (
                 <option value={idx} key={idx}>{column.name}</option>
@@ -98,7 +99,7 @@ export function view({ resultColumn, sourceColumns, dispatchUpdate, dispatchRemo
       </div>
     </li>
   );
-};
+}
 
 view.propTypes = {
   resultColumn: PropTypes.object.isRequired,

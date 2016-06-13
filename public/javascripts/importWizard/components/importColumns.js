@@ -245,10 +245,10 @@ function ViewPreview({sample, numHeaderRows, dispatch}) {
       <div className="headersActions clearfix">
         <span className="headersCount"></span>
         <UpdateHeadersButton
-          buttonType='more'
+          buttonType="more"
           onUpdateHeadersCount={(diff) => dispatch(changeHeaderCount(diff))} />
         <UpdateHeadersButton
-          buttonType='less'
+          buttonType="less"
           onUpdateHeadersCount={(diff) => dispatch(changeHeaderCount(diff))} />
       </div>
     </div>

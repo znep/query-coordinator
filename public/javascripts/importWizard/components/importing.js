@@ -16,8 +16,8 @@ export function view({importStatus}) {
 
           default:
             return null;
-       }
-     })()}
+        }
+      })()}
     </div>
   );
 }

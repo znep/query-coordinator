@@ -11,8 +11,8 @@ const view = ({ isHeader, row }) => {
 };
 
 view.propTypes = {
-    isHeader: PropTypes.bool.isRequired,
-    row: PropTypes.array.isRequired
+  isHeader: PropTypes.bool.isRequired,
+  row: PropTypes.array.isRequired
 };
 
 export default view;

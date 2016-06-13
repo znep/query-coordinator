@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 const generateButton = (buttonType, onUpdateHeadersCount) => {
   const I18nPrefixed = I18n.screens.dataset_new.import_columns;

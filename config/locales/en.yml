@@ -1848,6 +1848,9 @@ en:
         assets_federated:
           one: 1 asset federated
           other: '%{count} assets federated'
+        assets_discovered:
+          one: 1 asset discovered
+          other: '%{count} assets discovered'
         catalog: Catalog
         current_status: Current Status
         data: Data
@@ -1866,8 +1869,9 @@ en:
         esri_arcgis_url: ArcGIS Server address
         failing: Failing
         federated_assets: Federated assets
+        discovered_assets: Discovered assets
         flashes:
-          created: Success! We reached your server.
+          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the federation settings and continue setup.
           deleted: Your federation has been marked for deletion.
           updated: Your federation settings have been saved.
         ignore: Ignored
@@ -1882,9 +1886,10 @@ en:
         source_domain: Source Domain
         some_assets: Federate only these assets
         title: External Federation
-        working: Working
+        success: Success
         save: Save
-        not_yet: In progress
+        not_yet: Sync in progress
+        never: Never
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer

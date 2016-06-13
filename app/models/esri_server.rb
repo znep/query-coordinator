@@ -4,13 +4,14 @@
 # A federated layer corresponds to a socrata dataset.
 
 class EsriServer
-  attr_reader :job, :url, :layer_count, :id, :sync_type
+  attr_reader :job, :url, :synced_count, :layer_count, :id, :sync_type
 
   def initialize(server_hash)
     @data = server_hash
     @job =  @data['most_recent_job'] # may be nil
     @url = @data['url']
     @layer_count = @data['layer_count']
+    @synced_count = @data['synced_count']
     @id = @data['id']
     @sync_type = @data['sync_type']
   end
@@ -28,7 +29,7 @@ class EsriServer
     if @job
       case @job['status']
         when 'failure' then 'failing'
-        when 'success' then 'working'
+        when 'success' then 'success'
         else 'not_yet'
       end
     else

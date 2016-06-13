@@ -638,7 +638,7 @@ section.landing-page-section.schema-preview {
     }
 
     td {
-      padding: 10px 15px;
+      padding: 10px 15px 15px;
 
       &.column-name {
         width: auto;
@@ -647,6 +647,7 @@ section.landing-page-section.schema-preview {
       }
 
       &.column-description {
+        max-width: 7em;
         width: 40%;
         .contents {
           overflow: hidden;

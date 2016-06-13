@@ -31,7 +31,7 @@ class ExternalFederation
   # create a new external_federation link by posting it to the EsriCrawler
   def self.create(esri_domain, sync_type = 'ignored')
     EsriCrawler.post_request('/servers', {
-      :url => "https://#{esri_domain}/ArcGIS/rest",
+      :url => "https://#{esri_domain}",
       :sync_type => sync_type,
       :socrata_domain => CurrentDomain.cname
     })

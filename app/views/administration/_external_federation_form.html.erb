@@ -11,8 +11,14 @@
 
   <div class="input-group">
     <span class="input-group-prepend">https://</span>
-    <input type="text" name="server[esri_domain]" id="esri_domain" value="<%= @server['esri_domain']%>" class="required input-prepended input-appended"/>
-    <span class="input-group-append">/ArcGIS/rest</span>
+    <input
+      type="text"
+      name="server[esri_domain]"
+      id="esri_domain"
+      value="<%= @server['esri_domain']%>"
+      class="required input-prepended"
+      placeholder="<domain>/ArcGIS/rest"
+    />
   </div>
 
 </div>

@@ -157,7 +157,7 @@ describe ExternalFederation do
 
       expect(EsriCrawler).to receive(:post_request) do |path, body|
         expect(body).to eq({
-          :url => "https://#{esri_domain}/ArcGIS/rest",
+          :url => "https://#{esri_domain}",
           :sync_type => sync_type,
           :socrata_domain => CurrentDomain.cname
         })

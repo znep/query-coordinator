@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import * as SharedTypes from '../sharedTypes';
 import * as UploadFile from './uploadFile';
-import ColumnDetail from './importColumns/columnDetail';
+import * as ColumnDetail from './importColumns/columnDetail';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
+import * as Utils from '../utils';
 
 /*
 - Blueprint: schema (names & types)
@@ -51,6 +52,23 @@ function changeHeaderCount(change) {
   };
 }
 
+const UPDATE_COLUMN = 'UPDATE_COLUMN';
+function updateColumn(index, action) {
+  return {
+    type: UPDATE_COLUMN,
+    index: index,
+    action: action
+  };
+}
+
+const REMOVE_COLUMN = 'REMOVE_COLUMN';
+function removeColumn(index) {
+  return {
+    type: REMOVE_COLUMN,
+    index: index
+  };
+}
+
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     case UploadFile.FILE_UPLOAD_COMPLETE:
@@ -67,6 +85,16 @@ export function update(transform: Transform = null, action): Transform {
       return {
         ...transform,
         numHeaders: transform.numHeaders + action.change
+      };
+    case UPDATE_COLUMN:
+      return {
+        ...transform,
+        columns: Utils.updateAt(transform.columns, action.index, (col) => ColumnDetail.update(col, action.action))
+      };
+    case REMOVE_COLUMN:
+      return {
+        ...transform,
+        columns: _.filter(transform.columns, (unused, idx) => idx !== action.index)
       };
     default:
       return transform;
@@ -87,7 +115,7 @@ export function view({ transform, fileName, dispatch, goToPage }) {
       </div>
       <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
       <h2>{I18nPrefixed.subheadline}</h2>
-      <ViewColumns columns={transform.columns} />
+      <ViewColumns columns={transform.columns} dispatch={dispatch} />
       <ViewToolbar />
 
       <hr />
@@ -114,8 +142,9 @@ view.propTypes = {
   goToPage: PropTypes.func.isRequired
 };
 
+function ViewColumns({columns, dispatch}) {
+  const sourceColumns = columns.map(c => c.sourceColumn);
 
-function ViewColumns({columns}) {
   return (
     <div>
       <div className="columnsListHeader importListHeader clearfix">
@@ -131,22 +160,36 @@ function ViewColumns({columns}) {
         </div>
       </div>
       <ul className="columnsList importList" >
-        {columns.map((resultColumn, idx) => (
-          <ColumnDetail
-            resultColumn={resultColumn}
-            key={idx}
-            sourceColumns={columns} />
-          )
-        )
+        {
+          columns.map((resultColumn, idx) => {
+            function dispatchUpdateColumn(action) {
+              return dispatch(updateColumn(idx, action));
+            }
+
+            function dispatchRemoveColumn(event) {
+              event.preventDefault();
+              return dispatch(removeColumn(idx));
+            }
+
+            return (
+              <ColumnDetail.view
+                key={idx}
+                resultColumn={resultColumn}
+                sourceColumns={sourceColumns}
+                dispatchUpdate={dispatchUpdateColumn}
+                dispatchRemove={dispatchRemoveColumn} />
+            );
+          })
        }
-        {/* TODO: ^^ hook up to model */}
+       {/* TODO: ^^ hook up to model */}
       </ul>
     </div>
   );
 }
 
 ViewColumns.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired
 };
 
 
@@ -194,7 +237,7 @@ function ViewPreview({sample, numHeaderRows, dispatch}) {
         </table>
       </div>
       <div className="headersActions clearfix">
-        <span className="headersCount"></span> {/* TODO: make this be an actual count */}
+        <span className="headersCount"></span>
         <UpdateHeadersButton
           buttonType="more"
           onUpdateHeadersCount={(diff) => dispatch(changeHeaderCount(diff))} />

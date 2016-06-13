@@ -153,7 +153,7 @@ class ApplicationController < ActionController::Base
     if current_user_session
       @current_user = current_user_session.user
     end
-    RequestStore[:current_user] = current_user
+    RequestStore[:current_user] = @current_user
   end
 
   private

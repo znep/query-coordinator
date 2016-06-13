@@ -7,6 +7,10 @@
              fields: [:footer, :logo, :src],
              translation: translations[:footer_logo]) %>
 
+  <%= render('site_chrome/tab_content/form_field',
+             fields: [:locales, current_locale(suppress_locale = false), :footer, :site_name],
+             translation: translations[:footer_display_name]) %>
+
   <%= render('site_chrome/tab_content/form_field_pair',
              left: { fields: [:footer, :styles, :bg_color],
                      translation: translations[:footer_background_color] },

@@ -89,6 +89,9 @@ class AppConfig < Hashie::Dash
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier
 
+  # Canary declaration
+  property :canary, default: false
+
   def method_missing(name)
     message = "Attempted to access invalid property '#{name}' in AppConfig!"
     Airbrake.notify(

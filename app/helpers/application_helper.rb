@@ -4,6 +4,21 @@ module ApplicationHelper
   include BrowseHelper
   include Browse2Helper
 
+  def canary_warning
+    return unless APP_CONFIG.canary
+    content_tag(:style, :type => 'text/css') do
+      %q[body:before {
+        font-weight: bold;
+        color: white;
+        background-color: red;
+        content: "CANARY!";
+        display: block;
+        font-size: 32px;
+        padding: 5px;
+      }].html_safe
+    end
+  end
+
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
   def translate(key, options = {})

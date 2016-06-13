@@ -34,8 +34,6 @@ export function update(column, action) {
     case UPDATE_COLUMN_TYPE:
       return { ...column, chosenType: action.newType };
     case UPDATE_SOURCE_COLUMN:
-      console.log(column);
-      console.log(action.newSourceColumn);
       return { ...column, sourceColumn: action.newSourceColumn };
   }
 }

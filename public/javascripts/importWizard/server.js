@@ -11,7 +11,7 @@ import formurlencoded from 'form-urlencoded';
 
 
 export function saveMetadata() {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(Metadata.metadataNext());
     setTimeout(() => {
       dispatch(Working.workingNext());
@@ -109,7 +109,6 @@ function importData() {
       },
       credentials: 'same-origin',
       body: formurlencoded({
-        //name: state.metadata.name,
         name: state.upload.fileName,
         translation: transformToImports2Translation(state.transform),
         blueprint: JSON.stringify(transformToBlueprint(state.transform)),

@@ -44,14 +44,6 @@ function initialTransform(summary: UploadFile.Summary): Transform {
   ));
 }
 
-
-export const IMPORT_COLUMNS_NEXT = 'IMPORT_COLUMNS_NEXT';
-function importColumnsNext() {
-  return {
-    type: IMPORT_COLUMNS_NEXT
-  };
-}
-
 export const CHANGE_HEADER_COUNT = 'CHANGE_HEADER_COUNT';
 function changeHeaderCount(change) {
   return {

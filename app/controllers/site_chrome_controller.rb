@@ -8,12 +8,12 @@ class SiteChromeController < ApplicationController
   before_filter :find_or_create_default_site_chrome
 
   def tab_sections
-    %w(general header footer homepage social)
+    # EN-6943: removing "homepage" because it is not implemented yet
+    %w(general header footer social)
   end
   helper_method :tab_sections
 
   def edit
-    @current_locale = 'en' # TODO
   end
 
   def update

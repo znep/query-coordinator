@@ -2354,9 +2354,9 @@ en:
                 title: Header Bar Logo
                 description: URL reference to the header bar logo. Recommended minimum size is 100 x 40px. This logo will be displayed at a small size.
                 placeholder: URL
-              site_display_name:
-                title: Site Display Name
-                description: Name displayed in the Header Bar. Usually set to your organizations name.
+              header_display_name:
+                title: Header Display Name
+                description: Name displayed in the Header Bar. Usually set to your organization's name.
                 placeholder: Evergreen Open Data
               bar_background_color:
                 title: Bar Background Color
@@ -2377,8 +2377,12 @@ en:
             fields:
               footer_logo:
                 title: Footer Logo
-                description: URL reference the footer logo. Recommended minum size is 300px x 200px.
+                description: URL reference the footer logo. Recommended minimum size is 300px x 200px.
                 placeholder: URL
+              footer_display_name:
+                title: Footer Display Name
+                description: Name displayed in the Footer Bar. Usually set to your organization's name.
+                placeholder: Evergreen Open Data
               footer_background_color:
                 title: Footer Background Color
                 description: Background color of the footer and the color of the text and links displayed inside the footer.

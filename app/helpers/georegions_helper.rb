@@ -22,7 +22,7 @@ module GeoregionsHelper
   end
 
   def can_view_georegions_admin?(current_user)
-    current_user.is_admin? || current_user.roleName == 'administrator'
+    current_user.try(:is_admin?) || current_user.try(:roleName) == 'administrator'
   end
 
   def curated_region_job_queue

@@ -678,7 +678,18 @@ export default function AssetSelectorRenderer(options) {
       thatsEverything
     );
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    var backButton;
+    var componentType = assetSelectorStore.getComponentType();
+
+    if (componentType === 'image') {
+      // Paradoxically, we allow image components to be changed into other asset types.
+      backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    } else {
+      // Not so for other image-using components - they're locked to what they are (hero, author).
+      backButton = $('<button>', {class: 'btn btn-default', 'data-action': Actions.ASSET_SELECTOR_CLOSE});
+      backButton.text(I18n.t('editor.modal.buttons.cancel'));
+    }
+
     var selectButton = $(
       '<button>',
       {
@@ -716,6 +727,14 @@ export default function AssetSelectorRenderer(options) {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE
       });
+    });
+
+    backButton.one('click', function() {
+      if (backButton.attr('data-action')) {
+        dispatcher.dispatch({
+          action: backButton.attr('data-action')
+        });
+      }
     });
 
     return [search, searchError, galleryResults, navGroup];

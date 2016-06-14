@@ -3000,6 +3000,7 @@ en:
             title: Column Type
             type: Data Type
             type_prompt: Select a data type
+            working_copy_html: Please <a href="#" class="createWorkingCopy">make a working copy</a> to edit this column's Data Type
         column_order:
           columns:
             title: Columns
@@ -3082,7 +3083,7 @@ en:
             base_url_prompt: Enter the common URL prefix
             title: URL Options
           validation:
-            published: Please make a working copy or view of this dataset to change column properties
+            snapshot: You cannot edit column properties for a view snapshot
             unsaved: You cannot edit column properties for an unsaved view
         conditional_formatting:
           change_icon: change

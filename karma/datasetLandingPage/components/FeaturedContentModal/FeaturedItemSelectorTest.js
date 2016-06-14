@@ -57,6 +57,24 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     expect(element.querySelector('.featured-item .remove-button')).to.exist;
   });
 
+  it('renders the remove button with text if the item is not being removed', function() {
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, mockFeaturedItem, null]
+    }));
+
+    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.not.exist;
+  });
+
+  it('renders the remove button with a spinner if an item is being removed', function() {
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, mockFeaturedItem, null],
+      removePosition: 1,
+      isRemoving: true
+    }));
+
+    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.exist;
+  });
+
   it('renders an add button on placeholders', function() {
     var element = renderComponent(FeaturedItemSelector, getProps({
       contentList: [null, null, null]
@@ -138,7 +156,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('calls onClickRemove when the edit button is clicked', function() {
+    it('calls onClickRemove when the remove button is clicked', function() {
       var spy = sinon.spy();
 
       var element = renderComponent(FeaturedItemSelector, getProps({
@@ -148,6 +166,20 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       expect(spy.callCount).to.equal(0);
       Simulate.click(element.querySelector('.featured-item:first-child .remove-button'));
       expect(spy.callCount).to.equal(1);
+    });
+
+    it('does not call onClickRemove when the remove button is clicked and the item is already being removed', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickRemove: spy,
+        isRemoving: true,
+        removePosition: 0
+      }));
+
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.featured-item:first-child .remove-button'));
+      expect(spy.callCount).to.equal(0);
     });
   });
 });

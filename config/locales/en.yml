@@ -1317,7 +1317,6 @@ en:
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
         button: Manage Featured Content
     featured_content_modal:
-      header: Manage Featured Content
       external: External Resource
       external_resource_form:
         description: Description
@@ -1327,8 +1326,11 @@ en:
         save_error_message: Oh no! Something went wrong, please try again.
         title: Title
         url: Link to Resource
+      header: Manage Featured Content
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
       preview: Preview of featured content
+      remove_error: Oh no!  Something went wrong, please try again.
+      remove_prompt: Are you sure you wish to delete this?
       story: Story
       story_form:
         header: Feature a Socrata Story

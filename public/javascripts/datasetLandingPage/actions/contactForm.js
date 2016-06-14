@@ -79,7 +79,8 @@ export function submitContactForm() {
   return function(dispatch, getState) {
     var state = getState();
     var viewId = state.view.id;
-    var { fields, token } = state.contactForm;
+    var { fields } = state.contactForm;
+    var { csrfToken } = window.serverConfig;
 
     dispatch(sendContactForm());
 
@@ -90,7 +91,7 @@ export function submitContactForm() {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': token
+        'X-CSRF-Token': csrfToken
       },
       body: JSON.stringify({
         id: viewId,

@@ -55,7 +55,7 @@ describe('components/ViewWidget', function() {
 
     it('renders an image if provided', function() {
       var element = renderComponent(ViewWidget, getProps({
-        imageUrl: 'image.png'
+        imageUrl: '/image.png'
       }));
       expect(element.querySelector('img')).to.exist;
     });

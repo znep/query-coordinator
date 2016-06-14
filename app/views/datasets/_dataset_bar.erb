@@ -47,7 +47,9 @@
 
     <%- if @view.is_unpublished? -%>
      <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
-       <%- if @view.can_publish?() -%>
+       <%- if @view.can_publish?() && FeatureFlags.derive(nil, request).default_to_dataset_landing_page -%>
+         title="<%= t('screens.ds.bar.publish_prompt_with_dataset_landing_page') %>"
+       <%- elsif @view.can_publish?() -%>
          title="<%= t('screens.ds.bar.publish_prompt') %>"
       <%- else -%>
         title="<%= t('screens.ds.bar.publish_rights') %>"

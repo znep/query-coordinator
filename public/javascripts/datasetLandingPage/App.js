@@ -1,6 +1,7 @@
 import React from 'react';
 import Responsive from './lib/Responsive';
 import PrivateNotice from './components/PrivateNotice';
+import PublishNotice from './components/PublishNotice';
 import InfoPane from './components/InfoPane';
 import FeaturedContent from './components/FeaturedContent';
 import FeaturedContentModal from './components/FeaturedContentModal';
@@ -17,6 +18,7 @@ export default function() {
   return (
     <div>
       <PrivateNotice />
+      <PublishNotice />
       <InfoPane />
 
       <main className="container landing-page-container">

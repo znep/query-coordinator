@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-
+import { checkStatus } from '../lib/http';
 import { emitMixpanelEvent } from './mixpanel';
 
 import {
@@ -12,17 +12,6 @@ import {
   HANDLE_CONTACT_FORM_RECAPTCHA_ERROR,
   HANDLE_CONTACT_FORM_RECAPTCHA_RESET
 } from '../actionTypes';
-
-// Used to throw errors from non-200 responses when using fetch.
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-
-  var error = new Error(response.statusText);
-  error.response = response;
-  throw error;
-}
 
 export function setContactFormField(field, value) {
   return {

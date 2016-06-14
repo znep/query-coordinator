@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 
-import Constants from '../../../app/assets/javascripts/editor/Constants';
-import WindowSizeBreakpointStore from '../../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
+import Constants from 'editor/Constants';
+import WindowSizeBreakpointStore from 'editor/stores/WindowSizeBreakpointStore';
 
 describe('WindowSizeBreakpointStore', function() {
 

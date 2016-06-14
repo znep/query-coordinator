@@ -2,8 +2,8 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import I18nMocker from '../I18nMocker';
-import Store from '../../../app/assets/javascripts/editor/stores/Store';
-import {__RewireAPI__ as StorySavingStatusAPI} from '../../../app/assets/javascripts/editor/components/StorySavingStatus';
+import Store from 'editor/stores/Store';
+import {__RewireAPI__ as StorySavingStatusAPI} from 'editor/components/StorySavingStatus';
 
 describe('storySavingStatus jQuery plugin', function() {
 

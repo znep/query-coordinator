@@ -1,12 +1,12 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import {__RewireAPI__ as StoryStoreAPI} from '../../../app/assets/javascripts/editor/stores/StoryStore';
-import CollaboratorsStore, {__RewireAPI__ as CollaboratorsStoreAPI} from '../../../app/assets/javascripts/editor/stores/CollaboratorsStore';
-import CollaboratorsRenderer, {__RewireAPI__ as CollaboratorsRendererAPI} from '../../../app/assets/javascripts/editor/renderers/CollaboratorsRenderer';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import {__RewireAPI__ as StoryStoreAPI} from 'editor/stores/StoryStore';
+import CollaboratorsStore, {__RewireAPI__ as CollaboratorsStoreAPI} from 'editor/stores/CollaboratorsStore';
+import CollaboratorsRenderer, {__RewireAPI__ as CollaboratorsRendererAPI} from 'editor/renderers/CollaboratorsRenderer';
 
 describe('CollaboratorsRenderer', function() {
 

@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentSpacer';
+import 'editor/block-component-renderers/componentSpacer';
 
 describe('componentSpacer jQuery plugin', function() {
 

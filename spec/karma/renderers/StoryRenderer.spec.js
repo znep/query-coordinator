@@ -4,18 +4,18 @@ import _ from 'lodash';
 import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
 import I18nMocker from '../I18nMocker';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import {__RewireAPI__ as componentHTMLAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHTML';
-import Constants from '../../../app/assets/javascripts/editor/Constants';
-import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
-import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from '../../../app/assets/javascripts/editor/stores/DropHintStore';
-import WindowSizeBreakpointStore from '../../../app/assets/javascripts/editor/stores/WindowSizeBreakpointStore';
-import StoryRenderer, {__RewireAPI__ as StoryRendererAPI} from '../../../app/assets/javascripts/editor/renderers/StoryRenderer';
-import RichTextEditorToolbar from '../../../app/assets/javascripts/editor/RichTextEditorToolbar';
-import RichTextEditorManager from '../../../app/assets/javascripts/editor/RichTextEditorManager';
+import Dispatcher from 'editor/Dispatcher';
+import Actions from 'editor/Actions';
+import CustomEvent from 'CustomEvent';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import {__RewireAPI__ as componentHTMLAPI} from 'editor/block-component-renderers/componentHTML';
+import Constants from 'editor/Constants';
+import StoryStore from 'editor/stores/StoryStore';
+import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from 'editor/stores/DropHintStore';
+import WindowSizeBreakpointStore from 'editor/stores/WindowSizeBreakpointStore';
+import StoryRenderer, {__RewireAPI__ as StoryRendererAPI} from 'editor/renderers/StoryRenderer';
+import RichTextEditorToolbar from 'editor/RichTextEditorToolbar';
+import RichTextEditorManager from 'editor/RichTextEditorManager';
 
 describe('StoryRenderer', function() {
 

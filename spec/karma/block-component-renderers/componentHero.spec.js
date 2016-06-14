@@ -3,12 +3,12 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import CustomEvent from '../../../app/assets/javascripts/CustomEvent';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
-import {__RewireAPI__ as componentHeroAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHero';
+import Dispatcher from 'editor/Dispatcher';
+import CustomEvent from 'CustomEvent';
+import Actions from 'editor/Actions';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import StoryStore from 'editor/stores/StoryStore';
+import {__RewireAPI__ as componentHeroAPI} from 'editor/block-component-renderers/componentHero';
 
 describe('componentHero jQuery plugin', function() {
   var $component;

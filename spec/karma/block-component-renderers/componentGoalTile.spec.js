@@ -2,8 +2,8 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentGoalTile';
+import StorytellerUtils from 'StorytellerUtils';
+import 'editor/block-component-renderers/componentGoalTile';
 
 describe('componentGoalTile jQuery plugin', function() {
   var $component;

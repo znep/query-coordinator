@@ -1,12 +1,12 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import LinkModalStore from '../../../app/assets/javascripts/editor/stores/LinkModalStore';
-import LinkTipStore from '../../../app/assets/javascripts/editor/stores/LinkTipStore';
-import LinkTipRenderer, {__RewireAPI__ as LinkTipRendererAPI} from '../../../app/assets/javascripts/editor/renderers/LinkTipRenderer';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import LinkModalStore from 'editor/stores/LinkModalStore';
+import LinkTipStore from 'editor/stores/LinkTipStore';
+import LinkTipRenderer, {__RewireAPI__ as LinkTipRendererAPI} from 'editor/renderers/LinkTipRenderer';
 
 describe('LinkTipRenderer', function() {
 

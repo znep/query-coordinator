@@ -3,9 +3,9 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as SettingsPanelAPI} from '../../../app/assets/javascripts/editor/components/SettingsPanel';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as SettingsPanelAPI} from 'editor/components/SettingsPanel';
 
 describe('SettingsPanel jQuery plugin', function() {
 

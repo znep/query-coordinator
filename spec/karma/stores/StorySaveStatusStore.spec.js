@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import StorySaveStatusStore, {__RewireAPI__ as StorySaveStatusStoreAPI} from '../../../app/assets/javascripts/editor/stores/StorySaveStatusStore';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import StorySaveStatusStore, {__RewireAPI__ as StorySaveStatusStoreAPI} from 'editor/stores/StorySaveStatusStore';
 
 describe('StorySaveStatusStore', function() {
 

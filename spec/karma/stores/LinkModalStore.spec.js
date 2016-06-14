@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import LinkModalStore from '../../../app/assets/javascripts/editor/stores/LinkModalStore';
+import Actions from 'editor/Actions';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import Dispatcher from 'editor/Dispatcher';
+import LinkModalStore from 'editor/stores/LinkModalStore';
 
 describe('LinkModalStore', function() {
 

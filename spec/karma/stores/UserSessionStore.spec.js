@@ -1,9 +1,9 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import UserSessionStore from '../../../app/assets/javascripts/editor/stores/UserSessionStore';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import UserSessionStore from 'editor/stores/UserSessionStore';
 
 describe('UserSessionStore', function() {
 

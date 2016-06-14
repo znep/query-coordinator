@@ -106,10 +106,10 @@ sidebar:
   - position
   - default_pane
 site_chrome:
-  description: Site header/footer configuration, currently only used in Storyteller. Edit it at /stories/admin/site_chrome/edit
+  description: Site header/footer configuration. Edit it at /admin/site_chrome
   discourage_in_creation_ui:
     reason: :not_intended_for_direct_manipulation
-    instead: /stories/admin/site_chrome/edit
+    instead: /admin/site_chrome
 site_theme:
   cs_wiki: https://sites.google.com/a/socrata.com/client-services/2-editing-an-open-data-site/a-site-configurations
   things_site_theme_controls: favicon

@@ -8,7 +8,7 @@
     a {
       border-bottom: 4px solid $primary;
 
-      &:hover {
+      &:hover, &:focus {
         border-bottom: 4px solid $primary-dark;
       }
     }
@@ -23,9 +23,18 @@
       border-bottom: 4px solid $primary;
     }
 
-    &:hover {
+    &:hover, &:focus {
       border-bottom: 4px solid $light-grey-3;
       color: $dark-grey-3;
+      cursor: pointer;
     }
   }
+}
+
+.tab-content {
+  &.current {
+    display: inherit;
+  }
+
+  display: none;
 }

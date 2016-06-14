@@ -4,6 +4,7 @@ var Styleguide = {
   FlyoutFactory: require('./flyout'),
   MenuFactory: require('./menu'),
   ModalFactory: require('./modal'),
+  TabsFactory: require('./tabs'),
   ToggleFactory: require('./toggle'),
   TourFactory: require('./tour')
 };

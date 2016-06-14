@@ -652,8 +652,21 @@
   .uploadFileFormats .type {
     display: block;
   }
-  .uploadFileNameWrapper {
-    float: none;
+  .fileUploader-upload-button {
+    position: relative;
+    overflow: hidden;
+    direction: ltr;
+    input {
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      font-family: Arial;
+      font-size: 118px;
+      margin: 0px;
+      padding: 0px;
+      cursor: pointer;
+      opacity: 0;
+    }
   }
 }
 

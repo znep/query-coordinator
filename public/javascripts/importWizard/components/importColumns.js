@@ -69,12 +69,19 @@ function removeColumn(index) {
   };
 }
 
+function addColumnIds(summary: UploadFile.Summary): UploadFile.Summary {
+  return {
+    ...summary,
+    columns: summary.columns.map((column, index) => ({...column, index: index}))
+  };
+}
+
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     case UploadFile.FILE_UPLOAD_COMPLETE:
       if (!_.isUndefined(action.summary.columns)) {
         return {
-          columns: initialTransform(action.summary),
+          columns: initialTransform(addColumnIds(action.summary)),
           numHeaders: action.summary.headers,
           sample: action.summary.sample
         };

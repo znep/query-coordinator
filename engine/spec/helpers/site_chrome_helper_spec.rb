@@ -54,11 +54,6 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#current_user' do
-    it 'raises if RequestStore.store is missing :current_user' do
-      allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(false)
-      expect { helper.current_user }.to raise_error(/current_user/)
-    end
-
     it 'returns the contents of RequestStore.store[:current_user]' do
       allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
       allow(RequestStore.store).to receive(:[]).with(:current_user).and_return('id' => 'fooo-baar')

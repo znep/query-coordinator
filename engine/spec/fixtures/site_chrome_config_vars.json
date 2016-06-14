@@ -30,10 +30,10 @@
             "privacy": "Privacy Policy",
             "terms_of_service": "Terms of Service"
           },
-          "logo_alt": ""
+          "logo_alt": "",
+          "site_name": null
         },
         "general": {
-          "site_name": null,
           "social_shares": {
             "facebook": "Like us on Facebook",
             "twitter": "Follow us on Twitter"
@@ -46,7 +46,8 @@
             "home": "Home Page",
             "support": "Support"
           },
-          "logo_alt": ""
+          "logo_alt": "",
+          "site_name": null
         }
       }
     },

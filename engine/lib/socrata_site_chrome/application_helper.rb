@@ -73,10 +73,6 @@ module SocrataSiteChrome
     end
 
     def current_user
-      unless RequestStore.store.has_key?(:current_user)
-        raise 'Site Chrome: Host app must provide current_user key in RequestStore (even if nil)'
-      end
-
       RequestStore.store[:current_user]
     end
 

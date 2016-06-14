@@ -254,41 +254,41 @@ config.styleguide = false
             "en": {
               "footer": {
                 "links": {
-                  "link_05": "",
-                  "link_11": "",
-                  "link_06": "",
-                  "link_10": "",
-                  "link_13": "",
-                  "link_03": "",
-                  "link_12": "",
-                  "link_04": "",
-                  "link_09": "",
-                  "link_07": "",
-                  "link_08": "",
+                  "link_00": "Home",
                   "link_01": "Evergreen",
                   "link_02": "",
-                  "link_14": "",
-                  "link_00": "Home"
+                  "link_03": "",
+                  "link_04": "",
+                  "link_05": "",
+                  "link_06": "",
+                  "link_07": "",
+                  "link_08": "",
+                  "link_09": "",
+                  "link_10": "",
+                  "link_11": "",
+                  "link_12": "",
+                  "link_13": "",
+                  "link_14": ""
                 },
                 "site_name": "footer display name!"
               },
               "header": {
                 "links": {
-                  "link_05": "",
-                  "link_11": "",
-                  "link_06": "",
-                  "link_10": "",
-                  "link_13": "",
-                  "link_03": "",
-                  "link_12": "",
-                  "link_04": "",
-                  "link_09": "",
-                  "link_07": "",
-                  "link_08": "",
+                  "link_00": "Home"
                   "link_01": "Evergreen",
                   "link_02": "State website",
-                  "link_14": "",
-                  "link_00": "Home"
+                  "link_03": "",
+                  "link_04": "",
+                  "link_05": "",
+                  "link_06": "",
+                  "link_07": "",
+                  "link_08": "",
+                  "link_09": "",
+                  "link_10": "",
+                  "link_11": "",
+                  "link_12": "",
+                  "link_13": "",
+                  "link_14": ""
                 },
                 "site_name": "City of Evergreen"
               }
@@ -366,7 +366,7 @@ config.styleguide = false
             ]
           },
           "general": {
-            "window_or_tab_icon": "//3.bp.blogspot.com/_4ngpCZv0sNo/SiwO7f3LdzI/AAAAAAAAB5U/yobvWk1nrhg/s400/g7719.png",
+            "window_icon": "//3.bp.blogspot.com/_4ngpCZv0sNo/SiwO7f3LdzI/AAAAAAAAB5U/yobvWk1nrhg/s400/g7719.png",
             "social_shares": [
               {
                 "type": "facebook",
@@ -377,7 +377,7 @@ config.styleguide = false
                 "url": "http://twitter.com/dylan"
               }
             ],
-            "window_or_tab_title_display": "Custom title!"
+            "window_title_display": "Custom title!"
           }
         }
       }

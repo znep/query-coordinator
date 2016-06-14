@@ -41,7 +41,7 @@ module SocrataSiteChrome
 
     def default_content
       JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json")).first['properties'].
-        first.dig('value', 'versions', '0.1', 'published', 'content').with_indifferent_access
+        first.dig('value', 'versions', '0.2', 'published', 'content').with_indifferent_access
     end
   end
 end

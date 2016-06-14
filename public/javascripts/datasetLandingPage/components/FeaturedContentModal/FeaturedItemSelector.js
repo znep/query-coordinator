@@ -66,11 +66,18 @@ export var FeaturedItemSelector = React.createClass({
 
     if (_.isNull(contentList[index])) {
       if (showPlaceholderDetails[index]) {
-        return ([
-          renderAddButton('visualization', I18n.featured_content_modal.visualization),
-          renderAddButton('story', I18n.featured_content_modal.story),
-          renderAddButton('externalResource', I18n.featured_content_modal.external)
-        ]);
+        if (window.serverConfig.featureFlags.storiesEnabled) {
+          return ([
+            renderAddButton('visualization', I18n.featured_content_modal.visualization),
+            renderAddButton('story', I18n.featured_content_modal.story),
+            renderAddButton('externalResource', I18n.featured_content_modal.external)
+          ]);
+        } else {
+          return ([
+            renderAddButton('visualization', I18n.featured_content_modal.visualization),
+            renderAddButton('externalResource', I18n.featured_content_modal.external)
+          ]);
+        }
       } else {
         return (
           <button

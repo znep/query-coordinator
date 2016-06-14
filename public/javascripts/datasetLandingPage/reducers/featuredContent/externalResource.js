@@ -26,10 +26,12 @@ export default function(state, action) {
 
   switch (action.type) {
     case EDIT_FEATURED_ITEM:
-      state.description = action.featuredItem.description;
-      state.title = action.featuredItem.title;
-      state.url = action.featuredItem.url;
-      state.canSave = canSave(state);
+      if (action.featuredItem.contentType === 'external') {
+        state.description = action.featuredItem.description;
+        state.title = action.featuredItem.title;
+        state.url = action.featuredItem.url;
+        state.canSave = canSave(state);
+      }
       return state;
 
     case SET_EXTERNAL_RESOURCE_FIELD:

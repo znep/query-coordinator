@@ -25,24 +25,36 @@ class DatasetLandingPage
     format_featured_item(response)
   end
 
+  def get_formatted_view_widget_by_id(uid)
+    format_view_widget(View.find(uid))
+  end
+
   private
 
-  def format_view_widget(popular_view)
-    {
-      :name => popular_view.name,
-      :id => popular_view.id,
-      :description => popular_view.description,
-      :url => seo_friendly_url(popular_view),
-      :displayType => popular_view.display.try(:type),
-      :updatedAt => popular_view.time_last_updated_at,
-      :viewCount => popular_view.viewCount,
-      :isPrivate => !popular_view.is_public?
+  def format_view_widget(view)
+    formatted_view = {
+      :name => view.name,
+      :id => view.id,
+      :description => view.description,
+      :url => seo_friendly_url(view),
+      :displayType => view.display.try(:type),
+      :createdAt => view.time_created_at,
+      :updatedAt => view.time_last_updated_at,
+      :viewCount => view.viewCount,
+      :isPrivate => !view.is_public?
     }
+
+    if view.story?
+      formatted_view[:url] = "https:#{view_url(view)}"
+    end
+
+    formatted_view
   end
 
   def format_featured_item(featured_item)
-    if featured_item[:contentType] == 'internal'
-      featured_item.merge(:featuredView => format_view_widget(featured_item[:featuredView]))
+    if featured_item['contentType'] == 'internal'
+      view = View.set_up_model(featured_item['featuredView'])
+      return featured_item.merge(:featuredView => format_view_widget(view))
     end
 
     featured_item

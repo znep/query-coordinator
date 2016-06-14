@@ -287,6 +287,7 @@ Rails.application.routes.draw do
       get '/:id/popular_views', :action => 'popular_views'
       get '/:id/featured_content', :action => 'get_featured_content'
       post '/:id/featured_content', :action => 'post_featured_content'
+      get '/formatted_view/:id', :action => 'get_formatted_view_by_id'
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do

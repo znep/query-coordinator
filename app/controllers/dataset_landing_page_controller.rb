@@ -38,6 +38,18 @@ class DatasetLandingPageController < ActionController::Base
     render :json => featured_item
   end
 
+  def get_formatted_view_by_id
+    begin
+      view = dataset_landing_page.get_formatted_view_widget_by_id(params[:id])
+    rescue CoreServer::CoreServerError => e
+      return render :nothing => true, :status => :internal_server_error
+    end
+
+    render :json => view
+  end
+
+  private
+
   def initialize_current_user
     current_user_session
   end

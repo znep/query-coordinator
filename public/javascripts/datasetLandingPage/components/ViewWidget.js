@@ -10,6 +10,7 @@ var ViewWidget = React.createClass({
     description: PropTypes.string,
     displayType: PropTypes.string,
     id: PropTypes.string,
+    imageUrl: PropTypes.string,
     isExternal: PropTypes.bool,
     isPrivate: PropTypes.bool,
     name: PropTypes.string,
@@ -51,6 +52,7 @@ var ViewWidget = React.createClass({
     var {
       name,
       id,
+      imageUrl,
       isExternal,
       description,
       url,
@@ -78,7 +80,9 @@ var ViewWidget = React.createClass({
         rel: 'nofollow external'
       };
     } else {
-      var viewCountLabel = viewCount ? `${utils.formatNumber(viewCount)} ${I18n.views}` : null;
+      var viewCountLabel = viewCount ?
+        `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}` :
+          null;
       var updatedAtLabel = updatedAt ? formatDate(updatedAt) : null;
 
       metadataRow = (
@@ -97,6 +101,10 @@ var ViewWidget = React.createClass({
 
     var privateIcon = isPrivate ?
       <span className="icon icon-private" /> : null;
+
+    var image = imageUrl ?
+      <img src={imageUrl} alt={`${I18n.view_widget.image_alt_tag} ${name}`} /> :
+      <span className={`${icon} x-large-icon`}></span>;
 
     var ariaLabel = `${I18n.popular_views.view} ${name}`;
 
@@ -122,7 +130,7 @@ var ViewWidget = React.createClass({
           <div className="entry-main">
             <a {...linkProps} href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
               <div className="img-wrapper">
-                <span className={`${icon} x-large-icon`}></span>
+                {image}
               </div>
             </a>
             <div className="entry-description" dangerouslySetInnerHTML={{ __html: description }} />

@@ -493,21 +493,21 @@ describe AdministrationController do
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(false)
     allow(user_double).to receive(:roleName).and_return('administrator')
-    allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end
 
   def stub_superadmin_user
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(true)
     allow(user_double).to receive(:roleName).and_return('viewer')
-    allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end
 
   def stub_non_admin_user
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(false)
     allow(user_double).to receive(:roleName).and_return('viewer')
-    allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end
 
 end

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import ShareAndEmbedStore, {__RewireAPI__ as ShareAndEmbedStoreAPI} from '../../../app/assets/javascripts/editor/stores/ShareAndEmbedStore';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import ShareAndEmbedStore, {__RewireAPI__ as ShareAndEmbedStoreAPI} from 'editor/stores/ShareAndEmbedStore';
 
 describe('ShareAndEmbedStore', function() {
 

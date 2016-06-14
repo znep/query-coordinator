@@ -1,8 +1,8 @@
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import I18n from '../../../app/assets/javascripts/editor/I18n';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import FileUploaderStore, {__RewireAPI__ as FileUploaderStoreAPI, STATUS} from '../../../app/assets/javascripts/editor/stores/FileUploaderStore';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import I18n from 'editor/I18n';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import FileUploaderStore, {__RewireAPI__ as FileUploaderStoreAPI, STATUS} from 'editor/stores/FileUploaderStore';
 
 describe('FileUploaderStore', function() {
   var dispatcher;

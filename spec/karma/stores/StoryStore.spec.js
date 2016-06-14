@@ -1,9 +1,9 @@
 import DataGenerators from '../DataGenerators';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Environment from '../../../app/assets/javascripts/StorytellerEnvironment';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import StoryStore from '../../../app/assets/javascripts/editor/stores/StoryStore';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import Actions from 'editor/Actions';
+import Environment from 'StorytellerEnvironment';
+import Dispatcher from 'editor/Dispatcher';
+import StoryStore from 'editor/stores/StoryStore';
 
 describe('StoryStore', function() {
   var dispatcher;

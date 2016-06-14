@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
 import StandardMocks from '../StandardMocks';
-import Constants from '../../../app/assets/javascripts/editor/Constants';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import AssetSelectorStore, {viewIsDirectlyVisualizable, WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
-import {STATUS} from '../../../app/assets/javascripts/editor/stores/FileUploaderStore';
+import Constants from 'editor/Constants';
+import Actions from 'editor/Actions';
+import StorytellerUtils from 'StorytellerUtils';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import AssetSelectorStore, {viewIsDirectlyVisualizable, WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from 'editor/stores/AssetSelectorStore';
+import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker.js';
 
 var nbeView = {

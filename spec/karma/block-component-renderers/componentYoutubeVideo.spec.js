@@ -2,8 +2,8 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentYoutubeVideo';
+import StorytellerUtils from 'StorytellerUtils';
+import 'editor/block-component-renderers/componentYoutubeVideo';
 
 describe('componentYoutubeVideo jQuery plugin', function() {
 

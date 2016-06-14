@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import socrataVisualizationClassicComponentData from '../fixtures/socrataVisualizationClassicComponentData';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationClassic';
+import 'editor/block-component-renderers/componentSocrataVisualizationClassic';
 
 describe('componentSocrataVisualizationClassic jQuery plugin', function() {
 

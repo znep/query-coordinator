@@ -2,7 +2,7 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentImage';
+import 'editor/block-component-renderers/componentImage';
 
 describe('componentImage jQuery plugin', function() {
 

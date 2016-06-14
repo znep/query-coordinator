@@ -2,8 +2,8 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import I18nMocker from '../I18nMocker';
-import Store from '../../../app/assets/javascripts/editor/stores/Store';
-import {__RewireAPI__ as StorySaveErrorBarAPI} from '../../../app/assets/javascripts/editor/components/StorySaveErrorBar';
+import Store from 'editor/stores/Store';
+import {__RewireAPI__ as StorySaveErrorBarAPI} from 'editor/components/StorySaveErrorBar';
 
 describe('storySaveErrorBar jQuery plugin', function() {
 

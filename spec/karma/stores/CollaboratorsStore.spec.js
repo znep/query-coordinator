@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import CollaboratorsStore from '../../../app/assets/javascripts/editor/stores/CollaboratorsStore';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import CollaboratorsStore from 'editor/stores/CollaboratorsStore';
 
 describe('CollaboratorsStore', function() {
 

@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 
 import { $transient } from '../TransientElement';
-import {__RewireAPI__ as componentHTMLAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentHTML';
+import {__RewireAPI__ as componentHTMLAPI} from 'editor/block-component-renderers/componentHTML';
 
 describe('componentHTML jQuery plugin', function() {
 

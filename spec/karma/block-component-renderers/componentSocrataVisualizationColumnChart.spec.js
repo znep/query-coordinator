@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
 import componentSocrataVisualizationColumnChart, {__RewireAPI__ as componentSocrataVisualizationColumnChartAPI}
-  from '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationColumnChart';
+  from 'editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 /* eslint-enable no-unused-vars */
 
 describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {

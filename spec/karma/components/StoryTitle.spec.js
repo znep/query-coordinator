@@ -3,9 +3,9 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
-import Store from '../../../app/assets/javascripts/editor/stores/Store';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import {__RewireAPI__ as StoryTitleAPI} from '../../../app/assets/javascripts/editor/components/StoryTitle';
+import Store from 'editor/stores/Store';
+import Dispatcher from 'editor/Dispatcher';
+import {__RewireAPI__ as StoryTitleAPI} from 'editor/components/StoryTitle';
 
 describe('StoryTitle jQuery plugin', function() {
 

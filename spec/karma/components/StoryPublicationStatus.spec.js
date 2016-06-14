@@ -2,9 +2,9 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import I18nMocker from '../I18nMocker';
-import Store from '../../../app/assets/javascripts/editor/stores/Store';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import {__RewireAPI__ as StoryPublicationStatusAPI} from '../../../app/assets/javascripts/editor/components/StoryPublicationStatus';
+import Store from 'editor/stores/Store';
+import StorytellerUtils from 'StorytellerUtils';
+import {__RewireAPI__ as StoryPublicationStatusAPI} from 'editor/components/StoryPublicationStatus';
 
 describe('storyPublicationStatus jQuery plugin', function() {
 

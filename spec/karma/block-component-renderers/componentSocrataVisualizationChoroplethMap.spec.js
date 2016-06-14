@@ -2,7 +2,7 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationChoroplethMap';
+import 'editor/block-component-renderers/componentSocrataVisualizationChoroplethMap';
 
 describe('componentSocrataVisualizationChoroplethMap jQuery plugin', function() {
 

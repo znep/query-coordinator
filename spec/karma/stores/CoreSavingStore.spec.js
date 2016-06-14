@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import I18nMocker from '../I18nMocker';
 
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import CoreSavingStore, {__RewireAPI__ as CoreSavingStoreAPI} from '../../../app/assets/javascripts/editor/stores/CoreSavingStore';
+import StorytellerUtils from 'StorytellerUtils';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import CoreSavingStore, {__RewireAPI__ as CoreSavingStoreAPI} from 'editor/stores/CoreSavingStore';
 
 describe('CoreSavingStore', function() {
 

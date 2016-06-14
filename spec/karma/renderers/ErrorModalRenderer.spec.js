@@ -1,10 +1,10 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import ErrorModalRenderer, {__RewireAPI__ as ErrorModalRendererAPI} from '../../../app/assets/javascripts/editor/renderers/ErrorModalRenderer';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import ErrorModalRenderer, {__RewireAPI__ as ErrorModalRendererAPI} from 'editor/renderers/ErrorModalRenderer';
 import I18nMocker from '../I18nMocker';
 
 describe('ErrorModalRenderer', function() {

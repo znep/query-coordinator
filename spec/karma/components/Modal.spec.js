@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/components/Modal';
+import 'editor/components/Modal';
 
 describe('Modal jQuery plugin', function() {
 

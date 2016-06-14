@@ -2,9 +2,9 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import I18nMocker from '../I18nMocker';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import Store, {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import StoryPermissionsRenderer, {__RewireAPI__ as StoryPermissionsRendererAPI} from '../../../app/assets/javascripts/editor/renderers/StoryPermissionsRenderer';
+import Dispatcher from 'editor/Dispatcher';
+import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import StoryPermissionsRenderer, {__RewireAPI__ as StoryPermissionsRendererAPI} from 'editor/renderers/StoryPermissionsRenderer';
 
 describe('StoryPermissionsRenderer', function() {
 

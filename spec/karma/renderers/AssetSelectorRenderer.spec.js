@@ -5,13 +5,13 @@ import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import story from '../fixtures/Story';
 
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import AssetSelectorRenderer, {__RewireAPI__ as AssetSelectorRendererAPI} from '../../../app/assets/javascripts/editor/renderers/AssetSelectorRenderer';
-import {__RewireAPI__ as StoreAPI} from '../../../app/assets/javascripts/editor/stores/Store';
-import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP} from '../../../app/assets/javascripts/editor/stores/AssetSelectorStore';
-import {STATUS} from '../../../app/assets/javascripts/editor/stores/FileUploaderStore';
+import StorytellerUtils from 'StorytellerUtils';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import AssetSelectorRenderer, {__RewireAPI__ as AssetSelectorRendererAPI} from 'editor/renderers/AssetSelectorRenderer';
+import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP} from 'editor/stores/AssetSelectorStore';
+import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker';
 
 describe('AssetSelectorRenderer', function() {

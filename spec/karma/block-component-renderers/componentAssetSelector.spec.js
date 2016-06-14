@@ -2,9 +2,9 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentAssetSelector';
+import Actions from 'editor/Actions';
+import StorytellerUtils from 'StorytellerUtils';
+import 'editor/block-component-renderers/componentAssetSelector';
 
 describe('componentAssetSelector jQuery plugin', function() {
 

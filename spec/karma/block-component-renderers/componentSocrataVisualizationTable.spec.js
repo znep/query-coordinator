@@ -3,10 +3,10 @@ import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
-import Actions from '../../../app/assets/javascripts/editor/Actions';
-import Dispatcher from '../../../app/assets/javascripts/editor/Dispatcher';
-import StorytellerUtils from '../../../app/assets/javascripts/StorytellerUtils';
-import {__RewireAPI__ as componentSocrataVisualizationTableAPI} from '../../../app/assets/javascripts/editor/block-component-renderers/componentSocrataVisualizationTable';
+import Actions from 'editor/Actions';
+import Dispatcher from 'editor/Dispatcher';
+import StorytellerUtils from 'StorytellerUtils';
+import {__RewireAPI__ as componentSocrataVisualizationTableAPI} from 'editor/block-component-renderers/componentSocrataVisualizationTable';
 
 describe('componentSocrataVisualizationTable jQuery plugin', function() {
 

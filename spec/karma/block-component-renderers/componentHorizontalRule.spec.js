@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 
 import { $transient } from '../TransientElement';
-import '../../../app/assets/javascripts/editor/block-component-renderers/componentHorizontalRule';
+import 'editor/block-component-renderers/componentHorizontalRule';
 
 describe('componentHorizontalRule jQuery plugin', function() {
 

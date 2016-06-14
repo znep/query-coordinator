@@ -1121,11 +1121,14 @@ export default function AssetSelectorStore() {
   }
 
   function _extractGoalUidFromGoalUrl(goalUrl) {
-    var match = goalUrl.match(/^https\:\/\/.*\/stat\/goals\/(?:default|\w{4}\-\w{4})\/\w{4}\-\w{4}\/(\w{4}\-\w{4})/i);
+    var dashboardGoalRegex = /^https:\/\/.+\/stat\/goals\/(?:default|\w{4}-\w{4})\/\w{4}-\w{4}\/(\w{4}-\w{4})$/i;
+    var singleGoalRegex = /^https:\/\/.+\/stat\/goals\/single\/(\w{4}-\w{4})$/i;
     var goalUid = null;
 
-    if (match !== null) {
-      goalUid = match[1];
+    if (dashboardGoalRegex.test(goalUrl)) {
+      goalUid = goalUrl.match(dashboardGoalRegex)[1];
+    } else if (singleGoalRegex.test(goalUrl)) {
+      goalUid = goalUrl.match(singleGoalRegex)[1];
     }
 
     return goalUid;

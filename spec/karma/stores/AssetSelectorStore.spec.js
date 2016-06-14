@@ -1222,4 +1222,35 @@ describe('AssetSelectorStore', function() {
       });
     });
   });
+
+  describe('ASSET_SELECTOR_UPDATE_GOAL_URL', function() {
+    var dispatch = function(url) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_UPDATE_GOAL_URL,
+        url: url
+      });
+    };
+
+    it('sets nulls in componentProperties when the url is invalid', function() {
+      dispatch('https://example.com/bloop');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', null);
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', null);
+    });
+
+    it('sets componentProperties with valid data when the url is a dashboard goal', function() {
+      dispatch('https://example.com/stat/goals/aaaa-aaaa/bbbb-bbbb/cccc-cccc');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'cccc-cccc');
+
+      dispatch('https://example.com/stat/goals/default/aaaa-aaaa/bbbb-bbbb');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'bbbb-bbbb');
+    });
+
+    it('sets componentProperties with valid data when the url is a single goal', function() {
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+    });
+  });
 });

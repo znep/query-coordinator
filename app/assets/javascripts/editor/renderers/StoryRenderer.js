@@ -275,6 +275,7 @@ export default function StoryRenderer(options) {
     // Display a message if there are no blocks in the story
     _handleEmptyStoryMessage();
 
+    // Render all the blocks at once, to mitigate DOM thrashing.
     blockIds.forEach(function(blockId, i) {
 
       var $blockElement = elementCache.getBlock(blockId);
@@ -292,10 +293,25 @@ export default function StoryRenderer(options) {
       // E.g. disable the 'move up' button for the first block and the
       // 'move down' button for the last block.
       _updateBlockEditControls(blockId, $blockElement, i, blockCount);
+    });
+
+    // Now that all blocks are happy, update editor heights. Do this after
+    // the blocks have rendered, otherwise the layout ends up being
+    // recomputed N(blocks) times during render.
+    blockIds.forEach(function(blockId) {
+
+      var $blockElement = elementCache.getBlock(blockId);
 
       // Update the height of the containing iframes to be equal to the
       // height of the iframe document's body.
       _updateEditorHeights(blockId, $blockElement);
+    });
+
+    // We now know the heights of all blocks. Lay out the blocks vertically.
+    // We do this in a separate loop to avoid N(blocks) layouts per render.
+    blockIds.forEach(function(blockId, i) {
+
+      var $blockElement = elementCache.getBlock(blockId);
 
       // If we are supposed to display the insertion hint at this
       // block index, first position the insertion hint and adjust

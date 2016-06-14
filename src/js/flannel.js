@@ -118,7 +118,5 @@ module.exports = function FlannelFactory() {
         positionFlannel(flannel, hoverable);
       }
     });
-
-    positionFlannel(flannel, hoverable);
   });
 }

@@ -1,5 +1,7 @@
 $(function()
 {
+    var csrfCookieName = 'socrata-csrf-token';
+
     blist.util.enforceLodashFunctions();
 
     // generic events
@@ -196,11 +198,12 @@ $(function()
       });
     }
 
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    if (!$.isBlank(csrfToken))
+    var csrfTokenFromMeta = $('meta[name="csrf-token"]').attr('content');
+
+    if (!$.isBlank(csrfTokenFromMeta))
     {
         // for core server support
-        $.cookies.set('socrata-csrf-token', csrfToken, { secure: true });
+        $.cookies.set(csrfCookieName, csrfTokenFromMeta, { secure: true });
     }
 
     blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';
@@ -208,7 +211,7 @@ $(function()
         beforeSend: function(xhrObj)
         {
             xhrObj.setRequestHeader('X-App-Token', blist.configuration.appToken);
-            xhrObj.setRequestHeader('X-CSRF-Token', csrfToken);
+            xhrObj.setRequestHeader('X-CSRF-Token', $.cookies.get(csrfCookieName));
         }
     });
 

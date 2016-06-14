@@ -9,8 +9,8 @@
              translation: translations[:header_bar_logo]) %>
 
   <%= render('site_chrome/tab_content/form_field',
-             fields: [:locales, @current_locale, :general, :site_name],
-             translation: translations[:site_display_name]) %>
+             fields: [:locales, current_locale(suppress_locale = false), :header, :site_name],
+             translation: translations[:header_display_name]) %>
 
   <%= render('site_chrome/tab_content/form_field_pair',
              left: { fields: [:header, :styles, :bg_color],

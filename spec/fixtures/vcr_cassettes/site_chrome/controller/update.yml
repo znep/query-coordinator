@@ -177,7 +177,7 @@ http_interactions:
                         "first key" : "first value"
                       },
                       "general" : {
-                        "window_or_tab_icon" : "test favicon",
+                        "window_icon" : "test favicon",
                         "social_shares" : [ {
                           "type" : "facebook",
                           "url" : "http://facebook.com/potatoesForQuayle"
@@ -193,7 +193,7 @@ http_interactions:
                           "bg_color" : "#2c97de",
                           "font_family" : "Open Sans"
                         },
-                        "window_or_tab_title_display" : "test title again"
+                        "window_title_display" : "test title again"
                       },
                       "header" : {
                         "logo" : {
@@ -408,7 +408,7 @@ http_interactions:
                         "first key" : "first value"
                       },
                       "general" : {
-                        "window_or_tab_icon" : "test favicon",
+                        "window_icon" : "test favicon",
                         "social_shares" : [ {
                           "type" : "facebook",
                           "url" : "http://facebook.com/potatoesForQuayle"
@@ -424,7 +424,7 @@ http_interactions:
                           "bg_color" : "#2c97de",
                           "font_family" : "Open Sans"
                         },
-                        "window_or_tab_title_display" : "test title again"
+                        "window_title_display" : "test title again"
                       },
                       "header" : {
                         "logo" : {
@@ -467,7 +467,7 @@ http_interactions:
     uri: http://localhost:8080/configurations/102/properties?method=update
     body: 
       encoding: US-ASCII
-      string: "{\"name\":\"siteChromeConfigVars\",\"value\":{\"versions\":{\"0.1\":{\"published\":{\"content\":{\"footer\":{\"logo\":{\"src\":\"http://i.imgur.com/rF2EJ4P.gif\",\"href\":\"#\"},\"styles\":{\"fg_color\":\"yellow\",\"bg_color\":\"blue\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"terms_of_service\",\"url\":\"http://www.socrata.com/terms-of-service\"},{\"key\":\"privacy\",\"url\":\"http://www.socrata.com/privacy\"},{\"key\":\"accessibility\",\"url\":\"http://www.socrata.com/accessibility\"},{\"key\":\"contact_us\",\"url\":\"http://www.socrata.com/contact-us\"},{\"key\":\"a\",\"url\":\"#a\"},{\"key\":\"b\",\"url\":\"#b\"},{\"key\":\"c\",\"url\":\"#c\"},{\"key\":\"d\",\"url\":\"#d\"},{\"key\":\"e\",\"url\":\"#e\"},{\"key\":\"f\",\"url\":\"#f\"},{\"key\":\"g\",\"url\":\"#g\"},{\"key\":\"h\",\"url\":\"#happy content\"},{\"key\":\"link text\",\"url\":\"\"},{\"key\":\"jj\",\"url\":\"#jj\"}],\"copyright_notice\":\"1\",\"show_copyright_notice\":\"1\"},\"locales\":{\"en\":{\"footer\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"f\":\"Link F\",\"home\":\"Home Page\",\"g\":\"Link G with a super long title because I want to see if shit breaks or looks good!!!!11111\",\"d\":\"Link D\",\"e\":\"Link E\",\"b\":\"Link B\",\"c\":\"Link C\",\"a\":\"Link A\",\"privacy\":\"Privacy Policy\",\"terms_of_service\":\"Terms of Service\",\"link text\":\"\",\"j\":\"Link J\",\"h\":\"Link H had its name changed\",\"jj\":\"\",\"contact_us\":\"Contact Us\",\"i\":\"Link I\",\"accessibility\":\"Accessibility\"}},\"header\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"home\":\"Homey Page\",\"support\":\"Support\",\"catalog\":\"Browse\",\"developers\":\"Developers\",\"evergreen\":\"City of Evergreenie\"}},\"general\":{\"social_shares\":{\"twitter\":\"Follow us on Twitter\",\"facebook\":\"Like us on Facebook\"},\"site_name\":\"City of Evergreenieweeniepolkadotsand stripe\"}}},\"evenNewerPropertyName\":{\"first key\":\"first value\"},\"general\":{\"window_or_tab_icon\":\"test favicon\",\"social_shares\":[{\"type\":\"facebook\",\"url\":\"http://facebook.com/potatoesForQuayle\"},{\"type\":\"twitter\",\"url\":\"http://twitter.com/pant\"}],\"link_text_color\":\"blue\",\"locales\":[\"en\",\"es\",\"fr\"],\"default_locale\":\"en\",\"styles\":{\"fg_color\":\"#fff\",\"bg_color\":\"#2c97de\",\"font_family\":\"Open Sans\"},\"window_or_tab_title_display\":\"test title again\"},\"header\":{\"logo\":{\"src\":\"http://i.imgur.com/rF2EJ4P.gif\",\"href\":\"#\"},\"styles\":{\"fg_color\":\"pinky\",\"bg_color\":\"bluey\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"catalog\",\"url\":\"/browse\"},{\"key\":\"developers\",\"url\":\"http://dev.socrata.com\"},{\"key\":\"support\",\"url\":\"http://support.socrata.com\"},{\"key\":\"evergreen\",\"url\":\"http://data.evergreen.gov\"}]},\"new_batch_of_properties\":{\"some_key\":\"some_fine_value\"}}}}}}}"
+      string: "{\"name\":\"siteChromeConfigVars\",\"value\":{\"versions\":{\"0.1\":{\"published\":{\"content\":{\"footer\":{\"logo\":{\"src\":\"http://i.imgur.com/rF2EJ4P.gif\",\"href\":\"#\"},\"styles\":{\"fg_color\":\"yellow\",\"bg_color\":\"blue\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"terms_of_service\",\"url\":\"http://www.socrata.com/terms-of-service\"},{\"key\":\"privacy\",\"url\":\"http://www.socrata.com/privacy\"},{\"key\":\"accessibility\",\"url\":\"http://www.socrata.com/accessibility\"},{\"key\":\"contact_us\",\"url\":\"http://www.socrata.com/contact-us\"},{\"key\":\"a\",\"url\":\"#a\"},{\"key\":\"b\",\"url\":\"#b\"},{\"key\":\"c\",\"url\":\"#c\"},{\"key\":\"d\",\"url\":\"#d\"},{\"key\":\"e\",\"url\":\"#e\"},{\"key\":\"f\",\"url\":\"#f\"},{\"key\":\"g\",\"url\":\"#g\"},{\"key\":\"h\",\"url\":\"#happy content\"},{\"key\":\"link text\",\"url\":\"\"},{\"key\":\"jj\",\"url\":\"#jj\"}],\"copyright_notice\":\"1\",\"show_copyright_notice\":\"1\"},\"locales\":{\"en\":{\"footer\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"f\":\"Link F\",\"home\":\"Home Page\",\"g\":\"Link G with a super long title because I want to see if shit breaks or looks good!!!!11111\",\"d\":\"Link D\",\"e\":\"Link E\",\"b\":\"Link B\",\"c\":\"Link C\",\"a\":\"Link A\",\"privacy\":\"Privacy Policy\",\"terms_of_service\":\"Terms of Service\",\"link text\":\"\",\"j\":\"Link J\",\"h\":\"Link H had its name changed\",\"jj\":\"\",\"contact_us\":\"Contact Us\",\"i\":\"Link I\",\"accessibility\":\"Accessibility\"}},\"header\":{\"logo_alt\":\"Evergreen!\",\"links\":{\"home\":\"Homey Page\",\"support\":\"Support\",\"catalog\":\"Browse\",\"developers\":\"Developers\",\"evergreen\":\"City of Evergreenie\"}},\"general\":{\"social_shares\":{\"twitter\":\"Follow us on Twitter\",\"facebook\":\"Like us on Facebook\"},\"site_name\":\"City of Evergreenieweeniepolkadotsand stripe\"}}},\"evenNewerPropertyName\":{\"first key\":\"first value\"},\"general\":{\"window_icon\":\"test favicon\",\"social_shares\":[{\"type\":\"facebook\",\"url\":\"http://facebook.com/potatoesForQuayle\"},{\"type\":\"twitter\",\"url\":\"http://twitter.com/pant\"}],\"link_text_color\":\"blue\",\"locales\":[\"en\",\"es\",\"fr\"],\"default_locale\":\"en\",\"styles\":{\"fg_color\":\"#fff\",\"bg_color\":\"#2c97de\",\"font_family\":\"Open Sans\"},\"window_title_display\":\"test title again\"},\"header\":{\"logo\":{\"src\":\"http://i.imgur.com/rF2EJ4P.gif\",\"href\":\"#\"},\"styles\":{\"fg_color\":\"pinky\",\"bg_color\":\"bluey\"},\"links\":[{\"key\":\"home\",\"url\":\"/\"},{\"key\":\"catalog\",\"url\":\"/browse\"},{\"key\":\"developers\",\"url\":\"http://dev.socrata.com\"},{\"key\":\"support\",\"url\":\"http://support.socrata.com\"},{\"key\":\"evergreen\",\"url\":\"http://data.evergreen.gov\"}]},\"new_batch_of_properties\":{\"some_key\":\"some_fine_value\"}}}}}}}"
     headers: 
       Content-Type: 
       - application/json
@@ -609,7 +609,7 @@ http_interactions:
                       "first key" : "first value"
                     },
                     "general" : {
-                      "window_or_tab_icon" : "test favicon",
+                      "window_icon" : "test favicon",
                       "social_shares" : [ {
                         "type" : "facebook",
                         "url" : "http://facebook.com/potatoesForQuayle"
@@ -625,7 +625,7 @@ http_interactions:
                         "bg_color" : "#2c97de",
                         "font_family" : "Open Sans"
                       },
-                      "window_or_tab_title_display" : "test title again"
+                      "window_title_display" : "test title again"
                     },
                     "header" : {
                       "logo" : {
@@ -839,7 +839,7 @@ http_interactions:
                         "first key" : "first value"
                       },
                       "general" : {
-                        "window_or_tab_icon" : "test favicon",
+                        "window_icon" : "test favicon",
                         "social_shares" : [ {
                           "type" : "facebook",
                           "url" : "http://facebook.com/potatoesForQuayle"
@@ -855,7 +855,7 @@ http_interactions:
                           "bg_color" : "#2c97de",
                           "font_family" : "Open Sans"
                         },
-                        "window_or_tab_title_display" : "test title again"
+                        "window_title_display" : "test title again"
                       },
                       "header" : {
                         "logo" : {

@@ -168,7 +168,7 @@ http_interactions:
                         }
                       },
                       "general" : {
-                        "window_or_tab_icon" : "test favicon",
+                        "window_icon" : "test favicon",
                         "social_shares" : [ {
                           "type" : "facebook",
                           "url" : "http://facebook.com/potatoesForQuayle"
@@ -184,7 +184,7 @@ http_interactions:
                           "bg_color" : "#2c97de",
                           "font_family" : "Open Sans"
                         },
-                        "window_or_tab_title_display" : "test title again"
+                        "window_title_display" : "test title again"
                       },
                       "header" : {
                         "logo" : {

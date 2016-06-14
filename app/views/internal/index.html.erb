@@ -18,5 +18,11 @@
       <li><%= link_to 'Current Organization', "/internal/orgs/#{CurrentDomain.organizationId}" %></li>
       <li><%= link_to 'Current Domain', show_domain_path(domain_id: CurrentDomain.cname) %></li>
     </ul>
+
+    <p class="guidelink">
+      New to the Internal Panel? Check out the guide: <%=
+        link = 'https://docs.google.com/document/d/1Uk2FG_AovYyC9bQZ3yI0GaAkNboRrGo0AazfS_8TMZQ/edit'
+        link_to link, link %>
+    </p>
   </div>
 </div>

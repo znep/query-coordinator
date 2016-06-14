@@ -7,6 +7,7 @@
         "src": "http://i.imgur.com/rF2EJ4P.gif",
         "href": "#"
       },
+      "footer_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "yellow",
         "bg_color": "blue"
@@ -29,10 +30,10 @@
             "privacy": "Privacy Policy",
             "terms_of_service": "Terms of Service"
           },
-          "logo_alt": ""
+          "logo_alt": "",
+          "site_name": null
         },
         "general": {
-          "site_name": null,
           "social_shares": {
             "facebook": "Like us on Facebook",
             "twitter": "Follow us on Twitter"
@@ -45,7 +46,8 @@
             "home": "Home Page",
             "support": "Support"
           },
-          "logo_alt": ""
+          "logo_alt": "",
+          "site_name": null
         }
       }
     },
@@ -63,7 +65,6 @@
         }
       ],
       "link_text_color": "blue",
-      "site_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "#fff",
         "bg_color": "#2c97de",
@@ -76,6 +77,7 @@
         "src": "http://i.imgur.com/rF2EJ4P.gif",
         "href": "#"
       },
+      "header_display_name": "City of Evergreen",
       "styles": {
         "fg_color": "pink",
         "bg_color": "blue"

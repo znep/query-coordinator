@@ -17,7 +17,7 @@ describe SocrataSiteChrome::SiteChrome do
   let(:helper) { SocrataSiteChrome::SiteChrome.new(site_chrome_config) }
 
   it 'does not raise on initialization without parameters' do
-    expect { SocrataSiteChrome::SiteChrome.new() }.to_not raise_error
+    expect { SocrataSiteChrome::SiteChrome.new }.to_not raise_error
   end
 
   it 'sets id from properties' do
@@ -34,7 +34,7 @@ describe SocrataSiteChrome::SiteChrome do
 
   describe '#locales' do
     let(:default_locales) { JSON.parse(File.read("#{Rails.root}/engine/config/default_site_chrome.json")).
-      first['properties'].first.dig('value', 'versions', '0.1', 'published', 'content', 'locales').with_indifferent_access }
+      first['properties'].first.dig('value', 'versions', '0.2', 'published', 'content', 'locales').with_indifferent_access }
 
     it 'uses the default locales if there are no user specified locales' do
       config_vars_without_locales = site_chrome_config_vars['content'].dup.tap do |config_vars|

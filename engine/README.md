@@ -80,6 +80,8 @@ include SiteChromeHelper
 
 In the main layout that you are using for your application (usually `app/views/layouts/application.html.erb`), you will need to add the following `site_chrome_*` helpers to the bottom of the `<head>` section:
 ```erb
+<title><%= site_chrome_window_title %></title>
+<%= site_chrome_favicon_tag %>
 <%= site_chrome_meta_viewport_tag %>
 <%= site_chrome_stylesheet_tag %>
 <%= site_chrome_javascript_tag %>
@@ -93,16 +95,17 @@ An example layout is shown below:
 ```erb
 <html>
   <head>
-    <title>Your Application Title</title>
+    <title>Your Application Title - <%= site_chrome_window_title %></title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
     <%= csrf_meta_tags %>
 
 	...
 
-   <%= site_chrome_meta_viewport_tag %>
-   <%= site_chrome_stylesheet_tag %>
-   <%= site_chrome_javascript_tag %>
+    <%= site_chrome_favicon_tag %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+    <%= site_chrome_javascript_tag %>
   </head>
 
   <body>
@@ -177,158 +180,206 @@ config.styleguide = false
         "content": {
           "footer": {
             "logo": {
-              "src": "http://i.imgur.com/rF2EJ4P.gif",
-              "href": "#"
+              "src": "https://media.giphy.com/media/Wod1ZpWe3aVZS/giphy.gif"
+            },
+            "styles": {
+              "fg_color": "#fff",
+              "bg_color": "#333"
             },
             "links": [
               {
-                "url": "/",
-                "key": "home"
+                "key": "link_00",
+                "url": "/"
               },
               {
-                "url": "http://www.socrata.com/terms-of-service",
-                "key": "terms_of_service"
+                "key": "link_01",
+                "url": "http://data.evergreen.gov"
               },
               {
-                "url": "http://www.socrata.com/privacy",
-                "key": "privacy"
+                "key": "link_02",
+                "url": ""
               },
               {
-                "url": "http://www.socrata.com/accessibility",
-                "key": "accessibility"
+                "key": "link_03",
+                "url": ""
               },
               {
-                "url": "http://www.socrata.com/contact-us",
-                "key": "contact_us"
+                "key": "link_04",
+                "url": ""
               },
               {
-                "url": "#a",
-                "key": "a"
+                "key": "link_05",
+                "url": ""
               },
               {
-                "url": "#b",
-                "key": "b"
+                "key": "link_06",
+                "url": ""
               },
               {
-                "url": "#c",
-                "key": "c"
+                "key": "link_07",
+                "url": ""
               },
               {
-                "url": "#d",
-                "key": "d"
+                "key": "link_08",
+                "url": ""
               },
               {
-                "url": "#e",
-                "key": "e"
+                "key": "link_09",
+                "url": ""
               },
               {
-                "url": "#f",
-                "key": "f"
+                "key": "link_10",
+                "url": ""
               },
               {
-                "url": "#g",
-                "key": "g"
+                "key": "link_11",
+                "url": ""
               },
               {
-                "url": "#h",
-                "key": "h"
+                "key": "link_12",
+                "url": ""
               },
               {
-                "url": "#i",
-                "key": "i"
+                "key": "link_13",
+                "url": ""
               },
               {
-                "url": "#j",
-                "key": "j"
+                "key": "link_14",
+                "url": ""
               }
-            ]
+            ],
+            "copyright_notice": "true"
           },
           "locales": {
             "en": {
               "footer": {
-                "logo_alt": "Evergreen!",
                 "links": {
-                  "home": "Home Page",
-                  "privacy": "Privacy Policy",
-                  "terms_of_service": "Terms of Service",
-                  "contact_us": "Contact Us",
-                  "accessibility": "Accessibility"
-                }
-              },
-              "general": {
-                "social_shares": {
-                  "twitter": "Follow us on Twitter",
-                  "facebook": "Like us on Facebook"
+                  "link_00": "Home",
+                  "link_01": "Evergreen",
+                  "link_02": "",
+                  "link_03": "",
+                  "link_04": "",
+                  "link_05": "",
+                  "link_06": "",
+                  "link_07": "",
+                  "link_08": "",
+                  "link_09": "",
+                  "link_10": "",
+                  "link_11": "",
+                  "link_12": "",
+                  "link_13": "",
+                  "link_14": ""
                 },
-                "site_name": "City of Evergreen"
+                "site_name": "footer display name!"
               },
               "header": {
-                "logo_alt": "Evergreen!",
                 "links": {
-                  "home": "Home Page",
-                  "support": "Support",
-                  "catalog": "Browse",
-                  "evergreen": "City of Evergreen",
-                  "developers": "Developers"
-                }
+                  "link_00": "Home"
+                  "link_01": "Evergreen",
+                  "link_02": "State website",
+                  "link_03": "",
+                  "link_04": "",
+                  "link_05": "",
+                  "link_06": "",
+                  "link_07": "",
+                  "link_08": "",
+                  "link_09": "",
+                  "link_10": "",
+                  "link_11": "",
+                  "link_12": "",
+                  "link_13": "",
+                  "link_14": ""
+                },
+                "site_name": "City of Evergreen"
               }
             }
           },
           "header": {
             "logo": {
-              "src": "http://i.imgur.com/E8wtc6d.png",
-              "href": "#"
+              "src": "http://i.imgur.com/E8wtc6d.gif"
             },
             "styles": {
-              "fg_color": "#eee",
-              "bg_color": "#22b479"
+              "fg_color": "#fff",
+              "bg_color": "#444"
             },
             "links": [
               {
-                "url": "/",
-                "key": "home"
+                "key": "link_00",
+                "url": "/"
               },
               {
-                "url": "/browse",
-                "key": "catalog"
+                "key": "link_01",
+                "url": "http://data.evergreen.gov"
               },
               {
-                "url": "http://dev.socrata.com",
-                "key": "developers"
+                "key": "link_02",
+                "url": "#"
               },
               {
-                "url": "http://support.socrata.com",
-                "key": "support"
+                "key": "link_03",
+                "url": ""
               },
               {
-                "url": "http://data.evergreen.gov",
-                "key": "evergreen"
+                "key": "link_04",
+                "url": ""
+              },
+              {
+                "key": "link_05",
+                "url": ""
+              },
+              {
+                "key": "link_06",
+                "url": ""
+              },
+              {
+                "key": "link_07",
+                "url": ""
+              },
+              {
+                "key": "link_08",
+                "url": ""
+              },
+              {
+                "key": "link_09",
+                "url": ""
+              },
+              {
+                "key": "link_10",
+                "url": ""
+              },
+              {
+                "key": "link_11",
+                "url": ""
+              },
+              {
+                "key": "link_12",
+                "url": ""
+              },
+              {
+                "key": "link_13",
+                "url": ""
+              },
+              {
+                "key": "link_14",
+                "url": ""
               }
             ]
           },
           "general": {
+            "window_icon": "//3.bp.blogspot.com/_4ngpCZv0sNo/SiwO7f3LdzI/AAAAAAAAB5U/yobvWk1nrhg/s400/g7719.png",
             "social_shares": [
               {
                 "type": "facebook",
-                "url": "http://facebook.com"
+                "url": "http://facebook.com/dylan"
               },
               {
                 "type": "twitter",
-                "url": "http://twitter.com"
+                "url": "http://twitter.com/dylan"
               }
             ],
-            "link_text_color": "grey",
-            "window_or_tab_icon": "http://foo.png",
-            "default_locale": "en",
-            "styles": {
-              "fg_color": "#eee",
-              "bg_color": "#2c97de",
-              "font_family": "Open Sans"
-            },
-            "window_or_tab_title_display": "Evergreen"
+            "window_title_display": "Custom title!"
           }
-        },
-        "updatedAt": 1458946330
+        }
       }
     }
   }

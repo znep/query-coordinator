@@ -69,4 +69,32 @@ describe SiteChromeHelper do
       expect(fetch_content(path, site_chrome)).to be_nil
     end
   end
+
+  describe '#links_with_placeholders' do
+    it 'returns all placeholder values if passed nil links' do
+      result = links_with_placeholders(nil, 15)
+      expect(result).to match_array([nil] * 15)
+    end
+
+    it 'returns all placeholder values if passed an empty array' do
+      result = links_with_placeholders([], 15)
+      expect(result).to match_array([nil] * 15)
+    end
+
+    it 'returns no placeholder values if the links length matches the link_count' do
+      result = links_with_placeholders(['stuff'] * 10, 10)
+      expect(result).to match_array(['stuff'] * 10)
+    end
+
+    it 'fills in placeholders for link_count - links.length' do
+      result = links_with_placeholders(['stuff'] * 4, 8)
+      expected_array = ['stuff'] * 4 + [nil] * 4
+      expect(result).to match_array(expected_array)
+    end
+
+    it 'trims the links to the link_count' do
+      result = links_with_placeholders(['stuff'] * 20, 5)
+      expect(result).to match_array(['stuff'] * 5)
+    end
+  end
 end

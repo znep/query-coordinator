@@ -2383,7 +2383,7 @@ en:
                 placeholder: '#ffffff'
               menu_links:
                 title: Menu Links
-                description: Display up to 5 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+                description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
               link_title_label: Link Label
               link_title_placeholder: Link Text
               url_label: URL

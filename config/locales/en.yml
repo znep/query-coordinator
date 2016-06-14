@@ -2339,11 +2339,11 @@ en:
           general:
             title: General Settings
             fields:
-              window_or_tab_title_display:
+              window_title_display:
                 title: Window or Tab Title Display
                 description: Name displayed in the window or tab title.
                 placeholder: Evergreen Open Data
-              window_or_tab_icon:
+              window_icon:
                 title: Window or Tab Icon (favicon)
                 description: URL reference to the icon displayed in the window, tab, and browser URL field.
                 placeholder: URL

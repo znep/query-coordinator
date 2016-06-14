@@ -5,6 +5,7 @@ export default {
     csrfToken: 'supersecuretoken',
     defaultToDatasetLandingPage: true,
     enableDatasetLandingPage: true,
+    storiesEnabled: true,
     locale: 'en',
     recaptchaKey: 'superdupersecurekey'
   }

@@ -16,10 +16,7 @@
     <%= label_tag(nil, url_title) %>
   </div>
 
-  <% # Create empty placeholders in links array for links that do not yet exist %>
-  <% links = links.to_a + [nil] * (link_count - links.to_a.length) %>
-
-  <% links.each_with_index do |link, i| %>
+  <% links_with_placeholders(links, link_count).each_with_index do |link, i| %>
     <% link ||= { 'key' => "link_#{format('%02d', i)}", 'url' => '' } %>
     <div class="link-row">
       <% key_path = "content[#{content_key}]links[][key]" %>

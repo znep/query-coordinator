@@ -61,22 +61,16 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
         dispatch(fileUploadProgress(evt.percent));
       }
     });
+    // TODO: I think this gets called with a 500 response, we need to handle it
+    // e.g.: import a shapefile without starting geo-import
     upload.on('end', (xhr) => {
       const response = JSON.parse(xhr.responseText);
-      dispatch(fileUploadComplete(response.fileId, addColumnIds(response.summary)));
+      dispatch(fileUploadComplete(response.fileId, response.summary));
     });
     upload.on('error', (evt) => {
       dispatch(fileUploadError(JSON.stringify(evt)));
     });
     dispatch(fileUploadStart(file));
-  };
-}
-
-
-function addColumnIds(summary: Summary): Summary {
-  return {
-    ...summary,
-    columns: summary.columns.map((column, index) => ({...column, index: index}))
   };
 }
 
@@ -175,7 +169,6 @@ export function update(upload: FileUpload = initial(), action): FileUpload {
 
 // == Upload Progress
 
-
 export function initialUploadProgress() {
   return { type: 'InProgress', percent: 0 };
 }
@@ -203,11 +196,23 @@ export function view(props) {
         <div className="uploadFileNameWrapper">
           <input
             type="text"
-            className="uploadFileName"
+            className="uploadFileName valid"
             readOnly="readonly"
             value={fileNameDisplay} />
-          <input type="file" onChange={onSelectFile} />
         </div>
+        <div
+          className="buttonWrapper uploadFileButtonWrapper">
+          <div className="fileUploader-uploader" >
+            <div className="fileUploader-upload-button">
+              {I18n.plugins.fileuploader.upload_a_file}
+              <input
+                type="file"
+                name="file"
+                onChange={onSelectFile} />
+            </div>
+          </div>
+        </div>
+        {/* TODO: help text when things go wrong */}
         {(() => {
           switch (fileUpload.type) {
             case 'NothingSelected':
@@ -217,15 +222,17 @@ export function view(props) {
               return renderFileUploadStatus(fileUpload.progress);
           }
         })()}
-        <p className="uploadFileFormats">
-          <span className="type">
+
+        <p className="uploadFileFormats blist">
+          <span className="type type-blist">
             {(() => {
               switch (operation) {
                 case 'UploadData':
                   return I18nPrefixed.supported_blist;
-                case 'UploadGeo':
+                case 'UploadGeospatial':
                   return I18nPrefixed.supported_shapefile;
                 default:
+                  console.error('unknown operation', operation);
                   return null;
               }
             })()}

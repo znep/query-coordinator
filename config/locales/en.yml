@@ -1317,7 +1317,6 @@ en:
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
         button: Manage Featured Content
     featured_content_modal:
-      header: Manage Featured Content
       external: External Resource
       external_resource_form:
         description: Description
@@ -1327,8 +1326,18 @@ en:
         save_error_message: Oh no! Something went wrong, please try again.
         title: Title
         url: Link to Resource
+      header: Manage Featured Content
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
+      preview: Preview of featured content
+      remove_error: Oh no!  Something went wrong, please try again.
+      remove_prompt: Are you sure you wish to delete this?
       story: Story
+      story_form:
+        header: Feature a Socrata Story
+        invalid_url_message: Hmm... Something went wrong. Try using a valid link to a Scorata Story.
+        message_html: 'Using Socrata Perspectives, guide your users to relevant narratives based on this data. For a full list of public stories on this domain <a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a>'
+        save_error_message: Oh no! Something went wrong, please try again.
+        url: Link to Story
       title: Featured Content
       visualization: Visualization
     feedback:
@@ -1380,6 +1389,7 @@ en:
     remove: Remove
     save: Save
     saved: Saved
+    saving: Saving
     schema_preview:
       api_field_name: API Field Name
       column_name: Column Name
@@ -1432,6 +1442,7 @@ en:
     updated: Updated
     view_widget:
       external_content: External Content
+      image_alt_tag: Image of
       views: Views
   dataslate:
     component:
@@ -1848,6 +1859,9 @@ en:
         assets_federated:
           one: 1 asset federated
           other: '%{count} assets federated'
+        assets_discovered:
+          one: 1 asset discovered
+          other: '%{count} assets discovered'
         catalog: Catalog
         current_status: Current Status
         data: Data
@@ -1866,8 +1880,9 @@ en:
         esri_arcgis_url: ArcGIS Server address
         failing: Failing
         federated_assets: Federated assets
+        discovered_assets: Discovered assets
         flashes:
-          created: Success! We reached your server.
+          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the federation settings and continue setup.
           deleted: Your federation has been marked for deletion.
           updated: Your federation settings have been saved.
         ignore: Ignored
@@ -1882,9 +1897,10 @@ en:
         source_domain: Source Domain
         some_assets: Federate only these assets
         title: External Federation
-        working: Working
+        success: Success
         save: Save
-        not_yet: In progress
+        not_yet: Sync in progress
+        never: Never
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer
@@ -2367,7 +2383,7 @@ en:
                 placeholder: '#ffffff'
               menu_links:
                 title: Menu Links
-                description: Display up to 5 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+                description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
               link_title_label: Link Label
               link_title_placeholder: Link Text
               url_label: URL

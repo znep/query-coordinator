@@ -7,7 +7,14 @@ import {
   requestedFeaturedItemSave,
   handleFeaturedItemSaveSuccess,
   handleFeaturedItemSaveError,
-  setExternalResourceField
+  setExternalResourceField,
+  setStoryUrlField,
+  requestedStory,
+  handleLoadingStorySuccess,
+  handleLoadingStoryError
+  requestedFeaturedItemRemoval,
+  handleFeaturedItemRemovalSuccess,
+  handleFeaturedItemRemovalError
 } from 'actions/featuredContent';
 
 describe('reducers/featuredContent', function() {
@@ -55,6 +62,20 @@ describe('reducers/featuredContent', function() {
       expect(state.editType).to.equal('externalResource');
     });
 
+    it('sets editType to "story" if the featuredItem is a story', function() {
+      var featuredItem = {
+        contentType: 'internal',
+        featuredView: {
+          displayType: 'story'
+        },
+        position: 2
+      };
+
+      expect(state.editType).to.equal(null);
+      state = reducer(state, editFeaturedItem(featuredItem));
+      expect(state.editType).to.equal('story');
+    });
+
     it('sets the externalResource fields if the featured item is an external resource', function() {
       var featuredItem = {
         contentType: 'external',
@@ -73,6 +94,38 @@ describe('reducers/featuredContent', function() {
       expect(state.externalResource.title).to.equal('oh');
       expect(state.externalResource.description).to.equal('wow');
       expect(state.externalResource.url).to.equal('http://www.nooooooooooooooo.com');
+    });
+
+    it('sets the story fields if the featured item is a story', function() {
+      var featuredItem = {
+        contentType: 'internal',
+        featuredView: {
+          createdAt: 'some date',
+          description: 'some description',
+          displayType: 'story',
+          imageUrl: 'some-picture.png',
+          name: 'some name',
+          url: 'http://some-url.com/stories/s/abcd-1234',
+          viewCount: 99
+        },
+        position: 2
+      };
+
+      expect(state.story.title).to.equal('');
+      expect(state.story.description).to.equal('');
+      expect(state.story.url).to.equal('');
+      expect(state.story.createdAt).to.equal('');
+      expect(state.story.viewCount).to.equal(null);
+      expect(state.story.imageUrl).to.equal('');
+
+      state = reducer(state, editFeaturedItem(featuredItem));
+
+      expect(state.story.title).to.equal('some name');
+      expect(state.story.description).to.equal('some description');
+      expect(state.story.url).to.equal('http://some-url.com/stories/s/abcd-1234');
+      expect(state.story.createdAt).to.equal('some date');
+      expect(state.story.viewCount).to.equal(99);
+      expect(state.story.imageUrl).to.equal('some-picture.png');
     });
 
     it('sets editPosition to one less than the position of the featured item', function() {
@@ -117,10 +170,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaved).to.equal(false);
     });
 
-    it('sets hasError to false', function() {
-      state.hasError = true;
+    it('sets hasSaveError to false', function() {
+      state.hasSaveError = true;
       state = reducer(state, cancelFeaturedItemEdit());
-      expect(state.hasError).to.equal(false);
+      expect(state.hasSaveError).to.equal(false);
     });
   });
 
@@ -131,10 +184,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaving).to.equal(true);
     });
 
-    it('sets hasError to false', function() {
-      state.hasError = true;
+    it('sets hasSaveError to false', function() {
+      state.hasSaveError = true;
       state = reducer(state, requestedFeaturedItemSave());
-      expect(state.hasError).to.equal(false);
+      expect(state.hasSaveError).to.equal(false);
     });
   });
 
@@ -165,10 +218,10 @@ describe('reducers/featuredContent', function() {
       expect(state.isSaving).to.equal(false);
     });
 
-    it('sets hasError to true', function() {
-      state.hasError = false;
+    it('sets hasSaveError to true', function() {
+      state.hasSaveError = false;
       state = reducer(state, handleFeaturedItemSaveError());
-      expect(state.hasError).to.equal(true);
+      expect(state.hasSaveError).to.equal(true);
     });
   });
 
@@ -194,6 +247,205 @@ describe('reducers/featuredContent', function() {
       state = reducer(state, setExternalResourceField('title', ''));
 
       expect(state.externalResource.canSave).to.equal(false);
+    });
+  });
+
+  describe('SET_STORY_URL_FIELD', function() {
+    it('sets the specified field to the specified value', function() {
+      expect(state.story.url).to.equal('');
+      state = reducer(state, setStoryUrlField('http://super-real-website.com'));
+      expect(state.story.url).to.equal('http://super-real-website.com');
+    });
+
+    it('validates the url format', function() {
+
+      // empty string
+      state = reducer(state, setStoryUrlField(''));
+      expect(state.story.hasValidationError).to.equal(true);
+
+      // string not formatted like a url
+      state = reducer(state, setStoryUrlField('cool-potatoes'));
+      expect(state.story.hasValidationError).to.equal(true);
+
+      // url not formatted like a story
+      state = reducer(state, setStoryUrlField('http://giraffes.com/abcd-1234'));
+      expect(state.story.hasValidationError).to.equal(true);
+
+      // url that looks like a story
+      state = reducer(state, setStoryUrlField('http://giraffes.com/stories/s/turtles/abcd-1234'));
+      expect(state.story.hasValidationError).to.equal(false);
+    });
+
+    describe('url format is invalid', function() {
+      beforeEach(function() {
+        state = reducer(state, setStoryUrlField('cool-potatoes'));
+      });
+
+      it('restores the preview widget fields to initial state', function() {
+        expect(state.story.description).to.equal('');
+        expect(state.story.createdAt).to.equal('');
+        expect(state.story.imageUrl).to.equal('');
+        expect(state.story.title).to.equal('');
+        expect(state.story.viewCount).to.equal(null);
+      });
+
+      it('sets canSave to false', function() {
+        expect(state.story.canSave).to.equal(false);
+      });
+
+      it('does not set shouldLoadStory to true', function() {
+        expect(state.story.shouldLoadStory).to.equal(false);
+      });
+    });
+
+    describe('url format is valid', function() {
+      beforeEach(function() {
+        state = reducer(state, setStoryUrlField('http://giraffes.com/stories/s/turtles/abcd-1234'));
+      });
+
+      it('sets shouldLoadStory to true', function() {
+        expect(state.story.shouldLoadStory).to.equal(true);
+      });
+    });
+  });
+
+  describe('REQUESTED_STORY', function() {
+    beforeEach(function() {
+      state = reducer(state, requestedStory());
+    });
+
+    it('sets shouldLoadStory to false', function() {
+      expect(state.story.shouldLoadStory).to.equal(false);
+    });
+
+    it('sets isLoadingStory to true', function() {
+      expect(state.story.isLoadingStory).to.equal(true);
+    });
+  });
+
+  describe('HANDLE_LOADING_STORY_SUCCESS', function() {
+    beforeEach(function() {
+      state.story.url = 'http://giraffes.com/stories/s/turtles/abcd-1234';
+      state = reducer(state, handleLoadingStorySuccess({
+        description: 'ghostly guitars',
+        createdAt: '2016-06-08T15:52:10.000-07:00',
+        imageUrl: 'http://beach-party.com/unicorns.jpg',
+        title: 'wombats in space',
+        viewCount: 42
+      }));
+    });
+
+    it('updates preview widget fields', function() {
+      expect(state.story.description).to.equal('ghostly guitars');
+      expect(state.story.createdAt).to.equal('2016-06-08T15:52:10.000-07:00');
+      expect(state.story.imageUrl).to.equal('http://beach-party.com/unicorns.jpg');
+      expect(state.story.title).to.equal('wombats in space');
+      expect(state.story.viewCount).to.equal(42);
+    });
+
+    it('sets hasValidationError to false', function() {
+      expect(state.story.hasValidationError).to.equal(false);
+    });
+
+    it('sets isLoadingStory to false', function() {
+      expect(state.story.isLoadingStory).to.equal(false);
+    });
+
+    it('sets canSave to true', function() {
+      expect(state.story.canSave).to.equal(true);
+    });
+  });
+
+  describe('HANDLE_LOADING_STORY_ERROR', function() {
+    beforeEach(function() {
+      state.story.url = 'http://giraffes.com/stories/s/turtles/abcd-1234';
+      state = reducer(state, handleLoadingStoryError());
+    });
+
+    it('updates preview widget fields', function() {
+      expect(state.story.description).to.equal('');
+      expect(state.story.createdAt).to.equal('');
+      expect(state.story.imageUrl).to.equal('');
+      expect(state.story.title).to.equal('');
+      expect(state.story.viewCount).to.equal(null);
+    });
+
+    it('sets hasValidationError to true', function() {
+      expect(state.story.hasValidationError).to.equal(true);
+    });
+
+    it('sets isLoadingStory to false', function() {
+      expect(state.story.isLoadingStory).to.equal(false);
+    });
+
+    it('sets canSave to false', function() {
+      expect(state.story.canSave).to.equal(false);
+    });
+  });
+
+  describe('REQUESTED_FEATURED_ITEM_REMOVAL', function() {
+    it('sets isRemoving to true', function() {
+      expect(state.isRemoving).to.equal(false);
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.isRemoving).to.equal(true);
+    });
+
+    it('sets removePosition', function() {
+      expect(state.removePosition).to.equal(null);
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.removePosition).to.equal(6);
+    });
+
+    it('sets hasRemoveError to false', function() {
+      state.hasRemoveError = true;
+      state = reducer(state, requestedFeaturedItemRemoval(6));
+      expect(state.hasRemoveError).to.equal(false);
+    });
+  });
+
+  describe('HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS', function() {
+    it('sets isRemoving to false', function() {
+      state.isRemoving = true;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.isRemoving).to.equal(false);
+    });
+
+    it('sets removePosition to null', function() {
+      state.removePosition = 4;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.removePosition).to.equal(null);
+    });
+
+    it('sets hasRemoveError to false', function() {
+      state.hasRemoveError = true;
+      state = reducer(state, handleFeaturedItemRemovalSuccess(4));
+      expect(state.hasRemoveError).to.equal(false);
+    });
+
+    it('removes the item from contentList at the specified index', function() {
+      state.contentList = [ 4, 5, 6 ];
+      state = reducer(state, handleFeaturedItemRemovalSuccess(1));
+      expect(state.contentList).to.deep.equal([4, null, 6]);
+    });
+  });
+
+  describe('HANDLE_FEATURED_ITEM_REMOVAL_ERROR', function() {
+    it('sets isRemoving to false', function() {
+      state.isRemoving = true;
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.isRemoving).to.equal(false);
+    });
+
+    it('sets removePosition to null', function() {
+      state.removePosition = 19;
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.removePosition).to.equal(null);
+    });
+
+    it('sets hasRemoveError to true', function() {
+      expect(state.hasRemoveError).to.equal(false);
+      state = reducer(state, handleFeaturedItemRemovalError());
+      expect(state.hasRemoveError).to.equal(true);
     });
   });
 });

@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../lib/constants';
 import ViewWidget from '../ViewWidget';
+import FormFooter from './FormFooter';
 import {
   cancelFeaturedItemEdit,
   saveFeaturedItem,
@@ -14,7 +14,7 @@ export var ExternalResourceForm = React.createClass({
   propTypes: {
     canSave: PropTypes.bool,
     description: PropTypes.string,
-    hasError: PropTypes.bool,
+    hasSaveError: PropTypes.bool,
     isSaved: PropTypes.bool,
     isSaving: PropTypes.bool,
     onChangeDescription: PropTypes.func,
@@ -88,7 +88,7 @@ export var ExternalResourceForm = React.createClass({
   },
 
   renderContent: function() {
-    var { url, hasError, onClickCancel } = this.props;
+    var { url, hasSaveError, onClickCancel } = this.props;
 
     var isUrlInvalid = !_.isEmpty(url) && !VALID_URL_REGEX.test(url);
 
@@ -110,7 +110,7 @@ export var ExternalResourceForm = React.createClass({
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
       null;
 
-    var saveError = hasError ?
+    var saveError = hasSaveError ?
       <div className="alert error">{this.I18n.save_error_message}</div> :
       null;
 
@@ -143,45 +143,19 @@ export var ExternalResourceForm = React.createClass({
   renderFooter: function() {
     var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
 
-    var saveButtonClassName = classNames({
-      'btn': true,
-      'btn-sm': true,
-      'btn-success': isSaved,
-      'btn-primary': !isSaved,
-      'btn-busy': isSaving,
-      'save-button': true
-    });
+    var footerProps = {
+      cancelText: I18n.cancel,
+      canSave: canSave,
+      displaySaveButton: true,
+      isSaved: isSaved,
+      isSaving: isSaving,
+      onClickCancel: onClickCancel,
+      onClickSave: onClickSave,
+      saveText: I18n.save,
+      savedText: `${I18n.saved}!`
+    };
 
-    var saveButtonContents;
-
-    if (isSaving) {
-      saveButtonContents = <div className="spinner-default spinner-btn-primary" />;
-    } else if (isSaved) {
-      saveButtonContents = `${I18n.saved}!`;
-    } else {
-      saveButtonContents = I18n.save;
-    }
-
-    return (
-      <footer className="modal-footer">
-        <div className="modal-footer-actions">
-          <button
-            key="cancel"
-            className="btn btn-default btn-sm cancel-button"
-            onClick={onClickCancel}>
-            {I18n.cancel}
-          </button>
-
-          <button
-            key="save"
-            className={saveButtonClassName}
-            disabled={isSaving || !canSave}
-            onClick={onClickSave}>
-            {saveButtonContents}
-          </button>
-        </div>
-      </footer>
-    );
+    return <FormFooter {...footerProps} />;
   },
 
   render: function() {

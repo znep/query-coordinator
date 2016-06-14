@@ -163,17 +163,49 @@
           <thead>
             <tr>
               <th class="domain" scope="col"><span><%= t("#{external_federation}.source_domain") %> </span></th>
-              <th class="federatedAssets" scope="col"><span><%= t("#{external_federation}.federated_assets") %></span></th>
-              <th class="status" scope="col"><span><%= t("#{external_federation}.current_status") %></span></th>
-              <th class="endedAt" scope="col"><span><%= t("#{external_federation}.last_synced") %></span></th>
-              <th class="actions" scope="col"><span><%= t("#{external_federation}.actions") %></span></th>
+              <th class="federatedAssets" scope="col">
+                <span>
+                  <%= t("#{external_federation}.discovered_assets") %>
+                </span>
+              </th>
+              <th class="federatedAssets" scope="col">
+                <span>
+                  <%= t("#{external_federation}.federated_assets") %>
+                </span>
+              </th>
+              <th class="status" scope="col">
+                <span>
+                  <%= t("#{external_federation}.current_status") %>
+                </span>
+              </th>
+              <th class="endedAt" scope="col">
+                <span>
+                  <%= t("#{external_federation}.last_synced") %>
+                </span>
+              </th>
+              <th class="actions" scope="col">
+                <span>
+                  <%= t("#{external_federation}.actions") %>
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
             <%- @external_federations.each do |server| -%>
               <tr>
                 <td class="name" scope="row"><%= server.url %></td>
-                <td class="federatedAssets" scope="row"> <%= t("#{external_federation}.assets_federated", count: server.layer_count) %></td>
+                <td class="federatedAssets" scope="row">
+                  <%= t(
+                    "#{external_federation}.assets_discovered",
+                    count: server.layer_count
+                  ) %>
+                </td>
+                <td class="federatedAssets" scope="row">
+                  <%= t(
+                    "#{external_federation}.assets_federated",
+                    count: server.synced_count
+                  ) %>
+                </td>
                 <td class="status" scope="row">
                   <p class="curent-status">
                     <span class="external-federation-icon external-federation-icon-<%=server.status_key.dasherize %> icon-<%= external_federation_icon(server.status_key)%>"></span>
@@ -185,29 +217,43 @@
                   <%- if server.last_synced -%>
                     <%= server.last_synced %>
                   <%- else -%>
-                    <%= t("#{external_federation}.not_yet") %>
+                    <%= t("#{external_federation}.never") %>
                   <%- end -%>
                 </td>
                 <td class="actions" scope="row">
-                  <% if server.job -%>
-                    <%= form_button(
-                      {:action => :delete_external_federation, :server_id => server.id},
-                      t("#{socrata_federation}.terminate"),
-                      {:method => :delete},
-                      :class => "button buttonArea"
-                    )%>
+                  <%- if FeatureFlags.derive(nil, request).edit_external_federation -%>
 
-                    <%- if FeatureFlags.derive(nil, request).edit_external_federation -%>
+                    <%- if server.job %>
                       <%= link_to(
                         t("#{external_federation}.edit"),
-                        {:action => :edit_external_federation,
-                        :server_id => server.id},
+                        {
+                          :action => :edit_external_federation,
+                          :server_id => server.id
+                        },
                         {:class => 'button buttonArea'}
-                      )%>
-                    <%- end -%>
+                      )
+                      %>
 
-                  <%- else -%>
-                    <%= t("#{external_federation}.not_synced_yet_edit") %>
+                      <%= form_button(
+                        {:action => :delete_external_federation, :server_id => server.id},
+                        t("#{socrata_federation}.terminate"),
+                        {:method => :delete},
+                        :class => "button buttonArea"
+                      )%>
+                    <%- else -%>
+                      <%= link_to(
+                        t("#{external_federation}.edit"),
+                        '#',
+                        {:class => 'button buttonArea disabled'}
+                      )
+                      %>
+                      <%= link_to(
+                        t("#{socrata_federation}.terminate"),
+                        '#',
+                        {:class => 'button buttonArea disabled'}
+                      )
+                      %>
+                    <%- end -%>
                   <%- end -%>
                 </td>
               </tr>

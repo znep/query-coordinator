@@ -57,6 +57,24 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     expect(element.querySelector('.featured-item .remove-button')).to.exist;
   });
 
+  it('renders the remove button with text if the item is not being removed', function() {
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, mockFeaturedItem, null]
+    }));
+
+    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.not.exist;
+  });
+
+  it('renders the remove button with a spinner if an item is being removed', function() {
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, mockFeaturedItem, null],
+      removePosition: 1,
+      isRemoving: true
+    }));
+
+    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.exist;
+  });
+
   it('renders an add button on placeholders', function() {
     var element = renderComponent(FeaturedItemSelector, getProps({
       contentList: [null, null, null]
@@ -77,6 +95,26 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     Simulate.click(button);
 
     expect(element.querySelectorAll('.featured-item:first-child .btn')).to.have.length(3);
+  });
+
+  it('does not render a story button on placeholder when Perspectives is not enabled', function() {
+    window.serverConfig.featureFlags.storiesEnabled = false;
+    var element = renderComponent(FeaturedItemSelector, getProps({
+      contentList: [null, null, null]
+    }));
+
+    expect(element.querySelectorAll('.featured-item:first-child .btn')).to.have.length(1);
+
+    var button = element.querySelector('.featured-item:first-child .btn');
+    Simulate.click(button);
+
+    var buttons = element.querySelectorAll('.featured-item:first-child .btn');
+    var hasStoryOption = _.any(buttons, function(button) {
+      return button.innerText === I18n.featured_content_modal.story
+    });
+
+    expect(buttons).to.have.length(2);
+    expect(hasStoryOption).to.be.false;
   });
 
   describe('actions', function() {
@@ -118,7 +156,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('calls onClickRemove when the edit button is clicked', function() {
+    it('calls onClickRemove when the remove button is clicked', function() {
       var spy = sinon.spy();
 
       var element = renderComponent(FeaturedItemSelector, getProps({
@@ -128,6 +166,20 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       expect(spy.callCount).to.equal(0);
       Simulate.click(element.querySelector('.featured-item:first-child .remove-button'));
       expect(spy.callCount).to.equal(1);
+    });
+
+    it('does not call onClickRemove when the remove button is clicked and the item is already being removed', function() {
+      var spy = sinon.spy();
+
+      var element = renderComponent(FeaturedItemSelector, getProps({
+        onClickRemove: spy,
+        isRemoving: true,
+        removePosition: 0
+      }));
+
+      expect(spy.callCount).to.equal(0);
+      Simulate.click(element.querySelector('.featured-item:first-child .remove-button'));
+      expect(spy.callCount).to.equal(0);
     });
   });
 });

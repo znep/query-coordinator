@@ -10,13 +10,16 @@ import {
   CANCEL_FEATURED_ITEM_EDIT,
   REQUESTED_FEATURED_ITEM_SAVE,
   HANDLE_FEATURED_ITEM_SAVE_SUCCESS,
-  HANDLE_FEATURED_ITEM_SAVE_ERROR
+  HANDLE_FEATURED_ITEM_SAVE_ERROR,
+  REQUESTED_FEATURED_ITEM_REMOVAL,
+  HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
+  HANDLE_FEATURED_ITEM_REMOVAL_ERROR
 } from '../../actionTypes';
 
 var initialState = {
 
   // Source of truth
-  contentList: _.merge([null, null, null], _.get(window.initialState, 'featuredContent', [])),
+  contentList: assembleInitialFeaturedContent(),
 
   // Editing
   isEditing: false,
@@ -26,8 +29,24 @@ var initialState = {
   // Saving
   isSaving: false,
   isSaved: false,
-  hasError: false
+  hasSaveError: false,
+
+  // Removing
+  isRemoving: false,
+  removePosition: null,
+  hasRemoveError: false
 };
+
+function assembleInitialFeaturedContent() {
+  var featuredContent = _.get(window.initialState, 'featuredContent', []);
+  var contentList = [null, null, null];
+
+  featuredContent.forEach(function(item) {
+    contentList[item.position - 1] = item;
+  });
+
+  return contentList;
+}
 
 // Given a featured item, we need to figure out if it's a normal visualization, a story, or an
 // external resource.  Normally the `contentType` would provide this information for us, but
@@ -38,6 +57,9 @@ function getEditTypeFromFeaturedItem(featuredItem) {
   if (featuredItem.contentType === 'external') {
     return 'externalResource';
   } else if (featuredItem.contentType === 'internal') {
+    if (featuredItem.featuredView.displayType === 'story') {
+      return 'story';
+    }
     return; // TODO Good luck
   }
 }
@@ -85,14 +107,17 @@ export default function(state, action) {
         editPosition: null,
         isSaving: false,
         isSaved: false,
-        hasError: false
+        hasSaveError: false,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: false
       };
 
     case REQUESTED_FEATURED_ITEM_SAVE:
       return {
         ...state,
         isSaving: true,
-        hasError: false
+        hasSaveError: false
       };
 
     case HANDLE_FEATURED_ITEM_SAVE_SUCCESS:
@@ -108,7 +133,33 @@ export default function(state, action) {
       return {
         ...state,
         isSaving: false,
-        hasError: true
+        hasSaveError: true
+      };
+
+    case REQUESTED_FEATURED_ITEM_REMOVAL:
+      return {
+        ...state,
+        isRemoving: true,
+        removePosition: action.position,
+        hasRemoveError: false
+      };
+
+    case HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS:
+      state.contentList[action.position] = null;
+
+      return {
+        ...state,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: false
+      };
+
+    case HANDLE_FEATURED_ITEM_REMOVAL_ERROR:
+      return {
+        ...state,
+        isRemoving: false,
+        removePosition: null,
+        hasRemoveError: true
       };
 
     default:

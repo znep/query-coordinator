@@ -53,7 +53,11 @@ export var InfoPane = React.createClass({
       <span className="tag-category">{_.capitalize(view.category)}</span> : null;
 
     viewDataButton = (
-      <a href={view.gridUrl} className="btn btn-default btn-sm grid" onClick={onClickGrid}>
+      <a
+        href={view.gridUrl}
+        className="btn btn-default btn-sm grid"
+        onClick={onClickGrid}
+        target="_blank">
         {I18n.action_buttons.data}
         <span className="icon-external" />
       </a>

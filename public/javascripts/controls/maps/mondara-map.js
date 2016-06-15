@@ -153,7 +153,9 @@
 
       // The default name for geo columns ingressed normally is 'the_geom', but
       // some datasets may have a different name which we should attempt first.
-      var geoColumnFieldName = _(blist.dataset.columns).filter(function(column) {
+      var geoColumnFieldName = _(
+          _.get(this, '_layerModel._view.columns', [])
+        ).filter(function(column) {
         return /(polygon|line|point)$/.test(column.dataTypeName);
       }).pluck('fieldName').first();
       var tileUrl = [

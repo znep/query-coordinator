@@ -223,16 +223,16 @@
               break;
             case 'not_intended_for_direct_manipulation':
               $warning.addClass('not_intended_for_direct_manipulation');
-              if (discouragement.instead) {
-                $warning.find('span.instead').show();
-                $warning.find('span.instead a').attr('href', discouragement.instead);
-              }
               break;
             case 'deprecation':
               $warning.addClass('deprecation');
               break;
             default:
               console.error('not sure what happened');
+          }
+          if (discouragement.instead) {
+            $warning.find('span.instead').show();
+            $warning.find('span.instead a').attr('href', discouragement.instead);
           }
         } else if (_.include(existingConfigTypes, dataItem.name)) {
           $warning.addClass('already_exists');

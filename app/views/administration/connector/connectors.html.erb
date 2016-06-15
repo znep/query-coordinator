@@ -1,0 +1,140 @@
+<%- connector = 'screens.admin.connector' %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-connectors' %>
+  <title><%= t("#{connector}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="connector-content" class="contentBox withLeftNavigation">
+
+  <div class="adminHeader connectors floating">
+    <span class="icon"></span>
+    <h1><%= t("#{connector}.title") %></h1>
+    <% if !@failed_esri_connection %>
+      <div class="connector-top-page-button-area">
+        <div class="buttonArea">
+          <%= link_to(
+            t("#{connector}.add_new"),
+            :new_connector,
+            :class => "button",
+            :title => t("#{connector}.add_new")
+          )%>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= display_standard_flashes %>
+  <%- if !@failed_esri_connection -%>
+
+    <%- if @connectors.present? %>
+      <div class="gridListWrapper">
+        <table class="gridList templatesList" cellspacing="0">
+          <colgroup>
+            <col class="name" />
+            <col class="federatedAssets" />
+            <col class="status" />
+            <col class="endedAt" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="domain" scope="col"><span><%= t("#{connector}.source_domain") %> </span></th>
+              <th class="federatedAssets" scope="col">
+                <span>
+                  <%= t("#{connector}.discovered_assets") %>
+                </span>
+              </th>
+              <th class="federatedAssets" scope="col">
+                <span>
+                  <%= t("#{connector}.connected_assets") %>
+                </span>
+              </th>
+              <th class="status" scope="col">
+                <span>
+                  <%= t("#{connector}.current_status") %>
+                </span>
+              </th>
+              <th class="endedAt" scope="col">
+                <span>
+                  <%= t("#{connector}.last_synced") %>
+                </span>
+              </th>
+              <th class="actions" scope="col">
+                <span>
+                  <%= t("#{connector}.actions") %>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @connectors.each do |server| -%>
+              <tr>
+                <td class="name" scope="row"><%= server.url %></td>
+                <td class="federatedAssets" scope="row">
+                  <%= t(
+                    "#{connector}.assets_discovered",
+                    count: server.layer_count
+                  ) %>
+                </td>
+                <td class="federatedAssets" scope="row">
+                  <%= t(
+                    "#{connector}.assets_connected",
+                    count: server.synced_count
+                  ) %>
+                </td>
+                <td class="status" scope="row">
+                  <p class="curent-status">
+                    <span class="connector-icon connector-icon-<%=server.status_key.dasherize %> icon-<%= connector_icon(server.status_key)%>"></span>
+
+                    <%= t("#{connector}.#{server.status_key}") %>
+                  </p>
+                </td>
+                <td class="endedAt" scope="row">
+                  <%- if server.last_synced -%>
+                    <%= server.last_synced %>
+                  <%- else -%>
+                    <%= t("#{connector}.never") %>
+                  <%- end -%>
+                </td>
+                <td class="actions" scope="row">
+                  <%- if server.last_synced %>
+                    <%= link_to(
+                      t("#{connector}.edit"),
+                      {
+                        :action => :edit_connector,
+                        :server_id => server.id
+                      },
+                      {:class => 'button buttonArea'}
+                    )
+                    %>
+                  <%- else -%>
+                    <%= link_to(
+                      t("#{connector}.edit"),
+                      '#',
+                      {:class => 'button buttonArea disabled'}
+                    )
+                    %>
+                  <%- end -%>
+                  <%= form_button(
+                    {:action => :delete_connector, :server_id => server.id},
+                    t("#{connector}.terminate"),
+                    {:method => :delete},
+                    :class => "button buttonArea"
+                  )%>
+                </td>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+        <%- else -%>
+          <p class="noResultsMessage"> <%= t("#{connector}.no_connectors") %> </p>
+        <%- end -%>
+    </div>
+
+  </div>
+<%- end %>
+
+<%= render_admin_userzoom %>

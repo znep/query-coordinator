@@ -141,6 +141,14 @@
         </span>
       </li>
     <%- end -%>
+    <%- if current_user.try(:is_admin?) && feature_flag?('enable_catalog_connector', request) %>
+      <li class="connectors">
+        <%= admin_nav_link_to 'Connectors', :controller => '/administration/connector', :action => 'connectors' %>
+        <span class="description">
+          Register a connector to bulk create and manage connected datasets.
+        </span>
+      </li>
+    <%- end %>
   </ul>
 </div>
 

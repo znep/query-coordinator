@@ -1832,6 +1832,59 @@ en:
         title: Asset Inventory
         unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
+      connector:
+        actions: Actions
+        add_connector: Add Connector
+        add_new: Add new
+        all_assets: Connect all assets
+        arcgis_server_address: ArcGIS Server Address
+        assets_connected:
+          one: 1 asset connected
+          other: '%{count} assets connected'
+        assets_discovered:
+          one: 1 asset discovered
+          other: '%{count} assets discovered'
+        back_to_connector_list: Back to Connector list
+        catalog: Catalog
+        connected_assets: Connected assets
+        current_status: Current Status
+        data: Data
+        edit: Edit
+        edit_connector: 'Edit Connector: %{url}'
+        errors:
+          duplicate_server_error: That Esri Server has already been connected to this domain.
+          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
+          json_format_error: Your JSON was malformed.
+          missing_attributes_error: 'These parameters were missing: %{missing}.'
+          not_found_error: That resource was not found.
+          problem_with_errors: 'We were unable to process your request.'
+          server_ping_error: 'Could not reach server: %{url}'
+          unknown_error: 'Your request failed for the following reason: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS Server address
+        failing: Failing
+        discovered_assets: Discovered assets
+        flashes:
+          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+          deleted: Your connector has been marked for deletion.
+          server_not_found: We could not find that server-- it may have been recently deleted.
+          updated: Your connector's settings have been saved.
+        ignore: Ignored
+        last_synced: Last synced
+        not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
+        no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
+        not_yet: Not yet synced
+        search: Search the domain
+        selective_connection: Selective Connection
+        service_unavailable: 'Connector services are currently unavailable.'
+        source: Connector source
+        some_assets: Connect only these assets
+        terminate: Terminate
+        title: Manage Connectors
+        success: Success
+        save: Save
+        not_yet: Sync in progress
+        never: Never
       federation:
         accept: Accept
         accepted: Accepted
@@ -1861,57 +1914,6 @@ en:
         target_domain: Target Domain
         terminate: Terminate
         title: Open Data Federation
-      external_federation:
-        actions: Actions
-        add_new: Add new
-        add_new_federation: Add External Federation
-        all_assets: Federate all assets
-        arcgis_server_address: ArcGIS Server Address
-        assets_federated:
-          one: 1 asset federated
-          other: '%{count} assets federated'
-        assets_discovered:
-          one: 1 asset discovered
-          other: '%{count} assets discovered'
-        catalog: Catalog
-        current_status: Current Status
-        data: Data
-        edit: Edit
-        edit_federation: 'Edit Federation: %{url}'
-        errors:
-          duplicate_server_error: That Esri Server has already been federated on this domain.
-          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: Your JSON was malformed.
-          missing_attributes_error: 'These parameters were missing: %{missing}.'
-          not_found_error: That resource was not found.
-          problem_with_errors: 'We were unable to process your request.'
-          server_ping_error: 'Could not connect to server: %{url}'
-          unknown_error: 'Your request failed for the following reason: %{reason}'
-        esri_arcgis: Esri ArcGIS
-        esri_arcgis_url: ArcGIS Server address
-        failing: Failing
-        federated_assets: Federated assets
-        discovered_assets: Discovered assets
-        flashes:
-          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the federation settings and continue setup.
-          deleted: Your federation has been marked for deletion.
-          updated: Your federation settings have been saved.
-        ignore: Ignored
-        last_synced: Last synced
-        not_synced_yet_edit: You may edit the federation settings once we have synced the ArcGIS catalog.
-        no_external_federations: There are no current External Federations. If you wish to connect an external source to your catalog, click Add New above.
-        not_yet: Not yet synced
-        search: Search the domain
-        selective_federation: Selective Federation
-        service_unavailable: 'External federation is currently unavailable.'
-        source: Federation source
-        source_domain: Source Domain
-        some_assets: Federate only these assets
-        title: External Federation
-        success: Success
-        save: Save
-        not_yet: Sync in progress
-        never: Never
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer

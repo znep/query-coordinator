@@ -92,6 +92,11 @@
         <%= admin_nav_link_to 'Stories', '/stories/admin/themes' %>
       </li>
     <%- end -%>
+    <%- if current_user.try(:is_admin?) && feature_flag?('enable_catalog_connector', request) -%>
+      <li class="connectors">
+        <%= admin_nav_link_to 'Connectors', :controller => '/administration/connector', :action => 'connectors' %>
+      </li>
+    <%- end -%>
   </ul>
 </div>
 

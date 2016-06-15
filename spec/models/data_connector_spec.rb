@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe ExternalFederation do
-  let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/external_federation" }
+describe DataConnector do
+  let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/data_connector" }
   let(:check_params) do
     {
       'sync_type' => 'ignored',
@@ -74,7 +74,7 @@ describe ExternalFederation do
 
   context '#self.update_server' do
     it 'interprets checkboxes as sync_types' do
-      body = ExternalFederation.update_server(2, check_params)
+      body = DataConnector.update_server(2, check_params)
 
       expect(body['folders']).to be_kind_of(Array)
       body['folders'].each do |folder|
@@ -109,7 +109,7 @@ describe ExternalFederation do
         expect(query).to eq({:filters => {:socrata_domain => host}})
         {'items' => []}
       end
-      servers = ExternalFederation.servers
+      servers = DataConnector.servers
     end
 
     it 'returns an array of EsriServers' do
@@ -118,7 +118,7 @@ describe ExternalFederation do
         :status => 200,
         :body => File.read("#{fixture_prefix}/servers.json")
       )
-      servers = ExternalFederation.servers
+      servers = DataConnector.servers
       expect(servers.length).to eq(1)
       expect(servers[0]).to be_an_instance_of(EsriServer)
     end
@@ -134,7 +134,7 @@ describe ExternalFederation do
         :status => 200,
         :body => File.read("#{fixture_prefix}/server.json")
       )
-      server = ExternalFederation.server(1)
+      server = DataConnector.server(1)
       expect(server).to be_an_instance_of(EsriServer)
     end
   end
@@ -144,7 +144,7 @@ describe ExternalFederation do
       expect(query).to eq({:filters => {:socrata_domain => host}})
       {}
     end
-    server = ExternalFederation.server(1)
+    server = DataConnector.server(1)
   end
 
   context '#self.create' do
@@ -162,7 +162,7 @@ describe ExternalFederation do
           :socrata_domain => CurrentDomain.cname
         })
       end
-      ExternalFederation.create(esri_domain, sync_type)
+      DataConnector.create(esri_domain, sync_type)
     end
   end
 

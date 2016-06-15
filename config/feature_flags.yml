@@ -116,6 +116,9 @@ enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false
   category: obe deprecation
+enable_catalog_connector:
+  description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
+  defaultValue: false
 enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
@@ -156,12 +159,6 @@ enable_pdf_download_type:
   defaultValue: false
 enable_xls_download_type:
   description: Control visibility of the "Export > Download dataset as XLS/XLSX" formats.  A reason for disabling these download types is to avoid customer confusion stemming from the fact that there is a hard limit on the number of cells that can be exported for XLS/XLSX downloads.  XLS and XLSX file exports are truncated at 250,000 cells to preserve performance.
-  defaultValue: false
-external_federation:
-  description: Enable the external federation pages and section of the admin "federations" page. Allows user to federate data from esri.
-  defaultValue: false
-edit_external_federation:
-  description: Enable the edit_external_federation to selectively choose which resources to federate.
   defaultValue: false
 eventing_metrics:
   description: Use experimental event-based instead of key-value metrics. If 'both', emit both.

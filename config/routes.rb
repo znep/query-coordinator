@@ -135,6 +135,15 @@ Rails.application.routes.draw do
 
       end
 
+      scope :controller => 'administration/connector', :path => '/connectors' do
+        get '/', :action => 'connectors', :as => 'connectors'
+        post '/', :action => 'create_connector'
+        get '/new', :action => 'new_connector', :as => 'new_connector'
+        get '/:server_id', :action => 'edit_connector', :as => 'edit_connector'
+        post '/:server_id', :action => 'update_connector'
+        delete '/:server_id/delete', :action => 'delete_connector'
+      end
+
       put '/users/:user_id/promote/:role', :action => 'set_user_role'
       put '/users/update', :action => 'set_user_role'
       post '/users/:user_id/reset_password', :action => 'reset_user_password'
@@ -149,13 +158,6 @@ Rails.application.routes.draw do
       post '/federations/:id/accept', :action => 'accept_federation'
       post '/federations/:id/reject', :action => 'reject_federation'
       post '/federations/create', :action => 'create_federation'
-
-      get '/external_federation', :action => 'external_federation'
-      get '/external_federation/:server_id', :action => 'edit_external_federation'
-      post '/external_federation/:server_id', :action => 'update_external_federation'
-      post '/external_federation', :action => 'create_external_federation'
-      delete '/external_federation/:server_id/delete', :action => 'delete_external_federation'
-
 
       post '/metadata/:fieldset/create', :action => 'create_metadata_field'
       put '/metadata/save_field', :action => 'save_metadata_field'

@@ -28,7 +28,7 @@ class EsriServer
   def status_key
     if @job
       case @job['status']
-        when 'failure' then 'failing'
+        when 'failure' then 'failed'
         when 'success' then 'success'
         else 'not_yet'
       end

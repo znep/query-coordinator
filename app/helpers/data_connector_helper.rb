@@ -1,5 +1,5 @@
-# helper for logic around displaying external federation pages
-module ExternalFederationHelper
+# helper for logic around displaying connector pages
+module DataConnectorHelper
 
   # for a service hash, get the most preferred way to represent it as a string
   def service_display_string(service_data)
@@ -14,17 +14,14 @@ module ExternalFederationHelper
     layer_data['url']
   end
 
-  # get the suffix for an icon representing an external federation's sync state
+  # get the suffix for an icon representing a connector's sync state
   # ex: icon-check is a check symbol
-  def external_federation_icon(status)
+  def connector_icon(status)
     case status
-      when 'failing'
-        'failed'
-      when 'working'
-        'check'
-      when 'not_yet'
-        'waiting'
-      end
+      when 'failed' then 'failed'
+      when 'success' then 'check'
+      when 'not_yet' then 'waiting'
+    end
   end
 
   # Constructs the 'name' values of the checkbox input field
@@ -53,7 +50,7 @@ module ExternalFederationHelper
     "#{layer_display_string(layer)} #{service_search_term(folder, service)}"
   end
 
-  # Constructs the check_boxes for the edit_external_federation pages.
+  # Constructs the check_boxes for the edit_connector page.
   def folder_check_box(server, folder)
     check_box(
       folder_param_name(folder),

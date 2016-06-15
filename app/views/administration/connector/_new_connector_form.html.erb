@@ -1,0 +1,34 @@
+<%- connector = 'screens.admin.connector' %>
+
+<%= display_standard_flashes %>
+
+<div class="new-connector-form flexbox-space-between">
+  <div class="connector-form-field-container">
+    <div class="line">
+      <label for="federation_source" class="required"><%= t("#{connector}.source") %></label>
+      <select disabled>
+        <option id="federation_source"><%= t("#{connector}.esri_arcgis") %></option>
+      </select>
+    </div>
+    <div class="line">
+      <label for="esri_domain" class="required"><%= t("#{connector}.arcgis_server_address") %></label>
+
+      <div class="input-group">
+        <span class="input-group-prepend">https://</span>
+        <input
+          type="text"
+          name="server[esri_domain]"
+          id="esri_domain"
+          value="<%= @server['esri_domain']%>"
+          class="required input-prepended"
+          placeholder="<domain>/ArcGIS/rest"
+        />
+      </div>
+    </div>
+
+  </div>
+
+  <div class="line clearfix">
+    <input type="submit" value=<%=t("#{connector}.save")%> class="button"/>
+  </div>
+</div>

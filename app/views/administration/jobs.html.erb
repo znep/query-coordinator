@@ -111,6 +111,11 @@
           <td nowrap>
             <% if activity.initiated_by.nil? %>
               <span class="import-status-deleted"><%= "(#{t("#{jobs_prefix}.index_page.deleted_user")})" %></span>
+            <% elsif activity.initiated_by.is_admin? %>
+              Socrata
+              <% if current_user.is_admin? %>
+                (<%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>)
+              <% end %>
             <% else %>
               <%= link_to activity.initiated_by.displayName, profile_path(activity.initiated_by) %>
             <% end %>

@@ -8,13 +8,17 @@ var sources = [
 ];
 
 var configuration = {
+  extends: 'eslint:recommended',
   env: {
     browser: true,
     node: true
   },
-  extends: 'eslint:recommended',
   parserOptions: {
-    ecmaVersion: 6
+    ecmaVersion: 6,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    }
   }
 };
 

@@ -1,0 +1,76 @@
+.color-picker {
+  position: relative;
+  display: inline-block;
+  align-self: flex-end;
+  padding-bottom: 5px;
+  z-index: 2000;
+
+  .hidden {
+    display: none;
+  }
+}
+
+.color-picker-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.color-frame {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 35px;
+  height: 24px;
+  background-color: #d8d8d8;
+
+  .caret {
+    margin-left: 1px;
+  }
+}
+
+.selected-color-frame {
+  width: 24px;
+  height: 24px;
+}
+
+.color-buckets-container {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  top: 29px;
+  left: 0;
+  padding: 7px;
+  background-color: #f0efef;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.26);
+
+  &.reveal-from-top {
+    top: -121px;
+  }
+}
+
+.color-buckets {
+  display: flex;
+  flex-wrap: wrap;
+  width: 195px;
+}
+
+.color-bucket {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.color-24 .color-bucket:nth-child(8n) {
+  margin-right: 0;
+}
+
+.selected-color,
+.color-bucket:hover {
+  outline: 2px solid #71a8e7;
+}
+

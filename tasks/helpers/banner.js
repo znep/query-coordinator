@@ -1,11 +1,11 @@
-var package = require('../../package.json');
+var packageJson = require('../../package.json');
 
 module.exports = () => {
   return [
     '/*!',
-    ` * Socrata Styleguide v${package.version}`,
-    ` * Copyright 2015-${(new Date).getFullYear()} ${package.author}`,
-    ` * Licensed under ${package.license}`,
+    ` * Socrata Styleguide v${packageJson.version}`,
+    ` * Copyright 2015-${(new Date).getFullYear()} ${packageJson.author}`,
+    ` * Licensed under ${packageJson.license}`,
     ' */\n\n'
   ].join('\n');
 };

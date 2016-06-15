@@ -9,6 +9,14 @@ function configuration(filename, minify) {
     context: __dirname,
     devtool: 'source-map',
     entry: '../src/js/index.js',
+    externals: {
+      'react': {
+        root: 'React',
+        commonjs2: 'react',
+        commonjs: 'react',
+        amd: 'react'
+      }
+    },
     output: {
       path: `${__dirname}/dist/js`,
       filename,
@@ -17,6 +25,18 @@ function configuration(filename, minify) {
     },
     resolve: {
       modulesDirectories: ['node_modules']
+    },
+    module: {
+      loaders: [
+        {
+          loader: 'babel',
+          test: /\.js$/g,
+          exclude: /node_modules/g,
+          query: {
+            presets: ['es2015', 'react']
+          }
+        }
+      ]
     },
     plugins: minify ? [new UglifyJsPlugin({compress: {warnings: false}})] : []
   };

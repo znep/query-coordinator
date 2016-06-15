@@ -2,7 +2,7 @@ var path = require('path');
 
 var root = path.resolve(__dirname, '../..');
 
-module.exports = function ( karma ) {
+module.exports = function(karma) {
   karma.set({
     basePath: '../../',
 
@@ -27,14 +27,14 @@ module.exports = function ( karma ) {
         loaders: [
           {
             test: /\.jsx?$/,
-            exclude: /(node_modules|bower_components)/,
+            exclude: /(node_modules)/,
             loader: 'babel'
           }
         ]
       },
       resolve: {
         alias: {
-          '_': 'lodash',
+          '_': 'lodash'
         },
         root: [
           path.resolve('.'),
@@ -45,7 +45,8 @@ module.exports = function ( karma ) {
       externals: {
         'datasetCategories': 'datasetCategories',
         'importableTypes': 'importableTypes',
-        'enabledModules': 'enabledModules'
+        'enabledModules': 'enabledModules',
+        'customMetadataSchema': 'customMetadataSchema'
       }
     },
 

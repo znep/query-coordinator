@@ -20,14 +20,14 @@ module.exports = _.defaultsDeep({
   },
   resolve: {
     alias: {
-      '_': 'lodash'
-      //'socrata-utils': 'socrata-utils/dist/socrata.utils.js'
+      '_': 'lodash',
+      'socrata-utils': 'socrata-utils/dist/socrata.utils.js'
     }
   },
   externals: {
-    // per-domain config
     'importableTypes': 'importableTypes',
     'datasetCategories': 'datasetCategories',
+    'customMetadataSchema': 'customMetadataSchema',
     'enabledModules': 'enabledModules',
     // TODO: eventually compress into ImportSource
     'datasetName': 'datasetName',

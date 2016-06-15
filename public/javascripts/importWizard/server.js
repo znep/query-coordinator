@@ -5,14 +5,13 @@ import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
 import * as Working from './components/working';
 import * as Importing from './components/importing';
-import * as Metadata from './components/metadata';
+// import * as Metadata from './components/metadata';
 
 import formurlencoded from 'form-urlencoded';
 
 
 export function saveMetadata() {
   return (dispatch) => {
-    dispatch(Metadata.metadataNext());
     setTimeout(() => {
       dispatch(Working.workingNext());
       dispatch(importData()); // TODO: or not, depending on operation

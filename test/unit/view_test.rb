@@ -537,10 +537,10 @@ class ViewTest < Minitest::Test
   def test_find_dataset_landing_page_related_content
     # NBE && OBE
     obe_view = View.new('id' => 'abcd-abcd', 'tableId' => 123)
-    obe_endpoint = '/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=123'
+    obe_endpoint = '/views.json?count=&method=getByTableId&page=&sortBy=most_accessed&tableId=123'
 
     nbe_view = View.new('id' => 'efgh-efgh', 'tableId' => 456)
-    nbe_endpoint = '/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=456'
+    nbe_endpoint = '/views.json?count=&method=getByTableId&page=&sortBy=most_accessed&tableId=456'
 
     view = View.new('id' => 'abcd-abcd')
     view.stubs(:nbe_view => nbe_view, :obe_view => obe_view)

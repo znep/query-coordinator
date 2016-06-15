@@ -231,10 +231,10 @@ class View < Model
 
   def find_dataset_landing_page_related_content
     # Get related datasets associated with the OBE
-    related_obe_views = obe_view ? obe_view.find_related(1) : []
+    related_obe_views = obe_view ? obe_view.find_related(nil, nil) : []
 
     # Get related datasets associated with the NBE
-    related_nbe_views = nbe_view ? nbe_view.find_related(1) : []
+    related_nbe_views = nbe_view ? nbe_view.find_related(nil, nil) : []
 
     # Separate Data Lens views
     related_data_lens_views, related_nbe_views = related_nbe_views.partition do |related_view|

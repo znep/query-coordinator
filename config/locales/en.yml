@@ -1276,6 +1276,7 @@ en:
     back: Back
     cancel: Cancel
     change: Change
+    choose: Choose
     close: Close
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
@@ -1311,6 +1312,7 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
+    error: Error
     featured_content:
       title: Featured Content Using this Data
       manage_prompt:
@@ -1323,7 +1325,6 @@ en:
         header:  Feature an External Resource
         invalid_url_message: This looks like an invalid link. Try adding http:// to the beginning of your link.
         message: Create a link to some external asset relating to this data. It could be an awesome visualization on the web, a blog post about how the data was released, or a link to another part of your site.
-        save_error_message: Oh no! Something went wrong, please try again.
         title: Title
         url: Link to Resource
       header: Manage Featured Content
@@ -1331,15 +1332,21 @@ en:
       preview: Preview of featured content
       remove_error: Oh no!  Something went wrong, please try again.
       remove_prompt: Are you sure you wish to delete this?
+      save_error_message: Oh no! Something went wrong, please try again.
       story: Story
       story_form:
         header: Feature a Socrata Story
         invalid_url_message: Hmm... Something went wrong. Try using a valid link to a Scorata Story.
         message_html: 'Using Socrata Perspectives, guide your users to relevant narratives based on this data. For a full list of public stories on this domain <a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a>'
-        save_error_message: Oh no! Something went wrong, please try again.
         url: Link to Story
       title: Featured Content
       visualization: Visualization
+      view_selector_modal:
+         header: Feature a Socrata Visualization
+         message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
+         no_views: This dataset doesn’t have any related visualizations. Do you want to create one now?
+         create_a_view: Create a visualization
+         view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
     feedback:
       panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
       panel_title: Do you want to include an annotated screenshot of the current page?

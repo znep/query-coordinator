@@ -17,7 +17,7 @@ export var StoryForm = React.createClass({
     canSave: PropTypes.bool,
     createdAt: PropTypes.string,
     description: PropTypes.string,
-    hasError: PropTypes.bool,
+    hasSaveError: PropTypes.bool,
     hasValidationError: PropTypes.bool,
     imageUrl: PropTypes.string,
     isLoadingStory: PropTypes.bool,
@@ -47,7 +47,7 @@ export var StoryForm = React.createClass({
   componentDidUpdate: function() {
     this.loadStoryIfNeeded();
 
-    if (this.props.hasError) {
+    if (this.props.hasSaveError) {
       var invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
       if (invalidField) {
         invalidField.focus();
@@ -70,7 +70,7 @@ export var StoryForm = React.createClass({
   I18n: I18n.featured_content_modal.story_form,
 
   renderForm: function() {
-    var { url, hasError, hasValidationError, onClickSave } = this.props;
+    var { url, hasSaveError, hasValidationError, onClickSave } = this.props;
 
     var validationWarning = hasValidationError ?
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
@@ -89,7 +89,7 @@ export var StoryForm = React.createClass({
           value={url}
           placeholder="https://example.com/stories/s/abcd-efgh"
           aria-labelledby="story-url-label"
-          aria-invalid={hasValidationError || hasError}
+          aria-invalid={hasValidationError || hasSaveError}
           onChange={this.onChangeUrl}
           onKeyDown={handleKeyPress(onClickSave, true)} />
 
@@ -139,7 +139,7 @@ export var StoryForm = React.createClass({
   },
 
   renderContent: function() {
-    var { hasError, onClickCancel } = this.props;
+    var { hasSaveError, onClickCancel } = this.props;
 
     var backButton = (
       <button className="btn btn-default btn-simple btn-xs back-button" onClick={onClickCancel}>
@@ -148,8 +148,8 @@ export var StoryForm = React.createClass({
       </button>
     );
 
-    var saveError = hasError ?
-      <div className="alert error">{this.I18n.save_error_message}</div> :
+    var saveError = hasSaveError ?
+      <div className="alert error">{I18n.featured_content_modal.save_error_message}</div> :
       null;
 
     return (

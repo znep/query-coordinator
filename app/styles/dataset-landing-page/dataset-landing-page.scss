@@ -2,6 +2,7 @@
 @import "dataset-landing-page/breakpoints";
 @import "dataset-landing-page/view-widget";
 @import "dataset-landing-page/featured-content-modal";
+@import "dataset-landing-page/view-selector";
 @import "dataset-landing-page/contact-form";
 
 // Miscellaneous colors not in styleguide
@@ -156,6 +157,25 @@ body {
     }
   }
 }
+.dataset-landing-page {
+  // Styleguide polyfill
+  .spinner-large {
+    width: 64px;
+    height: 64px;
+    border: 7px solid $primary-base;
+    border-right-color: $primary-light;
+  }
+
+  .desktop-spinner {
+    display: flex;
+    width: 100%;
+    height: 287px;
+
+    .spinner-large {
+      margin: auto;
+    }
+  }
+}
 
 .dataset-landing-page {
   // Styleguide polyfill
@@ -199,7 +219,7 @@ main.container.landing-page-container {
 
       .btn-default {
         margin-bottom: 8px;
-        align-self: flex-end;
+        align-self: center;
 
         &:hover,
         &:focus {

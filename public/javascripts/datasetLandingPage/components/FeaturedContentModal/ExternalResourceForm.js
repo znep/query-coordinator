@@ -111,7 +111,7 @@ export var ExternalResourceForm = React.createClass({
       null;
 
     var saveError = hasSaveError ?
-      <div className="alert error">{this.I18n.save_error_message}</div> :
+      <div className="alert error">{I18n.featured_content_modal.save_error_message}</div> :
       null;
 
     return (

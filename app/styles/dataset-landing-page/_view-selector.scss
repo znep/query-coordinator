@@ -1,0 +1,17 @@
+.internal-view-list {
+  display: flex;
+  justify-content: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+
+  .result-card.media {
+    flex: 0 0 auto;
+    width: 31%;
+    height: 287px;
+    margin-right: 2%;
+  }
+
+  .spinner-large {
+    margin: auto;
+  }
+}

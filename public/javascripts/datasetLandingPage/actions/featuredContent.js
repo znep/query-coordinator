@@ -11,6 +11,10 @@ import {
   SET_EXTERNAL_RESOURCE_FIELD,
   SET_STORY_URL_FIELD,
   REQUESTED_STORY,
+  SET_SAVING_FEATURED_ITEM,
+  REQUESTED_DERIVED_VIEWS,
+  RECEIVE_DERIVED_VIEWS,
+  HANDLE_DERIVED_VIEWS_REQUEST_ERROR,
   HANDLE_LOADING_STORY_SUCCESS,
   HANDLE_LOADING_STORY_ERROR,
   REQUESTED_FEATURED_ITEM_REMOVAL,
@@ -44,6 +48,7 @@ function trimEditFromUrl(url) {
   return url.replace(/\/?edit\/?$/, '');
 }
 
+// Item Add
 export function addFeaturedItem(type, position) {
   return {
     type: ADD_FEATURED_ITEM,
@@ -52,6 +57,7 @@ export function addFeaturedItem(type, position) {
   };
 }
 
+// Item Edit
 export function editFeaturedItem(featuredItem) {
   return {
     type: EDIT_FEATURED_ITEM,
@@ -65,6 +71,7 @@ export function cancelFeaturedItemEdit() {
   };
 }
 
+// Item Save
 export function requestedFeaturedItemSave() {
   return {
     type: REQUESTED_FEATURED_ITEM_SAVE
@@ -85,7 +92,7 @@ export function handleFeaturedItemSaveError() {
   };
 }
 
-export function saveFeaturedItem() {
+export function saveFeaturedItem(options) {
   return function(dispatch, getState) {
     var state = getState();
     var viewId = state.view.id;
@@ -98,7 +105,13 @@ export function saveFeaturedItem() {
 
     // The payload differs depending on the type of item that is being featured.
     if (editType === 'visualization') {
-      payload = {};
+      dispatch(setSavingFeaturedItem(options.featuredLensUid));
+
+      payload = {
+        featuredLensUid: options.featuredLensUid,
+        contentType: 'internal',
+        position: editPosition + 1
+      };
     } else if (editType === 'story') {
       payload = {
         featuredLensUid: parseUid(featuredContent.story.url),
@@ -141,6 +154,7 @@ export function saveFeaturedItem() {
   };
 }
 
+// Item Removal
 export function requestedFeaturedItemRemoval(position) {
   return {
     type: REQUESTED_FEATURED_ITEM_REMOVAL,
@@ -186,6 +200,7 @@ export function removeFeaturedItem(position) {
   };
 }
 
+// External Resources
 export function setExternalResourceField(field, value) {
   return {
     type: SET_EXTERNAL_RESOURCE_FIELD,
@@ -194,6 +209,7 @@ export function setExternalResourceField(field, value) {
   };
 }
 
+// Stories
 export function setStoryUrlField(value) {
   return {
     type: SET_STORY_URL_FIELD,
@@ -241,5 +257,53 @@ export function loadStory() {
       then(function(response) {
         dispatch(handleLoadingStorySuccess(response));
       })['catch'](() => dispatch(handleLoadingStoryError()));
+  };
+}
+
+// Internal Assets
+export function setSavingFeaturedItem(viewUid) {
+  return {
+    type: SET_SAVING_FEATURED_ITEM,
+    viewUid: viewUid
+  };
+}
+
+export function requestDerivedViews() {
+  return function(dispatch, getState) {
+    var state = getState();
+
+    var viewId = state.view.id;
+    var fetchUrl = `/dataset_landing_page/${viewId}/related_views?sort_by=date`;
+    var fetchOptions = {
+      credentials: 'same-origin'
+    };
+
+    dispatch(requestedDerivedViews());
+
+    fetch(fetchUrl, fetchOptions).
+      then(checkStatus).
+      then(response => response.json()).
+      then(function(response) {
+        dispatch(receiveDerivedViews(response));
+      })['catch'](() => dispatch(handleDerivedViewsError()));
+  };
+}
+
+export function requestedDerivedViews() {
+  return {
+    type: REQUESTED_DERIVED_VIEWS
+  };
+}
+
+export function receiveDerivedViews(views) {
+  return {
+    type: RECEIVE_DERIVED_VIEWS,
+    views: views
+  };
+}
+
+export function handleDerivedViewsError() {
+  return {
+    type: HANDLE_DERIVED_VIEWS_REQUEST_ERROR
   };
 }

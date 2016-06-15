@@ -2,6 +2,15 @@ class DatasetLandingPage
   include Rails.application.routes.url_helpers
   include Socrata::UrlHelpers
 
+  def get_related_views(uid, sort_by)
+    # valid sort_by=name, date, most_accessed
+    view = View.find(uid)
+    return if view.nil?
+
+    related_views = view.find_dataset_landing_page_related_content(sort_by) || []
+    related_views.map(&method(:format_view_widget))
+  end
+
   def get_popular_views(uid, limit = nil, offset = 0)
     view = View.find(uid)
 
@@ -31,11 +40,9 @@ class DatasetLandingPage
 
   def delete_featured_content(uid, item_position)
     path = "/views/#{uid}/featured_content/#{item_position}"
+    # Response format: {"contentType"=>"internal", "lensId"=>16, "position"=>2, "title"=>"A Datalens"}
     response = JSON.parse(CoreServer::Base.connection.delete_request(path))
-    format_featured_item(response)
   end
-
-  private
 
   def format_view_widget(view)
     formatted_view = {

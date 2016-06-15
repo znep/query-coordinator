@@ -1,7 +1,22 @@
 #featured-content-modal {
+  /* these come from the styleguide, added here to avoid magic numbers */
+  $modal-header-height: 52px;
+  $modal-footer-height: 56px;
+
   h1 {
     font-weight: 400;
     font-size: 19px;
+  }
+
+  /* Allow for inner content to scroll */
+  .modal-content-wrapper {
+    height: calc(100% - #{$modal-header-height});
+    overflow: scroll;
+    padding-bottom: $modal-footer-height;
+
+    .modal-content {
+      max-height: none;
+    }
   }
 
   .modal-content {
@@ -132,7 +147,34 @@
     }
 
     .alert.error {
-      margin-top: 22px;
+      margin: 22px 0;
+    }
+  }
+
+  .internal-resource-contents {
+    .view-select.btn {
+      color: #fff;
+    }
+
+    .spinner-default {
+      margin: auto;
+      display: block;
+    }
+
+    .no-views-message {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      p {
+        line-height: 33px; /*height of btn-sm*/
+        margin-bottom: 0;
+      }
+
+      .btn {
+        flex-shrink: 0;
+        align-self: center;
+      }
     }
   }
 

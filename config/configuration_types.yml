@@ -60,9 +60,9 @@ feature_flags:
     instead: :feature_flags_config
 geo_setup:
   description: Something to do with setting up region coding when syncing to NBE.
-  deprecation: We should start using /admin/georegions instead.
   discourage_in_creation_ui:
     reason: :deprecation
+    instead: :georegions_administration
   known_properties:
   - curated_regions
 gov_stat:

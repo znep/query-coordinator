@@ -42,18 +42,21 @@ class ConfigurationTypesConfig < ExternalConfig
   end
 
   def discouragement_because(reason, options = {})
-    case reason
-    when :poorly_understood
-      %(This configuration is poorly understood or unknown, so if you're using this, please help document what it does.)
-    when :not_intended_for_direct_manipulation
-      message = %(This configuration is not intended for direct manipulation, so you probably shouldn't be creating it manually.)
-      if options[:force_instead] || (instead = instead_for_discouragement(options[:type], options[:with_params]))
-        message << %( <span class="instead">Try going to <a href="#{instead}">this page</a> instead.</span>)
+    message =
+      case reason
+      when :poorly_understood
+        %(This configuration is poorly understood or unknown, so if you're using this, please help document what it does.)
+      when :not_intended_for_direct_manipulation
+        %(This configuration is not intended for direct manipulation, so you probably shouldn't be creating it manually.)
+      when :deprecation
+        %(This configuration has been deprecated. It <i>should</i> do nothing even if you create it. Please don't create it.)
       end
-      message
-    when :deprecation
-      %(This configuration has been deprecated. It <i>should</i> do nothing even if you create it. Please don't create it.)
-    end.html_safe
+
+    if options[:force_instead] || (instead = instead_for_discouragement(options[:type], options[:with_params]))
+      message << %( <span class="instead">Try going to <a href="#{instead}">this page</a> instead.</span>)
+    end
+
+    message.html_safe
   end
 
   def discouragement_for(type, with_params = nil)

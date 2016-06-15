@@ -4,6 +4,7 @@ import velocity from 'velocity-animate';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import Linkify from 'react-linkify';
 import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
 import { emitMixpanelEvent } from '../actions/mixpanel';
@@ -11,8 +12,8 @@ import { handleKeyPress } from '../lib/a11yHelpers';
 
 export var MetadataTable = React.createClass({
   propTypes: {
-    onExpandMetadataTable: PropTypes.func.isRequired,
-    onExpandTags: PropTypes.func.isRequired,
+    onExpandMetadataTable: PropTypes.func,
+    onExpandTags: PropTypes.func,
     view: PropTypes.object.isRequired
   },
 
@@ -158,7 +159,9 @@ export var MetadataTable = React.createClass({
             <tr key={j}>
               <td>{field.displayName || field.name}</td>
               <td>
-                {fieldset.existing_fields[field.name]}
+                <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
+                  {fieldset.existing_fields[field.name]}
+                </Linkify>
               </td>
             </tr>
           );

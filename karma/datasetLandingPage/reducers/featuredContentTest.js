@@ -11,7 +11,7 @@ import {
   setStoryUrlField,
   requestedStory,
   handleLoadingStorySuccess,
-  handleLoadingStoryError
+  handleLoadingStoryError,
   requestedFeaturedItemRemoval,
   handleFeaturedItemRemovalSuccess,
   handleFeaturedItemRemovalError

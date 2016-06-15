@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import initClipboardControl from '../lib/clipboardControl';
+import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 
 export var ApiFlannel = React.createClass({
   propTypes: {
@@ -24,8 +24,10 @@ export var ApiFlannel = React.createClass({
   },
 
   componentDidMount: function() {
-    var el = ReactDOM.findDOMNode(this);
-    initClipboardControl(el.querySelectorAll('.btn.copy'));
+    if (isCopyingSupported) {
+      var el = ReactDOM.findDOMNode(this);
+      initClipboardControl(el.querySelectorAll('.btn.copy'));
+    }
   },
 
   onFocusInput: function(event) {
@@ -89,6 +91,18 @@ export var ApiFlannel = React.createClass({
       var currentFormat = currentFormats[subview.id];
       var currentUrl = subview.resourceUrl.replace(/\w*json$/, currentFormat);
 
+      var copyButton = isCopyingSupported ?
+        <span className="input-group-btn">
+          <button
+            type="button"
+            className="btn btn-primary btn-sm copy"
+            data-confirmation={I18n.copy_success}
+            onClick={onClickCopy}>
+            {I18n.copy}
+          </button>
+        </span> :
+        null;
+
       return (
         <div className="endpoint api-endpoint" key={i}>
           <section className="flannel-content">
@@ -123,15 +137,7 @@ export var ApiFlannel = React.createClass({
                   onFocus={self.onFocusInput}
                   onMouseUp={self.onMouseUpInput} />
                 {endpointFormatSelector}
-                <span className="input-group-btn">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm copy"
-                    data-confirmation={I18n.copy_success}
-                    onClick={onClickCopy}>
-                    {I18n.copy}
-                  </button>
-                </span>
+                {copyButton}
               </span>
             </form>
           </section>

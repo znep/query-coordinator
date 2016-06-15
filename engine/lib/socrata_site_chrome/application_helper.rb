@@ -106,5 +106,9 @@ module SocrataSiteChrome
       RequestStore.store[:current_user]
     end
 
+    # Returns template name - either 'default' or 'rally'
+    def current_template
+      get_site_chrome.general[:template] || 'default'
+    end
   end
 end

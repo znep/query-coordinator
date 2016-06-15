@@ -1,0 +1,33 @@
+<header id="chrome-header" template="rally">
+  <div class="banner">
+
+    <div class="rally-top">
+      <%= header_logo %>
+
+      <%= render 'site_chrome/searchbox', path: '/browse' %>
+    </div>
+
+    <div class="rally-bottom">
+      <nav class="desktop">
+        <div class="navbar-left">
+          <%= render 'site_chrome/nav_links' %>
+        </div>
+
+        <div class="navbar-right">
+          <%= render 'site_chrome/social_links', show_label: false %>
+
+          <%= render 'site_chrome/user_actions' %>
+        </div>
+      </nav>
+
+      <nav class="mobile">
+        <a class="chrome-btn menu-toggle" href="#">
+          <span class="icon-hamburger"></span>
+          Menu
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <%= render 'site_chrome/mobile_menu' %>
+</header>

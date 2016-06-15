@@ -1,4 +1,4 @@
-header#chrome-header {
+header#chrome-header[template="default"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
@@ -85,77 +85,4 @@ header#chrome-header {
       }
     }
   }
-
-  .mobile-menu {
-    position: fixed;
-    top: 0;
-    right: -120%;
-    bottom: 0;
-    overflow: auto;
-    z-index: 10;
-    background-color: #f8f8f8;
-    color: #949195;
-    width: 90%;
-    box-shadow: 0 8px 30px #a9a7aa;
-    transition: right 0.4s ease-in-out;
-
-    &.active {
-      right: 0%;
-    }
-
-    .menu-header-title {
-      color: $dark_text_color;
-      font-size: 20px;
-      font-weight: 300;
-      text-align: center;
-      margin: 1rem;
-      letter-spacing: -0.5px;
-    }
-
-    .menu-toggle {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1rem;
-      color: $dark_text_color;
-    }
-
-    .menu-content {
-      .nav-links {
-        a.nav-link {
-          color: $dark_text_color;
-          background-color: #fff;
-          display: block;
-          font-size: 15px;
-          border-top: 1px solid #f4f4f4;
-          padding: 15px $text_padding;
-          text-decoration: none;
-
-          &:last-of-type {
-            border-bottom: 1px solid #f4f4f4;
-          }
-
-          &:hover, &:focus, &:active {
-            background-color: #fafafa;
-          }
-        }
-      }
-      .menu-section-header {
-        margin-top: 20px;
-        padding: $text_padding;
-        font-weight: 300;
-        text-transform: uppercase;
-      }
-      .mobile-user-actions {
-        padding: 0 $text_padding;
-        a.chrome-mobile-btn {
-          display: block;
-        }
-      }
-      .social-links {
-        margin-top: 35px;
-      }
-    }
-  }
-
 }

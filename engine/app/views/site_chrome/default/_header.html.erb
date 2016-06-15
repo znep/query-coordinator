@@ -1,0 +1,25 @@
+<header id="chrome-header" template="default">
+  <div class="banner">
+    <%= header_logo %>
+
+    <nav class="desktop">
+      <%= render 'site_chrome/nav_links' %>
+
+      <%= content_tag(:span, nil, :class => 'divider') %>
+
+      <%= render 'site_chrome/social_links', show_label: false %>
+
+      <%= render 'site_chrome/user_actions' %>
+    </nav>
+
+    <nav class="mobile">
+      <a class="chrome-btn menu-toggle" href="#">
+        <span class="icon-hamburger"></span>
+        Menu
+      </a>
+    </nav>
+  </div>
+
+  <%= render 'site_chrome/mobile_menu' %>
+
+</header>

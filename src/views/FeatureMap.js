@@ -1,5 +1,5 @@
 var utils = require('socrata-utils');
-var Visualization = require('./Visualization');
+var SvgVisualization = require('./SvgVisualization');
 var L = require('leaflet');
 var _ = require('lodash');
 var $ = require('jquery');
@@ -19,7 +19,7 @@ var FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
 function FeatureMap(element, vif) {
 
-  _.extend(this, new Visualization(element, vif));
+  _.extend(this, new SvgVisualization(element, vif));
 
   var self = this;
 
@@ -78,7 +78,7 @@ function FeatureMap(element, vif) {
 
   // Render template here so that we can modify the map container's styles
   // below.
-  _renderTemplate(this.element);
+  _renderTemplate();
 
   // CORE-4832: Disable pan and zoom on feature map
   if (!_panAndZoom) {
@@ -119,7 +119,7 @@ function FeatureMap(element, vif) {
         // Construct leaflet map
         _map = L.map(_mapElement[0], _mapOptions);
         // Attach events on first render only
-        _attachEvents(this.element);
+        _attachEvents();
       }
 
       boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
@@ -162,7 +162,7 @@ function FeatureMap(element, vif) {
 
     if (_map) {
 
-      _detachEvents(this.element);
+      _detachEvents();
 
       // Remove the map after detaching events since `_detachEvents()` expects
       // the `_map` instance to exist.
@@ -170,14 +170,16 @@ function FeatureMap(element, vif) {
     }
 
     // Finally, clear out the container.
-    this.element.empty();
+    self.
+      $element.
+        empty();
   };
 
   /**
    * Private methods
    */
 
-  function _renderTemplate(el) {
+  function _renderTemplate() {
 
     var mapElement = $(
       '<div>',
@@ -256,15 +258,16 @@ function FeatureMap(element, vif) {
       _userCurrentPositionIcon = L.divIcon({ className: 'feature-map-user-current-position-icon' });
     }
 
-    self.renderAxisLabels(mapContainer);
-
     // Cache element selections
     _mapContainer = mapContainer;
     _mapElement = mapElement;
     _mapPanZoomDisabledWarning = mapPanZoomDisabledWarning;
     _mapLocateUserButton = mapLocateUserButton;
 
-    el.append(mapContainer);
+    self.
+      $element.
+        find('.visualization-container').
+          append(mapContainer);
   }
 
   function _attachEvents() {

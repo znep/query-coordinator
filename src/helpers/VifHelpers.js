@@ -205,12 +205,26 @@ function migrateVif1ToVif2(vifToMigrate) {
   migratedVif.createdAt = vifToMigrate.createdAt;
 
   // 5a. Copy over the format object
-  migratedVif.format = _.cloneDeep(vifToMigrate.format);
+  migratedVif.format = _.cloneDeep(
+    _.get(
+      vifToMigrate,
+      'format',
+      {
+        type: 'visualization_intercahnge_format',
+        version: 1
+      }
+    )
+  );
+
   // 5b. Update the version number in the format.
   migratedVif.format.version = 2;
 
   // 6. Copy over the origin object
   migratedVif.origin = _.cloneDeep(vifToMigrate.origin);
+
+  // 7. Copy over the title and description if they exist
+  migratedVif.title = (vifToMigrate.title) ? vifToMigrate.title : null;
+  migratedVif.description = (vifToMigrate.description) ? vifToMigrate.description : null;
 
   return migratedVif;
 }

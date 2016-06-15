@@ -100,6 +100,7 @@
         },
         'createdAt': '2014-01-01T00:00:00',
         'datasetUid': DATASET_UID,
+        'description': 'An example feature map',
         'domain': DOMAIN,
         'filters': [],
         'format': {
@@ -110,6 +111,7 @@
           'type': 'test_data',
           'url': 'localhost'
         },
+        title: 'Example Usage: socrata.visualizations.FeatureMap.js',
         type: 'featureMap',
         'unit': {
           'one': 'record',
@@ -151,8 +153,8 @@
        * (RowInspector events are handled internally to the RowInspector)
        */
 
-      $featureMap1Element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
-      $featureMap2Element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
+      $featureMap1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $featureMap2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
 
       function handleFlyout(event) {
 

@@ -61,7 +61,7 @@ $axisPadding: 42px;
 
   .info {
     position: absolute;
-    display: block;
+    display: none;
     width: 100%;
     height: $infoHeight;
     left: 0;
@@ -70,6 +70,7 @@ $axisPadding: 42px;
     box-sizing: border-box;
 
     .panning-notice {
+      display: none;
       margin-right: 6px;
       color: #ccc;
       font-size: 14px;
@@ -107,7 +108,7 @@ $axisPadding: 42px;
     }
 
     .visualization-container {
-      height: calc(100% - #{$titleHeight} - #{$headerMargin} - #{$infoHeight});
+      height: calc(100% - #{$titleHeight} - #{$headerMargin});
       border-top: 1px solid $visualizationBorderColor;
     }
   }
@@ -124,7 +125,7 @@ $axisPadding: 42px;
     }
 
     .visualization-container {
-      height: calc(100% - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      height: calc(100% - #{$descriptionHeight} - #{$headerMargin});
       border-top: 1px solid $visualizationBorderColor;
     }
   }
@@ -132,12 +133,12 @@ $axisPadding: 42px;
   &.title.description {
 
     .visualization-container {
-      height: calc(100% - #{$titleHeight} - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
+      height: calc(100% - #{$titleHeight} - #{$descriptionHeight} - #{$headerMargin});
       border-top: 1px solid $visualizationBorderColor;
     }
   }
 
-  &.panning-notice {
+  &.info {
 
     .visualization-container {
       height: calc(100% - #{$infoHeight});
@@ -148,7 +149,7 @@ $axisPadding: 42px;
     }
   }
 
-  &.title.panning-notice {
+  &.title.info {
 
     .visualization-container {
       height: calc(100% - #{$titleHeight} - #{$headerMargin} - #{$infoHeight});
@@ -156,7 +157,7 @@ $axisPadding: 42px;
     }
   }
 
-  &.description.panning-notice {
+  &.description.info {
 
     .visualization-container {
       height: calc(100% - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
@@ -164,11 +165,18 @@ $axisPadding: 42px;
     }
   }
 
-  &.title.description.panning-notice {
+  &.title.description.info {
 
     .visualization-container {
       height: calc(100% - #{$titleHeight} - #{$descriptionHeight} - #{$headerMargin} - #{$infoHeight});
       border-top: 1px solid $visualizationBorderColor;
+    }
+  }
+
+  &.panning-notice {
+
+    .panning-notice {
+      display: block;
     }
   }
 
@@ -187,7 +195,7 @@ $axisPadding: 42px;
     position: relative;
     display: block;
     width: 100%;
-    height: calc(100% - #{$infoHeight});
+    height: 100%;
     box-sizing: border-box;
 
     /**

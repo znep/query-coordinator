@@ -178,18 +178,14 @@ function SvgVisualization($element, vif) {
 
   this.showPanningNotice = function() {
     var $container = this.$element.find('.visualization');
-    var $panningNotice = $container.find('.panning-notice');
 
-    $container.addClass('panning-notice');
-    $panningNotice.show();
+    $container.addClass('info panning-notice');
   };
 
   this.hidePanningNotice = function() {
     var $container = this.$element.find('.visualization');
-    var $panningNotice = $container.find('.panning-notice');
 
-    $container.removeClass('panning-notice');
-    $panningNotice.hide();
+    $container.removeClass('info panning-notice');
   };
 
   this.isMobile = function() {

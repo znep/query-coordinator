@@ -1,0 +1,65 @@
+header#chrome-header {
+  // Dropdown SCSS stolen from styleguide, with colors replaced with hardcoded values for now.
+  .dropdown {
+    display: inline-block;
+    position: relative;
+
+    span[class*="icon-"] {
+      padding-left: ms(2);
+    }
+  }
+
+  .dropdown .dropdown-options {
+    position: absolute;
+    left: 0;
+    right: inherit;
+    min-width: 8em;
+
+    background: $header_dropdown_bg_color;
+    border-radius: 1px;
+    list-style: none;
+    padding: 0;
+    box-shadow: rgba(0, 0, 0, 0.23) 0 0 15px;
+
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .dropdown.dropdown-orientation-top .dropdown-options {
+    bottom: 100%;
+  }
+
+  .dropdown.dropdown-orientation-bottom .dropdown-options {
+    top: 100%;
+  }
+
+  .dropdown .dropdown-options li a {
+    // @include ellipsis
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    color: $header_dropdown_option_color;
+    padding: ms(-5) ms(0);
+
+    > span[class*="icon-"] {
+      padding-right: ms(-2);
+    }
+  }
+
+  /* Hover state */
+  .dropdown .dropdown-options li:hover a {
+    background: $header_dropdown_option_bg_color_hover;
+
+  }
+
+  /* Active state */
+  .dropdown.active .dropdown-options {
+    opacity: 1;
+    pointer-events: auto;
+    margin: 1px 0;
+  }
+}

@@ -1304,6 +1304,18 @@ en:
       row_display_unit: Each row is a
       rows: Rows
       title: What's in this Dataset?
+    dataset_preview:
+      grid_view_link: Explore Data
+      latitude: Latitude
+      longitude: Longitude
+      many_rows: Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}
+      next: Next
+      no_column_description: No description provided.
+      no_rows: No {unitOther}
+      only_rows: Showing {unit} {firstRowOrdinal} of {datasetRowCount}
+      previous: Previous
+      title: Table Preview
+      unable_to_render: We're having trouble displaying this table.
     default_row_label: row
     done: Done
     download:

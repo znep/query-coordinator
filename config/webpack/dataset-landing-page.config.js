@@ -22,8 +22,13 @@ module.exports = _.defaultsDeep({
     alias: {
       'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-      '_': 'lodash',
-      'jQuery': 'jquery'
+      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
+      '_': path.resolve(common.root, 'node_modules/lodash'),
+      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
+      'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
+      'L': 'leaflet',
+      'react': path.resolve(common.root, 'node_modules/react'),
+      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
     },
     root: [
       path.resolve(common.root, 'public/javascripts/datasetLandingPage')

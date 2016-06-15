@@ -59,6 +59,7 @@ module DatasetLandingPageHelper
     server_config = {
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
+      :domain => CurrentDomain.cname,
       :environment => Rails.env,
       :featureFlags => feature_flags,
       :locale => I18n.locale.to_s,
@@ -154,6 +155,26 @@ module DatasetLandingPageHelper
     end
   end
 
+  def sort_order
+    query = @view.metadata.json_query
+    order = query.try(:[], 'order').try(:first)
+
+    if query
+      order['columnName'] = order['columnName'] || order['columnFieldName']
+      [order]
+    else
+      # Default to sorting by the first column
+      [{
+        :ascending => true,
+        :columnName => @view.columns.try(:first).try(:fieldName)
+      }]
+    end
+  end
+
+  def row_label
+    @view.row_label || I18n.t('dataset_landing_page.default_row_label').capitalize
+  end
+
   def transformed_view
     if !view.is_geospatial?
       row_count = @view.row_count
@@ -172,11 +193,13 @@ module DatasetLandingPageHelper
       :description => @view.description,
       :category => @view.category,
       :attribution => @view.attribution,
-      :rowLabel => @view.row_label,
+      :rowLabel => row_label,
+      :rowLabelMultiple => row_label.pluralize(2),
       :columns => columns,
       :isPrivate => !@view.is_public?,
       :isUnpublished => @view.is_unpublished?,
       :isGeospatial => @view.is_geospatial?,
+      :isTabular => @view.is_tabular?,
       :gridUrl => data_grid_path(@view),
       :downloadOverride => @view.downloadOverride,
       :exportFormats => transformed_formats,
@@ -202,7 +225,8 @@ module DatasetLandingPageHelper
       :licenseName => @view.license.try(:name),
       :attributionLink => @view.attributionLink,
       :statsUrl => stats_url,
-      :editMetadataUrl => edit_metadata_url
+      :editMetadataUrl => edit_metadata_url,
+      :sortOrder => sort_order
     }
   end
 

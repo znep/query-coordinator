@@ -42,6 +42,20 @@ AUTH0_SECRET = ENV['AUTH0_SECRET'] || APP_CONFIG.auth0_secret
 AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG.auth0_jwt
 AUTH0_CONFIGURED = AUTH0_URI.present? && AUTH0_ID.present? && AUTH0_SECRET.present? && AUTH0_JWT.present?
 
+unless AUTH0_CONFIGURED
+  missing_variables = []
+
+  missing_variables.push('AUTH0_URI') if AUTH0_URI.nil?
+  missing_variables.push('AUTH0_ID') if AUTH0_ID.nil?
+  missing_variables.push('AUTH0_SECRET') if AUTH0_SECRET.nil?
+  missing_variables.push('AUTH0_JWT') if AUTH0_JWT.nil?
+
+  Airbrake.notify(
+    :error_class => 'Auth0MissingEnvironmentVariableError',
+    :error_message => "Auth0: Missing environment variables in frontend's configuration: #{missing_variables.join(', ')}"
+  ) if missing_variables.present?
+end
+
 RECAPTCHA_2_SITE_KEY = ENV['RECAPTCHA_2_SITE_KEY'] || APP_CONFIG.recaptcha_2_site_key
 RECAPTCHA_2_SECRET_TOKEN = ENV['RECAPTCHA_2_SECRET_TOKEN'] || APP_CONFIG.recaptcha_2_secret_token
 

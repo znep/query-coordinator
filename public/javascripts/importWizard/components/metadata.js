@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
-
-import * as Server from '../server';
-
+import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
+import { updateAt } from '../utils';
+import * as Server from '../server';
 
 // == Metadata
 
@@ -10,20 +10,13 @@ type DatasetMetadata = {
   name: string,
   description: string,
   category: string,
-  tags: string,
+  tags: Array,
   rowLabel: string,
-  mapLayer: string,
+  attributionLink: string,
+  customMetadata: Array,
   privacySettings: string,
-  contactEmail: string
-}
-
-
-export function emptyForName(name: string): DatasetMetadata {
-  return {
-    name: name,
-    description: '',
-    privacySettings: 'private'
-  };
+  email: string,
+  nextClicked: boolean
 }
 
 
@@ -67,11 +60,21 @@ export function updateRowLabel(newRowLabel: string) {
   };
 }
 
-const MD_UPDATE_MAPLAYER = 'MD_UPDATE_MAPLAYER';
-export function updateMapLayer(newMapLayer: string) {
+const MD_UPDATE_ATTRIBUTIONLINK = 'MD_UPDATE_ATTRIBUTIONLINK';
+export function updateAttributionLink(newAttributionLink: string) {
   return {
-    type: MD_UPDATE_MAPLAYER,
-    newMapLayer: newMapLayer
+    type: MD_UPDATE_ATTRIBUTIONLINK,
+    newAttributionLink: newAttributionLink
+  };
+}
+
+const MD_UPDATE_CUSTOMMETADATA = 'MD_UPDATE_CUSTOMMETADATA';
+export function updateCustomData(newCustomData: string, setIdx: number, fieldIdx: number) {
+  return {
+    type: MD_UPDATE_CUSTOMMETADATA,
+    newCustomData: newCustomData,
+    setIdx: setIdx,
+    fieldIdx: fieldIdx
   };
 }
 
@@ -83,21 +86,56 @@ export function updatePrivacySettings(newPrivacySettings: string) {
   };
 }
 
-const MD_UPDATE_CONTACTEMAIL = 'MD_UPDATE_CONTACTEMAIL';
-export function updateContactEmail(newContactEmail: string) {
+const MD_UPDATE_EMAIL = 'MD_UPDATE_EMAIL';
+export function updateEmail(newEmail: string) {
   return {
-    type: MD_UPDATE_CONTACTEMAIL,
-    newContactEmail: newContactEmail
+    type: MD_UPDATE_EMAIL,
+    newEmail: newEmail
   };
 }
 
-export const METADATA_NEXT = 'METADATA_NEXT';
-export function metadataNext() {
+const MD_UPDATE_NEXTCLICKED = 'MD_UPDATE_NEXTCLICKED';
+export function updateNextClicked() {
   return {
-    type: METADATA_NEXT
+    type: MD_UPDATE_NEXTCLICKED,
+    newNextClicked: true
   };
 }
 
+function defaultCustomData() {
+  return customMetadataSchema.map((set) => {
+    const fields = set.fields;
+    return fields.map((field) => {
+      if (_.has(field, 'options')) {
+        const option = field.options[0];
+        return {
+          field: field.name,
+          value: option
+        };
+      } else {
+        return {
+          field: field.name,
+          value: ''
+        };
+      }
+    });
+  });
+}
+
+export function emptyForName(name: string): DatasetMetadata {
+  return {
+    name: name,
+    description: '',
+    category: '',
+    tags: [],
+    rowLabel: '',
+    attributionLink: '',
+    customMetadata: defaultCustomData(),
+    privacySettings: 'private',
+    email: '',
+    nextClicked: false
+  };
+}
 
 export function update(metadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
   switch (action.type) {
@@ -117,37 +155,147 @@ export function update(metadata: DatasetMetadata = emptyForName(''), action): Da
         category: action.newCategory
       };
     case MD_UPDATE_TAGS:
+      metadata.tags = action.newTags.split(',');
       return {
         ...metadata,
-        tags: action.newTags
+        tags: metadata.tags
       };
     case MD_UPDATE_ROWLABEL:
       return {
         ...metadata,
         rowLabel: action.newRowLabel
       };
-    case MD_UPDATE_MAPLAYER:
+    case MD_UPDATE_ATTRIBUTIONLINK:
       return {
         ...metadata,
-        mapLayer: action.newMapLayer
+        attributionLink: action.newAttributionLink
       };
+    case MD_UPDATE_CUSTOMMETADATA: {
+      const newCustomMetadata = updateAt(metadata.customMetadata, action.setIdx, (fieldSet) => {
+        return updateAt(fieldSet, action.fieldIdx, (field) => ({
+          ...field,
+          value: action.newCustomData
+        }));
+      });
+      return {
+        ...metadata,
+        customMetadata: newCustomMetadata
+      };
+    }
     case MD_UPDATE_PRIVACYSETTINGS:
       return {
         ...metadata,
         privacySettings: action.newPrivacySettings
       };
-    case MD_UPDATE_CONTACTEMAIL:
+    case MD_UPDATE_EMAIL:
       return {
         ...metadata,
-        contactEmail: action.newContactEmail
+        email: action.newEmail
+      };
+    case MD_UPDATE_NEXTCLICKED:
+      return {
+        ...metadata,
+        nextClicked: true
       };
     default:
       return metadata;
   }
 }
 
+type MetadataValidationErrors = {
+  name: bool,
+  attributionLink: bool
+}
+
+export function validate(metadata: DatasetMetadata): MetadataValidationErrors {
+  return {
+    name: metadata.name.length !== 0,
+    attributionLink: metadata.attributionLink.length !== 0
+  };
+}
+
+export function isStandardMetadataValid(metadata: DatasetMetadata) {
+  const valid = validate(metadata);
+  return valid.name && valid.attributionLink;
+}
+
+function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setIdx: number, fieldIdx: number) {
+  return (metadata.customMetadata[setIdx][fieldIdx].value.length === 0 && field.required);
+}
+
+export function isCustomMetadataValid(metadata: DatasetMetadata) {
+  return customMetadataSchema.every((fieldSet, setIndex) => {
+    return fieldSet.fields.every((field, fieldIndex) => {
+      const value = metadata.customMetadata[setIndex][fieldIndex].value;
+      if (field.required) {
+        return value.length > 0;
+      } else {
+        return true;
+      }
+    });
+  });
+}
+
+export function isMetadataValid(metadata: DatasetMetadata) {
+  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata));
+}
+
+function renderSingleField(field, onMetadataAction, setIdx, fieldIdx) {
+  if (_.has(field, 'options')) {
+    const options = field.options;
+    return (
+      <select className={field.name} onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setIdx, fieldIdx))} >
+        {options.map((value) =>
+          <option value={value}>{value}</option>
+          )
+        }
+      </select>
+    );
+  } else {
+    return (
+      <input
+        type="text"
+        className={field.name}
+        onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setIdx, fieldIdx))} />
+    );
+  }
+}
+
+function renderFieldSet(metadata: DatasetMetadata, fieldSet, setIdx, onMetadataAction) {
+  const fields = fieldSet.fields;
+
+  return (
+    <div> {fields.map((field, fieldIdx) =>
+      <div className="line clearfix">
+        <label className={field.required ? 'required' : 'optional'}>{field.name}</label>
+        {renderSingleField(field, onMetadataAction, setIdx, fieldIdx)}
+        {(isRequiredCustomFieldMissing(metadata, field, setIdx, fieldIdx) && metadata.nextClicked)
+          ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
+          : null
+        }
+      </div>
+      )}
+    </div>
+  );
+}
+
+function renderCustomMetadata(metadata, onMetadataAction) {
+  return (
+    <div className="customMetadataSchema">
+      {customMetadataSchema.map((set, setIdx) =>
+        <div>
+          <h1 htmlFor="view_customMetadataName">{set.name}</h1>
+          {renderFieldSet(metadata, set, setIdx, onMetadataAction)}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function view({ metadata, onMetadataAction }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
+
+  const validationErrors = validate(metadata);
 
   return (
     <div className="metadataPane">
@@ -172,9 +320,11 @@ export function view({ metadata, onMetadataAction }) {
               type="text"
               name="view[name]"
               title={I18nPrefixed.dataset_title_prompt}
-              className="textPrompt required"
+              className="textPrompt required prompt error"
               value={metadata.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
+              {(!validationErrors.name && metadata.nextClicked) ?
+                <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
           </div>
 
           <div className="line clearfix">
@@ -213,18 +363,22 @@ export function view({ metadata, onMetadataAction }) {
           </div>
         </div>
 
-        <div className="mapLayerMetadata">
+        <div className="attributionLinkMetadata">
           <div className="line clearfix">
-            <label htmlFor="view_mapLayer" className="required">
+            <label htmlFor="view_attributionLink" className="required">
               {I18n.screens.dataset_new.metadata.esri_map_layer_url}
             </label>
             <input
               type="text"
-              name="view[mapLayer]"
+              name="view[attributionLink]"
               className="textPrompt required"
-              onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
+              onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
+            {(!validationErrors.attributionLink && metadata.nextClicked) ?
+              <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
           </div>
         </div>
+
+        {renderCustomMetadata(metadata, onMetadataAction)}
 
         <div className="licensingMetadata">
           {/* TODO: license editor */}
@@ -237,8 +391,6 @@ export function view({ metadata, onMetadataAction }) {
             {I18nPrefixed.attachmentsDisabledMessagePart2}
           </div>
         </div>
-
-        {/* TODO custom metadata editor */}
 
         <div className="privacyMetadata">
           <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
@@ -274,24 +426,43 @@ export function view({ metadata, onMetadataAction }) {
           </div>
 
           <div className="line clearfix">
-            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
+            <label htmlFor="{sanitize_to_id('view[email]')}">
               {I18nPrefixed.contact_email}
             </label>
             <input
               type="text"
-              name="view[contactEmail]'"
-              title={I18nPrefixed.email_address}
-              className="textPrompt email"
-              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
+              name="view[email]'"
+              title={I18nPrefixed.email_address} className="textPrompt email"
+              onChange={(evt) => onMetadataAction(updateEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
           </div>
         </div>
 
         <div className="required">{I18nPrefixed.required_field}</div>
+
+        <ul className="wizardButtons clearfix" aria-live="polite">
+          <li className="cancel">
+            <a className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</a>
+          </li>
+          <li className="next">
+            <a
+              className="button nextButton"
+              href="#"
+              onClick={() => {
+                onMetadataAction(updateNextClicked());
+                if (isMetadataValid(metadata)) {
+                  onMetadataAction(Server.saveMetadata());
+                }
+              }}>
+              {I18n.screens.wizard.next}
+            </a>
+          </li>
+          <li className="prev">
+            <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>
+          </li>
+        </ul>
+
       </div>
-      <a className="button nextButton" onClick={() => onMetadataAction(Server.saveMetadata())}>
-        {I18n.screens.wizard.next}
-      </a>
     </div>
   );
 }

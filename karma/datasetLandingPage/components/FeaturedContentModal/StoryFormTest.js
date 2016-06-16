@@ -7,7 +7,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       canSave: true,
       createdAt: '2016-06-08T15:52:10.000-07:00',
       description: 'Daphne and Josephine',
-      hasError: false,
+      hasSaveError: false,
       hasValidationError: false,
       isLoadingStory: false,
       isSaved: false,
@@ -165,9 +165,9 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       expect(spy).to.have.been.called;
     });
 
-    it('displays an error message if hasError is true', function() {
+    it('displays an error message if hasSaveError is true', function() {
       var element = renderComponent(StoryForm, getProps({
-        hasError: true
+        hasSaveError: true
       }));
 
       expect(element.querySelector('.alert.error')).to.exist;

@@ -12,12 +12,12 @@ describe('updateNavigation', () => {
     path: [ 'SelectType' ]
   }
 
-  it('sets currentPage to UploadFile when you choose UploadData', () => {
+  it('sets currentPage to SelectUploadType when you choose UploadData', () => {
     const stateAfter = updateNavigation(initialState, chooseOperation('UploadData'));
     expect(stateAfter).to.deep.equal({
       operation: 'UploadData',
-      page: 'UploadFile',
-      path: [ ...initialState.path, 'UploadFile' ]
+      page: 'SelectUploadType',
+      path: [ ...initialState.path, 'SelectUploadType' ]
     });
   });
 

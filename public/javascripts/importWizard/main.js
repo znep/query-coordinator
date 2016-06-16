@@ -1,7 +1,7 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
 import { render } from 'react-dom';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { Provider, connect } from 'react-redux';
+import { Provider, connect } from 'react-redux'; // eslint-disable-line no-unused-vars
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
@@ -36,7 +36,7 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore(rootReducer, Wizard.fakeInitialModel, enhancer);
-const ConnectedWizard = connect((state) => ({state: state}))(Wizard.view);
+const ConnectedWizard = connect((state) => ({state: state}))(Wizard.view); // eslint-disable-line no-unused-vars
 
 render(
   <Provider store={store}>

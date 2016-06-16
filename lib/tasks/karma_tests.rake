@@ -62,7 +62,7 @@ namespace :test do
     end
   end
 
-  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:oldUx']
+  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx']
 end
 
 Rake::Task[:test].enhance { Rake::Task['test:js'].invoke }

@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import initClipboardControl from '../lib/clipboardControl';
+import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 
 export var ODataModal = React.createClass({
   propTypes: {
@@ -12,8 +12,10 @@ export var ODataModal = React.createClass({
   },
 
   componentDidMount: function() {
-    var el = ReactDOM.findDOMNode(this);
-    initClipboardControl(el.querySelectorAll('.btn.copy'));
+    if (isCopyingSupported) {
+      var el = ReactDOM.findDOMNode(this);
+      initClipboardControl(el.querySelectorAll('.btn.copy'));
+    }
   },
 
   render: function() {
@@ -39,6 +41,18 @@ export var ODataModal = React.createClass({
         );
       }
 
+      var copyButton = isCopyingSupported ?
+        <span className="input-group-btn">
+          <button
+            type="button"
+            className="btn btn-primary btn-sm copy"
+            data-confirmation={I18n.copy_success}
+            onClick={onClickCopy}>
+            {I18n.copy}
+          </button>
+        </span> :
+        null;
+
       return (
         <div className="endpoint odata-endpoint" key={i}>
           <section className="modal-content">
@@ -51,15 +65,7 @@ export var ODataModal = React.createClass({
                   type="text"
                   value={subview.odataUrl}
                   readOnly />
-                <span className="input-group-btn">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm copy"
-                    data-confirmation={I18n.copy_success}
-                    onClick={onClickCopy}>
-                    {I18n.copy}
-                  </button>
-                </span>
+                {copyButton}
               </span>
             </form>
           </section>

@@ -9,5 +9,10 @@ export function workingNext() {
 }
 
 export function view() {
-  return <span>{I18n.screens.dataset_new.processing}</span>;
+  return (
+    <div className="workingPane">
+      <p className="headline">{I18n.screens.dataset_new.processing}</p>
+      <div className="spinner-default spinner-large-center"></div>
+    </div>
+  );
 }

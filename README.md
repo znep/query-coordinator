@@ -97,6 +97,7 @@ npm install -g karma-cli karma-phantomjs-launcher phantomjs
 bundle exec rake test:js
 bundle exec rake test:js:dataCards
 bundle exec rake test:js:datasetLandingPage
+bundle exec rake test:js:importWizard
 bundle exec rake test:js:oldUx
 ```
 
@@ -224,7 +225,7 @@ dev-server/dev-proxy.js
 
 ## Tools in `bin` directory
 
-These tools can be used to run commands like `rails`, `rake`, `bundler` and so on, when on the application is deployed in a development environment. 
+These tools can be used to run commands like `rails`, `rake`, `bundler` and so on, when on the application is deployed in a development environment.
 
 An example of starting up the `rails` console on a production host is:
 

@@ -1,7 +1,10 @@
 import Clipboard from 'clipboard';
 
+export var isCopyingSupported = document.queryCommandSupported &&
+  document.queryCommandSupported('copy');
+
 // Set up "copy to clipboard" for an element.  This is shared is ApiFlannel and ODataModal
-export default function(selector) {
+export function initClipboardControl(selector) {
   var copyButton = new Clipboard(selector, {
     text: function(trigger) {
       return $(trigger).closest('form').find('input').val();

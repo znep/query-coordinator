@@ -7,6 +7,7 @@ module ImportWizardHelper
       LocalePart.screens.wizard,
       LocalePart.screens.dataset_new,
       LocalePart.screens.edit_metadata,
+      LocalePart.core,
       LocalePart.plugins.fileuploader
     ]
     LocaleCache.render_translations(parts)
@@ -14,6 +15,10 @@ module ImportWizardHelper
 
   def render_import_wizard_translations
     javascript_tag("var I18n = #{json_escape(import_wizard_translations.to_json)};")
+  end
+
+  def render_custom_metadata
+    javascript_tag("var customMetadataSchema = #{json_escape((CurrentDomain.property(:fieldsets, :metadata) || []).to_json)};")
   end
 
   def render_importable_types

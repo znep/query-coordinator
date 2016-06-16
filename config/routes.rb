@@ -289,6 +289,7 @@ Rails.application.routes.draw do
       post '/:id/featured_content', :action => 'post_featured_content'
       delete '/:id/featured_content/:position', :action => 'delete_featured_content'
       get '/formatted_view/:id', :action => 'get_formatted_view_by_id'
+      get '/:id/related_views', :action => 'get_related_views'
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do

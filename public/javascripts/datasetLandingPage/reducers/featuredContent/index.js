@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import visualizationReducer from './visualization';
+import viewSelectorReducer from './viewSelector';
 import storyReducer from './story';
 import externalResourceReducer from './externalResource';
 
@@ -13,7 +13,8 @@ import {
   HANDLE_FEATURED_ITEM_SAVE_ERROR,
   REQUESTED_FEATURED_ITEM_REMOVAL,
   HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
-  HANDLE_FEATURED_ITEM_REMOVAL_ERROR
+  HANDLE_FEATURED_ITEM_REMOVAL_ERROR,
+  SET_SAVING_FEATURED_ITEM
 } from '../../actionTypes';
 
 var initialState = {
@@ -30,6 +31,7 @@ var initialState = {
   isSaving: false,
   isSaved: false,
   hasSaveError: false,
+  isSavingViewUid: '',
 
   // Removing
   isRemoving: false,
@@ -59,8 +61,9 @@ function getEditTypeFromFeaturedItem(featuredItem) {
   } else if (featuredItem.contentType === 'internal') {
     if (featuredItem.featuredView.displayType === 'story') {
       return 'story';
+    } else {
+      return 'visualization';
     }
-    return; // TODO Good luck
   }
 }
 
@@ -70,7 +73,7 @@ export default function(state, action) {
   if (_.isUndefined(state)) {
     return {
       ...initialState,
-      visualization: visualizationReducer(state, action),
+      viewSelector: viewSelectorReducer(state, action),
       story: storyReducer(state, action),
       externalResource: externalResourceReducer(state, action)
     };
@@ -78,7 +81,7 @@ export default function(state, action) {
 
   state = _.cloneDeep(state);
 
-  state.visualization = visualizationReducer(state.visualization, action);
+  state.viewSelector = viewSelectorReducer(state.viewSelector, action);
   state.story = storyReducer(state.story, action);
   state.externalResource = externalResourceReducer(state.externalResource, action);
 
@@ -118,6 +121,12 @@ export default function(state, action) {
         ...state,
         isSaving: true,
         hasSaveError: false
+      };
+
+    case SET_SAVING_FEATURED_ITEM:
+      return {
+        ...state,
+        isSavingViewUid: action.viewUid
       };
 
     case HANDLE_FEATURED_ITEM_SAVE_SUCCESS:

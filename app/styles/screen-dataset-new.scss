@@ -668,6 +668,13 @@
       opacity: 0;
     }
   }
+
+  .workingPane {
+    p.subheadline {
+      margin: 1em 0 -2em;
+      height: 1em;
+    }
+  }
 }
 
 // PANE ONE POINT FIVE B
@@ -914,4 +921,48 @@
   position: absolute;
   left: -14.9em;
   font-size: 1.2em;
+}
+
+
+// From the socrata style guide
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+$primary: #f1f1f1;
+$primary-light: #909090;
+
+.spinner-default {
+  animation: spin 0.9s linear infinite;
+  border: 3px solid $primary;
+  border-right-color: $primary-light;
+  border-radius: 50%;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+
+  &.spinner-dark {
+    border-color: $primary-light;
+    border-right-color: $primary;
+  }
+
+  &.spinner-large-center {
+    border-width: 4px;
+    width: 2em;
+    height: 2em;
+    margin: 5em calc(50% - 1em - 4px) auto;
+  }
+
+}
+
+.spinner-btn-primary {
+  border-color: #ffffff;
+  border-right-color: shade($primary, 20%);
 }

@@ -13,10 +13,11 @@ import * as Utils from '../utils';
 */
 
 type ColumnTransform
-  = { type: 'upper' }
+  = { type: 'title' }
+  | { type: 'upper' }
   | { type: 'lower' }
-  // TODO: forgetting some
-  | { type: 'findReplace', find: string, replace: string, regex: boolean, caseInsensitive: boolean }
+  | { type: 'toStateCode' }
+  | { type: 'findReplace', findText: string, replaceText: string, regex: boolean, caseSensitive: boolean }
 
 type ResultColumn = {
   sourceColumn: SharedTypes.SourceColumn,

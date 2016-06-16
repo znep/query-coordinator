@@ -6,7 +6,12 @@ import _ from 'lodash';
 const I18nPrefixed = I18n.screens.dataset_new.column_template;
 const I18nTransform = I18n.screens.import_common;
 
-// reducers
+
+function makeColumnTransform() {
+  return { type: 'title' };
+}
+
+// action dispatchers
 
 const UPDATE_COLUMN_NAME = 'UPDATE_COLUMN_NAME';
 function updateColumnName(newName) {
@@ -55,6 +60,23 @@ function removeColumnTransform(removeIndex) {
   };
 }
 
+const UPDATE_COLUMN_CHANGE_TRANSFORM = 'UPDATE_COLUMN_CHANGE_TRANSFORM';
+function changeColumnTransform(changeIndex, newTransform) {
+  const newTransformObject = { type: newTransform };
+  if (newTransformObject.type === 'findReplace') {
+    newTransformObject.findText = '';
+    newTransformObject.replaceText = '';
+    newTransformObject.regex = false;
+    newTransformObject.caseSensitive = false;
+  }
+
+  return {
+    type: UPDATE_COLUMN_CHANGE_TRANSFORM,
+    changeIndex: changeIndex,
+    newTransform: newTransformObject
+  };
+}
+
 export function update(columnState, action) {
   switch (action.type) {
     case UPDATE_COLUMN_NAME:
@@ -66,11 +88,12 @@ export function update(columnState, action) {
     case UPDATE_COLUMN_SHOW_TRANSFORMS:
       return { ...columnState, showColumnTransforms: action.showColumnTransforms };
     case UPDATE_COLUMN_ADD_TRANSFORM: {
-      let transforms = null;
+      let transforms;
+      const newTransform = makeColumnTransform();
       if (!_.isUndefined(columnState.transforms)) {
-        transforms = [ ...columnState.transforms, {} ];
+        transforms = [ ...columnState.transforms, newTransform ];
       } else {
-        transforms = [ {} ];
+        transforms = [ newTransform ];
       }
       return { ...columnState, transforms: transforms };
     }
@@ -79,6 +102,16 @@ export function update(columnState, action) {
       transforms.splice(action.removeIndex, 1);
       return { ...columnState, transforms: transforms };
     }
+    case UPDATE_COLUMN_CHANGE_TRANSFORM: {
+      const newTransforms = [
+        ...columnState.transforms.slice(0, action.changeIndex),
+        action.newTransform,
+        ...columnState.transforms.slice(action.changeIndex + 1)
+      ];
+      return { ...columnState, transforms: newTransforms };
+    }
+    default:
+      return columnState;
   }
 }
 
@@ -158,6 +191,7 @@ export function view({ resultColumn, sourceColumns, dispatchUpdate, dispatchRemo
 }
 
 function viewTransforms(transforms, dispatchUpdate) {
+
   return (
     <ul className="columnTransformsList">
     {
@@ -175,25 +209,35 @@ function viewTransforms(transforms, dispatchUpdate) {
               return <span className="thenText" style={{visibility: 'hidden'}}>{I18nTransform.then}</span>;
             }
           })()}
-          <select className="columnTransformOperation">
+          <select
+            className="columnTransformOperation"
+            value={transform.type}
+            onChange={(event) => {dispatchUpdate(changeColumnTransform(idx, event.target.value));}}>
             <option value="title">{I18nTransform.make_title_case}</option>
             <option value="upper">{I18nTransform.make_upper_case}</option>
             <option value="lower">{I18nTransform.make_lower_case}</option>
             <option value="toStateCode">{I18nTransform.to_state_code}</option>
             <option value="findReplace">{I18nTransform.find_and_replace}</option>
           </select>
-          <div className="additionalTransformOptions">
-            <div className="findReplaceSection">
-              <label className="findTextLabel">{I18nTransform.find}</label>
-              <input type="text" className="findText" />
-              <label className="replaceTextLabel">{I18nTransform.replace}</label>
-              <input type="text" className="replaceText" />
-              <input type="checkbox" className="caseSensitive" />
-              <label className="caseSensitiveLabel">{I18nTransform.case_sensitive}</label>
-              <input type="checkbox" className="regex" />
-              <label className="regexLabel">{I18nTransform.regular_expression}</label>
-            </div>
-          </div>
+          {(() => {
+            if (transform.type === 'findReplace') {
+              return (
+                <div className="additionalTransformOptions">
+                  <div className="findReplaceSection" style={{display: 'block'}}>
+                    <label className="findTextLabel">{I18nTransform.find}</label>
+                    <input type="text" className="findText" defaultValue={transform.findText} />
+                    <label className="replaceTextLabel">{I18nTransform.replace}</label>
+                    <input type="text" className="replaceText" defaultValue={transform.replaceText} />
+                    <input type="checkbox" className="caseSensitive" defaultChecked={transform.caseSensitive} />
+                    <label className="caseSensitiveLabel">{I18nTransform.case_sensitive}</label>
+                    <input type="checkbox" className="regex" defaultChecked={transform.regex} />
+                    <label className="regexLabel">{I18nTransform.regular_expression}</label>
+                  </div>
+                </div>
+              );
+            }
+          })()}
+
         </li>
       ))
     }

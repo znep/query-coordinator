@@ -1,6 +1,6 @@
-styleguide(document);
-
 document.addEventListener('DOMContentLoaded', function() {
+
+  styleguide.attachTo(document);
 
   /**
    * Fancy demo stuff.

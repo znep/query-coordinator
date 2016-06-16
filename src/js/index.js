@@ -1,28 +1,22 @@
-var Styleguide = {
-  DropdownFactory: require('./dropdown'),
-  FlannelFactory: require('./flannel'),
-  FlyoutFactory: require('./flyout'),
-  MenuFactory: require('./menu'),
-  ModalFactory: require('./modal'),
-  TabsFactory: require('./tabs'),
-  ToggleFactory: require('./toggle'),
-  TourFactory: require('./tour')
-};
+module.exports = {
+  attachTo: function(element) {
+    Object.keys(this.factories).forEach(function(factory) {
+      new this.factories[factory](element);
+    }, this);
+  },
 
-function bootstrap(element) {
-  return function() {
-    Object.keys(Styleguide).forEach(function(factory) {
-      new Styleguide[factory](element);
-    });
-  };
-}
+  factories: {
+    DropdownFactory: require('./dropdown'),
+    FlannelFactory: require('./flannel'),
+    FlyoutFactory: require('./flyout'),
+    MenuFactory: require('./menu'),
+    ModalFactory: require('./modal'),
+    TabsFactory: require('./tabs'),
+    ToggleFactory: require('./toggle'),
+    TourFactory: require('./tour')
+  },
 
-module.exports = function(element) {
-  if (document.readyState === 'complete') {
-    bootstrap(element)();
-  } else {
-    document.addEventListener('DOMContentLoaded', bootstrap(element));
+  components: {
+    ColorPicker: require('./colorpicker').ColorPicker
   }
-
-  return Styleguide;
 };

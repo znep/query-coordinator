@@ -52,6 +52,12 @@ class Domain < Model
     CoreServer::Base.connection.update_request(path, headers)
   end
 
+  def self.update_salesforce_id(cname, salesforceId)
+    headers = { "X-Socrata-Host" => cname }
+    path = "/domains/#{cname}.json?method=updateSalesforceId&salesforceId=#{salesforceId}"
+    CoreServer::Base.connection.update_request(path, headers)
+  end
+
   def self.all
     # cache in memory locally for 10 minutes:
     return @@all_domains if (defined? @@all_domains) && @@all_domains_fetched.since(600) > DateTime.current
@@ -124,6 +130,10 @@ class Domain < Model
   def feature_flags
     conf = default_configuration('feature_flags')
     FeatureFlags.merge({}, conf.try(:properties) || {})
+  end
+
+  def has_valid_salesforce_id?
+    self.salesforceId =~ /^00\w{16}/
   end
 
 end

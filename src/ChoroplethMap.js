@@ -614,6 +614,7 @@ $.fn.socrataChoroplethMap = function(vif) {
           top: payload.clientY
         },
         content: flyoutContent,
+        dark: true,
         title: payload.title,
         filtered: payload.filteredValue,
         unfiltered: payload.unfilteredValue,
@@ -633,6 +634,7 @@ $.fn.socrataChoroplethMap = function(vif) {
     var flyoutPayload = {
       element: payload.element,
       content: flyoutContent,
+      dark: true,
       rightSideHint: false,
       belowTarget: false
     };
@@ -732,6 +734,19 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   function _dispatchFlyout(payload) {
 
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        {
+          detail: payload,
+          bubbles: true
+        }
+      )
+    );
+
+    // TODO: Remove the dispatch of the '...CHOROPLETH_MAP_FLYOUT' event once
+    // DataLens is using the new standardized 'SOCRATA_VISUALIZATION_FLYOUT'
+    // event.
     $element[0].dispatchEvent(
       new window.CustomEvent(
         'SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT',

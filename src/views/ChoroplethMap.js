@@ -10,12 +10,12 @@ var chroma = require('chroma-js');
 var $ = require('jquery');
 var _ = require('lodash');
 
-var Visualization = require('./Visualization');
+var SvgVisualization = require('./SvgVisualization');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');
 
 function ChoroplethMap(element, vif) {
 
-  _.extend(this, new Visualization(element, vif));
+  _.extend(this, new SvgVisualization(element, vif));
 
   var self = this;
   // Data mapping to geojson
@@ -101,7 +101,7 @@ function ChoroplethMap(element, vif) {
   var _lastClickTimeout = null;
 
   // Render layout
-  _renderTemplate(self.element);
+  _renderTemplate(self.$element);
 
   // Construct leaflet map
   _map = L.map(_choroplethMapContainer[0], _mapOptions);
@@ -152,7 +152,7 @@ function ChoroplethMap(element, vif) {
     }
   }
 
-  var _legend = new _LegendType(self.element.find('.choropleth-legend'), self.element);
+  var _legend = new _LegendType(self.$element.find('.choropleth-legend'), self.$element);
 
   /**
    * Public methods
@@ -195,10 +195,6 @@ function ChoroplethMap(element, vif) {
     _updateTileLayer(options.baseLayer.url, options.baseLayer.opacity);
   };
 
-  this.renderError = function() {
-    // TODO: Some helpful error message.
-  };
-
   this.destroy = function() {
 
     // Remove Miscellaneous Events
@@ -208,7 +204,7 @@ function ChoroplethMap(element, vif) {
       _map.remove();
     }
 
-    self.element.empty();
+    self.$element.empty();
   };
 
 
@@ -218,10 +214,8 @@ function ChoroplethMap(element, vif) {
 
   /**
    * Creates HTML for visualization and adds it to the provided element.
-   *
-   * @param {jQuery Element} element - element to append visualization
    */
-  function _renderTemplate(el) {
+  function _renderTemplate() {
 
     // jQuery doesn't support SVG, so we have to create these elements manually :(
     var xmlns = 'http://www.w3.org/2000/svg';
@@ -253,7 +247,9 @@ function ChoroplethMap(element, vif) {
       }
     );
 
-    var choroplethContainer = el.find('.choropleth-container');
+    var choroplethContainer = self.
+      $element.
+        find('.choropleth-container');
 
     if (_.isEmpty(choroplethContainer)) {
       choroplethContainer = $(
@@ -274,7 +270,10 @@ function ChoroplethMap(element, vif) {
     _choroplethMapContainer = choroplethMapContainer;
     _choroplethLegend = choroplethLegend;
 
-    el.append(choroplethContainer);
+    self.
+      $element.
+        find('.visualization-container').
+          append(_choroplethContainer);
   }
 
   function _initializeMap(el, data) {

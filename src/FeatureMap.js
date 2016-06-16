@@ -292,6 +292,7 @@ $.fn.socrataFeatureMap = function(vif) {
         flyoutPayload = {
           flyoutOffset: payload.flyoutOffset,
           content: $flyoutContent,
+          dark: true,
           rightSideHint: false,
           belowTarget: false
         };
@@ -301,12 +302,26 @@ $.fn.socrataFeatureMap = function(vif) {
         flyoutPayload = {
           element: payload.element,
           content: $flyoutContent,
+          dark: true,
           rightSideHint: false,
           belowTarget: false
         };
 
       }
 
+      $element[0].dispatchEvent(
+        new CustomEvent(
+          'SOCRATA_VISUALIZATION_FLYOUT',
+          {
+            detail: flyoutPayload,
+            bubbles: true
+          }
+        )
+      );
+
+      // TODO: Remove the dispatch of the '...FEATURE_MAP_FLYOUT' event once
+      // DataLens is using the new standardized 'SOCRATA_VISUALIZATION_FLYOUT'
+      // event.
       $element[0].dispatchEvent(
         new CustomEvent(
           'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
@@ -320,6 +335,20 @@ $.fn.socrataFeatureMap = function(vif) {
   }
 
   function handleVisualizationFlyoutHide() {
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        {
+          detail: null,
+          bubbles: true
+        }
+      )
+    );
+
+    // TODO: Remove the dispatch of the '...FEATURE_MAP_FLYOUT' event once
+    // DataLens is using the new standardized 'SOCRATA_VISUALIZATION_FLYOUT'
+    // event.
     $element[0].dispatchEvent(
       new window.CustomEvent(
         'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',

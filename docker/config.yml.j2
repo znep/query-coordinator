@@ -5,6 +5,8 @@ default: &default
    # conditional checks account for environments (including local dev)
    # where only a subset of services may be running
    #}
+  canary: {{ CANARY | default('false') }}
+
   {% if CETERA_HOST is defined -%}
   cetera_host: {{ CETERA_HOST }}
   {%- endif %}

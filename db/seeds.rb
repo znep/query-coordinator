@@ -9,7 +9,7 @@
 block_1 = Block.create(
   layout: '12',
   components: [
-    {type: 'html', value: '<h1>Block One<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'}
+    {type: 'html', value: '<div><i>Block One!</i>&nbsp;Component One!<br></div>'}
   ],
   created_by: 'good-doer',
   presentable: true
@@ -18,8 +18,8 @@ block_1 = Block.create(
 block_2 = Block.create(
   layout: '6-6',
   components: [
-    {type: 'html', value: '<h1>Block Two<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Two<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'}
+    {type: 'html', value: '<div><i>Block Two!</i>&nbsp;Component One!<br></div>'},
+    {type: 'html', value: '<div><i>Block Two!</i>&nbsp;Component Two!<br></div>'}
   ],
   created_by: 'good-doer',
   presentable: true
@@ -28,9 +28,9 @@ block_2 = Block.create(
 block_3 = Block.create(
   layout: '4-4-4',
   components: [
-    {type: 'html', value: '<h1>Block Three<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Three<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Three<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'}
+    {type: 'html', value: '<div><i>Block Three!</i>&nbsp;Component One!<br></div>'},
+    {type: 'html', value: '<div><i>Block Three!</i>&nbsp;Component Two!<br></div>'},
+    {type: 'html', value: '<div><i>Block Three!</i>&nbsp;Component Three!<br></div>'}
   ],
   created_by: 'good-doer',
   presentable: true
@@ -39,10 +39,10 @@ block_3 = Block.create(
 block_4 = Block.create(
   layout: '3-3-3-3',
   components: [
-    {type: 'html', value: '<h1>Block Four<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Four<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Four<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'},
-    {type: 'html', value: '<h1>Block Four<br></h1><div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></div>'}
+    {type: 'html', value: '<div><i>Block Four!</i>&nbsp;Component One!<br></div>'},
+    {type: 'html', value: '<div><i>Block Four!</i>&nbsp;Component Two!<br></div>'},
+    {type: 'html', value: '<div><i>Block Four!</i>&nbsp;Component Three!<br></div>'},
+    {type: 'html', value: '<div><i>Block Four!</i>&nbsp;Component Four!<br></div>'}
   ],
   created_by: 'good-doer',
   presentable: true
@@ -96,7 +96,7 @@ block_9 = Block.create(
     {
       'type': 'hero',
       'value': {
-        'html': 'Hello World'
+        'html': '<h1 class="align-center" style="text-align:center">Your Great Story Title<br></h1>'
       }
     }
   ],

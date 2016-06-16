@@ -127,6 +127,8 @@ export default function LinkTipRenderer() {
       left: Math.max(linkTipLeft, 0)
     });
 
-    $container.append($tip);
+    if (_.last($container[0].children) !== $tip[0]) {
+      $container.append($tip);
+    }
   }
 }

@@ -1,6 +1,8 @@
 import _ from 'lodash';
 
 export default function() {
+  var content = 'MOCKED BY SquireMocker';
+
   var addEventListenerStub = sinon.stub();
 
   this.addEventListener = addEventListenerStub;
@@ -10,7 +12,7 @@ export default function() {
   };
 
   this.getHTML = function() {
-    return '';
+    return content;
   };
 
   this.getSelection = function() {
@@ -24,7 +26,7 @@ export default function() {
 
   this.setKeyHandler = function() {};
   this.hasFormat = function() {};
-  this.setHTML = function() {};
+  this.setHTML = function(newContent) { content = newContent; };
   this.__invokeEvent__ = function(eventName) {
     // Look at addEventListener calls on the Squire stub to pull out
     // the event handlers.

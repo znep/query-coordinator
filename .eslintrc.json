@@ -102,7 +102,6 @@
     "mixpanel": true,
     "Modernizr": true,
     "moment": true,
-    "OpenLayers": true,
     "pageMetadata": true,
     "pbf": true,
     "saveAs": true,

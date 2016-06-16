@@ -1,7 +1,7 @@
 (function($) {
   // Should inherit from tiledata.
 
-  var NBEFeatureGetter = OpenLayers.Class(OpenLayers.Control.GetFeature, { //eslint-disable-line new-cap
+  var NBEFeatureGetter = OpenLayers.Class(OpenLayers.Control.GetFeature, {
 
     initialize: function(options) {
       this._layer = options.layer;
@@ -52,9 +52,6 @@
         });
       }.bind(this), function(err) {
         //TODO: there are no mechanisms to handle errors apparently?
-        if (window.console) {
-          console.error('Error fetching layer JSON', err);
-        }
       });
     }
   });
@@ -173,7 +170,9 @@
     // instead of figuring it out and using it this will just have to suffice.
     _dummyProtocol:function() {
       return {
-        setFeatureType: _.noop
+        setFeatureType: function(_featureType) {
+          //;_;
+        }
       };
     },
 
@@ -313,7 +312,7 @@
 
         layerObj.flyoutHandler().add(layerObj, lonlat, $popupText[0].innerHTML,
             { onlyIf: 'loading',
-              closeBoxCallback: function() { layerObj._getFeature.unselectAll(); } });
+              closeBoxCallback: function(evt) { layerObj._getFeature.unselectAll(); } });
 
         layerObj._selectionLayer.addFeatures(features);
       });

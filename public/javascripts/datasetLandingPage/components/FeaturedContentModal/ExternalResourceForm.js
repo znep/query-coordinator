@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../lib/constants';
-import ViewWidget from '../ViewWidget';
+import FeaturedItemWidget from '../FeaturedItemWidget';
 import FormFooter from './FormFooter';
 import {
   cancelFeaturedItemEdit,
@@ -15,9 +15,11 @@ export var ExternalResourceForm = React.createClass({
     canSave: PropTypes.bool,
     description: PropTypes.string,
     hasSaveError: PropTypes.bool,
+    previewImage: PropTypes.string,
     isSaved: PropTypes.bool,
     isSaving: PropTypes.bool,
     onChangeDescription: PropTypes.func,
+    onChangePreviewImage: PropTypes.func,
     onChangeTitle: PropTypes.func,
     onChangeUrl: PropTypes.func,
     onClickCancel: PropTypes.func,
@@ -30,13 +32,46 @@ export var ExternalResourceForm = React.createClass({
   getDefaultProps: function() {
     return {
       onChangeDescription: _.noop,
+      onChangePreviewImage: _.noop,
       onChangeTitle: _.noop,
       onChangeUrl: _.noop
     };
   },
 
+  getInitialState: function() {
+    return {
+      isImageInvalid: false
+    };
+  },
+
   onChangeDescription: function(event) {
     this.props.onChangeDescription(event.target.value);
+  },
+
+  onChangePreviewImage: function(event) {
+    var { onChangePreviewImage } = this.props;
+
+    var file = event.target.files[0];
+    var isFileImage = file && /\.(jpe?g|png|gif)$/.test(file.name);
+
+    this.setState({
+      isImageInvalid: !isFileImage
+    });
+
+    if (!isFileImage) {
+      return;
+    }
+
+    var fileReader = new FileReader();
+
+    fileReader.addEventListener('load', function() {
+      var dataUrl = fileReader.result;
+      onChangePreviewImage(dataUrl);
+    }, false);
+
+    if (file) {
+      fileReader.readAsDataURL(file);
+    }
   },
 
   onChangeTitle: function(event) {
@@ -53,42 +88,50 @@ export var ExternalResourceForm = React.createClass({
     var prefix = 'external-resource';
     var value = this.props[key];
     var onChange = this[`onChange${_.capitalize(key)}`];
+    var kebabKey = _.kebabCase(key);
+
+    inputProps = _.defaults(inputProps, {
+      id: `${prefix}-${kebabKey}`,
+      className: `text-input ${kebabKey}`,
+      type: 'text',
+      'aria-labelledby': `${prefix}-${kebabKey}-label`,
+      onChange: onChange
+    });
+
+    if (inputProps.type !== 'file') {
+      inputProps.value = value;
+    }
 
     return (
       <div>
         <label
-          id={`${prefix}-${key}-label`}
-          htmlFor={`${prefix}-${key}`}
-          className={`block-label label-${key}`}>
-          {this.I18n[key]}
+          id={`${prefix}-${kebabKey}-label`}
+          htmlFor={`${prefix}-${kebabKey}`}
+          className={`block-label label-${kebabKey}`}>
+          {this.I18n[_.snakeCase(key)]}
         </label>
 
-        <input
-          id={`${prefix}-${key}`}
-          className={`text-input ${key}`}
-          type="text"
-          value={value}
-          aria-labelledby={`${prefix}-${key}-label`}
-          onChange={onChange}
-          {...inputProps} />
+        <input {...inputProps} />
       </div>
     );
   },
 
   renderPreview: function() {
-    var { description, title } = this.props;
+    var { description, previewImage, title } = this.props;
 
     var widgetProps = {
-      name: _.isEmpty(title) ? this.I18n.title : title,
       description: _.isEmpty(description) ? this.I18n.description : description,
-      isExternal: true
+      previewImage: _.isEmpty(previewImage) ? null : previewImage,
+      contentType: 'external',
+      title: _.isEmpty(title) ? this.I18n.title : title
     };
 
-    return <ViewWidget {...widgetProps} />;
+    return <FeaturedItemWidget {...widgetProps} />;
   },
 
   renderContent: function() {
     var { url, hasSaveError, onClickCancel } = this.props;
+    var { isImageInvalid } = this.state;
 
     var isUrlInvalid = !_.isEmpty(url) && !VALID_URL_REGEX.test(url);
 
@@ -105,9 +148,17 @@ export var ExternalResourceForm = React.createClass({
       'placeholder': 'https://example.com',
       'aria-invalid': isUrlInvalid
     });
+    var previewImageField = this.renderInputField('previewImage', {
+      type: 'file',
+      className: 'file-input preview-image'
+    });
 
     var urlWarning = isUrlInvalid ?
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
+      null;
+
+    var imageWarning = isImageInvalid ?
+      <div className="alert error">{this.I18n.invalid_image_message}</div> :
       null;
 
     var saveError = hasSaveError ?
@@ -128,6 +179,8 @@ export var ExternalResourceForm = React.createClass({
             {descriptionField}
             {urlField}
             {urlWarning}
+            {previewImageField}
+            {imageWarning}
           </form>
 
           <div className="external-resource-preview">
@@ -142,10 +195,11 @@ export var ExternalResourceForm = React.createClass({
 
   renderFooter: function() {
     var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
+    var { isImageInvalid } = this.state;
 
     var footerProps = {
       cancelText: I18n.cancel,
-      canSave: canSave,
+      canSave: canSave && !isImageInvalid,
       displaySaveButton: true,
       isSaved: isSaved,
       isSaving: isSaving,
@@ -188,6 +242,10 @@ function mapDispatchToProps(dispatch) {
 
     onChangeUrl: function(url) {
       dispatch(setExternalResourceField('url', url));
+    },
+
+    onChangePreviewImage: function(previewImage) {
+      dispatch(setExternalResourceField('previewImage', previewImage));
     },
 
     onClickCancel: function() {

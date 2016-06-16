@@ -8,6 +8,7 @@ import {
 
 var initialState = {
   description: '',
+  previewImage: '',
   title: '',
   url: '',
   canSave: false
@@ -28,6 +29,7 @@ export default function(state, action) {
     case EDIT_FEATURED_ITEM:
       if (action.featuredItem.contentType === 'external') {
         state.description = action.featuredItem.description;
+        state.previewImage = action.featuredItem.previewImage;
         state.title = action.featuredItem.title;
         state.url = action.featuredItem.url;
         state.canSave = canSave(state);

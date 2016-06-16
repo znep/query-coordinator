@@ -40,17 +40,45 @@ function showColumnTransforms(shouldShowTransforms) {
   };
 }
 
+const UPDATE_COLUMN_ADD_TRANSFORM = 'UPDATE_COLUMN_ADD_TRANSFORM';
+function addColumnTransform() {
+  return {
+    type: UPDATE_COLUMN_ADD_TRANSFORM
+  };
+}
 
-export function update(column, action) {
+const UPDATE_COLUMN_REMOVE_TRANSFORM = 'UPDATE_COLUMN_REMOVE_TRANSFORM';
+function removeColumnTransform(removeIndex) {
+  return {
+    type: UPDATE_COLUMN_REMOVE_TRANSFORM,
+    removeIndex: removeIndex
+  };
+}
+
+export function update(columnState, action) {
   switch (action.type) {
     case UPDATE_COLUMN_NAME:
-      return { ...column, name: action.newName };
+      return { ...columnState, name: action.newName };
     case UPDATE_COLUMN_TYPE:
-      return { ...column, chosenType: action.newType };
+      return { ...columnState, chosenType: action.newType };
     case UPDATE_SOURCE_COLUMN:
-      return { ...column, sourceColumn: action.newSourceColumn };
+      return { ...columnState, sourceColumn: action.newSourceColumn };
     case UPDATE_COLUMN_SHOW_TRANSFORMS:
-      return { ...column, showColumnTransforms: action.showColumnTransforms };
+      return { ...columnState, showColumnTransforms: action.showColumnTransforms };
+    case UPDATE_COLUMN_ADD_TRANSFORM: {
+      let transforms = null;
+      if (!_.isUndefined(columnState.transforms)) {
+        transforms = [ ...columnState.transforms, {} ];
+      } else {
+        transforms = [ {} ];
+      }
+      return { ...columnState, transforms: transforms };
+    }
+    case UPDATE_COLUMN_REMOVE_TRANSFORM: {
+      let transforms = [ ...columnState.transforms ];
+      transforms.splice(action.removeIndex, 1);
+      return { ...columnState, transforms: transforms };
+    }
   }
 }
 
@@ -114,13 +142,13 @@ export function view({ resultColumn, sourceColumns, dispatchUpdate, dispatchRemo
         <div className="compositeDetails"></div>
         <div className="locationDetails"></div>
         <div className="pointDetails"></div>
-        <div className="generalDetails" style={isTransformEditorVisible ? {display: "block"} : {}}>
+        <div className="generalDetails" style={isTransformEditorVisible ? {display: 'block'} : {}}>
           <h3>{I18nTransform.options}</h3>
           <h4>{I18nTransform.transforms}</h4>
-          <ul className="columnTransformsList">
-            {viewTransformLine()}
-          </ul>
-          <a href="#newTransform" className="button add newColumnTransformButton">
+          {viewTransforms(resultColumn.transforms, dispatchUpdate)}
+          <a
+            href="#newTransform" className="button add newColumnTransformButton"
+            onClick={() => dispatchUpdate(addColumnTransform())}>
             <span className="icon"></span>{I18nTransform.new_transform}
           </a>
         </div>
@@ -129,31 +157,47 @@ export function view({ resultColumn, sourceColumns, dispatchUpdate, dispatchRemo
   );
 }
 
-function viewTransformLine() {
+function viewTransforms(transforms, dispatchUpdate) {
   return (
-    <li className="clearfix">
-      <a className="remove removeTransformLineButton" href="#remove"><span className="icon">{I18nTransform.remove}</span></a>
-      <span className="thenText">{I18nTransform.then}</span>
-      <select className="columnTransformOperation">
-        <option value="title">{I18nTransform.make_title_case}</option>
-        <option value="upper">{I18nTransform.make_upper_case}</option>
-        <option value="lower">{I18nTransform.make_lower_case}</option>
-        <option value="toStateCode">{I18nTransform.to_state_code}</option>
-        <option value="findReplace">{I18nTransform.find_and_replace}</option>
-      </select>
-      <div className="additionalTransformOptions">
-        <div className="findReplaceSection">
-          <label className="findTextLabel">{I18nTransform.find}</label>
-          <input type="text" className="findText"/>
-          <label className="replaceTextLabel">{I18nTransform.replace}</label>
-          <input type="text" className="replaceText"/>
-          <input type="checkbox" className="caseSensitive"/>
-          <label className="caseSensitiveLabel">{I18nTransform.case_sensitive}</label>
-          <input type="checkbox" className="regex"/>
-          <label className="regexLabel">{I18nTransform.regular_expression}</label>
-        </div>
-      </div>
-    </li>
+    <ul className="columnTransformsList">
+    {
+      transforms.map((transform, idx) => (
+        <li className="clearfix" key={idx}>
+          <a
+            className="remove removeTransformLineButton" href="#remove"
+            onClick={() => dispatchUpdate(removeColumnTransform(idx))}>
+            <span className="icon">{I18nTransform.remove}</span>
+          </a>
+          {(() => {
+            if (idx > 0) {
+              return <span className="thenText">{I18nTransform.then}</span>;
+            } else {
+              return <span className="thenText" style={{visibility: 'hidden'}}>{I18nTransform.then}</span>;
+            }
+          })()}
+          <select className="columnTransformOperation">
+            <option value="title">{I18nTransform.make_title_case}</option>
+            <option value="upper">{I18nTransform.make_upper_case}</option>
+            <option value="lower">{I18nTransform.make_lower_case}</option>
+            <option value="toStateCode">{I18nTransform.to_state_code}</option>
+            <option value="findReplace">{I18nTransform.find_and_replace}</option>
+          </select>
+          <div className="additionalTransformOptions">
+            <div className="findReplaceSection">
+              <label className="findTextLabel">{I18nTransform.find}</label>
+              <input type="text" className="findText" />
+              <label className="replaceTextLabel">{I18nTransform.replace}</label>
+              <input type="text" className="replaceText" />
+              <input type="checkbox" className="caseSensitive" />
+              <label className="caseSensitiveLabel">{I18nTransform.case_sensitive}</label>
+              <input type="checkbox" className="regex" />
+              <label className="regexLabel">{I18nTransform.regular_expression}</label>
+            </div>
+          </div>
+        </li>
+      ))
+    }
+    </ul>
   );
 }
 

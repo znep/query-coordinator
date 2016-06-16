@@ -1574,7 +1574,7 @@ en:
     permission_denied_403:
       description_html: If you believe this to be an error, try logging out and back in as a different user <a href="/login">here</a>.
       no_permission: Error
-      were_sorry: The current user doesn't have access to this Data Lens page.
+      were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
   govstat:
     chrome:

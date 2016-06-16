@@ -9,6 +9,7 @@ import * as Finish from './components/finish';
 import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
 import * as SharedTypes from './sharedTypes';
+import * as SelectUploadType from './components/selectUploadType';
 
 import enabledModules from 'enabledModules';
 
@@ -92,6 +93,8 @@ export function updateNavigation(navigation = initialNavigation: Navigation, act
     case CHOOSE_OPERATION:
       switch (action.name) {
         case 'UploadData':
+          nextPage = 'SelectUploadType';
+          break;
         case 'UploadBlob':
         case 'UploadGeospatial':
           nextPage = 'UploadFile'; // TODO: select upload type
@@ -170,7 +173,10 @@ export function view({ state, dispatch }) {
               );
 
             case 'SelectUploadType':
-              return <span>SelectUploadType</span>;
+              return (
+                <SelectUploadType.view
+                  goToPage={(page) => dispatch(goToPage(page))} />
+              );
 
             case 'UploadFile':
               return (
@@ -210,7 +216,11 @@ export function view({ state, dispatch }) {
               return <Working.view />;
 
             case 'Importing':
-              return <Importing.view importStatus={state.importStatus} />;
+              return (
+                <Importing.view
+                  importStatus={state.importStatus}
+                  operation={state.navigation.operation} />
+              );
 
             case 'Finish':
               return <Finish.view />;

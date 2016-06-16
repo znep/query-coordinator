@@ -3,27 +3,40 @@ model into the JSON needed for those calls */
 
 import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
-import * as Working from './components/working';
-import * as Importing from './components/importing';
-// import * as Metadata from './components/metadata';
+import { goToPage } from './wizard';
 
 import formurlencoded from 'form-urlencoded';
 
 
 export function saveMetadata() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { navigation } = getState();
+    dispatch(goToPage('Working'));
     setTimeout(() => {
-      dispatch(Working.workingNext());
-      dispatch(importData()); // TODO: or not, depending on operation
+      dispatch(goToPage('Importing'));
+      switch (navigation.operation) {
+        case 'UploadData':
+          dispatch(importData());
+          break;
+        case 'UploadGeospatial':
+          dispatch(importGeospatial());
+          break;
+        default:
+          console.error('Unkown operation!', navigation.operation);
+      }
     }, 2000);
     // TODO: actually save metadata
   };
 }
 
+type ImportProgress
+  = { rowsImported: number }
+  | { stage: string }
 
 type ImportStatus
   = { type: 'NotStarted' }
-  | { type: 'InProgress', rowsImported: number }
+  | { type: 'Started' }
+  | { type: 'InProgress', progress: ImportProgress }
   | { type: 'Error', error: string }
   | { type: 'Complete' }
 
@@ -43,10 +56,10 @@ function importStart() {
 }
 
 const IMPORT_PROGRESS = 'IMPORT_PROGRESS';
-function importProgress(rowsImported: number) {
+function importProgress(progress: ImportProgress) {
   return {
     type: IMPORT_PROGRESS,
-    rowsImported: rowsImported
+    progress
   };
 }
 
@@ -70,14 +83,13 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
   switch (action.type) {
     case IMPORT_START:
       return {
-        type: 'InProgress',
-        rowsImported: 0
+        type: 'Started'
       };
 
     case IMPORT_PROGRESS:
       return {
         type: 'InProgress',
-        rowsImported: action.rowsImported
+        ...action.progress
       };
 
     case IMPORT_ERROR:
@@ -109,54 +121,101 @@ function importData() {
       credentials: 'same-origin',
       body: formurlencoded({
         name: state.upload.fileName,
-        translation: transformToImports2Translation(state.transform),
-        blueprint: JSON.stringify(transformToBlueprint(state.transform)),
+        translation: transformToImports2Translation(state.transform.columns),
+        blueprint: JSON.stringify(transformToBlueprint(state.transform.columns)),
         fileId: state.upload.progress.fileId
       })
     }).then((response) => {
       switch (response.status) {
         case 200:
-          dispatch(Importing.importingNext());
+          dispatch(goToPage('Finish'));
           break;
 
         case 202: {
           response.json().then((resp) => {
             const ticket = resp.ticket;
             setTimeout(() => {
-              pollUntilDone(ticket, dispatch);
+              pollUntilDone(ticket, dispatch, (progressResponse) => {
+                if (progressResponse.details && !_.isUndefined(progressResponse.details.progress)) {
+                  dispatch(importProgress({rowsImported: progressResponse.details.progress}));
+                }
+              });
             }, POLL_INTERVAL_MS);
           });
           break;
         }
 
         default:
+          // TODO: AIRBRAKE THIS STUFF: EN-6942
           console.error('IMPORTING DATA FAILED', response);
       }
     });
   };
 }
 
+function importGeospatial() {
+  return (dispatch, getState) => {
+    const state = getState();
+    dispatch(importStart());
+    fetch('/api/imports2.json?method=shapefile', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      credentials: 'same-origin',
+      body: formurlencoded({
+        name: state.upload.fileName,
+        blueprint: JSON.stringify({layers: _.map(state.layers, (layer) => ({name: layer.name}))}),
+        fileId: state.upload.progress.fileId
+      })
+    }).then((response) => {
+      switch (response.status) {
+        case 200:
+          dispatch(goToPage('Finish'));
+          break;
+
+        case 202: {
+          response.json().then((resp) => {
+            const ticket = resp.ticket;
+            setTimeout(() => {
+              pollUntilDone(ticket, dispatch, (progressResponse) => {
+                if (progressResponse.details && !_.isUndefined(progressResponse.details.stage)) {
+                  dispatch(importProgress({stage: progressResponse.details.stage}));
+                }
+              });
+            }, POLL_INTERVAL_MS);
+          });
+          break;
+        }
+
+        default:
+          // TODO: AIRBRAKE THIS STUFF: EN-6942
+          console.error('IMPORTING DATA FAILED', response);
+      }
+    });
+  };
+}
 
 const POLL_INTERVAL_MS = 5000;
 
 
-function pollUntilDone(ticket, dispatch) {
+function pollUntilDone(ticket, dispatch, onProgress) {
   fetch(`/api/imports2.json?ticket=${ticket}`, {
     credentials: 'same-origin'
   }).then((response) => {
     switch (response.status) {
       case 202:
         response.json().then((resp) => {
-          const rowsImported = resp.details.progress;
-          dispatch(importProgress(rowsImported));
+          onProgress(resp);
         });
         setTimeout(() => {
-          pollUntilDone(ticket, dispatch);
+          pollUntilDone(ticket, dispatch, onProgress);
         }, POLL_INTERVAL_MS);
         break;
 
       case 200:
         dispatch(importComplete());
+        dispatch(goToPage('Finish'));
         break;
 
       default:

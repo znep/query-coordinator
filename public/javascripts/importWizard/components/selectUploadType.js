@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
-export function view(props) {
+export function view({goToPage}) {
   const I18nPrefixed = I18n.screens.dataset_new['import'];
-  const {onGoToPage} = props;
   return (
     <div>
       <p className="headline">{I18nPrefixed.headline}</p>
@@ -12,7 +11,7 @@ export function view(props) {
             fhref="#local"
             className="byUpload"
             title={I18nPrefixed.local_explain}
-            onClick={onGoToPage('uploadFile')}>
+            onClick={() => goToPage('UploadFile')}>
             <span className="icon"></span>
             <p>{I18nPrefixed.local}</p>
           </a>
@@ -32,5 +31,5 @@ export function view(props) {
 }
 
 view.propTypes = {
-  onGoToPage: PropTypes.func.isRequired
+  goToPage: PropTypes.func.isRequired
 };

@@ -18,7 +18,7 @@ module ImportWizardHelper
   end
 
   def render_custom_metadata
-    javascript_tag("var customMetadataSchema = #{json_escape(CurrentDomain.property(:fieldsets, :metadata).to_json)};")
+    javascript_tag("var customMetadataSchema = #{json_escape((CurrentDomain.property(:fieldsets, :metadata) || []).to_json)};")
   end
 
   def render_importable_types

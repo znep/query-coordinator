@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import { updateAt } from '../utils';
+import * as Server from '../server';
 
 // == Metadata
 
@@ -135,7 +136,6 @@ export function emptyForName(name: string): DatasetMetadata {
     nextClicked: false
   };
 }
-
 
 export function update(metadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
   switch (action.type) {
@@ -448,7 +448,14 @@ export function view({ metadata, onMetadataAction }) {
             <a
               className="button nextButton"
               href="#"
-              onClick={() => onMetadataAction(updateNextClicked())}>{I18n.screens.wizard.next}</a>
+              onClick={() => {
+                onMetadataAction(updateNextClicked());
+                if (isMetadataValid(metadata)) {
+                  onMetadataAction(Server.saveMetadata());
+                }
+              }}>
+              {I18n.screens.wizard.next}
+            </a>
           </li>
           <li className="prev">
             <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>

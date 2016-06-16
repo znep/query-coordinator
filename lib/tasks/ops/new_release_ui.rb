@@ -8,7 +8,6 @@ require 'yaml'
 require_relative 'jenkins'
 
 class NewReleaseUi
-  ADDITIONAL_MANIFEST_EMAIL = 'emily.rund@socrata.com'
   MAX_MANIFEST_COMMITS = 1000 # This must be provided to the git library.
   MANIFEST_FILE = 'manifest.txt'
   RELEASE_BRANCH_NAME = 'release'
@@ -250,8 +249,7 @@ Proceed?
     copy_manifest_to_clipboard if dialog.yesno("Manifest written to #{MANIFEST_FILE}.
 Please send the manifest to:
 
-  * engineering@socrata.com
-  * #{ADDITIONAL_MANIFEST_EMAIL}
+  release-manifests-l@socrata.com
 
 Copy manifest to clipboard?")
   end

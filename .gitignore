@@ -20,8 +20,7 @@ public/cache
 public/geodata
 public/javascripts/dist
 public/packages
-public/stylesheets/styleguide
-public/stylesheets/styleguide
+public/stylesheets/socrata-styleguide
 REVISION
 socrata-node/DEPEND
 socrata-node/node_modules

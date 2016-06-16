@@ -1,20 +1,28 @@
 /* eslint-env node */
 var _ = require('lodash');
 var path = require('path');
+var webpack = require('webpack');
 
 var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
+var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
+if (!common.isProduction) {
+  plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/datasetLandingPage'),
-  entry: './main',
+  entry: common.getHotModuleEntries().concat([
+    './main'
+  ]),
   output: common.getOutput(identifier),
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         include: path.resolve(common.root, 'public/javascripts'),
-        loader: 'babel'
+        loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       }
     ]
   },
@@ -29,5 +37,5 @@ module.exports = _.defaultsDeep({
       path.resolve(common.root, 'public/javascripts/datasetLandingPage')
     ]
   },
-  plugins: common.plugins.concat(common.getManifestPlugin(identifier))
+  plugins: plugins
 }, require('./base'));

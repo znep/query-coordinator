@@ -7,7 +7,7 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var VifHelpers = require('./helpers/VifHelpers');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 
-var MAX_ROW_COUNT = 1000;
+var MAX_COLUMN_COUNT = 1000;
 var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
 var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
 var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
@@ -77,8 +77,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
     }
 
     visualization.renderError(
-      'An error was encountered when rendering this chart. ' +
-      'Please try again in a few minutes.'
+      visualization.getLocalization('ERROR_COLUMN_CHART_GENERIC')
     );
   }
 
@@ -117,19 +116,16 @@ $.fn.socrataSvgColumnChart = function(vif) {
           overMaxRowCount = dataResponses.
             some(
               function(dataResponse) {
-                return dataResponse.rows.length > MAX_ROW_COUNT;
+                return dataResponse.rows.length > MAX_COLUMN_COUNT;
               }
             );
 
           if (overMaxRowCount) {
 
             visualization.renderError(
-              (
-                'For optimal performance and legibility column charts are ' +
-                'limited to {0} columns. Try using filters to render a more ' +
-                'specific chart.'
-              ).
-                format(MAX_ROW_COUNT)
+              visualization.getLocalization(
+                'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT'
+              ).format(MAX_COLUMN_COUNT)
             );
           } else {
             visualization.render(newVif, dataResponses);
@@ -147,10 +143,6 @@ $.fn.socrataSvgColumnChart = function(vif) {
     });
     var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
     var measure = SoqlHelpers.measure(vifToRender, seriesIndex);
-    var ascendingValue = _.get(series, 'dataSource.configuration.ascending');
-    var ascending = (!_.isUndefined(ascendingValue)) ?
-      Boolean(ascendingValue) :
-      true;
     var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       vifToRender,
       seriesIndex
@@ -163,12 +155,20 @@ $.fn.socrataSvgColumnChart = function(vif) {
       seriesIndex,
       'dimension'
     );
+    var ascending;
     var queryString;
 
     if (
       series.dataSource.dimension.aggregationFunction === null &&
       series.dataSource.measure.aggregationFunction === null
     ) {
+
+      // Default to ascending order if this is an unaggregated query, since
+      // people are likely more interested in the categories rather than the
+      // values in this case.
+      ascending = Boolean(
+        _.get(series, 'dataSource.configuration.orderByAscending', true)
+      );
 
       queryString = UNAGGREGATED_BASE_QUERY.format(
         dimension,
@@ -177,9 +177,16 @@ $.fn.socrataSvgColumnChart = function(vif) {
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
         (ascending) ? 'ASC' : 'DESC',
-        MAX_ROW_COUNT + 1
+        MAX_COLUMN_COUNT + 1
       );
     } else {
+
+      // Default to descending order if this is an aggregated query, since
+      // people are likely more interested in the values rather than the
+      // categories in this case.
+      ascending = Boolean(
+        _.get(series, 'dataSource.configuration.orderByAscending', false)
+      );
 
       queryString = AGGREGATED_BASE_QUERY.format(
         dimension,
@@ -189,7 +196,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
         whereClause,
         aggregationClause,
         (ascending) ? 'ASC' : 'DESC',
-        MAX_ROW_COUNT + 1
+        MAX_COLUMN_COUNT + 1
       );
     }
 

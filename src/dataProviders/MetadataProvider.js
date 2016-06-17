@@ -98,7 +98,9 @@ function MetadataProvider(config) {
         });
 
         xhr.send();
+      /* eslint-disable dot-notation */
       })['catch'](_.constant(null));
+      /* eslint-enable dot-notation */
     }
 
 

@@ -110,12 +110,12 @@ export function saveFeaturedItem(options) {
       payload = {
         featuredLensUid: options.featuredLensUid,
         contentType: 'internal',
-        position: editPosition + 1
+        position: editPosition
       };
     } else if (editType === 'story') {
       payload = {
         featuredLensUid: parseUid(featuredContent.story.url),
-        position: editPosition + 1,
+        position: editPosition,
         contentType: 'internal',
         url: trimEditFromUrl(featuredContent.story.url)
       };
@@ -124,7 +124,7 @@ export function saveFeaturedItem(options) {
         description: featuredContent.externalResource.description,
         title: featuredContent.externalResource.title,
         url: featuredContent.externalResource.url,
-        position: editPosition + 1,
+        position: editPosition,
         contentType: 'external'
       };
     } else {
@@ -191,7 +191,7 @@ export function removeFeaturedItem(position) {
     dispatch(requestedFeaturedItemRemoval(position));
 
     // Save featured item
-    fetch(`/dataset_landing_page/${viewId}/featured_content/${position + 1}`, fetchOptions).
+    fetch(`/dataset_landing_page/${viewId}/featured_content/${position}`, fetchOptions).
       then(checkStatus).
       then(response => response.json()).
       then(function() {

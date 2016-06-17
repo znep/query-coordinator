@@ -299,9 +299,17 @@ module ApplicationHelper
     if request.cookies['js_flash']
       begin
         js_flash = JSON.parse(request.cookies['js_flash']).symbolize_keys
-        flash_obj = flash.clone
         FLASH_MESSAGE_TYPES.each do |type|
-          flash_obj[type] = h(js_flash[type]) if js_flash[type]
+          if js_flash[type]
+            flash_obj[type] = h(js_flash[type])
+            # EN-7186: It appears that Rails fails to properly discard flash messages that have been
+            # manually added to the flash object (which we do here by copying them from the cookie).
+            # This results in flash messages that are added from the cookie persisting for two page
+            # loads instead of one.
+            # To address this issue we will manually tell the flash object to discard the messages after
+            # the current request at the same time that we add them.
+            flash_obj.discard(type)
+          end
         end
       rescue
         # Somebody did something weird

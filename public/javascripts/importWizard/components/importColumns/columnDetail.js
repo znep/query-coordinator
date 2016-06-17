@@ -14,7 +14,7 @@ function makeColumnTransform() {
 // action dispatchers
 
 const UPDATE_COLUMN_NAME = 'UPDATE_COLUMN_NAME';
-function updateColumnName(newName) {
+export function updateColumnName(newName) {
   return {
     type: UPDATE_COLUMN_NAME,
     newName: newName
@@ -22,7 +22,7 @@ function updateColumnName(newName) {
 }
 
 const UPDATE_COLUMN_TYPE = 'UPDATE_COLUMN_TYPE';
-function updateColumnType(newType) {
+export function updateColumnType(newType) {
   return {
     type: UPDATE_COLUMN_TYPE,
     newType: newType
@@ -30,7 +30,7 @@ function updateColumnType(newType) {
 }
 
 const UPDATE_SOURCE_COLUMN = 'UPDATE_SOURCE_COLUMN';
-function updateSourceColumn(newSourceColumn) {
+export function updateSourceColumn(newSourceColumn) {
   return {
     type: UPDATE_SOURCE_COLUMN,
     newSourceColumn: newSourceColumn
@@ -38,7 +38,7 @@ function updateSourceColumn(newSourceColumn) {
 }
 
 const UPDATE_COLUMN_SHOW_TRANSFORMS = 'UPDATE_COLUMN_SHOW_TRANSFORMS';
-function showColumnTransforms(shouldShowTransforms) {
+export function showColumnTransforms(shouldShowTransforms) {
   return {
     type: UPDATE_COLUMN_SHOW_TRANSFORMS,
     showColumnTransforms: shouldShowTransforms
@@ -46,14 +46,14 @@ function showColumnTransforms(shouldShowTransforms) {
 }
 
 const UPDATE_COLUMN_ADD_TRANSFORM = 'UPDATE_COLUMN_ADD_TRANSFORM';
-function addColumnTransform() {
+export function addColumnTransform() {
   return {
     type: UPDATE_COLUMN_ADD_TRANSFORM
   };
 }
 
 const UPDATE_COLUMN_REMOVE_TRANSFORM = 'UPDATE_COLUMN_REMOVE_TRANSFORM';
-function removeColumnTransform(removeIndex) {
+export function removeColumnTransform(removeIndex) {
   return {
     type: UPDATE_COLUMN_REMOVE_TRANSFORM,
     removeIndex: removeIndex
@@ -61,7 +61,7 @@ function removeColumnTransform(removeIndex) {
 }
 
 const UPDATE_COLUMN_CHANGE_TRANSFORM = 'UPDATE_COLUMN_CHANGE_TRANSFORM';
-function changeColumnTransform(changeIndex, newTransform) {
+export function changeColumnTransform(changeIndex, newTransform) {
   return {
     type: UPDATE_COLUMN_CHANGE_TRANSFORM,
     changeIndex: changeIndex,

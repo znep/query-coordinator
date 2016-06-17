@@ -3,7 +3,6 @@ import TestUtils from 'react-addons-test-utils';
 import * as CD from 'components/importColumns/columnDetail';
 
 describe('columnDetail.js dispatchers', () => {
-    let state;
 
     it('updateColumnName', () => {
         const result = CD.updateColumnName('newName');
@@ -64,7 +63,11 @@ describe('columnDetail.js dispatchers', () => {
 
 describe('columnDetail.js reducer', () => {
 
-    let dummyState = {'a': 1, 'b': 2};
+    let dummyState;
+
+    beforeEach(() => {
+        dummyState = {'a': 1, 'b': 2};
+    });
 
     it('handles name update', () => {
         const action = {

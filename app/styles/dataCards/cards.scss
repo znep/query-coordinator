@@ -246,6 +246,9 @@ body.state-view-cards {
     #card-container {
       position: relative;
       margin: 0 0 ($customize-bar-height + 10px);
+      &.chrome-footer {
+        margin-bottom: 5px;
+      }
     }
     .cards {
       display: block;

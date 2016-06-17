@@ -121,4 +121,8 @@ module DataLensHelper
     include_javascripts_unminified('exception_notifier')
   end
 
+  def site_chrome_enabled?
+    FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens
+  end
+
 end

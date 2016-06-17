@@ -62,18 +62,10 @@ function removeColumnTransform(removeIndex) {
 
 const UPDATE_COLUMN_CHANGE_TRANSFORM = 'UPDATE_COLUMN_CHANGE_TRANSFORM';
 function changeColumnTransform(changeIndex, newTransform) {
-  const newTransformObject = { type: newTransform };
-  if (newTransformObject.type === 'findReplace') {
-    newTransformObject.findText = '';
-    newTransformObject.replaceText = '';
-    newTransformObject.regex = false;
-    newTransformObject.caseSensitive = false;
-  }
-
   return {
     type: UPDATE_COLUMN_CHANGE_TRANSFORM,
     changeIndex: changeIndex,
-    newTransform: newTransformObject
+    newTransform: newTransform
   };
 }
 
@@ -108,6 +100,7 @@ export function update(columnState, action) {
         action.newTransform,
         ...columnState.transforms.slice(action.changeIndex + 1)
       ];
+      console.log('new transforms: ', newTransforms);
       return { ...columnState, transforms: newTransforms };
     }
     default:
@@ -212,7 +205,7 @@ function viewTransforms(transforms, dispatchUpdate) {
           <select
             className="columnTransformOperation"
             value={transform.type}
-            onChange={(event) => {dispatchUpdate(changeColumnTransform(idx, event.target.value));}}>
+            onChange={(event) => dispatchUpdate(changeColumnTransform(idx, {...transform, type: event.target.value}))}>
             <option value="title">{I18nTransform.make_title_case}</option>
             <option value="upper">{I18nTransform.make_upper_case}</option>
             <option value="lower">{I18nTransform.make_lower_case}</option>
@@ -225,12 +218,20 @@ function viewTransforms(transforms, dispatchUpdate) {
                 <div className="additionalTransformOptions">
                   <div className="findReplaceSection" style={{display: 'block'}}>
                     <label className="findTextLabel">{I18nTransform.find}</label>
-                    <input type="text" className="findText" defaultValue={transform.findText} />
+                    <input
+                      type="text" className="findText" defaultValue={transform.findText}
+                      onChange={(event) => dispatchUpdate(changeColumnTransform(idx, {...transform, findText: event.target.value}))} />
                     <label className="replaceTextLabel">{I18nTransform.replace}</label>
-                    <input type="text" className="replaceText" defaultValue={transform.replaceText} />
-                    <input type="checkbox" className="caseSensitive" defaultChecked={transform.caseSensitive} />
+                    <input
+                      type="text" className="replaceText" defaultValue={transform.replaceText}
+                      onChange={(event) => dispatchUpdate(changeColumnTransform(idx, {...transform, replaceText: event.target.value}))} />
+                    <input
+                      type="checkbox" className="caseSensitive" defaultChecked={transform.caseSensitive}
+                      onClick={() => dispatchUpdate(changeColumnTransform(idx, {...transform, caseSensitive: !transform.caseSensitive}))} />
                     <label className="caseSensitiveLabel">{I18nTransform.case_sensitive}</label>
-                    <input type="checkbox" className="regex" defaultChecked={transform.regex} />
+                    <input
+                      type="checkbox" className="regex" defaultChecked={transform.regex}
+                      onClick={() => dispatchUpdate(changeColumnTransform(idx, {...transform, regex: !transform.regex}))} />
                     <label className="regexLabel">{I18nTransform.regular_expression}</label>
                   </div>
                 </div>

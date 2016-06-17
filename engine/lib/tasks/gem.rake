@@ -1,6 +1,7 @@
 namespace :gem do
   desc 'Build Chrome Gem'
   task :build do
+    puts `npm install`
     puts("Building socrata_site_chrome-#{SocrataSiteChrome::VERSION}.gem")
     Dir.chdir("#{Dir.pwd}/engine") unless Dir.pwd.ends_with?('engine')
     puts `gem build socrata_site_chrome.gemspec`

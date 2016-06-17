@@ -26,7 +26,7 @@
     <p>Domain ID: <%= @domain.id %></p>
     <p class="cacheRefreshedAt">
       Cache Refreshed at:
-      <%= link_to domain_cache_time, show_domain_data_path %>
+      <%= link_to domain_cache_time, show_domain_data_path(format: :json) %>
     </p>
     <p>Organized inside: <%= organization_link %></p>
     <p>Salesforce Information: <%= salesforce_information %></p>

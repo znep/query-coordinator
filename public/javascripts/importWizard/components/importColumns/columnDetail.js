@@ -100,7 +100,6 @@ export function update(columnState, action) {
         action.newTransform,
         ...columnState.transforms.slice(action.changeIndex + 1)
       ];
-      console.log(newTransforms);
       return { ...columnState, transforms: newTransforms };
     }
     default:

@@ -227,14 +227,11 @@ function pollUntilDone(ticket, dispatch, onProgress) {
   });
 }
 
-
-// translation:[(toStateCode(lower(upper(title(col1))))).replace(/abc/g, "def"),col2,col3,col4,col5]
-// JSON: "[{"type":"title"},{"type":"upper"},{"type":"lower"},{"type":"toStateCode"},{"type":"findReplace","findText":"abc","replaceText":"def"}]"
-function transformToImports2Translation(transform: ImportColumns.Transform): string {
+export function transformToImports2Translation(transform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
-    // TODO: transforms, location columns, composite columns
+    // TODO: location columns, composite columns
     let transformed = `col${resultColumn.sourceColumn.index + 1}`;
-    _(resultColumn.transforms).forEach((transform) => {
+    _.forEach(resultColumn.transforms, (transform) => {
       switch (transform.type) {
         case 'title':
           transformed = `title(${transformed})`;
@@ -255,6 +252,9 @@ function transformToImports2Translation(transform: ImportColumns.Transform): str
           }
 
           transformed = `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
+          break;
+        default:
+          console.log('error: unknown transform type ', transform.type);
           break;
       }
     });

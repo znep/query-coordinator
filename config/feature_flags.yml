@@ -264,6 +264,10 @@ site_chrome_header_and_footer_for_homepage:
   description: Turns on site chrome header/footer for Homepage.
   defaultValue: false
   category: site chrome
+site_chrome_header_and_footer_for_data_lens:
+  description: Turns on site chrome header/footer for (non-homepage) Data Lens pages.
+  defaultValue: false
+  category: site chrome
 site_chrome_header_and_footer_for_dataslate:
   description: Turns on site chrome header/footer for (non-homepage) dataslate pages.
   defaultValue: false

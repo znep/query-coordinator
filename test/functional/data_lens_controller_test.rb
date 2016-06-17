@@ -409,9 +409,10 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'not render google analytics JS if feature flag is not set' do
       FeatureFlags.stubs(
-        :derive => {
-          :enable_opendata_ga_tracking => false
-        }
+        :derive => Hashie::Mash.new({
+          :enable_opendata_ga_tracking => false,
+          :site_chrome_header_and_footer_for_data_lens => false
+        })
       )
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_no_match(/_gaSocrata\('create', 'UA-.+-.+'/, @response.body)
@@ -420,9 +421,10 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is set to true' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
-        :derive => {
-          :enable_opendata_ga_tracking => true
-        }
+        :derive => Hashie::Mash.new({
+          :enable_opendata_ga_tracking => true,
+          :site_chrome_header_and_footer_for_data_lens => false
+        })
       )
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
@@ -431,9 +433,10 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS using the app config token if feature flag is an empty string' do
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
-        :derive => {
-          :enable_opendata_ga_tracking => ''
-        }
+        :derive => Hashie::Mash.new({
+          :enable_opendata_ga_tracking => '',
+          :site_chrome_header_and_footer_for_data_lens => false
+        })
       )
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
@@ -441,9 +444,10 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'render google analytics JS with explicit ga code if specified' do
       FeatureFlags.stubs(
-        :derive => {
-          :enable_opendata_ga_tracking => 'UA-1234-567890'
-        }
+        :derive => Hashie::Mash.new({
+          :enable_opendata_ga_tracking => 'UA-1234-567890',
+          :site_chrome_header_and_footer_for_data_lens => false
+        })
       )
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_match(/_gaSocrata\('create', 'UA-1234-567890', 'auto', 'socrata'\);/, @response.body)

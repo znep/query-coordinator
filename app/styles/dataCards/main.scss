@@ -86,6 +86,10 @@ a {
   text-transform: lowercase;
 }
 
+#chrome-header .mobile-menu.active {
+  z-index: 100000 !important;
+}
+
 // Vertical center the logo if it's shorter than 50px
 .page-header-logo {
   padding: $header-logo-padding;

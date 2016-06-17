@@ -16,8 +16,8 @@
     <%= angular_stylesheet_tag %>
     <!--[if IE 9]><%= rendered_stylesheet_tag 'ie9' %><![endif]-->
 
-    <%= site_chrome_meta_viewport_tag %>
-    <%= site_chrome_stylesheet_tag %>
+    <%= site_chrome_meta_viewport_tag if site_chrome_enabled? %>
+    <%= site_chrome_stylesheet_tag if site_chrome_enabled? %>
 
     <%= yield :head %>
 
@@ -48,10 +48,13 @@
     <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>
     <%= include_webpack_bundle 'data-lens/main.js' %>
-    <%= site_chrome_javascript_tag %>
 
-    <%= render 'site_chrome/header' %>
+    <%= site_chrome_javascript_tag if site_chrome_enabled? %>
+    <%= render 'site_chrome/header' if site_chrome_enabled? %>
+
     <%= yield %>
+
+    <%= render 'site_chrome/footer' if site_chrome_enabled? %>
   </body>
 
 

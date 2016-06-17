@@ -18,7 +18,7 @@ class GoalTableBody extends React.Component {
       <td>{ goal.getIn(['created_by', 'displayName']) }</td>
       <td>{ moment(goal.get('updated_at')).format('ll') }</td>
       <td>{ this.props.translations.getIn(['admin', 'goal_values', goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
-      <td>{ this.props.translations.getIn(['measure', 'progress', goal.get('prevailingMeasureProgress')]) }</td>
+      <td>{ this.props.translations.getIn(['measure', 'progress', goal.get('status')]) }</td>
       <td>{ this.props.dashboards.get(goal.get('base_dashboard')).get('name') }</td>
       <td>&nbsp;</td>
     </tr>;

@@ -6,6 +6,7 @@ import * as ImportColumns from './components/importColumns';
 import { goToPage } from './wizard';
 
 import formurlencoded from 'form-urlencoded';
+import _ from 'lodash';
 
 
 export function saveMetadata() {
@@ -227,12 +228,39 @@ function pollUntilDone(ticket, dispatch, onProgress) {
 }
 
 
+// translation:[(toStateCode(lower(upper(title(col1))))).replace(/abc/g, "def"),col2,col3,col4,col5]
+// JSON: "[{"type":"title"},{"type":"upper"},{"type":"lower"},{"type":"toStateCode"},{"type":"findReplace","findText":"abc","replaceText":"def"}]"
 function transformToImports2Translation(transform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
     // TODO: transforms, location columns, composite columns
-    return `col${resultColumn.sourceColumn.index + 1}`;
+    let transformed = `col${resultColumn.sourceColumn.index + 1}`;
+    _(resultColumn.transforms).forEach((transform) => {
+      switch (transform.type) {
+        case 'title':
+          transformed = `title(${transformed})`;
+          break;
+        case 'upper':
+          transformed = `upper(${transformed})`;
+          break;
+        case 'lower':
+          transformed = `lower(${transformed})`;
+          break;
+        case 'toStateCode':
+          transformed = `toStateCode(${transformed})`;
+          break;
+        case 'findReplace':
+          let replaceString = `/${transform.findText}/g`;
+          if (!transform.caseSensitive) {
+            replaceString += 'i';
+          }
+
+          transformed = `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
+          break;
+      }
+    });
+    return transformed;
   }
-  return `[${transform.map(resultColumnToJs).join(', ')}]`;
+  return `[${transform.map(resultColumnToJs).join(',')}]`;
 }
 
 

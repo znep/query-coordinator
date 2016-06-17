@@ -16,6 +16,7 @@ var DIMENSION_LABEL_FONT_SIZE = 14;
 var MEASURE_LABEL_FONT_SIZE = 14;
 var MINIMUM_DESKTOP_DATUM_WIDTH = 20;
 var MINIMUM_MOBILE_DATUM_WIDTH = 50;
+var MAX_POINT_COUNT_WITHOUT_PAN = 500;
 
 /**
  * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
@@ -130,17 +131,8 @@ function SvgTimelineChart($element, vif) {
       MARGINS.LEFT -
       MARGINS.RIGHT
     );
-    var width = Math.max(
-      viewportWidth,
-      (
-        minimumDatumWidth *
-        d3.max(
-          dataToRender,
-          function(seriesResponse) { return seriesResponse.rows.length; }
-        )
-      )
-    );
-    var xAxisPanningEnabled = (viewportWidth !== width);
+    var width;
+    var xAxisPanningEnabled;
     var viewportHeight;
     var height;
     var d3ClipPathId = 'timeline-chart-clip-path-' + _.uniqueId();
@@ -156,6 +148,10 @@ function SvgTimelineChart($element, vif) {
           return series.columns.indexOf('measure');
         }
       );
+    var maxPointCount = d3.max(
+      dataToRender,
+      function(seriesResponse) { return seriesResponse.rows.length; }
+    );
     var startDate;
     var endDate;
     var maxSeriesLength;
@@ -172,6 +168,7 @@ function SvgTimelineChart($element, vif) {
     var viewportSvg;
 
     function renderXAxis() {
+      var baselineValue;
 
       viewportSvg.
         select('.x.axis').
@@ -185,11 +182,24 @@ function SvgTimelineChart($element, vif) {
               attr('stroke', '#888').
               attr('shape-rendering', 'crispEdges');
 
+        if (minYValue > 0) {
+          baselineValue = minYValue;
+        } else if (maxYValue < 0) {
+          baselineValue = maxYValue;
+        } else {
+          baselineValue = 0;
+        }
+
       viewportSvg.
-        select('.x.axis.zero').
+        select('.x.axis.baseline').
           attr(
             'transform',
-            'translate(0,' + d3YScale(0) + ')'
+            'translate(0,' + d3YScale(baselineValue) + ')'
+          ).
+          call(
+            d3XAxis.
+              tickFormat('').
+              tickSize(0)
           ).
           selectAll('line, path').
             attr('fill', 'none').
@@ -338,15 +348,43 @@ function SvgTimelineChart($element, vif) {
 
     // Actual execution begins here.
 
-    // First we need to figure out if we need to show the panning notice and
-    // only calculate the chart height after we know, since that can affect the
-    // amount of vertical space available to the chart.
-    if (xAxisPanningEnabled) {
-      self.showPanningNotice();
+    if (self.getXAxisScalingMode() === 'fit') {
+
+      width = viewportWidth;
+      xAxisPanningEnabled = false;
+
+      if (maxPointCount > MAX_POINT_COUNT_WITHOUT_PAN) {
+
+        self.renderError(
+          self.
+            getLocalization(
+              'ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_COUNT_WITHOUT_PAN'
+            ).
+            format(MAX_POINT_COUNT_WITHOUT_PAN)
+        );
+        return;
+      }
     } else {
-      self.hidePanningNotice();
+
+      width = Math.max(
+        viewportWidth,
+        (
+          minimumDatumWidth *
+          maxPointCount
+        )
+      );
+      xAxisPanningEnabled = (viewportWidth !== width);
+
+      if (xAxisPanningEnabled) {
+        self.showPanningNotice();
+      } else {
+        self.hidePanningNotice();
+      }
     }
 
+    // We only calculate the height after we have shown or hidden the panning
+    // notice, since its presence or absence affects the total height of the
+    // viewport.
     viewportHeight = (
       $chartElement.height() -
       MARGINS.TOP -
@@ -401,32 +439,39 @@ function SvgTimelineChart($element, vif) {
         )
     );
 
-    if ((minimumDatumWidth * maxSeriesLength) <= viewportWidth) {
+    if (self.getXAxisScalingMode() === 'fit') {
 
       domainStartDate = parseDate(startDate);
       domainEndDate = parseDate(endDate);
     } else {
 
-      lastRenderableDatumIndex = Math.floor(
-        viewportWidth /
-        minimumDatumWidth
-      );
+      if ((minimumDatumWidth * maxSeriesLength) <= viewportWidth) {
 
-      domainStartDate = parseDate(startDate);
-      domainEndDate = parseDate(
-        d3.min(
-          dataToRender.
-            map(
-              function(series, seriesIndex) {
-                var dimensionIndex = dimensionIndices[seriesIndex];
+        domainStartDate = parseDate(startDate);
+        domainEndDate = parseDate(endDate);
+      } else {
 
-                return (series.rows.length > lastRenderableDatumIndex) ?
-                  series.rows[lastRenderableDatumIndex][dimensionIndex] :
-                  series.rows[series.rows.length - 1][dimensionIndex];
-              }
-            )
-        )
-      );
+        lastRenderableDatumIndex = Math.floor(
+          viewportWidth /
+          minimumDatumWidth
+        );
+
+        domainStartDate = parseDate(startDate);
+        domainEndDate = parseDate(
+          d3.min(
+            dataToRender.
+              map(
+                function(series, seriesIndex) {
+                  var dimensionIndex = dimensionIndices[seriesIndex];
+
+                  return (series.rows.length > lastRenderableDatumIndex) ?
+                    series.rows[lastRenderableDatumIndex][dimensionIndex] :
+                    series.rows[series.rows.length - 1][dimensionIndex];
+                }
+              )
+          )
+        );
+      }
     }
 
     minYValue = d3.min(
@@ -633,7 +678,7 @@ function SvgTimelineChart($element, vif) {
 
     viewportSvg.
       append('g').
-      attr('class', 'x axis zero');
+      attr('class', 'x axis baseline');
 
     dataToRender.
       forEach(

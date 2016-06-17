@@ -44,6 +44,25 @@
        * Set up VIFs
        */
 
+      var LOCALIZATION = {
+        'NO_VALUE': 'No value',
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+        'FLYOUT_SELECTED_NOTICE': 'This date is selected',
+        'ERROR_TIMELINE_CHART_GENERIC': (
+          'An error was encountered when rendering this chart. Please try ' +
+          'again in a few minutes.'
+        ),
+        'ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_WITHOUT_PAN': (
+          'For optimal performance and legibility timeline charts for which ' +
+          'panning is disabled are limited to {0} points. Enable panning or ' +
+          'use filters to render a more specific chart.'
+        ),
+        'ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_COUNT': (
+          'For optimal performance and legibility timeline charts are ' +
+          'limited to {0} points. Use filters to render a more specific chart.'
+        )
+      };
       var COLUMN_NAME = 'date';
       var DATASET_UID = '52my-2pak';
       var DOMAIN = 'dataspace.demo.socrata.com';
@@ -58,12 +77,7 @@
           'interactive': true,
           // The localization values should be set by the application but are set
           // to string literals for the purposes of this example.
-          'localization': {
-            'NO_VALUE': 'No value',
-            'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-            'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-            'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-          },
+          'localization': LOCALIZATION,
           'precision': 'MONTH'
         },
         'createdAt': '2014-01-01T00:00:00',
@@ -100,12 +114,7 @@
           },
           // The localization values should be set by the application but are
           // set to string literals for the purposes of this example.
-          localization: {
-            NO_VALUE: 'No value',
-            FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-            FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-            FLYOUT_SELECTED_NOTICE: 'This column is selected'
-          }
+          localization: LOCALIZATION
         },
         description: 'Math proficiency by school district for 3rd graders in 2014',
         series: [

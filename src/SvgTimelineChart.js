@@ -8,7 +8,7 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var VifHelpers = require('./helpers/VifHelpers');
 
-var MAX_ROW_COUNT = 1000;
+var MAX_POINT_COUNT = 1000;
 var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
 var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
 var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
@@ -93,8 +93,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
     }
 
     visualization.renderError(
-      'An error was encountered when rendering this chart. ' +
-      'Please try again in a few minutes.'
+      visualization.getLocalization('ERROR_TIMELINE_CHART_GENERIC')
     );
   }
 
@@ -133,19 +132,16 @@ $.fn.socrataSvgTimelineChart = function(vif) {
           overMaxRowCount = dataResponses.
             some(
               function(dataResponse) {
-                return dataResponse.rows.length > MAX_ROW_COUNT;
+                return dataResponse.rows.length > MAX_POINT_COUNT;
               }
             );
 
           if (overMaxRowCount) {
 
             visualization.renderError(
-              (
-                'For optimal performance and legibility timeline charts are ' +
-                'limited to {0} time measurements. Try using filters to ' +
-                'render a more specific chart.'
-              ).
-                format(MAX_ROW_COUNT)
+              visualization.getLocalization(
+                'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT'
+              ).format(MAX_POINT_COUNT)
             );
           } else {
             visualization.render(newVif, dataResponses);
@@ -158,6 +154,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
   function decorateVifWithPrecision(vifToRender, seriesIndex) {
     var series = _.get(vifToRender, 'series[{0}]'.format(seriesIndex));
     var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+    // 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\''
     var queryString = PRECISION_BASE_QUERY.
       format(
         dimension,
@@ -440,12 +437,14 @@ $.fn.socrataSvgTimelineChart = function(vif) {
     var whereClause = (whereClauseComponents.length > 0) ?
       'WHERE {0} AND {1}'.format(
         whereClauseComponents,
+        // '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)'
         SOQL_DATE_GUARDS.format(
           dimension,
           MAX_LEGAL_JAVASCRIPT_DATE_STRING
         )
       ) :
       'WHERE {0}'.format(
+        // '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)'
         SOQL_DATE_GUARDS.format(
           dimension,
           MAX_LEGAL_JAVASCRIPT_DATE_STRING
@@ -470,16 +469,18 @@ $.fn.socrataSvgTimelineChart = function(vif) {
             series.dataSource.measure.aggregationFunction === null
           ) {
 
+            // 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}'
             queryString = UNAGGREGATED_BASE_QUERY.format(
               dimension,
               SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
               measure,
               SOQL_DATA_PROVIDER_MEASURE_ALIAS,
               whereClause,
-              MAX_ROW_COUNT + 1
+              MAX_POINT_COUNT + 1
             );
           } else {
 
+            // 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}'
             queryString = AGGREGATED_BASE_QUERY.format(
               dateTruncFunction,
               dimension,
@@ -487,7 +488,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
               measure,
               SOQL_DATA_PROVIDER_MEASURE_ALIAS,
               whereClause,
-              MAX_ROW_COUNT + 1
+              MAX_POINT_COUNT + 1
             );
           }
 

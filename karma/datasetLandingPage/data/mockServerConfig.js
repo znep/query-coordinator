@@ -6,7 +6,8 @@ export default {
     defaultToDatasetLandingPage: true,
     enableDatasetLandingPage: true,
     storiesEnabled: true,
-    locale: 'en',
     recaptchaKey: 'superdupersecurekey'
-  }
+  },
+  locale: 'en',
+  localePrefix: ''
 };

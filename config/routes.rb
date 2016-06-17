@@ -295,7 +295,7 @@ Rails.application.routes.draw do
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do
-      get '/view/bootstrap/:id', :action => 'bootstrap', :app => 'dataCards'
+      get '/view/bootstrap/:id', :action => 'bootstrap', :app => 'dataCards', as: 'new_data_lens'
       get '/dataset/:id/lens/new', :action => 'bootstrap', :app => 'dataCards'
     end
 

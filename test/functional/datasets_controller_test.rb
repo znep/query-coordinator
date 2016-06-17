@@ -244,6 +244,7 @@ class DatasetsControllerTest < ActionController::TestCase
           enable_dataset_landing_page: true,
           default_to_dataset_landing_page: true
         )
+        @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
       end)
 
       # Site chrome

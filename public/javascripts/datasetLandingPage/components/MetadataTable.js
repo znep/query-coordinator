@@ -9,6 +9,7 @@ import formatDate from '../lib/formatDate';
 import utils from 'socrata-utils';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { handleKeyPress } from '../lib/a11yHelpers';
+import { localizeLink } from '../lib/locale';
 
 export var MetadataTable = React.createClass({
   propTypes: {
@@ -219,7 +220,7 @@ export var MetadataTable = React.createClass({
       var tagLinks = _.map(view.tags, function(tag, i) {
         return (
           <span key={i}>
-            <a href={`/browse?tags=${tag}`}>{tag}</a>
+            <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
             {i === view.tags.length - 1 ? '' : ', '}
           </span>
         );

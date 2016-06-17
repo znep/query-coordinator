@@ -27,11 +27,11 @@ module SocrataSiteChrome
     end
 
     def logged_in?
-      current_user.present?
+      request_current_user.present?
     end
 
     def username
-      (current_user && current_user['displayName'].present?) ? current_user['displayName'] : 'Profile'
+      (request_current_user && request_current_user['displayName'].present?) ? request_current_user['displayName'] : 'Profile'
     end
 
     def copyright
@@ -72,7 +72,7 @@ module SocrataSiteChrome
         SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config)
     end
 
-    def current_user
+    def request_current_user
       RequestStore.store[:current_user]
     end
 

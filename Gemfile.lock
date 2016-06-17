@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (0.0.18)
+    socrata_site_chrome (0.0.19)
       rails (~> 4.2, >= 4.2.6)
 
 GEM

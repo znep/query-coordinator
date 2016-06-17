@@ -1,10 +1,11 @@
+/* eslint-env node */
 var path = require('path');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 
 var root = path.resolve(__dirname, '..', '..');
-var packageJson = require(path.resolve(root, 'package.json'))
+var packageJson = require(path.resolve(root, 'package.json'));
 var isProduction = process.env.NODE_ENV == 'production';
 var plugins = _.compact([
   new webpack.DefinePlugin({
@@ -23,6 +24,13 @@ var plugins = _.compact([
     }
   })
 ]);
+
+function getHotModuleEntries() {
+  return isProduction ? [] : [
+    'webpack-dev-server/client?https://0.0.0.0:' + packageJson.config.webpackDevServerPort,
+    'webpack/hot/only-dev-server'
+  ];
+}
 
 function getOutput(identifier) {
   var build = path.resolve(root, 'public/javascripts/build');
@@ -47,6 +55,7 @@ module.exports = {
   devServerPort: packageJson.config.webpackDevServerPort,
   isProduction: isProduction,
   plugins: plugins,
+  getHotModuleEntries: getHotModuleEntries,
   getOutput: getOutput,
   getManifestPlugin: getManifestPlugin
 };

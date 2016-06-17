@@ -44,6 +44,25 @@
        * Set up VIFs
        */
 
+      var LOCALIZATION = {
+        'NO_VALUE': 'No value',
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+        'FLYOUT_SELECTED_NOTICE': 'This column is selected',
+        'ERROR_COLUMN_CHART_GENERIC': (
+          'An error was encountered when rendering this chart. Please try ' +
+          'again in a few minutes.'
+        ),
+        'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT_WITHOUT_PAN': (
+          'For optimal performance and legibility column charts for which ' +
+          'panning is disabled are limited to {0} columns. Enable panning or ' +
+          'use filters to render a more specific chart.'
+        ),
+        'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT': (
+          'For optimal performance and legibility column charts are limited ' +
+          'to {0} columns. Use filters to render a more specific chart.'
+        )
+      };
       var DIMENSION = 'district_name';
       var MEASURE = 'proficient_2';
       var MEASURE_AGGREGATION = null;
@@ -89,12 +108,7 @@
           },
           // The localization values should be set by the application but are
           // set to string literals for the purposes of this example.
-          localization: {
-            NO_VALUE: 'No value',
-            FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-            FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-            FLYOUT_SELECTED_NOTICE: 'This column is selected'
-          }
+          localization: LOCALIZATION
         },
         description: 'Math proficiency by school district for 3rd graders in 2014',
         series: [
@@ -165,12 +179,7 @@
           'interactive': true,
           // The localization values should be set by the application but are
           // set to string literals for the purposes of this example.
-          'localization': {
-            'NO_VALUE': 'No value',
-            'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-            'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-            'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-          }
+          'localization': LOCALIZATION
         },
         'createdAt': '2014-01-01T00:00:00',
         'datasetUid': VIF_1_DATASET_UID,

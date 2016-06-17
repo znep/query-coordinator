@@ -285,6 +285,30 @@ function SvgVisualization($element, vif) {
       DEFAULT_HIGHLIGHT_COLOR;
   };
 
+  /**
+   * Valid options: 'fit', 'pan'
+   */
+  this.getXAxisScalingMode = function() {
+
+    return _.get(
+      currentVif,
+      'configuration.xAxisScalingMode',
+      'fit'
+    );
+  };
+
+  /**
+   * Valid options: 'fit', 'showZero'
+   */
+  this.getYAxisScalingMode = function() {
+
+    return _.get(
+      currentVif,
+      'configuration.yAxisScalingMode',
+      'showZero'
+    );
+  };
+
   this.emitEvent = function(name, payload) {
 
     this.$element[0].dispatchEvent(

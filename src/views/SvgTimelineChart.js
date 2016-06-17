@@ -140,13 +140,9 @@ function SvgTimelineChart($element, vif) {
         )
       )
     );
-    var viewportHeight = (
-      $chartElement.height() -
-      MARGINS.TOP -
-      MARGINS.BOTTOM
-    );
-    var height = viewportHeight;
-    var xAxisPanningEnabled = viewportWidth !== width;
+    var xAxisPanningEnabled = (viewportWidth !== width);
+    var viewportHeight;
+    var height;
     var d3ClipPathId = 'timeline-chart-clip-path-' + _.uniqueId();
     var dimensionIndices = dataToRender.
       map(
@@ -342,6 +338,23 @@ function SvgTimelineChart($element, vif) {
 
     // Actual execution begins here.
 
+    // First we need to figure out if we need to show the panning notice and
+    // only calculate the chart height after we know, since that can affect the
+    // amount of vertical space available to the chart.
+    if (xAxisPanningEnabled) {
+      self.showPanningNotice();
+    } else {
+      self.hidePanningNotice();
+    }
+
+    viewportHeight = (
+      $chartElement.height() -
+      MARGINS.TOP -
+      MARGINS.BOTTOM
+    );
+    height = viewportHeight;
+
+    // Next we can set up some data that we only want to compute once.
     dateBisectors = dataToRender.
       map(
         function(series, seriesIndex) {
@@ -441,9 +454,13 @@ function SvgTimelineChart($element, vif) {
           )
     );
 
-    // Normalize min and max values so that we always show 0.
-    minYValue = Math.min(minYValue, 0);
-    maxYValue = Math.max(0, maxYValue);
+    if (self.getYAxisScalingMode() === 'showZero') {
+
+      // Normalize min and max values so that we always show 0 if the user has
+      // specified that behavior in the Vif.
+      minYValue = Math.min(minYValue, 0);
+      maxYValue = Math.max(0, maxYValue);
+    }
 
     d3XScale = d3.
       time.
@@ -537,7 +554,9 @@ function SvgTimelineChart($element, vif) {
                     }
                   ).
                   y0(
+                    /* eslint-disable no-unused-vars */
                     function(d) {
+                    /* eslint-enable no-unused-vars */
                       return d3YScale(0);
                     }
                   ).
@@ -706,11 +725,6 @@ function SvgTimelineChart($element, vif) {
       if (startDate === lastRenderedStartDate && endDate === lastRenderedEndDate) {
         restoreLastRenderedZoom();
       }
-
-      self.showPanningNotice();
-    } else {
-
-      self.hidePanningNotice();
     }
 
     lastRenderedStartDate = startDate;

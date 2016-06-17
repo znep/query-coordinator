@@ -4,20 +4,22 @@ import thunk from 'redux-thunk';
 
 import reducer from 'src/authoringWorkflow/reducers';
 import vifs from 'src/authoringWorkflow/vifs';
-import defaultDatasetMetadata from 'src/authoringWorkflow/defaultDatasetMetadata';
+import defaultMetadata from 'src/authoringWorkflow/defaultMetadata';
 
 export default function(stateOverrides) {
+  var logger = createLogger();
   var initialState = _.merge(
     {
       vifAuthoring: {
-        vifs: vifs(),
-        selectedVisualizationType: vifs().columnChart.series[0].type
+        authoring: {
+          selectedVisualizationType: vifs().columnChart.series[0].type
+        },
+        vifs: vifs()
       },
-      datasetMetadata: defaultDatasetMetadata
+      metadata: defaultMetadata
     },
     stateOverrides
   );
-  var logger = createLogger();
 
   return createStore(reducer, initialState, applyMiddleware(thunk, logger));
 }

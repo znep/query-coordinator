@@ -43,7 +43,7 @@ function MetadataProvider(config) {
     return Promise.resolve($.get(url));
   };
 
-  this.getPhidippidiesMetadata = function() {
+  this.getPhidippidesMetadata = function() {
     var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')

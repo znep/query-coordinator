@@ -8,8 +8,8 @@ var VifHelpers = require('./helpers/VifHelpers');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 
 var MAX_COLUMN_COUNT = 1000;
-var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
-var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
+var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
+var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
 var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
 var AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
 var WINDOW_RESIZE_RERENDER_DELAY = 200;

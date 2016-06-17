@@ -1,8 +1,22 @@
 import { combineReducers } from 'redux';
-import vifAuthoring from './vifAuthoring';
-import datasetMetadata from './datasetMetadata';
+
+import metadata from './metadata';
+import authoring from './authoring';
+
+import choroplethMap from './vifs/choroplethMap';
+import columnChart from './vifs/columnChart';
+import featureMap from './vifs/featureMap';
+import timelineChart from './vifs/timelineChart';
 
 module.exports = combineReducers({
-  vifAuthoring: vifAuthoring,
-  datasetMetadata: datasetMetadata
+  metadata,
+  vifAuthoring: combineReducers({
+    authoring,
+    vifs: combineReducers({
+      choroplethMap,
+      columnChart,
+      featureMap,
+      timelineChart
+    })
+  })
 });

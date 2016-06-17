@@ -7,7 +7,7 @@ export var CustomizationTabPanes = React.createClass({
     selection: React.PropTypes.string
   },
 
-  paneAttributes: function(tab) {
+  paneAttributes(tab) {
     return {
       key: tab.id,
       id: tab.id,
@@ -15,7 +15,7 @@ export var CustomizationTabPanes = React.createClass({
     };
   },
 
-  pane: function(tab) {
+  pane(tab) {
     return (
       <CustomizationTabPane {...this.paneAttributes(tab)}>
         {React.createElement(tab.paneComponent)}
@@ -23,10 +23,10 @@ export var CustomizationTabPanes = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     return (
       <div className="visualization-tab-panes">
-        {_.map(this.props.tabs, (tab) => { return this.pane(tab); })}
+        {_.map(this.props.tabs, tab => { return this.pane(tab); })}
       </div>
     );
   }

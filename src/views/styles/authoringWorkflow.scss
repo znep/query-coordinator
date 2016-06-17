@@ -16,13 +16,21 @@
       margin-top: 1rem;
     }
 
+    h5 {
+      font-size: 14px;
+      text-transform: uppercase;
+      border-bottom: solid 1px #ebebeb;
+      padding-bottom: 5px;
+    }
+
     .block-label {
       margin-top: 0.5rem;
       margin-bottom: 0.25rem;
     }
 
     .text-input,
-    textarea {
+    textarea,
+    input[type="range"] {
       width: 100%;
       max-width: 100%;
     }
@@ -31,29 +39,45 @@
       height: 150px;
     }
 
+    .metadata-loading {
+      display: inline-flex;
+
+      .metadata-loading-spinner {
+        margin: auto;
+        margin-right: 10px;
+      }
+    }
+
     .dimension-dropdown-container,
     .measure-dropdown-container,
     .measure-aggregation-dropdown-container,
-    .chart-type-dropdown-container,
+    .visualization-type-dropdown-container,
     .region-dropdown-container,
-    .scale-type-dropdown-container {
+    .scale-type-dropdown-container,
+    .base-layer-dropdown-container,
+    .flyout-title-dropdown-container,
+    .color-scale-dropdown-container {
       position: relative;
 
       &::before {
         @extend .icon-arrow-down::before;
 
         position: absolute;
-        bottom: 15px;
-        right: 15px;
+        bottom: 9px;
+        right: 9px;
+        pointer-events: none;
       }
     }
 
     select {
       width: 100%;
       appearance: none;
-      padding: 0.8rem 0.6rem;
-      border-radius: 0;
       background-color: #fff;
+      border: solid 1px #c8c8c8;
+      border-radius: 1px;
+      box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+      font-size: 15px;
+      padding: 8px;
 
       &:disabled {
         background-color: #ddd;

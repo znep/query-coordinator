@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "10.13.0",
+  "version": "10.15.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"
@@ -17,7 +17,8 @@
     "test": "karma start karma.conf.js --singleRun true",
     "version-bump-check": "node tools/version-bump-check.js",
     "watch": "karma start karma.conf.js -v --singleRun false",
-    "compile-css": "node tools/compile-css.js"
+    "compile-css": "node tools/compile-css.js",
+    "compile-css-watch": "node tools/compile-css.js --watch"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
   "main": "dist/socrata-visualizations.js",
@@ -25,6 +26,7 @@
     "autoprefixer": "6.3.6",
     "chai": "3.5.0",
     "chai-dom": "1.4.0",
+    "chokidar": "1.5.2",
     "eslint": "2.3.0",
     "eslint-base": "0.2.3",
     "karma": "0.13.22",
@@ -50,7 +52,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.3",
-    "socrata-styleguide": "2.0.2",
+    "socrata-styleguide": "3.0.0",
     "strict-loader": "1.1.0",
     "webpack": "1.13.1"
   },

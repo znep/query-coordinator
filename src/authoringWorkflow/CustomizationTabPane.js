@@ -2,13 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 
 export var CustomizationTabPane = React.createClass({
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       show: false
     };
   },
 
-  render: function() {
+  render() {
     var isHidden = !this.props.show;
     var attributes = {
       key: this.props.id,

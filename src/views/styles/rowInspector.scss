@@ -4,7 +4,7 @@ $small-font-size: $base-font-size * 0.75;
 
 $row-inspector-max-height: 350px;
 $row-inspector-content-max-height: 250px;
-$row-inspector-content-scroll-bar-width: 1rem;
+$row-inspector-content-scroll-bar-width: 10px;
 $row-inspector-border-width: 1px;
 $pagination-height: 50px;
 
@@ -190,14 +190,14 @@ $action-btn-disabled-font-color: #c6c1bf;
       &::-webkit-scrollbar-track {
         -webkit-border-radius: 0.35rem;
         border-radius: 0;
-        width: 0.35rem;
+        width: 10px;
         background: rgba(0,0,0,0.1);
       }
 
       &::-webkit-scrollbar-thumb {
         -webkit-border-radius: 0.35rem;
         border-radius: 0.35rem;
-        width: 0.35rem;
+        width: 10px;
         background: rgba(0,0,0,0.2);
       }
 
@@ -306,9 +306,15 @@ $action-btn-disabled-font-color: #c6c1bf;
     right: 10px;
     position: absolute;
     z-index: 3;
+    opacity: 0.6;
+    transition: opacity 0.15s ease-in;
 
     &::before {
       content: '\2715';
+    }
+
+    &:hover {
+      opacity: 1;
     }
   }
 

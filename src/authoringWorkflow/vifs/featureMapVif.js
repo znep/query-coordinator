@@ -7,10 +7,8 @@ export default {
     baseLayerUrl: null,
     baseLayerOpacity: 0.8,
     datasetMetadata: false,
-    // defaultExtent: {
-    //   southwest: [Infinity, Infinity],
-    //   northeast: [Infinity, Infinity]
-    // },
+    pointColor: '#eb6900',
+    flyoutTitleColumnName: null,
     hover: true,
     localization: {
       'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
@@ -24,14 +22,12 @@ export default {
       'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'Click to try again',
       'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE': 'Panning and zooming has been disabled',
       'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time',
-      'USER_CURRENT_POSITION': 'Your current location (estimated)'
+      'USER_CURRENT_POSITION': 'Your current location (estimated)',
+      'latitude': 'Latitude',
+      'longitude': 'Longitude'
     },
     locateUser: false,
     panAndZoom: true,
-    // savedExtent: {
-    //   southwest: [Infinity, Infinity],
-    //   northeast: [Infinity, Infinity]
-    // },
     useOriginHost: false
   },
   description: '',
@@ -55,8 +51,8 @@ export default {
       label: null,
       type: 'featureMap',
       unit: {
-        one: 'One',
-        other: 'Other'
+        one: 'Record',
+        other: 'Records'
       }
     }
   ],

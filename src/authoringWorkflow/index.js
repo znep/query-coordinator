@@ -9,14 +9,14 @@ import thunk from 'redux-thunk';
 
 import reducer from './reducers';
 import vifs from './vifs';
-import defaultDatasetMetadata from './defaultDatasetMetadata';
+import defaultMetadata from './defaultMetadata';
 import AuthoringWorkflow from './AuthoringWorkflow';
 
 import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { setDataSource } from './actions';
 
 function propagateUserDefinedVifValuesToAllVifs(vif) {
-  var vifType = _.get(vif, 'series[0].type');
+  var vifType = _.get(vif, 'series[0].type', null);
   var clonedVifs = vifs();
 
   _.each(clonedVifs, function(clonedVif) {
@@ -30,6 +30,8 @@ function propagateUserDefinedVifValuesToAllVifs(vif) {
     clonedVifs[vifType] = _.merge({}, clonedVifs[vifType], vif);
   }
 
+  _.set(clonedVifs.featureMap, 'configuration.tileserverHosts', _.get(vif, 'configuration.tileserverHosts', []));
+
   return clonedVifs;
 }
 
@@ -38,28 +40,30 @@ module.exports = function(element, configuration) {
   var logger = createLogger();
 
   var vif = _.get(configuration, 'vif', {});
-  var vifType = _.get(vif, 'series[0].type', 'columnChart');
+  var vifType = _.get(vif, 'series[0].type', null);
 
   var initialState = {
+    metadata: defaultMetadata,
     vifAuthoring: {
       vifs: propagateUserDefinedVifValuesToAllVifs(vif),
-      selectedVisualizationType: vifType
-    },
-    datasetMetadata: defaultDatasetMetadata
+      authoring: {
+        selectedVisualizationType: vifType
+      }
+    }
   };
+
+  var domain = vifType ?
+    getDomain(initialState.vifAuthoring) :
+    _.get(initialState, 'vifAuthoring.vifs.columnChart.series[0].dataSource.domain');
+  var datasetUid = vifType ?
+    getDatasetUid(initialState.vifAuthoring) :
+    _.get(initialState, 'vifAuthoring.vifs.columnChart.series[0].dataSource.datasetUid');
+
 
   self.element = element;
   self.configuration = configuration;
-  self.store = createStore(
-    reducer,
-    initialState,
-    applyMiddleware(thunk, logger)
-  );
-
-  self.store.dispatch(setDataSource({
-    datasetUid: getDatasetUid(initialState.vifAuthoring),
-    domain: getDomain(initialState.vifAuthoring)
-  }));
+  self.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
+  self.store.dispatch(setDataSource({datasetUid, domain}));
 
   self.render = function() {
     ReactDOM.render(

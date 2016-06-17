@@ -2,13 +2,13 @@ import React from 'react';
 import classNames from 'classnames';
 
 export var CustomizationTab = React.createClass({
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       selected: false
     };
   },
 
-  linkAttributes: function() {
+  linkAttributes() {
     return {
       id: `${this.props.id}-link`,
       href: `#${this.props.id}`,
@@ -18,7 +18,7 @@ export var CustomizationTab = React.createClass({
     };
   },
 
-  listItemAttributes: function() {
+  listItemAttributes() {
     return {
       key: this.props.id,
       className: classNames('tab-link', {'current': this.props.selected}),
@@ -26,7 +26,7 @@ export var CustomizationTab = React.createClass({
     };
   },
 
-  render: function() {
+  render() {
     return (
       <li {...this.listItemAttributes()}>
         <a {...this.linkAttributes()}>{this.props.title}</a>

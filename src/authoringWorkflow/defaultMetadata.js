@@ -2,6 +2,6 @@ module.exports = {
   isLoading: false,
   data: null,
   curatedRegions: null,
-  phidippidiesMetadata: null,
+  phidippidesMetadata: null,
   error: null
 };

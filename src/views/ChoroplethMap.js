@@ -9,6 +9,7 @@ var ss = require('simple-statistics');
 var chroma = require('chroma-js');
 var $ = require('jquery');
 var _ = require('lodash');
+var L = require('leaflet');
 
 var SvgVisualization = require('./SvgVisualization');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');

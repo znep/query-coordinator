@@ -1,54 +1,74 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getCurrentVif } from './selectors/vifAuthoring';
+import { translate } from './I18n';
+import { getCurrentVif, isInsertableVisualization } from './selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
 import Visualization from './Visualization';
-
 import DataPane from './panes/DataPane';
 import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
-import LabelsPane from './panes/LabelsPane';
-import FlyoutsPane from './panes/FlyoutsPane';
+import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 
 export var AuthoringWorkflow = React.createClass({
-  getInitialState: function() {
+  propTypes: {
+    vif: React.PropTypes.object,
+    onCancel: React.PropTypes.func,
+    tabs: React.PropTypes.array
+  },
+
+  getInitialState() {
     return {
       currentTabSelection: 'authoring-data'
     };
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       tabs: [
-        {id: 'authoring-data', title: 'Data', paneComponent: DataPane},
-        {id: 'authoring-title-and-description', title: 'Tile & Description', paneComponent: TitleAndDescriptionPane},
-        {id: 'authoring-colors-and-style', title: 'Colors & Style', paneComponent: ColorsAndStylePane},
-        {id: 'authoring-axis-and-scale', title: 'Axis & Scale', paneComponent: AxisAndScalePane},
-        {id: 'authoring-labels', title: 'Labels', paneComponent: LabelsPane},
-        {id: 'authoring-flyouts', title: 'Flyouts', paneComponent: FlyoutsPane}
+        {
+          id: 'authoring-data',
+          title: translate('panes.data.title'),
+          paneComponent: DataPane
+        },
+        {
+          id: 'authoring-title-and-description',
+          title: translate('panes.title_and_description.title'),
+          paneComponent: TitleAndDescriptionPane
+        },
+        {
+          id: 'authoring-colors-and-style',
+          title: translate('panes.colors_and_style.title'),
+          paneComponent: ColorsAndStylePane
+        },
+        {
+          id: 'authoring-axis-and-scale',
+          title: translate('panes.axis_and_scale.title'),
+          paneComponent: AxisAndScalePane
+        },
+        {
+          id: 'authoring-legends-and-flyouts',
+          title: translate('panes.legends_and_flyouts.title'),
+          paneComponent: LegendsAndFlyoutsPane
+        }
       ]
     };
   },
 
-  propTypes: {
-    vif: React.PropTypes.object
-  },
-
-  onComplete: function() {
+  onComplete() {
     this.props.onComplete({
       vif: this.props.vif
     });
   },
 
-  onCancel: function() {
+  onCancel() {
     this.props.onCancel();
   },
 
-  onTabNavigation: function(event) {
+  onTabNavigation(event) {
     var href = event.target.getAttribute('href');
 
     if (href) {
@@ -57,13 +77,16 @@ export var AuthoringWorkflow = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
+    var vifAuthoring = this.props.vifAuthoring;
+    var isNotInsertable = !isInsertableVisualization(vifAuthoring);
+
     return (
       <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>
         <div className="modal-container">
 
           <header className="modal-header">
-            <h5 className="modal-header-title">Create Visualization</h5>
+            <h5 className="modal-header-title">{translate('modal.title')}</h5>
             <button className="btn btn-transparent modal-header-dismiss" onClick={this.onCancel}>
               <span className="icon-close-2"></span>
             </button>
@@ -80,8 +103,8 @@ export var AuthoringWorkflow = React.createClass({
 
           <footer className="modal-footer">
             <div className="modal-footer-actions">
-              <button className="btn btn-default cancel" onClick={this.onCancel}>Cancel</button>
-              <button className="btn btn-primary done" onClick={this.onComplete}>Insert</button>
+              <button className="btn btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
+              <button className="btn btn-primary done" onClick={this.onComplete} disabled={isNotInsertable}>{translate('modal.insert')}</button>
             </div>
           </footer>
         </div>
@@ -92,7 +115,8 @@ export var AuthoringWorkflow = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vif: getCurrentVif(state.vifAuthoring)
+    vif: getCurrentVif(state.vifAuthoring),
+    vifAuthoring: state.vifAuthoring
   };
 }
 

@@ -43,33 +43,110 @@
       output.innerHTML = '';
       $chart.empty();
 
-      var choroplethDataSource = {
-        domain: 'dataspace.demo.socrata.com',
-        datasetUid: '52my-2pak'
+      var productionTileServerHosts = [
+        'https://tileserver1.api.us.socrata.com',
+        'https://tileserver2.api.us.socrata.com',
+        'https://tileserver3.api.us.socrata.com',
+        'https://tileserver4.api.us.socrata.com'
+      ];
+
+      var stagingTileServerHosts = [
+        'https://tileserver1.api.us.test-socrata.com',
+        'https://tileserver2.api.us.test-socrata.com',
+        'https://tileserver3.api.us.test-socrata.com',
+      ];
+
+      var choroplethVif = {
+        configuration: {
+          tileserverHosts: productionTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'dataspace.demo.socrata.com',
+              datasetUid: '52my-2pak'
+            }
+          }
+        ]
       };
 
-      var ufoSightingsDataSource = {
-        domain: 'vertex-stories.test-socrata.com',
-        datasetUid: 'k6cs-ww27'
+      var ufoSightingsVif = {
+        configuration: {
+          tileserverHosts: stagingTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: 'k6cs-ww27'
+            }
+          }
+        ]
       };
 
-      var featureMapDataSource = {
-        domain: 'dataspace.demo.socrata.com',
-        datasetUid: 'r6t9-rak2'
+      var featureMapVif = {
+        configuration: {
+          tileserverHosts: productionTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'dataspace.demo.socrata.com',
+              datasetUid: 'r6t9-rak2'
+            }
+          }
+        ]
+      };
+
+      var licenseeTax = {
+        configuration: {
+          tileserverHosts: stagingTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: 'qnur-w9s6'
+            }
+          }
+        ]
+      };
+
+      var iowaMathAndReadingProficiency = {
+        configuration: {
+          tileserverHosts: stagingTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: 'vc2c-3mst'
+            }
+          }
+        ]
+      };
+
+      var citizenSatisfaction = {
+        configuration: {
+          tileserverHosts: stagingTileServerHosts
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: 'tsij-fj78'
+            }
+          }
+        ]
       };
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
-        vif: {
-          series: [
-            {
-              //dataSource: choroplethDataSource,
-              //dataSource: ufoSightingsDataSource,
-              dataSource: featureMapDataSource,
-              type: 'columnChart'
-            }
-          ]
-        },
-
+        //vif: choroplethVif,
+        //vif: ufoSightingsVif,
+        vif: featureMapVif,
+        //vif: iowaMathAndReadingProficiency,
+        //vif: licenseeTax,
+        //vif: citizenSatisfaction,
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);
           $chart.empty();

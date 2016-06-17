@@ -15,6 +15,9 @@ export default {
     highlightFeatureStrokeWidth: 4,
     legend: {
       type: 'continuous',
+      negativeColor: '#c6663d',
+      zeroColor: '#ffffff',
+      positiveColor: '#003747'
     },
     localization: {
       'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',

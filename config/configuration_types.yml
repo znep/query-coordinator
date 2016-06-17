@@ -65,6 +65,14 @@ geo_setup:
     instead: :georegions_administration
   known_properties:
   - curated_regions
+geocoding:
+  description: Configuration for geocoding default values and provider.
+  documentation: https://docs.google.com/document/d/1la6JkdyyaKUNit3AaBX_B9_pWmgG2v7B1DekZQ0sKaY/view
+  how_to_use_defaults: '"defaults" should be a json object with the optional fields: "country", "region", "subregion", "postal_code", "locality", "address".'
+  how_to_use_provider: '"provider" should be a supported provider: "mapquest", "esri"'
+  known_properties:
+  - defaults
+  - provider
 gov_stat:
   description: Configure displays. Dashboard can be list or grid_flow.
   default_config_name: Open Performance Settings

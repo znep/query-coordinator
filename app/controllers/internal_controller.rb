@@ -162,6 +162,8 @@ class InternalController < ApplicationController
     begin
       params[:domain]['shortName'] ||= params[:domain]['cName']
       params[:domain]['accountTierId'] ||= AccountTier.find_by_name('Ultimate').id
+      params[:domain]['salesforceId'].try(:strip!)
+      params[:domain].delete('salesforceId') if params[:domain]['salesforceId'].blank?
       domain = Domain.create(params[:domain])
 
       parentConfigId = params[:config][:parentDomainCName]
@@ -214,6 +216,11 @@ class InternalController < ApplicationController
     if params[:org_id]
       Domain.update_organization_id(params[:domain_id], params[:org_id])
       notices << 'Successfully updated org_id.'
+    end
+
+    if params[:salesforce_id]
+      Domain.update_salesforce_id(params[:domain_id], params[:salesforce_id].strip)
+      notices << 'Successfully updated salesforce_id.'
     end
 
     if params[:new_name]

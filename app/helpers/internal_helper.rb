@@ -200,6 +200,19 @@ module InternalHelper
     end
   end
 
+  def salesforce_information
+    if @domain.has_valid_salesforce_id?
+      link = "https://socrata.my.salesforce.com/#{@domain.salesforceId}"
+      link_to link, link, target: '_blank'
+    else
+      if @domain.salesforceId.blank?
+        'No Salesforce ID.'
+      else
+        %Q(Invalid Salesforce ID: "#{@domain.salesforceId}")
+      end
+    end
+  end
+
   def discouragement_explanation(reason)
     content = ExternalConfig.for(:configuration_types).
       discouragement_because(reason, force_instead: true)

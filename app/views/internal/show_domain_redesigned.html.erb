@@ -29,6 +29,7 @@
       <%= link_to domain_cache_time, show_domain_data_path %>
     </p>
     <p>Organized inside: <%= organization_link %></p>
+    <p>Salesforce Information: <%= salesforce_information %></p>
 
     <h2>Domain/Aliases:</h2>
     <div class="updateAliases">
@@ -130,6 +131,12 @@
               <%= text_field_tag :new_name, @domain.name %>
             <%- end %>
             <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
+          </dd>
+          <dt>Salesforce ID</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Set Salesforce ID') do %>
+              <%= text_field_tag :salesforce_id, @domain.salesforceId %>
+            <%- end %>
           </dd>
           <dt>Flush Cache</dt>
           <dd>

@@ -46,6 +46,10 @@
           <label>CName:</label>
           <input type="text" name="domain[cName]"/>
         </div>
+        <div class='line'>
+          <label>Salesforce ID:</label>
+          <input type="text" name="domain[salesforceId]"/>
+        </div>
         <input type="hidden" name="config[parentDomainCName]" value="<%= @default_domain.cname %>" />
         <input type="hidden" name="domain[parentDomainId]" value="<%= @default_domain.id %>" />
         <input type="submit" value="Create"/>

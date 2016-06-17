@@ -233,19 +233,23 @@ export function transformToImports2Translation(importTransform: ImportColumns.Tr
     let transformed = `col${resultColumn.sourceColumn.index + 1}`;
     _.forEach(resultColumn.transforms, (transform) => {
       switch (transform.type) {
-        case 'title':
+        case 'title': {
           transformed = `title(${transformed})`;
           break;
-        case 'upper':
+        }
+        case 'upper': {
           transformed = `upper(${transformed})`;
           break;
-        case 'lower':
+        }
+        case 'lower': {
           transformed = `lower(${transformed})`;
           break;
-        case 'toStateCode':
+        }
+        case 'toStateCode': {
           transformed = `toStateCode(${transformed})`;
           break;
-        case 'findReplace':
+        }
+        case 'findReplace': {
           let replaceString = `/${transform.findText}/g`;
           if (!transform.caseSensitive) {
             replaceString += 'i';
@@ -253,9 +257,11 @@ export function transformToImports2Translation(importTransform: ImportColumns.Tr
 
           transformed = `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
           break;
-        default:
+        }
+        default: {
           console.log('error: unknown transform type ', transform.type);
           break;
+        }
       }
     });
     return transformed;

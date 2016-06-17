@@ -881,6 +881,9 @@ $data-lens-color: #80acca;
   &.jobs #{$subselector} {
     background-position: 0 -208px;
   }
+  &.connectors #{$subselector} {
+    background-position: 0 -222px;
+  }
 }
 
 // icons/admin_header_icons.png
@@ -933,7 +936,7 @@ $data-lens-color: #80acca;
   &.jobs #{$subselector} {
     background-position: 0 -416px;
   }
-  &.externalFederation #{$subselector} {
+  &.connectors #{$subselector} {
     background-position: 0 -448px;
   }
 }

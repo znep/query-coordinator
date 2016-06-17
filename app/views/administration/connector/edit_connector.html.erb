@@ -1,0 +1,102 @@
+<%- prefix = 'screens.admin.connector' %>
+
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-connectors' %>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<%= include_webpack_bundle 'admin/admin-edit-connector.js' %>
+
+<div id="connector-content" class="contentBox withLeftNavigation">
+  <div class="adminHeader connectors">
+    <span class="icon"></span>
+    <h1><%= t("#{prefix}.edit_connector", url: @server.url) %></h1>
+    <div class="connector-list-go-back">
+      <%= link_to(t("#{prefix}.back_to_connector_list"),
+                  :controller => '/administration/connector',
+                  :action => 'connectors') %>
+    </div>
+  </div>
+
+  <div class="selective-connection">
+
+    <%= display_standard_flashes %>
+    <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
+      <h2><%= t("#{prefix}.selective_connection") %></h2>
+      <div class="new-connector-form flexbox-space-between">
+        <div class="flexbox-left-section">
+          <fieldset class="line">
+            <div class="valueBox">
+              <input type="radio" id="federateAll" class="serverSync"
+                name="server[sync_type]" value="catalog"
+                <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+              <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
+            </div>
+            <div class="valueBox">
+              <input type="radio" id="federateSome" class="serverSync"
+                name="server[sync_type]" value="ignored"
+                <%= @server.federate_all? ? '' : 'checked="checked"' %> />
+              <label for="federateAll"><%= t("#{prefix}.some_assets") %></label>
+            </div>
+          </div> <%# end flex left section %>
+          <div class="line clearfix flexbox-right-section">
+            <input type="submit" value=<%=t("#{prefix}.save")%> class="button"/>
+          </div>
+        </div> <%# end flex box container %>
+      <%= form_tag({:action => 'update_connector'}, {:method => 'post', :class => 'commonForm'}) %>
+        <fieldset class="line">
+
+          <div class="filter-assets">
+            <input
+              type="text"
+              title="<%= t("#{prefix}.search") %>"
+              class="textPrompt searchBox prompt"/>
+          </div>
+
+          <div class="esri-tree">
+            <%- @tree['folders'].each do |folder| -%>
+              <div class="item folder search-item">
+                <div class="editItem">
+                  <%= folder_check_box(@server, folder) %>
+                    <%= truncate(folder['name'], length: 120) %>
+                </div>
+
+                <%- folder['services'].each do |service| -%>
+                  <div class="item child service search-item">
+                    <div class="editItem">
+                      <%= service_check_box(folder, service) %>
+                      <a target="_blank" href="<%= service['url'] %>"
+                        name="<%= service_display_string(service) %>">
+                        <%= truncate(service_display_string(service), length: 120) %>
+                      </a>
+                    </div>
+
+                    <%- service['layers'].each do |layer| -%>
+                      <div class="item child layer search-item">
+                        <div class="editItem">
+                          <%= layer_check_box(folder, service, layer) %>
+                          <a target="_blank" href="<%= layer['url'] %>">
+                            <%- if layer['name'].blank? -%>
+                              <%= layer['url'] %>
+                            <%- else -%>
+                              <%= truncate(layer['name'], length: 120) %>
+                            <%- end -%>
+                          </a>
+                        </div>
+                      </div>
+                    <%- end -%>
+                  </div>
+                <%- end -%>
+              </div>
+            <%- end -%>
+          </div> <%# end esri-tree container %>
+        <%# end inner fieldset tag (by rails)%>
+      <%# end outer fieldset tag (by rails) %>
+    </form>
+  </div>
+</div>
+
+<%= render_admin_userzoom %>

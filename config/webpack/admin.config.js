@@ -11,7 +11,7 @@ module.exports = _.defaultsDeep({
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-jobs': './screens/admin-jobs',
     'admin-show-job': './screens/admin-show-job',
-    'edit-federation': './screens/admin-esri/edit-federation'
+    'admin-edit-connector': './screens/admin-edit-connector'
   },
   output: common.getOutput(identifier),
   module: {

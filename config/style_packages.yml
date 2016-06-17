@@ -99,6 +99,8 @@ administration-browse-widget:
 - screen-admin-browse-widget
 administration-canvas-pages:
 - screen-admin-canvas-pages
+administration-connectors:
+- screen-administration-connectors
 administration-federation:
 - screen-administration-federation
 administration-home:

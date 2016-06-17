@@ -1,5 +1,5 @@
-class ExternalFederation
-  include ExternalFederationHelper
+class DataConnector
+  include DataConnectorHelper
 
   def self.servers
     query = {
@@ -28,7 +28,7 @@ class ExternalFederation
     EsriCrawler.get_request("/servers/#{id}/tree")
   end
 
-  # create a new external_federation link by posting it to the EsriCrawler
+  # create a new connector by posting it to the EsriCrawler
   def self.create(esri_domain, sync_type = 'ignored')
     EsriCrawler.post_request('/servers', {
       :url => "https://#{esri_domain}",
@@ -41,7 +41,7 @@ class ExternalFederation
     EsriCrawler.delete_request("/servers/#{id}")
   end
 
-  # the updatable attributes for a external federation server here is going to be the 'sync_type'
+  # the updatable attribute for a connected server here is going to be the 'sync_type'
   # catalog => 1 for an object means that all its children layers should be created as catalog datasets
   # the method switches string ids to ints and sets them under the 'id' key in arrays
   def self.update_server(id, params)
@@ -49,7 +49,7 @@ class ExternalFederation
       path = path.clone
       child_name = path.shift
 
-      # checkboxes is a nested hash filled with the catalog state for the external federation object structure
+      # checkboxes is a nested hash filled with the catalog state for the connected server object structure
       # ex: (where 19 is the id of a folder, 5 of a service, 30 and 4 as ids of layers)
       # {'19' => {
       #   'sync_type' => 'ignored',

@@ -280,7 +280,7 @@ GEM
     shoulda-context (1.2.1)
     slop (3.6.0)
     snappy (0.0.15)
-    socrata_site_chrome (0.0.18)
+    socrata_site_chrome (0.0.19)
       rails (~> 4.2, >= 4.2.6)
     sprockets (3.6.0)
       concurrent-ruby (~> 1.0)
@@ -385,7 +385,7 @@ DEPENDENCIES
   semver2
   shoulda-context
   snappy
-  socrata_site_chrome (~> 0.0.18)
+  socrata_site_chrome (~> 0.0.19)
   statsd-ruby!
   test-unit
   therubyracer

@@ -175,6 +175,7 @@ module DatasetLandingPageHelper
       :rowLabel => @view.row_label,
       :columns => columns,
       :isPrivate => !@view.is_public?,
+      :isUnpublished => @view.is_unpublished?,
       :isGeospatial => @view.is_geospatial?,
       :gridUrl => data_grid_path(@view),
       :downloadOverride => @view.downloadOverride,

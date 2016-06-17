@@ -1392,6 +1392,10 @@ en:
       title: Popular Content Using this Data
       view: View
     private_notice: You are looking at a private dataset.
+    publish: Publish
+    published: Published
+    publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
+    publish_error: There was a problem publishing this dataset.  Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     published_by: Data Provided by
     remove: Remove
     save: Save
@@ -2647,6 +2651,7 @@ en:
         out_of_date: This dataset is out of date by %{age}
         publish_button: Publish Dataset
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
+        publish_prompt_with_dataset_landing_page: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.  Publishing this page will also publish Dataset Landing Page.
         publish_rights: Only an owner or publisher can publish this dataset
         revert_button: Revert
         revert_prompt: Revert to saved view

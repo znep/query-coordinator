@@ -1,0 +1,30 @@
+.alert.publish-error, .alert.publish-notice, .alert.private-notice {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+
+  .alert-container {
+    max-width: 68em;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 11px;
+  }
+
+  .alert-dismiss {
+    float: right;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+}
+
+.publish-notice {
+  .alert-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .btn {
+      min-width: 70px;
+    }
+  }
+}

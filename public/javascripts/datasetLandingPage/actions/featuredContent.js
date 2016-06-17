@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
-
+import { defaultHeaders, checkStatus } from '../lib/http';
 import { UID_REGEX } from '../lib/constants';
+
 import {
   ADD_FEATURED_ITEM,
   EDIT_FEATURED_ITEM,
@@ -21,23 +22,6 @@ import {
   HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
   HANDLE_FEATURED_ITEM_REMOVAL_ERROR
 } from '../actionTypes';
-
-var defaultHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-  'X-CSRF-Token': window.serverConfig.csrfToken
-};
-
-// Used to throw errors from non-200 responses when using fetch.
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-
-  var error = new Error(response.statusText);
-  error.response = response;
-  throw error;
-}
 
 function parseUid(url) {
   var trimmedUrl = trimEditFromUrl(url);

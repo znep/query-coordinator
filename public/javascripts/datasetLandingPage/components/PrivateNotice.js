@@ -56,7 +56,7 @@ export var PrivateNotice = React.createClass({
     }
 
     return (
-      <div className="alert info full-width private-notice">
+      <div className="alert info alert-full-width-top private-notice">
         <div className="alert-container">
           {I18n.private_notice}
           {' '}

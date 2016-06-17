@@ -9,8 +9,13 @@ module.exports = function ( karma ) {
     singleRun: true,
 
     files: [
-      'karma/datasetLandingPage/index.js'
+      'karma/datasetLandingPage/index.js',
+      { pattern: 'karma/datasetLandingPage/data/*.png', watched: false, included: false, served: true }
     ],
+
+    proxies: {
+      '/image.png': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png'
+    },
 
     preprocessors: {
       'karma/datasetLandingPage/index.js': ['webpack', 'sourcemap']

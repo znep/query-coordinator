@@ -1,9 +1,11 @@
 @import "dataset-landing-page/styleguide-colors";
 @import "dataset-landing-page/breakpoints";
-@import "dataset-landing-page/view-widget";
+
+@import "dataset-landing-page/alerts";
+@import "dataset-landing-page/contact-form";
 @import "dataset-landing-page/featured-content-modal";
 @import "dataset-landing-page/view-selector";
-@import "dataset-landing-page/contact-form";
+@import "dataset-landing-page/view-widget";
 
 // Miscellaneous colors not in styleguide
 $facebook-blue: #3b5998;
@@ -22,22 +24,15 @@ body {
   margin: 0 auto;
 }
 
-.alert.private-notice {
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
+// Fix styleguide buttons with spinners in them
+.btn.btn-sm.btn-busy {
+  padding: 8px 15px 5px;
 
-  .alert-container {
-    max-width: 68em;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 11px;
+  .spinner-default {
+    width: 15px;
+    height: 15px;
+    border-width: 2px;
   }
-}
-
-.alert-dismiss {
-  float: right;
-  cursor: pointer;
 }
 
 .info-pane {

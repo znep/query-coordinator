@@ -227,7 +227,7 @@ function pollUntilDone(ticket, dispatch, onProgress) {
   });
 }
 
-export function transformToImports2Translation(transform: ImportColumns.Transform): string {
+export function transformToImports2Translation(importTransform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
     // TODO: location columns, composite columns
     let transformed = `col${resultColumn.sourceColumn.index + 1}`;
@@ -260,7 +260,7 @@ export function transformToImports2Translation(transform: ImportColumns.Transfor
     });
     return transformed;
   }
-  return `[${transform.map(resultColumnToJs).join(',')}]`;
+  return `[${importTransform.map(resultColumnToJs).join(',')}]`;
 }
 
 

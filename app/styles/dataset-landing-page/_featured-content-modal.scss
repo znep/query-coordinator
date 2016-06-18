@@ -169,22 +169,6 @@
       margin: auto;
       display: block;
     }
-
-    .no-views-message {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-
-      p {
-        line-height: 33px; /*height of btn-sm*/
-        margin-bottom: 0;
-      }
-
-      .btn {
-        flex-shrink: 0;
-        align-self: center;
-      }
-    }
   }
 
   .modal-footer {

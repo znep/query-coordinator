@@ -1274,6 +1274,9 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     back: Back
+    bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
+    bootstrap_button: Create a Visualization
+    bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new Data Lens.
     cancel: Cancel
     change: Change
     choose: Choose
@@ -1358,8 +1361,6 @@ en:
       view_selector_modal:
          header: Feature a Socrata Visualization
          message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
-         no_views: This dataset doesn’t have any related visualizations. Do you want to create one now?
-         create_a_view: Create a visualization
          view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
     feedback:
       panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
@@ -1401,7 +1402,6 @@ en:
       title: Access this Dataset via OData
     official: Official
     popular_views:
-      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
       load_more_error: There was a problem loading additional content.
       title: Popular Content Using this Data
       view: View

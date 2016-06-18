@@ -114,8 +114,7 @@ module DatasetLandingPageHelper
       begin
         new_data_lens_path(:id => @view.migrations['nbeId'])
       rescue CoreServer::ConnectionError => e
-        # There are no migrations, so make a new viz from grid view
-        data_grid_path(@view)
+        nil
       end
     end
   end
@@ -173,7 +172,7 @@ module DatasetLandingPageHelper
   end
 
   def sort_order
-    query = @view.metadata.json_query
+    query = @view.metadata && @view.metadata.json_query
     order = query.try(:[], 'order').try(:first)
 
     if query

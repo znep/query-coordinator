@@ -6,6 +6,7 @@ import {
   saveFeaturedItem,
   requestDerivedViews
 } from '../../actions/featuredContent';
+import BootstrapAlert from '../BootstrapAlert';
 import FormFooter from './FormFooter';
 import ViewSelector from './ViewSelector';
 
@@ -83,14 +84,7 @@ export var ViewSelectorModal = React.createClass({
   renderNoViews: function() {
     var { bootstrapUrl } = this.props;
 
-    return (
-      <div className="alert default no-views-message">
-        <p>{this.I18n.no_views}</p>
-        <a href={bootstrapUrl} className="btn btn-sm btn-alternate-2">
-          {this.I18n.create_a_view}
-        </a>
-      </div>
-    );
+    return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
   },
 
   renderFooter: function() {

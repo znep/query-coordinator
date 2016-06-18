@@ -85,7 +85,7 @@ class AppConfig < Hashie::Dash
 
   # What's New configuration
   property :whats_new, default: {}
-  
+
   # Dataset restore configuration
   property :restore_dataset_days, default: 5
 

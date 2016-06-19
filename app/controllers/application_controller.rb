@@ -5,6 +5,13 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  # If someone requests a URL with a file extension that we do not explicitly
+  # handle then Rails will 'helpfully' display a default error page after
+  # alerting Airbrake. We don't care about that, and we want to show our own
+  # error page. This line presumably will rescue all of the below class of
+  # exceptions and just render our 404 page.
+  rescue_from ActionController::UnknownFormat, with: :render_404
+
   # Expose helper_methods for use in all views
   helper_method :current_user, :current_user_story_authorization
 
@@ -32,8 +39,9 @@ class ApplicationController < ActionController::Base
 
   def render_404
     respond_to do |format|
-      format.html { render 'stories/404', layout: '404', status: 404 }
-      format.json { render json: {error: '404 Not Found'}, status: 404 }
+      format.html { render('stories/404', layout: '404', status: 404) }
+      format.json { render(json: {error: '404 Not Found'}, status: 404) }
+      format.any { render('stories/404', layout: '404', formats: [:html], content_type: 'text/html', status: 404) }
     end
   end
 

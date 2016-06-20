@@ -2650,6 +2650,7 @@ en:
           underline: Underline
           undo: Undo
         full_screen: Toggle full screen
+        no_description: (No description provided)
         out_of_date: This dataset is out of date by %{age}
         publish_button: Publish Dataset
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.

@@ -60,7 +60,7 @@ var DownloadDropdown = React.createClass({
 
     if (view.downloadOverride) {
       return (
-        <a href={view.downloadOverride} className="btn btn-default btn-sm download">
+        <a href={view.downloadOverride} className="btn btn-simple btn-sm download">
           {I18n.action_buttons.download}
         </a>
       );
@@ -109,7 +109,7 @@ var DownloadDropdown = React.createClass({
 
     return (
       <div
-        className="dropdown btn btn-default download btn-sm"
+        className="dropdown btn btn-simple download btn-sm"
         data-dropdown
         data-orientation="bottom">
         <span aria-hidden>{I18n.action_buttons.download}</span>

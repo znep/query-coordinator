@@ -55,7 +55,7 @@ export var InfoPane = React.createClass({
     viewDataButton = (
       <a
         href={view.gridUrl}
-        className="btn btn-default btn-sm grid"
+        className="btn btn-simple btn-sm unstyled-link grid"
         onClick={onClickGrid}
         target="_blank">
         {I18n.action_buttons.data}
@@ -66,13 +66,13 @@ export var InfoPane = React.createClass({
     downloadDropdown = <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
 
     apiButton = (
-      <button className="btn btn-default btn-sm api" data-flannel="api-flannel" data-toggle>
+      <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
         {I18n.action_buttons.api}
       </button>
     );
 
     shareButton = (
-      <button className="btn btn-default btn-sm share" data-modal="share-modal">
+      <button className="btn btn-simple btn-sm share" data-modal="share-modal">
         {I18n.action_buttons.share}
       </button>
     );
@@ -94,7 +94,7 @@ export var InfoPane = React.createClass({
       null;
 
     moreActions = (
-      <div className="btn btn-default btn-sm dropdown more" data-dropdown data-orientation="bottom">
+      <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
           {contactFormButton}

@@ -2751,6 +2751,8 @@ en:
         remove_email: Remove
         success: Your email has been successfully sent.
         title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
+      fatrow:
+        edit_layout: Edit Layout
       grid_sidebar:
         add_column:
           convert_address:

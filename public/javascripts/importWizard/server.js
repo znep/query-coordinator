@@ -6,6 +6,7 @@ import * as ImportColumns from './components/importColumns';
 import { goToPage } from './wizard';
 
 import formurlencoded from 'form-urlencoded';
+import _ from 'lodash';
 
 
 export function saveMetadata() {
@@ -226,13 +227,46 @@ function pollUntilDone(ticket, dispatch, onProgress) {
   });
 }
 
-
-function transformToImports2Translation(transform: ImportColumns.Transform): string {
+export function transformToImports2Translation(importTransform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
-    // TODO: transforms, location columns, composite columns
-    return `col${resultColumn.sourceColumn.index + 1}`;
+    // TODO: location columns, composite columns
+    let transformed = `col${resultColumn.sourceColumn.index + 1}`;
+    _.forEach(resultColumn.transforms, (transform) => {
+      switch (transform.type) {
+        case 'title': {
+          transformed = `title(${transformed})`;
+          break;
+        }
+        case 'upper': {
+          transformed = `upper(${transformed})`;
+          break;
+        }
+        case 'lower': {
+          transformed = `lower(${transformed})`;
+          break;
+        }
+        case 'toStateCode': {
+          transformed = `toStateCode(${transformed})`;
+          break;
+        }
+        case 'findReplace': {
+          let replaceString = `/${transform.findText}/g`;
+          if (!transform.caseSensitive) {
+            replaceString += 'i';
+          }
+
+          transformed = `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
+          break;
+        }
+        default: {
+          console.log('error: unknown transform type ', transform.type);
+          break;
+        }
+      }
+    });
+    return transformed;
   }
-  return `[${transform.map(resultColumnToJs).join(', ')}]`;
+  return `[${importTransform.map(resultColumnToJs).join(',')}]`;
 }
 
 

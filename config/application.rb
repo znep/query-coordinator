@@ -79,9 +79,9 @@ module Frontend
 
     config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
       :namespace => 'webapp',
-      :check_size => false,
       :expires_in => 1.day,
-      :compress => true
+      :compress => true,
+      :value_max_bytes => ENV['MEMCACHED_VALUE_MAX_BYTES'] || (4 * 1024 * 1024)
     }
 
     # TTL for fragment caching, currently only used for DataSlate

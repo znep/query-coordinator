@@ -11,6 +11,8 @@ describe('StoryStore', function() {
   var story1Uid = 'what-what';
   var story1Title = 'Story 1';
   var story1Description = 'Story 1 Description';
+  var story1TileTitle = 'Override Title 1';
+  var story1TileDescription = 'Override Description 1';
   var story1Theme = 'testTheme';
   var story1Digest = 'Story 1 digest';
   var story1PublishedStory = {digest: 'test-digest-1'};
@@ -18,6 +20,8 @@ describe('StoryStore', function() {
   var story2Uid = 'stry-spc2';
   var story2Title = 'Story 2';
   var story2Description = 'Story 2 Description';
+  var story2TileTitle = 'Override Title 2';
+  var story2TileDescription = 'Override Description 2';
   var story2Digest = 'Story 2 digest';
   var story2PublishedStory = {digest: 'test-digest-2'};
 
@@ -58,6 +62,10 @@ describe('StoryStore', function() {
       uid: story1Uid,
       title: story1Title,
       description: story1Description,
+      tileConfig: {
+        title: story1TileTitle,
+        description: story1TileDescription
+      },
       theme: story1Theme,
       digest: story1Digest,
       permissions: {isPublic: false},
@@ -80,6 +88,10 @@ describe('StoryStore', function() {
       uid: story2Uid,
       title: story2Title,
       description: story2Description,
+      tileConfig: {
+        title: story2TileTitle,
+        description: story2TileDescription
+      },
       digest: story2Digest,
       permissions: {isPublic: true},
       publishedStory: story2PublishedStory,
@@ -161,6 +173,26 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             storyStore.getStoryDescription(null);
+          });
+        });
+      });
+
+      describe('.getStoryTileTitle()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyStore.getStoryTileTitle(null);
+          });
+        });
+      });
+
+      describe('.getStoryTileDescription()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyStore.getStoryTileDescription(null);
           });
         });
       });
@@ -285,6 +317,26 @@ describe('StoryStore', function() {
         });
       });
 
+      describe('.getStoryTileTitle()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyStore.getStoryTileTitle('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryTileDescription()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyStore.getStoryTileDescription('notf-ound');
+          });
+        });
+      });
+
       describe('.getStoryTheme()', function() {
 
         it('should throw an error', function() {
@@ -396,6 +448,20 @@ describe('StoryStore', function() {
         it('should return the correct value', function() {
           assert.equal(storyStore.getStoryDescription(story1Uid), story1Description);
           assert.equal(storyStore.getStoryDescription(story2Uid), story2Description);
+        });
+      });
+
+      describe('.getStoryTileTitle', function() {
+        it('should return the correct value', function() {
+          assert.equal(storyStore.getStoryTileTitle(story1Uid), story1TileTitle);
+          assert.equal(storyStore.getStoryTileTitle(story2Uid), story2TileTitle);
+        });
+      });
+
+      describe('.getStoryTileDescription', function() {
+        it('should return the correct value', function() {
+          assert.equal(storyStore.getStoryTileDescription(story1Uid), story1TileDescription);
+          assert.equal(storyStore.getStoryTileDescription(story2Uid), story2TileDescription);
         });
       });
 
@@ -983,6 +1049,73 @@ describe('StoryStore', function() {
           });
 
           assert.equal(storyStore.getStoryDescription(story1Uid), 'new description');
+        });
+      });
+    });
+
+    describe('STORY_SET_TILE_CONFIG', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.STORY_SET_TILE_CONFIG,
+              tile: {
+                title: story1TileTitle,
+                description: story1TileDescription
+              }
+            });
+          });
+        });
+      });
+
+      describe('not given a payload', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.STORY_SET_TILE_CONFIG,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.STORY_SET_TILE_CONFIG,
+              storyUid: 'badd-ddab',
+              tileConfig: {
+                title: story1TileTitle,
+                description: story1TileDescription
+              }
+            });
+          });
+        });
+      });
+
+      describe('given a valid story tile title and description', function() {
+
+        it('should update the story', function() {
+
+          dispatch({
+            action: Actions.STORY_SET_TILE_CONFIG,
+            storyUid: story1Uid,
+            tileConfig: {
+              title: story1TileTitle + 'zzz',
+              description: story1TileDescription + 'zzz'
+            }
+          });
+
+          assert.equal(storyStore.getStoryTileTitle(story1Uid), story1TileTitle + 'zzz');
+          assert.equal(storyStore.getStoryTileDescription(story1Uid), story1TileDescription + 'zzz');
         });
       });
     });

@@ -336,6 +336,47 @@ RSpec.describe StoriesController, type: :controller do
       end
     end
 
+    describe 'when embed override properties exist' do
+      let(:override_title) { 'Override Title' }
+      let(:override_description) { 'Override Description' }
+      render_views
+
+      before do
+        stub_invalid_session
+        stub_core_view(story_revision.uid, {
+          name: tile_title,
+          description: tile_description,
+          metadata: {
+            tileConfig: {
+              title: override_title,
+              description: override_description
+            }
+          }
+        })
+      end
+
+      describe 'and html is requested' do
+        it 'uses the overrides in place of the main name and description' do
+          get :tile, uid: story_revision.uid
+          expect(response).to render_template(:tile)
+          expect(response.body).to have_content(override_title)
+          expect(response.body).to have_content(override_description)
+          expect(response.body).to_not have_content(tile_title)
+          expect(response.body).to_not have_content(tile_description)
+        end
+      end
+
+      describe 'and json is requested' do
+        it 'uses the overrides in place of the main name and description' do
+          get :tile, uid: story_revision.uid, format: :json
+
+          response_json_as_hash = JSON.parse(response.body)
+          expect(response_json_as_hash['title']).to eq(override_title)
+          expect(response_json_as_hash['description']).to eq(override_description)
+        end
+      end
+    end
+
     describe 'log view access' do
       before do
         stub_valid_session

@@ -34,23 +34,17 @@ class StoriesController < ApplicationController
     if @story
       StoryAccessLogger.log_story_view_access(@story, embedded: true)
 
-      core_attributes = CoreServer.get_view(@story.uid) || {}
-      title = title_from_core_attributes(core_attributes)
+      @tile_properties = {
+        title: tile_config['title'] || title_from_core_attributes,
+        description: tile_config['description'] || description_from_core_attributes,
+        image: @story.block_images(:large).first,
+        theme: @story.theme,
+        url: story_url(uid: @story.uid, vanity_text: title_to_vanity_text(title_from_core_attributes))
+      }
 
       respond_to do |format|
         format.html { render 'stories/tile', layout: 'tile' }
-        format.json {
-
-          render(
-            json: {
-              title: title,
-              description: core_attributes['description'] || nil,
-              image: @story.block_images(:large).first || nil,
-              theme: @story.theme,
-              url: story_url(uid: @story.uid, vanity_text: title_to_vanity_text(title))
-            }
-          )
-        }
+        format.json { render json: @tile_properties }
       end
     else
       render_404
@@ -176,9 +170,8 @@ class StoriesController < ApplicationController
       }
 
       core_attributes = CoreServer.get_view(params[:uid])
-      vanity_text = title_to_vanity_text(title_from_core_attributes(core_attributes))
 
-      @story_view_url = story_url(uid: params[:uid], vanity_text: vanity_text)
+      @story_view_url = story_url(uid: params[:uid], vanity_text: title_to_vanity_text(title_from_core_attributes))
       @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
       theme_list = ThemeList.new
       @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
@@ -209,10 +202,6 @@ class StoriesController < ApplicationController
   end
 
   private
-
-  def title_from_core_attributes(core_attributes)
-    core_attributes['name'] || t('default_page_title')
-  end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
   # somewhere, but that clearly won't work with an embeddable tile so we

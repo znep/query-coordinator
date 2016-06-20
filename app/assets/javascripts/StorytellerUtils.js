@@ -80,6 +80,52 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   },
 
   /**
+   * Binds a set of events, whether delegated or direct, on a single node.
+   * Events are specified as a mapping of event types to handlers, e.g.
+   *
+   * {
+   *   'keyup': [
+   *     ['.custom-url-input', validateForm]
+   *   ],
+   *   'modal-dismissed': [
+   *     [handleModalDismissed]
+   *   ]
+   * }
+   *
+   * Handlers are specified as an array of arrays (which allows an event to be
+   * handled in multiple ways); the inner array consists of an optional selector
+   * (for delegated events) and the handling function.
+   *
+   * In conjunction with an unbinding counterpart (below), consolidating handlers
+   * into a data structure provides us with a more explicit guarantee of behavior.
+   */
+  bindEvents: function(node, eventHandlers) {
+    var $node = $(node);
+    _.each(eventHandlers, function(handlers, eventName) {
+      _.each(handlers, function(handlerArray) {
+        var handler = handlerArray.pop();
+        var delegate = handlerArray.pop();
+        $node.on(eventName, delegate, handler);
+      });
+    });
+  },
+
+  /**
+   * Unbinds a set of events, whether delegated or direct, on a single ancestor node.
+   * See previous method for more details.
+   */
+  unbindEvents: function(node, eventHandlers) {
+    var $node = $(node);
+    _.each(eventHandlers, function(handlers, eventName) {
+      _.each(handlers, function(handlerArray) {
+        var handler = handlerArray.pop();
+        var delegate = handlerArray.pop();
+        $node.off(eventName, delegate, handler);
+      });
+    });
+  },
+
+  /**
    * Prevents scrolling from bubbling up to the document
    * Ex: element.on('mousewheel', '.scrollable', Util.preventScrolling)
    */

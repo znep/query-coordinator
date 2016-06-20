@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608155603) do
+ActiveRecord::Schema.define(version: 20160620221837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,10 @@ ActiveRecord::Schema.define(version: 20160608155603) do
     t.integer  "status",              default: 0, null: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
+    t.float    "crop_x"
+    t.float    "crop_y"
+    t.float    "crop_width"
+    t.float    "crop_height"
   end
 
   add_index "documents", ["status"], name: "index_documents_on_status", using: :btree
@@ -76,9 +80,9 @@ ActiveRecord::Schema.define(version: 20160608155603) do
 
   create_table "getty_images", force: :cascade do |t|
     t.string   "getty_id",    null: false
+    t.integer  "document_id"
     t.integer  "domain_id",   null: false
     t.string   "created_by",  null: false
-    t.integer  "document_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end

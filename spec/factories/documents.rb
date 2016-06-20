@@ -13,6 +13,12 @@ FactoryGirl.define do
     factory :invalid_document do
       direct_upload_url 'https://example.com/somefile.exe'
     end
-  end
 
+    factory :cropped_document do
+      crop_x 0
+      crop_y 0
+      crop_width 1.0
+      crop_height 0.5
+    end
+  end
 end

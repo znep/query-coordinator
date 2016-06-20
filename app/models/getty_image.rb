@@ -17,7 +17,7 @@ class GettyImage < ActiveRecord::Base
     end
   end
 
-  def download!(user, story_uid)
+  def download!(user, story_uid, options = {})
     return if document.present?
 
     create_document = CreateDocument.new(user, download_parameters.merge(:story_uid => story_uid))
@@ -32,7 +32,12 @@ class GettyImage < ActiveRecord::Base
     self.created_by = user['id']
 
     save!
-    ProcessDocumentJob.perform_later(create_document.document.id)
+
+    if options[:process_immediately]
+      ProcessDocumentJob.perform_now(create_document.document.id)
+    else
+      ProcessDocumentJob.perform_later(create_document.document.id)
+    end
   end
 
   private

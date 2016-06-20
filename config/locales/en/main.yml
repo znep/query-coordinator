@@ -20,6 +20,12 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    errors:
+      models:
+        document:
+          all_cropping_values: all cropping values must be set if attempting to crop
+
   # Apparently YAML forbids beginning keys with numbers, so just like with the
   # CSS rules, we'll call this key `stories_404` instead of just `404`.
   stories_404:

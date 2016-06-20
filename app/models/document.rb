@@ -24,6 +24,12 @@ class Document < ActiveRecord::Base
   validates :story_uid, presence: true
   validates :created_by, presence: true, format: FOUR_BY_FOUR_PATTERN
 
+  # Cropping values are all percentages
+  validates :crop_x, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1 }, allow_blank: true
+  validates :crop_y, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1 }, allow_blank: true
+  validates :crop_width, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1 }, allow_blank: true
+  validates :crop_height, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1 }, allow_blank: true
+
   # Direct upload url verifier validates whitelisted direct upload source
   #
   # @note CORS required on s3 buckets to facilitate direct upload
@@ -37,7 +43,7 @@ class Document < ActiveRecord::Base
   EXPECTED_UPLOAD_URL_FORMAT = %r{
     \A
     (
-      https://#{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com/(?<path>uploads\/.+\/(?<filename>.+))
+      https://#{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com/(documents/)?(?<path>uploads\/.+\/(?<filename>.+))
     )|(
       https://delivery\.gettyimages\.com/.+\/.+\.(jpg|png|gif)\?.*
     )
@@ -55,12 +61,15 @@ class Document < ActiveRecord::Base
 
   has_attached_file :upload,
     styles: lambda { |a| a.instance.attachment_styles_from_thumbnail_sizes },
+    processors: [:manual_cropper],
     convert_options: {
       thumb: '-strip' # Default imagemagick quality setting is 92. See https://www.imagemagick.org/script/command-line-options.php#quality
     }
 
   validates :direct_upload_url, presence: true, format: { with: EXPECTED_UPLOAD_URL_FORMAT }
   validates_attachment_content_type :upload, content_type: /\A(image|text\/html)/
+
+  validate :all_or_none_cropping_values
 
   before_post_process :set_content_type
   before_post_process :check_content_type_is_image
@@ -123,4 +132,27 @@ class Document < ActiveRecord::Base
     THUMBNAIL_SIZES.inject({}) { |memo, (label, pixels)| memo[label] = "#{pixels}x#{pixels}>" ; memo }
   end
 
+  def cropping?
+    all_cropping_values_set?
+  end
+
+  def regenerate_thumbnails!
+    upload.reprocess!
+  end
+
+  def all_or_none_cropping_values
+    unless all_cropping_values_set? || all_cropping_values_unset?
+      errors.add(:base, I18n.t('activerecord.errors.models.document.all_cropping_values'))
+    end
+  end
+
+  private
+
+  def all_cropping_values_set?
+    [crop_width, crop_height, crop_x, crop_y].all?(&:present?)
+  end
+
+  def all_cropping_values_unset?
+    [crop_width, crop_height, crop_x, crop_y].all?(&:blank?)
+  end
 end

@@ -100,6 +100,10 @@ class ApplicationController < ActionController::Base
     redirect_to "/login?return_to=#{Rack::Utils.escape(request.fullpath)}"
   end
 
+  def assert_can_edit_story
+    render nothing: true, status: 403 unless can_edit_story?
+  end
+
   def require_logged_in_user
     # If no current_user:
     # - for JSON requests, respond with 401.
@@ -179,7 +183,9 @@ class ApplicationController < ActionController::Base
       when 'show'
         require_logged_in_user
       when 'create'
-        require_logged_in_user
+        assert_can_edit_story
+      when 'crop'
+        assert_can_edit_story
       else
         raise_undefined_authorization_handler_error
     end
@@ -192,7 +198,7 @@ class ApplicationController < ActionController::Base
 
       case action
         when 'create'
-          return render nothing: true, status: 403 unless can_edit_story?
+          assert_can_edit_story
         when 'latest'
           return render nothing: true, status: 403 unless can_view_unpublished_story?
         else
@@ -211,7 +217,7 @@ class ApplicationController < ActionController::Base
         when 'show'
           # Silence is golden.
         when 'search'
-          return render nothing: true, status: 403 unless can_edit_story?
+          assert_can_edit_story
         else
           raise_undefined_authorization_handler_error
       end

@@ -185,18 +185,27 @@ RSpec.describe GettyImage, type: :model do
         end
 
         describe 'when saving succeeds' do
-          let(:perform_later_spy) { spy('perform_later') }
+          let(:mock_perform) { double('perform') }
 
           before do
-            allow(ProcessDocumentJob).to receive(:perform_later).and_return(perform_later_spy)
+            allow(ProcessDocumentJob).to receive(:perform_later).and_return(mock_perform)
+            allow(ProcessDocumentJob).to receive(:perform_now).and_return(mock_perform)
             allow(subject).to receive(:save!)
           end
 
-          it 'returns a ProcessDocumentJob' do
+          it 'ProcessDocumentJob receives :perform_later' do
             subject.download!(user, story_uid)
             expect(ProcessDocumentJob).to have_received(:perform_later)
+            expect(ProcessDocumentJob).to_not have_received(:perform_now)
+          end
+
+          it 'ProcessDocumentJob receives :perform_now' do
+            subject.download!(user, story_uid, process_immediately: true)
+            expect(ProcessDocumentJob).to have_received(:perform_now)
+            expect(ProcessDocumentJob).to_not have_received(:perform_later)
           end
         end
+
       end
     end
   end

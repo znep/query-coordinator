@@ -110,6 +110,17 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
     end
+
+    describe 'crop endpoint' do
+      it 'routes to DocumentController' do
+        expect(put: '/api/v1/documents/3/crop', format: 'json').to route_to(
+          controller: 'api/v1/documents',
+          action: 'crop',
+          format: 'json',
+          id: '3'
+        )
+      end
+    end
   end
 
   # POST /api/v1/uploads

@@ -11,9 +11,9 @@ Rails.application.configure do
 
   config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
     :namespace => 'webapp',
-    :check_size => false,
     :expires_in => 1.day,
-    :compress => true
+    :compress => true,
+    :value_max_bytes => ENV['MEMCACHED_VALUE_MAX_BYTES'] || (4 * 1024 * 1024)
   }
 
   # Eager load code on boot. This eager loads most of Rails and

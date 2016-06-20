@@ -320,3 +320,82 @@ under the `eslintConfig` key. Currently we use no configuration options for
 ##### These Features must be added to your domain(s):
 * mondara\_nbe
 * geospatial
+
+## Configuration variables
+
+Below is the list of known environment variables that are used by the frontend. In most cases these are used to define values used by the Rails application itself, but in some other cases, they are used to provide information to third party services and APIs.
+
+_Note:_ Most, but not all, of the variables defined below can be specified or overridden via ENV variables, but in some cases, the values come solely from hard-coded values in `config/config.yml`. In other cases the values are specified either within `metachef` in the appropriate environment JSON file (e.g.`environments/production.json`) in the case of the dockerized app running in SEA1, or in `apps-marathon` in the case of the dockerized app running in AWS.
+
+In the case where the configuration variable is being provided as an ENV variable, the variable name is referenced in ALL CAPS, so `airbrake_environnment_name` would be written as `AIRBRAKE_ENVIRONNMENT_NAME`.
+
+Variable Name | Type | Description
+------------------ | :------: | -------------------------------------------------------------------------------------------
+`action_controller_perform_caching` | Boolean | Rails configuration directive specifying if caching should take place. _Must be set to `true` for Memcached to be used_.
+`cache_classes` | Boolean | Rails configuration directive specifying whether classes should be cached. Should be `true` in production.
+`consider_all_requests_local` | Boolean | Rails configuration directive specifying if full error reports should be displayed. Should be `false` in production.
+`airbrake_api_key` | String | This is the API key used to report errors to the AirBrake service.
+`airbrake_environnment_name` | String | Name of the environment to identify the project in AirBrake. Must match the value as configured in the AirBrake service.
+`airbrake_http_proxy` | URI | Proxy host URI used to connect to Airbrake (_citation needed_).
+`auth0_uri` | String | _Host name_, **not "URI"**, used to connect to the Auth0 service.
+`auth0_id` | String | API token used to authenticate with the Auth0 service.
+`auth0_secret` | String | Secret key used to authenticate with the Auth0 service.
+`auth0_jwt` | String | Javascript Web Token used to authenticate with the Auth0 service.
+`app_token` | String | TheSocrata API token used when making request to Core by the frontend for most _but not all_ requests. See also `data_cards_app_token`.
+`bundle_gemfile` | String | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
+`canary` | Boolean | If set to true the host will visually identify itself as the Canary.
+`cetera_host` | URI | API endpoint _URI_, **not "host"**, that provides the cetera catalog search service.
+`clortho_bucket` | String | Bucket identifier in AWS-KMS used to access secret values defined in the Clortho service.
+`consul_host` | URI | API endpoint _URI_, **not "host"**, used to access the Consul service. Used primarily to access maintenance / downtime notices displayed in the frontend.
+`coreservice_uri` | URI | API endpoint to which all Core requests are directed, both by the Rails application as well as JavaScript running client side.
+`curated_region_job_queue_hostname` | String | Host name to connect to for the Curated Region Job Queue.
+`curated_region_job_queue_port` | Integer | Port to connect to on `curated_region_job_queue_hostname` for the Curated Region Job Queue.
+`data_cards_app_token` | String | Defines the Socrata API token used by Data Lens when making requests to Core. It is used by both the Rails app and in client side JS. See also `app_token`.
+`disable_zookeeper` | String | 
+`enable_png_download_ui` | Boolean | Enables the PNG download feature in Data Lens. It should should be deprecated in favor of Feature Flags.
+`enable_search_suggestions` | Boolean | Enables the Spandex auto-suggestion search feature in Data Lens. It should be deprecated in favor of Feature Flags.
+`esri_crawler_hostname` | String | Host name used to connect to the ESRI crawler service.
+`esri_crawler_port` | String | Port used when connecting to `esri_crawler_hostname` for the ESRI crawler service.
+`feature_map_disable_pan_zoom` | Boolean | Disables pan/zoom on extremely large feature maps to prevent a possible performance impact on backend services.
+`feature_map_features_per_tile` | Integer | Sets the maximum number of features to render per tile for feature maps. Default value might be 50,000.
+`feature_map_zoom_debounce` | Integer | Sets the debounce-time for map zoom mouse clicks in milliseconds. This is to prevent excessive requests to the backend API endpoint.
+`http_user_agent` | String | User agent string provided in the request used to identify mobile users and other identification purposes (e.g. GlobalSign, etc.)
+`import_status_service_hostname` | String | Host name to connect to for the ISS.
+`import_status_service_port` | Integer | Port to connect to on `import_status_service_hostname` for the ISS.
+`kafka_rest_uri` | URI | (_Deprecated_) API endpoint used to connect to Kafka.
+`log_level` | String | Log level directive used when configuring `Rails.logger`.
+`memcached_hosts` | String | _Comma-separated_ list of URIs _including weighting_ used to connect to Memcached via Dalli. i.e. `10.1.0.72:11211:1,...`
+`memcached_value_max_bytes` | Integer | Maximum size of values allowed to be written to Memcached via Dalli.
+`metrics_dir` | String | Directory into which runtime metrics are written for collection into balboa by a separate agent.
+`mixpanel_token` | String | API token used to report runtime metrics to MixPanel.
+`odux_enable_feature_map` | Boolean | Enables to use of the feature map (point map) in Data Lens.
+`odysseus_uri` | URI | URI used to connect to Odysseus from within the Rails app.
+`opendata_ga_tracking_code` | String | Google Analytics tracking code used for the Open Data Portal.
+`polaroid_hostname` | String | Host name to connect to for the Polaroid page snapshot service.
+`polaroid_port` | Integer | Port to connect to on `polaroid_host` for the Polaroid page snapshot service.
+`rails_log_file` | String | File name into which to write logs from the Rails application. Can optionally be set to `STDOUT` OR `STDERR`.
+`rails_serve_static_files` | Boolean | Flag to indicate if the Rails application should serve static assetss. _Must be `true` in dockerized environments_.
+`recaptcha_public_key` | String | Public key used to authenticate with Recaptcha.
+`recaptcha_private_key` | String | Private key used to authenticate with Recaptcha.
+`recaptcha_2_secret_token` | String | API token used to authenticate with Recaptcha 2.
+`recaptcha_2_site_key` | String | API key used to authenticate with Recaptcha 2.
+`remote_addr` | String | IP Address of the requesting user agent. Typically expected to be the browser itself.
+`rpx_facebook_url` | URI | API endpoint used for OAuth with Facebook.
+`rpx_googleplus_url` | URI | API endpoint used for OAuth with Google+.
+`rpx_signin_url` | URI | API endpoint used for OAuth with OpenId.
+`rpx_twitter_url` | URI | API endpoint used for OAuth with Twitter.
+`rpx_windowslive_url` | URI | API endpoint used for OAuth with WindowsLive.
+`secondary_group_identifier` | String | ID of the Spandex secondary store used by the auto-suggest service.
+`secret_key_base` | String | Secret key value used to initialize sessions in Rails. _Must be set or the app cannot start_.
+`session_salt` | String | Salt value used to initialize sessions in Rails. _Must be set or the app cannot start_.
+`session_store_secret` | String | Secret key value used to store sessions in Rails. _Must be set or the app cannot start_.
+`shape_file_region_query_limit` | Integer | Maximum number of regions to fetch when reading shapefiles.
+`standard_ga_tracking_code` | String | Google Analytics tracking code used across all domains. (_citation needed_)
+`statsd_enabled` | Boolean | Enable collection of stats using `statsd`.
+`statsd_server` | String | Host name of the `statsd` server to connect to when `statsd_enabled` is `true`.
+`tileserver_host` | String | _Single_ **internally accessible** host to connect to in a specific environment for the Tile Server service.
+`tileserver_hosts` | String | _Comma-separated_ list of **publicly accessible** host names to connect to for the Tile Server service.
+`unicorn_listen_port` | Integer | Port that Unicorn will listen on to service incoming requests.
+`unicorn_timeout` | Integer | Number of milliseconds a Unicorn worker will wait for a request to be serviced by Rails before giving up.
+`unicorn_worker_processes` | Integer | Number Unicorn worker processes to run at startup.
+`zk_hosts` | URI | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.

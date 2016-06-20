@@ -44,7 +44,7 @@ function assembleInitialFeaturedContent() {
   var contentList = [null, null, null];
 
   featuredContent.forEach(function(item) {
-    contentList[item.position - 1] = item;
+    contentList[item.position] = item;
   });
 
   return contentList;
@@ -99,7 +99,7 @@ export default function(state, action) {
         ...state,
         isEditing: true,
         editType: getEditTypeFromFeaturedItem(action.featuredItem),
-        editPosition: action.featuredItem.position - 1
+        editPosition: action.featuredItem.position
       };
 
     case CANCEL_FEATURED_ITEM_EDIT:

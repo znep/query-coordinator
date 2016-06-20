@@ -136,7 +136,7 @@ describe('reducers/featuredContent', function() {
 
       expect(state.editPosition).to.equal(null);
       state = reducer(state, editFeaturedItem(featuredItem));
-      expect(state.editPosition).to.equal(1);
+      expect(state.editPosition).to.equal(2);
     });
   });
 

@@ -83,14 +83,14 @@ export function update(columnState, action) {
       let transforms;
       const newTransform = makeColumnTransform();
       if (!_.isUndefined(columnState.transforms)) {
-        transforms = [ ...columnState.transforms, newTransform ];
+        transforms = [...columnState.transforms, newTransform];
       } else {
-        transforms = [ newTransform ];
+        transforms = [newTransform];
       }
       return { ...columnState, transforms: transforms };
     }
     case UPDATE_COLUMN_REMOVE_TRANSFORM: {
-      let transforms = [ ...columnState.transforms ];
+      const transforms = [...columnState.transforms];
       transforms.splice(action.removeIndex, 1);
       return { ...columnState, transforms: transforms };
     }

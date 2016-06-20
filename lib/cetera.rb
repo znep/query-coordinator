@@ -40,6 +40,20 @@ module Cetera
     response.success? && CatalogSearchResult.new(response)
   end
 
+  def self.get_derived_from_views(uid, cookies_string, request_id, limit = nil, offset = nil)
+    options = {
+      search_context: CurrentDomain.cname,
+      domains: [CurrentDomain.cname],
+      derived_from: uid,
+      offset: offset,
+      limit: limit
+    }.compact
+
+    response = search_views(options, cookies_string, request_id)
+
+    response ? response.results : []
+  end
+
   #########
   # Helpers
 
@@ -74,7 +88,7 @@ module Cetera
     {
       boostDomains: opts[:domain_boosts],
       domains: translate_domains(opts[:domains]),
-      offset: translate_page_and_limit(opts[:page], opts[:limit]),
+      offset: translate_offset(opts[:offset], opts[:page], opts[:limit]),
       only: translate_display_type(opts[:limitTo], opts[:datasetView]),
       order: translate_sort_by(opts[:sortBy])
     }.compact
@@ -82,10 +96,6 @@ module Cetera
 
   def self.translate_domains(domains)
     domains.present? && domains.join(',') # Cetera does not yet support domains[]
-  end
-
-  def self.translate_page_and_limit(page, limit)
-    (page && limit) ? (page - 1) * limit : 0
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
@@ -104,6 +114,17 @@ module Cetera
         'blob' => 'files',
         'href' => 'links'
       }.fetch(limitTo, limitTo)
+    end
+  end
+
+  # Translate either the offset from either the provided offset of using the provided page
+  def self.translate_offset(offset, page, limit)
+    if offset
+      offset
+    elsif page && limit
+      (page - 1) * limit
+    else
+      0
     end
   end
 
@@ -132,7 +153,8 @@ module Cetera
 
   # Anything not explicitly supported here will be dropped
   def self.valid_cetera_keys
-    Set.new(%i(boostDomains categories domains for_user limit offset only order q search_context tags))
+    Set.new(%i(boostDomains categories derived_from domains for_user limit offset only order q
+               search_context tags))
   end
 
   # A row of Cetera results

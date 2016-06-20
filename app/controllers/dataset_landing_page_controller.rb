@@ -1,15 +1,22 @@
-class DatasetLandingPageController < ActionController::Base
-  include UserAuthMethods
+class DatasetLandingPageController < ApplicationController
+  include ApplicationHelper
+  include CommonMetadataMethods
 
   before_filter :hook_auth_controller
   before_filter :initialize_current_user
 
   def popular_views
     begin
-      popular_views = dataset_landing_page.get_popular_views(params[:id], params[:limit], params[:offset])
+      popular_views = dataset_landing_page.get_popular_views(
+        params[:id],
+        forwardable_session_cookies,
+        request_id,
+        params[:limit],
+        params[:offset]
+      )
     rescue CoreServer::ResourceNotFound
       return render :nothing => true, :status => :not_found
-    rescue CoreServer::CoreServerError => e
+    rescue CoreServer::CoreServerError
       return render :nothing => true, :status => :internal_server_error
     end
 

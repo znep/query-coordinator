@@ -1,5 +1,6 @@
 require 'rails_helper'
 require_relative '../../lib/dataset_landing_page'
+require_relative '../../lib/cetera'
 
 describe DatasetLandingPage do
   let(:dataset_landing_page) do
@@ -8,7 +9,8 @@ describe DatasetLandingPage do
 
   let(:view) do
     View.new({
-      :id => '1234-5678'
+      'id' => '1234-5678',
+      'newBackend' => true
     })
   end
 
@@ -42,37 +44,126 @@ describe DatasetLandingPage do
     }
   end
 
+  describe '#get_related_views' do
+    it 'returns nothing if the view does not exist' do
+      expect(View).to receive(:find).and_return(nil)
+      expect(view).not_to receive(:find_dataset_landing_page_related_content)
+      expect(dataset_landing_page).not_to receive(:format_view_widget)
+
+      result = dataset_landing_page.get_related_views('abcd-1234', 'most_accessed')
+
+      expect(result).to be_nil
+    end
+
+    it 'uses View.find_dataset_landing_page_related_content to retrieve related views' do
+      expect(View).to receive(:find).and_return(view)
+
+      expect(view).to receive(:find_dataset_landing_page_related_content).and_return([view])
+
+      expect(dataset_landing_page).to receive(:format_view_widget).
+        and_return(formatted_featured_item).
+        exactly(1).times
+
+      results = dataset_landing_page.get_related_views('abcd-1234', 'most_accessed')
+
+      expect(results).to eq([formatted_featured_item])
+    end
+  end
+
   describe '#get_popular_views' do
-    before(:each) do
-      allow(View).to receive(:find).and_return(view)
-      allow_any_instance_of(View).to receive(:find_dataset_landing_page_related_content).and_return(
-        Array.new(5, view)
-      )
-      allow(dataset_landing_page).to receive(:format_view_widget).and_return(formatted_view)
+    def make_request(limit = nil, offset = nil)
+      dataset_landing_page.get_popular_views('data-lens', 'cookie', 'request_id', limit, offset)
     end
 
-    it 'returns all views by default' do
-      expect(dataset_landing_page.get_popular_views('data-lens').length).to eq(5)
+    it 'returns an empty array if the view does not exist' do
+      expect(View).to receive(:find).and_return(nil)
+      expect(make_request).to eq([])
     end
 
-    it 'respects the limit parameter' do
-      expect(dataset_landing_page.get_popular_views('data-lens', 3).length).to eq(3)
-      expect(dataset_landing_page.get_popular_views('data-lens', 5).length).to eq(5)
-      expect(dataset_landing_page.get_popular_views('data-lens', 9001).length).to eq(5)
-      expect(dataset_landing_page.get_popular_views('data-lens', -1).length).to eq(0)
-      expect(dataset_landing_page.get_popular_views('data-lens', 'purple').length).to eq(0)
+    context 'public dataset' do
+      before(:each) do
+        allow(View).to receive(:find).and_return(view)
+        allow_any_instance_of(View).to receive(:is_public?).and_return(true)
+        allow(view).to receive(:migrations).and_return({'obeId' => 'peng-uins'})
+      end
+
+      def expect_cetera_invoked_with_correct_uid(uid, uid_to_query)
+        expect(Cetera).to receive(:get_derived_from_views).
+          with(uid_to_query, 'cookie', 'request_id', nil, nil).
+          at_least(:once).
+          and_return([])
+
+        dataset_landing_page.get_popular_views(uid, 'cookie', 'request_id')
+      end
+
+      it 'uses the provided uid if view is OBE' do
+        view = View.new('id' => 'peng-uins', 'newBackend' => false)
+        expect(View).to receive(:find).and_return(view)
+        expect(view).not_to receive(:migrations)
+
+        expect_cetera_invoked_with_correct_uid('peng-uins', 'peng-uins')
+      end
+
+      it 'uses the provided uid if no OBE version exists' do
+        expect(View).to receive(:find).and_return(view)
+        expect(view).to receive(:migrations).and_raise(CoreServer::ConnectionError.new(nil))
+
+        expect_cetera_invoked_with_correct_uid('1234-5678', '1234-5678')
+      end
+
+      it 'uses the OBE uid if an OBE version exists' do
+        expect(View).to receive(:find).and_return(view)
+        expect(view).to receive(:migrations).and_return('obeId' => 'peng-uins')
+
+        expect_cetera_invoked_with_correct_uid('1234-5678', 'peng-uins')
+      end
+
+      it 'uses Cetera.get_derived_from_views to retrieve the related views from Cetera' do
+        expect(Cetera).to receive(:get_derived_from_views).and_return([])
+        expect(make_request).to eq([])
+      end
+
+      it 'formats the response' do
+        expect(Cetera).to receive(:get_derived_from_views).and_return([{}])
+        expect(dataset_landing_page).to receive(:format_view_widget).
+          and_return(formatted_view)
+        expect(make_request).to eq([formatted_view])
+      end
     end
 
-    it 'respects the offset parameter' do
-      expect(dataset_landing_page.get_popular_views('data-lens', nil, 1).length).to eq(4)
-      expect(dataset_landing_page.get_popular_views('data-lens', nil, 10).length).to eq(0)
-      expect(dataset_landing_page.get_popular_views('data-lens', nil, -2).length).to eq(2)
-      expect(dataset_landing_page.get_popular_views('data-lens', nil, 'purple').length).to eq(5)
+    context 'private dataset' do
+      before(:each) do
+        allow(View).to receive(:find).and_return(view)
+        allow_any_instance_of(View).to receive(:is_public?).and_return(false)
+        allow_any_instance_of(View).to receive(:find_dataset_landing_page_related_content).and_return(
+          Array.new(5, view)
+        )
+        allow(dataset_landing_page).to receive(:format_view_widget).and_return(formatted_view)
+      end
+
+      it 'returns all views by default' do
+        expect(make_request.length).to eq(5)
+      end
+
+      it 'respects the limit parameter' do
+        expect(make_request(3).length).to eq(3)
+        expect(make_request(5).length).to eq(5)
+        expect(make_request(9001).length).to eq(5)
+        expect(make_request(-1).length).to eq(0)
+        expect(make_request('purple').length).to eq(0)
+      end
+
+      it 'respects the offset parameter' do
+        expect(make_request(nil, 1).length).to eq(4)
+        expect(make_request(nil, 10).length).to eq(0)
+        expect(make_request(nil, -2).length).to eq(2)
+        expect(make_request(nil, 'purple').length).to eq(5)
+      end
     end
   end
 
   describe '#get_featured_content' do
-    it 'makes the appropriate calls to retrieve featured content' do
+    it 'uses View.featured_content to retrieve featured content' do
       expect(View).to receive(:find).and_return(view)
       expect_any_instance_of(View).to receive(:featured_content).and_return(
         Array.new(3, featured_item)
@@ -87,7 +178,7 @@ describe DatasetLandingPage do
   end
 
   describe '#get_formatted_view_widget_by_id' do
-    it 'makes the appropriate calls to retrieve the view by id' do
+    it 'uses View.find to retrieve the view by id' do
       expect(View).to receive(:find).and_return(view)
 
       expect(dataset_landing_page).to receive(:format_view_widget).

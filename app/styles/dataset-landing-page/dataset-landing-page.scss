@@ -240,6 +240,10 @@ main.container.landing-page-container {
 
   .alert.error {
     margin-top: 15px;
+
+    .alert-dismiss {
+      float: right;
+    }
   }
 
   .media-results {

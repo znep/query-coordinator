@@ -32,7 +32,7 @@ const RowStatusWidget = React.createClass({
       status,
       onSuccess
     } = this.props;
-    const statusLabel = t(`status_${status}`);
+
     const className = classNames(
       'row-status-widget-label',
       `is-${status}`
@@ -62,7 +62,7 @@ const RowStatusWidget = React.createClass({
           <div>
             <span className="icon-failed status-icon-disabled" />
             {' '}
-            <span className={className}>{statusLabel}</span>
+            <span className={className}>{t('status_disabled')}</span>
             <FormButton {...disabledFormButtonProps} />
           </div>
         );
@@ -72,7 +72,7 @@ const RowStatusWidget = React.createClass({
           <div>
             <span className="icon-check status-icon-enabled" />
             {' '}
-            <span className={className}>{statusLabel}</span>
+            <span className={className}>{t('status_enabled')}</span>
             <FormButton {...enabledFormButtonProps} />
           </div>
         );
@@ -83,7 +83,7 @@ const RowStatusWidget = React.createClass({
             <span className="status-icon-progress" />
             {' '}
             <span className={className}>
-              {statusLabel}
+              {t('status_progress')}
               <br />
               <span className="substatus">{t('substatus_progress')}</span>
             </span>
@@ -96,12 +96,17 @@ const RowStatusWidget = React.createClass({
             <span className="icon-failed status-icon-failed" />
             {' '}
             <span className={className}>
-              {statusLabel}
+              {t('status_failed')}
               <br />
               <p className="substatus" dangerouslySetInnerHTML={failurePrompt} />
             </span>
           </div>
         );
+
+      default:
+        // We shouldn't get into this state, but if we don't return anything from this component,
+        // React breaks the rest of the javascript on this page. :(
+        return null;
     }
   }
 });

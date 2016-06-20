@@ -1,6 +1,6 @@
 import utils from 'socrata-utils';
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import MultilineEllipsis from 'react-dotdotdot';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
 import formatDate from '../lib/formatDate';
 
@@ -18,24 +18,6 @@ var ViewWidget = React.createClass({
     updatedAt: PropTypes.string,
     url: PropTypes.string,
     viewCount: PropTypes.number
-  },
-
-  componentDidMount: function() {
-    var $el = $(ReactDOM.findDOMNode(this));
-
-    var titleLineHeight = 24;
-    var descriptionLineHeight = 19;
-    var descriptionPadding = 8;
-
-    // Collapse title to 2 lines.
-    $el.find('.entry-title').dotdotdot({
-      height: 2 * titleLineHeight
-    });
-
-    // Collapse description to 3 lines.
-    $el.find('.entry-description').dotdotdot({
-      height: 3 * descriptionLineHeight + 2 * descriptionPadding
-    });
   },
 
   renderOverlay: function() {
@@ -103,7 +85,7 @@ var ViewWidget = React.createClass({
       <span className="icon icon-private" /> : null;
 
     var image = _.isString(imageUrl) ?
-      <img src={imageUrl} alt={`${I18n.view_widget.image_alt_tag} ${name}`} /> :
+      <img src={imageUrl} alt={name} /> :
       <span className={`${icon} x-large-icon`}></span>;
 
     var ariaLabel = `${I18n.popular_views.view} ${name}`;
@@ -115,7 +97,9 @@ var ViewWidget = React.createClass({
             <h3 className="entry-name">
               {privateIcon}
               <a {...linkProps} href={url} aria-label={ariaLabel} onClick={this.props.onClick}>
-                {name}
+                <MultilineEllipsis clamp={2} ellipsis="...">
+                  {name}
+                </MultilineEllipsis>
               </a>
             </h3>
           </div>
@@ -133,7 +117,11 @@ var ViewWidget = React.createClass({
                 {image}
               </div>
             </a>
-            <div className="entry-description" dangerouslySetInnerHTML={{ __html: description }} />
+            <div className="entry-description">
+              <MultilineEllipsis clamp={3} ellipsis="...">
+                <div dangerouslySetInnerHTML={{ __html: description }} />
+              </MultilineEllipsis>
+            </div>
           </div>
         </div>
 

@@ -1467,7 +1467,6 @@ en:
     updated: Updated
     view_widget:
       external_content: External Content
-      image_alt_tag: Image of
       views: Views
   dataslate:
     component:

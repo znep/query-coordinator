@@ -418,7 +418,7 @@ Rails.application.routes.draw do
       get '/signup', :to => 'accounts#new', :as => 'signup'
       post '/signup', :to => 'accounts#create', :as => 'signup_submit'
       post '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
-      get '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
+      post '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
       get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
       get '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
       get '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'

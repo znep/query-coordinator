@@ -6,7 +6,7 @@
         !@view.nil? && @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? -%>
     <li class="edit"><a class="button"
       href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>">
-      Edit Layout
+      <%= t('screens.ds.fatrow.edit_layout') %>
     </a></li>
     <%- end -%>
     <li><a href="#start" title="View first page" class="start button">
@@ -26,4 +26,3 @@
   <div class="templateRow row clearfix">
   </div>
 </div>
-

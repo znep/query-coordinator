@@ -944,9 +944,12 @@ class AdministrationController < ApplicationController
     if date_string.present?
       begin
         dates = date_string.split(' - ')
-        start_date = DateTime.strptime(dates[0] << ' 00:00:00', '%m/%d/%Y %H:%M:%S') # beginning of start day...
+        start_date = DateTime.strptime(dates[0] + ' 00:00:00', '%m/%d/%Y %H:%M:%S') # beginning of start day...
         if dates.count >= 2
-          end_date = DateTime.strptime(dates[1] << ' 23:59:59', '%m/%d/%Y %H:%M:%S') # to end of end day
+          end_date = DateTime.strptime(dates[1] + ' 23:59:59', '%m/%d/%Y %H:%M:%S') # to end of end day
+        else
+          # if we have a start date but no end date, set the end date to the end of the start day
+          end_date = DateTime.strptime(dates[0] + ' 23:59:59', '%m/%d/%Y %H:%M:%S')
         end
       rescue ArgumentError
         Rails.logger.warn("Invalid date in AdministrationController#jobs: #{date_string}")

@@ -30,7 +30,7 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
 
 blist.datasetControls.unsavedViewPrompt = function()
 {
-    $.live('a', 'click', function(e)
+    $('a').on('click', function(e)
     {
         // We only care about temp views
         if (!blist.dataset.temporary || blist.dataset.minorChange) { return; }
@@ -70,8 +70,7 @@ blist.datasetControls.unsavedViewPrompt = function()
 
         e.preventDefault();
 
-        var doRedirect = function()
-        {
+        var doRedirect = function() {
             window.location = origHref;
             return true;
         };

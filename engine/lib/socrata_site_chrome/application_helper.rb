@@ -34,6 +34,13 @@ module SocrataSiteChrome
       (request_current_user && request_current_user['displayName'].present?) ? request_current_user['displayName'] : 'Profile'
     end
 
+    def current_user_is_admin?
+      return false if request_current_user.nil?
+      return true if request_current_user.try(:is_admin?)
+      return true if request_current_user['flags'].try(:include?, 'admin')
+      return true if request_current_user['roleName'] == 'administrator'
+    end
+
     def copyright
       copy_with_year = "\u00A9 #{Time.now.year}"
       footer_title ? "#{copy_with_year}, #{footer_title}" : copy_with_year
@@ -59,6 +66,21 @@ module SocrataSiteChrome
     def valid_links(links)
       links.to_a.select do |link|
         link && link[:url].present? && link[:key].present?
+      end
+    end
+
+    def dropdown(prompt, dropdown_options = [], orientation = 'bottom')
+      dropdown_options = dropdown_options.compact.map { |option| content_tag :li, option }
+      div_options = {
+        'data-dropdown' => '',
+        'data-orientation' => 'bottom',
+        'class' => 'dropdown'
+      }
+      content_tag(:div, div_options) do
+        div_content = content_tag(:span, prompt)
+        div_content << content_tag(:ul, 'class' => 'dropdown-options') do
+          safe_join(dropdown_options)
+        end
       end
     end
 

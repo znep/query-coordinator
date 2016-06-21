@@ -7,7 +7,7 @@ header#chrome-header {
     line-height: 60px;
     font-size: 18px;
     padding: 0 1rem;
-    overflow: hidden;
+    min-height: 60px;
 
     > a.logo {
       float: left;
@@ -49,9 +49,9 @@ header#chrome-header {
           font-size: 12px;
           margin-left: $text_padding;
         }
-        a.profile-link {
+        a.profile-link, a.admin-link, a.logout-link {
           padding: 0 $text_padding;
-          color: $header_fg_color;
+          //color: $header_fg_color;
           text-decoration: none;
           &:hover, &:focus, &:active {
             text-decoration: underline;
@@ -153,4 +153,5 @@ header#chrome-header {
       }
     }
   }
+
 }

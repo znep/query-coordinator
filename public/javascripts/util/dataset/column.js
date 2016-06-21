@@ -114,7 +114,7 @@ var Column = ServerModel.extend({
 
     canUpdate: function()
     {
-        return (this.view.isUnpublished() || !this.view.isDefault()) &&
+        return !this.view.isSnapshot() &&
             this.view.hasRight(blist.rights.view.UPDATE_COLUMN);
     },
 

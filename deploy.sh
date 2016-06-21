@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [[ -z $(git status -s) ]]; then
+  npm i
   bundle exec middleman build
   git checkout  .
   git checkout gh-pages

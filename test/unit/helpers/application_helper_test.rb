@@ -48,7 +48,31 @@ class ApplicationHelperTest < ActionView::TestCase
     assert(application_helper.get_ga_tracking_code =~ /UA-51039907-4/)
   end
 
+  def stub_user(display_name, role)
+    user = User.new('roleName' => role, 'displayName' => display_name)
+    application_helper.stubs(:current_user => user)
+  end
+
+  def test_find_user_name_and_role
+    stub_user('john', 'admin')
+    assert_match(application_helper.find_user_name, 'john')
+    assert_match(application_helper.find_user_role, 'admin')
+
+    stub_user(nil, 'publisher')
+    assert_match(application_helper.find_user_name, 'none')
+    assert_match(application_helper.find_user_role, 'publisher')
+
+    stub_user('jane', nil)
+    assert_match(application_helper.find_user_name, 'jane')
+    assert_match(application_helper.find_user_role, 'none')
+
+    application_helper.stubs(:current_user => nil)
+    assert_match(application_helper.find_user_name, 'none')
+    assert_match(application_helper.find_user_role, 'none')
+  end
+
   def test_render_ga_tracking
+    application_helper.stubs(:current_user => nil)
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
     APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-9999999', 'auto', 'socrata'\);/)
@@ -62,6 +86,19 @@ class ApplicationHelperTest < ActionView::TestCase
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: false })
     assert(application_helper.render_ga_tracking !~ /_gaSocrata\('create'/)
+  end
+
+  def test_render_ga_tracking_extra_dimensions
+    # Tests output of render_ga_tracking. Be careful of tiny formatting
+    # differences that may cause tests to fail
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true})
+    stub_user('john', 'admin')
+    admin_present_regex = /_gaSocrata\('socrata\.send', 'pageview', {"dimension2":"john","dimension3":"admin"}\);/
+    assert(application_helper.render_ga_tracking =~ admin_present_regex)
+
+    application_helper.stubs(:current_user => nil)
+    no_user_regex = /_gaSocrata\('socrata\.send', 'pageview', {"dimension2":"none","dimension3":"none"}\);/ 
+    assert(application_helper.render_ga_tracking =~ no_user_regex)
   end
 
   def test_render_airbrake_shim_does_not_render
@@ -581,6 +618,7 @@ class ApplicationHelperTest < ActionView::TestCase
     application_helper.stubs(:controller_name => 'test')
     CurrentDomain.stubs(:configuration => OpenStruct.new(:properties => OpenStruct.new(:view_type => 'table')))
     application_helper.stubs(:request => OpenStruct.new(:env => { 'HTTP_USER_AGENT' => 'IPHone'}))
+    application_helper.stubs(:current_user => nil)
   end
 
   def init_current_domain_non_mobile_device

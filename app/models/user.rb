@@ -190,6 +190,10 @@ class User < Model
     has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
   end
 
+  def role_name
+    @data['roleName']
+  end
+
   @@states = {
     '--' => '------',
     'AK' => 'Alaska',

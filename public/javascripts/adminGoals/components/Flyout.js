@@ -51,14 +51,14 @@ class Flyout extends React.Component {
         onMouseLeave: this.onMouseLeave.bind(this)
       }));
 
-    return <span>
+    return <div className="flyout-container">
       { childrenWithProps }
       <div ref="flyout" className={ flyoutClass } style={ this.state.style }>
         <section className="flyout-content">
           <p>{ this.props.text }</p>
         </section>
       </div>
-    </span>;
+    </div>;
   }
 }
 

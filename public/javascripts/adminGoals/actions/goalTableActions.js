@@ -155,7 +155,7 @@ export function selectRow(goalId) {
   };
 }
 
-export function deSelectRow(goalId) {
+export function deselectRow(goalId) {
   return {
     type: TABLE_ROW_DESELECTED,
     goalId

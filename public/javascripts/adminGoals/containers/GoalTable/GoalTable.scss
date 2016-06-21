@@ -5,15 +5,23 @@ table.op-admin-table {
     tr {
       td[scope=title] {
         width: 400px;
+      }
 
-        .goalPageLink {
-          float: right;
-        }
+      .flyout-container {
+        display: inline-block;
       }
 
       .externalLink {
-        i {
+
+        .icon-external {
           margin-left: 5px;
+          display: none;
+        }
+
+        &:hover {
+          .icon-external {
+            display: initial;
+          }
         }
       }
 
@@ -32,10 +40,20 @@ table.op-admin-table {
       }
 
       .goalPageLink {
-        margin-left: 10px;
+        float: right;
+        min-width: 110px;
+        text-align: left;
         border-left: 1px solid #999999;
         padding-left: 5px;
         display: none;
+      }
+
+      .dashboardLink {
+        min-width: 220px;
+      }
+
+      .editLinkContainer {
+        min-width: 100px;
       }
 
       .goalEditLink {

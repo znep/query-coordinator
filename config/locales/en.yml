@@ -1720,6 +1720,9 @@ en:
         visibility: Visibility
         goal_status: Goal Status
         dashboard: Dashboard
+        manage_on_goal_page: Manage on Goal Page
+        view_dashboard: View Dashboard
+        goal_page: Goal Page
       goal_values:
         status_public: Public
         status_private: Private

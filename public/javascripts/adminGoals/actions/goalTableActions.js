@@ -3,13 +3,16 @@ import _ from 'lodash';
 
 import {
   TABLE_SHOW_PAGE,
-  TABLE_ERROR,
   CACHE_DASHBOARDS,
   CACHE_USERS,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE
 } from '../actionTypes';
+
+import {
+  displayAlert
+} from './alertActions';
 
 const fetchOptions = {credentials: 'same-origin'};
 
@@ -21,7 +24,7 @@ export function tableLoadPage() {
       then(getGoals).
       then(getGoalsExtras).
       then(prepareGoals).
-      catch(error => dispatch(handleTableError(error)));// eslint-disable-line dot-notation
+      catch(() => dispatch(displayAlert({ label: 'error' })));// eslint-disable-line dot-notation
 
     function getDashboards() {
       const dashboardFetchUrl = '/stat/api/v1/dashboards';
@@ -105,7 +108,7 @@ export function tableLoadPage() {
       return fetch(`/stat/api/v1/dashboards/${dashboard.id}`, fetchOptions).
         then(checkXhrStatus).
         then(response => response.json()).
-        catch(error => dispatch(handleTableError(error))); // eslint-disable-line dot-notation
+        catch(() => dispatch(displayAlert({ label: 'error' }))); // eslint-disable-line dot-notation
     }
   };
 }
@@ -114,13 +117,6 @@ export function tableShowPage(goals) {
   return {
     type: TABLE_SHOW_PAGE,
     goals
-  };
-}
-
-export function handleTableError(error) {
-  return {
-    type: TABLE_ERROR,
-    error
   };
 }
 

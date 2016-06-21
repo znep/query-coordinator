@@ -1,7 +1,7 @@
 export const TABLE_LOAD_PAGE = 'TABLE_LOAD_PAGE';
 export const TABLE_SHOW_PAGE = 'TABLE_SHOW_PAGE';
-export const TABLE_ERROR = 'TABLE_ERROR';
-export const TABLE_SHOW_ERROR = 'TABLE_SHOW_ERROR';
+export const SHOW_ALERT = 'SHOW_ALERT';
+export const HIDE_ALERT = 'HIDE_ALERT';
 export const CACHE_DASHBOARDS = 'CACHE_DASHBOARDS';
 export const CACHE_USERS = 'CACHE_USERS';
 export const TABLE_ROW_SELECTED = 'TABLE_ROW_SELECTED';

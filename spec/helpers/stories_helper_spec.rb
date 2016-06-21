@@ -240,9 +240,9 @@ RSpec.describe StoriesHelper, type: :helper do
       })
     }
 
-    context 'when enable_responsive_images feature flag is disabled' do
+    context 'when image has no thumbnails' do
       before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
+        allow(image_component).to receive(:has_thumbnails?).and_return(false)
       end
 
       it 'returns nil' do
@@ -250,32 +250,16 @@ RSpec.describe StoriesHelper, type: :helper do
       end
     end
 
-    context 'when enable_responsive_images feature flag is enabled' do
+    context 'when image has thumbnails' do
       before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
-      end
-
-      context 'when image has no thumbnails' do
-        before do
-          allow(image_component).to receive(:has_thumbnails?).and_return(false)
-        end
-
-        it 'returns nil' do
-          expect(image_srcset_from_component(image_component)).to be_nil
+        allow(image_component).to receive(:has_thumbnails?).and_return(true)
+        Document::THUMBNAIL_SIZES.keys.each do |size|
+          allow(image_component).to receive(:url).with(size).and_return("url-#{size}")
         end
       end
 
-      context 'when image has thumbnails' do
-        before do
-          allow(image_component).to receive(:has_thumbnails?).and_return(true)
-          Document::THUMBNAIL_SIZES.keys.each do |size|
-            allow(image_component).to receive(:url).with(size).and_return("url-#{size}")
-          end
-        end
-
-        it 'returns srcset' do
-          expect(image_srcset_from_component(image_component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
-        end
+      it 'returns srcset' do
+        expect(image_srcset_from_component(image_component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
       end
     end
   end
@@ -287,6 +271,47 @@ RSpec.describe StoriesHelper, type: :helper do
 
     it 'returns a value when columns is less than 12' do
       expect(image_sizes_from_number_of_columns(6)).to eq('(min-width: 1400px) calc(0.5 * 1090px), (min-width: 1200px) calc(0.5 * 910px), (min-width: 800px) calc(0.5 * 650px), 94vw')
+    end
+  end
+
+  describe '#hero_component_classes' do
+    let(:url) { 'url' }
+    let(:layout) { 'layout' }
+    let(:hero_component) { double('hero_component', url: url, layout: layout) }
+
+    let(:result) { hero_component_classes(hero_component) }
+
+    it 'returns list of classes' do
+      expect(result).to eq('hero')
+    end
+
+    context 'when url is blank' do
+      let(:url) { nil }
+
+      it 'includes class `hero`' do
+        expect(result).to match(/\s?hero\s/)
+      end
+
+      it 'includes class `hero-no-image`' do
+        expect(result).to eq('hero hero-no-image')
+      end
+    end
+
+    context 'when layout is blank' do
+      let(:layout) { nil }
+
+      it 'includes class `hero-default-height`' do
+        expect(result).to eq('hero hero-default-height')
+      end
+    end
+
+    context 'when url and layout are both blank' do
+      let(:layout) { nil }
+      let(:url) { nil }
+
+      it 'includes class `hero-no-image` and `hero-default-height`' do
+        expect(result).to eq('hero hero-no-image hero-default-height')
+      end
     end
   end
 end

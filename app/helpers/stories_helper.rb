@@ -166,8 +166,6 @@ module StoriesHelper
   end
 
   def image_srcset_from_component(image_component)
-    return nil unless Rails.application.config.enable_responsive_images
-
     if image_component.has_thumbnails?
       Document::THUMBNAIL_SIZES.map {|size, pixels| "#{image_component.url(size)} #{pixels}w"}.join(', ')
     end
@@ -183,6 +181,13 @@ module StoriesHelper
       "(min-width: 800px) calc(#{column_width} * 650px)",
       '94vw' # the smallest breakpoint has images at 94% of the viewport
     ].join(', ')
+  end
+
+  def hero_component_classes(hero_component)
+    classes = ['hero']
+    classes << 'hero-no-image' if hero_component.url(:xlarge).blank?
+    classes << 'hero-default-height' if hero_component.layout.blank?
+    classes.join(' ')
   end
 
   private

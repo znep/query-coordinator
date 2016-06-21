@@ -10,16 +10,18 @@
 %>
 <div class="author-image col2 component-image">
   <%
+    author_component = AuthorComponent.new(component)
+
     # image_tag was prepending a spurious /stories for absolute paths (like profile images).
   %>
   <img
-     src="<%= component['value']['image']['url'] %>"
+     src="<%= author_component.url(:small) %>"
      <%=
-       alt = component['value']['image']['alt']
+       alt = author_component.image_alt_text
        alt.present? ? "alt='#{alt}'" : ''
      %>
    >
 </div>
 <div class="author-blurb col10 component-html typeset squire-formatted remove-top-margin">
-  <%= component['value']['blurb'].html_safe %>
+  <%= author_component.blurb_html.html_safe %>
 </div>

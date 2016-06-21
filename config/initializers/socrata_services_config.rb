@@ -26,7 +26,3 @@ Rails.application.config.enable_getty_images_gallery = (ENV['ENABLE_GETTY_IMAGES
 
 # Enable or disable visualization Authoring Workflow
 Rails.application.config.enable_visualization_authoring_workflow = (ENV['ENABLE_VISUALIZATION_AUTHORING_WORKFLOW'].to_s.downcase == 'true')
-
-# Enable or disable responsive images in view mode
-# We initially set this to disabled until we can regenerate all the thumbnails for existing images
-Rails.application.config.enable_responsive_images = (ENV['ENABLE_RESPONSIVE_IMAGES'].to_s.downcase == 'true')

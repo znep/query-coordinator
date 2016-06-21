@@ -826,7 +826,7 @@ $data-lens-color: #80acca;
 @mixin admin-icons($subselector: '.icon') {
   #{$subselector} {
     @include text-hiding;
-    background-image: url(/stylesheets/images/icons/admin_icons.png?2);
+    background-image: url(/stylesheets/images/icons/admin_icons.png?3);
     height: 13px;
     width: 16px;
   }

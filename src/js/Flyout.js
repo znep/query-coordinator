@@ -10,6 +10,8 @@ module.exports = function FlyoutFactory(element) {
       var node = hoverable;
       var left = 0;
       var top = 0;
+      var flyoutWidth = flyout.offsetWidth;
+      var windowWidth = document.body.offsetWidth;
 
       do {
         left += node.offsetLeft;
@@ -18,6 +20,15 @@ module.exports = function FlyoutFactory(element) {
 
       left = left + hoverable.offsetWidth / 2;
       top = top + hoverable.offsetHeight + padding;
+
+      if (left + flyoutWidth > windowWidth) {
+        flyout.classList.remove('flyout-right');
+        flyout.classList.add('flyout-left');
+        left -= flyoutWidth;
+      } else {
+        flyout.classList.remove('flyout-left');
+        flyout.classList.add('flyout-right');
+      }
 
       flyout.style.left = left + 'px';
       flyout.style.top = top + 'px';

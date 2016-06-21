@@ -240,9 +240,9 @@ RSpec.describe StoriesHelper, type: :helper do
       })
     }
 
-    context 'when enable_responsive_images feature flag is disabled' do
+    context 'when image has no thumbnails' do
       before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(false)
+        allow(image_component).to receive(:has_thumbnails?).and_return(false)
       end
 
       it 'returns nil' do
@@ -250,32 +250,16 @@ RSpec.describe StoriesHelper, type: :helper do
       end
     end
 
-    context 'when enable_responsive_images feature flag is enabled' do
+    context 'when image has thumbnails' do
       before do
-        allow(Rails.application.config).to receive(:enable_responsive_images).and_return(true)
-      end
-
-      context 'when image has no thumbnails' do
-        before do
-          allow(image_component).to receive(:has_thumbnails?).and_return(false)
-        end
-
-        it 'returns nil' do
-          expect(image_srcset_from_component(image_component)).to be_nil
+        allow(image_component).to receive(:has_thumbnails?).and_return(true)
+        Document::THUMBNAIL_SIZES.keys.each do |size|
+          allow(image_component).to receive(:url).with(size).and_return("url-#{size}")
         end
       end
 
-      context 'when image has thumbnails' do
-        before do
-          allow(image_component).to receive(:has_thumbnails?).and_return(true)
-          Document::THUMBNAIL_SIZES.keys.each do |size|
-            allow(image_component).to receive(:url).with(size).and_return("url-#{size}")
-          end
-        end
-
-        it 'returns srcset' do
-          expect(image_srcset_from_component(image_component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
-        end
+      it 'returns srcset' do
+        expect(image_srcset_from_component(image_component)).to eq('url-small 346w, url-medium 650w, url-large 1300w, url-xlarge 2180w')
       end
     end
   end

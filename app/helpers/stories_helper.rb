@@ -166,8 +166,6 @@ module StoriesHelper
   end
 
   def image_srcset_from_component(image_component)
-    return nil unless Rails.application.config.enable_responsive_images
-
     if image_component.has_thumbnails?
       Document::THUMBNAIL_SIZES.map {|size, pixels| "#{image_component.url(size)} #{pixels}w"}.join(', ')
     end

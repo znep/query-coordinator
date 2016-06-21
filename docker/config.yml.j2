@@ -101,11 +101,11 @@ default: &default
   auth0_jwt: {{ AUTH0_JWT }}
   {%- endif %}
 
-  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
-  rps_googleplus_url: https://socrata-test.rpxnow.com/googleplus/start
-  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
-  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
-  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
+  rpx_facebook_url: {{ RPX_FACEBOOK_URL }}
+  rpx_googleplus_url: {{ RPX_GOOGLEPLUS_URL }}
+  rpx_signin_url: {{ RPX_SIGNIN_URL }}
+  rpx_twitter_url: {{ RPX_TWITTER_URL }}
+  rpx_windowslive_url: {{ RPX_WINDOWSLIVE_URL }}
 
   {#
    # data lens behaviors
@@ -177,11 +177,3 @@ rc:
 
 production:
   <<: *default
-  {#
-   # auth alternatives
-   #}
-  rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
-  rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
-  rpx_googleplus_url: https://socrata.rpxnow.com/googleplus/start
-  rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
-  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start

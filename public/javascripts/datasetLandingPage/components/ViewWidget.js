@@ -102,7 +102,7 @@ var ViewWidget = React.createClass({
     var privateIcon = isPrivate ?
       <span className="icon icon-private" /> : null;
 
-    var image = imageUrl ?
+    var image = _.isString(imageUrl) ?
       <img src={imageUrl} alt={`${I18n.view_widget.image_alt_tag} ${name}`} /> :
       <span className={`${icon} x-large-icon`}></span>;
 

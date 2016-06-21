@@ -1335,6 +1335,8 @@ en:
       external_resource_form:
         description: Description
         header:  Feature an External Resource
+        preview_image: Preview Image
+        invalid_image_message: This does not look like an image. Try uploading a gif, png, or jpg.
         invalid_url_message: This looks like an invalid link. Try adding http:// to the beginning of your link.
         message: Create a link to some external asset relating to this data. It could be an awesome visualization on the web, a blog post about how the data was released, or a link to another part of your site.
         title: Title

@@ -21,8 +21,6 @@ $external-blue: #1c6387;;
 
       h3 {
         margin: 0;
-        word-wrap: break-word;
-        word-break: break-all;
       }
     }
   }
@@ -34,13 +32,25 @@ $external-blue: #1c6387;;
   .img-wrapper {
     background-color: $light-grey-5;
     display: flex;
-    justify-content: center;
-    padding: 1.5em 0;
+    height: 117px;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      min-height: unset;
+      max-height: unset;
+      width: 100%;
+      position: absolute;
+      top: -9999px;
+      bottom: -9999px;
+      margin: auto;
+    }
 
     .x-large-icon {
       font-size: 72px;
       color: $dark-grey-1;
       line-height: 1;
+      margin: auto;
     }
 
     .icon-story {

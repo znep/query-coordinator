@@ -15,13 +15,16 @@ import {
   TABLE_SHOW_PAGE,
   TABLE_ERROR,
   CACHE_DASHBOARDS,
-  CACHE_USERS
+  CACHE_USERS,
+  TABLE_ROW_SELECTED,
+  TABLE_ROW_DESELECTED,
+  TABLE_ROW_ALL_SELECTION_TOGGLE
 } from 'actionTypes';
 
-import responseDashboards from '../data/dataTableActions/responseDashboards';
-import responseDashboardDetails from '../data/dataTableActions/responseDashboardDetails';
-import responseUserDetails from '../data/dataTableActions/responseUserDetails';
-import responseGoalDetails from '../data/dataTableActions/responseGoalDetails';
+import responseDashboards from '../data/goalTableActions/responseDashboards';
+import responseDashboardDetails from '../data/goalTableActions/responseDashboardDetails';
+import responseUserDetails from '../data/goalTableActions/responseUserDetails';
+import responseGoalDetails from '../data/goalTableActions/responseGoalDetails';
 
 describe('actions/goalTableActions', function() {
   var server;
@@ -73,7 +76,6 @@ describe('actions/goalTableActions', function() {
       var cacheUsersAction = _.find(executedActions, {type: CACHE_USERS});
       expect(cacheUsersAction).to.not.eq(undefined);
       expect(_.keys(_.get(cacheUsersAction, 'users')).length).to.eq(_.keys(responseUserDetails).length);
-
 
       var tableShowPageAction = _.find(executedActions, {type: TABLE_SHOW_PAGE});
       expect(tableShowPageAction).to.not.eq(undefined);

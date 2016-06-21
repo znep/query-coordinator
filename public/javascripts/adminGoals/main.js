@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
@@ -21,11 +21,16 @@ const initialState = Immutable.fromJS({
     dashboards: {},
     goals: [],
     cachedUsers: {},
-    translations: window.translations
+    translations: window.translations,
+    selectedRows: []
   }
 });
 
-let store = createStore(reducers, initialState,  applyMiddleware(...middleware));
+let store = createStore(reducers, initialState,  compose(
+  applyMiddleware(...middleware),
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
+
 store.dispatch(tableLoadPage());
 
 ReactDOM.render(
@@ -35,4 +40,4 @@ ReactDOM.render(
   document.querySelector('#app'));
 
 let styleGuide = require('socrata-styleguide');
-styleGuide(document);
+window.socrataStyleGuide = styleGuide(document);

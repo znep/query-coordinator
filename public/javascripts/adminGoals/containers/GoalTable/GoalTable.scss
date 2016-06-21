@@ -1,0 +1,46 @@
+table.op-admin-table {
+  table-layout:fixed;
+
+  tbody {
+    tr {
+      td[scope=title] {
+        width: 400px;
+
+        .goalPageLink {
+          float: right;
+        }
+      }
+
+      .externalLink {
+        i {
+          margin-left: 5px;
+        }
+      }
+
+      &.selected {
+        .goalPageLink, .goalEditLink {
+          display: initial;
+        }
+      }
+
+      &:hover {
+        background: #cae5fd;
+
+        .goalPageLink, .goalEditLink {
+          display: initial;
+        }
+      }
+
+      .goalPageLink {
+        margin-left: 10px;
+        border-left: 1px solid #999999;
+        padding-left: 5px;
+        display: none;
+      }
+
+      .goalEditLink {
+        display: none;
+      }
+    }
+  }
+}

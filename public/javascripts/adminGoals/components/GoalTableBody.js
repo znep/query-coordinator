@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import GoalTableRow from './GoalTableRow';
 
 class GoalTableBody extends React.Component {
   constructor(props) {
@@ -11,23 +11,14 @@ class GoalTableBody extends React.Component {
     return this.props.goals !== nextProps.goals;
   }
 
-  renderRow(goal) {
-    return <tr key={goal.get('id')}>
-      <td><input type="checkbox" /></td>
-      <td>{ goal.get('name') }</td>
-      <td>{ goal.getIn(['created_by', 'displayName']) }</td>
-      <td>{ moment(goal.get('updated_at')).format('ll') }</td>
-      <td>{ this.props.translations.getIn(['admin', 'goal_values', goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
-      <td>{ this.props.translations.getIn(['measure', 'progress', goal.get('status')]) }</td>
-      <td>{ this.props.dashboards.get(goal.get('base_dashboard')).get('name') }</td>
-      <td>&nbsp;</td>
-    </tr>;
-  }
-
   render() {
-    let rows = this.props.goals.map(goal => this.renderRow(goal));
     return <tbody>
-      { rows }
+      { this.props.goals.map(goal => <GoalTableRow
+        key={ goal.get('id') }
+        goal={ goal }
+        dashboard={ this.props.dashboards.get(goal.get('base_dashboard')) }
+        translations={ this.props.translations }
+      />) }
     </tbody>;
   }
 }
@@ -38,6 +29,6 @@ const mapStateToProps = state => ({
   dashboards: state.getIn(['goalTableData', 'dashboards'])
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({});// eslint-disable-line no-unused-vars
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalTableBody);

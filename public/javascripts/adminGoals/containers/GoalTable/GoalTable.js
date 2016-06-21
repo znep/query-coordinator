@@ -9,7 +9,7 @@ class GoalTable extends React.Component {
   }
 
   render() {
-    return <table className="table table-borderless">
+    return <table className="table table-borderless op-admin-table">
       <GoalTableHead />
       <GoalTableBody />
     </table>;

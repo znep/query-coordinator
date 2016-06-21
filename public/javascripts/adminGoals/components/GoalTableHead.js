@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { toggleAllRows } from '../actions/goalTableActions';
 
 class GoalTableHead extends React.Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class GoalTableHead extends React.Component {
   render() {
     return <thead>
       <tr>
-        <th><input type="checkbox" /></th>
+        <th><input type="checkbox" onClick={ this.props.toggleAllRows } /></th>
         <th>{ this.props.translations.getIn(['admin', 'listing', 'title']) }</th>
         <th>{ this.props.translations.getIn(['admin', 'listing', 'owner']) }</th>
         <th>{ this.props.translations.getIn(['admin', 'listing', 'updated_at']) }</th>
@@ -26,6 +27,8 @@ const mapStateToProps = state => ({
   translations: state.getIn(['goalTableData', 'translations'])
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  toggleAllRows: () => dispatch(toggleAllRows())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalTableHead);

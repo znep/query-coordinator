@@ -698,12 +698,29 @@ module ApplicationHelper
       standard_ga_tracking_code : custom_ga_tracking_code
   end
 
+  def find_user_name
+    current_user.try(:displayName) || 'none'
+  end
+
+  def find_user_role
+    current_user.try(:role_name) || 'none'
+  end
+
+  def build_tracking_info_param
+    # How to send custom dimensions
+    # https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+    #
+    # dimension2 is user name and dimension3 is user type
+    {dimension2: find_user_name, dimension3: find_user_role}.to_json
+  end
+
   # Given that the Google Analytics feature flag is either set to true or an explicit value
   # render the Google Analytics tracking JavaScript code.
   def render_ga_tracking
     if use_ga_tracking_code?
       # Google analytics namespaced for multi tenant applications
       # http://benfoster.io/blog/google-analytics-multi-tenant-applications
+      tracking_param = build_tracking_info_param
       javascript_tag(<<-eos)
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -711,7 +728,7 @@ module ApplicationHelper
         })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
 
         _gaSocrata('create', '#{get_ga_tracking_code}', 'auto', 'socrata');
-        _gaSocrata('socrata.send', 'pageview');
+        _gaSocrata('socrata.send', 'pageview', #{tracking_param});
       eos
     end
   end

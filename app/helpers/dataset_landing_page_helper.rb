@@ -48,6 +48,9 @@ module DatasetLandingPageHelper
   end
 
   def render_server_config
+    # Figure out if we need a locale prefix on links
+    locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
+
     feature_flags = Hash[
       FeatureFlags.derive(nil, request).slice(*[
         :enable_dataset_landing_page,
@@ -63,6 +66,7 @@ module DatasetLandingPageHelper
       :environment => Rails.env,
       :featureFlags => feature_flags,
       :locale => I18n.locale.to_s,
+      :localePrefix => locale_prefix.to_s,
       :recaptchaKey => RECAPTCHA_2_SITE_KEY
     }
 
@@ -100,6 +104,19 @@ module DatasetLandingPageHelper
   def stats_url
     if (@view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS))
       view_stats_path(@view)
+    end
+  end
+
+  def bootstrap_url
+    if @view.newBackend?
+      new_data_lens_path(:id => @view.id)
+    else
+      begin
+        new_data_lens_path(:id => @view.migrations['nbeId'])
+      rescue CoreServer::ConnectionError => e
+        # There are no migrations, so make a new viz from grid view
+        data_grid_path(@view)
+      end
     end
   end
 
@@ -206,7 +223,6 @@ module DatasetLandingPageHelper
       :lastUpdatedAt => @view.time_last_updated_at,
       :dataLastUpdatedAt => @view.time_data_last_updated_at,
       :metadataLastUpdatedAt => @view.time_metadata_last_updated_at,
-      :nbeId => @view.preferred_id,
       :createdAt => @view.time_created_at,
       :geospatialChildLayers => transformed_child_layers,
       :rowCount => row_count,
@@ -226,7 +242,8 @@ module DatasetLandingPageHelper
       :attributionLink => @view.attributionLink,
       :statsUrl => stats_url,
       :editMetadataUrl => edit_metadata_url,
-      :sortOrder => sort_order
+      :sortOrder => sort_order,
+      :bootstrapUrl => bootstrap_url
     }
   end
 

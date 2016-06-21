@@ -13,7 +13,7 @@ export var ShareModal = function(props) {
           <span dangerouslySetInnerHTML={{ __html: I18n.share.visibility_alert_html }} />
           {' '}
           <a
-            href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`}
+            href={`${view.gridUrl}?pane=manage`}
             target="_blank">
             {I18n.manage_prompt}
           </a>

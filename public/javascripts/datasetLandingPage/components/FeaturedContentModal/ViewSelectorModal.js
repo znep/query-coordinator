@@ -12,13 +12,13 @@ import ViewSelector from './ViewSelector';
 export var ViewSelectorModal = React.createClass({
 
   propTypes: {
+    bootstrapUrl: PropTypes.string,
     hasSaveError: PropTypes.bool,
     hasViewFetchError: PropTypes.bool,
     isLoading: PropTypes.bool,
     isSaving: PropTypes.bool,
     isSavingViewUid: PropTypes.string,
     isSaved: PropTypes.bool,
-    nbeId: PropTypes.string,
     onClickCancel: PropTypes.func,
     onClickChoose: PropTypes.func.isRequired,
     fetchViews: PropTypes.func,
@@ -81,8 +81,8 @@ export var ViewSelectorModal = React.createClass({
   },
 
   renderNoViews: function() {
-    var { nbeId } = this.props;
-    var bootstrapUrl = `/view/bootstrap/${nbeId}`;
+    var { bootstrapUrl } = this.props;
+
     return (
       <div className="alert default no-views-message">
         <p>{this.I18n.no_views}</p>
@@ -131,7 +131,7 @@ export var ViewSelectorModal = React.createClass({
 // Merge state.featuredContent.externalResource to top-level for convenience.
 function mapStateToProps(state) {
   return {
-    nbeId: state.view.nbeId, // When there are no views, we render a data lens bootstrap link
+    bootstrapUrl: state.view.bootstrapUrl,
     ...state.featuredContent,
     ...state.featuredContent.viewSelector
   };

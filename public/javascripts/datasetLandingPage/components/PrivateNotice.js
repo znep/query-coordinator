@@ -61,7 +61,7 @@ export var PrivateNotice = React.createClass({
           {I18n.private_notice}
           {' '}
           <a
-            href={`/dataset/${view.id}?pane=manage&enable_dataset_landing_page=false`}
+            href={`${view.gridUrl}?pane=manage`}
             target="_blank">
             {I18n.manage_prompt}
           </a>

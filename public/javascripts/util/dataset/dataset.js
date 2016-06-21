@@ -584,12 +584,13 @@ var Dataset = ServerModel.extend({
             ds.grants = _.reject(ds.grants || [], function(g)
             {
                 return (!$.isBlank(grant.userId) && grant.userId == g.userId) ||
+                    (!$.isBlank(grant.groupUid) && grant.groupUid == g.groupUid) ||
                     (!$.isBlank(grant.userEmail) && grant.userEmail == g.userEmail);
             });
             if (_.isFunction(successCallback)) { successCallback(); }
         }
 
-        ds.makeRequest({url: '/api/views/' + ds.id + '/grants/i',
+        ds.makeRequest({url: '/api/views/' + ds.id + '/grants',
             params: {method: 'delete'}, type: 'PUT', data: JSON.stringify(grant),
             success: grantDeleted, error: errorCallback});
     },

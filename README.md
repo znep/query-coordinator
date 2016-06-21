@@ -43,6 +43,12 @@ React components).
 The webpack dev server serves its packaged assets from memory.  For production
 builds, see the [webpack](#webpack) section.
 
+To build a subset of the webpack bundles, use the `FRONTEND_WEBPACK_BUNDLES` environment variable:
+
+```
+FRONTEND_WEBPACK_BUNDLES=admin,dataset-landing-page bundle exec foreman start
+```
+
 ## Running the app _without_ the local stack
 
 See: https://github.com/socrata/docs/blob/master/connect_local_frontend_to_staging_services.md

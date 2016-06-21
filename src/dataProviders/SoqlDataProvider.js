@@ -15,7 +15,7 @@ var _ = require('lodash');
  *    the user intends to query.
  */
 function SoqlDataProvider(config) {
-  'use strict';
+  var self = this;
 
   _.extend(this, new DataProvider(config));
 
@@ -24,8 +24,6 @@ function SoqlDataProvider(config) {
 
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
-
-  var _self = this;
 
   /**
    * Public methods
@@ -59,26 +57,31 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.query = function(queryString, nameAlias, valueAlias) {
+    var url = urlForQuery('$query={0}'.format(queryString));
 
-    var url = _queryUrl('$query={0}'.format(queryString));
-
-    return _makeSoqlGetRequestWithSalt(url).then(
-      function(data) {
-        return _mapRowsResponseToTable([ nameAlias, valueAlias ], data);
-      }
-    );
+    return makeSoqlGetRequest(url).
+      then(
+        function(data) {
+          return mapRowsResponseToTable([ nameAlias, valueAlias ], data);
+        }
+      );
   };
 
   this.getRowCount = function(whereClauseComponents) {
     var whereClause = (whereClauseComponents) ?
       '&$where={0}'.format(whereClauseComponents) :
       '';
+    var url = urlForQuery(
+      '$select=count(*) as count{0}&$$$read_from_nbe=true&$$$version=2.1'.
+        format(whereClause)
+    );
 
-    return _makeSoqlGetRequestWithSalt(_queryUrl(
-      '$select=count(*) as count{0}&$$$read_from_nbe=true&$$$version=2.1'.format(whereClause)
-      )).then(function(data) {
-        return parseInt(_.get(data, '[0].count'), 10);
-      });
+    return makeSoqlGetRequest(url).
+      then(
+        function(data) {
+          return parseInt(_.get(data, '[0].count'), 10);
+        }
+      );
   };
 
   /**
@@ -109,6 +112,8 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.getRows = function(columnNames, queryString) {
+    var url = urlForQuery(queryString);
+
     utils.assertInstanceOf(columnNames, Array);
     utils.assert(columnNames.length > 0);
     utils.assertIsOneOfTypes(queryString, 'string');
@@ -116,11 +121,12 @@ function SoqlDataProvider(config) {
       utils.assertIsOneOfTypes(columnName, 'string');
     });
 
-    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(
-      function(soqlData) {
-        return _mapRowsResponseToTable(columnNames, soqlData);
-      }
-    );
+    return makeSoqlGetRequest(url).
+      then(
+        function(soqlData) {
+          return mapRowsResponseToTable(columnNames, soqlData);
+        }
+      );
   };
 
   /**
@@ -142,6 +148,9 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents) {
+    var queryString;
+    var url;
+
     utils.assertInstanceOf(columnNames, Array);
     utils.assertIsOneOfTypes(offset, 'number');
     utils.assertIsOneOfTypes(limit, 'number');
@@ -156,52 +165,74 @@ function SoqlDataProvider(config) {
 
     // Note: The 3 $ signs are eventually collapsed down to two $ signs, because
     // of strange corner-casey behavior of String.format.
-    var queryString =
+    queryString =
       '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$read_from_nbe=true&$$$version=2.1'.
       format(
-        columnNames.map(_escapeColumnName).join(','),
+        columnNames.map(escapeColumnName).join(','),
         order[0].columnName,
         (order[0].ascending ? 'ASC' : 'DESC'),
         limit,
         offset,
         whereClauseComponents ? '&$where=' + whereClauseComponents : ''
       );
+    url = urlForQuery(queryString);
 
-    return _makeSoqlGetRequestWithSalt(_queryUrl(queryString)).then(function(data) {
-      return _mapRowsResponseToTable(columnNames, data);
-    });
+    return makeSoqlGetRequest(url).
+      then(
+        function(data) {
+          return mapRowsResponseToTable(columnNames, data);
+        }
+      );
   };
 
   /**
    * Private methods
    */
 
-  // Returns a Promise for a GET against the given SOQL url.
-  // Adds salt to the end of the URL for cache bust.
+  // Returns a Promise for a GET against the given SoQL url.
   // On error, rejects with an object: {
   //   status: HTTP code,
   //   message: status text,
   //   soqlError: response JSON
   // }
-  function _makeSoqlGetRequestWithSalt(url) {
-    return Promise.resolve($.get(url)).
-      catch(function(error) {
-        return Promise.reject({
-          status: parseInt(error.status, 10),
-          message: error.statusText,
-          soqlError: error.responseJSON || error.responseText
+  function makeSoqlGetRequest(url) {
+
+    return new Promise(
+      function(resolve, reject) {
+
+        function handleError(jqXHR) {
+
+          reject(
+            {
+              status: parseInt(jqXHR.status, 10),
+              message: jqXHR.statusText,
+              soqlError: jqXHR.responseJSON || jqXHR.responseText || '<No response>'
+            }
+          );
+        }
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          success: resolve,
+          error: handleError,
+          headers: {
+            'Accept': 'application/json; charset=utf-8'
+          }
         });
-      });
+      }
+    );
   }
 
-  function _escapeColumnName(columnName) {
+  function escapeColumnName(columnName) {
     return '`{0}`'.format(columnName);
   }
 
-  function _queryUrl(queryString) {
+  function urlForQuery(queryString) {
+
     return 'https://{0}/api/id/{1}.json?{2}'.format(
-      _self.getConfigurationProperty('domain'),
-      _self.getConfigurationProperty('datasetUid'),
+      self.getConfigurationProperty('domain'),
+      self.getConfigurationProperty('datasetUid'),
       queryString
     );
   }
@@ -231,29 +262,32 @@ function SoqlDataProvider(config) {
    *     ...
    *   ]
    */
-  function _mapRowsResponseToTable(columnNames, data) {
-
+  function mapRowsResponseToTable(columnNames, data) {
     var table = {
       columns: columnNames,
       rows: []
     };
+    var rows;
 
     if (data.length > 0) {
 
-      var rows = data.map(function(datum) {
+      rows = data.map(
+        function(datum) {
+          var row = [];
+          var column;
+          var value;
 
-        var row = [];
+          for (var i = 0; i < table.columns.length; i++) {
 
-        for (var i = 0; i < table.columns.length; i++) {
+            column = table.columns[i];
+            value = datum.hasOwnProperty(column) ? datum[column] : undefined;
 
-          var column = table.columns[i];
-          var value = datum.hasOwnProperty(column) ? datum[column] : undefined;
+            row.push(value);
+          }
 
-          row.push(value);
+          return row;
         }
-
-        return row;
-      });
+      );
 
       table.rows = rows;
     }

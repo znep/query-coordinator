@@ -593,19 +593,19 @@ describe('SoqlDataProvider', function() {
     // we only care about what query gets generated.
     describe('resultant query', function() {
       var soqlDataProvider;
-      var $getStub;
+      var $ajaxStub;
 
       before(function() {
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
-        $getStub = sinon.stub($, 'get', _.constant(new Promise(_.noop))); // Stub $.get to never resolve.
+        $ajaxStub = sinon.stub($, 'ajax', _.constant(new Promise(_.noop))); // Stub $.ajax to never resolve.
       });
 
       beforeEach(function() {
-        $.get.reset(); // reset stub between tests.
+        $.ajax.reset(); // reset stub between tests.
       });
 
       after(function() {
-        $.get.restore();
+        $.ajax.restore();
       });
 
       // function getTableData (columnNames, order, offset, limit) { ... }
@@ -627,20 +627,26 @@ describe('SoqlDataProvider', function() {
       argumentsAndExpectedQueryPairs.map(function(pair) {
         var args = pair.args;
         var resultantQueryParts = pair.resultantQueryParts;
+        var url;
 
         it('should query the NBE', function() {
           soqlDataProvider.getTableData.apply(soqlDataProvider, args);
-          assert.lengthOf($getStub.getCalls(), 1);
-          assert.include($getStub.getCalls()[0].args[0], '$$read_from_nbe=true');
-          assert.include($getStub.getCalls()[0].args[0], '$$version=2.1');
+
+          url = $ajaxStub.getCalls()[0].args[0].url;
+
+          assert.lengthOf($ajaxStub.getCalls(), 1);
+          assert.include(url, '$$read_from_nbe=true');
+          assert.include(url, '$$version=2.1');
         });
 
         resultantQueryParts.map(function(queryPart) {
           it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), function() {
             soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 
-            assert.lengthOf($getStub.getCalls(), 1);
-            assert.include($getStub.getCalls()[0].args[0], queryPart);
+            url = $ajaxStub.getCalls()[0].args[0].url;
+
+            assert.lengthOf($ajaxStub.getCalls(), 1);
+            assert.include(url, queryPart);
           });
         });
       });

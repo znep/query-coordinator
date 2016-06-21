@@ -7,6 +7,7 @@ import FeaturedContent from './components/FeaturedContent';
 import FeaturedContentModal from './components/FeaturedContentModal';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
+import DatasetPreview from './components/DatasetPreview';
 import PopularViewList from './containers/PopularViewList';
 import ApiFlannel from './components/ApiFlannel';
 import ContactForm from './components/ContactForm';
@@ -25,6 +26,7 @@ export default function() {
         <FeaturedContent />
         <MetadataTable />
         <DatasetContents />
+        <DatasetPreview />
 
         <Responsive>
           <PopularViewList />

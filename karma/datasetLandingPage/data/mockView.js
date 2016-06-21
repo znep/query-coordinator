@@ -5,15 +5,18 @@ export default {
   category: 'humor',
   attribution: '',
   rowLabel: 'thingamabob',
+  rowLabelMultiple: 'thingamabobs',
   columns: [ ],
   isPrivate: true,
   isGeospatial: false,
+  isTabular: true,
   gridUrl: 'gridUrl',
   downloadOverride: null,
   exportFormats: [ 'csv', 'json' ],
   lastUpdatedAt: 'May 5, 2016',
   dataLastUpdatedAt: 'Jan 1, 1970',
   metadataLastUpdatedAt: 'May 5, 2016',
+  nbeId: 'abcd-1234',
   createdAt: 'Jan 1, 1970',
   geospatialChildLayers: [],
   rowCount: 1,
@@ -30,5 +33,11 @@ export default {
   attachments: [],
   tags: [],
   licenseName: 'WTFPL',
-  attributionLink: 'attributionLink'
+  attributionLink: 'attributionLink',
+  statsUrl: 'http://wombats.com',
+  editMetadataUrl: 'http://penguins.com',
+  sortOrder: [{
+    ascending: true,
+    columnName: 'frogs'
+  }]
 };

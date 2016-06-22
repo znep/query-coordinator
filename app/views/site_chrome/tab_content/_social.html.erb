@@ -5,25 +5,20 @@
   <% form_field_url = "#{form_field_prefix}[url]" %>
   <% form_field_type = "#{form_field_prefix}[type]" %>
 
-  <section class="settings-group">
-    <% translation = translations[:facebook_profile_link] %>
-    <div class="settings-form">
-      <%= label_tag(form_field_url, translation[:title]) %>
-      <%= text_field_tag(form_field_url, social_share_link('facebook'), placeholder: translation[:placeholder]) %>
-      <%= hidden_field_tag(form_field_type, 'facebook') %>
-    </div>
-    <aside><p><%= translation[:description] %></p></aside>
-  </section>
+  <% social_media_sections =
+    %w(facebook twitter youtube linked_in flickr instagram tumblr yammer google_plus vimeo) %>
 
-  <section class="settings-group">
-    <% translation = translations[:twitter_profile_link] %>
-    <div class="settings-form">
-      <%= label_tag(form_field_url, translation[:title]) %>
-      <%= text_field_tag(form_field_url, social_share_link('twitter'), placeholder: translation[:placeholder]) %>
-      <%= hidden_field_tag(form_field_type, 'twitter') %>
-    </div>
-    <aside><p><%= translation[:description] %></p></aside>
-  </section>
+  <% social_media_sections.each do |social_media_section| %>
+    <section class="settings-group">
+      <% translation = translations["#{social_media_section}_profile_link".to_sym] %>
+      <div class="settings-form">
+        <%= label_tag(form_field_url, translation[:title]) %>
+        <%= text_field_tag(form_field_url, social_share_link(social_media_section), placeholder: translation[:placeholder]) %>
+        <%= hidden_field_tag(form_field_type, social_media_section) %>
+      </div>
+      <aside><p><%= translation[:description] %></p></aside>
+    </section>
+  <% end %>
 
   <%= submit_tag 'put_social', id: 'submit_social', style: 'display: none;' %>
 <% end %>

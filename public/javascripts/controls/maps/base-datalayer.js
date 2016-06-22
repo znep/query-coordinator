@@ -681,6 +681,8 @@
             }
             layerObj._parent.clearHoverTimer(layerObj._uniqueId + feature.attributes.dupKey);
 
+            feature.attributes.flyout = layerObj.getFlyout(feature.attributes.rows);
+
             if (feature.attributes.flyout)
             {
                 var lonlat = layerObj._displayLayer.getLonLatFromViewPortPx(
@@ -824,7 +826,6 @@
             marker.attributes.rows = $.makeArray(marker.attributes.rows);
             if (_.isEmpty(_.intersection(marker.attributes.rows, datum.rows)))
             { marker.attributes.rows = marker.attributes.rows.concat(datum.rows); }
-            marker.attributes.flyout = layerObj.getFlyout(marker.attributes.rows);
 
             if (newMarker)
             {

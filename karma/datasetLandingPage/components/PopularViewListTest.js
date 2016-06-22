@@ -1,11 +1,16 @@
 import { PopularViewList } from 'components/PopularViewList';
+import mockServerConfig from 'data/mockServerConfig';
 import mockViewWidget from 'data/mockViewWidget';
 
 describe('components/PopularViewList', function() {
-  var defaultProps;
+  function resetServerConfig() {
+    window.serverConfig = _.cloneDeep(mockServerConfig);
+  }
 
+  var defaultProps;
   beforeEach(function() {
     defaultProps = {
+      bootstrapUrl: 'bootstrapUrl',
       viewList: _.fill(Array(3), mockViewWidget),
       hasMore: false,
       hasError: false,
@@ -18,7 +23,11 @@ describe('components/PopularViewList', function() {
       onScrollList: _.noop,
       toggleList: _.noop
     };
+
+    resetServerConfig();
   });
+
+  afterEach(resetServerConfig);
 
   it('renders an element with the expected structure', function() {
     var element = renderComponent(PopularViewList, defaultProps);
@@ -27,16 +36,36 @@ describe('components/PopularViewList', function() {
     expect(element.querySelector('.dataset-landing-page-header')).to.exist;
   });
 
+  it('does not render if the user is not logged in and the list is empty', function() {
+    window.serverConfig.currentUser = null;
+    var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      viewList: []
+    }));
+
+    expect(element).to.not.exist;
+  });
+
+  it('does not render if the user is not an admin or publisher and the list is empty', function() {
+    window.serverConfig.currentUser = { roleName: 'wizard' };
+    var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      viewList: []
+    }));
+
+    expect(element).to.not.exist;
+  });
+
   describe('contents', function() {
-    it('renders an alert if the viewList of featured views is empty', function() {
+    it('renders an alert if the viewList of popular views is empty and the user is privileged', function() {
+      window.serverConfig.currentUser = { roleName: 'publisher' };
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         viewList: []
       }));
 
       expect(element.querySelector('.alert.default')).to.exist;
+      expect(element.querySelector('.alert.default .btn')).to.exist;
     });
 
-    it('renders a result-card for each featured view', function() {
+    it('renders a result-card for each popular view', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         viewList: _.take(defaultProps.viewList, 2)
       }));
@@ -46,7 +75,7 @@ describe('components/PopularViewList', function() {
   });
 
   describe('load more button', function() {
-    it('renders a button to load more featured views if hasMore is true', function() {
+    it('renders a button to load more popular views if hasMore is true', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true
       }));
@@ -54,7 +83,7 @@ describe('components/PopularViewList', function() {
       expect(element.querySelector('.load-more-button')).to.exist;
     });
 
-    it('does not render a button to load more featured views on a mobile device', function() {
+    it('does not render a button to load more popular views on a mobile device', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: true,
         isDesktop: false
@@ -84,7 +113,7 @@ describe('components/PopularViewList', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('does not render a button to load more featured views if hasMore is false', function() {
+    it('does not render a button to load more popular views if hasMore is false', function() {
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
         hasMore: false
       }));
@@ -92,7 +121,7 @@ describe('components/PopularViewList', function() {
       expect(element.querySelector('.load-more-button')).to.not.exist;
     });
 
-    it('dispatches an action to load more featured views if the button is clicked', function() {
+    it('dispatches an action to load more popular views if the button is clicked', function() {
       var spy = sinon.spy();
 
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {
@@ -105,7 +134,7 @@ describe('components/PopularViewList', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('does not dispatch an action to load more featured views if a request is in progress', function() {
+    it('does not dispatch an action to load more popular views if a request is in progress', function() {
       var spy = sinon.spy();
 
       var element = renderComponent(PopularViewList, _.assign(defaultProps, {

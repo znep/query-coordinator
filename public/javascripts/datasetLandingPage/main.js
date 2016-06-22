@@ -28,4 +28,4 @@ ReactDOM.render(
 
 // Initialize the styleguide javascript components
 var styleguide = require('socrata-styleguide');
-styleguide(document);
+styleguide.attachTo(document);

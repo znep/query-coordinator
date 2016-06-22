@@ -1,26 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import FeaturedItemWidget from './FeaturedItemWidget';
+import { isUserAdminOrPublisher } from '../lib/user';
 
 export var FeaturedContent = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired
   },
 
-  isUserAdminOrPublisher: function() {
-    var { currentUser } = window.serverConfig;
-
-    if (_.isEmpty(currentUser)) {
-      return false;
-    }
-
-    return _.contains(currentUser.flags, 'admin') ||
-      currentUser.roleName === 'administrator' ||
-      currentUser.roleName === 'publisher';
-  },
-
   renderManagePrompt: function() {
-    if (!this.isUserAdminOrPublisher()) {
+    if (!isUserAdminOrPublisher()) {
       return null;
     }
 
@@ -53,7 +42,7 @@ export var FeaturedContent = React.createClass({
     var { contentList } = this.props;
     var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
-    if (!defaultToDatasetLandingPage || (!_.any(contentList) && !this.isUserAdminOrPublisher())) {
+    if (!defaultToDatasetLandingPage || (!_.any(contentList) && !isUserAdminOrPublisher())) {
       return null;
     }
 

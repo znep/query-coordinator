@@ -1,27 +1,41 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import ViewWidget from './ViewWidget';
+import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
+import BootstrapAlert from './BootstrapAlert';
+import ViewWidget from './ViewWidget';
 import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
 import { handleKeyPress } from '../lib/a11yHelpers';
+import { isUserAdminOrPublisher } from '../lib/user';
+import { emitMixpanelEvent } from '../actions/mixpanel';
+import {
+  loadMorePopularViews,
+  dismissPopularViewsError,
+  togglePopularViews
+} from '../actions/popularViews';
 
 export var PopularViewList = React.createClass({
   propTypes: {
+    bootstrapUrl: PropTypes.string,
     dismissError: PropTypes.func.isRequired,
     hasError: PropTypes.bool.isRequired,
     hasMore: PropTypes.bool.isRequired,
+    isCollapsed: PropTypes.bool.isRequired,
     isDesktop: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    viewList: PropTypes.arrayOf(PropTypes.object).isRequired,
     loadMore: PropTypes.func.isRequired,
     onClickWidget: PropTypes.func.isRequired,
     onScrollList: PropTypes.func.isRequired,
-    toggleList: PropTypes.func.isRequired
+    toggleList: PropTypes.func.isRequired,
+    viewList: PropTypes.arrayOf(PropTypes.object).isRequired
   },
 
   getAnimation: function() {
     var { viewList, isCollapsed, isDesktop, isLoading } = this.props;
+
+    if (_.isEmpty(viewList)) {
+      return;
+    }
 
     var popularViewHeight = 284;
     var popularViewMargin = 18;
@@ -45,12 +59,25 @@ export var PopularViewList = React.createClass({
     };
   },
 
-  renderContents: function() {
-    var { viewList, hasMore, isCollapsed, onClickWidget, onScrollList, isDesktop } = this.props;
+  renderEmptyListAlert: function() {
+    var { bootstrapUrl } = this.props;
 
-    if (_.isEmpty(viewList)) {
-      var alertMessage = I18n.popular_views.no_content_alert_html;
-      return <div className="alert default" dangerouslySetInnerHTML={{ __html: alertMessage }} />;
+    return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
+  },
+
+  renderContents: function() {
+    var {
+      viewList,
+      hasMore,
+      isCollapsed,
+      onClickWidget,
+      onScrollList,
+      isDesktop,
+      isLoading
+    } = this.props;
+
+    if (isUserAdminOrPublisher() && _.isEmpty(viewList)) {
+      return this.renderEmptyListAlert();
     }
 
     var popularViews = _.map(viewList, function(popularView, i) {
@@ -79,7 +106,7 @@ export var PopularViewList = React.createClass({
       );
     }
 
-    if (isDesktop && hasMore) {
+    if (isDesktop && hasMore && isLoading) {
       popularViews.push(
         <div className="desktop-spinner" key="loading">
           <span className="spinner-default spinner-large" />
@@ -150,8 +177,14 @@ export var PopularViewList = React.createClass({
   },
 
   render: function() {
+    var { viewList } = this.props;
+
+    if (_.isEmpty(viewList) && !isUserAdminOrPublisher()) {
+      return null;
+    }
+
     return (
-      <section className="landing-page-section metadata">
+      <section className="landing-page-section popular-views">
         <h2 className="dataset-landing-page-header">
           {I18n.popular_views.title}
         </h2>
@@ -168,4 +201,57 @@ export var PopularViewList = React.createClass({
   }
 });
 
-export default PopularViewList;
+function mapStateToProps(state) {
+  return {
+    bootstrapUrl: state.view.bootstrapUrl,
+    ...state.popularViews
+  };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    loadMore: function() {
+      dispatch(loadMorePopularViews());
+
+      var mixpanelPayload = {
+        name: 'Clicked to Show More Views'
+      };
+
+      dispatch(emitMixpanelEvent(mixpanelPayload));
+    },
+
+    toggleList: function() {
+      dispatch(togglePopularViews());
+    },
+
+    dismissError: function() {
+      dispatch(dismissPopularViewsError());
+    },
+
+    onClickWidget: function(event) {
+      var resultCard = event.target.closest('.result-card');
+      var payload = {
+        name: 'Clicked a Related View',
+        properties: {
+          'Related View Id': resultCard.dataset.id,
+          'Related View Type': resultCard.dataset.type
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onScrollList: _.throttle(function(event) {
+      var el = event.target;
+      var isDesktop = ownProps.isDesktop;
+      var hasMore = event.target.querySelector('.loading-card');
+      var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
+
+      if (!isDesktop && hasMore && isAtRightEdge) {
+        dispatch(loadMorePopularViews());
+      }
+    }, 200)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PopularViewList);

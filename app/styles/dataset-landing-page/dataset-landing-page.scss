@@ -771,6 +771,23 @@ section.landing-page-section.schema-preview {
   }
 }
 
+.bootstrap-alert {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .btn {
+    margin-left: 22px;
+    flex-shrink: 0;
+  }
+}
+
+.flyout[id^="bootstrap-flyout"] {
+  max-width: none;
+  width: 400px;
+}
+
 #api-flannel {
   letter-spacing: 0;
   text-align: left;

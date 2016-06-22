@@ -40,41 +40,59 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case SET_CONTACT_FORM_FIELD:
-      state.fields[action.field] = action.value;
-      return state;
+      return {
+        ...state,
+        fields: {
+          ...state.fields,
+          [action.field]: action.value
+        }
+      };
 
     case SET_CONTACT_FORM_RECAPTCHA_LOADED:
-      state.recaptchaLoaded = action.value;
-      return state;
+      return {
+        ...state,
+        recaptchaLoaded: action.value
+      };
 
     case SEND_CONTACT_FORM:
-      state.status = 'sending';
-      return state;
+      return {
+        ...state,
+        status: 'sending'
+      };
 
     case RESET_CONTACT_FORM:
       return initialState;
 
     case HANDLE_CONTACT_FORM_SUCCESS:
-      state.status = 'success';
-      return state;
+      return {
+        ...state,
+        status: 'success'
+      };
 
     case HANDLE_CONTACT_FORM_FAILURE:
-      state.status = 'failure';
-      return state;
+      return {
+        ...state,
+        status: 'failure'
+      };
 
     case HANDLE_CONTACT_FORM_RECAPTCHA_ERROR:
-      state.status = '';
-      state.fields.recaptchaResponseToken = '';
-      state.resetRecaptcha = true;
-      return state;
+      return {
+        ...state,
+        status: '',
+        fields: {
+          ...state.fields,
+          recaptchaResponseToken: ''
+        },
+        resetRecaptcha: true
+      };
 
     case HANDLE_CONTACT_FORM_RECAPTCHA_RESET:
-      state.resetRecaptcha = false;
-      return state;
+      return {
+        ...state,
+        resetRecaptcha: false
+      };
 
     default:
       return state;

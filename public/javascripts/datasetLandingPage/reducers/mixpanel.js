@@ -12,6 +12,7 @@ export default function(state, action) {
         action.data.properties
       );
       return null;
+
     default:
       return null;
   }

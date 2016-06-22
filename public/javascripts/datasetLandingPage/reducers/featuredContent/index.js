@@ -79,11 +79,12 @@ export default function(state, action) {
     };
   }
 
-  state = _.cloneDeep(state);
-
-  state.viewSelector = viewSelectorReducer(state.viewSelector, action);
-  state.story = storyReducer(state.story, action);
-  state.externalResource = externalResourceReducer(state.externalResource, action);
+  state = {
+    ...state,
+    viewSelector: viewSelectorReducer(state.viewSelector, action),
+    story: storyReducer(state.story, action),
+    externalResource: externalResourceReducer(state.externalResource, action)
+  };
 
   switch (action.type) {
     case ADD_FEATURED_ITEM:
@@ -130,10 +131,9 @@ export default function(state, action) {
       };
 
     case HANDLE_FEATURED_ITEM_SAVE_SUCCESS:
-      state.contentList[action.position] = action.featuredItem;
-
       return {
         ...state,
+        contentList: _.set(_.clone(state.contentList), action.position, action.featuredItem),
         isSaving: false,
         isSaved: true
       };
@@ -154,10 +154,9 @@ export default function(state, action) {
       };
 
     case HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS:
-      state.contentList[action.position] = null;
-
       return {
         ...state,
+        contentList: _.set(_.clone(state.contentList), action.position, null),
         isRemoving: false,
         removePosition: null,
         hasRemoveError: false

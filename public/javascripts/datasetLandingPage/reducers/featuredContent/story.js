@@ -57,7 +57,7 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
+  state = _.clone(state);
 
   switch (action.type) {
     case CANCEL_FEATURED_ITEM_EDIT:

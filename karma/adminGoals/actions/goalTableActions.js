@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import Immutable from 'immutable';
 
 import {
   tableLoadPage,
@@ -30,33 +31,27 @@ describe('actions/goalTableActions', function() {
   var server;
   const mockStore = configureStore([thunk]);
 
+  let xhrResponsesForTableLoadPage = {};
+  xhrResponsesForTableLoadPage['/stat/api/v1/dashboards'] = JSON.stringify(responseDashboards);
+
+  _.each(responseDashboards, (dashboard) => {
+    xhrResponsesForTableLoadPage[`/stat/api/v1/dashboards/${dashboard.id}`] = JSON.stringify(responseDashboardDetails[dashboard.id]);
+  });
+
+  _.each(responseUserDetails, (user) => {
+    xhrResponsesForTableLoadPage[`/api/users/${user.id}.json`] = JSON.stringify(user);
+  });
+
+  _.each(responseGoalDetails, (goalDetail) => {
+    xhrResponsesForTableLoadPage[`/stat/api/v1/goals/${goalDetail.id}`] = JSON.stringify(goalDetail);
+  });
+
   beforeEach(function() {
     server = sinon.fakeServer.create();
     server.autoRespond = true;
-  });
-
-  afterEach(function () {
-    server.restore();
-  });
-
-  it('tableLoadPage should load all goals with details', function(done) {
-    let xhrResponses = {};
-    xhrResponses['/stat/api/v1/dashboards'] = JSON.stringify(responseDashboards);
-
-    _.each(responseDashboards, (dashboard) => {
-      xhrResponses[`/stat/api/v1/dashboards/${dashboard.id}`] = JSON.stringify(responseDashboardDetails[dashboard.id]);
-    });
-
-    _.each(responseUserDetails, (user) => {
-      xhrResponses[`/api/users/${user.id}.json`] = JSON.stringify(user);
-    });
-
-    _.each(responseGoalDetails, (goalDetail) => {
-      xhrResponses[`/stat/api/v1/goals/${goalDetail.id}`] = JSON.stringify(goalDetail);
-    });
 
     server.respondWith(xhr => {
-      var response = _.get(xhrResponses, xhr.url);
+      var response = _.get(xhrResponsesForTableLoadPage, xhr.url);
 
       if(!response) {
         xhr.respond(404, null, null);
@@ -64,8 +59,18 @@ describe('actions/goalTableActions', function() {
         xhr.respond(200, null, response);
       }
     });
+  });
 
-    const store = mockStore({});
+  afterEach(function () {
+    server.restore();
+  });
+
+  it('tableLoadPage should load all goals with details', function(done) {
+    const store = mockStore(Immutable.fromJS({
+      goalTableData: {
+        rowsPerPage: 100
+      }
+    }));
     return store.dispatch(tableLoadPage()).then(function() {
       var executedActions = store.getActions();
 
@@ -80,6 +85,23 @@ describe('actions/goalTableActions', function() {
       var tableShowPageAction = _.find(executedActions, {type: TABLE_SHOW_PAGE});
       expect(tableShowPageAction).to.not.eq(undefined);
       expect(_.keys(_.get(tableShowPageAction, 'goals')).length).to.eq(_.keys(responseGoalDetails).length);
+
+      done();
+    });
+  });
+
+  it('tableLoadPage should just load 2 goals', function(done) {
+    const store = mockStore(Immutable.fromJS({
+      goalTableData: {
+        rowsPerPage: 2
+      }
+    }));
+    return store.dispatch(tableLoadPage()).then(function() {
+      var executedActions = store.getActions();
+
+      var tableShowPageAction = _.find(executedActions, {type: TABLE_SHOW_PAGE});
+      expect(tableShowPageAction).to.not.eq(undefined);
+      expect(_.keys(_.get(tableShowPageAction, 'goals')).length).to.eq(2);
 
       done();
     });

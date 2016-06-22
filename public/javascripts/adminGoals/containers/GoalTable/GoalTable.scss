@@ -62,3 +62,27 @@ table.op-admin-table {
     }
   }
 }
+
+.rowsPerPageContainer {
+  float: right;
+  margin-right: 20%;
+  horiz-align: right;
+
+  .Select {
+    vertical-align: middle;
+    display: inline-block;
+    min-width: 60px;
+
+    .Select-value-label {
+      color: #5e5e5e;
+    }
+
+    &.has-value.Select--single > .Select-control > .Select-value .Select-value-label{
+      color: #5e5e5e;
+    }
+
+    .Select-control {
+      border: none;
+    }
+  }
+}

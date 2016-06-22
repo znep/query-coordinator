@@ -23,7 +23,8 @@ const initialState = Immutable.fromJS({
     cachedUsers: {},
     translations: window.translations,
     selectedRows: [],
-    alert: { label: '', message: '' }
+    alert: { label: '', message: '' },
+    rowsPerPage: 25
   }
 });
 

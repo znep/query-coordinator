@@ -109,12 +109,17 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
-  describe '#social_link_classname' do
-    it 'returns the icon classname regardless of symbol vs string and capitalization' do
-      result = helper.social_link_classname('FacEboOk')
-      result2 = helper.social_link_classname(:facebook)
+  describe '#social_link_icon' do
+    it 'returns the icon name regardless of symbol vs string and capitalization' do
+      result = helper.social_link_icon('FacEboOk')
+      result2 = helper.social_link_icon(:facebook)
       expect(result).to eq(result2)
-      expect(result).to eq('icon-facebook')
+      expect(result).to eq('facebook')
+    end
+
+    it 'returns the Mono Social icon name for an icon' do
+      expect(helper.social_link_icon('google_plus')).to eq('googleplus')
+      expect(helper.social_link_icon('linked_in')).to eq('linkedin')
     end
   end
 

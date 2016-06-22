@@ -50,10 +50,18 @@ module SocrataSiteChrome
       get_site_chrome.footer[:copyright_notice] == 'true'
     end
 
-    def social_link_classname(type)
+    def social_link_icon(type)
       {
-        'facebook' => 'icon-facebook',
-        'twitter' => 'icon-twitter'
+        'facebook' => 'facebook',
+        'twitter' => 'twitter',
+        'youtube' => 'youtube',
+        'linked_in' => 'linkedin',
+        'flickr' => 'flickr',
+        'instagram' => 'instagram',
+        'tumblr' => 'tumblr',
+        'yammer' => 'y', # Doesn't exist for yammer. Just show a "y" because y not
+        'google_plus' => 'googleplus',
+        'vimeo' => 'vimeo'
       }[type.to_s.downcase]
     end
 

@@ -2,9 +2,8 @@
 <% valid_social_shares.each do |social_share| %>
   <% label = localized("general.social_shares.#{social_share[:type]}", get_site_chrome.locales) %>
   <%= link_to(social_share[:url], :class => 'nav-link social-link') do %>
-    <%= content_tag(:span, nil, :class => social_link_classname(social_share[:type]), :title => label) %>
-    <%= label if show_label %>
-  <% end %>
+  <%= content_tag(:span, social_link_icon(social_share[:type]), :class => 'monosocial', :title => label) -%><%=
+    label if show_label %><% end -%>
 <% end %>
 <% if valid_social_shares.present? %>
   <%= content_tag(:span, nil, :class => 'divider') %>

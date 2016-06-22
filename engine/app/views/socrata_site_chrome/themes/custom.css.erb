@@ -1,4 +1,5 @@
 <% cache(cache_key_for_site_chrome(get_site_chrome)) do %>
+  @import url("/stylesheets/mono_social_icons_font/monosocialiconsfont.css");
   <% unless exclude_styleguide? %>
     <%# Note: excluding the actual styleguide CSS for now, because it doesn't currently play nicely
       # with many of the pages we want to use the header/footer on.

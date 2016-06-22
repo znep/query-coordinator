@@ -503,8 +503,12 @@ class AdministrationController < ApplicationController
 
     v.moderationStatus = (params[:approved] == 'yes')
     v.save!
-    flash[:notice] = "The view '#{v.name}' has been #{v.moderation_status.downcase}. " +
+
+    unless request.format.json?
+      # EN-7318: ajax calls to this endpoint (currently from data lens pages) should not persist flash messages
+      flash[:notice] = "The view '#{v.name}' has been #{v.moderation_status.downcase}. " +
         'Please allow a few minutes for the changes to be reflected on your home page'
+    end
 
     return(redirect_to (request.referer || {:action => 'views'}))
   end

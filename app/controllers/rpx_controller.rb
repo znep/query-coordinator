@@ -12,7 +12,7 @@ class RpxController < ApplicationController
     if @signup.create
       redirect_to(profile_path(@signup.user))
     else
-      flash.now[:error] = @signup.errors.join(", ")
+      flash.now[:error] = @signup.errors.values.join(', ')
       @body_id = 'signup'
       render :template => 'rpx/return_login'
     end

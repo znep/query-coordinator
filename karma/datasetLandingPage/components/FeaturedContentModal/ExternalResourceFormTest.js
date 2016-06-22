@@ -6,6 +6,7 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
     return _.defaultsDeep({}, props, {
       title: 'blueberry smoothie',
       description: 'glorious purple goop',
+      resetFocus: _.noop,
       url: 'http://thepurplestore.com'
     });
   }

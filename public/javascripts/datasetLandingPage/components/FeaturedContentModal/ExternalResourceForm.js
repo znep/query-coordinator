@@ -24,6 +24,7 @@ export var ExternalResourceForm = React.createClass({
     onChangeUrl: PropTypes.func,
     onClickCancel: PropTypes.func,
     onClickSave: PropTypes.func,
+    resetFocus: PropTypes.func,
     title: PropTypes.string,
     url: PropTypes.string
   },
@@ -42,6 +43,10 @@ export var ExternalResourceForm = React.createClass({
     return {
       isImageInvalid: false
     };
+  },
+
+  componentDidMount: function() {
+    this.props.resetFocus();
   },
 
   onChangeDescription: function(event) {
@@ -230,7 +235,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     onChangeDescription: function(description) {
       dispatch(setExternalResourceField('description', description));
@@ -250,6 +255,7 @@ function mapDispatchToProps(dispatch) {
 
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
+      ownProps.resetFocus();
     },
 
     onClickSave: function() {

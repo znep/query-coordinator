@@ -14,6 +14,7 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
       onClickCancel: _.noop,
       onClickChoose: _.noop,
       fetchViews: _.noop,
+      resetFocus: _.noop,
       viewList: _.fill(Array(2), mockViewWidget)
     });
   }

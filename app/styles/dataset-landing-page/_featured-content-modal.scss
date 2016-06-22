@@ -11,6 +11,11 @@
     font-size: 19px;
   }
 
+  .modal-header-dismiss:focus {
+    outline-style: auto;
+    outline-width: medium;
+  }
+
   /* Allow for inner content to scroll */
   .modal-content-wrapper {
     height: calc(100% - #{$modal-header-height});
@@ -58,7 +63,11 @@
 
         .edit-button, .remove-button {
           width: 110px;
-          visibility: hidden;
+          opacity: 0;
+
+          &:focus {
+            opacity: 1;
+          }
 
           [class^="icon"] {
             margin-right: 6px;
@@ -67,7 +76,7 @@
 
         &:hover, &.show-buttons {
           .edit-button, .remove-button {
-            visibility: visible;
+            opacity: 1;
           }
         }
 

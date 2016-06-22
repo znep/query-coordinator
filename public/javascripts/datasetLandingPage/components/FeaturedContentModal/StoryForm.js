@@ -27,6 +27,7 @@ export var StoryForm = React.createClass({
     onChangeUrl: PropTypes.func,
     onClickCancel: PropTypes.func,
     onClickSave: PropTypes.func,
+    resetFocus: PropTypes.func,
     shouldLoadStory: PropTypes.bool,
     title: PropTypes.string,
     url: PropTypes.string,
@@ -42,6 +43,7 @@ export var StoryForm = React.createClass({
 
   componentDidMount: function() {
     this.loadStoryIfNeeded();
+    this.props.resetFocus();
   },
 
   componentDidUpdate: function() {
@@ -205,7 +207,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     loadRequestedStory: function() {
       dispatch(loadStory());
@@ -213,6 +215,7 @@ function mapDispatchToProps(dispatch) {
 
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
+      ownProps.resetFocus();
     },
 
     onClickSave: function() {

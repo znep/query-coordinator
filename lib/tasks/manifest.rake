@@ -2,7 +2,7 @@ namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym, [:output_file] do |task, args|
-      tags = `git tag -l #{environment}/*`.split.sort.reverse.first(10)
+      tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
 
       to_tag = ENV['TO_TAG'] || tags[0]
       from_tag = ENV['FROM_TAG'] || tags[1]

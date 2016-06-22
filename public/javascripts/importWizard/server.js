@@ -15,12 +15,16 @@ export function saveMetadata() {
     dispatch(goToPage('Working'));
     setTimeout(() => {
       dispatch(goToPage('Importing'));
+      const onImportError = () => {
+        dispatch(importError());
+        dispatch(goToPage('Metadata'));
+      };
       switch (navigation.operation) {
         case 'UploadData':
-          dispatch(importData());
+          dispatch(importData(onImportError));
           break;
         case 'UploadGeospatial':
-          dispatch(importGeospatial());
+          dispatch(importGeospatial(onImportError));
           break;
         default:
           console.error('Unkown operation!', navigation.operation);
@@ -79,7 +83,6 @@ function importComplete() {
   };
 }
 
-
 export function update(status: ImportStatus = initialImportStatus(), action): ImportStatus {
   switch (action.type) {
     case IMPORT_START:
@@ -96,7 +99,9 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
     case IMPORT_ERROR:
       return {
         type: 'Error',
-        error: action.error
+        error: _.isUndefined(action.error) ?
+          I18n.screens.import_pane.unknown_error :
+          action.error
       };
 
     case IMPORT_COMPLETE:
@@ -110,7 +115,7 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
 }
 
 
-function importData() {
+function importData(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
@@ -129,6 +134,7 @@ function importData() {
     }).then((response) => {
       switch (response.status) {
         case 200:
+          dispatch(importComplete());
           dispatch(goToPage('Finish'));
           break;
 
@@ -147,14 +153,18 @@ function importData() {
         }
 
         default:
+          onError();
           // TODO: AIRBRAKE THIS STUFF: EN-6942
           console.error('IMPORTING DATA FAILED', response);
       }
+    })['catch'](() => {
+      // TODO: airbrake these errors (EN-6942)
+      onError();
     });
   };
 }
 
-function importGeospatial() {
+function importGeospatial(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
@@ -192,7 +202,11 @@ function importGeospatial() {
         default:
           // TODO: AIRBRAKE THIS STUFF: EN-6942
           console.error('IMPORTING DATA FAILED', response);
+          onError();
       }
+    })['catch']((error) => {
+      console.log(error);
+      onError();
     });
   };
 }

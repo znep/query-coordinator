@@ -55,7 +55,7 @@ export function initialNewDatasetModel(datasetId: string, datasetName: string): 
   return {
     datasetId: datasetId,
     navigation: initialNavigation,
-    upload: UploadFile.initial(),
+    upload: {},
     transform: null,
     layers: null,
     metadata: Metadata.emptyForName(datasetName),
@@ -209,7 +209,8 @@ export function view({ state, dispatch }) {
               return (
                 <Metadata.view
                   metadata={state.metadata}
-                  onMetadataAction={(action) => {dispatch(action);}} />
+                  onMetadataAction={(action) => {dispatch(action);}}
+                  importError={state.importStatus.error} />
               );
 
             case 'Working':

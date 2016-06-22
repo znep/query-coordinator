@@ -1,5 +1,4 @@
 import {
-  initial,
   selectFile,
   fileUploadStart,
   fileUploadProgress,
@@ -7,14 +6,15 @@ import {
   fileUploadComplete,
   fileUploadError,
   update,
-  initialUploadProgress
+  initialUploadProgress,
+  view
 } from 'components/uploadFile';
 
 describe("uploadFile's reducer", () => {
   var state;
 
   beforeEach(() => {
-    state = initial();
+    state = {};
   });
 
   describe('FILE_UPLOAD_START', () => {
@@ -23,7 +23,6 @@ describe("uploadFile's reducer", () => {
         name: 'test_name.csv'
       }));
       expect(result).to.deep.equal({
-        type: 'UploadInProgress',
         fileName: 'test_name.csv',
         progress: {
           type: 'InProgress',
@@ -37,7 +36,6 @@ describe("uploadFile's reducer", () => {
     it('reacts to file upload progress event', () => {
       const result = update(state, fileUploadProgress(15));
       expect(result).to.deep.equal({
-        type: 'UploadInProgress',
         progress: {
           type: 'InProgress',
           percent: 15
@@ -47,7 +45,6 @@ describe("uploadFile's reducer", () => {
   });
 
   const stateBefore = {
-    type: 'UploadInProgress',
     progress: {
       type: 'InProgress',
       percent: 15
@@ -58,7 +55,6 @@ describe("uploadFile's reducer", () => {
     it('reacts to file analyzing event', () => {
       const stateAfter = update(stateBefore, fileUploadAnalyzing());
       expect(stateAfter).to.deep.equal({
-        type: 'UploadInProgress',
         progress: {
           type: 'Analyzing'
         }
@@ -73,7 +69,6 @@ describe("uploadFile's reducer", () => {
         "thisisfine"
       ));
       expect(stateAfter).to.deep.equal({
-        type: 'UploadInProgress',
         progress: {
           type: 'Complete',
           fileId: 'abceasyas123',
@@ -87,7 +82,6 @@ describe("uploadFile's reducer", () => {
     it('reacts to file upload error', () => {
       const stateAfter = update(stateBefore, fileUploadError('oops'));
       expect(stateAfter).to.deep.equal({
-        type: 'UploadInProgress',
         progress: {
           type: 'Failed',
           error: 'oops'
@@ -96,4 +90,47 @@ describe("uploadFile's reducer", () => {
     });
   });
 
+  describe('view', () => {
+    it('renders an upload box with help text initially', () => {
+      const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UploadData'}));
+      expect(element.querySelector('input.uploadFileName.valid').value)
+        .to.equal(I18n.screens.dataset_new.upload_file.no_file_selected);
+    });
+    it('renders an upload box with filename once selected', () => {
+      const element = renderComponent(
+        view({
+          onFileUploadAction: _.noop,
+          fileUpload: {
+            fileName: 'my_file.txt',
+            progress: {
+              type: 'InProgress',
+              percent: 6
+            }
+          },
+          operation: 'UploadData'
+        })
+      );
+      expect(element.querySelector('input.uploadFileName.valid').value)
+        .to.equal('my_file.txt');
+      expect(element.querySelector('.uploadThrobber').children[1].innerText)
+        .to.equal('6% uploaded');
+    });
+    it('renders an error message on error', () => {
+      const element = renderComponent(
+        view({
+          onFileUploadAction: _.noop,
+          fileUpload: {
+            fileName: 'my_file.txt',
+            progress: {
+              type: 'Failed',
+              error: 'There was a problem importing that file. Please make sure it is valid.'
+            }
+          },
+          operation: 'UploadData'
+        })
+      );
+      expect(element.querySelector('.flash-alert.error').innerText)
+        .to.equal('There was a problem importing that file. Please make sure it is valid.');
+    });
+  });
 });

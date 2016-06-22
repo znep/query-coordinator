@@ -117,7 +117,6 @@ const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 export function view({ transform, fileName, dispatch, goToPage }) {
   return (
     <div className="importColumnsPane columnsPane">
-      <div className="flash"></div>
       <div className="importErrorHelpText">
         <p>{/* raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) */}</p>
       </div>

@@ -675,6 +675,146 @@
       height: 1em;
     }
   }
+
+  // ***************************************************************************
+  // Below are parts of the Socrata Styleguide that have been
+  // blatantly copied and pasted for the new import wizard experience.
+  // Sometime in the future, we should actually import the styleguide itself.
+  // ***************************************************************************
+
+  /// Slightly lighten a color
+  /// @access public
+  /// @param {Color} $color - color to tint
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+  }
+
+  /// Slightly darken a color
+  /// @access public
+  /// @param {Color} $color - color to shade
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function shade($color, $percentage) {
+    @return mix(black, $color, $percentage);
+  }
+
+  /* Colors */
+  $grey: #767676;
+  $dark-grey-1: shade($grey, 20%);
+  $light-grey-0: tint($grey, 10%);
+  $light-grey-1: tint($grey, 20%);
+  $light-grey-2: tint($grey, 40%);
+  $light-grey-3: tint($grey, 60%);
+  $light-grey-4: tint($grey, 80%);
+  $light-grey-5: tint($grey, 90%);
+  $light-grey-6: tint($grey, 93.3%);
+  $light-grey-7: tint($grey, 95%);
+  $light-grey-8: tint($grey, 97%);
+  $default-text-color: $dark-grey-1;
+  $primary: #f1f1f1;
+  $primary-light: #909090;
+  $primary-dark: shade($primary, 30%);
+  $success: lighten(#218649, 10%);
+  $success-dark: shade($success, 30%);
+  $success-light: tint($success, 90%);
+  $warning: shade(#fabe00, 8%);
+  $warning-light: tint($warning, 93%);
+  $warning-dark: shade($warning, 30%);
+  $warning-text: shade($warning, 40%);
+  $error: #ce6565;
+  $error-light: tint($error, 90%);
+  $error-dark: shade($error, 30%);
+
+
+  .flash-alert {
+    background-color: $light-grey-6;
+    border: 1px solid $light-grey-3;
+    font-size: 1.5em;
+    padding: .75em;
+    border-radius: 1px;
+    color: $default-text-color;
+
+    &.info {
+      background-color: $primary-light;
+      border-color: $primary;
+      color: $primary-dark;
+    }
+
+    &.success {
+      background-color: $success-light;
+      border-color: $success;
+      color: $success-dark;
+    }
+
+    &.warning {
+      background-color: $warning-light;
+      border-color: $warning;
+      color: $warning-text;
+    }
+
+    &.error {
+      background-color: $error-light;
+      border-color: $error;
+      color: $error-dark;
+    }
+
+    &.alert-full-width-top {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &.alert-full-width-bottom {
+      border-bottom: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+  }
+
+  @keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .spinner-default {
+    animation: spin 0.9s linear infinite;
+    border: 3px solid $primary;
+    border-right-color: $primary-light;
+    border-radius: 50%;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+
+    &.spinner-dark {
+      border-color: $primary-light;
+      border-right-color: $primary;
+    }
+
+    &.spinner-large-center {
+      border-width: 4px;
+      width: 2em;
+      height: 2em;
+      margin: 5em calc(50% - 1em - 4px) auto;
+    }
+
+  }
+
+  .spinner-btn-primary {
+    border-color: #ffffff;
+    border-right-color: shade($primary, 20%);
+  }
+
+  // ***************************************************************************
+  // End of copied Socrata Styleguide CSS.
+  // ***************************************************************************
+
 }
 
 // PANE ONE POINT FIVE B
@@ -921,48 +1061,4 @@
   position: absolute;
   left: -14.9em;
   font-size: 1.2em;
-}
-
-
-// From the socrata style guide
-
-@keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-$primary: #f1f1f1;
-$primary-light: #909090;
-
-.spinner-default {
-  animation: spin 0.9s linear infinite;
-  border: 3px solid $primary;
-  border-right-color: $primary-light;
-  border-radius: 50%;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-
-  &.spinner-dark {
-    border-color: $primary-light;
-    border-right-color: $primary;
-  }
-
-  &.spinner-large-center {
-    border-width: 4px;
-    width: 2em;
-    height: 2em;
-    margin: 5em calc(50% - 1em - 4px) auto;
-  }
-
-}
-
-.spinner-btn-primary {
-  border-color: #ffffff;
-  border-right-color: shade($primary, 20%);
 }

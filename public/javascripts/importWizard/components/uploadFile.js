@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import * as SharedTypes from '../sharedTypes';
 import Upload from 'component-upload';
 import * as url from 'url';
+import FlashMessage from './flashMessage';
 
 type FileName = string
 
@@ -23,10 +24,6 @@ type UploadProgress
 type FileUpload
 	= { type: 'NothingSelected' }
 	| { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
-
-export function initial(): FileUpload {
-  return { type: 'NothingSelected' };
-}
 
 function scanUrlForOperation(operation: SharedTypes.OperationName) {
   const urlAttrs = { pathname: '/imports2.txt' };
@@ -61,14 +58,26 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
         dispatch(fileUploadProgress(evt.percent));
       }
     });
-    // TODO: I think this gets called with a 500 response, we need to handle it
-    // e.g.: import a shapefile without starting geo-import
     upload.on('end', (xhr) => {
-      const response = JSON.parse(xhr.responseText);
-      dispatch(fileUploadComplete(response.fileId, response.summary));
+      let response;
+      switch (xhr.status) {
+        case 200:
+          response = JSON.parse(xhr.responseText);
+          dispatch(fileUploadComplete(response.fileId, response.summary));
+          break;
+        case 400:
+          // TODO: airbrake these errors (EN-6942)
+          response = JSON.parse(xhr.responseText);
+          dispatch(fileUploadError(response.message));
+          break;
+        default:
+        // TODO: airbrake these errors (EN-6942)
+          dispatch(fileUploadError());
+      }
     });
-    upload.on('error', (evt) => {
-      dispatch(fileUploadError(JSON.stringify(evt)));
+    upload.on('error', () => {
+      // TODO: airbrake these errors (EN-6942)
+      dispatch(fileUploadError());
     });
     dispatch(fileUploadStart(file));
   };
@@ -116,11 +125,10 @@ export function fileUploadError(error: string) {
 }
 
 
-export function update(upload: FileUpload = initial(), action): FileUpload {
+export function update(upload: FileUpload = {}, action): FileUpload {
   switch (action.type) {
     case FILE_UPLOAD_START:
       return {
-        type: 'UploadInProgress',
         fileName: action.file.name,
         progress: initialUploadProgress()
       };
@@ -128,7 +136,6 @@ export function update(upload: FileUpload = initial(), action): FileUpload {
     case FILE_UPLOAD_PROGRESS:
       return {
         ...upload,
-        type: 'UploadInProgress',
         progress: {
           type: 'InProgress',
           percent: action.percent
@@ -158,7 +165,9 @@ export function update(upload: FileUpload = initial(), action): FileUpload {
         ...upload,
         progress: {
           type: 'Failed',
-          error: action.error
+          error: _.isUndefined(action.error)
+            ? I18n.screens.import_pane.problem_importing
+            : action.error
         }
       };
 
@@ -173,9 +182,16 @@ export function initialUploadProgress() {
   return { type: 'InProgress', percent: 0 };
 }
 
+function renderErrorMessage(fileUpload) {
+  if (_.isUndefined(fileUpload) ||
+      _.isUndefined(fileUpload.progress) ||
+      _.isUndefined(fileUpload.progress.error)) {
+    return;
+  }
+  return <FlashMessage flashType="error" message={fileUpload.progress.error} />;
+}
 
-export function view(props) {
-  const { onFileUploadAction, fileUpload, operation } = props;
+export function view({ onFileUploadAction, fileUpload, operation }) {
   const I18nPrefixed = I18n.screens.dataset_new.upload_file;
 
   function onSelectFile(event) {
@@ -184,12 +200,13 @@ export function view(props) {
   }
 
   const fileNameDisplay =
-    fileUpload.type === 'UploadInProgress'
-      ? fileUpload.fileName
-      : I18nPrefixed.no_file_selected;
+    _.isUndefined(fileUpload.fileName)
+      ? I18nPrefixed.no_file_selected
+      : fileUpload.fileName;
 
   return (
     <div className="uploadFilePane">
+      {renderErrorMessage(fileUpload)}
       {/* TODO: should sometimes say "upload" instead of "import" (another I18n key) */}
       <p className="headline">{I18n.screens.import_pane.headline_import}</p>
       <div className="uploadFileContainer">
@@ -214,12 +231,9 @@ export function view(props) {
         </div>
         {/* TODO: help text when things go wrong */}
         {(() => {
-          switch (fileUpload.type) {
-            case 'NothingSelected':
-              return null;
-
-            case 'UploadInProgress':
-              return renderFileUploadStatus(fileUpload.progress);
+          if (!_.isUndefined(fileUpload.progress) &&
+              fileUpload.progress !== 'Failed') {
+            return renderFileUploadStatus(fileUpload.progress);
           }
         })()}
 
@@ -265,8 +279,7 @@ export function renderFileUploadStatus(progress: UploadProgress) {
       return withThrobber(`${Math.round(progress.percent)}% uploaded`);
 
     case 'Failed':
-      // TODO i18n
-      return withThrobber(`Error uploading file: ${progress.error}`);
+      return null;
 
     case 'Analyzing':
       return withThrobber(I18n.screens.import_pane.analyzing);

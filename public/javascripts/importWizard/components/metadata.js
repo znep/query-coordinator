@@ -3,6 +3,7 @@ import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import { updateAt } from '../utils';
 import * as Server from '../server';
+import FlashMessage from './flashMessage';
 
 // == Metadata
 
@@ -292,14 +293,21 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-export function view({ metadata, onMetadataAction }) {
+function renderFlashMessage(importError) {
+  if (_.isUndefined(importError)) {
+    return;
+  }
+  return <FlashMessage flashType="error" message={importError} />;
+}
+
+export function view({ metadata, onMetadataAction, importError }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
 
   const validationErrors = validate(metadata);
 
   return (
     <div className="metadataPane">
-      <div className="flash"></div>
+      {renderFlashMessage(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
         <div className="externalDatasetMetadata">
@@ -469,5 +477,6 @@ export function view({ metadata, onMetadataAction }) {
 
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
-  onMetadataAction: PropTypes.func.isRequired
+  onMetadataAction: PropTypes.func.isRequired,
+  importError: PropTypes.string
 };

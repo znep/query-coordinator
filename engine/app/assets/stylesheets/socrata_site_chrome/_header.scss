@@ -41,7 +41,11 @@ header#chrome-header {
           }
 
           &.social-link {
-            font-size: 19px;
+            padding: 0 5px;
+
+            span.monosocial {
+              margin: 0;
+            }
           }
         }
 

@@ -106,7 +106,15 @@
                       "site_name": null,
                       "social_shares": {
                         "facebook": "Like us on Facebook",
-                        "twitter": "Follow us on Twitter"
+                        "twitter": "Follow us on Twitter",
+                        "youtube": "Follow us on Youtube",
+                        "linked_in": "Follow us on LinkedIn",
+                        "flickr": "Follow us on Flickr",
+                        "instagram": "Follow us on Instagram",
+                        "tumblr": "Follow us on Tumblr",
+                        "yammer": "Follow us on Yammer",
+                        "google_plus": "Follow us on Google Plus",
+                        "vimeo": "Follow us on Vimeo"
                       }
                     },
                     "header": {
@@ -223,7 +231,15 @@
                     "general": {
                       "social_shares": {
                         "facebook": "Like us on Facebook",
-                        "twitter": "Follow us on Twitter"
+                        "twitter": "Follow us on Twitter",
+                        "youtube": "Follow us on Youtube",
+                        "linked_in": "Follow us on LinkedIn",
+                        "flickr": "Follow us on Flickr",
+                        "instagram": "Follow us on Instagram",
+                        "tumblr": "Follow us on Tumblr",
+                        "yammer": "Follow us on Yammer",
+                        "google_plus": "Follow us on Google Plus",
+                        "vimeo": "Follow us on Vimeo"
                       }
                     },
                     "header": {

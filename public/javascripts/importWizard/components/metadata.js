@@ -20,6 +20,34 @@ type DatasetMetadata = {
   nextClicked: boolean
 }
 
+export function defaultCustomData() {
+  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
+    return [
+      name,
+      fields.map(field => ({
+        field: field.name,
+        value: field.options ? field.options[0] : '',
+        privateField: _.has(field, 'private')
+      }))
+    ];
+  }));
+}
+
+export function emptyForName(name: string): DatasetMetadata {
+  return {
+    name: name,
+    description: '',
+    category: '',
+    tags: [],
+    rowLabel: '',
+    attributionLink: '',
+    customMetadata: defaultCustomData(customMetadataSchema),
+    privacySettings: 'private',
+    contactEmail: '',
+    nextClicked: false
+  };
+}
+
 const MD_UPDATE_NAME = 'MD_UPDATE_NAME';
 export function updateName(newName: string) {
   return {
@@ -101,33 +129,21 @@ export function updateNextClicked() {
   };
 }
 
-export function defaultCustomData() {
-  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
-    return [
-      name,
-      fields.map(field => ({
-        field: field.name,
-        value: field.options ? field.options[0] : '',
-        privateField: _.has(field, 'private')
-      }))
-    ];
-  }));
+const MD_LAST_SAVED = 'MD_LAST_SAVED';
+export function updateLastSaved(savedMetadata) {
+  return {
+    type: MD_LAST_SAVED,
+    savedMetadata: savedMetadata
+  };
 }
 
-
-export function emptyForName(name: string): DatasetMetadata {
-  return {
-    name: name,
-    description: '',
-    category: '',
-    tags: [],
-    rowLabel: '',
-    attributionLink: '',
-    customMetadata: defaultCustomData(customMetadataSchema),
-    privacySettings: 'private',
-    contactEmail: '',
-    nextClicked: false
-  };
+export function updateForLastSaved(lastSavedMetadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
+  switch (action.type) {
+    case MD_LAST_SAVED:
+      return action.savedMetadata;
+    default:
+      return lastSavedMetadata;
+  }
 }
 
 export function update(metadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
@@ -464,6 +480,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               onClick={() => {
                 onMetadataAction(updateNextClicked());
                 if (isMetadataValid(metadata)) {
+                  onMetadataAction(updateLastSaved(metadata));
                   onMetadataAction(Server.saveMetadataThenProceed());
                 }
               }}>{I18n.screens.wizard.next}</a>

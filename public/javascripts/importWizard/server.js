@@ -12,7 +12,8 @@ import _ from 'lodash';
 
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
-    const { navigation, metadata, datasetId } = getState();
+    const { navigation, lastSavedMetadata, metadata, datasetId } = getState();
+    updatePrivacy(datasetId, lastSavedMetadata.privacySettings, metadata.privacySettings);
     dispatch(goToPage('Working'));
     saveMetadataToViewsApi(datasetId, metadata).then(() => {
       dispatch(goToPage('Importing'));
@@ -75,6 +76,11 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 }
 
 export function coreViewToModel(view) {
+  const privacy =
+    _.has(view, 'grant')
+    ? 'public'
+    : 'private';
+
   return {
     name: view.name,
     description: view.description,
@@ -83,7 +89,8 @@ export function coreViewToModel(view) {
     rowLabel: view.metadata.rowLabel,
     attributionLink: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
-    contactEmail: view.privateMetadata.contactEmail
+    contactEmail: view.privateMetadata.contactEmail,
+    privacySettings: privacy
   };
 }
 
@@ -99,6 +106,33 @@ function coreViewToCustomMetadataModel(view) {
       }
     ))
   ));
+}
+
+export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
+  if (lastPrivacy === 'public' && currentPrivacy === 'private') {
+    // delete Grant
+    return fetch(`/api/views/${datasetId}/grants`, {
+      method: 'DELETE',
+      id: datasetId,
+      credentials: 'same-origin'
+    }).then((result) => {
+      console.log(result);
+    });
+  } else if (lastPrivacy === 'private' && currentPrivacy === 'public') {
+    // create Grant
+    return fetch(`/api/views/${datasetId}/grants`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: JSON.stringify(
+        {
+          inherited: false,
+          type: 'viewer',
+          flags: ['public']
+        })
+    }).then((result) => {
+      console.log(result);
+    });
+  }
 }
 
 type ImportProgress

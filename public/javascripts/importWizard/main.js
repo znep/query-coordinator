@@ -34,7 +34,8 @@ const rootReducer = combineReducers({
   transform: ImportColumns.update, // null except in the UploadData operation
   importStatus: Server.update,
   layers: ImportShapefile.update,
-  metadata: Metadata.update
+  metadata: Metadata.update,
+  lastSavedMetadata: Metadata.updateForLastSaved
 });
 
 const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view), enhancer);

@@ -18,6 +18,7 @@ describe("testing for API responses", () => {
     rowLabel: 'row',
     attributionLink: 'link',
     contactEmail: 'email@email.com',
+    privacySettings: 'private',
     customMetadata: {
       'jack':
         [

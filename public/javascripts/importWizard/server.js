@@ -10,7 +10,7 @@ import { goToPage } from './wizard';
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
 
-export function saveMetadata() {
+export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
     const { navigation, metadata, datasetId } = getState();
     dispatch(goToPage('Working'));

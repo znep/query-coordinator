@@ -464,7 +464,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               onClick={() => {
                 onMetadataAction(updateNextClicked());
                 if (isMetadataValid(metadata)) {
-                  onMetadataAction(Server.saveMetadata());
+                  onMetadataAction(Server.saveMetadataThenProceed());
                 }
               }}>{I18n.screens.wizard.next}</a>
           </li>

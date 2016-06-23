@@ -1,10 +1,11 @@
 <div class="mobile-user-actions">
   <% if logged_in? %>
-    <%= link_to('/profile', :class => 'profile-link chrome-mobile-btn') do %>
-      <%= content_tag(:span, nil, :class => 'icon-user')  %>
-      <%= username %>
-    <% end %>
+    <%= link_to('View Profile', '/profile', :class => 'profile-link chrome-mobile-btn') %>
+    <%- if current_user_is_admin? %>
+      <%= link_to('Administration', '/admin', :class => 'admin-link chrome-mobile-btn') %>
+    <%- end %>
+    <%= link_to('Sign Out', '/logout', :class => 'logout-link chrome-mobile-btn') %>
   <% else %>
-    <%= link_to('Sign In', '/login', :class => 'chrome-mobile-btn') %>
+    <%= link_to('Sign In', '/login', :class => "sign-in-toggle chrome-mobile-btn") %>
   <% end %>
 </div>

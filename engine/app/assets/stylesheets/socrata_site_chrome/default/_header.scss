@@ -42,11 +42,11 @@ header#chrome-header[template="default"] {
 
           &.social-link {
             padding: 0 5px;
-
-            span.monosocial {
-              margin: 0;
-            }
           }
+        }
+
+        .nav-links, .social-links {
+          float: left;
         }
 
         a.sign-in-toggle {
@@ -63,8 +63,12 @@ header#chrome-header[template="default"] {
         }
 
         span.divider {
+          display: inline-block;
+          vertical-align: middle;
+          position: relative;
+          top: -2px;
           margin: 0 $text_padding;
-          padding: 8px 0;
+          padding: 14px 0;
           border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
       }

@@ -43,31 +43,40 @@ header#chrome-header[template="rally"] {
           a.nav-link {
             height: 100%;
             display: inline-block;
-            padding: 0 $text_padding;
             color: $header_fg_color;
             text-decoration: none;
             &:hover, &:focus, &:active {
               text-decoration: underline;
-            }
-
-            &.social-link {
-              font-size: 19px;
             }
           }
 
           .navbar-left {
             height: 100%;
             float: left;
-            a.nav-link {
-              &:hover, &:focus, &:active {
-                text-decoration: none;
-                background-color: rgba(255, 255, 255, 0.3);
+
+            .nav-links {
+              height: 100%;
+
+              a.nav-link {
+                padding: 0 $text_padding;
+                &:hover, &:focus, &:active {
+                  text-decoration: none;
+                  background-color: rgba(255, 255, 255, 0.3);
+                }
               }
             }
           }
 
           .navbar-right {
+            height: 100%;
             float: right;
+
+            .social-links {
+              float: left;
+            }
+            a.nav-link {
+              padding: 0 5px;
+            }
             a.sign-in-toggle {
               font-size: 12px;
               margin-left: $text_padding;
@@ -82,8 +91,10 @@ header#chrome-header[template="rally"] {
             }
 
             span.divider {
+              display: inline-block;
+              vertical-align: middle;
               margin: 0 $text_padding;
-              padding: 8px 0;
+              padding: 14px 0;
               border-left: 1px solid rgba(255, 255, 255, 0.3);
             }
           }

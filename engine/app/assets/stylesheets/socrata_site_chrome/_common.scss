@@ -42,10 +42,15 @@ header#chrome-header, footer#chrome-footer {
 
   span.monosocial {
     display: inline-block;
-    font-size: 26px;
+    font-size: 34px;
     min-width: 22px;
-    margin-right: 5px;
     text-align: center;
+  }
+
+  .user-actions {
+    float: right;
+    cursor: pointer;
+    padding-left: 0.5rem;
   }
 
   .searchbox {

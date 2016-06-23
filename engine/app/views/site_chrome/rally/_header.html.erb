@@ -10,11 +10,19 @@
     <div class="rally-bottom">
       <nav class="desktop">
         <div class="navbar-left">
-          <%= render 'site_chrome/nav_links' %>
+          <div class="nav-links">
+            <%= render 'site_chrome/nav_links' %>
+          </div>
         </div>
 
         <div class="navbar-right">
-          <%= render 'site_chrome/social_links', show_label: false %>
+          <div class="social-links">
+            <%= render 'site_chrome/social_links', show_label: false %>
+          </div>
+
+          <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
+            <%= content_tag(:span, nil, :class => 'divider') %>
+          <% end %>
 
           <%= render 'site_chrome/user_actions' %>
         </div>

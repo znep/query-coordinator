@@ -10,7 +10,7 @@ import { goToPage } from './wizard';
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
 
-export function saveMetadata() {
+export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
     const { navigation, metadata, datasetId } = getState();
     dispatch(goToPage('Working'));
@@ -26,6 +26,9 @@ export function saveMetadata() {
           break;
         case 'UploadGeospatial':
           dispatch(importGeospatial(onImportError));
+          break;
+        case 'CreateFromScratch':
+          dispatch(goToPage('Finish'));
           break;
         default:
           console.error('Unkown operation!', navigation.operation);

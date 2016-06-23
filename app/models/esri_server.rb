@@ -4,7 +4,7 @@
 # A federated layer corresponds to a socrata dataset.
 
 class EsriServer
-  attr_reader :job, :url, :synced_count, :layer_count, :id, :sync_type
+  attr_reader :job, :url, :synced_count, :layer_count, :id, :sync_type, :last_synced
 
   def initialize(server_hash)
     @data = server_hash
@@ -14,14 +14,14 @@ class EsriServer
     @synced_count = @data['synced_count']
     @id = @data['id']
     @sync_type = @data['sync_type']
+    @last_synced = @data['last_synced']
   end
 
- # TODO: move this to a named time presentation
- # in config/initializers/time_formats.rb, when that file becomes available
-  def last_synced
-    if @job && @job['ended_at']
-      time = Time.parse(@job['ended_at'])
-      time.strftime('%d %b %Y %H:%M %Z')
+  def parse_last_synced
+    if @last_synced
+      Time.parse(@last_synced).to_s(:admin_connectors)
+    else
+      'Never'
     end
   end
 

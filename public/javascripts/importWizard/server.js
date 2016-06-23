@@ -13,24 +13,26 @@ import _ from 'lodash';
 export function saveMetadata() {
   return (dispatch, getState) => {
     const { navigation, metadata, datasetId } = getState();
-    dispatch(goToPage('Working'));
-    saveMetadataToViewsApi(datasetId, metadata).then(() => {
-      dispatch(goToPage('Importing'));
-      const onImportError = () => {
-        dispatch(importError());
-        dispatch(goToPage('Metadata'));
-      };
-      switch (navigation.operation) {
-        case 'UploadData':
-          dispatch(importData(onImportError));
-          break;
-        case 'UploadGeospatial':
-          dispatch(importGeospatial(onImportError));
-          break;
-        default:
-          console.error('Unkown operation!', navigation.operation);
-      }
-    });
+    if (Metadata.isMetadataValid(metadata)) {
+      dispatch(goToPage('Working'));
+      saveMetadataToViewsApi(datasetId, metadata).then(() => {
+        dispatch(goToPage('Importing'));
+        const onImportError = () => {
+          dispatch(importError());
+          dispatch(goToPage('Metadata'));
+        };
+        switch (navigation.operation) {
+          case 'UploadData':
+            dispatch(importData(onImportError));
+            break;
+          case 'UploadGeospatial':
+            dispatch(importGeospatial(onImportError));
+            break;
+          default:
+            console.error('Unkown operation!', navigation.operation);
+        }
+      });
+    }
   };
 }
 

@@ -461,7 +461,10 @@ export function view({ metadata, onMetadataAction, importError }) {
             <a
               className="button nextButton"
               href="#"
-              onClick={() => onMetadataAction(Server.saveMetadata())}>{I18n.screens.wizard.next}</a>
+              onClick={() => {
+                onMetadataAction(updateNextClicked());
+                onMetadataAction(Server.saveMetadata());
+              }}>{I18n.screens.wizard.next}</a>
           </li>
           <li className="prev">
             <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>

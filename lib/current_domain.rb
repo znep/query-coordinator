@@ -102,11 +102,12 @@ class CurrentDomain
     @@update_times = {} unless defined? @@update_times
 
     # Check memcache to see if we need to fetch a new theme.
-    refresh_mtime = self.last_refresh(cname)
+    refresh_mtime = last_refresh(cname)
+    refresh_mtime = nil unless refresh_mtime.is_a?(Time)
 
     if refresh_mtime.nil?
       refresh_time = Time.now
-      self.flag_out_of_date!(cname)
+      flag_out_of_date!(cname)
       return
     end
 
@@ -114,7 +115,7 @@ class CurrentDomain
     # than our local copy, time to update
     if @@update_times[cname].nil? || (refresh_mtime > @@update_times[cname])
       @@update_times[cname] = refresh_mtime
-      self.reload
+      reload
     end
   end
 

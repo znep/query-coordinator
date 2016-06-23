@@ -68,7 +68,8 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should load all goals with details', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
-        rowsPerPage: 100
+        rowsPerPage: 100,
+        currentPage: 0
       }
     }));
     return store.dispatch(tableLoadPage()).then(function() {
@@ -93,7 +94,8 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should just load 2 goals', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
-        rowsPerPage: 2
+        rowsPerPage: 2,
+        currentPage: 0
       }
     }));
     return store.dispatch(tableLoadPage()).then(function() {

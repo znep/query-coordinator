@@ -24,7 +24,8 @@ const initialState = Immutable.fromJS({
     translations: window.translations,
     selectedRows: [],
     alert: { label: '', message: '' },
-    rowsPerPage: 25
+    rowsPerPage: 25,
+    currentPage: 0
   }
 });
 

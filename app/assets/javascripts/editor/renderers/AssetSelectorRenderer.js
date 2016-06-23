@@ -713,7 +713,7 @@ export default function AssetSelectorRenderer(options) {
       });
     });
 
-    searchField.change(function() {
+    searchForm.submit(function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
         phrase: searchField.val()

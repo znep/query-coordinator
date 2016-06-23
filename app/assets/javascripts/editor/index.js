@@ -127,6 +127,11 @@ $(document).on('ready', function() {
     }
   });
 
+  // Prevent form autosubmission on <enter> key.
+  // All our forms that actually use the default
+  // browser form submission have an action attribute.
+  $(document.body).on('submit', 'form:not([action])', _.constant(false));
+
   /**
    * History events
    */

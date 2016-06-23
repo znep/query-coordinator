@@ -278,7 +278,7 @@ export default function RichTextEditorToolbar(selector, formats) {
     ).
     append(
       $(
-        '<div>',
+        '<form>',
         {
           'class': 'rich-text-editor-toolbar-text-color-panel-active-custom-color-container'
         }
@@ -286,7 +286,7 @@ export default function RichTextEditorToolbar(selector, formats) {
         $(
           '<input>',
           {
-            'class': 'rich-text-editor-toolbar-text-color-panel-color-input',
+            'class': 'rich-text-editor-toolbar-text-color-panel-color-input text-input',
             'type': 'text',
             'placeholder': '#333333'
           }

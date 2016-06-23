@@ -2458,6 +2458,38 @@ en:
                 title: Twitter Profile Link
                 description: Displays Twitter profile link in Header and Footer when present.
                 placeholder: http://www.twitter.com/
+              youtube_profile_link:
+                title: YouTube Profile Link
+                description: Displays YouTube profile link in Header and Footer when present.
+                placeholder: http://www.youtube.com/
+              linked_in_profile_link:
+                title: LinkedIn Profile Link
+                description: Displays LinkedIn profile link in Header and Footer when present.
+                placeholder: http://www.linkedin.com/
+              flickr_profile_link:
+                title: Flickr Profile Link
+                description: Displays Flickr profile link in Header and Footer when present.
+                placeholder: http://www.flickr.com/
+              instagram_profile_link:
+                title: Instagram Profile Link
+                description: Displays Instagram profile link in Header and Footer when present.
+                placeholder: http://www.instagram.com/
+              tumblr_profile_link:
+                title: Tumblr Profile Link
+                description: Displays Tumblr profile link in Header and Footer when present.
+                placeholder: http://www.tumblr.com/
+              yammer_profile_link:
+                title: Yammer Profile Link
+                description: Displays Yammer profile link in Header and Footer when present.
+                placeholder: http://www.yammer.com/
+              google_plus_profile_link:
+                title: Google Plus Profile Link
+                description: Displays Google Plus profile link in Header and Footer when present.
+                placeholder: http://www.plus.google.com/
+              vimeo_profile_link:
+                title: Vimeo Profile Link
+                description: Displays Vimeo profile link in Header and Footer when present.
+                placeholder: http://www.vimeo.com/
       users:
         actions: Actions
         all: All

@@ -53,7 +53,7 @@ module SocrataSiteChrome
     def social_link_icon(type)
       {
         'facebook' => 'facebook',
-        'twitter' => 'twitter',
+        'twitter' => 'twitterbird',
         'youtube' => 'youtube',
         'linked_in' => 'linkedin',
         'flickr' => 'flickr',
@@ -109,8 +109,14 @@ module SocrataSiteChrome
     # Returns template name - either 'default' or 'rally'
     # Users can override with query parameter `?site_chrome_template=rally`
     def current_template
-      request.try(:query_parameters).dig(:site_chrome_template) ||
-        get_site_chrome.general[:template] || 'default'
+      template = (request.try(:query_parameters).dig(:site_chrome_template) ||
+        get_site_chrome.general[:template]).to_s.strip.downcase
+      case template
+      when 'rally'
+        'rally'
+      else
+        'default'
+      end
     end
   end
 end

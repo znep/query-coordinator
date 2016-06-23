@@ -9,16 +9,12 @@
       <%= render 'site_chrome/nav_links' %>
     </div>
 
-    <div class="menu-section-header">Account</div>
-
     <%= render 'site_chrome/mobile_user_actions' %>
+
+    <%= render 'site_chrome/searchbox', path: '/browse' %>
 
     <div class="nav-links social-links">
       <%= render 'site_chrome/social_links', show_label: true %>
-    </div>
-
-    <div class="nav-links">
-      <%= render 'site_chrome/searchbox', path: '/browse' %>
     </div>
   </div>
 </div>

@@ -75,10 +75,11 @@ export default function ShareAndEmbedRenderer() {
   function template() {
     /* eslint-disable indent */
     return [
+      '<form>',
       '<div class="modal-error alert error"></div>',
 
       format('<h2 class="modal-input-label input-label">{0}</h2>', t('story_url_label')),
-      '<input class="share-and-embed-story-url" type="text" readonly>',
+      '<input class="share-and-embed-story-url text-input" type="text" readonly>',
       '<hr>',
 
       '<ul class="nav-tabs">',
@@ -88,7 +89,7 @@ export default function ShareAndEmbedRenderer() {
 
       '<div class="share-and-embed-pane-container">',
         '<div class="share-and-embed-pane current">',
-          '<textarea class="share-and-embed-embed-code" readonly></textarea>',
+          '<textarea class="share-and-embed-embed-code text-area" readonly></textarea>',
           format('<h2 class="modal-input-label input-label">{0}</h2>', t('embed_and_preview.preview_label')),
           '<iframe src="about:blank" class="share-and-embed-preview-iframe"></iframe>',
         '</div>',
@@ -96,9 +97,9 @@ export default function ShareAndEmbedRenderer() {
         '<div class="share-and-embed-pane">',
           format('<div class="alert info options-notice">{0}</div>', t('options.notice')),
           format('<h2 class="modal-input-label input-label">{0}</h2>', t('options.title_label')),
-          '<input class="share-and-embed-title" type="text">',
+          '<input class="share-and-embed-title text-input" type="text">',
           format('<h2 class="modal-input-label input-label">{0}</h2>', t('options.description_label')),
-          '<textarea class="share-and-embed-description"></textarea>',
+          '<textarea class="share-and-embed-description text-area"></textarea>',
         '</div>',
       '</div>',
 
@@ -111,7 +112,8 @@ export default function ShareAndEmbedRenderer() {
           '<button class="btn btn-primary"><span>{0}</span></button>',
           I18n.t('editor.modal.buttons.save_and_close')
         ),
-      '</div>'
+      '</div>',
+      '</form>'
     ].join('');
     /* eslint-enable indent */
   }

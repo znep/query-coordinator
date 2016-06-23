@@ -127,6 +127,8 @@ $(document).on('ready', function() {
     }
   });
 
+  StorytellerUtils.preventFormAutoSubmit();
+
   /**
    * History events
    */

@@ -1,6 +1,12 @@
 @import "lib/variables";
 @import "bourbon";
 
+#link-modal {
+  input[type=text], input[type=url] {
+    width: 100%;
+  }
+}
+
 .link-test-link-action {
   float: right;
   text-decoration: none;

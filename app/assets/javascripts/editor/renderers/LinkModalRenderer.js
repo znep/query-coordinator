@@ -37,17 +37,16 @@ export default function LinkModalRenderer() {
   function attachEvents() {
     var wait = 750;
 
-    $(window).on('keyup', enterToInsert);
     $text.on('input', _.debounce(update, wait));
     $link.on('input', _.debounce(update, wait));
     $openInNewWindow.on('change', _.debounce(update, wait));
     $testLink.on('click', testLink);
 
-    $modal.on('modal-dismissed', function() {
+    $modal.on('modal-dismissed', _.defer(function() {
       dispatcher.dispatch({
         action: Actions.LINK_MODAL_CLOSE
       });
-    });
+    }));
 
     $modal.on('click', '[data-action]', function(event) {
       var action = event.target.getAttribute('data-action');
@@ -58,19 +57,10 @@ export default function LinkModalRenderer() {
             action: Actions.LINK_MODAL_CLOSE
           });
           break;
-        case Actions.LINK_MODAL_ACCEPT:
-          dispatcher.dispatch({
-            action: Actions.LINK_MODAL_ACCEPT,
-            text: $text.val(),
-            link: $link.val(),
-            openInNewWindow: $openInNewWindow.is(':checked')
-          });
-          dispatcher.dispatch({
-            action: Actions.LINK_MODAL_CLOSE
-          });
-          break;
       }
     });
+
+    $modal.submit(handleSubmission);
   }
 
   function attachStoreListeners() {
@@ -107,12 +97,22 @@ export default function LinkModalRenderer() {
     $submitButton.prop('disabled', !predicate);
   }
 
-  function enterToInsert(event) {
+  function handleSubmission() {
     var visible = linkModalStore.getVisibility();
     var valid = linkModalStore.getValidity();
 
-    if (event.keyCode === 13 && valid && visible) {
-      $submitButton.click();
+    if (valid && visible) {
+      dispatcher.dispatch({
+        action: Actions.LINK_MODAL_ACCEPT,
+        text: $text.val(),
+        link: $link.val(),
+        openInNewWindow: $openInNewWindow.is(':checked')
+      });
+      dispatcher.dispatch({
+        action: Actions.LINK_MODAL_CLOSE
+      });
+    } else {
+      return false;
     }
   }
 

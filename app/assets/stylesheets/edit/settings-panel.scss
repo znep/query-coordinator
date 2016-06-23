@@ -151,6 +151,12 @@
   }
 }
 
+#settings-panel-story-metadata {
+  input, textarea {
+    width: 100%;
+  }
+}
+
 .settings-panel-displaying,
 .settings-panel-publishing {
   > h2 {
@@ -174,6 +180,8 @@
 
   textarea {
     resize: vertical;
+    height: 8rem;
+    padding: 8px;
   }
 
   .settings-save-btn {

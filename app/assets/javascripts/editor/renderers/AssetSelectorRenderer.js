@@ -631,19 +631,30 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseImageGalleryTemplate() {
-    var search = $('<div>', {
+    var searchForm = $('<form>', {
       class: 'images-search'
     });
 
     var searchField = $('<input>', {
-      class: 'asset-selector-text-input',
-      placeholder: I18n.t('editor.asset_selector.image_upload.search'),
+      class: 'asset-selector-text-input text-input',
+      placeholder: I18n.t('editor.asset_selector.image_upload.search_instructions'),
       type: 'text'
     });
 
     var searchLoadingSpinner = $('<button>', {
       class: 'btn btn-busy btn-transparent images-search-loading-spinner'
     }).append($('<span>')).hide();
+
+    var searchInputGroup = $('<span>', { class: 'input-group' }).
+      append([
+        searchField,
+        searchLoadingSpinner,
+        $('<input>', {
+          class: 'btn btn-primary',
+          type: 'submit',
+          value: I18n.t('editor.asset_selector.image_upload.search')
+        })
+      ]);
 
     var searchError = $('<div>', {
       class: 'alert warning-bar hidden images-error'
@@ -652,7 +663,7 @@ export default function AssetSelectorRenderer(options) {
       $('<p>').text(I18n.t('editor.asset_selector.image_upload.errors.image_search'))
     );
 
-    search.append(searchField, searchLoadingSpinner);
+    searchForm.append(searchInputGroup);
 
     var galleryResults = $('<div>', {
       class: 'gallery-results'
@@ -713,7 +724,7 @@ export default function AssetSelectorRenderer(options) {
       });
     });
 
-    searchField.change(function() {
+    searchForm.submit(function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_IMAGE_SEARCH,
         phrase: searchField.val()
@@ -737,7 +748,7 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    return [search, searchError, galleryResults, navGroup];
+    return [searchForm, searchError, galleryResults, navGroup];
   }
 
   function _getBestColumnForImagePlacement(imageElement) {
@@ -1136,13 +1147,13 @@ export default function AssetSelectorRenderer(options) {
     );
 
 
-    var inputField = $(
+    var inputField = $('<form>').append($(
       '<input>',
       {
-        'class': 'asset-selector-alt-text-input',
+        'class': 'asset-selector-alt-text-input text-input',
         'type': 'text'
       }
-    );
+    ));
 
     inputField.on('keyup', function(event) {
       if (event.keyCode === 13) {
@@ -1232,7 +1243,7 @@ export default function AssetSelectorRenderer(options) {
     var inputControl = $(
       '<input>',
       {
-        'class': 'asset-selector-text-input',
+        'class': 'text-input',
         'data-asset-selector-validate-field': 'storyUrl',
         'placeholder': 'https://www.example.com/stories/s/story-title/abcd-efgh',
         'type': 'text'
@@ -1286,7 +1297,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-story-tile' }).append([
       inputLabel,
       inputControl,
       previewContainer
@@ -1408,7 +1419,7 @@ export default function AssetSelectorRenderer(options) {
     var inputControl = $(
       '<input>',
       {
-        'class': 'asset-selector-text-input',
+        'class': 'text-input',
         'data-asset-selector-validate-field': 'goalUrl',
         'placeholder': 'https://www.example.com/stat/goals/abcd-1234/abcd-1234/abcd-1234',
         'type': 'text'
@@ -1462,7 +1473,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-goal-tile' }).append([
       inputLabel,
       inputControl,
       previewContainer
@@ -1567,7 +1578,7 @@ export default function AssetSelectorRenderer(options) {
     var inputControl = $(
       '<input>',
       {
-        'class': 'asset-selector-text-input',
+        'class': 'text-input',
         'data-asset-selector-validate-field': 'youtubeId',
         'placeholder': 'https://www.youtube.com/',
         'type': 'text'
@@ -1621,7 +1632,7 @@ export default function AssetSelectorRenderer(options) {
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-youtube' }).append([
       inputLabel,
       inputControl,
       previewContainer
@@ -2205,7 +2216,7 @@ export default function AssetSelectorRenderer(options) {
     var inputControl = $(
       '<textarea>',
       {
-        'class': 'asset-selector-text-input',
+        'class': 'asset-selector-text-input text-area',
         'data-asset-selector-field': 'embedHtml',
         'type': 'text'
       }
@@ -2279,7 +2290,7 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-embed-code' }).append([
       inputLabel,
       inputControl,
       previewLabel,

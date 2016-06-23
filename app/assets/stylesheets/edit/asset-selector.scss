@@ -79,6 +79,21 @@
     padding-bottom: 1rem;
   }
 
+  .asset-selector-youtube,
+  .asset-selector-story-tile,
+  .asset-selector-goal-tile {
+    input[type=text] {
+      width: 100%;
+    }
+  }
+
+  .asset-selector-embed-code {
+    textarea {
+      width: 100%;
+      height: 8rem;
+    }
+  }
+
   .asset-selector-image-description-label {
     padding-top: 3rem;
 
@@ -93,6 +108,7 @@
     padding: 2rem 1.5rem;
 
     .asset-selector-alt-text-input {
+      width: 100%;
       margin-bottom: 0;
     }
   }
@@ -394,11 +410,20 @@
 .images-search {
   position: relative;
   padding: 0 0.5rem;
+  margin-bottom: 1rem;
 
-  .btn-busy {
+  input[type=text] {
+    margin: 0;
+    padding: 1em;
+    &::-ms-clear {
+      display: none;
+    }
+  }
+
+  .images-search-loading-spinner {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 7rem;
     bottom: 0;
   }
 }

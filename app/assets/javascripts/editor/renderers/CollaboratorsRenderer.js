@@ -52,13 +52,13 @@ export default function CollaboratorsRenderer() {
   function template() {
     /* eslint-disable indent */
     return [
-      '<div>',
+      '<form>',
         '<div>',
           StorytellerUtils.format('<h2 class="modal-input-label">{0}</h2>', t('editor.collaborators.modal.invite_collaborators')),
           '<div class="modal-input-group">',
             '<div class="collaborators-email-input-wrapper">',
-              StorytellerUtils.format('<input name="collaborators-email" type="email" class="modal-input" placeholder="{0}">', t('editor.collaborators.modal.email_placeholder')),
-              '<button class="btn btn-transparent btn-busy"><span></span></button>',
+              StorytellerUtils.format('<input name="collaborators-email" type="email" class="modal-input text-input" placeholder="{0}">', t('editor.collaborators.modal.email_placeholder')),
+              '<button type="button" class="btn btn-transparent btn-busy"><span></span></button>',
             '</div>',
             '<div class="modal-radio-group">',
               StorytellerUtils.format('<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>', t('editor.collaborators.modal.errors.already_added')),
@@ -89,7 +89,7 @@ export default function CollaboratorsRenderer() {
                 '</li>',
               '</ul>',
             '</div>',
-            StorytellerUtils.format('<button class="btn btn-default" data-action="{0}" disabled>{1}</button>', Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')),
+            StorytellerUtils.format('<button type="button" class="btn btn-default" data-action="{0}" disabled>{1}</button>', Actions.COLLABORATORS_ADD, t('editor.collaborators.modal.add_contributor')),
           '</div>',
         '</div>',
         '<div>',
@@ -106,10 +106,10 @@ export default function CollaboratorsRenderer() {
           '</table>',
         '</div>',
         '<div class="modal-button-group r-to-l">',
-          StorytellerUtils.format('<button class="btn btn-default" data-action="{0}">{1}</button>', Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
-          StorytellerUtils.format('<button class="btn btn-primary" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
+          StorytellerUtils.format('<button class="btn btn-default" type="button" data-action="{0}">{1}</button>', Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
+          StorytellerUtils.format('<button type="submit" class="btn btn-primary" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
         '</div>',
-      '</div>'
+      '</form>'
     ].join('').format({
       // intentionally not a link, this should be pasted into an email by the user (not followed by them).
       domain: window.location.hostname
@@ -135,7 +135,7 @@ export default function CollaboratorsRenderer() {
     /* eslint-disable indent */
     return [
       '<button ',
-        'class="btn btn-default"',
+        'type="button" class="btn btn-default"',
         StorytellerUtils.format('data-action="{0}"', Actions.COLLABORATORS_REMOVE),
       StorytellerUtils.format('>{0}</button>', t('editor.collaborators.modal.remove'))
     ].join('');

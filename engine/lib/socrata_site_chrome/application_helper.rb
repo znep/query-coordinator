@@ -107,8 +107,10 @@ module SocrataSiteChrome
     end
 
     # Returns template name - either 'default' or 'rally'
+    # Users can override with query parameter `?site_chrome_template=rally`
     def current_template
-      get_site_chrome.general[:template] || 'default'
+      request.try(:query_parameters).dig(:site_chrome_template) ||
+        get_site_chrome.general[:template] || 'default'
     end
   end
 end

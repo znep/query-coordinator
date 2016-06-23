@@ -594,6 +594,13 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     );
 
     return result;
+  },
+
+  // Prevent form autosubmission on <enter> key.
+  // All our forms that actually use the default
+  // browser form submission have an action attribute.
+  preventFormAutoSubmit: function() {
+    $(document.body).on('submit', 'form:not([action])', _.constant(false));
   }
 });
 

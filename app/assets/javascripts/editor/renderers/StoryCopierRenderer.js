@@ -85,7 +85,7 @@ export default function StoryCopierRenderer(options) {
   function _renderModalContents() {
 
     var inputField = $('<input>', {
-      'class': 'make-a-copy-title-input',
+      'class': 'make-a-copy-title-input text-input',
       'name': 'title',
       'type': 'text',
       'maxlength': 255

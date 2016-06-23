@@ -92,6 +92,9 @@
     font-size: 1.5rem;
     background-color: $collaborators-input-email-background-color;
     margin-bottom: 0;
+    &::-ms-clear {
+      display: none;
+    }
   }
 
   .modal-radio-group {
@@ -103,9 +106,12 @@
       left: -0.075rem;
     }
 
+    li {
+      padding: 1rem 0;
+    }
+
     label {
       margin: 0;
-      padding: 1rem 0;
       cursor: pointer;
       transition: background-color .2s;
 

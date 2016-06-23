@@ -28,6 +28,9 @@ export function saveMetadata() {
           case 'UploadGeospatial':
             dispatch(importGeospatial(onImportError));
             break;
+          case 'CreateFromScratch':
+            dispatch(goToPage('Finish'));
+            break;
           default:
             console.error('Unkown operation!', navigation.operation);
         }

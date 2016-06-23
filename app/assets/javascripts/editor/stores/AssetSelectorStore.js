@@ -150,38 +150,7 @@ export default function AssetSelectorStore() {
         break;
 
       case Actions.ASSET_SELECTOR_PROVIDER_CHOSEN:
-        switch (payload.provider) {
-          case 'SOCRATA_VISUALIZATION':
-            _chooseVisualizationOption();
-            break;
-          case 'STORY_TILE':
-            _chooseStoryTile();
-            break;
-          case 'GOAL_TILE':
-            _chooseGoalTile();
-            break;
-          case 'YOUTUBE':
-            _chooseYoutube();
-            break;
-          case 'HERO':
-            _setComponentType('hero');
-            _chooseImageUpload();
-            break;
-          case 'IMAGE':
-            _setComponentType('image');
-            _chooseImageUpload();
-            break;
-          case 'EMBED_CODE':
-            _chooseEmbedCode();
-            break;
-          default:
-            throw new Error(
-              StorytellerUtils.format(
-                'Unsupported provider: {0}',
-                payload.provider
-              )
-            );
-        }
+        setProvider(payload);
         break;
 
       case Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN:
@@ -224,10 +193,6 @@ export default function AssetSelectorStore() {
         _updateDroppedImage(payload);
         break;
 
-      case Actions.FILE_UPLOAD:
-        _upload(payload);
-        break;
-
       case Actions.ASSET_SELECTOR_CLOSE:
         _closeDialog();
         break;
@@ -246,6 +211,35 @@ export default function AssetSelectorStore() {
 
       case Actions.ASSET_SELECTOR_IMAGE_SELECTED:
         _setImageSearchSelection(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_CROP_SET:
+        setImageCrop(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT:
+        commitImageCrop();
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_CROP_START:
+        startImageCropping();
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_CROP_RESET:
+        resetImageCropping();
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_UPLOAD:
+        setPreviewImage(payload);
+        break;
+
+      case Actions.ASSET_SELECTOR_IMAGE_PREVIEW_BACK:
+        backToImageUpload();
+        break;
+
+      case Actions.URL_UPLOAD:
+      case Actions.FILE_UPLOAD:
+        upload(payload);
         break;
     }
   });
@@ -283,8 +277,43 @@ export default function AssetSelectorStore() {
     return _state.dataset;
   };
 
+  this.getErrorReason = function() {
+    return _.get(_state.componentProperties, 'reason', null);
+  };
+
   this.getFileId = function() {
     return _.get(_state, 'fileId', null);
+  };
+
+  this.getPreviewImageData = function() {
+    return _.get(_state, 'previewImage', null);
+  };
+
+  this.hasPreviewImageData = function() {
+    return _.isObject(this.getPreviewImageData());
+  };
+
+  this.getPreviewImageUrl = function() {
+    return _.get(_state, 'previewImageUrl', null);
+  };
+
+  this.hasPreviewImageUrl = function() {
+    return _.isString(this.getPreviewImageUrl());
+  };
+
+  this.hasImageUrl = function() {
+    var value = getImageComponent(this.getComponentValue());
+    return !_.isEmpty(_.get(value, 'url', null));
+  };
+
+  this.hasImageUrlChanged = function() {
+    var value = getImageComponent(this.getComponentValue());
+    var originalValue = getImageComponent(_state.originalComponentProperties);
+
+    var url = _.get(value, 'url', null);
+    var originalUrl = _.get(originalValue, 'url', null);
+
+    return url !== originalUrl;
   };
 
   this.isEditingExisting = function() {
@@ -308,6 +337,34 @@ export default function AssetSelectorStore() {
 
   this.getDroppedImage = function() {
     return _.get(_state, 'droppedImage', null);
+  };
+
+  this.isCropping = function() {
+    return _.get(_state, 'cropping', false);
+  };
+
+  this.isCropComplete = function() {
+    return _.get(_state, 'cropComplete', false);
+  };
+
+  this.isCroppingUiEnabled = function() {
+    return _.get(_state, 'croppingUiEnabled', false);
+  };
+
+  this.hasCropChanged = function() {
+    var originalCrop = getImageComponent(_state.originalComponentProperties).crop;
+    var crop = getImageComponent(_state.componentProperties).crop;
+
+    return !_.isEqual(originalCrop, crop);
+  };
+
+  this.hasCrop = function() {
+    var componentProperties = getImageComponent(self.getComponentValue());
+
+    return _.has(componentProperties, 'crop.x') &&
+      _.has(componentProperties, 'crop.y') &&
+      _.has(componentProperties, 'crop.width') &&
+      _.has(componentProperties, 'crop.height');
   };
 
   this.getImageSearchUrl = function() {
@@ -375,6 +432,14 @@ export default function AssetSelectorStore() {
     return (self.getImageSearchPage() + 1) * self.getImageSearchPageSize() <= _state.imageSearchCount;
   };
 
+  function getImageComponent(componentProperties) {
+    var type = self.getComponentType();
+
+    return type === 'author' ?
+      _.get(componentProperties, 'image') :
+      componentProperties;
+  }
+
   function _setImageSearchPhrase(payload) {
     StorytellerUtils.assertHasProperty(payload, 'phrase');
     StorytellerUtils.assertIsOneOfTypes(payload.phrase, 'string');
@@ -432,6 +497,7 @@ export default function AssetSelectorStore() {
     };
 
     if (_state.selectedImageId !== payload.id) {
+      _state.previewImageUrl = image.url;
       _state.selectedImageId = payload.id;
 
       if (type === 'author') {
@@ -443,6 +509,153 @@ export default function AssetSelectorStore() {
       }
     } else {
       _state.selectedImageId = null;
+    }
+
+    self._emitChange();
+  }
+
+  function setImageCrop(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'crop');
+    StorytellerUtils.assertHasProperties(payload.crop, 'width', 'height', 'x', 'y');
+
+    var value = getImageComponent(self.getComponentValue());
+    value.crop = payload.crop;
+
+    self._emitChange();
+  }
+
+  function commitImageCrop() {
+    var value = getImageComponent(self.getComponentValue());
+    var url = StorytellerUtils.format('{0}documents/{1}/crop', Constants.API_PREFIX_PATH, value.documentId);
+    var document = value.crop ? {
+      crop_x: value.crop.x / 100,
+      crop_y: value.crop.y / 100,
+      crop_width: value.crop.width / 100,
+      crop_height: value.crop.height / 100
+    } : {
+      crop_x: null,
+      crop_y: null,
+      crop_width: null,
+      crop_height: null
+    };
+
+    var options = {
+      dataType: 'text',
+      data: JSON.stringify({ document: document }),
+      headers: { 'X-CSRF-Token': Environment.CSRF_TOKEN }
+    };
+
+    _state.cropping = true;
+    _state.cropComplete = false;
+
+    self._emitChange();
+
+    httpRequest('put', url, options).
+      then(function() {
+        _state.cropping = false;
+        _state.cropComplete = true;
+
+        self._emitChange();
+      }).
+      catch(function(error) {
+        _state.cropping = false;
+
+        exceptionNotifier.notify(error);
+
+        _updateImageUploadError({
+          error: {
+            reason: I18n.t('editor.asset_selector.image_preview.errors.cropping')
+          }
+        });
+
+        self._emitChange();
+      });
+  }
+
+  function startImageCropping() {
+    var value = getImageComponent(self.getComponentValue());
+    var crop = _.cloneDeep(Constants.DEFAULT_CROP);
+
+    _state.croppingUiEnabled = true;
+    value.crop = crop;
+
+    self._emitChange();
+  }
+
+  function resetImageCropping() {
+    var value = getImageComponent(self.getComponentValue());
+
+    _state.croppingUiEnabled = false;
+
+    if (value) {
+      delete value.crop;
+    }
+
+    self._emitChange();
+  }
+
+  function setPreviewImage(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'file');
+
+    var message;
+    var reader;
+    var file = payload.file;
+    var isNotValidFileSize = file.size > Constants.MAX_FILE_SIZE_BYTES;
+    var isNotValidImageType = !_.include(Constants.VALID_IMAGE_TYPES, file.type);
+    var isNotValidFileType = !_.include(Constants.VALID_FILE_TYPES, file.type);
+
+    if (isNotValidFileSize || (isNotValidImageType && isNotValidFileType)) {
+      message = isNotValidFileSize ?
+        'editor.asset_selector.image_upload.errors.validation_file_size' :
+        'editor.asset_selector.image_upload.errors.validation_file_type';
+
+      _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
+      _.set(_state.componentProperties, 'reason', I18n.t(message));
+    } else {
+      if (_state.componentProperties && _state.componentProperties.reason) {
+        delete _state.componentProperties.reason;
+      }
+
+      _state.step = WIZARD_STEP.IMAGE_PREVIEW;
+
+      reader = new FileReader();
+      reader.
+        addEventListener('load', function() {
+          _state.previewImageUrl = reader.result;
+          _state.previewImage = file;
+          self._emitChange();
+        });
+      reader.
+        addEventListener('error', function() {
+          _state.componentProperties.reason = I18n.t('editor.asset_selector.image_preview.errors.cannot_render_image');
+          _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
+          self._emitChange();
+        });
+
+      reader.readAsDataURL(payload.file);
+    }
+
+    _state.cropComplete = false;
+    self._emitChange();
+  }
+
+  function backToImageUpload() {
+    var value = getImageComponent(self.getComponentValue());
+
+    _state.previewImageUrl = null;
+    _state.previewImage = null;
+    _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
+
+    _state.imageSearchResults = [];
+    _state.imageSearchEmpty = true;
+    _state.imageSearching = false;
+    _state.imageSearchError = false;
+
+    _state.croppingUiEnabled = false;
+    _state.cropComplete = false;
+
+    if (value) {
+      delete value.crop;
     }
 
     self._emitChange();
@@ -507,6 +720,7 @@ export default function AssetSelectorStore() {
     var component;
     var domain;
     var datasetUid;
+    var value;
 
     StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
@@ -521,11 +735,21 @@ export default function AssetSelectorStore() {
       componentIndex: payload.componentIndex,
       componentType: component.type,
       componentProperties: component.value,
+      originalComponentProperties: _.cloneDeep(component.value),
       isEditingExisting: true
     };
 
     domain = _.get(component, 'value.dataset.domain');
     datasetUid = _.get(component, 'value.dataset.datasetUid');
+
+    if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {
+      value = getImageComponent(component.value);
+      _state.previewImageUrl = value.url;
+
+      if (!_.isEmpty(value.crop)) {
+        _state.croppingUiEnabled = true;
+      }
+    }
 
     if (datasetUid) {
       // Fetch additional data needed for UI.
@@ -879,13 +1103,23 @@ export default function AssetSelectorStore() {
     }
   }
 
-  function _upload(payload) {
-    var isNotHTMLFragment = !self.isHTMLFragment(payload.file.name);
+  function upload(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'id');
+
+    var crop = getImageComponent(self.getComponentValue()).crop;
+    var hasCrop = crop && crop.x !== 0 && crop.y !== 0 && crop.width !== 100 && crop.height !== 100;
+    var isNotHTMLFragment = _.isEmpty(payload.file) || !self.isHTMLFragment(payload.file.name);
 
     _state.fileId = payload.id;
+    // Clear any erroring that may be lingering.
+    delete _state.componentProperties.reason;
 
     if (isNotHTMLFragment) {
-      _state.step = WIZARD_STEP.IMAGE_UPLOADING;
+      if (hasCrop) {
+        _state.cropping = true;
+      }
+
+      self._emitChange();
     }
   }
 
@@ -904,7 +1138,8 @@ export default function AssetSelectorStore() {
         break;
       case STATUS.SIGNED:
       case STATUS.ACKNOWLEDGED:
-      case STATUS.PROGRESSING:
+      case STATUS.UPLOADING:
+      case STATUS.PROCESSING:
         // Nothing.
         break;
       default:
@@ -917,22 +1152,31 @@ export default function AssetSelectorStore() {
     switch (file.status) {
       case STATUS.CANCELLED:
         _state.fileId = null;
-        _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
+        _state.cropping = false;
         self._emitChange();
         break;
+
       case STATUS.COMPLETED:
-        _state.fileId = null;
-        _updateImagePreview({resource: file.resource});
+        _state.cropping = false;
+        _updateImagePreview(file);
         break;
+
       case STATUS.ERRORED:
         _state.fileId = null;
+        _state.cropping = false;
         _updateImageUploadError({error: {reason: file.message}});
         break;
+
+      case STATUS.UPLOADING:
+      case STATUS.PROCESSING:
+        self._emitChange();
+        break;
+
       case STATUS.SIGNED:
       case STATUS.ACKNOWLEDGED:
-      case STATUS.PROGRESSING:
         // Nothing.
         break;
+
       default:
         _state.fileId = null;
         break;
@@ -944,7 +1188,7 @@ export default function AssetSelectorStore() {
       var id = self.getFileId();
       var file = fileUploaderStore.fileById(id);
 
-      if (self.isHTMLFragment(file.raw.name)) {
+      if (file.raw && self.isHTMLFragment(file.raw.name)) {
         _handleEmbedCodeFragment(file);
       } else {
         _handleImage(file);
@@ -952,45 +1196,31 @@ export default function AssetSelectorStore() {
     }
   });
 
-  function _updateImagePreview(payload) {
-    var imageUrl = payload.resource.url;
-    var documentId = payload.resource.id;
-    var componentType = _state.componentType;
+  function _updateImagePreview(file) {
+    var type = self.getComponentType();
+    var image = {
+      documentId: file.resource.id,
+      url: file.resource.url,
+      crop: _state.componentProperties.crop
+    };
 
-    _state.step = WIZARD_STEP.IMAGE_PREVIEW;
-
-    if (componentType === 'image') {
-      _state.componentProperties = {
-        documentId: documentId,
-        url: imageUrl
-      };
-    } else if (componentType === 'hero') {
-      var html = _.get(_state, 'componentProperties.html'); // Preserve any previous HTML content.
-
-      _state.componentProperties = {
-        documentId: documentId,
-        url: imageUrl
-      };
-
-      if (html) {
-        _state.componentProperties.html = html;
-      }
-    } else if (componentType === 'author') {
-      _.set(_state.componentProperties, 'image.documentId', documentId);
-      _.set(_state.componentProperties, 'image.url', imageUrl);
+    if (type === 'author') {
+      _state.componentProperties = _.merge(
+        _state.componentProperties,
+        { image: image }
+      );
     } else {
-      throw new Error('Don\'t know how to set image values for component: ' + _state.componentType);
+      _state.componentProperties = image;
     }
 
     self._emitChange();
   }
 
   function _updateImageUploadError(payload) {
-    _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
-    _state.componentProperties = {};
+    var value = self.getComponentValue();
 
     if (!_.isUndefined(payload.error.reason)) {
-      _state.componentProperties.reason = payload.error.reason;
+      _.set(value, 'reason', payload.error.reason);
     }
 
     self._emitChange();
@@ -1066,6 +1296,45 @@ export default function AssetSelectorStore() {
     };
 
     self._emitChange();
+  }
+
+  function setProvider(payload) {
+    StorytellerUtils.assertHasProperty(payload, 'provider');
+
+    _state.componentProperties = {};
+
+    switch (payload.provider) {
+      case 'SOCRATA_VISUALIZATION':
+        _chooseVisualizationOption();
+        break;
+      case 'STORY_TILE':
+        _chooseStoryTile();
+        break;
+      case 'GOAL_TILE':
+        _chooseGoalTile();
+        break;
+      case 'YOUTUBE':
+        _chooseYoutube();
+        break;
+      case 'HERO':
+        _setComponentType('hero');
+        _chooseImageUpload();
+        break;
+      case 'IMAGE':
+        _setComponentType('image');
+        _chooseImageUpload();
+        break;
+      case 'EMBED_CODE':
+        _chooseEmbedCode();
+        break;
+      default:
+        throw new Error(
+          StorytellerUtils.format(
+            'Unsupported provider: {0}',
+            payload.provider
+          )
+        );
+    }
   }
 
   function _closeDialog() {

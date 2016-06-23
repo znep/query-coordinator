@@ -129,7 +129,7 @@ function templateHeroText() {
 function templateUnconfiguredHero() {
   /* eslint-disable indent */
   return [
-    '<div class="hero hero-unconfigured">',
+    '<div class="hero hero-unconfigured" data-url="" data-crop="{}">',
       templateHeroText(),
       '<div class="hero-add-controls">',
         '<img src="{coverImageUrl}" alt="Add Cover Image">',
@@ -143,7 +143,7 @@ function templateUnconfiguredHero() {
 function templateHero() {
   /* eslint-disable indent */
   return [
-    '<div class="hero" data-url="{image}">',
+    '<div class="hero">',
       templateHeroText(),
     '</div>'
   ].join('');
@@ -167,9 +167,15 @@ function renderUnconfiguredHero($element) {
     click(launchImageSelection);
 
   $element.find('.hero-text').triggerHandler('destroy');
+
   $element.
     find('.hero').
     remove();
+  $element.
+    find('.hero').
+    attr('data-url', '').
+    attr('data-crop', '{}');
+
   $element.
     addClass(typeClass()).
     append($template);
@@ -179,6 +185,7 @@ function renderHero($element, componentData) {
   assertComponentDataStructure(componentData);
 
   var url = componentData.value.url;
+  var crop = JSON.stringify(_.get(componentData, 'value.crop', {}));
   var formatters = {image: url};
   var $template = $(StorytellerUtils.format(templateHero(), formatters));
 
@@ -189,10 +196,14 @@ function renderHero($element, componentData) {
   $element.
     find('.hero').
     remove();
+
   $element.
-    attr('data-url', url).
     addClass(typeClass()).
     append($template);
+
+  $element.
+    find('.hero').
+    attr('data-crop', crop);
 
   $template.css(
     'background-image',
@@ -209,13 +220,15 @@ function updateHero($element, componentData) {
 
   var $hero = $element.find('.hero');
   var url = $hero.attr('data-url');
+  var crop = JSON.parse($hero.attr('data-crop'));
+  var componentDataCrop = JSON.stringify(_.get(componentData, 'value.crop', {}));
 
-  if (changedImage(url, componentData)) {
+  if (changedImage(url, componentData) || changedCrop(crop, componentData)) {
 
     // Preserve background-images, such as linear gradients.
     var backgroundImage = StorytellerUtils.format(
       'url({0}), {1}',
-      componentData.value.url,
+      appendSaltToSource(componentData.value.url),
       $hero.
         css('background-image').
         replace(/url\([^)]+\)\s*,/, '').
@@ -224,6 +237,7 @@ function updateHero($element, componentData) {
 
     $hero.
       attr('data-url', componentData.value.url).
+      attr('data-crop', componentDataCrop).
       css('background-image', backgroundImage);
   }
 }
@@ -308,6 +322,10 @@ function changedImage(url, componentData) {
   return url !== componentData.value.url;
 }
 
+function changedCrop(crop, componentData) {
+  return !_.isEqual(crop, _.get(componentData, 'value.crop', {}));
+}
+
 function synthesizeRichTextEditorData(componentData) {
   return {
     type: 'html',
@@ -318,4 +336,11 @@ function synthesizeRichTextEditorData(componentData) {
 function getEditorOrNull() {
   var editorId = $(this).find('[data-editor-id]').attr('data-editor-id');
   return editorId ? richTextEditorManager.getEditor(editorId) : null;
+}
+
+function appendSaltToSource(src) {
+  var now = Date.now();
+  return _.includes(src, '?') ?
+    src + '&salt=' + now :
+    src + '?' + now;
 }

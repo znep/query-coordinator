@@ -9,6 +9,7 @@ import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import AssetSelectorStore, {viewIsDirectlyVisualizable, WIZARD_STEP, __RewireAPI__ as AssetSelectorStoreAPI} from 'editor/stores/AssetSelectorStore';
 import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker.js';
+import I18nMocker from '../I18nMocker';
 
 var nbeView = {
   'id' : StandardMocks.validStoryUid,
@@ -151,6 +152,7 @@ describe('AssetSelectorStore', function() {
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('storyStore',  storyStore);
     AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
+    AssetSelectorStoreAPI.__Rewire__('I18n', I18nMocker);
 
     server = sinon.fakeServer.create();
     assetSelectorStore = new AssetSelectorStore();
@@ -164,6 +166,7 @@ describe('AssetSelectorStore', function() {
     StoreAPI.__ResetDependency__('dispatcher');
     AssetSelectorStoreAPI.__ResetDependency__('dispatcher');
     AssetSelectorStoreAPI.__ResetDependency__('storyStore');
+    AssetSelectorStoreAPI.__ResetDependency__('I18n');
 
     server.restore();
   });
@@ -873,10 +876,10 @@ describe('AssetSelectorStore', function() {
 
       function editComponent(blockId, type, value) {
         blockIdBeingEdited = blockId;
-        blockComponentAtIndex = {type: type};
+        blockComponentAtIndex = {type: type, value: {}};
 
         if (value) {
-          blockComponentAtIndex.value =  value;
+          blockComponentAtIndex.value = value;
         }
 
         dispatcher.dispatch({
@@ -1251,6 +1254,339 @@ describe('AssetSelectorStore', function() {
       dispatch('https://example.com/stat/goals/single/aaaa-aaaa');
       assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
       assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+    });
+  });
+
+
+  describe('ASSET_SELECTOR_IMAGE_CROP_COMMIT', function() {
+    var dispatch = function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT
+      });
+    };
+
+    describe('when a crop is set', function() {
+      var getComponentValueStub;
+      var crop = {crop: {x: 30, y: 40, width: 50, height: 50}};
+
+      beforeEach(function() {
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(crop));
+      });
+
+      afterEach(function() {
+        getComponentValueStub.reset();
+      });
+
+      it('should request a crop with dimensions corrected to a [0, 1] range.', function(done) {
+        dispatch();
+
+        assert.isTrue(assetSelectorStore.isCropping());
+        assert.isFalse(assetSelectorStore.isCropComplete());
+
+        assert.lengthOf(server.requests, 1);
+
+        var requestBody = JSON.parse(server.requests[0].requestBody);
+
+        server.respondWith('PUT', server.requests[0].url, [200, {}, '']);
+        server.respond();
+
+        assert.deepEqual(requestBody, {
+          document: {
+            crop_x: 0.3,
+            crop_y: 0.4,
+            crop_width: 0.5,
+            crop_height: 0.5
+          }
+        });
+
+        setTimeout(function() {
+          assert.isFalse(assetSelectorStore.isCropping());
+          assert.isTrue(assetSelectorStore.isCropComplete());
+          done();
+        });
+      });
+    });
+
+    describe('when a crop is not set', function() {
+      var getComponentValueStub;
+
+      beforeEach(function() {
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant({}));
+      });
+
+      afterEach(function() {
+        getComponentValueStub.reset();
+      });
+
+      it('should request a crop with null values.', function() {
+        dispatch();
+
+        assert.lengthOf(server.requests, 1);
+
+        var requestBody = JSON.parse(server.requests[0].requestBody);
+
+        server.respondWith('PUT', server.requests[0].url, [200, {}, '']);
+        server.respond();
+
+        assert.deepEqual(requestBody, {
+          document: {
+            crop_x: null,
+            crop_y: null,
+            crop_width: null,
+            crop_height: null
+          }
+        });
+      });
+    });
+
+    describe('when the response is an error', function() {
+      var value;
+      var getComponentValueStub;
+
+      beforeEach(function() {
+        value = {test: 'testing'};
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(value));
+      });
+
+      afterEach(function() {
+        getComponentValueStub.reset();
+      });
+
+      it('sets a reason', function(done) {
+        dispatch();
+
+        assert.lengthOf(server.requests, 1);
+
+        server.respondWith('PUT', server.requests[0].url, [400, {}, '']);
+        server.respond();
+
+        setTimeout(function() {
+          assert.property(value, 'reason');
+          assert.equal(value.reason, I18nMocker.t('editor.asset_selector.image_preview.errors.cropping'));
+          done();
+        }, 10);
+      });
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_CROP_START', function() {
+    var value;
+    var getComponentValueStub;
+
+    beforeEach(function() {
+      value = {};
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+
+      dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_START });
+    });
+
+    afterEach(function() {
+      getComponentValueStub.reset();
+    });
+
+    it('sets a default crop and enables cropping UI', function() {
+      assert.deepEqual(value.crop, Constants.DEFAULT_CROP);
+    });
+
+    it('enables cropping UI', function() {
+      assert.isTrue(assetSelectorStore.isCroppingUiEnabled());
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_CROP_RESET', function() {
+    var value;
+    var getComponentValueStub;
+
+    beforeEach(function() {
+      value = {crop: {}};
+
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+
+      dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_RESET });
+    });
+
+    afterEach(function() {
+      getComponentValueStub.reset();
+    });
+
+    it('removes crop from component properties', function() {
+      assert.notProperty(value, 'crop');
+    });
+
+    it('disables cropping UI', function() {
+      assert.isFalse(assetSelectorStore.isCroppingUiEnabled());
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_UPLOAD', function() {
+    var dispatch = function(file) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_UPLOAD,
+        file: file
+      });
+    };
+
+    describe('when the payload is valid', function() {
+      var originalFileReader;
+      var url = 'catspajamas.com';
+      var file = {
+        size: 1,
+        type: 'image/jpeg'
+      };
+
+      beforeEach(function() {
+        originalFileReader = window.FileReader;
+
+        window.FileReader = function() {
+          this.result = url;
+
+          this.addEventListener = sinon.stub();
+          this.addEventListener.withArgs('load').yields();
+
+          this.readAsDataURL = sinon.stub();
+        };
+
+        dispatch(file);
+      });
+
+      afterEach(function() {
+        window.FileReader = originalFileReader;
+      });
+
+      it('sets the image preview url', function() {
+        assert.equal(assetSelectorStore.getPreviewImageUrl(), url);
+      });
+
+      it('sets the image preview', function() {
+        assert.deepEqual(assetSelectorStore.getPreviewImageData(), file);
+      });
+
+      it('sets the step to IMAGE_PREVIEW', function() {
+        assert.equal(assetSelectorStore.getStep(), WIZARD_STEP.IMAGE_PREVIEW);
+      });
+
+      it('resets the crop completion to false', function() {
+        assert.isFalse(assetSelectorStore.isCropComplete());
+      });
+    });
+
+    describe('when the payload is invalid', function() {
+      var file;
+      var buildsErrorState = function() {
+        beforeEach(function() {
+          dispatch(file);
+        });
+
+        it('sets the step to IMAGE_UPLOAD_ERROR', function() {
+          assert.equal(assetSelectorStore.getStep(), WIZARD_STEP.IMAGE_UPLOAD_ERROR);
+        });
+      };
+
+      describe('when the file is too large', function() {
+        file = {
+          size: Constants.MAX_FILE_SIZE_BYTES + 10,
+          type: 'image/jpeg'
+        };
+
+        buildsErrorState();
+      });
+
+      describe('when the file has an invalid file type', function() {
+        file = {
+          size: 1,
+          type: 'mammal/homo-sapiens'
+        };
+
+        buildsErrorState();
+      });
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_PREVIEW_BACK', function() {
+    var value;
+    var getComponentValueStub;
+    var dispatch = function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_PREVIEW_BACK
+      });
+    };
+
+    beforeEach(function() {
+      value = {crop: {}};
+
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+
+      dispatch();
+    });
+
+    afterEach(function() {
+      getComponentValueStub.restore();
+    });
+
+    it('resets previewImage', function() {
+      assert.isNull(assetSelectorStore.getPreviewImageData());
+    });
+
+    it('sets step to SELECT_IMAGE_TO_UPLOAD', function() {
+      assert.equal(assetSelectorStore.getStep(), WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
+    });
+
+    it('resets Getty Image searching', function() {
+      assert.lengthOf(assetSelectorStore.getImageSearchResults(), 0);
+      assert.isFalse(assetSelectorStore.hasImageSearchResults());
+      assert.isFalse(assetSelectorStore.isImageSearching());
+      assert.isFalse(assetSelectorStore.hasImageSearchError());
+    });
+
+    it('resets cropping progress and UI enabling', function() {
+      assert.isFalse(assetSelectorStore.isCroppingUiEnabled());
+      assert.isFalse(assetSelectorStore.isCropComplete());
+    });
+
+    it('resets cropping', function() {
+      assert.notProperty(assetSelectorStore.getComponentValue(), 'crop');
+    });
+  });
+
+  describe('ASSET_SELECTOR_IMAGE_CROP_SET', function() {
+    var value;
+    var getComponentValueStub;
+    var crop = {x: 0, y: 0, width: 100, height: 100};
+    var dispatch = function(payload) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_CROP_SET,
+        crop: payload
+      });
+    };
+
+    beforeEach(function() {
+      value = {};
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+    });
+
+    afterEach(function() {
+      getComponentValueStub.restore();
+    });
+
+    it('sets crop', function() {
+      dispatch(crop);
+      assert.deepEqual(value.crop, crop);
     });
   });
 });

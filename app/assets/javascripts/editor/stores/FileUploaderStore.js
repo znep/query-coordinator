@@ -7,6 +7,7 @@ import I18n from '../I18n';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import Store from './Store';
+import { assetSelectorStore } from './AssetSelectorStore';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 var MAX_FILE_SIZE_BYTES = Constants.MAX_FILE_SIZE_BYTES || (1024 * 1024 * 5);
@@ -20,7 +21,8 @@ export var STATUS = {
   CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED',
   ERRORED: 'ERRORED',
-  PROGRESSING: 'PROGRESSING',
+  UPLOADING: 'UPLOADING',
+  PROCESSING: 'PROCESSING',
   SIGNED: 'SIGNED'
 };
 
@@ -33,6 +35,9 @@ export default function FileUploaderStore() {
 
   self.register(function(payload) {
     switch (payload.action) {
+      case Actions.URL_UPLOAD:
+        uploadUrl(payload);
+        break;
       case Actions.FILE_UPLOAD:
         uploadFile(payload);
         break;
@@ -88,9 +93,14 @@ export default function FileUploaderStore() {
   }
 
   function progressFile(id, progress) {
-    files[id].status = STATUS.PROGRESSING;
-    files[id].progress = progress;
+    files[id].status = STATUS.UPLOADING;
+    files[id].progress = progress / files[id].raw.size;
 
+    self._emitChange();
+  }
+
+  function waitFile(id) {
+    files[id].status = STATUS.PROCESSING;
     self._emitChange();
   }
 
@@ -128,6 +138,51 @@ export default function FileUploaderStore() {
 
     process(files[payload.id]);
     self._emitChange();
+  }
+
+  function uploadUrl(payload) {
+    StorytellerUtils.assertHasProperties(payload, 'id', 'url');
+
+    StorytellerUtils.assert(
+      !self.fileExistsById(payload.id),
+      StorytellerUtils.format(
+        'The file identifier, {0} already exists.',
+        payload.id
+      )
+    );
+
+    files[payload.id] = {
+      id: payload.id,
+      progress: 0,
+      status: STATUS.ACKNOWLEDGED
+    };
+
+    processUrl(files[payload.id], payload.url);
+    self._emitChange();
+  }
+
+  function processUrl(file, url) {
+    var id = file.id;
+
+    saveResource(id, url).
+      then(function(resource) {
+        if (notCancelled(id)) {
+          return waitForResourceToBeProcessed(id, resource);
+        } else {
+          return Promise.reject();
+        }
+      }).
+      catch(function(error) {
+        var message = _.isString(error) ?
+          error :
+          I18n.t('editor.asset_selector.image_upload.errors.exception');
+
+        errorFile(id, message);
+
+        if (message instanceof Error) {
+          exceptionNotifier.notify(error);
+        }
+      });
   }
 
   function process(file) {
@@ -184,11 +239,12 @@ export default function FileUploaderStore() {
     var file = self.fileById(id);
 
     var isNotValidFileSize = file.raw.size > MAX_FILE_SIZE_BYTES;
+    var isNotValidImageType = !_.include(Constants.VALID_IMAGE_TYPES, file.raw.type);
     var isNotValidFileType = !_.include(Constants.VALID_FILE_TYPES, file.raw.type);
 
     if (isNotValidFileSize) {
       return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.validation_file_size'));
-    } else if (isNotValidFileType) {
+    } else if (isNotValidFileType && isNotValidImageType) {
       return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.validation_file_type'));
     }
 
@@ -230,16 +286,54 @@ export default function FileUploaderStore() {
   }
 
   function saveResource(id, url) {
+    var requestData;
     var file = self.fileById(id);
-    var requestData = {
-      document: {
-        'story_uid': Environment.STORY_UID,
-        'direct_upload_url': url,
-        'upload_file_name': file.raw.name,
-        'upload_content_type': file.raw.type,
-        'upload_file_size': file.raw.size
+
+    var type = assetSelectorStore.getComponentType();
+    var value = assetSelectorStore.getComponentValue();
+
+    if (type === 'image' || type === 'hero' || type === 'author') {
+      var cropObjectPath = type === 'author' ? 'image.crop' : 'crop';
+      var crop = _.get(value, cropObjectPath, null);
+      var gettyImageMatches = url.match(/\/stories\/api\/v1\/getty-images\/(.*)$/);
+
+      requestData = {
+        document: {
+          'story_uid': Environment.STORY_UID,
+          'direct_upload_url': url
+        }
+      };
+
+      if (file.raw) {
+        requestData.document.upload_file_name = file.raw.name;
+        requestData.document.upload_content_type = file.raw.type;
+        requestData.document.upload_file_size = file.raw.size;
       }
-    };
+
+      if (crop) {
+        requestData.document = _.merge({}, requestData.document, {
+          crop_x: crop.x / 100,
+          crop_y: crop.y / 100,
+          crop_width: crop.width / 100,
+          crop_height: crop.height / 100
+        });
+      }
+
+      if (gettyImageMatches && gettyImageMatches[1]) {
+        requestData.document.getty_image_id = gettyImageMatches[1];
+        delete requestData.document.direct_upload_url;
+      }
+    } else {
+      requestData = {
+        document: {
+          'story_uid': Environment.STORY_UID,
+          'direct_upload_url': url,
+          'upload_file_name': file.raw.name,
+          'upload_content_type': file.raw.type,
+          'upload_file_size': file.raw.size
+        }
+      };
+    }
 
     return request('/documents', 'POST', requestData).
       then(function(data) {
@@ -251,6 +345,8 @@ export default function FileUploaderStore() {
     var resourceId = resource.id;
 
     return new Promise(function(resolve, reject) {
+      waitFile(id);
+
       if (resource.status === 'processed') {
         completeFile(id, resource);
         resolve(resource);

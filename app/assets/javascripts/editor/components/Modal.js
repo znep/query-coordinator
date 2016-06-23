@@ -68,8 +68,7 @@ export default function Modal(options) {
       on('modal-close', function() {
         self.addClass('hidden');
         $('html').css('overflow', 'auto');
-      }).
-      on('click', _emitDismissed);
+      });
 
     $(document).on('keyup', function(event) {
       // `ESC`

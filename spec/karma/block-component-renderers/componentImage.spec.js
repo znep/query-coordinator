@@ -85,7 +85,7 @@ describe('componentImage jQuery plugin', function() {
 
     describe('img src attribute', function() {
       it('should start off correct', function() {
-        assert.equal(
+        assert.include(
           $component.find('img').attr('src'),
           validComponentData.value.url
         );
@@ -97,7 +97,7 @@ describe('componentImage jQuery plugin', function() {
 
         $component.componentImage(updatedData);
 
-        assert.equal(
+        assert.include(
           $component.find('img').attr('src'),
           updatedData.value.url
         );

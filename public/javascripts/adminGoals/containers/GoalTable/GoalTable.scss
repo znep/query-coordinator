@@ -1,0 +1,64 @@
+table.op-admin-table {
+  table-layout:fixed;
+
+  tbody {
+    tr {
+      td[scope=title] {
+        width: 400px;
+      }
+
+      .flyout-container {
+        display: inline-block;
+      }
+
+      .externalLink {
+
+        .icon-external {
+          margin-left: 5px;
+          display: none;
+        }
+
+        &:hover {
+          .icon-external {
+            display: initial;
+          }
+        }
+      }
+
+      &.selected {
+        .goalPageLink, .goalEditLink {
+          display: initial;
+        }
+      }
+
+      &:hover {
+        background: #cae5fd;
+
+        .goalPageLink, .goalEditLink {
+          display: initial;
+        }
+      }
+
+      .goalPageLink {
+        float: right;
+        min-width: 110px;
+        text-align: left;
+        border-left: 1px solid #999999;
+        padding-left: 5px;
+        display: none;
+      }
+
+      .dashboardLink {
+        min-width: 220px;
+      }
+
+      .editLinkContainer {
+        min-width: 100px;
+      }
+
+      .goalEditLink {
+        display: none;
+      }
+    }
+  }
+}

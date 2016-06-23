@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { fromJS } from 'immutable';
 
-import goals from '../data/dataTableActions/propGoals';
-import dashboards from '../data/dataTableActions/propDashboards';
+import goals from '../data/goalTableActions/propGoals';
+import dashboards from '../data/goalTableActions/propDashboards';
 
 import translations from 'mockTranslations';
 
@@ -16,11 +16,12 @@ describe('components/GoalTableBody', function() {
       goalTableData: {
         goals: goals,
         dashboards: dashboards,
-        translations: translations
+        translations: translations,
+        selectedRows: []
       }
     };
 
-    this.output = renderComponentWithStore(GoalTableBody, state.dataTable, getDefaultStore(state));
+    this.output = renderComponentWithStore(GoalTableBody, state.goalTableData, getDefaultStore(state));
   });
 
   it('should have 4 rows', function() {
@@ -33,7 +34,7 @@ describe('components/GoalTableBody', function() {
 
   it('should have columns with correct data', function() {
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(2)')[0].textContent).
-      to.eq(goals[0].name);
+      to.contain(goals[0].name);
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(3)')[0].textContent).
       to.eq(goals[0].created_by.displayName);
@@ -48,7 +49,7 @@ describe('components/GoalTableBody', function() {
       to.eq(_.get(translations, `measure.progress.${goals[0].prevailingMeasureProgress}`));
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(7)')[0].textContent).
-      to.eq(dashboards[goals[0].base_dashboard].name);
+      to.contain(dashboards[goals[0].base_dashboard].name);
   });
 
 });

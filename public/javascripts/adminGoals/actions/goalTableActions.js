@@ -5,7 +5,10 @@ import {
   TABLE_SHOW_PAGE,
   TABLE_ERROR,
   CACHE_DASHBOARDS,
-  CACHE_USERS
+  CACHE_USERS,
+  TABLE_ROW_SELECTED,
+  TABLE_ROW_DESELECTED,
+  TABLE_ROW_ALL_SELECTION_TOGGLE
 } from '../actionTypes';
 
 const fetchOptions = {credentials: 'same-origin'};
@@ -18,7 +21,7 @@ export function tableLoadPage() {
       then(getGoals).
       then(getGoalsExtras).
       then(prepareGoals).
-      catch(error => dispatch(handleTableError(error)));
+      catch(error => dispatch(handleTableError(error)));// eslint-disable-line dot-notation
 
     function getDashboards() {
       const dashboardFetchUrl = '/stat/api/v1/dashboards';
@@ -41,7 +44,7 @@ export function tableLoadPage() {
       let goals = _(goalResponses).
         map('categories').
         flatten().
-        map('goals').
+        map(category => _.map(category.goals, (goal) => _.assign(goal, { category: category.id }))).
         reject(_.isEmpty).
         flatten().
         value();
@@ -50,7 +53,8 @@ export function tableLoadPage() {
 
       return Promise.all([
         getOwnerDetails(),
-        getGoalDetails()
+        getGoalDetails(),
+        Promise.resolve(goals)
       ]);
 
       function getOwnerDetails() {
@@ -76,6 +80,7 @@ export function tableLoadPage() {
     function prepareGoals(responses) {
       let goalOwnerDetailResponses = responses[0];
       let goalDetailResponses = responses[1];
+      let goals = responses[2];
       let cachedUsers = _.get(state, 'cachedUsers', {});
 
       let users = _.merge(
@@ -87,20 +92,20 @@ export function tableLoadPage() {
       let goalDetailSuccessfulResponses = _.reject(goalDetailResponses, { error: true });
       let goalDetails = _.zipObject(_.map(goalDetailSuccessfulResponses, 'id'), goalDetailSuccessfulResponses);
 
-      let goals = _.map(goalDetails, goal => {
+      let goalsWithExtras = _.map(goals, goal => {
         goal.created_by = users[goal.created_by];
-        goal.prevailingMeasureProgress = _.get(goal, 'prevailing_measure.computed_values.progress.progress', '');
+        goal.prevailingMeasureProgress = _.get(goalDetails, `${goal.id}.prevailing_measure.computed_values.progress.progress`, '');
         return goal;
       });
 
-      dispatch(tableShowPage(goals));
+      dispatch(tableShowPage(goalsWithExtras));
     }
 
     function getDashboardDetail(dashboard) {
       return fetch(`/stat/api/v1/dashboards/${dashboard.id}`, fetchOptions).
         then(checkXhrStatus).
         then(response => response.json()).
-        catch(error => dispatch(handleTableError(error)));
+        catch(error => dispatch(handleTableError(error))); // eslint-disable-line dot-notation
     }
   };
 }
@@ -141,4 +146,24 @@ function checkXhrStatus(response) {
   let error = new Error(response.statusText);
   error.response = response;
   throw error;
+}
+
+export function selectRow(goalId) {
+  return {
+    type: TABLE_ROW_SELECTED,
+    goalId
+  };
+}
+
+export function deselectRow(goalId) {
+  return {
+    type: TABLE_ROW_DESELECTED,
+    goalId
+  };
+}
+
+export function toggleAllRows() {
+  return {
+    type: TABLE_ROW_ALL_SELECTION_TOGGLE
+  };
 }

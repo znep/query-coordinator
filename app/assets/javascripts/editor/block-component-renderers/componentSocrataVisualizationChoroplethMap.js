@@ -48,7 +48,7 @@ function _renderTemplate($element, componentData) {
   $element.
     addClass(className).
     on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT_EVENT', function(event) {
+    on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {

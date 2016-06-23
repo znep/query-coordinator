@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
-import { updateAt } from '../utils';
 import * as Server from '../server';
+import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
 
 // == Metadata
@@ -14,12 +14,11 @@ type DatasetMetadata = {
   tags: Array,
   rowLabel: string,
   attributionLink: string,
-  customMetadata: Array,
+  customMetadata: Object,
   privacySettings: string,
-  email: string,
+  contactEmail: string,
   nextClicked: boolean
 }
-
 
 const MD_UPDATE_NAME = 'MD_UPDATE_NAME';
 export function updateName(newName: string) {
@@ -70,11 +69,11 @@ export function updateAttributionLink(newAttributionLink: string) {
 }
 
 const MD_UPDATE_CUSTOMMETADATA = 'MD_UPDATE_CUSTOMMETADATA';
-export function updateCustomData(newCustomData: string, setIdx: number, fieldIdx: number) {
+export function updateCustomData(newCustomData: string, setName: string, fieldIdx: number) {
   return {
     type: MD_UPDATE_CUSTOMMETADATA,
     newCustomData: newCustomData,
-    setIdx: setIdx,
+    setName: setName,
     fieldIdx: fieldIdx
   };
 }
@@ -87,41 +86,34 @@ export function updatePrivacySettings(newPrivacySettings: string) {
   };
 }
 
-const MD_UPDATE_EMAIL = 'MD_UPDATE_EMAIL';
-export function updateEmail(newEmail: string) {
+const MD_UPDATE_CONTACTEMAIL = 'MD_UPDATE_CONTACTEMAIL';
+export function updateContactEmail(newContactEmail: string) {
   return {
-    type: MD_UPDATE_EMAIL,
-    newEmail: newEmail
+    type: MD_UPDATE_CONTACTEMAIL,
+    newContactEmail: newContactEmail
   };
 }
 
 const MD_UPDATE_NEXTCLICKED = 'MD_UPDATE_NEXTCLICKED';
 export function updateNextClicked() {
   return {
-    type: MD_UPDATE_NEXTCLICKED,
-    newNextClicked: true
+    type: MD_UPDATE_NEXTCLICKED
   };
 }
 
-function defaultCustomData() {
-  return customMetadataSchema.map((set) => {
-    const fields = set.fields;
-    return fields.map((field) => {
-      if (_.has(field, 'options')) {
-        const option = field.options[0];
-        return {
-          field: field.name,
-          value: option
-        };
-      } else {
-        return {
-          field: field.name,
-          value: ''
-        };
-      }
-    });
-  });
+export function defaultCustomData() {
+  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
+    return [
+      name,
+      fields.map(field => ({
+        field: field.name,
+        value: field.options ? field.options[0] : '',
+        privateField: _.has(field, 'private')
+      }))
+    ];
+  }));
 }
+
 
 export function emptyForName(name: string): DatasetMetadata {
   return {
@@ -131,9 +123,9 @@ export function emptyForName(name: string): DatasetMetadata {
     tags: [],
     rowLabel: '',
     attributionLink: '',
-    customMetadata: defaultCustomData(),
+    customMetadata: defaultCustomData(customMetadataSchema),
     privacySettings: 'private',
-    email: '',
+    contactEmail: '',
     nextClicked: false
   };
 }
@@ -172,12 +164,9 @@ export function update(metadata: DatasetMetadata = emptyForName(''), action): Da
         attributionLink: action.newAttributionLink
       };
     case MD_UPDATE_CUSTOMMETADATA: {
-      const newCustomMetadata = updateAt(metadata.customMetadata, action.setIdx, (fieldSet) => {
-        return updateAt(fieldSet, action.fieldIdx, (field) => ({
-          ...field,
-          value: action.newCustomData
-        }));
-      });
+      const newCustomMetadata = _.clone(metadata.customMetadata);
+      newCustomMetadata[action.setName][action.fieldIdx].value = action.newCustomData;
+
       return {
         ...metadata,
         customMetadata: newCustomMetadata
@@ -188,10 +177,10 @@ export function update(metadata: DatasetMetadata = emptyForName(''), action): Da
         ...metadata,
         privacySettings: action.newPrivacySettings
       };
-    case MD_UPDATE_EMAIL:
+    case MD_UPDATE_CONTACTEMAIL:
       return {
         ...metadata,
-        email: action.newEmail
+        contactEmail: action.newContactEmail
       };
     case MD_UPDATE_NEXTCLICKED:
       return {
@@ -220,15 +209,15 @@ export function isStandardMetadataValid(metadata: DatasetMetadata) {
   return valid.name && valid.attributionLink;
 }
 
-function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setIdx: number, fieldIdx: number) {
-  return (metadata.customMetadata[setIdx][fieldIdx].value.length === 0 && field.required);
+function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
+  return (metadata.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
 }
 
 export function isCustomMetadataValid(metadata: DatasetMetadata) {
-  return customMetadataSchema.every((fieldSet, setIndex) => {
+  return customMetadataSchema.every((fieldSet) => {
     return fieldSet.fields.every((field, fieldIndex) => {
-      const value = metadata.customMetadata[setIndex][fieldIndex].value;
       if (field.required) {
+        const value = metadata.customMetadata[fieldSet.name][fieldIndex].value;
         return value.length > 0;
       } else {
         return true;
@@ -241,15 +230,18 @@ export function isMetadataValid(metadata: DatasetMetadata) {
   return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata));
 }
 
-function renderSingleField(field, onMetadataAction, setIdx, fieldIdx) {
+function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx) {
   if (_.has(field, 'options')) {
     const options = field.options;
     return (
-      <select className={field.name} onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setIdx, fieldIdx))} >
-        {options.map((value) =>
-          <option value={value}>{value}</option>
-          )
-        }
+      <select
+        className={field.name}
+        value={metadata.customMetadata[setName][fieldIdx].value}
+        onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} >
+          {options.map((value) =>
+            <option value={value}>{value}</option>
+            )
+          }
       </select>
     );
   } else {
@@ -257,21 +249,25 @@ function renderSingleField(field, onMetadataAction, setIdx, fieldIdx) {
       <input
         type="text"
         className={field.name}
-        onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setIdx, fieldIdx))} />
+        value={metadata.customMetadata[setName][fieldIdx].value}
+        onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} />
     );
   }
 }
 
-function renderFieldSet(metadata: DatasetMetadata, fieldSet, setIdx, onMetadataAction) {
+function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadataAction) {
   const fields = fieldSet.fields;
-
   return (
     <div> {fields.map((field, fieldIdx) =>
       <div className="line clearfix">
         <label className={field.required ? 'required' : 'optional'}>{field.name}</label>
-        {renderSingleField(field, onMetadataAction, setIdx, fieldIdx)}
-        {(isRequiredCustomFieldMissing(metadata, field, setIdx, fieldIdx) && metadata.nextClicked)
+        {renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)}
+        {(isRequiredCustomFieldMissing(metadata, field, setName, fieldIdx) && metadata.nextClicked)
           ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
+          : null
+        }
+        {(field['private'])
+          ? <div className="additionalHelp">{I18n.screens.edit_metadata.private_help}</div>
           : null
         }
       </div>
@@ -283,10 +279,10 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setIdx, onMetadataA
 function renderCustomMetadata(metadata, onMetadataAction) {
   return (
     <div className="customMetadataSchema">
-      {customMetadataSchema.map((set, setIdx) =>
+      {customMetadataSchema.map((set) =>
         <div>
           <h1 htmlFor="view_customMetadataName">{set.name}</h1>
-          {renderFieldSet(metadata, set, setIdx, onMetadataAction)}
+          {renderFieldSet(metadata, set, set.name, onMetadataAction)}
         </div>
       )}
     </div>
@@ -328,7 +324,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[name]"
               title={I18nPrefixed.dataset_title_prompt}
-              className="textPrompt required prompt error"
+              className="textPrompt required error"
               value={metadata.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
               {(!validationErrors.name && metadata.nextClicked) ?
@@ -341,13 +337,17 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[description]"
               title={I18nPrefixed.brief_description_prompt} className="textPrompt"
+              value={metadata.description}
               placeholder={I18nPrefixed.brief_description_prompt}
               onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
           </div>
 
           <div className="line clearfix">
             <label htmlFor="view_category">{I18nPrefixed.category}</label>
-            <select name="view[category]" onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
+            <select
+              name="view[category]"
+              value={metadata.category}
+              onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
               {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
             </select>
           </div>
@@ -357,6 +357,7 @@ export function view({ metadata, onMetadataAction, importError }) {
             <input
               type="text" name="view[tags]"
               title={I18nPrefixed.tags_prompt}
+              value={metadata.tags}
               className="textPrompt"
               onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
           </div>
@@ -367,6 +368,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[rowLabel]"
               className="textPrompt"
+              value={metadata.rowLabel}
               onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
           </div>
         </div>
@@ -380,6 +382,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[attributionLink]"
               className="textPrompt required"
+              value={metadata.attributionLink}
               onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
             {(!validationErrors.attributionLink && metadata.nextClicked) ?
               <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
@@ -394,8 +397,9 @@ export function view({ metadata, onMetadataAction, importError }) {
 
         <div className="attachmentsMetadata">
           <h2>{I18nPrefixed.attachments}</h2>
-          <div className="attachmentsHowtoMessage">{I18nPrefixed.attachmentsDisabledMessagePart1}
-            <span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>
+          <div className="attachmentsHowtoMessage">
+            {I18nPrefixed.attachmentsDisabledMessagePart1}
+            {' '}<span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>{' '}
             {I18nPrefixed.attachmentsDisabledMessagePart2}
           </div>
         </div>
@@ -404,7 +408,7 @@ export function view({ metadata, onMetadataAction, importError }) {
           <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
 
           <div className="line clearfix">
-            <fieldset id="privacy-settings" className="radioblock">
+            <fieldset id="privacy-settings" className="radioblock" defaultChecked={metadata.privacySettings}>
               <legend id="privacy-settings-legend">
                 {I18n.screens.dataset_new.metadata.privacy_settings}
               </legend>
@@ -434,14 +438,15 @@ export function view({ metadata, onMetadataAction, importError }) {
           </div>
 
           <div className="line clearfix">
-            <label htmlFor="{sanitize_to_id('view[email]')}">
+            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
               {I18nPrefixed.contact_email}
             </label>
             <input
               type="text"
-              name="view[email]'"
-              title={I18nPrefixed.email_address} className="textPrompt email"
-              onChange={(evt) => onMetadataAction(updateEmail(evt.target.value))} />
+              name="view[contactEmail]'"
+              value={metadata.contactEmail}
+              title={I18nPrefixed.email_address} className="textPrompt contactEmail"
+              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
           </div>
         </div>
@@ -456,14 +461,7 @@ export function view({ metadata, onMetadataAction, importError }) {
             <a
               className="button nextButton"
               href="#"
-              onClick={() => {
-                onMetadataAction(updateNextClicked());
-                if (isMetadataValid(metadata)) {
-                  onMetadataAction(Server.saveMetadata());
-                }
-              }}>
-              {I18n.screens.wizard.next}
-            </a>
+              onClick={() => onMetadataAction(Server.saveMetadata())}>{I18n.screens.wizard.next}</a>
           </li>
           <li className="prev">
             <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>

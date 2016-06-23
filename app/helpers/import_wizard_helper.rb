@@ -38,4 +38,8 @@ module ImportWizardHelper
                    "blist.licenses = #{ safe_json(ExternalConfig.for(:license).licenses) };")
   end
 
+  def render_view(view)
+    javascript_tag("var view = #{json_escape(view)};")
+  end
+
 end

@@ -12,7 +12,7 @@ import {
   updateRowLabel,
   updateAttributionLink,
   updatePrivacySettings,
-  updateEmail,
+  updateContactEmail,
   updateNextClicked,
   validate,
   isStandardMetadataValid,
@@ -91,7 +91,7 @@ describe("metadata's reducer testing", () => {
 
   describe('SET_PRIVACY_PUBLIC', () => {
     it('sets the privacy of the dataset to public', () => {
-      state.description = 'private';
+      state.privacySettings = 'private';
 
       const result = update(state, updatePrivacySettings('public'));
       expect(result.privacySettings).to.equal('public');
@@ -100,7 +100,7 @@ describe("metadata's reducer testing", () => {
 
   describe('SET_PRIVACY_PRIVATE', () => {
     it('sets the privacy of the dataset to private', () => {
-      state.description = 'public';
+      state.privacySettings = 'public';
 
       const result = update(state, updatePrivacySettings('private'));
       expect(result.privacySettings).to.equal('private');
@@ -111,8 +111,8 @@ describe("metadata's reducer testing", () => {
     it('sets the contact email of the dataset', () => {
       state.contactEmail = 'pandas@china.ch';
 
-      const result = update(state, updateEmail('wombats@australia.au'));
-      expect(result.email).to.equal('wombats@australia.au');
+      const result = update(state, updateContactEmail('wombats@australia.au'));
+      expect(result.contactEmail).to.equal('wombats@australia.au');
     });
   });
 
@@ -133,40 +133,49 @@ describe('validators', () => {
     metadata = {
       name: '',
       attributionLink: '',
-      customMetadata: [
-        [
-          {
-            field: '1',
-            value: 'ant'
-          },
-          {
-            field: '2',
-            value: ''
-          },
-          {
-            field: '3',
-            value: ''
-          }
-        ],
-        [
-          {
-            field: 'mars',
-            value: ''
-          },
-          {
-            field: 'venus',
-            value: ''
-          },
-          {
-            field: 'neptune',
-            value: '50'
-          },
-          {
-            field: 'jupiter',
-            value: ''
-          }
-        ]
-      ]
+      customMetadata: {
+        'jack':
+          [
+            {
+              field: '1',
+              value: 'ant',
+              privateField: false
+            },
+            {
+              field: '2',
+              value: '',
+              privateField: true
+            },
+            {
+              field: '3',
+              value: '',
+              privateField: false
+            }
+          ],
+        'second':
+          [
+            {
+              field: 'mars',
+              value: '',
+              privateField: false
+            },
+            {
+              field: 'venus',
+              value: '',
+              privateField: false
+            },
+            {
+              field: 'neptune',
+              value: '50',
+              privateField: false
+            },
+            {
+              field: 'jupiter',
+              value: '',
+              privateField: false
+            }
+          ]
+        }
     };
   });
 
@@ -200,7 +209,7 @@ describe('validators', () => {
 
   it('returns true if all required fields of customMetadata are nonempty', () => {
     //fields 1 and venus are the required fields.
-    metadata.customMetadata[1][1].value = 'venus';
+    metadata.customMetadata['second'][1].value = 'venus';
 
     const customRequired = isCustomMetadataValid(metadata);
     expect(customRequired).to.equal(true);
@@ -214,7 +223,7 @@ describe('validators', () => {
   it('returns true if all required metadata are nonempty', () => {
     metadata.name = 'name';
     metadata.attributionLink = 'google.com';
-    metadata.customMetadata[1][1].value = 'venus';
+    metadata.customMetadata['second'][1].value = 'venus';
 
     const standardValid = isMetadataValid(metadata);
     expect(standardValid).to.equal(true);
@@ -231,7 +240,7 @@ describe('view testing', () => {
 
  it('returns that there is no required text if next has not been clicked', () => {
    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
-   expect(element.querySelector('.textPrompt.email')).to.exist;
+   expect(element.querySelector('.textPrompt.contactEmail')).to.exist;
    expect(element.querySelector('.error.customField')).to.not.exist;
  });
 
@@ -245,7 +254,7 @@ describe('view testing', () => {
  it('returns that there is no required text if next has been clicked but all required fields are filled', () => {
    state.name = 'name';
    state.attributionLink = 'google.com';
-   state.customMetadata[1][1].value = 'venus';
+   state.customMetadata['second'][1].value = 'venus';
    state.nextClicked = true;
 
    const element = renderComponent(view( {metadata: state, onMetadataAction:_.noop } ), state);
@@ -266,7 +275,7 @@ describe('view testing', () => {
    const element = renderComponent(view( {metadata: state, onMetadataAction: spy }));
    expect(spy.callCount).to.equal(0);
 
-   const node = element.querySelector('.textPrompt.required.prompt.error');
+   const node = element.querySelector('.textPrompt.required.error');
    node.value = 'first';
    TestUtils.Simulate.change(node);
    expect(spy.callCount).to.equal(1);

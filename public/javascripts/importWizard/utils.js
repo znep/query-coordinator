@@ -9,3 +9,12 @@ export function updateAt(array, index, updater) {
     }
   });
 }
+
+// added in lodash 4
+export function fromPairs(pairs) {
+  const obj = {};
+  pairs.forEach(([key, value]) => {
+    obj[key] = value;
+  });
+  return obj;
+}

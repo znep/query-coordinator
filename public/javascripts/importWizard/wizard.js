@@ -51,22 +51,25 @@ const initialNavigation: Navigation = {
 };
 
 // is this even used or is it just the no-args call to the reducer?
-export function initialNewDatasetModel(datasetId: string, datasetName: string): NewDatasetModel {
+export function initialNewDatasetModel(initialView): NewDatasetModel {
   return {
-    datasetId: datasetId,
+    datasetId: initialView.id,
     navigation: initialNavigation,
     upload: {},
     transform: null,
     layers: null,
-    metadata: Metadata.emptyForName(datasetName),
+    metadata: initialMetadata(initialView),
     importStatus: Server.initialImportStatus()
   };
 }
 
-
-// TODO: read this stuff from server-dumped state
-export const fakeInitialModel = initialNewDatasetModel('fake-fake', 'Chicago Crimes');
-
+function initialMetadata(initialView) {
+  if (_.has(initialView, 'metadata')) {
+    return Server.coreViewToModel(initialView);
+  } else {
+    return Metadata.emptyForName(initialView.name);
+  }
+}
 
 // actions
 

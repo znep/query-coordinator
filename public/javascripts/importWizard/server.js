@@ -3,17 +3,18 @@ model into the JSON needed for those calls */
 
 import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
+import * as Metadata from './components/metadata';
+import * as Utils from './utils';
 import { goToPage } from './wizard';
 
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
 
-
 export function saveMetadata() {
   return (dispatch, getState) => {
-    const { navigation } = getState();
+    const { navigation, metadata, datasetId } = getState();
     dispatch(goToPage('Working'));
-    setTimeout(() => {
+    saveMetadataToViewsApi(datasetId, metadata).then(() => {
       dispatch(goToPage('Importing'));
       const onImportError = () => {
         dispatch(importError());
@@ -29,9 +30,72 @@ export function saveMetadata() {
         default:
           console.error('Unkown operation!', navigation.operation);
       }
-    }, 2000);
-    // TODO: actually save metadata
+    });
   };
+}
+
+function saveMetadataToViewsApi(datasetId, metadata) {
+  return fetch(`/api/views/${datasetId}`, {
+    method: 'PUT',
+    credentials: 'same-origin',
+    body: JSON.stringify(modelToViewParam(metadata))
+  }).then((result) => {
+    console.log(result);
+  });
+}
+
+export function modelToViewParam(metadata) {
+  return {
+    name: metadata.name,
+    description: metadata.description,
+    category: metadata.category,
+    tags: metadata.tags,
+    metadata: {
+      rowLabel: metadata.rowLabel,
+      attributionLink: metadata.attributionLink,
+      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, false)
+    },
+    privateMetadata: {
+      contactEmail: metadata.contactEmail,
+      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, true)
+    }
+  };
+}
+
+export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean) {
+  return _.mapValues(customMetadata, (fieldSet) => {
+    const pairs = fieldSet.
+      filter(field => (isPrivate === field.privateField)).
+      map(({field, value}) => ([field, value]));
+    return Utils.fromPairs(pairs);
+  });
+}
+
+export function coreViewToModel(view) {
+  return {
+    name: view.name,
+    description: view.description,
+    category: view.category,
+    tags: view.tags,
+    rowLabel: view.metadata.rowLabel,
+    attributionLink: view.metadata.attributionLink,
+    customMetadata: coreViewToCustomMetadataModel(view),
+    contactEmail: view.privateMetadata.contactEmail
+  };
+}
+
+function coreViewToCustomMetadataModel(view) {
+  return _.mapValues(Metadata.defaultCustomData(), (fieldSet, fieldSetName) => (
+    fieldSet.map(({field, privateField}) => (
+      {
+        field: field,
+        privateField: privateField,
+        value: privateField
+          ? view.privateMetadata.custom_fields[fieldSetName][field]
+          : view.metadata.custom_fields[fieldSetName][field]
+      }
+    ))
+  ));
 }
 
 type ImportProgress
@@ -129,7 +193,8 @@ function importData(onError) {
         name: state.upload.fileName,
         translation: transformToImports2Translation(state.transform.columns),
         blueprint: JSON.stringify(transformToBlueprint(state.transform.columns)),
-        fileId: state.upload.progress.fileId
+        fileId: state.upload.progress.fileId,
+        draftViewUid: state.datasetId
       })
     }).then((response) => {
       switch (response.status) {

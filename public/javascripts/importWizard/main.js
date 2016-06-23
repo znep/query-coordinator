@@ -13,6 +13,8 @@ import * as ImportColumns from './components/importColumns';
 import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
 
+import view from 'view';
+
 const enhancer = compose(
   applyMiddleware(createLogger(), thunk)
 );
@@ -35,7 +37,7 @@ const rootReducer = combineReducers({
   metadata: Metadata.update
 });
 
-const store = createStore(rootReducer, Wizard.fakeInitialModel, enhancer);
+const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view), enhancer);
 const ConnectedWizard = connect((state) => ({state: state}))(Wizard.view); // eslint-disable-line no-unused-vars
 
 render(

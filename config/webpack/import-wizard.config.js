@@ -30,8 +30,7 @@ module.exports = _.defaultsDeep({
     'customMetadataSchema': 'customMetadataSchema',
     'enabledModules': 'enabledModules',
     // TODO: eventually compress into ImportSource
-    'datasetName': 'datasetName',
-    'datasetId': 'datasetId'
+    'view': 'view'
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

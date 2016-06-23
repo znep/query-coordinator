@@ -57,7 +57,7 @@ window.customMetadataSchema = [
         'options': [
           '50',
           '100'
-        ]
+        ],
       },
       {
         'name': 'jupiter',

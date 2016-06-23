@@ -463,7 +463,9 @@ export function view({ metadata, onMetadataAction, importError }) {
               href="#"
               onClick={() => {
                 onMetadataAction(updateNextClicked());
-                onMetadataAction(Server.saveMetadata());
+                if (isMetadataValid(metadata)) {
+                  onMetadataAction(Server.saveMetadata());
+                }
               }}>{I18n.screens.wizard.next}</a>
           </li>
           <li className="prev">

@@ -1689,6 +1689,40 @@ en:
       layouts: Layouts
       list_layout: List Layout
       title: Select Layout
+    #measure shoud be kept in sync with janus-govstat
+    measure:
+      unit_percent: percent
+      progress:
+        no_judgement: Measuring
+        none: Needs More Data
+        needs_more_data: Needs More Data
+        within_tolerance: Near Target
+        good: On Track
+        progressing: In Progress
+        poor: Needs Improvement
+        bad: Needs Improvement
+        no_status: No Status
+      end_progress:
+        no_judgement: Measured
+        none: Needed More Data
+        needs_more_data: Needed More Data
+        within_tolerance: Almost met target
+        good: Achieved Goal
+        progressing: Almost met target
+        poor: Did not meet target
+        bad: Did not meet target
+      subheadline: This goal is measured by tracking {0} in {1}.
+    admin:
+      listing:
+        title: Title
+        owner: Owner
+        updated_at: Updated
+        visibility: Visibility
+        goal_status: Goal Status
+        dashboard: Dashboard
+      goal_values:
+        status_public: Public
+        status_private: Private
   plugins:
     daterangepicker:
       clear: Clear

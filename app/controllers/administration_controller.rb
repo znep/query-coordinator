@@ -1198,6 +1198,11 @@ class AdministrationController < ApplicationController
     end
   end
 
+  def goals
+
+    render :layout => 'plain'
+  end
+
   #
   # Access checks
   #

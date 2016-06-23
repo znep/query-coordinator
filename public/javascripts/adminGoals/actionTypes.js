@@ -1,0 +1,6 @@
+export const TABLE_LOAD_PAGE = 'TABLE_LOAD_PAGE';
+export const TABLE_SHOW_PAGE = 'TABLE_SHOW_PAGE';
+export const TABLE_ERROR = 'TABLE_ERROR';
+export const TABLE_SHOW_ERROR = 'TABLE_SHOW_ERROR';
+export const CACHE_DASHBOARDS = 'CACHE_DASHBOARDS';
+export const CACHE_USERS = 'CACHE_USERS';

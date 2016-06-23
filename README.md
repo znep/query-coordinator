@@ -105,6 +105,7 @@ bundle exec rake test:js:dataCards
 bundle exec rake test:js:datasetLandingPage
 bundle exec rake test:js:importWizard
 bundle exec rake test:js:oldUx
+bundle exec rake test:js:adminGoals
 ```
 
 Each rake task accepts three arguments:

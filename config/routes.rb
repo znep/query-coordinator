@@ -124,6 +124,7 @@ Rails.application.routes.draw do
       get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
+      get :goals
 
       scope :controller => 'administration/routing_approval', :path => '/routing_approval' do
         get '', :action => :index, :as => 'routing_approval_administration'

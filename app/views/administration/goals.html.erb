@@ -1,0 +1,12 @@
+<% content_for :head do %>
+  <%= render_server_config %>
+  <script type="text/javascript">
+    window.translations = <%== LocaleCache.render_translations([LocalePart.from_array(['govstat'])])['govstat'].to_json %>
+  </script>
+  <link rel="stylesheet" href="/stylesheets/socrata-styleguide/css/styleguide.css" />
+  <title>Goals | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="app"></div>
+
+<%= include_webpack_bundle 'admin-goals/main.js' %>

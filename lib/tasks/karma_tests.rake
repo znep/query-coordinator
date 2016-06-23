@@ -26,6 +26,13 @@ namespace :test do
     File.write(output_filename, 'module.exports = ' + all_translations.to_json.html_safe + ';')
   end
 
+  task :update_admin_goals_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma/adminGoals/mockTranslations.js'
+    translations = YAML.load_file(translations_filename)['en']['govstat']
+    File.write(output_filename, 'export default ' + translations.to_json.html_safe + ';')
+  end
+
   namespace :js do
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
@@ -53,6 +60,10 @@ namespace :test do
       run_karma('datasetLandingPage', args)
     end
 
+    task :adminGoals, [:watch, :browser, :reporter] => :update_admin_goals_translations do |task, args|
+      run_karma('adminGoals', args)
+    end
+
     task :importWizard, [:watch, :browser, :reporter] => 'update_import_wizard_translations' do |task, args|
       run_karma('importWizard', args)
     end
@@ -62,7 +73,7 @@ namespace :test do
     end
   end
 
-  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx']
+  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx', 'js:adminGoals']
 end
 
 Rake::Task[:test].enhance { Rake::Task['test:js'].invoke }

@@ -11,7 +11,7 @@ class GoalTableRow extends React.Component {
   }
 
   onClick() {
-    if (this.props.selectedRows.indexOf(this.props.goal.get('id')) > -1) {
+    if (this.props.selectedRows.includes(this.props.goal.get('id'))) {
       this.props.rowDeselected(this.props.goal.get('id'));
     } else {
       this.props.rowSelected(this.props.goal.get('id'));

@@ -18,9 +18,15 @@ class GettyImage < ActiveRecord::Base
   end
 
   def download!(user, story_uid, options = {})
-    return if document.present?
+    return if document.present? && !document.skip_thumbnail_generation
 
-    create_document = CreateDocument.new(user, download_parameters.merge(:story_uid => story_uid))
+    create_document = CreateDocument.new(
+      user,
+      download_parameters.merge(
+        story_uid: story_uid,
+        skip_thumbnail_generation: options[:skip_thumbnail_generation]
+      )
+    )
     document_saved = create_document.create
 
     unless document_saved
@@ -85,10 +91,13 @@ class GettyImage < ActiveRecord::Base
 
     metadata = images_sdk.with_ids([getty_id]).execute
 
-    # Get the largest image we can get from getty since we generate thumbnails.
+    # We want to grab an image that is close to our largest thumbnail for now.
+    # This is in line with the largest screen resolution that we care to support
+    # for fullbleed images.
+    largest_thumbnail_size = Document::THUMBNAIL_SIZES.values.max
     download_metadata = metadata['images'][0]['download_sizes'].
-      sort { |a, b| b['width'] <=> a['width'] }.
-      first
+      sort { |a, b| a['width'] <=> b['width'] }.
+      detect { |image| image['width'] > largest_thumbnail_size }
 
     # EN-6695 - Nil-related errors in Storyteller Ruby code
     #

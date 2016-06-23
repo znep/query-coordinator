@@ -137,6 +137,15 @@ RSpec.describe GettyImage, type: :model do
       end
     end
 
+    describe 'when the document is already associated with the model' do
+      let(:document) { FactoryGirl.create(:document, skip_thumbnail_generation: true) }
+
+      it 'proceeds' do
+        subject.download!(user, story_uid)
+        expect(CreateDocument).to have_received(:new)
+      end
+    end
+
     describe 'when a new document creation is started' do
       let(:attributes) do
         {

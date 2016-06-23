@@ -24,7 +24,13 @@ class CreateDocumentFromGettyImage
     end
 
     @getty_image = GettyImage.find_or_initialize_by(getty_id: params[:getty_image_id])
-    @getty_image.download!(user, params[:story_uid], process_immediately: true)
+
+    # If we are seeing this Getty image for the first time, we're going to download it below without
+    # generating thumbnails (for SPEED). But after we create the new Document, we can queue up
+    # regenerating those thumbnails.
+    @getty_image_will_need_thumbnails = @getty_image.document.nil?
+
+    @getty_image.download!(user, params[:story_uid], process_immediately: true, skip_thumbnail_generation: true)
     @getty_image.reload
 
     document_params = @getty_image.document.attributes.with_indifferent_access.
@@ -47,6 +53,11 @@ class CreateDocumentFromGettyImage
 
   def queue_process
     ProcessDocumentJob.perform_later(@document.id)
+
+    # since we skip thumbnail generation above for the getty image, queue it up to process later
+    if @getty_image_will_need_thumbnails
+      RegenerateSkippedThumbnailsJob.perform_later(@getty_image.document.id)
+    end
   end
 
 end

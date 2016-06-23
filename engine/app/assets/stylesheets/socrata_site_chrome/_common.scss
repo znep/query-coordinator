@@ -139,10 +139,6 @@ header#chrome-header, footer#chrome-footer {
           padding: 15px $text_padding;
           text-decoration: none;
 
-          &:last-of-type {
-            border-bottom: 1px solid #f4f4f4;
-          }
-
           &:hover, &:focus, &:active {
             background-color: #fafafa;
           }
@@ -162,6 +158,35 @@ header#chrome-header, footer#chrome-footer {
       }
       .social-links {
         margin-top: 35px;
+
+        .social-link {
+          .monosocial {
+            font-size: 26px;
+            float: right;
+          }
+        }
+      }
+      .searchbox {
+        display: block;
+        width: 100%;
+        form {
+          line-height: normal;
+          input {
+            // 48px button, (11*2)px padding, (1*2)px border
+            width: calc(100% - 48px - 22px - 2px);
+            padding: 15px 11px;
+            font-style: 16px;
+            box-shadow: none;
+            border-color: #f4f4f4;
+          }
+          button {
+            height: 50px;
+            color: $dark_text_color;
+            background-color: #fff;
+            border-color: #f4f4f4;
+            border-right: none;
+          }
+        }
       }
     }
   }

@@ -7,11 +7,11 @@ import {
   requestDerivedViews
 } from '../../actions/featuredContent';
 import BootstrapAlert from '../BootstrapAlert';
+import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import ViewSelector from './ViewSelector';
 
 export var ViewSelectorModal = React.createClass({
-
   propTypes: {
     bootstrapUrl: PropTypes.string,
     hasSaveError: PropTypes.bool,
@@ -21,7 +21,8 @@ export var ViewSelectorModal = React.createClass({
     isSavingViewUid: PropTypes.string,
     isSaved: PropTypes.bool,
     onClickCancel: PropTypes.func,
-    onClickChoose: PropTypes.func.isRequired,
+    onClickChoose: PropTypes.func,
+    onClickClose: PropTypes.func,
     fetchViews: PropTypes.func,
     resetFocus: PropTypes.func,
     viewList: PropTypes.array.isRequired
@@ -111,15 +112,22 @@ export var ViewSelectorModal = React.createClass({
   },
 
   render: function() {
+    var { onClickClose } = this.props;
+
     return (
-      <div className="modal-content-wrapper internal-resource-contents">
+      <div className="modal-container">
+        <FeaturedContentModalHeader onClickClose={onClickClose} />
+
         <div className="modal-content">
-          {this.renderBackButton()}
-          <h2>{this.I18n.header}</h2>
-          <p>{this.I18n.message}</p>
-          {this.renderSaveError()}
-          {this.renderContent()}
+          <div className="container">
+            {this.renderBackButton()}
+            <h2>{this.I18n.header}</h2>
+            <p>{this.I18n.message}</p>
+            {this.renderSaveError()}
+            {this.renderContent()}
+          </div>
         </div>
+
         {this.renderFooter()}
       </div>
     );
@@ -146,6 +154,10 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(saveFeaturedItem({
         featuredLensUid: uid
       }));
+    },
+
+    onClickClose: function() {
+      dispatch(cancelFeaturedItemEdit());
     },
 
     fetchViews: function() {

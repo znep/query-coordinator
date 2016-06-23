@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../lib/constants';
 import FeaturedItemWidget from '../FeaturedItemWidget';
+import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import {
   cancelFeaturedItemEdit,
@@ -23,6 +24,7 @@ export var ExternalResourceForm = React.createClass({
     onChangeTitle: PropTypes.func,
     onChangeUrl: PropTypes.func,
     onClickCancel: PropTypes.func,
+    onClickClose: PropTypes.func,
     onClickSave: PropTypes.func,
     resetFocus: PropTypes.func,
     title: PropTypes.string,
@@ -172,28 +174,30 @@ export var ExternalResourceForm = React.createClass({
 
     return (
       <div className="modal-content external-resource">
-        {backButton}
+        <div className="container">
+          {backButton}
 
-        <h2>{this.I18n.header}</h2>
+          <h2>{this.I18n.header}</h2>
 
-        <p>{this.I18n.message}</p>
+          <p>{this.I18n.message}</p>
 
-        <div className="external-resource-contents">
-          <form className="external-resource-form">
-            {titleField}
-            {descriptionField}
-            {urlField}
-            {urlWarning}
-            {previewImageField}
-            {imageWarning}
-          </form>
+          <div className="external-resource-contents">
+            <form className="external-resource-form">
+              {titleField}
+              {descriptionField}
+              {urlField}
+              {urlWarning}
+              {previewImageField}
+              {imageWarning}
+            </form>
 
-          <div className="external-resource-preview">
-            {this.renderPreview()}
+            <div className="external-resource-preview">
+              {this.renderPreview()}
+            </div>
           </div>
-        </div>
 
-        {saveError}
+          {saveError}
+        </div>
       </div>
     );
   },
@@ -218,8 +222,11 @@ export var ExternalResourceForm = React.createClass({
   },
 
   render: function() {
+    var { onClickClose } = this.props;
+
     return (
-      <div>
+      <div className="modal-container">
+        <FeaturedContentModalHeader onClickClose={onClickClose} />
         {this.renderContent()}
         {this.renderFooter()}
       </div>
@@ -256,6 +263,10 @@ function mapDispatchToProps(dispatch, ownProps) {
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
       ownProps.resetFocus();
+    },
+
+    onClickClose: function() {
+      dispatch(cancelFeaturedItemEdit());
     },
 
     onClickSave: function() {

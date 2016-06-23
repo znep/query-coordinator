@@ -22,15 +22,15 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     });
 
     it('renders a header', function() {
-      expect(element.querySelector('.modal-content > h2')).to.exist;
+      expect(element.querySelector('.modal-content h2')).to.exist;
     });
 
     it('renders an introduction', function() {
-      expect(element.querySelector('.modal-content > p')).to.exist;
+      expect(element.querySelector('.modal-content p')).to.exist;
     });
 
     it('renders the featured content', function() {
-      expect(element.querySelector('.modal-content > .featured-content')).to.exist;
+      expect(element.querySelector('.modal-content .featured-content')).to.exist;
     });
 
     it('renders a footer', function() {

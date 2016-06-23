@@ -1,14 +1,16 @@
 #featured-content-modal {
-  /* these come from the styleguide, added here to avoid magic numbers */
-  $modal-header-height: 52px;
-  $modal-footer-height: 56px;
   $view-widget-width: 32%;
+  $min-view-widget-width: 300px;
   $view-widget-height: 287px;
+  $container-width: 1000px;
 
+  .modal-header {
+    z-index: 1;
 
-  h1 {
-    font-weight: 400;
-    font-size: 19px;
+    h1 {
+      font-weight: 400;
+      font-size: 19px;
+    }
   }
 
   .modal-header-dismiss:focus {
@@ -16,21 +18,10 @@
     outline-width: medium;
   }
 
-  /* Allow for inner content to scroll */
-  .modal-content-wrapper {
-    height: calc(100% - #{$modal-header-height});
-    overflow: scroll;
-    padding-bottom: $modal-footer-height;
-
-    .modal-content {
-      max-height: none;
-    }
-  }
-
   .modal-content {
-    margin: 0 auto;
-    width: 1000px;
-    overflow: visible;
+    .container {
+      max-width: $container-width;
+    }
 
     .back-button {
       margin-bottom: 11px;
@@ -47,6 +38,7 @@
       .featured-item {
         flex: 0 0 $view-widget-width;
         height: $view-widget-height;
+        max-width: $view-widget-width;
 
         & + .featured-item {
           margin-left: 15px;
@@ -90,13 +82,31 @@
           }
         }
       }
+
+      @media(max-width: $medium) {
+        flex-wrap: wrap;
+
+        .featured-item {
+          margin-bottom: 15px;
+          margin-right: 50%;
+          min-width: $min-view-widget-width;
+
+          + .featured-item {
+            margin-left: 0;
+          }
+
+          .edit-button, .remove-button {
+            visibility: visible;
+          }
+        }
+      }
     }
 
     .external-resource-contents {
       display: flex;
 
       form.external-resource-form {
-        flex: 1 0 auto;
+        flex: 1 1 100%;
         padding-right: 22px;
 
         input[type="text"] {
@@ -121,6 +131,7 @@
         flex: 0 0 $view-widget-width;
         height: $view-widget-height;
         overflow: hidden;
+        min-width: $min-view-widget-width;
 
         .view-widget {
           width: 100%;
@@ -128,13 +139,17 @@
           border: 2px $light-grey-1 dashed;
         }
       }
+
+      @media(max-width: $medium) {
+        flex-wrap: wrap;
+      }
     }
 
     .story-contents {
       display: flex;
 
       form.story-form {
-        flex: 1 0 auto;
+        flex: 1 1 100%;
         padding-right: 22px;
 
         input.url {
@@ -151,6 +166,7 @@
         height: $view-widget-height;
         display: flex;
         overflow: hidden;
+        min-width: $min-view-widget-width;
 
         .view-widget {
           width: 100%;
@@ -175,6 +191,10 @@
           }
         }
       }
+
+      @media(max-width: $medium) {
+        flex-wrap: wrap;
+      }
     }
 
     .alert.error {
@@ -182,15 +202,23 @@
     }
   }
 
-  .internal-resource-contents {
+  .internal-view-list {
     .result-card.view-widget {
       flex: 0 0 $view-widget-width;
       height: $view-widget-height;
 
-      &:nth-child(3n) {
-        margin-right: 0;
+      @media(max-width: $medium) {
+        margin-right: 50%;
+        min-width: $min-view-widget-width;
+      }
+
+      @media(min-width: $medium) {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
       }
     }
+
     .view-select.btn {
       color: #fff;
     }

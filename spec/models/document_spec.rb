@@ -180,6 +180,8 @@ RSpec.describe Document, type: :model do
   end
 
   describe '#attachment_styles_from_thumbnail_sizes' do
+    let(:subject) { FactoryGirl.build(:document) }
+
     it 'returns a hash of thumbnail sizes' do
       expected = {
         small: "346x346>",
@@ -187,8 +189,15 @@ RSpec.describe Document, type: :model do
         large: "1300x1300>",
         xlarge: "2180x2180>"
       }
-      document = FactoryGirl.build(:document)
       expect(subject.attachment_styles_from_thumbnail_sizes).to eq(expected)
+    end
+
+    context 'when skip_thumbnail_generation is true' do
+      let(:subject) { FactoryGirl.build(:document, skip_thumbnail_generation: true) }
+
+      it 'returns empty hash' do
+        expect(subject.attachment_styles_from_thumbnail_sizes).to be_empty
+      end
     end
   end
 
@@ -248,6 +257,15 @@ RSpec.describe Document, type: :model do
       it 'gets thumbnail size specified by parameter' do
         expect(subject.upload).to receive(:url).with(:humungous).and_return('humungous-url')
         expect(subject.canonical_url(:humungous)).to eq('humungous-url')
+      end
+    end
+
+    context 'when skip_thumbnail_generation is true' do
+      let(:subject) { FactoryGirl.create(:document, skip_thumbnail_generation: true) }
+
+      it 'gets original upload url' do
+        expect(subject.upload).to receive(:url).with(nil).and_return('original-url')
+        expect(subject.canonical_url).to eq('original-url')
       end
     end
   end

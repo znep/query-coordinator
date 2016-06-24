@@ -39,7 +39,7 @@ RSpec.describe CreateDocumentFromGettyImage do
   end
 
   it 'forces a download and reload of the getty_image' do
-    expect(getty_image).to receive(:download!).with(user, params[:story_uid], process_immediately: true)
+    expect(getty_image).to receive(:download!).with(user, params[:story_uid], process_immediately: true, skip_thumbnail_generation: true)
     expect(getty_image).to receive(:reload)
 
     subject

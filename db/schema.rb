@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620221837) do
+ActiveRecord::Schema.define(version: 20160623225738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,20 +45,21 @@ ActiveRecord::Schema.define(version: 20160620221837) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "documents", force: :cascade do |t|
-    t.string   "story_uid",                       null: false
-    t.string   "direct_upload_url",               null: false
+    t.string   "story_uid",                             null: false
+    t.string   "direct_upload_url",                     null: false
     t.string   "upload_file_name"
     t.string   "upload_content_type"
     t.integer  "upload_file_size"
     t.datetime "upload_updated_at"
-    t.string   "created_by",                      null: false
-    t.integer  "status",              default: 0, null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.string   "created_by",                            null: false
+    t.integer  "status",                    default: 0, null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.float    "crop_x"
     t.float    "crop_y"
     t.float    "crop_width"
     t.float    "crop_height"
+    t.boolean  "skip_thumbnail_generation"
   end
 
   add_index "documents", ["status"], name: "index_documents_on_status", using: :btree

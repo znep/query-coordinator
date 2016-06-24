@@ -109,7 +109,7 @@ class Document < ActiveRecord::Base
   # if it's an image, or the original upload location if it's an html snippet.
   # Optionally specify one of THUMBNAIL_SIZES to get that thumbnail size.
   def canonical_url(size = nil)
-    default_thumbnail_size_or_nil = if check_content_type_is_image
+    default_thumbnail_size_or_nil = if check_content_type_is_image && !skip_thumbnail_generation
       size || :xlarge
     else
       # Sending nil to self.upload.url() will return the original uploaded file url
@@ -129,7 +129,11 @@ class Document < ActiveRecord::Base
   # 650px  | 317px | 207px | medium
   # 650px  | 650px | 650px | small
   def attachment_styles_from_thumbnail_sizes
-    THUMBNAIL_SIZES.inject({}) { |memo, (label, pixels)| memo[label] = "#{pixels}x#{pixels}>" ; memo }
+    if skip_thumbnail_generation
+      {}
+    else
+      THUMBNAIL_SIZES.inject({}) { |memo, (label, pixels)| memo[label] = "#{pixels}x#{pixels}>" ; memo }
+    end
   end
 
   def cropping?

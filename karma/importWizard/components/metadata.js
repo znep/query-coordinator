@@ -4,6 +4,7 @@ import TestUtils from 'react-addons-test-utils';
 
 import {
   update,
+  updateForLastSaved,
   emptyForName,
   updateName,
   updateDescription,
@@ -14,12 +15,15 @@ import {
   updatePrivacySettings,
   updateContactEmail,
   updateNextClicked,
+  updateLastSaved,
   validate,
   isStandardMetadataValid,
   isCustomMetadataValid,
   isMetadataValid,
   view
 } from 'components/metadata';
+
+import { initialNewDatasetModel } from 'wizard';
 
 describe("metadata's reducer testing", () => {
   let state;
@@ -299,5 +303,40 @@ describe('view testing', () => {
    TestUtils.Simulate.change(node);
    expect(spy.callCount).to.equal(2);
  });
+
+});
+
+describe('testing for lastSaved', () => {
+  let metadata, lastSavedMetadata;
+
+  describe('last saved testing', () => {
+    it('returns that wizard intializes metadata and lastSaved equally', () => {
+      const state = initialNewDatasetModel({});
+      metadata = state.metadata;
+      lastSavedMetadata = state.lastSavedMetadata;
+
+      expect(metadata).to.deep.equal(lastSavedMetadata);
+    });
+
+    it('returns that an unsaved wizard does not update lastSaved to equal metadata', () => {
+      const state = initialNewDatasetModel({});
+      metadata = state.metadata;
+      lastSavedMetadata = state.lastSavedMetadata;
+      metadata = update(metadata, updateContactEmail('wombats@australia.au'));
+
+      expect(metadata).to.not.deep.equal(lastSavedMetadata);
+    });
+
+    it('returns that the saved wizard updates lastSaved to equal metadata', () => {
+      const state = initialNewDatasetModel({});
+      metadata = state.metadata;
+      lastSavedMetadata = state.lastSavedMetadata;
+      metadata = update(metadata, updateContactEmail('wombats@australia.au'));
+      lastSavedMetadata = updateForLastSaved(lastSavedMetadata, updateLastSaved(metadata));
+
+      expect(metadata).to.deep.equal(lastSavedMetadata);
+    });
+  });
+
 
 });

@@ -536,7 +536,7 @@ class InternalController < ApplicationController
   end
 
   def domains_summary
-    summary = Domain.all.map{ |domain| { :id => domain.id, :name => domain.name, :cname => domain.cname, :shortName => domain.shortName } }
+    summary = Domain.all.map{ |domain| { :id => domain.id, :name => domain.name, :cname => domain.cname, :shortName => domain.shortName, :aliases => domain.aliases } }
 
     respond_to do |format|
       format.data { render :json => summary }

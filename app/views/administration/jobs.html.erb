@@ -137,7 +137,7 @@
             <% end %>
 
             <%# If activity is a delete and within the last X days, show button to restore dataset %>
-            <% if FeatureFlags.derive(@view, request).restore_dataset_button && activity.dataset.deleted && activity.activity_type == 'delete' && (Date.today - activity.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days %>
+            <% if display_restore_button(activity) %>
               <button class="button restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>"><%= t("#{jobs_prefix}.index_page.restore_deleted_dataset") %></button>
             <% end %>
           </td>

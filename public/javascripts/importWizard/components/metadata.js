@@ -430,19 +430,19 @@ export function view({ metadata, onMetadataAction, importError }) {
                 {I18n.screens.dataset_new.metadata.privacy_settings}
               </legend>
               <RadioGroup
-                name='privacy'
+                name="privacy"
                 selectedValue={metadata.privacySettings}
                 onChange={(value) => onMetadataAction(updatePrivacySettings(value))}>
                 {Radio => (
                   <div>
                     <div>
-                      <Radio value='public' />
+                      <Radio value="public" />
                       <label
                         htmlFor="privacy_public"
                         dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
                     </div>
                     <div>
-                      <Radio value='private' />
+                      <Radio value="private" />
                       <label
                         htmlFor="privacy_private"
                         dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />

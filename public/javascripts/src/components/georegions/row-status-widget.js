@@ -42,11 +42,11 @@ const RowStatusWidget = React.createClass({
       onSuccess,
       method: 'put'
     };
-    const disabledFormButtonProps = _.merge(defaultButtonProps, {
+    const disabledFormButtonProps = _.merge({}, defaultButtonProps, {
       action: `${action}/enable`,
       value: t('enable')
     });
-    const enabledFormButtonProps = _.merge(defaultButtonProps, {
+    const enabledFormButtonProps = _.merge({}, defaultButtonProps, {
       action: `${action}/disable`,
       disabled: false,
       title: null,

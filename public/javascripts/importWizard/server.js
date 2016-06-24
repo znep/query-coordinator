@@ -13,7 +13,7 @@ import _ from 'lodash';
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
     const { navigation, lastSavedMetadata, metadata, datasetId } = getState();
-    updatePrivacy(datasetId, lastSavedMetadata.privacySettings, metadata.privacySettings);
+    dispatch(updatePrivacy(datasetId, metadata.privacySettings));
     dispatch(goToPage('Working'));
     saveMetadataToViewsApi(datasetId, metadata).then(() => {
       const onImportError = () => {
@@ -105,18 +105,22 @@ function coreViewToCustomMetadataModel(view) {
   ));
 }
 
-export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
-  if ((lastPrivacy !== currentPrivacy)) {
-    if (currentPrivacy === 'public') {
-      currentPrivacy = 'public.read';
-    }
+export function updatePrivacy(datasetId, currentPrivacy) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const lastPrivacy = state.lastSavedMetadata.privacySettings;
+    if ((lastPrivacy !== currentPrivacy)) {
+      if (currentPrivacy === 'public') {
+        currentPrivacy = 'public.read';
+      }
 
-    return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${currentPrivacy}`, {
-      method: 'PUT',
-      credentials: 'same-origin'
-    }).then((result) => {
-      console.log(result);
-    });
+      return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${currentPrivacy}`, {
+        method: 'PUT',
+        credentials: 'same-origin'
+      }).then((result) => {
+        console.log(result);
+      });
+    }
   }
 }
 

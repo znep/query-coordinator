@@ -424,7 +424,7 @@ export function view({ metadata, onMetadataAction, importError }) {
           <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
 
           <div className="line clearfix">
-            <fieldset id="privacy-settings" className="radioblock" defaultChecked={metadata.privacySettings}>
+            <fieldset id="privacy-settings" className="radioblock">
               <legend id="privacy-settings-legend">
                 {I18n.screens.dataset_new.metadata.privacy_settings}
               </legend>
@@ -432,7 +432,8 @@ export function view({ metadata, onMetadataAction, importError }) {
                 <input
                   type="radio"
                   name="privacy"
-                  value="public" id="privacy_public"
+                  value="public"
+                  id="privacy_public"
                   onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
                 <label
                   htmlFor="privacy_public"
@@ -480,8 +481,8 @@ export function view({ metadata, onMetadataAction, importError }) {
               onClick={() => {
                 onMetadataAction(updateNextClicked());
                 if (isMetadataValid(metadata)) {
-                  onMetadataAction(updateLastSaved(metadata));
                   onMetadataAction(Server.saveMetadataThenProceed());
+                  onMetadataAction(updateLastSaved(metadata));
                 }
               }}>{I18n.screens.wizard.next}</a>
           </li>

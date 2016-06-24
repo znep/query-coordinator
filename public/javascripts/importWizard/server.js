@@ -16,8 +16,8 @@ export function saveMetadataThenProceed() {
     updatePrivacy(datasetId, lastSavedMetadata.privacySettings, metadata.privacySettings);
     dispatch(goToPage('Working'));
     saveMetadataToViewsApi(datasetId, metadata).then(() => {
-      dispatch(goToPage('Importing'));
       const onImportError = () => {
+        dispatch(goToPage('Importing'));
         dispatch(importError());
         dispatch(goToPage('Metadata'));
       };
@@ -109,26 +109,15 @@ function coreViewToCustomMetadataModel(view) {
 }
 
 export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
-  if (lastPrivacy === 'public' && currentPrivacy === 'private') {
-    // delete Grant
-    return fetch(`/api/views/${datasetId}/grants`, {
-      method: 'DELETE',
-      id: datasetId,
+  if ((lastPrivacy === 'public' && currentPrivacy === 'private') || (lastPrivacy === 'private' && currentPrivacy === 'public')) {
+
+    if (currentPrivacy === 'public') {
+      currentPrivacy = 'public.read';
+    }
+
+    return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${currentPrivacy}`, {
+      method: 'PUT',
       credentials: 'same-origin'
-    }).then((result) => {
-      console.log(result);
-    });
-  } else if (lastPrivacy === 'private' && currentPrivacy === 'public') {
-    // create Grant
-    return fetch(`/api/views/${datasetId}/grants`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      body: JSON.stringify(
-        {
-          inherited: false,
-          type: 'viewer',
-          flags: ['public']
-        })
     }).then((result) => {
       console.log(result);
     });
@@ -152,7 +141,6 @@ export function initialImportStatus(): ImportStatus {
     type: 'NotStarted'
   };
 }
-
 
 const IMPORT_START = 'IMPORT_START';
 function importStart() {

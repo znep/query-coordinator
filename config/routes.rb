@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       get '/modules', :action => 'index_modules'
       get :config_info
       get :domains_summary
+      get :organization_list
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'

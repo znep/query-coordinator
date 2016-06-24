@@ -43,7 +43,6 @@ class InternalController < ApplicationController
 
   def show_domain
     @domain = Domain.find(params[:domain_id])
-    @organizations = Organization.find
     @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
@@ -538,6 +537,15 @@ class InternalController < ApplicationController
 
   def domains_summary
     summary = Domain.all.map{ |domain| { :id => domain.id, :name => domain.name, :cname => domain.cname, :shortName => domain.shortName } }
+
+    respond_to do |format|
+      format.data { render :json => summary }
+      format.json { render :json => summary }
+    end
+  end
+
+  def organization_list
+    summary = Organization.find.map { |org| { id: org.id, name: org.name } }
 
     respond_to do |format|
       format.data { render :json => summary }

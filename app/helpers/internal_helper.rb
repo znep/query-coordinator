@@ -116,7 +116,12 @@ module InternalHelper
   end
 
   def organization_link
-    organization_name = @organizations.find { |org| org.id == @domain.organizationId }.name
+    organization_name =
+      if defined? @organizations
+        @organizations.find { |org| org.id == @domain.organizationId }.name
+      else
+        content_tag(:span, @domain.organizationId, 'class' => 'organizationLink')
+      end
     link_to organization_name, show_org_path(org_id: @domain.organizationId)
   end
 

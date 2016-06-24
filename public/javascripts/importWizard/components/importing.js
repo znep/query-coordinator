@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import NavigationControl from './navigationControl';
 
 function renderProgressText(importStatus, operation) {
   let progressText = null;
@@ -35,10 +36,13 @@ function renderProgressText(importStatus, operation) {
 
 export function view({importStatus, operation}) {
   return (
-    <div className="workingPane">
-      <p className="headline">{I18n.screens.dataset_new.importing_your_data}</p>
-      {renderProgressText(importStatus, operation)}
-      <div className="spinner-default spinner-large-center"></div>
+    <div>
+      <div className="workingPane">
+        <p className="headline">{I18n.screens.dataset_new.importing_your_data}</p>
+        {renderProgressText(importStatus, operation)}
+        <div className="spinner-default spinner-large-center"></div>
+      </div>
+      <NavigationControl />
     </div>
   );
 }

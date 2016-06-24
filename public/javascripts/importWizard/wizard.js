@@ -46,7 +46,7 @@ type NewDatasetModel = {
 
 const initialNavigation: Navigation = {
   page: 'SelectType',
-  path: ['SelectType'],
+  path: [],
   operation: null // will be filled in when we click something on the first screen
 };
 
@@ -89,6 +89,13 @@ export function goToPage(page) {
   };
 }
 
+const GO_TO_PREVIOUS = 'GO_TO_PREVIOUS';
+export function goToPrevious() {
+  return {
+    type: GO_TO_PREVIOUS
+  };
+}
+
 export function updateNavigation(navigation = initialNavigation: Navigation, action): Navigation {
 
   let nextPage = navigation.page;
@@ -114,7 +121,7 @@ export function updateNavigation(navigation = initialNavigation: Navigation, act
       return {
         operation: action.name,
         page: nextPage,
-        path: [...navigation.path, nextPage]
+        path: [...navigation.path, navigation.page]
       };
 
     case UploadFile.FILE_UPLOAD_COMPLETE:
@@ -134,14 +141,21 @@ export function updateNavigation(navigation = initialNavigation: Navigation, act
       return {
         ...navigation,
         page: nextPage,
-        path: [...navigation.path, nextPage]
+        path: [...navigation.path, navigation.page]
       };
 
     case GO_TO_PAGE:
       return {
         ...navigation,
         page: action.page,
-        path: [...navigation.path, action.page]
+        path: [...navigation.path, navigation.page]
+      };
+
+    case GO_TO_PREVIOUS:
+      return {
+        ...navigation,
+        page: navigation.path[navigation.path.length - 1],
+        path: navigation.path.slice(0, -1)
       };
 
     default:
@@ -178,7 +192,8 @@ export function view({ state, dispatch }) {
             case 'SelectUploadType':
               return (
                 <SelectUploadType.view
-                  goToPage={(page) => dispatch(goToPage(page))} />
+                  goToPage={(page) => dispatch(goToPage(page))}
+                  goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'UploadFile':
@@ -186,7 +201,8 @@ export function view({ state, dispatch }) {
                 <UploadFile.view
                   onFileUploadAction={dispatch}
                   fileUpload={state.upload}
-                  operation={state.navigation.operation} />
+                  operation={state.navigation.operation}
+                  goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'ImportColumns':
@@ -196,7 +212,8 @@ export function view({ state, dispatch }) {
                   transform={state.transform}
                   fileName={state.upload.fileName}
                   dispatch={dispatch}
-                  goToPage={(page) => dispatch(goToPage(page))} />
+                  goToPage={(page) => dispatch(goToPage(page))}
+                  goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'ImportShapefile':
@@ -205,7 +222,8 @@ export function view({ state, dispatch }) {
                   layers={state.layers}
                   fileName={state.upload.fileName}
                   dispatch={dispatch}
-                  goToPage={(page) => dispatch(goToPage(page))} />
+                  goToPage={(page) => dispatch(goToPage(page))}
+                  goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'Metadata':
@@ -213,7 +231,8 @@ export function view({ state, dispatch }) {
                 <Metadata.view
                   metadata={state.metadata}
                   onMetadataAction={(action) => {dispatch(action);}}
-                  importError={state.importStatus.error} />
+                  importError={state.importStatus.error}
+                  goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'Working':
@@ -227,7 +246,10 @@ export function view({ state, dispatch }) {
               );
 
             case 'Finish':
-              return <Finish.view />;
+              return (
+                <Finish.view
+                  datasetId={state.datasetId} />
+              );
 
             default:
               console.error('Unknown page', state.navigation.page);

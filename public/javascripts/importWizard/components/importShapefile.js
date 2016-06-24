@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
+import NavigationControl from './navigationControl';
 
 import { FILE_UPLOAD_COMPLETE } from './uploadFile';
 import * as Utils from '../utils';
 
-export function view({ layers, fileName, dispatch, goToPage }) {
+export function view({ layers, fileName, dispatch, goToPage, goToPrevious }) {
 
   const I18nPrefixed = I18n.screens.dataset_new.import_shapefile;
 
@@ -74,30 +75,9 @@ export function view({ layers, fileName, dispatch, goToPage }) {
         <div className="flash"></div>
         {shapefilePane()}
       </div>
-      <ul className="wizardButtons clearfix" aria-live="polite">
-        <li className="cancel">
-          <a
-            className="button cancelButton"
-            href="#cancel">
-            {I18n.screens.wizard.cancel}
-          </a>
-        </li>
-        <li className="next">
-          <a
-            className="button nextButton"
-            href="#"
-            onClick={() => goToPage('Metadata')} >
-            {I18n.screens.wizard.next}
-          </a>
-        </li>
-        <li className="prev">
-          <a
-            className="button prevButton"
-            href="#">
-            {I18n.screens.wizard.previous}
-          </a>
-        </li>
-      </ul>
+      <NavigationControl
+        onNext={() => goToPage('Metadata')}
+        onPrev={goToPrevious} />
     </div>
   );
 }
@@ -106,7 +86,8 @@ view.propTypes = {
   layers: PropTypes.array.isRequired,
   fileName: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  goToPage: PropTypes.func.isRequired
+  goToPage: PropTypes.func.isRequired,
+  goToPrevious: PropTypes.func.isRequired
 };
 
 // actions

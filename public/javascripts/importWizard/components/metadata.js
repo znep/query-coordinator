@@ -4,6 +4,7 @@ import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
 import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
+import NavigationControl from './navigationControl';
 
 // == Metadata
 
@@ -296,184 +297,173 @@ function renderFlashMessage(importError) {
   return <FlashMessage flashType="error" message={importError} />;
 }
 
-export function view({ metadata, onMetadataAction, importError }) {
+export function view({ metadata, onMetadataAction, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
 
   const validationErrors = validate(metadata);
 
   return (
-    <div className="metadataPane">
-      {renderFlashMessage(importError)}
-      <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
-      <div className="commonForm metadataForm">
-        <div className="externalDatasetMetadata">
-          <div className="line clearfix">
-            <label className="required">{I18nPrefixed.dataset_url}</label>
-            <input
-              type="text"
-              name="external_sources[0]"
-              className="textPrompt url required"
-              title={I18nPrefixed.dataset_url_prompt} />
+    <div>
+      <div className="metadataPane">
+        {renderFlashMessage(importError)}
+        <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
+        <div className="commonForm metadataForm">
+          <div className="externalDatasetMetadata">
+            <div className="line clearfix">
+              <label className="required">{I18nPrefixed.dataset_url}</label>
+              <input
+                type="text"
+                name="external_sources[0]"
+                className="textPrompt url required"
+                title={I18nPrefixed.dataset_url_prompt} />
+            </div>
           </div>
+
+          <div className="generalMetadata">
+            <div className="line clearfix">
+              <label htmlFor="view_name" className="required">{I18nPrefixed.dataset_title}</label>
+              <input
+                type="text"
+                name="view[name]"
+                title={I18nPrefixed.dataset_title_prompt}
+                className="textPrompt required error"
+                value={metadata.name}
+                onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
+                {(!validationErrors.name && metadata.nextClicked) ?
+                  <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
+            </div>
+
+            <div className="line clearfix">
+              <label htmlFor="view_description">{I18nPrefixed.brief_description}</label>
+              <textarea
+                type="text"
+                name="view[description]"
+                title={I18nPrefixed.brief_description_prompt} className="textPrompt"
+                value={metadata.description}
+                placeholder={I18nPrefixed.brief_description_prompt}
+                onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
+            </div>
+
+            <div className="line clearfix">
+              <label htmlFor="view_category">{I18nPrefixed.category}</label>
+              <select
+                name="view[category]"
+                value={metadata.category}
+                onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
+                {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
+              </select>
+            </div>
+
+            <div className="line clearfix">
+              <label htmlFor="view_tags">{I18nPrefixed.tags_keywords}</label>
+              <input
+                type="text" name="view[tags]"
+                title={I18nPrefixed.tags_prompt}
+                value={metadata.tags}
+                className="textPrompt"
+                onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
+            </div>
+
+            <div className="line clearfix">
+              <label htmlFor="view_rowLabel">{I18nPrefixed.row_label}</label>
+              <input
+                type="text"
+                name="view[rowLabel]"
+                className="textPrompt"
+                value={metadata.rowLabel}
+                onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
+            </div>
+          </div>
+
+          <div className="attributionLinkMetadata">
+            <div className="line clearfix">
+              <label htmlFor="view_attributionLink" className="required">
+                {I18n.screens.dataset_new.metadata.esri_map_layer_url}
+              </label>
+              <input
+                type="text"
+                name="view[attributionLink]"
+                className="textPrompt required"
+                value={metadata.attributionLink}
+                onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
+              {(!validationErrors.attributionLink && metadata.nextClicked) ?
+                <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
+            </div>
+          </div>
+
+          {renderCustomMetadata(metadata, onMetadataAction)}
+
+          <div className="licensingMetadata">
+            {/* TODO: license editor */}
+          </div>
+
+          <div className="attachmentsMetadata">
+            <h2>{I18nPrefixed.attachments}</h2>
+            <div className="attachmentsHowtoMessage">
+              {I18nPrefixed.attachmentsDisabledMessagePart1}
+              {' '}<span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>{' '}
+              {I18nPrefixed.attachmentsDisabledMessagePart2}
+            </div>
+          </div>
+
+          <div className="privacyMetadata">
+            <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
+
+            <div className="line clearfix">
+              <fieldset id="privacy-settings" className="radioblock" defaultChecked={metadata.privacySettings}>
+                <legend id="privacy-settings-legend">
+                  {I18n.screens.dataset_new.metadata.privacy_settings}
+                </legend>
+                <div>
+                  <input
+                    type="radio"
+                    name="privacy"
+                    value="public" id="privacy_public"
+                    onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
+                  <label
+                    htmlFor="privacy_public"
+                    dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    name="privacy"
+                    value="private"
+                    id="privacy_private"
+                    defaultChecked
+                    onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
+                  <label
+                    htmlFor="privacy_private"
+                    dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
+                </div>
+              </fieldset>
+            </div>
+
+            <div className="line clearfix">
+              <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
+                {I18nPrefixed.contact_email}
+              </label>
+              <input
+                type="text"
+                name="view[contactEmail]'"
+                value={metadata.contactEmail}
+                title={I18nPrefixed.email_address} className="textPrompt contactEmail"
+                onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
+              <div className="additionalHelp">{I18nPrefixed.email_help}</div>
+            </div>
+          </div>
+          <div className="required">{I18nPrefixed.required_field}</div>
         </div>
-
-        <div className="generalMetadata">
-          <div className="line clearfix">
-            <label htmlFor="view_name" className="required">{I18nPrefixed.dataset_title}</label>
-            <input
-              type="text"
-              name="view[name]"
-              title={I18nPrefixed.dataset_title_prompt}
-              className="textPrompt required error"
-              value={metadata.name}
-              onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
-              {(!validationErrors.name && metadata.nextClicked) ?
-                <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
-          </div>
-
-          <div className="line clearfix">
-            <label htmlFor="view_description">{I18nPrefixed.brief_description}</label>
-            <textarea
-              type="text"
-              name="view[description]"
-              title={I18nPrefixed.brief_description_prompt} className="textPrompt"
-              value={metadata.description}
-              placeholder={I18nPrefixed.brief_description_prompt}
-              onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
-          </div>
-
-          <div className="line clearfix">
-            <label htmlFor="view_category">{I18nPrefixed.category}</label>
-            <select
-              name="view[category]"
-              value={metadata.category}
-              onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
-              {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
-            </select>
-          </div>
-
-          <div className="line clearfix">
-            <label htmlFor="view_tags">{I18nPrefixed.tags_keywords}</label>
-            <input
-              type="text" name="view[tags]"
-              title={I18nPrefixed.tags_prompt}
-              value={metadata.tags}
-              className="textPrompt"
-              onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
-          </div>
-
-          <div className="line clearfix">
-            <label htmlFor="view_rowLabel">{I18nPrefixed.row_label}</label>
-            <input
-              type="text"
-              name="view[rowLabel]"
-              className="textPrompt"
-              value={metadata.rowLabel}
-              onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
-          </div>
-        </div>
-
-        <div className="attributionLinkMetadata">
-          <div className="line clearfix">
-            <label htmlFor="view_attributionLink" className="required">
-              {I18n.screens.dataset_new.metadata.esri_map_layer_url}
-            </label>
-            <input
-              type="text"
-              name="view[attributionLink]"
-              className="textPrompt required"
-              value={metadata.attributionLink}
-              onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
-            {(!validationErrors.attributionLink && metadata.nextClicked) ?
-              <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
-          </div>
-        </div>
-
-        {renderCustomMetadata(metadata, onMetadataAction)}
-
-        <div className="licensingMetadata">
-          {/* TODO: license editor */}
-        </div>
-
-        <div className="attachmentsMetadata">
-          <h2>{I18nPrefixed.attachments}</h2>
-          <div className="attachmentsHowtoMessage">
-            {I18nPrefixed.attachmentsDisabledMessagePart1}
-            {' '}<span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>{' '}
-            {I18nPrefixed.attachmentsDisabledMessagePart2}
-          </div>
-        </div>
-
-        <div className="privacyMetadata">
-          <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
-
-          <div className="line clearfix">
-            <fieldset id="privacy-settings" className="radioblock" defaultChecked={metadata.privacySettings}>
-              <legend id="privacy-settings-legend">
-                {I18n.screens.dataset_new.metadata.privacy_settings}
-              </legend>
-              <div>
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="public" id="privacy_public"
-                  onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                <label
-                  htmlFor="privacy_public"
-                  dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="private"
-                  id="privacy_private"
-                  defaultChecked
-                  onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                <label
-                  htmlFor="privacy_private"
-                  dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="line clearfix">
-            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
-              {I18nPrefixed.contact_email}
-            </label>
-            <input
-              type="text"
-              name="view[contactEmail]'"
-              value={metadata.contactEmail}
-              title={I18nPrefixed.email_address} className="textPrompt contactEmail"
-              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
-            <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-          </div>
-        </div>
-
-        <div className="required">{I18nPrefixed.required_field}</div>
-
-        <ul className="wizardButtons clearfix" aria-live="polite">
-          <li className="cancel">
-            <a className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</a>
-          </li>
-          <li className="next">
-            <a
-              className="button nextButton"
-              href="#"
-              onClick={() => {
-                onMetadataAction(updateNextClicked());
-                if (isMetadataValid(metadata)) {
-                  onMetadataAction(Server.saveMetadataThenProceed());
-                }
-              }}>{I18n.screens.wizard.next}</a>
-          </li>
-          <li className="prev">
-            <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>
-          </li>
-        </ul>
-
       </div>
+      <NavigationControl
+        onNext={() => {
+          onMetadataAction(updateNextClicked());
+          if (isMetadataValid(metadata)) {
+            onMetadataAction(Server.saveMetadataThenProceed());
+          }
+        }}
+        onPrev={goToPrevious}
+        cancelLink="/profile" />
     </div>
   );
 }
@@ -481,5 +471,6 @@ export function view({ metadata, onMetadataAction, importError }) {
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
   onMetadataAction: PropTypes.func.isRequired,
-  importError: PropTypes.string
+  importError: PropTypes.string,
+  goToPrevious: PropTypes.func.isRequired
 };

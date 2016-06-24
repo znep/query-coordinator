@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import NavigationControl from './navigationControl';
 
-export function view({goToPage}) {
+export function view({goToPage, goToPrevious}) {
   const I18nPrefixed = I18n.screens.dataset_new['import'];
   return (
     <div>
@@ -26,10 +27,14 @@ export function view({goToPage}) {
           </a>
         </li>
       </ul>
+      <NavigationControl
+        onPrev={goToPrevious}
+        cancelLink="/profile" />
     </div>
   );
 }
 
 view.propTypes = {
-  goToPage: PropTypes.func.isRequired
+  goToPage: PropTypes.func.isRequired,
+  goToPrevious: PropTypes.func.isRequired
 };

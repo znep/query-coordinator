@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import _ from 'lodash';
+import NavigationControl from './navigationControl';
 
 export function view(props) {
   const I18nPrefixed = I18n.screens.dataset_new.first_page;
@@ -87,6 +88,8 @@ export function view(props) {
       <ul className="newKindList clearfix">
         {secondRow}
       </ul>
+      <NavigationControl
+        cancelLink="/profile" />
     </div>
   );
 }

@@ -76,11 +76,6 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 }
 
 export function coreViewToModel(view) {
-  const privacy =
-    _.has(view, 'grant')
-    ? 'public'
-    : 'private';
-
   return {
     name: view.name,
     description: view.description,
@@ -90,7 +85,9 @@ export function coreViewToModel(view) {
     attributionLink: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
     contactEmail: view.privateMetadata.contactEmail,
-    privacySettings: privacy
+    privacySettings: _.has(view, 'grants')
+                        ? 'public'
+                        : 'private'
   };
 }
 
@@ -109,8 +106,7 @@ function coreViewToCustomMetadataModel(view) {
 }
 
 export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
-  if ((lastPrivacy === 'public' && currentPrivacy === 'private') || (lastPrivacy === 'private' && currentPrivacy === 'public')) {
-
+  if ((lastPrivacy !== currentPrivacy)) {
     if (currentPrivacy === 'public') {
       currentPrivacy = 'public.read';
     }

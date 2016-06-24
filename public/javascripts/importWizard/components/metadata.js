@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import RadioGroup from 'react-radio-group';
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
@@ -428,29 +429,27 @@ export function view({ metadata, onMetadataAction, importError }) {
               <legend id="privacy-settings-legend">
                 {I18n.screens.dataset_new.metadata.privacy_settings}
               </legend>
-              <div>
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="public"
-                  id="privacy_public"
-                  onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                <label
-                  htmlFor="privacy_public"
-                  dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="private"
-                  id="privacy_private"
-                  defaultChecked
-                  onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                <label
-                  htmlFor="privacy_private"
-                  dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
-              </div>
+              <RadioGroup
+                name='privacy'
+                selectedValue={metadata.privacySettings}
+                onChange={(value) => onMetadataAction(updatePrivacySettings(value))}>
+                {Radio => (
+                  <div>
+                    <div>
+                      <Radio value='public' />
+                      <label
+                        htmlFor="privacy_public"
+                        dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
+                    </div>
+                    <div>
+                      <Radio value='private' />
+                      <label
+                        htmlFor="privacy_private"
+                        dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
+                    </div>
+                  </div>
+                )}
+              </RadioGroup>
             </fieldset>
           </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleAllRows } from '../actions/goalTableActions';
+import classNames from 'classnames/bind';
+import { toggleAllRows, sortRows } from '../actions/goalTableActions';
 
 class GoalTableHead extends React.Component {
   constructor(props) {
@@ -8,15 +9,27 @@ class GoalTableHead extends React.Component {
   }
 
   render() {
+    let titlesList = ['title', 'owner', 'updated_at', 'visibility', 'goal_status', 'dashboard'];
+    let titles = _.map(titlesList, (label) => {
+
+      let direction = this.props.currentColumn == label && this.props.currentDirection == 'asc' ? 'desc' : 'asc';
+      let thClass = classNames('order-icon', {
+        'icon-arrow-up': this.props.currentColumn == label && direction == 'asc',
+        'icon-arrow-down': this.props.currentColumn == label && direction == 'desc'
+      });
+
+      return <th key={ _.uniqueId() }>
+        <span data-column={ label } data-direction={ direction } onClick={ this.props.sort }>
+          { this.props.translations.getIn(['admin', 'listing', label]) }
+          <span className={ thClass } />
+        </span>
+      </th>;
+    });
+
     return <thead>
       <tr>
         <th><input type="checkbox" onClick={ this.props.toggleAllRows } /></th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'title']) }</th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'owner']) }</th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'updated_at']) }</th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'visibility']) }</th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'goal_status']) }</th>
-        <th>{ this.props.translations.getIn(['admin', 'listing', 'dashboard']) }</th>
+        { titles }
         <th>&nbsp;</th>
       </tr>
     </thead>;
@@ -24,11 +37,14 @@ class GoalTableHead extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations'])
+  translations: state.getIn(['goalTableData', 'translations']),
+  currentColumn: state.getIn(['goalTableData', 'tableOrder', 'column']),
+  currentDirection: state.getIn(['goalTableData', 'tableOrder', 'direction'])
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleAllRows: () => dispatch(toggleAllRows())
+  toggleAllRows: () => dispatch(toggleAllRows()),
+  sort: event => dispatch(sortRows(event.target.getAttribute('data-column'), event.target.getAttribute('data-direction')))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalTableHead);

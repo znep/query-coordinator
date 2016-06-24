@@ -1,6 +1,17 @@
 table.op-admin-table {
   table-layout:fixed;
 
+  thead {
+    span {
+      cursor: pointer;
+    }
+
+    .order-icon {
+      margin-left: 7px;
+      font-size: 12px;
+    }
+  }
+
   tbody {
     tr {
       td[scope=title] {

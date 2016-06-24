@@ -30,13 +30,16 @@ export default function ShareAndEmbedRenderer() {
   var $errorNotice;
   var $titleInput;
   var $descriptionInput;
+  var $previewFrame;
 
   var events = {
     'focus': [
       ['.share-and-embed-story-url, .share-and-embed-embed-code', highlightInput]
     ],
     'keyup': [
-      ['.share-and-embed-title', validateFields]
+      ['.share-and-embed-title', validateFields],
+      ['.share-and-embed-title', updatePreviewTitle],
+      ['.share-and-embed-description', updatePreviewDescription]
     ],
     'click': [
       ['.nav-tabs .tab-link', changeTab],
@@ -97,9 +100,9 @@ export default function ShareAndEmbedRenderer() {
         '<div class="share-and-embed-pane">',
           format('<div class="alert info options-notice">{0}</div>', t('options.notice')),
           format('<h2 class="modal-input-label input-label">{0}</h2>', t('options.title_label')),
-          '<input class="share-and-embed-title text-input" type="text">',
+          '<input class="share-and-embed-title text-input" name="embed-title" type="text">',
           format('<h2 class="modal-input-label input-label">{0}</h2>', t('options.description_label')),
-          '<textarea class="share-and-embed-description text-area"></textarea>',
+          '<textarea class="share-and-embed-description text-area" name="embed-description"></textarea>',
         '</div>',
       '</div>',
 
@@ -132,6 +135,7 @@ export default function ShareAndEmbedRenderer() {
     $errorNotice = $shareAndEmbed.find('.modal-error');
     $titleInput = $shareAndEmbed.find('.share-and-embed-title');
     $descriptionInput = $shareAndEmbed.find('.share-and-embed-description');
+    $previewFrame = $shareAndEmbed.find('.share-and-embed-preview-iframe');
   }
 
   function highlightInput() {
@@ -155,6 +159,28 @@ export default function ShareAndEmbedRenderer() {
     var hasEmptyTitle = _.isEmpty(title);
     $titleInput.toggleClass('alert error', hasEmptyTitle);
     $saveButton.prop('disabled', hasEmptyTitle);
+  }
+
+  function updatePreviewTitle() {
+    var title = $titleInput.val().trim();
+    var hasEmptyTitle = _.isEmpty(title);
+    var frameDocument = $previewFrame.get(0).contentDocument;
+    var $titleElement = $('.tile-title', frameDocument);
+
+    if (!hasEmptyTitle) {
+      $titleElement.text(title);
+    }
+  }
+
+  function updatePreviewDescription() {
+    var description = $descriptionInput.val().trim();
+    var hasEmptyDescription = _.isEmpty(description);
+    var frameDocument = $previewFrame.get(0).contentDocument;
+    var $descriptionElement = $('.tile-description', frameDocument);
+    var $descriptionMissingElement = $('.tile-no-description', frameDocument);
+
+    $descriptionElement.text(description).toggleClass('hidden', hasEmptyDescription);
+    $descriptionMissingElement.toggleClass('hidden', !hasEmptyDescription);
   }
 
   function saveModal() {

@@ -58,8 +58,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     before do
       open_pane
 
-      title_description = page.find(settings_title_description)
-      title_description.click()
+      page.find(settings_title_description).click
       # Dummy action to force capybara to wait for the selector to return nonempty
       page.find('#settings-panel-story-metadata .active').visible?
     end
@@ -92,8 +91,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     before do
       open_pane
 
-      title_description = page.all(settings_make_copy).first()
-      title_description.click()
+      page.find(settings_make_copy).click
     end
 
     it 'shows the modal' do
@@ -117,12 +115,30 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     before do
       open_pane
 
-      title_description = page.all(settings_share_embed).first()
-      title_description.click()
+      page.find(settings_share_embed).click
     end
 
     it 'shows the modal' do
       expect(page).to have_selector('#share-and-embed-modal', visible: true)
+    end
+
+    it 'updates the preview when you type' do
+      override_title = 'title override'
+      override_description = 'description override'
+
+      modal = page.find('#share-and-embed-modal')
+
+      modal.find('.nav-tabs li:not(.current)').click
+
+      fill_in('embed-title', with: override_title)
+      fill_in('embed-description', with: override_description)
+
+      modal.find('.nav-tabs li:not(.current)').click
+
+      within_frame(page.find('#share-and-embed-modal iframe')) do
+        expect(page.find('.tile-title')).to have_content(override_title)
+        expect(page.find('.tile-description')).to have_content(override_description)
+      end
     end
 
     context 'when you click save & close' do

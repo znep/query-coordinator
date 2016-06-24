@@ -1,5 +1,5 @@
 /**
- * For 508 compliance, this page needs to render without javascript
+ * For 508 compliance, this page needs to render without javascript ;_;
  * The functionality here is non-essential, simply faciliating checkbox selection
  */
 
@@ -42,7 +42,7 @@ function cascadeUnsyncUp($el) {
   cascadeUnsyncUp($parent);
 }
 
-// Yea using 1 and 0 for t/f is dumb but checkboxes...and consistency
+// Yea using 1 and 0 for t/f is dumb but checkboxes...and consistency ;_;
 function onChecked(event) {
   const $target = $(event.currentTarget);
   if ($target.is(':checked')) {
@@ -51,6 +51,27 @@ function onChecked(event) {
     cascadeUnsyncUp($target);
     cascadeSyncDown($target);
   }
+}
+
+function onRadioSelected(event) {
+  const $target = $(event.currentTarget);
+  const canSelectLayers = $target.value() && ($target.attr('value') === 'catalog');
+  const setState = ($el) => {
+    $el[canSelectLayers ? 'attr' : 'removeAttr']('disabled', true);
+  };
+
+  // Argh! because rails puts a bunch of hidden elements everywhere, we can't
+  // just enable/disable the ones we know about, we have to get the hidden
+  // ones as well, which have names that match the elements of .sync-type,
+  // so we loop over all the visible ones and select the hidden ones
+  // from the name of the visible ones ;_;
+  $('input.sync-type').each((_index, el) => {
+    const $visible = $(el);
+    const name = $visible.attr('name');
+    const $hidden = $(`input[name="${name}"`);
+    setState($visible);
+    setState($hidden);
+  });
 }
 
 function filterAssets($el) {
@@ -80,4 +101,5 @@ $(() => {
   });
 
   $('.sync-type').change(onChecked);
+  $('.server-sync').change(onRadioSelected);
 });

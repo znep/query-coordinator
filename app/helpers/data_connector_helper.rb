@@ -59,6 +59,7 @@ module DataConnectorHelper
         :checked => folder['sync_type'] == 'catalog',
         :value => folder['sync_type'],
         :class => 'sync-type',
+        :disabled => server.federate_all?,
         :data => {
           :parent => 'server',
           :type => 'folder',
@@ -70,7 +71,7 @@ module DataConnectorHelper
     )
   end
 
-  def service_check_box(folder, service)
+  def service_check_box(server, folder, service)
     check_box(
       service_param_name(folder, service),
       'sync_type',
@@ -78,6 +79,7 @@ module DataConnectorHelper
         :checked => service['sync_type'] == 'catalog',
         :value => service['sync_type'],
         :class => 'sync-type',
+        :disabled => server.federate_all?,
         :data => {
           :parent => 'folder',
           :type => 'service',
@@ -89,7 +91,7 @@ module DataConnectorHelper
     )
   end
 
-  def layer_check_box(folder, service, layer)
+  def layer_check_box(server, folder, service, layer)
     check_box(
       layer_param_name(folder, service, layer),
       'sync_type',
@@ -97,6 +99,7 @@ module DataConnectorHelper
         :checked => layer['sync_type'] == 'catalog',
         :value => layer['sync_type'],
         :class => 'sync-type',
+        :disabled => server.federate_all?,
         :data => {
           :parent => 'service',
           :type => 'layer',

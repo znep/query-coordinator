@@ -24,6 +24,7 @@ export function tableLoadPage() {
     return getDashboards().
       then(getGoals).
       then(mergeDashboards).
+      then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
       catch(() => dispatch(displayAlert({ label: 'error' })));// eslint-disable-line dot-notation
@@ -46,16 +47,17 @@ export function tableLoadPage() {
     }
 
     function mergeDashboards(goalResponses) {
-      let goals = _(goalResponses).
+      return _(goalResponses).
         map('categories').
         flatten().
         map(category => _.map(category.goals, (goal) => _.assign(goal, { category: category.id }))).
         reject(_.isEmpty).
         flatten().
-        slice(0, state.getIn(['goalTableData', 'rowsPerPage'])).
         value();
+    }
 
-      return Promise.resolve(goals);
+    function trimToPageSize(goals) {
+      return _.slice(goals, 0, state.getIn(['goalTableData', 'rowsPerPage']));
     }
 
     function getGoalsExtras(goals) {

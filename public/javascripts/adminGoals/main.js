@@ -40,6 +40,3 @@ ReactDOM.render(
     <App />
   </Provider>,
   document.querySelector('#app'));
-
-let styleGuide = require('socrata-styleguide');
-window.socrataStyleGuide = styleGuide(document);

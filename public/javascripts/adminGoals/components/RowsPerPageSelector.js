@@ -25,10 +25,10 @@ class RowsPerPageSelector extends React.Component {
     return <div className="rowsPerPageContainer">
       { this.props.translations.getIn(['admin', 'listing', 'rows_per_page']) }:
       <Select
-        options={options}
+        options={ options }
         value={ this.state.selectedValue }
         clearable={ false }
-        onChange={this.valueChanged.bind(this) }
+        onChange={ this.valueChanged.bind(this) }
       />
     </div>;
   }

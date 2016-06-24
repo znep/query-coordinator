@@ -186,8 +186,10 @@ $(document).ready(function(){
 
 <% end %>
 
-<%= partial 'proto_header'
-%>
+<%= partial 'proto_header', locals: {
+    link: "/prototypes/landingpage",
+    link_text: "Log Out"
+  } %>
 
 
 <div class="container main">

@@ -80,8 +80,10 @@ $(document).ready(function(){
 
 <% end %>
 
-<%= partial 'proto_header'
-%>
+<%= partial 'proto_header', locals: {
+    link: "/prototypes/landingpage/landingpage-logged-in.html",
+    link_text: "Log In"
+  } %>
 
 
 <div class="container main">

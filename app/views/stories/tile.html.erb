@@ -9,11 +9,12 @@
       <div class="tile-image"></div>
     <% end %>
 
-    <% if @tile_properties[:description].present? %>
-      <p class="tile-description"><%= @tile_properties[:description] %></p>
-    <% else %>
-      <p class="tile-no-description"><%= t('tile.no_description_label') %></p>
-    <% end %>
+    <p class="tile-description <%= 'hidden' if @tile_properties[:description].blank? %>">
+      <%= @tile_properties[:description] %>
+    </p>
+    <p class="tile-no-description <%= 'hidden' if @tile_properties[:description].present? %>">
+      <%= t('tile.no_description_label') %>
+    </p>
 
     <div class="tile-link-container">
       <p class="tile-link">

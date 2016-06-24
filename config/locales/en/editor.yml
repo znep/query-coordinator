@@ -248,7 +248,7 @@ en:
       unsaved: 'Save'
       idle: 'Save'
     story_tile:
-      view_story_prompt: 'View Story'
+      view_story_prompt: 'Read More'
       invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
     goal_tile:
       view_goal_prompt: 'View Goal'

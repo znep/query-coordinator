@@ -48,6 +48,7 @@ group :development, :test, :production do
   gem 'closure-compiler'
   gem 'sass'
   gem 'uglifier'
+  gem 'unicorn-worker-killer'
   gem 'yui-compressor'
   # Note the default js compressor used by jammit, jsmin, is known to generate syntactically invalid js.
 end

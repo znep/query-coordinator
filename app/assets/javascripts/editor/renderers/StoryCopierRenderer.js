@@ -105,7 +105,7 @@ export default function StoryCopierRenderer(options) {
       'class': 'btn btn-primary',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_SUBMIT,
       'type': 'submit'
-    }).text(I18n.t('editor.make_a_copy.make_copy'));
+    }).text(I18n.t('editor.make_a_copy.copy'));
 
     var buttons = $('<div>', {
       'class': 'make-a-copy-button-group r-to-l'

@@ -142,8 +142,8 @@ en:
         section_title: 'View Story Stats'
     make_a_copy:
       cancel: 'Cancel'
+      copy: 'Copy'
       copy_warning: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
-      make_copy: 'Make Copy'
       title: 'Make a Copy of this Story'
     asset_selector:
       choose_provider_heading: 'Select Data or Media Provider'

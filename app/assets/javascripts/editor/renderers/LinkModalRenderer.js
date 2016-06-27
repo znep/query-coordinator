@@ -35,18 +35,23 @@ export default function LinkModalRenderer() {
   }
 
   function attachEvents() {
-    var wait = 750;
-
-    $text.on('input', _.debounce(update, wait));
-    $link.on('input', _.debounce(update, wait));
-    $openInNewWindow.on('change', _.debounce(update, wait));
+    $text.on('input', update);
+    $link.on('input', update);
+    $openInNewWindow.on('change', update);
     $testLink.on('click', testLink);
 
-    $modal.on('modal-dismissed', _.defer(function() {
-      dispatcher.dispatch({
-        action: Actions.LINK_MODAL_CLOSE
-      });
-    }));
+    $modal.on('modal-dismissed', function() {
+
+      setTimeout(
+        function() {
+
+          dispatcher.dispatch({
+            action: Actions.LINK_MODAL_CLOSE
+          });
+        },
+        0
+      );
+    });
 
     $modal.on('click', '[data-action]', function(event) {
       var action = event.target.getAttribute('data-action');

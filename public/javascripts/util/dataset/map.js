@@ -91,7 +91,7 @@ Dataset.map.convertToVersion2 = function(view, df)
 
     df.distinctLegend = true;
 
-    view.update({ displayFormat: df });
+    view.update({ displayFormat: df, flags: view.flags });
 };
 
 Dataset.map.backgroundLayers = [

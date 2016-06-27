@@ -2070,6 +2070,41 @@ en:
         thumbnail: Thumbnail
         title: Manage Home Page
         up: Up
+      index:
+        comment_moderation: Comment Moderation
+        comment_moderation_description: Review and moderate comments for datasets on your site
+        connectors: Connectors
+        connectors_description: Register a connector to bulk create and manage connected datasets.
+        dataset_routing_and_approval: Dataset Routing & Approval
+        dataset_routing_and_approval_description: Review datasets that are in the approval process, and manage the steps of the approval process
+        datasets: Asset Inventory
+        datasets_description: List the assets on this domain and configure the layout of the dataset page
+        dataslate_pages: DataSlate Pages
+        dataslate_pages_description: List and manage the DataSlate pages on this domain
+        federation: Federation
+        federation_description: Manage connections and data sharing with other sites via Open Data Federation Services
+        georegions: Spatial Lens
+        georegions_description: Configure custom boundaries that can be used to create Spatial Lens maps
+        home_page: Home Page
+        home_page_description: Configure what content is featured on the home page
+        internal: Internal
+        internal_description: Change and add modules, sites, and more
+        jobs: Jobs
+        jobs_description: See all current and recent long-running data processing jobs happening on your platform
+        metadata: Metadata
+        metadata_description: Manage the dataset metadata fields, including categories and custom fields
+        sdp_templates: SDP Templates
+        sdp_templates_description: Manage and customize the templates used for publishing your data via Socrata Data Players
+        site_chrome: Site Appearance
+        site_chrome_description: Configure the appearance of your Socrata site
+        site_analytics: Site Analytics
+        site_analytics_description: View sitewide statistics for datasets, views, visitors and more
+        stories: Stories
+        stories_description: Edit custom story themes
+        users: Users
+        users_description: Manage users on your site and what permissions and abilities they have
+        view_moderation: View Moderation
+        view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
         actions:
           geocoding: Geocoding

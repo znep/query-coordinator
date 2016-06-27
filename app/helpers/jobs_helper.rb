@@ -66,4 +66,10 @@ module JobsHelper
     end
   end
 
+  def display_restore_button(event)
+    FeatureFlags.derive(nil, request).restore_dataset_button &&
+    event.dataset.deleted && event.activity_type == 'delete' &&
+    (Date.today - event.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days
+  end
+
 end

@@ -96,35 +96,28 @@ function renderNumberCell(input, column) {
     groupCharacter: format.groupSeparator
   };
 
-  if (_isObePercentColumn(column) || _isNbePercentColumn(column)) {
-
-    // EN-3548 - OBE percent columns have a renderTypeName of 'percent'; the
-    // corresponding NBE version of the dataset will have a renderTypeName of
-    // 'number' but will have the `format.view` property set to
-    // 'percent_bar_and_text'. The `_isObePercentColumn()` test above will
-    // check the `renderTypeName`; the `_isNbePercentColumn()` test below will
-    // check the `format.view` property instead. We can't simply test for the
-    // `format.view` property and handle both cases because percentages are
-    // pre-multiplied in OBE but not in NBE (see below).
-    //
-    // EN-3548 - Currently, NBE datasets for which the origin OBE dataset had a
-    // 'percent' column have the corresponding number column divided by 100 in
-    // the NBE copy. Multiplying here by 100 brings the rendered values into
-    // parity. As I understand, Chi has a fix in mind that would stop DI2 from
-    // dividing percentage values by 100, which would then make this
-    // multiplication redundant and incorrect. When that happens, let's remove
-    // this.
-    //
-    // UPDATE: EN-3482 will remove the unnecessary division by 100 from Delta
-    // Importer 2, which will cause the original multiplication by 100 to be
-    // incorrect. Although at the time of writing that team is still figuring
-    // out how to schedule backporting this change to previously-migrated
-    // datasets, we have chosen to make the code do the right thing for the
-    // future case and let it remain broken for datasets exhibiting the divide-
-    // -by-100 behavior.
-    //
-    // Accordingly, both the conditional cases have been collapsed into the same
-    // test.
+  // EN-3548 - OBE percent columns have a renderTypeName of 'percent'; the
+  // corresponding NBE version of the dataset will have a renderTypeName of
+  // 'number' but will have the `format.view` property set to
+  // 'percent_bar_and_text'. The `_isObePercentColumn()` test above will check
+  // the `renderTypeName`; the `_isNbePercentColumn()` test below will check
+  // the `format.view` property instead. We can't simply test for the
+  // `format.view` property and handle both cases because percentages are
+  // pre-multiplied in OBE but not in NBE.
+  //
+  // NBE datasets for which the origin OBE dataset had a 'percent' column have
+  // the corresponding number column divided by 100 in the NBE copy.
+  // Multiplying here by 100 brings the rendered values into parity.
+  //
+  // NOTE: The order of the checks for OBE/NBE below (first NBE, then OBE) is
+  // important, since as of 6/27/2016 we force all queries through the NBE so
+  // that we must assume that the value has been divided by 100.
+  //
+  // The path for OBE percentages is being left in place in case a decision is
+  // made to intentionally support OBE queries as well.
+  if (_isNbePercentColumn(column)) {
+    return _renderPercentageNumber(amount * 100, format);
+  } else if (_isObePercentColumn(column)) {
     return _renderPercentageNumber(amount, format);
   } else if (format.mask) {
     return _renderMaskedNumber(amount, format);

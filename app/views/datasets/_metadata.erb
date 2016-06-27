@@ -19,10 +19,14 @@
             existing_value = existing_fields[field.name] || '' -%>
 
         <div class="line clearfix<%= ' customRequired' if required %>">
-          <label for="view_<%= md_field %>_custom_fields_<%= fieldset.name + "_" + field.name %>"
+        <%- 
+          form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]"
+          form_id = sanitize_to_id form_name
+        -%>
+          <label for="<%= form_id %>"
             <%= " class=required" if required %>>
             <%= field.name %></label>
-          <%- form_name = "view[#{md_field}][custom_fields][#{fieldset.name}][#{field.name}]" -%>
+          
           <%- if field['type'] && field['type'] == 'fixed' -%>
             <%= select_tag(form_name, options_for_select(['']+field['options'], existing_value),
                            :class => (required ? 'required' : '')) %>

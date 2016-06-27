@@ -186,13 +186,10 @@ $(document).ready(function(){
 
 <% end %>
 
-<div class="responsive-navbar">
-  <img src="../../images/evergreen.png" />
-  <span>City of Evergreen</span>
-  <div class="responsive-navbar-nav">
-    <button class="btn btn-default btn-inverse">Menu</button>
-  </div>
-</div>
+<%= partial 'proto_header', locals: {
+    link: "/prototypes/landingpage",
+    link_text: "Log Out"
+  } %>
 
 
 <div class="container main">

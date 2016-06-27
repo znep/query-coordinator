@@ -2,6 +2,7 @@ import React from 'react';
 import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';
 
+import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES } from '../constants';
 import CustomizationTabPane from '../CustomizationTabPane';
 
@@ -45,7 +46,7 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <div>
-        <label className="block-label" htmlFor="base-color">Base Color:</label>
+        <label className="block-label" htmlFor="base-color">{translate('panes.colors_and_style.fields.base_color.title')}:</label>
         <Styleguide.components.ColorPicker handleColorChange={this.props.onChangeBaseColor} value={baseColor} />
       </div>
     );
@@ -65,9 +66,9 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <div>
-        <label className="block-label" htmlFor="point-color">Point Color:</label>
+        <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}:</label>
         <Styleguide.components.ColorPicker handleColorChange={this.props.onChangePointColor} value={pointColor} />
-        <label className="block-label" htmlFor="point-opacity">Point Opacity:</label>
+        <label className="block-label" htmlFor="point-opacity">translate('panes.colors_and_style.fields.point_opacity.title')}:</label>
         <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={this.props.onChangePointOpacity} />
         {this.mapLayerControls()}
       </div>
@@ -90,7 +91,7 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <div>
-        <label className="block-label" htmlFor="color-scale">Color Scale:</label>
+        <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}:</label>
         <div className="color-scale-dropdown-container">
           <select id="color-scale" onChange={this.onChangeColorScale} defaultValue={defaultColorScaleKey}>
             {colorScaleOptions}
@@ -121,13 +122,13 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <div>
-        <label className="block-label" htmlFor="base-layer">Map Type:</label>
+        <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}:</label>
         <div className="base-layer-dropdown-container">
           <select id="base-layer" onChange={this.props.onChangeBaseLayer} defaultValue={defaultBaseLayer}>
             {baseLayerOptions}
           </select>
         </div>
-        <label className="block-label" htmlFor="base-layer-opacity">Map Layer Opacity:</label>
+        <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}:</label>
         <input {...baseLayerOpacityAttributes}/>
       </div>
     );

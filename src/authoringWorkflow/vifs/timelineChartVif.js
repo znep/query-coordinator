@@ -1,3 +1,5 @@
+import { translate } from '../I18n';
+
 export default {
   format: {
     type: 'visualization_interchange_format',
@@ -5,12 +7,7 @@ export default {
   },
   configuration: {
     xAxisScalingMode: 'fit',
-    localization: {
-      'NO_VALUE': 'No value',
-      'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-      'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-      'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-    }
+    localization: translate('visualizations.timelineChart')
   },
   description: '',
   series: [
@@ -36,8 +33,8 @@ export default {
       label: null,
       type: 'timelineChart',
       unit: {
-        one: 'Record',
-        other: 'Records'
+        one: translate('visualizations.common.units.one'),
+        other: translate('visualizations.common.units.other')
       }
     }
   ],

@@ -12,14 +12,14 @@ export var AxisAndScalePane = React.createClass({
   visualizationLabels() {
     return (
       <div>
-        <h5>Labels</h5>
-        <label className="block-label" htmlFor="label-top">Top</label>
+        <h5>{translate('panes.axis_and_scale.subheaders.labels')}</h5>
+        <label className="block-label" htmlFor="label-top">{translate('panes.axis_and_scale.fields.top.title')}</label>
         <input className="text-input" id="label-top" type="text" onChange={this.props.onChangeLabelTop} />
-        <label className="block-label" htmlFor="label-bottom">Bottom</label>
+        <label className="block-label" htmlFor="label-bottom">{translate('panes.axis_and_scale.fields.bottom.title')}</label>
         <input className="text-input" id="label-bottom" type="text" onChange={this.props.onChangeLabelBottom} />
-        <label className="block-label" htmlFor="label-left">Left</label>
+        <label className="block-label" htmlFor="label-left">{translate('panes.axis_and_scale.fields.left.title')}</label>
         <input className="text-input" id="label-left" type="text" onChange={this.props.onChangeLabelLeft} />
-        <label className="block-label" htmlFor="label-right">Right</label>
+        <label className="block-label" htmlFor="label-right">{translate('panes.axis_and_scale.fields.right.title')}</label>
         <input className="text-input" id="label-right" type="text" onChange={this.props.onChangeLabelRight} />
       </div>
     );

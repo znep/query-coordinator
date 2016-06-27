@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import { getTitle, getDescription } from '../selectors/vifAuthoring';
 import { setTitle, setDescription } from '../actions';
@@ -14,14 +15,14 @@ export var TitleAndDescriptionPane = React.createClass({
   },
 
   render() {
-    var title = getTitle(this.props.vifAuthoring) || null;
-    var description = getDescription(this.props.vifAuthoring) || null;
+    var title = getTitle(this.props.vifAuthoring);
+    var description = getDescription(this.props.vifAuthoring);
 
     return (
       <form>
-        <label className="block-label" htmlFor="title">Title:</label>
+        <label className="block-label" htmlFor="title">{translate('panes.title_and_description.fields.title.title')}:</label>
         <input id="title" className="text-input" type="text" onChange={this.props.onChangeTitle} defaultValue={title} />
-        <label className="block-label" htmlFor="description">Description:</label>
+        <label className="block-label" htmlFor="description">{translate('panes.title_and_description.fields.description.title')}:</label>
         <textarea id="description" className="text-input text-area" onChange={this.props.onChangeDescription} defaultValue={description} />
       </form>
     );

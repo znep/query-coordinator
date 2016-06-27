@@ -59,22 +59,75 @@ export const translations = {
       }
     },
     title_and_description: {
-      title: 'Title & Description'
+      title: 'Title & Description',
+      fields: {
+        title: {
+          title: 'Title'
+        },
+        description: {
+          title: 'Description'
+        }
+      }
     },
     colors_and_style: {
-      title: 'Colors & Style'
+      title: 'Colors & Style',
+      fields: {
+        base_color: {
+          title: 'Base Color'
+        },
+        point_color: {
+          title: 'Point Color'
+        },
+        point_opacity: {
+          title: 'Point Opacity'
+        },
+        color_scale: {
+          title: 'Color Scale'
+        },
+        base_layer: {
+          title: 'Map Type'
+        },
+        base_layer_opacity: {
+          title: 'Map Layer Opacity'
+        }
+      }
     },
     axis_and_scale: {
       title: 'Axis & Scale',
+      subheaders: {
+        labels: 'Labels'
+      },
       fields: {
+        top: {
+          title: 'Top'
+        },
+        bottom: {
+          title: 'Bottom'
+        },
+        left: {
+          title: 'Left'
+        },
+        right: {
+          title: 'Right'
+        },
         x_axis_scaling_mode: {
           title: 'Autofit Horizontally'
-        }
+        },
       }
     },
     legends_and_flyouts: {
       title: 'Legends & Flyouts',
+      subheaders: {
+        units: 'Units',
+        flyout_title: 'Flyout Title'
+      },
       fields: {
+        units_one: {
+          title: 'One'
+        },
+        units_other: {
+          title: 'Other'
+        },
         flyout_title: {
           no_value: 'No Flyout Title'
         }
@@ -94,17 +147,51 @@ export const translations = {
   },
 
   visualizations: {
+    common: {
+      units: {
+        one: 'Record',
+        other: 'Records'
+      }
+    },
     choroplethMap: {
-      title: 'Choropleth Map'
+      title: 'Choropleth Map',
+      FLYOUT_SELECTED_NOTICE: 'The page is currently filtered by this value, click to clear it',
+      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
+      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
+      NO_VALUE: '(No Value)',
+      CLEAR_FILTER_LABEL: 'Clear filter'
     },
     columnChart: {
-      title: 'Column Chart'
+      title: 'Column Chart',
+      NO_VALUE: 'No value',
+      NO_LABEL: '(No Label)',
+      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
+      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
+      FLYOUT_SELECTED_NOTICE: 'This column is selected'
     },
     featureMap: {
-      title: 'Feature Map'
+      title: 'Feature Map',
+      FLYOUT_FILTER_NOTICE: 'There are too many points at this location',
+      FLYOUT_FILTER_OR_ZOOM_NOTICE: 'Zoom in to see details',
+      FLYOUT_DENSE_DATA_NOTICE: 'Numerous',
+      FLYOUT_CLICK_TO_INSPECT_NOTICE: 'Click to see details',
+      FLYOUT_CLICK_TO_LOCATE_USER_TITLE: 'Click to show your position on the map',
+      FLYOUT_CLICK_TO_LOCATE_USER_NOTICE: 'You may have to give your browser permission to share your current location',
+      FLYOUT_LOCATING_USER_TITLE: 'Your position is being determined',
+      FLYOUT_LOCATE_USER_ERROR_TITLE: 'There was an error determining your location',
+      FLYOUT_LOCATE_USER_ERROR_NOTICE: 'Click to try again',
+      FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE: 'Panning and zooming has been disabled',
+      ROW_INSPECTOR_ROW_DATA_QUERY_FAILED: 'Detailed information about these points cannot be loaded at this time',
+      USER_CURRENT_POSITION: 'Your current location (estimated)',
+      latitude: 'Latitude',
+      longitude: 'Longitude'
     },
     timelineChart: {
-      title: 'Timeline Chart'
+      title: 'Timeline Chart',
+      NO_VALUE: 'No value',
+      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
+      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
+      FLYOUT_SELECTED_NOTICE: 'This column is selected'
     }
   }
 };

@@ -1,3 +1,5 @@
+import { translate } from '../I18n';
+
 export default {
   format: {
     type: 'visualization_interchange_format',
@@ -19,13 +21,7 @@ export default {
       zeroColor: '#ffffff',
       positiveColor: '#003747'
     },
-    localization: {
-      'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
-      'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-      'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-      'NO_VALUE': '(No Value)',
-      'CLEAR_FILTER_LABEL': 'Clear filter'
-    },
+    localization: translate('visualizations.choroplethMap'),
     mapMaxZoom: 18,
     mapMinZoom: 1,
     mapZoomAnimation: false,
@@ -67,8 +63,8 @@ export default {
       label: null,
       type: 'choroplethMap',
       unit: {
-        one: 'One',
-        other: 'Other'
+        one: translate('visualizations.common.units.one'),
+        other: translate('visualizations.common.units.other')
       }
     }
   ],

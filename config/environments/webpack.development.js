@@ -13,10 +13,6 @@ module.exports = {
     https: true
   },
   devtool: 'eval',
-  output: {
-    filename: '[name].[hash].js',
-    path: 'public/js'
-  },
   plugins: [
     new AssetsPlugin()
   ]

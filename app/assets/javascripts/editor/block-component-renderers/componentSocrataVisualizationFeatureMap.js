@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import I18n from '../I18n';
 import Constants from '../Constants';
+import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
@@ -104,6 +105,24 @@ function _updateVisualization($element, componentData) {
     vif.configuration.hover = true;
     vif.configuration.locateUser = true;
     vif.configuration.panAndZoom = true;
+
+    // EN-7517 - Temporarily override viz title and description with null
+    //
+    // The new viz implementations actually read from title and description and
+    // will display them, but the VisualizationAdd controller will set the
+    // title to the name of the column or something.
+    //
+    // Until users have a way to actually change the title and description, we
+    // want to make sure that we override them at runtime to null, which will
+    // prevent them from being displayed.
+    //
+    // TODO: Remove these overrides once the Authorship Experience is available
+    // to customers.
+    if (!Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
+
+      vif.title = null;
+      vif.description = null;
+    }
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');

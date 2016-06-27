@@ -13,6 +13,7 @@ import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP} from 'editor/stores/AssetSelectorStore';
 import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker';
+import StoryStoreMocker from '../mocks/StoryStoreMocker';
 
 describe('AssetSelectorRenderer', function() {
 
@@ -22,6 +23,7 @@ describe('AssetSelectorRenderer', function() {
   var testComponentIndex = 1;
   var assetSelectorStoreMock;
   var fileUploaderStoreMock;
+  var storyStoreMock;
   var server;
   var environment;
   var dispatcher;
@@ -49,15 +51,17 @@ describe('AssetSelectorRenderer', function() {
       }
     });
 
+    storyStoreMock = StoryStoreMocker.create({
+      properties: {
+        getBlockComponentAtIndex: _.constant({ type: 'image' })
+      }
+    });
+
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('Environment', environment);
     AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
-    AssetSelectorStoreAPI.__Rewire__('storyStore', {
-      getBlockComponentAtIndex: _.constant({
-        type: 'image'
-      })
-    });
+    AssetSelectorStoreAPI.__Rewire__('storyStore', storyStoreMock);
 
     assetSelectorStoreMock = new AssetSelectorStore();
 
@@ -193,9 +197,11 @@ describe('AssetSelectorRenderer', function() {
     });
 
     describe('event triggered in image description (alt attribute) field', function() {
-      var isUploadingFileStub;
+      var getComponentValueStub;
 
       beforeEach(function() {
+        getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
           provider: 'IMAGE'
@@ -206,12 +212,11 @@ describe('AssetSelectorRenderer', function() {
           step: WIZARD_STEP.IMAGE_PREVIEW
         });
 
-        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
         fileUploaderStoreMock._emitChange();
       });
 
       afterEach(function() {
-        isUploadingFileStub.reset();
+        getComponentValueStub.reset();
       });
 
       it('dispatches an `ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE` action on a input event from the image description input field', function(done) {
@@ -393,13 +398,16 @@ describe('AssetSelectorRenderer', function() {
         step: WIZARD_STEP.IMAGE_PREVIEW
       });
 
-      sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
+      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
       fileUploaderStoreMock._emitChange();
 
       assert.equal(container.find('.asset-selector-image-description-container').length, 1);
       assert.equal(container.find('.asset-selector-alt-text-input').length, 1);
       assert.equal(container.find('.asset-selector-image-description-label').length, 1);
       assert.equal(container.find('.asset-selector-image-alt-hint').length, 1);
+
+      getComponentValueStub.reset();
     });
 
     it('renders the "choose YouTube" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {
@@ -1001,8 +1009,7 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    describe('a `FILE_UPLOAD_DONE` action is fired', function() {
-      var isUploadingFileStub;
+    describe('during an image preview', function() {
       var imageUrl = 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif';
       var imgEl;
 
@@ -1013,10 +1020,19 @@ describe('AssetSelectorRenderer', function() {
 
             if (provider === 'IMAGE') {
               blockId = StandardMocks.imageBlockId;
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+                return {type: 'image', value: {url: imageUrl}};
+              });
             } else if (provider === 'HERO') {
               blockId = StandardMocks.heroBlockId;
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+                return {type: 'hero', value: {url: imageUrl}};
+              });
             } else if (provider === 'AUTHOR') {
               blockId = StandardMocks.authorBlockId;
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+                return {type: 'author', value: {image: {url: imageUrl}}};
+              });
             }
 
             dispatcher.dispatch({
@@ -1027,24 +1043,8 @@ describe('AssetSelectorRenderer', function() {
           });
 
           beforeEach(function() {
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-              provider: 'IMAGE'
-            });
-
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
-              step: WIZARD_STEP.IMAGE_PREVIEW
-            });
-
-            isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
             fileUploaderStoreMock._emitChange();
-
-            imgEl = container.find('.asset-selector-preview-image');
-          });
-
-          afterEach(function() {
-            isUploadingFileStub.reset();
+            imgEl = container.find('img');
           });
 
           it('renders a preview image from the payload URL', function() {
@@ -1057,16 +1057,11 @@ describe('AssetSelectorRenderer', function() {
             });
 
             it('has a button that goes back to the choose image upload step', function() {
-              assert.lengthOf(
-                container.find('.back-btn'),
-                1
-              );
+              assert.lengthOf(container.find('.image-crop-back-btn'), 1);
             });
 
             it('has an enabled insert button', function() {
-              assert.isFalse(
-                container.find('.btn-apply').prop('disabled')
-              );
+              assert.isFalse(container.find('.image-crop-upload-btn').prop('disabled'));
             });
           });
         });

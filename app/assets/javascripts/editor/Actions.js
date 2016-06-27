@@ -1,50 +1,50 @@
 export default {
-  // {object} data: Story data object.
+  // {Object} data: Story data Object.
   STORY_CREATE: 'STORY_CREATE',
 
-  // {string} storyUid
-  // {string} description
+  // {String} storyUid
+  // {String} description
   STORY_SET_DESCRIPTION: 'STORY_SET_DESCRIPTION',
 
-  // {string} storyUid
-  // {string} title
+  // {String} storyUid
+  // {String} title
   STORY_SET_TITLE: 'STORY_SET_TITLE',
 
-  // {string} storyUid
-  // {object} tile
+  // {String} storyUid
+  // {Object} tile
   STORY_SET_TILE_CONFIG: 'STORY_SET_TILE_CONFIG',
 
-  // {string} storyUid
-  // {string} theme
+  // {String} storyUid
+  // {String} theme
   STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 
-  // {object} publishedStory
+  // {Object} publishedStory
   STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
 
-  // {string} storyUid
-  // {string} blockId
+  // {String} storyUid
+  // {String} blockId
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
 
-  // {string} storyUid
-  // {string} blockId
+  // {String} storyUid
+  // {String} blockId
   STORY_MOVE_BLOCK_DOWN: 'STORY_MOVE_BLOCK_DOWN',
 
-  // {string} storyUid
-  // {string} blockId
+  // {String} storyUid
+  // {String} blockId
   STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
 
-  // {string} storyUid
-  // {string} blockId
+  // {String} storyUid
+  // {String} blockId
   STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY: 'STORY_TOGGLE_BLOCK_PRESENTATION_VISIBILITY',
 
-  // {string} storyUid
+  // {String} storyUid
   // {number} insertAt: Index in block list to insert block.
-  // {object} blockContent: Object describing components in block.
+  // {Object} blockContent: Object describing components in block.
   STORY_INSERT_BLOCK: 'STORY_INSERT_BLOCK',
 
-  // {string} blockId
-  // {number|string} componentIndex
-  // {string} type: New component type.
+  // {String} blockId
+  // {number|String} componentIndex
+  // {String} type: New component type.
   // {any} value: New component value.
   BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
 
@@ -52,22 +52,22 @@ export default {
    * Story save
    */
 
-  // {string} storyUid
+  // {String} storyUid
   STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
 
-  // {string} storyUid
-  // {string} digest
+  // {String} storyUid
+  // {String} digest
   STORY_SAVED: 'STORY_SAVED',
 
-  // {string} storyUid
-  // {string} message
+  // {String} storyUid
+  // {String} message
   STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
 
   /**
    * Story metadata and permissions save
    */
 
-  // {string} storyUid
+  // {String} storyUid
   STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
 
   // {boolean} isPublic
@@ -77,33 +77,33 @@ export default {
    * Drag drop and double-click-to-add-block actions
    */
 
-  // {string} storyUid
+  // {String} storyUid
   STORY_DRAG_LEAVE: 'STORY_DRAG_LEAVE',
 
-  // {string} storyUid
-  // {object} blockContent: Data of block being dragged over story.
-  // {object} pointer: Pointer event that triggered this action.
+  // {String} storyUid
+  // {Object} blockContent: Data of block being dragged over story.
+  // {Object} pointer: Pointer event that triggered this action.
   // {HTMLElement} storyElement: Root of story DOM being dragged over.
   STORY_DRAG_OVER: 'STORY_DRAG_OVER',
 
-  // {string} storyUid
+  // {String} storyUid
   STORY_DROP: 'STORY_DROP',
 
-  // {string} storyUid
-  // {string} blockId
+  // {String} storyUid
+  // {String} blockId
   BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK',
 
   /**
    * Rich text editor -> rich text editor toolbar communication
    */
 
-  // {array[string]} activeFormats: Currently available formatters.
+  // {array[String]} activeFormats: Currently available formatters.
   RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS: 'RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS',
 
-  // {string} activeColor
+  // {String} activeColor
   RTE_TOOLBAR_SET_ACTIVE_COLOR: 'RTE_TOOLBAR_SET_ACTIVE_COLOR',
 
-  // {string} customColor
+  // {String} customColor
   RTE_TOOLBAR_UPDATE_ACTIVE_CUSTOM_COLOR: 'RTE_TOOLBAR_UPDATE_ACTIVE_CUSTOM_COLOR',
 
   // No payload
@@ -113,10 +113,10 @@ export default {
    * History management
    */
 
-  // {string} storyUid
+  // {String} storyUid
   HISTORY_UNDO: 'HISTORY_UNDO',
 
-  // {string} storyUid
+  // {String} storyUid
   HISTORY_REDO: 'HISTORY_REDO',
 
   /**
@@ -126,17 +126,39 @@ export default {
   // No payload
   ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE: 'ASSET_SELECTOR_IMAGE_SEARCH_LOAD_MORE',
 
-  // {string} phrase
+  // {String} phrase
   ASSET_SELECTOR_IMAGE_SEARCH: 'ASSET_SELECTOR_IMAGE_SEARCH',
 
-  // {string} uri
+  // {String} uri
   ASSET_SELECTOR_IMAGE_SELECTED: 'ASSET_SELECTOR_IMAGE_SELECTED',
 
   // Have the user select an asset, then insert it into
   // the given block and component.
-  // {string} blockId
-  // {number} componentIndex
+  // {String} blockId
+  // {Number} componentIndex
   ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT: 'ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT',
+
+  // {Object} file
+  ASSET_SELECTOR_IMAGE_UPLOAD: 'ASSET_SELECTOR_IMAGE_UPLOAD',
+
+  // No payload
+  ASSET_SELECTOR_IMAGE_PREVIEW_BACK: 'ASSET_SELECTOR_IMAGE_PREVIEW_BACK',
+
+  // {Object} crop
+  // {Number} crop.x
+  // {Number} crop.y
+  // {Number} crop.width
+  // {Number} crop.height
+  ASSET_SELECTOR_IMAGE_CROP_SET: 'ASSET_SELECTOR_IMAGE_CROP_SET',
+
+  // No payload
+  ASSET_SELECTOR_IMAGE_CROP_COMMIT: 'ASSET_SELECTOR_IMAGE_CROP_COMMIT',
+
+  // No payload
+  ASSET_SELECTOR_IMAGE_CROP_START: 'ASSET_SELECTOR_IMAGE_CROP_START',
+
+  // No payload
+  ASSET_SELECTOR_IMAGE_CROP_RESET: 'ASSET_SELECTOR_IMAGE_CROP_RESET',
 
   /**
    * Image embed flow
@@ -149,8 +171,11 @@ export default {
   // No payload
   ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
 
-  // {string} altAttribute
+  // {String} altAttribute
   ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE: 'ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE',
+
+  // {String} id
+  URL_UPLOAD: 'URL_UPLOAD',
 
   // {String} id
   // {File, Blob} file
@@ -160,9 +185,9 @@ export default {
   FILE_CANCEL: 'FILE_CANCEL',
 
   // Edit an existing asset.
-  // {string} blockId
+  // {String} blockId
   // {number} componentIndex
-  // {string} provider. One of:
+  // {String} provider. One of:
   //  - 'SOCRATA_VISUALIZATION'
   //  - 'YOUTUBE'
   //  - 'IMAGE'
@@ -170,14 +195,14 @@ export default {
   ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED: 'ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED',
 
   // In the current workflow, jump (usually back) to a specific step.
-  // {string} Step. One of AssetSelectorStore.WIZARD_STEP.
+  // {String} Step. One of AssetSelectorStore.WIZARD_STEP.
   ASSET_SELECTOR_JUMP_TO_STEP: 'ASSET_SELECTOR_JUMP_TO_STEP',
 
   // No payload
   ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
 
   // The user chose an asset provider.
-  // {string} provider. One of:
+  // {String} provider. One of:
   //  - 'SOCRATA_VISUALIZATION'
   //  - 'YOUTUBE'
   //  - 'IMAGE'
@@ -185,7 +210,7 @@ export default {
   ASSET_SELECTOR_PROVIDER_CHOSEN: 'ASSET_SELECTOR_PROVIDER_CHOSEN',
 
   // The user chose a visualization option.
-  // {string} visualizationOption. One of:
+  // {String} visualizationOption. One of:
   // - 'INSERT_VISUALIZATION'
   // - 'CREATE_VISUALIZATION'
   ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN: 'ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN',
@@ -194,7 +219,7 @@ export default {
    * Story tile embed flow
    */
 
-  // {string} url
+  // {String} url
   ASSET_SELECTOR_UPDATE_STORY_URL: 'ASSET_SELECTOR_UPDATE_STORY_URL',
 
   // No payload
@@ -204,14 +229,14 @@ export default {
    * Goal tile embed flow
    */
 
-  // {string} url
+  // {String} url
   ASSET_SELECTOR_UPDATE_GOAL_URL: 'ASSET_SELECTOR_UPDATE_GOAL_URL',
 
   /**
    * YouTube embed flow
    */
 
-  // {string} url
+  // {String} url
   ASSET_SELECTOR_UPDATE_YOUTUBE_URL: 'ASSET_SELECTOR_UPDATE_YOUTUBE_URL',
 
   /**
@@ -221,20 +246,20 @@ export default {
   // No payload
   ASSET_SELECTOR_CHOOSE_VISUALIZATION: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION',
 
-  // {string} datasetUid
+  // {String} datasetUid
   // {boolean} isNewBackend
-  // {string} domain
+  // {String} domain
   ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET',
 
-  // {string} mapOrChartUid
-  // {string} domain
+  // {String} mapOrChartUid
+  // {String} domain
   ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART',
 
   // User chose to visualize the dataset as a chart.
   // No payload.
   ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP: 'ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP',
 
-  // {object} cardData
+  // {Object} cardData
   ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',
 
   /**
@@ -244,7 +269,7 @@ export default {
   // No payload
   ASSET_SELECTOR_CHOOSE_EMBED_CODE: 'ASSET_SELECTOR_CHOOSE_EMBED_CODE',
 
-  // {string} html
+  // {String} html
   ASSET_SELECTOR_UPDATE_EMBED_CODE: 'ASSET_SELECTOR_UPDATE_EMBED_CODE',
 
   // {number} percentLoaded
@@ -263,19 +288,19 @@ export default {
   // No Payload
   LINK_MODAL_CLOSE: 'LINK_MODAL_CLOSE',
 
-  // {string} editorId
-  // {string} text
-  // {string} url
+  // {String} editorId
+  // {String} text
+  // {String} url
   // {boolean} openInNewWindow
   LINK_MODAL_OPEN: 'LINK_MODAL_OPEN',
 
-  // {string} text
-  // {string} url
+  // {String} text
+  // {String} url
   // {boolean} openInNewWindow
   LINK_MODAL_UPDATE: 'LINK_MODAL_UPDATE',
 
-  // {string} text
-  // {string} url
+  // {String} text
+  // {String} url
   // {boolean} openInNewWindow
   LINK_MODAL_ACCEPT: 'LINK_MODAL_ACCEPT',
 
@@ -296,9 +321,9 @@ export default {
    * Link Action Tip
    */
 
-  // {string} text
-  // {string} link
-  // {string} editorId
+  // {String} text
+  // {String} link
+  // {String} editorId
   // {boolean} openInNewWindow
   // {ClientRect} boundingClientRect
   LINK_TIP_OPEN: 'LINK_TIP_OPEN',
@@ -321,28 +346,28 @@ export default {
   COLLABORATORS_OPEN: 'COLLABORATORS_OPEN',
 
   // {Object} collaborator
-  //   {string} email
-  //   {string} accessLevel
+  //   {String} email
+  //   {String} accessLevel
   COLLABORATORS_ADD: 'COLLABORATORS_ADD',
 
   // {Object} collaborator
-  //   {string} email
-  //   {string} accessLevel
+  //   {String} email
+  //   {String} accessLevel
   COLLABORATORS_REMOVE: 'COLLABORATORS_REMOVE',
 
   // {Object} collaborator
-  //   {string} email
-  //   {string} accessLevel
+  //   {String} email
+  //   {String} accessLevel
   COLLABORATORS_MARK_REMOVAL: 'COLLABORATORS_MARK_REMOVAL',
 
   // {Object} collaborator
-  //   {string} email
-  //   {string} accessLevel
+  //   {String} email
+  //   {String} accessLevel
   COLLABORATORS_UNMARK_REMOVAL: 'COLLABORATORS_UNMARK_REMOVAL',
 
   // {Object} collaborator
-  //   {string} email
-  //   {string} accessLevel
+  //   {String} email
+  //   {String} accessLevel
   COLLABORATORS_CHANGE: 'COLLABORATORS_CHANGE',
 
   // No payload

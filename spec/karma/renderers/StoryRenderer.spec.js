@@ -14,6 +14,7 @@ import StoryStore from 'editor/stores/StoryStore';
 import DropHintStore, {__RewireAPI__ as DropHintStoreAPI} from 'editor/stores/DropHintStore';
 import WindowSizeBreakpointStore from 'editor/stores/WindowSizeBreakpointStore';
 import StoryRenderer, {__RewireAPI__ as StoryRendererAPI} from 'editor/renderers/StoryRenderer';
+import StorytellerUtils from 'StorytellerUtils';
 import RichTextEditorToolbar from 'editor/RichTextEditorToolbar';
 import RichTextEditorManager from 'editor/RichTextEditorManager';
 
@@ -60,6 +61,9 @@ describe('StoryRenderer', function() {
     StoryRendererAPI.__Rewire__('richTextEditorManager', richTextEditorManager);
     StoryRendererAPI.__Rewire__('windowSizeBreakpointStore', windowSizeBreakpointStore);
     StoryRendererAPI.__Rewire__('I18n', I18nMocker);
+
+    sinon.stub(StorytellerUtils, 'fetchDomainStrings');
+    StoryRendererAPI.__Rewire__('StorytellerUtils', StorytellerUtils);
 
     componentHTMLAPI.__Rewire__('richTextEditorManager', richTextEditorManager);
 
@@ -114,6 +118,8 @@ describe('StoryRenderer', function() {
     StoryRendererAPI.__ResetDependency__('richTextEditorManager');
     StoryRendererAPI.__ResetDependency__('windowSizeBreakpointStore');
     StoryRendererAPI.__ResetDependency__('I18n');
+
+    StorytellerUtils.fetchDomainStrings.restore();
 
     if (storyRenderer) {
       storyRenderer.destroy();

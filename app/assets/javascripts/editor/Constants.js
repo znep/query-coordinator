@@ -24,7 +24,8 @@ export default {
   CHECK_DOCUMENT_PROCESSED_MAX_RETRY_SECONDS: 30,
   CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL: 1000,
   MAX_FILE_SIZE_BYTES: 10 * 1024 * 1024,  // 10 MB
-  VALID_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'text/html'],
+  VALID_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif'],
+  VALID_FILE_TYPES: ['text/html'],
   EMBEDDED_FRAGMENT_FILE_NAME: 'embedded_fragment.html',
 
   HISTORY_MAX_UNDO_COUNT: 99,
@@ -92,5 +93,12 @@ export default {
     { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 3, panel: false },
     { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 4, panel: false },
     { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 5, panel: false }
-  ]
+  ],
+
+  DEFAULT_CROP: {
+    x: 10,
+    y: 10,
+    width: 80,
+    height: 80
+  }
 };

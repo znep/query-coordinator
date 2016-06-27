@@ -1,5 +1,8 @@
 import $ from 'jQuery';
 import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactCrop from 'react-image-crop';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import '../components/Modal';
@@ -11,7 +14,7 @@ import StorytellerUtils from '../../StorytellerUtils';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { dispatcher } from '../Dispatcher';
 import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
-import { fileUploaderStore } from '../stores/FileUploaderStore';
+import { STATUS, fileUploaderStore } from '../stores/FileUploaderStore';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 export default function AssetSelectorRenderer(options) {
@@ -43,9 +46,17 @@ export default function AssetSelectorRenderer(options) {
   function _attachEvents() {
 
     _container.on('modal-dismissed', function() {
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CLOSE
-      });
+      if (assetSelectorStore.isUploadingFile() || assetSelectorStore.isCropping()) {
+        if (confirm(I18n.t('editor.asset_selector.image_preview.confirm_cancel'))) {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CLOSE
+          });
+        }
+      } else {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CLOSE
+        });
+      }
     });
 
     _container.on(
@@ -55,7 +66,7 @@ export default function AssetSelectorRenderer(options) {
         if (event.target.files && event.target.files.length > 0) {
           dispatcher.dispatch({
             id: _.uniqueId(),
-            action: Actions.FILE_UPLOAD,
+            action: Actions.ASSET_SELECTOR_IMAGE_UPLOAD,
             file: event.target.files[0]
           });
         }
@@ -259,8 +270,20 @@ export default function AssetSelectorRenderer(options) {
       });
     });
 
+    _container.on('click', '[data-action="ASSET_SELECTOR_IMAGE_CROP_START"]', function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_CROP_START
+      });
+    });
+
+    _container.on('click', '[data-action="ASSET_SELECTOR_IMAGE_CROP_RESET"]', function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_CROP_RESET
+      });
+    });
+
     _container.on('click', '.btn-apply', function() {
-      _saveAndClose();
+      saveAndClose();
     });
 
     _container.on('click', '.btn-close', function() {
@@ -270,7 +293,7 @@ export default function AssetSelectorRenderer(options) {
     });
   }
 
-  function _saveAndClose() {
+  function saveAndClose() {
     // TODO this sequence of steps should likely be its own single action,
     // which both AssetSelectorStore and StoryStore handle.
     dispatcher.dispatch({
@@ -297,6 +320,8 @@ export default function AssetSelectorRenderer(options) {
     // See if we need to render a new template, then render a media selector step if
     // necessary.
     if (step !== _lastRenderedStep) {
+      _lastRenderedStep = step;
+
       switch (step) {
 
         case WIZARD_STEP.SELECT_ASSET_PROVIDER:
@@ -437,7 +462,7 @@ export default function AssetSelectorRenderer(options) {
         break;
 
       case WIZARD_STEP.IMAGE_PREVIEW:
-        _renderImagePreviewData(componentValue);
+        renderImagePreviewData(componentValue);
         break;
 
       case WIZARD_STEP.IMAGE_UPLOAD_ERROR:
@@ -451,8 +476,6 @@ export default function AssetSelectorRenderer(options) {
       default:
         break;
     }
-
-    _lastRenderedStep = step;
   }
 
   function _renderChooseProvider() {
@@ -956,9 +979,8 @@ export default function AssetSelectorRenderer(options) {
 
         if (files[0]) {
           dispatcher.dispatch({
-            action: Actions.FILE_UPLOAD,
-            file: files[0],
-            id: _.uniqueId()
+            action: Actions.ASSET_SELECTOR_IMAGE_UPLOAD,
+            file: files[0]
           });
         }
       }).
@@ -1091,33 +1113,76 @@ export default function AssetSelectorRenderer(options) {
     }
   }
 
+  function uploadImage() {
+    dispatcher.dispatch({
+      action: Actions.FILE_UPLOAD,
+      file: assetSelectorStore.getPreviewImageData(),
+      id: _.uniqueId()
+    });
+  }
+
+  function cropImage() {
+    dispatcher.dispatch({
+      action: Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT
+    });
+  }
+
+  function uploadUrl() {
+    var type = assetSelectorStore.getComponentType();
+    var value = assetSelectorStore.getComponentValue();
+    var url = type === 'author' ? value.image.url : value.url;
+
+    dispatcher.dispatch({
+      action: Actions.URL_UPLOAD,
+      url: url,
+      id: _.uniqueId()
+    });
+  }
+
   function _renderImagePreviewTemplate() {
+    var errorMessaging = $(
+      '<div>',
+      { 'class': 'alert error asset-selector-error hidden' }
+    );
+
     var previewImageLabel = $(
       '<h2>',
       { 'class': 'asset-selector-preview-label' }
     ).text(I18n.t('editor.asset_selector.image_preview.preview_label'));
 
-    var previewImage = $(
-      '<img>',
-      { 'class': 'asset-selector-preview-image' }
-    );
-
     var previewSpinner = $(
       '<button>',
-      { 'class': 'btn-busy btn-transparent' }
+      { 'class': 'btn btn-busy btn-transparent asset-selector-preview-spinner hidden' }
     ).append($('<span>'));
 
-    previewImage.on('load', function() {
-      previewSpinner.hide();
-    });
+    var cropButton = $('<button>', {
+      'class': 'btn btn-xs btn-default btn-toggle image-crop-btn',
+      'data-action': 'ASSET_SELECTOR_IMAGE_CROP_START'
+    }).append([
+      $('<span>', {'class': 'icon-crop image-crop-btn-icon'}),
+      I18n.t('editor.asset_selector.image_preview.crop')
+    ]);
+
+    var resetImageButton = $('<button>', {
+      'class': 'btn btn-xs btn-default image-crop-reset-btn',
+      'data-action': 'ASSET_SELECTOR_IMAGE_CROP_RESET'
+    }).append([
+      $('<span>', {'class': 'icon-close-2 image-crop-reset-btn-icon'}),
+      I18n.t('editor.asset_selector.image_preview.reset_image')
+    ]);
+
+    var imageActionsContainer = $('<div>', {
+      'class': 'image-actions-container'
+    }).append([
+      cropButton,
+      resetImageButton,
+      previewSpinner
+    ]);
 
     var previewContainer = $(
       '<div>',
-      { 'class': 'asset-selector-preview-container' }
-    ).append([
-      previewImage,
-      previewSpinner
-    ]);
+      { 'class': 'asset-selector-preview-container asset-selector-image-preview-container' }
+    );
 
     var gettyImageInfo = $(
       '<div>',
@@ -1127,9 +1192,6 @@ export default function AssetSelectorRenderer(options) {
         $('<span>', {class: 'icon-info-inverse'})
       ),
       $('<div>', { class: 'alert-content' }).append(
-        $('<p>').append(
-          I18n.t('editor.asset_selector.image_upload.getty_image_info')
-        ),
         $('<p>').append(
           StorytellerUtils.format(I18n.t('editor.asset_selector.image_upload.getty_image_terms'), _insertButtonText())
         )
@@ -1168,14 +1230,60 @@ export default function AssetSelectorRenderer(options) {
       inputField
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD);
+    var backButton = $('<button>', {
+      'class': 'btn btn-default image-crop-back-btn'
+    }).text(I18n.t('editor.asset_selector.back_button_text'));
+
+    var insertButton = $('<button>', {
+      'class': 'btn btn-primary image-crop-upload-btn'
+    }).append(
+      $('<span>').text(_insertButtonText)
+    );
+
+    backButton.one('click', function() {
+      if (assetSelectorStore.isUploadingFile()) {
+        dispatcher.dispatch({
+          action: Actions.FILE_CANCEL,
+          id: assetSelectorStore.getFileId()
+        });
+      }
+
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_PREVIEW_BACK
+      });
+    });
+
+    insertButton.on('click', function() {
+      if (assetSelectorStore.isEditingExisting()) {
+        if (assetSelectorStore.hasPreviewImageData()) {
+          uploadImage();
+        } else if (assetSelectorStore.hasImageUrlChanged()) {
+          uploadUrl();
+        } else if (assetSelectorStore.hasCropChanged()) {
+          cropImage();
+        } else {
+          saveAndClose();
+        }
+      } else {
+        if (assetSelectorStore.hasPreviewImageData()) {
+          uploadImage();
+        } else if (assetSelectorStore.hasImageUrlChanged()) {
+          uploadUrl();
+        } else {
+          saveAndClose();
+        }
+      }
+    });
 
     var buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
+      $('<small>', { 'class': 'image-loading-status hidden' }).append(
+        I18n.t('editor.asset_selector.image_preview.loading.step_one')
+      ),
       backButton,
-      _renderModalInsertButton()
+      insertButton
     ]);
 
     var isImage = assetSelectorStore.getComponentType() === 'image';
@@ -1183,7 +1291,9 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-input-group' }
     ).append([
+      errorMessaging,
       previewImageLabel,
+      imageActionsContainer,
       previewContainer,
       gettyImageInfo,
       isImage ? descriptionLabel : null,
@@ -1193,17 +1303,7 @@ export default function AssetSelectorRenderer(options) {
     return [ content, buttonGroup ];
   }
 
-  // Some components types have the image properties under an `image` field,
-  // whereas the image component itself has the image properties at the root.
-  function _extractImageUrl(componentProperties) {
-    return _.get(
-      componentProperties,
-      'url',
-      _.get(componentProperties, 'image.url', null) // Try again, this time under image.url. Overall default is null.
-    );
-  }
-
-  function _extractImageAlt(componentProperties) {
+  function extractImageAlt(componentProperties) {
     return _.get(
       componentProperties,
       'alt',
@@ -1211,28 +1311,113 @@ export default function AssetSelectorRenderer(options) {
     );
   }
 
-  function _renderImagePreviewData(componentProperties) {
-    var imageUrl = _extractImageUrl(componentProperties);
-    var altAttribute = _extractImageAlt(componentProperties);
+  function grabOriginalImage(url) {
+    return assetSelectorStore.isEditingExisting() ?
+      (url || '').replace(/\/(xlarge|large|medium|small)\//, '/original/') :
+      url;
+  }
+
+  function onImageResize(crop) {
+    dispatcher.dispatch({
+      action: Actions.ASSET_SELECTOR_IMAGE_CROP_SET,
+      crop: crop
+    });
+  }
+
+  function renderImageCropper(source, crop) {
     var imageContainer = _container.find('.asset-selector-preview-container');
-    var imageElement = imageContainer.find('.asset-selector-preview-image');
-    var imageSrc = imageElement.attr('src');
-    var altInputField = _container.find('.asset-selector-alt-text-input');
-    var insertButton = _container.find('.btn-apply');
-    var gettyImageInfo = _container.find('.getty-image-info');
+    var previewSpinner = _container.find('.asset-selector-preview-spinner');
+
+    var imageCrop = React.createElement(ReactCrop, {
+      src: grabOriginalImage(source),
+      crop: crop,
+      onComplete: onImageResize,
+      onImageLoaded: function() {
+        previewSpinner.addClass('hidden');
+      },
+      keepSelection: true
+    });
+
+    ReactDOM.render(imageCrop, imageContainer[0]);
+  }
+
+  function renderImagePreviewFromUrl(url, crop) {
+    renderImageCropper(url, crop);
+  }
+
+  function renderImagePreviewData(componentProperties) {
+    var file = fileUploaderStore.fileById(assetSelectorStore.getFileId());
+    var crop = assetSelectorStore.getComponentType() === 'author' ?
+      componentProperties.image.crop :
+      componentProperties.crop;
+
+    var imageUrl = grabOriginalImage(assetSelectorStore.getPreviewImageUrl());
+    var existingImageUrl = _container.find('img').attr('src');
+    var altAttribute = extractImageAlt(componentProperties);
+
+    var isUploadingFile = assetSelectorStore.isUploadingFile();
+    var isCropping = assetSelectorStore.isCropping();
+    var isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
     var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
-    altInputField.attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
+    var hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
+    var doesNotHaveError = !_.has(componentProperties, 'reason');
+    var loadingMessage = '';
 
-    if (!_.isNull(imageUrl)) {
-      if (imageSrc !== imageUrl) {
-        imageElement.attr('src', imageUrl);
-        gettyImageInfo.toggleClass('hidden', isNotGettyImage);
+    if (file && file.status === STATUS.UPLOADING && file.progress < 1) {
+      loadingMessage = 'editor.asset_selector.image_preview.loading.step_one';
+    } else if (isCropping || file && file.status === STATUS.PROCESSING) {
+      if (isCropping) {
+        loadingMessage = 'editor.asset_selector.image_preview.loading.step_two_with_cropping';
+      } else {
+        loadingMessage = 'editor.asset_selector.image_preview.loading.step_two';
       }
+    }
 
-      insertButton.prop('disabled', false);
-    } else {
-      insertButton.prop('disabled', true);
+    _container.
+      find('.asset-selector-alt-text-input').
+      attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
+
+    _container.
+      find('.getty-image-info').
+      toggleClass('hidden', isNotGettyImage);
+
+    _container.
+      find('.image-crop-btn').
+      prop('disabled', isUploadingFile || isCropping).
+      toggleClass('active', isCroppingUiEnabled);
+
+    _container.
+      find('.image-crop-reset-btn').
+      prop('disabled', isUploadingFile || isCropping);
+
+    _container.
+      find('.asset-selector-preview-container').
+      toggleClass('disable-pointer-events', !isCroppingUiEnabled || isUploadingFile || isCropping);
+
+    _container.
+      find('.image-crop-upload-btn').
+      prop('disabled', isUploadingFile || isCropping).
+      toggleClass('btn-busy', isUploadingFile || isCropping);
+
+    _container.
+      find('.asset-selector-error').
+      text(_.get(componentProperties, 'reason', '')).
+      toggleClass('hidden', doesNotHaveError);
+
+    _container.
+      find('.image-loading-status').
+      toggleClass('hidden', !isUploadingFile && !isCropping).
+      html(loadingMessage && I18n.t(loadingMessage));
+
+    _container.
+      find('.asset-selector-preview-spinner').
+      toggleClass('hidden', existingImageUrl === imageUrl);
+
+    if (hasCompletedUpload || assetSelectorStore.isCropComplete()) {
+      saveAndClose();
+    } else if (imageUrl) {
+      renderImagePreviewFromUrl(imageUrl, crop);
     }
   }
 
@@ -1924,7 +2109,7 @@ export default function AssetSelectorRenderer(options) {
         });
 
         authoringWorkflow.destroy();
-        _saveAndClose();
+        saveAndClose();
       },
       onCancel: function() {
         dispatcher.dispatch({

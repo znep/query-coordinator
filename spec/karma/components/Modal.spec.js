@@ -102,7 +102,7 @@ describe('Modal jQuery plugin', function() {
 
     it('should emit modal-dismissed on click outside modal-dialog', function(done) {
       node.on('modal-dismissed', function() { done(); });
-      node.click();
+      node.find('.modal-overlay').click();
     });
 
     it('should emit modal-dismissed on X click', function(done) {

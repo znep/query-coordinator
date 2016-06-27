@@ -58,7 +58,9 @@ function _renderImage($element, componentData) {
     '<img>',
     {
       'src': null,
-      'data-document-id': null
+      'data-src': null,
+      'data-document-id': null,
+      'data-crop': null
     }
   );
 
@@ -68,8 +70,10 @@ function _renderImage($element, componentData) {
 }
 
 function _updateImageAttributes($element, componentData) {
+  var src;
   var imgSrc;
   var documentId;
+  var crop;
   var documentIdAsStringOrNull;
   var altAttribute;
   var $imgElement = $element.find('img');
@@ -78,19 +82,25 @@ function _updateImageAttributes($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData.value, 'url');
   StorytellerUtils.assertHasProperty(componentData.value, 'documentId');
 
+  crop = _.get(componentData, 'value.crop', {});
   imgSrc = componentData.value.url;
   documentId = componentData.value.documentId; // May be null or undefined.
   documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
   altAttribute = componentData.value.alt;
 
   if (
-    $imgElement.attr('src') !== imgSrc ||
-    $imgElement[0].getAttribute('data-document-id') !== documentIdAsStringOrNull
+    $imgElement[0].getAttribute('data-src') !== imgSrc ||
+    $imgElement[0].getAttribute('data-document-id') !== documentIdAsStringOrNull ||
+    !_.isEqual(JSON.parse($imgElement[0].getAttribute('data-crop')), crop)
   ) {
     _informHeightChanges($imgElement);
+    src = _appendSaltToSource(imgSrc);
 
-    $imgElement.attr('src', imgSrc);
-    $imgElement.attr('data-document-id', documentId);
+    $imgElement.
+      attr('src', src).
+      attr('data-src', imgSrc).
+      attr('data-document-id', documentId).
+      attr('data-crop', JSON.stringify(crop));
   }
 
   $imgElement.attr('alt', _.isEmpty(altAttribute) ? null : altAttribute);
@@ -109,3 +119,10 @@ function _informHeightChanges($image) {
   });
 }
 
+// Utilize this to force an <img> src refresh with the same URL.
+function _appendSaltToSource(src) {
+  var now = Date.now();
+  return _.includes(src, '?') ?
+    src + '&salt=' + now :
+    src + '?' + now;
+}

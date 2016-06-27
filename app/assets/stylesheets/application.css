@@ -12,6 +12,7 @@
  *
  *= require dist/css/styleguide
  *= require leaflet
+ *= require ReactCrop
  *= require socrata-visualizations
  *= require_tree ./lib
  *= require_tree ./edit

@@ -1,5 +1,4 @@
 import $ from 'jQuery';
-import _ from 'lodash';
 
 import I18n from '../I18n';
 import Actions from '../Actions';

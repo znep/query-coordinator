@@ -5,10 +5,6 @@ module.exports = {
   entry: {
     'test': './spec/scripts'
   },
-  output: {
-    filename: '[name].[hash].js',
-    path: 'public/js'
-  },
   resolve: {
     root: [
       path.resolve(__dirname, '../../app/assets/javascripts')

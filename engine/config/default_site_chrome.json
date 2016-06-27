@@ -43,9 +43,9 @@
                 },
                 "general": {
                   "default_locale": "en",
-                  "window_or_tab_icon": "",
+                  "window_icon": "",
                   "link_text_color": "blue",
-                  "window_or_tab_title_display": null,
+                  "window_title_display": null,
                   "social_shares": [
                     {
                       "type": "facebook",
@@ -167,10 +167,11 @@
                   }
                 },
                 "general": {
+                  "template": null,
                   "default_locale": "en",
-                  "window_or_tab_icon": "",
+                  "window_icon": "",
                   "link_text_color": "blue",
-                  "window_or_tab_title_display": null,
+                  "window_title_display": null,
                   "social_shares": [
                     {
                       "type": "facebook",

@@ -1,14 +1,16 @@
-<% if logged_in? %>
-  <%- profile_link = capture do %>
-    <%= link_to('View Profile', '/profile', :class => 'profile-link') %>
-  <%- end %>
-  <%- admin_link = capture do %>
-    <%= link_to('Administration', '/admin', :class => 'admin-link') %>
-  <%- end if current_user_is_admin? %>
-  <%- logout_link = capture do %>
-    <%= link_to('Sign Out', '/logout', :class => 'logout-link') %>
-  <%- end %>
-  <%= dropdown("Hi #{username}!", [ profile_link, admin_link, logout_link ]) %>
-<% else %>
-  <%= link_to('Sign In', '/login', :class => "sign-in-toggle chrome-btn") %>
-<% end %>
+<div class="user-actions">
+  <% if logged_in? %>
+    <%- profile_link = capture do %>
+      <%= link_to('View Profile', '/profile', :class => 'profile-link') %>
+    <%- end %>
+    <%- admin_link = capture do %>
+      <%= link_to('Administration', '/admin', :class => 'admin-link') %>
+    <%- end if current_user_is_admin? %>
+    <%- logout_link = capture do %>
+      <%= link_to('Sign Out', '/logout', :class => 'logout-link') %>
+    <%- end %>
+    <%= dropdown("Hi #{username}!", [ profile_link, admin_link, logout_link ]) %>
+  <% else %>
+    <%= link_to('Sign In', '/login', :class => "sign-in-toggle chrome-btn") %>
+  <% end %>
+</div>

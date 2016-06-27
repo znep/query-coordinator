@@ -186,4 +186,20 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     # TODO - tests for different locales
   end
+
+  describe '#current_template' do
+    it 'returns "default" by default' do
+      expect(helper.current_template).to eq('default')
+    end
+
+    it 'returns "default" if an invalid string is set in the url param' do
+      helper.request.query_parameters[:site_chrome_template] = 'asdf'
+      expect(helper.current_template).to eq('default')
+    end
+
+    it 'returns "rally" if it is set in the url param, regardless of type' do
+      helper.request.query_parameters[:site_chrome_template] = 'RaLLy'
+      expect(helper.current_template).to eq('rally')
+    end
+  end
 end

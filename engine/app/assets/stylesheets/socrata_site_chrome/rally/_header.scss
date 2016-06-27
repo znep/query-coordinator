@@ -1,0 +1,121 @@
+header#chrome-header[template="rally"] {
+  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
+
+  .banner {
+    line-height: 60px;
+    font-size: 18px;
+    min-height: 160px;
+
+    > .rally-top {
+      padding: 1rem;
+      overflow: hidden;
+
+      > a.logo {
+        float: left;
+        text-decoration: none;
+
+        > img {
+          height: $header-top-content-height;
+          margin-right: 1rem;
+          vertical-align: middle;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: 28px;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    > .rally-bottom {
+      color: $header_fg_color;
+      background-color: $header_bg_color;
+      height: 63px;
+      padding: 0 1rem;
+
+      > nav {
+        font-size: 15px;
+        font-weight: 300;
+        height: 100%;
+
+        &.desktop {
+          a.nav-link {
+            height: 100%;
+            display: inline-block;
+            color: $header_fg_color;
+            text-decoration: none;
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+
+          .navbar-left {
+            height: 100%;
+            float: left;
+
+            .nav-links {
+              height: 100%;
+
+              a.nav-link {
+                padding: 0 $text_padding;
+                &:hover, &:focus, &:active {
+                  text-decoration: none;
+                  background-color: rgba(255, 255, 255, 0.3);
+                }
+              }
+            }
+          }
+
+          .navbar-right {
+            height: 100%;
+            float: right;
+
+            .social-links {
+              float: left;
+            }
+            a.nav-link {
+              padding: 0 5px;
+            }
+            a.sign-in-toggle {
+              font-size: 12px;
+              margin-left: $text_padding;
+            }
+            a.profile-link, a.admin-link, a.logout-link {
+              padding: 0 $text_padding;
+              // color: $header_fg_color;
+              text-decoration: none;
+              &:hover, &:focus, &:active {
+                text-decoration: underline;
+              }
+            }
+
+            span.divider {
+              display: inline-block;
+              vertical-align: middle;
+              margin: 0 $text_padding;
+              padding: 14px 0;
+              border-left: 1px solid rgba(255, 255, 255, 0.3);
+            }
+          }
+        }
+
+        &.mobile {
+          float: right;
+          .menu-toggle {
+            font-size: 12px;
+          }
+        }
+
+        @include desktop {
+          &.desktop { display: block; }
+          &.mobile { display: none; }
+        }
+        @include mobile-med {
+          &.desktop { display: none; }
+          &.mobile { display: block; }
+        }
+      }
+    }
+  }
+}

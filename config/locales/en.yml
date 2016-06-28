@@ -2453,6 +2453,10 @@ en:
           general:
             title: General Settings
             fields:
+              template:
+                title: Template
+                description: Adjust the appearance of the header/footer by changing the template. Supported templates are "default" and "rally".
+                placeholder: Rally
               window_title_display:
                 title: Window or Tab Title Display
                 description: Name displayed in the window or tab title.

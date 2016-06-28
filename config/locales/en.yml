@@ -2471,6 +2471,7 @@ en:
                 title: Google Analytics Token
                 description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
                 placeholder: UA-12345678-1
+                error: 'Token should match the format: UA-XXXXX-XXXX'
           header:
             title: Header Bar
             fields:

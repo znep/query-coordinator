@@ -19,6 +19,7 @@ javascripts:
     - public/javascripts/plugins/jquery.tache.js
     - public/javascripts/plugins/jquery.uniform.js
     - public/javascripts/plugins/jquery.validate.js
+    - public/javascripts/plugins/jquery.validate.additional-methods.js
     - public/javascripts/plugins/pure.js
     - public/javascripts/plugins/jquery-ui-1.8.23.custom.js
     - public/javascripts/plugins/lodash.js

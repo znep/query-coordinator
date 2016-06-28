@@ -28,7 +28,7 @@ RSpec.describe Aws::DatabaseMaintainer do
 
   after do
     # We set this environment in one of the tests. Make sure we reset it
-    ENV['RAILS_ENV'] = 'test'
+    Rails.env = 'test'
   end
 
   describe '#new' do

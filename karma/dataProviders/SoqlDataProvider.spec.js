@@ -143,14 +143,6 @@ describe('SoqlDataProvider', function() {
     server.respond([SUCCESS_STATUS, { 'Content-Type': 'application/json' }, payload]);
   }
 
-  beforeEach(function() {
-    SoqlDataProvider.__set__({
-      MetadataProvider: function() {
-        this.getDatasetMetadata = _.constant(Promise.resolve(SAMPLE_DATASET_METADATA));
-      }
-    });
-  });
-
   describe('constructor', function() {
 
     describe('when called with invalid configuration options', function() {

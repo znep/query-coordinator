@@ -65,7 +65,12 @@ export const translations = {
       title: 'Colors & Style'
     },
     axis_and_scale: {
-      title: 'Axis & Scale'
+      title: 'Axis & Scale',
+      fields: {
+        x_axis_scaling_mode: {
+          title: 'Autofit Horizontally'
+        }
+      }
     },
     legends_and_flyouts: {
       title: 'Legends & Flyouts',
@@ -81,6 +86,11 @@ export const translations = {
     tabs: {
       visualization: 'Visualization'
     }
+  },
+
+  scaling_modes: {
+    pan: 'Pan',
+    fit: 'Fit'
   },
 
   visualizations: {

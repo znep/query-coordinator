@@ -15,6 +15,7 @@ import {
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
+  SET_X_AXIS_SCALING_MODE,
   SET_UNITS_ONE,
   SET_UNITS_OTHER
 } from '../../actions';
@@ -74,6 +75,10 @@ export default function columnChart(state, action) {
 
     case SET_LABEL_RIGHT:
       setValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
+      break;
+
+    case SET_X_AXIS_SCALING_MODE:
+      setValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
 
     case SET_UNITS_ONE:

@@ -2,7 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { translate } from './I18n';
-import { getCurrentVif, isInsertableVisualization } from './selectors/vifAuthoring';
+import {
+  getCurrentVif,
+  getXAxisScalingMode,
+  isInsertableVisualization,
+  isColumnChart,
+  isTimelineChart
+} from './selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
@@ -12,6 +18,8 @@ import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
+
+import { setXAxisScalingMode } from './actions';
 
 export var AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -77,9 +85,34 @@ export var AuthoringWorkflow = React.createClass({
     }
   },
 
+  scalingMode() {
+    var checkboxAttributes = {
+      type: 'checkbox',
+      onChange: this.props.onChangeXAxisScalingMode,
+      checked: getXAxisScalingMode(this.props.vifAuthoring) === 'fit',
+      id: 'x-axis-scaling-mode'
+    };
+
+    return (
+      <form className="x-axis-scaling-mode-container">
+        <div className="checkbox">
+          <input {...checkboxAttributes} />
+          <label htmlFor="x-axis-scaling-mode">
+            <span className="fake-checkbox">
+              <span className="icon-checkmark3"></span>
+            </span>
+            {translate('panes.axis_and_scale.fields.x_axis_scaling_mode.title')}
+          </label>
+        </div>
+      </form>
+    );
+  },
+
   render() {
     var vifAuthoring = this.props.vifAuthoring;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
+    var isColumnOrTimeline = isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring);
+    var scalingMode = isColumnOrTimeline ? this.scalingMode() : null;
 
     return (
       <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>
@@ -97,7 +130,10 @@ export var AuthoringWorkflow = React.createClass({
 
             <div className="authoring-controls">
               <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-              <Visualization />
+              <div className="authoring-preview-container">
+                <Visualization />
+                {scalingMode}
+              </div>
             </div>
           </section>
 
@@ -120,8 +156,13 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch) {
+  return {
+    onChangeXAxisScalingMode(event) {
+      var xAxisScalingMode = event.target.checked;
+      dispatch(setXAxisScalingMode(xAxisScalingMode));
+    }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflow);

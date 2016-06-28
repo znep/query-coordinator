@@ -13,51 +13,55 @@ import _ from 'lodash';
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
     const { navigation, metadata, datasetId } = getState();
-    dispatch(goToPage('Working'));
-    saveMetadataToViewsApi(datasetId, metadata).
-      then(() => {
-        console.log('then');
-        console.log(metadata);
-        updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
-          then(() => {
-            console.log('then2');
-            const onImportError = () => {
-              dispatch(importError());
-              dispatch(goToPage('Metadata'));
-            };
-            dispatch(Metadata.metadataSaveComplete());
-            switch (navigation.operation) {
-              case 'UploadData':
-                dispatch(importData(onImportError));
-                break;
-              case 'UploadGeospatial':
-                dispatch(importGeospatial(onImportError));
-                break;
-              case 'CreateFromScratch':
-                dispatch(goToPage('Finish'));
-                break;
-              default:
-                console.error('Unkown operation!', navigation.operation);
-            }
-          }).
-          catch((err) => {
-            dispatch(Metadata.metadataSaveError(err));
-          });
+    saveMetadataToViewsApi(datasetId, metadata, dispatch).
+      then((result) => {
+        console.log(result);
+        if (result.statusText === 'Bad Request') {
+          dispatch(Metadata.metadataSaveError(result.statusText));
+        } else {
+          dispatch(goToPage('Working'));
+          updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
+            then(() => {
+              const onImportError = () => {
+                dispatch(importError());
+                dispatch(goToPage('Metadata'));
+              };
+              dispatch(Metadata.metadataSaveComplete());
+              switch (navigation.operation) {
+                case 'UploadData':
+                  dispatch(importData(onImportError));
+                  break;
+                case 'UploadGeospatial':
+                  dispatch(importGeospatial(onImportError));
+                  break;
+                case 'CreateFromScratch':
+                  dispatch(goToPage('Finish'));
+                  break;
+                default:
+                  console.error('Unkown operation!', navigation.operation);
+              }
+            }).
+            catch((err) => {
+              dispatch(Metadata.metadataSaveError(err));
+            });
+        }
       }).
       catch((err) => {
-        console.log(err);
         dispatch(Metadata.metadataSaveError(err));
       });
   };
 }
 
-function saveMetadataToViewsApi(datasetId, metadata) {
+function saveMetadataToViewsApi(datasetId, metadata, dispatch) {
   return fetch(`/api/views/${datasetId}`, {
     method: 'PUT',
     credentials: 'same-origin',
     body: JSON.stringify(modelToViewParam(metadata))
-  }).then((result) => {
-    console.log(result);
+  // }).then((result) => {
+  //   console.log(result);
+  //   if (result.statusText === 'Bad Request') {
+  //     dispatch(Metadata.metadataSaveError(result.statusText));
+  //   }
   });
 }
 

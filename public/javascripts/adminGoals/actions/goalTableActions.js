@@ -67,23 +67,24 @@ export function tableLoadPage() {
 
     function sortGoals(goals) {
       let sortedArray;
+      let sortColumn = state.getIn(['goalTableData', 'tableOrder', 'column']);
+      let sortDirection = state.getIn(['goalTableData', 'tableOrder', 'direction']);
 
-      switch (state.getIn(['goalTableData', 'tableOrder', 'column'])) {
+      switch (sortColumn) {
         case 'title':
-          sortedArray = _.sortByOrder(goals, 'name', state.getIn(['goalTableData', 'tableOrder', 'direction']));
+          sortedArray = _.sortByOrder(goals, 'name', sortDirection);
           break;
         case 'owner':
-          sortedArray = _.sortByOrder(goals, 'created_by.displayName',
-            state.getIn(['goalTableData', 'tableOrder', 'direction']));
+          sortedArray = _.sortByOrder(goals, 'created_by.displayName', sortDirection);
           break;
         case 'updated_at':
-          sortedArray = _.sortByOrder(goals, 'updated_at', state.getIn(['goalTableData', 'tableOrder', 'direction']));
+          sortedArray = _.sortByOrder(goals, 'updated_at', sortDirection);
           break;
         case 'visibility':
-          sortedArray = _.sortByOrder(goals, 'is_public', state.getIn(['goalTableData', 'tableOrder', 'direction']));
+          sortedArray = _.sortByOrder(goals, 'is_public', sortDirection);
           break;
         case 'dashboard':
-          sortedArray = _.sortByOrder(goals, 'dashboardName', state.getIn(['goalTableData', 'tableOrder', 'direction']));
+          sortedArray = _.sortByOrder(goals, 'dashboardName', sortDirection);
           break;
         case 'goal_status':
         default:

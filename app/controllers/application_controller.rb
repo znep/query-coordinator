@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::UnknownFormat, with: :render_404
 
   # Expose helper_methods for use in all views
-  helper_method :current_user, :current_user_story_authorization
+  helper_method :current_user, :current_user_story_authorization, :downtimes
 
   prepend_before_filter :set_story_uid
   before_filter :handle_authorization
@@ -31,6 +31,10 @@ class ApplicationController < ActionController::Base
 
   def current_user_story_authorization
     @current_user_story_authorization = CoreServer.current_user_story_authorization
+  end
+
+  def downtimes
+    @downtimes ||= StorytellerService.downtimes
   end
 
   def ssl_disabled?

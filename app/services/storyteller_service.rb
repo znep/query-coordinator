@@ -7,12 +7,17 @@
 class StorytellerService
 
   CONSUL_KEYS = {
-    :version => 'storyteller/active_version'
+    version: 'storyteller/active_version',
+    downtime: 'config/frontend/downtime'
   }
 
   def self.active?
     active_version = consul_reported_version
     active_version.nil? || active_version == Rails.application.config.version
+  end
+
+  def self.downtimes
+    consul_reported_downtimes || []
   end
 
   private
@@ -30,5 +35,23 @@ class StorytellerService
     end
 
     active_version || Rails.cache.read("consul:#{CONSUL_KEYS[:version]}")
+  end
+
+  def self.consul_reported_downtimes
+    downtimes = nil
+
+    begin
+      # within a given environment, downtimes may be specified as a hash or array of hashes
+      downtime_config = Diplomat::Kv.get(CONSUL_KEYS[:downtime])
+      downtimes = [YAML.load(downtime_config).try(:[], Rails.application.config.downtime_config_env)].flatten.compact
+    rescue Psych::SyntaxError => error
+      Rails.logger.warn("Invalid YAML in Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
+    rescue Diplomat::KeyNotFound => error
+      Rails.logger.warn("Failed to find Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
+    rescue Faraday::ConnectionFailed => error
+      Rails.logger.warn("Unable to connect to Consul: #{error.message}")
+    end
+
+    downtimes
   end
 end

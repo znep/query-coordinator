@@ -153,6 +153,10 @@ export var SchemaPreview = React.createClass({
     var toggles;
     var tableRows;
 
+    if (_.isEmpty(view.columns) || view.rowCount === 0) {
+      return null;
+    }
+
     if (showAsLayer) {
       title = (
         <h3 className="landing-page-section-header">

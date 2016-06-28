@@ -394,6 +394,14 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
     return style;
   }
 
+  function adjustHeight(iframeDocument) {
+    _updateContentHeight();
+    _broadcastHeightChange();
+
+    $(iframeDocument.body).
+      css('opacity', 1);
+  }
+
   /**
    * Loads (default & custom) themes into the given document (from an iframe).
    * The theme css is sourced from the styles already present on the
@@ -402,18 +410,22 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
    * Please note that this function requires that the document is
    * loaded (i.e., wait for its `load` event).
    */
-  function _addThemeStyles(document) {
+  function _addThemeStyles(iframeDocument) {
     // Prevent flash of unstyled text by setting opacity to zero
     // and then overriding it in the stylesheet.
-    $(document.body).
+    $(iframeDocument.body).
       css('opacity', 0).
       addClass('typeset squire-formatted');
 
     var defaultThemesStyleElement = makeStyleElement(_defaultThemesCss);
     var customThemesStyleElement = makeStyleElement(_customThemesCss);
 
-    document.head.appendChild(defaultThemesStyleElement);
-    document.head.appendChild(customThemesStyleElement);
+    defaultThemesStyleElement.onload = adjustHeight.bind(null, iframeDocument);
+
+    $(iframeDocument.head).append([
+      defaultThemesStyleElement,
+      customThemesStyleElement
+    ]);
 
     // It takes the browser a few extra frames to render the styles that are
     // applied above with appendChild. If we update the content height
@@ -421,11 +433,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
     // height (an unstyled height, if you will). To avoid this, we wait for
     // a seemingly arbitrary amount of time (10ms has been determined
     // sufficient through casual testing) before recalculating the height.
-    setTimeout(function() {
-      _updateContentHeight();
-      _broadcastHeightChange();
-      $(document.body).css('opacity', '');
-    }, 10);
+    setTimeout(adjustHeight.bind(null, iframeDocument), 10);
   }
 
   /**

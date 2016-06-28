@@ -59,6 +59,17 @@ class DatasetsController < ApplicationController
       end
     end
 
+    # TODO: Remove this after DSLP launch (note that this is not being localized
+    # intentionally and we plan on removing it post-launch)
+    if display_dataset_landing_page_notice?
+      flash[:notice] = %{
+        Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
+        <a href="?enable_dataset_landing_page=true&default_to_dataset_landing_page=true">
+        Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>
+        visit the support portal</a> for additional details.
+      }.html_safe
+    end
+
     if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
@@ -1167,6 +1178,12 @@ class DatasetsController < ApplicationController
   def dataset_landing_page_is_default?
     dataset_landing_page_enabled? &&
       FeatureFlags.derive(nil, request).default_to_dataset_landing_page == true
+  end
+
+  def display_dataset_landing_page_notice?
+    FeatureFlags.derive(nil, request).display_dataset_landing_page_notice == true &&
+      view_has_landing_page? &&
+      current_user.try(:roleName) == 'administrator'
   end
 
   def view_has_landing_page?

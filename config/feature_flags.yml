@@ -58,6 +58,9 @@ default_to_dataset_landing_page:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
+display_dataset_landing_page_notice:
+  description: Display the notice informing site admins that the page they are seeing will soon be replaced by the dataset landing page.
+  defaultValue: false
 enable_data_lens_aggregation_tour:
   description: Show the tour of the card-level aggregation.
   defaultValue: false

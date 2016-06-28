@@ -82,15 +82,21 @@ jQuery.metrics = {
         $.metrics.increment(entity, metric, 1);
     },
 
-    flush_metrics: function()
+    /**
+     * async: Whether or not to send the metrics asynchronously. If null or undefined, assumed to be true.
+     */
+    flush_metrics: function(async)
     {
         if ($.metrics.queue.length === 0) { return; }
+
+        if(async === null || async === undefined) { async = true; }
 
         var metrics_bag = $.metrics.queue;
         $.metrics.queue = [];
         $.socrataServer.makeRequest({
         url: "/analytics/add",
         type: "POST",
+        async: async,
         data: JSON.stringify({'metrics': metrics_bag}),
         anonymous: true,
         isSODA: true,
@@ -258,4 +264,4 @@ jQuery.metrics = {
 };
 
 $(window).load(function() { _.defer($.metrics.collect_page_timings); });
-$(window).unload(function() { $.metrics.flush_metrics(); });
+$(window).unload(function() { $.metrics.flush_metrics(false); });

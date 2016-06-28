@@ -1958,15 +1958,20 @@ export default function AssetSelectorRenderer(options) {
         // On first load, prepopulate the textarea with whatever
         // HTML previously entered.
         if (textareaIsUnedited()) {
+
+          // from_xhr walks around browser caching, which was pulling an earlier
+          // response from the <iframe> we load with the HTML fragment. The difference
+          // in headers from the requests causes this XHR to fail. Adding a query param
+          // creates a distinct request that can't be cached by association.
+          htmlFragmentUrl += '&from_xhr=true';
+
           $.get(htmlFragmentUrl).then(function(htmlFragment) {
-            // DO NOT PUT THIS DIRECTLY INTO THE DOM!
-            // htmlFragment is _arbitrary_ html - we display it
-            // only in other-domain iframes for security.
-            // Here, we're only putting the content into a textarea.
             if (textareaIsUnedited()) {
+              // This is customer data. Don't put it in the DOM.
+              // Here we show it as plain text.
               textareaElement.val(htmlFragment);
             }
-          });
+          }, exceptionNotifier.error);
         }
       }
 

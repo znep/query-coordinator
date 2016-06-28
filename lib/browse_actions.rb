@@ -5,6 +5,7 @@ require 'set'
 module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
+  include CommonSocrataMethods # forwardable_session_cookies
 
   protected
 
@@ -417,9 +418,13 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
+            browse_options[:search_options][:search_context] = CurrentDomain.cname
 
-            # See app/helpers/application_helper.rb#request_id
-            Cetera.search_views(browse_options[:search_options], request.cookies, request_id(request))
+            Cetera.search_views(
+              browse_options[:search_options],
+              forwardable_session_cookies(request.cookies),
+              request_id(request) # See app/helpers/application_helper.rb#request_id
+            )
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end
@@ -747,6 +752,7 @@ module BrowseActions
 
   @@moderatable_types = Set.new([ 'new_view', 'filters', 'charts', 'maps', 'calendars', 'forms' ])
 
+  # See also cetera_soql_params in lib/cetera.rb
   @@search_options = Set.new(
     [
       :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,

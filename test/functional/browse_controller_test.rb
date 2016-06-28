@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class BrowseControllerTest < ActionController::TestCase
-
   def setup
     init_core_session
     init_current_domain
@@ -311,7 +310,8 @@ class BrowseControllerTest < ActionController::TestCase
     }
 
     cetera_headers = {
-      'Cookie' => 'assume_nothing=Pass It All Along',
+      'Content-Type' => 'application/json',
+      'Cookie' => '_core_session_id=this cookie is valid so it goes through',
       'X-Socrata-Host' => 'localhost'
     }
 
@@ -479,7 +479,8 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with embed' do
-      @request.cookies['assume_nothing'] = 'Pass It All Along'
+      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
+      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
         with(query: default_cetera_params, headers: cetera_headers).
@@ -493,7 +494,8 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with browse' do
-      @request.cookies['assume_nothing'] = 'Pass It All Along'
+      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
+      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
         with(query: default_cetera_params, headers: cetera_headers).
@@ -508,7 +510,8 @@ class BrowseControllerTest < ActionController::TestCase
 
     # See EN-3383
     should 'truncate custom cutoffs as configured' do
-      @request.cookies['assume_nothing'] = 'Pass It All Along'
+      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
+      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search, true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
         with(query: default_cetera_params, headers: cetera_headers).

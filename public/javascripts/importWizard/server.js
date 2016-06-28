@@ -12,29 +12,42 @@ import _ from 'lodash';
 
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
-    const { navigation, lastSavedMetadata, metadata, datasetId } = getState();
-    dispatch(updatePrivacy(datasetId, metadata.privacySettings));
+    const { navigation, metadata, datasetId } = getState();
     dispatch(goToPage('Working'));
-    saveMetadataToViewsApi(datasetId, metadata).then(() => {
-      const onImportError = () => {
-        dispatch(goToPage('Importing'));
-        dispatch(importError());
-        dispatch(goToPage('Metadata'));
-      };
-      switch (navigation.operation) {
-        case 'UploadData':
-          dispatch(importData(onImportError));
-          break;
-        case 'UploadGeospatial':
-          dispatch(importGeospatial(onImportError));
-          break;
-        case 'CreateFromScratch':
-          dispatch(goToPage('Finish'));
-          break;
-        default:
-          console.error('Unkown operation!', navigation.operation);
-      }
-    });
+    saveMetadataToViewsApi(datasetId, metadata).
+      then(() => {
+        console.log('then');
+        console.log(metadata);
+        updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
+          then(() => {
+            console.log('then2');
+            const onImportError = () => {
+              dispatch(importError());
+              dispatch(goToPage('Metadata'));
+            };
+            dispatch(Metadata.metadataSaveComplete());
+            switch (navigation.operation) {
+              case 'UploadData':
+                dispatch(importData(onImportError));
+                break;
+              case 'UploadGeospatial':
+                dispatch(importGeospatial(onImportError));
+                break;
+              case 'CreateFromScratch':
+                dispatch(goToPage('Finish'));
+                break;
+              default:
+                console.error('Unkown operation!', navigation.operation);
+            }
+          }).
+          catch((err) => {
+            dispatch(Metadata.metadataSaveError(err));
+          });
+      }).
+      catch((err) => {
+        console.log(err);
+        dispatch(Metadata.metadataSaveError(err));
+      });
   };
 }
 
@@ -50,18 +63,18 @@ function saveMetadataToViewsApi(datasetId, metadata) {
 
 export function modelToViewParam(metadata) {
   return {
-    name: metadata.name,
-    description: metadata.description,
-    category: metadata.category,
-    tags: metadata.tags,
+    name: metadata.contents.name,
+    description: metadata.contents.description,
+    category: metadata.contents.category,
+    tags: metadata.contents.tags,
     metadata: {
-      rowLabel: metadata.rowLabel,
-      attributionLink: metadata.attributionLink,
-      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, false)
+      rowLabel: metadata.contents.rowLabel,
+      attributionLink: metadata.contents.attributionLink,
+      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
     },
     privateMetadata: {
-      contactEmail: metadata.contactEmail,
-      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, true)
+      contactEmail: metadata.contents.contactEmail,
+      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
     }
   };
 }
@@ -76,6 +89,16 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 }
 
 export function coreViewToModel(view) {
+  const contents = coreViewContents(view);
+  return {
+    nextClicked: false,
+    contents: contents,
+    lastSaved: contents,
+    apiCall: {}
+  };
+}
+
+export function coreViewContents(view) {
   return {
     name: view.name,
     description: view.description,
@@ -105,23 +128,15 @@ function coreViewToCustomMetadataModel(view) {
   ));
 }
 
-export function updatePrivacy(datasetId, currentPrivacy) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const lastPrivacy = state.lastSavedMetadata.privacySettings;
-    if ((lastPrivacy !== currentPrivacy)) {
-      if (currentPrivacy === 'public') {
-        currentPrivacy = 'public.read';
-      }
+export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
+  const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
 
-      return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${currentPrivacy}`, {
-        method: 'PUT',
-        credentials: 'same-origin'
-      }).then((result) => {
-        console.log(result);
-      });
-    }
-  }
+  return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
+    method: 'PUT',
+    credentials: 'same-origin'
+  }).then((result) => {
+    console.log(result);
+  });
 }
 
 type ImportProgress

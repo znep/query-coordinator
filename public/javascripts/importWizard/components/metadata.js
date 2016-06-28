@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import { combineReducers } from 'redux';
 import RadioGroup from 'react-radio-group';
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
@@ -9,16 +10,10 @@ import FlashMessage from './flashMessage';
 // == Metadata
 
 type DatasetMetadata = {
-  name: string,
-  description: string,
-  category: string,
-  tags: Array,
-  rowLabel: string,
-  attributionLink: string,
-  customMetadata: Object,
-  privacySettings: string,
-  contactEmail: string,
-  nextClicked: boolean
+  nextClicked: boolean,
+  apiCall: Object,
+  lastSaved: Object,
+  contents: Object
 }
 
 export function defaultCustomData() {
@@ -34,7 +29,7 @@ export function defaultCustomData() {
   }));
 }
 
-export function emptyForName(name: string): DatasetMetadata {
+export function emptyContents(name: string) {
   return {
     name: name,
     description: '',
@@ -43,9 +38,17 @@ export function emptyForName(name: string): DatasetMetadata {
     rowLabel: '',
     attributionLink: '',
     customMetadata: defaultCustomData(customMetadataSchema),
-    privacySettings: 'private',
     contactEmail: '',
-    nextClicked: false
+    privacySettings: 'private'
+  };
+}
+
+export function emptyForName(name: string): DatasetMetadata {
+  return {
+    nextClicked: false,
+    apiCall: {type: 'Not Started'},
+    lastSaved: emptyContents(name),
+    contents: emptyContents(name)
   };
 }
 
@@ -138,74 +141,121 @@ export function updateLastSaved(savedMetadata) {
   };
 }
 
-export function updateForLastSaved(lastSavedMetadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
+const MD_SAVE_START = 'MD_SAVE_START';
+export function metadataSaveStart() {
+  return {
+    type: MD_SAVE_START
+  };
+}
+
+const MD_SAVE_COMPLETE = 'MD_SAVE_COMPLETE';
+export function metadataSaveComplete() {
+  return {
+    type: MD_SAVE_COMPLETE
+  };
+}
+
+const MD_SAVE_ERROR = 'MD_SAVE_ERROR';
+export function metadataSaveError(err) {
+  return {
+    type: MD_SAVE_ERROR,
+    err: err
+  };
+}
+
+export const update =
+  combineReducers({
+    nextClicked: updateForNextClicked,
+    apiCall: updateAPI,
+    contents: updateContents,
+    lastSaved: updateForLastSaved
+  });
+
+export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
   switch (action.type) {
     case MD_LAST_SAVED:
-      return action.savedMetadata;
+      return action.savedMetadata.contents;
     default:
       return lastSavedMetadata;
   }
 }
 
-export function update(metadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
+export function updateContents(contents = emptyContents(''), action): DatasetMetadata {
   switch (action.type) {
     case MD_UPDATE_NAME:
       return {
-        ...metadata,
+        ...contents,
         name: action.newName
       };
     case MD_UPDATE_DESCRIPTION:
       return {
-        ...metadata,
+        ...contents,
         description: action.newDescription
       };
     case MD_UPDATE_CATEGORY:
       return {
-        ...metadata,
+        ...contents,
         category: action.newCategory
       };
     case MD_UPDATE_TAGS:
-      metadata.tags = action.newTags.split(',');
+      contents.tags = action.newTags.split(',');
       return {
-        ...metadata,
-        tags: metadata.tags
+        ...contents,
+        tags: contents.tags
       };
     case MD_UPDATE_ROWLABEL:
       return {
-        ...metadata,
+        ...contents,
         rowLabel: action.newRowLabel
       };
     case MD_UPDATE_ATTRIBUTIONLINK:
       return {
-        ...metadata,
+        ...contents,
         attributionLink: action.newAttributionLink
       };
     case MD_UPDATE_CUSTOMMETADATA: {
-      const newCustomMetadata = _.clone(metadata.customMetadata);
+      const newCustomMetadata = _.clone(contents.customMetadata);
       newCustomMetadata[action.setName][action.fieldIdx].value = action.newCustomData;
 
       return {
-        ...metadata,
+        ...contents,
         customMetadata: newCustomMetadata
       };
     }
     case MD_UPDATE_PRIVACYSETTINGS:
       return {
-        ...metadata,
+        ...contents,
         privacySettings: action.newPrivacySettings
       };
     case MD_UPDATE_CONTACTEMAIL:
       return {
-        ...metadata,
+        ...contents,
         contactEmail: action.newContactEmail
       };
-    case MD_UPDATE_NEXTCLICKED:
-      return {
-        ...metadata,
-        nextClicked: true
-      };
     default:
-      return metadata;
+      return contents;
+  }
+}
+
+export function updateForNextClicked(nextClicked: boolean = false, action) {
+  switch (action.type) {
+    case MD_UPDATE_NEXTCLICKED:
+      return true;
+    default:
+      return nextClicked;
+  }
+}
+
+export function updateAPI(apiCallState = {type: 'Not Started'}, action) {
+  switch (action.type) {
+    case MD_SAVE_START:
+      return {type: 'In Progress'};
+    case MD_SAVE_COMPLETE:
+      return {type: 'Success'};
+    case MD_SAVE_ERROR:
+      return {type: 'Error', error: action.err};
+    default:
+      return apiCallState;
   }
 }
 
@@ -214,27 +264,27 @@ type MetadataValidationErrors = {
   attributionLink: bool
 }
 
-export function validate(metadata: DatasetMetadata): MetadataValidationErrors {
+export function validate(metadata): MetadataValidationErrors {
   return {
-    name: metadata.name.length !== 0,
-    attributionLink: metadata.attributionLink.length !== 0
+    name: metadata.contents.name.length !== 0,
+    attributionLink: metadata.contents.attributionLink.length !== 0
   };
 }
 
-export function isStandardMetadataValid(metadata: DatasetMetadata) {
-  const valid = validate(metadata);
+export function isStandardMetadataValid(contents) {
+  const valid = validate(contents);
   return valid.name && valid.attributionLink;
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
-  return (metadata.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
+  return (metadata.contents.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
 }
 
 export function isCustomMetadataValid(metadata: DatasetMetadata) {
   return customMetadataSchema.every((fieldSet) => {
     return fieldSet.fields.every((field, fieldIndex) => {
       if (field.required) {
-        const value = metadata.customMetadata[fieldSet.name][fieldIndex].value;
+        const value = metadata.contents.customMetadata[fieldSet.name][fieldIndex].value;
         return value.length > 0;
       } else {
         return true;
@@ -253,7 +303,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
     return (
       <select
         className={field.name}
-        value={metadata.customMetadata[setName][fieldIdx].value}
+        value={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} >
           {options.map((value) =>
             <option value={value}>{value}</option>
@@ -266,7 +316,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
       <input
         type="text"
         className={field.name}
-        value={metadata.customMetadata[setName][fieldIdx].value}
+        value={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} />
     );
   }
@@ -315,7 +365,6 @@ function renderFlashMessage(importError) {
 
 export function view({ metadata, onMetadataAction, importError }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
-
   const validationErrors = validate(metadata);
 
   return (
@@ -342,7 +391,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               name="view[name]"
               title={I18nPrefixed.dataset_title_prompt}
               className="textPrompt required error"
-              value={metadata.name}
+              value={metadata.contents.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
               {(!validationErrors.name && metadata.nextClicked) ?
                 <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
@@ -354,7 +403,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[description]"
               title={I18nPrefixed.brief_description_prompt} className="textPrompt"
-              value={metadata.description}
+              value={metadata.contents.description}
               placeholder={I18nPrefixed.brief_description_prompt}
               onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
           </div>
@@ -363,7 +412,7 @@ export function view({ metadata, onMetadataAction, importError }) {
             <label htmlFor="view_category">{I18nPrefixed.category}</label>
             <select
               name="view[category]"
-              value={metadata.category}
+              value={metadata.contents.category}
               onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
               {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
             </select>
@@ -374,7 +423,7 @@ export function view({ metadata, onMetadataAction, importError }) {
             <input
               type="text" name="view[tags]"
               title={I18nPrefixed.tags_prompt}
-              value={metadata.tags}
+              value={metadata.contents.tags}
               className="textPrompt"
               onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
           </div>
@@ -385,7 +434,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[rowLabel]"
               className="textPrompt"
-              value={metadata.rowLabel}
+              value={metadata.contents.rowLabel}
               onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
           </div>
         </div>
@@ -399,7 +448,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               type="text"
               name="view[attributionLink]"
               className="textPrompt required"
-              value={metadata.attributionLink}
+              value={metadata.contents.attributionLink}
               onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
             {(!validationErrors.attributionLink && metadata.nextClicked) ?
               <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
@@ -431,7 +480,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               </legend>
               <RadioGroup
                 name="privacy"
-                selectedValue={metadata.privacySettings}
+                selectedValue={metadata.contents.privacySettings}
                 onChange={(value) => onMetadataAction(updatePrivacySettings(value))}>
                 {Radio => (
                   <div>
@@ -460,7 +509,7 @@ export function view({ metadata, onMetadataAction, importError }) {
             <input
               type="text"
               name="view[contactEmail]'"
-              value={metadata.contactEmail}
+              value={metadata.contents.contactEmail}
               title={I18nPrefixed.email_address} className="textPrompt contactEmail"
               onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
@@ -480,8 +529,8 @@ export function view({ metadata, onMetadataAction, importError }) {
               onClick={() => {
                 onMetadataAction(updateNextClicked());
                 if (isMetadataValid(metadata)) {
+                  onMetadataAction(metadataSaveStart());
                   onMetadataAction(Server.saveMetadataThenProceed());
-                  onMetadataAction(updateLastSaved(metadata));
                 }
               }}>{I18n.screens.wizard.next}</a>
           </li>

@@ -41,8 +41,7 @@ type NewDatasetModel = {
   upload: UploadFile.FileUpload,
   transform: ImportColumns.Transform,               // only used in UploadData operation
   layers: Array<Layer>,               // only used in UploadGeo operation
-  metadata: Metadata.DatasetMetadata,
-  lastSavedMetadata: Metadata.DatasetMetadata
+  metadata: Metadata.DatasetMetadata
 }
 
 const initialNavigation: Navigation = {
@@ -54,7 +53,6 @@ const initialNavigation: Navigation = {
 // is this even used or is it just the no-args call to the reducer?
 export function initialNewDatasetModel(initialView): NewDatasetModel {
   const initialMD = initialMetadata(initialView);
-
   return {
     datasetId: initialView.id,
     navigation: initialNavigation,
@@ -62,7 +60,6 @@ export function initialNewDatasetModel(initialView): NewDatasetModel {
     transform: null,
     layers: null,
     metadata: initialMD,
-    lastSavedMetadata: initialMD,
     importStatus: Server.initialImportStatus()
   };
 }
@@ -217,8 +214,7 @@ export function view({ state, dispatch }) {
                 <Metadata.view
                   datasetId={state.datasetId}
                   metadata={state.metadata}
-                  lastSavedMetadata={state.metadata}
-                  onMetadataAction={(action) => {dispatch(action);}} />
+                  onMetadataAction={dispatch} />
               );
 
             case 'Working':

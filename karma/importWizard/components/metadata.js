@@ -34,89 +34,73 @@ describe("metadata's reducer testing", () => {
 
   describe('SET_NAME', () => {
     it('sets the name of the dataset', () => {
-      state.name = 'pandas';
-
       const result = update(state, updateName('wombats'));
-      expect(result.name).to.equal('wombats');
+      expect(result.contents.name).to.equal('wombats');
     });
   });
 
   describe('SET_DESCRIPTION', () => {
     it('sets the description of the dataset', () => {
-      state.description = 'pandas';
-
       const result = update(state, updateDescription('wombats'));
-      expect(result.description).to.equal('wombats');
+      expect(result.contents.description).to.equal('wombats');
     });
   });
 
   describe('SET_CATEGORY', () => {
     it('sets the category of the dataset', () => {
-      state.category = 'Business';
-
       const result = update(state, updateCategory('Personal'));
-      expect(result.category).to.equal('Personal');
+      expect(result.contents.category).to.equal('Personal');
     });
   });
 
   describe('SET_TAGS', () => {
     it('sets the tags of the dataset', () => {
-      state.tags = [];
-
       const result = update(state, updateTags('wombats,pandas'));
-      expect(result.tags[0]).to.equal('wombats');
-      expect(result.tags[1]).to.equal('pandas');
+      expect(result.contents.tags[0]).to.equal('wombats');
+      expect(result.contents.tags[1]).to.equal('pandas');
     });
   });
 
   describe('SET_ROWLABEL', () => {
     it('sets the row label of the dataset', () => {
-      state.rowLabel = 'pandas';
-
       const result = update(state, updateRowLabel('wombats'));
-      expect(result.rowLabel).to.equal('wombats');
+      expect(result.contents.rowLabel).to.equal('wombats');
     });
   });
 
   describe('SET_ATTRIBUTIONLINK', () => {
     it('sets the attribution link url of the dataset', () => {
-      state.attributionLink = 'pandas.ch';
-
       const result = update(state, updateAttributionLink('wombats.au'));
-      expect(result.attributionLink).to.equal('wombats.au');
+      expect(result.contents.attributionLink).to.equal('wombats.au');
     });
   });
 
   describe('CHECK_PRIVACY_INITIALIZATION_PRIVATE', () => {
     it('checks initial privacy of the dataset', () => {
-      expect(state.privacySettings).to.equal('private');
+      expect(state.contents.privacySettings).to.equal('private');
     });
   });
 
   describe('SET_PRIVACY_PUBLIC', () => {
     it('sets the privacy of the dataset to public', () => {
-      state.privacySettings = 'private';
-
       const result = update(state, updatePrivacySettings('public'));
-      expect(result.privacySettings).to.equal('public');
+      expect(result.contents.privacySettings).to.equal('public');
     });
   });
 
   describe('SET_PRIVACY_PRIVATE', () => {
     it('sets the privacy of the dataset to private', () => {
-      state.privacySettings = 'public';
+      state.contents.privacySettings = 'public';
 
       const result = update(state, updatePrivacySettings('private'));
-      expect(result.privacySettings).to.equal('private');
+      expect(result.contents.privacySettings).to.equal('private');
     });
   });
 
   describe('SET_EMAIL', () => {
     it('sets the contact email of the dataset', () => {
-      state.contactEmail = 'pandas@china.ch';
-
       const result = update(state, updateContactEmail('wombats@australia.au'));
-      expect(result.contactEmail).to.equal('wombats@australia.au');
+      expect(result.contents.contactEmail).to.equal('wombats@australia.au');
     });
   });
 
@@ -135,51 +119,53 @@ describe('validators', () => {
 
   beforeEach(() => {
     metadata = {
-      name: '',
-      attributionLink: '',
-      customMetadata: {
-        'jack':
-          [
-            {
-              field: '1',
-              value: 'ant',
-              privateField: false
-            },
-            {
-              field: '2',
-              value: '',
-              privateField: true
-            },
-            {
-              field: '3',
-              value: '',
-              privateField: false
-            }
-          ],
-        'second':
-          [
-            {
-              field: 'mars',
-              value: '',
-              privateField: false
-            },
-            {
-              field: 'venus',
-              value: '',
-              privateField: false
-            },
-            {
-              field: 'neptune',
-              value: '50',
-              privateField: false
-            },
-            {
-              field: 'jupiter',
-              value: '',
-              privateField: false
-            }
-          ]
-        }
+      contents: {
+        name: '',
+        attributionLink: '',
+        customMetadata: {
+          'jack':
+            [
+              {
+                field: '1',
+                value: 'ant',
+                privateField: false
+              },
+              {
+                field: '2',
+                value: '',
+                privateField: true
+              },
+              {
+                field: '3',
+                value: '',
+                privateField: false
+              }
+            ],
+          'second':
+            [
+              {
+                field: 'mars',
+                value: '',
+                privateField: false
+              },
+              {
+                field: 'venus',
+                value: '',
+                privateField: false
+              },
+              {
+                field: 'neptune',
+                value: '50',
+                privateField: false
+              },
+              {
+                field: 'jupiter',
+                value: '',
+                privateField: false
+              }
+            ]
+          }
+      }
     };
   });
 
@@ -195,8 +181,8 @@ describe('validators', () => {
   });
 
   it('returns true if customMetadata has empty keys', () => {
-    metadata.name = 'panda',
-    metadata.attributionLink = 'wombat'
+    metadata.contents.name = 'panda',
+    metadata.contents.attributionLink = 'wombat'
 
     const standardValid = isStandardMetadataValid(metadata);
     expect(standardValid).to.equal(true);
@@ -213,7 +199,7 @@ describe('validators', () => {
 
   it('returns true if all required fields of customMetadata are nonempty', () => {
     //fields 1 and venus are the required fields.
-    metadata.customMetadata['second'][1].value = 'venus';
+    metadata.contents.customMetadata['second'][1].value = 'venus';
 
     const customRequired = isCustomMetadataValid(metadata);
     expect(customRequired).to.equal(true);
@@ -225,9 +211,9 @@ describe('validators', () => {
   });
 
   it('returns true if all required metadata are nonempty', () => {
-    metadata.name = 'name';
-    metadata.attributionLink = 'google.com';
-    metadata.customMetadata['second'][1].value = 'venus';
+    metadata.contents.name = 'name';
+    metadata.contents.attributionLink = 'google.com';
+    metadata.contents.customMetadata['second'][1].value = 'venus';
 
     const standardValid = isMetadataValid(metadata);
     expect(standardValid).to.equal(true);
@@ -256,10 +242,10 @@ describe('view testing', () => {
  });
 
  it('returns that there is no required text if next has been clicked but all required fields are filled', () => {
-   state.name = 'name';
-   state.attributionLink = 'google.com';
-   state.customMetadata['second'][1].value = 'venus';
-   state.nextClicked = true;
+   state.contents.name = 'name';
+   state.contents.attributionLink = 'google.com';
+   state.contents.customMetadata['second'][1].value = 'venus';
+   state.contents.nextClicked = true;
 
    const element = renderComponent(view( {metadata: state, onMetadataAction:_.noop } ), state);
    expect(element.querySelector('.error.customField')).to.not.exist;
@@ -307,34 +293,36 @@ describe('view testing', () => {
 });
 
 describe('testing for lastSaved', () => {
-  let metadata, lastSavedMetadata;
+  let metadata, contents, lastSavedMetadata;
 
   describe('last saved testing', () => {
     it('returns that wizard intializes metadata and lastSaved equally', () => {
       const state = initialNewDatasetModel({});
-      metadata = state.metadata;
-      lastSavedMetadata = state.lastSavedMetadata;
+      contents = state.metadata.contents;
+      lastSavedMetadata = state.metadata.lastSaved;
 
-      expect(metadata).to.deep.equal(lastSavedMetadata);
+      expect(contents).to.deep.equal(lastSavedMetadata);
     });
 
     it('returns that an unsaved wizard does not update lastSaved to equal metadata', () => {
       const state = initialNewDatasetModel({});
       metadata = state.metadata;
-      lastSavedMetadata = state.lastSavedMetadata;
+      lastSavedMetadata = state.metadata.lastSaved;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
+      contents = metadata.contents;
 
-      expect(metadata).to.not.deep.equal(lastSavedMetadata);
+      expect(contents).to.not.deep.equal(lastSavedMetadata);
     });
 
     it('returns that the saved wizard updates lastSaved to equal metadata', () => {
       const state = initialNewDatasetModel({});
       metadata = state.metadata;
-      lastSavedMetadata = state.lastSavedMetadata;
+      lastSavedMetadata = state.metadata.lastSaved;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
       lastSavedMetadata = updateForLastSaved(lastSavedMetadata, updateLastSaved(metadata));
+      contents = metadata.contents;
 
-      expect(metadata).to.deep.equal(lastSavedMetadata);
+      expect(contents).to.deep.equal(lastSavedMetadata);
     });
   });
 

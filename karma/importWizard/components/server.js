@@ -11,61 +11,63 @@ import {
 
 describe("testing for API responses", () => {
   const metadata = {
-    name: 'name',
-    description: 'desc',
-    category: 'cat',
-    tags: ['one', 'two'],
-    rowLabel: 'row',
-    attributionLink: 'link',
-    contactEmail: 'email@email.com',
-    privacySettings: 'private',
-    customMetadata: {
-      'jack':
-        [
-          {
-            field: '1',
-            value: 'ant',
-            privateField: false
-          },
-          {
-            field: '2',
-            value: 'frank',
-            privateField: true
-          },
-          {
-            field: '3',
-            value: 'fred',
-            privateField: false
-          }
-        ],
-      'second':
-        [
-          {
-            field: 'mars',
-            value: 'mars',
-            privateField: false
-          },
-          {
-            field: 'venus',
-            value: 'earth',
-            privateField: false
-          },
-          {
-            field: 'neptune',
-            value: '50',
-            privateField: false
-          },
-          {
-            field: 'jupiter',
-            value: 'eritrea',
-            privateField: false
-          }
-        ]
-      }
+    contents: {
+      name: 'name',
+      description: 'desc',
+      category: 'cat',
+      tags: ['one', 'two'],
+      rowLabel: 'row',
+      attributionLink: 'link',
+      contactEmail: 'email@email.com',
+      privacySettings: 'private',
+      customMetadata: {
+        'jack':
+          [
+            {
+              field: '1',
+              value: 'ant',
+              privateField: false
+            },
+            {
+              field: '2',
+              value: 'frank',
+              privateField: true
+            },
+            {
+              field: '3',
+              value: 'fred',
+              privateField: false
+            }
+          ],
+        'second':
+          [
+            {
+              field: 'mars',
+              value: 'mars',
+              privateField: false
+            },
+            {
+              field: 'venus',
+              value: 'earth',
+              privateField: false
+            },
+            {
+              field: 'neptune',
+              value: '50',
+              privateField: false
+            },
+            {
+              field: 'jupiter',
+              value: 'eritrea',
+              privateField: false
+            }
+          ]
+        }
+    }
   };
 
   describe('privacyCustomMetadata', () => {
-    const customMetadata = metadata.customMetadata;
+    const customMetadata = metadata.contents.customMetadata;
 
     it('test that public values are correctly returned', () => {
       const publicCustom = customMetadataModelToCoreView(customMetadata, false);
@@ -115,7 +117,7 @@ describe("testing for API responses", () => {
       const view = modelToViewParam(metadata);
       const meta = coreViewToModel(view);
 
-      expect(metadata).to.deep.equal(meta);
+      expect(metadata.contents).to.deep.equal(meta.contents);
     });
   });
 

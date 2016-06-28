@@ -62,7 +62,7 @@ class DatasetsController < ApplicationController
     # TODO: Remove this after DSLP launch (note that this is not being localized
     # intentionally and we plan on removing it post-launch)
     if display_dataset_landing_page_notice?
-      flash[:notice] = %{
+      flash.now[:notice] = %{
         Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
         <a href="?enable_dataset_landing_page=true&default_to_dataset_landing_page=true">
         Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>

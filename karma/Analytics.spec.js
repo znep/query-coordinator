@@ -109,6 +109,10 @@ describe('Anatlyics.js', function() {
       it('sends metrics data', function() {
         expect(analytics_request.requestBody).to.equal('{"metrics":[{"entity":"booyah","metric":"things","increment":666}]}');
       });
+
+      it('sends metrics asynchronously by default', function() {
+        expect(analytics_request.async).to.equal(true);
+      });
     });
   });
 
@@ -126,6 +130,7 @@ describe('Anatlyics.js', function() {
 
       setTimeout(function() {
         expect(server.requests.length).to.equal(1);
+        expect(server.requests[0].async).to.equal(false);
       }, 10);
     });
   });

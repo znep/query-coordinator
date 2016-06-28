@@ -49,14 +49,20 @@ var Analytics = function() {
 
   /**
    * Sends any queued metrics
+   * async: Whether or not to send the metrics asynchronously. If null or undefined, assumed to be true.
    */
-  this.flushMetrics = function() {
+  this.flushMetrics = function(async) {
     var analyticsPayload;
 
     if (serverUploadEnabled) {
       if (queue.length === 0) {
         return;
       }
+
+      if (async === null || async === undefined) {
+        async = true;
+      }
+
       // create the batched payload and reset the queue
       analyticsPayload = JSON.stringify({'metrics': queue});
       queue = [];
@@ -64,6 +70,7 @@ var Analytics = function() {
       $.ajax({
         url: analyticsUrl,
         type: 'post',
+        async: async,
         contentType: 'application/text',
         headers: {
           'X-Socrata-Auth': 'unauthenticated'
@@ -75,7 +82,7 @@ var Analytics = function() {
   };
 
   // We want to flush metrics on unload in case we've queued up some metrics and haven't explicitly flushed.
-  window.onbeforeunload = this.flushMetrics;
+  window.onbeforeunload = this.flushMetrics(false);
 };
 
 module.exports = Analytics;

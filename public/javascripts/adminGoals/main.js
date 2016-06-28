@@ -23,7 +23,8 @@ const initialState = Immutable.fromJS({
     cachedUsers: {},
     translations: window.translations,
     selectedRows: [],
-    alert: { label: '', message: '' }
+    alert: { label: '', message: '' },
+    rowsPerPage: 25
   }
 });
 
@@ -39,6 +40,3 @@ ReactDOM.render(
     <App />
   </Provider>,
   document.querySelector('#app'));
-
-let styleGuide = require('socrata-styleguide');
-window.socrataStyleGuide = styleGuide(document);

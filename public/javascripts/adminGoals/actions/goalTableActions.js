@@ -7,7 +7,8 @@ import {
   CACHE_USERS,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
-  TABLE_ROW_ALL_SELECTION_TOGGLE
+  TABLE_ROW_ALL_SELECTION_TOGGLE,
+  ROWS_PER_PAGE_CHANGED
 } from '../actionTypes';
 
 import {
@@ -22,6 +23,8 @@ export function tableLoadPage() {
 
     return getDashboards().
       then(getGoals).
+      then(mergeDashboards).
+      then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
       catch(() => dispatch(displayAlert({ label: 'error' })));// eslint-disable-line dot-notation
@@ -43,15 +46,21 @@ export function tableLoadPage() {
       return Promise.all(dashboardDetailFetchBatch);
     }
 
-    function getGoalsExtras(goalResponses) {
-      let goals = _(goalResponses).
+    function mergeDashboards(goalResponses) {
+      return _(goalResponses).
         map('categories').
         flatten().
         map(category => _.map(category.goals, (goal) => _.assign(goal, { category: category.id }))).
         reject(_.isEmpty).
         flatten().
         value();
+    }
 
+    function trimToPageSize(goals) {
+      return _.slice(goals, 0, state.getIn(['goalTableData', 'rowsPerPage']));
+    }
+
+    function getGoalsExtras(goals) {
       let cachedUsers = _.get(state, 'cachedUsers', {});
 
       return Promise.all([
@@ -161,5 +170,12 @@ export function deselectRow(goalId) {
 export function toggleAllRows() {
   return {
     type: TABLE_ROW_ALL_SELECTION_TOGGLE
+  };
+}
+
+export function setRowsPerPage(value) {
+  return dispatch => {
+    dispatch({type: ROWS_PER_PAGE_CHANGED, value});
+    dispatch(tableLoadPage());
   };
 }

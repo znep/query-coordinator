@@ -1723,6 +1723,7 @@ en:
         view_dashboard: View Dashboard
         goal_page: Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
+        rows_per_page: Rows per page
       goal_values:
         status_public: Public
         status_private: Private

@@ -98,7 +98,7 @@ group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem 'pry-byebug', '~> 1.3.3'
+  gem 'pry-byebug'
   gem 'pry-remote'
   gem 'pry-stack_explorer'
 

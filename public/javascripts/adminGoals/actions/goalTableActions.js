@@ -82,7 +82,7 @@ export function tableLoadPage() {
       }
 
       function getGoalDetails() {
-        let goalDetailPromises = _.map(goals, goal => fetch(`/stat/api/v1/goals/${goal.id}`).
+        let goalDetailPromises = _.map(goals, goal => fetch(`/stat/api/v1/goals/${goal.id}`, fetchOptions).
          then(response => response.json()));
 
         return Promise.all(goalDetailPromises);

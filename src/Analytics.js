@@ -59,7 +59,7 @@ var Analytics = function() {
         return;
       }
 
-      if(async === null || async === undefined) {
+      if (async === null || async === undefined) {
         async = true;
       }
 

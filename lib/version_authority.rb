@@ -24,19 +24,27 @@ module VersionAuthority
 
   def self.paths_mtime
     # WARNING: Core also writes to these keys.
-    Rails.cache.read(pages_key, :raw => true)
+    mtime = Rails.cache.read(pages_key, :raw => true)
+    Rails.logger.info("Paths mtime according to key #{pages_key}: #{mtime}")
+    mtime
   end
 
   def self.set_paths_mtime(mtime, cache_ttl = 15)
+    Rails.logger.info("Writing paths mtime of #{mtime} to key #{pages_key}")
     Rails.cache.write(pages_key, mtime, :expires_in => cache_ttl.minutes)
   end
 
   def self.page_mtime(uid)
-    Rails.cache.read(pages_key(uid), :raw => true)
+    key = pages_key(uid)
+    mtime = Rails.cache.read(key, :raw => true)
+    Rails.logger.info("Page mtime according to key #{key}: #{mtime}")
+    mtime
   end
 
   def self.set_page_mtime(uid, mtime, cache_ttl = 15)
-    Rails.cache.write(pages_key(uid), mtime, :expires_in => cache_ttl.minutes)
+    key = pages_key(uid)
+    Rails.logger.info("Writing page mtime of #{mtime} to key #{key}")
+    Rails.cache.write(key, mtime, :expires_in => cache_ttl.minutes)
   end
 
   # Given a path/user find the manifest associated with this domain and

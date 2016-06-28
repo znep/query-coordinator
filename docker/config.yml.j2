@@ -11,6 +11,10 @@ default: &default
   cetera_host: {{ CETERA_HOST }}
   {%- endif %}
 
+  {% if SITEMAP_S3_URL is defined -%}
+  sitemap_s3_url: {{ SITEMAP_S3_URL }}
+  {%- endif %}
+
   {% if CONSUL_HOST is defined -%}
   consul_host: {{ CONSUL_HOST }}
   {%- endif %}

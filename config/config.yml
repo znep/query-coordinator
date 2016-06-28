@@ -1,34 +1,48 @@
-###
-#
-#  META NOTE!
-#  Despite the comment below, on our local dev boxes this config file is INDEED
-#  manually updated and not dynamically chef'd.
-#
-###
-
 ###############################################################################
-# NOTE! All configuration information in this file are overwritten by chef when
-# the app is deployed. If you wish to ensure that new configuration information
-# is deployed along with this app, then make sure it is added to appropriate
-# JSON file in the environments folder of the metachef repo.
+# NOTES ON THE USE OF THIS FILE
 #
-# Attributes that you wish to add to the "default" section below should be
-# added under the "default_attributes" hash key in the appropriate JSON file
-# mentioned above.
+# Defining a new config value
+# --------------------------------------------------
+# New config values must be declared in frontend/lib/app_config.rb
+# If they're going to be supplied as environment variables in a Docker container,
+# also add them to frontend/docker/config.yml.j2
 #
-# At the time of this writing, the following metachef environment files are
-# germane to this application and where it is deployed:
+# Apps deployed by chef
+# --------------------------------------------------
+# As of the time of this writing, the only environments in which the frontend
+# is deployed by chef is Sea1 (prod) and Azure (RC). In those environments:
 #
-#  azure-westeurope-production.json
-#  production.json
-#  azure-staging.json
-#  azure-rc.json
+# RC: RC is dockerized, so set these configurations in `webapp.docker.env_vars`
+#     in metachef/environments/azure-rc.json, which looks like this:
 #
-# The way this file works is thus:
+#      "webapp": {
+#      "docker": {
+#        "tag": "release.2016.06.28.0948_1955_b3a30811",
+#        "env_vars": {
+#          "AIRBRAKE_ENVIRONNMENT_NAME": "azure-rc",
+#
+# Prod Sea1: If the release will be of the dockerized variety, set these configurations
+#     in the same place as RC in metachef/environments/production.json.
+#     Otherwise, set them directly under `webapp`.
+#
+# The way this file works in a cheffed environment is thus:
 # 1. metachef will run chef on all nodes every 20 minutes
 # 2. chef will write its version of this file to /etc/config.yml
 # 3. UPON DEPLOY, frontend will copy /etc/config.yml into config/config.yml
 # 4. frontend starts up, reading its config/config.yml
+#
+# Apps deployed via marathon
+# --------------------------------------------------
+# As with any other application, set these in apps-marathon/params/<env>/frontend.toml
+# and make sure the necessary logic to set them exists in docker/config.yml.j2
+#
+# General Notes
+# --------------------------------------------------
+# Attributes that you wish to add to the "default" section below should be
+# added under the "default_attributes" hash key in the appropriate JSON file
+# mentioned above.
+#
+###############################################################################
 
 default: &default
   # service hosts/ports/names et simil
@@ -40,6 +54,7 @@ default: &default
   secondary_group_identifier: 'spandex'
   statsd_enabled: false
   zk_hosts: 'localhost:2181'
+  sitemap_s3_url: 'https://localhost.amazonaws.com/bucket_dne/sitemaps'
 
   # internal app tokens
   app_token: U29jcmF0YS0td2VraWNrYXNz0
@@ -91,6 +106,7 @@ development: &development
   polaroid_hostname: localhost
   polaroid_port: 1337
   ssl_port: 443
+  sitemap_s3_url: 'https://localhost.amazonaws.com/bucket_dne/sitemaps'
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
@@ -110,6 +126,7 @@ test:
   <<: *default
   # service hosts/ports/names et simil
   metrics_dir: tmp/metriclogs
+  sitemap_s3_url: 'https://test.amazonaws.com/bucket_dne/sitemaps'
 
   # auth alternatives
   auth0_uri: exists
@@ -119,24 +136,32 @@ test:
 # test-socrata.com
 staging:
   <<: *default
+  # service hosts/ports/names et simil
+  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-staging/sitemaps'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # rc-socrata.com
 rc:
   <<: *default
+  # service hosts/ports/names et simil
+  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-rc/sitemaps'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # fedramp-test.socrata.com
 fedramp-prod:
   <<: *default
+  # service hosts/ports/names et simil
+  sitemap_s3_url: 'https://s3-us-west-1.amazonaws.com/sa-socrata-sitemaps-us-west-1-prod/sitemaps'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # eu-west-test.socrata.com
 eu-prod:
   <<: *default
+  # service hosts/ports/names et simil
+  sitemap_s3_url: 'https://s3-eu-west-1.amazonaws.com/sa-socrata-sitemaps-eu-west-1-prod/sitemaps'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
@@ -145,6 +170,7 @@ production:
   <<: *default
   # service hosts/ports/names et simil
   coreservice_uri: http://lb-vip.sea1.socrata.com:8081
+  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-prod/sitemaps'
 
   # third-party app tokens
   mixpanel_token: 1d804068e1d3694468823f3c7f74567d

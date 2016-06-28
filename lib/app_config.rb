@@ -28,6 +28,9 @@ class AppConfig < Hashie::Dash
   # Search
   property :cetera_host
 
+  # Sitemap
+  property :sitemap_s3_url
+
   # Polaroid
   property :polaroid_hostname
   property :polaroid_port, transform_with: as_int
@@ -85,7 +88,7 @@ class AppConfig < Hashie::Dash
 
   # What's New configuration
   property :whats_new, default: {}
-  
+
   # Dataset restore configuration
   property :restore_dataset_days, default: 5
 

@@ -173,6 +173,8 @@
                   "window_icon": "",
                   "link_text_color": "blue",
                   "window_title_display": null,
+                  "show_signin_signout": "true",
+                  "show_profile": "true",
                   "social_shares": [
                     {
                       "type": "facebook",

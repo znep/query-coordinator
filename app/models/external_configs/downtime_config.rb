@@ -5,7 +5,7 @@ class DowntimeConfig < ExternalConfig
   def_delegator :@downtimes, :each
 
   def filename
-    @filename ||= "#{Rails.root}/config/downtime.yml" if use_consul?
+    @filename ||= "#{Rails.root}/config/downtime.yml" unless use_consul?
   end
 
   def update!

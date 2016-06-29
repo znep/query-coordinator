@@ -686,7 +686,7 @@ function SvgColumnChart($element, vif) {
         self.renderError(
           self.
             getLocalization(
-              'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT_WITHOUT_PAN'
+              'error_column_chart_exceeded_max_column_count_without_pan'
             ).
             format(MAX_COLUMN_COUNT_WITHOUT_PAN)
         );
@@ -1105,7 +1105,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = label || self.getLocalization('NO_LABEL');
+    label = label || self.getLocalization('no_label');
 
     return (label.length >= DIMENSION_LABEL_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1328,7 +1328,7 @@ function SvgColumnChart($element, vif) {
           var $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
 
           if (value === null) {
-            valueString = self.getLocalization('NO_VALUE');
+            valueString = self.getLocalization('no_value');
           } else {
             valueString = '{0} {1}'.
               format(
@@ -1378,7 +1378,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function showColumnFlyout(columnElement, datum) {
-    var title = columnElement.getAttribute('data-column-category') || self.getLocalization('NO_LABEL');
+    var title = columnElement.getAttribute('data-column-category') || self.getLocalization('no_label');
     var label = datum[0];
     var value = datum[1];
     var seriesIndex = self.getSeriesIndexByLabel(label);
@@ -1399,7 +1399,7 @@ function SvgColumnChart($element, vif) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = self.getLocalization('NO_VALUE');
+      valueString = self.getLocalization('no_value');
     } else {
       valueString = '{0} {1}'.
         format(

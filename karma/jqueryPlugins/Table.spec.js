@@ -10,13 +10,13 @@ describe('views/Table', function() {
     columnName: '',
     configuration: {
       localization: {
-        PREVIOUS: 'translation for previous button',
-        NEXT: 'translation for next button',
-        NO_ROWS: 'translation for no rows',
-        ONLY_ROW: 'translation for only one row',
-        MANY_ROWS: 'translation for many rows',
-        LATITUDE: 'translation for latitude',
-        LONGITUDE: 'translation for longitude'
+        previous: 'translation for previous button',
+        next: 'translation for next button',
+        no_rows: 'translation for no rows',
+        only_row: 'translation for only one row',
+        many_rows: 'translation for many rows',
+        latitude: 'translation for latitude',
+        longitude: 'translation for longitude'
       },
       order: [
         {

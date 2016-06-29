@@ -1,4 +1,4 @@
-import { translate } from '../I18n';
+import { translate, translateGroup } from '../I18n';
 
 export default {
   format: {
@@ -21,7 +21,7 @@ export default {
       zeroColor: '#ffffff',
       positiveColor: '#003747'
     },
-    localization: translate('visualizations.choroplethMap'),
+    localization: translateGroup('visualizations.choropleth_map'),
     mapMaxZoom: 18,
     mapMinZoom: 1,
     mapZoomAnimation: false,

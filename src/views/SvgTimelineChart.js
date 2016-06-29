@@ -358,7 +358,7 @@ function SvgTimelineChart($element, vif) {
         self.renderError(
           self.
             getLocalization(
-              'ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_COUNT_WITHOUT_PAN'
+              'error_timeline_chart_exceeded_max_point_count_without_pan'
             ).
             format(MAX_POINT_COUNT_WITHOUT_PAN)
         );
@@ -962,7 +962,7 @@ function SvgTimelineChart($element, vif) {
             var $valueCell;
 
             if (datumValue === null) {
-              datumValueString = self.getLocalization('NO_VALUE');
+              datumValueString = self.getLocalization('no_value');
             } else {
               datumValueString = '{0} {1}'.
                 format(

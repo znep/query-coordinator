@@ -389,9 +389,9 @@ function ChoroplethMap(element, vif) {
       clientX: event.originalEvent.clientX,
       clientY: event.originalEvent.clientY,
       title: feature.properties[LABEL_GEOJSON_PROPERTY_NAME],
-      unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
-      filteredValueLabel: self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL'),
-      selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
+      unfilteredValueLabel: self.getLocalization('flyout_unfiltered_amount_label'),
+      filteredValueLabel: self.getLocalization('flyout_filtered_amount_label'),
+      selectedNotice: self.getLocalization('flyout_selected_notice'),
       selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
     };
 
@@ -441,7 +441,7 @@ function ChoroplethMap(element, vif) {
 
     } else {
 
-      payload.unfilteredValue = self.getLocalization('NO_VALUE');
+      payload.unfilteredValue = self.getLocalization('no_value');
     }
 
     if (lastRenderOptions.showFiltered) {
@@ -455,7 +455,7 @@ function ChoroplethMap(element, vif) {
 
       } else {
 
-        payload.filteredValue = self.getLocalization('NO_VALUE');
+        payload.filteredValue = self.getLocalization('no_value');
       }
     }
 

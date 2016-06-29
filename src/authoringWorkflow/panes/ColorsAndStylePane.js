@@ -68,7 +68,7 @@ export var ColorsAndStylePane = React.createClass({
       <div>
         <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}:</label>
         <Styleguide.components.ColorPicker handleColorChange={this.props.onChangePointColor} value={pointColor} />
-        <label className="block-label" htmlFor="point-opacity">translate('panes.colors_and_style.fields.point_opacity.title')}:</label>
+        <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}:</label>
         <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={this.props.onChangePointOpacity} />
         {this.mapLayerControls()}
       </div>

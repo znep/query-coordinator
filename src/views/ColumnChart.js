@@ -322,18 +322,18 @@ function ColumnChart(element, vif) {
     var payload = {
       element: barGroupElement,
       title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
-      unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
+      unfilteredValueLabel: self.getLocalization('flyout_unfiltered_amount_label'),
       unfilteredValue: '{0} {1}'.format(
         utils.formatNumber(datum[UNFILTERED_INDEX]),
         unfilteredValueUnit
       ),
-      selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
+      selectedNotice: self.getLocalization('flyout_selected_notice'),
       selected: datum[SELECTED_INDEX]
     };
 
     if (_lastRenderOptions.showFiltered) {
 
-      payload.filteredValueLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
+      payload.filteredValueLabel = self.getLocalization('flyout_filtered_amount_label');
       payload.filteredValue = '{0} {1}'.format(
         utils.formatNumber(datum[FILTERED_INDEX]),
         filteredValueUnit
@@ -648,7 +648,7 @@ function ColumnChart(element, vif) {
             return '{0}rem'.format(topOffset);
           }).
           classed('undefined', function(d) {
-            return _labelValueOrPlaceholder(d[NAME_INDEX]) === self.getLocalization('NO_VALUE');
+            return _labelValueOrPlaceholder(d[NAME_INDEX]) === self.getLocalization('no_value');
           }).
           select('.text').
             text(function(d) {
@@ -924,7 +924,7 @@ function ColumnChart(element, vif) {
 
   function _labelValueOrPlaceholder(value, placeholder) {
 
-    var placeholderText = placeholder || self.getLocalization('NO_VALUE');
+    var placeholderText = placeholder || self.getLocalization('no_value');
     var valueText;
 
     if ($.isNumeric(value)) {

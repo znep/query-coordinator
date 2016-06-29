@@ -79,10 +79,10 @@ $.fn.socrataColumnChart = function(vif) {
 
   utils.assertHasProperties(
     vif.configuration.localization,
-    'NO_VALUE',
-    'FLYOUT_UNFILTERED_AMOUNT_LABEL',
-    'FLYOUT_FILTERED_AMOUNT_LABEL',
-    'FLYOUT_SELECTED_NOTICE'
+    'no_value',
+    'flyout_unfiltered_amount_label',
+    'flyout_filtered_amount_label',
+    'flyout_selected_notice'
   );
 
   var $element = $(this);

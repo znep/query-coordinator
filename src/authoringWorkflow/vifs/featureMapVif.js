@@ -1,4 +1,4 @@
-import { translate } from '../I18n';
+import { translate, translateGroup } from '../I18n';
 
 export default {
   format: {
@@ -12,7 +12,7 @@ export default {
     pointColor: '#eb6900',
     flyoutTitleColumnName: null,
     hover: true,
-    localization: translate('visualizations.featureMap'),
+    localization: translateGroup('visualizations.feature_map'),
     locateUser: false,
     panAndZoom: true,
     useOriginHost: false

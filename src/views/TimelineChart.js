@@ -553,7 +553,7 @@ function TimelineChart(element, vif) {
 
       payload.title = $target.attr('data-flyout-label');
       payload.unfilteredValue = formatValue(unfilteredValue);
-      payload.unfilteredLabel = self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL');
+      payload.unfilteredLabel = self.getLocalization('flyout_unfiltered_amount_label');
 
       var date = $target.attr('data-start');
 
@@ -562,7 +562,7 @@ function TimelineChart(element, vif) {
 
       if (!_.isUndefined(filteredValue) && (unfilteredValue !== filteredValue || isWithinSelection)) {
         payload.filteredValue = formatValue(filteredValue);
-        payload.filteredLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
+        payload.filteredLabel = self.getLocalization('flyout_filtered_amount_label');
       }
 
       if (isSelectionRendered) {
@@ -587,13 +587,13 @@ function TimelineChart(element, vif) {
       }
 
       payload.unfilteredValue = formatValue(currentDatum.unfiltered);
-      payload.unfilteredLabel = self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL');
+      payload.unfilteredLabel = self.getLocalization('flyout_unfiltered_amount_label');
 
       var isWithinSelection = currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
 
       if (isWithinSelection || currentDatum.unfiltered !== currentDatum.filtered) {
         payload.filteredValue = formatValue(currentDatum.filtered);
-        payload.filteredLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
+        payload.filteredLabel = self.getLocalization('flyout_filtered_amount_label');
       }
 
       if (isSelectionRendered) {

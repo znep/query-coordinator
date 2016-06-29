@@ -1,4 +1,4 @@
-import { translate } from '../I18n';
+import { translate, translateGroup } from '../I18n';
 
 export default {
   format: {
@@ -7,7 +7,7 @@ export default {
   },
   configuration: {
     xAxisScalingMode: 'fit',
-    localization: translate('visualizations.columnChart')
+    localization: translateGroup('visualizations.column_chart')
   },
   description: '',
   series: [

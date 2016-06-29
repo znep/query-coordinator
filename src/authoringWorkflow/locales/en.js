@@ -117,10 +117,12 @@ export default {
       },
       fields: {
         units_one: {
-          title: 'One'
+          title: 'One',
+          placeholder: 'Record'
         },
         units_other: {
-          title: 'Other'
+          title: 'Other',
+          placeholder: 'Records'
         },
         flyout_title: {
           no_value: 'No Flyout Title'
@@ -142,51 +144,51 @@ export default {
         other: 'Records'
       }
     },
-    choroplethMap: {
+    choropleth_map: {
       title: 'Choropleth Map',
-      FLYOUT_SELECTED_NOTICE: 'The page is currently filtered by this value, click to clear it',
-      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-      NO_VALUE: '(No Value)',
-      CLEAR_FILTER_LABEL: 'Clear filter'
+      flyout_selected_notice: 'The page is currently filtered by this value, click to clear it',
+      flyout_unfiltered_amount_label: 'Total',
+      flyout_filtered_amount_label: 'Filtered',
+      no_value: '(No Value)',
+      clear_filter_label: 'Clear filter'
     },
-    columnChart: {
+    column_chart: {
       title: 'Column Chart',
-      NO_VALUE: 'No value',
-      NO_LABEL: '(No Label)',
-      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-      FLYOUT_SELECTED_NOTICE: 'This column is selected',
-      ERROR_COLUMN_CHART_GENERIC: 'Sorry! There was an error rendering this column chart.',
-      ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT: 'For optimal performance and legibility column charts are limited to {0} columns. Use filters to render a more specific chart.',
-      ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT_WITHOUT_PAN: 'For optimal performance and legibility column charts for which panning is disabled are limited to {0} columns. Enable panning or use filters to render a more specific chart.'
+      no_value: 'No value',
+      no_label: '(No Label)',
+      flyout_unfiltered_amount_label: 'Total',
+      flyout_filtered_amount_label: 'Filtered',
+      flyout_selected_notice: 'This column is selected',
+      error_column_chart_generic: 'Sorry! There was an error rendering this column chart.',
+      error_column_chart_exceeded_max_column_count: 'For optimal performance and legibility column charts are limited to {0} columns. Use filters to render a more specific chart.',
+      error_column_chart_exceeded_max_column_count_without_pan: 'For optimal performance and legibility column charts for which panning is disabled are limited to {0} columns. Enable panning or use filters to render a more specific chart.'
     },
-    featureMap: {
+    feature_map: {
       title: 'Feature Map',
-      FLYOUT_FILTER_NOTICE: 'There are too many points at this location',
-      FLYOUT_FILTER_OR_ZOOM_NOTICE: 'Zoom in to see details',
-      FLYOUT_DENSE_DATA_NOTICE: 'Numerous',
-      FLYOUT_CLICK_TO_INSPECT_NOTICE: 'Click to see details',
-      FLYOUT_CLICK_TO_LOCATE_USER_TITLE: 'Click to show your position on the map',
-      FLYOUT_CLICK_TO_LOCATE_USER_NOTICE: 'You may have to give your browser permission to share your current location',
-      FLYOUT_LOCATING_USER_TITLE: 'Your position is being determined',
-      FLYOUT_LOCATE_USER_ERROR_TITLE: 'There was an error determining your location',
-      FLYOUT_LOCATE_USER_ERROR_NOTICE: 'Click to try again',
-      FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE: 'Panning and zooming has been disabled',
-      ROW_INSPECTOR_ROW_DATA_QUERY_FAILED: 'Detailed information about these points cannot be loaded at this time',
-      USER_CURRENT_POSITION: 'Your current location (estimated)',
+      flyout_filter_notice: 'There are too many points at this location',
+      flyout_filter_or_zoom_notice: 'Zoom in to see details',
+      flyout_dense_data_notice: 'Numerous',
+      flyout_click_to_inspect_notice: 'Click to see details',
+      flyout_click_to_locate_user_title: 'Click to show your position on the map',
+      flyout_click_to_locate_user_notice: 'You may have to give your browser permission to share your current location',
+      flyout_locating_user_title: 'Your position is being determined',
+      flyout_locate_user_error_title: 'There was an error determining your location',
+      flyout_locate_user_error_notice: 'Click to try again',
+      flyout_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
+      row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time',
+      user_current_position: 'Your current location (estimated)',
       latitude: 'Latitude',
       longitude: 'Longitude'
     },
-    timelineChart: {
+    timeline_chart: {
       title: 'Timeline Chart',
-      NO_VALUE: 'No value',
-      FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-      FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-      FLYOUT_SELECTED_NOTICE: 'This column is selected',
-      ERROR_TIMELINE_CHART_GENERIC: 'An error was encountered when rendering this chart. Please try again in a few minutes.',
-      ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_WITHOUT_PAN: 'For optimal performance and legibility timeline charts for which panning is disabled are limited to {0} points. Enable panning or use filters to render a more specific chart.',
-      ERROR_TIMELINE_CHART_EXCEEDED_MAX_POINT_COUNT: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.'
+      no_value: 'No value',
+      flyout_unfiltered_amount_label: 'Total',
+      flyout_filtered_amount_label: 'Filtered',
+      flyout_selected_notice: 'This column is selected',
+      error_timeline_chart_generic: 'An error was encountered when rendering this chart. Please try again in a few minutes.',
+      error_timeline_chart_exceeded_max_point_without_pan: 'For optimal performance and legibility timeline charts for which panning is disabled are limited to {0} points. Enable panning or use filters to render a more specific chart.',
+      error_timeline_chart_exceeded_max_point_count: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.'
     }
   }
 };

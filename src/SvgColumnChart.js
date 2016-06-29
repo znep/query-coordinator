@@ -77,7 +77,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
     }
 
     visualization.renderError(
-      visualization.getLocalization('ERROR_COLUMN_CHART_GENERIC')
+      visualization.getLocalization('error_column_chart_generic')
     );
   }
 
@@ -124,7 +124,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
 
             visualization.renderError(
               visualization.getLocalization(
-                'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT'
+                'error_column_chart_exceeded_max_column_count'
               ).format(MAX_COLUMN_COUNT)
             );
           } else {

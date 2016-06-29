@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {isNull, isString, isPlainObject, has, get} from 'lodash';
 
 import en from './locales/en';
 import es from './locales/es';
@@ -7,13 +7,41 @@ var locale = 'en';
 const locales = { en, es };
 
 export const setLocale = key => {
-  if (_.isString(key) && _.has(locales, key.toLowerCase())) {
+  key = isString(key) ? key.toLowerCase() : null;
+
+  if (has(locales, key)) {
     locale = key;
   } else {
-    throw new Error(`I18n: There is not a locale with the key, ${key}`);
+    throw new Error(`I18n: The locale ${key} is not available.`);
   }
 };
 
 export const translate = key => {
-  return _.get(locales[locale], key, `I18n: Translation missing for ${key}.`);
+  key = isString(key) ? key.toLowerCase() : null;
+  var translation = get(locales[locale], key, null);
+
+  if (isString(translation)) {
+    return translation;
+  } else if (isNull(key)) {
+    throw new Error('I18n: translate requires a String.');
+  } else if (isPlainObject(translation)) {
+    throw new Error('I18n: Access to a group of translations is not allowed. Use translateGroup instead.');
+  } else {
+    throw new Error(`I18n: Translation missing for ${key}.`);
+  }
+};
+
+export const translateGroup = key => {
+  key = isString(key) ? key.toLowerCase() : null;
+  var translationGroup = get(locales[locale], key, null);
+
+  if (isPlainObject(translationGroup)) {
+    return translationGroup;
+  } else if (isNull(key)) {
+    throw new Error('I18n: translateGroup requires a String.');
+  } else if (isString(translationGroup)) {
+    throw new Error('I18n: Access to a direct translation is not allowed. Use translate instead.');
+  } else {
+    throw new Error(`I18n: Translations missing for ${key}`);
+  }
 };

@@ -20,9 +20,10 @@ module.exports = function Table(element, vif) {
 
   utils.assertHasProperties(
     vif,
-    'configuration.localization.LATITUDE',
-    'configuration.localization.LONGITUDE',
-    'configuration.localization.NO_COLUMN_DESCRIPTION'
+    'configuration.localization.latitude',
+    'configuration.localization.longitude',
+    'configuration.localization.unable_to_render',
+    'configuration.localization.no_column_description'
   );
 
   _attachEvents(this.element);
@@ -139,8 +140,8 @@ module.exports = function Table(element, vif) {
       '<td data-cell-render-type="{renderTypeName}">',
         '<div>',
           DataTypeFormatter.renderCell(cell, column, {
-            latitude: vif.configuration.localization.LATITUDE,
-            longitude: vif.configuration.localization.LONGITUDE
+            latitude: vif.configuration.localization.latitude,
+            longitude: vif.configuration.localization.longitude
           }),
         '</div>',
       '</td>'
@@ -246,7 +247,7 @@ module.exports = function Table(element, vif) {
   function _renderError() {
     var $errorMessage = $([
       '<div class="alert error">',
-        '<p>{0}</p>'.format(vif.configuration.localization.UNABLE_TO_RENDER),
+        '<p>{0}</p>'.format(vif.configuration.localization.unable_to_render),
       '</div>'
     ].join(''));
 
@@ -288,7 +289,7 @@ module.exports = function Table(element, vif) {
     content = content.format({
       title: $target.text(),
       description: description,
-      noColumnDescription: vif.configuration.localization.NO_COLUMN_DESCRIPTION
+      noColumnDescription: vif.configuration.localization.no_column_description
     });
 
     self.emitEvent(

@@ -93,7 +93,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
     }
 
     visualization.renderError(
-      visualization.getLocalization('ERROR_TIMELINE_CHART_GENERIC')
+      visualization.getLocalization('error_timeline_chart_generic')
     );
   }
 
@@ -140,7 +140,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
 
             visualization.renderError(
               visualization.getLocalization(
-                'ERROR_COLUMN_CHART_EXCEEDED_MAX_COLUMN_COUNT'
+                'error_column_chart_exceeded_max_column_count'
               ).format(MAX_POINT_COUNT)
             );
           } else {

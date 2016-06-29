@@ -819,7 +819,7 @@ export default function AssetSelectorRenderer(options) {
     var isSearching = assetSelectorStore.isImageSearching();
 
     if (hasImages) {
-      var renderedSources = _.indexBy(_.map(_container.find('.gallery-result img'), 'src'));
+      var renderedSources = _.keyBy(_.map(_container.find('.gallery-result img'), 'src'));
       var promises = results.map(function(image) {
         var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
         var alreadyInSources = renderedSources.hasOwnProperty(uri);

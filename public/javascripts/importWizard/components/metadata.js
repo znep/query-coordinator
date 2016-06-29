@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { combineReducers } from 'redux';
+import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
@@ -296,8 +297,18 @@ export function isCustomMetadataValid(metadata: DatasetMetadata) {
   });
 }
 
+export function isEmailValid(contactEmail) {
+  return isEmail(contactEmail) || contactEmail.length === 0;
+}
+
 export function isMetadataValid(metadata: DatasetMetadata) {
-  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata));
+  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata)) && isEmailValid(metadata.contents.contactEmail);
+}
+
+export function isMetadataUnsaved(metadata) {
+  const contents = metadata.contents;
+  const lastSaved = metadata.lastSaved;
+  return !(_.isEqual(contents, lastSaved));
 }
 
 function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx) {
@@ -364,12 +375,6 @@ function renderFlashMessage(importError) {
     return;
   }
   return <FlashMessage flashType="error" message={importError} />;
-}
-
-function isMetadataUnsaved(metadata) {
-  const contents = metadata.contents;
-  const lastSaved = metadata.lastSaved;
-  return !(_.isEqual(contents, lastSaved));
 }
 
 export function view({ metadata, onMetadataAction, importError }) {
@@ -522,7 +527,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               title={I18nPrefixed.email_address} className="textPrompt contactEmail"
               onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            {(metadata.apiCall.type === 'Error') ?
+            {!isEmailValid(metadata.contents.contactEmail) ?
               <label className="error email_help">{I18n.core.validation.email}</label> : null}
           </div>
         </div>
@@ -531,24 +536,22 @@ export function view({ metadata, onMetadataAction, importError }) {
 
         <ul className="wizardButtons clearfix" aria-live="polite">
           <li className="cancel">
-            <a className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</a>
+            <button className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</button>
           </li>
           <li className="save">
-            <a
+            <button
               className="button saveButton"
-              href="#save"
+              disabled={!(isMetadataUnsaved(metadata) && isMetadataValid(metadata))}
               onClick={() => {
                 onMetadataAction(metadataSaveStart());
-                if (isMetadataUnsaved(metadata) && isMetadataValid(metadata)) {
-                  onMetadataAction(updateLastSaved(metadata));
-                  onMetadataAction(metadataSaveComplete(metadata.contents));
-                }
+                onMetadataAction(updateLastSaved(metadata));
+                onMetadataAction(metadataSaveComplete(metadata.contents));
               }}>
               {'Save'}
-            </a>
+            </button>
           </li>
           <li className="next">
-            <a
+            <button
               className="button nextButton"
               href="#"
               onClick={() => {
@@ -558,10 +561,10 @@ export function view({ metadata, onMetadataAction, importError }) {
                   onMetadataAction(Server.saveMetadataThenProceed());
                   onMetadataAction(updateLastSaved(metadata));
                 }
-              }}>{I18n.screens.wizard.next}</a>
+              }}>{I18n.screens.wizard.next}</button>
           </li>
           <li className="prev">
-            <a className="button prevButton" href="#">{I18n.screens.wizard.previous}</a>
+            <button className="button prevButton" href="#" disabled>{I18n.screens.wizard.previous}</button>
           </li>
         </ul>
 

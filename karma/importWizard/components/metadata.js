@@ -19,7 +19,9 @@ import {
   validate,
   isStandardMetadataValid,
   isCustomMetadataValid,
+  isEmailValid,
   isMetadataValid,
+  isMetadataUnsaved,
   view
 } from 'components/metadata';
 
@@ -122,6 +124,9 @@ describe('validators', () => {
       contents: {
         name: '',
         attributionLink: '',
+        contactEmail: '',
+        description: '',
+        tags: [],
         customMetadata: {
           'jack':
             [
@@ -205,6 +210,11 @@ describe('validators', () => {
     expect(customRequired).to.equal(true);
   });
 
+  it('returns true if email is empty', () => {
+    const validEmail = isEmailValid(metadata.contents.contactEmail);
+    expect(validEmail).to.equal(true);
+  });
+
   it('returns false if not all required metadata are filled', () => {
     const standardValid = isMetadataValid(metadata);
     expect(standardValid).to.equal(false);
@@ -217,6 +227,21 @@ describe('validators', () => {
 
     const standardValid = isMetadataValid(metadata);
     expect(standardValid).to.equal(true);
+  });
+
+  it('returns false if metadata has not been updated', () => {
+    metadata.lastSaved = metadata.contents;
+    const unsaved = isMetadataUnsaved(metadata);
+
+    expect(unsaved).to.equal(false);
+  });
+
+  it('returns true if metadata has been updated', () => {
+    metadata.lastSaved = _.cloneDeep(metadata.contents);
+    metadata.contents.name = 'new name';
+    const unsaved = isMetadataUnsaved(metadata);
+
+    expect(unsaved).to.equal(true);
   });
 
 });
@@ -325,6 +350,5 @@ describe('testing for lastSaved', () => {
       expect(contents).to.deep.equal(lastSavedMetadata);
     });
   });
-
 
 });

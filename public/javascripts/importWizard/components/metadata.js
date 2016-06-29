@@ -133,13 +133,13 @@ export function updateNextClicked() {
   };
 }
 
-const MD_LAST_SAVED = 'MD_LAST_SAVED';
-export function updateLastSaved(savedMetadata) {
-  return {
-    type: MD_LAST_SAVED,
-    savedMetadata: savedMetadata
-  };
-}
+// const MD_LAST_SAVED = 'MD_LAST_SAVED';
+// export function updateLastSaved(savedMetadata) {
+//   return {
+//     type: MD_LAST_SAVED,
+//     savedMetadata: savedMetadata
+//   };
+// }
 
 const MD_SAVE_START = 'MD_SAVE_START';
 export function metadataSaveStart() {
@@ -167,18 +167,18 @@ export const update =
   combineReducers({
     nextClicked: updateForNextClicked,
     apiCall: updateAPI,
-    contents: updateContents,
-    lastSaved: updateForLastSaved
+    contents: updateContents
+    // lastSaved: updateForLastSaved
   });
 
-export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
-  switch (action.type) {
-    case MD_LAST_SAVED:
-      return action.savedMetadata.contents;
-    default:
-      return lastSavedMetadata;
-  }
-}
+// export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
+//   switch (action.type) {
+//     case MD_LAST_SAVED:
+//       return action.savedMetadata.contents;
+//     default:
+//       return lastSavedMetadata;
+//   }
+// }
 
 export function updateContents(contents = emptyContents(''), action): DatasetMetadata {
   switch (action.type) {

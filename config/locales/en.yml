@@ -397,24 +397,6 @@ en:
           bad_dates: Chart cannot be rendered due to invalid date values.
           default: Chart cannot be rendered.
           no_data: Chart cannot be rendered with no values.
-      tour:
-        aggregation:
-          step_1:
-            text: We listened to your feedback. We moved a setting to improve customize mode!
-            title: Notice something different?
-          step_2:
-            text: Each card can be summarized by a different column. We also removed the 15 number column limit.
-            title: Use Settings to change the Aggregation function
-          step_3:
-            text: Pick the number column you want to sum, or choose to count the rows.
-            title: Summarize by SUM or COUNT
-          step_4:
-            text: You can add multiple cards for the same column, then summarize by different column values. This allows for useful comparisons.
-            title: It's now more flexible!
-          step_5:
-            text_one: Create your page using this flexible way to summarize data.
-            text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
-            title: Try it yourself!
   controls:
     browse:
       actions:
@@ -1471,6 +1453,10 @@ en:
     view_widget:
       external_content: External Content
       views: Views
+    tour:
+      done: OK
+      title: Datasets have a new look!
+      description: We call it the Dataset Landing Page. But in case you ever want to look at the tabular view of the data, you can access it from here.
   dataslate:
     component:
       edit: Edit this component
@@ -1875,6 +1861,10 @@ en:
       contributors: Contributors
       created: created
       data_provided_by: Data Provided By
+      dataset_landing_page:
+        title: This information is now on the Dataset Landing Page
+        description: All the information that is in this pane, and more, is now on the Dataset Landing Page, in a more consumable and user friendly format.
+        button: Take me there!
       datasync_status: Datasync Status
       description: Description
       downloads: Downloads

@@ -70,8 +70,6 @@ DataCards:
 1004 Generic tool panels (API panel, Save as panel, Other views panel, Aggregation panel)
 1004 Customize bar
 3000 Currently dragged card.
-5000 Shepherd tour overlay
-5001 Shepherd tour
 9999 Modal translucent overlay
 10000 Modal dialog
 10010 Mouse capture overlay (InputHacks)

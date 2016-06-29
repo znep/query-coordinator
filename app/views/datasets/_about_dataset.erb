@@ -1,4 +1,11 @@
 <div class="aboutDataset">
+  <%- if @view.has_landing_page? && FeatureFlags.derive(@view, request).default_to_dataset_landing_page -%>
+    <div class="dslpLink">
+      <h4 class="formHeader"><%= t('screens.about.dataset_landing_page.title') %></h4>
+      <p><%= t('screens.about.dataset_landing_page.description') %></p>
+      <a class="fullButton" href="<%= view_path(@view) %>"><%= t('screens.about.dataset_landing_page.button') %></a>
+    </div>
+  <%- end -%>
   <div class="aboutHeader clearfix">
     <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner) %>">
       <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"

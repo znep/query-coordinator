@@ -60,6 +60,7 @@ module DatasetLandingPageHelper
     ]
 
     server_config = {
+      :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] || APP_CONFIG.dataset_landing_page_airbrake_api_key,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

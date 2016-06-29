@@ -106,6 +106,7 @@
     "webpack-manifest-plugin": "0.4.0"
   },
   "dependencies": {
+    "airbrake-js": "0.5.9",
     "classnames": "2.2.5",
     "clipboard": "1.5.10",
     "component-upload": "0.3.0",

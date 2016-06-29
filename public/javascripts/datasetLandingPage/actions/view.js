@@ -45,7 +45,8 @@ export function publishView() {
 
         dispatch(handleViewPublishSuccess());
         _.delay(redirect, 1000);
-      })['catch'](() => {
+      }).
+      catch(() => {
         dispatch(handleViewPublishError());
       });
   };

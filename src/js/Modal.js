@@ -29,6 +29,7 @@ ModalFactory.prototype = {
         var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
         modals.forEach(function(modal) {
           modal.classList.add('modal-hidden');
+          document.body.classList.remove('modal-open');
         });
       }
     });
@@ -46,6 +47,8 @@ ModalFactory.prototype = {
     modal = this.root.querySelector('#' + modal);
     modal.classList.remove('modal-hidden');
 
+    document.body.classList.add('modal-open');
+
     var windowWidth = document.body.offsetWidth;
     var modalContainer = modal.querySelector('.modal-container');
 
@@ -56,10 +59,7 @@ ModalFactory.prototype = {
         left: 0
       }, {
         duration: animationDuration,
-        easing: animationEasing,
-        complete: function() {
-          document.body.style.overflow = 'hidden';
-        }
+        easing: animationEasing
       });
     }
 
@@ -89,9 +89,8 @@ ModalFactory.prototype = {
     }
 
     function hideModal() {
-      document.body.style.overflow = '';
-
       if (closeable) {
+        document.body.classList.remove('modal-open');
         modal.classList.add('modal-hidden');
       }
     }
@@ -121,10 +120,8 @@ ModalFactory.prototype = {
 
     if (windowWidth >= mobileBreakpoint) {
       modal.style.margin = '';
-      document.body.style.overflow = '';
     } else {
       modal.style.margin = 0;
-      document.body.style.overflow = 'hidden';
     }
   }
 };

@@ -140,7 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var CustomEvent = function(eventName, params) {
 
-	  var customEventParams = _.merge(
+	  var customEventParams = _.assign(
 	    { bubbles: false, cancelable: false, detail: undefined },
 	    params
 	  );
@@ -1065,12 +1065,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	// shim for using process in browser
 
 	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	(function () {
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
+	    }
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
+	    }
+	  }
+	} ())
 	var queue = [];
 	var draining = false;
 	var currentQueue;
 	var queueIndex = -1;
 
 	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -1086,7 +1114,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = setTimeout(cleanUpNextTick);
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
 	    draining = true;
 
 	    var len = queue.length;
@@ -1103,7 +1131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    clearTimeout(timeout);
+	    cachedClearTimeout(timeout);
 	}
 
 	process.nextTick = function (fun) {
@@ -1115,7 +1143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
+	        cachedSetTimeout(drainQueue, 0);
 	    }
 	};
 
@@ -1210,14 +1238,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /**
 	   * Sends any queued metrics
+	   * async: Whether or not to send the metrics asynchronously. If null or undefined, assumed to be true.
 	   */
-	  this.flushMetrics = function() {
+	  this.flushMetrics = function(async) {
 	    var analyticsPayload;
 
 	    if (serverUploadEnabled) {
 	      if (queue.length === 0) {
 	        return;
 	      }
+
+	      if (async === null || async === undefined) {
+	        async = true;
+	      }
+
 	      // create the batched payload and reset the queue
 	      analyticsPayload = JSON.stringify({'metrics': queue});
 	      queue = [];
@@ -1225,6 +1259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      $.ajax({
 	        url: analyticsUrl,
 	        type: 'post',
+	        async: async,
 	        contentType: 'application/text',
 	        headers: {
 	          'X-Socrata-Auth': 'unauthenticated'
@@ -1236,7 +1271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // We want to flush metrics on unload in case we've queued up some metrics and haven't explicitly flushed.
-	  window.onbeforeunload = this.flushMetrics;
+	  window.onbeforeunload = this.flushMetrics(false);
 	};
 
 	module.exports = Analytics;

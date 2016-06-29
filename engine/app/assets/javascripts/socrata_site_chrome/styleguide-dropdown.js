@@ -59,7 +59,6 @@ $(document).ready(function() {
       }
 
       document.addEventListener('click', function(event) {
-        console.info('click');
         var node = event.target;
         while (node.parentElement && !node.classList.contains('dropdown')) {
           node = node.parentElement;

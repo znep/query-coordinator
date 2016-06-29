@@ -1,4 +1,4 @@
-describe('Rich text editor', function() {
+xdescribe('Rich text editor', function() {
   'use strict';
 
   var $rootScope;

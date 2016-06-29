@@ -4,6 +4,7 @@ import Upload from 'component-upload';
 import * as url from 'url';
 import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
+import { authenticityToken, appToken } from '../server';
 
 type FileName = string
 
@@ -33,12 +34,16 @@ function scanUrlForOperation(operation: SharedTypes.OperationName) {
   switch (operation) {
     case 'UploadData':
       urlAttrs.query = {
-        method: 'scan'
+        method: 'scan',
+        authenticity_token: authenticityToken,
+        app_token: appToken
       };
       break;
     case 'UploadGeospatial':
       urlAttrs.query = {
-        method: 'scanShape'
+        method: 'scanShape',
+        authenticity_token: authenticityToken,
+        app_token: appToken
       };
       break;
     default:

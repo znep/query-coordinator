@@ -2,8 +2,9 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
+import I18nMocker from '../I18nMocker';
 import StorytellerUtils from 'StorytellerUtils';
-import 'editor/block-component-renderers/componentGoalTile';
+import {__RewireAPI__ as componentGoalTileAPI} from 'editor/block-component-renderers/componentGoalTile';
 
 describe('componentGoalTile jQuery plugin', function() {
   var $component;
@@ -19,9 +20,6 @@ describe('componentGoalTile jQuery plugin', function() {
     'id': 'test-test',
     'name': 'Goal Title',
     'is_public': true,
-    'metadata': {
-      'custom_subtitle': 'Custom Subtitle'
-    },
     'prevailing_measure': {
       'end': '2015-12-31T23:59:59.000',
       'unit': 'percent',
@@ -33,7 +31,8 @@ describe('componentGoalTile jQuery plugin', function() {
         'progress': {
           'progress': 'good'
         }
-      }
+      },
+      'summary': 'This is a fake summary'
     }
   };
   var fakeDomainStrings = {
@@ -77,12 +76,14 @@ describe('componentGoalTile jQuery plugin', function() {
   }
 
   before(function() {
+    componentGoalTileAPI.__Rewire__('I18n', I18nMocker);
     sinon.stub(StorytellerUtils, 'fetchDomainStrings', function() {
       return Promise.resolve(fakeDomainStrings);
     });
   });
 
   after(function() {
+    componentGoalTileAPI.__ResetDependency__('I18n');
     StorytellerUtils.fetchDomainStrings.restore();
   });
 
@@ -187,6 +188,21 @@ describe('componentGoalTile jQuery plugin', function() {
 
     it('should render the story title', function() {
       assert.equal($component.find('.goal-tile-title').text(), validGoalData.name);
+    });
+
+    it('should render the goal prevailing measure summary', function() {
+      assert.equal($component.find('.goal-tile-metric-subtitle').text(), validGoalData.prevailing_measure.summary);
+    });
+  });
+
+  describe('when there is not a prevailing measure summary', function() {
+    var goalData = _.cloneDeep(validGoalData);
+    delete goalData.prevailing_measure.summary;
+
+    stubApiAndCreateComponentWith(200, goalData, validComponentData);
+
+    it('should render the goal with a default summary', function() {
+      assert.equal($component.find('.goal-tile-metric-subtitle').text(), I18nMocker.t('editor.open_performance.measure.subheadline'));
     });
   });
 

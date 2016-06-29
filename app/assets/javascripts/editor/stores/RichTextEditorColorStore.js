@@ -56,7 +56,7 @@ export default function RichTextEditorColorStore() {
     StorytellerUtils.assertIsOneOfTypes(themeId, 'string');
 
     if (_.startsWith(themeId, 'custom-')) {
-      themeId = parseInt(_.trimLeft(themeId, 'custom-'), 10);
+      themeId = parseInt(_.trimStart(themeId, 'custom-'), 10);
     }
 
     var defaultThemes = Environment.DEFAULT_THEMES.themes;

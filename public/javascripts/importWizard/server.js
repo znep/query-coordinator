@@ -12,6 +12,13 @@ import { goToPage } from './wizard';
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
 
+const authenticityMetaTag = document.querySelector('meta[name=csrf-token]');
+export const authenticityToken: string = authenticityMetaTag === null
+  ? ''
+  : authenticityMetaTag.attributes.content.value;
+
+export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
+
 declare var I18n: any;
 type CurrentUser = { id: string }
 export type Blist = { currentUser: CurrentUser }
@@ -48,6 +55,10 @@ function saveMetadataToViewsApi(datasetId, metadata) {
   return fetch(`/api/views/${datasetId}`, {
     method: 'PUT',
     credentials: 'same-origin',
+    headers: {
+      'X-CSRF-Token': authenticityToken,
+      'X-App-Token': appToken
+    },
     body: JSON.stringify(modelToViewParam(metadata))
   }).then((result) => {
     console.log(result);
@@ -259,7 +270,9 @@ function importData(onError) {
     fetch('/api/imports2.json', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
       },
       credentials: 'same-origin',
       body: formurlencoded({
@@ -312,7 +325,9 @@ function importGeospatial(onError) {
     fetch('/api/imports2.json?method=shapefile', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
       },
       credentials: 'same-origin',
       body: formurlencoded({

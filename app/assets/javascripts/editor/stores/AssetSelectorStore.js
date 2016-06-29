@@ -1346,9 +1346,9 @@ export default function AssetSelectorStore() {
 
   function _parseUrl(url) {
     if (url.match(/https?:\/\//)) {
-      var a = document.createElement('a');
-      a.href = url;
-      return a;
+      // Have to build the anchor node this way to work around IE11 behavior
+      // where the leading slash was dropped from pathname.
+      return $('<a href="' + url + '">').get(0);
     } else {
       return null;
     }

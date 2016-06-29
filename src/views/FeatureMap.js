@@ -568,8 +568,14 @@ function FeatureMap(element, vif) {
     _showLocateUserButtonFlyout();
   }
 
-  function _handleVectorTileMousemove(event) {
+  function _sumPointsByCount(points) {
+    return _.chain(points).
+      map('count').
+      map(_.toNumber).
+      sum();
+  }
 
+  function _handleVectorTileMousemove(event) {
     if (event.hasOwnProperty('tile')) {
 
       // Set flyout data and force a refresh of the flyout
@@ -577,7 +583,7 @@ function FeatureMap(element, vif) {
         x: event.originalEvent.clientX,
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
       };
-      _flyoutData.count = _.sum(event.points, 'count');
+      _flyoutData.count = _sumPointsByCount(event.points);
       _flyoutData.totalPoints = event.tile.totalPoints;
 
       if (_flyoutData.count > 0) {
@@ -598,7 +604,7 @@ function FeatureMap(element, vif) {
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
       };
 
-      _flyoutData.count = _.sum(event.points, 'count');
+      _flyoutData.count = _sumPointsByCount(event.points);
     }
 
     var inspectorDataQueryConfig;
@@ -612,7 +618,7 @@ function FeatureMap(element, vif) {
       inspectorDataQueryConfig = {
         latLng: event.latlng,
         position: position,
-        rowCount: _.sum(event.points, 'count'),
+        rowCount: _sumPointsByCount(event.points),
         queryBounds: _getQueryBounds(event.containerPoint)
       };
 

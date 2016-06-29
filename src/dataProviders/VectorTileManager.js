@@ -960,7 +960,12 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
           // NOTE: `self.options` (which refers to the VectorTileManager
           // instance options) is not the same as `this.options` (which refers
           // to the map instance options).
-          var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
+          var totalPoints = _.chain(e.points).
+            map('count').
+            map(_.toNumber).
+            sum();
+
+          var manyRows = totalPoints > self.options.rowInspectorMaxRowDensity;
           var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
 
           if (!denseData && !manyRows) {

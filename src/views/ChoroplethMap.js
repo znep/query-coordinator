@@ -1458,8 +1458,8 @@ function ChoroplethMap(element, vif) {
         return undefined;
       }
 
-      var values = _.pluck(
-        _.pluck(data.features, 'properties'),
+      var values = _.map(
+        _.map(data.features, 'properties'),
         UNFILTERED_GEOJSON_PROPERTY_NAME
       );
       var min = _.min(values);

@@ -394,7 +394,7 @@ $.fn.socrataFeatureMap = function(vif) {
     }
 
     soqlDataProvider.
-      getRows(_.pluck(displayableColumns, 'fieldName'), query).
+      getRows(_.map(displayableColumns, 'fieldName'), query).
       then(
         handleRowInspectorQuerySuccess,
         handleRowInspectorQueryError

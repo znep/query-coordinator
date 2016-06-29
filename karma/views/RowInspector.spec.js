@@ -151,8 +151,8 @@ describe('socrata.visualizations.views.RowInspector', function() {
             var $values = $rowItems.find('.value');
 
             assert.lengthOf($rowItems, validData[0].length);
-            assert.equal($names.text(), _.pluck(validData[0], 'column').join(''));
-            assert.equal($values.text(), _.pluck(validData[0], 'value').join(''));
+            assert.equal($names.text(), _.map(validData[0], 'column').join(''));
+            assert.equal($values.text(), _.map(validData[0], 'value').join(''));
             assert.equal($rowInspector.find('.paging-info .message div:first-child').text(), 'Showing Row');
           });
 

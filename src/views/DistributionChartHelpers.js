@@ -215,7 +215,7 @@ var helpers = module.exports = {
   // continuous because of the use of an ordinal scale. The zero bucket
   // must be eliminated due to the current way zero buckets are treated.
   getMagnitudeRange: function(dataByMagnitude) {
-    var extent = d3.extent(_.pluck(dataByMagnitude, 'magnitude'));
+    var extent = d3.extent(_.map(dataByMagnitude, 'magnitude'));
     var min = extent[0];
     var max = extent[1];
 

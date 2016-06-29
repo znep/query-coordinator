@@ -203,7 +203,7 @@ $.fn.socrataTable = function(vif) {
 
     utils.assert(
       _.include(
-        _.pluck(_renderState.fetchedData.columns, 'fieldName'),
+        _.map(_renderState.fetchedData.columns, 'fieldName'),
         columnName
       ),
       'column name not found to sort by: {0}'.format(columnName)
@@ -385,7 +385,7 @@ $.fn.socrataTable = function(vif) {
             _.pick(vifToRender, 'datasetUid', 'domain')
           ).
             getDisplayableColumns(datasetMetadata);
-          var displayableColumnsFieldNames = _.pluck(
+          var displayableColumnsFieldNames = _.map(
             displayableColumns,
             'fieldName'
           ).

@@ -330,7 +330,7 @@ describe('MetadataProvider', function() {
         "name" : "Location 1",
         "dataTypeName" : "point",
         "fieldName" : "location_1",
-        "position" : d3.max(_.pluck(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
+        "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 1,
         "renderTypeName" : "point",
         "tableColumnId" : _.uniqueId(),
         "format" : { }
@@ -341,7 +341,7 @@ describe('MetadataProvider', function() {
         "name" : "Location 1 (city)",
         "dataTypeName" : "point",
         "fieldName" : "location_1_city",
-        "position" : d3.max(_.pluck(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
+        "position" : d3.max(_.map(SAMPLE_DATASET_METADATA.columns, 'position')) + 2,
         "renderTypeName" : "point",
         "tableColumnId" : _.uniqueId(),
         "format" : { }

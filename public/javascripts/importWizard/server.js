@@ -27,7 +27,7 @@ export function saveMetadataThenProceed() {
                 dispatch(importError());
                 dispatch(goToPage('Metadata'));
               };
-              dispatch(Metadata.metadataSaveComplete());
+              dispatch(Metadata.metadataSaveComplete(metadata.contents));
               switch (navigation.operation) {
                 case 'UploadData':
                   dispatch(importData(onImportError));

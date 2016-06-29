@@ -44,10 +44,11 @@ export function emptyContents(name: string) {
 }
 
 export function emptyForName(name: string): DatasetMetadata {
+  const lastMetadataSaved = _.cloneDeep(emptyContents(name));
   return {
     nextClicked: false,
     apiCall: {type: 'Not Started'},
-    lastSaved: emptyContents(name),
+    lastSaved: lastMetadataSaved,
     contents: emptyContents(name)
   };
 }
@@ -133,13 +134,14 @@ export function updateNextClicked() {
   };
 }
 
-// const MD_LAST_SAVED = 'MD_LAST_SAVED';
-// export function updateLastSaved(savedMetadata) {
-//   return {
-//     type: MD_LAST_SAVED,
-//     savedMetadata: savedMetadata
-//   };
-// }
+const MD_LAST_SAVED = 'MD_LAST_SAVED';
+export function updateLastSaved(savedMetadata) {
+  const x = _.cloneDeep(savedMetadata);
+  return {
+    type: MD_LAST_SAVED,
+    savedMetadata: x
+  };
+}
 
 const MD_SAVE_START = 'MD_SAVE_START';
 export function metadataSaveStart() {
@@ -149,9 +151,10 @@ export function metadataSaveStart() {
 }
 
 const MD_SAVE_COMPLETE = 'MD_SAVE_COMPLETE';
-export function metadataSaveComplete() {
+export function metadataSaveComplete(contents) {
   return {
-    type: MD_SAVE_COMPLETE
+    type: MD_SAVE_COMPLETE,
+    contents: contents
   };
 }
 
@@ -167,18 +170,18 @@ export const update =
   combineReducers({
     nextClicked: updateForNextClicked,
     apiCall: updateAPI,
-    contents: updateContents
-    // lastSaved: updateForLastSaved
+    contents: updateContents,
+    lastSaved: updateForLastSaved
   });
 
-// export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
-//   switch (action.type) {
-//     case MD_LAST_SAVED:
-//       return action.savedMetadata.contents;
-//     default:
-//       return lastSavedMetadata;
-//   }
-// }
+export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
+  switch (action.type) {
+    case MD_LAST_SAVED:
+      return _.cloneDeep(action.savedMetadata.contents);
+    default:
+      return lastSavedMetadata;
+  }
+}
 
 export function updateContents(contents = emptyContents(''), action): DatasetMetadata {
   switch (action.type) {
@@ -214,7 +217,7 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         attributionLink: action.newAttributionLink
       };
     case MD_UPDATE_CUSTOMMETADATA: {
-      const newCustomMetadata = _.clone(contents.customMetadata);
+      const newCustomMetadata = _.cloneDeep(contents.customMetadata);
       newCustomMetadata[action.setName][action.fieldIdx].value = action.newCustomData;
 
       return {
@@ -251,7 +254,7 @@ export function updateAPI(apiCallState = {type: 'Not Started'}, action) {
     case MD_SAVE_START:
       return {type: 'In Progress'};
     case MD_SAVE_COMPLETE:
-      return {type: 'Success'};
+      return {type: 'Success', contents: action.contents};
     case MD_SAVE_ERROR:
       return {type: 'Error', error: action.err};
     default:
@@ -361,6 +364,12 @@ function renderFlashMessage(importError) {
     return;
   }
   return <FlashMessage flashType="error" message={importError} />;
+}
+
+function isMetadataUnsaved(metadata) {
+  const contents = metadata.contents;
+  const lastSaved = metadata.lastSaved;
+  return !(_.isEqual(contents, lastSaved));
 }
 
 export function view({ metadata, onMetadataAction, importError }) {
@@ -524,15 +533,30 @@ export function view({ metadata, onMetadataAction, importError }) {
           <li className="cancel">
             <a className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</a>
           </li>
+          <li className="save">
+            <a
+              className="button saveButton"
+              href="#save"
+              onClick={() => {
+                onMetadataAction(metadataSaveStart());
+                if (isMetadataUnsaved(metadata) && isMetadataValid(metadata)) {
+                  onMetadataAction(updateLastSaved(metadata));
+                  onMetadataAction(metadataSaveComplete(metadata.contents));
+                }
+              }}>
+              {'Save'}
+              </a>
+          </li>
           <li className="next">
             <a
               className="button nextButton"
               href="#"
               onClick={() => {
                 onMetadataAction(updateNextClicked());
+                onMetadataAction(metadataSaveStart());
                 if (isMetadataValid(metadata)) {
-                  onMetadataAction(metadataSaveStart());
                   onMetadataAction(Server.saveMetadataThenProceed());
+                  onMetadataAction(updateLastSaved(metadata));
                 }
               }}>{I18n.screens.wizard.next}</a>
           </li>

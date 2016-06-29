@@ -760,7 +760,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
             // This ensures that all edgeTests for the given hotspot values
             // are true, which means that the mouse is within threshold of
             // all hotspot values (aka edges).
-            if (_.all(_.at(edgeTests, hotspot), _.identity)) {
+            if (_.every(_.at(edgeTests, hotspot), _.identity)) {
               var neighborTile = _.clone(tile);
               var neighborOffset = _.clone(mouseTileOffset);
 

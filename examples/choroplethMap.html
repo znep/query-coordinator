@@ -153,25 +153,21 @@
       var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
       var $choroplethElement1 = $('#choropleth-map-1');
-      $choroplethElement1.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement1.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement1.socrataChoroplethMap(choropleth1VIF);
 
       var $choroplethElement2 = $('#choropleth-map-2');
-      $choroplethElement2.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement2.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement2.socrataChoroplethMap(choropleth2VIF);
 
       var $choroplethElement3 = $('#choropleth-map-3');
-      $choroplethElement3.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement3.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement3.socrataChoroplethMap(choropleth3VIF);
 
       var $choroplethElement4 = $('#choropleth-map-4');
-      $choroplethElement4.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
       $choroplethElement4.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $choroplethElement4.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement4.socrataChoroplethMap(choropleth4VIF);
@@ -207,19 +203,19 @@
        * Destroy the plugins
        */
 
-      // $choroplethElement1.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement1.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $choroplethElement1.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement1.trigger('destroy');
 
-      // $choroplethElement2.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement2.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $choroplethElement2.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement2.trigger('destroy');
 
-      // $choroplethElement3.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement3.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $choroplethElement3.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement3.trigger('destroy');
 
-      // $choroplethElement4.off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', handleFlyout);
+      // $choroplethElement4.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $choroplethElement4.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement4.trigger('destroy');
     });

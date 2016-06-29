@@ -4,59 +4,54 @@
 #
 # This service is used in the ConsulChecksController#active endpoint.
 
-require 'httparty'
-
 class StorytellerService
 
+  CONSUL_KEYS = {
+    version: 'storyteller/active_version',
+    downtime: 'config/frontend/downtime'
+  }
+
   def self.active?
-    response = nil
+    active_version = consul_reported_version
+    active_version.nil? || active_version == Rails.application.config.version
+  end
 
-    begin
-      response = HTTParty.get(consul_active_version_url, timeout: Rails.application.config.consul_service_timeout)
-    rescue => error
-      Rails.logger.warn("Error while attempting to connect to #{consul_active_version_url}: (#{error.message})")
-    end
-
-    # Only return true when the version in the k/v store is identical to our own instance version.
-    current_active_version(response) == Rails.application.config.version
+  def self.downtimes
+    consul_reported_downtimes || []
   end
 
   private
 
-  def self.current_active_version(response)
+  def self.consul_reported_version
     active_version = nil
 
-    if response.present? && response.ok?
-      active_version_response = response.parsed_response
-
-      active_version = active_version_from_response_json(active_version_response)
-      if active_version
-        # Save response in case we fail getting it later.
-        Rails.cache.write(consul_active_version_url, active_version_response, expires_in: 12.hours)
-      end
+    begin
+      active_version = Diplomat::Kv.get(CONSUL_KEYS[:version])
+      Rails.cache.write("consul:#{CONSUL_KEYS[:version]}", active_version, expires_in: 12.hours)
+    rescue Diplomat::KeyNotFound => error
+      Rails.logger.warn("Failed to find Consul KV #{CONSUL_KEYS[:version]}: #{error.message}")
+    rescue Faraday::ConnectionFailed => error
+      Rails.logger.warn("Unable to connect to Consul: #{error.message}")
     end
 
-    if active_version.blank?
-      # Try and get the previously successful response.
-      cached_response = Rails.cache.read(consul_active_version_url)
-      unless cached_response.nil?
-        active_version = active_version_from_response_json(cached_response)
-      end
-    end
-
-    # If there is no value in the consul k/v store for the active storyteller version,
-    # assume the current version of storyteller is the active version.
-    active_version || Rails.application.config.version
+    active_version || Rails.cache.read("consul:#{CONSUL_KEYS[:version]}")
   end
 
-  def self.active_version_from_response_json(response)
-    active_version_base64 = response.try(:first).try(:fetch, 'Value')
-    unless active_version_base64.nil?
-      Base64.decode64(active_version_base64).strip
-    end
-  end
+  def self.consul_reported_downtimes
+    downtimes = nil
 
-  def self.consul_active_version_url
-    "#{Rails.application.config.consul_service_uri}/v1/kv/storyteller/active_version"
+    begin
+      # within a given environment, downtimes may be specified as a hash or array of hashes
+      downtime_config = Diplomat::Kv.get(CONSUL_KEYS[:downtime])
+      downtimes = [YAML.load(downtime_config).try(:[], Rails.application.config.downtime_config_env)].flatten.compact
+    rescue Psych::SyntaxError => error
+      Rails.logger.warn("Invalid YAML in Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
+    rescue Diplomat::KeyNotFound => error
+      Rails.logger.warn("Failed to find Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
+    rescue Faraday::ConnectionFailed => error
+      Rails.logger.warn("Unable to connect to Consul: #{error.message}")
+    end
+
+    downtimes
   end
 end

@@ -73,7 +73,7 @@ var escapeSpaces = function() {
  */
 var CustomEvent = function(eventName, params) {
 
-  var customEventParams = _.merge(
+  var customEventParams = _.assign(
     { bubbles: false, cancelable: false, detail: undefined },
     params
   );

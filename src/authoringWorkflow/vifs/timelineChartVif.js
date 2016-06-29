@@ -4,6 +4,7 @@ export default {
     version: 2
   },
   configuration: {
+    xAxisScalingMode: 'fit',
     localization: {
       'NO_VALUE': 'No value',
       'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',

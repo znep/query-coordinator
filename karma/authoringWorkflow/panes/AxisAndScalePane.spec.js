@@ -25,6 +25,15 @@ describe('AxisAndScalePane', function() {
   var component;
   var props;
 
+  function setUpVisualization(type) {
+    return function() {
+      var renderedParts = render(type);
+
+      component = renderedParts.component;
+      props = renderedParts.props;
+    };
+  }
+
   function emitsEvent(id, eventName) {
     it(`should emit an ${eventName} event`, function() {
       TestUtils.Simulate.change(component.querySelector(id));
@@ -32,14 +41,7 @@ describe('AxisAndScalePane', function() {
     });
   }
 
-  describe('columnChart', function() {
-    beforeEach(function() {
-      var renderedParts = render('columnChart');
-
-      component = renderedParts.component;
-      props = renderedParts.props;
-    });
-
+  function rendersLabelsAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a top label input', function() {
         expect(component.querySelector('#label-top')).to.exist;
@@ -75,5 +77,15 @@ describe('AxisAndScalePane', function() {
         emitsEvent('#label-right', 'onChangeLabelRight');
       });
     });
+  }
+
+  describe('columnChart', function() {
+    beforeEach(setUpVisualization('columnChart'));
+    rendersLabelsAndEmitsEvents();
+  });
+
+  describe('timelineChart', function() {
+    beforeEach(setUpVisualization('timelineChart'));
+    rendersLabelsAndEmitsEvents();
   });
 });

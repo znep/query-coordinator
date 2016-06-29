@@ -1,19 +1,13 @@
 import { createSelector } from 'reselect';
 
-export const getVifs = state => {
-  return _.get(state, 'vifs', {});
-};
+export const getVifs = state => _.get(state, 'vifs', {})
 
-export const getSelectedVisualizationType = state => {
-  return _.get(state, 'authoring.selectedVisualizationType', null);
-};
+export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
 
 export const getCurrentVif = createSelector(
   getVifs,
   getSelectedVisualizationType,
-  (vifs, selectedVisualizationType) => {
-    return _.get(vifs, selectedVisualizationType, {});
-  }
+  (vifs, selectedVisualizationType) => _.get(vifs, selectedVisualizationType, {})
 );
 
 export const getConfiguration = createSelector(
@@ -23,53 +17,38 @@ export const getConfiguration = createSelector(
 
 export const getDimension = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].dataSource.dimension', null);
-  }
+  vif => _.get(vif, 'series[0].dataSource.dimension', null)
 );
 
 export const getMeasure = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].dataSource.measure', null);
-  }
+  vif => _.get(vif, 'series[0].dataSource.measure', null)
 );
 
 export const getTitle = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'title', null);
-  }
+  vif => _.get(vif, 'title', null)
 );
 
 export const getDescription = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'description', null);
-  }
+  vif => _.get(vif, 'description', null)
 );
 
 export const getBaseColor = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].color.primary', null);
-  }
+  vif => _.get(vif, 'series[0].color.primary', null)
 );
 
 export const getPointColor = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.pointColor', null);
-  }
+  vif => _.get(vif, 'configuration.pointColor', null)
 );
 
 export const getPointOpacity = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.pointOpacity', 1) * 100;
-  }
+  vif => _.get(vif, 'configuration.pointOpacity', 1) * 100
 );
-
 
 export const getColorScale = createSelector(
   getCurrentVif,
@@ -84,65 +63,52 @@ export const getColorScale = createSelector(
 
 export const getBaseLayer = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.baseLayerUri');
-  }
+  vif => _.get(vif, 'configuration.baseLayerUri')
 );
 
 export const getBaseLayerOpacity = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.baseLayerOpacity', 1) * 100;
-  }
+  vif =>  _.get(vif, 'configuration.baseLayerOpacity', 1) * 100
 );
 
 export const getShapefileUid = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.shapefile.uid', null);
-  }
+  vif =>  _.get(vif, 'configuration.shapefile.uid', null)
 );
 
 export const getUnitOne = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].unit.one', null);
-  }
+  vif => _.get(vif, 'series[0].unit.one', null)
 );
 
 export const getUnitOther = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].unit.other', null);
-  }
+  vif =>  _.get(vif, 'series[0].unit.other', null)
 );
 
 export const getFlyoutTitleColumn = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'configuration.flyoutTitleColumnName', null);
-  }
+  vif =>  _.get(vif, 'configuration.flyoutTitleColumnName', null)
 );
 
 export const getDatasetUid = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].dataSource.datasetUid');
-  }
+  vif =>  _.get(vif, 'series[0].dataSource.datasetUid')
 );
 
 export const getDomain = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].dataSource.domain');
-  }
+  vif =>  _.get(vif, 'series[0].dataSource.domain')
+);
+
+export const getXAxisScalingMode = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.xAxisScalingMode')
 );
 
 export const getVisualizationType = createSelector(
   getCurrentVif,
-  vif => {
-    return _.get(vif, 'series[0].type', null);
-  }
+  vif =>  _.get(vif, 'series[0].type', null)
 );
 
 export const hasVisualizationType = createSelector(
@@ -152,9 +118,7 @@ export const hasVisualizationType = createSelector(
 
 export const isChoroplethMap = createSelector(
   getVisualizationType,
-  type => {
-    return type === 'choroplethMap';
-  }
+  type => type === 'choroplethMap'
 );
 
 export const isValidChoroplethMapVif = createSelector(
@@ -184,9 +148,7 @@ export const isValidChoroplethMapVif = createSelector(
 
 export const isColumnChart = createSelector(
   getVisualizationType,
-  type => {
-    return type === 'columnChart';
-  }
+  type => type === 'columnChart'
 );
 
 export const isValidColumnChartVif = createSelector(
@@ -205,9 +167,7 @@ export const isValidColumnChartVif = createSelector(
 
 export const isFeatureMap = createSelector(
   getVisualizationType,
-  type => {
-    return type === 'featureMap';
-  }
+  type => type === 'featureMap'
 );
 
 export const isValidFeatureMapVif = createSelector(
@@ -225,9 +185,7 @@ export const isValidFeatureMapVif = createSelector(
 
 export const isTimelineChart = createSelector(
   getVisualizationType,
-  type => {
-    return type === 'timelineChart';
-  }
+  type => type === 'timelineChart'
 );
 
 export const isValidTimelineChartVif = createSelector(

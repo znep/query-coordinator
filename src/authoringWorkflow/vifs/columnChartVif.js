@@ -4,6 +4,7 @@ export default {
     version: 2
   },
   configuration: {
+    xAxisScalingMode: 'fit',
     // The localization values should be set by the application but are set
     // to string literals for the purposes of this example.
     localization: {

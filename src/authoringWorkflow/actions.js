@@ -190,6 +190,14 @@ export function setLabelRight(labelRight) {
   };
 }
 
+export var SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
+export function setXAxisScalingMode(shouldFit) {
+  return {
+    type: SET_X_AXIS_SCALING_MODE,
+    xAxisScalingMode: shouldFit ? 'fit' : 'pan'
+  };
+}
+
 export var SET_UNITS_ONE = 'SET_UNITS_ONE';
 export function setUnitsOne(one) {
   return {

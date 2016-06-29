@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import { isColumnChart, isTimelineChart } from '../selectors/vifAuthoring';
 import CustomizationTabPane from '../CustomizationTabPane';

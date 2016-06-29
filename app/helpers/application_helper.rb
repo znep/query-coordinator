@@ -4,6 +4,7 @@ module ApplicationHelper
 
   include Browse2Helper
   include BrowseHelper
+  include UserAuthMethods
   include Socrata::UrlHelpers
   # Note: SiteChromeHelper is included automatically due to the naming coinciding with
   # SiteChromeController, but here anyways for posterity

@@ -83,6 +83,7 @@ In the main layout that you are using for your application (usually `app/views/l
 <title><%= site_chrome_window_title %></title>
 <%= site_chrome_favicon_tag %>
 <%= site_chrome_meta_viewport_tag %>
+<%= site_chrome_google_analytics_tag %>
 <%= site_chrome_stylesheet_tag %>
 <%= site_chrome_javascript_tag %>
 ```
@@ -104,6 +105,7 @@ An example layout is shown below:
 
     <%= site_chrome_favicon_tag %>
     <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_google_analytics_tag %>
     <%= site_chrome_stylesheet_tag %>
     <%= site_chrome_javascript_tag %>
   </head>

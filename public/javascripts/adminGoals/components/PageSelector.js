@@ -10,18 +10,18 @@ class PageSelector extends React.Component {
   }
 
   render() {
-    let totalPageCount = _.ceil(this.props.totalGoalCount / this.props.rowsPerPage);
-    let startOffset = this.props.rowsPerPage * this.props.currentPage;
-    let maxPosition = startOffset + this.props.rowsPerPage;
-    let endPosition = maxPosition > this.props.totalGoalCount ? this.props.totalGoalCount : maxPosition;
+    let totalPageCount = _.max([1, _.ceil(this.props.totalGoalCount / this.props.rowsPerPage)]);
+    let startOffset = this.props.rowsPerPage * (this.props.currentPage - 1);
+    let maxIndex = startOffset + this.props.rowsPerPage;
+    let endPosition = maxIndex > this.props.totalGoalCount ? this.props.totalGoalCount : maxIndex;
 
-    let prevAvailable = this.props.currentPage > 0;
+    let prevAvailable = this.props.currentPage > 1;
     let prevProps = { className: classNames('pageChangeIcon', 'icon-arrow-left', { disabled: !prevAvailable }) };
     if (prevAvailable) {
       prevProps.onClick = _.wrap(this.props.currentPage - 1, this.props.changePage);
     }
 
-    let nextAvailable = this.props.currentPage + 1 < totalPageCount;
+    let nextAvailable = this.props.currentPage < totalPageCount;
     let nextProps = { className: classNames('pageChangeIcon', 'icon-arrow-right', { disabled: !nextAvailable }) };
     if (nextAvailable) {
       nextProps.onClick = _.wrap(this.props.currentPage + 1, this.props.changePage);

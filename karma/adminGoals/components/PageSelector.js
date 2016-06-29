@@ -9,7 +9,7 @@ describe('components/GoalTableHead', function() {
       goalTableData: {
         translations: translations,
         rowsPerPage: 10,
-        currentPage: 1,
+        currentPage: 2,
         totalGoalCount: 100
       }
     };
@@ -24,7 +24,7 @@ describe('components/GoalTableHead', function() {
       goalTableData: {
         translations: translations,
         rowsPerPage: 10,
-        currentPage: 0,
+        currentPage: 1,
         totalGoalCount: 100
       }
     };
@@ -39,7 +39,7 @@ describe('components/GoalTableHead', function() {
       goalTableData: {
         translations: translations,
         rowsPerPage: 10,
-        currentPage: 0,
+        currentPage: 1,
         totalGoalCount: 100
       }
     };
@@ -61,6 +61,38 @@ describe('components/GoalTableHead', function() {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
+    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
+  });
+
+  it('prev & next link shouldnt be disabled in middle pages', function() {
+    var state = {
+      goalTableData: {
+        translations: translations,
+        rowsPerPage: 10,
+        currentPage: 5,
+        totalGoalCount: 100
+      }
+    };
+
+    var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
+
+    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.not.be.true;
+    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.not.be.true;
+  });
+
+  it('prev & next link should be disabled if there is only 1 page', function() {
+    var state = {
+      goalTableData: {
+        translations: translations,
+        rowsPerPage: 10,
+        currentPage: 1,
+        totalGoalCount: 9
+      }
+    };
+
+    var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
+
+    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
     expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
   });
 

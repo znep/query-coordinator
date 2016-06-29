@@ -26,6 +26,7 @@ export function tableLoadPage() {
     return getDashboards().
       then(getGoals).
       then(mergeDashboards).
+      then(dispatchTotalGoalCount).
       then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
@@ -58,11 +59,16 @@ export function tableLoadPage() {
         value();
     }
 
-    function trimToPageSize(goals) {
+    function dispatchTotalGoalCount(goals) {
       dispatch(setTotalGoalCount(goals.length));
 
-      let sliceStart = state.getIn(['goalTableData', 'currentPage']) * state.getIn(['goalTableData', 'rowsPerPage']);
-      let sliceEnd = state.getIn(['goalTableData', 'currentPage']) * state.getIn(['goalTableData', 'rowsPerPage']) +
+      return goals;
+    }
+
+    function trimToPageSize(goals) {
+      let index = state.getIn(['goalTableData', 'currentPage']) - 1;
+      let sliceStart = index * state.getIn(['goalTableData', 'rowsPerPage']);
+      let sliceEnd = index * state.getIn(['goalTableData', 'rowsPerPage']) +
         state.getIn(['goalTableData', 'rowsPerPage']);
 
       return _.slice(goals, sliceStart, sliceEnd);

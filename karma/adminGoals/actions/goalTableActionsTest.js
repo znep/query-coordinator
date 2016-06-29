@@ -69,7 +69,7 @@ describe('actions/goalTableActions', function() {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
         rowsPerPage: 100,
-        currentPage: 0
+        currentPage: 1
       }
     }));
     return store.dispatch(tableLoadPage()).then(function() {
@@ -95,7 +95,7 @@ describe('actions/goalTableActions', function() {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
         rowsPerPage: 2,
-        currentPage: 0
+        currentPage: 1
       }
     }));
     return store.dispatch(tableLoadPage()).then(function() {

@@ -2467,6 +2467,10 @@ en:
                 title: Window or Tab Icon (favicon)
                 description: URL reference to the icon displayed in the window, tab, and browser URL field.
                 placeholder: URL
+              google_analytics_token:
+                title: Google Analytics Token
+                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
+                placeholder: UA-12345678-1
           header:
             title: Header Bar
             fields:

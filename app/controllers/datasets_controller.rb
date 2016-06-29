@@ -47,6 +47,7 @@ class DatasetsController < ApplicationController
 
     return if @view.nil?
 
+    # Ingress & draft logic
     if FeatureFlags.derive(nil, request).ingress_reenter
       if @view.displayType == 'draft'
         unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
@@ -70,10 +71,48 @@ class DatasetsController < ApplicationController
       }.html_safe
     end
 
+    # adjust layout to thin versions (rather than '_full')
+    @page_custom_header = 'header'
+    @page_custom_footer = 'footer'
+    @page_custom_chrome = ''
+    @suppress_content_wrapper = true
+
+    if is_mobile?
+      return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
+    end
+
+    dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
+    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
+
+    # NBE/OBE redirect & flash messages
+    if @view.new_backend? && !permitted_nbe_view?
+      destination_url = view_redirection_url
+
+      if show_nbe_redirection_warning?
+        flash.now[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
+      end
+
+      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
+        if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
+          begin
+            pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
+            return redirect_to "/view/#{pages.first[:pageId]}" unless pages.empty?
+          rescue AuthenticationRequired, UnauthorizedDatasetMetadataRequest,
+                 DatasetMetadataNotFound, UnknownRequestError
+            # Do nothing.
+          end
+        end
+        if destination_url == '/'
+          flash.now[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
+        end
+        return redirect_to destination_url
+      end
+    end
+
+    # Dataset landing page case
     if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
-        flash.keep
         return redirect_to canonical_path
       end
 
@@ -96,46 +135,6 @@ class DatasetsController < ApplicationController
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 
       return
-    end
-
-    # adjust layout to thin versions (rather than '_full')
-    @page_custom_header = 'header'
-    @page_custom_footer = 'footer'
-    @page_custom_chrome = ''
-    @suppress_content_wrapper = true
-
-    if is_mobile?
-      flash.keep
-      return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
-    end
-
-    dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
-    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
-
-    if @view.new_backend? && !permitted_nbe_view?
-      destination_url = view_redirection_url
-
-      if show_nbe_redirection_warning?
-        flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
-      end
-
-      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
-        if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
-          begin
-            pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
-            return redirect_to "/view/#{pages.first[:pageId]}" unless pages.empty?
-          rescue AuthenticationRequired, UnauthorizedDatasetMetadataRequest,
-                 DatasetMetadataNotFound, UnknownRequestError
-            # Do nothing.
-          end
-        end
-        if destination_url == '/'
-          flash[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
-        end
-        flash.keep
-        return redirect_to destination_url
-      end
-
     end
 
     etag = "#{dsmtime}-#{user}"
@@ -197,8 +196,9 @@ class DatasetsController < ApplicationController
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
+      # when setting flash messages and redirectly to datasets#show, we fall through
+      # here, so persist any previously set flash messages (like timeout errors from bootstrap)
       flash.keep
-
       return redirect_to canonical_path
     end
 
@@ -336,8 +336,6 @@ class DatasetsController < ApplicationController
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
-      flash.keep
-
       return redirect_to canonical_path
     end
 

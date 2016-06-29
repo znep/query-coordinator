@@ -197,7 +197,7 @@ var helpers = module.exports = {
   // Returns an object mapping magnitudes to buckets. Also merges the
   // bucket with magnitude zero into the bucket with magnitude one.
   getDataByMagnitude: function(data) {
-    var dataByMagnitude = _.indexBy(_.cloneDeep(data), 'magnitude');
+    var dataByMagnitude = _.keyBy(_.cloneDeep(data), 'magnitude');
 
     // Merge zero-bucket into one-bucket.
     if (_.isObject(dataByMagnitude[0])) {

@@ -585,11 +585,11 @@ $.fn.socrataTimelineChart = function(vif) {
 
   function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
 
-    var unfilteredAsHash = _.indexBy(
+    var unfilteredAsHash = _.keyBy(
       unfiltered.rows,
       unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );
-    var filteredAsHash = _.indexBy(
+    var filteredAsHash = _.keyBy(
       filtered.rows,
       filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );

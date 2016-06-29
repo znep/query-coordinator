@@ -329,8 +329,8 @@ $.fn.socrataChoroplethMap = function(vif) {
     filteredData,
     vifToRender) {
 
-    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
-    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
+    var unfilteredDataAsHash = _.mapValues(_.keyBy(unfilteredData, 'name'), 'value');
+    var filteredDataAsHash = _.mapValues(_.keyBy(filteredData, 'name'), 'value');
     var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
     var ownFilterOperands = filters.

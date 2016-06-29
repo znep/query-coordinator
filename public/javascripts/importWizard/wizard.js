@@ -41,7 +41,8 @@ type NewDatasetModel = {
   upload: UploadFile.FileUpload,
   transform: ImportColumns.Transform,               // only used in UploadData operation
   layers: Array<Layer>,               // only used in UploadGeo operation
-  metadata: Metadata.DatasetMetadata
+  metadata: Metadata.DatasetMetadata,
+  importStatus: Server.ImportStatus
 }
 
 const initialNavigation: Navigation = {
@@ -242,7 +243,8 @@ export function view({ state, dispatch }) {
               return (
                 <Importing.view
                   importStatus={state.importStatus}
-                  operation={state.navigation.operation} />
+                  operation={state.navigation.operation}
+                  onNotifyMe={() => dispatch(Server.addNotificationInterest())} />
               );
 
             case 'Finish':

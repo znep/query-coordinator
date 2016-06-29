@@ -267,7 +267,7 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
           ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
           : null
         }
-        {(field['private'])
+        {(field.private)
           ? <div className="additionalHelp">{I18n.screens.edit_metadata.private_help}</div>
           : null
         }

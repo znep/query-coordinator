@@ -6,8 +6,31 @@ import {
   modelToViewParam,
   customMetadataModelToCoreView,
   coreViewToModel,
-  transformToImports2Translation
+  transformToImports2Translation,
+  update,
+  importProgress
 } from 'server';
+
+describe('ImportStatus reducer', () => {
+  const stateBefore = { type: 'Started' };
+  it('adds a notification key when notifications are enabled', () => {
+    const stateAfter = update(stateBefore, importProgress({rowsImported: 0}, true));
+    expect(stateAfter).to.deep.equal({
+      type: 'InProgress',
+      progress: { rowsImported: 0 },
+      notification: 'Available'
+    });
+  });
+
+  it('does not add a notification key when notifications are not enabled', () => {
+    const stateAfter = update(stateBefore, importProgress({rowsImported: 0}));
+    expect(stateAfter).to.deep.equal({
+      type: 'InProgress',
+      progress: { rowsImported: 0 }
+    });
+  });
+
+});
 
 describe("testing for API responses", () => {
   const metadata = {

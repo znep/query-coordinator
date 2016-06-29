@@ -22,7 +22,7 @@ export function view(props) {
         title={I18nPrefixed.import_explain}
         onClick={onChooseOperation('UploadData')}>
         <span className="icon"></span>
-        <p>{I18nPrefixed['import']}</p>
+        <p>{I18nPrefixed.import}</p>
       </div>
     </li>
   ];

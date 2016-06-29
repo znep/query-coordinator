@@ -2742,6 +2742,7 @@ en:
       notify_me: Notify me
       notify_me_messaging: via email when this completes.
       notify_me_success_html: <strong>Great!</strong> We will send an email to <strong>%{email}</strong> when your dataset is ready.
+      notify_me_success_html_js: <strong>Great!</strong> We will send an email to <strong>{0}</strong> when your dataset is ready.
       notify_me_success_addl: It is safe to close this browser in the meantime.
       notify_me_error_html: Something went wrong trying to schedule the notification email. Please try again later, or contact <a href="mailto:support@socrata.com">Socrata Support</a> if the problem persists.
       processing: Processing...

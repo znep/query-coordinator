@@ -13,6 +13,9 @@
     "padded-blocks": 0,
     "prefer-template": 0,
     "space-in-parens": 0,
-    "vars-on-top": 0
+    "vars-on-top": 0,
+    "dot-notation": ["error", {
+      "allowKeywords": true
+    }]
   }
 }

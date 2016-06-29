@@ -97,7 +97,7 @@ export function submitContactForm() {
         dispatch(handleContactFormSuccess());
         dispatch(emitMixpanelEvent({ name: 'Contacted Dataset Owner' }));
       }).
-      catch((error) => {
+      catch(function(error) {
         return error.response.json().
           then(function(response) {
             if (response.message === 'Invalid Recaptcha') {

@@ -196,9 +196,9 @@ export var ContactForm = React.createClass({
     return (
       <div role="dialog" aria-labelledby="contact-owner-title">
         <header className="modal-header">
-          <h1 id="contact-owner-title" className="h5 modal-header-title">
+          <h2 id="contact-owner-title" className="h5 modal-header-title">
             {I18n.contact_dataset_owner_modal.title}
-          </h1>
+          </h2>
           <button
             aria-label={I18n.close}
             className="btn btn-transparent modal-header-dismiss"

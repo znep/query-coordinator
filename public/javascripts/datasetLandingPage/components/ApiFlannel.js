@@ -161,7 +161,7 @@ export var ApiFlannel = React.createClass({
         id="api-flannel"
         className="flannel flannel-hidden">
         <header className="flannel-header">
-          <h4 id="api-flannel-title" className="flannel-header-title">{I18n.api_flannel.title}</h4>
+          <h2 id="api-flannel-title" className="flannel-header-title">{I18n.api_flannel.title}</h2>
           <button
             aria-label={I18n.close}
             className="btn btn-transparent flannel-header-dismiss"

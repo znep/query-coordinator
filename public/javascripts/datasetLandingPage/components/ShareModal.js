@@ -31,7 +31,7 @@ export var ShareModal = function(props) {
       data-modal-dismiss>
       <div className="modal-container">
         <header className="modal-header">
-          <h5 id="share-modal-title" className="h5 modal-header-title">{I18n.share.title}</h5>
+          <h2 id="share-modal-title" className="h2 modal-header-title">{I18n.share.title}</h2>
           <button
             aria-label={I18n.close}
             className="btn btn-transparent modal-header-dismiss"

@@ -445,7 +445,7 @@ main.container.landing-page-container {
   .metadata-table {
     padding: 0 15px;
 
-    h5.metadata-table-title {
+    h3.metadata-table-title {
       font-size: 15px;
       font-weight: 600;
       margin: 0;
@@ -794,7 +794,11 @@ section.landing-page-section.schema-preview {
   width: 420px;
   max-width: 100%; // mobile
 
-  h4, h6 {
+  h2 {
+    font-size: 20px;
+  }
+
+  h2, h6 {
     font-weight: 400;
     margin-top: 0;
     margin-bottom: 0;
@@ -813,8 +817,10 @@ section.landing-page-section.schema-preview {
 
 #odata-modal {
   .modal-header {
-    h5 {
+    h2 {
       margin: 0;
+      font-size: 19px;
+      font-weight: normal;
     }
   }
 
@@ -877,8 +883,11 @@ section.landing-page-section.schema-preview {
 
 #share-modal {
   .modal-header {
-    h5 {
+    h2 {
       margin: 0;
+      font-size: 19px;
+      font-weight: normal;
+      color: $dark-grey-2;
     }
 
     margin-bottom: 24px;

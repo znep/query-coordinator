@@ -370,20 +370,21 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-function renderFlashMessage(importError) {
-  if (_.isUndefined(importError)) {
+function renderFlashMessage(apiCall) {
+  if (apiCall.type !== 'Error') {
     return;
+  } else {
+    return <FlashMessage flashType="error" message={apiCall.error.message} />;
   }
-  return <FlashMessage flashType="error" message={importError} />;
 }
 
-export function view({ metadata, onMetadataAction, importError }) {
+export function view({ metadata, onMetadataAction }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
   return (
     <div className="metadataPane">
-      {renderFlashMessage(importError)}
+      {renderFlashMessage(metadata.apiCall)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
         <div className="externalDatasetMetadata">
@@ -547,7 +548,7 @@ export function view({ metadata, onMetadataAction, importError }) {
                 onMetadataAction(updateLastSaved(metadata));
                 onMetadataAction(metadataSaveComplete(metadata.contents));
               }}>
-              {'Save'}
+              Save
             </button>
           </li>
           <li className="next">
@@ -575,6 +576,5 @@ export function view({ metadata, onMetadataAction, importError }) {
 
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
-  onMetadataAction: PropTypes.func.isRequired,
-  importError: PropTypes.string
+  onMetadataAction: PropTypes.func.isRequired
 };

@@ -648,6 +648,7 @@ en:
           main: Results %{body}
           term: for "%{term}"
     charts:
+      inaccessible: This visualization is inaccessible or missing.
       missing_column_html: Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">this support article</a> or contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.
       negatives_in_data: 'Invalid chart: negative values present'
       no_data: No data
@@ -668,8 +669,6 @@ en:
         rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
-      missing_column_html: 'Oops... looks like a configuration change was made to the dataset powering this chart. If you are the owner of this page, please see <a href="https://support.socrata.com/hc/en-us/articles/216102847">this support article</a> or contact <a href="mailto:support@socrata.com">support@socrata.com</a> for assistance.'
-      inaccessible: 'This visualization is inaccessible or missing.'
     common:
       auth_required: You must be logged in to %{action_phrase}
       dataset_picker:
@@ -1274,9 +1273,9 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     back: Back
-    bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
     bootstrap_button: Create a Visualization
     bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new Data Lens.
+    bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
     cancel: Cancel
     change: Change
     choose: Choose
@@ -1285,7 +1284,7 @@ en:
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
       email: Your Email
-      email_description: (Your email address will be shared with the dataset owner so they can get back to you)
+      email_description: "(Your email address will be shared with the dataset owner so they can get back to you)"
       error_empty_email: Please fill in your email so the data owner can get back to you.
       error_empty_message: Please fill in the message form.
       error_empty_recaptcha: Please confirm you are not a robot by checking the box above.
@@ -1329,19 +1328,19 @@ en:
       shapefile: Shapefile
     error: Error
     featured_content:
-      title: Featured Content Using this Data
       manage_prompt:
-        message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
         button: Manage Featured Content
+        message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
+      title: Featured Content Using this Data
     featured_content_modal:
       external: External Resource
       external_resource_form:
         description: Description
-        header:  Feature an External Resource
-        preview_image: Preview Image
+        header: Feature an External Resource
         invalid_image_message: This does not look like an image. Try uploading a gif, png, or jpg.
         invalid_url_message: This looks like an invalid link. Try adding http:// to the beginning of your link.
         message: Create a link to some external asset relating to this data. It could be an awesome visualization on the web, a blog post about how the data was released, or a link to another part of your site.
+        preview_image: Preview Image
         title: Title
         url: Link to Resource
       header: Manage Featured Content
@@ -1354,16 +1353,20 @@ en:
       story_form:
         header: Feature a Socrata Story
         invalid_url_message: Hmm... Something went wrong. Try using a valid link to a Scorata Story.
-        message_html: 'Using Socrata Perspectives, guide your users to relevant narratives based on this data. For a full list of public stories on this domain <a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a>'
+        message_html: Using Socrata Perspectives, guide your users to relevant narratives based on this data. For a full list of public stories on this domain <a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a>
         url: Link to Story
       title: Featured Content
-      visualization: Visualization
       view_selector_modal:
-         header: Feature a Socrata Visualization
-         message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
-         view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
+        header: Feature a Socrata Visualization
+        message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
+        view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
+      visualization: Visualization
+    featured_views:
+      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
+      title: Popular Content Using this Data
+      view: View
     feedback:
-      panel_details_html: 'With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.'
+      panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
       panel_title: Do you want to include an annotated screenshot of the current page?
       screenshot_no: No thanks
       screenshot_yes: Yes, include a screenshot
@@ -1390,8 +1393,8 @@ en:
       tags: Tags
       title: About this Dataset
       topics: Topics
-      views: Views
       view_statistics: View all statistics for this Dataset
+      views: Views
     more: Show More
     multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
@@ -1407,9 +1410,9 @@ en:
       view: View
     private_notice: You are looking at a private dataset.
     publish: Publish
-    published: Published
-    publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
     publish_error: There was a problem publishing this dataset.  Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
+    publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
+    published: Published
     published_by: Data Provided by
     remove: Remove
     save: Save
@@ -1612,6 +1615,22 @@ en:
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
   govstat:
+    admin:
+      goal_values:
+        status_private: Private
+        status_public: Public
+      listing:
+        dashboard: Dashboard
+        default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
+        goal_page: Goal Page
+        goal_status: Goal Status
+        manage_on_goal_page: Manage on Goal Page
+        owner: Owner
+        rows_per_page: Rows per page
+        title: Title
+        updated_at: Updated
+        view_dashboard: View Dashboard
+        visibility: Visibility
     chrome:
       header:
         links:
@@ -1647,6 +1666,28 @@ en:
       sdp_templates: Data Player Templates
       title: Manage Site Configuration
       users: Users
+    measure:
+      end_progress:
+        bad: Did not meet target
+        good: Achieved Goal
+        needs_more_data: Needed More Data
+        no_judgement: Measured
+        none: Needed More Data
+        poor: Did not meet target
+        progressing: Almost met target
+        within_tolerance: Almost met target
+      progress:
+        bad: Needs Improvement
+        good: On Track
+        needs_more_data: Needs More Data
+        no_judgement: Measuring
+        no_status: No Status
+        none: Needs More Data
+        poor: Needs Improvement
+        progressing: In Progress
+        within_tolerance: Near Target
+      subheadline: This goal is measured by tracking {0} in {1}.
+      unit_percent: percent
     reports:
       component:
         base_map: Base Map
@@ -1688,45 +1729,6 @@ en:
       layouts: Layouts
       list_layout: List Layout
       title: Select Layout
-    #measure shoud be kept in sync with janus-govstat
-    measure:
-      unit_percent: percent
-      progress:
-        no_judgement: Measuring
-        none: Needs More Data
-        needs_more_data: Needs More Data
-        within_tolerance: Near Target
-        good: On Track
-        progressing: In Progress
-        poor: Needs Improvement
-        bad: Needs Improvement
-        no_status: No Status
-      end_progress:
-        no_judgement: Measured
-        none: Needed More Data
-        needs_more_data: Needed More Data
-        within_tolerance: Almost met target
-        good: Achieved Goal
-        progressing: Almost met target
-        poor: Did not meet target
-        bad: Did not meet target
-      subheadline: This goal is measured by tracking {0} in {1}.
-    admin:
-      listing:
-        title: Title
-        owner: Owner
-        updated_at: Updated
-        visibility: Visibility
-        goal_status: Goal Status
-        dashboard: Dashboard
-        manage_on_goal_page: Manage on Goal Page
-        view_dashboard: View Dashboard
-        goal_page: Goal Page
-        default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
-        rows_per_page: Rows per page
-      goal_values:
-        status_public: Public
-        status_private: Private
   plugins:
     daterangepicker:
       clear: Clear
@@ -1869,6 +1871,58 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      connector:
+        actions: Actions
+        add_connector: Add Connector
+        add_new: Add new
+        all_assets: Connect all assets
+        arcgis_server_address: ArcGIS Server Address
+        assets_connected:
+          one: 1 asset connected
+          other: "%{count} assets connected"
+        assets_discovered:
+          one: 1 asset discovered
+          other: "%{count} assets discovered"
+        back_to_connector_list: Back to Connector list
+        catalog: Catalog
+        connected_assets: Connected assets
+        current_status: Current Status
+        data: Data
+        discovered_assets: Discovered assets
+        edit: Edit
+        edit_connector: 'Edit Connector: %{url}'
+        errors:
+          duplicate_server_error: That Esri Server has already been connected to this domain.
+          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
+          json_format_error: Your JSON was malformed.
+          missing_attributes_error: 'These parameters were missing: %{missing}.'
+          not_found_error: That resource was not found.
+          problem_with_errors: We were unable to process your request.
+          server_ping_error: 'Could not reach server: %{url}'
+          unknown_error: 'Your request failed for the following reason: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS Server address
+        failing: Failing
+        flashes:
+          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+          deleted: Your connector has been marked for deletion.
+          server_not_found: We could not find that server-- it may have been recently deleted.
+          updated: Your connector's settings have been saved.
+        ignore: Ignored
+        last_synced: Last synced
+        never: Never
+        no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
+        not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
+        not_yet: Sync in progress
+        save: Save
+        search: Search the domain
+        selective_connection: Selective Connection
+        service_unavailable: Connector services are currently unavailable.
+        some_assets: Connect only these assets
+        source: Connector source
+        success: Success
+        terminate: Terminate
+        title: Manage Connectors
       datasets:
         asset_inventory:
           tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
@@ -1884,59 +1938,6 @@ en:
         title: Asset Inventory
         unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
-      connector:
-        actions: Actions
-        add_connector: Add Connector
-        add_new: Add new
-        all_assets: Connect all assets
-        arcgis_server_address: ArcGIS Server Address
-        assets_connected:
-          one: 1 asset connected
-          other: '%{count} assets connected'
-        assets_discovered:
-          one: 1 asset discovered
-          other: '%{count} assets discovered'
-        back_to_connector_list: Back to Connector list
-        catalog: Catalog
-        connected_assets: Connected assets
-        current_status: Current Status
-        data: Data
-        edit: Edit
-        edit_connector: 'Edit Connector: %{url}'
-        errors:
-          duplicate_server_error: That Esri Server has already been connected to this domain.
-          invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: Your JSON was malformed.
-          missing_attributes_error: 'These parameters were missing: %{missing}.'
-          not_found_error: That resource was not found.
-          problem_with_errors: 'We were unable to process your request.'
-          server_ping_error: 'Could not reach server: %{url}'
-          unknown_error: 'Your request failed for the following reason: %{reason}'
-        esri_arcgis: Esri ArcGIS
-        esri_arcgis_url: ArcGIS Server address
-        failing: Failing
-        discovered_assets: Discovered assets
-        flashes:
-          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
-          deleted: Your connector has been marked for deletion.
-          server_not_found: We could not find that server-- it may have been recently deleted.
-          updated: Your connector's settings have been saved.
-        ignore: Ignored
-        last_synced: Last synced
-        not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
-        no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
-        not_yet: Not yet synced
-        search: Search the domain
-        selective_connection: Selective Connection
-        service_unavailable: 'Connector services are currently unavailable.'
-        source: Connector source
-        some_assets: Connect only these assets
-        terminate: Terminate
-        title: Manage Connectors
-        success: Success
-        save: Save
-        not_yet: Sync in progress
-        never: Never
       federation:
         accept: Accept
         accepted: Accepted
@@ -2014,7 +2015,8 @@ en:
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.
         page_title: Manage Spatial Lens
-        picker_explanation_html: <p>Choose a geospatial layer that you want to use as the basis for your Spatial Lens.</p><p>You can click on the name to preview the layer in a new browser tab.</p>
+        picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
+        picker_explanation_html: "<p>Choose a geospatial layer that you want to use as the basis for your Spatial Lens.</p><p>You can click on the name to preview the layer in a new browser tab.</p>"
         picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
         region_name: Boundary Name
         remove: Remove
@@ -2097,10 +2099,10 @@ en:
         metadata_description: Manage the dataset metadata fields, including categories and custom fields
         sdp_templates: SDP Templates
         sdp_templates_description: Manage and customize the templates used for publishing your data via Socrata Data Players
-        site_chrome: Site Appearance
-        site_chrome_description: Configure the appearance of your Socrata site
         site_analytics: Site Analytics
         site_analytics_description: View sitewide statistics for datasets, views, visitors and more
+        site_chrome: Site Appearance
+        site_chrome_description: Configure the appearance of your Socrata site
         stories: Stories
         stories_description: Edit custom story themes
         users: Users
@@ -2445,133 +2447,133 @@ en:
         'true': true
         up: Up
       site_chrome:
-        description: Configure the appearance of your Socrata site.
-        site_appearance: Site Appearance
-        preview_changes: Preview Changes
-        save_changes: Save Changes
-        save: Save
         cancel: Cancel
+        description: Configure the appearance of your Socrata site.
+        preview_changes: Preview Changes
+        save: Save
+        save_changes: Save Changes
+        site_appearance: Site Appearance
         tabs:
-          general:
-            title: General Settings
-            fields:
-              template:
-                title: Template
-                description: Adjust the appearance of the header/footer by changing the template. Supported templates are "default" and "rally".
-                placeholder: Rally
-              window_title_display:
-                title: Window or Tab Title Display
-                description: Name displayed in the window or tab title.
-                placeholder: Evergreen Open Data
-              window_icon:
-                title: Window or Tab Icon (favicon)
-                description: URL reference to the icon displayed in the window, tab, and browser URL field.
-                placeholder: URL
-              google_analytics_token:
-                title: Google Analytics Token
-                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
-                placeholder: UA-12345678-1
-                error: 'Token should match the format: UA-XXXXX-XXXX'
-          header:
-            title: Header Bar
-            fields:
-              header_bar_logo:
-                title: Header Bar Logo
-                description: URL reference to the header bar logo. Recommended minimum size is 100 x 40px. This logo will be displayed at a small size.
-                placeholder: URL
-              header_display_name:
-                title: Header Display Name
-                description: Name displayed in the Header Bar. Usually set to your organization's name.
-                placeholder: Evergreen Open Data
-              bar_background_color:
-                title: Bar Background Color
-                description: Background color of the header bar and the color of text and links that sit atop the bar.
-                placeholder: '#123456'
-              bar_text_link_color:
-                title: Bar Text & Link Color
-                placeholder: '#ffffff'
-              menu_links:
-                title: Menu Links
-                description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
-              link_title_label: Link Label
-              link_title_placeholder: Link Text
-              url_label: URL
-              url_placeholder: http://data.evergreen.gov
           footer:
-            title: Footer
             fields:
-              footer_logo:
-                title: Footer Logo
-                description: URL reference the footer logo. Recommended minimum size is 300px x 200px.
-                placeholder: URL
-              footer_display_name:
-                title: Footer Display Name
-                description: Name displayed in the Footer Bar. Usually set to your organization's name.
-                placeholder: Evergreen Open Data
-              footer_background_color:
-                title: Footer Background Color
-                description: Background color of the footer and the color of the text and links displayed inside the footer.
-                placeholder: '#123456'
-              footer_text_link_color:
-                title: Footer Text & Link Color
-                placeholder: '#ffffff'
-              menu_links:
-                title: Footer Menu Links
-                description: Display up to 15 links in the Footer. We automatically place these links in columns.
               copyright_notice:
-                title: Copyright Notice
                 description: Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.
                 label: Show Copyright Notice
+                title: Copyright Notice
+              footer_background_color:
+                description: Background color of the footer and the color of the text and links displayed inside the footer.
+                placeholder: "#123456"
+                title: Footer Background Color
+              footer_display_name:
+                description: Name displayed in the Footer Bar. Usually set to your organization's name.
+                placeholder: Evergreen Open Data
+                title: Footer Display Name
+              footer_logo:
+                description: URL reference the footer logo. Recommended minimum size is 300px x 200px.
+                placeholder: URL
+                title: Footer Logo
+              footer_text_link_color:
+                placeholder: "#ffffff"
+                title: Footer Text & Link Color
               link_title_label: Link Label
               link_title_placeholder: Link Text
+              menu_links:
+                description: Display up to 15 links in the Footer. We automatically place these links in columns.
+                title: Footer Menu Links
               url_label: URL
               url_placeholder: http://data.evergreen.gov
-          homepage:
-            title: Homepage
+            title: Footer
+          general:
             fields:
+              google_analytics_token:
+                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
+                error: 'Token should match the format: UA-XXXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: Google Analytics Token
+              template:
+                description: Adjust the appearance of the header/footer by changing the template. Supported templates are "default" and "rally".
+                placeholder: Rally
+                title: Template
+              window_icon:
+                description: URL reference to the icon displayed in the window, tab, and browser URL field.
+                placeholder: URL
+                title: Window or Tab Icon (favicon)
+              window_title_display:
+                description: Name displayed in the window or tab title.
+                placeholder: Evergreen Open Data
+                title: Window or Tab Title Display
+            title: General Settings
+          header:
+            fields:
+              bar_background_color:
+                description: Background color of the header bar and the color of text and links that sit atop the bar.
+                placeholder: "#123456"
+                title: Bar Background Color
+              bar_text_link_color:
+                placeholder: "#ffffff"
+                title: Bar Text & Link Color
+              header_bar_logo:
+                description: URL reference to the header bar logo. Recommended minimum size is 100 x 40px. This logo will be displayed at a small size.
+                placeholder: URL
+                title: Header Bar Logo
+              header_display_name:
+                description: Name displayed in the Header Bar. Usually set to your organization's name.
+                placeholder: Evergreen Open Data
+                title: Header Display Name
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              menu_links:
+                description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+                title: Menu Links
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Header Bar
+          homepage:
+            fields:
+            title: Homepage
           social:
-            title: Social Sharing
             fields:
               facebook_profile_link:
-                title: Facebook Profile Link
                 description: Displays Facebook profile link link in Header and Footer when present.
                 placeholder: http://www.facebook.com/
-              twitter_profile_link:
-                title: Twitter Profile Link
-                description: Displays Twitter profile link in Header and Footer when present.
-                placeholder: http://www.twitter.com/
-              youtube_profile_link:
-                title: YouTube Profile Link
-                description: Displays YouTube profile link in Header and Footer when present.
-                placeholder: http://www.youtube.com/
-              linked_in_profile_link:
-                title: LinkedIn Profile Link
-                description: Displays LinkedIn profile link in Header and Footer when present.
-                placeholder: http://www.linkedin.com/
+                title: Facebook Profile Link
               flickr_profile_link:
-                title: Flickr Profile Link
                 description: Displays Flickr profile link in Header and Footer when present.
                 placeholder: http://www.flickr.com/
-              instagram_profile_link:
-                title: Instagram Profile Link
-                description: Displays Instagram profile link in Header and Footer when present.
-                placeholder: http://www.instagram.com/
-              tumblr_profile_link:
-                title: Tumblr Profile Link
-                description: Displays Tumblr profile link in Header and Footer when present.
-                placeholder: http://www.tumblr.com/
-              yammer_profile_link:
-                title: Yammer Profile Link
-                description: Displays Yammer profile link in Header and Footer when present.
-                placeholder: http://www.yammer.com/
+                title: Flickr Profile Link
               google_plus_profile_link:
-                title: Google Plus Profile Link
                 description: Displays Google Plus profile link in Header and Footer when present.
                 placeholder: http://www.plus.google.com/
+                title: Google Plus Profile Link
+              instagram_profile_link:
+                description: Displays Instagram profile link in Header and Footer when present.
+                placeholder: http://www.instagram.com/
+                title: Instagram Profile Link
+              linked_in_profile_link:
+                description: Displays LinkedIn profile link in Header and Footer when present.
+                placeholder: http://www.linkedin.com/
+                title: LinkedIn Profile Link
+              tumblr_profile_link:
+                description: Displays Tumblr profile link in Header and Footer when present.
+                placeholder: http://www.tumblr.com/
+                title: Tumblr Profile Link
+              twitter_profile_link:
+                description: Displays Twitter profile link in Header and Footer when present.
+                placeholder: http://www.twitter.com/
+                title: Twitter Profile Link
               vimeo_profile_link:
-                title: Vimeo Profile Link
                 description: Displays Vimeo profile link in Header and Footer when present.
                 placeholder: http://www.vimeo.com/
+                title: Vimeo Profile Link
+              yammer_profile_link:
+                description: Displays Yammer profile link in Header and Footer when present.
+                placeholder: http://www.yammer.com/
+                title: Yammer Profile Link
+              youtube_profile_link:
+                description: Displays YouTube profile link in Header and Footer when present.
+                placeholder: http://www.youtube.com/
+                title: YouTube Profile Link
+            title: Social Sharing
       users:
         actions: Actions
         all: All
@@ -2740,11 +2742,11 @@ en:
         prompt: Please describe your data.
         public_explain: 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
       notify_me: Notify me
-      notify_me_messaging: via email when this completes.
-      notify_me_success_html: <strong>Great!</strong> We will send an email to <strong>%{email}</strong> when your dataset is ready.
-      notify_me_success_html_js: <strong>Great!</strong> We will send an email to <strong>{0}</strong> when your dataset is ready.
-      notify_me_success_addl: It is safe to close this browser in the meantime.
       notify_me_error_html: Something went wrong trying to schedule the notification email. Please try again later, or contact <a href="mailto:support@socrata.com">Socrata Support</a> if the problem persists.
+      notify_me_messaging: via email when this completes.
+      notify_me_success_addl: It is safe to close this browser in the meantime.
+      notify_me_success_html: "<strong>Great!</strong> We will send an email to <strong>%{email}</strong> when your dataset is ready."
+      notify_me_success_html_js: "<strong>Great!</strong> We will send an email to <strong>{0}</strong> when your dataset is ready."
       processing: Processing...
       title: New Dataset
       upload_accessible: Upload a new dataset accessibly
@@ -2779,7 +2781,7 @@ en:
           underline: Underline
           undo: Undo
         full_screen: Toggle full screen
-        no_description: (No description provided)
+        no_description: "(No description provided)"
         out_of_date: This dataset is out of date by %{age}
         publish_button: Publish Dataset
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
@@ -3251,6 +3253,7 @@ en:
             base_url_prompt: Enter the common URL prefix
             title: URL Options
           validation:
+            published: Please make a working copy or view of this dataset to change column properties
             snapshot: You cannot edit column properties for a view snapshot
             unsaved: You cannot edit column properties for an unsaved view
         conditional_formatting:
@@ -3607,7 +3610,6 @@ en:
       contact_information: Contact Information
       custom: Custom
       custom_error: Custom semantic class must be url.
-      described_by: Data Dictionary
       data_provided_by: Data Provided By
       data_provided_prompt: Individual or Organization
       data_provider_required: You must specify the data provider (attribution).
@@ -3618,6 +3620,7 @@ en:
       dataset_url_prompt: Enter the location of your external dataset
       default_row_label: Row
       delete: Delete
+      described_by: Data Dictionary
       described_by_prompt: Enter a data dictionary link
       email_address: Email Address
       email_help: This address will not be displayed publicly. If left blank, it will default to your address
@@ -4016,9 +4019,9 @@ en:
         name: New Template Name
         title: Create a new Template
       create_new_dataset:
-        title: Create a New Dataset
-        prompt: Please give your new dataset a name.
         explanation_html: When you press <strong>Save</strong>, your new <strong>Draft Dataset</strong> will be visible in your personal catalog. Nobody else will be able to see it until you complete the New Dataset Wizard.
+        prompt: Please give your new dataset a name.
+        title: Create a New Dataset
     wizard:
       cancel: Cancel
       finish: Finish

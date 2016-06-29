@@ -42,22 +42,22 @@ ca:
     dataCards:
       add_card_dialog:
         add_card: Afegeix una targeta
-        add_card_title:
+        add_card_title: Afegir una targeta
         add_this_card: Afegeix aquesta targeta
         card_on_page: La targeta ja és a la pàgina
         card_on_page_long: Aquesta targeta ja és a la pàgina
         choose_column: Tria una columna
-        choropleth_admin_message:
-        choropleth_message:
+        choropleth_admin_message: Per a afegir límits personalitzats, haureu de posar-vos en contacte amb el vostre administrador del lloc per a que configuri el conjunt disponible a través de <a href="/admin/geo">la secció de lent espacial</a> dins el panell administratiu, o <a href="mailto:support@socrata.com">poseu-vos en contacte amb el servei d'ajut de Socrata</a>.
+        choropleth_message: Per a afegir límits personalitzats, haureu de posar-vos en contacte amb el vostre administrador del lloc per a que configuri el conjunt disponible a través de la secció de lent espacial dins el panell administratiu, o <a href="mailto:support@socrata.com">poseu-vos en contacte amb el servei d'ajut de Socrata</a>.
         column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
-        column_label:
+        column_label: Columna
         curated_region_messages:
-          not_yet_computed:
-        custom:
+          not_yet_computed: Els límits necessiten ser inicialitzats
+        custom: "(personalitzat...)"
         customize_prompt: Personalitza aquesta targeta
-        generic_prompt:
-        histogram_column_chart_warning:
-        no_available_boundaries:
+        generic_prompt: Escolliu una columna del menú desplegable amunt per a afegir una nova visualització
+        histogram_column_chart_warning: 'Nota: a causa de la distribució de valors d''aquesta columna, apareixerà com un histograma de barres en lloc d''una corba de distribució'
+        no_available_boundaries: No hi ha límits disponibles
         not_supported: Actualment no és compatible
         not_supported_long: Aquesta mena de targetes actualment no són compatibles
         prompt: Tria una columna del menú desplegable de sobre per afegir-hi una targeta nova
@@ -83,11 +83,11 @@ ca:
         title: Institut Americà de Petroli
         url: 'Podeu accedir a aquesta informació a través de Socrata Open Data API a aquesta URL:'
       card_aggregation_selector:
-        add_this_aggregation:
-        choose_count:
-        choose_sum:
-        function_label:
-        value_label:
+        add_this_aggregation: Afegir aquesta agregació
+        choose_count: Recompte
+        choose_sum: Escollir una columna
+        function_label: Funció
+        value_label: Valor
       card_controls:
         collapse_card: Col·lapseu aquesta targeta
         customize_disabled: No hi ha cap mena de personalització disponible per a aquesta targeta encara
@@ -96,21 +96,21 @@ ca:
         remove_card: Elimineu aquesta targeta
       card_layout:
         add_card_here: Afegiu una targeta aquí
-        card_group_customize_hint_flyout_text:
-        card_group_customize_hint_text:
-        card_group_placeholder_text:
+        card_group_customize_hint_flyout_text: Arrossegui targetes entre seccions per a ajustar el número màxim de columnes per filera. Les targetes ajustaran automàticament la seva mida, per a omplir qualsevol buit.
+        card_group_customize_hint_text: Fins a {0} targetes per filera en aquesta secció
+        card_group_placeholder_text: Arrossega i deixa anar targetes aquí
       card_titles:
         average: mitjana de {0}
         number_of: número de {0}
         sum_of: quantitat de {0}
       choropleth:
-        computation_in_progress:
-        has_cardinality_error:
-        has_no_polygons:
-        no_preview_available:
-        pending_computation:
+        computation_in_progress: "<p>Inicialitzant límits per a aquest conjunt de dades. Aquesta operació por trigar uns pocs minuts (triga més per a conjunts de dades grans).</p><p>El mapa apareixerà quan la inicialització hagi estat completada.</p>"
+        has_cardinality_error: Aquest mapa no pot ser representat, ja que tots els punts es troben en la mateixa ubicació.
+        has_no_polygons: No hi ha dades dins els límits.
+        no_preview_available: No hi ha vista prèvia disponible
+        pending_computation: "<p>Aquesta és la primera vegada que aquest límit es fa servir per a aquest conjunt de dades.</p><p>El mapa pot trigar uns minuts en representar-se (més, si es tracta de conjunts de dades més grans), en quant l'hagueu afegit a la pàgina.</p>"
       common:
-        by:
+        by: per
         cancel: Cancel·leu-ho
         cards:
           choropleth: Coroplètic
@@ -137,7 +137,7 @@ ca:
           permissions: Permisos
           private: Privat
           public: Privat
-        row:
+        row: filera
         save: Guardar
       customize_bar:
         changes_warning: Heu fet canvis a la pàgina
@@ -148,25 +148,25 @@ ca:
         customizing_flyout: Esteu personalitzant aquesta pàgina actualment
         customizing_flyout_instructions: Podeu fer clic a aquest botó sempre que vulgueu visualitzar i guardar els canvis
         exit_visualization_export: 'Per entrar en el mode de personalització: Sortiu  del mode "Descarregar la visualització com a imatge" fent clic al botó de cancel·lar al panell informatiu'
-        unsaved_warning:
+        unsaved_warning: Aquesta vista no ha estat desada encara.
       customize_card_dialog:
         feature_map_flannel:
-          default_option:
-          select_column:
-          title:
+          default_option: "(per defecte)"
+          select_column: Seleccioneu una columna
+          title: Títol d'emergent
         histogram_bucket_type:
-          linear:
-          linear_desc:
-          logarithmic:
-          logarithmic_desc:
-          title:
-          warning:
+          linear: Lineal
+          linear_desc: Aquesta opció defineix les caselles dels eixos a una escala lineal (10, 20, ...) i és més útil en rangs numèrics més petits.
+          logarithmic: Logarítmica
+          logarithmic_desc: Aquesta opció defineix les caselles dels eixos a una escala logarítmica (10, 100, ...) i és més útil en rangs numèrics més grans.
+          title: Mida de caselles a l'eix X
+          warning: En canviar la mida de les caselles, s'eliminarà el vostre filtre actual en aquesta targeta
         map_layer:
           custom: Mapa custom
-          simple_blue:
-          simple_grey:
+          simple_blue: Blau simple
+          simple_grey: Gris simple
           title: Mapa basat en estrats
-        title:
+        title: Ajustaments
         visualization_options:
           title: Tipus de targeta
       distribution_chart:
@@ -176,25 +176,25 @@ ca:
           error: Hem trobat un error mentre intentàvem de proveir aquesta targeta
           no_data: No hi ha cap dada per mostrar
       export_menu:
-        choose_card:
+        choose_card: Escollir targeta
         csv:
-          all_rows:
-          current_filter:
-          header:
-          not_available:
-          not_available_specific:
+          all_rows: Totes les fileres
+          current_filter: Filtre actual
+          header: Fileres com a CSV (Excel)
+          not_available: No disponible
+          not_available_specific: No disponible per a aquest conjunt de dades.
         image:
-          description:
-          header:
+          description: Deseu un arxiu d'imatge PNG d'una visualització
+          header: Visualització com a imatge
       feature_map:
-        feature_map_disabled:
+        feature_map_disabled: Els mapes destacats no estan disponibles.
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
       feature_map_flannel:
-        error_message:
-        next:
-        paging:
-        previous:
-        showing:
+        error_message: S'ha produït un error en obtenir les dades d'ubicació.
+        next: Següent
+        paging: "{0} de {1}"
+        previous: Anterior
+        showing: Mostrant {0}
       feedback_panel:
         broken: Sembla que alguna cosa no va bé.
         feedback: Opinió
@@ -218,67 +218,67 @@ ca:
         clear_filter_long: Actualment la pàgina és filtrada amb aquest valor, feu clic aquí per esborrar-ho
         clear_range_filter_long: Actualment aquesta pàgina és filtrada per aquesta selecció, feu clic aquí per esborrar-ho
         current_filter: Filtre actual
-        dense_data:
+        dense_data: Nombrós
         details: Cliqueu per veure els detalls
         expand: Cliqueu per expandir-ho
-        filter_prompt:
+        filter_prompt: Aplicar un filtre per a veure les dades
         filtered_amount: Quantitat filtrada
         total: Total
-        zoom_or_filter_prompt:
+        zoom_or_filter_prompt: Feu zoom o apliqueu un filtre per a veure les dades
       last_updated:
         label: "última actualització"
       lens_type:
         community: comunitat de visió de dades
         official: visió de dades oficial
-        official_view_explanation:
-        official_view_label:
+        official_view_explanation: En seleccionar aquesta opció, la vista rebrà una designació especial que indicarà que és una vista oficial.
+        official_view_label: Vista oficial
       manage_lens_dialog:
         dataset_private_page_private: Com que la font de la taula de dades d'aquesta pàgina s'ha configurat com a <b>Private</b>, aquesta pàgina no es podrà fer pública. Només aquells que tinguin un accés privilegiat podran veure-ho i no apareixerà al catàleg públic.
         dataset_private_page_public: '<span class="icon-warning"></span>  La font de la taula de dades d''aquesta pàgina s''ha configurat com a <b>Private</b>, així que encara que aquesta pàgina sigui configurada com a pública, ningú sense accés no podrà veure la font d''aquesta taula de dades. Així i tot, apareixerà en el catàleg públic. Hauríeu de considerar de configurar la taula de dades com a pública o la pàgina com a privada. '
         dataset_public_page_private: 'Aquesta pàgina s''ha configurat com a <b>Private</b>, així que només aquells que tinguin accés privilegiat podran veure-la. No apareixerà en el catàleg públic. '
         dataset_public_page_public: 'Aquesta pàgina i les fonts de les taules de dades són totes <b>Public</b>, així doncs tothom ho podrà veure i apareixerà en el catàleg públic. '
         error:
-          ownership:
-          preamble:
-          sharing:
-          unknown:
-          visibility:
+          ownership: No s'ha pogut canviar el propietari.
+          preamble: 'No s''han desat alguns dels vostres canvis:'
+          sharing: No s'han pogut actualitzar els ajustaments de rol i de compartició.
+          unknown: S'ha produït un error desconegut. Si us plau, contacteu amb el servei d'ajut de Socrata.
+          visibility: No s'ha pogut actualitzar la visibilitat.
         ownership:
-          owner_unavailable:
-          title:
-          warning:
+          owner_unavailable: La informació del propietari no està disponible temporalment.
+          title: Propietari
+          warning: Heu de seleccionar un propietari per a aquesta lent de dades, per tal de procedir.
         provenance:
-          description:
-          label:
-          title:
+          description: Seleccionant aquesta opció, la vista tindrà una demarcació especial que indicarà que és una vista oficial
+          label: Vista oficial
+          title: Veure estat
         sharing:
-          add_new:
-          contributor:
-          inherited_description:
-          keep:
+          add_new: Afegir nou
+          contributor: Contribuent
+          inherited_description: 'Heretat del conjunt de dades font:'
+          keep: Conservar
           new_share_dialog:
-            add_more:
-            description:
-            email:
-            message:
-            remove:
-            title:
-          owner:
-          remove:
-          title:
-          viewer:
+            add_more: Afegir més
+            description: Especifiqueu persones addicionals a qui us agradaria donar permís per a aquesta lent de dades. Si algú no té encara un compte, se li enviarà una invitació a registrar-se, i si ho fa rebrà el permís.
+            email: Adreça de correu electrònic
+            message: Missatge opcional
+            remove: Eliminar
+            title: Compartir aquesta lent de dades
+          owner: Copropietari
+          remove: Eliminar
+          title: Compartit amb
+          viewer: Visitant
         title: Dirigir
-        unsaved_changes_message:
+        unsaved_changes_message: Hi ha canvis que no heu desat
         visibility:
-          dataset_is_private:
-          hidden:
-          shown:
-          title:
-          user_is_unprivileged:
-          view_moderation_approved:
-          view_moderation_pending:
-          view_moderation_rejected:
-          view_moderation_title:
+          dataset_is_private: Aquesta lent de dades està basada en el conjunt de dades privat {0}. La lent de dades només pot aparèixer al catàleg si el conjunt de dades font és públic.
+          hidden: Oculta en el catàleg
+          shown: Mostrada en el catàleg
+          title: Visibilitat
+          user_is_unprivileged: Heu de ser administrador o editor per a poder modificar la visibilitat de la lent de dades. Si us plau, poseu-vos amb contacte amb l'administrador del lloc per a canviar aquest ajustament.
+          view_moderation_approved: Aprovada
+          view_moderation_pending: Pendent
+          view_moderation_rejected: Rebutjada
+          view_moderation_title: Veure moderació
       metadata:
         data_as_csv: Totes les fonts de les dades com a CSV (Exel)
         edit_description_prompt: Descriviu bé la vostra pàgina perquè ajuda que la gent entengui tot el que les vostres dades volen dir. (Opcional)
@@ -292,8 +292,8 @@ ca:
         acknowledgement: D'acord, ja ho tinc!
         description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '
       multiline_ellipsis:
-        show_less:
-        show_more:
+        show_less: Mostrar menys
+        show_more: Mostrar més
       page_header:
         logo: Logotip
         sign_in: Registreu-vos
@@ -303,23 +303,23 @@ ca:
         clear_all: Esborra-ho tot
         clear_all_flyout: Feu clic per reconfigurar tots els filtres
         filter_title: Mostrant <span class="light">the {0}</span>
-        filtered_title:
-        old_filter_title:
-        old_filtered_title:
-        unfiltered_title:
+        filtered_title: Mostrant <span class="light">{0}</span>
+        old_filter_title: Mostrant <span class="light">{0}</span>
+        old_filtered_title: Mostrant <span class="light">{0}</span>
+        unfiltered_title: Mostrant <span class="light">{0} (tot)</span>
       related_views:
         button: Altres vistes d'aquesta dada
         title: Aaltres vistes d'aquesta dada
       related_visualization_selector:
-        based_on_column:
-        visualization_not_supported:
+        based_on_column: Basat en {0}
+        visualization_not_supported: Disculpeu les molèsties! Encara estem desenvolupant la funcionalitat que us permetrà incrustar aquest tipus de gràfica dins una història.
       remove_all_cards:
-        button:
-        flyout:
-        flyout_no_cards:
-        flyout_not_edit_mode:
-        prompt:
-        prompt_confirm:
+        button: Eliminar totes les targetes
+        flyout: Feu clic per a eliminar totes les targetes d'aquesta pàgina
+        flyout_no_cards: No hi ha targetes en la pàgina per a eliminar
+        flyout_not_edit_mode: Aneu al mode de personalització per a eliminar totes les targetes d'aquesta pàgina de lent
+        prompt: Segur que voleu eliminar totes les targetes d'aquesta pàgina?
+        prompt_confirm: Sí, eliminar totes
       revert_button:
         flyoutHasChanges: Feu clic per desfer tots els canvis des de l'última vegada que vàreu guardar-ho
         flyoutNoChanges: Cap canvi a fer
@@ -332,7 +332,7 @@ ca:
         link_placeholder: Entreu un URL aquí
         underline: Subratllat
       save_as:
-        flyoutEphemeral:
+        flyoutEphemeral: Feu clic per a desar aquesta lent de dades
         flyoutFailedBody: Si us plau, contacteu amb Socrata Support
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar tots els canvis coma una pàgina nova
@@ -341,21 +341,21 @@ ca:
         description: Entreu una descripció per la vostra nova pàgina (opcional)
         new_name: Guardeu la pàgina actual amb un nom nou
         title: Guardar com
-        visibility:
-        visibility_disabled:
-        visibility_with_view_moderation:
+        visibility: Configureu la visibilitat de la vostra nova pàgina
+        visibility_disabled: No teniu permís per a actualitzar la visibilitat de la lent de dades. Si us plau, contacteu amb l'administrador del lloc per a canviar aquest ajustament.
+        visibility_with_view_moderation: Configureu l'estat de moderació de vista de la vostra nova pàgina
       save_button:
         failed: Ha fallat
         flyoutFailedBody: Si us plau, contacteu amb Socrata Support
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar els canvis
         flyoutNoChanges: No s'ha guardat cap canvi
-        flyoutNoEditPermission:
+        flyoutNoEditPermission: No teniu permís per a desar canvis en aquesta lent
         save: Guardar
         saved: Guardat!
         saving: Guardant...
       search_card:
-        error_explanation:
+        error_explanation: "<p>S'ha produït un error en obtenir els suggeriments de la cerca.</p><p>Encara podeu prémer Enter en qualsevol moment, per a cercar exactament el text que heu introduït, o també podeu intentar-ho de nou més tard, per a veure els valors suggerits.</p>"
         invalid_search: Intenteu buscar per números, no per lletres.
         loading: 'Carregant suggeriments... '
         no_results: 'La vostra cerca no té cap resultat. Reviseu que estigui tot ben escrit o canvieu de terme. '
@@ -365,13 +365,13 @@ ca:
         search_info: 'Es mostra {0} de {1} resultats coincidents. '
         two_examples: 'Exemples: ''{0}'' o ''{1}'''
       suggestion_tool_panel:
-        all_suggestions:
-        loading_suggestions_hint:
-        max_suggestions:
-        no_suggestions:
-        no_suggestions_hint:
-        only_suggestion:
-        some_suggestions_hint:
+        all_suggestions: 'Mostrant tots els {0} suggeriments:'
+        loading_suggestions_hint: Escriviu un text i polseu Enter per a cercar, o espereu a que apareguin suggeriments.
+        max_suggestions: 'Mostrant els primers {0} suggeriments:'
+        no_suggestions: No hem trobat dades que coincideixin amb els vostres termes de cerca.
+        no_suggestions_hint: Intenteu ampliar la vostra cerca, per a obtenir més resultats.
+        only_suggestion: 'Mostrant l''únic suggeriment:'
+        some_suggestions_hint: Escolliu un dels suggeriments anteriors o continueu escrivint més suggeriments.
       table:
         a_to_z: A-Z
         ascending: ascendent
@@ -380,8 +380,8 @@ ca:
         loading: Carregant
         newest_first: El primer més nou
         no_rows: No hi ha files per mostrar
-        no_sort:
-        non_range_label:
+        no_sort: No hi ha criteri d'endreç disponible
+        non_range_label: "{0} <strong>{1} de {2}</strong>"
         oldest_first: El primer més antic
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Mostra-ho tot {0} {1}
@@ -400,21 +400,21 @@ ca:
       tour:
         aggregation:
           step_1:
-            text:
-            title:
+            text: Hem escoltat les vostres opinions. Hem desplaçat un ajustament per a millorar el mode de personalització!
+            title: Us adoneu de quelcom diferent?
           step_2:
-            text:
-            title:
+            text: Cada targeta es pot resumir amb una columna diferent. També hem eliminat el límit de 15 columnes numèriques.
+            title: Feu servir els ajustaments per a canviar la funció d'agregació
           step_3:
-            text:
-            title:
+            text: Escolliu el número de columna que voleu sumar o escolliu el recompte de fileres.
+            title: Resumir per suma o per recompte
           step_4:
-            text:
-            title:
+            text: Podeu afegir diverses targetes per a la mateixa columna, i després resumir per diferents valors de columna. Això permet fer comparacions útils.
+            title: Ara és més flexible!
           step_5:
-            text_one:
-            text_two:
-            title:
+            text_one: Creeu la vostra pàgina fent servir aquesta forma flexible de resumir dades.
+            text_two: Aprengueu més consultant l'article <a href="https://support.socrata.com/hc/en-us/articles/216510338">Fent servir la funció d'agregació</a> dins la base de coneixements de Socrata. Com sempre, ens encantarà rebre els vostres comentaris.
+            title: Proveu-ho!
   controls:
     browse:
       actions:
@@ -427,12 +427,12 @@ ca:
         compact_list: Veure-ho com a llista compacta
         create_dataset: Crea o carrega el teu conjunt de dades
         create_dataset_short: Crear un nou Conjunt de Dades
-        create_dataset_shorter:
+        create_dataset_shorter: Conjunt de dades
         create_dataset_verb: Crear
-        create_resource:
-        create_resource_short:
-        create_resource_verb:
-        create_story_short:
+        create_resource: Creeu un nou recurs de Socrata
+        create_resource_short: Crear nou...
+        create_resource_verb: Crear
+        create_story_short: Història
         dataset_subscribe: Subscriu-t'hi als canvis en aquesta vista
         delete:
           button: Esborra
@@ -592,13 +592,13 @@ ca:
           charts: Gràfics
           data_lens: Pàgines de visió de dades
           datasets: Conjunts de Dades
-          draft:
+          draft: Esborranys de conjunts de dades
           filters: Vistes amb Filtres
           forms: Formulari
           href: Conjunts de Dades Externs
           maps: Mapes
-          pulse:
-          pulse_help:
+          pulse: Pulse
+          pulse_help: Conèixer més sobre Pulse
           story: Històries
           story_help: Apreneu més coses sobre les històries
           unpublished: Conjunts de Dades No Publicats
@@ -610,14 +610,14 @@ ca:
         federation_source_html: Proveït per %{source_link}
         no_results: Sense Resultats
         result_count: Mostrant %{this} de %{total}
-        result_count_cetera:
+        result_count_cetera: Mostrant %{start} - %{end} de %{total}
         table_header:
           name: Nom
           popularity: Popularitat
           rss: RSS
           type: Tipus
         timeout: Ho lamentem. No podem mostrar resultats ara mateix. Provi més tard.
-      ordered_topics:
+      ordered_topics: Temes endreçats
       row_results:
         less_link: Menys
         matching_rows: Buscant conjunt de dades amb files coincidents
@@ -650,7 +650,8 @@ ca:
           main: Resultats %{body}
           term: per "%{term}"
     charts:
-      missing_column_html:
+      inaccessible: Aquesta visualització no està disponible o no hi és.
+      missing_column_html: Vaja, sembla que s'ha fet un canvi en la configuració del conjunt de dades que facilitava aquest gràfic. Si sou el propietari d'aquesta pàgina, llegiu <a href="https://support.socrata.com/hc/en-us/articles/216102847">aquest article d'ajut</a> o poseu-vos en contacte amb <a href="mailto:support@socrata.com">support@socrata.com</a> per a rebre asistència.
       negatives_in_data: 'Gràfica Invàlida: apareixen valors negatius'
       no_data: Sense dades
       other_slice_label: Altre
@@ -690,7 +691,7 @@ ca:
           email: Correu Electrònic
           facebook: Facebook
           twitter: Twitter
-        share_story_text:
+        share_story_text: 'Feu un cop d''ull a %{name} en %{site}:'
         share_text: 'Comprova el conjunt de dades %{name} a %{site}:'
       sidebar:
         tabs:
@@ -838,31 +839,32 @@ ca:
       delete_warning_multi_column: Desitja eliminar les columnes seleccionades? Totes les dades d'aquestes columnes seran eliminades!
       delete_warning_single_column: Desitja eliminar la columna seleccionada? Totes les dades d'aquesta columna seran eliminades!
       edit_column_properties: Editar Propietats de la Columna
-      end_page:
+      end_page: "Última pàgina"
       errors:
         cannot_edit_at_this_time: 'Aquesta columna no és pot editar actualment. Proveu-ho més tard. '
-        data_lens_is_incompatible_with_group_bys:
+        data_lens_is_incompatible_with_group_bys: Els conjunts de dades amb agrupacions no es poden fer servir amb una pàgina de lent de dades. Lamentem les molèsties.
         primary_key_collision: 'Aquest valor ja existeix com a clau primària. No podeu tornar-lo a escriure. '
         row_locked_for_edit: 'Actualment no podem editar un fila recentment creada. Estem treballant per fer-ho possible. De moment, recarregueu la pàgina abans d''editar aquesta fila. '
-        something_went_wrong:
+        something_went_wrong: Sembla que quelcom ha anat malament. Si us plau, refresqueu aquesta pàgina.
+        timeout_on_bootstrap: S'ha esgotat el temps, però encara estem generant la vostra lent de dades en segon pla. Si us plau, proveu-ho de nou en uns minuts.
       filter_this_column: Filtrar Aquesta Columna
       geocodes_pending: Les files situades a la columna s'estan encara geocodificant. Si us plau, esperi fins que hagin acabat de publicar aquest conjunt de dades
       hide_column: Amaga la Columna
       menu: Menú
       must_enter_name: 'Ha d''introduir un nom per a aquesta columna '
       new_row: Nou
-      next_page:
+      next_page: Pàgina següent
       no_columns: El conjunt de dades %{uid} no té cap columna.
       no_rows: No hi ha files per a mostrar
-      page_size:
+      page_size: Mostrant %{pageSize} fileres per pàgina
       permission_denied: No té accés a aquesta vista.
       previous: Anterior
-      previous_page:
+      previous_page: Pàgina anterior
       required_cols_missing: Les columnes requerides per a aquesta vista no són enlloc
-      row_count:
+      row_count: Número total de fileres %{count}
       sort_ascending: Ordre Ascendent
       sort_descending: Ordre Descendent
-      start_page:
+      start_page: Primera pàgina
       totals: Totals
       view_cell_comments: Veure comentaris per a aquesta cel·la
       view_first_row: Veure la primera fila
@@ -871,7 +873,7 @@ ca:
       view_previous_row: Veure l'anterior fila
       view_row: Veure fila
       view_single_row: Veure les Dades d'una Única Fila
-      viewing_current_page:
+      viewing_current_page: Veient pàgina %{current} de %{total}
       viewing_row_html: Veient fila <span class"curPage"></span> de <span class="totalPages"></span>
     map:
       address_prompt: Introduir l'adreça ací
@@ -898,8 +900,8 @@ ca:
       previous: Anterior
       previous_row: Anterior fila
       request_timed_out: La sol·licitud per a aquesta dada ha expirat.
-      unable_to_display_features_html:
-      unable_to_load_map_html:
+      unable_to_display_features_html: "<h3>No hi ha funcions disponibles en aquest nivell de zoom.</h3>"
+      unable_to_load_map_html: "<h3>Estem tenint problemes per a connectar-nos amb el servei de mapes Esri que allotja aquest mapa.</h3><p>Si el problema es continua produint, poseu-vos en contacte amb l'administrador del lloc, fent servir aquest missatge d'error.</p>"
     nominate:
       all: Tots
       approve: "(Aprovar)"
@@ -982,7 +984,7 @@ ca:
     and: i
     auth:
       invalid_userpass: Nom d'usuari o contrasenya invàlids
-      need_email_verification:
+      need_email_verification: Abans que pugueu completar el vostre registre i que inicieu sessió, necessiteu verificar l'adreça de correu electrònic d'aquest compte. Si no teniu accés al correu electrònic de verificació que us hem enviat, tan sols heu de crear un compte nou amb la mateixa adreça de correu electrònic, i rebreu un altre correu electrònic.
       need_login: Ha d'iniciar sessió per accedir a aquesta pàgina
       need_permission: No té permís per veure aquesta pàgina
       too_many_tries: Massa intents per a iniciar sessió. El compte ha estat deshabilitat temporalment.
@@ -1016,7 +1018,7 @@ ca:
       timeline: Línia temporal
       treemap: Mapa d'Arbre
     data_types:
-      blob:
+      blob: BLOB
       calendar_date: Data & Temps
       checkbox: Casella
       dataset_link: Enllaç al Conjunt de Dades
@@ -1027,14 +1029,14 @@ ca:
       flag: Bandera
       geospatial: Geoespacial
       html: Text Formatat
-      line:
+      line: Cadena en línia
       link: Enllaça a la Columna
       list: Llista
       location: Localització
       money: Moneda
-      multiline:
-      multipoint:
-      multipolygon:
+      multiline: Cadena de diverses línies
+      multipoint: Diversos punts
+      multipolygon: Diversos polígons
       nested_table: Taula Ennierada
       number: Nombre
       object: Objecte
@@ -1042,7 +1044,7 @@ ca:
       phone: Telèfon
       photo: Foto (Imatge)
       point: Punt
-      polygon:
+      polygon: Polígon
       stars: 'Estrella '
       text: Text Pla
       url: URL del Lloc Web
@@ -1092,7 +1094,7 @@ ca:
       years_past: fa %{time} anys
     dialogs:
       apply: Sol·licitar
-      back:
+      back: Enrere
       cancel: Cancel·lar
       close: Tancar
       continue: Continuar
@@ -1215,6 +1217,7 @@ ca:
       dateISO: Si us plau, introdueixi una data vàlida (ISO).
       digits: Si us plau, introdueixi únicament xifres.
       email: Si us plau, introdueixi una adreça de correu electrònic vàlida.
+      email_recipient: Si us plau, introduïu una adreça de correu electrònic vàlida o escolliu un grup.
       equalTo: Si us plau, introdueixi el mateix valor una altra vegada.
       max: Si us plau, introdueixi un valor menor o igual que {0}.
       maxlength: Si us plau, introdueixi no més de {0} caràcters.
@@ -1239,7 +1242,7 @@ ca:
       grouped: vista agrupada
       href: conjunt de dades extern
       map: mapa
-      story:
+      story: història
       table: taules
       working_copy: còpia de treball
     view_types_plural:
@@ -1256,120 +1259,220 @@ ca:
       public: públic
   dataset_landing_page:
     action_buttons:
-      api:
-      contact_owner:
-      data:
-      download:
-      odata:
-      share:
+      api: API
+      comment: Comentar sobre aquest conjunt de dades
+      contact_owner: Contactar amb el propietari del conjunt de dades
+      data: Veure dades
+      download: Descarregar
+      odata: Accedir a les dades a través d'OData
+      share: Compartir
+    add: Afegir
     api_flannel:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      foundry_button:
-      multiple_geo_layers:
-      title:
-    contact_dataset_owner:
-    copy:
-    copy_success:
+      description: L'API de dades obertes de Socrata (SODA) facilita un accés programàtic a aquest conjunt de dades, incloent la capacitat de filtrar, consultar i afegir dades.
+      developer_portal_button: Portal de desenvolupador
+      endpoint_title: Punt final de l'API
+      foundry_button: Documents de l'API
+      multiple_geo_layers: Aquest conjunt de dades conté diverses capes geoespacials. Cada capa disposa de la seva pròpia documentació i punt final de l'API a continuació.
+      title: Accediu a aquest conjunt de dades a través de l'API SODA
+    back: Enrere
+    bootstrap_button: Crear visualització
+    bootstrap_disabled_notice: En aquests moments les vostres dades estan sent processades. Refresqueu la pàgina en uns pocs minuts i podreu crear una nova lent de dades.
+    bootstrap_message: Aquest conjunt de dades no té cap visualització relacionada. Us agradaria crear-ne una, ara?
+    cancel: Cancel·lar
+    change: Canviar
+    choose: Escollir
+    close: Tancar
+    contact_dataset_owner: Contactar amb el propietari del conjunt de dades
+    contact_dataset_owner_modal:
+      description: Envieu un missatge curt al propietari del conjunt de dades per a fer una pregunta o comentari, o per a assenyalar quelcom sobre les dades.
+      email: El teu correu electrònic
+      email_description: "(la vostra adreça de correu electrònic es compartirà amb el propietari del conjunt de dades per a que pugui contactar-vos)"
+      error_empty_email: Si us plau, inclogueu la vostra adreça de correu electrònic per a que el propietari de les dades pugui contactar-vos.
+      error_empty_message: Si us plau, ompliu el formulari de missatge.
+      error_empty_recaptcha: Si us plau, confirmeu que no sou un robot tot marcant la casella anterior.
+      error_empty_subject: Si us plau, escriviu l'assumpte del vostre missatge.
+      error_invalid_email: Si us plau, introduïu una adreça de correu electrònic vàlida.
+      failure_html: "<b>Oh, no!</b> Quelcom ha anat malament. Si us plau, proveu-ho de nou més tard."
+      message: Missatge
+      recaptcha: Repte recaptcha
+      recaptcha_loading: El recaptcha està carregant
+      send: Enviar
+      sending: S'està enviant el formulari
+      subject: Assumpte
+      success_html: "<b>Gràcies!</b> El teu missatge ha estat enviat."
+      title: Envieu un missatge al propietari d'aquest conjunt de dades
+    copy: Copiar
+    copy_success: Copiat!
     dataset_contents:
-      columns:
-      row_display_unit:
-      rows:
-      title:
-    done:
+      columns: Columnes
+      row_display_unit: Cada filera és un
+      rows: Fileres
+      title: Què hi ha dins d'aquest conjunt de dades?
+    dataset_preview:
+      grid_view_link: Explorar dades
+      latitude: Latitud
+      longitude: Longitud
+      many_rows: Mostrant {unitOther} {firstRowOrdinal} - {lastRowOrdinal} de {datasetRowCount}
+      next: Següent
+      no_column_description: No disposa de descripció.
+      no_rows: Sense {unitOther}
+      only_rows: Mostrant {unit} {firstRowOrdinal} de {datasetRowCount}
+      previous: Anterior
+      title: Vista prèvia de taula
+      unable_to_render: Estem tenint problemes per a mostrar aquesta taula.
+    default_row_label: filera
+    done: Fet
     download:
-      csv_for_excel:
-      csv_without_geo:
-      json_without_geo:
-      original:
-      shapefile:
+      csv_for_excel: CSV per a Excel
+      csv_without_geo: CSV (sense dades geoespacials)
+      json_without_geo: JSON (sense dades geoespacials)
+      original: Original
+      shapefile: Shapefile
+    error: Error
+    featured_content:
+      manage_prompt:
+        button: Gestionar continguts destacats
+        message: Escolliu la promoció de fins a 3 recursos de Socrata que facin servir aquestes dades, o escolliu destacar qualsevol recurs extern rellevant. Si es deixa en blanc, aquesta secció serà invisible.
+      title: Continguts destacats amb aquestes dades
+    featured_content_modal:
+      external: Recurs extern
+      external_resource_form:
+        description: Descripció
+        header: Destacar un recurs extern
+        invalid_image_message: Això no sembla una imatge. Proveu de carregar un arxiu gif, png o jpg.
+        invalid_url_message: Això sembla un enllaç no vàlid. Proveu d'afegir "http://" al principi del vostre enllaç.
+        message: Creeu un enllaç a algun recurs extern relacionat amb aquestes dades. Pot tractar-se d'una visualització increïble sobre la web, d'una publicació de bloc sobre com les dades es van fer públiques o d'un enllaç a una altra part del vostre lloc.
+        preview_image: Vista prèvia d'imatge
+        title: Títol
+        url: Enllaç a recurs
+      header: Gestionar continguts destacats
+      introduction: Què us agradaria que les persones veiessin en mirar per primer cop aquest conjunt de dades? Promogueu fins a 3 recursos de Socrata que facin servir aquestes dades, o escolliu destacar qualsevol recurs extern rellevant. Penseu en aquesta secció com en la cara de les vostres dades.
+      preview: Vista prèvia dels continguts destacats
+      remove_error: Oh, no! Quelcom ha anat malament. Si us plau, proveu-ho de nou.
+      remove_prompt: Segur que voleu eliminar això?
+      save_error_message: Oh, no! Quelcom ha anat malament. Si us plau, proveu-ho de nou.
+      story: Història
+      story_form:
+        header: Destaca una història de Socrata
+        invalid_url_message: Hm... Quelcom ha anat malament. Proveu a fer servir un enllaç vàlid cap a una història de Socrata.
+        message_html: Fent servir Socrata Perspectives, guieu els vostres usuaris a narracions rellevants basades en aquestes dades. Per a consultar una llista completa d'històries públiques sobre aquest camp, <a href="/browse?limitTo=story" target="_blank">feu clic aquí<span class="icon-external"></span></a>
+        url: Enllaç a història
+      title: Continguts destacats
+      view_selector_modal:
+        header: Destaca una visualització de Socrata
+        message: Escolliu una visualització o vista filtrada que penseu que representa realment el vostre conjunt de dades. Això serà una de les primeres coses que els usuaris vegin quan consultin aquest conjunt de dades.
+        view_fetch_error: Oh, no! Quelcom ha anat malament quan hem intentat obtenir les visualitzacions d'aquestes dades. Proveu-ho de nou més tard.
+      visualization: Visualització
     featured_views:
-      no_content_alert_html:
-      title:
-      view:
-    less:
-    manage_prompt:
+      no_content_alert_html: "<b>Hm...</b> Sembla que no hi ha continguts públics que facin servir aquestes dades."
+      title: Continguts populars amb aquestes dades
+      view: Veure
+    feedback:
+      panel_details_html: Amb una captura de pantalla, podeu mostrar-nos exactament sobre què tracta el comentari. Fem servir <a href="https://usersnap.com">Usersnap</a> per a les captures de pantalla. Llegiu la seva <a href="https://usersnap.com/privacy-policy">política de privacitat</a>.
+      panel_title: Voleu incloure una captura de pantalla de la pàgina actual, amb anotacions?
+      screenshot_no: No, gràcies
+      screenshot_yes: Sí, incloure una captura de pantalla
+      title: Comentaris
+    less: Mostrar menys
+    manage_prompt: Feu clic aquí per a gestionar els permisos
     metadata:
-      attachments:
-      category:
-      creation_date:
-      data_last_updated:
-      data_provided_by:
-      dataset_owner:
-      downloads:
-      license:
-      licensing:
-      metadata_last_updated:
-      no_category_value:
-      no_license_value:
-      no_tags_value:
-      no_value:
-      source_link:
-      tags:
-      title:
-      topics:
-      views:
-    more:
+      attachments: Adjunts
+      category: Categoria
+      creation_date: Data de creació
+      data_last_updated: Dades actualitzades per últim cop
+      data_provided_by: Dades facilitades per
+      dataset_owner: Propietari del conjunt de dades
+      downloads: Descàrregues
+      edit_metadata: Editar metadades
+      license: Llicència
+      licensing: Llicències i atribució
+      metadata_last_updated: "Última actualització de metadades"
+      no_category_value: Aquest conjunt de dades no ha estat categoritzat
+      no_license_value: La llicència d'aquest conjunt de dades no està especificada
+      no_tags_value: Aquest conjunt de dades no té cap etiqueta
+      no_value: "(cap)"
+      source_link: Enllaç de la font
+      tags: Etiquetes
+      title: Sobre aquest conjunt de dades
+      topics: Temes
+      view_statistics: Veure totes les dades estadístiques d'aquest conjunt de dades
+      views: Vistes
+    more: Mostrar més
+    multiple_geo_layers: Aquest conjunt de dades conté diverses capes geoespacials, detallades a continuació.
     odata_modal:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      multiple_geo_layers:
-      title:
-    official:
-    private_notice:
-    published_by:
+      description: Crea una full de càlcul en Microsoft Excel per a analitzar o visualitzar aquest conjunt de dades. Tot fent servir un enllaç d'OData, les dades es podran refrescar.
+      developer_portal_button: Documentació d'OData de Socrata
+      endpoint_title: Punt final d'OData
+      multiple_geo_layers: Aquest conjunt de dades conté diverses capes geoespacials. Cada capa té el seu propi punt final OData a continuació.
+      title: Accedir a aquest conjunt de dades a través d'OData
+    official: Oficial
+    popular_views:
+      load_more_error: Ha ocorregut un problema en carregar continguts addicionals.
+      title: Continguts populars amb aquestes dades
+      view: Veure
+    private_notice: Esteu mirant un conjunt de dades privat.
+    publish: Publicar
+    publish_error: S'ha produït un problema a l'hora de publicar aquest conjunt de dades. Assegureu-vos que esteu connectats i que teniu els permisos adients. Si el problema es continua produint, contacteu amb <a href="https://support.socrata.com">el servei d'ajut de Socrata</a>.
+    publish_notice: Aquest conjunt de dades <strong>no està publicat</strong>. Amb la publicació d'aquesta pàgina també es publicarà la <a href="{url}" target="_blank">vista tabular</a> d'aquest conjunt de dades.
+    published: Publicat
+    published_by: Dades facilitades per
+    remove: Eliminar
+    save: Desar
+    saved: Desat
+    saving: Desant
     schema_preview:
-      api_field_name:
-      column_name:
-      data_type:
+      api_field_name: Nom de camp d'API
+      column_name: Nom de la columna
+      data_type: Tipus de dades
       data_types:
-        blob:
-        calendar_date:
-        checkbox:
-        dataset_link:
-        date:
-        document:
-        drop_down_list:
-        email:
-        flag:
-        geospatial:
-        html:
-        line:
-        link:
-        list:
-        location:
-        money:
-        multiline:
-        multipoint:
-        multipolygon:
-        nested_table:
-        number:
-        object:
-        percent:
-        phone:
-        photo:
-        point:
-        polygon:
-        stars:
-        text:
-        url:
-      description:
-      geospatial_layer_title:
-      show_all:
-      show_less:
-      title:
-      type:
+        blob: BLOB
+        calendar_date: Segell de temps flotant
+        checkbox: Casella
+        dataset_link: Enllaç de conjunt de dades
+        date: Segell de temps fix
+        document: Document
+        drop_down_list: Text
+        email: Text
+        flag: Text
+        geospatial: Geoespacial
+        html: Text
+        line: Línia
+        link: Text
+        list: Llista
+        location: Ubicació
+        money: Diners
+        multiline: Línia
+        multipoint: Punt
+        multipolygon: Polígon
+        nested_table: Taula en niu
+        number: Número
+        object: Objecte
+        percent: Número
+        phone: Text
+        photo: Foto
+        point: Punt
+        polygon: Polígon
+        stars: Número
+        text: Text
+        url: Text
+      description: Descripció
+      geospatial_layer_title: Columnes en aquesta capa
+      show_all: Mostrar tot
+      show_less: Mostrar menys
+      title: Columnes en aquest conjunt de dades
+      type: Tipus
     share:
-      cancel:
-      email:
-      email_body:
-      facebook:
-      title:
-      twitter:
-      visibility_alert_html:
-    updated:
+      cancel: Cancel·lar
+      email: Compartir per correu electrònic
+      email_body: 'Aquí hi ha un conjunt de dades de %{provider} que m''agradaria compartir amb vós: %{url}'
+      facebook: Compartir a través de Facebook
+      title: Compartir aquest conjunt de dades
+      twitter: Compartir a través de Twitter
+      visibility_alert_html: "<b>Atenció!</b> Aquest conjunt de dades és privat i és possible que hagi persones amb qui ho hagueu compartit que no puguin accedir-hi."
+    updated: Actualitzat
+    view_widget:
+      external_content: Continguts externs
+      views: Vistes
   dataslate:
     component:
       edit: Editar aquesta component
@@ -1463,7 +1566,7 @@ ca:
       title: Configuració de Pàgina
   date:
     abbr_month_names:
-    -
+    - 
     - Gen
     - Feb
     - Mar
@@ -1477,7 +1580,7 @@ ca:
     - Nov
     - Des
     month_names:
-    -
+    - 
     - Gener
     - Febrer
     - Març
@@ -1514,6 +1617,22 @@ ca:
       were_sorry: Ho lamentem, però sembla que no té permís per accedir a aquesta pàgina.
     to_whence_you_came: per a d'on ve vostè.
   govstat:
+    admin:
+      goal_values:
+        status_private: Privat
+        status_public: Públic
+      listing:
+        dashboard: Tauler
+        default_alert_message: 
+        goal_page: Pàgina de metes
+        goal_status: Estat de la meta
+        manage_on_goal_page: Gestionar en pàgina de meta
+        owner: Propietari
+        rows_per_page: 
+        title: Títol
+        updated_at: Actualitzat
+        view_dashboard: Veure tauler
+        visibility: Visibilitat
     chrome:
       header:
         links:
@@ -1541,7 +1660,7 @@ ca:
       datasets: Conjunts de Dades
       federations: Federacions
       homepage: Pagina d'Inici
-      jobs:
+      jobs: Tasques
       metadata: Metadades
       moderation: Comentar Moderació
       nomination: Nomenar Moderació
@@ -1549,6 +1668,28 @@ ca:
       sdp_templates: Plantilla de Dades per als Jugadors
       title: Administrar la Configuració del Lloc
       users: Usuaris
+    measure:
+      end_progress:
+        bad: No va assolir l'objectiu
+        good: Meta assolida
+        needs_more_data: Va necessitar més dades
+        no_judgement: Avaluat
+        none: Va necessitar més dades
+        poor: No va assolir l'objectiu
+        progressing: Quasi va assolir l'objectiu
+        within_tolerance: Quasi va assolir l'objectiu
+      progress:
+        bad: Necessita millorar
+        good: En camí
+        needs_more_data: Necessita més dades
+        no_judgement: Avaluant
+        no_status: Sense estat
+        none: Necessita més dades
+        poor: Necessita millorar
+        progressing: En procés
+        within_tolerance: Prop de l'objectiu
+      subheadline: Aquesta meta s'avalua fent un seguiment de {0} en {1}.
+      unit_percent: percentatge
     reports:
       component:
         base_map: Mapa Base
@@ -1592,30 +1733,31 @@ ca:
       title: Seleccionar Capa
   plugins:
     daterangepicker:
+      clear: Esborrar
       date_range: Interval de Dades
       done: Fet
       end_date: Data de finalització
-      last_30_days:
-      last_3_days:
+      last_30_days: Els 30 darrers dies
+      last_3_days: Els 3 darrers dies
       last_month: Mes passat
-      last_week:
-      last_year:
+      last_week: La setmana passada
+      last_year: L'any passat
       month_to_date: De Mes a Dates
       next: Següent
-      preceding_30_days:
-      preceding_month:
-      preceding_week:
+      preceding_30_days: els 30 dies anteriors
+      preceding_month: el mes anterior
+      preceding_week: la setmana anterior
       prev: Previ
       specific_date: Data Específica
       start_date: Data d'inici
-      the_day_of:
+      the_day_of: El dia de...
       the_month_of: El mes de...
       the_week_of: La setmana de...
       the_year_of: L'any de...
       today: Avui
       week_to_date: De Setmanes a Dates
       year_to_date: D'anys a Dates
-      yesterday:
+      yesterday: Ahir
     fileuploader:
       drop_files: Deixi caure els fitxers ací per a carregar-los
       failed: Fallida
@@ -1686,7 +1828,7 @@ ca:
     about:
       actions: Accions
       activity: Activitat
-      admin_debugging:
+      admin_debugging: Depuració de superadministrador
       attachments: Adjunts
       category: Categoria
       comments: Comentaris
@@ -1695,7 +1837,7 @@ ca:
       contributors: Col·laboradors
       created: creat
       data_provided_by: Dades Proveïdes Per
-      datasync_status:
+      datasync_status: Estat de sincronització de dades
       description: Descripció
       downloads: Descàrregues
       edit_metadata: Editar Metadades
@@ -1731,21 +1873,73 @@ ca:
       visits: Visites
       your: La seva Puntuació
     admin:
+      connector:
+        actions: Accions
+        add_connector: Afegir connector
+        add_new: Afegir nou
+        all_assets: Connectar tots els recursos
+        arcgis_server_address: Accés de servidor ArcGIS
+        assets_connected:
+          one: 1 recurs connectat
+          other: "%{count} recursos connectats"
+        assets_discovered:
+          one: 1 recurs descobert
+          other: "%{count} recursos descoberts"
+        back_to_connector_list: Tornar a la llista de connectors
+        catalog: Catàleg
+        connected_assets: Recursos connectat
+        current_status: Estat actual
+        data: Dades
+        discovered_assets: Recursos descoberts
+        edit: Editar
+        edit_connector: 'Editar connector: %{url}'
+        errors:
+          duplicate_server_error: Aquest servidor Esri ja estava connectat a aquest camp.
+          invalid_attributes_error: 'Aquests paràmetres no eren vàlids: %{invalid}.'
+          json_format_error: El vostre JSON no estava ben format.
+          missing_attributes_error: 'Faltaven aquests paràmetres: %{missing}.'
+          not_found_error: No s'ha trobat aquest recurs.
+          problem_with_errors: No hem pogut processar la vostra petició.
+          server_ping_error: 'No s''ha pogut contactar amb el servidor: %{url}'
+          unknown_error: 'La vostra petició ha fallat pels següents motius: %{reason}'
+        esri_arcgis: ArcGIS Esri
+        esri_arcgis_url: Adreça de servidor ArcGIS
+        failing: Fallant
+        flashes:
+          created: Bé! Hem contactat amb el vostre servidor. Trigarem una mica de temps en sincronitzar el catàleg ArcGIS, i després podreu editar els ajustaments del connector i continuar amb la configuració.
+          deleted: El vostre connector ha estat marcat per a la seva eliminació.
+          server_not_found: No hem pogut trobar aquest servidor. Es possible que recentment hagi estat eliminat.
+          updated: Els ajustament del vostre connector han estat desats.
+        ignore: Ignorat
+        last_synced: "Última sincronització"
+        never: Mai
+        no_connectors: No hi ha connectors actuals. Si voleu connectar el vostre catàleg a un recurs extern, feu clic en "Afegir nou" amunt.
+        not_synced_yet_edit: Podeu editar els ajustaments del connector tan bon punt haguem sincronitzat el catàleg ArcGIS.
+        not_yet: Sincronització en procés
+        save: Desar
+        search: Buscar el domini
+        selective_connection: Connexió selectiva
+        service_unavailable: Els serveis de connector no estan disponibles en aquests moments.
+        some_assets: Connectar només aquests recursos
+        source: Font del connector
+        success: "Èxit"
+        terminate: Finalitzar
+        title: Gestionar connectors
       datasets:
         asset_inventory:
-          tooltip:
-        description:
+          tooltip: Aquesta opció no està disponible, degut a un error. Si el problema encara es produeix després de 24 hores, si us plau, contacteu amb el servei d'ajut.
+        description: Fa una llista dels recursos d'aquest camp i configura el disseny de la pàgina de conjunt de dades
         layout_config: Configuració de Capes
         left: Esquerra
         right: Dreta
         saved: Desat
         saving: Desant
         sidebar_position: Posició de la Barra Lateral
-        skip_to_dataset_listing:
-        table_description:
+        skip_to_dataset_listing: Saltar a llistat de conjunt de dades
+        table_description: Conjunts de dades
         title: Conjunts de Dades
         unpublished_datasets: Conjunts de Dades no publicats
-        view_as_a_dataset:
+        view_as_a_dataset: Veure com a conjunt de dades
       federation:
         accept: Acceptar
         accepted: Acceptat
@@ -1776,66 +1970,67 @@ ca:
         terminate: Finalitzar
         title: Federació de Dades Obertes
       georegions:
-        actions:
-        choose_a_dataset:
+        actions: Accions
+        choose_a_dataset: Escolliu una capa
         configure_boundary:
-          boundary_geometry_label_field_error:
-          boundary_geometry_label_page_error:
-          boundary_name:
-          boundary_name_description:
-          boundary_name_required_field_error:
-          boundary_name_required_page_error:
-          boundary_name_unique_error:
-          choose_a_column:
-          configure_boundary:
-          confirm_html:
-          confirm_title:
-          description:
-          next:
-          page_title:
-          primary_key_column:
-          primary_key_column_description:
-          primary_key_column_missing_field_error:
-          save_core_error:
-          save_error:
-          save_success:
-          shape_label:
-          shape_label_description:
-        create_new:
-        custom_georegions:
-        date_added:
-        default:
-        default_georegions:
-        default_georegions_flyout:
-        default_georegions_limit:
-        default_success:
-        delete:
-        description:
-        disable:
-        disable_success:
-        edit:
-        enable:
-        enable_success:
-        enabled?:
+          boundary_geometry_label_field_error: El límit ha de tenir una etiqueta de figura.
+          boundary_geometry_label_page_error: 'No s''ha pogut desar: el límit ha de tenir una etiqueta de figura.'
+          boundary_name: Nom del límit
+          boundary_name_description: El nom del límit (p. ex., "Estats" o "Barris"). Apareixerà als mapes de lents espacials.
+          boundary_name_required_field_error: El límit ha de tenir un nom.
+          boundary_name_required_page_error: 'No s''ha pogut desar: el límit ha de tenir un nom.'
+          boundary_name_unique_error: El nom del límit ha d'ésser únic.
+          choose_a_column: Escolliu una columna...
+          configure_boundary: Configurar límit
+          confirm_html: <p>Feu clic en "Create" per a afegir un nou límit de lent espacial basat en el conjunt de dades geoespacials "%{boundary_name}".</p><p>Aquest nou límit de lent espacial és una imatge i no canviarà encara que actualitzeu el conjunt de dades geoespacials "%{boundary_name}".</p>
+          confirm_title: Creeu la vostra lent espacial
+          description: Configureu límits personalitzats que es puguin fer servir per a crear mapes de lents espacials
+          next: Següent
+          page_title: Gestionar límits
+          primary_key_column: Identificador de figura
+          primary_key_column_description: La columna que conté l'identificador únic que identifica cada figura dins el límit. Si no hi ha tal columna, escolliu una columna única.
+          primary_key_column_missing_field_error: Heu d'especificar una columna per a l'identificador de figura.
+          save_core_error: 'No s''ha pogut crear el límit: %{error_message}'
+          save_error: Quelcom ha anat malament en intentar desar els vostres canvis. Si us plau, proveu-ho de nou més tard, o poseu-vos en contacte amb el servei d'ajut de Socrata si el problema es continua produint.
+          save_success: Canvis desats correctament.
+          shape_label: Etiqueta de figura
+          shape_label_description: La columna que s'ha de fer servir com a l'etiqueta per a cada figura (p. ex., una columna que contingui "WA" i "NY").
+        create_new: Crear nou
+        custom_georegions: Límits personalitzats
+        date_added: Data afegida
+        default: Configurar afegiment ràpid per a límits
+        default_georegions: Activa l'afegiment ràpid per a nous conjunts de dades (%{count} de %{limit})
+        default_georegions_flyout: Si teniu un límit que voleu fer servir en la major part de pàgines de lents de dades, aquesta opció farà que sigui més ràpid visualitzar qualsevol conjunt de dades carregat després d'haver activat l'afegiment ràpid. Podeu activar fins a 5 límits d'afegiment ràpid.
+        default_georegions_limit: Podeu tenir com a molt %{limit} límits d'afegiment ràpid.
+        default_success: "%{name} ha estat configurat per a l'afegiment ràpid. Tots els conjunts de dades nous estaran automàticament codificats per regió fent servir aquest límit de lent espacial."
+        delete: Eliminar
+        description: Configura els límits personals que es poden fer servir per a crear mapes de lents espacials
+        disable: Desactivar
+        disable_success: "%{name} ha estat desactivat i ja no estarà disponible per a la creació de mapes coroplètics en les lents de dades, fent servir aquest límit de lent espacial."
+        edit: Editar
+        enable: Activar
+        enable_success: '%{name} ha estat activat. Ara podeu crear mapes coroplètics en lent de dades, fent servir aquest límit de lent espacial. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Apreneu més</a> sobre l''ús de lents espacials per a crear mapes.'
+        enabled?: Activat?
         flashes:
-          add_georegion_error:
-          service_unavailable_html:
-        learn_more:
-        page_subtitle:
-        page_title:
-        picker_explanation:
-        picker_support_html:
-        region_name:
-        remove:
-        status_disabled:
-        status_enabled:
-        status_failed:
-        status_progress:
-        substatus_failed_html:
-        substatus_progress:
-        title:
-        undefault:
-        undefault_success:
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Saber més</a></div>
+          service_unavailable_html: <p>Estem experimentant problemes tècnics amb alguns serveis relacionats amb la lent espacial.</p><p>Si us plau, contacteu amb el <a href="https://support.socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.</p>
+        learn_more: Apreneu més sobre com <a href="https://support.socrata.com/hc/en-us/articles/212862177">gestionar la lent espacial en el vostre camp</a>
+        page_subtitle: Heu definit %{default_count} de %{available_count} límits disponibles com a límits autocodificats.
+        page_title: Gestionar lent espacial
+        picker_explanation: Escolliu una capa geoespacial que vulgueu fer servir com a base per a la vostra lent espacial. Podeu fer clic en el nom per a fer una vista prèvia de la capa en una nova pestanya del navegador.
+        picker_explanation_html: "<p>Escolliu una capa geoespacial que vulgueu fer servir com a base per a la vostra lent espacial.</p><p>Podeu fer clic en el nom per a fer una vista prèvia de la capa en una nova pestanya del navegador.</p>"
+        picker_support_html: No heu pogut trobar allò que busqueu? Consulteu l'article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Trobant un conjunt de dades per a la vostra lent espacial</a> per a saber-ne més.
+        region_name: Nom del límit
+        remove: Retirar
+        status_disabled: No activat
+        status_enabled: Llest per al seu ús
+        status_failed: Quelcom ha anat malament...
+        status_progress: Processant
+        substatus_failed_html: Si us plau, contacteu amb el <a href="https://support.socrata.com">servei d'ajut de Socrata</a> i incloeu el codi <strong>%{code}</strong>.
+        substatus_progress: Disponible en breu
+        title: Lent espacial
+        undefault: Desconfigurar l'afegiment ràpid per al límit
+        undefault_success: S'ha desconfigurat l'afegiment ràpid per a %{name}. Els nous conjunts de dades ja no estaran codificats automàticament per regió fent servir aquest límit de lent espacial.
       home:
         add_featured_dataset: Afegir un Nou Conjunt de Dades Destacat
         are_you_sure: Està segur? Aquesta acció no es pot desfer.
@@ -1881,298 +2076,339 @@ ca:
         thumbnail: Miniatura
         title: Administrar Pàgina d'Inici
         up: Dalt
+      index:
+        comment_moderation: 
+        comment_moderation_description: 
+        connectors: 
+        connectors_description: 
+        dataset_routing_and_approval: 
+        dataset_routing_and_approval_description: 
+        datasets: 
+        datasets_description: 
+        dataslate_pages: 
+        dataslate_pages_description: 
+        federation: 
+        federation_description: 
+        georegions: 
+        georegions_description: 
+        home_page: 
+        home_page_description: 
+        internal: 
+        internal_description: 
+        jobs: 
+        jobs_description: 
+        metadata: 
+        metadata_description: 
+        sdp_templates: 
+        sdp_templates_description: 
+        site_analytics: 
+        site_analytics_description: 
+        site_chrome: 
+        site_chrome_description: 
+        stories: 
+        stories_description: 
+        users: 
+        users_description: 
+        view_moderation: 
+        view_moderation_description: 
       jobs:
         actions:
-          geocoding:
-          import:
-          replace:
-          upsert:
-          working_copy:
+          geocoding: Geocodificació
+          import: Importar
+          replace: Canviar
+          upsert: Upsert
+          working_copy: Còpia de treball
         filters:
-          all:
-          append:
-          apply_filters:
-          data_workflow:
-          filter_by:
-          import:
-          import_activity:
-          publish:
-          replace:
-          type:
-          working_copy:
+          all: Tot
+          append: Adjuntar
+          apply_filters: Anar
+          data_workflow: Flux de treball
+          delete: Eliminar
+          filter_by: Filtrar per
+          import: Importar
+          import_activity: Importar activitat
+          publish: Publicar
+          replace: Canviar
+          restore: Restablir
+          type: Tipus
+          upsert: Upsert
+          working_copy: Còpia de treball
         index_page:
-          action:
-          dataset:
-          deleted_dataset:
-          deleted_user:
-          export_as_csv:
-          initiated_by:
-          no_jobs:
-          page_title:
-          showing_all_so_far:
-          showing_most_recent:
-          started:
-          status:
-          title:
-          to_working_copy:
-          with_problems:
+          action: Acció
+          dataset: Conjunt de dades
+          deleted: Eliminat
+          deleted_dataset: Conjunt de dades eliminat
+          deleted_user: L'usuari ha estat eliminat
+          export_as_csv: Exportar com a CSV
+          initiated_by: Iniciada per
+          no_jobs: No hi ha tasques a mostrar
+          page_title: Tasques de dades
+          restore_deleted_dataset: Restablir
+          restore_deleted_dataset_confirm: Segur que vols restablir el conjunt de dades %{dataset}?
+          showing_all_so_far: Mostrant totes les tasques que han estat registrades fins ara
+          showing_most_recent: Mostrant les %{limit} tasques més recents
+          started: Iniciada
+          status: Estat
+          title: Tasques de dades
+          to_working_copy: a còpia de treball
+          with_problems: amb problemes
         show_page:
-          back:
-          error_details_heading:
+          back: Tornar a llista de tasques
+          error_details_heading: Informació de l'error
           event_messages:
             failure:
               bad_response_from_server:
-                description:
-                title:
+                description: No hem pogut importar les vostres dades perquè s'ha produït un error inesperat. Si us plau, proveu-ho de nou més tard.
+                title: Quelcom ha anat malament
               bad_timestamp_format:
-                description:
-                title:
+                description: El valor de la data "%{pattern}" té un format que no comprenem. Si us plau, comproveu bé que totes les dates que esteu important s'ajusten a l'estàndard <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a>.
+                title: Valor de data o hora incorrecte
               bad_timezone:
-                description:
-                title:
+                description: No comprenem la zona horària "%{name}". Si us plau, comproveu bé que totes les dates que esteu important s'ajusten a l'estàndard <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a>.
+                title: Zona horària incorrecta
               completed_with_warnings:
-                description:
-                title:
+                description: 'Les vostres dades han estat importades amb avisos, però es va produir un error en desar els avisos en el conjunt de dades. Tanmateix, podreu trobar una llista completa d''avisos aquí: %{warnings}.'
+                title: Error en desar els avisos
               control_file_invalid_json:
-                description:
-                title:
+                description: 'El vostre arxiu de control no s''ha pogut analitzar com a JSON. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu JSON vàlid.'
+                title: Arxiu de control mal format
               control_file_malformed:
-                description:
-                title:
+                description: El vostre arxiu de control era un arxiu JSON vàlid, però no coincidia amb el format que esperem. Si us plau, assegureu-vos que el vostre arxiu de control coincideix amb <a href="https://socrata.github.io/datasync/resources/control-config.html">aquestes especificacions</a>.
+                title: Arxiu de control mal format
               control_file_too_large:
-                description:
-                title:
+                description: El vostre arxiu de control era massa llarg. Si us plau, reduïu la seva mida a %{limit} caràcters o menys, i proveu-ho de nou.
+                title: L'arxiu de control és massa llarg
               corrupt_archive:
-                description:
-                title:
+                description: 'No hem pogut processar la col·lecció d''arxius que heu carregat. Missatge d''error: %{reason}'
+                title: Col·lecció d'arxius corrupta
               corrupt_gzip:
-                description:
-                title:
+                description: 'L''arxiu comprimit amb GZip no s''ha pogut extraure correctament. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu GZip vàlid.'
+                title: No s'ha pogut extreure l'arxiu comprimit
               corrupt_shapefile:
-                description:
-                title:
+                description: No s'ha pogut llegir l'encapçalament de shapefile.
+                title: Shapefile corromput
               corrupt_xz:
-                description:
-                title:
+                description: 'L''arxiu comprimit amb XZ no s''ha pogut extraure correctament. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu XZ vàlid.'
+                title: No s'ha pogut extraure l'arxiu comprimit
               delete_without_user_pk:
-                description:
-                title:
+                description: No podem processar correctament les operacions d'eliminació a menys que es declari un camp d'identificador de fileres.
+                title: No es pot eliminar sense l'identificador de filera
               di2_counts:
-                description:
-                title:
+                description: El vostre arxiu d'importació ha estat importat, però de %{rowCount} fileres en total, no hem pogut carregar %{failCount} fileres dins del vostre conjunt de dades. Si no comptàveu amb això, si us plau, descarregueu les fileres fallides des de la dreta, i verifiqueu que els vostres valors coincideixen <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">amb els formats esperats de Socrata</a>. Després podreu tornar a importar aquestes fileres.
+                title: Completat
               duplicated_fields_in_input:
-                description:
-                title:
+                description: El nom o noms de camp %{fieldNames} es fa servir diverses vegades en el vostre arxiu de dades. Si us plau, assegureu-vos que els noms de camp són únics.
+                title: Noms de camp duplicats especificats
               field_not_in_dataset:
-                description:
-                title:
+                description: 
+                title: No s'ha pogut trobar el camp en el conjunt de dades
               field_not_in_input:
-                description:
-                title:
+                description: En el vostre arxiu de dades no s'ha pogut trobar una columna (%{fieldNames}) que esperàvem, i no heu especificat una columna d'identificació de fileres. Si us plau, comproveu bé les columnes facilitades i proveu-ho de nou.
+                title: No s'ha pogut trobar el camp en l'arxiu
               field_wrong_format:
-                description:
-                title:
+                description: El nom de camp "%{fieldName}" facilitat en el vostre arxiu de dades no és legal. Els noms de camp vàlids han de contenir només caràcters ASCII i començar amb un guió baix o lletra.
+                title: S'ha donat un nom de camp il·legal
               generic:
-                description:
-                title:
+                description: Ho sentim, no hem pogut processar la vostra petició d'importació degut a un error no esperat.
+                title: Quelcom ha anat malament
               geocoding_failure:
-                description:
-                title:
+                description: Per un motiu desconegut, no hem pogut realitzar la geocodificació amb les dades de font facilitades. Si us plau, proveu-ho de nou més tard i poseu-vos en contacte amb el <a href="https://support.socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.
+                title: Error de geocodificació desconegut
               geocoding_source_ignored:
-                description:
-                title:
+                description: 
+                title: No s'han pogut ignorar les columnes especificades
               geocoding_source_invalid_type:
-                description:
-                title:
+                description: 
+                title: No s'ha pogut realitzar la geocodificació a partir de les columnes facilitades
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description:
-                title:
+                description: Ja que les columnes són part de la font de geocodificació d'una columna d'ubicació, no hem pogut ignorar-les, tal com s'ha demanat.
+                title: No s'ha pogut ignorar les columnes especificades
               incomplete_archive:
-                description:
-                title:
+                description: A la col·lecció d'arxius shapefile que heu carregat li falta un arxiu amb extensió "%{missing}". Si us plau, assegureu-vos que la vostra col·lecció d'arxius conté aquest arxiu i proveu-ho de nou.
+                title: Arxiu shapefile incomplet
               invalid_encoding:
-                description:
-                title:
+                description: No hem pogut llegir el vostre arxiu perquè estava xifrat amb %{encoding} i només acceptem UTF-8. Per a un millor resultat, assegureu-vos que el vostre arxiu és un arxiu vàlid en UTF-8.
+                title: Codificació d'arxiu no vàlida
               invalid_row_length:
-                description:
-                title:
+                description: La filera %{record} del vostre arxiu CSV contenia %{actual} camps, mentre que les vostres altres fileres contenien %{expected} camps. Si us plau, assegureu-vos que el vostre arxiu té un nombre regular de camps per filera.
+                title: Nombre de camps no esperat en filera
               malformed_blueprint:
-                description:
-                title:
+                description: 
+                title: 
               malformed_upsert:
-                description:
-                title:
+                description: La vostra càrrega d'upsert no es podia analitzar com a JSON, prop del registre %{record}. Si us plau, verifiqueu que és un arxiu JSON vàlid.
+                title: Upsert mal format
               no_field_names_in_input:
-                description:
-                title:
+                description: Normalment, això es deu a que l'arxiu CSV que hem rebut està completament buit. Si us plau, assegureu-vos que el vostre arxiu conté dades, i torneu-ho a provar.
+                title: No s'ha pogut trobar l'encapçalament CSV
               no_identity_column:
-                description:
-                title:
+                description: Aquest conjunt de dades té una columna d'identificador de fileres ("%{fieldName}"), però no hem pogut trobar aquesta columna en les dades que ens heu facilitat. Si us plau, assegureu-vos que existeix, i torneu-ho a provar.
+                title: No s'ha trobat la columna d'identificador de filera
               parse_error:
-                description:
-                title:
+                description: 
+                title: Error d'anàlisi
               permission_denied:
-                description:
-                title:
+                description: L'usuari que va iniciar aquesta operació (%{user}) no sembla que tingui els drets necessaris per a realitzar-la. Si us plau, assegureu-vos que heu definit correctament els vostres permisos, i proveu-ho de nou.
+                title: Permís denegat
               record_too_large:
-                description:
-                title:
+                description: Hem cancel·lat la lectura del vostre arxiu perquè hem trobat un registre que era massa llarg en la línia %{record} (superava el límit de %{limit}). Això normalment es deu a un escapament CSV incorrecte que provoca que moltes dades de fileres es llegeixen en una sola cel·la. Si us plau, comproveu que el vostre arxiu és vàlid.
+                title: Un registre massa llarg
               row_too_large:
-                description:
-                title:
+                description: El número de filera %{nearRecord} del vostre arxiu tenia massa caràcters; el límit és de %{limit}.
+                title: Filera massa gran
               synthetic_location_in_input:
-                description:
-                title:
+                description: En el vostre arxiu de dades s'ha trobat una columna (%{fieldNames}) que coincideix amb una columna sintètica d'aquest conjunt de dades. Les columnes sintètiques es calculen automàticament i no s'hi pot importar de forma manual.
+                title: No s'ha pogut importar dins la columna sintètica
               too_many_errors_in_input:
-                description:
-                title:
+                description: S'està cancel·lant la tasca perquè s'han trobat massa errors en les vostres dades d'entrada.
+                title: S'ha trobat massa errors d'entrada
               too_many_records_in_input:
-                description:
-                title:
+                description: El vostre arxiu de dades excedeix el nombre màxim de registres que podem importar d'una vegada (teniu %{recordCount}, però el màxim és de %{maxRecordCount}). Si us plau, reduïu el nombre de registres per arxiu i proveu-ho de nou.
+                title: Massa registres
               uninterpretable_value:
-                description:
-                title:
+                description: El valor "%{value}" en la filera %{record} i columna "%{column}" no s'ha pogut llegir com a %{expectedType}. Si us plau, assegureu-vos que tots els valors estan formatats correctament per a les seves columnes objectiu.
+                title: Valor de registre no interpretable
               unknown_domain:
-                description:
-                title:
+                description: No reconeixem el camp objectiu facilitat de la vostra tasca (%{domain}). Si us plau, assegureu-vos que es tracta d'un camp objectiu Socrata vàlid, i proveu-ho de nou.
+                title: Camp no reconegut
               unknown_file_type:
-                description:
-                title:
+                description: No reconeixem el tipus d'arxiu que ens heu facilitat (extensió %{extension}). Si us plau, assegureu-vos que es tracta d'un tipus d'arxiu compatible i vàlid.
+                title: Tipus d'arxiu desconegut
               unsupported_import_type:
-                description:
-                title:
+                description: El mètode d'importació "%{importType}" no és compatible. Si us plau, feu servir "canviar", "adjuntar" o "importar".
+                title: Mètode d'importació no compatible
               upsert_already_in_progress_by_someone_else:
-                description:
-                title:
+                description: No es poden realitzar dos upserts a la vegada dins un conjunt de dades, i algú altre està enmig d'una operació d'upsert.
+                title: Upsert ja en procès
               upsert_counts:
-                description:
-                title:
+                description: El vostre arxiu d'importació ha estat importat, però de %{rowCount} fileres en total, no hem pogut carregar %{failCount} fileres dins del vostre conjunt de dades. Si us plau, verifiqueu que els vostres valors coincideixen <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">amb els formats esperats de Socrata</a>.
+                title: Completada
             success_with_data_errors:
               di2_counts:
-                description:
-                title:
+                description: El vostre arxiu d'importació ha estat importat, però de %{rowCount} fileres en total, no hem pogut carregar %{failCount} fileres dins del vostre conjunt de dades. Si no comptàveu amb això, si us plau, descarregueu les fileres fallides des de la dreta, i verifiqueu que els vostres valors coincideixen <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">amb els formats esperats de Socrata</a>. Després podreu tornar a importar aquestes fileres.
+                title: Completat
               upsert_counts:
-                description:
-                title:
-          failed_rows:
-          fallback_event_title:
-          file_name_unknown:
-          import:
+                description: El vostre arxiu d'importació ha estat importat, però de %{rowCount} fileres en total, no hem pogut carregar %{failCount} fileres dins del vostre conjunt de dades. Si us plau, verifiqueu que els vostres valors coincideixen <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">amb els formats esperats de Socrata</a>.
+                title: Completat
+          failed_rows: Fileres fallides
+          fallback_event_title: 'Error: %{error_code}'
+          file_name_unknown: nom d'arxiu desconegut
+          import: Importar
           import_failures:
             bad_timestamp_format:
-              description:
-              title:
+              description: El valor de la data "%{pattern}" té un format que no comprenem. Si us plau, comproveu bé que totes les dates que esteu important s'ajusten a l'estàndard <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a>.
+              title: Valor de data o d'hora incorrecte
             bad_timezone:
-              description:
-              title:
+              description: No comprenem la zona horària "%{name}". Si us plau, comproveu bé que totes les dates que esteu important s'ajusten a l'estàndard <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601</a>.
+              title: Zona horària incorrecta
             control_file_invalid_json:
-              description:
-              title:
+              description: 'El vostre arxiu de control no s''ha pogut analitzar com a JSON. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu JSON vàlid.'
+              title: Arxiu de control mal format
             control_file_malformed:
-              description:
-              title:
+              description: El vostre arxiu de control era un arxiu JSON vàlid, però no coincidia amb el format que esperem. Si us plau, assegureu-vos que el vostre arxiu de control coincideix amb <a href="https://socrata.github.io/datasync/resources/control-config.html">aquestes especificacions</a>.
+              title: Arxiu de control mal format
             control_file_too_large:
-              description:
-              title:
+              description: El vostre arxiu de control era massa llarg. Si us plau, reduïu la seva mida a %{limit} caràcters o menys, i proveu-ho de nou.
+              title: Arxiu de control massa llarg
             corrupt_gzip:
-              description:
-              title:
+              description: 'L''arxiu comprimit amb GZip no s''ha pogut extraure correctament. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu GZip vàlid.'
+              title: No s'ha pogut extraure l'arxiu comprimit
             corrupt_xz:
-              description:
-              title:
+              description: 'L''arxiu comprimit amb XZ no s''ha pogut extraure correctament. Missatge d''error: "%{message}". Si us plau, verifiqueu que és un arxiu XZ vàlid.'
+              title: No s'ha pogut extraure l'arxiu comprimit
             delete_without_user_pk:
-              description:
-              title:
+              description: No podem processar correctament operacions d'eliminació a menys que es declari el camp d'identificació de fileres.
+              title: No s'ha pogut eliminar sense identificador de fileres
             duplicated_fields_in_input:
-              description:
-              title:
+              description: El nom o noms de camp %{fieldNames} es fa servir diverses vegades en el vostre arxiu de dades. Si us plau, assegureu-vos que els noms de camp són únics.
+              title: Noms de camp duplicats especificats
             field_not_in_dataset:
-              description:
-              title:
+              description: No s'ha pogut trobar el nom o noms de camp %{fieldNames} en el conjunt de dades al qual esteu intentant importar. Si voleu importar aquesta columna, comproveu bé com està escrit i torneu-ho a provar.
+              title: No s'ha pogut trobar el camp en el conjunt de dades
             field_not_in_input:
-              description:
-              title:
+              description: En el vostre arxiu de dades no s'ha pogut trobar una columna (%{fieldNames}) que esperàvem, i no heu especificat una columna d'identificació de fileres. Si us plau, comproveu bé les columnes facilitades i proveu-ho de nou.
+              title: No s'ha pogut trobar el camp en l'arxiu
             field_wrong_format:
-              description:
-              title:
+              description: El nom de camp "%{fieldName}" facilitat en el vostre arxiu de dades no és legal. Els noms de camp vàlids han de contenir només caràcters ASCII i començar amb un guió baix o lletra.
+              title: S'ha facilitat un nom de camp il·legal
             geocoding_failure:
-              description:
-              title:
+              description: Per un motiu desconegut, no hem pogut realitzar la geocodificació amb les dades de font facilitades. Si us plau, proveu-ho de nou més tard i poseu-vos en contacte amb el <a href="https://support.socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.
+              title: Error de geocodificació desconegut
             geocoding_source_ignored:
-              description:
-              title:
+              description: Ja que les columnes %{fieldNames.join(", ")} són part de la font de geocodificació d'una columna d'ubicació, no hem pogut ignorar-les, tal com s'ha demanat.
+              title: No s'ha pogut ignorar les columnes especificades
             geocoding_source_invalid_type:
-              description:
-              title:
+              description: No hem pogut fer servir les columnes %{fieldNames} com a font per a geocodificar la informació d'ubicació. Si us plau, comproveu bé que es tracta de text vàlid o de columnes numèriques.
+              title: No s'ha pogut realitzar la geocodificació a partir de les columnes especificades
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description:
-              title:
+              description: Ja que les columnes són part de la font de geocodificació d'una columna d'ubicació, no hem pogut ignorar-les, tal com s'ha demanat.
+              title: No s'han pogut ignorar les columnes especificades
             invalid_encoding:
-              description:
-              title:
+              description: No hem pogut llegir el vostre arxiu perquè estava xifrat amb %{encoding} i només acceptem UTF-8. Per a un millor resultat, assegureu-vos que el vostre arxiu és un arxiu vàlid en UTF-8.
+              title: Codificació d'arxiu no vàlida
             invalid_row_length:
-              description:
-              title:
+              description: La filera %{record} del vostre arxiu CSV contenia %{actual} camps, mentre que les vostres altres fileres contenien %{expected} camps. Si us plau, assegureu-vos que el vostre arxiu té un nombre regular de camps per filera.
+              title: Nombre de camps dins filera no esperat
             malformed_upsert:
-              description:
-              title:
+              description: La vostra càrrega d'upsert no es podia analitzar com a JSON, prop del registre %{record}. Si us plau, verifiqueu que és un arxiu JSON vàlid.
+              title: Upsert mal format
             no_field_names_in_input:
-              description:
-              title:
+              description: Normalment, això es deu a que l'arxiu CSV que hem rebut està completament buit. Si us plau, assegureu-vos que el vostre arxiu conté dades, i torneu-ho a provar.
+              title: No s'ha pogut trobar l'encapçalament CSV
             no_identity_column:
-              description:
-              title:
+              description: Aquest conjunt de dades té una columna d'identificador de fileres ("%{fieldName}"), però no hem pogut trobar aquesta columna en les dades que ens heu facilitat. Si us plau, assegureu-vos que existeix, i torneu-ho a provar.
+              title: No s'ha trobat la columna d'identificador de filera
             permission_denied:
-              description:
-              title:
+              description: L'usuari que va iniciar aquesta operació (%{user}) no sembla que tingui els drets necessaris per a realitzar-la. Si us plau, assegureu-vos que heu definit correctament els vostres permisos, i proveu-ho de nou.
+              title: Permís denegat
             record_too_large:
-              description:
-              title:
+              description: Hem cancel·lat la lectura del vostre arxiu perquè hem trobat un registre que era massa llarg en la línia %{record} (superava el límit de %{limit}). Això normalment es deu a un escapament CSV incorrecte que provoca que moltes dades de fileres es llegeixen en una sola cel·la. Si us plau, comproveu que el vostre arxiu és vàlid.
+              title: Un sol registre massa llarg
             synthetic_location_in_input:
-              description:
-              title:
+              description: En el vostre arxiu de dades s'ha trobat una columna (%{fieldNames}) que coincideix amb una columna sintètica d'aquest conjunt de dades. Les columnes sintètiques es calculen automàticament i no s'hi pot importar de forma manual.
+              title: No s'ha pogut importar dins la columna sintètica
             too_many_errors_in_input:
-              description:
-              title:
+              description: S'està cancel·lant la tasca perquè s'han trobat massa errors en les vostres dades d'entrada.
+              title: S'ha ter
             too_many_records_in_input:
-              description:
-              title:
+              description: El vostre arxiu de dades excedeix el nombre màxim de registres que podem importar d'una vegada (teniu %{recordCount}, però el màxim és de %{maxRecordCount}). Si us plau, reduïu el nombre de registres per arxiu i proveu-ho de nou.
+              title: Massa registres
             uninterpretable_value:
-              description:
-              title:
+              description: El valor "%{value}" en la filera %{record} i columna "%{column}" no s'ha pogut llegir com a %{expectedType}. Si us plau, assegureu-vos que tots els valors estan formatats correctament per a les seves columnes objectiu.
+              title: Valor de registre no interpretable
             unknown_domain:
-              description:
-              title:
+              description: No reconeixem el camp objectiu facilitat de la vostra tasca (%{domain}). Si us plau, assegureu-vos que es tracta d'un camp objectiu Socrata vàlid, i proveu-ho de nou.
+              title: Camp no reconegut
             unknown_file_type:
-              description:
-              title:
+              description: No reconeixem el tipus d'arxiu que ens heu facilitat (extensió %{extension}). Si us plau, assegureu-vos que es tracta d'un tipus d'arxiu compatible i vàlid.
+              title: Tipus d'arxiu desconegut
             upsert_already_in_progress_by_someone_else:
-              description:
-              title:
-          import_method:
-          initiated_at:
-          no_events:
-          page_title:
+              description: No es poden realitzar dos upserts a la vegada en un conjunt de dades, i algú altre està enmig d'una operació d'upsert.
+              title: Upsert ja en procès
+          import_method: Mètode d'importació
+          initiated_at: Iniciada en
+          no_events: Encara no s'han registrat esdeveniments de progrés per a aquesta tasca.
+          page_title: Informació de tasques de dades
           services:
-            DeltaImporter2:
-            Imports2:
-            ResourcesAPI:
-          started_by:
-          title:
-          to:
+            DeltaImporter2: Sincronització de dades
+            Imports2: Interfície web
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">API de recursos</a>
+          started_by: Iniciada per
+          title: Informació de dades de tasca
+          to: a
         statuses:
-          failure:
-          in_progress:
-          not_started:
-          success:
-          success_with_data_errors:
+          failure: Fallida
+          in_progress: En procès
+          not_started: Encara sense començar
+          success: Completada
+          success_with_data_errors: Completada, amb problemes
       metadata:
         add_new_category: Afegir una Categoria Nova
         add_new_field: Afegir un Camp nou
         allowed_values: 'Valors Permesos '
         are_you_sure: Està segur de voler eliminar aquest conjunt de camps i tots els camps associats?
         category_name: 'Nom de la Categoria '
-        category_table_description:
+        category_table_description: Categories de metadades
         create: Crear
         create_new_fieldset: Crear un Conjunt de Camps Nou
         define_categories: Definir les Categories dels Conjunts de Dades
@@ -2202,7 +2438,7 @@ ca:
         metadata_explain1: Les metadades personalitzades s'han desfet en <span class="code">conjunts de camps</span> i <span class="code">camps</span>. Un <span class="code">conjunt de dades</span> és la forma d'agrupar lògica i visualment un o més <span class="code">camps</span> junts.
         metadata_explain2: Els camps poden ser configurats de múltiples formes. Poden ser <span class="code">requerits</span>, el que farà que s'executin quan el editors creïn nous conjunts de dades i actualitzin metadades existents. També poden ser <span class="code">privats</span> i per tant, els valors introduïts no seran visibles pel públic.
         metadata_explain3: Finalment, pot elegir predefinir les opcions del seu <span class="code">camp</span> si desitja que els valors se seleccionin d'una llista en compte de ser introduïts en forma de text lliure de forma.
-        metadata_field_table_description:
+        metadata_field_table_description: Camps de metadades per a '%{name}'
         no_data: Encara no s'han definit camps de conjunts de dades personalitzats al seu domini. Introdueixi un nom a sota i cliqui 'Crear' per començar.
         no_fields_defined: Aquest conjunt de camps encara no té cap camp definit
         page_title: Administrar Metadades de Conjunts de Dades
@@ -2212,6 +2448,134 @@ ca:
         title: Administrar Metadades
         'true': true
         up: Dalt
+      site_chrome:
+        cancel: Cancel·lar
+        description: Configureu l'aparença del vostre lloc de Socrata.
+        preview_changes: Vista prèvia de canvis
+        save: Desar
+        save_changes: Desar canvis
+        site_appearance: Aparença del lloc
+        tabs:
+          footer:
+            fields:
+              copyright_notice:
+                description: Canvieu l'aspecte de l'avís de drets d'autor del vostre lloc. Actualitzem automàticament l'avís per a mostrar l'any natural actual.
+                label: Mostrar avís de drets d'autor
+                title: Avís de drets d'autor
+              footer_background_color:
+                description: Color de fons per al peu de pàgina i color del text i dels enllaços que apareixen dins el peu de pàgina.
+                placeholder: "#123456"
+                title: Color de fons del peu de pàgina
+              footer_display_name:
+                description: Nom que apareix en la barra del peu de pàgina. Normalment es configura segons el nom de la vostra organització.
+                placeholder: Dades obertes d'Evergreen
+                title: Nom del peu de pàgina
+              footer_logo:
+                description: URL de referència per al logo del peu de pàgina. La mida mínima recomanada és de 300 x 200 píxels.
+                placeholder: URL
+                title: Logo de peu de pàgina
+              footer_text_link_color:
+                placeholder: "#ffffff"
+                title: Text del peu de pàgina i color d'enllaç
+              link_title_label: Etiqueta d'enllaç
+              link_title_placeholder: Text d'enllaç
+              menu_links:
+                description: Mostra fins a 15 enllaços en el peu de pàgina. Els col·loquem automàticament en columnes.
+                title: Enllaços de menú de peu de pàgina
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Peu de pàgina
+          general:
+            fields:
+              google_analytics_token:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              template:
+                description: 
+                placeholder: 
+                title: 
+              window_icon:
+                description: URL de referència per a la icona mostrada en els camps URL de finestra, pestanya i navegador.
+                placeholder: URL
+                title: Icona de finestra o pestanya (favicon)
+              window_title_display:
+                description: Nom mostrat en el títol de finestra o pestanya.
+                placeholder: Dades obertes d'Evergreen
+                title: Títol de finestra o pestanya
+            title: Ajustaments generals
+          header:
+            fields:
+              bar_background_color:
+                description: Color de fons per a l'encapçalament i color del text i dels enllaços situats sobre la barra.
+                placeholder: "#123456"
+                title: Color de fons de la barra
+              bar_text_link_color:
+                placeholder: "#ffffff"
+                title: Color del text i l'enllaç de la barra
+              header_bar_logo:
+                description: URL de referència per al logo de l'encapçalament. La mida mínima recomanada és de 100 x 40 píxels. Aquest logo apareixerà en mida petita.
+                placeholder: URL
+                title: Logo de la barra d'encapçalament
+              header_display_name:
+                description: Nom que apareix en la barra de l'encapçalament. Normalment es configura segons el nom de la vostra organització.
+                placeholder: Dades obertes d'Evergreen
+                title: Nom d'encapçalament
+              link_title_label: Etiqueta de l'enllaç
+              link_title_placeholder: Text de l'enllaç
+              menu_links:
+                description: Mostra fins a 15 enllaços en la barra d'encapçalament. Si les etiquetes d'enllaços són massa llargues o un visitant està mirant el vostre lloc en un dispositiu petit, els enllaços es recullen automàticament dins un menú.
+                title: Enllaços de menú
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Barra d'encapçalament
+          homepage:
+            fields: 
+            title: Pàgina principal
+          social:
+            fields:
+              facebook_profile_link:
+                description: Mostra l'enllaç de perfil de Facebook en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.facebook.com/
+                title: Enllaç de perfil de Facebook
+              flickr_profile_link:
+                description: Mostra l'enllaç de perfil de Flickr en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.flickr.com/
+                title: Enllaç de perfil de Flickr
+              google_plus_profile_link:
+                description: Mostra l'enllaç de perfil de Google Plus en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.plus.google.com/
+                title: Enllaç de perfil de Google Plus
+              instagram_profile_link:
+                description: Mostra l'enllaç de perfil d'Instagram en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.instagram.com/
+                title: Enllaç de perfil d'Instagram
+              linked_in_profile_link:
+                description: Mostra l'enllaç de perfil de LinkedIn en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.linkedin.com/
+                title: Enllaç de perfil de LinkedIn
+              tumblr_profile_link:
+                description: Mostra l'enllaç de perfil de Tumblr en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.tumblr.com/
+                title: Enllaç de perfil de Tumblr
+              twitter_profile_link:
+                description: Mostra l'enllaç de perfil de Twitter en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.twitter.com/
+                title: Enllaç de perfil de Twitter
+              vimeo_profile_link:
+                description: Mostra l'enllaç de perfil de Vimeo en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.vimeo.com/
+                title: Enllaç de perfil de Vimeo
+              yammer_profile_link:
+                description: Mostra l'enllaç de perfil de Yammer en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.yammer.com/
+                title: Enllaç de perfil de Yammer
+              youtube_profile_link:
+                description: Mostra l'enllaç de perfil de YouTube en l'encapçalament i en el peu de pàgina, quan està present.
+                placeholder: http://www.youtube.com/
+                title: Enllaç de perfil de YouTube
+            title: Compartició social
       users:
         actions: Accions
         all: Tot
@@ -2221,7 +2585,7 @@ ca:
         email_prompt: Introdueixi les adreces de correu electrònic per als comptes que desitgi crear
         emails: Correus electrònics
         error_permission_request: Ha ocorregut un error mentre processàvem la seva sol·licitud del permís
-        export_as_csv:
+        export_as_csv: Exportar com a CSV
         filter_by: Filtrar per
         flashes:
           accounts_created:
@@ -2241,7 +2605,7 @@ ca:
         no_users_found: No s'han trobat usuaris existents
         no_users_match: Cap usuari coincideix amb el filtre actual
         pending_users: Els següents usuaris tenen comptes pendents, però no els han activat encara
-        pending_users_table_description:
+        pending_users_table_description: Usuaris pendents
         reenable_privileges: Restablir Privilegis
         remove: Eliminar
         reset_password: Reiniciar Contrasenya
@@ -2261,9 +2625,9 @@ ca:
         search_results: Cercar Resultats per a '%{term}'
         title: Administrar Usuaris
         user_saved: Usuari desat
-        users_table_description:
+        users_table_description: Usuaris
       view_moderation:
-        table_description:
+        table_description: Conjunts de dades moderats
     dataset_edit:
       append: Agregar
       append_and_replace: Agregar i Reemplaçar dades
@@ -2304,8 +2668,8 @@ ca:
         missing_name: Es requereix un nom per al conjunt de dades.
         need_description: Si us plau, descrigui &ldquo;%{name}&rdquo;
         point:
-          missing_latlong:
-          suboptimal_column:
+          missing_latlong: configurat per a importar un <strong>%{coordinateType} però no una <strong>columna %{missingCoordinateType}. Si us plau, especifiqueu per complet la parella de latitud i longitud.
+          suboptimal_column: 
       finish:
         headline: El seu Conjunt de Dades ha estat creat.
         subheadline: Cliqui en Finalitzar per veure-ho!
@@ -2339,6 +2703,7 @@ ca:
         headers: Capçaleres
         headers_instructions: Les capçaleres s'ignoraran i no seran importades com a dades. Si us plau, indiqui quantes files de la seva font són capçaleres
         headline: Especificar com s'importarà &ldquo;<span class="fileName"></span>&rdquo;.
+        headline_interpolate: Especifiqueu com "{0}" s'ha d'importar.
         help_message: Si necessita ajuda, comprovi la <a href="%{common_errors}" rel="external">llista d'errors i advertències comunes</a>.
         more_rows: Més Files
         name: Nom
@@ -2354,14 +2719,16 @@ ca:
         why_choose_now: Perquè és important elegir el tipus de les columnes ara?
       import_help: <strong>Necessita ajuda?</strong> Mantenim una <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a> que li pot ajudar.
       import_shapefile:
-        abbreviatedSubheadline:
-        abbreviatedSummary:
+        abbreviatedSubheadline: El resum d'aquest conjunt de dades pot trigar molt. Feu clic en "Següent" per a importar-lo.
+        abbreviatedSummary: 
         crs: Sistema de Referència de Coordinades
         headline: Especifiqui com s'importarà &ldquo;<span class="fileName"></span>&rdquo;
+        headline_interpolate: Especifiqueu com "{0}" s'ha d'importar.
         layers_list: Capes a importar
         name: Nom
         pending: Si us plau, esperi mentre carreguem les seves capes...
         subheadline: Aquest fitxer forma conté <span class="featureCount"></span> destacats en <span class="layerCount"></span> capes.
+        subheadline_interpolate: Aquest shapefile conté {0} capes.
       import_warnings:
         headline: Advertències durant l'importació
         see_docs: <strong>Confós?</strong> Si us plau, comprovi la <a href="%{publisher_link}" rel="external">documentació de l'editor</a> sobre com importar dades per a una explicació de com l'importador s'encarrega de les dades. També pot adreçar-se a la <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a>.
@@ -2376,6 +2743,12 @@ ca:
         private_explain: Les meves dades són <strong>privades</strong>
         prompt: Si us plau, descrigui les seves dades.
         public_explain: 'Les meves dades són <strong>públiques</strong>: només poden ser accedides per mi, però tothom pot veure-les'
+      notify_me: Notifiqueu-me
+      notify_me_error_html: Quelcom ha anat malament en intentar programar el correu electrònic de notificació. Si us plau, proveu-ho de nou més tard o poseu-vos en contacte amb el <a href="mailto:support@socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.
+      notify_me_messaging: a través de correu electrònic quan hagi acabat.
+      notify_me_success_addl: Mentrestant és segur tancar aquest navegador.
+      notify_me_success_html: "<strong>Genial!</strong> Enviarem un correu electrònic <strong>%{email}</strong> quan el vostre conjunt de dades estigui llest."
+      notify_me_success_html_js: 
       processing: Processant...
       title: Nou Conjunt de Dades
       upload_accessible: Carregui un nou conjunt de dades de forma accessible
@@ -2393,7 +2766,7 @@ ca:
       bar:
         api_unsavable: Les vistes de l'API no poden ser modificades
         based_on_html: Basat en <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html:
+        based_on_layer_html: Una capa de conjunt de dades geoespacials <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Basat en <a class="parentName"></a>
         based_on_private_view: una vista privada.
         based_on_working_copy_html: Basat en la còpia de treball de <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -2410,9 +2783,11 @@ ca:
           underline: Subratllar
           undo: Desfer
         full_screen: Canvia a pantalla completa
+        no_description: "(no s'ha facilitat cap descripció)"
         out_of_date: Aquesta taula de dades és obsoleta des de%{age}
         publish_button: Publicar el Conjunt de Dades
         publish_prompt: Aquest conjunt de dades és una còpia de treball i no està disponible públicament. Una vegada hagi realitzat els canvis desitjats, aquest conjunt de dades podrà ser publicat per fer-lo disponible públicmanet.
+        publish_prompt_with_dataset_landing_page: 
         publish_rights: "Únicament un propietari o un editor poder publicar aquest conjunt de dades"
         revert_button: Revertir
         revert_prompt: Revertir a una vista desada
@@ -2510,6 +2885,8 @@ ca:
         remove_email: Eliminar
         success: El seu correu electrònic ha estat enviat satisfactòriament.
         title_html: Compartir &quot;<span class="datasetName">%{name}</span>&quot;
+      fatrow:
+        edit_layout: Editar disseny
       grid_sidebar:
         add_column:
           convert_address:
@@ -2542,7 +2919,8 @@ ca:
           developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'
           intro_html: L'<strong>API de Dades Obertes de Socrata</strong> (SODA) permet al enginyers de programari accedir a les dades allotjades en els llocs de dades de Socrata programàticament. Els desenvolupadors poden crear aplicacions que emprin les APIs SODA per a visualitzar i &ldquo;mesclar&rdquo; els conjunts de dades de Socrata de formes noves i excitants. Podreu crear una aplicació d'iPhone que visualitzi la despesa del govern a la vostra àrea, una aplicació web que permeti als ciutadans obtenir beneficis potencials del govern en temes ignorats fins al moment o un servei que automàticament enviï correus electrònics quan s'afegeixin noves característiques als rebuts que us interessi seguir.
-          multiple_endpoints_intro_html:
+          multiple_endpoints_intro_html: L'<a href="http://dev.socrata.com/" target="external">API de dades obertes de Socrata (SODA)</a> ofereix un accés programàtic a aquest conjunt de dades, incloent la capacitat de <a href="http://dev.socrata.com/docs/filtering.html" target="external">filtrar</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">consultar</a> y <a href="http://dev.socrata.com/docs/aggregation.html" target="external">afegir</a> dades. Per a més informació, consulteu a continuació la documentació de l'API per a aquest conjunt de dades o visiteu el nostre <a href="http://dev.socrata.com" target="external">portal per a desenvolupadors</a>.
+          no_endpoints_available: No hi ha punts finals disponibles.
           reference_html: Per a accedir a aquest conjunt de dades programàticament, utilitzi el punt final de l'API proveïda a sota. Per a més informació i exemples sobre com usar l'API de Dades Obertes de Socrata, miri la nostra <a href="http://dev.socrata.com" rel="external">Documentació del Desenvolupador</a>.
           subtitle: Accedir-hi %{view_type} mitjançant SODA
           title: SODA API
@@ -2566,8 +2944,8 @@ ca:
             immutable: Iniciar l'assistent de Reemplaçament
             mutable: Iniciar l'assistent d'Adjuntament i Reemplaçament
         backup:
-          button:
-          item_html:
+          button: Fer còpia de seguretat a aquest conjunt de dades
+          item_html: Còpia de seguretat en <span class="backupTime"></span>
         base:
           buttons:
             apply: Aplicar
@@ -2598,8 +2976,8 @@ ca:
             formatted_text: text formatat
             geospatial: geoespacial
             groups:
-              geometry:
-              standard:
+              geometry: Geometria
+              standard: Estàndard
             list: llista
             location: localització
             money: moneda
@@ -2794,6 +3172,7 @@ ca:
             title: Tipus de Columna
             type: Tipus de Dades
             type_prompt: Seleccioni un tipus de dades
+            working_copy_html: Si us plau, <a href="#" class="createWorkingCopy">feu una còpia de treball</a> per a editar el tipus de dades d'aquesta columna
         column_order:
           columns:
             title: Columnes
@@ -2834,8 +3213,8 @@ ca:
             currency: Moneda
             format_mask_warning: "-"
             groups:
-              all:
-              common:
+              all: Tot
+              common: Comú
             no_precision: Cap
             precision: Precisió
             title: Format de Moneda
@@ -2868,8 +3247,8 @@ ca:
           subtitle: Actualitzar varies propietats en aquesta columna
           success: La seva columna s'ha actualitzat
           text_formatting:
-            display_style:
-            title:
+            display_style: Estil d'aparença
+            title: Format del text
           title: Propietats de Columna
           url:
             base_url: URL Base
@@ -2877,6 +3256,7 @@ ca:
             title: Opcions d'URL
           validation:
             published: Si us plau, faci una còpia de treball o vista d'aquesta conjunt de dades per a canviar les propietats de la columna
+            snapshot: No podeu editar propietats de columnes per a una imatge de vista
             unsaved: No pot editar les propietats de la columna per a vistes no desades
         conditional_formatting:
           change_icon: canvi
@@ -2902,10 +3282,10 @@ ca:
             no_columns: Aquesta vista no té columnes que filtrar
             no_icons: Les icones són relevants únicament per a la vista de mapa
         data_lens:
-          button:
-          button_flyout:
-          subtitle:
-          title:
+          button: Nova lent de dades
+          button_flyout: Ara mateix s'estan processant les vostres dades. Refresqueu la pàgina en uns minuts i podreu crear una lent de dades nova.
+          subtitle: 
+          title: Lent de dades
         delete:
           confirm: Açò eliminarà el %{view_type} permanentment. No hi ha volta de fulla! Segur que desitja continuar?
           delete_button: Eliminar aquest %{view_type}
@@ -2931,8 +3311,8 @@ ca:
           download_as: Descarregar Com a
           download_dataset: Si us plau, descarregueu-vos la taula de dades de la qual deriva aquesta imatge.
           geo_header: Descarregar Dades Geoespacials
-          monolayer_header:
-          multilayer_header:
+          monolayer_header: Descarregar sense dades geoespacials
+          multilayer_header: Descarregar les dades d'una capa específica
           subtitle: Descarregar una còpia d'aquest conjunt de dades en format estàtic
           title: Descarregar
         feed:
@@ -3026,12 +3406,13 @@ ca:
           validation:
             hidden_location_html: Vostè pot <a href="#showLoc" title="Show a location column">mostrar una columna de localització</a>.
             location_column: Es requereix una columna de localització per a crear el mapa.
-            location_column_invalid_dataset:
+            location_column_invalid_dataset: El conjunt de dades sol·licitat no existeix.
             viz_limit: Una vista deu tenir només una visualització a sobre
         odata:
           endpoint_action: 'Copia aquest enllaç:'
           intro_html1: Crear una fulla de càlcul en Microsoft Excel per a analitzar o visualitzar aquest conjunt de dades. Si empra un enllaç OData, les dades es podran actualitzar.
           intro_html2: Empri Microsoft Excel 2010, Microsoft Excel 2013 o Microsoft Power Query. Segueixi les instruccions ací, emprant la <a href="%{doc_link}">Documentació OData de Socrata</a>.
+          no_endpoints_available: No hi ha punts finals disponibles.
           subtitle: Accedir al conjunt de dades mitjançant OData
           title: OData
         ownership:
@@ -3113,7 +3494,7 @@ ca:
           subtitle: Ajustar les columnes que seran visibles en aquesta vista
           title: Mostrar i Amagar Columnes
           warnings:
-            active_filter:
+            active_filter: No podeu ocultar aquesta columna, perquè té un filtre actiu.
         sort_rollup:
           rollup:
             add_group_button: Afegir Columna d'Agrupament
@@ -3215,8 +3596,8 @@ ca:
       unable_to_find_dataset_page: 'No som capaços de trobar una visió de dades per aquesta taula de dades. '
     edit_metadata:
       about: Sobre
-      add_link:
-      add_source:
+      add_link: Afegir enllaç
+      add_source: Afegir font
       additional_source: 'Font Addicional '
       alternative_access_prompt: Introdueixi un punt d'accés alternatiu per a aquest conjunt de dades
       api_endpoint: Punt Final d'API
@@ -3239,8 +3620,10 @@ ca:
       dataset_title_prompt: Introdueixi un títol
       dataset_url: URL del Conjunt de Dades
       dataset_url_prompt: Introdueixi la localització del seu conjunt de dades extern
-      default_row_label:
+      default_row_label: Filera
       delete: Eliminar
+      described_by: Diccionari de dades
+      described_by_prompt: Introduïu un enllaç de diccionari de dades
       email_address: Adreça de Correu Electrònic
       email_help: Aquestes adreces no es faran públiques. Si ho deixa en blanc, l'adreça passarà per defecte a ser la seva
       existing_attachments: Adjunts Existents
@@ -3259,8 +3642,8 @@ ca:
       licensing_attr: Llicències i Atribució
       list: Llista
       metadata_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
-      missing_external_dataset:
-      multiple_extensions:
+      missing_external_dataset: Si us plau, faciliteu al menys un conjunt de dades extern.
+      multiple_extensions: No es permet més d'una extensió del mateix tipus per al mateix punt final.
       new_attachment: Nou Adjunt
       none: "(cap)"
       northwest_latitude: Latitud Nord-Oest
@@ -3268,7 +3651,7 @@ ca:
       optional: Opcional
       private_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
       remove_image: Eliminar Imatge
-      remove_link:
+      remove_link: Eliminar enllaç
       required_field: Camp Requerit
       resource_name: Nom del Recurs
       resource_name_prompt: Introdueixi un nom per al recurs
@@ -3276,9 +3659,9 @@ ca:
       row_class: Classes de Fila
       row_identifier: Identificador de Fila
       row_identifier_help_text: 'No es pot canviar l''identificador de files un cop s''ha publicat una visió. '
-      row_label:
-      row_label_help:
-      row_label_prompt:
+      row_label: Etiqueta de filera
+      row_label_help: Descriviu què representa cada filera en el conjunt de dades (si és aplicable).
+      row_label_prompt: p. ex., crim, persona, hospital
       save: 'Desar '
       save_changes: Desar canvis
       semantics_rdf: Semàntica i RDF
@@ -3297,7 +3680,7 @@ ca:
       upload_help: Aquesta imatge es retallarà per a ajustar-la al quadrat
       upload_image: Carregar la Imatge
       upload_new_attachment: Carregar Nou Adjunt
-      url:
+      url: URL
     forgot_password:
       already_authenticated: 'Impossible reiniciar la contrasenya: ja ha iniciat la sessió.'
       failed: Ha ocorregut un problema mentre enviàvem la seva petició de reinici de contrasenya. Si us plau, provi una altra vegada.
@@ -3323,7 +3706,7 @@ ca:
       existing_latlng_cols: Columnes de Latitud i Longitud Existents
       find: cercar
       find_and_replace: Cercar i Reemplaçar valors...
-      import_from_latlong:
+      import_from_latlong: Importar de columnes de <strong>latitud</strong> i <strong>longitud</strong>
       import_from_multiple: Importar des de <strong>múltiples columnes</strong>
       import_from_single: Importar des d'una <strong>columna única</strong>
       latitude: Latitud
@@ -3337,7 +3720,7 @@ ca:
       new_source_col: Afegir nova columna font
       new_transform: Afegir nova transformació
       options: Opcions
-      point_source_col:
+      point_source_col: Columnes de font de punts
       properly_formatted: La columna ha d'estar a href="%{formatting_link}" rel="external">adequadament formatada</a> abans d'importar
       regular_expression: expressió regular
       remove: eliminar
@@ -3366,8 +3749,9 @@ ca:
       one_header: Una de les seves files és una capçalera.
       problem_importing: Ha ocorregut un problema mentre importàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
       problem_uploading: Ha ocorregut un problema mentre carregàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
-      replicating:
+      replicating: 'Replicant el conjunt de dades:'
       rows_imported: "%{num} files importades fins al moment."
+      rows_imported_js: "{0} fileres importades fins ara."
       try_again: Si us plau, provi una altra vegada en uns moments.
       unknown_error: Ha ocorregut un error desconegut
       uploading: Carregant la seva fila
@@ -3389,7 +3773,7 @@ ca:
         no_applications: No ha creat encara cap aplicació. Cliqui 'Administrar' a la dreta per començar-hi
         title: Les Aplicacions de %{user}
       bar:
-        edit_info_link:
+        edit_info_link: Editar informació bàsica
         edit_settings_link: Editar els Ajustaments de Compte
         follow_link: Seguir
         join_date: S'ha unit en
@@ -3519,10 +3903,10 @@ ca:
         following: Seguint
         hide_contacts_link: Amagar
       whats_new:
-        caught_up:
-        older_news:
-        read_more:
-        title:
+        caught_up: 
+        older_news: Veure notícies més antigues
+        read_more: Llegir més
+        title: L'últim de Socrata
     reset_password:
       failed: Ha ocorregut un problema mentre reiniciàvem la seva contrasenya. Si us pla, provi una altra vegada.
       form:
@@ -3540,13 +3924,13 @@ ca:
       mismatch: Les contrasenyes no coincideixen; si  us plau, provi una altra vegada
       prompt_html: Iniciar Sessió amb la seva <strong>Socrata ID</strong>
       sign_in_with: "<strong>Registreu-vos</strong> amb %{provider}"
-      sso_required:
+      sso_required: L'administrador d'aquest lloc requereix que els usuaris amb privilegis iniciïn sessió amb un compte que no sigui un identificador de Socrata. Si us plau, inicieu sessió fent servir un mètode diferent.
       tips_html: Empri el seu Correu Electrònic i Contrasenya per a iniciar sessió en tots els llocs <strong><a href="http://www.socrata.com" rel="external">Socrata</a> relacionants</strong>.
     sign_up:
       email_verification:
-        expired:
-        sent:
-        success:
+        expired: Aquest enllaç de verificació de correu electrònic ha caducat. Si us plau, creeu un compte nou amb la mateixa adreça de correu electrònic i rebreu un altre correu electrònic de verificació per a completar el registre.
+        sent: Hem enviat un correu electrònic de verificació a %{email}. Si us plau, seguiu les instruccions del correu per a completar el procés de registre.
+        success: La vostra adreça de correu electrònic ha estat verificada. Si us plau, inicieu sessió.
       form:
         create_account_button: Crear el Meu Compte
         have_account_link: Ja disposo d'un compte
@@ -3560,7 +3944,7 @@ ca:
     stats:
       api: API
       apply: Aplicar
-      browser_page_views:
+      browser_page_views: Vistes de pàgina en navegador
       bytes_out: Bits Fora
       chart_created: gràfica creada
       charts: Gràfiques
@@ -3569,12 +3953,12 @@ ca:
       comments: Comentaris
       comments_created: comentaris creats
       daily: Diàriament
-      date_range:
+      date_range: Rang de dates
       deleted_application: aplicació eliminada
-      delta_decrease:
-      delta_decrease_compared:
-      delta_increase:
-      delta_increase_compared:
+      delta_decrease: 
+      delta_decrease_compared: 
+      delta_increase: 
+      delta_increase_compared: 
       dependent_metrics: Mètriques Depenents
       download: descarregar
       downloads: descàrregues
@@ -3599,7 +3983,7 @@ ca:
       no_data_time_period: Cap dada en aquest període
       page_viewed: pàgina vista
       pages_viewed: pàgines vistes
-      preceding_period:
+      preceding_period: el període anterior
       referrals: Referents
       rows_loaded: Files Carregades
       sdp: SDP
@@ -3636,6 +4020,10 @@ ca:
       create_new:
         name: Nou Nom per a la Plantilla
         title: Crear una nova Plantilla
+      create_new_dataset:
+        explanation_html: 
+        prompt: Si us plau, poseu un nom al vostre conjunt de dades nou.
+        title: 
     wizard:
       cancel: Cancel·lar
       finish: Finalitzar
@@ -3649,5 +4037,5 @@ ca:
       last_word_connector: ", o "
       two_words_connector: 'o '
   table:
-    no_summary_available:
-    summary:
+    no_summary_available: 
+    summary: 

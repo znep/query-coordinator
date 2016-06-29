@@ -97,7 +97,7 @@ $(document).on('ready', function() {
       editors = _.omit(richTextEditorManager.getAllEditors(), currentEditorId);
 
       richTextEditorManager.linkToolbar(currentEditorId);
-      _.invoke(editors, 'deselect');
+      _.invokeMap(editors, 'deselect');
     }
   });
 

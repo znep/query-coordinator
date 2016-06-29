@@ -16,8 +16,9 @@ export function saveMetadataThenProceed() {
     saveMetadataToViewsApi(datasetId, metadata, dispatch).
       then((result) => {
         console.log(result);
-        if (result.statusText === 'Bad Request') {
-          dispatch(Metadata.metadataSaveError(result.statusText));
+        const saveStatus = result.statusText;
+        if (saveStatus === 'Bad Request') {
+          dispatch(Metadata.metadataSaveError(saveStatus));
         } else {
           dispatch(goToPage('Working'));
           updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).

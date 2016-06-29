@@ -40,21 +40,21 @@ function ChoroplethMap(element, vif) {
   var DISCRETE_LEGEND_POSITIVE_COLOR = '#408499';
   var DISCRETE_LEGEND_NEGATIVE_COLOR = '#c6663d';
 
-  var _utilConstants = {
+  var utilConstants = {
     UNFILTERED_GEOJSON_PROPERTY_NAME: UNFILTERED_GEOJSON_PROPERTY_NAME,
     FILTERED_GEOJSON_PROPERTY_NAME: FILTERED_GEOJSON_PROPERTY_NAME,
     SELECTED_GEOJSON_PROPERTY_NAME: SELECTED_GEOJSON_PROPERTY_NAME,
     MAXIMUM_NUMBER_OF_CLASS_BREAKS_ALLOWED: MAXIMUM_NUMBER_OF_CLASS_BREAKS_ALLOWED
   };
 
-  var _visualizationUtils = new ChoroplethMapUtils(_utilConstants);
+  var visualizationUtils = new ChoroplethMapUtils(utilConstants);
 
-  var _choroplethContainer;
-  var _choroplethMapContainer;
-  var _choroplethLegend;
+  var choroplethContainer;
+  var choroplethMapContainer;
+  var choroplethLegend;
   // These configuration options belong to Leaflet, not the visualization we are
   // building on top of it.
-  var _mapOptions = _.extend(
+  var mapOptions = _.extend(
     {
       attributionControl: false,
       center: [47.609895, -122.330259], // Center on Seattle by default.
@@ -69,58 +69,58 @@ function ChoroplethMap(element, vif) {
     vif.configuration.mapOptions
   );
 
-  var _lastElementWidth;
-  var _lastElementHeight;
+  var lastElementWidth;
+  var lastElementHeight;
 
-  var _map;
-  var _baseTileLayer;
-  var _minLng;
-  var _maxLng;
-  var _minLat;
-  var _maxLat;
-  var _boundsArray;
-  var _coordinates;
+  var map;
+  var baseTileLayer;
+  var minLng;
+  var maxLng;
+  var minLat;
+  var maxLat;
+  var boundsArray;
+  var coordinates;
 
   // Keep track of the geojson layers so that we can remove them cleanly.
   // Every redraw of the map forces us to remove the layer entirely because
   // there is no way to mutate already-rendered geojson objects.
-  var _geojsonBaseLayer = null;
+  var geojsonBaseLayer = null;
 
   // Watch for first render so we know whether or not to update the center/bounds.
   // (We don't update the center or the bounds if the choropleth has already been
   // rendered so that we can retain potential panning and zooming done by the user.
-  var _firstRender = true;
+  var firstRender = true;
 
-  var _lastRenderOptions = {};
-  var _lastRenderedVif;
+  var lastRenderOptions = {};
+  var lastRenderedVif;
 
-  var _interactive = vif.configuration.interactive === true;
+  var interactive = vif.configuration.interactive === true;
 
   // Keep track of click details so that we can zoom on double-click but
   // still selects on single clicks.
-  var _lastClick = 0;
-  var _lastClickTimeout = null;
+  var lastClick = 0;
+  var lastClickTimeout = null;
 
   // Render layout
-  _renderTemplate(self.$element);
+  renderTemplate(self.$element);
 
   // Construct leaflet map
-  _map = L.map(_choroplethMapContainer[0], _mapOptions);
+  map = L.map(choroplethMapContainer[0], mapOptions);
 
   // Attach Miscellaneous Events
-  _attachEvents();
+  attachEvents();
 
   // Initialize map's bounds if provided with that data
-  var _extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
+  var extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
 
   // If bounds are not defined, this will get handled when render is first
   // called, as the fallback bounds calculation requires the geoJSON data.
-  if (_firstRender && _extentsDefined) {
-    _initializeMap(_choroplethContainer);
+  if (firstRender && extentsDefined) {
+    initializeMap(choroplethContainer);
   }
 
   // Setup legend
-  var _LegendType = _LegendContinuous;
+  var LegendType = LegendContinuous;
 
   if (vif.configuration.hasOwnProperty('legend')) {
 
@@ -137,7 +137,7 @@ function ChoroplethMap(element, vif) {
     }
 
     if (vif.configuration.legend.hasOwnProperty('type') && vif.configuration.legend.type === 'discrete') {
-      _LegendType = _LegendDiscrete;
+      LegendType = LegendDiscrete;
 
       if (vif.configuration.legend.hasOwnProperty('negativeColor')) {
         DISCRETE_LEGEND_NEGATIVE_COLOR = vif.configuration.legend.negativeColor;
@@ -153,7 +153,7 @@ function ChoroplethMap(element, vif) {
     }
   }
 
-  var _legend = new _LegendType(self.$element.find('.choropleth-legend'), self.$element);
+  var legend = new LegendType(self.$element.find('.choropleth-legend'), self.$element);
 
   /**
    * Public methods
@@ -161,7 +161,7 @@ function ChoroplethMap(element, vif) {
 
   this.render = function(data, options) {
     // Stop rendering if element has no width or height
-    if (_choroplethContainer.width() <= 0 || _choroplethContainer.height() <= 0) {
+    if (choroplethContainer.width() <= 0 || choroplethContainer.height() <= 0) {
       if (window.console && window.console.warn) {
         console.warn('Aborted rendering choropleth map: map width or height is zero.');
       }
@@ -170,39 +170,39 @@ function ChoroplethMap(element, vif) {
 
     // Why are we merging the options here but replacing them in other
     // visualization implementations?
-    _.merge(_lastRenderOptions, options);
+    _.merge(lastRenderOptions, options);
     // Eventually we may only want to pass in the VIF instead of other render
     // options as well as the VIF, but for the time being we will just treat it
     // as another property on `options`.
-    _lastRenderedVif = options.vif;
+    lastRenderedVif = options.vif;
 
-    // Calling _initializeMap should only occur here if bounds were not specified in the VIF.
+    // Calling initializeMap should only occur here if bounds were not specified in the VIF.
     // We call it here because the fallback bounds calculation requires geoJSON.
-    if (_firstRender) {
-      _initializeMap(_choroplethContainer, data);
+    if (firstRender) {
+      initializeMap(choroplethContainer, data);
     }
 
-    _updateFeatureLayer(data);
+    updateFeatureLayer(data);
 
     // TODO: React to active filters being cleared.
   };
 
   this.invalidateSize = function() {
-    _updateDimensions(_choroplethContainer);
+    updateDimensions(choroplethContainer);
   };
 
   this.updateTileLayer = function(options) {
-    _.merge(_lastRenderOptions, options);
-    _updateTileLayer(options.baseLayer.url, options.baseLayer.opacity);
+    _.merge(lastRenderOptions, options);
+    updateTileLayer(options.baseLayer.url, options.baseLayer.opacity);
   };
 
   this.destroy = function() {
 
     // Remove Miscellaneous Events
-    _detachEvents();
+    detachEvents();
 
-    if (_map) {
-      _map.remove();
+    if (map) {
+      map.remove();
     }
 
     self.$element.empty();
@@ -216,7 +216,7 @@ function ChoroplethMap(element, vif) {
   /**
    * Creates HTML for visualization and adds it to the provided element.
    */
-  function _renderTemplate() {
+  function renderTemplate() {
 
     // jQuery doesn't support SVG, so we have to create these elements manually :(
     var xmlns = 'http://www.w3.org/2000/svg';
@@ -231,7 +231,7 @@ function ChoroplethMap(element, vif) {
     var gradient = document.createElementNS(xmlns, 'svg');
     gradient.setAttribute('class', 'gradient');
 
-    var choroplethLegend = $(
+    choroplethLegend = $(
       '<div>',
       {
         'class': 'choropleth-legend'
@@ -241,14 +241,14 @@ function ChoroplethMap(element, vif) {
       legendTicks
     ]);
 
-    var choroplethMapContainer = $(
+    choroplethMapContainer = $(
       '<div>',
       {
         'class': 'choropleth-map-container'
       }
     );
 
-    var choroplethContainer = self.
+    choroplethContainer = self.
       $element.
         find('.choropleth-container');
 
@@ -266,107 +266,102 @@ function ChoroplethMap(element, vif) {
       choroplethLegend
     ]);
 
-    // Cache element selections
-    _choroplethContainer = choroplethContainer;
-    _choroplethMapContainer = choroplethMapContainer;
-    _choroplethLegend = choroplethLegend;
-
     self.
       $element.
         find('.visualization-container').
-          append(_choroplethContainer);
+          append(choroplethContainer);
   }
 
-  function _initializeMap(el, data) {
+  function initializeMap(el, data) {
     // Only update bounds on the first render so we can persist
     // users' panning and zooming.
     // It is critical to invalidate size prior to updating bounds
     // Otherwise, Leaflet will fit the bounds to an incorrectly sized viewport.
     // This manifests itself as the map being zoomed all of the way out.
-    _map.invalidateSize();
-    _updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
-    _firstRender = false;
+    map.invalidateSize();
+    updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
+    firstRender = false;
 
-    _lastElementWidth = el.width();
-    _lastElementHeight = el.height();
+    lastElementWidth = el.width();
+    lastElementHeight = el.height();
   }
 
   /**
    * Attach Miscellanous Events
    */
-  function _attachEvents() {
+  function attachEvents() {
 
-    _choroplethLegend.on('mousemove', '.choropleth-legend-color', _showLegendFlyout);
-    _choroplethLegend.on('mouseout', '.choropleth-legend-color', _hideFlyout);
+    choroplethLegend.on('mousemove', '.choropleth-legend-color', showLegendFlyout);
+    choroplethLegend.on('mouseout', '.choropleth-legend-color', hideFlyout);
 
-    _map.on('mouseout', _hideFlyout);
-    _map.on('zoomend dragend', _emitExtentEventsFromMap);
+    map.on('mouseout', hideFlyout);
+    map.on('zoomend dragend', emitExtentEventsFromMap);
   }
 
   /**
    * Detach Miscellanous Events
    */
-  function _detachEvents() {
+  function detachEvents() {
 
-    _choroplethLegend.off('mousemove', '.choropleth-legend-color', _showLegendFlyout);
-    _choroplethLegend.off('mouseout', '.choropleth-legend-color', _hideFlyout);
+    choroplethLegend.off('mousemove', '.choropleth-legend-color', showLegendFlyout);
+    choroplethLegend.off('mouseout', '.choropleth-legend-color', hideFlyout);
 
-    _map.off('mouseout', _hideFlyout);
-    _map.off('zoomend dragend', _emitExtentEventsFromMap);
+    map.off('mouseout', hideFlyout);
+    map.off('zoomend dragend', emitExtentEventsFromMap);
   }
 
   /**
    * Handle mouse over feature.
    */
-  function _onFeatureMouseOver(event) {
-    _addHighlight(event);
-    _showFlyout(event);
+  function onFeatureMouseOver(event) {
+    addHighlight(event);
+    showFlyout(event);
   }
 
   /**
    * Handle mousing out of a feature.
    */
-  function _onFeatureMouseOut(event) {
-    _removeHighlight(event);
-    _hideFlyout();
+  function onFeatureMouseOut(event) {
+    removeHighlight(event);
+    hideFlyout();
   }
 
   /**
    * Handle clicking on a feature.
    */
-  function _onSelectRegion(event) {
+  function onSelectRegion(event) {
     var now = Date.now();
-    var delay = now - _lastClick;
+    var delay = now - lastClick;
 
-    _lastClick = now;
+    lastClick = now;
 
-    if (_interactive) {
+    if (interactive) {
       if (delay < MAP_DOUBLE_CLICK_THRESHOLD_MILLISECONDS) {
-        if (!_.isNull(_lastClickTimeout)) {
+        if (!_.isNull(lastClickTimeout)) {
 
           // If this is actually a double click, cancel the timeout which
           // selects the feature and zoom in instead.
-          window.clearTimeout(_lastClickTimeout);
-          _lastClickTimeout = null;
-          _map.setView(event.latlng, _map.getZoom() + 1);
+          window.clearTimeout(lastClickTimeout);
+          lastClickTimeout = null;
+          map.setView(event.latlng, map.getZoom() + 1);
         }
       } else {
-        _lastClickTimeout = window.setTimeout(
-          function() { _emitSelectRegionEvent(event); },
+        lastClickTimeout = window.setTimeout(
+          function() { emitSelectRegionEvent(event); },
           MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS
         );
       }
     }
   }
 
-  function _emitSelectRegionEvent(event) {
+  function emitSelectRegionEvent(event) {
     utils.assertHasProperties(
-      _lastRenderedVif,
+      lastRenderedVif,
       'configuration.shapefile.primaryKey'
     );
 
     var feature = event.target.feature;
-    var shapefilePrimaryKey = _lastRenderedVif.
+    var shapefilePrimaryKey = lastRenderedVif.
       configuration.
       shapefile.
       primaryKey;
@@ -385,7 +380,7 @@ function ChoroplethMap(element, vif) {
     }
   }
 
-  function _showFlyout(event) {
+  function showFlyout(event) {
     var feature = event.target.feature;
     var unfilteredValueUnit;
     var filteredValueUnit;
@@ -400,8 +395,8 @@ function ChoroplethMap(element, vif) {
       selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
     };
 
-    var aggregationField = _.get(_lastRenderOptions, 'vif.series[0].dataSource.measure.columnName');
-    var aggregationFunction = _.get(_lastRenderOptions, 'vif.series[0].dataSource.measure.aggregationFunction');
+    var aggregationField = _.get(lastRenderOptions, 'vif.series[0].dataSource.measure.columnName');
+    var aggregationFunction = _.get(lastRenderOptions, 'vif.series[0].dataSource.measure.aggregationFunction');
     var unitOne = _.get(vif, 'series[0].unit.one');
     var unitOther = _.get(vif, 'series[0].unit.other');
 
@@ -420,28 +415,20 @@ function ChoroplethMap(element, vif) {
 
       if (feature.properties[UNFILTERED_GEOJSON_PROPERTY_NAME] === 1) {
 
-        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-          _lastRenderOptions.unit.one :
-          unitOne;
+        unfilteredValueUnit = _.get(lastRenderOptions, 'unit.one', unitOne);
 
       } else {
 
-        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-          _lastRenderOptions.unit.other :
-          unitOther;
+        unfilteredValueUnit = _.get(lastRenderOptions, 'unit.other', unitOther);
       }
 
       if (feature.properties[FILTERED_GEOJSON_PROPERTY_NAME] === 1) {
 
-        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
-          _lastRenderOptions.unit.one :
-          unitOne;
+        filteredValueUnit = _.get(lastRenderOptions, 'unit.one', unitOne);
 
       } else {
 
-        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
-          _lastRenderOptions.unit.other :
-         unitOther;
+        filteredValueUnit = _.get(lastRenderOptions, 'unit.other', unitOther);
       }
     }
 
@@ -457,7 +444,7 @@ function ChoroplethMap(element, vif) {
       payload.unfilteredValue = self.getLocalization('NO_VALUE');
     }
 
-    if (_lastRenderOptions.showFiltered) {
+    if (lastRenderOptions.showFiltered) {
 
       if (_.isNumber(feature.properties[FILTERED_GEOJSON_PROPERTY_NAME])) {
 
@@ -478,7 +465,7 @@ function ChoroplethMap(element, vif) {
     );
   }
 
-  function _showLegendFlyout(event) {
+  function showLegendFlyout(event) {
 
     var el = event.target;
 
@@ -493,7 +480,7 @@ function ChoroplethMap(element, vif) {
     );
   }
 
-  function _hideFlyout() {
+  function hideFlyout() {
 
     self.emitEvent(
       'SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT',
@@ -501,12 +488,17 @@ function ChoroplethMap(element, vif) {
     );
   }
 
-  function _emitExtentEventsFromMap() {
-    var leafletBounds = _map.getBounds();
 
-    utils.assert(leafletBounds.isValid(), 'Bounds object is not valid.');
+  function emitExtentEventsFromMap() {
+    var leafletBounds = map.getBounds();
+    var bounds;
 
-    var updatedBounds = {
+    utils.assert(
+      leafletBounds.isValid(),
+      'Leaflet bounds object is not valid.'
+    );
+
+    bounds = {
       southwest: {
         lat: leafletBounds.getSouth(),
         lng: leafletBounds.getWest()
@@ -519,7 +511,7 @@ function ChoroplethMap(element, vif) {
 
     self.emitEvent(
       'SOCRATA_VISUALIZATION_CHOROPLETH_EXTENT_CHANGE',
-      updatedBounds
+      bounds
     );
   }
 
@@ -529,13 +521,13 @@ function ChoroplethMap(element, vif) {
    * @param {String} url - tile server endpoint to use
    * @param {Number} opacity - opacity of the tile layer
    */
-  function _updateTileLayer(url, opacity) {
+  function updateTileLayer(url, opacity) {
 
-    if (_baseTileLayer) {
-      _map.removeLayer(_baseTileLayer);
+    if (baseTileLayer) {
+      map.removeLayer(baseTileLayer);
     }
 
-    _baseTileLayer = L.tileLayer(
+    baseTileLayer = L.tileLayer(
       url,
       {
         attribution: '',
@@ -545,7 +537,7 @@ function ChoroplethMap(element, vif) {
       }
     );
 
-    _map.addLayer(_baseTileLayer);
+    map.addLayer(baseTileLayer);
   }
 
   /**
@@ -553,7 +545,7 @@ function ChoroplethMap(element, vif) {
    *
    * @param {Object} data - geoJson feature collection to be rendered
    */
-  function _updateFeatureLayer(data) {
+  function updateFeatureLayer(data) {
 
     // Validate data is geoJson
     utils.assertHasProperties(
@@ -572,31 +564,31 @@ function ChoroplethMap(element, vif) {
 
     // Determine dimensions
     var dimensions = {
-      width: _lastElementWidth,
-      height: _lastElementHeight
+      width: lastElementWidth,
+      height: lastElementHeight
     };
 
     // Add legend and get color scale
-    var _coloring = _legend.update(data, dimensions);
+    var coloring = legend.update(data, dimensions);
 
     var featureOptions = {
       onEachFeature: function(feature, layer) {
         layer.on({
-          mouseover: _onFeatureMouseOver,
-          mouseout: _onFeatureMouseOut,
-          mousemove: _showFlyout,
-          click: _onSelectRegion
+          mouseover: onFeatureMouseOver,
+          mouseout: onFeatureMouseOut,
+          mousemove: showFlyout,
+          click: onSelectRegion
         });
       },
-      style: _visualizationUtils.getStyleFn(_coloring)
+      style: visualizationUtils.getStyleFn(coloring)
     };
 
-    if (!_.isNull(_geojsonBaseLayer)) {
-      _map.removeLayer(_geojsonBaseLayer);
+    if (!_.isNull(geojsonBaseLayer)) {
+      map.removeLayer(geojsonBaseLayer);
     }
 
-    _geojsonBaseLayer = L.geoJson(data, featureOptions);
-    _geojsonBaseLayer.addTo(_map);
+    geojsonBaseLayer = L.geoJson(data, featureOptions);
+    geojsonBaseLayer.addTo(map);
 
     // Emit render complete
     self.emitEvent(
@@ -610,9 +602,9 @@ function ChoroplethMap(element, vif) {
   /**
    * Update map bounds.
    */
-  function _updateBounds(geojsonData, defaultExtent, savedExtent) {
+  function updateBounds(geojsonData, defaultExtent, savedExtent) {
 
-    function _buildPositionArray(positions) {
+    function buildPositionArray(positions) {
 
       var cleanPositions = positions.filter(function(position) {
         return _.isNumber(position[0]) && _.isNumber(position[1]);
@@ -623,24 +615,24 @@ function ChoroplethMap(element, vif) {
       var lats = _.map(cleanPositions, function(lngLat) { return lngLat[1]; });
 
       // Clamp values to min and max
-      if (_.min(lngs) < _minLng) {
-        _minLng = _.min(lngs);
+      if (_.min(lngs) < minLng) {
+        minLng = _.min(lngs);
       }
 
-      if (_.max(lngs) > _maxLng) {
-        _maxLng = _.max(lngs);
+      if (_.max(lngs) > maxLng) {
+        maxLng = _.max(lngs);
       }
 
-      if (_.min(lats) < _minLat) {
-        _minLat = _.min(lats);
+      if (_.min(lats) < minLat) {
+        minLat = _.min(lats);
       }
 
-      if (_.max(lats) > _maxLat) {
-        _maxLat = _.max(lats);
+      if (_.max(lats) > maxLat) {
+        maxLat = _.max(lats);
       }
     }
 
-    function _buildBounds(featureExtent) {
+    function buildBounds(featureExtent) {
 
       var southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
       var northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
@@ -651,13 +643,13 @@ function ChoroplethMap(element, vif) {
       return bounds;
     }
 
-    _minLng = 180;
-    _maxLng = -180;
-    _minLat = 90;
-    _maxLat = -90;
-    _boundsArray = [
-      [_maxLat, _maxLng],
-      [_minLat, _minLng]
+    minLng = 180;
+    maxLng = -180;
+    minLat = 90;
+    maxLat = -90;
+    boundsArray = [
+      [maxLat, maxLng],
+      [minLat, minLng]
     ];
 
     if (!_.isUndefined(geojsonData)) {
@@ -667,7 +659,7 @@ function ChoroplethMap(element, vif) {
       }
 
       _.each(geojsonData.features, function(feature) {
-        _coordinates = feature.geometry.coordinates;
+        coordinates = feature.geometry.coordinates;
 
         switch (feature.geometry.type) {
 
@@ -675,46 +667,46 @@ function ChoroplethMap(element, vif) {
           // = arrays of position arrays
           case 'Polygon':
           case 'MultiLineString':
-            _.each(_coordinates, function(positionArrays) {
-              _buildPositionArray(positionArrays);
+            _.each(coordinates, function(positionArrays) {
+              buildPositionArray(positionArrays);
             });
             break;
 
           // MultiPolygon coordinates = an array of Polygon coordinate arrays
           case 'MultiPolygon':
-            _.each(_coordinates, function(polygonCoordinates) {
+            _.each(coordinates, function(polygonCoordinates) {
               _.each(polygonCoordinates, function(positionArrays) {
-                _buildPositionArray(positionArrays);
+                buildPositionArray(positionArrays);
               });
             });
             break;
 
           // LineString coordinates = position array
           case 'LineString':
-            _buildPositionArray(_coordinates);
+            buildPositionArray(coordinates);
             break;
         }
       });
 
-      _boundsArray = [
-        [_maxLat, _maxLng],
-        [_minLat, _minLng]
+      boundsArray = [
+        [maxLat, maxLng],
+        [minLat, minLng]
       ];
     }
 
     var computedBounds = L.latLngBounds([
-      _boundsArray[1][0],
-      _boundsArray[1][1]
+      boundsArray[1][0],
+      boundsArray[1][1]
     ], [
-      _boundsArray[0][0],
-      _boundsArray[0][1]
+      boundsArray[0][0],
+      boundsArray[0][1]
     ]);
     var initialBounds = computedBounds;
 
     if (!_.isEmpty(savedExtent)) {
-      initialBounds = _buildBounds(savedExtent);
+      initialBounds = buildBounds(savedExtent);
     } else if (!_.isEmpty(defaultExtent)) {
-      var defaultBounds = _buildBounds(defaultExtent);
+      var defaultBounds = buildBounds(defaultExtent);
 
       if (!defaultBounds.contains(computedBounds)) {
         initialBounds = defaultBounds;
@@ -727,7 +719,7 @@ function ChoroplethMap(element, vif) {
     // provided and then check the value of a non-existent
     // animate property, causing a TypeError and halting
     // execution.
-    _map.fitBounds(
+    map.fitBounds(
       initialBounds,
       {
         animate: false
@@ -735,27 +727,27 @@ function ChoroplethMap(element, vif) {
     );
   }
 
-  function _updateDimensions(el) {
+  function updateDimensions(el) {
     var mapWidth = el.width();
     var mapHeight = el.height();
 
     // Recenter map if container's dimensions have changed
-    if (_lastElementWidth !== mapWidth || _lastElementHeight !== mapHeight) {
-      _map.invalidateSize();
+    if (lastElementWidth !== mapWidth || lastElementHeight !== mapHeight) {
+      map.invalidateSize();
 
-      _lastElementWidth = mapWidth;
-      _lastElementHeight = mapHeight;
+      lastElementWidth = mapWidth;
+      lastElementHeight = mapHeight;
     }
   }
 
   /**
    * Add highlighted style to layer.
    */
-  function _addHighlight(event) {
+  function addHighlight(event) {
 
     var layer = event.target;
 
-    if (!_isLayerSelected(layer)) {
+    if (!isLayerSelected(layer)) {
       layer.setStyle({
         weight: CHOROPLETH_REGION_HIGHLIGHTED_STROKE_WIDTH
       });
@@ -774,11 +766,11 @@ function ChoroplethMap(element, vif) {
   /**
    * Remove highlighted style to layer.
    */
-  function _removeHighlight(event) {
+  function removeHighlight(event) {
 
     var layer = event.target;
 
-    if (!_isLayerSelected(layer)) {
+    if (!isLayerSelected(layer)) {
       layer.setStyle({
         weight: CHOROPLETH_REGION_DEFAULT_STROKE_WIDTH
       });
@@ -789,7 +781,7 @@ function ChoroplethMap(element, vif) {
   /**
    * Determines whether or not the given layer is selected.
    */
-  function _isLayerSelected(layer) {
+  function isLayerSelected(layer) {
 
     var selectedPropertyName = 'feature.properties.{0}'.
       format(SELECTED_GEOJSON_PROPERTY_NAME);
@@ -800,12 +792,12 @@ function ChoroplethMap(element, vif) {
   /**
    * A choropleth legend, with discrete colors for ranges of values.
    */
-  function _LegendDiscrete(legendElement, container) {
+  function LegendDiscrete(legendElement, container) {
     this.legendElement = legendElement;
     this.container = container;
   }
 
-  $.extend(_LegendDiscrete.prototype, {
+  $.extend(LegendDiscrete.prototype, {
 
     /**
      * Generates a color scale for the given classBreaks.
@@ -873,11 +865,11 @@ function ChoroplethMap(element, vif) {
             negatives.unshift(-_.last(classBreaks));
           }
 
-          var negativeColorScale = _visualizationUtils.calculateColoringScale(
+          var negativeColorScale = visualizationUtils.calculateColoringScale(
             [DISCRETE_LEGEND_NEGATIVE_COLOR, marginallyNegative],
             negatives
           );
-          var positiveColorScale = _visualizationUtils.calculateColoringScale(
+          var positiveColorScale = visualizationUtils.calculateColoringScale(
             [marginallyPositive, DISCRETE_LEGEND_POSITIVE_COLOR],
             positives
           );
@@ -927,14 +919,14 @@ function ChoroplethMap(element, vif) {
         } else {
 
           // All the numbers are negative. Give them the negative color scale.
-          return _visualizationUtils.calculateColoringScale(
+          return visualizationUtils.calculateColoringScale(
             [DISCRETE_LEGEND_NEGATIVE_COLOR, marginallyNegative],
             classBreaks
           );
         }
       } else {
         // Otherwise, it's all positive, so give them the positive color scale.
-        return _visualizationUtils.calculateColoringScale(
+        return visualizationUtils.calculateColoringScale(
           [marginallyPositive, DISCRETE_LEGEND_POSITIVE_COLOR],
           classBreaks
         );
@@ -950,12 +942,12 @@ function ChoroplethMap(element, vif) {
      */
     update: function(data) {
 
-      var classBreaks = _visualizationUtils.calculateDataClassBreaks(
+      var classBreaks = visualizationUtils.calculateDataClassBreaks(
         data,
         UNFILTERED_GEOJSON_PROPERTY_NAME
       );
 
-      _visualizationUtils.addZeroIfNecessary(classBreaks);
+      visualizationUtils.addZeroIfNecessary(classBreaks);
 
       var numTicks = 3;
       var tickValues;
@@ -1058,7 +1050,7 @@ function ChoroplethMap(element, vif) {
         // gives unexpected results due to floating point math.
         // We want to just return the value for "small-ranged" data.
         // --> do not call a tickFormatter on yAxis if range is small.
-        yAxis.tickFormat(_visualizationUtils.bigNumTickFormatter);
+        yAxis.tickFormat(visualizationUtils.bigNumTickFormatter);
 
         // Due to similar issues, d3's scale#nice method also has
         // floating point math issues.
@@ -1103,8 +1095,8 @@ function ChoroplethMap(element, vif) {
       svg.attr('width', tickAreaWidth + COLOR_BAR_WIDTH);
 
       // Size the container appropriately
-      _choroplethLegend.css('height', colorBarHeight + BOTTOM_PADDING);
-      _choroplethLegend.css('width', tickAreaWidth + COLOR_BAR_WIDTH);
+      choroplethLegend.css('height', colorBarHeight + BOTTOM_PADDING);
+      choroplethLegend.css('width', tickAreaWidth + COLOR_BAR_WIDTH);
 
       // draw legend colors
       var rects = svg.
@@ -1135,7 +1127,7 @@ function ChoroplethMap(element, vif) {
         var value = _.filter(classBreaks)[0];
         if (isLargeRange) {
           rects.
-            attr('data-flyout-text', _visualizationUtils.bigNumTickFormatter(value));
+            attr('data-flyout-text', visualizationUtils.bigNumTickFormatter(value));
         } else {
           rects.
             attr('data-flyout-text', value);
@@ -1144,8 +1136,8 @@ function ChoroplethMap(element, vif) {
         if (isLargeRange) {
           rects.
             attr('data-flyout-text', _.bind(function(color, i) {
-              return _visualizationUtils.bigNumTickFormatter(classBreaks[i]) + ' – ' +
-                _visualizationUtils.bigNumTickFormatter(classBreaks[i + 1]);
+              return visualizationUtils.bigNumTickFormatter(classBreaks[i]) + ' – ' +
+                visualizationUtils.bigNumTickFormatter(classBreaks[i + 1]);
             }, this));
         } else {
           rects.
@@ -1165,14 +1157,14 @@ function ChoroplethMap(element, vif) {
   /**
    * A Legend with a continuous scale.
    */
-  function _LegendContinuous(legendElement, container) {
+  function LegendContinuous(legendElement, container) {
 
     this.legendElement = legendElement.addClass('continuous');
     this.container = container;
     this.gradientId = 'gradient-{0}'.format(_.uniqueId());
   }
 
-  $.extend(_LegendContinuous.prototype, {
+  $.extend(LegendContinuous.prototype, {
     /**
      * Finds an array of values, including the min, max, and numStops - 2 more values,
      * evenly-spaced between the min and max.
@@ -1351,7 +1343,7 @@ function ChoroplethMap(element, vif) {
         orient('left');
 
       if (_.last(tickStops) - tickStops[0] > 10) {
-        axis.tickFormat(_visualizationUtils.bigNumTickFormatter);
+        axis.tickFormat(visualizationUtils.bigNumTickFormatter);
       }
 
       axis(ticksGroup);
@@ -1499,7 +1491,7 @@ function ChoroplethMap(element, vif) {
 
       var scale = this.scaleForValues(values, min, max);
       var tickStops = this.findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
-      var indexOfZero = _visualizationUtils.addZeroIfNecessary(tickStops);
+      var indexOfZero = visualizationUtils.addZeroIfNecessary(tickStops);
 
       var colorScale = this.createColorScale(tickStops, scale);
       var gradientSvg = this.legendElement.find('svg.gradient');

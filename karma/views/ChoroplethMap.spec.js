@@ -281,7 +281,7 @@ describe('ChoroplethMap', function() {
         properties[choroplethVIF.configuration.shapefile.columns.name] = humanReadableName;
         properties[choroplethVIF.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
         properties[choroplethVIF.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-        properties[choroplethVIF.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
+        properties[choroplethVIF.configuration.shapefile.columns.selected] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.

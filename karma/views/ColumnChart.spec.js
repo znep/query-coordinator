@@ -1136,7 +1136,7 @@ describe('ColumnChart', function() {
         columnChart.chart.render(testDataWithFiltered, renderOptions);
 
         expect($('.bar.filtered').length).to.equal(bars);
-        expect(_.any($('.bar.filtered'), function(bar) {
+        expect(_.some($('.bar.filtered'), function(bar) {
           return $(bar).height() > 0;
         }));
 
@@ -1244,7 +1244,7 @@ describe('ColumnChart', function() {
   describe('when there are a small number of columns', function() {
 
     var width = 1000;
-    var testDataSubset = _.select(testData, function(object, index) {
+    var testDataSubset = _.filter(testData, function(object, index) {
       return index < 4;
     });
 
@@ -1496,7 +1496,7 @@ describe('ColumnChart', function() {
 
       columnChart.chart.render(testDataWithBlankAtIndex(-1), columnChart.renderOptions);
 
-      expect(_.any($('.labels .label .contents .text'), function(el) {
+      expect(_.some($('.labels .label .contents .text'), function(el) {
         return $(el).hasClass('undefined');
       })).to.equal(false);
     });

@@ -189,7 +189,7 @@ $.extend(ChoroplethMapUtils.prototype, {
       throw new Error('Cannot calculate stroke color for undefined feature geometry type.');
     }
 
-    if (!_.contains(['LineString', 'MultiLineString'], feature.geometry.type)) {
+    if (!_.includes(['LineString', 'MultiLineString'], feature.geometry.type)) {
       return highlighted ? this.defaultHighlightColor : this.defaultStrokeColor;
     }
 

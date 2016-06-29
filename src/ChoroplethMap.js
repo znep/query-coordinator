@@ -412,7 +412,7 @@ $.fn.socrataChoroplethMap = function(vif) {
         properties[vif.configuration.shapefile.columns.name] = humanReadableName;
         properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
         properties[vif.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-        properties[vif.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
+        properties[vif.configuration.shapefile.columns.selected] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.

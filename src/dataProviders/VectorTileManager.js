@@ -1004,7 +1004,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       // is cleared, but points highlighted under a new flannel remain.
       flannelClosedCallback = function(e) {
         var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
-          return !_.contains(e.points, value);
+          return !_.includes(e.points, value);
         });
         highlightClickedPoints(pointsToKeepHighlighted);
       };

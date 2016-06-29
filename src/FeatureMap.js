@@ -522,7 +522,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
         var existingNameSuffix = subColumnMatch[1];
 
-        if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
+        if (_.includes(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
           return existingNameSuffix;
         }
       }

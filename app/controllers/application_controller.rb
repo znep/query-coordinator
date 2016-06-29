@@ -221,7 +221,7 @@ class ApplicationController < ActionController::Base
         when 'show'
           # Silence is golden.
         when 'search'
-          assert_can_edit_story
+          require_logged_in_user
         else
           raise_undefined_authorization_handler_error
       end

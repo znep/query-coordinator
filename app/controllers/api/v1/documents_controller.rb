@@ -4,8 +4,13 @@
 class Api::V1::DocumentsController < ApplicationController
   force_ssl
 
+  # NOTE Not happy with this, but gets us working again until we can rev the api to make documents
+  # children of stories, which technically, they already are.
+  skip_before_filter :set_story_uid
+  prepend_before_filter :save_story_uid, only: [:create]
+  prepend_before_filter :save_story_uid_from_document, only: [:show, :crop]
+
   def show
-    document = Document.find(params[:id])
     render json: document
   end
 
@@ -26,8 +31,6 @@ class Api::V1::DocumentsController < ApplicationController
   end
 
   def crop
-    document = Document.find(params[:id])
-
     if document.update_attributes(crop_params)
       document.regenerate_thumbnails!
       render nothing: true, status: :ok
@@ -37,6 +40,18 @@ class Api::V1::DocumentsController < ApplicationController
   end
 
   private
+
+  def document
+    @document ||= Document.find(params[:id])
+  end
+
+  def save_story_uid
+    ::RequestStore.store[:story_uid] = params.dig('document', 'story_uid')
+  end
+
+  def save_story_uid_from_document
+    ::RequestStore.store[:story_uid] = document.try(:story_uid)
+  end
 
   def document_params
     params.require(:document).permit(

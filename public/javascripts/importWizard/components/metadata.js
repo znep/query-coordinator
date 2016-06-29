@@ -545,7 +545,7 @@ export function view({ metadata, onMetadataAction, importError }) {
                 }
               }}>
               {'Save'}
-              </a>
+            </a>
           </li>
           <li className="next">
             <a

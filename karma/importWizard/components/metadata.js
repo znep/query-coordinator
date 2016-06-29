@@ -257,7 +257,7 @@ describe('view testing', () => {
    expect(spy.callCount).to.equal(0);
 
    TestUtils.Simulate.click(element.querySelector('.button.nextButton'));
-   expect(spy.callCount).to.equal(1);
+   expect(spy.callCount).to.equal(2);
  });
 
  it('returns that inserting text into a standard field fires onMetadataAction for each action', () => {

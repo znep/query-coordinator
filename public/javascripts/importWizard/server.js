@@ -13,7 +13,7 @@ import _ from 'lodash';
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
     const { navigation, metadata, datasetId } = getState();
-    saveMetadataToViewsApi(datasetId, metadata, dispatch).
+    saveMetadataToViewsApi(datasetId, metadata).
       then((result) => {
         console.log(result);
         const saveStatus = result.statusText;
@@ -53,7 +53,7 @@ export function saveMetadataThenProceed() {
   };
 }
 
-function saveMetadataToViewsApi(datasetId, metadata, dispatch) {
+function saveMetadataToViewsApi(datasetId, metadata) {
   return fetch(`/api/views/${datasetId}`, {
     method: 'PUT',
     credentials: 'same-origin',

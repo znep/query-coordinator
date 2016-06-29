@@ -513,7 +513,7 @@ export function view({ metadata, onMetadataAction, importError }) {
               title={I18nPrefixed.email_address} className="textPrompt contactEmail"
               onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            {(metadata.apiCall.type==='Error') ?
+            {(metadata.apiCall.type === 'Error') ?
               <label className="error email_help">{I18n.core.validation.email}</label> : null}
           </div>
         </div>

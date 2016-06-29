@@ -460,8 +460,8 @@ $.fn.socrataTimelineChart = function(vif) {
     function mapQueryResponseToPrecision(response) {
       var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
       var endIndex = _.indexOf(response.columns, SOQL_PRECISION_END_ALIAS);
-      var domainStartDate = _.first(response.rows)[startIndex];
-      var domainEndDate = _.first(response.rows)[endIndex];
+      var domainStartDate = _.head(response.rows)[startIndex];
+      var domainEndDate = _.head(response.rows)[endIndex];
 
       var domain = {
         start: moment(domainStartDate, moment.ISO_8601),

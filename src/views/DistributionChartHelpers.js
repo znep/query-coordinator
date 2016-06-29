@@ -48,7 +48,7 @@ var helpers = module.exports = {
     var origin = scale.y(0);
     return function(d) {
       if (d === 'start') {
-        return scale.y(_.first(data).value);
+        return scale.y(_.head(data).value);
       } else if (d === 'end') {
         return scale.y(_.last(data).value);
       } else {
@@ -74,7 +74,7 @@ var helpers = module.exports = {
   },
 
   getXTickAlign: function(bucket, scale) {
-    if (bucket === _.first(scale.x.domain())) { return 'start'; }
+    if (bucket === _.head(scale.x.domain())) { return 'start'; }
     if (bucket === _.last(scale.x.domain())) { return 'end'; }
     return 'middle';
   },

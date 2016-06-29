@@ -139,7 +139,7 @@ describe('DistributionChartHelpers', function() {
   describe('yCoordinateForBucket', function() {
     it('returns the pixel value on the y axis for the first bucket if "start" is passed to the resulting function', function() {
       var result = helpers.yCoordinateForBucket(scale, fakeData.unfiltered);
-      expect(result('start')).to.equal(result(_.first(fakeData.unfiltered)));
+      expect(result('start')).to.equal(result(_.head(fakeData.unfiltered)));
     });
 
     it('returns the pixel value on the y axis for the last bucket if "end" is passed to the resulting function', function() {
@@ -149,7 +149,7 @@ describe('DistributionChartHelpers', function() {
 
     it('returns a number for the pixel value on the y axis for the bucket if a bucket is passed to the resulting function', function() {
       var result = helpers.yCoordinateForBucket(scale, fakeData.unfiltered);
-      expect(_.isNumber(result(_.first(fakeData.unfiltered)))).to.equal(true);
+      expect(_.isNumber(result(_.head(fakeData.unfiltered)))).to.equal(true);
     });
   });
 
@@ -488,7 +488,7 @@ describe('DistributionChartHelpers', function() {
           output = run(input, logarithmicOptions);
 
           expect(output.length).to.equal(6);
-          expect(_.first(output)).to.deep.equal({start: 0, end: 10, value: 0});
+          expect(_.head(output)).to.deep.equal({start: 0, end: 10, value: 0});
         });
       });
 
@@ -541,7 +541,7 @@ describe('DistributionChartHelpers', function() {
           output = run(input, {bucketType: 'linear', bucketSize: 25});
 
           expect(output.length).to.equal(6);
-          expect(_.first(output)).to.deep.equal({start: 0, end: 25, value: 0});
+          expect(_.head(output)).to.deep.equal({start: 0, end: 25, value: 0});
         });
       });
     });

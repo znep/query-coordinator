@@ -131,7 +131,7 @@ DistributionChart.prototype.fetchColumnDomain = function() {
   // Convert the SoqlDataProvider response into an object containing min and max keys.
   return columnDomainRequest.
     then(function(data) {
-      return _.map(_.first(data.rows), parseFloat);
+      return _.map(_.head(data.rows), parseFloat);
     }).
     then(_.partial(_.zipObject, columnNames))
     ['catch'](this.handleError);

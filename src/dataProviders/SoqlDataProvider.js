@@ -72,14 +72,14 @@ function SoqlDataProvider(config) {
       '&$where={0}'.format(whereClauseComponents) :
       '';
     var url = urlForQuery(
-      '$select=count(*) as count{0}&$$$read_from_nbe=true&$$$version=2.1'.
+      '$select=count(*) as __COUNT_ALIAS__{0}&$$$read_from_nbe=true&$$$version=2.1'.
         format(whereClause)
     );
 
     return makeSoqlGetRequest(url).
       then(
         function(data) {
-          return parseInt(_.get(data, '[0].count'), 10);
+          return parseInt(_.get(data, '[0].__COUNT_ALIAS__'), 10);
         }
       );
   };

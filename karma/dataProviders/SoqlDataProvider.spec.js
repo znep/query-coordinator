@@ -131,7 +131,7 @@ describe('SoqlDataProvider', function() {
 
   var EXPECTED_ROW_COUNT = 100;
 
-  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{count: EXPECTED_ROW_COUNT}]);
+  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__COUNT_ALIAS__: EXPECTED_ROW_COUNT}]);
 
   var server;
 

@@ -1980,7 +1980,7 @@ export default function AssetSelectorRenderer(options) {
         removeClass('invalid');
 
       invalidMessageContainer.hide();
-      insertButton.prop('disabled', false);
+      insertButton.prop('disabled', isUploading);
     } else if (!_.isNull(errorReason)) {
 
       iframeElement.attr('src', '');

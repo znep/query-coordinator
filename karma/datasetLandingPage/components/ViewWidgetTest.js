@@ -69,5 +69,14 @@ describe('components/ViewWidget', function() {
       var element = renderComponent(ViewWidget, getProps());
       expect(element.querySelector('.entry-description')).to.exist;
     });
+
+    it('strips dangerous html from the description', function() {
+      var element = renderComponent(ViewWidget, {
+        description: 'Stick to the <script></script>, kid'
+      });
+
+      // We have wrapper divs for ellipsis
+      expect(element.querySelector('.entry-description div div').innerHTML).to.equal('Stick to the , kid');
+    });
   });
 });

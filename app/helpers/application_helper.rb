@@ -722,10 +722,12 @@ module ApplicationHelper
       # http://benfoster.io/blog/google-analytics-multi-tenant-applications
       tracking_param = build_tracking_info_param
       javascript_tag(<<-eos)
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
+        if (typeof window._gaSocrata === 'undefined') {
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
+        }
 
         _gaSocrata('create', '#{get_ga_tracking_code}', 'auto', 'socrata');
         _gaSocrata('socrata.send', 'pageview', #{tracking_param});

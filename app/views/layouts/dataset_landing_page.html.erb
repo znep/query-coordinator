@@ -17,6 +17,11 @@
 
   <body>
     <%= render 'site_chrome/header' %>
+
+    <div id="noticeContainer">
+      <%= display_styleguide_flashes %>
+    </div>
+
     <%= yield %>
     <%= render 'site_chrome/footer' %>
 

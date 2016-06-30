@@ -3,6 +3,8 @@ import * as SharedTypes from '../sharedTypes';
 import Upload from 'component-upload';
 import * as url from 'url';
 import FlashMessage from './flashMessage';
+import NavigationControl from './navigationControl';
+import { authenticityToken, appToken } from '../server';
 
 type FileName = string
 
@@ -32,12 +34,16 @@ function scanUrlForOperation(operation: SharedTypes.OperationName) {
   switch (operation) {
     case 'UploadData':
       urlAttrs.query = {
-        method: 'scan'
+        method: 'scan',
+        authenticity_token: authenticityToken,
+        app_token: appToken
       };
       break;
     case 'UploadGeospatial':
       urlAttrs.query = {
-        method: 'scanShape'
+        method: 'scanShape',
+        authenticity_token: authenticityToken,
+        app_token: appToken
       };
       break;
     default:
@@ -191,7 +197,7 @@ function renderErrorMessage(fileUpload) {
   return <FlashMessage flashType="error" message={fileUpload.progress.error} />;
 }
 
-export function view({ onFileUploadAction, fileUpload, operation }) {
+export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.dataset_new.upload_file;
 
   function onSelectFile(event) {
@@ -205,54 +211,59 @@ export function view({ onFileUploadAction, fileUpload, operation }) {
       : fileUpload.fileName;
 
   return (
-    <div className="uploadFilePane">
-      {renderErrorMessage(fileUpload)}
-      {/* TODO: should sometimes say "upload" instead of "import" (another I18n key) */}
-      <p className="headline">{I18n.screens.import_pane.headline_import}</p>
-      <div className="uploadFileContainer">
-        <div className="uploadFileNameWrapper">
-          <input
-            type="text"
-            className="uploadFileName valid"
-            readOnly="readonly"
-            value={fileNameDisplay} />
-        </div>
-        <div
-          className="buttonWrapper uploadFileButtonWrapper">
-          <div className="fileUploader-uploader" >
-            <div className="fileUploader-upload-button">
-              {I18n.plugins.fileuploader.upload_a_file}
-              <input
-                type="file"
-                name="file"
-                onChange={onSelectFile} />
+    <div>
+      <div className="uploadFilePane">
+        {renderErrorMessage(fileUpload)}
+        {/* TODO: should sometimes say "upload" instead of "import" (another I18n key) */}
+        <p className="headline">{I18n.screens.import_pane.headline_import}</p>
+        <div className="uploadFileContainer">
+          <div className="uploadFileNameWrapper">
+            <input
+              type="text"
+              className="uploadFileName valid"
+              readOnly="readonly"
+              value={fileNameDisplay} />
+          </div>
+          <div
+            className="buttonWrapper uploadFileButtonWrapper">
+            <div className="fileUploader-uploader" >
+              <div className="fileUploader-upload-button">
+                {I18n.plugins.fileuploader.upload_a_file}
+                <input
+                  type="file"
+                  name="file"
+                  onChange={onSelectFile} />
+              </div>
             </div>
           </div>
-        </div>
-        {/* TODO: help text when things go wrong */}
-        {(() => {
-          if (!_.isUndefined(fileUpload.progress) &&
-              fileUpload.progress !== 'Failed') {
-            return renderFileUploadStatus(fileUpload.progress);
-          }
-        })()}
+          {/* TODO: help text when things go wrong */}
+          {(() => {
+            if (!_.isUndefined(fileUpload.progress) &&
+                fileUpload.progress !== 'Failed') {
+              return renderFileUploadStatus(fileUpload.progress);
+            }
+          })()}
 
-        <p className="uploadFileFormats blist">
-          <span className="type type-blist">
-            {(() => {
-              switch (operation) {
-                case 'UploadData':
-                  return I18nPrefixed.supported_blist;
-                case 'UploadGeospatial':
-                  return I18nPrefixed.supported_shapefile;
-                default:
-                  console.error('unknown operation', operation);
-                  return null;
-              }
-            })()}
-          </span>
-        </p>
+          <p className="uploadFileFormats blist">
+            <span className="type type-blist">
+              {(() => {
+                switch (operation) {
+                  case 'UploadData':
+                    return I18nPrefixed.supported_blist;
+                  case 'UploadGeospatial':
+                    return I18nPrefixed.supported_shapefile;
+                  default:
+                    console.error('unknown operation', operation);
+                    return null;
+                }
+              })()}
+            </span>
+          </p>
+        </div>
       </div>
+      <NavigationControl
+        onPrev={goToPrevious}
+        cancelLink="/profile" />
     </div>
   );
 }
@@ -260,7 +271,8 @@ export function view({ onFileUploadAction, fileUpload, operation }) {
 view.propTypes = {
   onFileUploadAction: PropTypes.func.isRequired,
   fileUpload: PropTypes.object.isRequired,
-  operation: PropTypes.string.isRequired
+  operation: PropTypes.string.isRequired,
+  goToPrevious: PropTypes.func.isRequired
 };
 
 export function renderFileUploadStatus(progress: UploadProgress) {

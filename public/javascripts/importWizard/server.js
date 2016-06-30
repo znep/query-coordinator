@@ -1,3 +1,5 @@
+// @flow weak
+
 /* everything having to do with making API calls, incl. turning parts of the Redux
 model into the JSON needed for those calls */
 
@@ -9,6 +11,18 @@ import { goToPage } from './wizard';
 
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
+
+const authenticityMetaTag = document.querySelector('meta[name=csrf-token]');
+export const authenticityToken: string = authenticityMetaTag === null
+  ? ''
+  : authenticityMetaTag.attributes.content.value;
+
+export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
+
+declare var I18n: any;
+type CurrentUser = { id: string }
+export type Blist = { currentUser: CurrentUser }
+declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
@@ -39,7 +53,7 @@ export function saveMetadataToViewsApi(datasetId, metadata) {
 export function proceed(navigation, datasetId, metadata) {
   return (dispatch) => {
     dispatch(goToPage('Working'));
-    updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
+    updatePrivacy(datasetId, metadata.contents.privacySettings).
       then(() => {
         const onImportError = () => {
           dispatch(importError());
@@ -66,12 +80,16 @@ export function proceed(navigation, datasetId, metadata) {
   };
 }
 
-export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
+export function updatePrivacy(datasetId, currentPrivacy) {
   const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
 
   return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
     method: 'PUT',
-    credentials: 'same-origin'
+    credentials: 'same-origin',
+    headers: {
+      'X-CSRF-Token': authenticityToken,
+      'X-App-Token': appToken
+    }
   }).then((result) => {
     console.log(result);
   });
@@ -158,10 +176,17 @@ type ImportProgress
   = { rowsImported: number }
   | { stage: string }
 
+type NotificationStatus
+  = 'Available'
+  | 'InProgress'
+  | 'NotificationSuccessful'
+  | 'NotificationError'
+
 type ImportStatus
   = { type: 'NotStarted' }
   | { type: 'Started' }
   | { type: 'InProgress', progress: ImportProgress }
+  | { type: 'InProgress', progress: ImportProgress, notification: NotificationStatus }
   | { type: 'Error', error: string }
   | { type: 'Complete' }
 
@@ -180,15 +205,16 @@ function importStart() {
 }
 
 const IMPORT_PROGRESS = 'IMPORT_PROGRESS';
-function importProgress(progress: ImportProgress) {
+export function importProgress(progress: ImportProgress, notificationsEnabled: boolean = false) {
   return {
     type: IMPORT_PROGRESS,
-    progress
+    progress,
+    notificationsEnabled
   };
 }
 
 const IMPORT_ERROR = 'IMPORT_ERROR';
-function importError(error: string) {
+function importError(error: string = I18n.screens.import_pane.unknown_error) {
   return {
     type: IMPORT_ERROR,
     error: error
@@ -202,6 +228,14 @@ function importComplete() {
   };
 }
 
+export const NOTIFICATION_STATUS = 'NOTIFICATION_STATUS';
+export function notificationStatus(status: NotificationStatus) {
+  return {
+    type: NOTIFICATION_STATUS,
+    status
+  };
+}
+
 export function update(status: ImportStatus = initialImportStatus(), action): ImportStatus {
   switch (action.type) {
     case IMPORT_START:
@@ -210,17 +244,34 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
       };
 
     case IMPORT_PROGRESS:
-      return {
-        type: 'InProgress',
-        ...action.progress
-      };
+      if (action.notificationsEnabled) {
+        return {
+          type: 'InProgress',
+          progress: action.progress,
+          notification: status.notification || 'Available'
+        };
+      } else {
+        return {
+          type: 'InProgress',
+          progress: action.progress
+        };
+      }
+
+    case NOTIFICATION_STATUS: {
+      if (status.type === 'InProgress') {
+        return {
+          ...status,
+          notificationStatus: action.status
+        };
+      } else {
+        return status;
+      }
+    }
 
     case IMPORT_ERROR:
       return {
         type: 'Error',
-        error: _.isUndefined(action.error) ?
-          I18n.screens.import_pane.unknown_error :
-          action.error
+        error: action.error
       };
 
     case IMPORT_COMPLETE:
@@ -233,15 +284,47 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
   }
 }
 
+export function addNotificationInterest() {
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.importStatus.notification === 'Available') {
+      dispatch(notificationStatus('InProgress'));
+      fetch(`/users/${blist.currentUser.id}/email_interests.json`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          eventTag: 'MAIL.IMPORT_ACTIVITY_COMPLETE',
+          extraInfo: state.importStatus.progress.ticket
+        })
+      }).then((response) => {
+        switch (response.status) {
+          case 200:
+            dispatch(notificationStatus('NotificationSuccessful'));
+            break;
+          default:
+            dispatch(notificationStatus('NotificationError'));
+            break;
+        }
+      }).catch(() => {
+        dispatch(notificationStatus('NotificationError'));
+      });
+    }
+  };
+}
 
 function importData(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
     fetch('/api/imports2.json', {
-      method: 'post',
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
       },
       credentials: 'same-origin',
       body: formurlencoded({
@@ -264,9 +347,12 @@ function importData(onError) {
             setTimeout(() => {
               pollUntilDone(ticket, dispatch, (progressResponse) => {
                 if (progressResponse.details && !_.isUndefined(progressResponse.details.progress)) {
-                  dispatch(importProgress({rowsImported: progressResponse.details.progress}));
+                  dispatch(importProgress({
+                    rowsImported: progressResponse.details.progress,
+                    ticket: ticket
+                  }, true));
                 }
-              });
+              }, onError);
             }, POLL_INTERVAL_MS);
           });
           break;
@@ -277,7 +363,7 @@ function importData(onError) {
           // TODO: AIRBRAKE THIS STUFF: EN-6942
           console.error('IMPORTING DATA FAILED', response);
       }
-    })['catch'](() => {
+    }).catch(() => {
       // TODO: airbrake these errors (EN-6942)
       onError();
     });
@@ -289,9 +375,11 @@ function importGeospatial(onError) {
     const state = getState();
     dispatch(importStart());
     fetch('/api/imports2.json?method=shapefile', {
-      method: 'post',
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
       },
       credentials: 'same-origin',
       body: formurlencoded({
@@ -313,7 +401,7 @@ function importGeospatial(onError) {
                 if (progressResponse.details && !_.isUndefined(progressResponse.details.stage)) {
                   dispatch(importProgress({stage: progressResponse.details.stage}));
                 }
-              });
+              }, onError);
             }, POLL_INTERVAL_MS);
           });
           break;
@@ -324,7 +412,7 @@ function importGeospatial(onError) {
           console.error('IMPORTING DATA FAILED', response);
           onError();
       }
-    })['catch']((error) => {
+    }).catch((error) => {
       console.log(error);
       onError();
     });
@@ -334,7 +422,7 @@ function importGeospatial(onError) {
 const POLL_INTERVAL_MS = 5000;
 
 
-function pollUntilDone(ticket, dispatch, onProgress) {
+function pollUntilDone(ticket, dispatch, onProgress, onError) {
   fetch(`/api/imports2.json?ticket=${ticket}`, {
     credentials: 'same-origin'
   }).then((response) => {
@@ -344,7 +432,7 @@ function pollUntilDone(ticket, dispatch, onProgress) {
           onProgress(resp);
         });
         setTimeout(() => {
-          pollUntilDone(ticket, dispatch, onProgress);
+          pollUntilDone(ticket, dispatch, onProgress, onError);
         }, POLL_INTERVAL_MS);
         break;
 
@@ -354,9 +442,8 @@ function pollUntilDone(ticket, dispatch, onProgress) {
         break;
 
       default:
-        response.json().then((resp) => {
-          dispatch(importError(JSON.stringify(resp))); // TODO human-readable error message
-        });
+        console.error('response error: ', response);
+        onError();
     }
   });
 }

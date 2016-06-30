@@ -78,7 +78,7 @@ module Frontend
     config.assets.version = '1.0'
 
     config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
-      :namespace => 'webapp',
+      :namespace => ENV['MEMCACHED_KEYSPACE'] || 'webapp_rails4',
       :expires_in => 1.day,
       :compress => true,
       :value_max_bytes => ENV['MEMCACHED_VALUE_MAX_BYTES'] || (4 * 1024 * 1024)

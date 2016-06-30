@@ -4,6 +4,8 @@ class WidgetsController < ApplicationController
 
   skip_before_filter :require_user, :disable_frame_embedding
 
+  before_filter :allow_frame_embedding
+
   layout 'widgets'
 
   def show
@@ -73,4 +75,10 @@ class WidgetsController < ApplicationController
       format.data { render :json => FeatureFlags.derive(@view, request, true) }
     end
   end
+
+  # +before_filter+
+  def allow_frame_embedding
+    headers['X-Frame-Options'] = 'ALLOWALL'
+  end
+
 end

@@ -119,8 +119,12 @@ export var DatasetPreview = React.createClass({
 
   render: function() {
     var { view, onClickGrid } = this.props;
+    var shouldRenderTable = view.isTabular &&
+      !_.isEmpty(view.columns) &&
+      view.rowCount > 0 &&
+      serverConfig.featureFlags.defaultToDatasetLandingPage;
 
-    if (view.isTabular && serverConfig.featureFlags.defaultToDatasetLandingPage) {
+    if (shouldRenderTable) {
       return (
         <section className="landing-page-section dataset-preview">
           <div className="landing-page-header-wrapper">

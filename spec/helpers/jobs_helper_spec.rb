@@ -111,4 +111,44 @@ describe JobsHelper do
 
   end
 
+  describe '#show_restore_button' do
+
+    it "doesn't show restore button on non-deleted events" do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { :activity_type => 'delete', :created_at => Date.today},
+        nil,
+        View.new('deleted' => false),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(false)
+    end
+
+    it "shows restore button on recent deleted events" do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { :activity_type => 'delete', :created_at => Date.today.to_s},
+        nil,
+        View.new('deleted' => true),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(true)
+    end
+
+    it "doesn't show restore button on old deleted events" do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { 
+          :activity_type => 'delete',
+          :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s
+        },
+        nil,
+        View.new('deleted' => true),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(false)
+    end
+
+  end
+
 end

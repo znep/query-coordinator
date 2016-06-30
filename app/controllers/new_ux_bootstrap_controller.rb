@@ -112,7 +112,7 @@ class NewUxBootstrapController < ActionController::Base
         return instantiate_ephemeral_view(dataset_metadata_response_body)
       rescue CoreServer::TimeoutError
         flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
-        return redirect_to action: 'show', controller: 'datasets'
+        return render 'shared/error', :status => 504, :layout => 'main'
       end
     end
 

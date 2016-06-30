@@ -1,5 +1,5 @@
 <% # sitemap isn't user-agent specific %>
-Sitemap: http://<%= CurrentDomain.cname %>/sitemap-<%= CurrentDomain.cname %>.xml
+Sitemap: <%= APP_CONFIG.sitemap_s3_url || "http://#{CurrentDomain.cname}" %>/sitemap-<%= CurrentDomain.cname %>.xml
 
 User-agent: *
 <%= render "common" %>

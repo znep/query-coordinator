@@ -3,13 +3,20 @@ import _ from 'lodash';
 
 import {
   TABLE_SHOW_PAGE,
-  TABLE_ERROR,
   CACHE_DASHBOARDS,
   CACHE_USERS,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
-  TABLE_ROW_ALL_SELECTION_TOGGLE
+  TABLE_ROW_ALL_SELECTION_TOGGLE,
+  ROWS_PER_PAGE_CHANGED,
+  SET_TOTAL_GOAL_COUNT,
+  SET_CURRENT_PAGE,
+  SET_TABLE_ORDER
 } from '../actionTypes';
+
+import {
+  displayAlert
+} from './alertActions';
 
 const fetchOptions = {credentials: 'same-origin'};
 
@@ -19,9 +26,13 @@ export function tableLoadPage() {
 
     return getDashboards().
       then(getGoals).
+      then(mergeDashboards).
+      then(dispatchTotalGoalCount).
+      then(sortGoals).
+      then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
-      catch(error => dispatch(handleTableError(error)));// eslint-disable-line dot-notation
+      catch(() => dispatch(displayAlert({ label: 'error' })));// eslint-disable-line dot-notation
 
     function getDashboards() {
       const dashboardFetchUrl = '/stat/api/v1/dashboards';
@@ -40,15 +51,65 @@ export function tableLoadPage() {
       return Promise.all(dashboardDetailFetchBatch);
     }
 
-    function getGoalsExtras(goalResponses) {
-      let goals = _(goalResponses).
+    function mergeDashboards(goalResponses) {
+      return _(goalResponses).
         map('categories').
         flatten().
-        map(category => _.map(category.goals, (goal) => _.assign(goal, { category: category.id }))).
+        map(category => _.map(category.goals, (goal) =>
+          _.assign(goal, {
+            category: category.id,
+            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name
+          }))).
         reject(_.isEmpty).
         flatten().
         value();
+    }
 
+    function sortGoals(goals) {
+      let sortedArray;
+      let sortColumn = state.getIn(['goalTableData', 'tableOrder', 'column']);
+      let sortDirection = state.getIn(['goalTableData', 'tableOrder', 'direction']);
+
+      switch (sortColumn) {
+        case 'title':
+          sortedArray = _.sortByOrder(goals, 'name', sortDirection);
+          break;
+        case 'owner':
+          sortedArray = _.sortByOrder(goals, 'created_by.displayName', sortDirection);
+          break;
+        case 'updated_at':
+          sortedArray = _.sortByOrder(goals, 'updated_at', sortDirection);
+          break;
+        case 'visibility':
+          sortedArray = _.sortByOrder(goals, 'is_public', sortDirection);
+          break;
+        case 'dashboard':
+          sortedArray = _.sortByOrder(goals, 'dashboardName', sortDirection);
+          break;
+        case 'goal_status':
+        default:
+          sortedArray = goals;
+      }
+
+      return sortedArray;
+    }
+
+    function dispatchTotalGoalCount(goals) {
+      dispatch(setTotalGoalCount(goals.length));
+
+      return goals;
+    }
+
+    function trimToPageSize(goals) {
+      let index = state.getIn(['goalTableData', 'currentPage']) - 1;
+      let sliceStart = index * state.getIn(['goalTableData', 'rowsPerPage']);
+      let sliceEnd = index * state.getIn(['goalTableData', 'rowsPerPage']) +
+        state.getIn(['goalTableData', 'rowsPerPage']);
+
+      return _.slice(goals, sliceStart, sliceEnd);
+    }
+
+    function getGoalsExtras(goals) {
       let cachedUsers = _.get(state, 'cachedUsers', {});
 
       return Promise.all([
@@ -70,7 +131,7 @@ export function tableLoadPage() {
       }
 
       function getGoalDetails() {
-        let goalDetailPromises = _.map(goals, goal => fetch(`/stat/api/v1/goals/${goal.id}`).
+        let goalDetailPromises = _.map(goals, goal => fetch(`/stat/api/v1/goals/${goal.id}`, fetchOptions).
          then(response => response.json()));
 
         return Promise.all(goalDetailPromises);
@@ -105,7 +166,7 @@ export function tableLoadPage() {
       return fetch(`/stat/api/v1/dashboards/${dashboard.id}`, fetchOptions).
         then(checkXhrStatus).
         then(response => response.json()).
-        catch(error => dispatch(handleTableError(error))); // eslint-disable-line dot-notation
+        catch(() => dispatch(displayAlert({ label: 'error' }))); // eslint-disable-line dot-notation
     }
   };
 }
@@ -114,13 +175,6 @@ export function tableShowPage(goals) {
   return {
     type: TABLE_SHOW_PAGE,
     goals
-  };
-}
-
-export function handleTableError(error) {
-  return {
-    type: TABLE_ERROR,
-    error
   };
 }
 
@@ -165,5 +219,33 @@ export function deselectRow(goalId) {
 export function toggleAllRows() {
   return {
     type: TABLE_ROW_ALL_SELECTION_TOGGLE
+  };
+}
+
+export function setRowsPerPage(value) {
+  return dispatch => {
+    dispatch({type: ROWS_PER_PAGE_CHANGED, value});
+    dispatch(tableLoadPage());
+  };
+}
+
+export function setTotalGoalCount(count) {
+  return {
+    type: SET_TOTAL_GOAL_COUNT,
+    count
+  };
+}
+
+export function setCurrentPage(page) {
+  return dispatch => {
+    dispatch({type: SET_CURRENT_PAGE, page});
+    dispatch(tableLoadPage());
+  };
+}
+
+export function sortRows(column, direction) {
+  return dispatch => {
+    dispatch({type: SET_TABLE_ORDER, column, direction});
+    dispatch(tableLoadPage());
   };
 }

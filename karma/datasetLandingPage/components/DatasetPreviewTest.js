@@ -8,7 +8,7 @@ describe('components/DatasetPreview', function() {
   var socrataTableStub;
 
   function getProps(props) {
-    return _.defaultsDeep({}, props, {
+    return _.defaults({}, props, {
       onClickGrid: _.noop,
       view: mockView
     });
@@ -23,6 +23,20 @@ describe('components/DatasetPreview', function() {
 
   afterEach(function() {
     $.fn.socrataTable = originalSocrataTable;
+  });
+
+  it('does not render an element if the view has no columns', function() {
+    var element = renderComponent(DatasetPreview, getProps({
+      view: { columns: [] }
+    }));
+    expect(element).to.not.exist;
+  });
+
+  it('does not render an element if the view has no rows', function() {
+    var element = renderComponent(DatasetPreview, getProps({
+      view: { rowCount: 0 }
+    }));
+    expect(element).to.not.exist;
   });
 
   it('does not render an element if the view is not tabular', function() {

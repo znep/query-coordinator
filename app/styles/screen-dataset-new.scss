@@ -676,6 +676,28 @@
     }
   }
 
+  div.button.navButtons {
+    float: right;
+  }
+
+  .workingPane .notifyUploadComplete {
+    padding-top: 3em;
+    height: 3em;
+  }
+
+  .workingPane .notifyUploadContainer {
+    display: block;
+  }
+
+  .workingPane .notifyingUploadComplete {
+    display: block;
+  }
+
+  .workingPane .notifyUploadError {
+    display: block;
+    font-weight: normal;
+  }
+
   // ***************************************************************************
   // Below are parts of the Socrata Styleguide that have been
   // blatantly copied and pasted for the new import wizard experience.

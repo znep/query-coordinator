@@ -1,7 +1,12 @@
 [ignore]
+.*/node_modules/.*/test
+.*/node_modules/fbjs/lib
+.*/test/fixtures/.*\.json
 
 [include]
+../../../node_modules
 
 [libs]
 
 [options]
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore

@@ -60,6 +60,7 @@ module DatasetLandingPageHelper
     ]
 
     server_config = {
+      :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] || APP_CONFIG.dataset_landing_page_airbrake_api_key,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
@@ -130,18 +131,7 @@ module DatasetLandingPageHelper
       return [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
     end
 
-    formats = [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
-
-    if FeatureFlags.derive(nil, request).enable_pdf_download_type
-      formats.push('pdf')
-    end
-
-    if FeatureFlags.derive(nil, request).enable_xls_download_type
-      formats.push('xls')
-      formats.push('xlsx')
-    end
-
-    formats
+    [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
   end
 
   def custom_metadata_fieldsets

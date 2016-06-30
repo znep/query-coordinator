@@ -362,11 +362,19 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users,
                           :delete_future_user, :re_enable_user] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
+
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
-      @user_search_results = Clytemnestra.search_users(:q => params[:username]).results
+
+      # NOTE: Remote calls may fail.
+      @user_search_results = Cetera.search_users(
+        params[:username],
+        forwardable_session_cookies,
+        request_id
+      ).results
+
       @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
     else
       @admins = find_privileged_users.sort{|x,y| (x.displayName || x.email).downcase <=>

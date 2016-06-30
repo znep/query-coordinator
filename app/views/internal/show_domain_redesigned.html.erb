@@ -117,11 +117,7 @@
           <dt>Change Organization</dt>
           <dd>
             <%= one_button_form(url: update_domain_path, text: 'Update') do %>
-              <%= select_tag :org_id,
-                options_from_collection_for_select(@organizations,
-                                                   'id',
-                                                   'name',
-                                                   @domain.organizationId) %>
+              <%= select_tag :org_id, nil, 'class' => 'organizationList' %>
             <%- end %>
             <p>This is entirely organizational and only affects which organization you see this domain listed in.</p>
           </dd>

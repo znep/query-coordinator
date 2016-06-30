@@ -29,7 +29,7 @@ gem 'rinku', :require => 'rails_rinku'
 gem 'sanitize' # Note that this is in addition to the default Rails implementation.
 gem 'sass-rails', '~> 5.0'
 gem 'semver2'
-gem 'socrata_site_chrome', '~> 0.0.19'
+gem 'socrata_site_chrome', '~> 0.0.22'
 gem 'snappy'
 gem 'statsd-ruby', :require => 'statsd', :git => 'https://github.com/socrata-platform/statsd-ruby-fork.git'
 gem 'therubyracer'
@@ -48,6 +48,7 @@ group :development, :test, :production do
   gem 'closure-compiler'
   gem 'sass'
   gem 'uglifier'
+  gem 'unicorn-worker-killer'
   gem 'yui-compressor'
   # Note the default js compressor used by jammit, jsmin, is known to generate syntactically invalid js.
 end

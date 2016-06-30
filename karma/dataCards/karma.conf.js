@@ -1,4 +1,5 @@
 var path = require('path');
+var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
 
 var projectRootDir = path.resolve(__dirname, '../..');
 var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
@@ -100,6 +101,7 @@ module.exports = function ( karma ) {
           }
         ]
       },
+      plugins: [ new WebpackFailurePlugin() ],
       resolve: {
         alias: {
           angular_templates: templateDir

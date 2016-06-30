@@ -1,7 +1,8 @@
 import {
   updateNavigation,
   chooseOperation,
-  goToPage
+  goToPage,
+  goToPrevious
 } from 'wizard';
 import { fileUploadComplete } from 'components/uploadFile';
 
@@ -9,7 +10,7 @@ describe('updateNavigation', () => {
   const initialState = {
     operation: null,
     page: 'SelectType',
-    path: [ 'SelectType' ]
+    path: []
   }
 
   it('sets currentPage to SelectUploadType when you choose UploadData', () => {
@@ -17,7 +18,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'UploadData',
       page: 'SelectUploadType',
-      path: [ ...initialState.path, 'SelectUploadType' ]
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -26,7 +27,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'UploadBlob',
       page: 'UploadFile',
-      path: [ ...initialState.path, 'UploadFile' ]
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -35,7 +36,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'UploadGeospatial',
       page: 'UploadFile',
-      path: [ ...initialState.path, 'UploadFile']
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -44,7 +45,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'ConnectToEsri',
       page: 'Metadata',
-      path: [ ...initialState.path, 'Metadata']
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -53,7 +54,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'LinkToExternal',
       page: 'Metadata',
-      path: [ ...initialState.path, 'Metadata']
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -62,7 +63,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       operation: 'CreateFromScratch',
       page: 'Metadata',
-      path: [ ...initialState.path, 'Metadata']
+      path: [ ...initialState.path, initialState.page ]
     });
   });
 
@@ -70,7 +71,7 @@ describe('updateNavigation', () => {
     const stateBefore = {
       operation: 'UploadGeospatial',
       page: 'UploadFile',
-      path: [ 'SelectType', 'UploadFile' ]
+      path: [ 'SelectType' ]
     };
     const stateAfter = updateNavigation(
       stateBefore,
@@ -86,7 +87,7 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       ...stateBefore,
       page: 'ImportShapefile',
-      path: [ ...stateBefore.path, 'ImportShapefile' ]
+      path: [ ...stateBefore.path, stateBefore.page ]
     });
   });
 
@@ -94,7 +95,7 @@ describe('updateNavigation', () => {
     const stateBefore = {
       operation: 'UploadGeospatial',
       page: 'ImportShapefile',
-      path: [ 'SelectType', 'UploadFile', 'ImportShapefile' ]
+      path: [ 'SelectType', 'UploadFile' ]
     };
     const stateAfter = updateNavigation(
       stateBefore,
@@ -103,8 +104,18 @@ describe('updateNavigation', () => {
     expect(stateAfter).to.deep.equal({
       ...stateBefore,
       page: 'Metadata',
-      path: [ ...stateBefore.path, 'Metadata' ]
+      path: [ ...stateBefore.path, stateBefore.page ]
     });
   });
 
+  it('goes to previous page based on whatever is in the path', () => {
+    const stateBefore = {
+      page: 'Some Random Page',
+      path: [ 'A', 'B', 'C', 'D' ]
+    };
+    expect(updateNavigation(stateBefore, goToPrevious())).to.deep.equal({
+      page: 'D',
+      path: [ 'A', 'B', 'C' ]
+    });
+  });
 });

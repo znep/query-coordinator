@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import reducers from './reducers';
-import App from './containers/App';
+import App from './containers/App/App';
 import {
   tableLoadPage
 } from './actions/goalTableActions';
@@ -22,7 +22,11 @@ const initialState = Immutable.fromJS({
     goals: [],
     cachedUsers: {},
     translations: window.translations,
-    selectedRows: []
+    selectedRows: [],
+    alert: { label: '', message: '' },
+    rowsPerPage: 25,
+    currentPage: 1,
+    tableOrder: { direction: 'asc' }
   }
 });
 
@@ -38,6 +42,3 @@ ReactDOM.render(
     <App />
   </Provider>,
   document.querySelector('#app'));
-
-let styleGuide = require('socrata-styleguide');
-window.socrataStyleGuide = styleGuide(document);

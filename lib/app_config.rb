@@ -28,6 +28,9 @@ class AppConfig < Hashie::Dash
   # Search
   property :cetera_host
 
+  # Sitemap
+  property :sitemap_s3_url
+
   # Polaroid
   property :polaroid_hostname
   property :polaroid_port, transform_with: as_int
@@ -54,6 +57,7 @@ class AppConfig < Hashie::Dash
   property :opendata_ga_tracking_code
   property :standard_ga_tracking_code
   property :airbrake_api_key
+  property :dataset_landing_page_airbrake_api_key
   property :recaptcha_2_site_key
   property :recaptcha_2_secret_token
   property :mixpanel_token
@@ -85,7 +89,7 @@ class AppConfig < Hashie::Dash
 
   # What's New configuration
   property :whats_new, default: {}
-  
+
   # Dataset restore configuration
   property :restore_dataset_days, default: 5
 

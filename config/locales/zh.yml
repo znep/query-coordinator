@@ -42,33 +42,33 @@ zh:
     dataCards:
       add_card_dialog:
         add_card: "添加卡片"
-        add_card_title:
+        add_card_title: 
         add_this_card: "添加该卡片"
         card_on_page: "卡片已在页面上"
         card_on_page_long: "该卡片已在页面上"
         choose_column: "选择一列"
-        choropleth_admin_message:
-        choropleth_message:
+        choropleth_admin_message: 
+        choropleth_message: 
         column_chart_warning: "注意：这将产生一个超过一百条的柱状图，可能比其它图表慢"
-        column_label:
+        column_label: 
         curated_region_messages:
-          not_yet_computed:
-        custom:
+          not_yet_computed: 
+        custom: 
         customize_prompt: "自定义此卡片"
-        generic_prompt:
-        histogram_column_chart_warning:
-        no_available_boundaries:
+        generic_prompt: 
+        histogram_column_chart_warning: 
+        no_available_boundaries: 
         not_supported: "目前暂不支持"
         not_supported_long: "目前暂不支持此卡片类型"
         prompt: "从上面的下拉列表中选择一列添加新卡"
         settings: "设置"
         visualize_flyout:
-          choropleth:
-          column_chart:
-          distribution_chart:
-          feature_map:
-          search_card:
-          timeline_chart:
+          choropleth: 
+          column_chart: 
+          distribution_chart: 
+          feature_map: 
+          search_card: 
+          timeline_chart: 
       api_explorer:
         additional_resources: "此API的其他资源："
         api_button: API
@@ -83,11 +83,11 @@ zh:
         title: API
         url: "你可以通过此URL的Socrata开放数据API访问此数据："
       card_aggregation_selector:
-        add_this_aggregation:
-        choose_count:
-        choose_sum:
-        function_label:
-        value_label:
+        add_this_aggregation: 
+        choose_count: 
+        choose_sum: 
+        function_label: 
+        value_label: 
       card_controls:
         collapse_card: "收起该开片"
         customize_disabled: "此卡片还没有自定义选项"
@@ -96,21 +96,21 @@ zh:
         remove_card: "删除此卡片"
       card_layout:
         add_card_here: "在此添加卡片"
-        card_group_customize_hint_flyout_text:
-        card_group_customize_hint_text:
-        card_group_placeholder_text:
+        card_group_customize_hint_flyout_text: 
+        card_group_customize_hint_text: 
+        card_group_placeholder_text: 
       card_titles:
-        average:
-        number_of:
-        sum_of:
+        average: 
+        number_of: 
+        sum_of: 
       choropleth:
-        computation_in_progress:
-        has_cardinality_error:
-        has_no_polygons:
-        no_preview_available:
-        pending_computation:
+        computation_in_progress: 
+        has_cardinality_error: 
+        has_no_polygons: 
+        no_preview_available: 
+        pending_computation: 
       common:
-        by:
+        by: 
         cancel: "取消"
         cards:
           choropleth: "等值线"
@@ -137,7 +137,7 @@ zh:
           permissions: "许可"
           private: "隐私"
           public: "公开"
-        row:
+        row: 
         save: "保存"
       customize_bar:
         changes_warning: "你已更改此页面。"
@@ -148,25 +148,25 @@ zh:
         customizing_flyout: "你正在自定义此页面"
         customizing_flyout_instructions: "你可以随时点击此按钮预览你的修改并保存"
         exit_visualization_export: "要进入自定义模式：点击点击信息窗格中的取消按钮退出“下载图形可视化”模式"
-        unsaved_warning:
+        unsaved_warning: 
       customize_card_dialog:
         feature_map_flannel:
-          default_option:
-          select_column:
-          title:
+          default_option: 
+          select_column: 
+          title: 
         histogram_bucket_type:
-          linear:
-          linear_desc:
-          logarithmic:
-          logarithmic_desc:
-          title:
-          warning:
+          linear: 
+          linear_desc: 
+          logarithmic: 
+          logarithmic_desc: 
+          title: 
+          warning: 
         map_layer:
           custom: "自定义地图"
-          simple_blue:
-          simple_grey:
+          simple_blue: 
+          simple_grey: 
           title: "地图基底层"
-        title:
+        title: 
         visualization_options:
           title: "卡片类型"
       distribution_chart:
@@ -176,25 +176,25 @@ zh:
           error: "尝试解析此卡片时遇到错误。"
           no_data: "没有可显示的数据。"
       export_menu:
-        choose_card:
+        choose_card: 
         csv:
-          all_rows:
-          current_filter:
-          header:
-          not_available:
-          not_available_specific:
+          all_rows: 
+          current_filter: 
+          header: 
+          not_available: 
+          not_available_specific: 
         image:
-          description:
-          header:
+          description: 
+          header: 
       feature_map:
-        feature_map_disabled:
+        feature_map_disabled: 
         zoom_disabled: "缩放功能暂不可用。请稍后再试。"
       feature_map_flannel:
-        error_message:
-        next:
-        paging:
-        previous:
-        showing:
+        error_message: 
+        next: 
+        paging: 
+        previous: 
+        showing: 
       feedback_panel:
         broken: "似乎出了故障"
         feedback: "反馈"
@@ -218,67 +218,67 @@ zh:
         clear_filter_long: "此页面当前由该值过滤，点击清除"
         clear_range_filter_long: "此页面当前由该选项过滤，点击清除"
         current_filter: "当前过滤器"
-        dense_data:
+        dense_data: 
         details: "点击查看详情"
         expand: "点击展开"
-        filter_prompt:
+        filter_prompt: 
         filtered_amount: "过滤量"
         total: "总计"
-        zoom_or_filter_prompt:
+        zoom_or_filter_prompt: 
       last_updated:
         label: "最近更新"
       lens_type:
         community: "社区数据透镜"
         official: "办公数据透镜"
-        official_view_explanation:
-        official_view_label:
+        official_view_explanation: 
+        official_view_label: 
       manage_lens_dialog:
         dataset_private_page_private: "鉴于此页面的源数据集被设为<b>隐私</b>，此页面不能公开。只有拥有访问特权的人可以看到此页面，并且不会出现在公共目录中。"
         dataset_private_page_public: <span class="icon-warning"></span>此页面的源数据集被设为<b>隐私</b>，因此尽管此页面被设为公开，没有源数据集访问权限的任何人都无法看到该页面。它仍然会出现在公共目录中。你应该考虑将数据集设置为公开，或将本页面设置为隐私。
         dataset_public_page_private: "此页面被设为<b>隐私</b>，因此只有拥有访问特权的人可以看到。它不会出现在公共目录中。"
         dataset_public_page_public: "此页面及其源数据集均为<b>公开</b>，因此任何人都可以看到此页面并且它将出现在公共目录中。"
         error:
-          ownership:
-          preamble:
-          sharing:
-          unknown:
-          visibility:
+          ownership: 
+          preamble: 
+          sharing: 
+          unknown: 
+          visibility: 
         ownership:
-          owner_unavailable:
-          title:
-          warning:
+          owner_unavailable: 
+          title: 
+          warning: 
         provenance:
-          description:
-          label:
-          title:
+          description: 
+          label: 
+          title: 
         sharing:
-          add_new:
-          contributor:
-          inherited_description:
-          keep:
+          add_new: 
+          contributor: 
+          inherited_description: 
+          keep: 
           new_share_dialog:
-            add_more:
-            description:
-            email:
-            message:
-            remove:
-            title:
-          owner:
-          remove:
-          title:
-          viewer:
+            add_more: 
+            description: 
+            email: 
+            message: 
+            remove: 
+            title: 
+          owner: 
+          remove: 
+          title: 
+          viewer: 
         title: "管理"
-        unsaved_changes_message:
+        unsaved_changes_message: 
         visibility:
-          dataset_is_private:
-          hidden:
-          shown:
-          title:
-          user_is_unprivileged:
-          view_moderation_approved:
-          view_moderation_pending:
-          view_moderation_rejected:
-          view_moderation_title:
+          dataset_is_private: 
+          hidden: 
+          shown: 
+          title: 
+          user_is_unprivileged: 
+          view_moderation_approved: 
+          view_moderation_pending: 
+          view_moderation_rejected: 
+          view_moderation_title: 
       metadata:
         data_as_csv: "完整的源数据为CSV（Excel）"
         edit_description_prompt: "给你的页面写一段好的介绍，帮助别人理解你的数据所讲述的故事。（可选）"
@@ -292,8 +292,8 @@ zh:
         acknowledgement: "好，明白了！"
         description: "我们正在努力改善此网站的移动体验。"
       multiline_ellipsis:
-        show_less:
-        show_more:
+        show_less: 
+        show_more: 
       page_header:
         logo: "标志"
         sign_in: "登录"
@@ -303,23 +303,23 @@ zh:
         clear_all: "清除所有"
         clear_all_flyout: "点击重设所有过滤器"
         filter_title: 显示<span class="light">{0}</span>
-        filtered_title:
-        old_filter_title:
-        old_filtered_title:
-        unfiltered_title:
+        filtered_title: 
+        old_filter_title: 
+        old_filtered_title: 
+        unfiltered_title: 
       related_views:
         button: "此数据的其他视图"
         title: "此数据的其他视图"
       related_visualization_selector:
-        based_on_column:
-        visualization_not_supported:
+        based_on_column: 
+        visualization_not_supported: 
       remove_all_cards:
-        button:
-        flyout:
-        flyout_no_cards:
-        flyout_not_edit_mode:
-        prompt:
-        prompt_confirm:
+        button: 
+        flyout: 
+        flyout_no_cards: 
+        flyout_not_edit_mode: 
+        prompt: 
+        prompt_confirm: 
       revert_button:
         flyoutHasChanges: "点击撤销上次保存后所做的所有修改"
         flyoutNoChanges: "没有要还原的修改"
@@ -332,7 +332,7 @@ zh:
         link_placeholder: "在此输入一个URL"
         underline: "下划线"
       save_as:
-        flyoutEphemeral:
+        flyoutEphemeral: 
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改为新页面"
@@ -341,21 +341,21 @@ zh:
         description: "为你的页面输入一段说明（可选）"
         new_name: "以新名称保存当前页面"
         title: "保存为"
-        visibility:
-        visibility_disabled:
-        visibility_with_view_moderation:
+        visibility: 
+        visibility_disabled: 
+        visibility_with_view_moderation: 
       save_button:
         failed: "失败"
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改"
         flyoutNoChanges: "没有要保存的修改"
-        flyoutNoEditPermission:
+        flyoutNoEditPermission: 
         save: "保存"
         saved: "已保存！"
         saving: "正在保存……"
       search_card:
-        error_explanation:
+        error_explanation: 
         invalid_search: "尝试搜索不含字母的数字。"
         loading: "加载建议……"
         no_results: "没有搜到任何记录。请检查你的拼写，或尝试不同的词语。"
@@ -365,13 +365,13 @@ zh:
         search_info: "显示{0}搜索结果，共{1}条"
         two_examples: "例如：'{0}'或'{1}'"
       suggestion_tool_panel:
-        all_suggestions:
-        loading_suggestions_hint:
-        max_suggestions:
-        no_suggestions:
-        no_suggestions_hint:
-        only_suggestion:
-        some_suggestions_hint:
+        all_suggestions: 
+        loading_suggestions_hint: 
+        max_suggestions: 
+        no_suggestions: 
+        no_suggestions_hint: 
+        only_suggestion: 
+        some_suggestions_hint: 
       table:
         a_to_z: A-Z
         ascending: "升序"
@@ -380,8 +380,8 @@ zh:
         loading: "加载中……"
         newest_first: "最新者优先"
         no_rows: "没有可显示的行"
-        no_sort:
-        non_range_label:
+        no_sort: 
+        non_range_label: 
         oldest_first: "最旧者优先"
         range_label: "{0} <strong>{1}-{2}之{3}</strong>"
         range_label_all: "显示所有{0} {1}"
@@ -400,21 +400,21 @@ zh:
       tour:
         aggregation:
           step_1:
-            text:
-            title:
+            text: 
+            title: 
           step_2:
-            text:
-            title:
+            text: 
+            title: 
           step_3:
-            text:
-            title:
+            text: 
+            title: 
           step_4:
-            text:
-            title:
+            text: 
+            title: 
           step_5:
-            text_one:
-            text_two:
-            title:
+            text_one: 
+            text_two: 
+            title: 
   controls:
     browse:
       actions:
@@ -427,12 +427,12 @@ zh:
         compact_list: "简洁列表"
         create_dataset: "创建或上传数据集"
         create_dataset_short: "创建新数据集"
-        create_dataset_shorter:
+        create_dataset_shorter: 
         create_dataset_verb: "创建"
-        create_resource:
-        create_resource_short:
-        create_resource_verb:
-        create_story_short:
+        create_resource: 
+        create_resource_short: 
+        create_resource_verb: 
+        create_story_short: 
         dataset_subscribe: "订阅本视图的改动"
         delete:
           button: "删除"
@@ -461,117 +461,117 @@ zh:
       browse2:
         api:
           link:
-            label:
-            title:
-        comment_count:
+            label: 
+            title: 
+        comment_count: 
         create:
           dataset:
-            label:
-            title:
-          label:
+            label: 
+            title: 
+          label: 
           story:
-            label:
-            title:
-          title:
+            label: 
+            title: 
+          title: 
         created_at:
-          label:
+          label: 
         data_types:
-          label:
+          label: 
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: 
+          show_more_label: 
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          draft:
-          filter:
-          form:
-          href:
-          map:
-          predeply_api:
-          pulse:
-          story:
-          unknown:
+          api: 
+          blob: 
+          calendar: 
+          chart: 
+          data_lens: 
+          dataset: 
+          draft: 
+          filter: 
+          form: 
+          href: 
+          map: 
+          predeply_api: 
+          pulse: 
+          story: 
+          unknown: 
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: 
+            error: 
+            label: 
+            title: 
           make_private:
-            error:
-            label:
-            title:
+            error: 
+            label: 
+            title: 
           make_public:
-            error:
-            label:
-            title:
+            error: 
+            label: 
+            title: 
         facets:
           clear_all:
-            label:
+            label: 
           expand:
-            label:
-            title:
+            label: 
+            title: 
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: 
+            filtered_by: 
+            result: 
+          hint: 
           mobile:
-            back:
-            clear_all:
-            filter:
-            sort:
-            sort_by:
+            back: 
+            clear_all: 
+            filter: 
+            sort: 
+            sort_by: 
           modal:
-            alphaAscending:
-            close:
-            top:
+            alphaAscending: 
+            close: 
+            top: 
         federation:
-          label:
-          label_with_source:
+          label: 
+          label_with_source: 
         last_updated:
-          label:
+          label: 
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: 
+            title: 
+          prompt: 
         results:
-          cetera_count:
-          count:
+          cetera_count: 
+          count: 
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: 
+          placeholder: 
+          title: 
         settings:
-          label:
-          title:
+          label: 
+          title: 
         skiplinks:
-          results:
+          results: 
         sort:
-          label:
+          label: 
         sorts:
           last_modified: "最近更新"
           most_accessed: "浏览量最多"
           newest: "最新者优先"
           relevance: "相关度最高"
         topics:
-          empty:
-          label:
-          more:
+          empty: 
+          label: 
+          more: 
         view_count:
-          label:
+          label: 
         visibility:
           private:
-            label:
+            label: 
           public:
-            label:
+            label: 
       facets:
         categories_singular_title: "类别"
         categories_title: "类别"
@@ -590,15 +590,15 @@ zh:
           blob: "文件及文档"
           calendars: "日历"
           charts: "图表"
-          data_lens:
+          data_lens: 
           datasets: "数据集"
-          draft:
+          draft: 
           filters: "筛选视图"
           forms: "表格"
           href: "外部数据集"
           maps: "地图"
-          pulse:
-          pulse_help:
+          pulse: 
+          pulse_help: 
           story: "故事"
           story_help: "了解故事"
           unpublished: "未发布的数据集"
@@ -610,14 +610,14 @@ zh:
         federation_source_html: "来源：%{source_link}"
         no_results: "没有结果"
         result_count: "共%{total}个结果，显示 %{this} "
-        result_count_cetera:
+        result_count_cetera: 
         table_header:
           name: "名称"
           popularity: "关注度"
           rss: RSS
           type: "类型"
         timeout: "抱歉，本次未能搜索到结果，请稍后再试。"
-      ordered_topics:
+      ordered_topics: 
       row_results:
         less_link: "更少"
         matching_rows: "匹配的行"
@@ -648,7 +648,8 @@ zh:
           main: "结果 %{body}"
           term: '"%{term}" 的'
     charts:
-      missing_column_html:
+      inaccessible: 
+      missing_column_html: 
       negatives_in_data: "无效图表：现负值"
       no_data: "无数据"
       other_slice_label: "其他"
@@ -688,7 +689,7 @@ zh:
           email: "电子邮件"
           facebook: Facebook
           twitter: Twitter
-        share_story_text:
+        share_story_text: 
         share_text: "到%{site}查看%{name}数据集："
       sidebar:
         tabs:
@@ -836,31 +837,32 @@ zh:
       delete_warning_multi_column: "您想删除选中的列吗？列中的数据将全部删除！"
       delete_warning_single_column: "您想删除选中的列吗？列中的数据将全部删除！"
       edit_column_properties: "编辑列属性"
-      end_page:
+      end_page: 
       errors:
         cannot_edit_at_this_time: "目前无法编辑该列。请稍后再试。"
-        data_lens_is_incompatible_with_group_bys:
+        data_lens_is_incompatible_with_group_bys: 
         primary_key_collision: "此值是主键。你不能覆盖它。"
         row_locked_for_edit: "现阶段，我们无法编辑刚刚创建的行。我们正努力实现该功能。目前，请在编辑该行前刷新页面。"
-        something_went_wrong:
+        something_went_wrong: 
+        timeout_on_bootstrap: 
       filter_this_column: "对本列进行筛选"
       geocodes_pending: "在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集"
       hide_column: "隐藏列"
       menu: "菜单"
       must_enter_name: "您必须输入此列的名称"
       new_row: "新增"
-      next_page:
+      next_page: 
       no_columns: "数据集%{uid}没有任何列。"
       no_rows: "无行显示"
-      page_size:
+      page_size: 
       permission_denied: "您没有访问该视图的权限。"
       previous: "上一步"
-      previous_page:
+      previous_page: 
       required_cols_missing: "缺少该视图所需的列"
-      row_count:
+      row_count: 
       sort_ascending: "按升序排列"
       sort_descending: "按降序排列"
-      start_page:
+      start_page: 
       totals: "目标"
       view_cell_comments: "查看该单元格注释"
       view_first_row: "查看第一列"
@@ -869,7 +871,7 @@ zh:
       view_previous_row: "查看前一列"
       view_row: "查看行"
       view_single_row: "查看单行的数据"
-      viewing_current_page:
+      viewing_current_page: 
       viewing_row_html: 查看第 <span class="curPage"></span> 行，共 <span class="totalPages"></span> 行
     map:
       address_prompt: "在此输入地址"
@@ -896,8 +898,8 @@ zh:
       previous: "下一"
       previous_row: "上一行"
       request_timed_out: "该数据请求超时。"
-      unable_to_display_features_html:
-      unable_to_load_map_html:
+      unable_to_display_features_html: 
+      unable_to_load_map_html: 
     nominate:
       all: "所有"
       approve: "（批准）"
@@ -980,7 +982,7 @@ zh:
     and: "和"
     auth:
       invalid_userpass: "无效的用户名或密码"
-      need_email_verification:
+      need_email_verification: 
       need_login: "你必须先登录才能访问此页"
       need_permission: "你没有权限查看此页"
       too_many_tries: "该登录尝试的登录次数过多。账户暂时停用。"
@@ -1014,7 +1016,7 @@ zh:
       timeline: "时间轴"
       treemap: "树形图"
     data_types:
-      blob:
+      blob: 
       calendar_date: "日期和时间"
       checkbox: "复选框"
       dataset_link: "数据集链接"
@@ -1025,14 +1027,14 @@ zh:
       flag: "旗标"
       geospatial: "地理空间"
       html: "格式化文本"
-      line:
+      line: 
       link: "链接列"
       list: "列表"
       location: "地点"
       money: "金额"
-      multiline:
-      multipoint:
-      multipolygon:
+      multiline: 
+      multipoint: 
+      multipolygon: 
       nested_table: "嵌套表"
       number: "数字"
       object: "对象"
@@ -1040,7 +1042,7 @@ zh:
       phone: "电话"
       photo: "照片（图像）"
       point: "点"
-      polygon:
+      polygon: 
       stars: "星号"
       text: "纯文本"
       url: "网址"
@@ -1090,7 +1092,7 @@ zh:
       years_past: "%{time} 年前"
     dialogs:
       apply: "应用"
-      back:
+      back: 
       cancel: "取消"
       close: "关闭"
       continue: "继续"
@@ -1213,6 +1215,7 @@ zh:
       dateISO: "请填入有效的日期(ISO)。"
       digits: "请只填数字。"
       email: "请填入有效的电子邮件地址。"
+      email_recipient: 
       equalTo: "请再次输入相同的值。"
       max: "请输入小于或等于{0}的值。"
       maxlength: "请不要超过{0} 个字符。"
@@ -1229,7 +1232,7 @@ zh:
       blob: "非表格文件或文档"
       calendar: "日历"
       chart: "图表"
-      data_lens:
+      data_lens: 
       dataset: "数据集"
       filter: "筛选视图"
       form: "表格"
@@ -1237,7 +1240,7 @@ zh:
       grouped: "分组视图"
       href: "外部数据集"
       map: "地图"
-      story:
+      story: 
       table: "表"
       working_copy: "工作副本"
     view_types_plural:
@@ -1254,120 +1257,220 @@ zh:
       public: "公共"
   dataset_landing_page:
     action_buttons:
-      api:
-      contact_owner:
-      data:
-      download:
-      odata:
-      share:
+      api: 
+      comment: 
+      contact_owner: 
+      data: 
+      download: 
+      odata: 
+      share: 
+    add: 
     api_flannel:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      foundry_button:
-      multiple_geo_layers:
-      title:
-    contact_dataset_owner:
-    copy:
-    copy_success:
+      description: 
+      developer_portal_button: 
+      endpoint_title: 
+      foundry_button: 
+      multiple_geo_layers: 
+      title: 
+    back: 
+    bootstrap_button: 
+    bootstrap_disabled_notice: 
+    bootstrap_message: 
+    cancel: 
+    change: 
+    choose: 
+    close: 
+    contact_dataset_owner: 
+    contact_dataset_owner_modal:
+      description: 
+      email: 
+      email_description: 
+      error_empty_email: 
+      error_empty_message: 
+      error_empty_recaptcha: 
+      error_empty_subject: 
+      error_invalid_email: 
+      failure_html: 
+      message: 
+      recaptcha: 
+      recaptcha_loading: 
+      send: 
+      sending: 
+      subject: 
+      success_html: 
+      title: 
+    copy: 
+    copy_success: 
     dataset_contents:
-      columns:
-      row_display_unit:
-      rows:
-      title:
-    done:
+      columns: 
+      row_display_unit: 
+      rows: 
+      title: 
+    dataset_preview:
+      grid_view_link: 
+      latitude: 
+      longitude: 
+      many_rows: 
+      next: 
+      no_column_description: 
+      no_rows: 
+      only_rows: 
+      previous: 
+      title: 
+      unable_to_render: 
+    default_row_label: 
+    done: 
     download:
-      csv_for_excel:
-      csv_without_geo:
-      json_without_geo:
-      original:
-      shapefile:
+      csv_for_excel: 
+      csv_without_geo: 
+      json_without_geo: 
+      original: 
+      shapefile: 
+    error: 
+    featured_content:
+      manage_prompt:
+        button: 
+        message: 
+      title: 
+    featured_content_modal:
+      external: 
+      external_resource_form:
+        description: 
+        header: 
+        invalid_image_message: 
+        invalid_url_message: 
+        message: 
+        preview_image: 
+        title: 
+        url: 
+      header: 
+      introduction: 
+      preview: 
+      remove_error: 
+      remove_prompt: 
+      save_error_message: 
+      story: 
+      story_form:
+        header: 
+        invalid_url_message: 
+        message_html: 
+        url: 
+      title: 
+      view_selector_modal:
+        header: 
+        message: 
+        view_fetch_error: 
+      visualization: 
     featured_views:
-      no_content_alert_html:
-      title:
-      view:
-    less:
-    manage_prompt:
+      no_content_alert_html: 
+      title: 
+      view: 
+    feedback:
+      panel_details_html: 
+      panel_title: 
+      screenshot_no: 
+      screenshot_yes: 
+      title: 
+    less: 
+    manage_prompt: 
     metadata:
-      attachments:
-      category:
-      creation_date:
-      data_last_updated:
-      data_provided_by:
-      dataset_owner:
-      downloads:
-      license:
-      licensing:
-      metadata_last_updated:
-      no_category_value:
-      no_license_value:
-      no_tags_value:
-      no_value:
-      source_link:
-      tags:
-      title:
-      topics:
-      views:
-    more:
+      attachments: 
+      category: 
+      creation_date: 
+      data_last_updated: 
+      data_provided_by: 
+      dataset_owner: 
+      downloads: 
+      edit_metadata: 
+      license: 
+      licensing: 
+      metadata_last_updated: 
+      no_category_value: 
+      no_license_value: 
+      no_tags_value: 
+      no_value: 
+      source_link: 
+      tags: 
+      title: 
+      topics: 
+      view_statistics: 
+      views: 
+    more: 
+    multiple_geo_layers: 
     odata_modal:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      multiple_geo_layers:
-      title:
-    official:
-    private_notice:
-    published_by:
+      description: 
+      developer_portal_button: 
+      endpoint_title: 
+      multiple_geo_layers: 
+      title: 
+    official: 
+    popular_views:
+      load_more_error: 
+      title: 
+      view: 
+    private_notice: 
+    publish: 
+    publish_error: 
+    publish_notice: 
+    published: 
+    published_by: 
+    remove: 
+    save: 
+    saved: 
+    saving: 
     schema_preview:
-      api_field_name:
-      column_name:
-      data_type:
+      api_field_name: 
+      column_name: 
+      data_type: 
       data_types:
-        blob:
-        calendar_date:
-        checkbox:
-        dataset_link:
-        date:
-        document:
-        drop_down_list:
-        email:
-        flag:
-        geospatial:
-        html:
-        line:
-        link:
-        list:
-        location:
-        money:
-        multiline:
-        multipoint:
-        multipolygon:
-        nested_table:
-        number:
-        object:
-        percent:
-        phone:
-        photo:
-        point:
-        polygon:
-        stars:
-        text:
-        url:
-      description:
-      geospatial_layer_title:
-      show_all:
-      show_less:
-      title:
-      type:
+        blob: 
+        calendar_date: 
+        checkbox: 
+        dataset_link: 
+        date: 
+        document: 
+        drop_down_list: 
+        email: 
+        flag: 
+        geospatial: 
+        html: 
+        line: 
+        link: 
+        list: 
+        location: 
+        money: 
+        multiline: 
+        multipoint: 
+        multipolygon: 
+        nested_table: 
+        number: 
+        object: 
+        percent: 
+        phone: 
+        photo: 
+        point: 
+        polygon: 
+        stars: 
+        text: 
+        url: 
+      description: 
+      geospatial_layer_title: 
+      show_all: 
+      show_less: 
+      title: 
+      type: 
     share:
-      cancel:
-      email:
-      email_body:
-      facebook:
-      title:
-      twitter:
-      visibility_alert_html:
-    updated:
+      cancel: 
+      email: 
+      email_body: 
+      facebook: 
+      title: 
+      twitter: 
+      visibility_alert_html: 
+    updated: 
+    view_widget:
+      external_content: 
+      views: 
   dataslate:
     component:
       edit: "编辑该组件"
@@ -1461,7 +1564,7 @@ zh:
       title: "页面设置"
   date:
     abbr_month_names:
-    -
+    - 
     - "一月"
     - "二月"
     - "三月"
@@ -1475,7 +1578,7 @@ zh:
     - "十一月"
     - "十二月"
     month_names:
-    -
+    - 
     - "一月"
     - "二月"
     - "三月"
@@ -1512,6 +1615,22 @@ zh:
       were_sorry: "很抱歉，您似乎没有访问此页面的权限。"
     to_whence_you_came: "上一页面。"
   govstat:
+    admin:
+      goal_values:
+        status_private: 
+        status_public: 
+      listing:
+        dashboard: 
+        default_alert_message: 
+        goal_page: 
+        goal_status: 
+        manage_on_goal_page: 
+        owner: 
+        rows_per_page: 
+        title: 
+        updated_at: 
+        view_dashboard: 
+        visibility: 
     chrome:
       header:
         links:
@@ -1539,7 +1658,7 @@ zh:
       datasets: "数据集"
       federations: "联盟"
       homepage: "首页"
-      jobs:
+      jobs: 
       metadata: "元数据"
       moderation: "注解调整"
       nomination: "提名调整"
@@ -1547,6 +1666,28 @@ zh:
       sdp_templates: "数据播放器模板"
       title: "管理站点配置"
       users: "用户"
+    measure:
+      end_progress:
+        bad: 
+        good: 
+        needs_more_data: 
+        no_judgement: 
+        none: 
+        poor: 
+        progressing: 
+        within_tolerance: 
+      progress:
+        bad: 
+        good: 
+        needs_more_data: 
+        no_judgement: 
+        no_status: 
+        none: 
+        poor: 
+        progressing: 
+        within_tolerance: 
+      subheadline: 
+      unit_percent: 
     reports:
       component:
         base_map: "基础地图"
@@ -1590,30 +1731,31 @@ zh:
       title: "选择布局"
   plugins:
     daterangepicker:
+      clear: 
       date_range: "数据范围"
       done: "完成"
       end_date: "结束日期"
-      last_30_days:
-      last_3_days:
+      last_30_days: 
+      last_3_days: 
       last_month: "上月"
-      last_week:
-      last_year:
+      last_week: 
+      last_year: 
       month_to_date: "月至今"
       next: "下一"
-      preceding_30_days:
-      preceding_month:
-      preceding_week:
+      preceding_30_days: 
+      preceding_month: 
+      preceding_week: 
       prev: "上一"
       specific_date: "具体日期"
       start_date: "开始日期"
-      the_day_of:
+      the_day_of: 
       the_month_of: "第...月"
       the_week_of: "第...周"
       the_year_of: "...年"
       today: "今天"
       week_to_date: "周至今"
       year_to_date: "年至今"
-      yesterday:
+      yesterday: 
     fileuploader:
       drop_files: "文件拖放此处上传"
       failed: "失败"
@@ -1684,7 +1826,7 @@ zh:
     about:
       actions: "操作"
       activity: "活动"
-      admin_debugging:
+      admin_debugging: 
       attachments: "附件"
       category: "类别"
       comments: "评论"
@@ -1693,7 +1835,7 @@ zh:
       contributors: "参与者"
       created: "创建日期："
       data_provided_by: "数据提供方："
-      datasync_status:
+      datasync_status: 
       description: "说明"
       downloads: "下载次数"
       edit_metadata: "编辑元数据"
@@ -1729,21 +1871,69 @@ zh:
       visits: "访问次数"
       your: "你的评分"
     admin:
+      connector:
+        actions: 
+        add_connector: 
+        add_new: 
+        all_assets: 
+        arcgis_server_address: 
+        assets_connected: 
+        assets_discovered: 
+        back_to_connector_list: 
+        catalog: 
+        connected_assets: 
+        current_status: 
+        data: 
+        discovered_assets: 
+        edit: 
+        edit_connector: 
+        errors:
+          duplicate_server_error: 
+          invalid_attributes_error: 
+          json_format_error: 
+          missing_attributes_error: 
+          not_found_error: 
+          problem_with_errors: 
+          server_ping_error: 
+          unknown_error: 
+        esri_arcgis: 
+        esri_arcgis_url: 
+        failing: 
+        flashes:
+          created: 
+          deleted: 
+          server_not_found: 
+          updated: 
+        ignore: 
+        last_synced: 
+        never: 
+        no_connectors: 
+        not_synced_yet_edit: 
+        not_yet: 
+        save: 
+        search: 
+        selective_connection: 
+        service_unavailable: 
+        some_assets: 
+        source: 
+        success: 
+        terminate: 
+        title: 
       datasets:
         asset_inventory:
-          tooltip:
-        description:
+          tooltip: 
+        description: 
         layout_config: "布局配置"
         left: "左"
         right: "右"
         saved: "已保存"
         saving: "保存中"
         sidebar_position: "边栏位置"
-        skip_to_dataset_listing:
-        table_description:
+        skip_to_dataset_listing: 
+        table_description: 
         title: "数据集"
         unpublished_datasets: "未发布的数据集"
-        view_as_a_dataset:
+        view_as_a_dataset: 
       federation:
         accept: "接受"
         accepted: "已接受"
@@ -1774,66 +1964,67 @@ zh:
         terminate: "终止"
         title: "打开数据联盟"
       georegions:
-        actions:
-        choose_a_dataset:
+        actions: 
+        choose_a_dataset: 
         configure_boundary:
-          boundary_geometry_label_field_error:
-          boundary_geometry_label_page_error:
-          boundary_name:
-          boundary_name_description:
-          boundary_name_required_field_error:
-          boundary_name_required_page_error:
-          boundary_name_unique_error:
-          choose_a_column:
-          configure_boundary:
-          confirm_html:
-          confirm_title:
-          description:
-          next:
-          page_title:
-          primary_key_column:
-          primary_key_column_description:
-          primary_key_column_missing_field_error:
-          save_core_error:
-          save_error:
-          save_success:
-          shape_label:
-          shape_label_description:
-        create_new:
-        custom_georegions:
-        date_added:
-        default:
-        default_georegions:
-        default_georegions_flyout:
-        default_georegions_limit:
-        default_success:
-        delete:
-        description:
-        disable:
-        disable_success:
-        edit:
-        enable:
-        enable_success:
-        enabled?:
+          boundary_geometry_label_field_error: 
+          boundary_geometry_label_page_error: 
+          boundary_name: 
+          boundary_name_description: 
+          boundary_name_required_field_error: 
+          boundary_name_required_page_error: 
+          boundary_name_unique_error: 
+          choose_a_column: 
+          configure_boundary: 
+          confirm_html: 
+          confirm_title: 
+          description: 
+          next: 
+          page_title: 
+          primary_key_column: 
+          primary_key_column_description: 
+          primary_key_column_missing_field_error: 
+          save_core_error: 
+          save_error: 
+          save_success: 
+          shape_label: 
+          shape_label_description: 
+        create_new: 
+        custom_georegions: 
+        date_added: 
+        default: 
+        default_georegions: 
+        default_georegions_flyout: 
+        default_georegions_limit: 
+        default_success: 
+        delete: 
+        description: 
+        disable: 
+        disable_success: 
+        edit: 
+        enable: 
+        enable_success: 
+        enabled?: 
         flashes:
-          add_georegion_error:
-          service_unavailable_html:
-        learn_more:
-        page_subtitle:
-        page_title:
-        picker_explanation:
-        picker_support_html:
-        region_name:
-        remove:
-        status_disabled:
-        status_enabled:
-        status_failed:
-        status_progress:
-        substatus_failed_html:
-        substatus_progress:
-        title:
-        undefault:
-        undefault_success:
+          add_georegion_error: 
+          service_unavailable_html: 
+        learn_more: 
+        page_subtitle: 
+        page_title: 
+        picker_explanation: 
+        picker_explanation_html: 
+        picker_support_html: 
+        region_name: 
+        remove: 
+        status_disabled: 
+        status_enabled: 
+        status_failed: 
+        status_progress: 
+        substatus_failed_html: 
+        substatus_progress: 
+        title: 
+        undefault: 
+        undefault_success: 
       home:
         add_featured_dataset: "添加新精选数据集"
         are_you_sure: "你确定吗？此操作不可撤消。"
@@ -1879,298 +2070,339 @@ zh:
         thumbnail: "缩略图"
         title: "管理首页"
         up: "向上"
+      index:
+        comment_moderation: 
+        comment_moderation_description: 
+        connectors: 
+        connectors_description: 
+        dataset_routing_and_approval: 
+        dataset_routing_and_approval_description: 
+        datasets: 
+        datasets_description: 
+        dataslate_pages: 
+        dataslate_pages_description: 
+        federation: 
+        federation_description: 
+        georegions: 
+        georegions_description: 
+        home_page: 
+        home_page_description: 
+        internal: 
+        internal_description: 
+        jobs: 
+        jobs_description: 
+        metadata: 
+        metadata_description: 
+        sdp_templates: 
+        sdp_templates_description: 
+        site_analytics: 
+        site_analytics_description: 
+        site_chrome: 
+        site_chrome_description: 
+        stories: 
+        stories_description: 
+        users: 
+        users_description: 
+        view_moderation: 
+        view_moderation_description: 
       jobs:
         actions:
-          geocoding:
-          import:
-          replace:
-          upsert:
-          working_copy:
+          geocoding: 
+          import: 
+          replace: 
+          upsert: 
+          working_copy: 
         filters:
-          all:
-          append:
-          apply_filters:
-          data_workflow:
-          filter_by:
-          import:
-          import_activity:
-          publish:
-          replace:
-          type:
-          working_copy:
+          all: 
+          append: 
+          apply_filters: 
+          data_workflow: 
+          delete: 
+          filter_by: 
+          import: 
+          import_activity: 
+          publish: 
+          replace: 
+          restore: 
+          type: 
+          upsert: 
+          working_copy: 
         index_page:
-          action:
-          dataset:
-          deleted_dataset:
-          deleted_user:
-          export_as_csv:
-          initiated_by:
-          no_jobs:
-          page_title:
-          showing_all_so_far:
-          showing_most_recent:
-          started:
-          status:
-          title:
-          to_working_copy:
-          with_problems:
+          action: 
+          dataset: 
+          deleted: 
+          deleted_dataset: 
+          deleted_user: 
+          export_as_csv: 
+          initiated_by: 
+          no_jobs: 
+          page_title: 
+          restore_deleted_dataset: 
+          restore_deleted_dataset_confirm: 
+          showing_all_so_far: 
+          showing_most_recent: 
+          started: 
+          status: 
+          title: 
+          to_working_copy: 
+          with_problems: 
         show_page:
-          back:
-          error_details_heading:
+          back: 
+          error_details_heading: 
           event_messages:
             failure:
               bad_response_from_server:
-                description:
-                title:
+                description: 
+                title: 
               bad_timestamp_format:
-                description:
-                title:
+                description: 
+                title: 
               bad_timezone:
-                description:
-                title:
+                description: 
+                title: 
               completed_with_warnings:
-                description:
-                title:
+                description: 
+                title: 
               control_file_invalid_json:
-                description:
-                title:
+                description: 
+                title: 
               control_file_malformed:
-                description:
-                title:
+                description: 
+                title: 
               control_file_too_large:
-                description:
-                title:
+                description: 
+                title: 
               corrupt_archive:
-                description:
-                title:
+                description: 
+                title: 
               corrupt_gzip:
-                description:
-                title:
+                description: 
+                title: 
               corrupt_shapefile:
-                description:
-                title:
+                description: 
+                title: 
               corrupt_xz:
-                description:
-                title:
+                description: 
+                title: 
               delete_without_user_pk:
-                description:
-                title:
+                description: 
+                title: 
               di2_counts:
-                description:
-                title:
+                description: 
+                title: 
               duplicated_fields_in_input:
-                description:
-                title:
+                description: 
+                title: 
               field_not_in_dataset:
-                description:
-                title:
+                description: 
+                title: 
               field_not_in_input:
-                description:
-                title:
+                description: 
+                title: 
               field_wrong_format:
-                description:
-                title:
+                description: 
+                title: 
               generic:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_failure:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_source_ignored:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_source_invalid_type:
-                description:
-                title:
+                description: 
+                title: 
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description:
-                title:
+                description: 
+                title: 
               incomplete_archive:
-                description:
-                title:
+                description: 
+                title: 
               invalid_encoding:
-                description:
-                title:
+                description: 
+                title: 
               invalid_row_length:
-                description:
-                title:
+                description: 
+                title: 
               malformed_blueprint:
-                description:
-                title:
+                description: 
+                title: 
               malformed_upsert:
-                description:
-                title:
+                description: 
+                title: 
               no_field_names_in_input:
-                description:
-                title:
+                description: 
+                title: 
               no_identity_column:
-                description:
-                title:
+                description: 
+                title: 
               parse_error:
-                description:
-                title:
+                description: 
+                title: 
               permission_denied:
-                description:
-                title:
+                description: 
+                title: 
               record_too_large:
-                description:
-                title:
+                description: 
+                title: 
               row_too_large:
-                description:
-                title:
+                description: 
+                title: 
               synthetic_location_in_input:
-                description:
-                title:
+                description: 
+                title: 
               too_many_errors_in_input:
-                description:
-                title:
+                description: 
+                title: 
               too_many_records_in_input:
-                description:
-                title:
+                description: 
+                title: 
               uninterpretable_value:
-                description:
-                title:
+                description: 
+                title: 
               unknown_domain:
-                description:
-                title:
+                description: 
+                title: 
               unknown_file_type:
-                description:
-                title:
+                description: 
+                title: 
               unsupported_import_type:
-                description:
-                title:
+                description: 
+                title: 
               upsert_already_in_progress_by_someone_else:
-                description:
-                title:
+                description: 
+                title: 
               upsert_counts:
-                description:
-                title:
+                description: 
+                title: 
             success_with_data_errors:
               di2_counts:
-                description:
-                title:
+                description: 
+                title: 
               upsert_counts:
-                description:
-                title:
-          failed_rows:
-          fallback_event_title:
-          file_name_unknown:
-          import:
+                description: 
+                title: 
+          failed_rows: 
+          fallback_event_title: 
+          file_name_unknown: 
+          import: 
           import_failures:
             bad_timestamp_format:
-              description:
-              title:
+              description: 
+              title: 
             bad_timezone:
-              description:
-              title:
+              description: 
+              title: 
             control_file_invalid_json:
-              description:
-              title:
+              description: 
+              title: 
             control_file_malformed:
-              description:
-              title:
+              description: 
+              title: 
             control_file_too_large:
-              description:
-              title:
+              description: 
+              title: 
             corrupt_gzip:
-              description:
-              title:
+              description: 
+              title: 
             corrupt_xz:
-              description:
-              title:
+              description: 
+              title: 
             delete_without_user_pk:
-              description:
-              title:
+              description: 
+              title: 
             duplicated_fields_in_input:
-              description:
-              title:
+              description: 
+              title: 
             field_not_in_dataset:
-              description:
-              title:
+              description: 
+              title: 
             field_not_in_input:
-              description:
-              title:
+              description: 
+              title: 
             field_wrong_format:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_failure:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_source_ignored:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_source_invalid_type:
-              description:
-              title:
+              description: 
+              title: 
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description:
-              title:
+              description: 
+              title: 
             invalid_encoding:
-              description:
-              title:
+              description: 
+              title: 
             invalid_row_length:
-              description:
-              title:
+              description: 
+              title: 
             malformed_upsert:
-              description:
-              title:
+              description: 
+              title: 
             no_field_names_in_input:
-              description:
-              title:
+              description: 
+              title: 
             no_identity_column:
-              description:
-              title:
+              description: 
+              title: 
             permission_denied:
-              description:
-              title:
+              description: 
+              title: 
             record_too_large:
-              description:
-              title:
+              description: 
+              title: 
             synthetic_location_in_input:
-              description:
-              title:
+              description: 
+              title: 
             too_many_errors_in_input:
-              description:
-              title:
+              description: 
+              title: 
             too_many_records_in_input:
-              description:
-              title:
+              description: 
+              title: 
             uninterpretable_value:
-              description:
-              title:
+              description: 
+              title: 
             unknown_domain:
-              description:
-              title:
+              description: 
+              title: 
             unknown_file_type:
-              description:
-              title:
+              description: 
+              title: 
             upsert_already_in_progress_by_someone_else:
-              description:
-              title:
-          import_method:
-          initiated_at:
-          no_events:
-          page_title:
+              description: 
+              title: 
+          import_method: 
+          initiated_at: 
+          no_events: 
+          page_title: 
           services:
-            DeltaImporter2:
-            Imports2:
-            ResourcesAPI:
-          started_by:
-          title:
-          to:
+            DeltaImporter2: 
+            Imports2: 
+            ResourcesAPI: 
+          started_by: 
+          title: 
+          to: 
         statuses:
-          failure:
-          in_progress:
-          not_started:
-          success:
-          success_with_data_errors:
+          failure: 
+          in_progress: 
+          not_started: 
+          success: 
+          success_with_data_errors: 
       metadata:
         add_new_category: "添加新类别"
         add_new_field: "添加新字段"
         allowed_values: "允许的值"
         are_you_sure: "您是否确定要删除该字段集以及所有相关的字段？"
         category_name: "类别名称"
-        category_table_description:
+        category_table_description: 
         create: "创建"
         create_new_fieldset: "创建一个新的字段集"
         define_categories: "定义数据集分类"
@@ -2200,7 +2432,7 @@ zh:
         metadata_explain1: 自定义元数据被分成<span class="code">字段集</ span>和<span class="code">字段</ SPAN>。一个<span class="code">字段集</ SPAN>是一种在逻辑和视觉上将一个或多个自定义<span class="code">字段</span>分成一组的方式。
         metadata_explain2: 字段可以以多种方式进行配置。可以为<span class="code">必须</span>，当发行者创建新的数据集并更新现有的元数据时将被强制执行<。它们也可以是<span class="code">私人</span>，这意味着输入的值将对公众不可见。
         metadata_explain3: 最后，如果你希望从列表中选择，而不是输入为自由格式的文本，你可以选择预先定义您的<span class="code">字段</span>。
-        metadata_field_table_description:
+        metadata_field_table_description: 
         no_data: "你的域名尚未定义自定义数据集字段。请在下面输入一个名称，然后单击“创建”开始。"
         no_fields_defined: "该字段设置尚未定义任何字段"
         page_title: "管理数据集元数据"
@@ -2210,6 +2442,134 @@ zh:
         title: "管理元数据"
         'true': true
         up: "向上"
+      site_chrome:
+        cancel: 
+        description: 
+        preview_changes: 
+        save: 
+        save_changes: 
+        site_appearance: 
+        tabs:
+          footer:
+            fields:
+              copyright_notice:
+                description: 
+                label: 
+                title: 
+              footer_background_color:
+                description: 
+                placeholder: 
+                title: 
+              footer_display_name:
+                description: 
+                placeholder: 
+                title: 
+              footer_logo:
+                description: 
+                placeholder: 
+                title: 
+              footer_text_link_color:
+                placeholder: 
+                title: 
+              link_title_label: 
+              link_title_placeholder: 
+              menu_links:
+                description: 
+                title: 
+              url_label: 
+              url_placeholder: 
+            title: 
+          general:
+            fields:
+              google_analytics_token:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              template:
+                description: 
+                placeholder: 
+                title: 
+              window_icon:
+                description: 
+                placeholder: 
+                title: 
+              window_title_display:
+                description: 
+                placeholder: 
+                title: 
+            title: 
+          header:
+            fields:
+              bar_background_color:
+                description: 
+                placeholder: 
+                title: 
+              bar_text_link_color:
+                placeholder: 
+                title: 
+              header_bar_logo:
+                description: 
+                placeholder: 
+                title: 
+              header_display_name:
+                description: 
+                placeholder: 
+                title: 
+              link_title_label: 
+              link_title_placeholder: 
+              menu_links:
+                description: 
+                title: 
+              url_label: 
+              url_placeholder: 
+            title: 
+          homepage:
+            fields: 
+            title: 
+          social:
+            fields:
+              facebook_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              flickr_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              google_plus_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              instagram_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              linked_in_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              tumblr_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              twitter_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              vimeo_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              yammer_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              youtube_profile_link:
+                description: 
+                placeholder: 
+                title: 
+            title: 
       users:
         actions: "操作"
         all: "全部"
@@ -2219,7 +2579,7 @@ zh:
         email_prompt: "输入你希望创建帐户的电子邮件地址"
         emails: "电子邮件"
         error_permission_request: "处理你的权限请求时出现错误"
-        export_as_csv:
+        export_as_csv: 
         filter_by: "过滤标准"
         flashes:
           accounts_created: "已成功创建%{count} 个账户"
@@ -2237,7 +2597,7 @@ zh:
         no_users_found: "未找到已有用户"
         no_users_match: "无用户匹配你当前的过滤器。"
         pending_users: "以下用户都有待定账户，但尚未激活"
-        pending_users_table_description:
+        pending_users_table_description: 
         reenable_privileges: "重新启用特权"
         remove: "删除"
         reset_password: "重设密码"
@@ -2247,19 +2607,19 @@ zh:
           administrator: "管理员"
           designer: "设计师"
           editor: "编辑"
-          editor_stories:
+          editor_stories: 
           none: "无"
           publisher: "发布者"
-          publisher_stories:
+          publisher_stories: 
           viewer: "审查"
         search: "搜索"
         search_for_users: "搜索要添加的用户"
         search_results: "搜索'%{term}'的结果"
         title: "管理用户"
         user_saved: "用户已保存"
-        users_table_description:
+        users_table_description: 
       view_moderation:
-        table_description:
+        table_description: 
     dataset_edit:
       append: "追加"
       append_and_replace: "追加和替换数据"
@@ -2300,8 +2660,8 @@ zh:
         missing_name: "数据集名称为必需。"
         need_description: "请说明&ldquo;%{name}&rdquo;"
         point:
-          missing_latlong:
-          suboptimal_column:
+          missing_latlong: 
+          suboptimal_column: 
       finish:
         headline: "你的数据集已创建。"
         subheadline: "单击Finish（完成）查看！"
@@ -2335,6 +2695,7 @@ zh:
         headers: "页眉"
         headers_instructions: "页眉应该被忽略并不会作为数据导入。请注明你的源文件有多少行属于页眉"
         headline: 请指定如何导入&ldquo;<span class="fileName"></span>&rdquo; 。
+        headline_interpolate: 
         help_message: 如需帮助，请查看<a href="%{common_errors}" rel="external">的常见警告与错误列表</a>。
         more_rows: "更多行"
         name: "名称"
@@ -2350,14 +2711,16 @@ zh:
         why_choose_now: "为什么选择列类型很重要？"
       import_help: <strong>需要帮助吗？</ strong>我们维持一个对你可能有帮助的<a href="%{common_errors}" rel="external">常见的警告和错误</a>。
       import_shapefile:
-        abbreviatedSubheadline:
-        abbreviatedSummary:
+        abbreviatedSubheadline: 
+        abbreviatedSummary: 
         crs: "坐标参考系统"
         headline: 指定&ldquo;<span class="fileName"></span>&rdquo; 应如何导入。
+        headline_interpolate: 
         layers_list: "要导入的层"
         name: "名称"
         pending: "请稍候，我们正在上传你的图层..."
         subheadline: 该shapefile在<span class="layerCount"></span>层包含<span class="layerCount"></span>功能。
+        subheadline_interpolate: 
       import_warnings:
         headline: "导入过程中的警告"
         see_docs: <strong>困惑？<strong>请查看我们的<a href="%{publisher_link}" rel="external">发布者文件</a>了解导入工具如何处理数据的详细说明。你也可以参考我们的<a href="%{common_errors}" rel="external">常见的警告和错误列表</ a>。
@@ -2372,6 +2735,12 @@ zh:
         private_explain: "我的数据<strong>private</strong>"
         prompt: "请描述你的数据。"
         public_explain: "我的数据<strong>public</strong>：它只能由我来修改，但每个人都可以查看。"
+      notify_me: 
+      notify_me_error_html: 
+      notify_me_messaging: 
+      notify_me_success_addl: 
+      notify_me_success_html: 
+      notify_me_success_html_js: 
       processing: "处理中..."
       title: "新数据集"
       upload_accessible: "上传可访问的新的数据集"
@@ -2389,7 +2758,7 @@ zh:
       bar:
         api_unsavable: "不能修改API视图"
         based_on_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html:
+        based_on_layer_html: 
         based_on_parent_html: 基于 <a class="parentName"></a>
         based_on_private_view: "私有视图"
         based_on_working_copy_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a> 的工作副本
@@ -2406,9 +2775,11 @@ zh:
           underline: "下划线"
           undo: "撤销"
         full_screen: "全屏显示开关"
+        no_description: 
         out_of_date: "此数据集已过期%{age}"
         publish_button: "发布数据集"
         publish_prompt: "本数据集是工作副本，因此不对外公开。您完成所需的改动后，需要先发布数据集，其他人才能访问。"
+        publish_prompt_with_dataset_landing_page: 
         publish_rights: "只有所有者或发布者才能发布此数据集"
         revert_button: "恢复"
         revert_prompt: "恢复到已保存的视图"
@@ -2506,6 +2877,8 @@ zh:
         remove_email: "移除"
         success: "您的邮件发送成功。"
         title_html: 分享 “<span class="datasetName">%{name}</span>”
+      fatrow:
+        edit_layout: 
       grid_sidebar:
         add_column:
           convert_address:
@@ -2538,7 +2911,8 @@ zh:
           developer_portal: "开发者门户"
           endpoint_title: API访问端点：
           intro_html: "借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。"
-          multiple_endpoints_intro_html:
+          multiple_endpoints_intro_html: 
+          no_endpoints_available: 
           reference_html: 使用下面提供的API端点，开始访问数据库，进行编程。更多有关如何使用Socrata 开放数据 API的信息及示例，请参考<a href="http://dev.socrata.com" rel="external">开发人员文档</a>。
           subtitle: "通过SODA访问%{view_type}"
           title: SODA API
@@ -2562,8 +2936,8 @@ zh:
             immutable: "启动“替换”向导"
             mutable: "启动“添加和替换”向导"
         backup:
-          button:
-          item_html:
+          button: 
+          item_html: 
         base:
           buttons:
             apply: "应用"
@@ -2594,8 +2968,8 @@ zh:
             formatted_text: "带格式的文本"
             geospatial: "地理空间"
             groups:
-              geometry:
-              standard:
+              geometry: 
+              standard: 
             list: "列表"
             location: "位置"
             money: "资金"
@@ -2790,6 +3164,7 @@ zh:
             title: "列的类型"
             type: "数据类型"
             type_prompt: "选择数据类型"
+            working_copy_html: 
         column_order:
           columns:
             title: "列"
@@ -2828,10 +3203,10 @@ zh:
           money:
             abbreviated: "缩写"
             currency: "币种"
-            format_mask_warning:
+            format_mask_warning: 
             groups:
-              all:
-              common:
+              all: 
+              common: 
             no_precision: "无"
             precision: "精确度"
             title: "货币格式"
@@ -2864,8 +3239,8 @@ zh:
           subtitle: "更新列的各项属性"
           success: "列已经更新"
           text_formatting:
-            display_style:
-            title:
+            display_style: 
+            title: 
           title: "列属性"
           url:
             base_url: "基准URL"
@@ -2873,6 +3248,7 @@ zh:
             title: URL选项
           validation:
             published: "要改变列属性，请复制此数据库的工作副本或视图。"
+            snapshot: 
             unsaved: "您不能编辑未保存视图中的列属性"
         conditional_formatting:
           change_icon: "变更"
@@ -2898,10 +3274,10 @@ zh:
             no_columns: "此视图无列可筛选"
             no_icons: "图标只与地图视图相关"
         data_lens:
-          button:
-          button_flyout:
-          subtitle:
-          title:
+          button: 
+          button_flyout: 
+          subtitle: 
+          title: 
         delete:
           confirm: "此操作将永久删除 %{view_type} 。再没有办法恢复！您确信要继续吗？ "
           delete_button: "删除 %{view_type}"
@@ -2927,8 +3303,8 @@ zh:
           download_as: "下载格式"
           download_dataset: "请从生成此视图的地方下载数据集。"
           geo_header: "下载地理空间数据"
-          monolayer_header:
-          multilayer_header:
+          monolayer_header: 
+          multilayer_header: 
           subtitle: "以静态格式下载此数据集"
           title: "下载"
         feed:
@@ -3022,12 +3398,13 @@ zh:
           validation:
             hidden_location_html: 您可 <a href="#showLoc" title="Show a location column">显示隐藏的地点列</a>。
             location_column: "必须有地点列才能创建地图。"
-            location_column_invalid_dataset:
+            location_column_invalid_dataset: 
             viz_limit: "一个视图只能加载一种可视化操作"
         odata:
           endpoint_action: "复制此链接："
           intro_html1: "在Excel中创建一个电子表格来分析和可视化数据集。使用OData链接将刷新这些数据。"
           intro_html2: 使用Microsoft Excel 2010、Microsoft Excel 2013或Microsoft Power Query。使用<a href="%{doc_link}">Socrata's OData文档</a>，遵循用户指南。
+          no_endpoints_available: 
           subtitle: "通过OData访问该数据集"
           title: OData
         ownership:
@@ -3109,7 +3486,7 @@ zh:
           subtitle: "调整在此视图中显示的列"
           title: "显示/隐藏列"
           warnings:
-            active_filter:
+            active_filter: 
         sort_rollup:
           rollup:
             add_group_button: "添加分组列"
@@ -3211,8 +3588,8 @@ zh:
       unable_to_find_dataset_page: "我们无法为该数据集找到一个数据透镜页面。"
     edit_metadata:
       about: "关于"
-      add_link:
-      add_source:
+      add_link: 
+      add_source: 
       additional_source: "其他资源"
       alternative_access_prompt: "输入该数据集的其他访问点"
       api_endpoint: API 端点
@@ -3235,8 +3612,10 @@ zh:
       dataset_title_prompt: "输入标题"
       dataset_url: "数据集的URL"
       dataset_url_prompt: "输入外部数据集的位置"
-      default_row_label:
+      default_row_label: 
       delete: "删除"
+      described_by: 
+      described_by_prompt: 
       email_address: "电子邮件地址"
       email_help: "此地址不会公开显示。 如果留空，将默认为您的地址。"
       existing_attachments: "现有附件"
@@ -3255,8 +3634,8 @@ zh:
       licensing_attr: "许可和归属"
       list: "列表"
       metadata_help: "该字段已被您的组织标为私有，不可公开查看。"
-      missing_external_dataset:
-      multiple_extensions:
+      missing_external_dataset: 
+      multiple_extensions: 
       new_attachment: "新附件"
       none: "（无）"
       northwest_latitude: "西北纬度"
@@ -3264,7 +3643,7 @@ zh:
       optional: "可选"
       private_help: "该字段已被您的组织标记为私有，不可公开查看"
       remove_image: "移除图像"
-      remove_link:
+      remove_link: 
       required_field: "必填字段"
       resource_name: "资源名称"
       resource_name_prompt: "输入资源名称"
@@ -3272,9 +3651,9 @@ zh:
       row_class: "行类别"
       row_identifier: "行标识符"
       row_identifier_help_text: "一旦视图发布，不可再修改行标识符。"
-      row_label:
-      row_label_help:
-      row_label_prompt:
+      row_label: 
+      row_label_help: 
+      row_label_prompt: 
       save: "保存"
       save_changes: "保存更改"
       semantics_rdf: "语义和资源描述框架"
@@ -3293,7 +3672,7 @@ zh:
       upload_help: "该图像将剪裁为正方形"
       upload_image: "上传图像"
       upload_new_attachment: "上传新附件"
-      url:
+      url: 
     forgot_password:
       already_authenticated: "无法重置密码：您已经登录。"
       failed: "提交密码重置请求时出现问题。 请重试。"
@@ -3319,7 +3698,7 @@ zh:
       existing_latlng_cols: "现有的纬度和经度列"
       find: "查找"
       find_and_replace: "查找和替换值..."
-      import_from_latlong:
+      import_from_latlong: 
       import_from_multiple: "从<strong>多列</strong>导入"
       import_from_single: "从<strong>单列</strong>导入"
       latitude: "纬度"
@@ -3333,7 +3712,7 @@ zh:
       new_source_col: "添加新源列"
       new_transform: "添加新的转换"
       options: "选项"
-      point_source_col:
+      point_source_col: 
       properly_formatted: 导入前，列必须<a href="%{formatting_link}" rel="external">正确格式化</ a>。
       regular_expression: "正则表达式"
       remove: "删除"
@@ -3362,8 +3741,9 @@ zh:
       one_header: "其中一行为页眉。"
       problem_importing: "导入该文件时出现问题。请确保它是有效的。"
       problem_uploading: "上传该文件时出现问题。请确保它是有效的。"
-      replicating:
+      replicating: 
       rows_imported: "目前已导入%{num} 行。"
+      rows_imported_js: 
       try_again: "请稍后再试。"
       unknown_error: "出现未知错误"
       uploading: "正在上传文件"
@@ -3385,7 +3765,7 @@ zh:
         no_applications: "您还未创建应用程序。点击右边的“管理”开始创建。"
         title: "%{user}的应用程序"
       bar:
-        edit_info_link:
+        edit_info_link: 
         edit_settings_link: "编辑账户设置"
         follow_link: "关注"
         join_date: "注册于"
@@ -3515,10 +3895,10 @@ zh:
         following: "我关注的人"
         hide_contacts_link: "隐藏"
       whats_new:
-        caught_up:
-        older_news:
-        read_more:
-        title:
+        caught_up: 
+        older_news: 
+        read_more: 
+        title: 
     reset_password:
       failed: "重置密码时出现问题。请重试。"
       form:
@@ -3536,13 +3916,13 @@ zh:
       mismatch: "密码不匹配；请重试"
       prompt_html: "使用 <strong>Socrata 用户名</strong>登录"
       sign_in_with: "以%{provider}<strong>登录</strong>"
-      sso_required:
+      sso_required: 
       tips_html: 使用您的电子邮件和密码登录所有使用<strong><a href="http://www.socrata.com" rel="external">Socrata</a> 技术</strong> 的网站。
     sign_up:
       email_verification:
-        expired:
-        sent:
-        success:
+        expired: 
+        sent: 
+        success: 
       form:
         create_account_button: "创建我的账户"
         have_account_link: "我已经有账户了"
@@ -3556,7 +3936,7 @@ zh:
     stats:
       api: API
       apply: "应用"
-      browser_page_views:
+      browser_page_views: 
       bytes_out: "输出字节"
       chart_created: "已创建图表"
       charts: "图表"
@@ -3565,12 +3945,12 @@ zh:
       comments: "注释"
       comments_created: "已创建注释"
       daily: "每日"
-      date_range:
+      date_range: 
       deleted_application: "已删除的应用"
-      delta_decrease:
-      delta_decrease_compared:
-      delta_increase:
-      delta_increase_compared:
+      delta_decrease: 
+      delta_decrease_compared: 
+      delta_increase: 
+      delta_increase_compared: 
       dependent_metrics: "相关指标"
       download: "下载"
       downloads: "下载"
@@ -3595,7 +3975,7 @@ zh:
       no_data_time_period: "该时间段无数据"
       page_viewed: "查看的页面"
       pages_viewed: "查看的数据"
-      preceding_period:
+      preceding_period: 
       referrals: "推荐"
       rows_loaded: "加载的行"
       sdp: SDP
@@ -3632,6 +4012,10 @@ zh:
       create_new:
         name: "新的模板名称"
         title: "创建一个新的模板"
+      create_new_dataset:
+        explanation_html: 
+        prompt: 
+        title: 
     wizard:
       cancel: "取消"
       finish: "完成"
@@ -3645,5 +4029,5 @@ zh:
       last_word_connector: "或"
       two_words_connector: "或"
   table:
-    no_summary_available:
-    summary:
+    no_summary_available: 
+    summary: 

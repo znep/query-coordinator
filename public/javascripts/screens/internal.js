@@ -85,6 +85,33 @@
     }
   }, 200));
 
+  if ($('.organizationLink').exists()) {
+    var fillTheBlanks = function(orgList) {
+      var currentOrg;
+      var $link = $('.organizationLink');
+      var $select = $('.organizationList');
+      _.map(orgList, function(org) {
+        var selected = false;
+        if (org.id == $link.text()) {
+          selected = true;
+          currentOrg = org.name;
+        }
+        $select.append($.tag2({
+          _: 'option',
+          value: org.id,
+          selected: selected,
+          contents: org.name
+        }));
+      });
+      $link.text(currentOrg);
+    };
+    $.ajax({
+      url: '/internal/organization_list.json',
+      dataType: 'json',
+      success: fillTheBlanks
+    });
+  }
+
   $.fn.formatWithMoment = function(format) {
     var text = this.text();
     var asMoment = moment(text);

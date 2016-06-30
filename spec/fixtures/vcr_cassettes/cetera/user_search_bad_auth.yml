@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/whitepages?q=socrata.com
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - "==QJW62BbMvVPjzQ7M1A5fG2aam4St4I1PgRBY9o9lxawNfX9jQAZE7mGb9RkipxDbQIS+nQnEPIDVMbxnLHWLaF=nekot-frsc-atarcos
+        ;QGOhVTMxEjYiNzMzEzYwMWNlNmMmdTNlZ2MxcTZjRDNzImN0EzY2UGIyYWYlF2N2UGM4UmNgUTN1cDOwcjN0EDIlpXO31SeuNDO=di_noisses_eroc_
+        ;e9b0f7b19a391352076b7bb65e2ebed1404ee245--wYEA7Ywb09lbyVHdlJnDikEVUBwOGQXaulWCikkRAsjB9kVO5R1KndUcm9kVrglSmNjd1A1a2kTdwMjSFN3SkFTQOllYu9mUZBlbjpVMikkRAsjBuV2avR3XmJ3cj9FEikEMGBwOGIXZzVXCikkRAsjBlJjM1kzYhNjY2QDM4ATY0MGNwMzYidTZjJWN5gjYiFWJikkRFZgOGQWaf52bpN3clN3DikkC7hAB=di_noisses_atarcos_
+        ;eurt=ni_deggol"
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Requestid:
+      - 55c8a53595d246c6ac8e20dd2a9bcb71
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Date:
+      - Mon, 27 Jun 2016 23:08:28 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: '{ "results" : [], "resultSetSize" : 0 }'
+    http_version: 
+  recorded_at: Mon, 27 Jun 2016 23:08:28 GMT
+recorded_with: VCR 3.0.3

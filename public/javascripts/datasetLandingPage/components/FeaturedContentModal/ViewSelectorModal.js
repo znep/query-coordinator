@@ -23,11 +23,15 @@ export var ViewSelectorModal = React.createClass({
     onClickCancel: PropTypes.func,
     onClickChoose: PropTypes.func.isRequired,
     fetchViews: PropTypes.func,
+    resetFocus: PropTypes.func,
     viewList: PropTypes.array.isRequired
   },
 
   componentWillMount: function() {
-    this.props.fetchViews();
+    var { fetchViews, resetFocus } = this.props;
+
+    fetchViews();
+    resetFocus();
   },
 
   I18n: I18n.featured_content_modal.view_selector_modal,
@@ -131,10 +135,11 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
+      ownProps.resetFocus();
     },
 
     onClickChoose: function(uid) {

@@ -94,7 +94,7 @@
                 </td>
                 <td class="endedAt" scope="row">
                   <%- if server.last_synced -%>
-                    <%= server.last_synced %>
+                    <%= server.parse_last_synced %>
                   <%- else -%>
                     <%= t("#{connector}.never") %>
                   <%- end -%>

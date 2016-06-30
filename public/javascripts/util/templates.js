@@ -27,7 +27,7 @@
     var normalDownloadTypes = _.get(
       window,
       'blist.configuration.normalDownloadTypes',
-      ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
+      ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XML']
     );
     $.templates.downloadsTable = {
         downloadTypes: {

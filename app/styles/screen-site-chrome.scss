@@ -1,5 +1,8 @@
 $grey: #7a7a7a;
 $dark-grey: #5e5e5e;
+$red-text: #d06463;
+$red-btn: #ce6565;
+$red-btn-hover: #a55151;
 $faint-border-color: #ebebeb;
 
 .site-chrome {
@@ -37,6 +40,15 @@ $faint-border-color: #ebebeb;
       border-color: #288DC1;
       &:hover {
         background-color: #20719a;
+      }
+    }
+    &.error {
+      color: #fff;
+      background-color: $red-btn;
+      border-color: $red-btn;
+      cursor: default;
+      &:hover {
+        background-color: $red-btn-hover;
       }
     }
   }
@@ -154,6 +166,11 @@ $faint-border-color: #ebebeb;
           font-size: 16px;
           font-weight: 400;
           color: $grey;
+
+          &.error {
+            color: $red-text;
+            font-size: 14px;
+          }
         }
         input {
           width: calc(100% - 16px);

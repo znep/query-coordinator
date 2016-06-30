@@ -15,8 +15,8 @@ class SiteChrome
   include HTTParty
 
   base_uri CORESERVICE_URI.to_s
-  format :json
   default_timeout 5 # seconds
+  format :json
 
   # For authenticating with and talking to core
   # cookies is a string e.g., "cookie_name=cookie_value;other_cookie=other_value"

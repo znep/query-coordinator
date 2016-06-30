@@ -3,25 +3,89 @@ require 'httparty'
 require 'ostruct'
 
 # Interface for Cetera, the new search service https://github.com/socrata/cetera
-# Uses HTTParty. Also, note that cetera_host is misnamed; it is actually a uri not a host.
 module Cetera
-  def self.search_views(opts, cookies, request_id)
-    cetera_url = "#{APP_CONFIG.cetera_host}/catalog/v1"
+  def self.base_uri
+    APP_CONFIG.cetera_host # cetera_host is misnamed; it is actually a uri.
+  end
+
+  def self.get(path, options)
+    uri = File.join(base_uri, path)
+    Rails.logger.info("Cetera request to #{path} with query: #{options[:query].inspect}")
+
+    response = HTTParty.get(uri, options)
+    Rails.logger.error("FAILED Cetera request: #{response.body}") unless response.success?
+
+    response
+  end
+
+  # Admins only! For now, do not call this without a search query.
+  def self.search_users(search_query, cookie_string, request_id = nil)
+    path = '/whitepages'
+    options = request_options({ q: search_query }.compact, cookie_string, request_id)
+
+    response = get(path, options)
+
+    # app/controllers/administration_controller.rb does not handle user search failures
+    response.success? ? UserSearchResult.new(response) : UserSearchResult.new('results' => [])
+  end
+
+  # 90%+ of search queries go through here so try not to break anything
+  # TODO: Do we want this to match the signature of search_users?
+  def self.search_views(opts = {}, cookie_string = nil, request_id = nil)
+    path = '/catalog/v1'
     query = cetera_soql_params(opts)
+    options = request_options(query, cookie_string, request_id)
 
-    Rails.logger.info("Cetera request to #{cetera_url} with params: #{query.inspect}")
+    response = get(path, options)
+    response.success? && CatalogSearchResult.new(response)
+  end
 
-    options = {
-      cookies: cookies, # Cetera is fine with empty cookie string
+  #########
+  # Helpers
+
+  def self.request_options(query, cookie_string, request_id)
+    {
       format: :json,
-      headers: { 'X-Socrata-Host' => CurrentDomain.cname,
-                 'X-Socrata-RequestId' => request_id }.compact,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Cookie' => cookie_string,
+        'X-Socrata-Host' => CurrentDomain.cname,
+        'X-Socrata-RequestId' => request_id.present? ? request_id : nil
+      }.compact,
       query: query.to_query,
-      timeout: 5
-    }
+      timeout: 5 # seconds, >10x Cetera's median round trip time
+    }.compact
+  end
 
-    result = HTTParty.get(cetera_url, options)
-    result.success? && CeteraSearchResult.new(result)
+  #############
+  # Translators
+  #
+  # Prepare Cetera params from browse_options[:search_options] in lib/browse_actions.rb
+
+  def self.cetera_soql_params(opts = {})
+    translations = translated_query_params(opts) # Some params must be translated / modified
+    metadata = opts[:metadata_tag] || {} # Cetera treats unrecognized keys as custom metadata keys
+    combined = [opts, translations, metadata].inject(:merge)
+
+    validated_query_params(combined, metadata.keys) # filter out invalid keys and blank values
+  end
+
+  def self.translated_query_params(opts = {})
+    {
+      boostDomains: opts[:domain_boosts],
+      domains: translate_domains(opts[:domains]),
+      offset: translate_page_and_limit(opts[:page], opts[:limit]),
+      only: translate_display_type(opts[:limitTo], opts[:datasetView]),
+      order: translate_sort_by(opts[:sortBy])
+    }.compact
+  end
+
+  def self.translate_domains(domains)
+    domains.present? && domains.join(',') # Cetera does not yet support domains[]
+  end
+
+  def self.translate_page_and_limit(page, limit)
+    (page && limit) ? (page - 1) * limit : 0
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
@@ -56,22 +120,19 @@ module Cetera
     }.fetch(sort_by) # For Core/Cly parity, we want no results if sort_by is bogus
   end
 
-  # Translate FE browse_options[:search_options] from lib/browse_actions.rb to Cetera params
+  ############
+  # Validation
+
+  # Really just validates the keys but that's better than nothing
+  def self.validated_query_params(opts = {}, extra_keys = {})
+    opts.select do |key, value|
+      (valid_cetera_keys.include?(key) || extra_keys.include?(key)) && value.present?
+    end
+  end
+
   # Anything not explicitly supported here will be dropped
-  def self.cetera_soql_params(opts = {})
-    (opts[:metadata_tag] || {}).merge(
-      domains: opts[:domains].join(','), # Cetera does not yet support domains[]
-      boostDomains: opts[:domain_boosts], # Federated domains have searchBoost values
-      search_context: CurrentDomain.cname,
-      for_user: opts[:for_user],
-      only: translate_display_type(opts[:limitTo], opts[:datasetView]),
-      categories: opts[:categories],
-      tags: opts[:tags],
-      q: opts[:q],
-      offset: opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0,
-      limit: opts[:limit],
-      order: translate_sort_by(opts[:sortBy])
-    ).compact
+  def self.valid_cetera_keys
+    Set.new(%i(boostDomains categories domains for_user limit offset only order q search_context tags))
   end
 
   # A row of Cetera results
@@ -115,34 +176,33 @@ module Cetera
       )
     end
 
+    def display_map
+      {
+        'datalens' => Cetera::Displays::DataLens,
+        'pulse' => Cetera::Displays::Pulse,
+        'draft' => Cetera::Displays::Draft,
+        'story' => Cetera::Displays::Story,
+
+        'dataset' => Cetera::Displays::Dataset,
+        'chart' => Cetera::Displays::Chart,
+        'map' => Cetera::Displays::Map,
+        'calendar' => Cetera::Displays::Calendar,
+        'filter' => Cetera::Displays::Filter,
+
+        # Cetera is replacing type 'href' with type 'link',
+        'href' => Cetera::Displays::Link,
+        'link' => Cetera::Displays::Link,
+
+        'file' => Cetera::Displays::File,
+        'form' => Cetera::Displays::Form,
+        'api' => Cetera::Displays::Api
+      }
+    end
+
     def display
-      case type
-
-      when 'datalens' then Cetera::Displays::DataLens
-      when 'pulse' then Cetera::Displays::Pulse
-      when 'draft' then Cetera::Displays::Draft
-      when 'story' then Cetera::Displays::Story
-
-      when 'dataset' then Cetera::Displays::Dataset
-      when 'chart' then Cetera::Displays::Chart
-      when 'map' then Cetera::Displays::Map
-      when 'calendar' then Cetera::Displays::Calendar
-      when 'filter' then Cetera::Displays::Filter
-
-      # Cetera is replacing type 'href' with type 'link'
-      when 'href' then Cetera::Displays::Link
-      when 'link' then Cetera::Displays::Link
-
-      when 'file' then Cetera::Displays::File
-      when 'form' then Cetera::Displays::Form
-      when 'api' then Cetera::Displays::Api
-
-      else
-        airbrake_type_error(type)
-        # In development, you might want this to raise.
-        # In production, probably not.
-        #
-        # NOTE: we could set name and title to type and roll with it
+      display_map.fetch(type) do |bad_type|
+        raise "Bad result type for Cetera: #{bad_type}" if Rails.env.development?
+        airbrake_type_error(bad_type)
         Cetera::Displays::Base
       end
     end
@@ -167,6 +227,7 @@ module Cetera
       domainCName != CurrentDomain.cname
     end
 
+    # WARN: This is going to change!!!
     # Cetera only returns public objects as of 2015/10/19
     def is_public?
       true
@@ -181,6 +242,7 @@ module Cetera
     end
   end
 
+  # Parent class for all search result types from Cetera
   class SearchResult
     attr_reader :data
 
@@ -202,8 +264,20 @@ module Cetera
     end
   end
 
-  # Who uses this @klass?
-  class CeteraSearchResult < SearchResult
+  # Search results from /admin/users (admin only!)
+  class UserSearchResult < SearchResult
+    @klass = User
+
+    def initialize(data = {})
+      super
+      data['results'].each do |result|
+        result['displayName'] = result['screen_name'] if result['screen_name']
+      end
+    end
+  end
+
+  # Search results from the catalog
+  class CatalogSearchResult < SearchResult
     @klass = Cetera::CeteraResultRow
   end
 end

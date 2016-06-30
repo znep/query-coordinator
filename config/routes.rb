@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       get '/modules', :action => 'index_modules'
       get :config_info
       get :domains_summary
+      get :organization_list
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'
@@ -423,7 +424,7 @@ Rails.application.routes.draw do
       get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
       get '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
       post '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
-      get '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
+      post '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',
         :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
       get '/oauth/authorize' => 'oauth#authorize'

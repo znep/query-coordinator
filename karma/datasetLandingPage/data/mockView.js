@@ -6,7 +6,15 @@ export default {
   attribution: '',
   rowLabel: 'thingamabob',
   rowLabelMultiple: 'thingamabobs',
-  columns: [ ],
+  columns: [
+    {
+      dataTypeName: 'number',
+      description: 'so many wombats',
+      fieldName: 'wombats',
+      id: 1956,
+      name: 'wombats'
+    }
+  ],
   isPrivate: true,
   isGeospatial: false,
   isTabular: true,

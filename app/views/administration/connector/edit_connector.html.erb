@@ -30,13 +30,13 @@
         <div class="flexbox-left-section">
           <fieldset class="line">
             <div class="valueBox">
-              <input type="radio" id="federateAll" class="serverSync"
+              <input type="radio" id="federateAll" class="server-sync"
                 name="server[sync_type]" value="catalog"
                 <%= @server.federate_all? ? 'checked="checked"' : '' %> />
               <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
             </div>
             <div class="valueBox">
-              <input type="radio" id="federateSome" class="serverSync"
+              <input type="radio" id="federateSome" class="server-sync"
                 name="server[sync_type]" value="ignored"
                 <%= @server.federate_all? ? '' : 'checked="checked"' %> />
               <label for="federateAll"><%= t("#{prefix}.some_assets") %></label>
@@ -61,13 +61,13 @@
               <div class="item folder search-item">
                 <div class="editItem">
                   <%= folder_check_box(@server, folder) %>
-                    <%= truncate(folder['name'], length: 120) %>
+                  <%= truncate(folder['name'], length: 120) %>
                 </div>
 
                 <%- folder['services'].each do |service| -%>
                   <div class="item child service search-item">
                     <div class="editItem">
-                      <%= service_check_box(folder, service) %>
+                      <%= service_check_box(@server, folder, service) %>
                       <a target="_blank" href="<%= service['url'] %>"
                         name="<%= service_display_string(service) %>">
                         <%= truncate(service_display_string(service), length: 120) %>
@@ -77,7 +77,7 @@
                     <%- service['layers'].each do |layer| -%>
                       <div class="item child layer search-item">
                         <div class="editItem">
-                          <%= layer_check_box(folder, service, layer) %>
+                          <%= layer_check_box(@server, folder, service, layer) %>
                           <a target="_blank" href="<%= layer['url'] %>">
                             <%- if layer['name'].blank? -%>
                               <%= layer['url'] %>

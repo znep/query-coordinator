@@ -64,6 +64,7 @@ export function loadMorePopularViews() {
       then(response => response.json()).
       then(
         popularViews => dispatch(receivePopularViews(popularViews))
-      )['catch'](() => dispatch(handlePopularViewsError()));
+      ).
+      catch(() => dispatch(handlePopularViewsError()));
   };
 }

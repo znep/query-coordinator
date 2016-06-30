@@ -59,6 +59,9 @@
 
 
   <%= render_ga_tracking %>
+  <%- if enable_site_chrome? -%>
+    <%= site_chrome_google_analytics_tag %>
+  <%- end -%>
   <%= render :partial => 'templates/mixpanel_tracking' %>
 
 </html>

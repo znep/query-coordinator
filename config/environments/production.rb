@@ -21,7 +21,7 @@ Rails.application.configure do
   # config.action_dispatch.rack_cache = true
   # '10.1.0.68:11211:1', '10.1.0.69:11211:1', '10.1.0.70:11211:1', '10.1.0.71:11211:1', '10.1.0.72:11211:1', '10.1.0.73:11211:1'
   config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
-    :namespace => 'webapp',
+    :namespace => ENV['MEMCACHED_KEYSPACE'] || 'webapp_rails4',
     :expires_in => 1.day,
     :compress => true,
     :value_max_bytes => ENV['MEMCACHED_VALUE_MAX_BYTES'] || (4 * 1024 * 1024)

@@ -1,4 +1,5 @@
 var path = require('path');
+var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
 
 var root = path.resolve(__dirname, '../..');
 
@@ -37,6 +38,7 @@ module.exports = function ( karma ) {
           }
         ]
       },
+      plugins: [ new WebpackFailurePlugin() ],
       resolve: {
         alias: {
           'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',

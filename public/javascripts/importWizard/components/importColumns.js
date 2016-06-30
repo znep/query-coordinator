@@ -5,6 +5,7 @@ import * as ColumnDetail from './importColumns/columnDetail';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
+import NavigationControl from './navigationControl';
 
 /*
 - Blueprint: schema (names & types)
@@ -114,30 +115,33 @@ const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
 
-export function view({ transform, fileName, dispatch, goToPage }) {
+export function view({ transform, fileName, dispatch, goToPage, goToPrevious }) {
   return (
-    <div className="importColumnsPane columnsPane">
-      <div className="importErrorHelpText">
-        <p>{/* raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) */}</p>
+    <div>
+      <div className="importColumnsPane columnsPane">
+        <div className="importErrorHelpText">
+          <p>{/* raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) */}</p>
+        </div>
+        <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
+        <h2>{I18nPrefixed.subheadline}</h2>
+        <ViewColumns columns={transform.columns} dispatch={dispatch} />
+        <ViewToolbar />
+
+        <hr />
+
+        <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} dispatch={dispatch} />
+
+        <div className="warningsSection">
+          <h2>{I18nPrefixed.errors_warnings}</h2>
+          <p className="warningsHelpMessage">{/* t("#{prefix}.help_message", :common_errors => common_errors_support_link ) */}</p>
+          <ul className="columnWarningsList"></ul>
+        </div>
+        <hr />
       </div>
-      <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
-      <h2>{I18nPrefixed.subheadline}</h2>
-      <ViewColumns columns={transform.columns} dispatch={dispatch} />
-      <ViewToolbar />
-
-      <hr />
-
-      <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} dispatch={dispatch} />
-
-      <div className="warningsSection">
-        <h2>{I18nPrefixed.errors_warnings}</h2>
-        <p className="warningsHelpMessage">{/* t("#{prefix}.help_message", :common_errors => common_errors_support_link ) */}</p>
-        <ul className="columnWarningsList"></ul>
-      </div>
-      <hr />
-      <a className="button nextButton" onClick={() => goToPage('Metadata')}>
-        {I18n.screens.wizard.next}
-      </a>
+      <NavigationControl
+        onNext={() => goToPage('Metadata')}
+        onPrev={goToPrevious}
+        cancelLink="/profile" />
     </div>
   );
 }
@@ -146,7 +150,8 @@ view.propTypes = {
   transform: PropTypes.object.isRequired,
   fileName: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  goToPage: PropTypes.func.isRequired
+  goToPage: PropTypes.func.isRequired,
+  goToPrevious: PropTypes.func.isRequired
 };
 
 function ViewColumns({columns, dispatch}) {

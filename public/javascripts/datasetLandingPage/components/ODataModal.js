@@ -86,7 +86,7 @@ export var ODataModal = React.createClass({
       <div id="odata-modal" className="modal modal-overlay modal-hidden" data-modal-dismiss>
         <div className="modal-container">
           <header className="modal-header">
-            <h5 className="h5 modal-header-title">{I18n.odata_modal.title}</h5>
+            <h2 className="h2 modal-header-title">{I18n.odata_modal.title}</h2>
             <button
               aria-label={I18n.close}
               className="btn btn-transparent modal-header-dismiss"

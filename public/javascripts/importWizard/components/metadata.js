@@ -7,6 +7,7 @@ import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
 import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
+import NavigationControl from './navigationControl';
 
 // == Metadata
 
@@ -347,7 +348,7 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
           ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
           : null
         }
-        {(field['private'])
+        {(field.private)
           ? <div className="additionalHelp">{I18n.screens.edit_metadata.private_help}</div>
           : null
         }
@@ -370,7 +371,7 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-function renderFlashMessage(apiCall) {
+function renderFlashMessageApiError(apiCall) {
   if (apiCall.type !== 'Error') {
     return;
   } else {
@@ -385,13 +386,21 @@ function renderFlashMessage(apiCall) {
   }
 }
 
-export function view({ datasetId, metadata, onMetadataAction }) {
+function renderFlashMessageImportError(importError) {
+  if (_.isUndefined(importError)) {
+    return;
+  }
+  return <FlashMessage flashType="error" message={importError} />;
+}
+
+export function view({ datasetId, metadata, onMetadataAction, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
   return (
     <div className="metadataPane">
-      {renderFlashMessage(metadata.apiCall)}
+      {renderFlashMessageApiError(metadata.apiCall)}
+      {renderFlashMessageImportError(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
         <div className="externalDatasetMetadata">
@@ -479,19 +488,6 @@ export function view({ datasetId, metadata, onMetadataAction }) {
 
         {renderCustomMetadata(metadata, onMetadataAction)}
 
-        <div className="licensingMetadata">
-          {/* TODO: license editor */}
-        </div>
-
-        <div className="attachmentsMetadata">
-          <h2>{I18nPrefixed.attachments}</h2>
-          <div className="attachmentsHowtoMessage">
-            {I18nPrefixed.attachmentsDisabledMessagePart1}
-            {' '}<span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>{' '}
-            {I18nPrefixed.attachmentsDisabledMessagePart2}
-          </div>
-        </div>
-
         <div className="privacyMetadata">
           <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
 
@@ -542,48 +538,39 @@ export function view({ datasetId, metadata, onMetadataAction }) {
 
         <div className="required">{I18nPrefixed.required_field}</div>
 
-        <ul className="wizardButtons clearfix" aria-live="polite">
-          <li className="cancel">
-            <button className="button cancelButton" href="#cancel">{I18n.screens.wizard.cancel}</button>
-          </li>
-          <li className="save">
-            <button
-              className="button saveButton"
-              onClick={() => {
-                onMetadataAction(updateNextClicked());
-                if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
-                  onMetadataAction(metadataSaveStart());
-                  onMetadataAction(updateLastSaved(metadata));
-                  onMetadataAction(Server.saveMetadataToViewsApi(datasetId, metadata));
-                  onMetadataAction(metadataSaveComplete(metadata.contents));
-                }
-              }}>Save</button>
-          </li>
-          <li className="next">
-            <button
-              className="button nextButton"
-              href="#"
-              onClick={() => {
-                onMetadataAction(updateNextClicked());
-                onMetadataAction(metadataSaveStart());
-                if (isMetadataValid(metadata)) {
-                  onMetadataAction(Server.saveMetadataThenProceed());
-                  onMetadataAction(updateLastSaved(metadata));
-                }
-              }}>{I18n.screens.wizard.next}</button>
-          </li>
-          <li className="prev">
-            <button className="button prevButton" href="#" disabled>{I18n.screens.wizard.previous}</button>
-          </li>
-        </ul>
-
       </div>
+      <NavigationControl
+        onPrev={goToPrevious}
+
+        onSave={() => {
+          onMetadataAction(updateNextClicked());
+          if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
+            onMetadataAction(metadataSaveStart());
+            onMetadataAction(updateLastSaved(metadata));
+            onMetadataAction(Server.saveMetadataToViewsApi(datasetId, metadata));
+            onMetadataAction(metadataSaveComplete(metadata.contents));
+          }
+        }}
+
+        onNext={('finish', () => {
+          onMetadataAction(updateNextClicked());
+          onMetadataAction(metadataSaveStart());
+          if (isMetadataValid(metadata)) {
+            onMetadataAction(Server.saveMetadataThenProceed());
+            onMetadataAction(updateLastSaved(metadata));
+          }
+        })}
+
+        cancelLink="/profile" />
+
     </div>
   );
 }
 
 view.propTypes = {
+  datasetId: PropTypes.string.isRequired,
   metadata: PropTypes.object.isRequired,
   onMetadataAction: PropTypes.func.isRequired,
-  datasetId: PropTypes.string.isRequired
+  importError: PropTypes.string,
+  goToPrevious: PropTypes.func.isRequired
 };

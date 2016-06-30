@@ -42,22 +42,22 @@ nl:
     dataCards:
       add_card_dialog:
         add_card: Kaart toevoegen
-        add_card_title:
+        add_card_title: Voeg een kaart toe
         add_this_card: Deze kaart toevoegen
         card_on_page: Kaart al op pagina
         card_on_page_long: Deze kaart is al op de pagina
         choose_column: Kies een kolom...
-        choropleth_admin_message:
-        choropleth_message:
+        choropleth_admin_message: Om aangepaste grenzen toe te voegen, vraagt u aan de beheerder van de website om de beschikbare set te configureren via het <a href="/admin/geo">Ruimtelijke Lens gedeelte</a> van het beheerderspaneel, of <a href="mailto:support@socrata.com">contacteert u de helpdesk van Socrata</a>.
+        choropleth_message: Om aangepaste grenzen toe te voegen, vraagt u aan de beheerder van de website om de beschikbare set te configureren via het Ruimtelijke Lens gedeelte van het beheerderspaneel, of <a href="mailto:support@socrata.com">contacteert u de helpdesk van Socrata</a>.
         column_chart_warning: 'Let op: dit resulteert in een staafdiagram met meer dan honderd staven, het kan trager zijn dan andere diagrammen'
-        column_label:
+        column_label: Kolom
         curated_region_messages:
-          not_yet_computed:
-        custom:
+          not_yet_computed: Grenzen hebben initialisatie nodig
+        custom: "(Aangepaste...)"
         customize_prompt: Deze kaart aanpassen
-        generic_prompt:
-        histogram_column_chart_warning:
-        no_available_boundaries:
+        generic_prompt: Kies een kolom uit het uitrolmenu bovenaan om een nieuwe visualisatie toe te voegen
+        histogram_column_chart_warning: 'Opgelet: door de spreiding van de kolomwaarden, zal deze worden weergegeven als een staafhistogram in plaats van een verdelingskromme'
+        no_available_boundaries: Geen grenzen beschikbaar
         not_supported: Momenteel niet ondersteund
         not_supported_long: Deze kaartsoort wordt momenteel niet ondersteund
         prompt: Kies een kolom uit de bovenstaande keuzelijst om een nieuwe kaart toe te voegen
@@ -83,11 +83,11 @@ nl:
         title: API
         url: 'U kunt toegang krijgen tot deze gegevens via de Socrata Open Data API op deze URL:'
       card_aggregation_selector:
-        add_this_aggregation:
-        choose_count:
-        choose_sum:
-        function_label:
-        value_label:
+        add_this_aggregation: Voeg deze aggregatie toe
+        choose_count: Aantal
+        choose_sum: Kies een kolom
+        function_label: Functie
+        value_label: Waarde
       card_controls:
         collapse_card: Deze kaart invouwen
         customize_disabled: Er zijn nog geen aanpassingsopties voor deze kaart
@@ -96,21 +96,21 @@ nl:
         remove_card: Deze kaart verwijderen
       card_layout:
         add_card_here: Kaart hier toevoegen
-        card_group_customize_hint_flyout_text:
-        card_group_customize_hint_text:
-        card_group_placeholder_text:
+        card_group_customize_hint_flyout_text: Sleep kaarten van de ene sectie naar de andere om het maximale aantal kolommen per rij aan te passen. De kaarten zullen vanzelf van formaat wijzigen om mogelijke ruimtes op te vullen
+        card_group_customize_hint_text: Tot {0} kaarten per rij in deze sectie
+        card_group_placeholder_text: Sleep kaarten naar hier
       card_titles:
         average: gemiddelde van {0}
         number_of: het aantal {0}
         sum_of: som van {0}
       choropleth:
-        computation_in_progress:
-        has_cardinality_error:
-        has_no_polygons:
-        no_preview_available:
-        pending_computation:
+        computation_in_progress: "<p>Grens voor deze dataset aan het initialiseren. Dit kan enkele minuten duren (langer voor grote datasets).</p><p>De map zal getoond worden wanneer de initialisatie is voltooid.</p>"
+        has_cardinality_error: Deze kaart kan niet geconstrueerd worden omdat alle punten zich op dezelfde plek bevinden.
+        has_no_polygons: Er bevindt zich geen data binnen de grenzen.
+        no_preview_available: Er is geen voorbeeld beschikbaar
+        pending_computation: "<p>Dit is de eerste keer dat deze grens wordt gebruikt voor deze dataset.</p><p>Na toevoeging aan de pagina kan het enkele minuten duren (langer voor grote datasets) alvorens de kaart is geconstrueerd.</p>"
       common:
-        by:
+        by: per
         cancel: Annuleren
         cards:
           choropleth: Choropletenkaart
@@ -137,7 +137,7 @@ nl:
           permissions: Permissies
           private: Privé
           public: Publiek
-        row:
+        row: rij
         save: Bewaren
       customize_bar:
         changes_warning: U heeft aanpassingen gemaakt aan deze pagina.
@@ -148,25 +148,25 @@ nl:
         customizing_flyout: U bent nu bezig met het aanpassen van deze pagina
         customizing_flyout_instructions: U kunt op ieder moment op deze knop klikken voor een voorvertoning van uw aanpassingen en ze op een later moment opslaan
         exit_visualization_export: 'Om naar de aanpassingsmodus te gaan: Verlaat de "Download Visualisatie als Afbeelding"-modus door op de annuleerknop in het infopaneel te klikken'
-        unsaved_warning:
+        unsaved_warning: Dit uitzicht werd nog niet opgeslagen.
       customize_card_dialog:
         feature_map_flannel:
-          default_option:
-          select_column:
-          title:
+          default_option: "(Standaard)"
+          select_column: Selecteer een kolom
+          title: Titel zijmenu
         histogram_bucket_type:
-          linear:
-          linear_desc:
-          logarithmic:
-          logarithmic_desc:
-          title:
-          warning:
+          linear: Lineair
+          linear_desc: Deze optie bepaalt de intervallen op de assen op een lineaire schaal (10, 20, ...) en is zeer handig bij nauwere numerieke bereiken.
+          logarithmic: Logaritmisch
+          logarithmic_desc: Deze optie bepaalt de intervallen op de assen op een logaritmische schaal (10, 100, ...) en is handig bij wijdere numerieke bereiken.
+          title: Eenheidsgrootte op de x-as
+          warning: Door de eenheidsgrootte aan te passen, zal uw huidige filter op deze kaart worden verwijderd
         map_layer:
           custom: Aangepaste kaart
-          simple_blue:
-          simple_grey:
+          simple_blue: Eenvoudig blauw
+          simple_grey: Eenvoudig grijs
           title: Kaart basislaag
-        title:
+        title: Instellingen
         visualization_options:
           title: Kaartsoort
       distribution_chart:
@@ -176,25 +176,25 @@ nl:
           error: Er ging iets mis bij het maken van deze kaart.
           no_data: Er zijn geen gegevens om te tonen.
       export_menu:
-        choose_card:
+        choose_card: Kies kaart
         csv:
-          all_rows:
-          current_filter:
-          header:
-          not_available:
-          not_available_specific:
+          all_rows: Alle rijen
+          current_filter: Huidige filter
+          header: Rijen als CSV (Excel)
+          not_available: N.v.t.
+          not_available_specific: Niet beschikbaar voor deze dataset.
         image:
-          description:
-          header:
+          description: Sla een bestand met een PNG-afbeelding van een visualisatie op
+          header: Visualisatie als afbeelding
       feature_map:
-        feature_map_disabled:
+        feature_map_disabled: Bijhorende kaarten niet beschikbaar.
         zoom_disabled: Zoom is tijdelijk niet beschikbaar. Probeer het later opnieuw.
       feature_map_flannel:
-        error_message:
-        next:
-        paging:
-        previous:
-        showing:
+        error_message: Er deed zich een fout voor tijdens het ophalen van locatiedata.
+        next: Volgende
+        paging: "{0} of {1}"
+        previous: Vorige
+        showing: "{0} worden weergegeven"
       feedback_panel:
         broken: Het lijkt er op dat er iets kapot is
         feedback: Feedback
@@ -218,67 +218,67 @@ nl:
         clear_filter_long: De pagina wordt momenteel gefilterd op deze waarde, klik om hem te verwijderen
         clear_range_filter_long: De pagina wordt momenteel gefilterd op deze selectie, klik om hem te verwijderen
         current_filter: Huidige Filter
-        dense_data:
+        dense_data: Groot aantal
         details: Klik om meer informatie te bekijken
         expand: Klik om te ontvouwen
-        filter_prompt:
+        filter_prompt: Pas een filter toe om details te zien
         filtered_amount: Gefilterde hoeveelheid
         total: Totaal
-        zoom_or_filter_prompt:
+        zoom_or_filter_prompt: Zoom in of pas een filter toe om details te zien
       last_updated:
         label: laatst bijgewerkt
       lens_type:
         community: gemeenschappelijke data lens
         official: officiële data lens
-        official_view_explanation:
-        official_view_label:
+        official_view_explanation: Door deze optie te selecteren, zal het uitzicht de bijzondere aanduiding 'Officieel uitzicht' krijgen.
+        official_view_label: Officieel uitzicht
       manage_lens_dialog:
         dataset_private_page_private: Omdat het gegevensbestand dat ten grondslag ligt aan deze pagina is ingesteld op <b>Privé</b>, kan deze pagina niet op Openbaar worden ingesteld. Alleen mensen met de juiste privileges kunnen de pagina zien en de pagina zal niet in de openbare catalogus verschijnen.
         dataset_private_page_public: <span class="icon-warning"></span> Het gegevensbestand dat ten grondslag ligt aan deze pagina is ingesteld op <b>Privé</b>, dus ook al is deze pagina ingesteld op Openbaar, iemand zonder toegang tot het gegevensbestand zal de pagina niet kunnen zien. Toch zal hij verschijnen in de openbare catalogus. U kunt er voor kiezen het gegevensbestand als Openbaar in te stellen, of deze pagina als Privé.
         dataset_public_page_private: Deze pagina is ingesteld als <b>Privé</b>, dus alleen de personen met de juiste privileges kunnen de pagina zien. Hij zal niet verschijnen in de openbare catalogus.
         dataset_public_page_public: Deze pagina en het gegevensbestand dat er aan ten grondslag ligt zijn allebei <b>Openbaar</b>, dus iedereen kan deze pagina zien en hij zal verschijnen in de openbare catalogus.
         error:
-          ownership:
-          preamble:
-          sharing:
-          unknown:
-          visibility:
+          ownership: De eigenaar kon niet veranderd worden.
+          preamble: 'Sommige van uw aanpassingen werden niet opgeslagen:'
+          sharing: Rol- en deelinstellingen konden niet bijgewerkt worden.
+          unknown: Er deed zich een onbekende fout voor. Contacteer de helpdesk van Socrata.
+          visibility: Zichtbaarheid kon niet bijgewerkt worden.
         ownership:
-          owner_unavailable:
-          title:
-          warning:
+          owner_unavailable: Informatie over eigenaar is tijdelijk niet beschikbaar.
+          title: Eigenaar
+          warning: U moet een Eigenaar selecteren voor deze Datalens om verder te kunnen gaan.
         provenance:
-          description:
-          label:
-          title:
+          description: Door deze optie te selecteren, zal het uitzicht een bijzondere demarcatie krijgen die duidelijk maakt dat het een Officieel uitzicht is
+          label: Officieel uitzicht
+          title: Status bekijken
         sharing:
-          add_new:
-          contributor:
-          inherited_description:
-          keep:
+          add_new: Nieuwe toevoegen
+          contributor: Bijdrager
+          inherited_description: 'Overgenomen van de oorspronkelijke dataset:'
+          keep: Bijhouden
           new_share_dialog:
-            add_more:
-            description:
-            email:
-            message:
-            remove:
-            title:
-          owner:
-          remove:
-          title:
-          viewer:
+            add_more: Meer toevoegen
+            description: Specificeer bijkomende mensen waaraan u toestemming wenst te geven voor deze Datalens. Een uitnodiging voor registratie zal verzonden worden naar degenen die nog geen account hebben. Hierna zullen ook zij toestemming krijgen.
+            email: E-mailadres
+            message: Optioneel bericht
+            remove: Verwijderen
+            title: Deze Datalens delen
+          owner: Mede-eigenaar
+          remove: Verwijderen
+          title: Gedeeld met
+          viewer: Bekijker
         title: Beheren
-        unsaved_changes_message:
+        unsaved_changes_message: Er zijn niet opgeslagen aanpassingen
         visibility:
-          dataset_is_private:
-          hidden:
-          shown:
-          title:
-          user_is_unprivileged:
-          view_moderation_approved:
-          view_moderation_pending:
-          view_moderation_rejected:
-          view_moderation_title:
+          dataset_is_private: Deze Datalens is gebaseerd op de persoonlijke dataset {0}. De Datalens kan alleen in de catalogus worden getoond als de oorspronkelijke dataset openbaar is gemaakt.
+          hidden: Verborgen in catalogus
+          shown: Weergegeven in catalogus
+          title: Zichtbaarheid
+          user_is_unprivileged: U moet een beheerder of publisher zijn om de zichtbaarheid van de Datalens aan te passen. Contacteer de beheerder van de website om deze instelling te veranderen.
+          view_moderation_approved: Goedgekeurd
+          view_moderation_pending: Wordt verwerkt
+          view_moderation_rejected: Geweigerd
+          view_moderation_title: Moderatie bekijken
       metadata:
         data_as_csv: Volledige brongegevens als CSV (Excel)
         edit_description_prompt: Geef uw pagina een goede omschrijving die mensen helpt het verhaal te begrijpen wat uw gegevens proberen te vertellen. (Optioneel)
@@ -292,8 +292,8 @@ nl:
         acknowledgement: Oké, ik begrijp het!
         description: We werken aan het verbeteren van de mobiele ervaring op deze site.
       multiline_ellipsis:
-        show_less:
-        show_more:
+        show_less: Minder tonen
+        show_more: Meer tonen
       page_header:
         logo: Logo
         sign_in: Inloggen
@@ -303,23 +303,23 @@ nl:
         clear_all: Alles wissen
         clear_all_flyout: Klik op alle filters terug te zetten
         filter_title: Toont <span class="light">de {0}</span>
-        filtered_title:
-        old_filter_title:
-        old_filtered_title:
-        unfiltered_title:
+        filtered_title: <span class="light">{0}</span> worden getoond
+        old_filter_title: <span class="light">De {0}</span> worden getoond
+        old_filtered_title: <span class="light">De {0}</span> worden getoond
+        unfiltered_title: <span class="light">Alle {0}</span> worden getoond
       related_views:
         button: Andere visies op deze gegevens
         title: Andere visies op deze gegevens
       related_visualization_selector:
-        based_on_column:
-        visualization_not_supported:
+        based_on_column: Gebaseerd op {0}
+        visualization_not_supported: Neem het ons niet kwalijk! We zijn nog steeds de functionaliteit aan het ontwikkelen die u zal toelaten om dit grafiektype in te voegen in een verhaal.
       remove_all_cards:
-        button:
-        flyout:
-        flyout_no_cards:
-        flyout_not_edit_mode:
-        prompt:
-        prompt_confirm:
+        button: Alle kaarten verwijderen
+        flyout: Klik om alle kaarten op deze pagina te verwijderen
+        flyout_no_cards: Er zijn geen kaarten te verwijderen op de pagina
+        flyout_not_edit_mode: Ga naar de aanpasmodus om alle kaarten op deze Lenspagina te verwijderen
+        prompt: Bent u zeker dat u alle kaarten op deze pagina wilt verwijderen?
+        prompt_confirm: Ja, verwijder ze allemaal
       revert_button:
         flyoutHasChanges: Klik om alle veranderingen sinds de laatste keer dat u heeft opgeslagen ongedaan te maken
         flyoutNoChanges: Er zijn geen veranderingen om ongedaan te maken
@@ -332,7 +332,7 @@ nl:
         link_placeholder: Vul hier een URL in
         underline: Onderstreept
       save_as:
-        flyoutEphemeral:
+        flyoutEphemeral: Klik om deze Datalens op te slaan
         flyoutFailedBody: Neem contact op met Socrata Support
         flyoutFailedTitle: Er ging iets mis
         flyoutIdle: Klik om uw veranderingen op te slaan als een nieuwe pagina
@@ -341,21 +341,21 @@ nl:
         description: Vul een omschrijving voor uw nieuwe pagina in (optioneel)
         new_name: Bewaar de huidige pagina met een nieuwe naam
         title: Bewaren als
-        visibility:
-        visibility_disabled:
-        visibility_with_view_moderation:
+        visibility: Stel de zichtbaarheid in van uw nieuwe pagina
+        visibility_disabled: U heeft de toelating niet om de zichtbaarheid van Datalens bij te werken. Contacteer de beheerder van de website om deze instelling te veranderen.
+        visibility_with_view_moderation: Stel de bekijk moderatie status van uw nieuwe pagina
       save_button:
         failed: Mislukt
         flyoutFailedBody: Neem contact op met Socrata Support
         flyoutFailedTitle: Er ging iets mis
         flyoutIdle: Klik om uw wijzigingen te bewaren
         flyoutNoChanges: Er zijn geen wijzigingen om te bewaren
-        flyoutNoEditPermission:
+        flyoutNoEditPermission: U heeft de toelating niet om veranderingen aan deze Lens op te slaan
         save: Bewaren
         saved: Bewaard!
         saving: Bezig met bewaren...
       search_card:
-        error_explanation:
+        error_explanation: "<p>Er ging iets mis bij het ophalen van zoeksuggesties.</p><p>U kan nog steeds te allen tijde op Enter te drukken om een zoekopdracht volgens de ingevoerde tekst uit te voeren, of u kan later nogmaals proberen om voorgestelde waarden te bekijken.</p>"
         invalid_search: Probeer te zoeken naar een aantal zonder letters.
         loading: Bezig met laden van aanbevelingen...
         no_results: Uw zoekopdracht leverde geen resultaten op. Controleer uw spelling, of probeer een ander zoekwoord.
@@ -365,13 +365,13 @@ nl:
         search_info: "{0} van {1} bijpassende resultaten"
         two_examples: 'Voorbeelden: ''{0}'' of ''{1}'''
       suggestion_tool_panel:
-        all_suggestions:
-        loading_suggestions_hint:
-        max_suggestions:
-        no_suggestions:
-        no_suggestions_hint:
-        only_suggestion:
-        some_suggestions_hint:
+        all_suggestions: 'Alle {0} suggesties worden weergegeven:'
+        loading_suggestions_hint: Typ een tekst en druk op Enter om te zoeken, of wacht op suggesties.
+        max_suggestions: 'De eerste {0} suggesties worden weergegeven:'
+        no_suggestions: Geen gegevens gevonden die overeenkomen met uw zoekterm.
+        no_suggestions_hint: Probeer uw zoekopdracht te verruimen voor meer resultaten.
+        only_suggestion: 'De enige suggestie wordt weergegeven:'
+        some_suggestions_hint: Kies een suggestie hierboven, of typ verder voor meer suggesties.
       table:
         a_to_z: A-Z
         ascending: oplopend
@@ -380,8 +380,8 @@ nl:
         loading: Bezig met laden...
         newest_first: nieuwste eerst
         no_rows: Geen rijen om te tonen
-        no_sort:
-        non_range_label:
+        no_sort: Sorteren is niet mogelijk
+        non_range_label: "{0} <strong>{1} van de {2}</strong>"
         oldest_first: oudste eerst
         range_label: "{0} <strong>{1}-{2} van {3}</strong>"
         range_label_all: Alle {0} {1} worden getoond
@@ -400,21 +400,21 @@ nl:
       tour:
         aggregation:
           step_1:
-            text:
-            title:
+            text: We hebben naar uw mening geluisterd. We hebben een instelling verzet om de aanpasmodus te verbeteren!
+            title: Merkt u iets nieuws op?
           step_2:
-            text:
-            title:
+            text: Elke kaart kan samengevat worden door een andere kolom. We hebben ook de limiet van 15 voor kolommen verwijderd.
+            title: Gebruik Instellingen om de Aggregatie functie te veranderen
           step_3:
-            text:
-            title:
+            text: Kies het nummer van de kolom die u wilt optellen of tel het aantal rijen.
+            title: Vat samen aan de hand van OPTELLEN of TELLEN
           step_4:
-            text:
-            title:
+            text: U kan meerdere kaarten toevoegen aan eenzelfde kolom, en samenvatten volgens verschillende kolomwaarden. Hierdoor kunnen nuttige vergelijkingen uitgevoerd worden.
+            title: Het is nu flexibeler!
           step_5:
-            text_one:
-            text_two:
-            title:
+            text_one: Maak uw pagina aan door deze flexibele manier van gegevens samenvatten toe te passen.
+            text_two: Kom meer te weten door het <a href="https://support.socrata.com/hc/en-us/articles/216510338">Het gebruik van de aggregatiefunctie</a> artikel te lezen in het kennisgedeelte van Socrata. Zoals steeds horen wij graag uw mening.
+            title: Probeer het zelf!
   controls:
     browse:
       actions:
@@ -427,12 +427,12 @@ nl:
         compact_list: Als een compact overzicht bekijken
         create_dataset: Creëer of upload uw eigen dataset
         create_dataset_short: Maak een nieuwe gegevensset aan
-        create_dataset_shorter:
+        create_dataset_shorter: Dataset
         create_dataset_verb: Creëren
-        create_resource:
-        create_resource_short:
-        create_resource_verb:
-        create_story_short:
+        create_resource: Maak een nieuw Socrata systeemelement aan
+        create_resource_short: Maak nieuwe ... aan
+        create_resource_verb: Aanmaken
+        create_story_short: Verhaal
         dataset_subscribe: Abonneren op veranderingen op deze view
         delete:
           button: Verwijderen
@@ -593,15 +593,15 @@ nl:
           blob: Bestanden en documenten
           calendars: Kalenders
           charts: Grafieken
-          data_lens:
+          data_lens: Datalenspagina's
           datasets: Datasets
-          draft:
+          draft: Ontwerp datasets
           filters: Gefilterde views
           forms: Formulieren
           href: Externe datasets
           maps: Kaarten
-          pulse:
-          pulse_help:
+          pulse: Pulse
+          pulse_help: Kom meer te weten over Pulse
           story: Verhalen
           story_help: Lees meer over Verhalen
           unpublished: Ongepubliceerde datasets
@@ -613,14 +613,14 @@ nl:
         federation_source_html: Geleverd door %{source_link}
         no_results: Geen resultaten
         result_count: Toont %{this} van %{total}
-        result_count_cetera:
+        result_count_cetera: "%{start}-%{end} van %{total} wordt weergegeven"
         table_header:
           name: Naam
           popularity: Populariteit
           rss: RSS
           type: Type
         timeout: Het spijt ons. Resultaten kunnen op dit moment niet worden teruggevonden. Probeer het later opnieuw.
-      ordered_topics:
+      ordered_topics: Bestelde onderwerpen
       row_results:
         less_link: Minder
         matching_rows: Zoek in dataset voor overeenkomende rijen
@@ -651,7 +651,8 @@ nl:
           main: Resultaten %{body}
           term: voor "%{term}"
     charts:
-      missing_column_html:
+      inaccessible: Deze visualisatie is onbereikbaar of ontbreekt.
+      missing_column_html: Oeps... het lijkt erop dat een verandering aan de configuratie van de dataset die deze grafiek aandrijft werd gemaakt. Raadpleeg <a href="https://support.socrata.com/hc/en-us/articles/216102847">dit ondersteunend artikel</a> als u de eigenaar van de pagina bent, of contacteer <a href="mailto:support@socrata.com">support@socrata.com</a> voor bijstand.
       negatives_in_data: 'Ongeldige grafiek: negatieve waarden aanwezig'
       no_data: Geen gegevens
       other_slice_label: Anders
@@ -697,7 +698,7 @@ nl:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
-        share_story_text:
+        share_story_text: 'Bekijk %{name} op %{site}:'
         share_text: 'Bekijk de %{name}, dataset op %{site}:'
       sidebar:
         tabs:
@@ -851,31 +852,32 @@ nl:
       delete_warning_multi_column: Wilt u de geselecteerde kolommen verwijderen? Alle gegevens in deze kolommen zullen worden verwijderd!
       delete_warning_single_column: Wilt u de geselecteerde kolom verwijderen? Alle gegevens in deze kolom zullen worden verwijderd!
       edit_column_properties: Bewerk kolomeigenschappen
-      end_page:
+      end_page: Laatste pagina
       errors:
         cannot_edit_at_this_time: Deze kolom kan op niet moment niet worden aangepast. Probeer het later opnieuw.
-        data_lens_is_incompatible_with_group_bys:
+        data_lens_is_incompatible_with_group_bys: Datasets met groeperingen kunnen niet gebruikt worden met een Datalenspagina. Wij verontschuldigen ons voor dit ongemak.
         primary_key_collision: De waarde bestaat al als een primaire sleutel. U kunt hem niet overschrijven.
         row_locked_for_edit: Op dit moment kunnen we een net aangemaakte rij niet aanpassen. We werken er aan dat mogelijk te maken. Voor nu is het noodzakelijk de pagina te vernieuwen om deze rij te bewerken.
-        something_went_wrong:
+        something_went_wrong: Er ging blijkbaar iets mis. Hernieuw de pagina.
+        timeout_on_bootstrap: Er nam een time-out plaats, maar we zijn nog steeds uw Datalens in de achtergrond aan het genereren. Probeer binnen enkele minuten opnieuw.
       filter_this_column: Deze kolom filteren
       geocodes_pending: Rijen in de locatiekolom worden nog gegeocodeerd. Wacht tot ze klaar zijn om deze dataset te publiceren.
       hide_column: Kolom verbergen
       menu: Menu
       must_enter_name: U moet een naam opgeven voor deze kolom
       new_row: Nieuw
-      next_page:
+      next_page: Volgende pagina
       no_columns: Dataset %{uid} heeft geen kolommen.
       no_rows: Geen rijen om te tonen
-      page_size:
+      page_size: "%{pageSize} rijen per pagina worden weergegeven"
       permission_denied: U heeft geen toegang tot deze weergave
       previous: Vorige
-      previous_page:
+      previous_page: Vorige pagina
       required_cols_missing: Er ontbreken kolommen die voor deze weergave noodzakelijk zijn
-      row_count:
+      row_count: Totaal aantal rijen %{count}
       sort_ascending: Sorteer oplopend
       sort_descending: Sorteer aflopend
-      start_page:
+      start_page: Eerste pagina
       totals: Totalen
       view_cell_comments: Bekijk de commentaren op deze cel
       view_first_row: Eerste rij bekijken
@@ -884,7 +886,7 @@ nl:
       view_previous_row: Vorige rij bekijken
       view_row: Rij bekijken
       view_single_row: Bekijk enkele rijgegevens
-      viewing_current_page:
+      viewing_current_page: Pagina %{current} van %{total} aan het bekijken
       viewing_row_html: Het bekijken van rij <span class="curPage"></span> van <span class="totalPages"></span>
     map:
       address_prompt: Voer hier adres in
@@ -911,8 +913,8 @@ nl:
       previous: Eerdere
       previous_row: Eerdere rij
       request_timed_out: Time out voor de aanvraag van deze gegevens.
-      unable_to_display_features_html:
-      unable_to_load_map_html:
+      unable_to_display_features_html: "<h3>Er zijn geen functies beschikbaar op dit zoomniveau.</h3>"
+      unable_to_load_map_html: "<h3>Het lukt ons niet om verbinding te maken met de Esri kaart service die deze kaart host.</h3><p>Contacteer de beheerder van deze website en geef hem dit foutbericht door als het probleem zich nog steeds voordoet.</p>"
     nominate:
       all: Alles
       approve: "(Goedkeuren)"
@@ -995,7 +997,7 @@ nl:
     and: en
     auth:
       invalid_userpass: Ongeldige gebruikersnaam of wachtwoord
-      need_email_verification:
+      need_email_verification: U moet eerst het e-mailadres voor dit account verifiëren voordat u de registratie kan voltooien en kan inloggen. Indien u geen toegang hebt tot de verificatiemail die wij hebben verzonden, kan u simpelweg een nieuw account aanmaken met hetzelfde e-mailadres en u ontvangt wederom een e-mail.
       need_login: U moet ingelogd zijn om toegang tot deze pagina te krijgen
       need_permission: U heeft geen toestemming om deze pagina te bekijken
       too_many_tries: Te veel inlogpogingen voor deze login. Account tijdelijk uitgeschakeld.
@@ -1029,7 +1031,7 @@ nl:
       timeline: Tijdlijn
       treemap: Treemap
     data_types:
-      blob:
+      blob: Blob
       calendar_date: Datum & tijd
       checkbox: Vakje
       dataset_link: Datasetlink
@@ -1040,14 +1042,14 @@ nl:
       flag: Aanmerken
       geospatial: Geospatiaal
       html: Geformatteerde tekst
-      line:
+      line: Lijngrafiek
       link: Kolom verbinden
       list: Lijst
       location: Locatie
       money: Geld
-      multiline:
-      multipoint:
-      multipolygon:
+      multiline: Meerdere lijnen
+      multipoint: Meerdere punten
+      multipolygon: Meerdere veelhoeken
       nested_table: Geneste tabel
       number: Getal
       object: Onderwerp
@@ -1055,7 +1057,7 @@ nl:
       phone: Telefoon
       photo: Foto (afbeelding)
       point: Punt
-      polygon:
+      polygon: Veelhoek
       stars: Ster
       text: Eenvoudige tekst
       url: Website-URL
@@ -1105,7 +1107,7 @@ nl:
       years_past: "%{time} jaar geleden"
     dialogs:
       apply: Toepassen
-      back:
+      back: Terug
       cancel: Annuleren
       close: Sluiten
       continue: Doorgaan
@@ -1232,6 +1234,7 @@ nl:
       dateISO: Vul een geldige datum in (ISO).
       digits: Vul alleen cijfers in.
       email: Vul een geldig e-mailadres in.
+      email_recipient: Voer een geldig e-mailadres in of kies een groep.
       equalTo: Vul dezelfde waarde opnieuw in.
       max: Voer een waarde kleiner dan of gelijk aan {0} in.
       maxlength: Vul niet meer dan {0} tekens in.
@@ -1252,7 +1255,7 @@ nl:
       blob: non-tabulair bestand of document
       calendar: Kalender
       chart: grafiek
-      data_lens:
+      data_lens: Datalenspagina
       dataset: dataset
       filter: gefilterde view
       form: formulier
@@ -1260,7 +1263,7 @@ nl:
       grouped: gegroepeerde view
       href: externe dataset
       map: kaart
-      story:
+      story: verhaal
       table: tabel
       working_copy: werkende kopie
     view_types_plural:
@@ -1277,120 +1280,220 @@ nl:
       public: openbaar
   dataset_landing_page:
     action_buttons:
-      api:
-      contact_owner:
-      data:
-      download:
-      odata:
-      share:
+      api: API
+      comment: Op deze Dataset reageren
+      contact_owner: Eigenaar Dataset contacteren
+      data: Gegevens bekijken
+      download: Downloaden
+      odata: Krijg toegang tot gegevens via OData
+      share: Delen
+    add: Toevoegen
     api_flannel:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      foundry_button:
-      multiple_geo_layers:
-      title:
-    contact_dataset_owner:
-    copy:
-    copy_success:
+      description: De Socrata Open Data API (SODA) voorziet een programmatische toegang tot deze dataset en de mogelijkheid om gegevens te filteren, op te vragen en te combineren.
+      developer_portal_button: Ontwikkelingsportaal
+      endpoint_title: API-eindpunt
+      foundry_button: API-documenten
+      multiple_geo_layers: Deze dataset bevat meerdere geospatiale lagen. Elke laag heeft onderaan zijn eigen documentatie en API-eindpunt.
+      title: Krijg toegang tot deze Dataset via SODA API
+    back: Terug
+    bootstrap_button: Maak een Visualisatie aan
+    bootstrap_disabled_notice: Uw gegevens worden momenteel verwerkt. Hernieuw de pagina binnen enkele minuten en u zal een nieuwe Datalens kunnen aanmaken.
+    bootstrap_message: Deze dataset heeft geen enkele gerelateerde visualisaties. Wilt u er nu één aanmaken?
+    cancel: Annuleren
+    change: Veranderen
+    choose: Kiezen
+    close: Sluiten
+    contact_dataset_owner: Eigenaar dataset contacteren
+    contact_dataset_owner_modal:
+      description: Stuur een kort bericht naar de eigenaar van de dataset met uw vraag of reactie, of vertel iets over de gegevens.
+      email: Uw e-mailadres
+      email_description: "(Uw e-mailadres zal gedeeld worden met de eigenaar van de dataset zodat een reactie naar u kan worden gestuurd)"
+      error_empty_email: Voer uw e-mailadres in zodat de eigenaar van de gegevens u een reactie kan sturen.
+      error_empty_message: Vul a.u.b. het berichtformulier in.
+      error_empty_recaptcha: Bevestig a.u.b. dat u geen robot bent door het vakje bovenaan aan te vinken.
+      error_empty_subject: Voer het onderwerp van uw boodschap in.
+      error_invalid_email: Voer een geldig e-mailadres in.
+      failure_html: "<b>Oh nee!</b> Er ging iets mis. Probeer later opnieuw."
+      message: Bericht
+      recaptcha: Recaptcha uitdaging
+      recaptcha_loading: Recaptcha is aan het laden
+      send: Verzenden
+      sending: Formulier wordt verzonden
+      subject: Onderwerp
+      success_html: "<b>Dank u!</b> Uw bericht werd verzonden."
+      title: Een bericht werd verzonden naar de eigenaar van deze dataset
+    copy: Kopiëren
+    copy_success: Gekopieerd!
     dataset_contents:
-      columns:
-      row_display_unit:
-      rows:
-      title:
-    done:
+      columns: Kolommen
+      row_display_unit: Elke rij is een
+      rows: Rijen
+      title: Wat zit er in deze dataset?
+    dataset_preview:
+      grid_view_link: Gegevens onderzoeken
+      latitude: Breedtegraad
+      longitude: Lengtegraad
+      many_rows: "{unitOther} {firstRowOrdinal}-{lastRowOrdinal} uit {datasetRowCount} worden weergegeven"
+      next: Volgende
+      no_column_description: Er is geen beschrijving voorzien.
+      no_rows: Geen {unitOther}
+      only_rows: "{unit} {firstRowOrdinal} van {datasetRowCount} wordt weergegeven"
+      previous: Vorige
+      title: Voorbeeld tabel
+      unable_to_render: We kunnen de tabel niet tonen.
+    default_row_label: rij
+    done: Klaar
     download:
-      csv_for_excel:
-      csv_without_geo:
-      json_without_geo:
-      original:
-      shapefile:
+      csv_for_excel: CSV voor Excel
+      csv_without_geo: CSV (zonder geospatiale gegevens)
+      json_without_geo: JSON (zonder geospatiale gegevens)
+      original: Origineel
+      shapefile: Shapefile
+    error: Foutmelding
+    featured_content:
+      manage_prompt:
+        button: Beheer uitgelichte inhoud
+        message: Kies ervoor om tot 3 activa van Socrata te promoten die deze gegevens gebruiken, of kies ervoor om externe hulpmiddelen uit te lichten. Dit gedeelte zal onzichtbaar worden indien de velden leeg worden gelaten.
+      title: Uitgelichte inhoud die gebruik maakt van deze gegevens
+    featured_content_modal:
+      external: Extern hulpmiddel
+      external_resource_form:
+        description: Beschrijving
+        header: Een extern hulpmiddel uitlichten
+        invalid_image_message: Dit lijkt niet op een afbeelding. Probeer een gif, png of jpg te uploaden.
+        invalid_url_message: Dit lijkt op een ongeldige link. Probeer http:// aan het begin van de link toe te voegen.
+        message: Maak een link aan naar activa gerelateerd aan deze gegevens. Dit kan een geweldige visualisatie op het internet zijn, een blogpost over hoe de gegevens werden verspreid, of een link naar een ander gedeelte van uw website.
+        preview_image: Voorbeeld afbeelding
+        title: Titel
+        url: Link naar hulpmiddel
+      header: Beheer uitgelichte inhoud
+      introduction: Wat wilt u dat de mensen te zien krijgen als zij voor het eerst de dataset bekijken? Promoot tot 3 activa van Socrata die gebruik maken van deze gegevens, of kies ervoor om relevante externe hulpmiddelen uit te lichten. Beschouw dit gedeelte als het gezicht van uw gegevens.
+      preview: Voorbeeld van de uitgelichte inhoud
+      remove_error: Oh nee!  Er ging iets mis, probeer a.u.b. opnieuw.
+      remove_prompt: Bent u zeker dat u dit wilt verwijderen?
+      save_error_message: Oh nee! Er ging iets mis, probeer a.u.b. opnieuw.
+      story: Verhaal
+      story_form:
+        header: Licht een Socrata-verhaal uit
+        invalid_url_message: Hmm... er ging iets mis. Probeer een geldige link te gebruiken naar een Scorata-verhaal.
+        message_html: Leid uw gebruikers naar relevante verhalen gebaseerd op deze gegevens door gebruik van Socrata perspectieven. <a href="/browse?limitTo=story" target="_blank">Klik&nbsp;hier <span class="icon-external"></span></a>voor een volledige lijst aan openbare verhalen op dit domein.
+        url: Link naar verhaal
+      title: Uitgelichte inhoud
+      view_selector_modal:
+        header: Licht een Socrata visualisatie uit
+        message: Kies een visualisatie of een gefilterd uitzicht waarvan u denkt dat het uw dataset vertegenwoordigt. Dit is een van de eerste zaken die uw gebruikers te zien zullen krijgen wanneer ze uw dataset bekijken.
+        view_fetch_error: Oh nee! Er ging iets mis terwijl we de visualisaties voor deze gegevens aan het ophalen waren. Probeer later opnieuw.
+      visualization: Visualisatie
     featured_views:
-      no_content_alert_html:
-      title:
-      view:
-    less:
-    manage_prompt:
+      no_content_alert_html: "<b>Hmm...</b> Het lijkt erop dat er geen openbare inhoud gebruik maakt van deze gegevens."
+      title: Populaire inhoud die gebruik maakt van deze gegevens
+      view: Bekijken
+    feedback:
+      panel_details_html: Met een screenshot kan u ons perfect tonen waarover u feedback wilt geven. Wij maken gebruik van <a href="https://usersnap.com">Usersnap</a> voor screenshots. Lees hun <a href="https://usersnap.com/privacy-policy">privacybeleid</a>.
+      panel_title: Wilt u een geannoteerd screenshot van de huidige pagina toevoegen?
+      screenshot_no: Nee dank u
+      screenshot_yes: Ja, voeg een screenshot toe
+      title: Feedback
+    less: Minder tonen
+    manage_prompt: Klik hier om toestemmingen te beheren
     metadata:
-      attachments:
-      category:
-      creation_date:
-      data_last_updated:
-      data_provided_by:
-      dataset_owner:
-      downloads:
-      license:
-      licensing:
-      metadata_last_updated:
-      no_category_value:
-      no_license_value:
-      no_tags_value:
-      no_value:
-      source_link:
-      tags:
-      title:
-      topics:
-      views:
-    more:
+      attachments: Bijlagen
+      category: Categorie
+      creation_date: Datum aanmaking
+      data_last_updated: Laatste bijwerking gegevens
+      data_provided_by: Gegevens voorzien door
+      dataset_owner: Eigenaar dataset
+      downloads: Downloads
+      edit_metadata: Metagegevens bewerken
+      license: Licentie
+      licensing: Licentieverlening en toekenning
+      metadata_last_updated: Laatste bijwerking metagegevens
+      no_category_value: Deze dataset werd niet in een categorie onderverdeeld
+      no_license_value: De licentie voor deze dataset is niet gespecificeerd
+      no_tags_value: Deze dataset bevat geen tags
+      no_value: "(geen)"
+      source_link: Oorspronkelijke link
+      tags: Tags
+      title: Over deze dataset
+      topics: Onderwerpen
+      view_statistics: Bekijk alle statistieken over deze dataset
+      views: Aantal keer bekeken
+    more: Meer tonen
+    multiple_geo_layers: Deze dataset bevat meerdere geospatiale lagen, hieronder gedetailleerd weergegeven.
     odata_modal:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      multiple_geo_layers:
-      title:
-    official:
-    private_notice:
-    published_by:
+      description: Maak een spreadsheet in Microsoft Excel aan om deze dataset te analyseren of te visualiseren. De gegevens kunnen hernieuwd worden door gebruik te maken van een OData-link.
+      developer_portal_button: Socrata OData-documentatie
+      endpoint_title: OData-eindpunt
+      multiple_geo_layers: Deze dataset bevat meerdere geospatiale lagen. Elke laag heeft zijn eigen OData-eindpunt onderaan.
+      title: Krijg toegang tot deze Dataset via OData
+    official: Officieel
+    popular_views:
+      load_more_error: Er ging iets mis bij het laden van bijkomende inhoud.
+      title: Populaire inhoud gebruik makend van deze gegevens
+      view: Bekijken
+    private_notice: U bent een persoonlijke dataset aan het bezichtigen.
+    publish: Publiceren
+    publish_error: Er ging iets mis bij het publiceren van deze dataset. Zorg ervoor dat u ingelogd bent en over de nodige toestemmingen beschikt. Contacteer <a href="https://support.socrata.com">de helpdesk van Socrata</a> als het probleem zich blijft voordoen.
+    publish_notice: Deze dataset is <strong>Ongepubliceerd</strong>. Door deze pagina te publiceren, wordt ook de <a href="{url}" target="_blank">tabelweergave</a> gepubliceerd.
+    published: Gepubliceerd
+    published_by: Gegevens voorzien door
+    remove: Verwijderen
+    save: Opslaan
+    saved: Opgeslagen
+    saving: Aan het opslaan
     schema_preview:
-      api_field_name:
-      column_name:
-      data_type:
+      api_field_name: API-veldnaam
+      column_name: Kolomnaam
+      data_type: Gegevenstype
       data_types:
-        blob:
-        calendar_date:
-        checkbox:
-        dataset_link:
-        date:
-        document:
-        drop_down_list:
-        email:
-        flag:
-        geospatial:
-        html:
-        line:
-        link:
-        list:
-        location:
-        money:
-        multiline:
-        multipoint:
-        multipolygon:
-        nested_table:
-        number:
-        object:
-        percent:
-        phone:
-        photo:
-        point:
-        polygon:
-        stars:
-        text:
-        url:
-      description:
-      geospatial_layer_title:
-      show_all:
-      show_less:
-      title:
-      type:
+        blob: Blob
+        calendar_date: Zwevende tijdsaanduiding
+        checkbox: Keuzevakje
+        dataset_link: Dataset-link
+        date: Vaste tijdsaanduiding
+        document: Document
+        drop_down_list: Tekst
+        email: Tekst
+        flag: Tekst
+        geospatial: Geospatiaal
+        html: Tekst
+        line: Lijn
+        link: Tekst
+        list: Lijst
+        location: Locatie
+        money: Geld
+        multiline: Lijn
+        multipoint: Punt
+        multipolygon: Veelhoek
+        nested_table: Geneste tabel
+        number: Nummer
+        object: Object
+        percent: Nummer
+        phone: Tekst
+        photo: Foto
+        point: Punt
+        polygon: Veelhoek
+        stars: Nummer
+        text: Tekst
+        url: Tekst
+      description: Beschrijving
+      geospatial_layer_title: Kolommen in deze laag
+      show_all: Alles tonen
+      show_less: Minder tonen
+      title: Kolommen in deze dataset
+      type: Type
     share:
-      cancel:
-      email:
-      email_body:
-      facebook:
-      title:
-      twitter:
-      visibility_alert_html:
-    updated:
+      cancel: Annuleren
+      email: Delen via e-mail
+      email_body: 'Hier is een dataset van %{provider} die ik graag met u wil delen: %{url}'
+      facebook: Delen via Facebook
+      title: Deze dataset delen
+      twitter: Delen via Twitter
+      visibility_alert_html: "<b>Opgelet!</b> Deze dataset is persoonlijk en kan mogelijk niet geopend worden door de mensen waarmee je hem deelt."
+    updated: Bijgewerkt
+    view_widget:
+      external_content: Externe inhoud
+      views: Aantal keer bekeken
   dataslate:
     component:
       edit: Pas deze component aan
@@ -1484,7 +1587,7 @@ nl:
       title: Paginainstellingen
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Maa
@@ -1498,7 +1601,7 @@ nl:
     - Nov
     - Dec
     month_names:
-    -
+    - 
     - Januari
     - Februari
     - Maart
@@ -1537,6 +1640,22 @@ nl:
       were_sorry: Sorry, maar het lijkt erop dat u geen toestemming heeft om deze pagina te bekijken.
     to_whence_you_came: naar waar u vandaan kwam.
   govstat:
+    admin:
+      goal_values:
+        status_private: Persoonlijk
+        status_public: Openbaar
+      listing:
+        dashboard: Dashboard
+        default_alert_message: 
+        goal_page: Doelpagina
+        goal_status: Doelstatus
+        manage_on_goal_page: Doelpagina beheren
+        owner: Eigenaar
+        rows_per_page: 
+        title: Titel
+        updated_at: Bijgewerkt
+        view_dashboard: Dashboard bekijken
+        visibility: Zichtbaarheid
     chrome:
       header:
         links:
@@ -1564,7 +1683,7 @@ nl:
       datasets: Datasets
       federations: Federaties
       homepage: Homepage
-      jobs:
+      jobs: Jobs
       metadata: Metadata
       moderation: Beheer van reacties
       nomination: Beheer van nominaties
@@ -1572,6 +1691,28 @@ nl:
       sdp_templates: Data afspeelsjablonen
       title: Beheer siteconfiguratie
       users: Gebruikers
+    measure:
+      end_progress:
+        bad: Doel werd niet bereikt
+        good: Doel bereikt
+        needs_more_data: Meer gegevens waren nodig
+        no_judgement: Gemeten
+        none: Meer gegevens waren nodig
+        poor: Doel werd niet bereikt
+        progressing: Doel werd bijna bereikt
+        within_tolerance: Doel werd bijna bereikt
+      progress:
+        bad: Heeft nood aan verbetering
+        good: Op schema
+        needs_more_data: Meer gegevens zijn nodig
+        no_judgement: Aan het meten
+        no_status: Geen status
+        none: Meer gegevens zijn nodig
+        poor: Nood aan verbeteringen
+        progressing: Bezig
+        within_tolerance: Dicht bij doel
+      subheadline: Dit doel wordt gemeten door {0} in {1} op te volgen.
+      unit_percent: procent
     reports:
       component:
         base_map: Basiskaart
@@ -1615,30 +1756,31 @@ nl:
       title: Kies een opmaak
   plugins:
     daterangepicker:
+      clear: Verwijderen
       date_range: Datumbereik
       done: Klaar
       end_date: Einddatum
-      last_30_days:
-      last_3_days:
+      last_30_days: Afgelopen 30 dagen
+      last_3_days: Afgelopen 3 dagen
       last_month: Vorige maand
-      last_week:
-      last_year:
+      last_week: Afgelopen week
+      last_year: Afgelopen jaar
       month_to_date: Maand naar datum
       next: Volgende
-      preceding_30_days:
-      preceding_month:
-      preceding_week:
+      preceding_30_days: Voorafgaande 30 dagen
+      preceding_month: Voorafgaande maand
+      preceding_week: Voorafgaande week
       prev: Vorige
       specific_date: Specifieke datum
       start_date: Begindatum
-      the_day_of:
+      the_day_of: De dag van..
       the_month_of: De maand van...
       the_week_of: De week van...
       the_year_of: Het jaar van...
       today: Vandaag
       week_to_date: Week naar datum
       year_to_date: Jaar naar datum
-      yesterday:
+      yesterday: Gisteren
     fileuploader:
       drop_files: |2-
 
@@ -1711,7 +1853,7 @@ nl:
     about:
       actions: Acties
       activity: Activiteit
-      admin_debugging:
+      admin_debugging: Foutopsporing superbeheerder
       attachments: Attachments
       category: Categorie
       comments: Reacties
@@ -1720,7 +1862,7 @@ nl:
       contributors: Bijdragers
       created: aangemaakt
       data_provided_by: Gegevens geleverd door
-      datasync_status:
+      datasync_status: Datasync status
       description: Beschrijving
       downloads: Downloads
       edit_metadata: Metadata bewerken
@@ -1756,21 +1898,73 @@ nl:
       visits: Bezoeken
       your: Uw beoordeling
     admin:
+      connector:
+        actions: Acties
+        add_connector: Connector toevoegen
+        add_new: Nieuwe toevoegen
+        all_assets: Alle activa verbinden
+        arcgis_server_address: ArcGIS serveradres
+        assets_connected:
+          one: 1 activa verbonden
+          other: "%{count} activa verbonden"
+        assets_discovered:
+          one: 1 activa ontdekt
+          other: "%{count} activa ontdekt"
+        back_to_connector_list: Terug naar connectorlijst
+        catalog: Catalogus
+        connected_assets: Verbonden activa
+        current_status: Huidige status
+        data: Gegevens
+        discovered_assets: Ontdekte activa
+        edit: Bewerken
+        edit_connector: 'Connector bewerken: %{url}'
+        errors:
+          duplicate_server_error: Deze Esri-server heeft reeds verbinding gemaakt met dit domein.
+          invalid_attributes_error: 'Deze parameters waren ongeldig: %{invalid}.'
+          json_format_error: Uw JSON was ongeldig.
+          missing_attributes_error: 'Deze parameters ontbraken: %{missing}.'
+          not_found_error: Dit hulpmiddel kon niet worden gevonden.
+          problem_with_errors: We konden uw verzoek niet verwerken.
+          server_ping_error: 'Kon de server niet bereiken: %{url}'
+          unknown_error: 'Uw verzoek mislukte om de volgende reden: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS serveradres
+        failing: Aan het mislukken
+        flashes:
+          created: Gelukt! We hebben uw server kunnen bereiken.  Het zal even duren om de ArcGIS-catalogus te synchroniseren, maar hierna kan u de instellingen van de connector bewerken en de installatie voortzetten.
+          deleted: Uw connector werd gemarkeerd voor verwijdering.
+          server_not_found: We konden deze server niet vinden-- misschien werd hij recent verwijderd.
+          updated: De instellingen van uw connector werden opgeslagen.
+        ignore: Genegeerd
+        last_synced: Laatste keer gesynchroniseerd
+        never: Nooit
+        no_connectors: Er zijn op dit moment geen connectors. Klik bovenaan op Nieuwe toevoegen als u een externe bron wenst te verbinden met uw catalogus.
+        not_synced_yet_edit: U kan de instellingen van de connector bewerken zodra we de ArcGIS-catalogus hebben gesynchroniseerd.
+        not_yet: Synchronisatie aan de gang
+        save: Opslaan
+        search: Domein opzoeken
+        selective_connection: Selectieve verbinding
+        service_unavailable: Connectordiensten zijn momenteel niet beschikbaar.
+        some_assets: Enkel deze activa verbinden
+        source: Connectorbron
+        success: Gelukt
+        terminate: Beëindigen
+        title: Connectoren beheren
       datasets:
         asset_inventory:
-          tooltip:
-        description:
+          tooltip: Deze optie is niet beschikbaar wegens een foutmelding. Contacteer de helpdesk als het probleem zich na 24 uur nog steeds voordoet.
+        description: Lijst de activa op dit domein en configureer de lay-out van de datasetpagina
         layout_config: Configuratie van de opmaak
         left: Links
         right: Rechts
         saved: Opgeslagen
         saving: Wordt opgeslagen
         sidebar_position: Positie van de zijbalk
-        skip_to_dataset_listing:
-        table_description:
+        skip_to_dataset_listing: Overslaan naar datasetlijsten
+        table_description: Datasets
         title: Dataset
         unpublished_datasets: Ongepubliceerde datasets
-        view_as_a_dataset:
+        view_as_a_dataset: Als dataset bekijken
       federation:
         accept: Accepteren
         accepted: Geaccepteerd
@@ -1801,66 +1995,67 @@ nl:
         terminate: Beëindigen
         title: Open datafederatie
       georegions:
-        actions:
-        choose_a_dataset:
+        actions: Acties
+        choose_a_dataset: Kies een laag
         configure_boundary:
-          boundary_geometry_label_field_error:
-          boundary_geometry_label_page_error:
-          boundary_name:
-          boundary_name_description:
-          boundary_name_required_field_error:
-          boundary_name_required_page_error:
-          boundary_name_unique_error:
-          choose_a_column:
-          configure_boundary:
-          confirm_html:
-          confirm_title:
-          description:
-          next:
-          page_title:
-          primary_key_column:
-          primary_key_column_description:
-          primary_key_column_missing_field_error:
-          save_core_error:
-          save_error:
-          save_success:
-          shape_label:
-          shape_label_description:
-        create_new:
-        custom_georegions:
-        date_added:
-        default:
-        default_georegions:
-        default_georegions_flyout:
-        default_georegions_limit:
-        default_success:
-        delete:
-        description:
-        disable:
-        disable_success:
-        edit:
-        enable:
-        enable_success:
-        enabled?:
+          boundary_geometry_label_field_error: De grens moet een vormlabel hebben.
+          boundary_geometry_label_page_error: 'Opslaan mislukt: de grens moet een vormlabel hebben.'
+          boundary_name: Grensnaam
+          boundary_name_description: De naam van de grens (bv. "Provincies" of "Buurten"). Zal worden getoond op spatiale lenskaarten.
+          boundary_name_required_field_error: De grens heeft een naam nodig.
+          boundary_name_required_page_error: 'Opslaan mislukt: de grens heeft een naam nodig.'
+          boundary_name_unique_error: De grensnaam moet uniek zijn.
+          choose_a_column: Kies een kolom...
+          configure_boundary: Grens configureren
+          confirm_html: <p>Klik op "Aanmaken" om een nieuwe spatiale lensgrens gebaseerd op de geospatiale dataset "%{boundary_name}" toe te voegen.</p><p>Deze nieuwe spatiale lensgrens is een momentopname en zal niet veranderen bij een update van de geospatiale dataset "%{boundary_name}".</p>
+          confirm_title: Uw spatiale lens aanmaken
+          description: Configureer aangepaste grenzen die gebruikt kunnen worden bij het aanmaken van spatiale lenskaarten
+          next: Volgende
+          page_title: Grenzen beheren
+          primary_key_column: Vorm-ID
+          primary_key_column_description: De kolom waarin het unieke ID-nummer dat elke vorm in de grens identificeert zich bevindt.  Als zo'n kolom ontbreekt, kies dan om het even welke unieke kolom.
+          primary_key_column_missing_field_error: U moet een kolom kiezen voor het vorm-ID.
+          save_core_error: 'Kon de grens niet aanmaken: %{error_message}'
+          save_error: Er ging iets mis tijdens het opslaan van uw aanpassingen. Probeer later opnieuw, of contacteer de helpdesk van Socrata als het probleem zich blijft voordoen.
+          save_success: Aanpassingen succesvol opgeslagen.
+          shape_label: Vormlabel
+          shape_label_description: De kolom die gebruikt zou moeten worden als het label van elke vorm (bv. een kolom waarin "WA" en "NY" zich bevinden).
+        create_new: Nieuwe aanmaken
+        custom_georegions: Grenzen aanpassen
+        date_added: Datum van toevoeging
+        default: Snelle toevoeging voor grens instellen
+        default_georegions: Snelle toevoeging voor nieuwe datasets activeren (%{count} of %{limit})
+        default_georegions_flyout: Als u een grens hebt die u wilt gebruiken op de meeste datalenspagina's, dan versnelt deze optie het visualisatieproces voor om het even welke dataset die werd geüpload na het activeren van Snelle toevoeging. U kan tot 5 grenzen met Snelle toevoeging activeren.
+        default_georegions_limit: U kan maximaal %{limit} grenzen met Snelle toevoeging hebben.
+        default_success: "%{name} werd ingesteld op Snelle toevoeging. Alle nieuwe datasets zullen automatisch een regiocode krijgen aan de hand van deze spatiale lensgrens."
+        delete: Verwijderen
+        description: Configureer aangepaste grenzen die gebruikt kunnen worden om spatiale lenskaarten aan te maken
+        disable: Deactiveren
+        disable_success: "%{name} werd gedeactiveerd en zal niet langer beschikbaar zijn voor de aanmaking van choropletenkaarten in datalens aan de hand van deze spatiale lensgrens."
+        edit: Bewerken
+        enable: Activeren
+        enable_success: '%{name} werd geactiveerd. U kan nu choropletenkaarten aanmaken in datalens aan de hand van deze spatiale lensgrens. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Kom meer te weten</a> over het gebruik van spatiale lens om kaarten aan te maken.'
+        enabled?: Geactiveerd?
         flashes:
-          add_georegion_error:
-          service_unavailable_html:
-        learn_more:
-        page_subtitle:
-        page_title:
-        picker_explanation:
-        picker_support_html:
-        region_name:
-        remove:
-        status_disabled:
-        status_enabled:
-        status_failed:
-        status_progress:
-        substatus_failed_html:
-        substatus_progress:
-        title:
-        undefault:
-        undefault_success:
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Kom meer te weten</a></div>
+          service_unavailable_html: <p>Wij ervaren momenteel technische problemen bij enkele diensten die gerelateerd zijn aan de spatiale lens.</p><p>Contacteer a.u.b. <a href="https://support.socrata.com">de helpdesk van Socrata</a> als het probleem nog steeds aanhoudt.</p>
+        learn_more: Kom meer te weten over hoe u <a href="https://support.socrata.com/hc/en-us/articles/212862177">de spatiale lens kan gebruiken op uw domein</a>
+        page_subtitle: U heeft %{default_count} van %{available_count} beschikbare grenzen ingesteld als grenzen die automatisch gecodeerd worden.
+        page_title: Spatiale lens beheren
+        picker_explanation: Kies een geospatiale laag die u als basis wilt gebruiken voor uw spatiale lens. U kan op de naam klikken om een voorbeeld van de laag te bekijken in een nieuw browservenster.
+        picker_explanation_html: "<p>Kies een geospatiale laag die u als basis wilt gebruiken voor uw spatiale lens.</p><p>U kan op de naam klikken om een voorbeeld van de laag te bekijken in een nieuw browservenster.</p>"
+        picker_support_html: U vindt niet wat u zoekt? Lees het artikel <a href="https://support.socrata.com/hc/en-us/articles/217039278">Een dataset vinden voor uw spatiale lens</a> om meer te weten te komen.
+        region_name: Grensnaam
+        remove: Verwijderen
+        status_disabled: Niet geactiveerd
+        status_enabled: Klaar voor gebruik
+        status_failed: Er ging iets mis...
+        status_progress: Aan het verwerken
+        substatus_failed_html: Contacteer <a href="https://support.socrata.com">de helpdesk van Socrata</a> en voeg de code <strong>%{code}</strong> toe.
+        substatus_progress: Binnenkort beschikbaar
+        title: Spatiale lens
+        undefault: Snelle toevoeging voor grens ongedaan maken
+        undefault_success: Snelle toevoeging werd ongedaan gemaakt voor %{name}. Nieuwe datasets zullen niet langer automatisch een regiocode krijgen door het gebruik van deze spatiale lensgrens.
       home:
         add_featured_dataset: Voeg een nieuwe getoonde dataset toe
         are_you_sure: Weet u het zeker? Deze actie kan niet ongedaan worden gemaakt.
@@ -1906,298 +2101,339 @@ nl:
         thumbnail: Miniatuurafbeelding
         title: Beheer homepage
         up: Omhoog
+      index:
+        comment_moderation: 
+        comment_moderation_description: 
+        connectors: 
+        connectors_description: 
+        dataset_routing_and_approval: 
+        dataset_routing_and_approval_description: 
+        datasets: 
+        datasets_description: 
+        dataslate_pages: 
+        dataslate_pages_description: 
+        federation: 
+        federation_description: 
+        georegions: 
+        georegions_description: 
+        home_page: 
+        home_page_description: 
+        internal: 
+        internal_description: 
+        jobs: 
+        jobs_description: 
+        metadata: 
+        metadata_description: 
+        sdp_templates: 
+        sdp_templates_description: 
+        site_analytics: 
+        site_analytics_description: 
+        site_chrome: 
+        site_chrome_description: 
+        stories: 
+        stories_description: 
+        users: 
+        users_description: 
+        view_moderation: 
+        view_moderation_description: 
       jobs:
         actions:
-          geocoding:
-          import:
-          replace:
-          upsert:
-          working_copy:
+          geocoding: Geocodering
+          import: Importeren
+          replace: Vervangen
+          upsert: Rijen toevoegen
+          working_copy: Werkkopie
         filters:
-          all:
-          append:
-          apply_filters:
-          data_workflow:
-          filter_by:
-          import:
-          import_activity:
-          publish:
-          replace:
-          type:
-          working_copy:
+          all: Alles
+          append: Bijvoegen
+          apply_filters: Gaan
+          data_workflow: Werkstroom gegevens
+          delete: Verwijderen
+          filter_by: Filteren volgens
+          import: Importeren
+          import_activity: Importactiviteit
+          publish: Publiceren
+          replace: Vervangen
+          restore: Herstellen
+          type: Type
+          upsert: Rijen invoegen
+          working_copy: Werkkopie
         index_page:
-          action:
-          dataset:
-          deleted_dataset:
-          deleted_user:
-          export_as_csv:
-          initiated_by:
-          no_jobs:
-          page_title:
-          showing_all_so_far:
-          showing_most_recent:
-          started:
-          status:
-          title:
-          to_working_copy:
-          with_problems:
+          action: Actie
+          dataset: Dataset
+          deleted: Verwijderd
+          deleted_dataset: Verwijderde dataset
+          deleted_user: Gebruiker werd verwijderd
+          export_as_csv: Exporteren als CSV
+          initiated_by: Gestart door
+          no_jobs: Geen jobs te weergeven
+          page_title: Datajobs
+          restore_deleted_dataset: Herstellen
+          restore_deleted_dataset_confirm: Bent u zeker dat u de dataset %{dataset} wilt herstellen?
+          showing_all_so_far: Alle jobs die werden opgeslagen worden weergegeven
+          showing_most_recent: De %{limit} meest recente jobs worden weergegeven
+          started: Gestart
+          status: Status
+          title: Gegevens jobs
+          to_working_copy: naar werkkopie
+          with_problems: met problemen
         show_page:
-          back:
-          error_details_heading:
+          back: Terug naar joblijst
+          error_details_heading: Foutmelding details
           event_messages:
             failure:
               bad_response_from_server:
-                description:
-                title:
+                description: We konden uw gegevens niet importeren wegens een onverwachte foutmelding. Probeer later opnieuw.
+                title: Er ging iets mis
               bad_timestamp_format:
-                description:
-                title:
+                description: De datumwaarde "%{pattern}" werd geformatteerd op een manier die wij niet begrijpen. Controleer a.u.b. of alle data die u aan het importeren bent conform de <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standaard</a> zijn.
+                title: Verkeerde datum/tijdswaarde
               bad_timezone:
-                description:
-                title:
+                description: We begrijpen de tijdzone "%{name}" niet. Controleer a.u.b. of alle data die u hebt ingevoerd conform de <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standaard</a> zijn.
+                title: Verkeerde tijdzone
               completed_with_warnings:
-                description:
-                title:
+                description: 'Uw gegevens werden met waarschuwingen geïmporteerd, maar er ging iets mis bij het opslaan van de waarschuwingen naar de dataset. U kan echter een volledige lijst aan waarschuwingen hier terugvinden: %{warnings}'
+                title: Foutmelding bij het opslaan van waarschuwingen
               control_file_invalid_json:
-                description:
-                title:
+                description: 'Uw controlebestand kon niet ontleed worden als een JSON. Foutmelding: "%{message}". Verifieer a.u.b. dat het om een geldige JSON gaat.'
+                title: Ongeldig controlebestand
               control_file_malformed:
-                description:
-                title:
+                description: Uw controlebestand was een geldige JSON, maar het kwam niet overeen met het type dat wij hadden verwacht. Zorg ervoor dat uw controlebestand overeenkomt met <a href="https://socrata.github.io/datasync/resources/control-config.html">deze specificatie</a>.
+                title: Ongeldig controlebestand
               control_file_too_large:
-                description:
-                title:
+                description: Uw controlebestand was te groot. Verklein naar %{limit} of minder tekens en probeer opnieuw.
+                title: Controlebestand is te groot
               corrupt_archive:
-                description:
-                title:
+                description: 'We konden het archief dat u hebt geüpload niet verwerken. Foutmelding: %{reason}'
+                title: Beschadigd archief
               corrupt_gzip:
-                description:
-                title:
+                description: 'Het met GZip gecomprimeerde bestand dat u naar ons doorstuurde kon niet uitgepakt worden. Foutmelding: "%{message}". Verifieer a.u.b. of het om een geldig GZip-bestand gaat.'
+                title: Kon het gecomprimeerde bestand niet uitpakken
               corrupt_shapefile:
-                description:
-                title:
+                description: De hoofding van het shapefile kon niet gelezen worden.
+                title: Beschadigde shapefile
               corrupt_xz:
-                description:
-                title:
+                description: 'Het met XZ gecomprimeerde bestand dat u naar ons doorstuurde kon niet uitgepakt worden. Foutmelding: "%{message}". Verifieer of het om een geldig XZ-bestand gaat.'
+                title: Kon het gecomprimeerde bestand niet uitpakken
               delete_without_user_pk:
-                description:
-                title:
+                description: We kunnen verwijderingsoperaties niet verwerken als er geen id-veld voor de rij is opgegeven.
+                title: Kan niet verwijderen zonder rij-id
               di2_counts:
-                description:
-                title:
+                description: Uw bestand voor import werd geïmporteerd, maar uit een totaal van %{rowCount} rijen konden we %{failCount} rijen niet laden in uw dataset. Download als dit onverwacht is de mislukte rijen rechts en verifieer dat uw waarden overeenkomen met <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">de door Socrata aangenomen formaten</a>. U kan daarna enkel deze rijen nogmaals importeren.
+                title: Voltooid
               duplicated_fields_in_input:
-                description:
-                title:
+                description: De veldnaam/veldnamen %{fieldNames} wordt/worden meermaals gebruikt in uw gegevensbestand. Zorg ervoor dat de veldnamen uniek zijn.
+                title: Duplicate veldnamen gespecificeerd
               field_not_in_dataset:
-                description:
-                title:
+                description: De veldnaam/veldnamen %{fieldNames} kon/konden niet gevonden worden in de dataset waarnaar u probeert te importeren. Controleer uw spelling en probeer opnieuw als u deze kolom wilt importeren.
+                title: Kon veld niet vinden in dataset
               field_not_in_input:
-                description:
-                title:
+                description: Een kolom die wij verwachtten (%{fieldNames}) kon niet gevonden worden in het gegevensbestand dat u opgaf, en u heeft geen rij-id kolom gespecificeerd. Controleer de opgegeven kolommen en probeer opnieuw.
+                title: Kon veld niet vinden in bestand
               field_wrong_format:
-                description:
-                title:
+                description: De veldnaam "%{fieldName}" die is opgegeven in uw gegevensbestand is niet geldig. Geldige veldnamen mogen enkel ASCII-tekens bevatten en moeten met een underscore of letter beginnen.
+                title: 
               generic:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_failure:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_source_ignored:
-                description:
-                title:
+                description: 
+                title: 
               geocoding_source_invalid_type:
-                description:
-                title:
+                description: 
+                title: 
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description:
-                title:
+                description: 
+                title: 
               incomplete_archive:
-                description:
-                title:
+                description: 
+                title: 
               invalid_encoding:
-                description:
-                title:
+                description: 
+                title: 
               invalid_row_length:
-                description:
-                title:
+                description: 
+                title: 
               malformed_blueprint:
-                description:
-                title:
+                description: 
+                title: 
               malformed_upsert:
-                description:
-                title:
+                description: 
+                title: 
               no_field_names_in_input:
-                description:
-                title:
+                description: 
+                title: 
               no_identity_column:
-                description:
-                title:
+                description: 
+                title: 
               parse_error:
-                description:
-                title:
+                description: 
+                title: 
               permission_denied:
-                description:
-                title:
+                description: 
+                title: 
               record_too_large:
-                description:
-                title:
+                description: 
+                title: 
               row_too_large:
-                description:
-                title:
+                description: 
+                title: 
               synthetic_location_in_input:
-                description:
-                title:
+                description: 
+                title: 
               too_many_errors_in_input:
-                description:
-                title:
+                description: 
+                title: 
               too_many_records_in_input:
-                description:
-                title:
+                description: 
+                title: 
               uninterpretable_value:
-                description:
-                title:
+                description: 
+                title: 
               unknown_domain:
-                description:
-                title:
+                description: 
+                title: 
               unknown_file_type:
-                description:
-                title:
+                description: 
+                title: 
               unsupported_import_type:
-                description:
-                title:
+                description: 
+                title: 
               upsert_already_in_progress_by_someone_else:
-                description:
-                title:
+                description: 
+                title: 
               upsert_counts:
-                description:
-                title:
+                description: 
+                title: 
             success_with_data_errors:
               di2_counts:
-                description:
-                title:
+                description: 
+                title: 
               upsert_counts:
-                description:
-                title:
-          failed_rows:
-          fallback_event_title:
-          file_name_unknown:
-          import:
+                description: 
+                title: 
+          failed_rows: 
+          fallback_event_title: 
+          file_name_unknown: 
+          import: 
           import_failures:
             bad_timestamp_format:
-              description:
-              title:
+              description: 
+              title: 
             bad_timezone:
-              description:
-              title:
+              description: 
+              title: 
             control_file_invalid_json:
-              description:
-              title:
+              description: 
+              title: 
             control_file_malformed:
-              description:
-              title:
+              description: 
+              title: 
             control_file_too_large:
-              description:
-              title:
+              description: 
+              title: 
             corrupt_gzip:
-              description:
-              title:
+              description: 
+              title: 
             corrupt_xz:
-              description:
-              title:
+              description: 
+              title: 
             delete_without_user_pk:
-              description:
-              title:
+              description: 
+              title: 
             duplicated_fields_in_input:
-              description:
-              title:
+              description: 
+              title: 
             field_not_in_dataset:
-              description:
-              title:
+              description: 
+              title: 
             field_not_in_input:
-              description:
-              title:
+              description: 
+              title: 
             field_wrong_format:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_failure:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_source_ignored:
-              description:
-              title:
+              description: 
+              title: 
             geocoding_source_invalid_type:
-              description:
-              title:
+              description: 
+              title: 
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description:
-              title:
+              description: 
+              title: 
             invalid_encoding:
-              description:
-              title:
+              description: 
+              title: 
             invalid_row_length:
-              description:
-              title:
+              description: 
+              title: 
             malformed_upsert:
-              description:
-              title:
+              description: 
+              title: 
             no_field_names_in_input:
-              description:
-              title:
+              description: 
+              title: 
             no_identity_column:
-              description:
-              title:
+              description: 
+              title: 
             permission_denied:
-              description:
-              title:
+              description: 
+              title: 
             record_too_large:
-              description:
-              title:
+              description: 
+              title: 
             synthetic_location_in_input:
-              description:
-              title:
+              description: 
+              title: 
             too_many_errors_in_input:
-              description:
-              title:
+              description: 
+              title: 
             too_many_records_in_input:
-              description:
-              title:
+              description: 
+              title: 
             uninterpretable_value:
-              description:
-              title:
+              description: 
+              title: 
             unknown_domain:
-              description:
-              title:
+              description: 
+              title: 
             unknown_file_type:
-              description:
-              title:
+              description: 
+              title: 
             upsert_already_in_progress_by_someone_else:
-              description:
-              title:
-          import_method:
-          initiated_at:
-          no_events:
-          page_title:
+              description: 
+              title: 
+          import_method: 
+          initiated_at: 
+          no_events: 
+          page_title: 
           services:
-            DeltaImporter2:
-            Imports2:
-            ResourcesAPI:
-          started_by:
-          title:
-          to:
+            DeltaImporter2: 
+            Imports2: 
+            ResourcesAPI: 
+          started_by: 
+          title: 
+          to: 
         statuses:
-          failure:
-          in_progress:
-          not_started:
-          success:
-          success_with_data_errors:
+          failure: 
+          in_progress: 
+          not_started: 
+          success: 
+          success_with_data_errors: 
       metadata:
         add_new_category: Voeg een nieuwe categorie toe
         add_new_field: Voeg een nieuw veld toe
         allowed_values: Toegestane waarden
         are_you_sure: Weet u zeker dat u deze set velden en alle daarmee verbonden velden wilt verwijderen?
         category_name: Naam van de categorie
-        category_table_description:
+        category_table_description: 
         create: Aanmaken
         create_new_fieldset: Maak een nieuwe set velden aan
         define_categories: Definieer datasetcategorieën
@@ -2227,7 +2463,7 @@ nl:
         metadata_explain1: Aangepaste metadata is onderverdeeld in <span class="code">sets van velden</span> en <span class="code">velden</span>. Een <span class="code">set van velden</span> is een manier om één of meer aangepaste <span class="code">velden</span> logisch en visueel samen te voegen.
         metadata_explain2: Velden kunnen op meerdere manieren worden geconfigureerd. Ze kunnen <span class="code">verplicht</span> zijn, wat afgedwongen zal worden als uitgevers nieuwe datasets aanmaken en bestaande metadata bijwerken. Ze kunnen ook <span class="code">privé</span> zijn, wat betekent dat de ingevoerde waarden niet openbaar zichtbaar zijn.
         metadata_explain3: U kunt er tenslotte ook voor kiezen om de opties voor uw <span class="code">velden</span> van te voren vast te stellen, als u de waarden uit een lijst wilt kiezen in plaats van in een veld in te voeren.
-        metadata_field_table_description:
+        metadata_field_table_description: 
         no_data: Voor dit domein zijn nog geen aangepaste datasetvelden gedefinieerd. Voer hieronder een naam in en klik op "Aanmaken" om te beginnen.
         no_fields_defined: Voor dit set van velden zijn nog geen velden gedefinieerd.
         page_title: Beheer dataset metadata
@@ -2237,6 +2473,134 @@ nl:
         title: Beheer metadata
         'true': true
         up: Omhoog
+      site_chrome:
+        cancel: 
+        description: 
+        preview_changes: 
+        save: 
+        save_changes: 
+        site_appearance: 
+        tabs:
+          footer:
+            fields:
+              copyright_notice:
+                description: 
+                label: 
+                title: 
+              footer_background_color:
+                description: 
+                placeholder: 
+                title: 
+              footer_display_name:
+                description: 
+                placeholder: 
+                title: 
+              footer_logo:
+                description: 
+                placeholder: 
+                title: 
+              footer_text_link_color:
+                placeholder: 
+                title: 
+              link_title_label: 
+              link_title_placeholder: 
+              menu_links:
+                description: 
+                title: 
+              url_label: 
+              url_placeholder: 
+            title: 
+          general:
+            fields:
+              google_analytics_token:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              template:
+                description: 
+                placeholder: 
+                title: 
+              window_icon:
+                description: 
+                placeholder: 
+                title: 
+              window_title_display:
+                description: 
+                placeholder: 
+                title: 
+            title: 
+          header:
+            fields:
+              bar_background_color:
+                description: 
+                placeholder: 
+                title: 
+              bar_text_link_color:
+                placeholder: 
+                title: 
+              header_bar_logo:
+                description: 
+                placeholder: 
+                title: 
+              header_display_name:
+                description: 
+                placeholder: 
+                title: 
+              link_title_label: 
+              link_title_placeholder: 
+              menu_links:
+                description: 
+                title: 
+              url_label: 
+              url_placeholder: 
+            title: 
+          homepage:
+            fields: 
+            title: 
+          social:
+            fields:
+              facebook_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              flickr_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              google_plus_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              instagram_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              linked_in_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              tumblr_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              twitter_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              vimeo_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              yammer_profile_link:
+                description: 
+                placeholder: 
+                title: 
+              youtube_profile_link:
+                description: 
+                placeholder: 
+                title: 
+            title: 
       users:
         actions: Acties
         all: Alles
@@ -2246,7 +2610,7 @@ nl:
         email_prompt: Voer e-mailadressen in voor de accounts die u aan wilt maken
         emails: E-mails
         error_permission_request: Er deed zich een fout voor bij het verwerken van uw verzoek om toestemming
-        export_as_csv:
+        export_as_csv: 
         filter_by: Filteren op
         flashes:
           accounts_created:
@@ -2266,7 +2630,7 @@ nl:
         no_users_found: Geen bestaande gebruikers gevonden
         no_users_match: Geen gebruikers voldoen aan uw huidige filter.
         pending_users: De volgende gebruikers hebben hangende accounts, maar hebben deze nog niet geactiveerd
-        pending_users_table_description:
+        pending_users_table_description: 
         reenable_privileges: Privileges opnieuw inschakelen
         remove: Verwijderen
         reset_password: Wachtwoord resetten
@@ -2276,19 +2640,19 @@ nl:
           administrator: beheerder
           designer: ontwerper
           editor: redacteur
-          editor_stories:
+          editor_stories: 
           none: geen
           publisher: uitgever
-          publisher_stories:
+          publisher_stories: 
           viewer: kijker
         search: Zoeken
         search_for_users: Zoek naar gebruikers om toe te voegen
         search_results: Zoekresultaten voor '%{term}'
         title: Beheer gebruikers
         user_saved: Gebruiker opgeslagen
-        users_table_description:
+        users_table_description: 
       view_moderation:
-        table_description:
+        table_description: 
     dataset_edit:
       append: Toevoegen
       append_and_replace: Voeg data toe of vervang deze
@@ -2329,8 +2693,8 @@ nl:
         missing_name: Naam van dataset is verplicht.
         need_description: Omschrijf &ldquo;%{name}&rdquo;
         point:
-          missing_latlong:
-          suboptimal_column:
+          missing_latlong: 
+          suboptimal_column: 
       finish:
         headline: Uw dataset is aangemaakt.
         subheadline: Klik op Afsluiten om het te zien!
@@ -2364,6 +2728,7 @@ nl:
         headers: Kopteksten
         headers_instructions: Kopteksten moeten worden genegeerd en niet als data worden geïmporteerd. Geef alstublieft aan hoeveel rijen van uw bronbestand kopteksten zijn.
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
+        headline_interpolate: 
         help_message: Voor hulp kunt u een <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten bekijken</a>.
         more_rows: Meer rijen
         name: Naam
@@ -2379,14 +2744,16 @@ nl:
         why_choose_now: Waarom is het belangrijk dat ik nu kolomtypes kies?
       import_help: <strong>Hulp nodig?</strong> We houden een <a href="%{common_errors}" rel="external">lijst bij van veelvoorkomende waarschuwingen en fouten</a> die van nut kunnen zijn voor u.
       import_shapefile:
-        abbreviatedSubheadline:
-        abbreviatedSummary:
+        abbreviatedSubheadline: 
+        abbreviatedSummary: 
         crs: Coördinaat referentiesysteem
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
+        headline_interpolate: 
         layers_list: Lagen die geïmporteerd moeten worden
         name: Naam
         pending: We laden uw lagen, een moment geduld a.u.b.
         subheadline: Deze shapefile bevat <span class="featureCount"></span> functies in <span class="layerCount"></span> lagen.
+        subheadline_interpolate: 
       import_warnings:
         headline: Waarschuwingen tijdens importeren
         see_docs: <strong>Is het niet helemaal duidelijk?</strong> Bekijk onze <a href="%{publisher_link}" rel="external">uitgeversdocumentatie</a> over het importeren van data, voor een uitgebreide uitleg over hoe de importeur met data omgaat. We verwijzen u ook naar onze <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten</a>.
@@ -2401,6 +2768,12 @@ nl:
         private_explain: Mijn data is <strong>privé</strong>
         prompt: Omschrijf uw data
         public_explain: 'Mijn data is <strong>openbaar</strong>: het kan alleen door mij worden gewijzigd, maar iedereen kan het zien'
+      notify_me: 
+      notify_me_error_html: 
+      notify_me_messaging: 
+      notify_me_success_addl: 
+      notify_me_success_html: 
+      notify_me_success_html_js: 
       processing: Wordt verwerkt...
       title: Nieuwe dataset
       upload_accessible: Upload een nieuwe toegankelijke dataset
@@ -2418,7 +2791,7 @@ nl:
       bar:
         api_unsavable: API-views kunnen niet worden gewijzigd
         based_on_html: Gebaseerd op <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html:
+        based_on_layer_html: 
         based_on_parent_html: Gebaseerd op <a class="parentName"></a>
         based_on_private_view: een privéview
         based_on_working_copy_html: Gebaseerd op de werkende kopie van <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -2435,9 +2808,11 @@ nl:
           underline: Onderstrepen
           undo: Ongedaan maken
         full_screen: Toggle volledig scherm
+        no_description: 
         out_of_date: Dit gegevensbestand is %{age} oud
         publish_button: Dataset publiceren
         publish_prompt: Deze dataset is een werkende kopie en is niet publiek beschikbaar. Nadat u de gewenste wijzigingen hebt aangebracht, moet deze dataset worden gepubliceerd om deze publiek toegankelijk te maken.
+        publish_prompt_with_dataset_landing_page: 
         publish_rights: Alleen een eigenaar of uitgever kan deze dataset publiceren
         revert_button: Terugkeren
         revert_prompt: Terug naar opgeslagen view
@@ -2537,6 +2912,8 @@ nl:
         remove_email: Verwijderen
         success: Uw e-mail is met succes verstuurd.
         title_html: Deel &quot;<span class="datasetName">%{name}</span>&quot;
+      fatrow:
+        edit_layout: 
       grid_sidebar:
         add_column:
           convert_address:
@@ -2569,7 +2946,8 @@ nl:
           developer_portal: Ontwikkelaarsportaal
           endpoint_title: 'API-toegangseindpunt:'
           intro_html: Met de <strong>Socrata Open Data API</strong> (SODA) kunnen software-ontwikkelaars toegang krijgen tot de gegevens gehost in Socrata datasites op programmabasis. Ontwikkelaars kunnen applicaties aanmaken die de SODA API's gebruiken om "mash-up" Socrata datasets op nieuwe en spannende manieren te visualiseren en te creëren. Maak een iPhone-applicatie die de overheidsuitgaven in uw omgeving weergeven, een webapplicatie waarmee burgers potentiële overheidssubsidies die ze over het hoofd gezien kunnen opzoeken, of een service die automatisch e-mails stuurt wanneer nieuwe oormerken worden toegevoegd aan facturen die u wilt volgen.
-          multiple_endpoints_intro_html:
+          multiple_endpoints_intro_html: 
+          no_endpoints_available: 
           reference_html: Om programmatisch te beginnen met het bezoeken van deze dataset, gebruikt u het API-eindpunt hieronder. Voor meer informatie en voorbeelden over hoe de Socrata Open Data API kunt gebruiken, verwijzen we u naar onze <a href="http://dev.socrata.com" rel="external">ontwikkelaarsdocumentatie</a>.
           subtitle: Krijg toegang tot %{view_type} via SODA
           title: SODA API
@@ -2593,8 +2971,8 @@ nl:
             immutable: Start de Vervangwizard
             mutable: Start de Toevoeg- en Vervangwizard
         backup:
-          button:
-          item_html:
+          button: 
+          item_html: 
         base:
           buttons:
             apply: Toepassen
@@ -2625,8 +3003,8 @@ nl:
             formatted_text: geformatteerde tekst
             geospatial: geospatiale
             groups:
-              geometry:
-              standard:
+              geometry: 
+              standard: 
             list: lijst
             location: locatie
             money: geld
@@ -2827,6 +3205,7 @@ nl:
             title: Kolomtype
             type: Datatype
             type_prompt: Selecteer een gegevenstype
+            working_copy_html: 
         column_order:
           columns:
             title: Kolommen
@@ -2867,8 +3246,8 @@ nl:
             currency: Valuta
             format_mask_warning: " "
             groups:
-              all:
-              common:
+              all: 
+              common: 
             no_precision: Geen
             precision: Precisie
             title: Geldformaat
@@ -2901,8 +3280,8 @@ nl:
           subtitle: Werken verschillende eigenschappen in deze kolom
           success: Uw kolom is bijgewerkt
           text_formatting:
-            display_style:
-            title:
+            display_style: 
+            title: 
           title: Eigenschappen kolom
           url:
             base_url: Basis URL
@@ -2910,6 +3289,7 @@ nl:
             title: URL-opties
           validation:
             published: Maak dan een werkende kopie of view van deze dataset om kolomeigenschappen te wijzigen
+            snapshot: 
             unsaved: U kunt geen kolomeigenschappen bewerken voor een niet opgeslagen view
         conditional_formatting:
           change_icon: veranderen
@@ -2935,10 +3315,10 @@ nl:
             no_columns: Deze view heeft geen kolommen om te filteren
             no_icons: Iconen zijn alleen relevant voor kaartweergave
         data_lens:
-          button:
-          button_flyout:
-          subtitle:
-          title:
+          button: 
+          button_flyout: 
+          subtitle: 
+          title: 
         delete:
           confirm: Dit zal de %{view_type} definitief verwijderen. En dit kan niet ongedaan worden gemaakt! Weet u zeker dat u wilt doorgaan?
           delete_button: Verwijder deze %{view_type}
@@ -2964,8 +3344,8 @@ nl:
           download_as: Downloaden als
           download_dataset: Download alstublieft het gegevensbestand waar deze weergave aan is ontleend.
           geo_header: Download geogegevens
-          monolayer_header:
-          multilayer_header:
+          monolayer_header: 
+          multilayer_header: 
           subtitle: Download een kopie van deze dataset in een statisch formaat
           title: Downloaden
         feed:
@@ -3059,12 +3439,13 @@ nl:
           validation:
             hidden_location_html: U kunt <a href="#showLoc" title="Show a location column">een verborgen locatiekolom tonen</a>.
             location_column: Een locatiekolom is nodig om een ​​kaart te maken.
-            location_column_invalid_dataset:
+            location_column_invalid_dataset: 
             viz_limit: Een view mag er slechts een visualisatie op hebben
         odata:
           endpoint_action: 'Kopieer deze link:'
           intro_html1: Maak een spreadsheet in Microsoft Excel om deze dataset te analyseren of te visualiseren. Door een OData link te gebruiken worden deze gegevens verversbaar.
           intro_html2: Gebruik Microsoft Excel 2010, Microsoft Excel 2013 of Microsoft Power Query. Volg de instructies hier, met behulp van <a href="%{doc_link}">Socrata's OData documentatie</a>.
+          no_endpoints_available: 
           subtitle: Krijg toegang tot deze dataset via OData
           title: OData
         ownership:
@@ -3148,7 +3529,7 @@ nl:
           subtitle: Aanpassen welke kolommen zichtbaar zijn in deze view
           title: Kolommen tonen en verbergen
           warnings:
-            active_filter:
+            active_filter: 
         sort_rollup:
           rollup:
             add_group_button: Groeperen kolom toevoegen
@@ -3250,8 +3631,8 @@ nl:
       unable_to_find_dataset_page: We waren niet in staat om een Data Lens pagina te vinden voor dit gegevensbestand.
     edit_metadata:
       about: Over
-      add_link:
-      add_source:
+      add_link: 
+      add_source: 
       additional_source: Extra bron
       alternative_access_prompt: Voer een afwisselend toegangspunt voor deze dataset in.
       api_endpoint: API eindpunt
@@ -3274,8 +3655,10 @@ nl:
       dataset_title_prompt: Voer een titel in
       dataset_url: URL van de dataset
       dataset_url_prompt: Voer de locatie van uw externe dataset in
-      default_row_label:
+      default_row_label: 
       delete: Verwijderen
+      described_by: 
+      described_by_prompt: 
       email_address: E-mailadres
       email_help: Dit adres zal niet voor iedereen zichtbaar zijn. Als het leeg wordt gelaten wordt standaard uw adres gebruikt.
       existing_attachments: Bestaande bijlagen
@@ -3294,8 +3677,8 @@ nl:
       licensing_attr: Licentie & naamsvermelding
       list: Lijst
       metadata_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
-      missing_external_dataset:
-      multiple_extensions:
+      missing_external_dataset: 
+      multiple_extensions: 
       new_attachment: Nieuwe bijlage
       none: "(geen)"
       northwest_latitude: Noordwestelijke breedtegraad
@@ -3303,7 +3686,7 @@ nl:
       optional: Optioneel
       private_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
       remove_image: Afbeelding verwijderen
-      remove_link:
+      remove_link: 
       required_field: Verplicht veld
       resource_name: Naam van de bron
       resource_name_prompt: Voer een naam van de bron in
@@ -3311,9 +3694,9 @@ nl:
       row_class: Rijklasse
       row_identifier: Rijaanduiding
       row_identifier_help_text: Het rij-ID kan niet meer worden gewijzigd zodra een weergave gepubliceerd is.
-      row_label:
-      row_label_help:
-      row_label_prompt:
+      row_label: 
+      row_label_help: 
+      row_label_prompt: 
       save: Opslaan
       save_changes: Wijzigingen opslaan
       semantics_rdf: Semantiek & RDF
@@ -3332,7 +3715,7 @@ nl:
       upload_help: Deze afbeelding zal worden bijgesneden in een vierkant
       upload_image: Afbeelding uploaden
       upload_new_attachment: Nieuwe bijlage uploaden
-      url:
+      url: 
     forgot_password:
       already_authenticated: 'Niet in staat om wachtwoord te resetten: u bent al ingelogd'
       failed: Er is een probleem opgetreden bij het indienen van uw wachtwoord resetaanvraag. Probeer het opnieuw.
@@ -3358,7 +3741,7 @@ nl:
       existing_latlng_cols: Bestaande kolommen voor breedte- en lengtegraden
       find: zoeken
       find_and_replace: Zoek en vervang waarde...
-      import_from_latlong:
+      import_from_latlong: 
       import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
       import_from_single: Uit <strong>één kolom</strong> importeren
       latitude: Breedtegraad
@@ -3372,7 +3755,7 @@ nl:
       new_source_col: Voeg nieuwe bron kolom toe
       new_transform: Voeg nieuwe transformatie toe
       options: Opties
-      point_source_col:
+      point_source_col: 
       properly_formatted: Kolom moet in het<a href="%{formatting_link}" rel="external">juiste formaat zijn</a> voordat het geïmporteerd wordt.
       regular_expression: reguliere expressie
       remove: verwijderen
@@ -3401,8 +3784,9 @@ nl:
       one_header: Eén van uw rijen is een koptekst
       problem_importing: Er deed zich een probleem voor bij het importeren van dat bestand. Zorg ervoor dat het een geldig bestand is.
       problem_uploading: Er deed zich een probleem voor bij het uploaden van dit bestand. Zorg ervoor dat het om een geldig bestand gaat.
-      replicating:
+      replicating: 
       rows_imported: Tot nu toe %{num} rijen geïmporteerd.
+      rows_imported_js: 
       try_again: Probeer het zometeen nog eens.
       unknown_error: Er trad een onbekende fout op
       uploading: Uw bestand wordt geüpload
@@ -3424,7 +3808,7 @@ nl:
         no_applications: U heeft geen toepassingen die zijn gemaakt nog. Klik op 'Beheer' op het recht begonnen
         title: Applicatie van %{user}
       bar:
-        edit_info_link:
+        edit_info_link: 
         edit_settings_link: Accountinstellingen bewerken
         follow_link: Volgen
         join_date: Geregistreerd op
@@ -3554,10 +3938,10 @@ nl:
         following: Aan het volgen
         hide_contacts_link: Verbergen
       whats_new:
-        caught_up:
-        older_news:
-        read_more:
-        title:
+        caught_up: 
+        older_news: 
+        read_more: 
+        title: 
     reset_password:
       failed: Er is een probleem opgetreden bij het resetten van uw wachtwoord. Probeer het opnieuw.
       form:
@@ -3575,13 +3959,13 @@ nl:
       mismatch: Wachtwoorden komen niet overeen; Probeer het opnieuw
       prompt_html: Meld u aan met uw <strong> Socrata-ID </strong>
       sign_in_with: "<strong>Inloggen</strong> met %{provider}"
-      sso_required:
+      sso_required: 
       tips_html: Gebruik uw e-mailadres en wachtwoord om u aan te melden bij alle <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
     sign_up:
       email_verification:
-        expired:
-        sent:
-        success:
+        expired: 
+        sent: 
+        success: 
       form:
         create_account_button: Mijn account aanmaken
         have_account_link: Ik heb al een account
@@ -3595,7 +3979,7 @@ nl:
     stats:
       api: API
       apply: Toepassen
-      browser_page_views:
+      browser_page_views: 
       bytes_out: Verstuurde bytes
       chart_created: grafiek aangemaakt
       charts: Grafieken
@@ -3604,12 +3988,12 @@ nl:
       comments: Reacties
       comments_created: reacties aangemaakt
       daily: Dagelijks
-      date_range:
+      date_range: 
       deleted_application: applicatie verwijderd
-      delta_decrease:
-      delta_decrease_compared:
-      delta_increase:
-      delta_increase_compared:
+      delta_decrease: 
+      delta_decrease_compared: 
+      delta_increase: 
+      delta_increase_compared: 
       dependent_metrics: Afhankelijke metrische gegevens
       download: downloaden
       downloads: downloads
@@ -3634,7 +4018,7 @@ nl:
       no_data_time_period: Geen data voor deze tijdperiode
       page_viewed: pagina bekeken
       pages_viewed: pagina's bekeken
-      preceding_period:
+      preceding_period: 
       referrals: Verwijzingen
       rows_loaded: Geladen rijen
       sdp: SDP
@@ -3671,6 +4055,10 @@ nl:
       create_new:
         name: Naam voor nieuwe sjabloon
         title: Maak een nieuw sjabloon aan
+      create_new_dataset:
+        explanation_html: 
+        prompt: 
+        title: 
     wizard:
       cancel: Annuleren
       finish: Voltooien
@@ -3684,5 +4072,5 @@ nl:
       last_word_connector: ", of"
       two_words_connector: of
   table:
-    no_summary_available:
-    summary:
+    no_summary_available: 
+    summary: 

@@ -438,7 +438,7 @@ class CustomContentController < ApplicationController
       Canvas::Environment.facet_value = nil
     end
     Canvas::Environment.params = params
-    Canvas::Environment.page_config = page_config.reject { |key| key == 'contents' }
+    Canvas::Environment.page_config = Hashie::Mash.new(page_config.reject { |key| key == 'contents' })
     Canvas::Environment.request = request
     Canvas::Environment.locale_config = I18n.config
 

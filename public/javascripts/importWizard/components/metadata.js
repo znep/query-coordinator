@@ -57,7 +57,7 @@ export function emptyContents(name: string): MetadataContents {
     tags: [],
     rowLabel: '',
     attributionLink: '',
-    customMetadata: defaultCustomData(customMetadataSchema),
+    customMetadata: Object.freeze(defaultCustomData(customMetadataSchema)),
     contactEmail: '',
     privacySettings: 'private'
   };
@@ -156,10 +156,9 @@ export function updateNextClicked() {
 
 const MD_LAST_SAVED = 'MD_LAST_SAVED';
 export function updateLastSaved(savedMetadata) {
-  const x = _.cloneDeep(savedMetadata);
   return {
     type: MD_LAST_SAVED,
-    savedMetadata: x
+    savedMetadata: _.cloneDeep(savedMetadata)
   };
 }
 
@@ -399,7 +398,7 @@ function renderFlashMessageApiError(apiCall) {
       case 'Bad Gateway':
         return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.http_error.format(apiCall.error.message)} />;
       default:
-        return <FlashMessage flashType="error" message={I18n.screens.import_pane.uploading} />;
+        return <FlashMessage flashType="error" message={I18n.screens.import_pane.unknown_error} />;
     }
   }
 }
@@ -563,19 +562,14 @@ export function view({ datasetId, metadata, onMetadataAction, importError, goToP
         onSave={() => {
           onMetadataAction(updateNextClicked());
           if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
-            onMetadataAction(metadataSaveStart());
-            onMetadataAction(updateLastSaved(metadata));
             onMetadataAction(Server.saveMetadataToViewsApi(datasetId, metadata));
-            onMetadataAction(metadataSaveComplete(metadata.contents));
           }
         }}
 
-        onNext={('finish', () => {
+        onNext={(() => {
           onMetadataAction(updateNextClicked());
-          onMetadataAction(metadataSaveStart());
           if (isMetadataValid(metadata)) {
             onMetadataAction(Server.saveMetadataThenProceed());
-            onMetadataAction(updateLastSaved(metadata));
           }
         })}
 

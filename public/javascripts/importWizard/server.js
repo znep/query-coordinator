@@ -37,6 +37,8 @@ export function saveMetadataThenProceed() {
 
 export function saveMetadataToViewsApi(datasetId, metadata) {
   return (dispatch) => {
+    dispatch(Metadata.metadataSaveStart());
+
     return fetch(`/api/views/${datasetId}`, {
       method: 'PUT',
       credentials: 'same-origin',
@@ -44,8 +46,12 @@ export function saveMetadataToViewsApi(datasetId, metadata) {
     }).then(checkStatus)
       .then((response) => {
         console.log(response);
-      }).
-    catch((err) => {
+    }).then(() => {
+      dispatch(updatePrivacy(datasetId, metadata.contents.privacySettings));
+    }).then(() => {
+      dispatch(Metadata.metadataSaveComplete(metadata.contents));
+      dispatch(Metadata.updateLastSaved(metadata));
+    }).catch((err) => {
       dispatch(Metadata.metadataSaveError(err));
     });
   };
@@ -53,46 +59,41 @@ export function saveMetadataToViewsApi(datasetId, metadata) {
 
 export function proceed(navigation, datasetId, metadata) {
   return (dispatch) => {
-    updatePrivacy(datasetId, metadata.contents.privacySettings).
-      then(() => {
-        const onImportError = () => {
-          dispatch(importError());
-          dispatch(goToPage('Metadata'));
-        };
-        dispatch(Metadata.metadataSaveComplete(metadata.contents));
-        switch (navigation.operation) {
-          case 'UploadData':
-            dispatch(importData(onImportError));
-            break;
-          case 'UploadGeospatial':
-            dispatch(importGeospatial(onImportError));
-            break;
-          case 'CreateFromScratch':
-            dispatch(goToPage('Finish'));
-            break;
-          default:
-            console.error('Unkown operation!', navigation.operation);
-        }
-      }).
-      catch((err) => {
-        dispatch(Metadata.metadataSaveError(err));
-      });
+    const onImportError = () => {
+      dispatch(importError());
+      dispatch(goToPage('Metadata'));
+    };
+    switch (navigation.operation) {
+      case 'UploadData':
+        dispatch(importData(onImportError));
+        break;
+      case 'UploadGeospatial':
+        dispatch(importGeospatial(onImportError));
+        break;
+      case 'CreateFromScratch':
+        dispatch(goToPage('Finish'));
+        break;
+      default:
+        console.error('Unkown operation!', navigation.operation);
+    }
   };
 }
 
 export function updatePrivacy(datasetId, currentPrivacy) {
-  const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
+  return (dispatch) => {
+    const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
 
-  return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
-    method: 'PUT',
-    credentials: 'same-origin',
-    headers: {
-      'X-CSRF-Token': authenticityToken,
-      'X-App-Token': appToken
-    }
-  }).then((result) => {
-    console.log(result);
-  });
+    return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
+      }
+    }).then((result) => {
+      console.log(result);
+    });
+  }
 }
 
 export function checkStatus(response) {

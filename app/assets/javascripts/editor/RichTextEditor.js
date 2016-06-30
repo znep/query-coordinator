@@ -113,7 +113,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
         // Querying this via a css selector (i.e., [href="foobar"]) is expensive.
         var headElement = contentDocument.querySelector('head');
         var hrefsInHead = _.invokeMap(headElement.children, 'getAttribute', 'href');
-        if (!_.contains(hrefsInHead, $(theme).attr('href'))) {
+        if (!_.includes(hrefsInHead, $(theme).attr('href'))) {
           $(headElement).append($(theme));
         }
       }

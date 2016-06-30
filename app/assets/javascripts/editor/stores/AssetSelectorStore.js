@@ -601,8 +601,8 @@ export default function AssetSelectorStore() {
     var reader;
     var file = payload.file;
     var isNotValidFileSize = file.size > Constants.MAX_FILE_SIZE_BYTES;
-    var isNotValidImageType = !_.include(Constants.VALID_IMAGE_TYPES, file.type);
-    var isNotValidFileType = !_.include(Constants.VALID_FILE_TYPES, file.type);
+    var isNotValidImageType = !_.includes(Constants.VALID_IMAGE_TYPES, file.type);
+    var isNotValidFileType = !_.includes(Constants.VALID_FILE_TYPES, file.type);
 
     if (isNotValidFileSize || (isNotValidImageType && isNotValidFileType)) {
       message = isNotValidFileSize ?

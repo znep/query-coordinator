@@ -831,7 +831,7 @@ describe('StorytellerUtils', function() {
 
     it('should flatten property values', function(done) {
       StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then(function(response) {
-        assert.deepEqual(_.pluck(response, 'properties'), [
+        assert.deepEqual(_.map(response, 'properties'), [
           { foo: { bar: 'baz' } },
           { meep: 'beep' }
         ]);

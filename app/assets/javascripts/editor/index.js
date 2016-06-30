@@ -123,7 +123,7 @@ $(document).on('ready', function() {
         action: Actions.LINK_TIP_CLOSE
       });
 
-      _.invoke(richTextEditorManager.getAllEditors(), 'deselect');
+      _.invokeMap(richTextEditorManager.getAllEditors(), 'deselect');
     }
   });
 

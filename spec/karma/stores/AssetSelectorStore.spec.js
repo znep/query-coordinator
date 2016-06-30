@@ -1259,6 +1259,10 @@ describe('AssetSelectorStore', function() {
 
 
   describe('ASSET_SELECTOR_IMAGE_CROP_COMMIT', function() {
+    var url = 'https://supertechbro.sushi';
+    var documentResponse = [200, {'Content-Type': 'application/json'}, '{"document": {"url": "' + url + '"}}'];
+    var cropResponse = [200, {}, ''];
+
     var dispatch = function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT
@@ -1285,24 +1289,33 @@ describe('AssetSelectorStore', function() {
 
         assert.lengthOf(server.requests, 1);
 
-        var requestBody = JSON.parse(server.requests[0].requestBody);
-
-        server.respondWith('PUT', server.requests[0].url, [200, {}, '']);
+        server.respondWith('GET', server.requests[0].url, documentResponse);
         server.respond();
 
-        assert.deepEqual(requestBody, {
-          document: {
-            crop_x: 0.3,
-            crop_y: 0.4,
-            crop_width: 0.5,
-            crop_height: 0.5
-          }
-        });
-
         setTimeout(function() {
-          assert.isFalse(assetSelectorStore.isCropping());
-          assert.isTrue(assetSelectorStore.isCropComplete());
-          done();
+          assert.lengthOf(server.requests, 2);
+
+          var requestBody = JSON.parse(server.requests[1].requestBody);
+
+          server.respondWith('PUT', server.requests[1].url, cropResponse);
+          server.respond();
+
+          assert.deepEqual(requestBody, {
+            document: {
+              crop_x: 0.3,
+              crop_y: 0.4,
+              crop_width: 0.5,
+              crop_height: 0.5
+            }
+          });
+
+          setTimeout(function() {
+            assert.isFalse(assetSelectorStore.isCropping());
+            assert.isTrue(assetSelectorStore.isCropComplete());
+            assert.propertyVal(crop, 'url', url);
+
+            done();
+          });
         });
       });
     });
@@ -1318,23 +1331,32 @@ describe('AssetSelectorStore', function() {
         getComponentValueStub.reset();
       });
 
-      it('should request a crop with null values.', function() {
+      it('should request a crop with null values.', function(done) {
         dispatch();
 
         assert.lengthOf(server.requests, 1);
 
-        var requestBody = JSON.parse(server.requests[0].requestBody);
-
-        server.respondWith('PUT', server.requests[0].url, [200, {}, '']);
+        server.respondWith('GET', server.requests[0].url, documentResponse);
         server.respond();
 
-        assert.deepEqual(requestBody, {
-          document: {
-            crop_x: null,
-            crop_y: null,
-            crop_width: null,
-            crop_height: null
-          }
+        setTimeout(function() {
+          assert.lengthOf(server.requests, 2);
+
+          var requestBody = JSON.parse(server.requests[1].requestBody);
+
+          server.respondWith('PUT', server.requests[1].url, cropResponse);
+          server.respond();
+
+          assert.deepEqual(requestBody, {
+            document: {
+              crop_x: null,
+              crop_y: null,
+              crop_width: null,
+              crop_height: null
+            }
+          });
+
+          done();
         });
       });
     });

@@ -13,7 +13,7 @@ import NavigationControl from './navigationControl';
 
 type DatasetMetadata = {
   nextClicked: boolean,
-  apiCall: Object,
+  apiCall: MetadataApiCall,
   lastSaved: MetadataContents,
   contents: MetadataContents
 }

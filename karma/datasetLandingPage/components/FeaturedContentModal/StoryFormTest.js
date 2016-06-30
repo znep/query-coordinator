@@ -16,6 +16,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       onChangeUrl: _.noop,
       onClickCancel: _.noop,
       onClickSave: _.noop,
+      resetFocus: _.noop,
       shouldLoadStory: true,
       title: 'Sweet Sue and Her Society Syncopators',
       url: 'http://giraffes-in-spats.com/stories/s/nobodys-perfect/abcd-1234',

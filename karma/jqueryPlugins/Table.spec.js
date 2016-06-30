@@ -100,7 +100,7 @@ describe('views/Table', function() {
           return column.fieldName !== theSingleNonDisplayableColumn;
         }
       );
-      displayableColumnNames = _.pluck(displayableColumns, 'fieldName');
+      displayableColumnNames = _.map(displayableColumns, 'fieldName');
 
       // Mock data providers
 
@@ -150,7 +150,7 @@ describe('views/Table', function() {
 
       assert.lengthOf(calls, 1);
 
-      var columnNamesQueriedFor = _.pluck(
+      var columnNamesQueriedFor = _.map(
         calls[0].args[0].columns,
         'fieldName'
       );

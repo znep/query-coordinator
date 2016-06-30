@@ -496,12 +496,12 @@ $.fn.socrataColumnChart = function(vif) {
         return filter.arguments.operand;
       });
 
-    unfilteredAsHash = _.indexBy(
+    unfilteredAsHash = _.keyBy(
       unfiltered.rows,
       unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );
 
-    filteredAsHash = _.indexBy(
+    filteredAsHash = _.keyBy(
       filtered.rows,
       filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );

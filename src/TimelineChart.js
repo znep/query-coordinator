@@ -460,8 +460,8 @@ $.fn.socrataTimelineChart = function(vif) {
     function mapQueryResponseToPrecision(response) {
       var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
       var endIndex = _.indexOf(response.columns, SOQL_PRECISION_END_ALIAS);
-      var domainStartDate = _.first(response.rows)[startIndex];
-      var domainEndDate = _.first(response.rows)[endIndex];
+      var domainStartDate = _.head(response.rows)[startIndex];
+      var domainEndDate = _.head(response.rows)[endIndex];
 
       var domain = {
         start: moment(domainStartDate, moment.ISO_8601),
@@ -585,11 +585,11 @@ $.fn.socrataTimelineChart = function(vif) {
 
   function _mergeUnfilteredAndFilteredData(unfiltered, filtered, precision) {
 
-    var unfilteredAsHash = _.indexBy(
+    var unfilteredAsHash = _.keyBy(
       unfiltered.rows,
       unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );
-    var filteredAsHash = _.indexBy(
+    var filteredAsHash = _.keyBy(
       filtered.rows,
       filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
     );

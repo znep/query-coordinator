@@ -202,8 +202,8 @@ $.fn.socrataTable = function(vif) {
     if (_renderState.busy) { return; }
 
     utils.assert(
-      _.include(
-        _.pluck(_renderState.fetchedData.columns, 'fieldName'),
+      _.includes(
+        _.map(_renderState.fetchedData.columns, 'fieldName'),
         columnName
       ),
       'column name not found to sort by: {0}'.format(columnName)
@@ -385,7 +385,7 @@ $.fn.socrataTable = function(vif) {
             _.pick(vifToRender, 'datasetUid', 'domain')
           ).
             getDisplayableColumns(datasetMetadata);
-          var displayableColumnsFieldNames = _.pluck(
+          var displayableColumnsFieldNames = _.map(
             displayableColumns,
             'fieldName'
           ).
@@ -414,7 +414,7 @@ $.fn.socrataTable = function(vif) {
               // Rows can either be undefined OR of the exact length of the
               // displayableColumns OR MAX_COLUMN_COUNT, if the
               // displayableColumns has more than MAX_COLUMN_COUNT items.
-              utils.assert(_.all(soqlData.rows, function(row) {
+              utils.assert(_.every(soqlData.rows, function(row) {
 
                 return (
                   !row ||

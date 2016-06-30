@@ -120,7 +120,7 @@ module.exports = function Table(element, vif) {
       return this.getBoundingClientRect().width;
     });
 
-    var columns = _.pluck(_lastRenderData.columns, 'fieldName');
+    var columns = _.map(_lastRenderData.columns, 'fieldName');
 
     _columnWidths = _.zipObject(
       columns,

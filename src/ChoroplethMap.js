@@ -329,8 +329,8 @@ $.fn.socrataChoroplethMap = function(vif) {
     filteredData,
     vifToRender) {
 
-    var unfilteredDataAsHash = _.mapValues(_.indexBy(unfilteredData, 'name'), 'value');
-    var filteredDataAsHash = _.mapValues(_.indexBy(filteredData, 'name'), 'value');
+    var unfilteredDataAsHash = _.mapValues(_.keyBy(unfilteredData, 'name'), 'value');
+    var filteredDataAsHash = _.mapValues(_.keyBy(filteredData, 'name'), 'value');
     var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
     var ownFilterOperands = filters.
@@ -412,7 +412,7 @@ $.fn.socrataChoroplethMap = function(vif) {
         properties[vif.configuration.shapefile.columns.name] = humanReadableName;
         properties[vif.configuration.shapefile.columns.filtered] = filteredDataAsHash[name] || null;
         properties[vif.configuration.shapefile.columns.unfiltered] = unfilteredDataAsHash[name];
-        properties[vif.configuration.shapefile.columns.selected] = _.contains(ownFilterOperands, name);
+        properties[vif.configuration.shapefile.columns.selected] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.

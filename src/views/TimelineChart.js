@@ -842,7 +842,7 @@ function TimelineChart(element, vif) {
       // Eventually: receiving the VIF instead of the render options.
       if (_.isArray(options.activeFilters) && options.activeFilters.length > 0) {
 
-        filter = _.first(options.activeFilters);
+        filter = _.head(options.activeFilters);
 
         selectionStartDate = filter.start;
         selectionEndDate = filter.end;
@@ -1490,8 +1490,8 @@ function TimelineChart(element, vif) {
      * Override the leading and trailing values if requested.
      */
     if (leadingValue) {
-      _.first(outputValues).filtered = leadingValue;
-      _.first(outputValues).unfiltered = leadingValue;
+      _.head(outputValues).filtered = leadingValue;
+      _.head(outputValues).unfiltered = leadingValue;
     }
 
     if (trailingValue) {
@@ -1670,7 +1670,7 @@ function TimelineChart(element, vif) {
 
       // Reset minDate and maxDate to accurately reflect the 'half-way'
       // interpolated values created by transformValuesForRendering.
-      transformedMinDate = _.first(values[0]).date;
+      transformedMinDate = _.head(values[0]).date;
       transformedMaxDate = _.last(values[0]).date;
 
       line = d3.

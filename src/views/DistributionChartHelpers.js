@@ -48,7 +48,7 @@ var helpers = module.exports = {
     var origin = scale.y(0);
     return function(d) {
       if (d === 'start') {
-        return scale.y(_.first(data).value);
+        return scale.y(_.head(data).value);
       } else if (d === 'end') {
         return scale.y(_.last(data).value);
       } else {
@@ -74,7 +74,7 @@ var helpers = module.exports = {
   },
 
   getXTickAlign: function(bucket, scale) {
-    if (bucket === _.first(scale.x.domain())) { return 'start'; }
+    if (bucket === _.head(scale.x.domain())) { return 'start'; }
     if (bucket === _.last(scale.x.domain())) { return 'end'; }
     return 'middle';
   },
@@ -197,7 +197,7 @@ var helpers = module.exports = {
   // Returns an object mapping magnitudes to buckets. Also merges the
   // bucket with magnitude zero into the bucket with magnitude one.
   getDataByMagnitude: function(data) {
-    var dataByMagnitude = _.indexBy(_.cloneDeep(data), 'magnitude');
+    var dataByMagnitude = _.keyBy(_.cloneDeep(data), 'magnitude');
 
     // Merge zero-bucket into one-bucket.
     if (_.isObject(dataByMagnitude[0])) {
@@ -215,7 +215,7 @@ var helpers = module.exports = {
   // continuous because of the use of an ordinal scale. The zero bucket
   // must be eliminated due to the current way zero buckets are treated.
   getMagnitudeRange: function(dataByMagnitude) {
-    var extent = d3.extent(_.pluck(dataByMagnitude, 'magnitude'));
+    var extent = d3.extent(_.map(dataByMagnitude, 'magnitude'));
     var min = extent[0];
     var max = extent[1];
 

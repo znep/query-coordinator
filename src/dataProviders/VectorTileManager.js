@@ -760,7 +760,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
             // This ensures that all edgeTests for the given hotspot values
             // are true, which means that the mouse is within threshold of
             // all hotspot values (aka edges).
-            if (_.all(_.at(edgeTests, hotspot), _.identity)) {
+            if (_.every(_.at(edgeTests, hotspot), _.identity)) {
               var neighborTile = _.clone(tile);
               var neighborOffset = _.clone(mouseTileOffset);
 
@@ -960,7 +960,12 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
           // NOTE: `self.options` (which refers to the VectorTileManager
           // instance options) is not the same as `this.options` (which refers
           // to the map instance options).
-          var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
+          var totalPoints = _.chain(e.points).
+            map('count').
+            map(_.toNumber).
+            sum();
+
+          var manyRows = totalPoints > self.options.rowInspectorMaxRowDensity;
           var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
 
           if (!denseData && !manyRows) {
@@ -1004,7 +1009,7 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
       // is cleared, but points highlighted under a new flannel remain.
       flannelClosedCallback = function(e) {
         var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
-          return !_.contains(e.points, value);
+          return !_.includes(e.points, value);
         });
         highlightClickedPoints(pointsToKeepHighlighted);
       };

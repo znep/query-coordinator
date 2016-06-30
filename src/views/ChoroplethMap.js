@@ -1190,8 +1190,8 @@ function ChoroplethMap(element, vif) {
       }
 
       // For log scales, if the first stop is zero, set it to the minimum value.
-      if (scale.base && _.first(stops) === 0) {
-        stops[0] = _.first(scale.domain());
+      if (scale.base && _.head(stops) === 0) {
+        stops[0] = _.head(scale.domain());
       }
 
       return stops;
@@ -1312,7 +1312,7 @@ function ChoroplethMap(element, vif) {
       }
 
       // For log scales, if the domain includes zero, set it to the minimum value instead.
-      if (scale.base && _.first(domain) === 0) {
+      if (scale.base && _.head(domain) === 0) {
         domain[0] = min;
       }
 
@@ -1458,8 +1458,8 @@ function ChoroplethMap(element, vif) {
         return undefined;
       }
 
-      var values = _.pluck(
-        _.pluck(data.features, 'properties'),
+      var values = _.map(
+        _.map(data.features, 'properties'),
         UNFILTERED_GEOJSON_PROPERTY_NAME
       );
       var min = _.min(values);

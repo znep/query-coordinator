@@ -394,7 +394,7 @@ $.fn.socrataFeatureMap = function(vif) {
     }
 
     soqlDataProvider.
-      getRows(_.pluck(displayableColumns, 'fieldName'), query).
+      getRows(_.map(displayableColumns, 'fieldName'), query).
       then(
         handleRowInspectorQuerySuccess,
         handleRowInspectorQueryError
@@ -522,7 +522,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
         var existingNameSuffix = subColumnMatch[1];
 
-        if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
+        if (_.includes(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
           return existingNameSuffix;
         }
       }

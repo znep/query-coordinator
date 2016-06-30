@@ -371,14 +371,12 @@ function renderCustomMetadata(metadata, onMetadataAction) {
 }
 
 function renderFlashMessage(apiCall) {
-
-  //I18n.screens.import_pane.errors
   if (apiCall.type !== 'Error') {
     return;
   } else {
     switch (apiCall.error.message) {
       case 'Failed to fetch':
-       return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.network_error} />;
+        return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.network_error} />;
       case 'Bad Gateway':
         return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.http_error.format(apiCall.error.message)} />;
       default:

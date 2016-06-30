@@ -64,11 +64,6 @@ function saveMetadataToViewsApi(datasetId, metadata) {
     method: 'PUT',
     credentials: 'same-origin',
     body: JSON.stringify(modelToViewParam(metadata))
-  // }).then((result) => {
-  //   console.log(result);
-  //   if (result.statusText === 'Bad Request') {
-  //     dispatch(Metadata.metadataSaveError(result.statusText));
-  //   }
   });
 }
 

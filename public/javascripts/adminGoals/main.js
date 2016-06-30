@@ -25,7 +25,8 @@ const initialState = Immutable.fromJS({
     selectedRows: [],
     alert: { label: '', message: '' },
     rowsPerPage: 25,
-    currentPage: 1
+    currentPage: 1,
+    tableOrder: { direction: 'asc' }
   }
 });
 

@@ -10,7 +10,8 @@ import {
   TABLE_ROW_ALL_SELECTION_TOGGLE,
   ROWS_PER_PAGE_CHANGED,
   SET_TOTAL_GOAL_COUNT,
-  SET_CURRENT_PAGE
+  SET_CURRENT_PAGE,
+  SET_TABLE_ORDER
 } from '../actionTypes';
 
 import {
@@ -27,6 +28,7 @@ export function tableLoadPage() {
       then(getGoals).
       then(mergeDashboards).
       then(dispatchTotalGoalCount).
+      then(sortGoals).
       then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
@@ -53,10 +55,43 @@ export function tableLoadPage() {
       return _(goalResponses).
         map('categories').
         flatten().
-        map(category => _.map(category.goals, (goal) => _.assign(goal, { category: category.id }))).
+        map(category => _.map(category.goals, (goal) =>
+          _.assign(goal, {
+            category: category.id,
+            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name
+          }))).
         reject(_.isEmpty).
         flatten().
         value();
+    }
+
+    function sortGoals(goals) {
+      let sortedArray;
+      let sortColumn = state.getIn(['goalTableData', 'tableOrder', 'column']);
+      let sortDirection = state.getIn(['goalTableData', 'tableOrder', 'direction']);
+
+      switch (sortColumn) {
+        case 'title':
+          sortedArray = _.sortByOrder(goals, 'name', sortDirection);
+          break;
+        case 'owner':
+          sortedArray = _.sortByOrder(goals, 'created_by.displayName', sortDirection);
+          break;
+        case 'updated_at':
+          sortedArray = _.sortByOrder(goals, 'updated_at', sortDirection);
+          break;
+        case 'visibility':
+          sortedArray = _.sortByOrder(goals, 'is_public', sortDirection);
+          break;
+        case 'dashboard':
+          sortedArray = _.sortByOrder(goals, 'dashboardName', sortDirection);
+          break;
+        case 'goal_status':
+        default:
+          sortedArray = goals;
+      }
+
+      return sortedArray;
     }
 
     function dispatchTotalGoalCount(goals) {
@@ -204,6 +239,13 @@ export function setTotalGoalCount(count) {
 export function setCurrentPage(page) {
   return dispatch => {
     dispatch({type: SET_CURRENT_PAGE, page});
+    dispatch(tableLoadPage());
+  };
+}
+
+export function sortRows(column, direction) {
+  return dispatch => {
+    dispatch({type: SET_TABLE_ORDER, column, direction});
     dispatch(tableLoadPage());
   };
 }

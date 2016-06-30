@@ -109,6 +109,49 @@ describe('actions/goalTableActions', function() {
     });
   });
 
+  it('tableLoadPage should order goals ascending', function(done) {
+    const store = mockStore(Immutable.fromJS({
+      goalTableData: {
+        rowsPerPage: 100,
+        currentPage: 1,
+        tableOrder: {
+          column: 'title',
+          direction: 'asc'
+        }
+      }
+    }));
+
+    return store.dispatch(tableLoadPage()).then(function() {
+      var executedActions = store.getActions();
+
+      var tableShowPageAction = _.find(executedActions, {type: TABLE_SHOW_PAGE});
+      expect(_.get(tableShowPageAction, 'goals[0].name')).to.eq('Categoryless Goal');
+      expect(_.get(tableShowPageAction, 'goals[3].name')).to.eq('My Über Goal');
+      done();
+    });
+  });
+
+  it('tableLoadPage should order goals descending', function(done) {
+    const store = mockStore(Immutable.fromJS({
+      goalTableData: {
+        rowsPerPage: 100,
+        currentPage: 1,
+        tableOrder: {
+          column: 'title',
+          direction: 'desc'
+        }
+      }
+    }));
+
+    return store.dispatch(tableLoadPage()).then(function() {
+
+      var tableShowPageAction = _.find(store.getActions(), {type: TABLE_SHOW_PAGE});
+      expect(_.get(tableShowPageAction, 'goals[0].name')).to.eq('My Über Goal');
+      expect(_.get(tableShowPageAction, 'goals[3].name')).to.eq('Categoryless Goal');
+      done();
+    });
+  });
+
   it('cacheDashboards should send dashboards to reducer', function() {
     var returnValue = cacheDashboards(responseDashboards);
     expect(returnValue).to.deep.eq({type: CACHE_DASHBOARDS, dashboards: responseDashboards});

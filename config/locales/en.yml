@@ -1352,7 +1352,7 @@ en:
       story: Story
       story_form:
         header: Feature a Socrata Story
-        invalid_url_message: Hmm... Something went wrong. Try using a valid link to a Scorata Story.
+        invalid_url_message: Hmm... Something went wrong. Try using a valid link to a Socrata Story.
         message_html: Using Socrata Perspectives, guide your users to relevant narratives based on this data. For a full list of public stories on this domain <a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a>
         url: Link to Story
       title: Featured Content

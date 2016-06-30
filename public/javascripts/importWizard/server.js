@@ -12,36 +12,53 @@ import _ from 'lodash';
 
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
-    const { navigation, metadata, datasetId } = getState();
-    saveMetadataToViewsApi(datasetId, metadata).
-      then(checkStatus).
-      then((response) => {
+    const { navigation, datasetId, metadata } = getState();
+    dispatch(saveMetadataToViewsApi(datasetId, metadata)).
+      then(() => {
+        dispatch(proceed(navigation, datasetId, metadata));
+      });
+  };
+}
+
+export function saveMetadataToViewsApi(datasetId, metadata) {
+  return (dispatch) => {
+    return fetch(`/api/views/${datasetId}`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      body: JSON.stringify(modelToViewParam(metadata))
+    }).then(checkStatus)
+      .then((response) => {
         console.log(response);
-        dispatch(goToPage('Working'));
-        updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
-          then(() => {
-            const onImportError = () => {
-              dispatch(importError());
-              dispatch(goToPage('Metadata'));
-            };
-            dispatch(Metadata.metadataSaveComplete(metadata.contents));
-            switch (navigation.operation) {
-              case 'UploadData':
-                dispatch(importData(onImportError));
-                break;
-              case 'UploadGeospatial':
-                dispatch(importGeospatial(onImportError));
-                break;
-              case 'CreateFromScratch':
-                dispatch(goToPage('Finish'));
-                break;
-              default:
-                console.error('Unkown operation!', navigation.operation);
-            }
-          }).
-          catch((err) => {
-            dispatch(Metadata.metadataSaveError(err));
-          });
+      }).
+    catch((err) => {
+      dispatch(Metadata.metadataSaveError(err));
+    });
+  };
+}
+
+export function proceed(navigation, datasetId, metadata) {
+  return (dispatch) => {
+    dispatch(goToPage('Working'));
+    updatePrivacy(datasetId, metadata.lastSaved.privacySettings, metadata.contents.privacySettings).
+      then(() => {
+        const onImportError = () => {
+          dispatch(importError());
+          dispatch(goToPage('Metadata'));
+        };
+        dispatch(Metadata.metadataSaveComplete(metadata.contents));
+        switch (navigation.operation) {
+          case 'UploadData':
+            dispatch(importData(onImportError));
+            break;
+          case 'UploadGeospatial':
+            dispatch(importGeospatial(onImportError));
+            break;
+          case 'CreateFromScratch':
+            dispatch(goToPage('Finish'));
+            break;
+          default:
+            console.error('Unkown operation!', navigation.operation);
+        }
       }).
       catch((err) => {
         dispatch(Metadata.metadataSaveError(err));
@@ -49,7 +66,18 @@ export function saveMetadataThenProceed() {
   };
 }
 
-function checkStatus(response) {
+export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
+  const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
+
+  return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
+    method: 'PUT',
+    credentials: 'same-origin'
+  }).then((result) => {
+    console.log(result);
+  });
+}
+
+export function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
@@ -57,14 +85,6 @@ function checkStatus(response) {
     error.response = response;
     throw error;
   }
-}
-
-function saveMetadataToViewsApi(datasetId, metadata) {
-  return fetch(`/api/views/${datasetId}`, {
-    method: 'PUT',
-    credentials: 'same-origin',
-    body: JSON.stringify(modelToViewParam(metadata))
-  });
 }
 
 export function modelToViewParam(metadata) {
@@ -132,17 +152,6 @@ function coreViewToCustomMetadataModel(view) {
       }
     ))
   ));
-}
-
-export function updatePrivacy(datasetId, lastPrivacy, currentPrivacy) {
-  const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
-
-  return fetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
-    method: 'PUT',
-    credentials: 'same-origin'
-  }).then((result) => {
-    console.log(result);
-  });
 }
 
 type ImportProgress

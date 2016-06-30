@@ -306,7 +306,7 @@ ul.wizardButtons {
   margin: 1em;
   li {
     display: block;
-    &.cancel {
+    &.cancel, &.save {
       float: left;
     }
     &.prev, &.next {

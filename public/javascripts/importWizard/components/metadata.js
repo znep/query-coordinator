@@ -385,7 +385,7 @@ function renderFlashMessage(apiCall) {
   }
 }
 
-export function view({ metadata, onMetadataAction }) {
+export function view({ datasetId, metadata, onMetadataAction }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
@@ -549,14 +549,15 @@ export function view({ metadata, onMetadataAction }) {
           <li className="save">
             <button
               className="button saveButton"
-              disabled={!(isMetadataUnsaved(metadata) && isMetadataValid(metadata))}
               onClick={() => {
-                onMetadataAction(metadataSaveStart());
-                onMetadataAction(updateLastSaved(metadata));
-                onMetadataAction(metadataSaveComplete(metadata.contents));
-              }}>
-              Save
-            </button>
+                onMetadataAction(updateNextClicked());
+                if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
+                  onMetadataAction(metadataSaveStart());
+                  onMetadataAction(updateLastSaved(metadata));
+                  onMetadataAction(Server.saveMetadataToViewsApi(datasetId, metadata));
+                  onMetadataAction(metadataSaveComplete(metadata.contents));
+                }
+              }}>Save</button>
           </li>
           <li className="next">
             <button
@@ -583,5 +584,6 @@ export function view({ metadata, onMetadataAction }) {
 
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
-  onMetadataAction: PropTypes.func.isRequired
+  onMetadataAction: PropTypes.func.isRequired,
+  datasetId: PropTypes.string.isRequired
 };

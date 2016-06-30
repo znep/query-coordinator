@@ -14,6 +14,25 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+if SemVer.new(*Jammit::VERSION.split('.').map(&:to_i)) > SemVer.new(0, 6, 5)
+  # EN-7680: This reverts
+  # https://github.com/documentcloud/jammit/commit/dcc9b02c2b9254fc4e6e53ba4a2dbc36378540cd
+  # Because Rails has moved on in the last few years, but Jammit hasn't.
+  module FixJammit
+    def include_javascripts(*packages)
+      options = packages.extract_options!
+      options.merge!(:extname=>false)
+      html_safe packages.map {|pack|
+        should_package? ? Jammit.asset_url(pack, :js) : Jammit.packager.individual_urls(pack.to_sym, :js)
+      }.flatten.map {|pack|
+        javascript_include_tag pack, options
+      }.join("\n")
+    end
+  end
+
+  ::ActionView::Base.send(:include, FixJammit)
+end
+
 module Frontend
   UID_REGEXP = /\w{4}-\w{4}/
   INTEGER_REGEXP = /-?\d+/

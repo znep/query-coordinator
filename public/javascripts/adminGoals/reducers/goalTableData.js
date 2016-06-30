@@ -9,7 +9,9 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
-  ROWS_PER_PAGE_CHANGED
+  ROWS_PER_PAGE_CHANGED,
+  SET_TOTAL_GOAL_COUNT,
+  SET_CURRENT_PAGE
 } from '../actionTypes';
 
 export default createReducer(Immutable.fromJS({}), {
@@ -27,5 +29,7 @@ export default createReducer(Immutable.fromJS({}), {
   [TABLE_ROW_ALL_SELECTION_TOGGLE]: state => state.get('selectedRows').size == state.get('goals').size ?
     state.set('selectedRows', new Immutable.List) :
     state.set('selectedRows', state.get('goals').map(goal => goal.get('id'))),
-  [ROWS_PER_PAGE_CHANGED]: (state,action) => state.set('rowsPerPage', action.value)
+  [ROWS_PER_PAGE_CHANGED]: (state,action) => state.set('rowsPerPage', action.value),
+  [SET_TOTAL_GOAL_COUNT]: (state,action) => state.set('totalGoalCount', action.count),
+  [SET_CURRENT_PAGE]: (state,action) => state.set('currentPage', action.page)
 });

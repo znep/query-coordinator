@@ -8,7 +8,9 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
-  ROWS_PER_PAGE_CHANGED
+  ROWS_PER_PAGE_CHANGED,
+  SET_TOTAL_GOAL_COUNT,
+  SET_CURRENT_PAGE
 } from '../actionTypes';
 
 import {
@@ -24,6 +26,7 @@ export function tableLoadPage() {
     return getDashboards().
       then(getGoals).
       then(mergeDashboards).
+      then(dispatchTotalGoalCount).
       then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
@@ -56,8 +59,19 @@ export function tableLoadPage() {
         value();
     }
 
+    function dispatchTotalGoalCount(goals) {
+      dispatch(setTotalGoalCount(goals.length));
+
+      return goals;
+    }
+
     function trimToPageSize(goals) {
-      return _.slice(goals, 0, state.getIn(['goalTableData', 'rowsPerPage']));
+      let index = state.getIn(['goalTableData', 'currentPage']) - 1;
+      let sliceStart = index * state.getIn(['goalTableData', 'rowsPerPage']);
+      let sliceEnd = index * state.getIn(['goalTableData', 'rowsPerPage']) +
+        state.getIn(['goalTableData', 'rowsPerPage']);
+
+      return _.slice(goals, sliceStart, sliceEnd);
     }
 
     function getGoalsExtras(goals) {
@@ -176,6 +190,20 @@ export function toggleAllRows() {
 export function setRowsPerPage(value) {
   return dispatch => {
     dispatch({type: ROWS_PER_PAGE_CHANGED, value});
+    dispatch(tableLoadPage());
+  };
+}
+
+export function setTotalGoalCount(count) {
+  return {
+    type: SET_TOTAL_GOAL_COUNT,
+    count
+  };
+}
+
+export function setCurrentPage(page) {
+  return dispatch => {
+    dispatch({type: SET_CURRENT_PAGE, page});
     dispatch(tableLoadPage());
   };
 }

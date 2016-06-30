@@ -2,14 +2,11 @@ require 'rails_helper'
 
 describe SocrataSiteChrome::ThemesHelper do
 
-  let(:site_chrome_config_vars) do
-    JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access
+  let(:site_chrome_config) do
+    JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access
   end
-
-  let(:core_config) do
-    JSON.parse(File.read('spec/fixtures/core_config.json')).with_indifferent_access.tap do |config|
-      config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
-    end
+  let(:site_chrome_content) do
+    site_chrome_config['properties'].first['value']['versions']['0.2']['published']
   end
 
   describe '#cache_key_for_site_chrome' do
@@ -18,9 +15,9 @@ describe SocrataSiteChrome::ThemesHelper do
     end
 
     it 'returns a cache key with the site_chrome updated_at timestamp' do
-      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(core_config)
-      site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
-      expect(helper.cache_key_for_site_chrome(site_chrome_config)).to eq('/config/custom-123546789')
+      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(site_chrome_config)
+      domain_site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
+      expect(helper.cache_key_for_site_chrome(domain_site_chrome_config)).to eq('/config/custom-1462907760')
     end
   end
 

@@ -10,7 +10,7 @@ module SiteChromeHelper
   end
 
   def google_analytics_tracking_code
-    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token])
+    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag

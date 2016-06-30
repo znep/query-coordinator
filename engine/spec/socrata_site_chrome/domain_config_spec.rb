@@ -4,12 +4,7 @@ require 'webmock/rspec'
 describe SocrataSiteChrome::DomainConfig do
 
   let(:domain) { 'data.seattle.gov' }
-  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
-  let(:core_config) do
-    JSON.parse(File.read('spec/fixtures/core_config.json')).with_indifferent_access.tap do |config|
-      config['properties'].first['value']['versions']['0.1']['published'] = site_chrome_config_vars
-    end
-  end
+  let(:site_chrome_config) { JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access }
 
   def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
     uri = "https://#{domain}/api/configurations.json?type=site_chrome&defaultOnly=true"
@@ -71,17 +66,17 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
-  describe '#newest_published_site_chrome' do
-    it 'returns an empty hash if core_config does not have properties' do
+  describe '#current_published_site_chrome' do
+    it 'returns an empty hash if site_chrome_config does not have properties' do
       allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { {} }
       domain_config = SocrataSiteChrome::DomainConfig.new(domain)
-      result = domain_config.send(:newest_published_site_chrome)
+      result = domain_config.send(:current_published_site_chrome)
       expect(result).to eq({})
     end
 
     it 'returns the published config of the most recent version of the site chrome' do
-      core_config_with_various_versions = core_config.clone
-      core_config_with_various_versions['properties'].first['value']['versions'] =
+      site_chrome_config_with_various_versions = site_chrome_config.clone
+      site_chrome_config_with_various_versions['properties'].first['value']['versions'] =
         {
           '0.1' => {
             'draft' => { 'value' => 'x' },
@@ -96,20 +91,21 @@ describe SocrataSiteChrome::DomainConfig do
             'published' => { 'value' => 'c' }
           }
         }
-      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { core_config_with_various_versions }
-      result = SocrataSiteChrome::DomainConfig.new(domain).send(:newest_published_site_chrome)
+      site_chrome_config_with_various_versions['properties'].first['value']['current_version'] = nil
+      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { site_chrome_config_with_various_versions }
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_published_site_chrome)
       expect(result).to eq({ 'value' => 'b' })
     end
 
     it 'dispatches an Airbrake notification when invalid site_chrome config is found' do
-      core_config_with_various_versions = core_config.clone
-      core_config_with_various_versions['properties'].first['value']['versions'] = nil
-      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { core_config_with_various_versions }
+      site_chrome_config_with_various_versions = site_chrome_config.clone
+      site_chrome_config_with_various_versions['properties'].first['value']['versions'] = nil
+      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { site_chrome_config_with_various_versions }
       expect(Airbrake).to receive(:notify) do |hash|
         expect(hash[:error_class]).to eq('InvalidSiteChromeConfiguration')
         expect(hash[:error_message]).to match(/invalid site_chrome config/i)
       end
-      result = SocrataSiteChrome::DomainConfig.new(domain).send(:newest_published_site_chrome)
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_published_site_chrome)
       expect(result).to eq({})
     end
   end

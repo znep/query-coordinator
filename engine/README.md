@@ -176,210 +176,115 @@ config.styleguide = false
 
 ```
 {
+  "current_version": "0.3",
   "versions": {
-    "0.1": {
+    "0.3": {
       "published": {
         "content": {
           "footer": {
-            "logo": {
-              "src": "https://media.giphy.com/media/Wod1ZpWe3aVZS/giphy.gif"
-            },
-            "styles": {
-              "fg_color": "#fff",
-              "bg_color": "#333"
-            },
             "links": [
               {
-                "key": "link_00",
+                "key": "home",
                 "url": "/"
               },
               {
-                "key": "link_01",
-                "url": "http://data.evergreen.gov"
+                "key": "terms_of_service",
+                "url": "http://www.socrata.com/terms-of-service"
               },
               {
-                "key": "link_02",
-                "url": ""
+                "key": "privacy",
+                "url": "http://www.socrata.com/privacy"
               },
               {
-                "key": "link_03",
-                "url": ""
+                "key": "accessibility",
+                "url": "http://www.socrata.com/accessibility"
               },
               {
-                "key": "link_04",
-                "url": ""
-              },
-              {
-                "key": "link_05",
-                "url": ""
-              },
-              {
-                "key": "link_06",
-                "url": ""
-              },
-              {
-                "key": "link_07",
-                "url": ""
-              },
-              {
-                "key": "link_08",
-                "url": ""
-              },
-              {
-                "key": "link_09",
-                "url": ""
-              },
-              {
-                "key": "link_10",
-                "url": ""
-              },
-              {
-                "key": "link_11",
-                "url": ""
-              },
-              {
-                "key": "link_12",
-                "url": ""
-              },
-              {
-                "key": "link_13",
-                "url": ""
-              },
-              {
-                "key": "link_14",
-                "url": ""
+                "key": "contact_us",
+                "url": "http://www.socrata.com/contact-us"
               }
             ],
-            "copyright_notice": "true"
+            "logo": {
+              "href": "#",
+              "src": "/stylesheets/images/common/socrata_logo_light.png"
+            },
+            "styles": {
+              "bg_color": "#3b3a3c",
+              "fg_color": "#eeeeee"
+            }
+          },
+          "general": {
+            "template": "rally",
+            "default_locale": "en",
+            "window_icon": "",
+            "link_text_color": "blue",
+            "window_title_display": "Evergreen",
+            "social_shares": {
+              "facebook": {
+                "url": "http://facebook.com/evergreen"
+              },
+              "twitter": {
+                "url": "http://twitter.com/evergreen"
+              }
+            },
+            "styles": {
+              "bg_color": "#2c97de",
+              "fg_color": "#eeeeee",
+              "font_family": "Open Sans"
+            }
+          },
+          "header": {
+            "links": [
+              {
+                "key": "home",
+                "url": "/"
+              },
+              {
+                "key": "catalog",
+                "url": "/browse"
+              },
+              {
+                "key": "developers",
+                "url": "http://dev.socrata.com"
+              },
+              {
+                "key": "support",
+                "url": "http://support.socrata.com"
+              }
+            ],
+            "logo": {
+              "href": "#",
+              "src": "http://evergreen.gov/logo.png"
+            },
+            "styles": {
+              "bg_color": "#22b479",
+              "fg_color": "#eeeeee"
+            }
           },
           "locales": {
             "en": {
               "footer": {
                 "links": {
-                  "link_00": "Home",
-                  "link_01": "Evergreen",
-                  "link_02": "",
-                  "link_03": "",
-                  "link_04": "",
-                  "link_05": "",
-                  "link_06": "",
-                  "link_07": "",
-                  "link_08": "",
-                  "link_09": "",
-                  "link_10": "",
-                  "link_11": "",
-                  "link_12": "",
-                  "link_13": "",
-                  "link_14": ""
+                  "accessibility": "Accessibility",
+                  "contact_us": "Contact Us",
+                  "home": "Home Page",
+                  "privacy": "Privacy Policy",
+                  "terms_of_service": "Terms of Service"
                 },
-                "site_name": "footer display name!"
+                "logo_alt": "Welcome to Evergreen",
+                "site_name": "City of Evergreen"
               },
               "header": {
                 "links": {
-                  "link_00": "Home"
-                  "link_01": "Evergreen",
-                  "link_02": "State website",
-                  "link_03": "",
-                  "link_04": "",
-                  "link_05": "",
-                  "link_06": "",
-                  "link_07": "",
-                  "link_08": "",
-                  "link_09": "",
-                  "link_10": "",
-                  "link_11": "",
-                  "link_12": "",
-                  "link_13": "",
-                  "link_14": ""
+                  "catalog": "Browse",
+                  "developers": "Developers",
+                  "home": "Home Page",
+                  "support": "Support"
                 },
-                "site_name": "City of Evergreen"
+                "logo_alt": "Evergreen",
+                "site_name": "Evergreen"
               }
             }
-          },
-          "header": {
-            "logo": {
-              "src": "http://i.imgur.com/E8wtc6d.gif"
-            },
-            "styles": {
-              "fg_color": "#fff",
-              "bg_color": "#444"
-            },
-            "links": [
-              {
-                "key": "link_00",
-                "url": "/"
-              },
-              {
-                "key": "link_01",
-                "url": "http://data.evergreen.gov"
-              },
-              {
-                "key": "link_02",
-                "url": "#"
-              },
-              {
-                "key": "link_03",
-                "url": ""
-              },
-              {
-                "key": "link_04",
-                "url": ""
-              },
-              {
-                "key": "link_05",
-                "url": ""
-              },
-              {
-                "key": "link_06",
-                "url": ""
-              },
-              {
-                "key": "link_07",
-                "url": ""
-              },
-              {
-                "key": "link_08",
-                "url": ""
-              },
-              {
-                "key": "link_09",
-                "url": ""
-              },
-              {
-                "key": "link_10",
-                "url": ""
-              },
-              {
-                "key": "link_11",
-                "url": ""
-              },
-              {
-                "key": "link_12",
-                "url": ""
-              },
-              {
-                "key": "link_13",
-                "url": ""
-              },
-              {
-                "key": "link_14",
-                "url": ""
-              }
-            ]
-          },
-          "general": {
-            "window_icon": "//3.bp.blogspot.com/_4ngpCZv0sNo/SiwO7f3LdzI/AAAAAAAAB5U/yobvWk1nrhg/s400/g7719.png",
-            "social_shares": [
-              {
-                "type": "facebook",
-                "url": "http://facebook.com/dylan"
-              },
-              {
-                "type": "twitter",
-                "url": "http://twitter.com/dylan"
-              }
-            ],
-            "window_title_display": "Custom title!"
           }
         }
       }

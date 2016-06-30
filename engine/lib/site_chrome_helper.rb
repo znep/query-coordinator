@@ -1,5 +1,7 @@
 # The purpose of this module is to add helper methods to the host Rails application.
 
+require 'cgi'
+
 module SiteChromeHelper
   include SocrataSiteChrome::ApplicationHelper
 
@@ -8,7 +10,7 @@ module SiteChromeHelper
   end
 
   def google_analytics_tracking_code
-    get_site_chrome.general[:google_analytics_token]
+    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token])
   end
 
   def site_chrome_google_analytics_tag

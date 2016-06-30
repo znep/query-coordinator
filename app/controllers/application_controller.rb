@@ -35,6 +35,15 @@ class ApplicationController < ActionController::Base
     session['init'] = true unless session.loaded?
     super
   end
+  protected :valid_authenticity_token?
+
+  # We're caching the masked token per request here in order to make sure that form_tag helpers (and other
+  # methods) that render the CSRF token, all get the same value. Long-term we need to teach Core how to deal
+  # with the new Rails 4 masked CSRF tokens.
+  def masked_authenticity_token(session)
+    RequestStore[:masked_authenticity_token] ||= super
+  end
+  protected :masked_authenticity_token
 
   def handle_unverified_request
     # As of Rails 2.3.11 (and in 3.0.4), the CSRF protection behavior

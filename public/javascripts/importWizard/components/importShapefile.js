@@ -71,7 +71,6 @@ export function view({ layers, fileName, dispatch, goToPage }) {
   return (
     <div>
       <div className="importShapefilePane" style={{width: '1000px', display: 'list-item'}}>
-        <div className="flash"></div>
         {shapefilePane()}
       </div>
       <ul className="wizardButtons clearfix" aria-live="polite">

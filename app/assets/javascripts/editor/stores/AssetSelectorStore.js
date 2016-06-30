@@ -8,8 +8,8 @@ import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
-import {fileUploaderStore, STATUS} from './FileUploaderStore';
-import httpRequest from '../../services/httpRequest';
+import { fileUploaderStore, STATUS } from './FileUploaderStore';
+import httpRequest, { storytellerAPIRequestHeaders } from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 // The step in the asset selection flow the user is in.
@@ -526,7 +526,25 @@ export default function AssetSelectorStore() {
 
   function commitImageCrop() {
     var value = getImageComponent(self.getComponentValue());
-    var url = StorytellerUtils.format('{0}documents/{1}/crop', Constants.API_PREFIX_PATH, value.documentId);
+    var documentUrl = StorytellerUtils.format('{0}documents/{1}', Constants.API_PREFIX_PATH, value.documentId);
+    var documentRequestOptions = {
+      dataType: 'json',
+      headers: storytellerAPIRequestHeaders()
+    };
+
+    _state.cropping = true;
+    _state.cropComplete = false;
+
+    self._emitChange();
+
+    httpRequest('get', documentUrl, documentRequestOptions).
+      then(cropImage).
+      catch(cropImageError);
+  }
+
+  function cropImage(data) {
+    var value = getImageComponent(self.getComponentValue());
+    var cropUrl = StorytellerUtils.format('{0}documents/{1}/crop', Constants.API_PREFIX_PATH, value.documentId);
     var document = value.crop ? {
       crop_x: value.crop.x / 100,
       crop_y: value.crop.y / 100,
@@ -539,37 +557,35 @@ export default function AssetSelectorStore() {
       crop_height: null
     };
 
-    var options = {
+    var cropRequestOptions = {
       dataType: 'text',
       data: JSON.stringify({ document: document }),
-      headers: { 'X-CSRF-Token': Environment.CSRF_TOKEN }
+      headers: storytellerAPIRequestHeaders()
     };
 
-    _state.cropping = true;
-    _state.cropComplete = false;
-
-    self._emitChange();
-
-    httpRequest('put', url, options).
+    httpRequest('put', cropUrl, cropRequestOptions).
       then(function() {
         _state.cropping = false;
         _state.cropComplete = true;
+        value.url = data.document.url;
 
         self._emitChange();
       }).
-      catch(function(error) {
-        _state.cropping = false;
+      catch(cropImageError);
+  }
 
-        exceptionNotifier.notify(error);
+  function cropImageError(error) {
+    _state.cropping = false;
 
-        _updateImageUploadError({
-          error: {
-            reason: I18n.t('editor.asset_selector.image_preview.errors.cropping')
-          }
-        });
+    exceptionNotifier.notify(error);
 
-        self._emitChange();
-      });
+    _updateImageUploadError({
+      error: {
+        reason: I18n.t('editor.asset_selector.image_preview.errors.cropping')
+      }
+    });
+
+    self._emitChange();
   }
 
   function startImageCropping() {

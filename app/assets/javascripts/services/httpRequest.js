@@ -1,8 +1,15 @@
 import $ from 'jQuery';
 
+import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 
 var SUPPORTED_REQUEST_METHODS = ['GET', 'PUT'];
+
+export var storytellerAPIRequestHeaders = function() {
+  return {
+    'X-CSRF-Token': Environment.CSRF_TOKEN
+  };
+};
 
 export default function httpRequest(method, url, options) {
 

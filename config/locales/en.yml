@@ -1347,7 +1347,7 @@ en:
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
       preview: Preview of featured content
       remove_error: Oh no!  Something went wrong, please try again.
-      remove_prompt: Are you sure you want to remove this as a piece of featured content?
+      remove_prompt: Are you sure you want to remove this piece of featured content?
       save_error_message: Oh no! Something went wrong, please try again.
       story: Story
       story_form:

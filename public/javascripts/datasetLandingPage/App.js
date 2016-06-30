@@ -18,8 +18,8 @@ import FeedbackPanel from './components/FeedbackPanel';
 export default function() {
   return (
     <div>
-      <PrivateNotice />
       <PublishNotice />
+      <PrivateNotice />
       <InfoPane />
 
       <main className="container landing-page-container">

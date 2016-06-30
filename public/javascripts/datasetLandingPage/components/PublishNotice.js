@@ -79,8 +79,8 @@ export var PublishNotice = React.createClass({
 
     return (
       <div>
-        {this.renderPublishErrorAlert()}
         {this.renderPublishAlert()}
+        {this.renderPublishErrorAlert()}
       </div>
     );
   }

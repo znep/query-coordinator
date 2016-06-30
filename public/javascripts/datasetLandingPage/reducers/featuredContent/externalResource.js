@@ -23,23 +23,30 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case EDIT_FEATURED_ITEM:
       if (action.featuredItem.contentType === 'external') {
-        state.description = action.featuredItem.description;
-        state.previewImage = action.featuredItem.previewImage;
-        state.title = action.featuredItem.title;
-        state.url = action.featuredItem.url;
-        state.canSave = canSave(state);
+        return {
+          ...state,
+          description: action.featuredItem.description,
+          previewImage: action.featuredItem.previewImage,
+          title: action.featuredItem.title,
+          url: action.featuredItem.url,
+          canSave: canSave(state)
+        };
       }
+
       return state;
 
     case SET_EXTERNAL_RESOURCE_FIELD:
-      state[action.field] = action.value;
-      state.canSave = canSave(state);
-      return state;
+      var newState = {
+        ...state,
+        [action.field]: action.value
+      };
+
+      newState.canSave = canSave(newState);
+
+      return newState;
 
     case CANCEL_FEATURED_ITEM_EDIT:
       return initialState;

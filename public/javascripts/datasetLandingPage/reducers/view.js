@@ -19,8 +19,6 @@ export default function(state, action) {
     return getInitialState();
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case REQUESTED_VIEW_PUBLISH:
       return {

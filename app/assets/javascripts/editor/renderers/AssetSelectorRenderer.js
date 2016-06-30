@@ -1122,9 +1122,17 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function cropImage() {
-    dispatcher.dispatch({
-      action: Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT
-    });
+    var type = assetSelectorStore.getComponentType();
+    var value = assetSelectorStore.getComponentValue();
+    var documentId = type === 'author' ? value.image.documentId : value.documentId;
+
+    if (documentId) {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_IMAGE_CROP_COMMIT
+      });
+    } else {
+      uploadUrl();
+    }
   }
 
   function uploadUrl() {

@@ -25,20 +25,19 @@ export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(goToPage('Working'));
-    const { navigation, datasetId, metadata } = getState();
-    dispatch(saveMetadataToViewsApi(datasetId, metadata)).
+    dispatch(saveMetadataToViewsApi()).
       then(() => {
-        dispatch(proceed(navigation, datasetId, metadata));
+        dispatch(proceedFromMetadataPane());
       });
   };
 }
 
-export function saveMetadataToViewsApi(datasetId, metadata) {
-  return (dispatch) => {
+export function saveMetadataToViewsApi() {
+  return (dispatch, getState) => {
     dispatch(Metadata.metadataSaveStart());
-
+    const { datasetId, metadata } = getState();
     return fetch(`/api/views/${datasetId}`, {
       method: 'PUT',
       credentials: 'same-origin',
@@ -46,19 +45,19 @@ export function saveMetadataToViewsApi(datasetId, metadata) {
     }).then(checkStatus)
       .then((response) => {
         console.log(response);
-    }).then(() => {
-      dispatch(updatePrivacy(datasetId, metadata.contents.privacySettings));
-    }).then(() => {
-      dispatch(Metadata.metadataSaveComplete(metadata.contents));
-      dispatch(Metadata.updateLastSaved(metadata));
-    }).catch((err) => {
-      dispatch(Metadata.metadataSaveError(err));
-    });
+        dispatch(Metadata.metadataSaveComplete(metadata.contents));
+        dispatch(Metadata.updateLastSaved(metadata));
+      }).then(() => {
+        dispatch(updatePrivacy(datasetId, metadata, metadata.contents.privacySettings));
+      }).catch((err) => {
+        dispatch(Metadata.metadataSaveError(err));
+      });
   };
 }
 
-export function proceed(navigation, datasetId, metadata) {
-  return (dispatch) => {
+export function proceedFromMetadataPane() {
+  return (dispatch, getState) => {
+    const { navigation } = getState();
     const onImportError = () => {
       dispatch(importError());
       dispatch(goToPage('Metadata'));
@@ -79,7 +78,7 @@ export function proceed(navigation, datasetId, metadata) {
   };
 }
 
-export function updatePrivacy(datasetId, currentPrivacy) {
+export function updatePrivacy(datasetId, metadata, currentPrivacy) {
   return (dispatch) => {
     const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
 
@@ -92,8 +91,10 @@ export function updatePrivacy(datasetId, currentPrivacy) {
       }
     }).then((result) => {
       console.log(result);
+      dispatch(Metadata.metadataSaveComplete(metadata.contents));
+      dispatch(Metadata.updateLastSaved(metadata));
     });
-  }
+  };
 }
 
 export function checkStatus(response) {

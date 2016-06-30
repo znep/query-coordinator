@@ -410,7 +410,7 @@ function renderFlashMessageImportError(importError) {
   return <FlashMessage flashType="error" message={importError} />;
 }
 
-export function view({ datasetId, metadata, onMetadataAction, importError, goToPrevious }) {
+export function view({ metadata, onMetadataAction, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
@@ -562,7 +562,7 @@ export function view({ datasetId, metadata, onMetadataAction, importError, goToP
         onSave={() => {
           onMetadataAction(updateNextClicked());
           if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
-            onMetadataAction(Server.saveMetadataToViewsApi(datasetId, metadata));
+            onMetadataAction(Server.saveMetadataToViewsApi());
           }
         }}
 
@@ -580,7 +580,6 @@ export function view({ datasetId, metadata, onMetadataAction, importError, goToP
 }
 
 view.propTypes = {
-  datasetId: PropTypes.string.isRequired,
   metadata: PropTypes.object.isRequired,
   onMetadataAction: PropTypes.func.isRequired,
   importError: PropTypes.string,

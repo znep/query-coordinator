@@ -18,13 +18,13 @@ export var DatasetPreview = React.createClass({
   },
 
   componentDidMount: function() {
-    if (this.props.view.isTabular) {
+    if (this.shouldRenderTable()) {
       this.initializeTable();
     }
   },
 
   componentWillUnmount: function() {
-    if (this.props.view.isTabular) {
+    if (this.shouldRenderTable()) {
       this.removeTable();
     }
   },
@@ -61,6 +61,15 @@ export var DatasetPreview = React.createClass({
         other: view.rowLabelMultiple
       }
     };
+  },
+
+  shouldRenderTable: function() {
+    var { view } = this.props;
+
+    return view.isTabular &&
+      !_.isEmpty(view.columns) &&
+      view.rowCount > 0 &&
+      serverConfig.featureFlags.defaultToDatasetLandingPage;
   },
 
   initializeTable: function() {
@@ -119,12 +128,8 @@ export var DatasetPreview = React.createClass({
 
   render: function() {
     var { view, onClickGrid } = this.props;
-    var shouldRenderTable = view.isTabular &&
-      !_.isEmpty(view.columns) &&
-      view.rowCount > 0 &&
-      serverConfig.featureFlags.defaultToDatasetLandingPage;
 
-    if (shouldRenderTable) {
+    if (this.shouldRenderTable()) {
       return (
         <section className="landing-page-section dataset-preview">
           <div className="landing-page-header-wrapper">

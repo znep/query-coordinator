@@ -17,15 +17,32 @@ export var LegendsAndFlyoutsPane = React.createClass({
 
   units() {
     var unitOne = getUnitOne(this.props.vifAuthoring);
+    var unitOneAttributes = {
+      id: 'units-one',
+      className: 'text-input',
+      type: 'text',
+      onChange: this.props.onChangeUnitsOne,
+      placeholder: translate('panes.legends_and_flyouts.fields.units_one.placeholder'),
+      defaultValue: unitOne
+    };
+
     var unitOther = getUnitOther(this.props.vifAuthoring);
+    var unitOtherAttributes = {
+      id: 'units-other',
+      className: 'text-input',
+      type: 'text',
+      onChange: this.props.onChangeUnitsOther,
+      placeholder: translate('panes.legends_and_flyouts.fields.units_other.placeholder'),
+      defaultValue: unitOther
+    };
 
     return (
       <div>
-        <h5>Units</h5>
-        <label className="block-label" htmlFor="units-one">One:</label>
-        <input id="units-one" className="text-input" type="text" onChange={this.props.onChangeUnitsOne} placeholder="Record" defaultValue={unitOne} />
-        <label className="block-label" htmlFor="units-other">Other:</label>
-        <input id="units-other" className="text-input" type="text" onChange={this.props.onChangeUnitsOther} placeholder="Records" defaultValue={unitOther} />
+        <h5>{translate('panes.legends_and_flyouts.subheaders.units')}</h5>
+        <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}:</label>
+        <input {...unitOneAttributes} />
+        <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}:</label>
+        <input {...unitOtherAttributes} />
       </div>
     );
   },
@@ -55,7 +72,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return (
       <div>
         {this.units()}
-        <h5>Flyout Title</h5>
+        <h5>{translate('panes.legends_and_flyouts.subheaders.flyout_title')}</h5>
         <label className="block-label" htmlFor="flyout-title-column">Column</label>
         <div className="flyout-title-dropdown-container">
           <select id="flyout-title" onChange={this.props.onChangeFlyoutTitle} defaultValue={defaultFlyoutTitleColumn}>

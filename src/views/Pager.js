@@ -10,11 +10,11 @@ module.exports = function Pager(element, vif) {
   var _lastRenderOptions;
 
   utils.assertHasProperties(vif,
-    'configuration.localization.PREVIOUS',
-    'configuration.localization.NEXT',
-    'configuration.localization.NO_ROWS',
-    'configuration.localization.ONLY_ROW',
-    'configuration.localization.MANY_ROWS',
+    'configuration.localization.previous',
+    'configuration.localization.next',
+    'configuration.localization.no_rows',
+    'configuration.localization.only_row',
+    'configuration.localization.many_rows',
     'unit.one',
     'unit.other'
   );
@@ -49,11 +49,11 @@ module.exports = function Pager(element, vif) {
     var endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
-      message = vif.configuration.localization.NO_ROWS;
+      message = vif.configuration.localization.no_rows;
     } else if (options.endIndex === options.startIndex + 1) {
-      message = vif.configuration.localization.ONLY_ROW;
+      message = vif.configuration.localization.only_row;
     } else {
-      message = vif.configuration.localization.MANY_ROWS;
+      message = vif.configuration.localization.many_rows;
     }
 
     message = message.format({
@@ -76,8 +76,8 @@ module.exports = function Pager(element, vif) {
     ].join('\n');
 
     return template.format({
-      previous: vif.configuration.localization.PREVIOUS,
-      next: vif.configuration.localization.NEXT,
+      previous: vif.configuration.localization.previous,
+      next: vif.configuration.localization.next,
       previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
       nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount) ? ' disabled' : ''
     });

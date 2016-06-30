@@ -503,8 +503,8 @@ function FeatureMap(element, vif) {
         {
           icon: _userCurrentPositionIcon,
           clickable: false,
-          title: self.getLocalization('USER_CURRENT_POSITION'),
-          alt: self.getLocalization('USER_CURRENT_POSITION')
+          title: self.getLocalization('user_current_position'),
+          alt: self.getLocalization('user_current_position')
         }
       );
 
@@ -669,7 +669,7 @@ function FeatureMap(element, vif) {
         _flyoutData.count,
         rowCountUnit
       ),
-      notice: self.getLocalization('FLYOUT_CLICK_TO_INSPECT_NOTICE'),
+      notice: self.getLocalization('flyout_click_to_inspect_notice'),
       flyoutOffset: {
         left: event.originalEvent.clientX,
         top: event.originalEvent.clientY
@@ -679,9 +679,9 @@ function FeatureMap(element, vif) {
     if (manyRows || denseData) {
 
       if (_map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
-        payload.notice = self.getLocalization('FLYOUT_FILTER_NOTICE');
+        payload.notice = self.getLocalization('flyout_filter_notice');
       } else {
-        payload.notice = self.getLocalization('FLYOUT_FILTER_OR_ZOOM_NOTICE');
+        payload.notice = self.getLocalization('flyout_filter_or_zoom_notice');
       }
 
       // If the tile we are hovering over has more points then the
@@ -690,7 +690,7 @@ function FeatureMap(element, vif) {
       // prompt the user to filter and/or zoom in for accurate data.
       if (denseData) {
         payload.title = '{0} {1}'.format(
-          self.getLocalization('FLYOUT_DENSE_DATA_NOTICE'),
+          self.getLocalization('flyout_dense_data_notice'),
           (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'series[0].unit.other')
         );
       }
@@ -708,7 +708,7 @@ function FeatureMap(element, vif) {
 
     var payload = {
       element: _mapPanZoomDisabledWarning[0],
-      title: self.getLocalization('FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE')
+      title: self.getLocalization('flyout_pan_zoom_disabled_warning_title')
     };
 
     self.emitEvent(
@@ -726,15 +726,15 @@ function FeatureMap(element, vif) {
 
       payload = {
         element: _mapLocateUserButton[0],
-        title: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_TITLE'),
-        notice: self.getLocalization('FLYOUT_CLICK_TO_LOCATE_USER_NOTICE')
+        title: self.getLocalization('flyout_click_to_locate_user_title'),
+        notice: self.getLocalization('flyout_click_to_locate_user_notice')
       };
 
     } else if (locateUserStatus === 'busy') {
 
       payload = {
         element: _mapLocateUserButton[0],
-        title: self.getLocalization('FLYOUT_LOCATING_USER_TITLE'),
+        title: self.getLocalization('flyout_locating_user_title'),
         notice: null
       };
 
@@ -742,8 +742,8 @@ function FeatureMap(element, vif) {
 
       payload = {
         element: _mapLocateUserButton[0],
-        title: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_TITLE'),
-        notice: self.getLocalization('FLYOUT_LOCATE_USER_ERROR_NOTICE')
+        title: self.getLocalization('flyout_locate_user_error_title'),
+        notice: self.getLocalization('flyout_locate_user_error_notice')
       };
 
     }

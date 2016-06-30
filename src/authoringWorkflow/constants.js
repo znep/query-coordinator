@@ -5,19 +5,19 @@ export const INPUT_DEBOUNCE_MILLISECONDS = 300;
 export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
-    title: translate('visualizations.columnChart.title')
+    title: translate('visualizations.column_chart.title')
   },
   {
     type: 'choroplethMap',
-    title: translate('visualizations.choroplethMap.title')
+    title: translate('visualizations.choropleth_map.title')
   },
   {
     type: 'featureMap',
-    title: translate('visualizations.featureMap.title')
+    title: translate('visualizations.feature_map.title')
   },
   {
     type: 'timelineChart',
-    title: translate('visualizations.timelineChart.title')
+    title: translate('visualizations.timeline_chart.title')
   }
 ];
 

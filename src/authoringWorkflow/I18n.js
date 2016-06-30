@@ -1,110 +1,47 @@
-import _ from 'lodash';
+import {isNull, isString, isPlainObject, has, get} from 'lodash';
 
-export const translate = key => {
-  return _.get(translations, key, `Translation missing for ${key}.`);
+import en from './locales/en';
+import es from './locales/es';
+
+var locale = 'en';
+const locales = { en, es };
+
+export const setLocale = key => {
+  key = isString(key) ? key.toLowerCase() : null;
+
+  if (has(locales, key)) {
+    locale = key;
+  } else {
+    throw new Error(`I18n: The locale ${key} is not available.`);
+  }
 };
 
-export const translations = {
-  aggregations: {
-    sum: 'Sum',
-    count: 'Count'
-  },
+export const translate = key => {
+  key = isString(key) ? key.toLowerCase() : null;
+  var translation = get(locales[locale], key, null);
 
-  base_layers: {
-    simple_blue: 'Simple Blue',
-    simple_grey: 'Simple Grey',
-    esri: 'Esri'
-  },
+  if (isString(translation)) {
+    return translation;
+  } else if (isNull(key)) {
+    throw new Error('I18n: translate requires a String.');
+  } else if (isPlainObject(translation)) {
+    throw new Error('I18n: Access to a group of translations is not allowed. Use translateGroup instead.');
+  } else {
+    throw new Error(`I18n: Translation missing for ${key}.`);
+  }
+};
 
-  color_scales: {
-    simple_blue: 'Simple Blue',
-    simple_grey: 'Simple Grey',
-    yellow_blue_green: 'Yellow Blue Green',
-    intrepid_turquoise: 'Intrepid Turquoise'
-  },
+export const translateGroup = key => {
+  key = isString(key) ? key.toLowerCase() : null;
+  var translationGroup = get(locales[locale], key, null);
 
-  modal: {
-    title: 'Create A Visualization',
-    close: 'Close',
-    insert: 'Insert'
-  },
-
-  panes: {
-    data: {
-      title: 'Data',
-      uhoh: 'Uh oh!',
-      loading_metadata: 'Loading metadata...',
-      loading_metadata_error: 'There was a mishap loading your metadata.',
-      fields: {
-        dimension: {
-          title: 'Dimension',
-          placeholder: 'Select a dimension...'
-        },
-        measure: {
-          title: 'Measure',
-          no_value: '(Count of Rows)'
-        },
-        measure_aggregation: {
-          title: 'Measure Aggregation',
-          no_value: 'No Measure Aggregation'
-        },
-        visualization_type: {
-          title: 'Visualization Type',
-          placeholder: 'Select a visualization type...'
-        },
-        region: {
-          title: 'Region',
-          placeholder: 'Select a region...'
-        }
-      }
-    },
-    title_and_description: {
-      title: 'Title & Description'
-    },
-    colors_and_style: {
-      title: 'Colors & Style'
-    },
-    axis_and_scale: {
-      title: 'Axis & Scale',
-      fields: {
-        x_axis_scaling_mode: {
-          title: 'Autofit Horizontally'
-        }
-      }
-    },
-    legends_and_flyouts: {
-      title: 'Legends & Flyouts',
-      fields: {
-        flyout_title: {
-          no_value: 'No Flyout Title'
-        }
-      }
-    }
-  },
-
-  preview: {
-    tabs: {
-      visualization: 'Visualization'
-    }
-  },
-
-  scaling_modes: {
-    pan: 'Pan',
-    fit: 'Fit'
-  },
-
-  visualizations: {
-    choroplethMap: {
-      title: 'Choropleth Map'
-    },
-    columnChart: {
-      title: 'Column Chart'
-    },
-    featureMap: {
-      title: 'Feature Map'
-    },
-    timelineChart: {
-      title: 'Timeline Chart'
-    }
+  if (isPlainObject(translationGroup)) {
+    return translationGroup;
+  } else if (isNull(key)) {
+    throw new Error('I18n: translateGroup requires a String.');
+  } else if (isString(translationGroup)) {
+    throw new Error('I18n: Access to a direct translation is not allowed. Use translate instead.');
+  } else {
+    throw new Error(`I18n: Translations missing for ${key}`);
   }
 };

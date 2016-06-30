@@ -56,18 +56,18 @@ $.fn.socrataFeatureMap = function(vif) {
 
   utils.assertHasProperties(
     vif.configuration.localization,
-    'FLYOUT_FILTER_NOTICE',
-    'FLYOUT_FILTER_OR_ZOOM_NOTICE',
-    'FLYOUT_DENSE_DATA_NOTICE',
-    'FLYOUT_CLICK_TO_INSPECT_NOTICE',
-    'FLYOUT_CLICK_TO_LOCATE_USER_TITLE',
-    'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE',
-    'FLYOUT_LOCATING_USER_TITLE',
-    'FLYOUT_LOCATE_USER_ERROR_TITLE',
-    'FLYOUT_LOCATE_USER_ERROR_NOTICE',
-    'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE',
-    'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED',
-    'USER_CURRENT_POSITION'
+    'flyout_filter_notice',
+    'flyout_filter_or_zoom_notice',
+    'flyout_dense_data_notice',
+    'flyout_click_to_inspect_notice',
+    'flyout_click_to_locate_user_title',
+    'flyout_click_to_locate_user_notice',
+    'flyout_locating_user_title',
+    'flyout_locate_user_error_title',
+    'flyout_locate_user_error_notice',
+    'flyout_pan_zoom_disabled_warning_title',
+    'row_inspector_row_data_query_failed',
+    'user_current_position'
   );
 
   var $element = $(this);

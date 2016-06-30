@@ -175,10 +175,10 @@ describe('ColumnChart', function() {
           selected: SELECTED_INDEX
         },
         localization: {
-          'NO_VALUE': '(No value)',
-          'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'UNFILTERED VALUE',
-          'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
-          'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
+          'no_value': '(No value)',
+          'flyout_unfiltered_amount_label': 'UNFILTERED VALUE',
+          'flyout_filtered_amount_label': 'FILTERED VALUE',
+          'flyout_selected_notice': 'THIS COLUMN IS CURRENTLY SELECTED'
         },
         interactive: true
       },

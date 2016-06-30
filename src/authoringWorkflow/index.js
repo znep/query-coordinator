@@ -11,6 +11,7 @@ import reducer from './reducers';
 import vifs from './vifs';
 import defaultMetadata from './defaultMetadata';
 import AuthoringWorkflow from './AuthoringWorkflow';
+import { setLocale } from './I18n';
 
 import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { setDataSource } from './actions';
@@ -59,11 +60,12 @@ module.exports = function(element, configuration) {
     getDatasetUid(initialState.vifAuthoring) :
     _.get(initialState, 'vifAuthoring.vifs.columnChart.series[0].dataSource.datasetUid');
 
-
   self.element = element;
   self.configuration = configuration;
   self.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
   self.store.dispatch(setDataSource({datasetUid, domain}));
+
+  setLocale(_.get(self.configuration, 'locale', 'en'));
 
   self.render = function() {
     ReactDOM.render(

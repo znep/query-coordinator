@@ -21,11 +21,11 @@ describe('Pager', function() {
       'columnName': COLUMN_NAME,
       'configuration': {
         'localization': {
-          'PREVIOUS': 'translation for previous button',
-          'NEXT': 'translation for next button',
-          'NO_ROWS': 'translation for no rows',
-          'ONLY_ROW': 'translation for only one row',
-          'MANY_ROWS': 'translation for many rows'
+          'previous': 'translation for previous button',
+          'next': 'translation for next button',
+          'no_rows': 'translation for no rows',
+          'only_row': 'translation for only one row',
+          'many_rows': 'translation for many rows'
         },
         'order': [{
           ascending: true,
@@ -67,11 +67,11 @@ describe('Pager', function() {
     it('should reflect the localization strings in the vif', function() {
       assert.include(
         nextButton.text(),
-        vif.configuration.localization.NEXT
+        vif.configuration.localization.next
       );
       assert.include(
         previousButton.text(),
-        vif.configuration.localization.PREVIOUS
+        vif.configuration.localization.previous
       );
     });
   });
@@ -111,7 +111,7 @@ describe('Pager', function() {
 
   describe('pager label', function() {
     beforeEach(function() {
-      vif.configuration.localization.NO_ROWS = { format: sinon.stub().returns('translation for no rows') };
+      vif.configuration.localization.no_rows = { format: sinon.stub().returns('translation for no rows') };
     });
 
     describe('with no rows', function() {
@@ -125,7 +125,7 @@ describe('Pager', function() {
 
       it('should format the translation with the correct parameters', function() {
         sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.NO_ROWS.format,
+          vif.configuration.localization.no_rows.format,
           {
             unitOne: 'case',
             unitOther: 'cases',
@@ -139,7 +139,7 @@ describe('Pager', function() {
 
     describe('with a page size of one', function() {
       beforeEach(function() {
-        vif.configuration.localization.ONLY_ROW = { format: sinon.stub().returns('translation for only one row') };
+        vif.configuration.localization.only_row = { format: sinon.stub().returns('translation for only one row') };
       });
 
       renderPagerWithOptions({
@@ -152,7 +152,7 @@ describe('Pager', function() {
 
       it('should format the translation with the correct parameters', function() {
         sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.ONLY_ROW.format,
+          vif.configuration.localization.only_row.format,
           {
             unitOne: 'case',
             unitOther: 'cases',
@@ -166,7 +166,7 @@ describe('Pager', function() {
 
     describe('with a page size of 10', function() {
       beforeEach(function() {
-        vif.configuration.localization.MANY_ROWS = { format: sinon.stub().returns('translation for many rows') };
+        vif.configuration.localization.many_rows = { format: sinon.stub().returns('translation for many rows') };
       });
 
       renderPagerWithOptions({
@@ -179,7 +179,7 @@ describe('Pager', function() {
 
       it('should format the translation with the correct parameters', function() {
         sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.MANY_ROWS.format,
+          vif.configuration.localization.many_rows.format,
           {
             unitOne: 'case',
             unitOther: 'cases',

@@ -26,10 +26,10 @@ describe('ChoroplethMap', function() {
         type: 'discrete'
       },
       localization: {
-        'FLYOUT_SELECTED_NOTICE': 'The page is currently filtered by this value, click to clear it',
-        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-        'NO_VALUE': '(No Value)'
+        'flyout_selected_notice': 'The page is currently filtered by this value, click to clear it',
+        'flyout_unfiltered_amount_label': 'Total',
+        'flyout_filtered_amount_label': 'Filtered',
+        'no_value': '(No Value)'
       },
       shapefile: {
         columns: {

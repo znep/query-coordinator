@@ -1,3 +1,5 @@
+import { translate, translateGroup } from '../I18n';
+
 export default {
   format: {
     type: 'visualization_interchange_format',
@@ -5,15 +7,7 @@ export default {
   },
   configuration: {
     xAxisScalingMode: 'fit',
-    // The localization values should be set by the application but are set
-    // to string literals for the purposes of this example.
-    localization: {
-      'NO_VALUE': 'No value',
-      'NO_LABEL': '(No Label)',
-      'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-      'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-      'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-    }
+    localization: translateGroup('visualizations.column_chart')
   },
   description: '',
   series: [
@@ -39,8 +33,8 @@ export default {
       label: null,
       type: 'columnChart',
       unit: {
-        one: 'Record',
-        other: 'Records'
+        one: translate('visualizations.common.units.one'),
+        other: translate('visualizations.common.units.other')
       }
     }
   ],

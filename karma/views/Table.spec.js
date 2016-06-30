@@ -10,9 +10,10 @@ describe('Table', function() {
     var tableVIF = {
       configuration: {
         localization: {
-          'LATITUDE': 'translation for latitude',
-          'LONGITUDE': 'translation for longitude',
-          'NO_COLUMN_DESCRIPTION': 'translation for no_column_description'
+          'latitude': 'translation for latitude',
+          'longitude': 'translation for longitude',
+          'no_column_description': 'translation for no_column_description',
+          'unable_to_render': 'translation for unable_to_render'
         }
       },
       type: 'table'
@@ -395,7 +396,7 @@ describe('Table', function() {
       });
 
       describe('when the column does not have a description', function() {
-        it('emits event with content that contains the column name and NO_COLUMN_DESCRIPTION localization', function(done) {
+        it('emits event with content that contains the column name and no_column_description localization', function(done) {
           render(table, data);
 
           onmouseenter(function(payload) {

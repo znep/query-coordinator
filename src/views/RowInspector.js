@@ -11,7 +11,7 @@ var ROW_INSPECTOR_HINT_WIDTH = 10;
 var ROW_INSPECTOR_DEFAULT_TRANSLATIONS = {
   previous: 'Previous',
   next: 'Next',
-  defaultLabelUnit: 'Row',
+  default_label_unit: 'Row',
   showing: 'Showing {0}',
   paging: '{0} of {1}',
   longitude: 'Longitude',
@@ -478,7 +478,7 @@ function _setState(payload) {
   _state = {
     rows: payload.error ? null : payload.data,
     titles: payload.error ? null : payload.titles,
-    labelUnit: payload.labelUnit || _config.localization.defaultLabelUnit,
+    labelUnit: payload.labelUnit || _config.localization.default_label_unit,
     error: payload.error,
     message: payload.message,
     position: payload.position,

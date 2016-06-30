@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { translate } from '../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setValueOrDefaultValue } from '../../helpers';
 import {
@@ -59,13 +60,13 @@ export default function featureMap(state, action) {
 
     case SET_UNITS_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, 'Record');
+        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.units.one'));
       });
       break;
 
     case SET_UNITS_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, 'Records');
+        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.units.other'));
       });
       break;
 

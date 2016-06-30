@@ -359,7 +359,17 @@
 
   .asset-selector-image-preview-container {
     height: auto;
+    border: 1px dashed $input-element-border-color;
     border-top: none;
+    background-color: #fafafa;
+    text-align: center;
+    min-height: 50px;
+
+    &.disable-pointer-events {
+      .ReactCrop {
+        pointer-events: none;
+      }
+    }
   }
 }
 
@@ -429,23 +439,14 @@
 }
 
 .asset-selector-preview-container  {
+  @include display(flex);
+  border: 1px solid $asset-selector-input-group-border-color;
   overflow: auto;
-  border: 1px dashed $input-element-border-color;
-  border-top: none;
-  background-color: #fafafa;
   padding: 0.5rem;
-  text-align: center;
-  min-height: 50px;
 
   .asset-selector-preview-table {
     overflow: hidden;
     margin: 0;
-  }
-
-  &.disable-pointer-events {
-    .ReactCrop {
-      pointer-events: none;
-    }
   }
 }
 

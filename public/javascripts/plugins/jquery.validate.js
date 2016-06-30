@@ -116,6 +116,8 @@ $.extend( $.fn, {
 	valid: function() {
 		var valid, validator, errorList;
 
+		// SOCRATA 6/30/2016: if checking validity of an empty array, return true rather than exploding.
+		if ( this.length === 0 ) return true;
 		if ( $( this[ 0 ] ).is( "form" ) ) {
 			valid = this.validate().form();
 		} else {
@@ -616,15 +618,18 @@ $.extend( $.validator, {
 			var validator = this,
 				rulesCache = {};
 
+			// SOCRATA 2/19/2016: (EN-2991) Change rulesCache to store element's id not name,
+			// because name's are not always unique.
+
 			// Select all valid inputs inside the form (no submit or reset buttons)
 			return $( this.currentForm )
 			.find( "input, select, textarea, [contenteditable]" )
 			.not( ":submit, :reset, :image, :disabled" )
 			.not( this.settings.ignore )
 			.filter( function() {
-				var name = this.name || $( this ).attr( "name" ); // For contenteditable
-				if ( !name && validator.settings.debug && window.console ) {
-					console.error( "%o has no name assigned", this );
+				var id = this.id || $( this ).attr( "id" ); // For contenteditable
+				if ( !id && validator.settings.debug && window.console ) {
+					console.error( "%o has no id assigned", this );
 				}
 
 				// Set form expando on contenteditable
@@ -632,12 +637,12 @@ $.extend( $.validator, {
 					this.form = $( this ).closest( "form" )[ 0 ];
 				}
 
-				// Select only the first element for each name, and only those with rules specified
-				if ( name in rulesCache || !validator.objectLength( $( this ).rules() ) ) {
+				// Select only the first element for each id, and only those with rules specified
+				if ( id in rulesCache || !validator.objectLength( $( this ).rules() ) ) {
 					return false;
 				}
 
-				rulesCache[ name ] = true;
+				rulesCache[ id ] = true;
 				return true;
 			} );
 		},

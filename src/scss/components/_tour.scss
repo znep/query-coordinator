@@ -5,19 +5,6 @@ $tour-step-box-shadow-color: rgba(#000, 0.34);
 $tour-hint-color: #fff;
 $tour-text-color: #5c5c5c;
 $tour-link-color: #0000c8;
-$tour-button-active-box-shadow-color: #2c2c2c;
-$tour-btn-primary-background-color: #2c97de;
-$tour-btn-primary-text-color: #fff;
-$tour-btn-primary-border-color: #2c97de;
-$tour-btn-primary-hover-background-color: #2379b2;
-$tour-btn-primary-active-background-color: #2379b2;
-$tour-btn-primary-active-border-color: #2888c8;
-$tour-btn-default-text-color: #7a7a7a;
-$tour-btn-default-background-color: #fff;
-$tour-btn-default-border-color: #c2c2c2;
-$tour-btn-default-hover-background-color: #e6e6e6;
-$tour-btn-default-active-background-color: #e6e6e6;
-$tour-btn-default-active-border-color: #ccc;
 $tour-cancel-link-color: #adadad;
 $tour-cancel-link-hover-color: #7a7a7a;
 $tour-overlay-background-color: rgba(#000, 0.35);
@@ -113,32 +100,32 @@ $tour-overlay-background-color: rgba(#000, 0.35);
     margin-top: 30px;
 
     .btn-primary {
-      color: $tour-btn-primary-text-color;
-      background: $tour-btn-primary-background-color;
-      border: 1px $tour-btn-primary-border-color solid;
+      color: $btn-primary-color;
+      background: $btn-primary-background-color;
+      border: 1px $btn-primary-border-color solid;
 
       &:hover {
-        background-color: $tour-btn-primary-hover-background-color;
+        background-color: $btn-primary-hover-background-color;
       }
 
       &:active {
-        background-color: $tour-btn-primary-active-background-color;
-        border: 1px $tour-btn-primary-active-border-color solid;
+        background-color: $btn-primary-hover-background-color;
+        border: 1px $btn-primary-active-border-color solid;
       }
     }
 
     .btn-default {
-      color: $tour-btn-default-text-color;
-      background-color: $tour-btn-default-background-color;
-      border: 1px $tour-btn-default-border-color solid;
+      color: $btn-default-color;
+      background-color: $btn-default-background-color;
+      border: 1px $btn-default-border-color solid;
 
       &:hover {
-        background-color: $tour-btn-default-hover-background-color;
+        background-color: $btn-default-hover-background-color;
       }
 
       &:active {
-        background-color: $tour-btn-default-active-background-color;
-        border: 1px $tour-btn-default-active-border-color solid;
+        background-color: $btn-default-hover-background-color;
+        border: 1px $btn-default-active-border-color solid;
       }
     }
 
@@ -165,7 +152,7 @@ $tour-overlay-background-color: rgba(#000, 0.35);
       transition: background-color 0.2s;
 
       &:active {
-        box-shadow: inset 0 0 10px -2px $tour-button-active-box-shadow-color;
+        box-shadow: inset 0 0 10px -2px $btn-active-box-shadow-color;
       }
     }
   }

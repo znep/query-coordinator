@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import MultilineEllipsis from 'react-dotdotdot';
 import { getIconClassForDisplayType } from '../lib/displayTypeMetadata';
 import formatDate from '../lib/formatDate';
+import purify from '../lib/purify';
 
 var ViewWidget = React.createClass({
   propTypes: {
@@ -119,7 +120,7 @@ var ViewWidget = React.createClass({
             </a>
             <div className="entry-description">
               <MultilineEllipsis clamp={3} ellipsis="...">
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+                <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
               </MultilineEllipsis>
             </div>
           </div>

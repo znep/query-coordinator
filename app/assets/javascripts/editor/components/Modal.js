@@ -112,7 +112,7 @@ function _renderModalCloseButton() {
     $(
       '<span>',
       {
-        'class': 'icon-cross2'
+        'class': 'icon-close-2'
       }
     )
   );

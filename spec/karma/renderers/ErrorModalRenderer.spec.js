@@ -22,7 +22,10 @@ describe('ErrorModalRenderer', function() {
   beforeEach(function() {
     $body = $('body');
     $modal = $('<div>', { id: 'error-modal-container' }).
-      append($('<div>', { 'class': 'error-warning-message' }));
+      append([
+        $('<div>', { 'class': 'error-warning-message' }),
+        $('<button>', { 'class': 'btn-login' })
+      ]);
     $body.append($modal);
 
     dispatcher = new Dispatcher();
@@ -108,7 +111,7 @@ describe('ErrorModalRenderer', function() {
       reestablishSession();
     });
 
-    it('should include a login link that dispatches LOGIN_BUTTON_CLICK', function(done) {
+    it('should include a login button that dispatches LOGIN_BUTTON_CLICK', function(done) {
       causeSessionExpiry();
 
       dispatcher.register(function(action) {
@@ -117,7 +120,7 @@ describe('ErrorModalRenderer', function() {
         }
       });
 
-      $modal.find('.error-warning-message a').click();
+      $modal.find('.btn-login').click();
     });
   });
 

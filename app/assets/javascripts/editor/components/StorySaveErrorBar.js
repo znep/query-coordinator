@@ -50,7 +50,10 @@ export default function StorySaveErrorBar() {
 
     if (hasError) {
       if (!hasValidUserSession) {
-        text = I18n.t('editor.user_session_timeout');
+        text = [
+          $('<span>').text(I18n.t('editor.user_session_timeout')),
+          $('<a href="" role="button">').text(I18n.t('editor.story_save_error_login_button'))
+        ];
       } else {
         text = I18n.t(saveError.conflict ?
           'editor.story_save_error_conflict' :
@@ -59,7 +62,9 @@ export default function StorySaveErrorBar() {
       }
 
       $message.empty().append(text);
-      $message.find('button').on('click', function() {
+      $message.find('a').on('click', function(event) {
+        event.preventDefault();
+
         dispatcher.dispatch({
           action: Actions.LOGIN_BUTTON_CLICK
         });

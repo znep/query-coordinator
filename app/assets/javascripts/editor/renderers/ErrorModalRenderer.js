@@ -10,6 +10,7 @@ import { userSessionStore } from '../stores/UserSessionStore';
 export default function ErrorModalRenderer() {
   var $modal = $('#error-modal-container');
   var $warningMessage = $modal.find('.error-warning-message');
+  var $loginButton = $modal.find('.btn-login');
   var $reloadButton = $modal.find('.btn-reload');
   var $modalContents = $modal.children();
 
@@ -34,10 +35,7 @@ export default function ErrorModalRenderer() {
     window.document.location.reload();
   });
 
-  // The only button in the warning message is a login button.
-  $warningMessage.on('click', 'a', function(event) {
-    event.preventDefault();
-
+  $loginButton.click(function() {
     dispatcher.dispatch({
       action: Actions.LOGIN_BUTTON_CLICK
     });
@@ -47,6 +45,8 @@ export default function ErrorModalRenderer() {
     var reason = reasonForBeingOpen();
     var userCausingConflict = storySaveStatusStore.userCausingConflict();
     var userLinkOrPlaceholder;
+
+    $loginButton.hide();
 
     // If the reason for us being open changes, ensure
     // the modal is open (the user may have dismissed it
@@ -63,6 +63,7 @@ export default function ErrorModalRenderer() {
       );
 
       $reloadButton.hide();
+      $loginButton.show();
     } else if (reason === 'CONFLICT') {
       // User details are loaded async, show a placeholder while that is in flight.
       if (userCausingConflict) {

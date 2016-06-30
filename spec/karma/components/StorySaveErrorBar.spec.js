@@ -1,8 +1,10 @@
 import $ from 'jQuery';
 import _ from 'lodash';
 
+import Actions from 'editor/Actions';
 import I18nMocker from '../I18nMocker';
 import Store from 'editor/stores/Store';
+import Dispatcher from 'editor/Dispatcher';
 import {__RewireAPI__ as StorySaveErrorBarAPI} from 'editor/components/StorySaveErrorBar';
 
 describe('storySaveErrorBar jQuery plugin', function() {
@@ -11,6 +13,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
   var mockStore;
   var userSessionStoreMock;
   var autosave;
+  var dispatcher;
 
   function tryAgainButtonAvailable() {
     return $errorBar.find('.btn-try-again').hasClass('available');
@@ -45,16 +48,20 @@ describe('storySaveErrorBar jQuery plugin', function() {
     mockStore = new MockStore();
     userSessionStoreMock = new MockStore();
     autosave = {saveASAP: sinon.stub()};
+    dispatcher = new Dispatcher();
+
     StorySaveErrorBarAPI.__Rewire__('storySaveStatusStore', mockStore);
     StorySaveErrorBarAPI.__Rewire__('userSessionStore', userSessionStoreMock);
     StorySaveErrorBarAPI.__Rewire__('autosave', autosave);
     StorySaveErrorBarAPI.__Rewire__('I18n', I18nMocker);
+    StorySaveErrorBarAPI.__Rewire__('dispatcher', dispatcher);
   });
 
   afterEach(function() {
     StorySaveErrorBarAPI.__ResetDependency__('userSessionStore');
     StorySaveErrorBarAPI.__ResetDependency__('storySaveStatusStore');
     StorySaveErrorBarAPI.__ResetDependency__('I18n');
+    StorySaveErrorBarAPI.__ResetDependency__('dispatcher', dispatcher);
   });
 
   it('should return a jQuery object for chaining', function() {
@@ -200,6 +207,22 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       it('should place the correct text in the message', function() {
         assert.include($errorBar.find('.message').text(), 'Translation for: editor.user_session_timeout');
+      });
+
+      describe('login button', function() {
+        it('should have a button to log back in', function() {
+          assert.lengthOf($errorBar.find('a[href]'), 1);
+        });
+
+        it('should emit a LOGIN_BUTTON_CLICK event when clicked', function(done) {
+          dispatcher.register(function(action) {
+            if (action.action === Actions.LOGIN_BUTTON_CLICK) {
+              done();
+            }
+          });
+
+          $errorBar.find('a[href]').click();
+        });
       });
     });
   });

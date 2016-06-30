@@ -17,7 +17,7 @@ module.exports = function FlannelFactory() {
         complete: function() {
           flannel.classList.add('flannel-hidden');
           hoverable.classList.remove('active');
-          document.body.style.overflow = '';
+          document.body.classList.remove('modal-open');
         }
       });
     } else {
@@ -53,7 +53,7 @@ module.exports = function FlannelFactory() {
     if (windowWidth >= mobileBreakpoint) {
       flannel.style.left = left + 'px';
       flannel.style.top = top + 'px';
-      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     } else {
       flannel.style.left = windowWidth + 'px';
       flannel.style.top = 0;
@@ -63,7 +63,7 @@ module.exports = function FlannelFactory() {
         duration: animationDuration,
         easing: animationEasing,
         complete: function() {
-          document.body.style.overflow = 'hidden';
+          document.body.classList.add('modal-open');
         }
       });
     }

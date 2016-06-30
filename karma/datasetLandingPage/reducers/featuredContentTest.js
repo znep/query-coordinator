@@ -103,7 +103,6 @@ describe('reducers/featuredContent', function() {
           createdAt: 'some date',
           description: 'some description',
           displayType: 'story',
-          imageUrl: 'some-picture.png',
           name: 'some name',
           url: 'http://some-url.com/stories/s/abcd-1234',
           viewCount: 99
@@ -116,7 +115,6 @@ describe('reducers/featuredContent', function() {
       expect(state.story.url).to.equal('');
       expect(state.story.createdAt).to.equal('');
       expect(state.story.viewCount).to.equal(null);
-      expect(state.story.imageUrl).to.equal('');
 
       state = reducer(state, editFeaturedItem(featuredItem));
 
@@ -125,7 +123,6 @@ describe('reducers/featuredContent', function() {
       expect(state.story.url).to.equal('http://some-url.com/stories/s/abcd-1234');
       expect(state.story.createdAt).to.equal('some date');
       expect(state.story.viewCount).to.equal(99);
-      expect(state.story.imageUrl).to.equal('some-picture.png');
     });
 
     it('sets editPosition to one less than the position of the featured item', function() {
@@ -284,7 +281,6 @@ describe('reducers/featuredContent', function() {
       it('restores the preview widget fields to initial state', function() {
         expect(state.story.description).to.equal('');
         expect(state.story.createdAt).to.equal('');
-        expect(state.story.imageUrl).to.equal('');
         expect(state.story.title).to.equal('');
         expect(state.story.viewCount).to.equal(null);
       });
@@ -329,7 +325,6 @@ describe('reducers/featuredContent', function() {
       state = reducer(state, handleLoadingStorySuccess({
         description: 'ghostly guitars',
         createdAt: '2016-06-08T15:52:10.000-07:00',
-        imageUrl: 'http://beach-party.com/unicorns.jpg',
         title: 'wombats in space',
         viewCount: 42
       }));
@@ -338,7 +333,6 @@ describe('reducers/featuredContent', function() {
     it('updates preview widget fields', function() {
       expect(state.story.description).to.equal('ghostly guitars');
       expect(state.story.createdAt).to.equal('2016-06-08T15:52:10.000-07:00');
-      expect(state.story.imageUrl).to.equal('http://beach-party.com/unicorns.jpg');
       expect(state.story.title).to.equal('wombats in space');
       expect(state.story.viewCount).to.equal(42);
     });
@@ -365,7 +359,6 @@ describe('reducers/featuredContent', function() {
     it('updates preview widget fields', function() {
       expect(state.story.description).to.equal('');
       expect(state.story.createdAt).to.equal('');
-      expect(state.story.imageUrl).to.equal('');
       expect(state.story.title).to.equal('');
       expect(state.story.viewCount).to.equal(null);
     });

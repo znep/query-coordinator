@@ -27,6 +27,7 @@
   position: absolute;
   top: calc(50%  - (#{$btn-padding-top-bottom} * 2 + #{$btn-busy-height} + #{$btn-busy-border-width} * 2) / 2);
   left: calc(50% - (#{$btn-padding-left-right} * 2 + #{$btn-busy-width} + #{$btn-busy-border-width} * 2) / 2);
+  z-index: 3;
 }
 
 #asset-selector-container {

@@ -203,33 +203,37 @@ describe Cetera do
   end
 
   describe 'Cetera user search' do
-    search_query = 'socrata.com'
+    search_query = 'katie'
 
     # NOTE: If you re-record the cassette, you'll need to replace this with whatever is getting
     # passed to Cetera & Core. Check the Cetera debug logs or puts forwardable_session_cookies.
-    cookie_string = 'logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWFiYjg5NWJjZTdiYzMwNGM0YTA4MDQ2YjNhYzk1MjJlBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMVpjblBZUm9uYllOQTFkS3NFSjMwdTk2a1A1djNmSlgrVk9mcUdnK1R5OVk9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYw--542ee4041debe2e56bb7b670253193a91b7f0b9e; _core_session_id=ODNueS13OXplIDE0NjcwODc1NTUgNmU4MGU2N2FlYWYyIGU2YzE0NmIzNDRjZTcxM2ZlNTdmMmNlNWMwYzEzMzNiYjExMTVhOGQ; socrata-csrf-token=FaLWHLnxbMVDIPEnQn+SIQbDxpikR9bGm7EZAQj9XfNwaxl9o9YBRgP1I4tS4maa2Gf5A1M7QzjPVvMbB26WJQ=='
+    cookie_string = 'logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTk2YzU2Zjk0YTdjM2RhMWMzODQ4M2E4OGE0MzNhNDkzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjEwU3BVWkpNVXBNM2dGN2ZsT2lSMHgreFMzdFd2T3BKeXRWbFA2K2Erd3lBPQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA==--753eb4f6b07926596a2bcd9b2925c72d93a7e267; _core_session_id=ODNueS13OXplIDE0NjczNDA0OTIgNjMyYjcxNTIyZWZmIDZmNWFlMDI3MmY2YzY0YjFiODFiMmY3NTgxZGQ5NTJiM2RhM2E5MzY=; socrata-csrf-token=/+1vNjX7ttHA0ffeUcGyQRcoqD7XjhBu0LTEoPVEd6kuxztSpu8SHCDGQDtr5caG+3p263i0ghxl7YtLE/q0iQ=='
 
     request_id = '55c8a53595d246c6ac8e20dd2a9bcb71'
 
     it 'should call to Cetera and parse some responses' do
       VCR.use_cassette('cetera/user_search') do
+
+        # Set this to whatever domain you re-record from, if you re-record this call
+        CurrentDomain.set_domain(Domain.new('cname' => "opendata.rc-socrata.com"))
+
         search_result = Cetera.search_users(search_query, cookie_string, request_id)
         expect(search_result).to be_a(Cetera::SearchResult)
 
         results = search_result.results
-        expect(results.size).to eq(200) # old Core limit, let's not OOM
-
-        # Documenting behavior, may not be desired:
-        # Cetera's /whitepages resultSetSize is inconsistent with Cetera's /catalog resultSetSize
-        # /whitepage's means total in payload, /catalog's means total matching query
-        expect(results.count).to eq(200)
+        expect(results.size).to eq(5) # Currently 5 results for Katie in RC
 
         results.each do |user|
           expect(user).to be_a(User)
           expect(user.id).to be_present
           expect(user.email).to be_present
           expect(user.screen_name).to be(user.displayName) # needed by FE view
+          expect(user.role_name).to be(user.roleName) # role_name calls the property roleName
         end
+
+        expect(results.any? { |user| user.role_name.nil? }).to be(true)
+        expect(results.any? { |user| user.role_name == 'publisher_stories' }).to be(true)
+        expect(results.any? { |user| user.role_name == 'viewer' }).to be(true)
       end
     end
 
@@ -270,5 +274,4 @@ describe Cetera do
       'Dataset-Information_Superhero' => 'Superman'
     }
   end
-
 end

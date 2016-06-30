@@ -272,6 +272,7 @@ module Cetera
       super
       data['results'].each do |result|
         result['displayName'] = result['screen_name'] if result['screen_name']
+        result['roleName'] = result['role_name'] if result['role_name']
       end
     end
   end

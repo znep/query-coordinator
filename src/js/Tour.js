@@ -152,7 +152,10 @@ TourFactory.prototype = {
           {
             text: tourElement.getAttribute('data-tour-done'),
             classes: 'btn-primary',
-            action: tour.complete
+            action: function() {
+              var tourName = tourElement.getAttribute('data-tour-name');
+              that.clickDone(tourName);
+            }
           }
         ];
       }
@@ -200,6 +203,16 @@ TourFactory.prototype = {
     tourObject.tour.start();
     this.tourOverlay.classList.remove('overlay-hidden');
   },
+  clickDone: function(tourName) {
+    var tourObject = this.tours[tourName];
+    var payload = {
+      currentStep: tourObject.tour.getCurrentStep().id.replace('step-', ''),
+      tourName: tourObject.name
+    };
+
+    document.dispatchEvent(new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_COMPLETE', { 'detail': payload }));
+    tourObject.tour.complete();
+  },
   clickNext: function(tourName) {
     var tourObject = this.tours[tourName];
     var payload = {
@@ -207,7 +220,7 @@ TourFactory.prototype = {
       tourName: tourObject.name
     };
 
-    document.dispatchEvent(new CustomEvent('next', { 'detail': payload }));
+    document.dispatchEvent(new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_NEXT', { 'detail': payload }));
     tourObject.tour.next();
   },
   closeTour: function(tourName) {
@@ -217,7 +230,7 @@ TourFactory.prototype = {
       tourName: tourObject.name
     };
 
-    document.dispatchEvent(new CustomEvent('cancel', { 'detail': payload }));
+    document.dispatchEvent(new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_CLOSED', { 'detail': payload }));
     tourObject.tour.cancel();
   }
 };

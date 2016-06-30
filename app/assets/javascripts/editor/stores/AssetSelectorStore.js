@@ -612,6 +612,10 @@ export default function AssetSelectorStore() {
       _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
       _.set(_state.componentProperties, 'reason', I18n.t(message));
     } else {
+      if (!_state.componentProperties) {
+        _state.componentProperties = {};
+      }
+
       if (_state.componentProperties && _state.componentProperties.reason) {
         delete _state.componentProperties.reason;
       }
@@ -1210,7 +1214,10 @@ export default function AssetSelectorStore() {
         { image: image }
       );
     } else {
-      _state.componentProperties = image;
+      _state.componentProperties = _.merge(
+        _state.componentProperties,
+        image
+      );
     }
 
     self._emitChange();
@@ -1227,10 +1234,11 @@ export default function AssetSelectorStore() {
   }
 
   function _updateImageAltAttribute(payload) {
+    var value = self.getComponentValue();
     var altAttribute = payload.altAttribute;
 
     if (_state.componentType === 'image') {
-      _state.componentProperties.alt = altAttribute;
+      value.alt = altAttribute;
     } else {
       throw new Error(
         StorytellerUtils.format(
@@ -1300,8 +1308,6 @@ export default function AssetSelectorStore() {
 
   function setProvider(payload) {
     StorytellerUtils.assertHasProperty(payload, 'provider');
-
-    _state.componentProperties = {};
 
     switch (payload.provider) {
       case 'SOCRATA_VISUALIZATION':

@@ -388,17 +388,20 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders an image preview with a description (alt attribute) container', function() {
+      var getComponentTypeStub = sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
+      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
       dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
-        provider: 'IMAGE'
+        action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+        blockId: testBlockId,
+        componentIndex: testComponentIndex,
+        initialComponentProperties: {}
       });
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
         step: WIZARD_STEP.IMAGE_PREVIEW
       });
-
-      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
 
       fileUploaderStoreMock._emitChange();
 
@@ -407,6 +410,7 @@ describe('AssetSelectorRenderer', function() {
       assert.equal(container.find('.asset-selector-image-description-label').length, 1);
       assert.equal(container.find('.asset-selector-image-alt-hint').length, 1);
 
+      getComponentTypeStub.reset();
       getComponentValueStub.reset();
     });
 

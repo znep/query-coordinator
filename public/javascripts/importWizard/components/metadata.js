@@ -14,8 +14,26 @@ import NavigationControl from './navigationControl';
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: Object,
-  lastSaved: Object,
-  contents: Object
+  lastSaved: MetadataContents,
+  contents: MetadataContents
+}
+
+type MetadataApiCall
+  = { type: 'Not Started' }
+  | { type: 'In Progress' }
+  | { type: 'Error', error: any }
+  | { type: 'Success', contents: MetadataContents }
+
+type MetadataContents = {
+  name: String,
+  description: String,
+  category: String,
+  tags: Array,
+  rowLabel: String,
+  attributionLink: String,
+  customMetadata: Object,
+  contactEmail: String,
+  privacySettings: String
 }
 
 export function defaultCustomData() {
@@ -31,7 +49,7 @@ export function defaultCustomData() {
   }));
 }
 
-export function emptyContents(name: string) {
+export function emptyContents(name: string): MetadataContents {
   return {
     name: name,
     description: '',
@@ -171,7 +189,7 @@ export function metadataSaveError(err) {
 export const update =
   combineReducers({
     nextClicked: updateForNextClicked,
-    apiCall: updateAPI,
+    apiCall: updateApiCallState,
     contents: updateContents,
     lastSaved: updateForLastSaved
   });
@@ -251,7 +269,7 @@ export function updateForNextClicked(nextClicked: boolean = false, action) {
   }
 }
 
-export function updateAPI(apiCallState = {type: 'Not Started'}, action) {
+export function updateApiCallState(apiCallState = {type: 'Not Started'}, action) {
   switch (action.type) {
     case MD_SAVE_START:
       return {type: 'In Progress'};

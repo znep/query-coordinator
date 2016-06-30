@@ -26,6 +26,7 @@ declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
   return (dispatch, getState) => {
+    dispatch(goToPage('Working'));
     const { navigation, datasetId, metadata } = getState();
     dispatch(saveMetadataToViewsApi(datasetId, metadata)).
       then(() => {
@@ -52,7 +53,6 @@ export function saveMetadataToViewsApi(datasetId, metadata) {
 
 export function proceed(navigation, datasetId, metadata) {
   return (dispatch) => {
-    dispatch(goToPage('Working'));
     updatePrivacy(datasetId, metadata.contents.privacySettings).
       then(() => {
         const onImportError = () => {

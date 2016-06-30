@@ -53,14 +53,13 @@ const initialNavigation: Navigation = {
 
 // is this even used or is it just the no-args call to the reducer?
 export function initialNewDatasetModel(initialView): NewDatasetModel {
-  const initialMD = initialMetadata(initialView);
   return {
     datasetId: initialView.id,
     navigation: initialNavigation,
     upload: {},
     transform: null,
     layers: null,
-    metadata: initialMD,
+    metadata: initialMetadata(initialView),
     importStatus: Server.initialImportStatus()
   };
 }

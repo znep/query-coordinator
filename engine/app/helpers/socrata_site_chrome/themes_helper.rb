@@ -1,3 +1,5 @@
+require 'cgi'
+
 module SocrataSiteChrome
   module ThemesHelper
 
@@ -30,7 +32,7 @@ module SocrataSiteChrome
 
     def theme_value(key, value)
       # Return font family values in quotes
-      key == 'font_family' ? %Q{"#{value}"} : value
+      key == 'font_family' ? %Q{"#{CGI.escapeHTML(value)}"} : value
     end
 
     def exclude_styleguide?

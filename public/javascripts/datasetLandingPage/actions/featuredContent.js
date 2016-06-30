@@ -139,7 +139,8 @@ export function saveFeaturedItem(options) {
       then(function(response) {
         dispatch(handleFeaturedItemSaveSuccess(response, editPosition));
         _.delay(dispatch, 1500, cancelFeaturedItemEdit());
-      })['catch'](() => dispatch(handleFeaturedItemSaveError()));
+      }).
+      catch(() => dispatch(handleFeaturedItemSaveError()));
   };
 }
 
@@ -185,7 +186,8 @@ export function removeFeaturedItem(position) {
       then(response => response.json()).
       then(function() {
         dispatch(handleFeaturedItemRemovalSuccess(position));
-      })['catch'](() => dispatch(handleFeaturedItemRemovalError()));
+      }).
+      catch(() => dispatch(handleFeaturedItemRemovalError()));
   };
 }
 
@@ -245,7 +247,8 @@ export function loadStory() {
       then(response => response.json()).
       then(function(response) {
         dispatch(handleLoadingStorySuccess(response));
-      })['catch'](() => dispatch(handleLoadingStoryError()));
+      }).
+      catch(() => dispatch(handleLoadingStoryError()));
   };
 }
 
@@ -274,7 +277,8 @@ export function requestDerivedViews() {
       then(response => response.json()).
       then(function(response) {
         dispatch(receiveDerivedViews(response));
-      })['catch'](() => dispatch(handleDerivedViewsError()));
+      }).
+      catch(() => dispatch(handleDerivedViewsError()));
   };
 }
 

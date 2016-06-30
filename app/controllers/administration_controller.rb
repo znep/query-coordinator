@@ -364,7 +364,6 @@ class AdministrationController < ApplicationController
                           :delete_future_user, :re_enable_user] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
 
   def users
-    @roles_list = User.roles_list
     if !params[:username].blank?
       @search = params[:username]
 

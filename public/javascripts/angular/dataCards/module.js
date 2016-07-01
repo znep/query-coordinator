@@ -18,7 +18,6 @@ angular.module('dataCards', dependencies);
 angular.module('dataCards').
 
   // Controllers
-  controller('AggregationTourController', require('./controllers/AggregationTourController.js')).
   controller('CardsViewController', require('./controllers/pages/CardsViewController.js')).
   controller('ChoroplethController', require('./controllers/ChoroplethController.js')).
   controller('ColumnChartController', require('./controllers/ColumnChartController.js')).

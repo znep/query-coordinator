@@ -5,6 +5,7 @@ import FeaturedContentModal from './components/FeaturedContentModal';
 import FeedbackPanel from './components/FeedbackPanel';
 import ODataModal from './components/ODataModal';
 import ShareModal from './components/ShareModal';
+import Tour from './components/Tour';
 
 var DynamicContent = function() {
   return (
@@ -15,6 +16,7 @@ var DynamicContent = function() {
       <FeedbackPanel />
       <ODataModal />
       <ShareModal />
+      <Tour />
     </div>
   );
 };

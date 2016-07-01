@@ -54,6 +54,7 @@ module DatasetLandingPageHelper
     feature_flags = Hash[
       FeatureFlags.derive(nil, request).slice(*[
         :enable_dataset_landing_page,
+        :enable_dataset_landing_page_tour,
         :default_to_dataset_landing_page,
         :stories_enabled
       ]).map { |k, v| [ k.camelize(:lower), v ] }

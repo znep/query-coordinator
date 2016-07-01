@@ -110,7 +110,7 @@ class DatasetsController < ApplicationController
     end
 
     # Dataset landing page case
-    if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
+    if dataset_landing_page_is_default? && view.has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
         return redirect_to canonical_path
@@ -757,7 +757,7 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    if dataset_landing_page_enabled? && view_has_landing_page?
+    if dataset_landing_page_enabled? && view.has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
 
       begin
@@ -1192,12 +1192,8 @@ class DatasetsController < ApplicationController
 
   def display_dataset_landing_page_notice?
     FeatureFlags.derive(nil, request).display_dataset_landing_page_notice == true &&
-      view_has_landing_page? &&
+      view.has_landing_page? &&
       current_user.try(:roleName) == 'administrator'
-  end
-
-  def view_has_landing_page?
-    @view.dataset?
   end
 
   def fetch_layer_info(layer_url)

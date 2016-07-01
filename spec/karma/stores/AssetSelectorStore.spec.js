@@ -339,6 +339,13 @@ describe('AssetSelectorStore', function() {
       describe('.getComponentValue()', function() {
         beforeEach(function() {
           dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+            blockId: '',
+            componentIndex: '',
+            initialComponentProperties: {}
+          });
+
+          dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
             provider: 'IMAGE'
           });

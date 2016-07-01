@@ -216,6 +216,8 @@ $(function() {
     // Clear cloned content and append to page
     $clone.find('.externalLink:not(:first)').remove();
     $clone.find('input, textarea').val('').text('');
+    // Clear the prompt class, if present, to ensure data dictionary values are saved
+    $clone.find('.prompt').removeClass('prompt');
     $clone.appendTo('.externalDatasetBox');
     updateRemoveLinks();
   });

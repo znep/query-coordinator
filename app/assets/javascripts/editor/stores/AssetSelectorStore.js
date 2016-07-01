@@ -56,9 +56,10 @@ export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore()
 // different view than the intended view (but not always,
 // ha ha!).
 export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
-  var isCreatingTable = intendedComponentType === 'socrata.visualization.table';
-  var hasQuery = !_.isEmpty(viewData.query);
+  var isNewBackend = _.get(viewData, 'newBackend') === true;
   var hasGroupBys = !_.isEmpty(_.get(viewData, 'query.groupBys'));
+  var hasQuery = !_.isEmpty(_.get(viewData, 'query'));
+  var isCreatingTable = intendedComponentType === 'socrata.visualization.table';
 
   // Now this is peculiar because our backend is peculiar.
   // All this stems from the fact that ALL our visualizations
@@ -80,7 +81,7 @@ export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
   // Read the above carefully. It's the opposite of what you might
   // expect. Maybe even the opposite of that. What.
 
-  if (viewData.newBackend) {
+  if (isNewBackend) {
     return true;
   } else if (hasGroupBys) {
     // Not working with NBE APIs at this time.
@@ -842,24 +843,49 @@ export default function AssetSelectorStore() {
   // for a view data object we can directly visualize. Not guaranteed to succeed, as
   // this transformation is not possible in all conditions.
   function _getVisualizableView(originalViewData) {
+
+    // If we could not reach Core Server, fail silently because the HTTP request
+    // failure has already notified Airbrake.
+    if (originalViewData === null) {
+      return Promise.reject(null);
+    }
+
     if (viewIsDirectlyVisualizable(_state.componentType, originalViewData)) {
+
       return Promise.resolve(originalViewData);
     } else {
-      return _getNbeView(originalViewData.domain, originalViewData.id).then(
-        function(nbeViewData) {
-          // We should be able to handle all NBE datasets.
-          StorytellerUtils.assert(
-            viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
-            'All versions of this dataset deemed unfit for visualization!'
-          );
-          return nbeViewData;
-        },
-        function() {
-          // No migration. Give up.
-          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); //eslint-disable-line no-alert
-          return Promise.reject();
-        }
-      );
+
+      return _getNbeView(originalViewData.domain, originalViewData.id).
+        then(
+          function(nbeViewData) {
+
+            // EN-7322 - No repsonse on choosing some datasets
+            //
+            // Do not assume that we have view data. If the request for
+            // /api/migrations/four-four.json returned 404 it means that there
+            // is no corresponding NBE version of this dataset.
+            if (_.isPlainObject(nbeViewData)) {
+
+              // We should be able to handle all NBE datasets.
+              StorytellerUtils.assert(
+                viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
+                'All versions of this dataset deemed unfit for visualization!'
+              );
+              return nbeViewData;
+            } else {
+
+              // No migration. Give up.
+              /* eslint-disable no-alert */
+              alert(
+                I18n.t(
+                'editor.asset_selector.visualization.choose_dataset_unsupported_error'
+                )
+              );
+              /* eslint-enable no-alert */
+              return Promise.reject(null);
+            }
+          }
+        );
     }
   }
 
@@ -867,29 +893,62 @@ export default function AssetSelectorStore() {
     StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
     StorytellerUtils.assertIsOneOfTypes(payload.datasetUid, 'string');
 
-    _getView(payload.domain, payload.datasetUid).then(
-      _getVisualizableView
-    ).then(function(viewData) {
-      var isCreatingTable = (_state.componentType === 'socrata.visualization.table');
-      _setComponentPropertiesFromViewData(viewData);
+    _getView(payload.domain, payload.datasetUid).
+      then(_getVisualizableView).
+      then(
+        function(viewData) {
+          var isCreatingTable = (
+            _state.componentType === 'socrata.visualization.table'
+          );
+          var authoringWorkflowAndSvgVisualizationsEnabled = (
+            _state.isAuthoringVisualization &&
+            Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW &&
+            Environment.ENABLE_SVG_VISUALIZATIONS
+          );
 
-      if (isCreatingTable) {
-        _setUpTableFromSelectedDataset();
-        _state.step = WIZARD_STEP.TABLE_PREVIEW;
-      } else if (_state.isAuthoringVisualization && Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
-        _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
-      } else {
-        _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
-      }
-      self._emitChange();
-    }).catch(function(error) {
+          _setComponentPropertiesFromViewData(viewData);
 
-      if (window.console && console.error) {
-        console.error('Error selecting dataset: ', error);
-      }
+          if (isCreatingTable) {
+            _setUpTableFromSelectedDataset();
+            _state.step = WIZARD_STEP.TABLE_PREVIEW;
+          } else if (authoringWorkflowAndSvgVisualizationsEnabled ) {
+            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
+          } else {
+            _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+          }
+          self._emitChange();
+        }
+      ).
+      catch(
+        function(error) {
 
-      exceptionNotifier.notify(error);
-    });
+          // EN-7322 - No response on choosing some datasets
+          //
+          // If the user attempts to add a chart using an OBE dataset that has
+          // no corresponding migrated NBE dataset, this promise chain is
+          // expected to fail. As such, we probably don't want to notify
+          // Airbrake.
+          //
+          // If the user has attempted to add a chart using one of these
+          // datasets we will reject the _getVisualizableView promise with
+          // null, which can be used to signify that this is one of the
+          // expected errors.
+          // Since the messaging to the user that the dataset they selected is
+          // not currently visualizable is done in _getVisualizableView, we can
+          // just fail silently here.
+          //
+          // TODO: Consider consolidating the user messaging for different
+          // expected error cases here and not in their upstream functions.
+          if (error !== null) {
+
+            if (window.console && console.error) {
+              console.error('Error selecting dataset: ', error);
+            }
+
+            exceptionNotifier.notify(error);
+          }
+        }
+      );
   }
 
   function _chooseVisualizationMapOrChart(payload) {
@@ -897,21 +956,41 @@ export default function AssetSelectorStore() {
 
     StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
 
-    var mapChartError = function(jqXhr, textStatus, error) { //eslint-disable-line no-unused-vars
-      alert(I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')); //eslint-disable-line no-alert
+    var mapChartError = function() {
+
+      /* eslint-disable no-alert */
+      alert(
+        I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')
+      );
+      /* eslint-enable no-alert */
     };
 
-    _getView(payload.domain, payload.mapOrChartUid).then(
-      function(viewData) {
-        if (viewData.displayType === 'chart' || viewData.displayType === 'map') {
-          _setComponentPropertiesFromViewData(viewData);
-          self._emitChange();
-        } else {
+    _getView(payload.domain, payload.mapOrChartUid).
+      then(
+        function(viewData) {
+          var isChartOrMapView = (
+            _.isPlainObject(viewData) &&
+            (
+              viewData.displayType === 'chart' ||
+              viewData.displayType === 'map'
+            )
+          );
+
+          if (isChartOrMapView) {
+
+            _setComponentPropertiesFromViewData(viewData);
+            self._emitChange();
+          } else {
+            mapChartError();
+          }
+        }
+      ).
+      catch(
+        function() {
+
           mapChartError();
         }
-      },
-      mapChartError
-    );
+      );
   }
 
   function _setUpTableFromSelectedDataset() {
@@ -1018,7 +1097,27 @@ export default function AssetSelectorStore() {
           return _getView(domain, migrationData.nbeId);
         }
       ).
-      catch(exceptionNotifier.notify);
+      catch(
+        function(error) {
+          var noMigrationMatch = error.
+            message.
+              match('Cannot find migration info for view with id');
+
+          // We expect to get 404s back for calls to /api/migrations for
+          // OBE datasets with no corresponding NBE dataset, so let's not
+          // notify Airbrake if this is the case. (This isn't a great
+          // approach but it seems better than treating 404s as a special
+          // case in httpRequest and then needing to explicitly check for
+          // 404s in every place that we use it).
+          if (noMigrationMatch === null) {
+            exceptionNotifier.notify(error);
+          }
+
+          // Because this error is already notified here we do not need to
+          // propagate it upward where the return vaule may be misinterpreted.
+          return null;
+        }
+      );
   }
 
   function _getView(domain, uid) {
@@ -1036,6 +1135,7 @@ export default function AssetSelectorStore() {
     return httpRequest('GET', viewUrl).
       then(
         function(viewData) {
+
           // Retcon the domain into the view data.
           // We'd have to pass it around like 5 methods
           // otherwise.
@@ -1061,6 +1161,8 @@ export default function AssetSelectorStore() {
           /* eslint-disable no-alert */
           alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error'));
           /* eslint-enable no-alert */
+
+          return null;
         }
       );
   }

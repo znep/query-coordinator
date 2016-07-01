@@ -23,6 +23,10 @@
       max-width: $container-width;
     }
 
+    .no-wrap {
+      white-space: nowrap;
+    }
+
     .back-button {
       margin-bottom: 11px;
 
@@ -50,7 +54,8 @@
         }
 
         .btn-wide {
-          min-width: 165px;
+          width: 165px;
+          max-width: 165px;
         }
 
         .edit-button, .remove-button {

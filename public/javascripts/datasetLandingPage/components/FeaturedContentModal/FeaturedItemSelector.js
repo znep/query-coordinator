@@ -125,7 +125,7 @@ export var FeaturedItemSelector = React.createClass({
       } else {
         return (
           <button
-            className="btn btn-alternate-2 btn-inverse"
+            className="btn btn-alternate-2 btn-inverse btn-wide"
             onClick={_.partial(this.onClickPreAdd, index)}>
             {`${I18n.add}...`}
           </button>

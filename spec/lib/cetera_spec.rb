@@ -12,6 +12,20 @@ describe Cetera do
     end
   end
 
+  context 'translating offsets' do
+    it 'should return the provided offset when available' do
+      expect(Cetera.translate_offset(30, 9999, 4)).to eq(30)
+    end
+
+    it 'should calculate the offset from page and limit when provided' do
+      expect(Cetera.translate_offset(nil, 5, 2)).to eq(8)
+    end
+
+    it 'should return 0 when offset, page, and limit are nil' do
+      expect(Cetera.translate_offset(nil, nil, nil)).to eq(0)
+    end
+  end
+
   it 'should test_cetera_limit_type_translator' do
     frontend_to_cetera = {
       'data_lens' => 'datalenses',
@@ -242,6 +256,52 @@ describe Cetera do
         search_result = Cetera.search_users(search_query, cookie_string.reverse, request_id)
         expect(search_result.results).to be_empty
       end
+    end
+  end
+
+  describe 'get_derived_from_views' do
+    let(:cookies) { 'i am a cookie' }
+    let(:request_id) { 'iAmProbablyUnique' }
+
+    let(:cetera_results) do
+      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_search_results.json"))
+      Cetera::CatalogSearchResult.new(cetera_payload)
+    end
+
+    before(:each) do
+      allow(CurrentDomain).to receive(:cname).and_return('unicorns')
+    end
+
+    it 'returns CeteraResultRow objects' do
+      allow(Cetera).to receive(:search_views).and_return(cetera_results)
+      result = Cetera.get_derived_from_views('data-lens', cookies, request_id, nil, nil)
+
+      expect(result.first.class).to eq(Cetera::CeteraResultRow)
+    end
+
+    it 'invokes Cetera with limit and offset parameters' do
+      expect(Cetera).to receive(:search_views).
+        with(
+          {
+            search_context: 'unicorns',
+            domains: ['unicorns'],
+            derived_from: 'data-lens',
+            offset: 20,
+            limit: 30
+          },
+          any_args
+        ).
+        and_return(cetera_results)
+
+      Cetera.get_derived_from_views('data-lens', cookies, request_id, 30, 20)
+    end
+
+    it 'returns an empty array when Cetera returns a bad response' do
+      allow(Cetera).to receive(:search_views).and_return(nil)
+      result = Cetera.get_derived_from_views('data-lens', cookies, request_id, nil, 'purple')
+
+      expect(result).to be_a Array
+      expect(result.length).to eq(0)
     end
   end
 

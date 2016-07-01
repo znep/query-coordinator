@@ -119,8 +119,14 @@ class DatasetsController < ApplicationController
       dataset_landing_page = DatasetLandingPage.new
 
       begin
-        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
-      rescue CoreServer::CoreServerError => e
+        @popular_views = dataset_landing_page.get_popular_views(
+          params[:id],
+          forwardable_session_cookies,
+          request_id,
+          4, # limit
+          0 # offset
+        )
+      rescue CoreServer::CoreServerError
         @popular_views = []
       end
 
@@ -755,8 +761,14 @@ class DatasetsController < ApplicationController
       dataset_landing_page = DatasetLandingPage.new
 
       begin
-        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
-      rescue CoreServer::CoreServerError => e
+        @popular_views = dataset_landing_page.get_popular_views(
+          params[:id],
+          forwardable_session_cookies,
+          request_id,
+          4, # limit
+          0 # offset
+        )
+      rescue CoreServer::CoreServerError
         @popular_views = []
       end
 

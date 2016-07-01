@@ -658,7 +658,7 @@ export default function StoryRenderer(options) {
 
         maxEditorHeight = _.chain($elements).
           map($).
-          invoke('outerHeight', true).
+          invokeMap('outerHeight', true).
           concat(maxEditorHeight).
           max().value();
       }

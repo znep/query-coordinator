@@ -162,7 +162,7 @@ describe('DragDrop', function() {
 
         it('should dispatch STORY_DRAG_OVER', function() {
           assert.equal(dispatchedEvents.length, 1);
-          assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
+          assert.deepEqual(_.find(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
             action: Actions.STORY_DRAG_OVER,
             storyUid: StandardMocks.validStoryUid,
             blockContent: StandardMocks.validBlockData1,

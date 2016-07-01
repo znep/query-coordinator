@@ -17,7 +17,7 @@ describe('UserSessionStore', function() {
       status: 401
     };
     // Call all handlers on $.ajaxError.
-    _.chain(ajaxErrorStub.getCalls()).pluck('args').flatten().invoke(_.call, '', {}, fakeJqXhr).value();
+    _.chain(ajaxErrorStub.getCalls()).map('args').flatten().invokeMap(_.call, '', {}, fakeJqXhr).value();
   }
 
   function respondToCurrentUserCallWith404() {

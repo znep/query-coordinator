@@ -164,7 +164,7 @@ describe('SettingsPanel jQuery plugin', function() {
                 field.parent('form').submit();
 
                 assert.deepEqual(
-                  _.pluck(actions, 'action'),
+                  _.map(actions, 'action'),
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
@@ -191,7 +191,7 @@ describe('SettingsPanel jQuery plugin', function() {
                 saveButton.click();
 
                 assert.deepEqual(
-                  _.pluck(actions, 'action'),
+                  _.map(actions, 'action'),
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
@@ -250,7 +250,7 @@ describe('SettingsPanel jQuery plugin', function() {
               saveButton.click();
 
               assert.deepEqual(
-                _.pluck(actions, 'action'),
+                _.map(actions, 'action'),
                 [ Actions.STORY_SET_DESCRIPTION, Actions.STORY_SAVE_METADATA ]
               );
 
@@ -348,7 +348,7 @@ describe('SettingsPanel jQuery plugin', function() {
                 node.find('.settings-panel').trigger('sidebar:close');
 
                 assert.deepEqual(
-                  _.pluck(actions, 'action'),
+                  _.map(actions, 'action'),
                   [ Actions.STORY_SET_TITLE, Actions.STORY_SET_DESCRIPTION ]
                 );
 

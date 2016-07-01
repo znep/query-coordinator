@@ -39,7 +39,7 @@ describe('StorytellerJQueryUtils', function() {
     it('should call .attr() with the correct arguments only when the attribute changes', function() {
       // We only care about calls to .attr(attribute, value), not
       // .attr(attribute).
-      var onlySetCallArgs = _.chain(attrSpy.getCalls()).pluck('args').
+      var onlySetCallArgs = _.chain(attrSpy.getCalls()).map('args').
         filter(function(args) { return args.length !== 1; }).
         value();
 
@@ -53,7 +53,7 @@ describe('StorytellerJQueryUtils', function() {
       sinon.assert.alwaysCalledOn(callbackStub, $node);
 
       assert.deepEqual(
-        _.pluck(callbackStub.getCalls(), 'args'),
+        _.map(callbackStub.getCalls(), 'args'),
         [
           [ 'foo', 'data-test' ],
           [ 'bar', 'data-test' ],

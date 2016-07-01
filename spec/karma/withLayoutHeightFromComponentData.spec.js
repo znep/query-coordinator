@@ -50,7 +50,7 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
 
     it('should call self.height() with correct args only if the height changed', function() {
       assert.deepEqual(
-        _.pluck(heightFunctionSpy.getCalls(), 'args'),
+        _.map(heightFunctionSpy.getCalls(), 'args'),
         [[100], [200], [100]]
       );
     });
@@ -86,7 +86,7 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
 
     it('should call self.height() with correct args only if the height changed', function() {
       assert.deepEqual(
-        _.pluck(heightFunctionSpy.getCalls(), 'args'),
+        _.map(heightFunctionSpy.getCalls(), 'args'),
         [ [defaultHeight], [123] ]
       );
     });

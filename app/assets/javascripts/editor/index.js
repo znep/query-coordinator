@@ -97,7 +97,7 @@ $(document).on('ready', function() {
       editors = _.omit(richTextEditorManager.getAllEditors(), currentEditorId);
 
       richTextEditorManager.linkToolbar(currentEditorId);
-      _.invoke(editors, 'deselect');
+      _.invokeMap(editors, 'deselect');
     }
   });
 
@@ -123,7 +123,7 @@ $(document).on('ready', function() {
         action: Actions.LINK_TIP_CLOSE
       });
 
-      _.invoke(richTextEditorManager.getAllEditors(), 'deselect');
+      _.invokeMap(richTextEditorManager.getAllEditors(), 'deselect');
     }
   });
 

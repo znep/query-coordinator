@@ -43,7 +43,7 @@ export default function() {
       filter(function(singleCallArgs) { // Grab only addEventListener calls for eventName.
         return singleCallArgs[0] === eventName;
       }).
-      pluck(1). // Grab the actual handler functions.
-      invoke(_.call).value(); // Call 'em all (value() is needed to actually realize the chain).
+      map(1). // Grab the actual handler functions.
+      invokeMap(_.call).value(); // Call 'em all (value() is needed to actually realize the chain).
   };
 }

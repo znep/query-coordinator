@@ -540,7 +540,7 @@ describe('AssetSelectorStore', function() {
         // Wait for promises...
         setTimeout(function() {
           assert.lengthOf(server.requests, 1);
-          assert.isFalse(_.any(server.requests, function(request) {
+          assert.isFalse(_.some(server.requests, function(request) {
             return request.url === migrationUrl;
           }));
           done();

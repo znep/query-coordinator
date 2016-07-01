@@ -40,16 +40,16 @@ module Cetera
     response.success? && CatalogSearchResult.new(response)
   end
 
-  def self.get_derived_from_views(uid, cookies_string, request_id, limit = nil, offset = nil)
-    options = {
+  def self.get_derived_from_views(uid, options = {})
+    cookie_string = options.delete(:cookie_string)
+    request_id = options.delete(:request_id)
+    search_options = options.merge({
       search_context: CurrentDomain.cname,
       domains: [CurrentDomain.cname],
-      derived_from: uid,
-      offset: offset,
-      limit: limit
-    }.compact
+      derived_from: uid
+    }).compact
 
-    response = search_views(options, cookies_string, request_id)
+    response = search_views(search_options, cookie_string, request_id)
 
     response ? response.results : []
   end
@@ -137,7 +137,9 @@ module Cetera
       'alpha' => 'name',
       'newest' => 'createdAt',
       'oldest' => 'createdAt ASC',
-      'last_modified' => 'updatedAt'
+      'last_modified' => 'updatedAt',
+      'date' => 'createdAt',
+      'name' => 'name'
     }.fetch(sort_by) # For Core/Cly parity, we want no results if sort_by is bogus
   end
 

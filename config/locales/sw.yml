@@ -1495,6 +1495,10 @@ sw:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1654,6 +1658,7 @@ sw:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1866,6 +1871,10 @@ sw:
       contributors: Wasiliana na Mmiliki wa Setidata
       created: Iliundwa
       data_provided_by: Data Imetolewa na
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Maelezo
       downloads: Kupakua
@@ -3643,6 +3652,8 @@ sw:
       new_ux_nbe_warning: 
       new_ux_text: 
       new_ux_title: 
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Una data hazijahifadhiwa ambazo zitapotea kama utaacha ukurasa huu. Tafadhali chagua kama unataka au hutaki kuhifadhi mwonekano huu kabla ya kuondoka; au chagua Batilisha ili kurudi kwenye ukurasa.

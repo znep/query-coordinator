@@ -1476,6 +1476,10 @@ sl:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1634,6 +1638,7 @@ sl:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1844,6 +1849,10 @@ sl:
       contributors: Sodelavci
       created: ustvarjeno
       data_provided_by: Podatke omogočil
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Opis
       downloads: Prenosi
@@ -3585,6 +3594,8 @@ sl:
       new_ux_nbe_warning: 'Samo za notranjo rabo: stari UX pogled na zbirko podatkov z novim vmesnikom Backend. Običajni uporabniki bi bili preusmerjeni na %{url}'
       new_ux_text: Izkusite te podatke na nov, Data Lens način
       new_ux_title: Pripravljeni na vizualno raziskovanje?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Obstajajo neshranjeni podatki, ki bodo izgubljeni, če zapustite to stran. Izberite, ali želite shraniti ta pogled preden odidete; ali pa izberite Prekliči, da se vrnete na stran.

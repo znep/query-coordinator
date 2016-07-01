@@ -1468,6 +1468,10 @@ pt:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1626,6 +1630,7 @@ pt:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1836,6 +1841,10 @@ pt:
       contributors: Colaboradores
       created: criado
       data_provided_by: Dados fornecidos por
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Descrição
       downloads: Downloads
@@ -3563,6 +3572,8 @@ pt:
       new_ux_nbe_warning: 'Uso interno: visualização UX antiga da nova tabela de dados'
       new_ux_text: Ver estes dados na nova experiência Data Lens
       new_ux_title: Está pronto(a) para explorar visualmente?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Você tem dados não-salvos que irão se perder se você sair desta página. Por favor escolha se quer ou não salvar esta visualização antes de sair; ou escolha Cancelar para voltar para a página.

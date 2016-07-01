@@ -1471,6 +1471,10 @@ es:
       title: Compartir este conjunto de datos
       twitter: Compartir mediante Twitter
       visibility_alert_html: "<b>¡Atención!</b> Este conjunto de datos es privado y podría no ser accesible para las personas con las que lo compartes."
+    tour:
+      description: 
+      done: 
+      title: 
     updated: Actualizado
     view_widget:
       external_content: Contenido externo
@@ -1629,6 +1633,7 @@ es:
         goal_page: Página del objetivo
         goal_status: Estado del objetivo
         manage_on_goal_page: Administrar en la página del objetivo
+        of: 
         owner: Propietario
         rows_per_page: 
         title: Título
@@ -1839,6 +1844,10 @@ es:
       contributors: Colaboradores
       created: creado
       data_provided_by: Datos suministrados por
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: Estado de sincronización de datos
       description: Descripción
       downloads: Descargas
@@ -3570,6 +3579,8 @@ es:
       new_ux_nbe_warning: 'Solo interno: vista UX antigua del conjunto New Backend. Se habrá redirigido a los usuarios ordinarios a %{url}'
       new_ux_text: Ver estos datos en la nueva experiencia de Data Lens
       new_ux_title: "¿Está listo para explorar de forma visual?"
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: 'Tiene datos sin guardar que se perderán si sale de esta página. Por favor, elija guardar o no está vista antes de dejar la página; o seleccione “Cancelar” para regresar a la página. '

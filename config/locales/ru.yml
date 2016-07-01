@@ -1467,6 +1467,10 @@ ru:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1625,6 +1629,7 @@ ru:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1837,6 +1842,10 @@ ru:
       contributors: "Авторы"
       created: "Создано"
       data_provided_by: "Данные предоставлены"
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: "Описание"
       downloads: "Количество загрузок"
@@ -3575,6 +3584,8 @@ ru:
       new_ux_nbe_warning: "Только для внутреннего использования: старый вид UX нового внутреннего набора данных. Обычные пользователи будут перенаправлены на %{url}"
       new_ux_text: "Просмотрите эти данные с помощью новых линз данных"
       new_ux_title: "Готовы к визуальному просмотру?"
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: "У вас остались несохраненные данные, они будут потеряны, если вы уйдете с этой страницы. Нажатием кнопки укажите, сохранить или не сохранять данный вид, прежде чем вы уйдете с этой страницы, или нажмите «Отмена», чтобы вернуться на эту страницу."

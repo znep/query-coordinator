@@ -16,7 +16,8 @@
       #choropleth-map-1,
       #choropleth-map-2,
       #choropleth-map-3,
-      #choropleth-map-4 {
+      #choropleth-map-4,
+      #choropleth-map-5 {
         display: block;
         position: relative;
         width: 640px;
@@ -31,6 +32,7 @@
     <div id="choropleth-map-2"></div>
     <div id="choropleth-map-3"></div>
     <div id="choropleth-map-4"></div>
+    <div id="choropleth-map-5"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -104,7 +106,7 @@
           'type': 'visualization_interchange_format',
           'version': 1
         },
-        'title': 'Example Usage: socrata.visualizations.ChoroplethMap.js',
+        'title': 'Example Usage: ChoroplethMap.js',
         'type': 'choroplethMap',
         'unit': {
           'one': 'crime',
@@ -113,10 +115,19 @@
       };
 
       var choropleth2VIF = _.cloneDeep(choropleth1VIF);
-      choropleth2VIF.configuration.legend = {
+      choropleth2VIF.configuration.mapCenterAndZoom = {
+        center: {
+          lat: 47.5961688328413,
+          lng: -122.3282253742218
+        },
+        zoom: 17
+      };
+
+      var choropleth3VIF = _.cloneDeep(choropleth1VIF);
+      choropleth3VIF.configuration.legend = {
         'type': 'discrete'
       };
-      choropleth2VIF.filters = [
+      choropleth3VIF.filters = [
         {
           'columnName': 'location_description',
           'function': 'binaryOperator',
@@ -127,8 +138,8 @@
         }
       ];
 
-      var choropleth3VIF = _.cloneDeep(choropleth1VIF);
-      choropleth3VIF.filters = [
+      var choropleth4VIF = _.cloneDeep(choropleth1VIF);
+      choropleth4VIF.filters = [
         {
           'columnName': 'location_point',
           'function': 'binaryComputedGeoregionOperator',
@@ -140,8 +151,8 @@
         }
       ];
 
-      var choropleth4VIF = _.cloneDeep(choropleth1VIF);
-      choropleth4VIF.aggregation = {
+      var choropleth5VIF = _.cloneDeep(choropleth1VIF);
+      choropleth5VIF.aggregation = {
         'field': 'id',
         'function': 'sum'
       };
@@ -171,6 +182,11 @@
       $choroplethElement4.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $choroplethElement4.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement4.socrataChoroplethMap(choropleth4VIF);
+
+      var $choroplethElement5 = $('#choropleth-map-5');
+      $choroplethElement5.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement5.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $choroplethElement5.socrataChoroplethMap(choropleth5VIF);
 
       /**
        * Handle plugin events
@@ -218,6 +234,10 @@
       // $choroplethElement4.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $choroplethElement4.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement4.trigger('destroy');
+
+      // $choroplethElement5.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement5.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $choroplethElement5.trigger('destroy');
     });
   </script>
 </html>

@@ -13,11 +13,13 @@ module SocrataSiteChrome
     def site_chrome_config
       raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
-      site_chrome_config = newest_published_site_chrome
+      site_chrome_config = current_published_site_chrome
+
       {
         id: config[:id],
         content: site_chrome_config[:content],
-        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt]
+        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
+        current_version: config[:properties].to_a.first.to_h.dig(:value, :current_version)
       }
     end
 
@@ -29,7 +31,7 @@ module SocrataSiteChrome
 
     # Config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
-    def newest_published_site_chrome
+    def current_published_site_chrome
       published_site_chrome_config = {}
 
       if config.has_key?(:properties)
@@ -38,8 +40,10 @@ module SocrataSiteChrome
         end
 
         if site_chrome_config.dig(:value, :versions).present?
-          latest_version = site_chrome_config[:value][:versions].keys.map(&:to_f).max.to_s
-          published_site_chrome_config = site_chrome_config[:value][:versions][latest_version][:published]
+          # If current_version does not exist, use latest version
+          current_version = site_chrome_config.dig(:value, :current_version) ||
+            site_chrome_config.dig(:value, :versions).keys.map { |version| Gem::Version.new(version) }.max.to_s
+          published_site_chrome_config = site_chrome_config.dig(:value, :versions, current_version, :published)
         else
           message = "Invalid site_chrome configuration in domain: #{domain}"
           Airbrake.notify(

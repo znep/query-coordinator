@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe SocrataSiteChrome::ApplicationHelper do
-  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config_vars.json')).with_indifferent_access }
-  let(:site_chrome_config) do { content: site_chrome_config_vars['content'] }
+  let(:site_chrome_config) do { content: JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).
+    with_indifferent_access['properties'].first['value']['versions']['0.2']['published']['content'] }
   end
 
   describe'#logo' do
@@ -49,7 +49,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       RequestStore.store[:site_chrome] = site_chrome
       result = helper.header_logo
-      expect(result).to eq('<a class="logo" href="/"><img alt="test header" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/rF2EJ4P.gif" /><span class="site-name"></span></a>')
+      expect(result).to eq('<a class="logo" href="/"><img onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
   end
 
@@ -124,14 +124,40 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#valid_social_links' do
-    it 'returns only links with a url present' do
-      test_links = [
-        { 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' },
-        { 'type': 'twitter', 'url': '' }
-      ]
+    it 'returns an empty array if passed nil' do
+      expect(helper.valid_social_links(nil)).to match_array([])
+    end
 
-      result = helper.valid_social_links(test_links)
-      expect(result).to match_array([{ 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' }])
+    it 'returns an empty array if passed an empty hash' do
+      expect(helper.valid_social_links({})).to match_array([])
+    end
+
+    describe 'version <= 0.2' do
+      it 'returns only links with a url present' do
+        test_links = [
+          { 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' },
+          { 'type': 'twitter', 'url': '' }
+        ]
+
+        allow(helper).to receive(:current_version_is_greater_than_or_equal?).and_return(false)
+
+        result = helper.valid_social_links(test_links)
+        expect(result).to match_array([ type: 'facebook', url: 'http://facebook.com/bobsaget' ])
+      end
+    end
+
+    describe 'version 0.3' do
+      it 'returns only links with a url present' do
+        test_links = {
+          'facebook': { 'url': 'http://facebook.com/bobsaget' },
+          'twitter': { 'url': '' }
+        }
+
+        allow(helper).to receive(:current_version_is_greater_than_or_equal?).and_return(true)
+
+        result = helper.valid_social_links(test_links)
+        expect(result).to match_array([{ 'type': 'facebook', 'url': 'http://facebook.com/bobsaget' }])
+      end
     end
   end
 
@@ -200,6 +226,23 @@ describe SocrataSiteChrome::ApplicationHelper do
     it 'returns "rally" if it is set in the url param, regardless of type' do
       helper.request.query_parameters[:site_chrome_template] = 'RaLLy'
       expect(helper.current_template).to eq('rally')
+    end
+  end
+
+  describe '#current_version_is_greater_than_or_equal?' do
+    it 'returns false if the current version is less than the version passed' do
+      allow_any_instance_of(SocrataSiteChrome::SiteChrome).to receive(:current_version).and_return('0.1')
+      expect(helper.current_version_is_greater_than_or_equal?('0.2')).to eq(false)
+    end
+
+    it 'returns true if the current version is the same as the version passed' do
+      allow_any_instance_of(SocrataSiteChrome::SiteChrome).to receive(:current_version).and_return('0.2')
+      expect(helper.current_version_is_greater_than_or_equal?('0.2')).to eq(true)
+    end
+
+    it 'returns true if the current version is greater than the version passed' do
+      allow_any_instance_of(SocrataSiteChrome::SiteChrome).to receive(:current_version).and_return('0.3')
+      expect(helper.current_version_is_greater_than_or_equal?('0.2')).to eq(true)
     end
   end
 end

@@ -65,10 +65,26 @@ module SocrataSiteChrome
       }[type.to_s.downcase]
     end
 
+    def social_link_order
+      %w(facebook twitter youtube linked_in flickr instagram tumblr yammer google_plus vimeo)
+    end
+
     def valid_social_links(links)
-      links.to_a.select do |link|
-        link && link[:url].present?
+      if current_version_is_greater_than_or_equal?('0.3')
+        social_links = []
+        links.to_a.each do |type, value|
+          social_links.push(
+            :type => type.to_s,
+            :url => value[:url]
+          )
+        end
+      else
+        social_links = links.to_a
       end
+
+      social_links.select do |link|
+        link[:url].present?
+      end.sort_by { |x| social_link_order.find_index(x[:type]) }
     end
 
     def valid_links(links)
@@ -117,6 +133,10 @@ module SocrataSiteChrome
       else
         'default'
       end
+    end
+
+    def current_version_is_greater_than_or_equal?(version)
+      Gem::Version.new(get_site_chrome.current_version) >= Gem::Version.new(version)
     end
   end
 end

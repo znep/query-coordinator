@@ -233,6 +233,10 @@ body .header-main {
     .message {
       color: $story-save-error-bar-color;
       padding: 0 0.6rem;
+
+      span + a {
+        margin-left: 5px;
+      }
     }
 
     .btn-busy {
@@ -268,11 +272,6 @@ ul.quick-action-menu {
     height: $header-height;
     vertical-align: top;
   }
-}
-
-a[role="button"] {
-  text-decoration: none;
-  color: inherit;
 }
 
 .hidden {

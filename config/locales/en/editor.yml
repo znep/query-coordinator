@@ -20,7 +20,8 @@ en:
     story_save_error_conflict_generic_user_name: 'another user'
     story_save_error_conflict_detail_2: 'in another window. Any changes you make here will not be saved. Reload this page to see the latest version of the story.'
     story_save_error_reload: 'Reload your story'
-    user_session_timeout: Oh no! It appears that you're offline. Make sure you're <a class="btn btn-alternate-2 btn-xs">logged in</a> and check your Internet connection.
+    story_save_error_login_button: 'Log in now'
+    user_session_timeout: Oh no! It appears that you're offline. Make sure you're logged in and check your Internet connection.
     block_edit_controls:
       presentation_hide_flyout: 'Hide in presentation view'
       presentation_show_flyout: 'Show in presentation view'

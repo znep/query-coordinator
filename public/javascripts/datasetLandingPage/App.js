@@ -12,8 +12,8 @@ import PopularViewList from './components/PopularViewList';
 export default function() {
   return (
     <div>
-      <PrivateNotice />
       <PublishNotice />
+      <PrivateNotice />
       <InfoPane />
 
       <main className="container landing-page-container">

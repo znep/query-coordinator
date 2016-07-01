@@ -111,7 +111,14 @@ function ChoroplethMap(element, vif) {
   attachEvents();
 
   // Initialize map's bounds if provided with that data
+  //
+  // TODO: Deprecate extentsDefined in favor of centerAndZoomDefined.
   var extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
+  var centerAndZoomDefined = (
+    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
+    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
+    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
+  );
 
   // If bounds are not defined, this will get handled when render is first
   // called, as the fallback bounds calculation requires the geoJSON data.
@@ -275,11 +282,21 @@ function ChoroplethMap(element, vif) {
   function initializeMap(el, data) {
     // Only update bounds on the first render so we can persist
     // users' panning and zooming.
+    //
     // It is critical to invalidate size prior to updating bounds
     // Otherwise, Leaflet will fit the bounds to an incorrectly sized viewport.
     // This manifests itself as the map being zoomed all of the way out.
     map.invalidateSize();
-    updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
+
+    // Note that we prefer center and zoom over extents, since we intend to
+    // deprecate the latter and the former will be set by the new authoring
+    // experience.
+    if (centerAndZoomDefined) {
+      updateCenterAndZoom(data, vif.configuration.mapCenterAndZoom);
+    } else if (extentsDefined) {
+      updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
+    }
+
     firstRender = false;
 
     lastElementWidth = el.width();
@@ -295,7 +312,9 @@ function ChoroplethMap(element, vif) {
     choroplethLegend.on('mouseout', '.choropleth-legend-color', hideFlyout);
 
     map.on('mouseout', hideFlyout);
-    map.on('zoomend dragend', emitExtentEventsFromMap);
+    map.on('dragend zoomend', emitMapCenterAndZoomChange);
+    // TODO: Deprecate the following event handler.
+    map.on('dragend zoomend', emitExtentEventsFromMap);
   }
 
   /**
@@ -307,7 +326,9 @@ function ChoroplethMap(element, vif) {
     choroplethLegend.off('mouseout', '.choropleth-legend-color', hideFlyout);
 
     map.off('mouseout', hideFlyout);
-    map.off('zoomend dragend', emitExtentEventsFromMap);
+    map.off('dragend zoomend', emitMapCenterAndZoomChange);
+    // TODO: Deprecate the following event handler.
+    map.off('dragend zoomend', emitExtentEventsFromMap);
   }
 
   /**
@@ -488,6 +509,71 @@ function ChoroplethMap(element, vif) {
     );
   }
 
+  function emitMapCenterAndZoomChange() {
+    var leafletCenter = map.getCenter();
+    var zoom = map.getZoom();
+    var lat = leafletCenter.lat;
+    var lng = leafletCenter.lng;
+    var centerAndZoom;
+
+    utils.assertIsOneOfTypes(
+      lat,
+      'number'
+    );
+
+    utils.assert(
+      lat >= -90,
+      'Latitude is out of bounds ({0} < -90)'.format(lat)
+    );
+
+    utils.assert(
+      lat <= 90,
+      'Latitude is out of bounds ({0} > 90)'.format(lat)
+    );
+
+    utils.assertIsOneOfTypes(
+      lng,
+      'number'
+    );
+
+    utils.assert(
+      lng >= -180,
+      'Longitude is out of bounds ({0} < -180)'.format(lng)
+    );
+
+    utils.assert(
+      lng <= 180,
+      'Longitude is out of bounds ({0} > 180)'.format(lng)
+    );
+
+    utils.assertIsOneOfTypes(
+      zoom,
+      'number'
+    );
+
+    utils.assert(
+      zoom > 0,
+      'Leaflet zoom is out of bounds ({0} < 1)'.format(zoom)
+    );
+
+    utils.assert(
+      zoom < 19,
+      'Leaflet zoom is out of bounds ({0} > 18)'.format(zoom)
+    );
+
+    centerAndZoom = {
+      center: {
+        lat: lat,
+        lng: lng
+      },
+      zoom: zoom
+    };
+
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_CHOROPLETH_CENTER_AND_ZOOM_CHANGE',
+      centerAndZoom
+    );
+  }
 
   function emitExtentEventsFromMap() {
     var leafletBounds = map.getBounds();
@@ -599,9 +685,20 @@ function ChoroplethMap(element, vif) {
     );
   }
 
+  function updateCenterAndZoom(geojsonData, centerAndZoom) {
+    utils.assertHasProperties(centerAndZoom, 'center', 'zoom');
+    utils.assertHasProperties(centerAndZoom.center, 'lat', 'lng');
+    utils.assertIsOneOfTypes(centerAndZoom.center.lat, 'number');
+    utils.assertIsOneOfTypes(centerAndZoom.center.lng, 'number');
+    utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
+
+    map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
+  }
+
   /**
    * Update map bounds.
    */
+
   function updateBounds(geojsonData, defaultExtent, savedExtent) {
 
     function buildPositionArray(positions) {

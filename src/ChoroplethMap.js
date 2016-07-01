@@ -52,14 +52,6 @@ $.fn.socrataChoroplethMap = function(vif) {
   utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
   utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
 
-  utils.assertHasProperties(
-    vif.configuration.localization,
-    'no_value',
-    'flyout_unfiltered_amount_label',
-    'flyout_filtered_amount_label',
-    'flyout_selected_notice'
-  );
-
   /**
    * Setup visualization
    */
@@ -446,6 +438,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', handleFlyout);
     $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', handleSelection);
+    $element.on('SOCRATA_VISUALIZATION_CHOROPLETH_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
     $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
@@ -456,6 +449,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_FLYOUT', handleFlyout);
     $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_SELECT_REGION', handleSelection);
+    $element.off('SOCRATA_VISUALIZATION_CHOROPLETH_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
     $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
@@ -542,6 +536,21 @@ $.fn.socrataChoroplethMap = function(vif) {
         'SOCRATA_VISUALIZATION_VIF_UPDATED',
         {
           detail: newVif,
+          bubbles: true
+        }
+      )
+    );
+  }
+
+  function handleMapCenterAndZoomChange(event) {
+
+    event.originalEvent.stopPropagation();
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED',
+        {
+          detail: event.originalEvent.detail,
           bubbles: true
         }
       )

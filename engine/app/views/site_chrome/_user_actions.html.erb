@@ -9,7 +9,7 @@
     <%- logout_link = capture do %>
       <%= link_to('Sign Out', '/logout', :class => 'logout-link') %>
     <%- end %>
-    <%= dropdown("Hi #{username}!", [ profile_link, admin_link, logout_link ]) %>
+    <%= dropdown("#{username}", [ profile_link, admin_link, logout_link ]) %>
   <% else %>
     <%= link_to('Sign In', '/login', :class => "sign-in-toggle chrome-btn") %>
   <% end %>

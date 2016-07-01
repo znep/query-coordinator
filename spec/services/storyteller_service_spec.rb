@@ -14,6 +14,16 @@ RSpec.describe StorytellerService do
       end
     end
 
+    context 'when consul errors' do
+      before do
+        allow_any_instance_of(Diplomat::Kv).to receive(:get).and_raise(Diplomat::UnknownStatus.new)
+      end
+
+      it 'is true' do
+        expect(subject).to eq(true)
+      end
+    end
+
     context 'when consul does not contain key' do
       before do
         allow_any_instance_of(Diplomat::Kv).to receive(:get).and_raise(Diplomat::KeyNotFound.new)
@@ -68,6 +78,16 @@ RSpec.describe StorytellerService do
     context 'when no connection to consul' do
       before do
         allow_any_instance_of(Diplomat::Kv).to receive(:get).and_raise(Faraday::ConnectionFailed.new(nil))
+      end
+
+      it 'is an empty array' do
+        expect(subject).to eq([])
+      end
+    end
+
+    context 'when consul errors' do
+      before do
+        allow_any_instance_of(Diplomat::Kv).to receive(:get).and_raise(Diplomat::UnknownStatus.new)
       end
 
       it 'is an empty array' do

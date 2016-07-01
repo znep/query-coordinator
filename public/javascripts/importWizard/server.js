@@ -15,7 +15,7 @@ import _ from 'lodash';
 const authenticityMetaTag = document.querySelector('meta[name=csrf-token]');
 export const authenticityToken: string = authenticityMetaTag === null
   ? ''
-  : authenticityMetaTag.attributes.content.value;
+  : authenticityMetaTag.attributes.getNamedItem('content').value;
 
 export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
 
@@ -51,14 +51,24 @@ export function saveMetadataThenProceed() {
   };
 }
 
+const defaultFetchOptions = {
+  headers: {
+    'X-CSRF-Token': authenticityToken,
+    'X-App-Token': appToken
+  }
+};
+export function socrataFetch(path, options): Promise {
+  // only need to add in authenticityToken for non-GET requests
+  const mergedOptions = (!_.isUndefined(options.method) && options.method.toUpperCase() !== 'GET')
+    ? _.merge(options, defaultFetchOptions)
+    : options;
+  return fetch(path, mergedOptions);
+}
+
 function saveMetadataToViewsApi(datasetId, metadata) {
-  return fetch(`/api/views/${datasetId}`, {
+  return socrataFetch(`/api/views/${datasetId}`, {
     method: 'PUT',
     credentials: 'same-origin',
-    headers: {
-      'X-CSRF-Token': authenticityToken,
-      'X-App-Token': appToken
-    },
     body: JSON.stringify(modelToViewParam(metadata))
   }).then((result) => {
     console.log(result);
@@ -209,7 +219,7 @@ export function update(status: ImportStatus = initialImportStatus(), action): Im
       if (status.type === 'InProgress') {
         return {
           ...status,
-          notificationStatus: action.status
+          notification: action.status
         };
       } else {
         return status;
@@ -237,7 +247,7 @@ export function addNotificationInterest() {
     const state = getState();
     if (state.importStatus.notification === 'Available') {
       dispatch(notificationStatus('InProgress'));
-      fetch(`/users/${blist.currentUser.id}/email_interests.json`, {
+      socrataFetch(`/users/${blist.currentUser.id}/email_interests.json`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -267,12 +277,10 @@ function importData(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
-    fetch('/api/imports2.json', {
+    socrataFetch('/api/imports2.json', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRF-Token': authenticityToken,
-        'X-App-Token': appToken
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       credentials: 'same-origin',
       body: formurlencoded({
@@ -322,12 +330,10 @@ function importGeospatial(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
-    fetch('/api/imports2.json?method=shapefile', {
+    socrataFetch('/api/imports2.json?method=shapefile', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRF-Token': authenticityToken,
-        'X-App-Token': appToken
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       credentials: 'same-origin',
       body: formurlencoded({
@@ -371,7 +377,7 @@ const POLL_INTERVAL_MS = 5000;
 
 
 function pollUntilDone(ticket, dispatch, onProgress, onError) {
-  fetch(`/api/imports2.json?ticket=${ticket}`, {
+  socrataFetch(`/api/imports2.json?ticket=${ticket}`, {
     credentials: 'same-origin'
   }).then((response) => {
     switch (response.status) {

@@ -1715,7 +1715,6 @@ en:
       layouts: Layouts
       list_layout: List Layout
       title: Select Layout
-    #measure shoud be kept in sync with janus-govstat
     measure:
       unit_percent: percent
       progress:

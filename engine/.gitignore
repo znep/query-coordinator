@@ -1,7 +1,7 @@
 .bundle/
 log/*.log
 pkg/
-public/stylesheets/styleguide
+public/socrata_site_chrome/stylesheets/styleguide
 spec/dummy/db/*.sqlite3
 spec/dummy/db/*.sqlite3-journal
 spec/dummy/log/*.log

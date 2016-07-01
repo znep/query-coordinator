@@ -1,6 +1,6 @@
 import {
-  SHOW_ALERT,
-  HIDE_ALERT
+  SHOW_GOAL_TABLE_ALERT,
+  SHOW_GOAL_QUICK_EDIT_ALERT
 } from '../actionTypes';
 
 /**
@@ -13,15 +13,16 @@ import {
  * @param alert
  * @returns Object
  */
-export function displayAlert(alert) {
+export function displayGoalTableAlert(alert) {
   return {
-    type: SHOW_ALERT,
+    type: SHOW_GOAL_TABLE_ALERT,
     alert
   };
 }
 
-export function hideAlert() {
+export function displayGoalQuickEditAlert(alert) {
   return {
-    type: HIDE_ALERT
+    type: SHOW_GOAL_QUICK_EDIT_ALERT,
+    alert
   };
 }

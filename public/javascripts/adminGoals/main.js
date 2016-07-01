@@ -21,12 +21,15 @@ const initialState = Immutable.fromJS({
     dashboards: {},
     goals: [],
     cachedUsers: {},
+    cachedGoalExtras: {},
     translations: window.translations,
     selectedRows: [],
-    alert: { label: '', message: '' },
     rowsPerPage: 25,
     currentPage: 1,
-    tableOrder: { direction: 'asc' }
+    tableOrder: { direction: 'asc' },
+    goalQuickEditOpenGoalId: null,
+    goalTableAlert: {},
+    goalQuickEditAlert: {}
   }
 });
 

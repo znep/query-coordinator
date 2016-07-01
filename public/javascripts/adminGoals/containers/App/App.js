@@ -1,13 +1,13 @@
 import React  from 'react';
 import GoalTable from './../GoalTable/GoalTable';
-import Alert from '../../components/Alert';
+import GoalQuickEdit from '../../components/GoalQuickEdit';
 import './App.scss';
 
 export default function() {
   return (
     <div>
-      <Alert />
       <GoalTable />
+      <GoalQuickEdit />
     </div>
   );
 }

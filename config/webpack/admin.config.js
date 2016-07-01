@@ -14,6 +14,7 @@ module.exports = _.defaultsDeep({
     'admin-edit-connector': './screens/admin-edit-connector'
   },
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig('public/javascripts/src/.eslintrc.json'),
   module: {
     loaders: [{
       test: /\.js$/,

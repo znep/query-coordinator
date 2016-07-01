@@ -9,6 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/mobile'),
   entry: './main',
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig('public/javascripts/mobile/.eslintrc.json'),
   module: {
     loaders: [
       {

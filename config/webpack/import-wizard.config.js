@@ -9,6 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/importWizard'),
   entry: './main',
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig('public/javascripts/importWizard/.eslintrc.json'),
   module: {
     loaders: [
       {

@@ -9,6 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/angular/src'),
   entry: './main',
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
   module: {
     loaders: [
       {

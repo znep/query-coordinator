@@ -9,6 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/adminGoals'),
   entry: './main.js',
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig('public/javascripts/adminGoals/.eslintrc.json'),
   module: {
     loaders: [
       {

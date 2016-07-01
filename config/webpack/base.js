@@ -14,11 +14,6 @@ module.exports = {
     stats: 'minimal',
     hot: true
   },
-  eslint: {
-    configFile: common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json',
-    formatter: require('eslint/lib/formatters/compact'),
-    failOnError: false
-  },
   module: {
     preLoaders: _.compact(common.isProduction ? null : [
       {

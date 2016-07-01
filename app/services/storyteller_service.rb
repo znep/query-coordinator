@@ -30,6 +30,8 @@ class StorytellerService
       Rails.cache.write("consul:#{CONSUL_KEYS[:version]}", active_version, expires_in: 12.hours)
     rescue Diplomat::KeyNotFound => error
       Rails.logger.warn("Failed to find Consul KV #{CONSUL_KEYS[:version]}: #{error.message}")
+    rescue Diplomat::UnknownStatus => error
+      Rails.logger.warn("Received non-success status from Consul: #{error.message}")
     rescue Faraday::ConnectionFailed => error
       Rails.logger.warn("Unable to connect to Consul: #{error.message}")
     end
@@ -48,6 +50,8 @@ class StorytellerService
       Rails.logger.warn("Invalid YAML in Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
     rescue Diplomat::KeyNotFound => error
       Rails.logger.warn("Failed to find Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")
+    rescue Diplomat::UnknownStatus => error
+      Rails.logger.warn("Received non-success status from Consul: #{error.message}")
     rescue Faraday::ConnectionFailed => error
       Rails.logger.warn("Unable to connect to Consul: #{error.message}")
     end

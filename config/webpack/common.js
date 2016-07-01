@@ -49,6 +49,14 @@ function getManifestPlugin(identifier) {
   });
 }
 
+function getEslintConfig(configFile) {
+  return {
+    configFile: path.resolve(root, configFile),
+    formatter: require('eslint/lib/formatters/compact'),
+    failOnError: false
+  };
+}
+
 module.exports = {
   root: root,
   packageJson: packageJson,
@@ -57,5 +65,6 @@ module.exports = {
   plugins: plugins,
   getHotModuleEntries: getHotModuleEntries,
   getOutput: getOutput,
-  getManifestPlugin: getManifestPlugin
+  getManifestPlugin: getManifestPlugin,
+  getEslintConfig: getEslintConfig
 };

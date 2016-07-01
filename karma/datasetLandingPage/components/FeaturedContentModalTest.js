@@ -1,5 +1,4 @@
 import { FeaturedContentModal } from 'components/FeaturedContentModal';
-import { Simulate } from 'react-addons-test-utils';
 
 describe('components/FeaturedContentModal', function() {
   function getProps(props) {
@@ -13,18 +12,6 @@ describe('components/FeaturedContentModal', function() {
   it('renders an element', function() {
     var element = renderComponentWithStore(FeaturedContentModal, getProps());
     expect(element).to.exist;
-  });
-
-  it('calls onCloseModal when the close icon is clicked', function() {
-    var spy = sinon.spy();
-
-    var element = renderComponentWithStore(FeaturedContentModal, getProps({
-      onCloseModal: spy
-    }));
-
-    expect(spy.callCount).to.equal(0);
-    Simulate.click(element.querySelector('.btn.modal-header-dismiss'));
-    expect(spy.callCount).to.equal(1);
   });
 
   it('renders FeaturedItemSelector when isEditing is false', function() {

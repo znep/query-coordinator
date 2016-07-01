@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../lib/a11yHelpers';
 import ViewWidget from '../ViewWidget';
+import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import {
   cancelFeaturedItemEdit,
@@ -25,6 +26,7 @@ export var StoryForm = React.createClass({
     loadRequestedStory: PropTypes.func,
     onChangeUrl: PropTypes.func,
     onClickCancel: PropTypes.func,
+    onClickClose: PropTypes.func,
     onClickSave: PropTypes.func,
     resetFocus: PropTypes.func,
     shouldLoadStory: PropTypes.bool,
@@ -153,18 +155,20 @@ export var StoryForm = React.createClass({
 
     return (
       <div className="modal-content story">
-        {backButton}
+        <div className="container">
+          {backButton}
 
-        <h2>{this.I18n.header}</h2>
+          <h2>{this.I18n.header}</h2>
 
-        <p dangerouslySetInnerHTML={{ __html: this.I18n.message_html }} />
+          <p dangerouslySetInnerHTML={{ __html: this.I18n.message_html }} />
 
-        <div className="story-contents">
-          {this.renderForm()}
-          {this.renderPreview()}
+          <div className="story-contents">
+            {this.renderForm()}
+            {this.renderPreview()}
+          </div>
+
+          {saveError}
         </div>
-
-        {saveError}
       </div>
     );
   },
@@ -188,8 +192,11 @@ export var StoryForm = React.createClass({
   },
 
   render: function() {
+    var { onClickClose } = this.props;
+
     return (
-      <div>
+      <div className="modal-container">
+        <FeaturedContentModalHeader onClickClose={onClickClose} />
         {this.renderContent()}
         {this.renderFooter()}
       </div>
@@ -213,6 +220,10 @@ function mapDispatchToProps(dispatch, ownProps) {
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
       ownProps.resetFocus();
+    },
+
+    onClickClose: function() {
+      dispatch(cancelFeaturedItemEdit());
     },
 
     onClickSave: function() {

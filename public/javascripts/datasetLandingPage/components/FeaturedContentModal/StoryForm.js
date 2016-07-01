@@ -19,7 +19,6 @@ export var StoryForm = React.createClass({
     description: PropTypes.string,
     hasSaveError: PropTypes.bool,
     hasValidationError: PropTypes.bool,
-    imageUrl: PropTypes.string,
     isLoadingStory: PropTypes.bool,
     isSaved: PropTypes.bool,
     isSaving: PropTypes.bool,
@@ -107,7 +106,6 @@ export var StoryForm = React.createClass({
       title,
       createdAt,
       viewCount,
-      imageUrl,
       canSave,
       isLoadingStory
     } = this.props;
@@ -117,7 +115,6 @@ export var StoryForm = React.createClass({
         name: title,
         description: description,
         displayType: 'story',
-        imageUrl: imageUrl,
         viewCount: viewCount,
         updatedAt: createdAt
       };

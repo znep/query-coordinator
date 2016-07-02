@@ -3,6 +3,12 @@ require 'ostruct'
 
 class BrowseActionsContainer
   include BrowseActions
+  attr_accessor :cookies, :request
+
+  def initialize
+    @cookies = {}
+    @request = {}
+  end
 end
 
 class BrowseActionsTest < Minitest::Test
@@ -447,11 +453,15 @@ class BrowseActionsTest4 < Minitest::Test
       name = type_of_facet.gsub('_facet', '')
       @browse_actions_container.stubs(type_of_facet.to_sym => facet(name))
     end
-  end
 
-  def test_topics_facet_without_param
     stub_request(:get, "http://localhost:8080/tags?method=viewsTags").with(:headers => request_headers).
       to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
+
+    stub_request(:get, "http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").with(:headers => cetera_request_headers).
+      to_return(:status => 200, :body => %q({"results":[{"domain_tag":"crazy", "count":1},{"domain_tag":"other", "count":2},{"domain_tag":"tag", "count":2},{"domain_tag":"keyword", "count":1},{"domain_tag":"neato", "count":1},{"domain_tag":"ufo", "count":1},{"domain_tag":"weird", "count":1}],"resultSetSize":7,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}}), :headers => {})
+  end
+
+  def test_cly_topics_facet_without_param
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
     expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -459,9 +469,7 @@ class BrowseActionsTest4 < Minitest::Test
     assert_equal(expected_facets, facets)
   end
 
-  def test_topics_facet_with_matching_param
-    stub_request(:get, "http://localhost:8080/tags?method=viewsTags").with(:headers => request_headers).
-      to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
+  def test_cly_topics_facet_with_matching_param
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
     expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -469,13 +477,39 @@ class BrowseActionsTest4 < Minitest::Test
     assert_equal(expected_facets, facets)
   end
 
-  def test_topics_facet_with_non_matching_param
-    stub_request(:get, "http://localhost:8080/tags?method=viewsTags").with(:headers => request_headers).
-      to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
+  def test_cly_topics_facet_with_non_matching_param
     @browse_actions_container.unstub(:topics_facet)
     expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     facets = @browse_actions_container.send(:topics_facet, :tags => 'unknown').with_indifferent_access
+    expected_facets['options'] = facets['options'].push('text' => 'unknown', 'value' => 'unknown', 'count' => 0)
+    assert_equal(expected_facets, facets)
+  end
+
+  def test_cetera_topics_facet_without_param
+    stub_feature_flags_with(:cetera_search, true)
+    @browse_actions_container.unstub(:topics_facet)
+    facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
+    expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
+    assert_equal(expected_facets, facets)
+  end
+
+  def test_cetera_topics_facet_with_matching_param
+    stub_feature_flags_with(:cetera_search, true)
+    @browse_actions_container.unstub(:topics_facet)
+    facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
+    expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
+    assert_equal(expected_facets, facets)
+  end
+
+  def test_cetera_topics_facet_with_non_matching_param
+    stub_feature_flags_with(:cetera_search, true)
+    @browse_actions_container.unstub(:topics_facet)
+    facets = @browse_actions_container.send(:topics_facet, :tags => 'unknown').with_indifferent_access
+    expected_facets = JSON.parse('{"title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     expected_facets['options'] = facets['options'].push('text' => 'unknown', 'value' => 'unknown', 'count' => 0)
     assert_equal(expected_facets, facets)
   end

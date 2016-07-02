@@ -18,6 +18,16 @@ module Cetera
     response
   end
 
+  def self.get_tags(cookie_string, request_id)
+    path = '/catalog/v1/domain_tags'
+    opts = { domains: [CurrentDomain.cname] }
+    query = cetera_soql_params(opts)
+    options = request_options(query, cookie_string, request_id)
+
+    response = get(path, options)
+    response.success? && TagCountResult.new(response)
+  end
+
   # Admins only! For now, do not call this without a search query.
   def self.search_users(search_query, cookie_string, request_id = nil)
     path = '/whitepages'
@@ -302,5 +312,18 @@ module Cetera
   # Search results from the catalog
   class CatalogSearchResult < SearchResult
     @klass = Cetera::CeteraResultRow
+  end
+
+  class TagCountResult < SearchResult
+    @klass = Tag
+
+    def initialize(data = {})
+      super
+      # Format results the same way Cly does so the rest of topics_facet doesn't need to change
+      data['results'].each do |result|
+        result['name'] = result['domain_tag'] if result['domain_tag']
+        result['frequency'] = result['count'] if result['count']
+      end
+    end
   end
 end

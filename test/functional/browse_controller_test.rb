@@ -47,6 +47,18 @@ class BrowseControllerTest < ActionController::TestCase
     CoreServer::Base.stubs(:connection => connection_stub)
     Tag.stubs(:find => [])
     Federation.stubs(:find => [])
+
+    return_body = %q({"results":[],"resultSetSize":0,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}})
+
+    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=data.seattle.gov&offset=0&order=relevance').
+      with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'data.seattle.gov'}).
+      to_return(:status => 200, :body => return_body, :headers => {})
+    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=example.com&offset=0&order=relevance').
+      with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'example.com'}).
+      to_return(:status => 200, :body => return_body, :headers => {})
+    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance').
+      with(:headers => {'Content-Type'=>'application/json', 'Cookie'=>'_core_session_id=this cookie is valid so it goes through', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => return_body, :headers => {})
   end
 
   clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
@@ -574,7 +586,11 @@ class BrowseControllerTest < ActionController::TestCase
       stub_feature_flags_with(:cetera_search, true)
 
       cetera_params = Cetera.cetera_soql_params(
-        domains: ['example.com'], search_context: 'example.com', limit: 10
+        :domains => ['example.com'],
+        :search_context => 'example.com',
+        :limit => 10,
+        :offset => 0,
+        :order => 'relevance'
       )
 
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
@@ -592,9 +608,11 @@ class BrowseControllerTest < ActionController::TestCase
       stub_feature_flags_with(:cetera_search, true)
 
       cetera_params = Cetera.cetera_soql_params(
-        domains: ['example.com'],
-        search_context: 'example.com',
-        limit: 10
+        :domains => ['example.com'],
+        :search_context => 'example.com',
+        :limit => 10,
+        :offset => 0,
+        :order => 'relevance'
       )
 
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
@@ -611,9 +629,11 @@ class BrowseControllerTest < ActionController::TestCase
       stub_feature_flags_with(:cetera_search, true)
 
       cetera_params = Cetera.cetera_soql_params(
-        domains: ['example.com'],
-        search_context: 'example.com',
-        limit: 10
+        :domains => ['example.com'],
+        :search_context => 'example.com',
+        :limit => 10,
+        :offset => 0,
+        :order => 'relevance'
       )
 
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').

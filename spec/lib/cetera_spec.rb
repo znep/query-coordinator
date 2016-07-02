@@ -305,6 +305,57 @@ describe Cetera do
     end
   end
 
+  describe 'TagCountResult' do
+    let(:cetera_results) do
+      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_domain_tag_results.json"))
+      Cetera::TagCountResult.new(cetera_payload)
+    end
+
+    it 'returns a TagCountResult object' do
+      expect(cetera_results.class).to eq(Cetera::TagCountResult)
+    end
+
+    it 'returns a results object that is an array of Tag objects' do
+      expect(cetera_results.results.class).to eq(Array)
+      expect(cetera_results.results[0].class).to eq(Tag)
+    end
+
+    it 'returns Tag objects that have expected properties' do
+      expect(cetera_results.results[0].name).to eq('desire')
+      expect(cetera_results.results[0].domain_tag).to eq('desire')
+      expect(cetera_results.results[0].frequency).to eq(3)
+      expect(cetera_results.results[0].count).to eq(3)
+    end
+  end
+
+  describe 'get_tags' do
+    let(:cookies) { 'i am a cookie' }
+    let(:request_id) { 'iAmProbablyUnique' }
+
+    it 'returns a TagCountResult with expected properties' do
+      VCR.use_cassette('cetera/get_tags') do
+        CurrentDomain.stub(:cname) { 'localhost' }
+
+        results = Cetera.get_tags(cookies, request_id)
+
+        expect(results.class).to eq(Cetera::TagCountResult)
+        expect(results.results[0].name).to eq('biz')
+        expect(results.results[0].domain_tag).to eq('biz')
+        expect(results.results[0].frequency).to eq(1)
+        expect(results.results[0].count).to eq(1)
+      end
+    end
+
+    it 'returns false when Cetera returns a bad response' do
+      VCR.use_cassette('cetera/failed_get_tags') do
+        # fails because CurrentDomain.cname is not set
+        results = Cetera.get_tags(cookies, request_id)
+
+        expect(results).to eq(false)
+      end
+    end
+  end
+
   private
 
   def sample_search_options

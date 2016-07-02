@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/domain_tags?domains=opendata.rc-socrata.com&offset=0&order=relevance
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - i am a cookie
+      X-Socrata-Host:
+      - opendata.rc-socrata.com
+      X-Socrata-Requestid:
+      - iAmProbablyUnique
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 01 Jul 2016 21:15:50 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: '{"error":"Domain not found: opendata.rc-socrata.com"}'
+    http_version: 
+  recorded_at: Fri, 01 Jul 2016 21:15:50 GMT
+recorded_with: VCR 3.0.3

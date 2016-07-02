@@ -274,7 +274,7 @@ describe Cetera do
 
     it 'returns CeteraResultRow objects' do
       allow(Cetera).to receive(:search_views).and_return(cetera_results)
-      result = Cetera.get_derived_from_views('data-lens', cookies, request_id, nil, nil)
+      result = Cetera.get_derived_from_views('data-lens', {})
 
       expect(result.first.class).to eq(Cetera::CeteraResultRow)
     end
@@ -289,16 +289,19 @@ describe Cetera do
             offset: 20,
             limit: 30
           },
-          any_args
+          cookies,
+          request_id
         ).
         and_return(cetera_results)
 
-      Cetera.get_derived_from_views('data-lens', cookies, request_id, 30, 20)
+      options = { offset: 20, limit: 30, cookie_string: cookies, request_id: request_id }
+      Cetera.get_derived_from_views('data-lens', options)
     end
 
     it 'returns an empty array when Cetera returns a bad response' do
       allow(Cetera).to receive(:search_views).and_return(nil)
-      result = Cetera.get_derived_from_views('data-lens', cookies, request_id, nil, 'purple')
+      options = { offset: nil, limit: 'purple', cookie_string: cookies, request_id: request_id }
+      result = Cetera.get_derived_from_views('data-lens', options)
 
       expect(result).to be_a Array
       expect(result.length).to eq(0)

@@ -40,7 +40,12 @@ class DatasetLandingPageController < ApplicationController
     sort_by = params[:sort_by] || 'most_accessed'
 
     begin
-      related_content = dataset_landing_page.get_related_views(params[:id], sort_by)
+      related_content = dataset_landing_page.get_related_views(
+        params[:id],
+        forwardable_session_cookies,
+        request_id,
+        sort_by
+      )
     rescue CoreServer::ResourceNotFound
       return render :nothing => true, :status => :not_found
     rescue CoreServer::CoreServerError => e

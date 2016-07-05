@@ -8,10 +8,10 @@ import * as Utils from '../utils';
 import NavigationControl from './navigationControl';
 
 /*
-- Blueprint: schema (names & types)
-- Translation: mapping of file columns to dataset columns
-- Transform: encompasses them both
-*/
+   - Blueprint: schema (names & types)
+   - Translation: mapping of file columns to dataset columns
+   - Transform: encompasses them both
+ */
 
 type ColumnTransform
   = { type: 'title' }
@@ -39,7 +39,7 @@ type Transform = {
 }
 
 
-function initialTransform(summary: UploadFile.Summary): Transform {
+export function initialTransform(summary: UploadFile.Summary): Transform {
   // TODO: set aside location columns
   return summary.columns.map((column) => (
     {
@@ -59,7 +59,7 @@ function changeHeaderCount(change) {
   };
 }
 
-const UPDATE_COLUMN = 'UPDATE_COLUMN';
+export const UPDATE_COLUMN = 'UPDATE_COLUMN';
 function updateColumn(index, action) {
   return {
     type: UPDATE_COLUMN,
@@ -68,7 +68,7 @@ function updateColumn(index, action) {
   };
 }
 
-const REMOVE_COLUMN = 'REMOVE_COLUMN';
+export const REMOVE_COLUMN = 'REMOVE_COLUMN';
 function removeColumn(index) {
   return {
     type: REMOVE_COLUMN,
@@ -80,8 +80,11 @@ export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     case UploadFile.FILE_UPLOAD_COMPLETE:
       if (!_.isUndefined(action.summary.columns)) {
+        const columns = initialTransform(action.summary);
+
         return {
-          columns: initialTransform(action.summary),
+          columns: columns,
+          defaultColumns: columns,
           numHeaders: action.summary.headers,
           sample: action.summary.sample
         };
@@ -103,6 +106,11 @@ export function update(transform: Transform = null, action): Transform {
         ...transform,
         columns: _.filter(transform.columns, (unused, idx) => idx !== action.index)
       };
+    case RESTORE_SUGGESTED_SETTINGS:
+      return {
+        ...transform,
+        columns: transform.defaultColumns
+      };
     default:
       return transform;
   }
@@ -123,7 +131,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
         <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
         <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />
-        <ViewToolbar />
+        <ViewToolbar dispatch={dispatch} />
 
         <hr />
 
@@ -209,20 +217,26 @@ ViewColumns.propTypes = {
   dispatch: PropTypes.func.isRequired
 };
 
+ViewToolbar.propTypes = {
+  dispatch: PropTypes.func.isRequired
+};
+
+export const RESTORE_SUGGESTED_SETTINGS = 'RESTORE_SUGGESTED_SETTINGS';
+export function restoreSuggestedSettings() {
+  return { type: RESTORE_SUGGESTED_SETTINGS };
+}
 
 // TODO actually hook up buttons
-function ViewToolbar() {
+function ViewToolbar({dispatch}) {
   return (
     <div className="columnsToolbar clearfix">
       <div className="presets">
-        <label htmlFor="columnsPresetsSelect">{I18nPrefixed.reset_to_preset}:</label>
-        <select className="columnsPresetsSelect">
-          <option value="suggested">{I18nPrefixed.suggested_columns}</option>
-          <option value="suggestedFlat">{I18nPrefixed.suggested_flat}</option>
-          <option value="suggestedPlusDiscrete">{I18nPrefixed.suggested_plus_discrete}</option>
-          <option value="alltext">{I18nPrefixed.suggested_alltext}</option>
-        </select>
-        <a className="columnsPresetsButton button" href="#set">{I18nPrefixed.set}</a>
+        <a
+          className="columnsPresetsButton button"
+          href="#set"
+          onClick={event => dispatch(restoreSuggestedSettings(event))}>
+          {I18nPrefixed.restore_suggested_settings}
+        </a>
       </div>
       <div className="actions">
         <a className="clearColumnsButton button" href="#clear">{I18nPrefixed.clear_all}</a>
@@ -244,12 +258,14 @@ function ViewPreview({sample, numHeaderRows, dispatch}) {
       <div className="headersTableWrapper">
         <table className="headersTable">
           <tbody>
-            {_.take(sample, NUM_PREVIEW_ROWS).map((row, idx) => (
-              <SampleRow
-                key={idx}
-                isHeader={idx <= numHeaderRows}
-                row={row} />
-            ))}
+            {
+              _.take(sample, NUM_PREVIEW_ROWS).map((row, idx) => (
+                <SampleRow
+                  key={idx}
+                  isHeader={idx <= numHeaderRows}
+                  row={row} />
+              ))
+            }
           </tbody>
         </table>
       </div>

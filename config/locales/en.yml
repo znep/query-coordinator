@@ -2716,6 +2716,7 @@ en:
         name: Name
         pending_columns: Please wait while we load your columns...
         reset_to_preset: Reset to preset
+        restore_suggested_settings: Restore suggested settings
         set: Set
         source_column: Source Column
         subheadline: Columns to import

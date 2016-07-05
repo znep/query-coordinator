@@ -1,0 +1,59 @@
+<div id="custom-dropdown-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var withIcon = function(icon) {
+      return function(option) {
+        return React.createElement('div', {className: 'special-dropdown-option'}, [
+          React.createElement('span', {className: icon, key: icon}),
+          option.title
+        ]);
+      }
+    };
+
+    var customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: function(option) {
+        console.log('option selected:', option.title, option.value);
+      },
+      placeholder: function() {
+        return React.createElement('button', {className: 'btn btn-primary'}, ['Hello, World!']);
+      },
+      options: [
+        {title: 'Emotional technicality', value: 'emotecho', render: withIcon('icon-facebook')},
+        {title: 'Pontificate harder', value: 'ponfer', render: withIcon('icon-twitter')},
+        {title: 'No one misses these', value: 'noone', render: withIcon('icon-dataset')}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.components.Dropdown, customRenderProps),
+      document.getElementById('custom-dropdown-container')
+    );
+
+    // Alternative stateless React-y way:
+
+    /*
+    var DropdownWithIcon = (props) => {
+      return (
+        <div className="special-dropdown-option">
+          <span className={props.icon} key={props.icon}></div>
+          {props.title}
+        </div>
+      );
+    };
+
+    var customRenderProps = {
+      placeholder: 'HAR HAR HAR',
+      options: [
+        {title: 'Just One, kid', value: 'kiddo', render: DropdownWithIcon, icon: 'icon-facebook'}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.components.Dropdown, customRenderProps),
+      document.getElementById('custom-dropdown-container')
+    );
+    */
+  });
+</script>

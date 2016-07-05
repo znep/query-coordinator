@@ -6,17 +6,18 @@ module.exports = {
   },
 
   factories: {
-    DropdownFactory: require('./dropdown'),
-    FlannelFactory: require('./flannel'),
-    FlyoutFactory: require('./flyout'),
-    MenuFactory: require('./menu'),
-    ModalFactory: require('./modal'),
-    TabsFactory: require('./tabs'),
-    ToggleFactory: require('./toggle'),
-    TourFactory: require('./tour')
+    DropdownFactory: require('./Dropdown'),
+    FlannelFactory: require('./Flannel'),
+    FlyoutFactory: require('./Flyout'),
+    MenuFactory: require('./Menu'),
+    ModalFactory: require('./Modal'),
+    TabsFactory: require('./Tabs'),
+    ToggleFactory: require('./Toggle'),
+    TourFactory: require('./Tour')
   },
 
   components: {
-    ColorPicker: require('./colorpicker').ColorPicker
+    ColorPicker: require('./ColorPicker').ColorPicker,
+    Dropdown: require('./components/Dropdown').Dropdown
   }
 };

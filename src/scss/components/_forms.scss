@@ -45,12 +45,10 @@
   }
 }
 
-/* Hover state */
 .dropdown .dropdown-options li:hover a {
   background: $light-grey-5;
 }
 
-/* Active state */
 .dropdown.active .dropdown-options {
   opacity: 1;
   pointer-events: auto;

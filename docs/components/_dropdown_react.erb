@@ -1,0 +1,24 @@
+<div id="dropdown-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      onSelection: function(option) {
+        console.log('option selected:', option.title, option.value);
+      },
+      options: [
+        {title: 'Floating Frog\'s Feet', value: 'potion-one'},
+        [
+          {title: 'Skittering Spider Silk', value: 'potion-two'},
+          {title: 'Blue Barbed Berries', value: 'potion-three'}
+        ],
+        {title: 'Dastardly Demonic Dairy', value: 'potion-four'}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.components.Dropdown, props),
+      document.getElementById('dropdown-container')
+    );
+  });
+</script>

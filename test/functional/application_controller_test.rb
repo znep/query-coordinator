@@ -10,7 +10,7 @@ class ApplicationControllerTest < ActionController::TestCase
       init_current_user(@controller)
     end
 
-    context 'when the current user isn\'t an admin' do
+    context "when the current user isn't an admin" do
       should 'return boolean false confirming that user is not an admin' do
         @controller.current_user.stubs(:is_admin? => false)
         assert_equal(@controller.is_admin?, false)
@@ -24,12 +24,13 @@ class ApplicationControllerTest < ActionController::TestCase
       end
     end
 
-    context 'when the current user doesn\'t exist' do
+    context "when the current user doesn't exist" do
       should 'return nil confirming that the user is not an admin' do
         @controller.stubs(:current_user => nil)
         assert_equal(@controller.is_admin?, false)
       end
     end
+
   end
 
   context '#show_nbe_redirection_warning?' do
@@ -45,7 +46,7 @@ class ApplicationControllerTest < ActionController::TestCase
         stub_feature_flags_with(:disable_nbe_redirection_warning_message, true)
       end
 
-      context 'when the user isn\'t an admin, and disable_obe_redirection is true' do
+      context "when the user isn't an admin, and disable_obe_redirection is true" do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_admin? => false)
           stub_feature_flags_with(:disable_obe_redirection, true)
@@ -69,13 +70,14 @@ class ApplicationControllerTest < ActionController::TestCase
         end
       end
 
-      context 'when the user isn\'t an admin and disable_obe_redirection is false' do
+      context "when the user isn't an admin and disable_obe_redirection is false" do
         should 'return boolean true confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_admin? => false)
           stub_feature_flags_with(:disable_obe_redirection, false)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
+
     end
 
     context 'when disable_nbe_redirection_warning_message is false' do
@@ -84,7 +86,7 @@ class ApplicationControllerTest < ActionController::TestCase
         stub_feature_flags_with(:disable_nbe_redirection_warning_message, false)
       end
 
-      context 'when the user isn\'t an admin, and disable_obe_redirection is true' do
+      context "when the user isn't an admin, and disable_obe_redirection is true" do
         should 'return boolean true confirming that the message should be shown' do
           @controller.current_user.stubs(:is_admin? => false)
           stub_feature_flags_with(:disable_obe_redirection, true)
@@ -108,13 +110,23 @@ class ApplicationControllerTest < ActionController::TestCase
         end
       end
 
-      context 'when the user isn\'t an admin and disable_obe_redirection is false' do
+      context "when the user isn't an admin and disable_obe_redirection is false" do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_admin? => false)
           stub_feature_flags_with(:disable_obe_redirection, false)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
+
     end
+
+    context 'when multiple requests for CSRF auth token are made' do
+      should 'return the same value' do
+        token = @controller.send(:masked_authenticity_token, @controller.session)
+        assert_equal token, @controller.send(:masked_authenticity_token, @controller.session)
+      end
+    end
+
   end
+
 end

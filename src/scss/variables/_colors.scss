@@ -59,7 +59,7 @@ $dark-grey-3: shade($grey, 60%);
 
 /* Color Vars */
 $default-text-color: $dark-grey-1;
-$quiet-text-color: $light-grey-0;
+$quiet-text-color: $grey;
 $light-text-color: $white;
 $light-grey-bg: $light-grey-5;
 
@@ -116,15 +116,15 @@ $btn-alternate-1-inverse-hover-background-color: $alternate-1;
 $btn-alternate-1-busy-border-right-color: tint($alternate-1, 20%);
 
 $btn-alternate-2-color: $white;
-$btn-alternate-2-background-color: shade($alternate-2, 19%);
+$btn-alternate-2-background-color: $alternate-2-text;
 $btn-alternate-2-border-color: $alternate-2;
 $btn-alternate-2-hover-background-color: shade($alternate-2, 29%);
 $btn-alternate-2-hover-color: $white;
 $btn-alternate-2-active-border-color: shade($alternate-2, 10%);
-$btn-alternate-2-inverse-color: $alternate-2;
+$btn-alternate-2-inverse-color: $alternate-2-text;
 $btn-alternate-2-inverse-background-color: $white;
 $btn-alternate-2-inverse-hover-color: $white;
-$btn-alternate-2-inverse-hover-background-color: $alternate-2;
+$btn-alternate-2-inverse-hover-background-color: $alternate-2-text;
 $btn-alternate-2-busy-border-right-color: tint($alternate-2, 20%);
 
 $btn-alternate-3-color: $white;

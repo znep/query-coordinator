@@ -66,7 +66,7 @@ window.customMetadataSchema = [
     ]
   }
 ];
-
+window.licenses = {};
 window.enabledModules = ['geospatial', 'esri_integration'];
 window.I18n = require('mockTranslations');
 window.renderComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);

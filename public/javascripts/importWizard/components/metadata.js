@@ -395,10 +395,28 @@ function renderLicenses(metadata, onMetadataAction) {
       <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
       <div className="line clearfix">
         <label htmlFor="view_licenses">License Type</label>
-        <select
-          name="view[licenses]">
+        <select name="view[licenses]">
           {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
         </select>
+      </div>
+      <div className="line clearfix">
+        <label htmlFor="view_attribution">{I18n.screens.edit_metadata.data_provided_by}</label>
+        <input
+          type="text"
+          name="view[attribution]"
+          id="view_attribution"
+          value=""
+          placeholder={I18n.screens.edit_metadata.data_provided_prompt}
+          className="textPrompt" />
+      </div>
+      <div className="line clearfix">
+        <label htmlFor="view_attributionLink">{I18n.screens.edit_metadata.source_link}</label>
+        <input
+          type="text"
+          name="view[attributionLink]"
+          id="view_attributionLink"
+          placeholder={I18n.screens.edit_metadata.source_link_prompt}
+          className="textPrompt" />
       </div>
     </div>
   );

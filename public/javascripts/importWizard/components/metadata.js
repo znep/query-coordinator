@@ -15,8 +15,9 @@ import licenses from 'licenses';
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: MetadataApiCall,
-  lastSaved: MetadataContents,
-  contents: MetadataContents
+  license: LicenseContents,
+  contents: MetadataContents,
+  lastSaved: MetadataContents
 }
 
 type MetadataApiCall
@@ -35,6 +36,12 @@ type MetadataContents = {
   customMetadata: Object,
   contactEmail: String,
   privacySettings: String
+}
+
+type LicenseContents = {
+    licenseType: String,
+    provider: String,
+    sourceLink: String
 }
 
 export function defaultCustomData() {
@@ -58,10 +65,18 @@ export function emptyContents(name: string): MetadataContents {
     tags: [],
     rowLabel: '',
     attributionLink: '',
-    customMetadata: Object.freeze(defaultCustomData(customMetadataSchema)),
+    customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',
     privacySettings: 'private'
   };
+}
+
+export function emptyLicense(): LicenseContents {
+  return {
+    licenseType: Object.keys(licenses)[0],
+    provider: '',
+    sourceLink: ''
+  }
 }
 
 export function emptyForName(name: string): DatasetMetadata {
@@ -69,8 +84,9 @@ export function emptyForName(name: string): DatasetMetadata {
   return {
     nextClicked: false,
     apiCall: {type: 'Not Started'},
-    lastSaved: lastMetadataSaved,
-    contents: emptyContents(name)
+    contents: emptyContents(name),
+    license: emptyLicense(),
+    lastSaved: lastMetadataSaved
   };
 }
 
@@ -119,6 +135,30 @@ export function updateAttributionLink(newAttributionLink: string) {
   return {
     type: MD_UPDATE_ATTRIBUTIONLINK,
     newAttributionLink: newAttributionLink
+  };
+}
+
+const MD_UPDATE_LICENSETYPE = 'MD_UPDATE_LICENSETYPE';
+export function updateLicenseType(newLicenseType: string) {
+  return {
+    type: MD_UPDATE_LICENSETYPE,
+    newLicenseType: newLicenseType
+  };
+}
+
+const MD_UPDATE_LICENSEPROVIDER = 'MD_UPDATE_LICENSEPROVIDER';
+export function updateLicenseProvider(newLicenseProvider: string) {
+  return {
+    type: MD_UPDATE_LICENSEPROVIDER,
+    newLicenseProvider: newLicenseProvider
+  };
+}
+
+const MD_UPDATE_LICENSESOURCELINK = 'MD_UPDATE_LICENSESOURCELINK';
+export function updateLicenseSourceLink(newLicenseSourceLink: string) {
+  return {
+    type: MD_UPDATE_LICENSESOURCELINK,
+    newLicenseSourceLink: newLicenseSourceLink
   };
 }
 
@@ -191,6 +231,7 @@ export const update =
     nextClicked: updateForNextClicked,
     apiCall: updateApiCallState,
     contents: updateContents,
+    license: updateLicense,
     lastSaved: updateForLastSaved
   });
 
@@ -257,6 +298,28 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
       };
     default:
       return contents;
+  }
+}
+
+export function updateLicense(license = emptyLicense(), action): licenseType {
+  switch (action.type) {
+    case MD_UPDATE_LICENSETYPE:
+      return {
+        ...license,
+        licenseType: action.newLicenseType
+      };
+    case MD_UPDATE_LICENSEPROVIDER:
+      return {
+        ...license,
+        provider: action.newLicenseProvider
+      };
+    case MD_UPDATE_LICENSESOURCELINK:
+      return {
+        ...license,
+        sourceLink: action.newLicenseSourceLink
+      };
+    default:
+      return license;
   }
 }
 
@@ -395,7 +458,9 @@ function renderLicenses(metadata, onMetadataAction) {
       <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
       <div className="line clearfix">
         <label htmlFor="view_licenses">License Type</label>
-        <select name="view[licenses]">
+        <select
+          name="view[licenses]"
+          onChange={(evt) => onMetadataAction(updateLicenseType(evt.target.value))}>
           {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
         </select>
       </div>
@@ -405,8 +470,9 @@ function renderLicenses(metadata, onMetadataAction) {
           type="text"
           name="view[attribution]"
           id="view_attribution"
-          value=""
+          value={metadata.license.provider}
           placeholder={I18n.screens.edit_metadata.data_provided_prompt}
+          onChange={(evt) => onMetadataAction(updateLicenseProvider(evt.target.value))}
           className="textPrompt" />
       </div>
       <div className="line clearfix">
@@ -415,7 +481,9 @@ function renderLicenses(metadata, onMetadataAction) {
           type="text"
           name="view[attributionLink]"
           id="view_attributionLink"
+          value={metadata.license.sourceLink}
           placeholder={I18n.screens.edit_metadata.source_link_prompt}
+          onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
           className="textPrompt" />
       </div>
     </div>

@@ -11,7 +11,7 @@ describe('updateNavigation', () => {
     operation: null,
     page: 'SelectType',
     path: []
-  }
+  };
 
   it('sets currentPage to SelectUploadType when you choose UploadData', () => {
     const stateAfter = updateNavigation(initialState, chooseOperation('UploadData'));

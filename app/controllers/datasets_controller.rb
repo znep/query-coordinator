@@ -56,7 +56,8 @@ class DatasetsController < ApplicationController
           return render 'shared/error', :status => :not_found
         end
 
-        render 'new'
+        # need to return so we exit this function and render/redirect don't get called again
+        return render 'new'
       end
     end
 

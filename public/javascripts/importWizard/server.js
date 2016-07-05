@@ -461,44 +461,51 @@ function pollUntilDone(ticket, dispatch, onProgress, onError) {
   });
 }
 
+
+function sourceColumnExpr(sourceColumn: SharedTypes.SourceColumn) {
+  return `col${sourceColumn.index + 1}`;
+}
+
+
+function compositeColumnComponent(component: string | SharedTypes.SourceColumn) {
+  return _.isObject(component)
+    ? sourceColumnExpr(component)
+    : '"' + component.replace(/"/g, '\\"') + '"';
+}
+
+
 export function transformToImports2Translation(importTransform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
-    // TODO: location columns, composite columns
-    let transformed = `col${resultColumn.sourceColumn.index + 1}`;
-    _.forEach(resultColumn.transforms, (transform) => {
+    // TODO: location columns
+    const columnSource =
+      resultColumn.columnSource.type === 'SingleColumn'
+        ? sourceColumnExpr(resultColumn.columnSource.sourceColumn)
+        : resultColumn.columnSource.components.map(compositeColumnComponent).join(' + ');
+    return _.reduce(resultColumn.transforms, (transformed, transform) => {
       switch (transform.type) {
-        case 'title': {
-          transformed = `title(${transformed})`;
-          break;
-        }
-        case 'upper': {
-          transformed = `upper(${transformed})`;
-          break;
-        }
-        case 'lower': {
-          transformed = `lower(${transformed})`;
-          break;
-        }
-        case 'toStateCode': {
-          transformed = `toStateCode(${transformed})`;
-          break;
-        }
-        case 'findReplace': {
-          let replaceString = `/${transform.findText}/g`;
-          if (!transform.caseSensitive) {
-            replaceString += 'i';
-          }
+        case 'title':
+          return `title(${transformed})`;
 
-          transformed = `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
-          break;
+        case 'upper':
+          return `upper(${transformed})`;
+
+        case 'lower':
+          return `lower(${transformed})`;
+
+        case 'toStateCode':
+          return `toStateCode(${transformed})`;
+
+        case 'findReplace': {
+          const findText = transform.regex ? Utils.escapeRegex(transform.findText) : transform.findText;
+          const replaceString = `/${findText}/g` + (transform.caseSensitive ? '' : 'i');
+          return `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
         }
-        default: {
+        default:
           console.log('error: unknown transform type ', transform.type);
           break;
-        }
+
       }
-    });
-    return transformed;
+    }, columnSource);
   }
   return `[${importTransform.map(resultColumnToJs).join(',')}]`;
 }

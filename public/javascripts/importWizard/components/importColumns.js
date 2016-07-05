@@ -21,11 +21,16 @@ type ColumnTransform
   | { type: 'findReplace', findText: string, replaceText: string, regex: boolean, caseSensitive: boolean }
 
 type ResultColumn = {
-  sourceColumn: SharedTypes.SourceColumn,
+  columnSource: ColumnSource,
   name: String,
   chosenType: SharedTypes.TypeName,
   transforms: Array<ColumnTransform>
 }
+
+export type ColumnSource
+  = { type: 'SingleColumn', sourceColumn: SharedTypes.SourceColumn }
+  | { type: 'CompositeColumn', components: Array<string | SharedTypes.SourceColumn> }
+  // TODO: location column
 
 type Transform = {
   columns: Array<ResultColumn>,
@@ -38,7 +43,7 @@ function initialTransform(summary: UploadFile.Summary): Transform {
   // TODO: set aside location columns
   return summary.columns.map((column) => (
     {
-      sourceColumn: column,
+      columnSource: { type: 'SingleColumn', sourceColumn: column },
       name: column.name,
       chosenType: column.suggestion,
       transforms: []
@@ -71,19 +76,12 @@ function removeColumn(index) {
   };
 }
 
-function addColumnIds(summary: UploadFile.Summary): UploadFile.Summary {
-  return {
-    ...summary,
-    columns: summary.columns.map((column, index) => ({...column, index: index}))
-  };
-}
-
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     case UploadFile.FILE_UPLOAD_COMPLETE:
       if (!_.isUndefined(action.summary.columns)) {
         return {
-          columns: initialTransform(addColumnIds(action.summary)),
+          columns: initialTransform(action.summary),
           numHeaders: action.summary.headers,
           sample: action.summary.sample
         };
@@ -115,7 +113,7 @@ const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
 
-export function view({ transform, fileName, dispatch, goToPage, goToPrevious }) {
+export function view({ transform, fileName, sourceColumns, dispatch, goToPage, goToPrevious }) {
   return (
     <div>
       <div className="importColumnsPane columnsPane">
@@ -124,7 +122,7 @@ export function view({ transform, fileName, dispatch, goToPage, goToPrevious }) 
         </div>
         <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
-        <ViewColumns columns={transform.columns} dispatch={dispatch} />
+        <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />
         <ViewToolbar />
 
         <hr />
@@ -149,13 +147,20 @@ export function view({ transform, fileName, dispatch, goToPage, goToPrevious }) 
 view.propTypes = {
   transform: PropTypes.object.isRequired,
   fileName: PropTypes.string.isRequired,
+  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired,
   goToPage: PropTypes.func.isRequired,
   goToPrevious: PropTypes.func.isRequired
 };
 
-function ViewColumns({columns, dispatch}) {
-  const sourceColumns = columns.map(c => c.sourceColumn);
+
+export const EMPTY_COMPOSITE_COLUMN = { type: 'CompositeColumn', components: [] };
+
+function ViewColumns({columns, dispatch, sourceColumns}) {
+  const sourceOptions = [
+    ...sourceColumns.map((column) => ({ type: 'SingleColumn', sourceColumn: column })),
+    EMPTY_COMPOSITE_COLUMN
+  ];
 
   return (
     <div>
@@ -187,13 +192,12 @@ function ViewColumns({columns, dispatch}) {
               <ColumnDetail.view
                 key={idx}
                 resultColumn={resultColumn}
-                sourceColumns={sourceColumns}
+                sourceOptions={sourceOptions}
                 dispatchUpdate={dispatchUpdateColumn}
                 dispatchRemove={dispatchRemoveColumn} />
             );
           })
        }
-       {/* TODO: ^^ hook up to model */}
       </ul>
     </div>
   );
@@ -201,6 +205,7 @@ function ViewColumns({columns, dispatch}) {
 
 ViewColumns.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired
 };
 

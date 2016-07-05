@@ -10,11 +10,21 @@ type FileName = string
 
 type FileId = string
 
-type Summary = {
-  headers: number,
-  columns: Array<SharedTypes.SourceColumn>,
-  locations: Array<{ latitude: number, longitude: number }>,
-  sample: Array<Array<string>>,
+type Summary
+  = { // normal tabular
+      headers: number,
+      columns: Array<SharedTypes.SourceColumn>,
+      locations: Array<{ latitude: number, longitude: number }>,
+      sample: Array<Array<string>>,
+    }
+  | { // geo
+      totalFeatureCount: number,
+      layers: Array<GeoLayer>
+    }
+
+type GeoLayer = {
+  name: string,
+  referenceSystem: string
 }
 
 type UploadProgress
@@ -69,7 +79,7 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       switch (xhr.status) {
         case 200:
           response = JSON.parse(xhr.responseText);
-          dispatch(fileUploadComplete(response.fileId, response.summary));
+          dispatch(fileUploadComplete(response.fileId, addColumnIndicesToSummary(response.summary)));
           break;
         case 400:
           // TODO: airbrake these errors (EN-6942)
@@ -87,6 +97,18 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
     });
     dispatch(fileUploadStart(file));
   };
+}
+
+
+function addColumnIndicesToSummary(summary: Summary): Summary {
+  if (summary.columns) {
+    return {
+      ...summary,
+      columns: summary.columns.map((col, idx) => ({ ...col, index: idx }))
+    };
+  } else {
+    return summary;
+  }
 }
 
 

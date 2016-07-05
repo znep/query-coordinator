@@ -3709,6 +3709,7 @@ en:
       city: City
       column: Column
       combine_multiple_columns: Combine Multiple Columns
+      insert_static_text: (Insert static text...)
       create_composite: 'Create one column out of many source columns:'
       enter_custom: Enter a custom value
       existing_cols: Existing Address Columns

@@ -34,16 +34,21 @@
         </a>
       <%- end -%>
     </div>
-    <div class="authProvider socrata">
-      <p><%=raw t('screens.sign_in.back_to_sign_in_selection') %></p>
-      <div class="login-description-container">
-        <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
-        <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
+
+    <%- if FeatureFlags.derive(@view, request).use_auth0_login_flow %>
+      <div class="auth0login" id="auth0login-socrata-id"></div>
+    <%- else %>
+      <div class="authProvider socrata">
+        <p><%=raw t('screens.sign_in.back_to_sign_in_selection') %></p>
+        <div class="login-description-container">
+          <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
+          <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
+        </div>
+        <%= form_for @user_session do |f| %>
+          <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
+        <%- end -%>
       </div>
-      <%= form_for @user_session do |f| %>
-        <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
-      <%- end -%>
-    </div>
+    <%- end %>
 
   <%- elsif use_auth0? %>
 

@@ -42,4 +42,12 @@ module ImportWizardHelper
     javascript_tag("var view = #{json_escape(view)};")
   end
 
+  def render_license_options(selected_license = '')
+    licenses = ExternalConfig.for(:license).merged_licenses
+    licenses["-- #{t 'core.no_license'} --"] = ''
+
+    options_for_select(licenses.sort_by(&:first), selected_license)
+    javascript_tag("var licenses = #{json_escape(licenses.to_json)};")
+  end
+
 end

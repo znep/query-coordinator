@@ -30,6 +30,7 @@ module.exports = _.defaultsDeep({
     'datasetCategories': 'datasetCategories',
     'customMetadataSchema': 'customMetadataSchema',
     'enabledModules': 'enabledModules',
+    'licenses': 'licenses',
     // TODO: eventually compress into ImportSource
     'view': 'view'
   },

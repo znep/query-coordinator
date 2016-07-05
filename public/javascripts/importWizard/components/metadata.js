@@ -2,12 +2,13 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
-import customMetadataSchema from 'customMetadataSchema';
-import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
 import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
+import customMetadataSchema from 'customMetadataSchema';
+import datasetCategories from 'datasetCategories';
+import licenses from 'licenses';
 
 // == Metadata
 
@@ -388,6 +389,18 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
+function renderLicenses(metadata, onMetadataAction) {
+  return (
+    <div className="line clearfix">
+      <label htmlFor="view_licenses">License Type</label>
+      <select
+        name="view[licenses]">
+        {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
+      </select>
+    </div>
+  );
+}
+
 function renderFlashMessageApiError(apiCall) {
   if (apiCall.type !== 'Error') {
     return;
@@ -502,6 +515,8 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
           </div>
         </div>
+
+        {renderLicenses(metadata, onMetadataAction)}
 
         {renderCustomMetadata(metadata, onMetadataAction)}
 

@@ -381,7 +381,7 @@ function renderCustomMetadata(metadata, onMetadataAction) {
     <div className="customMetadataSchema">
       {customMetadataSchema.map((set) =>
         <div>
-          <h1 htmlFor="view_customMetadataName">{set.name}</h1>
+          <h2 htmlFor="view_customMetadataName">{set.name}</h2>
           {renderFieldSet(metadata, set, set.name, onMetadataAction)}
         </div>
       )}
@@ -391,12 +391,15 @@ function renderCustomMetadata(metadata, onMetadataAction) {
 
 function renderLicenses(metadata, onMetadataAction) {
   return (
-    <div className="line clearfix">
-      <label htmlFor="view_licenses">License Type</label>
-      <select
-        name="view[licenses]">
-        {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
-      </select>
+    <div className="licenses">
+      <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
+      <div className="line clearfix">
+        <label htmlFor="view_licenses">License Type</label>
+        <select
+          name="view[licenses]">
+          {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
+        </select>
+      </div>
     </div>
   );
 }

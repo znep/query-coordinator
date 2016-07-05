@@ -125,6 +125,8 @@ export function socrataFetch(path, options): Promise {
 export function modelToViewParam(metadata) {
   return {
     name: metadata.contents.name,
+    attributionLink: metadata.licenses.sourceLink,
+    attribution: metadata.licenses.provider,
     description: metadata.contents.description,
     category: metadata.contents.category,
     tags: metadata.contents.tags,
@@ -136,7 +138,9 @@ export function modelToViewParam(metadata) {
     privateMetadata: {
       contactEmail: metadata.contents.contactEmail,
       custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
-    }
+    },
+    licenseType: metadata.license.licenseType,
+    license: {}
   };
 }
 
@@ -155,7 +159,13 @@ export function coreViewToModel(view) {
     nextClicked: false,
     contents: contents,
     lastSaved: contents,
-    apiCall: {}
+    apiCall: { type: 'In Progress' },
+    // license: {
+    //   licenseType: view.licenseId,
+    //   licenseName: view.license.name,
+    //   sourceLink: view.attributionLink,
+    //   provider: view.attribution
+    // }
   };
 }
 

@@ -39,6 +39,7 @@ type MetadataContents = {
 }
 
 type LicenseContents = {
+    licenseName: String,
     licenseType: String,
     provider: String,
     sourceLink: String
@@ -73,7 +74,8 @@ export function emptyContents(name: string): MetadataContents {
 
 export function emptyLicense(): LicenseContents {
   return {
-    licenseType: Object.keys(licenses)[0],
+    licenseType: '',
+    licenseName: Object.keys(licenses)[0],
     provider: '',
     sourceLink: ''
   }
@@ -138,11 +140,11 @@ export function updateAttributionLink(newAttributionLink: string) {
   };
 }
 
-const MD_UPDATE_LICENSETYPE = 'MD_UPDATE_LICENSETYPE';
-export function updateLicenseType(newLicenseType: string) {
+const MD_UPDATE_LICENSENAME = 'MD_UPDATE_LICENSENAME';
+export function updateLicenseName(newLicenseName: string) {
   return {
-    type: MD_UPDATE_LICENSETYPE,
-    newLicenseType: newLicenseType
+    type: MD_UPDATE_LICENSENAME,
+    newLicenseName: newLicenseName
   };
 }
 
@@ -301,12 +303,12 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
   }
 }
 
-export function updateLicense(license = emptyLicense(), action): licenseType {
+export function updateLicense(license = emptyLicense(), action): LicenseContents {
   switch (action.type) {
-    case MD_UPDATE_LICENSETYPE:
+    case MD_UPDATE_LICENSENAME:
       return {
         ...license,
-        licenseType: action.newLicenseType
+        licenseName: action.newLicenseName
       };
     case MD_UPDATE_LICENSEPROVIDER:
       return {
@@ -460,8 +462,8 @@ function renderLicenses(metadata, onMetadataAction) {
         <label htmlFor="view_licenses">License Type</label>
         <select
           name="view[licenses]"
-          onChange={(evt) => onMetadataAction(updateLicenseType(evt.target.value))}>
-          {Object.keys(licenses).map((name) => <option value={licenses[name]}>{name}</option> )}
+          onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
+          {Object.keys(licenses).map((name) => <option value={name}>{name}</option> )}
         </select>
       </div>
       <div className="line clearfix">

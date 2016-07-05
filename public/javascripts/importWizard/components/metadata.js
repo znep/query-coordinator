@@ -40,7 +40,7 @@ type MetadataContents = {
 
 type LicenseContents = {
     licenseName: String,
-    licenseType: String,
+    licenseId: String,
     provider: String,
     sourceLink: String
 }
@@ -73,9 +73,10 @@ export function emptyContents(name: string): MetadataContents {
 }
 
 export function emptyLicense(): LicenseContents {
+  const defaultLicense = Object.keys(licenses)[0];
   return {
-    licenseType: '',
-    licenseName: Object.keys(licenses)[0],
+    licenseName: defaultLicense,
+    licenseId: licenses[defaultLicense],
     provider: '',
     sourceLink: ''
   }
@@ -303,12 +304,13 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
   }
 }
 
-export function updateLicense(license = emptyLicense(), action): LicenseContents {
+export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
     case MD_UPDATE_LICENSENAME:
       return {
         ...license,
-        licenseName: action.newLicenseName
+        licenseName: action.newLicenseName,
+        licenseId: licenses[action.newLicenseName]
       };
     case MD_UPDATE_LICENSEPROVIDER:
       return {

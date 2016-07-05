@@ -21,10 +21,11 @@ export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
 
 declare var I18n: any;
 type CurrentUser = { id: string }
-export type Blist = { currentUser: CurrentUser }
+export type Blist = { currentUser: CurrentUser, licenses: licenses }
 declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
+  console.log(JSON.stringify(blist.licenses));
   return (dispatch) => {
     dispatch(goToPage('Working'));
     dispatch(saveMetadataToViewsApi()).
@@ -125,8 +126,8 @@ export function socrataFetch(path, options): Promise {
 export function modelToViewParam(metadata) {
   return {
     name: metadata.contents.name,
-    attributionLink: metadata.licenses.sourceLink,
-    attribution: metadata.licenses.provider,
+    attributionLink: metadata.license.sourceLink,
+    attribution: metadata.license.provider,
     description: metadata.contents.description,
     category: metadata.contents.category,
     tags: metadata.contents.tags,
@@ -139,9 +140,35 @@ export function modelToViewParam(metadata) {
       contactEmail: metadata.contents.contactEmail,
       custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
     },
-    licenseType: metadata.license.licenseType,
-    license: {}
+    licenseId: metadata.license.licenseId,
+    license: viewToLicenseInformation(metadata.license)
   };
+}
+
+function viewToLicenseInformation(license) {
+  const licenses = blist.licenses.map((license) => {
+    if (_.has(license, 'licenses')) {
+      return license.licenses;
+    } else {
+      return license;
+    }
+  });
+  const flattenedLicenses = [].concat.apply([], licenses);
+
+  const match = flattenedLicenses.filter((l) => {
+    return l.licenseName === license.icenseName;
+  })[0];
+
+  return {
+    name: match.name,
+    termsLink: match.terms_link
+                ? match.terms_link
+                : '',
+    logoUrl: match.logo
+              ? match.logo
+              : ''
+  };
+
 }
 
 export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean) {
@@ -160,12 +187,12 @@ export function coreViewToModel(view) {
     contents: contents,
     lastSaved: contents,
     apiCall: { type: 'In Progress' },
-    // license: {
-    //   licenseType: view.licenseId,
-    //   licenseName: view.license.name,
-    //   sourceLink: view.attributionLink,
-    //   provider: view.attribution
-    // }
+    license: {
+      licenseType: view.licenseId,
+      licenseName: view.license.name,
+      sourceLink: view.attributionLink,
+      provider: view.attribution
+    }
   };
 }
 

@@ -271,12 +271,21 @@ describe('MetadataProvider', function() {
   });
 
   describe('getDatasetMetadata()', function() {
-    it('should query the NBE', function() {
+    it('should query the NBE by default', function() {
       metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
       assert.lengthOf(server.requests, 1);
       assert.include(
         server.requests[0].url,
         '/api/views/test-test.json?read_from_nbe=true'
+      );
+    });
+
+    it('should not default to the NBE if allowObeDataset is true', function() {
+      metadataProvider.getDatasetMetadata(true); // Discard the response, we don't care.
+      assert.lengthOf(server.requests, 1);
+      assert.include(
+        server.requests[0].url,
+        '/api/views/test-test.json'
       );
     });
 

@@ -674,4 +674,112 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
     });
 
   });
+
+  describe('url formatting', function() {
+    it('should render a link', function() {
+      var cellContent = DataTypeFormatter.renderUrlCellHTML({
+        url: 'https://socrata.com',
+        description: 'wombats'
+      });
+      var expected = '<a href="https://socrata.com" target="_blank" rel="external">wombats</a>';
+      expect(cellContent).to.equal(expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderUrlCellHTML({});
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  describe('email formatting', function() {
+    it('should render a link', function() {
+      var cellContent = DataTypeFormatter.renderEmailCellHTML('a@b.com');
+      var expected = '<a href="mailto:a@b.com" target="_blank" rel="external">a@b.com</a>';
+      expect(cellContent).to.equal(expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderEmailCellHTML({});
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  describe('phone formatting', function() {
+    it('should render a link without extra characters in the href', function() {
+      var cellContent = DataTypeFormatter.renderPhoneCellHTML({
+        phone_number: 'Other: 555-5555'
+      });
+      var expected = '<a href="tel:555-5555" target="_blank" rel="external">Other: 555-5555</a>';
+      expect(cellContent).to.equal(expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderPhoneCellHTML({});
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  // TODO: Remove this once we don't need to support OBE datasets
+  describe('photo formatting', function() {
+    it('should render a link', function() {
+      var cellContent = DataTypeFormatter.renderPhotoCellHTML('hi', 'neat.co', 'abcd-1234');
+      var expected = '<a href="https://neat.co/views/abcd-1234/files/hi" target="_blank" rel="external">hi</a>';
+      expect(cellContent).to.equal(expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderPhotoCellHTML('');
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  // TODO: Remove this once we don't need to support OBE datasets
+  describe('document formatting', function() {
+    it('should render a link', function() {
+      var cellContent = DataTypeFormatter.renderDocumentCellHTML(
+        {
+          file_id: 'hello',
+          filename: 'dolly'
+        },
+        'neat.co',
+        'peng-uins'
+      );
+      var expected = '<a href="https://neat.co/views/peng-uins/files/hello" target="_blank" rel="external">dolly</a>';
+      expect(cellContent).to.equal(expected);
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderDocumentCellHTML({});
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  // TODO: Remove this once we don't need to support OBE datasets
+  describe('multiple choice formatting', function() {
+    it('should render the corresponding value', function() {
+      var cellContent = DataTypeFormatter.renderMultipleChoiceCell(
+        'abcd-1234',
+        {
+          dropDown: {
+            values: [
+              {
+                description: 'foo',
+                id: 'four-four'
+              },
+              {
+                description: 'bar',
+                id: 'abcd-1234'
+              }
+            ]
+          }
+        }
+      );
+      expect(cellContent).to.equal('bar');
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderMultipleChoiceCell('', {});
+      expect(cellContent).to.equal('');
+    });
+  });
 });

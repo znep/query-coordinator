@@ -9,10 +9,16 @@ module.exports = {
   renderGeoCell: renderGeoCell,
   renderGeoCellHTML: renderGeoCellHTML,
   renderMoneyCell: renderMoneyCell,
+  renderUrlCellHTML: renderUrlCellHTML,
+  renderEmailCellHTML: renderEmailCellHTML,
+  renderPhoneCellHTML: renderPhoneCellHTML,
+  renderPhotoCellHTML: renderPhotoCellHTML,
+  renderDocumentCellHTML: renderDocumentCellHTML,
+  renderMultipleChoiceCell: renderMultipleChoiceCell,
   renderTimestampCell: renderTimestampCell
 };
 
-function renderCell(cellContent, column, i18n) {
+function renderCell(cellContent, column, i18n, domain, datasetUid) {
   var cellText;
 
   utils.assertIsOneOfTypes(column, 'object');
@@ -29,21 +35,6 @@ function renderCell(cellContent, column, i18n) {
     case 'number':
       cellText = _.escape(renderNumberCell(cellContent, column));
       break;
-    // EN-3548 - Note that only OBE datasets can have a column renderTypeName
-    // of 'percent'. Corresponding NBE datasets will have a column
-    // renderTypeName of 'number'. In order to keep that sort of logic somewhat
-    // contained, inside of the implementation of `renderNumberCell()` we do a
-    // few tests to figure out if we should be formatting the resulting value
-    // as a percentage.
-    case 'percent':
-      cellText = _.escape(renderNumberCell(cellContent, column));
-      break;
-
-    // OBE location columns are actually objects with latitude and longitude
-    // keys, so we need to handle them as a special case.
-    case 'location':
-      cellText = _.escape(renderObeLocation(cellContent));
-      break;
     // Avoid escaping because cell content is HTML.
     // TODO: Is it? I don't think so... let's verify next time we're in this
     // code.
@@ -54,9 +45,53 @@ function renderCell(cellContent, column, i18n) {
     case 'calendar_date':
       cellText = _.escape(renderTimestampCell(cellContent, column));
       break;
+
+    // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
+    case 'email':
+      cellText = renderEmailCellHTML(cellContent);
+      break;
     case 'money':
       cellText = _.escape(renderMoneyCell(cellContent, column));
       break;
+    // OBE location columns are actually objects with latitude and longitude
+    // keys, so we need to handle them as a special case.
+    case 'location':
+      cellText = _.escape(renderObeLocation(cellContent));
+      break;
+    // EN-3548 - Note that only OBE datasets can have a column renderTypeName
+    // of 'percent'. Corresponding NBE datasets will have a column
+    // renderTypeName of 'number'. In order to keep that sort of logic somewhat
+    // contained, inside of the implementation of `renderNumberCell()` we do a
+    // few tests to figure out if we should be formatting the resulting value
+    // as a percentage.
+    case 'percent':
+      cellText = _.escape(renderNumberCell(cellContent, column));
+      break;
+    case 'phone':
+      cellText = renderPhoneCellHTML(cellContent);
+      break;
+    case 'url':
+      cellText = renderUrlCellHTML(cellContent);
+      break;
+
+    // TODO: Remove these types once we no longer support OBE datasets
+    // OBE types that are deprecated post-NBE migration:
+    case 'date':
+      cellText = _.escape(renderTimestampCell(cellContent, column));
+      break;
+    case 'document':
+      cellText = renderDocumentCellHTML(cellContent, domain, datasetUid);
+      break;
+    case 'drop_down_list':
+      cellText = _.escape(renderMultipleChoiceCell(cellContent, column));
+      break;
+    case 'html': // Formatted Text
+      cellText = $(cellContent).text();
+      break;
+    case 'photo':
+      cellText = renderPhotoCellHTML(cellContent, domain, datasetUid);
+      break;
+
     default:
       cellText = _.escape(cellContent);
       break;
@@ -279,10 +314,109 @@ function renderMoneyCell(cellContent, column) {
 }
 
 /**
+* Render a url cell.
+*/
+function renderUrlCellHTML(cellContent) {
+  if (!_.isEmpty(cellContent)) {
+    return '<a href="{url}" target="_blank" rel="external">{text}</a>'.format({
+      url: cellContent.url,
+      text:cellContent.description
+    });
+  }
+
+  return '';
+}
+
+/**
+* Render an email cell.
+*/
+function renderEmailCellHTML(cellContent) {
+  if (!_.isEmpty(cellContent)) {
+    return '<a href="mailto:{email}" target="_blank" rel="external">{email}</a>'.format({
+      email: cellContent
+    });
+  }
+
+  return '';
+}
+
+/**
+* Render a phone cell.
+*/
+function renderPhoneCellHTML(cellContent) {
+  if (!_.isEmpty(cellContent)) {
+    var phoneNumber = _.get(cellContent, 'phone_number', '');
+
+    return '<a href="tel:{phoneHref}" target="_blank" rel="external">{phone}</a>'.format({
+      phoneHref: phoneNumber.replace(/[a-zA-Z]+: /, ''),
+      phone: phoneNumber
+    });
+  }
+
+  return '';
+}
+
+/**
+* Render a photo cell.
+*
+* TODO: Remove this function once we don't need to support OBE datasets
+*/
+function renderPhotoCellHTML(cellContent, domain, datasetUid) {
+  if (!_.isEmpty(cellContent)) {
+    return '<a href="https://{0}/views/{1}/files/{2}" target="_blank" rel="external">{2}</a>'.format(
+      domain,
+      datasetUid,
+      cellContent
+    );
+  }
+
+  return '';
+}
+
+/**
+* Render a document cell.
+*
+* TODO: Remove this function once we don't need to support OBE datasets
+*/
+function renderDocumentCellHTML(cellContent, domain, datasetUid) {
+  if (!_.isEmpty(cellContent)) {
+    return '<a href="https://{0}/views/{1}/files/{2}" target="_blank" rel="external">{3}</a>'.format(
+      domain,
+      datasetUid,
+      cellContent.file_id,
+      cellContent.filename
+    );
+  }
+
+  return '';
+}
+
+/**
+* Render a multiple choice cell.
+*
+* TODO: Remove this function once we don't need to support OBE datasets
+*/
+function renderMultipleChoiceCell(cellContent, column) {
+  if (!_.isEmpty(cellContent)) {
+    var selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
+      return _.isEqual(option.id, cellContent);
+    });
+
+    return selectedOption ? selectedOption.description : '';
+  }
+
+  return '';
+}
+
+/**
 * Render a date or timestamp following column formatting, otherwise following defaults.
 */
 function renderTimestampCell(cellContent, column) {
-  if (!_.isEmpty(cellContent)) {
+  if (_.isString(cellContent) || _.isNumber(cellContent)) {
+    if (_.isNumber(cellContent)) {
+      cellContent = (cellContent * 1000);
+    }
+
     var time = moment(new Date(cellContent));
     if (time.isValid()) {
       if (column.format && column.format.formatString) {

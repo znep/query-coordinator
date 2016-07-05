@@ -3,4 +3,4 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd $APP_DIR
-exec su socrata -c 'QUEUE=documents bin/rake queues:process'
+exec su socrata -c 'QUEUES=documents,thumbnails bin/rake queues:process'

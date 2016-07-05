@@ -3764,6 +3764,9 @@ en:
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file
+      errors:
+        network_error: We were unable to save your metadata due to a network error.
+        http_error: "We were unable to save your metadata due to an error: {0}"
     link_account:
       success: Your external account has been linked.
     profile:
@@ -4038,6 +4041,7 @@ en:
       finish: Finish
       next: Next
       previous: Previous
+      save: Save
   support:
     array:
       last_word_connector: ", and "

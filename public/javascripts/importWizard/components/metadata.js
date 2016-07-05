@@ -1,4 +1,7 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import { combineReducers } from 'redux';
+import isEmail from 'validator/lib/isEmail';
+import RadioGroup from 'react-radio-group';
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
@@ -9,16 +12,65 @@ import NavigationControl from './navigationControl';
 // == Metadata
 
 type DatasetMetadata = {
-  name: string,
-  description: string,
-  category: string,
+  nextClicked: boolean,
+  apiCall: MetadataApiCall,
+  lastSaved: MetadataContents,
+  contents: MetadataContents
+}
+
+type MetadataApiCall
+  = { type: 'Not Started' }
+  | { type: 'In Progress' }
+  | { type: 'Error', error: any }
+  | { type: 'Success', contents: MetadataContents }
+
+type MetadataContents = {
+  name: String,
+  description: String,
+  category: String,
   tags: Array,
-  rowLabel: string,
-  attributionLink: string,
+  rowLabel: String,
+  attributionLink: String,
   customMetadata: Object,
-  privacySettings: string,
-  contactEmail: string,
-  nextClicked: boolean
+  contactEmail: String,
+  privacySettings: String
+}
+
+export function defaultCustomData() {
+  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
+    return [
+      name,
+      fields.map(field => ({
+        field: field.name,
+        value: field.options ? field.options[0] : '',
+        privateField: _.has(field, 'private')
+      }))
+    ];
+  }));
+}
+
+export function emptyContents(name: string): MetadataContents {
+  return {
+    name: name,
+    description: '',
+    category: '',
+    tags: [],
+    rowLabel: '',
+    attributionLink: '',
+    customMetadata: Object.freeze(defaultCustomData(customMetadataSchema)),
+    contactEmail: '',
+    privacySettings: 'private'
+  };
+}
+
+export function emptyForName(name: string): DatasetMetadata {
+  const lastMetadataSaved = _.cloneDeep(emptyContents(name));
+  return {
+    nextClicked: false,
+    apiCall: {type: 'Not Started'},
+    lastSaved: lastMetadataSaved,
+    contents: emptyContents(name)
+  };
 }
 
 const MD_UPDATE_NAME = 'MD_UPDATE_NAME';
@@ -102,94 +154,130 @@ export function updateNextClicked() {
   };
 }
 
-export function defaultCustomData() {
-  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
-    return [
-      name,
-      fields.map(field => ({
-        field: field.name,
-        value: field.options ? field.options[0] : '',
-        privateField: _.has(field, 'private')
-      }))
-    ];
-  }));
-}
-
-
-export function emptyForName(name: string): DatasetMetadata {
+const MD_LAST_SAVED = 'MD_LAST_SAVED';
+export function updateLastSaved(savedMetadata) {
   return {
-    name: name,
-    description: '',
-    category: '',
-    tags: [],
-    rowLabel: '',
-    attributionLink: '',
-    customMetadata: defaultCustomData(customMetadataSchema),
-    privacySettings: 'private',
-    contactEmail: '',
-    nextClicked: false
+    type: MD_LAST_SAVED,
+    savedMetadata: _.cloneDeep(savedMetadata)
   };
 }
 
-export function update(metadata: DatasetMetadata = emptyForName(''), action): DatasetMetadata {
+const MD_SAVE_START = 'MD_SAVE_START';
+export function metadataSaveStart() {
+  return {
+    type: MD_SAVE_START
+  };
+}
+
+const MD_SAVE_COMPLETE = 'MD_SAVE_COMPLETE';
+export function metadataSaveComplete(contents) {
+  return {
+    type: MD_SAVE_COMPLETE,
+    contents: contents
+  };
+}
+
+const MD_SAVE_ERROR = 'MD_SAVE_ERROR';
+export function metadataSaveError(err) {
+  return {
+    type: MD_SAVE_ERROR,
+    err: err
+  };
+}
+
+export const update =
+  combineReducers({
+    nextClicked: updateForNextClicked,
+    apiCall: updateApiCallState,
+    contents: updateContents,
+    lastSaved: updateForLastSaved
+  });
+
+export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
+  switch (action.type) {
+    case MD_LAST_SAVED:
+      return _.cloneDeep(action.savedMetadata.contents);
+    default:
+      return lastSavedMetadata;
+  }
+}
+
+export function updateContents(contents = emptyContents(''), action): DatasetMetadata {
   switch (action.type) {
     case MD_UPDATE_NAME:
       return {
-        ...metadata,
+        ...contents,
         name: action.newName
       };
     case MD_UPDATE_DESCRIPTION:
       return {
-        ...metadata,
+        ...contents,
         description: action.newDescription
       };
     case MD_UPDATE_CATEGORY:
       return {
-        ...metadata,
+        ...contents,
         category: action.newCategory
       };
     case MD_UPDATE_TAGS:
-      metadata.tags = action.newTags.split(',');
+      contents.tags = action.newTags.split(',');
       return {
-        ...metadata,
-        tags: metadata.tags
+        ...contents,
+        tags: contents.tags
       };
     case MD_UPDATE_ROWLABEL:
       return {
-        ...metadata,
+        ...contents,
         rowLabel: action.newRowLabel
       };
     case MD_UPDATE_ATTRIBUTIONLINK:
       return {
-        ...metadata,
+        ...contents,
         attributionLink: action.newAttributionLink
       };
     case MD_UPDATE_CUSTOMMETADATA: {
-      const newCustomMetadata = _.clone(metadata.customMetadata);
+      const newCustomMetadata = _.cloneDeep(contents.customMetadata);
       newCustomMetadata[action.setName][action.fieldIdx].value = action.newCustomData;
 
       return {
-        ...metadata,
+        ...contents,
         customMetadata: newCustomMetadata
       };
     }
     case MD_UPDATE_PRIVACYSETTINGS:
       return {
-        ...metadata,
+        ...contents,
         privacySettings: action.newPrivacySettings
       };
     case MD_UPDATE_CONTACTEMAIL:
       return {
-        ...metadata,
+        ...contents,
         contactEmail: action.newContactEmail
       };
-    case MD_UPDATE_NEXTCLICKED:
-      return {
-        ...metadata,
-        nextClicked: true
-      };
     default:
-      return metadata;
+      return contents;
+  }
+}
+
+export function updateForNextClicked(nextClicked: boolean = false, action) {
+  switch (action.type) {
+    case MD_UPDATE_NEXTCLICKED:
+      return true;
+    default:
+      return nextClicked;
+  }
+}
+
+export function updateApiCallState(apiCallState = {type: 'Not Started'}, action) {
+  switch (action.type) {
+    case MD_SAVE_START:
+      return {type: 'In Progress'};
+    case MD_SAVE_COMPLETE:
+      return {type: 'Success', contents: action.contents};
+    case MD_SAVE_ERROR:
+      return {type: 'Error', error: action.err};
+    default:
+      return apiCallState;
   }
 }
 
@@ -198,27 +286,27 @@ type MetadataValidationErrors = {
   attributionLink: bool
 }
 
-export function validate(metadata: DatasetMetadata): MetadataValidationErrors {
+export function validate(metadata): MetadataValidationErrors {
   return {
-    name: metadata.name.length !== 0,
-    attributionLink: metadata.attributionLink.length !== 0
+    name: metadata.contents.name.length !== 0,
+    attributionLink: metadata.contents.attributionLink.length !== 0
   };
 }
 
-export function isStandardMetadataValid(metadata: DatasetMetadata) {
-  const valid = validate(metadata);
+export function isStandardMetadataValid(contents) {
+  const valid = validate(contents);
   return valid.name && valid.attributionLink;
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
-  return (metadata.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
+  return (metadata.contents.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
 }
 
 export function isCustomMetadataValid(metadata: DatasetMetadata) {
   return customMetadataSchema.every((fieldSet) => {
     return fieldSet.fields.every((field, fieldIndex) => {
       if (field.required) {
-        const value = metadata.customMetadata[fieldSet.name][fieldIndex].value;
+        const value = metadata.contents.customMetadata[fieldSet.name][fieldIndex].value;
         return value.length > 0;
       } else {
         return true;
@@ -227,8 +315,18 @@ export function isCustomMetadataValid(metadata: DatasetMetadata) {
   });
 }
 
+export function isEmailValid(contactEmail) {
+  return isEmail(contactEmail) || contactEmail.length === 0;
+}
+
 export function isMetadataValid(metadata: DatasetMetadata) {
-  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata));
+  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata)) && isEmailValid(metadata.contents.contactEmail);
+}
+
+export function isMetadataUnsaved(metadata) {
+  const contents = metadata.contents;
+  const lastSaved = metadata.lastSaved;
+  return !(_.isEqual(contents, lastSaved));
 }
 
 function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx) {
@@ -237,7 +335,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
     return (
       <select
         className={field.name}
-        value={metadata.customMetadata[setName][fieldIdx].value}
+        value={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} >
           {options.map((value) =>
             <option value={value}>{value}</option>
@@ -250,7 +348,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
       <input
         type="text"
         className={field.name}
-        value={metadata.customMetadata[setName][fieldIdx].value}
+        value={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} />
     );
   }
@@ -290,7 +388,22 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-function renderFlashMessage(importError) {
+function renderFlashMessageApiError(apiCall) {
+  if (apiCall.type !== 'Error') {
+    return;
+  } else {
+    switch (apiCall.error.message) {
+      case 'Failed to fetch':
+        return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.network_error} />;
+      case 'Bad Gateway':
+        return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.http_error.format(apiCall.error.message)} />;
+      default:
+        return <FlashMessage flashType="error" message={I18n.screens.import_pane.unknown_error} />;
+    }
+  }
+}
+
+function renderFlashMessageImportError(importError) {
   if (_.isUndefined(importError)) {
     return;
   }
@@ -299,171 +412,169 @@ function renderFlashMessage(importError) {
 
 export function view({ metadata, onMetadataAction, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
-
   const validationErrors = validate(metadata);
 
   return (
-    <div>
-      <div className="metadataPane">
-        {renderFlashMessage(importError)}
-        <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
-        <div className="commonForm metadataForm">
-          <div className="externalDatasetMetadata">
-            <div className="line clearfix">
-              <label className="required">{I18nPrefixed.dataset_url}</label>
-              <input
-                type="text"
-                name="external_sources[0]"
-                className="textPrompt url required"
-                title={I18nPrefixed.dataset_url_prompt} />
-            </div>
+    <div className="metadataPane">
+      {renderFlashMessageApiError(metadata.apiCall)}
+      {renderFlashMessageImportError(importError)}
+      <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
+      <div className="commonForm metadataForm">
+        <div className="externalDatasetMetadata">
+          <div className="line clearfix">
+            <label className="required">{I18nPrefixed.dataset_url}</label>
+            <input
+              type="text"
+              name="external_sources[0]"
+              className="textPrompt url required"
+              title={I18nPrefixed.dataset_url_prompt} />
           </div>
-
-          <div className="generalMetadata">
-            <div className="line clearfix">
-              <label htmlFor="view_name" className="required">{I18nPrefixed.dataset_title}</label>
-              <input
-                type="text"
-                name="view[name]"
-                title={I18nPrefixed.dataset_title_prompt}
-                className="textPrompt required error"
-                value={metadata.name}
-                onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
-                {(!validationErrors.name && metadata.nextClicked) ?
-                  <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
-            </div>
-
-            <div className="line clearfix">
-              <label htmlFor="view_description">{I18nPrefixed.brief_description}</label>
-              <textarea
-                type="text"
-                name="view[description]"
-                title={I18nPrefixed.brief_description_prompt} className="textPrompt"
-                value={metadata.description}
-                placeholder={I18nPrefixed.brief_description_prompt}
-                onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
-            </div>
-
-            <div className="line clearfix">
-              <label htmlFor="view_category">{I18nPrefixed.category}</label>
-              <select
-                name="view[category]"
-                value={metadata.category}
-                onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
-                {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
-              </select>
-            </div>
-
-            <div className="line clearfix">
-              <label htmlFor="view_tags">{I18nPrefixed.tags_keywords}</label>
-              <input
-                type="text" name="view[tags]"
-                title={I18nPrefixed.tags_prompt}
-                value={metadata.tags}
-                className="textPrompt"
-                onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
-            </div>
-
-            <div className="line clearfix">
-              <label htmlFor="view_rowLabel">{I18nPrefixed.row_label}</label>
-              <input
-                type="text"
-                name="view[rowLabel]"
-                className="textPrompt"
-                value={metadata.rowLabel}
-                onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
-            </div>
-          </div>
-
-          <div className="attributionLinkMetadata">
-            <div className="line clearfix">
-              <label htmlFor="view_attributionLink" className="required">
-                {I18n.screens.dataset_new.metadata.esri_map_layer_url}
-              </label>
-              <input
-                type="text"
-                name="view[attributionLink]"
-                className="textPrompt required"
-                value={metadata.attributionLink}
-                onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
-              {(!validationErrors.attributionLink && metadata.nextClicked) ?
-                <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
-            </div>
-          </div>
-
-          {renderCustomMetadata(metadata, onMetadataAction)}
-
-          <div className="licensingMetadata">
-            {/* TODO: license editor */}
-          </div>
-
-          <div className="attachmentsMetadata">
-            <h2>{I18nPrefixed.attachments}</h2>
-            <div className="attachmentsHowtoMessage">
-              {I18nPrefixed.attachmentsDisabledMessagePart1}
-              {' '}<span className="about"><span className="icon"></span>{I18nPrefixed.about}</span>{' '}
-              {I18nPrefixed.attachmentsDisabledMessagePart2}
-            </div>
-          </div>
-
-          <div className="privacyMetadata">
-            <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
-
-            <div className="line clearfix">
-              <fieldset id="privacy-settings" className="radioblock" defaultChecked={metadata.privacySettings}>
-                <legend id="privacy-settings-legend">
-                  {I18n.screens.dataset_new.metadata.privacy_settings}
-                </legend>
-                <div>
-                  <input
-                    type="radio"
-                    name="privacy"
-                    value="public" id="privacy_public"
-                    onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                  <label
-                    htmlFor="privacy_public"
-                    dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    name="privacy"
-                    value="private"
-                    id="privacy_private"
-                    defaultChecked
-                    onChange={(evt) => onMetadataAction(updatePrivacySettings(evt.target.value))} />
-                  <label
-                    htmlFor="privacy_private"
-                    dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
-                </div>
-              </fieldset>
-            </div>
-
-            <div className="line clearfix">
-              <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
-                {I18nPrefixed.contact_email}
-              </label>
-              <input
-                type="text"
-                name="view[contactEmail]'"
-                value={metadata.contactEmail}
-                title={I18nPrefixed.email_address} className="textPrompt contactEmail"
-                onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
-              <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            </div>
-          </div>
-          <div className="required">{I18nPrefixed.required_field}</div>
         </div>
+
+        <div className="generalMetadata">
+          <div className="line clearfix">
+            <label htmlFor="view_name" className="required">{I18nPrefixed.dataset_title}</label>
+            <input
+              type="text"
+              name="view[name]"
+              title={I18nPrefixed.dataset_title_prompt}
+              className="textPrompt required error"
+              value={metadata.contents.name}
+              onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
+              {(!validationErrors.name && metadata.nextClicked) ?
+                <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
+          </div>
+
+          <div className="line clearfix">
+            <label htmlFor="view_description">{I18nPrefixed.brief_description}</label>
+            <textarea
+              type="text"
+              name="view[description]"
+              title={I18nPrefixed.brief_description_prompt} className="textPrompt"
+              value={metadata.contents.description}
+              placeholder={I18nPrefixed.brief_description_prompt}
+              onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
+          </div>
+
+          <div className="line clearfix">
+            <label htmlFor="view_category">{I18nPrefixed.category}</label>
+            <select
+              name="view[category]"
+              value={metadata.contents.category}
+              onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
+              {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
+            </select>
+          </div>
+
+          <div className="line clearfix">
+            <label htmlFor="view_tags">{I18nPrefixed.tags_keywords}</label>
+            <input
+              type="text" name="view[tags]"
+              title={I18nPrefixed.tags_prompt}
+              value={metadata.contents.tags}
+              className="textPrompt"
+              onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
+          </div>
+
+          <div className="line clearfix">
+            <label htmlFor="view_rowLabel">{I18nPrefixed.row_label}</label>
+            <input
+              type="text"
+              name="view[rowLabel]"
+              className="textPrompt"
+              value={metadata.contents.rowLabel}
+              onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
+          </div>
+        </div>
+
+        <div className="attributionLinkMetadata">
+          <div className="line clearfix">
+            <label htmlFor="view_attributionLink" className="required">
+              {I18n.screens.dataset_new.metadata.esri_map_layer_url}
+            </label>
+            <input
+              type="text"
+              name="view[attributionLink]"
+              className="textPrompt required"
+              value={metadata.contents.attributionLink}
+              onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
+            {(!validationErrors.attributionLink && metadata.nextClicked) ?
+              <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
+          </div>
+        </div>
+
+        {renderCustomMetadata(metadata, onMetadataAction)}
+
+        <div className="privacyMetadata">
+          <h2>{I18n.screens.dataset_new.metadata.privacy_security}</h2>
+
+          <div className="line clearfix">
+            <fieldset id="privacy-settings" className="radioblock">
+              <legend id="privacy-settings-legend">
+                {I18n.screens.dataset_new.metadata.privacy_settings}
+              </legend>
+              <RadioGroup
+                name="privacy"
+                selectedValue={metadata.contents.privacySettings}
+                onChange={(value) => onMetadataAction(updatePrivacySettings(value))}>
+                {Radio => (
+                  <div>
+                    <div>
+                      <Radio value="public" />
+                      <label
+                        htmlFor="privacy_public"
+                        dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.public_explain}} />
+                    </div>
+                    <div>
+                      <Radio value="private" />
+                      <label
+                        htmlFor="privacy_private"
+                        dangerouslySetInnerHTML={{__html: I18n.screens.dataset_new.metadata.private_explain}} />
+                    </div>
+                  </div>
+                )}
+              </RadioGroup>
+            </fieldset>
+          </div>
+
+          <div className="line clearfix">
+            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
+              {I18nPrefixed.contact_email}
+            </label>
+            <input
+              type="text"
+              name="view[contactEmail]'"
+              value={metadata.contents.contactEmail}
+              title={I18nPrefixed.email_address} className="textPrompt contactEmail"
+              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
+            <div className="additionalHelp">{I18nPrefixed.email_help}</div>
+            {!isEmailValid(metadata.contents.contactEmail) ?
+              <label className="error email_help">{I18n.core.validation.email}</label> : null}
+          </div>
+        </div>
+
+        <div className="required">{I18nPrefixed.required_field}</div>
+
       </div>
       <NavigationControl
-        onNext={() => {
+        onPrev={goToPrevious}
+
+        onSave={() => {
+          onMetadataAction(updateNextClicked());
+          if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
+            onMetadataAction(Server.saveMetadataToViewsApi());
+          }
+        }}
+
+        onNext={(() => {
           onMetadataAction(updateNextClicked());
           if (isMetadataValid(metadata)) {
             onMetadataAction(Server.saveMetadataThenProceed());
           }
-        }}
-        onPrev={goToPrevious}
+        })}
+
         cancelLink="/profile" />
+
     </div>
   );
 }

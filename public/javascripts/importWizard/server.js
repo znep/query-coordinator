@@ -25,30 +25,86 @@ export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
-  return (dispatch, getState) => {
-    const { navigation, metadata, datasetId } = getState();
+  return (dispatch) => {
     dispatch(goToPage('Working'));
-    saveMetadataToViewsApi(datasetId, metadata).then(() => {
-      dispatch(goToPage('Importing'));
-      const onImportError = () => {
-        dispatch(importError());
-        dispatch(goToPage('Metadata'));
-      };
-      switch (navigation.operation) {
-        case 'UploadData':
-          dispatch(importData(onImportError));
-          break;
-        case 'UploadGeospatial':
-          dispatch(importGeospatial(onImportError));
-          break;
-        case 'CreateFromScratch':
-          dispatch(goToPage('Finish'));
-          break;
-        default:
-          console.error('Unkown operation!', navigation.operation);
+    dispatch(saveMetadataToViewsApi()).
+      then(() => {
+        dispatch(proceedFromMetadataPane());
+      });
+  };
+}
+
+export function saveMetadataToViewsApi() {
+  return (dispatch, getState) => {
+    dispatch(Metadata.metadataSaveStart());
+    const { datasetId, metadata } = getState();
+    return socrataFetch(`/api/views/${datasetId}`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      body: JSON.stringify(modelToViewParam(metadata))
+    }).then(checkStatus)
+      .then((response) => {
+        console.log(response);
+        dispatch(Metadata.metadataSaveComplete(metadata.contents));
+        dispatch(Metadata.updateLastSaved(metadata));
+      }).then(() => {
+        dispatch(updatePrivacy(datasetId, metadata, metadata.contents.privacySettings));
+      }).catch((err) => {
+        dispatch(Metadata.metadataSaveError(err));
+      });
+  };
+}
+
+export function proceedFromMetadataPane() {
+  return (dispatch, getState) => {
+    const { navigation } = getState();
+    const onImportError = () => {
+      dispatch(importError());
+      dispatch(goToPage('Metadata'));
+    };
+    switch (navigation.operation) {
+      case 'UploadData':
+        dispatch(importData(onImportError));
+        break;
+      case 'UploadGeospatial':
+        dispatch(importGeospatial(onImportError));
+        break;
+      case 'CreateFromScratch':
+        dispatch(goToPage('Finish'));
+        break;
+      default:
+        console.error('Unkown operation!', navigation.operation);
+    }
+  };
+}
+
+export function updatePrivacy(datasetId, metadata, currentPrivacy) {
+  return (dispatch) => {
+    const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
+
+    return socrataFetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-Token': authenticityToken,
+        'X-App-Token': appToken
       }
+    }).then((result) => {
+      console.log(result);
+      dispatch(Metadata.metadataSaveComplete(metadata.contents));
+      dispatch(Metadata.updateLastSaved(metadata));
     });
   };
+}
+
+export function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    var error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+  }
 }
 
 const defaultFetchOptions = {
@@ -57,6 +113,7 @@ const defaultFetchOptions = {
     'X-App-Token': appToken
   }
 };
+
 export function socrataFetch(path, options): Promise {
   // only need to add in authenticityToken for non-GET requests
   const mergedOptions = (!_.isUndefined(options.method) && options.method.toUpperCase() !== 'GET')
@@ -65,30 +122,20 @@ export function socrataFetch(path, options): Promise {
   return fetch(path, mergedOptions);
 }
 
-function saveMetadataToViewsApi(datasetId, metadata) {
-  return socrataFetch(`/api/views/${datasetId}`, {
-    method: 'PUT',
-    credentials: 'same-origin',
-    body: JSON.stringify(modelToViewParam(metadata))
-  }).then((result) => {
-    console.log(result);
-  });
-}
-
 export function modelToViewParam(metadata) {
   return {
-    name: metadata.name,
-    description: metadata.description,
-    category: metadata.category,
-    tags: metadata.tags,
+    name: metadata.contents.name,
+    description: metadata.contents.description,
+    category: metadata.contents.category,
+    tags: metadata.contents.tags,
     metadata: {
-      rowLabel: metadata.rowLabel,
-      attributionLink: metadata.attributionLink,
-      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, false)
+      rowLabel: metadata.contents.rowLabel,
+      attributionLink: metadata.contents.attributionLink,
+      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
     },
     privateMetadata: {
-      contactEmail: metadata.contactEmail,
-      custom_fields: customMetadataModelToCoreView(metadata.customMetadata, true)
+      contactEmail: metadata.contents.contactEmail,
+      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
     }
   };
 }
@@ -103,6 +150,16 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 }
 
 export function coreViewToModel(view) {
+  const contents = coreViewContents(view);
+  return {
+    nextClicked: false,
+    contents: contents,
+    lastSaved: contents,
+    apiCall: {}
+  };
+}
+
+export function coreViewContents(view) {
   return {
     name: view.name,
     description: view.description,
@@ -111,7 +168,10 @@ export function coreViewToModel(view) {
     rowLabel: view.metadata.rowLabel,
     attributionLink: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
-    contactEmail: view.privateMetadata.contactEmail
+    contactEmail: view.privateMetadata.contactEmail,
+    privacySettings: _.has(view, 'grants')
+                        ? 'public'
+                        : 'private'
   };
 }
 
@@ -153,7 +213,6 @@ export function initialImportStatus(): ImportStatus {
     type: 'NotStarted'
   };
 }
-
 
 const IMPORT_START = 'IMPORT_START';
 function importStart() {

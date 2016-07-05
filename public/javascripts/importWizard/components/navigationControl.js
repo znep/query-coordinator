@@ -40,6 +40,21 @@ function prevButton(onPrev) {
   );
 }
 
+function saveButton(onSave) {
+  const saveButtonStatus =
+    _.isUndefined(onSave)
+      ? ' disabled'
+      : '';
+
+  return (
+    <a
+      className={'button saveButton' + saveButtonStatus}
+      onClick={onSave}>
+      {I18n.screens.wizard.save}
+    </a>
+  );
+}
+
 function cancelButton(cancelLink) {
   const cancelButtonStatus =
     _.isUndefined(cancelLink)
@@ -56,10 +71,11 @@ function cancelButton(cancelLink) {
 }
 
 
-function view({finishLink, onNext, onPrev, cancelLink}) {
+function view({finishLink, onNext, onPrev, onSave, cancelLink}) {
   return (
     <div className="wizardButtons clearfix">
       {cancelButton(cancelLink)}
+      {saveButton(onSave)}
       <div className="button navButtons">
         {prevButton(onPrev)}
         {nextButton(finishLink, onNext)}
@@ -71,6 +87,7 @@ function view({finishLink, onNext, onPrev, cancelLink}) {
 view.propTypes = {
   finishLink: PropTypes.string,
   onNext: PropTypes.func,
+  onSave: PropTypes.func,
   onPrev: PropTypes.func,
   cancelLink: PropTypes.string
 };

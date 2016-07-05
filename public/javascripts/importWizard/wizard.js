@@ -230,8 +230,9 @@ export function view({ state, dispatch }) {
             case 'Metadata':
               return (
                 <Metadata.view
+                  datasetId={state.datasetId}
                   metadata={state.metadata}
-                  onMetadataAction={(action) => {dispatch(action);}}
+                  onMetadataAction={dispatch}
                   importError={state.importStatus.error}
                   goToPrevious={() => dispatch(goToPrevious())} />
               );

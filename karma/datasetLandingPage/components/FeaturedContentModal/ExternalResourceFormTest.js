@@ -24,15 +24,15 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
     });
 
     it('renders a back button', function() {
-      expect(element.querySelector('.modal-content > .back-button')).to.exist;
+      expect(element.querySelector('.modal-content .back-button')).to.exist;
     });
 
     it('renders the header', function() {
-      expect(element.querySelector('.modal-content > h2')).to.exist;
+      expect(element.querySelector('.modal-content h2')).to.exist;
     });
 
     it('renders the prompt', function() {
-      expect(element.querySelector('.modal-content > p')).to.exist;
+      expect(element.querySelector('.modal-content p')).to.exist;
     });
 
     it('renders the form container', function() {

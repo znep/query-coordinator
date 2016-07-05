@@ -18,9 +18,18 @@ $external-blue: #1c6387;;
 
     .entry-title {
       margin-right: 2%;
+      max-height: 48px;
 
       h3 {
         margin: 0;
+
+        .icon-private {
+          margin-right: 4px;
+        }
+
+        a div {
+          display: inline !important;
+        }
       }
     }
   }

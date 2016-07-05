@@ -60,17 +60,6 @@ class DatasetsController < ApplicationController
       end
     end
 
-    # TODO: Remove this after DSLP launch (note that this is not being localized
-    # intentionally and we plan on removing it post-launch)
-    if display_dataset_landing_page_notice?
-      flash.now[:notice] = %{
-        Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
-        <a href="?enable_dataset_landing_page=true&default_to_dataset_landing_page=true">
-        Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>
-        visit the support portal</a> for additional details.
-      }.html_safe
-    end
-
     # adjust layout to thin versions (rather than '_full')
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'
@@ -110,7 +99,7 @@ class DatasetsController < ApplicationController
     end
 
     # Dataset landing page case
-    if dataset_landing_page_is_default? && view_has_landing_page? && !request[:bypass_dslp]
+    if dataset_landing_page_is_default? && view.has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
         return redirect_to canonical_path
@@ -119,8 +108,14 @@ class DatasetsController < ApplicationController
       dataset_landing_page = DatasetLandingPage.new
 
       begin
-        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
-      rescue CoreServer::CoreServerError => e
+        @popular_views = dataset_landing_page.get_popular_views(
+          params[:id],
+          forwardable_session_cookies,
+          request_id,
+          4, # limit
+          0 # offset
+        )
+      rescue CoreServer::CoreServerError
         @popular_views = []
       end
 
@@ -135,6 +130,19 @@ class DatasetsController < ApplicationController
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 
       return
+    end
+
+    # We're going to some version of the grid/viz page
+
+    # TODO: Remove this after DSLP launch (note that this is not being localized
+    # intentionally and we plan on removing it post-launch)
+    if display_dataset_landing_page_notice?
+      flash.now[:notice] = %{
+        Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
+        <a href="?enable_dataset_landing_page=true&default_to_dataset_landing_page=true">
+        Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>
+        visit the support portal</a> for additional details.
+      }.html_safe
     end
 
     etag = "#{dsmtime}-#{user}"
@@ -751,12 +759,18 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
-    if dataset_landing_page_enabled? && view_has_landing_page?
+    if dataset_landing_page_enabled? && view.has_landing_page?
       dataset_landing_page = DatasetLandingPage.new
 
       begin
-        @popular_views = dataset_landing_page.get_popular_views(params[:id], 4)
-      rescue CoreServer::CoreServerError => e
+        @popular_views = dataset_landing_page.get_popular_views(
+          params[:id],
+          forwardable_session_cookies,
+          request_id,
+          4, # limit
+          0 # offset
+        )
+      rescue CoreServer::CoreServerError
         @popular_views = []
       end
 
@@ -1180,12 +1194,8 @@ class DatasetsController < ApplicationController
 
   def display_dataset_landing_page_notice?
     FeatureFlags.derive(nil, request).display_dataset_landing_page_notice == true &&
-      view_has_landing_page? &&
+      view.has_landing_page? &&
       current_user.try(:roleName) == 'administrator'
-  end
-
-  def view_has_landing_page?
-    @view.dataset?
   end
 
   def fetch_layer_info(layer_url)

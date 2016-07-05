@@ -61,10 +61,6 @@ disable_dataset_search_box:
 display_dataset_landing_page_notice:
   description: Display the notice informing site admins that the page they are seeing will soon be replaced by the dataset landing page.
   defaultValue: false
-enable_data_lens_aggregation_tour:
-  description: Show the tour of the card-level aggregation.
-  defaultValue: false
-  category: data lens
 enable_data_lens_export_menu:
   description: Toggles visibility of the export menu, which also allows export of the current filter.
   defaultValue: true
@@ -77,6 +73,9 @@ enable_dataset_landing_page:
   description: Enable the dataset landing page
   defaultValue: false
   category: dataset landing page
+enable_dataset_landing_page_tour:
+  description: Display the tour when visitors first access a dataset landing page.
+  defaultValue: true
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

@@ -17,6 +17,7 @@ module.exports = _.defaultsDeep({
     './main'
   ]),
   output: common.getOutput(identifier),
+  eslint: common.getEslintConfig('public/javascripts/datasetLandingPage/.eslintrc.json'),
   module: {
     loaders: [
       {

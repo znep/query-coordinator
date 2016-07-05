@@ -32,7 +32,6 @@ function initialPreviewWidgetState() {
   return {
     createdAt: '',
     description: '',
-    imageUrl: '',
     title: '',
     viewCount: null
   };
@@ -47,8 +46,7 @@ function updatePreviewValues(state, story) {
     description: story.description,
     title: story.title || story.name,
     createdAt: story.createdAt,
-    viewCount: story.viewCount,
-    imageUrl: story.imageUrl
+    viewCount: story.viewCount
   });
 }
 
@@ -57,7 +55,7 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
+  state = _.clone(state);
 
   switch (action.type) {
     case CANCEL_FEATURED_ITEM_EDIT:

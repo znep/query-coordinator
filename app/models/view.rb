@@ -1364,6 +1364,10 @@ class View < Model
     is_tabular? && displayType == 'data_lens'
   end
 
+  def has_landing_page?
+    dataset?
+  end
+
   def visualization?
     standalone_visualization? || classic_visualization?
   end

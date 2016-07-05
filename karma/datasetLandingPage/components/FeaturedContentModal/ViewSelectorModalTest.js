@@ -26,12 +26,12 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
       element = renderComponent(ViewSelectorModal, getProps());
     });
 
-    it('uses the scoped class names', function() {
-      expect(element.getAttribute('class')).to.include('internal-resource-contents');
+    it('renders the header', function() {
+      expect(element.querySelector('.modal-header')).to.exist;
     });
 
     it('renders the title', function() {
-      expect(element.querySelector('.modal-content > h2')).to.exist;
+      expect(element.querySelector('.modal-content h2')).to.exist;
     });
 
     it('renders the footer', function() {
@@ -39,7 +39,7 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
     });
 
     it('renders a back button', function() {
-      expect(element.querySelector('.modal-content > .back-button')).to.exist;
+      expect(element.querySelector('.modal-content .back-button')).to.exist;
     });
 
     it('does not render spinner', function() {

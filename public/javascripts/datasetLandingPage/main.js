@@ -7,21 +7,28 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import a11y from 'react-a11y';
 import airbrake from './lib/airbrake';
+import styleguide from 'socrata-styleguide';
 
 import datasetLandingPage from './reducers';
 import App from './App';
+import DynamicContent from './DynamicContent';
 
 var middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
   a11y(React, { ReactDOM: ReactDOM });
-  middleware.push(createLogger());
+  middleware.push(createLogger({
+    duration: true,
+    timestamp: false,
+    collapsed: true
+  }));
 } else {
   airbrake.init();
 }
 
 var store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
+// Render the main content
 ReactDOM.render(
   <Provider store={store}>
     <App />
@@ -29,6 +36,21 @@ ReactDOM.render(
   document.querySelector('#app')
 );
 
-// Initialize the styleguide javascript components
-var styleguide = require('socrata-styleguide');
-styleguide.attachTo(document);
+// Show the footer
+var footer = document.querySelector('#chrome-footer');
+if (footer) {
+  footer.style.visibility = 'visible';
+}
+
+// Render the modals, flannels, etc. and bind styleguide events.
+_.defer(function() {
+  ReactDOM.render(
+    <Provider store={store}>
+      <DynamicContent />
+    </Provider>,
+    document.querySelector('#dynamic-content')
+  );
+
+  // Initialize the styleguide javascript components
+  styleguide.attachTo(document);
+});

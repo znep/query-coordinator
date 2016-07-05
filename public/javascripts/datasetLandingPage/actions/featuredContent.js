@@ -104,7 +104,7 @@ export function saveFeaturedItem(options) {
         url: trimEditFromUrl(featuredContent.story.url)
       };
     } else if (editType === 'externalResource') {
-      var previewImage = featuredContent.externalResource.previewImage;
+      var previewImage = _.get(featuredContent.externalResource, 'previewImage', '');
       var matches = previewImage.match(/base64,([^\s]+)$/);
       var previewImageBase64 = _.isNull(matches) ? null : matches[1];
 

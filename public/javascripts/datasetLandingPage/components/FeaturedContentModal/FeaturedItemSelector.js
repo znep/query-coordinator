@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import FeaturedItemWidget from '../FeaturedItemWidget';
+import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 
 import {
   addFeaturedItem,
@@ -16,10 +17,12 @@ export var FeaturedItemSelector = React.createClass({
     hasRemoveError: PropTypes.bool,
     isRemoving: PropTypes.bool,
     onClickAdd: PropTypes.func,
+    onClickClose: PropTypes.func,
     onClickDone: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickRemove: PropTypes.func,
-    removePosition: PropTypes.number
+    removePosition: PropTypes.number,
+    renderHeader: PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -122,7 +125,7 @@ export var FeaturedItemSelector = React.createClass({
       } else {
         return (
           <button
-            className="btn btn-alternate-2 btn-inverse"
+            className="btn btn-alternate-2 btn-inverse btn-wide"
             onClick={_.partial(this.onClickPreAdd, index)}>
             {`${I18n.add}...`}
           </button>
@@ -181,17 +184,19 @@ export var FeaturedItemSelector = React.createClass({
     });
 
     return (
-      <section className="modal-content">
-        <h2>{I18n.featured_content_modal.title}</h2>
+      <div className="modal-content">
+        <div className="container">
+          <h2>{I18n.featured_content_modal.title}</h2>
 
-        <p>{I18n.featured_content_modal.introduction}</p>
+          <p>{I18n.featured_content_modal.introduction}</p>
 
-        <div className="featured-content">
-          {items}
+          <div className="featured-content">
+            {items}
+          </div>
+
+          {this.renderRemoveError()}
         </div>
-
-        {this.renderRemoveError()}
-      </section>
+      </div>
     );
   },
 
@@ -210,8 +215,11 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   render: function() {
+    var { onClickClose } = this.props;
+
     return (
-      <div>
+      <div className="modal-container">
+        <FeaturedContentModalHeader onClickClose={onClickClose} />
         {this.renderContent()}
         {this.renderFooter()}
       </div>
@@ -227,6 +235,10 @@ function mapDispatchToProps(dispatch) {
   return {
     onClickAdd: function(type, position) {
       dispatch(addFeaturedItem(type, position));
+    },
+
+    onClickClose: function() {
+      dispatch(cancelFeaturedItemEdit());
     },
 
     onClickDone: function() {

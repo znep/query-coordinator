@@ -91,7 +91,12 @@ module BrowseActions
     params = params || request_params || {}
 
     topic_chop = get_facet_cutoff(:topic)
-    all_tags = Tag.find({:method => "viewsTags"})
+
+    if using_cetera?
+      all_tags = Cetera.get_tags(forwardable_session_cookies, request_id(request)).results
+    else
+      all_tags = Tag.find(:method => 'viewsTags')
+    end
 
     # top_tags appear above the fold and contain the first "topic_chop" number of tags + the selected tag
     top_tags = all_tags.slice(0, topic_chop).map do |tag|

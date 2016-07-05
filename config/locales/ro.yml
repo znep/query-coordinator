@@ -1468,6 +1468,10 @@ ro:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1626,6 +1630,7 @@ ro:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1836,6 +1841,10 @@ ro:
       contributors: Colaboratori
       created: creat
       data_provided_by: Date furnizate de
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Descriere
       downloads: Descărcări
@@ -3563,6 +3572,8 @@ ro:
       new_ux_nbe_warning: 'Doar intern: Vizualizare UX veche a setului de date New Backend. Utilizatorii obișnuiți ar fi trebuit să fie redirecționați la %{url}'
       new_ux_text: Vedeți această informație într-o nouă experiență Data Lens
       new_ux_title: Sunteți pregătit(ă) să explorați vizual?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Aveţi date nesalvate care se vor pierde dacă părăsiţi această pagină. Vă rugăm să alegeţi dacă doriţi sau nu să salvaţi această vizualizare înainte de a ieşi, sau alegeţi "Anulare" pentru reveni la pagină.

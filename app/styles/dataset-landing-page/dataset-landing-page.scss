@@ -925,6 +925,24 @@ section.landing-page-section.schema-preview {
   }
 }
 
+.shepherd-step .shepherd-content {
+  h3 {
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .shepherd-buttons {
+    text-align: center;
+  }
+
+  .shepherd-cancel-link {
+    display: none;
+  }
+}
+
 a {
   color: $link-color;
   text-decoration: none;
@@ -1064,8 +1082,9 @@ a {
   z-index: 1000 !important;
 }
 
-#chrome-footer {
+footer#chrome-footer {
   margin-top: 20px;
+  visibility: hidden;
 }
 
 // firefox-specific issue

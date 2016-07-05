@@ -1467,6 +1467,10 @@ zh:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1625,6 +1629,7 @@ zh:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1835,6 +1840,10 @@ zh:
       contributors: "参与者"
       created: "创建日期："
       data_provided_by: "数据提供方："
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: "说明"
       downloads: "下载次数"
@@ -3560,6 +3569,8 @@ zh:
       new_ux_nbe_warning: "仅限内部使用：新后端数据集的旧版UX视图。普通用户会被重定向到%{url}"
       new_ux_text: "以新的数据透镜体验查看该数据"
       new_ux_title: "准备好进行可视化探索了吗？"
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: "如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。"

@@ -288,8 +288,8 @@ module ApplicationHelper
   # Display a standardized flash error message.
   # To use this, simply set flash[:notice], flash[:warning], or flash[:error]
   # in your controller, then add <%= display_standard_flashes %> in your view
-  # template. It will automagically display the most severe flash message
-  # available - error, then warning, then notice. The result is a div like this:
+  # template. It will display all the flash messages available.
+  # - error, warning, notice. The result is a div like this:
   #
   # <div class="flash warning">Your error text</flash>
   #
@@ -297,6 +297,66 @@ module ApplicationHelper
   FLASH_MESSAGE_TYPES = %i[error warning notice]
   def display_standard_flashes
     flash_obj = flash
+    add_js_flash(flash_obj)
+
+    return if flash_obj.blank?
+
+    flash_html = flash_obj.map do |level, message|
+      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
+
+      message = format_flash_message(message)
+
+      content_tag('div', message, :class => "flash #{level}")
+    end.join
+
+    flash_html.html_safe
+  end
+
+  # Returns flashes with the markup the Socrata Styleguide expects to style for
+  # alerts. Used on dataset landing page and hopefully other places moving forward
+  def display_styleguide_flashes
+    flash_obj = flash
+    add_js_flash(flash_obj)
+
+    return if flash_obj.blank?
+
+    flash_html = flash_obj.map do |level, message|
+      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
+
+      message = format_flash_message(message)
+
+      alert_class = (level === 'notice') ? 'info' : level
+      inner_alert = content_tag('div', message, :class => "alert-container")
+      content_tag('div', inner_alert, :class => "alert styleguide-alert #{alert_class}")
+    end.join
+
+    flash_html.html_safe
+  end
+
+  # Most basic flash display. Does not support arrays or | separators
+  def display_homepage_flashes
+    return unless controller.class == CustomContentController && action_name == 'homepage'
+
+    flash.map do |level, message|
+      content_tag('div', message, :class => "flash #{level}")
+    end.join
+  end
+
+  # Join flash arrays and convert | to <br>s
+  def format_flash_message(message)
+    if message.is_a?(Array)
+      message = safe_join(message, tag('br'))
+    end
+
+    if message.include?('|')
+      # Todo: consider replacing places we rely on | with normal <br> tags
+      message = safe_join(message.split('|').map { |piece| content_tag(:span, piece.html_safe) }, tag('br'))
+    end
+
+    return message
+  end
+
+  def add_js_flash(flash_obj)
     if request.cookies['js_flash']
       begin
         js_flash = JSON.parse(request.cookies['js_flash']).symbolize_keys
@@ -318,30 +378,7 @@ module ApplicationHelper
       cookies.delete 'js_flash'
     end
 
-    flash_html = flash_obj.map do |level, message|
-      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
-
-      if message.is_a?(Array)
-        message = safe_join(message, tag('br'))
-      end
-
-      if message.include?('|')
-        # Todo: consider replacing places we rely on | with normal <br> tags
-        message = safe_join(message.split('|').map { |piece| content_tag(:span, piece.html_safe) }, tag('br'))
-      end
-
-      content_tag('div', message, :class => "flash #{level}")
-    end.join
-
-    flash_html.html_safe
-  end
-
-  def display_homepage_flashes
-    return unless controller.class == CustomContentController && action_name == 'homepage'
-
-    flash.map do |level, message|
-      content_tag('div', message, :class => "flash #{level}")
-    end.join
+    return flash_obj
   end
 
 # DATE HELPERS

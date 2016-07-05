@@ -341,7 +341,7 @@ Variable Name | Type | Source | Description
 `action_controller_perform_caching` | Boolean | Configuration | Rails configuration directive specifying if caching should take place. _Must be set to `true` for Memcached to be used_.
 `cache_classes` | Boolean | | Configuration | Rails configuration directive specifying whether classes should be cached. Should be `true` in production.
 `consider_all_requests_local` | Boolean | Configuration | Rails configuration directive specifying if full error reports should be displayed. Should be `false` in production.
-`airbrake_api_key` | String | Configuration | This is the API key used to report errors to the AirBrake service.
+`airbrake_api_key` | String | Configuration | API key used to report errors to the AirBrake service.
 `airbrake_environnment_name` | String | Configuration | Name of the environment to identify the project in AirBrake. Must match the value as configured in the AirBrake service.
 `airbrake_http_proxy` | URI | Configuration | Proxy host URI used to connect to Airbrake _Citation needed_.
 `ark_host` | String | Docker | Host name of the docker host running this container. Used to identify when the app is running with a container. Currently used solely by `LocaleMiddleware`. _To be deprecated?_
@@ -359,6 +359,7 @@ Variable Name | Type | Source | Description
 `curated_region_job_queue_hostname` | String | Configuration | Host name to connect to for the Curated Region Job Queue.
 `curated_region_job_queue_port` | Integer | Configuration | Port to connect to on `curated_region_job_queue_hostname`.
 `data_cards_app_token` | String | Configuration | Defines the Socrata API token used by Data Lens when making requests to Core. It is used by both the Rails app and in client side JS. See also `app_token`.
+`dataset_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track DSLP errors.
 `disable_zookeeper` | String | Configuration | Used by the `zookeeper_discovery.rb` initializer to selectively initialize the `ZookeeperDiscovery` class.
 `enable_png_download_ui` | Boolean | Configuration | Enables the PNG download feature in Data Lens. It should should be deprecated in favor of Feature Flags.
 `enable_search_suggestions` | Boolean | Configuration | Enables the Spandex auto-suggestion search feature in Data Lens. It should be deprecated in favor of Feature Flags.
@@ -369,6 +370,7 @@ Variable Name | Type | Source | Description
 `feature_map_features_per_tile` | Integer | Configuration | Sets the maximum number of features to render per tile for feature maps. Default value might be 50,000.
 `feature_map_zoom_debounce` | Integer | Configuration | Sets the debounce-time for map zoom mouse clicks in milliseconds. This is to prevent excessive requests to the backend API endpoint.
 `http_accept` | String | Browser | Used in metrics logging by the `LogRefererMiddleware`.
+`http_port` | Integer | Configuration | HTTP port that the HTTP server listens on. _Citation needed_. _Likely deprecated_.
 `http_referer` | URI | Browser | Used in metrics logging by the `LogRefererMiddleware`.
 `http_user_agent` | String | Browser | User agent string provided in the request used to identify mobile users and other identification purposes (e.g. GlobalSign, etc.)
 `http_version` | String | Browser | Used by `RequestLoggerMiddleware` in composing the log message.
@@ -386,6 +388,7 @@ Variable Name | Type | Source | Description
 `mixpanel_token` | String | Configuration | API token used to report runtime metrics to MixPanel.
 `odux_enable_feature_map` | Boolean | Configuration | Enables to use of the feature map (point map) in Data Lens.
 `odysseus_uri` | URI | Configuration | URI used to connect to `Odysseus` service from within the Rails app.
+`odysseus_app_name` | String | Configuration | The name of the `Odysseus` application server. _Not the name of the app_.
 `opendata_ga_tracking_code` | String | Configuration | Google Analytics tracking code used for the Open Data Portal.
 `path_info` | String | Rails | The path portion of the incoming request. Used to determine `locale` in some cases. See also `request_path` and `request_uri`. See also `RequestLoggerMiddleware`.
 `phidippides_address` | String | Configuration | Host name or IP address of the Phidippides service.
@@ -408,6 +411,7 @@ Variable Name | Type | Source | Description
 `remote_user` | String | Browser | Used by `RequestLoggerMiddleware` in composing the log message.
 `request_method` |String | Rails | Used by `RequestLoggerMiddleware` in composing the log message.
 `request_uri` | URI | Rails | URI of the incoming request. Used to identify whether or not the request is for the `version.json` endpoint. See `VersionMiddleware`.
+`restore_dataset_days` | Integer | Configuration | Maximum number of days within which a dataset may be restored after deletion.
 `rpx_facebook_url` | URI | Configuration | API endpoint used for OAuth with Facebook.
 `rpx_googleplus_url` | URI | Configuration | API endpoint used for OAuth with Google+.
 `rpx_signin_url` | URI | Configuration | API endpoint used for OAuth with OpenId.
@@ -419,17 +423,22 @@ Variable Name | Type | Source | Description
 `session_salt` | String | Configuration | Salt value used to initialize sessions in Rails. _Must be set or the app cannot start_.
 `session_store_secret` | String | Configuration | Secret key value used to store sessions in Rails. _Must be set or the app cannot start_.
 `shape_file_region_query_limit` | Integer | Configuration | Maximum number of regions to fetch when reading shapefiles.
+`sitemap_s3_url` | URI | Configuration | URI pointing to where in S3 robots should retrieve the sitemap from.
 `socrata.core-session` | String | Configuration | Used by `SocrataCookieStore` to find session information for every request.
 `soda_fountain_address` | String | Configuration | Host name or IP address of the `SodaFountain` service.
 `soda_fountain_port` | Integer | Configuration | Port used when connecting to `soda_fountain_address`.
+`ssl_port` | Integer | Configuration | HTTPS server port that HTTP server listens on. _Citation needed_. _Likely deprecated_.
 `standard_ga_tracking_code` | String | Configuration | Google Analytics tracking code used across all domains. _Citation needed_.
 `statsd_enabled` | Boolean | Configuration | Enable collection of stats using `statsd`.
 `statsd_server` | String | Configuration | Host name of the `statsd` server to connect to when `statsd_enabled` is `true`.
+`threadpool_count` | Integer | Configuration | Size of the `QueueThreadpool` used when rendering Canvas2 widgets.
 `tileserver_host` | String | Configuration | _Single_ **internally accessible** host to connect to in a specific environment for the Tile Server service.
 `tileserver_hosts` | String | Configuration | _Comma-separated_ list of **publicly accessible** host names to connect to for the Tile Server service.
 `unicorn_listen_port` | Integer | Configuration | Port that Unicorn will listen on to service incoming requests.
 `unicorn_timeout` | Integer | Configuration | Number of milliseconds a Unicorn worker will wait for a request to be serviced by Rails before giving up.
 `unicorn_worker_processes` | Integer | Configuration | Number of Unicorn worker processes to run at startup.
+`userzoom` | String | Configuration | Userzoom survey configuration identifiers i.e. CUID.
+`whats_new` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.
 `x_socrata_auth` | String | Rails | Used to tell Core that the request is from an anonymous user.
 `zk_hosts` | URI | Configuration | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.
 `zookeeper_soda_fountain_path` | String | Configuration | `Zookeeper` path to the `SodaFountain` service.

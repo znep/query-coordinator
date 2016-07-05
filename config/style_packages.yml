@@ -22,7 +22,6 @@ angular-app-dataCards:
 - dataCards/visualization-type-selector
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
-- dataCards/tour
 - dataCards/_leaflet
 
 dataset-landing-page:

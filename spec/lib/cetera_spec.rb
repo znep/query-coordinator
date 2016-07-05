@@ -12,6 +12,20 @@ describe Cetera do
     end
   end
 
+  context 'translating offsets' do
+    it 'should return the provided offset when available' do
+      expect(Cetera.translate_offset(30, 9999, 4)).to eq(30)
+    end
+
+    it 'should calculate the offset from page and limit when provided' do
+      expect(Cetera.translate_offset(nil, 5, 2)).to eq(8)
+    end
+
+    it 'should return 0 when offset, page, and limit are nil' do
+      expect(Cetera.translate_offset(nil, nil, nil)).to eq(0)
+    end
+  end
+
   it 'should test_cetera_limit_type_translator' do
     frontend_to_cetera = {
       'data_lens' => 'datalenses',
@@ -203,33 +217,37 @@ describe Cetera do
   end
 
   describe 'Cetera user search' do
-    search_query = 'socrata.com'
+    search_query = 'katie'
 
     # NOTE: If you re-record the cassette, you'll need to replace this with whatever is getting
     # passed to Cetera & Core. Check the Cetera debug logs or puts forwardable_session_cookies.
-    cookie_string = 'logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWFiYjg5NWJjZTdiYzMwNGM0YTA4MDQ2YjNhYzk1MjJlBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMVpjblBZUm9uYllOQTFkS3NFSjMwdTk2a1A1djNmSlgrVk9mcUdnK1R5OVk9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYw--542ee4041debe2e56bb7b670253193a91b7f0b9e; _core_session_id=ODNueS13OXplIDE0NjcwODc1NTUgNmU4MGU2N2FlYWYyIGU2YzE0NmIzNDRjZTcxM2ZlNTdmMmNlNWMwYzEzMzNiYjExMTVhOGQ; socrata-csrf-token=FaLWHLnxbMVDIPEnQn+SIQbDxpikR9bGm7EZAQj9XfNwaxl9o9YBRgP1I4tS4maa2Gf5A1M7QzjPVvMbB26WJQ=='
+    cookie_string = 'logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTk2YzU2Zjk0YTdjM2RhMWMzODQ4M2E4OGE0MzNhNDkzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjEwU3BVWkpNVXBNM2dGN2ZsT2lSMHgreFMzdFd2T3BKeXRWbFA2K2Erd3lBPQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA==--753eb4f6b07926596a2bcd9b2925c72d93a7e267; _core_session_id=ODNueS13OXplIDE0NjczNDA0OTIgNjMyYjcxNTIyZWZmIDZmNWFlMDI3MmY2YzY0YjFiODFiMmY3NTgxZGQ5NTJiM2RhM2E5MzY=; socrata-csrf-token=/+1vNjX7ttHA0ffeUcGyQRcoqD7XjhBu0LTEoPVEd6kuxztSpu8SHCDGQDtr5caG+3p263i0ghxl7YtLE/q0iQ=='
 
     request_id = '55c8a53595d246c6ac8e20dd2a9bcb71'
 
     it 'should call to Cetera and parse some responses' do
       VCR.use_cassette('cetera/user_search') do
+
+        # Set this to whatever domain you re-record from, if you re-record this call
+        CurrentDomain.set_domain(Domain.new('cname' => "opendata.rc-socrata.com"))
+
         search_result = Cetera.search_users(search_query, cookie_string, request_id)
         expect(search_result).to be_a(Cetera::SearchResult)
 
         results = search_result.results
-        expect(results.size).to eq(200) # old Core limit, let's not OOM
-
-        # Documenting behavior, may not be desired:
-        # Cetera's /whitepages resultSetSize is inconsistent with Cetera's /catalog resultSetSize
-        # /whitepage's means total in payload, /catalog's means total matching query
-        expect(results.count).to eq(200)
+        expect(results.size).to eq(5) # Currently 5 results for Katie in RC
 
         results.each do |user|
           expect(user).to be_a(User)
           expect(user.id).to be_present
           expect(user.email).to be_present
           expect(user.screen_name).to be(user.displayName) # needed by FE view
+          expect(user.role_name).to be(user.roleName) # role_name calls the property roleName
         end
+
+        expect(results.any? { |user| user.role_name.nil? }).to be(true)
+        expect(results.any? { |user| user.role_name == 'publisher_stories' }).to be(true)
+        expect(results.any? { |user| user.role_name == 'viewer' }).to be(true)
       end
     end
 
@@ -237,6 +255,106 @@ describe Cetera do
       VCR.use_cassette('cetera/user_search_bad_auth') do
         search_result = Cetera.search_users(search_query, cookie_string.reverse, request_id)
         expect(search_result.results).to be_empty
+      end
+    end
+  end
+
+  describe 'get_derived_from_views' do
+    let(:cookies) { 'i am a cookie' }
+    let(:request_id) { 'iAmProbablyUnique' }
+
+    let(:cetera_results) do
+      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_search_results.json"))
+      Cetera::CatalogSearchResult.new(cetera_payload)
+    end
+
+    before(:each) do
+      allow(CurrentDomain).to receive(:cname).and_return('unicorns')
+    end
+
+    it 'returns CeteraResultRow objects' do
+      allow(Cetera).to receive(:search_views).and_return(cetera_results)
+      result = Cetera.get_derived_from_views('data-lens', {})
+
+      expect(result.first.class).to eq(Cetera::CeteraResultRow)
+    end
+
+    it 'invokes Cetera with limit and offset parameters' do
+      expect(Cetera).to receive(:search_views).
+        with(
+          {
+            search_context: 'unicorns',
+            domains: ['unicorns'],
+            derived_from: 'data-lens',
+            offset: 20,
+            limit: 30
+          },
+          cookies,
+          request_id
+        ).
+        and_return(cetera_results)
+
+      options = { offset: 20, limit: 30, cookie_string: cookies, request_id: request_id }
+      Cetera.get_derived_from_views('data-lens', options)
+    end
+
+    it 'returns an empty array when Cetera returns a bad response' do
+      allow(Cetera).to receive(:search_views).and_return(nil)
+      options = { offset: nil, limit: 'purple', cookie_string: cookies, request_id: request_id }
+      result = Cetera.get_derived_from_views('data-lens', options)
+
+      expect(result).to be_a Array
+      expect(result.length).to eq(0)
+    end
+  end
+
+  describe 'TagCountResult' do
+    let(:cetera_results) do
+      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_domain_tag_results.json"))
+      Cetera::TagCountResult.new(cetera_payload)
+    end
+
+    it 'returns a TagCountResult object' do
+      expect(cetera_results.class).to eq(Cetera::TagCountResult)
+    end
+
+    it 'returns a results object that is an array of Tag objects' do
+      expect(cetera_results.results.class).to eq(Array)
+      expect(cetera_results.results[0].class).to eq(Tag)
+    end
+
+    it 'returns Tag objects that have expected properties' do
+      expect(cetera_results.results[0].name).to eq('desire')
+      expect(cetera_results.results[0].domain_tag).to eq('desire')
+      expect(cetera_results.results[0].frequency).to eq(3)
+      expect(cetera_results.results[0].count).to eq(3)
+    end
+  end
+
+  describe 'get_tags' do
+    let(:cookies) { 'i am a cookie' }
+    let(:request_id) { 'iAmProbablyUnique' }
+
+    it 'returns a TagCountResult with expected properties' do
+      VCR.use_cassette('cetera/get_tags') do
+        CurrentDomain.stub(:cname) { 'localhost' }
+
+        results = Cetera.get_tags(cookies, request_id)
+
+        expect(results.class).to eq(Cetera::TagCountResult)
+        expect(results.results[0].name).to eq('biz')
+        expect(results.results[0].domain_tag).to eq('biz')
+        expect(results.results[0].frequency).to eq(1)
+        expect(results.results[0].count).to eq(1)
+      end
+    end
+
+    it 'returns false when Cetera returns a bad response' do
+      VCR.use_cassette('cetera/failed_get_tags') do
+        # fails because CurrentDomain.cname is not set
+        results = Cetera.get_tags(cookies, request_id)
+
+        expect(results).to eq(false)
       end
     end
   end
@@ -270,5 +388,4 @@ describe Cetera do
       'Dataset-Information_Superhero' => 'Superman'
     }
   end
-
 end

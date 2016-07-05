@@ -254,12 +254,12 @@ it:
         sharing:
           add_new: Aggiungi nuovo
           contributor: Contribuente
-          inherited_description: 'Ereditato dalla sequenza di dati di origine:'
+          inherited_description: 'Ereditato dalla sequenza di dati originale:'
           keep: Mantieni
           new_share_dialog:
             add_more: Aggiungi altri
-            description: Specifica le persone aggiuntive a cui desideri concedere le autorizzazioni su questo Data Lens. Se qualcuna di loro non dispone ancora di un profilo, gli sarà inviato un invito ad effettuare la registrazione, dopo la quale saranno concesse le autorizzazioni.
-            email: 
+            description: Specifica le persone aggiuntive a cui desideri concedere le autorizzazioni su questa Data Lens. Se qualcuna di esse non dispone ancora di un profilo, gli sarà inviato un invito ad effettuare la registrazione, dopo la quale saranno concesse le autorizzazioni.
+            email: Indirizzo e-mail
             message: Messaggio opzionale
             remove: Rimuovi
             title: Condividi questa Data Lens
@@ -280,17 +280,17 @@ it:
           view_moderation_rejected: Rifiutato
           view_moderation_title: Visualizza moderazione
       metadata:
-        data_as_csv: Origine dati completi come CSV (Excel)
+        data_as_csv: Dati originali completi in formato CSV (Excel)
         edit_description_prompt: Dai alla tua pagina una buona descrizione che aiuti le persone a capire la storia che i tuoi dati cercano di raccontare. (Facoltativo)
         page_name_placeholder: Senza titolo
-        source_dataset: origine del set di dati
+        source_dataset: sequenza di dati originale
         validation_error_max_length: Il tuo titolo è troppo lungo
         validation_error_min_length: Inserisci un titolo
         validation_error_required: Inserisci un titolo
         visualization_as_image: Visualizzazione come immagine
       mobile_warning_dialog:
         acknowledgement: Va bene, ho capito!
-        description: Stiamo laviorando per migliorare l'esperienza mobile su questo sito.
+        description: Stiamo lavorando per migliorare l'esperienza mobile su questo sito.
       multiline_ellipsis:
         show_less: Mostra di meno
         show_more: Mostra di più
@@ -308,20 +308,20 @@ it:
         old_filtered_title: Mostrando <span class="light">{0}</span>
         unfiltered_title: Mostrando <span class="light">all {0}</span>
       related_views:
-        button: Altre viste di questo dato
-        title: Altre viste di questo dato
+        button: Altre visualizzazioni di questi dati
+        title: Altre visualizzazioni di questi dati
       related_visualization_selector:
-        based_on_column: In base a {0}
+        based_on_column: Sulla base di {0}
         visualization_not_supported: Ci scusiamo per il disagio! Stiamo ancora sviluppando la funzionalità che ti consentirà di includere questo grafico in un articolo.
       remove_all_cards:
-        button: Rimuovi tutte le carte
-        flyout: Clicca per rimuovere tutte le carte presenti su questa pagina
-        flyout_no_cards: Non ci sono carte da rimuovere su questa pagina
-        flyout_not_edit_mode: Inserisci una modalità personalizzata per rimuovere tutte le carte da questa pagina Lens
-        prompt: Sei sicuro di voler rimuovere tutte le carte da questa pagina?
+        button: Rimuovi tutte le schede
+        flyout: Clicca per rimuovere tutte le schede presenti su questa pagina
+        flyout_no_cards: Non ci sono schede da rimuovere su questa pagina
+        flyout_not_edit_mode: Inserisci una modalità personalizzata per rimuovere tutte le schede da questa pagina Lens
+        prompt: Sei sicuro di voler rimuovere tutte le schede da questa pagina?
         prompt_confirm: Sì, rimuovile tutte
       revert_button:
-        flyoutHasChanges: Fai clic per annullare tutte le modifiche fatte dall'ultimo tuo salvataggio
+        flyoutHasChanges: Clicca per annullare tutte le modifiche fatte dall'ultimo tuo salvataggio
         flyoutNoChanges: Nessuna modifica da ripristinare
         text: Annulla le modifiche
       rich_text_editor:
@@ -333,10 +333,10 @@ it:
         underline: Sottolineatura
       save_as:
         flyoutEphemeral: Clicca per salvare questa Data Lens
-        flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
+        flyoutFailedBody: Ti preghiamo di contattare l'assistenza Socrata
         flyoutFailedTitle: Si è verificato un errore
-        flyoutIdle: Fai clic per salvare le tue modifiche come nuova pagina
-        text: Salva come
+        flyoutIdle: Clicca per salvare le tue modifiche come una nuova pagina
+        text: Salva con nome
       save_as_panel:
         description: Inserisci una descrizione per la tua nuova pagina (facoltativo)
         new_name: Salva la pagina attuale con un nuovo nome
@@ -346,27 +346,27 @@ it:
         visibility_with_view_moderation: Imposta lo status di visualizzazione della moderazione per la tua nuova pagina
       save_button:
         failed: Non riuscito
-        flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
+        flyoutFailedBody: Ti preghiamo di contattare l'assistenza Socrata
         flyoutFailedTitle: Si è verificato un errore
-        flyoutIdle: Fai clic per salvare le tue modifiche
+        flyoutIdle: Clicca per salvare le tue modifiche
         flyoutNoChanges: Nessuna modifica da salvare
         flyoutNoEditPermission: Non disponi delle autorizzazioni necessarie per salvare le modifiche a questa Lens
         save: Salva
         saved: Salvata!
         saving: Salvataggio...
       search_card:
-        error_explanation: "<p>Si è verificato un errore in fase di riporto dei suggerimenti di ricerca.</p><p>Puoi ancora premere Invio in qualsiasi momento per effettuare una ricerca esattamente in base al testo inserito, oppure puoi riprovare più tardi per vedere i valori suggeriti.</p>"
+        error_explanation: <p>Si è verificato un errore in fase di riporto dei suggerimenti di ricerca.</p><p>Puoi ancora premere "Invio" in qualsiasi momento per effettuare una ricerca esattamente in base al testo inserito, oppure puoi riprovare più tardi per vedere i valori suggeriti.</p>
         invalid_search: Prova a cercare un numero che non contenga lettere.
         loading: Caricamento dei suggerimenti...
         no_results: La tua ricerca non ha restituito alcun risultato. Controlla l'ortografia o prova con un termine diverso.
         one_example: 'Esempio: ''{0}'''
-        prompt_number: Digita un numero e premi invio per cercare
-        prompt_text: Digita del testo e premi invio per cercare
-        search_info: Sto mostrando {0} di {1} risultati corrispondenti
+        prompt_number: Digita un numero e premi "Invio" per cercare
+        prompt_text: Digita del testo e premi "Invio" per effettuare una ricerca
+        search_info: Mostra {0} di {1} risultati corrispondenti
         two_examples: 'Esempi: ''{0}'' o ''{1}'''
       suggestion_tool_panel:
         all_suggestions: 'Mostrando tutte e {0} i suggerimenti:'
-        loading_suggestions_hint: Digita il testo e premi Invio per avviare la ricerca, oppure attendi i suggerimenti.
+        loading_suggestions_hint: Digita il testo e premi "Invio" per avviare la ricerca oppure attendi i suggerimenti.
         max_suggestions: 'Mostra i primi {0} suggerimenti:'
         no_suggestions: Nessun dato trovato corrispondente ai criteri di ricerca.
         no_suggestions_hint: Prova ad ampliare la tua ricerca per avere maggiori risultati.
@@ -376,23 +376,23 @@ it:
         a_to_z: A-Z
         ascending: ordine crescente
         descending: ordine decrescente
-        largest_first: prima il più grande
-        loading: Caricamento...
-        newest_first: prima il più nuovo
+        largest_first: dal più grande al più piccolo
+        loading: Caricamento in corso...
+        newest_first: dal più recente al più datato
         no_rows: Nessuna riga da visualizzare
         no_sort: Nessun ordine disponibile
         non_range_label: "{0} <strong>{1} di {2}</strong>"
-        oldest_first: prima il più vecchio
+        oldest_first: dal più datato al più recente
         range_label: "{0} <strong>{1}-{2} di {3}</strong>"
         range_label_all: Sto mostrando tutto {0} {1}
         range_label_subtitle: Sto mostrando {0} {1} <span class="subtitle">di {2}</span>
-        smallest_first: prima il più piccolo
-        sort: Fai clic per ordinare {0}
+        smallest_first: dal più piccolo al più grande
+        sort: Clicca per ordinare {0}
         sorted: Ordinato {0}
         z_to_a: Z-A
       timeline_chart:
-        drag_clear_help: Cancella intervallo di filtro
-        drag_help: Trascina per cambiare l'intervallo di filtro
+        drag_clear_help: Cancella l'intervallo del filtro
+        drag_help: Trascina per cambiare l'intervallo del filtro
         errors:
           bad_dates: Il grafico non può essere rappresentato a causa di valori di dati non validi.
           default: Il grafico non può essere rappresentato.
@@ -403,13 +403,13 @@ it:
             text: Abbiamo acquisito il tuo feedback. Abbiamo cambiato un'impostazione per migliorare la modalità di personalizzazione!
             title: Noti qualcosa di diverso?
           step_2:
-            text: Ciascuna carta può essere sintetizzata da una colonna diversa. Abbiamo rimosso anche il limite di 15 colonne numeriche.
+            text: Ciascuna scheda può essere sintetizzata da una colonna diversa. Abbiamo rimosso anche il limite di 15 colonne numeriche.
             title: Utilizza le Impostazioni per modificare la funzione di Aggregazione
           step_3:
             text: Prendi la colonna numerica che desideri sommare oppure scegli di contare le righe.
-            title: Sintetizza per SOMMA o CONTA
+            title: Sintetizza in base alla SOMMA o alla CONTA
           step_4:
-            text: Puoi aggiungere molteplici carte per la stessa colonna, poi sintetizzare in base ai diversi valori delle colonne. Questo consente di effettuare utili paragoni.
+            text: Puoi aggiungere molteplici schede per la stessa colonna, poi sintetizzare in base ai diversi valori delle colonne stesse. Questo consente di effettuare utili paragoni.
             title: Adesso è più flessibile!
           step_5:
             text_one: Crea la tua pagina utilizzando questo modo flessibile di sintetizzare i dati.
@@ -420,13 +420,13 @@ it:
       actions:
         about:
           button: Informazioni
-          title: Informazioni sul Dataset
-        all_options: Vedi Tutti
+          title: Informazioni sulla sequenza di dati
+        all_options: Visualizza tutti
         clear_all: Elimina tutte le opzioni
         clear_facet: "(Tutti)"
         compact_list: Visualizza come lista compatta
-        create_dataset: Crea o carica il tuo dataset
-        create_dataset_short: Crea un nuovo Dataset
+        create_dataset: Crea o carica la tua sequenza di dati
+        create_dataset_short: Crea una nuova sequenza di dati
         create_dataset_shorter: Sequenza di dati
         create_dataset_verb: Crea
         create_resource: Crea una nuova risorsa Socrata
@@ -435,9 +435,9 @@ it:
         create_story_short: Articolo
         dataset_subscribe: Sottoscrivi le modifiche a questa visualizzazione
         delete:
-          button: Cancella
-          confirm: Sei sicuro di voler cancellare %{dataset}?
-          title: Cancella questo elemento
+          button: Elimina
+          confirm: Sei sicuro di voler eliminare %{dataset}?
+          title: Elimina questo elemento
         expand_section: Clicca per espandere
         less_options: Vedi meno
         manage_api:
@@ -445,7 +445,7 @@ it:
           title: Gestisci questa API
         moderation:
           accept: Accetta
-          reject: Respingi
+          reject: Rifiuta
         permissions:
           change_button:
             private_html: Rendi pubblico
@@ -454,105 +454,104 @@ it:
         rich_list: Visualizza come lista espansa
         share_button: Condividi
         subscribe: Sottoscrivi
-        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci un dataset.
-        suggest_dataset_short: Suggerisci un dataset
+        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci una sequenza di dati.
+        suggest_dataset_short: Suggerisci una sequenza di dati
         suggest_dataset_verb: Suggerisci
-      back_to_dataset: Torna al dataset
+      back_to_dataset: Torna alla sequenza di dati
       browse2:
         api:
           link:
             label: Documentazione API
-            title: Leggi Documentazione API per questo set di dati
+            title: Leggi Documentazione API per questa sequenza di dati
         comment_count: Numero di commenti
         create:
           dataset:
-            label: Creare/Caricare un Set di Dati
-            title: Creare o caricare un set di dati per la piattaforma Socrata
+            label: Crea/Carica una sequenza di dati
+            title: Crea o carica una sequenza di dati sulla piattaforma Socrata
           label: Aggiungere nuova
           story:
-            label: Creare una Storia Socrata
-            title: Creare una Nuova Storia Socrata
+            label: Crea una Storia Socrata
+            title: Creare una nuova storia Socrata
           title: Creare una nuova risorsa Socrata
         created_at:
-          label: Creato
+          label: Creata
         data_types:
-          label: Tipi di dati
+          label: Tipologie di dati
         description:
-          show_less_label: Di meno
-          show_more_label: Di Più
+          show_less_label: Meno
+          show_more_label: Altro
         display_types:
           api: API
           blob: File o documento
           calendar: Calendario
           chart: Grafico
           data_lens: Data Lens
-          dataset: Dataset
-          draft: Progetto Dataset
-          filter: Filer
+          dataset: Sequenza di dati
+          draft: Bozza della sequenza di dati
+          filter: Visualizzazione filtrata
           form: Modulo
           href: Link Esterno
-          map: |
-            Carta Geografica
+          map: Mappa
           predeply_api: Predistribuzione API
           pulse: Streaming
           story: Storia
           unknown: Sconosciuto
         edit:
           delete:
-            confirm: Sei sicuro si desidera eliminare «%{dataset}»?
-            error: C'era un errore di eliminazione «%{dataset}». Per favore, riprova.
-            label: Eliminare
-            title: Eliminare «%{name}»
+            confirm: Sei sicuro di voler eliminare «%{dataset}»?
+            error: Si è verificato un errore in fase di eliminazione di «%{dataset}». Ti preghiamo di riprovare
+            label: Elimina
+            title: Elimina «%{name}»
           make_private:
-            error: C'era un errore di rendendo «%{dataset}» privato. Per favore, riprova.
-            label: Rendere privato
-            title: Rendere «%{name}» privato
+            error: Si è verificato un errore durante l'impostazione di «%{dataset}» come privato. Ti preghiamo di riprovare.
+            label: Rendi privato
+            title: Rendi «%{name}» privato
           make_public:
-            error: C'era un errore di rendendo «%{dataset}» pubblico. Per favore, riprova.
-            label: Rendere pubblico
-            title: Rendere «%{name}» pubblico
+            error: Si è verificato un errore durante l'impostazione di «%{dataset}» come pubblico. Ti preghiamo di riprovare.
+            label: Rendi pubblico
+            title: Rendi «%{name}» pubblico
         facets:
           clear_all:
-            label: Cancellare tutto
+            label: Cancella tutto
           expand:
-            label: Mostrare tutto...
-            title: Mostrare tutte le opzioni
+            label: Mostra tutto...
+            title: Mostra tutte le opzioni
           header:
-            filter: Filtrare
-            filtered_by: filtrata da
+            filter: Filtra
+            filtered_by: filtrato per
             result: Risultato
           hint: Filtrare o Passare in Rassegna i Risultati
           mobile:
             back: Indietro
             clear_all: Cancella tutto
-            filter: Filtrare
-            sort: Ordinare
+            filter: Filtra
+            sort: Ordina
             sort_by: Ordina per
           modal:
             alphaAscending: A-Z
-            close: Chiudere
+            close: Chiudi
             top: Primo
         federation:
-          label: Dati Forniti da
-          label_with_source: Dati Forniti da %{source}
+          label: Dati forniti da
+          label_with_source: Dati forniti da %{source}
         last_updated:
-          label: Aggiornato
+          label: Aggiornati
         odn:
           link:
-            label: sulla Rete Dati Aperti
-            title: Trovare più dati come questo sulla Rete Dati Aperti
-          prompt: Trovare Dati Come Questo
+            label: sulla Rete Open Data
+            title: Trova altri dati come questo sulla Rete Open Data
+          prompt: Trova dati come questi
         results:
-          cetera_count: Visualizzazione %{start}-%{end} di %{total} risultati
-          count: Visualizzazione %{this} di %{total} risultati
+          cetera_count: Visualizza %{start}-%{end} di %{total} risultati
+          count: Visualizza %{this} di %{total} risultati
         search:
           clear:
-            title: Liberare la ricerca
+            title: Pulisci la ricerca
           placeholder: Ricerca
           title: Ricerca
         settings:
-          label: Configurazione
-          title: Configurazione
+          label: Impostazioni
+          title: Impostazioni
         skiplinks:
           results: Passare i risultati
         sort:
@@ -560,12 +559,12 @@ it:
         sorts:
           last_modified: Aggiornato di recente
           most_accessed: Con maggiori accessi
-          newest: prima il più nuovo
-          relevance: Più rilevante
+          newest: Aggiunti di recente
+          relevance: Più rilevanti
         topics:
-          empty: Temi non assegnato
+          empty: Nessun tema assegnato
           label: Temi
-          more: e %{count} di più
+          more: e altri %{count}
         view_count:
           label: Visualizzazioni
         visibility:
@@ -584,49 +583,49 @@ it:
           rejected: Respinto
         moderation_status_singular_title: moderazione
         moderation_status_title: Stato
-        topics_singular_title: argomento
-        topics_title: Argomenti
+        topics_singular_title: tema
+        topics_title: Temi
         view_types:
           apis: API
-          blob: File e Documenti
+          blob: File e documenti
           calendars: Calendari
           charts: Grafici
           data_lens: Pagine Data Lens
-          datasets: Dataset
+          datasets: Sequenze di dati
           draft: Crea una bozza delle sequenze di dati
           filters: Viste filtrate
           forms: Moduli
-          href: Dati esterni
+          href: Sequenze di dati esterne
           maps: Mappe
           pulse: Pulse
           pulse_help: Che cos'è Pulse
-          story: Sorie
-          story_help: Informazioni su Storie
-          unpublished: Dataset non pubblicati
-        view_types_singular_title: tipo
-        view_types_title: Tipi di viste
+          story: Storie
+          story_help: Nuovo
+          unpublished: Copie di lavorazione
+        view_types_singular_title: tipologia
+        view_types_title: Tipologie di visualizzazione
       listing:
         comment_count: Numero di commenti
         federation_source: Federato da %{source}
         federation_source_html: Fornito da %{source_link}
         no_results: Nessun risultato
-        result_count: Mostrati %{this} di %{total}
+        result_count: Mostra %{this} di %{total}
         result_count_cetera: Mostra risultati %{start}-%{end} di %{total}
         table_header:
           name: Nome
           popularity: Popolarità
           rss: RSS
-          type: Tipo
-        timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi.
-      ordered_topics: Argomenti ordinati
+          type: Tipologia
+        timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
+      ordered_topics: Temi ordinati
       row_results:
         less_link: Meno
-        matching_rows: In cerca di righe corrispondenti
+        matching_rows: Ricerca in corso per sequenze di dati per le righe corrispondenti
         more_link: Ancora
         no_matching_rows: Nessuna riga corrispondente trovata.
         title_html: 'Mostrate <span class="rowResultCountText"></span> su <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
       search: Cerca
-      sort_period_title: Periodo dell'ordinamento
+      sort_period_title: Ordina periodo
       sort_periods:
         month: Questo mese
         week: Questa settimana
@@ -634,12 +633,12 @@ it:
       sort_title: Ordina per
       sorts:
         alpha: Alfabetico
-        comments: Più commentati
+        comments: Altri commenti
         last_modified: Aggiornato di recente
         most_accessed: Con maggiori accessi
-        newest: Più nuovo
-        oldest: Più vecchio
-        rating: Con voto più alto
+        newest: Più recente
+        oldest: Più datato
+        rating: Con valutazione più alta
         relevance: Più rilevante
       title:
         default: Cerca e sfoglia dataset e visualizzazioni
@@ -656,15 +655,15 @@ it:
       other_slice_label: Altro
       series_grouping:
         calculating_time: Calcolo del tempo rimanente in corso...
-        calculation_running: Preparazione dati
-        drawing_progress: L’operazione necessita tempo…
-        drawing_running: Preparazione diagramma
-        pause_button_explanation1: Consiglio! Sta impiegando troppo tempo? Prova a mettere in pausa e creare un Filtro
+        calculation_running: Preparazione dei dati
+        drawing_progress: L’operazione potrebbe richiedere un po' di tempo…
+        drawing_running: Preparazione del grafico
+        pause_button_explanation1: Consiglio! Sta impiegando troppo tempo? Prova a sospendere e creare un filtro
         pause_button_explanation2: per limitare la quantità di calcoli necessari.
         pause_rendering: Pausa
         rendering_paused: La preparazione dei dati è in sospeso.
         rendering_progress: "%{rows_remaining} righe rimanenti."
-        rendering_progress_almost_done: "%{rows_remaining} righe rimanenti, attendi ancora qualche momento."
+        rendering_progress_almost_done: "%{rows_remaining} righe rimanenti, attendi ancora qualche istante."
         rendering_progress_minute: "%{rows_remaining} righe rimanenti, circa %{time_remaining} minuto."
         rendering_progress_minutes: "%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti."
         rendering_progress_seconds: "%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi."
@@ -674,7 +673,7 @@ it:
       auth_required: Devi effettuare l'accesso per %{action_phrase}
       dataset_picker:
         button: Scegli
-        title: Scegli un dataset da utilizzare
+        title: Scegli una sequenza di dati da utilizzare
       expander:
         collapse: Clicca per ridurre
         expand: Clicca per espandere
@@ -682,16 +681,16 @@ it:
         button: Carica immagine
       no_results: Nessun risultato
       rate:
-        auth_action_phrase: vota questo dataset
+        auth_action_phrase: dai una valutazione a questa sequenza di dati
       share:
-        button_prompt: Condividi
-        button_tooltip: Condividi questo dataset
+        button_prompt: Socializza
+        button_tooltip: Condividi questa sequenza di dati
         networks:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
         share_story_text: 'Verifica %{name} su%{site}:'
-        share_text: 'Condividi %{name}, dataset con %{site}: '
+        share_text: 'Condividi %{name}, sequenza di dati con %{site}:'
       sidebar:
         tabs:
           about: Informazioni
@@ -703,7 +702,7 @@ it:
           export: Esporta
           filter: Filtra
           manage: Gestisci
-          moreViews: Più viste
+          moreViews: Altre visualizzazioni
           visualize: Visualizza
       stars:
         tooltip: "%{number} stelle"
@@ -727,42 +726,42 @@ it:
         replace_title: Sostituisci l'immagine
         view_title: Visualizza l'immagine in una finestra separata
     embed:
-      create_template_button: Crea un Nuovo Template
+      create_template_button: Crea un Nuovo Modello
       custom_size: Personalizza dimensioni
       embed: Incorpora questo dataset
-      form_frame: Incorpora questo Form in un Frame
+      form_frame: Incorpora questo Modulo in una Struttura
       form_or: oppure
-      form_plain: Incorpora questo Form come Plain HTML
+      form_plain: Incorpora questo Modulo come Piano HTML
       height: Altezza
       minimum_size: 425x425 è la dimensione minima
-      private_warning: Questa vista è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica affinchè altri possano vederla.
+      private_warning: Questa visualizzazione è attualmente privata. Puoi visualizzarne un'anteprima, ma dovrai renderla pubblica affinché altri possano vederla.
       sdp_template: Social Data Player Template
       size: Dimensioni
-      template: Template
+      template: Modello
       width: Larghezza
     feed:
       authed_actions:
         delete_comment: elimina un commento
         flag_comment: contrassegna un commento
-        post_comment: aggiungi un commento
-        rate_comment: vota un commento
+        post_comment: pubblica un commento
+        rate_comment: dai una valutazione a un commento
       comment_actions:
         already_marked_inappropriate: Contrassegnato
         delete: Elimina
-        delete_confirm: Davvero? Il tuo commento verrà perso.
+        delete_confirm: Sei sicuro? Il tuo commento verrà perso.
         inappropriate: Inappropriato
         marked_inappropriate: Contrassegnato!
         rate_down: Abbassa il voto
-        rate_up: Vota questo commento
+        rate_up: Alza il voto per questo commento
         reply: Rispondi
       comment_form:
-        cancel_button: Cancella
-        empty_body_error: Il commento non può essere vuoto.
+        cancel_button: Annulla
+        empty_body_error: Il corpo del commento non può essere vuoto.
         header: Nuovo commento
         post_button: Aggiungi
       header:
         add_comment: Aggiungi commento
-        cell_comment_header_html: Commenti per la riga <span class="rowName"></span>, colonna <span class="columnName"></span>
+        cell_comment_header_html: Commenti per riga <span class="rowName"></span>, colonna <span class="columnName"></span>
         feed_filter_label: Mostra
         pending_moderation: Il tuo commento è stato inviato ed è in attesa di moderazione
       listing:
@@ -781,39 +780,39 @@ it:
         confirm_modify: Con questa operazione verranno rimossi tutti i valori per il filtro impostato. Sicuro di voler procedere?
         disable_filter: Non filtrare
         first_condition: Clicca qui per aggiungere la tua prima condizione di filtro.
-        new_condition_button: Aggiungi un nuovo filtro.
+        new_condition_button: Aggiungi una nuova condizione di filtro.
         remove_filter: Rimuovi il filtro
-        select_column: 'Seleziona la colonna per cui filtrare:'
-        select_operation: 'Seleziona un criterio per il filtro:'
-        select_subcolumn: 'Seleziona la parte di %{name} per cui filtrare:'
+        select_column: 'Seleziona una colonna da filtrare per:'
+        select_operation: 'Seleziona un''operazione da filtrare per:'
+        select_subcolumn: 'Seleziona la parte di %{name} da filtrare per:'
       edit_default:
-        advanced_body: Questo significa che gli utenti avranno accesso completo alle funzioni dei filtri. Per una più approfondita esperienza, prova la modalità semplificata.
+        advanced_body: Questo significa che gli utenti avranno accesso completo alle opzioni disponibili sul filtro. Per una più approfondita esperienza, prova la modalità semplificata.
         advanced_header: Gli utenti inizieranno in modalità avanzata.
-        advanced_toggle: Cambia il predefinito a semplificato.
-        auto_suggested: I valori suggeriti sono determinati automaticamente per questo criterio.
+        advanced_toggle: Cambia l'impostazione predefinita in semplificata.
+        auto_suggested: I valori suggeriti sono determinati automaticamente per questa tipologia di operatore.
         cancel_button: Cancella
         done_button: Fatto
-        instructions: 'Usa gli strumenti sotto per creare filtri, modificare i valori proposti, selezionare il numero dei valori che il filtro proverà a proporre automaticamente, e così via. Quando sarai soddisfatto delle opzioni presentate, click su Fatto qui sotto per salvare:'
+        instructions: 'Usa gli strumenti precedenti per creare filtri, modificare i valori proposti, selezionare il numero dei valori che il filtro proverà a proporre automaticamente, e così via. Quando sarai soddisfatto delle opzioni presentate, click sul pulsante "Fatto" qui sotto per salvare:'
         manual_suggested_html: Mostra fino a <select class="autogeneratedCount"></select> valori suggeriti.
         mode_button: Modifica il filtro predefinito.
-        mode_message: 'Come redattore di questa vista, puoi definire i filtri base che verranno proposti agli utenti:'
-        save_confirm: Se continui, verranno perse tutte le modifiche non salvate. Salvare ogni modifica da mantenere prima di continuare.
+        mode_message: 'Come redattore di questa visualizzazione, puoi definire i filtri predefiniti che verranno proposti agli utenti:'
+        save_confirm: Se scegli di continuare, verranno perse tutte le modifiche non salvate. Salva ogni modifica che desideri mantenere prima di continuare.
         simplified_body: Questo significa che gli utenti non avranno la possibilità di aggiungere nuove condizioni, cambiare le colonne o i criteri per i filtri, o accedere ai menù avanzati dei filtri.
         simplified_header: Gli utenti inizieranno in modalità semplificata.
-        simplified_toggle: Cambia il predefinito sull'avanzato.
+        simplified_toggle: Ripristina l'impostazione predefinita su avanzato.
       main:
         base_explanation: Con i seguenti filtri di base
-        base_info: Questi filtri vengono applicati sempre, assieme ai filtri extra inseriti sopra. Questi filtri non possono essere modificati, perchè non hai i permessi di modificare l'attuale visualizzazione, oppure perchè vengono da una visualizzazione o da un insieme di dati padre.
+        base_info: Questi filtri vengono applicati sempre, assieme ai filtri extra inseriti in precedenza. Questi filtri non possono essere modificati, perché non disponi delle autorizzazioni necessarie per modificare l'attuale visualizzazione oppure perché vengono da una visualizzazione o da una sequenza dati generatrice.
         filter: Filtra
-        filter_based_on_contents: Filtra questo set di dati in base al contenuto
+        filter_based_on_contents: Filtra questa sequenza di dati in base al contenuto.
         no_conditions: Nessuna condizione ancora definita.
         no_suggestions: Nessun valore suggerito per questa colonna e per questo criterio.
         or: o
         simplified_message: Modalità semplificata.
-        simplified_toggle: Accedi alla modalità avanzata?
+        simplified_toggle: Vuoi accedere alla modalità avanzata?
         tutorial_html: Mai creato un filtro prima? Guarda una breve video guida <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">qui</a>.
-        view_has_no_columns: Questo dataset non ha colonne per cui filtrare
-        view_must_be_valid: Questo dataset deve essere valido
+        view_has_no_columns: Questa sequenza di dati non ha colonne da filtrare
+        view_must_be_valid: Questa visualizzazione deve essere valida
       menu:
         match_all: Soddisfa tutte le condizioni.
         match_any: Soddisfa qualunque condizione.
@@ -824,72 +823,72 @@ it:
     global_indicator:
       error: Errore
       saved: Salvato
-      saving: Salvataggio...
-      working: Lavorando...
+      saving: Salvataggio in corso...
+      working: Lavorazione in corso...
     grid:
-      add_column: Aggiungi una nuova colonna
-      clear_column_filter: Elimina filtro
+      add_column: Aggiungi una nuova colonna...
+      clear_column_filter: Elimina filtro della colonna
       clear_sort: Elimina ordinamento
       click_for_menu: Clicca per il Menu
       click_to_sort: Clicca per ordinare
       column_info: Informazioni sulla colonna
       delete_column: Elimina colonna
-      delete_row: Elimina Record
+      delete_row: Elimina riga
       delete_warning_multi_column: Vuoi eliminare le colonne selezionate? Tutti i dati in queste colonne saranno rimossi!
       delete_warning_single_column: Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!
-      edit_column_properties: Modifica delle proprietà della colonna
+      edit_column_properties: Modifica le proprietà della colonna
       end_page: Ultima pagina
       errors:
         cannot_edit_at_this_time: In questo momento, la colonna non può essere modificata. Ti preghiamo di riprovare più tardi.
-        data_lens_is_incompatible_with_group_bys: Le sequenze di dati caratterizzate da raggruppamenti non possono essere utilizzate con una pagina Data Lens. Ci scusiamo per l'inconveniente.
+        data_lens_is_incompatible_with_group_bys: Le sequenze di dati caratterizzate da raggruppamenti non possono essere utilizzate con pagina Data Lens. Ci scusiamo per l'inconveniente.
         primary_key_collision: Questo valore è già presente come chiave primaria. Non è possibile sovrascriverlo.
         row_locked_for_edit: Attualmente, non possiamo modificare una riga appena creata. Stiamo lavorando per renderlo possibile. Per il momento, aggiorna la pagina prima di modificare questa riga.
         something_went_wrong: Si è verificato un errore. Ricarica la pagina.
         timeout_on_bootstrap: Si è verificato un errore di timeout di connessione, ma stiamo ancora generando la tua Data Lens in background. Riprova tra qualche minuto.
       filter_this_column: Filtra questa colonna
-      geocodes_pending: Le linee nella colonna località non sono ancora state geocodificate. Attendere fino a quando la pubblicazione di questo dataset non sarà completata.
+      geocodes_pending: Le righe nella colonna località non sono ancora state geo-codificate. Attendere fino a quando la pubblicazione di questa sequenza di dati non sarà completata.
       hide_column: Nascondi colonna
       menu: Menu
       must_enter_name: Devi inserire un nome per questa colonna
       new_row: Nuovo
       next_page: Pagina successiva
-      no_columns: Dataset %{uid} non ha colonne
-      no_rows: Nessun record da visualizzare
+      no_columns: La sequenza di dati %{uid} non ha colonne
+      no_rows: Nessuna riga da visualizzare
       page_size: Mostra %{pageSize} righe per pagina
-      permission_denied: Non hai accesso a questa vista.
+      permission_denied: Non hai accesso a questa visualizzazione.
       previous: Precedente
       previous_page: Pagina precedente
-      required_cols_missing: Le colonne richieste per questa vista non sono presenti
+      required_cols_missing: Le colonne richieste per questa visualizzazione non sono presenti
       row_count: Numero totale di righe %{count}
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
       start_page: 
       totals: Totali
-      view_cell_comments: Vedi commenti per questa cella
-      view_first_row: Visualizza primo record
-      view_last_row: Visualizza ultimo record
-      view_next_row: Visualizza record successivo
-      view_previous_row: Visualizza record precedente
-      view_row: Vedi riga
-      view_single_row: Visualizza Singolo Record
+      view_cell_comments: Visualizza i commenti per questa cella
+      view_first_row: Visualizza prima riga
+      view_last_row: Visualizza ultima riga
+      view_next_row: Visualizza riga successiva
+      view_previous_row: Visualizza riga precedente
+      view_row: Visualizza riga
+      view_single_row: Visualizza i dati di una singola riga
       viewing_current_page: Visualizzazione pagina %{current} di %{total}
       viewing_row_html: Visualizzazione della riga <span class="curPage"></span> su <span class="totalPages"></span>
     map:
-      address_prompt: Inserire qui l'indirizzo
+      address_prompt: Inserisci qui l'indirizzo
       auto: auto
       base_layers: Layer di base
       boundary_map: Mappa confini
-      current_location: Utilizza posizione corrente
-      data_layers: Layer dati
-      data_request_timeout: Una richiesta di dati ha impiegato troppo tempo ad essere completata e la richiesta è scaduta.
-      forever_node_explanation: Il cluster di dati è troppo compatto per mostrare geograficamente dati utili
-      forever_node_recommend: Raccomandiamo di <a href="#openTable">aprire la visione tabellare</a> per avere maggiori dettagli.
+      current_location: Utilizza posizione attuale
+      data_layers: Layer di dati
+      data_request_timeout: Una richiesta di dati ha impiegato troppo tempo per essere completata ed è scaduta.
+      forever_node_explanation: Il dati di questo raggruppamento sono troppo compatti per mostrare dati geograficamente utili.
+      forever_node_recommend: Consigliamo di <a href="#openTable">aprire la visualizzazione tabellare</a> per avere maggiori dettagli.
       forever_node_title: Troppi dati
       geocoding_inaccessible: Il servizio di geocodifica non è accessibile. Prova più tardi
-      geocoding_noresults: Impossibile geocodificare. Assicurarsi che l'indirizzo sia corretto
-      heat_map: Mappa del calore
-      heatmap_ie8_warning: Le Mappe del Calore Raster non funzionano con il tuo browser corrente. Ti preghiamo di passare a IE9, usare Google Chrome o Mozilla Firefox. Grazie.
-      loading: Caricamento...
+      geocoding_noresults: Impossibile geo-codificare. Assicurarsi che l'indirizzo sia corretto
+      heat_map: Mappa delle temperature
+      heatmap_ie8_warning: Le Mappe delle temperature Raster non funzionano con il tuo browser corrente. Ti preghiamo di aggiornare a IE9, usare Google Chrome o Mozilla Firefox. Grazie.
+      loading: Caricamento in corso...
       map_legend: Legenda della mappa
       multiple_layer_instructions: 'Sono presenti dati per più di un layer qui. Selezionarne uno:'
       next: Successivo
@@ -908,15 +907,15 @@ it:
       approved: Approvati
       attachment: Allegato
       attachments: Allegati
-      back_to_suggestions: Torna ai suggerimenti dataset
+      back_to_suggestions: Torna ai suggerimenti della sequenza di dati
       browse: Sfoglia
       cancel: Annulla
       comments: Commenti
       contact_author: Contatta l'autore dei suggerimenti
-      dataset_suggestions: Suggerimenti dataset
+      dataset_suggestions: Suggerimenti della sequenza di dati
       delete_attachment: allegato
       delete_confirm: Sei sicuro di voler cancellare questo %{type}?
-      delete_error: Errore nel cancellare %{type}
+      delete_error: Errore in fase di eliminazione di %{type}
       delete_suggestion: suggerimento
       description: Descrizione
       description_prompt: Inserisci i dettagli sul tuo suggerimento
@@ -926,12 +925,12 @@ it:
       files: File
       filter_by_status: Filtra per stato
       form_error: Correggi gli errori soprastanti
-      great_sadness: Errore nel contattare l'autore del suggerimento. Riprova più tardi.
+      great_sadness: Si è verificato un errore nel contattare l'autore del suggerimento. Riprova più tardi.
       greater_success: Il tuo messaggio è stato inviato all'autore del suggerimento.
       message: Messaggio
       message_prompt: Inserisci il tuo messaggio
       moderate: "(Modera)"
-      moderate_error: Errore nel modificare lo stato
+      moderate_error: Si è verificato un errore in fase di modifica dello stato
       moderate_tip: Accetta il suggerimento e aprilo alle valutazioni
       needs_moderation: Necessita di essere moderato
       new: Nuovo
@@ -940,10 +939,10 @@ it:
       rate_down: Non mi piace
       rate_up: Mi piace
       rating: Valutazione
-      rating_error: Errore nella valutazione del suggerimento
-      reject: "(Respingi)"
+      rating_error: Si è verificato un errore in fase di valutazione del suggerimento
+      reject: "(Rifiuta)"
       reject_tip: Respingi questo suggerimento
-      rejected: Respinto
+      rejected: Rifiutato
       remove: "(Elimina)"
       remove_tip: Elimina questo suggerimento
       required: Obbligatorio
@@ -974,7 +973,7 @@ it:
       minimum: Minimo
       sum: Somma
     alignment:
-      center: Centrato
+      center: Centra
       left: A sinistra
       right: A destra
     analytics:
@@ -986,7 +985,7 @@ it:
       need_email_verification: Prima di poter completare la registrazione ed effettuare l'accesso, dovrai verificare il tuo indirizzo e-mail per questo profilo. Se non hai accesso all'e-mail di verifica che ti abbiamo inviato, basta creare un nuovo profilo con lo stesso indirizzo di posta elettronica e riceverai una nuova e-mail.
       need_login: Per accedere a questa pagina devi aver effettuato il login
       need_permission: Non hai l'autorizzazione per visualizzare questa pagina
-      too_many_tries: Sono stati effettuati troppi tentativi di accesso a quel login. Il conto è temporaneamente disabilitato.
+      too_many_tries: Sono stati effettuati troppi tentativi di accesso per queste credenziali. Il profilo è temporaneamente disabilitato.
     browser_support:
       chrome: Chrome
       internet_explorer: Internet Explorer
@@ -998,11 +997,11 @@ it:
       bubble: Grafico a bolle
       column: Grafico a colonne
       donut: Grafico ad anello
-      line: Grafico a linea
+      line: Grafico lineare
       pie: Grafico a torta
-      stackedbar: Grafico a barre in pila
-      stackedcolumn: Grafico a colonne in pila
-      timeline: Time Line
+      stackedbar: Grafico a barre sovrapposte
+      stackedcolumn: Grafico a colonne sovrapposte
+      timeline: Linea temporale
       treemap: Tree Map
     chart_types_short:
       area: Area
@@ -1015,12 +1014,12 @@ it:
       stackedbar: Barra Sovrapposta
       stackedcolumn: Colonna Sovrapposta
       timeline: Linea Temporale
-      treemap: Mappa dell'Albero
+      treemap: Mappa ad albero
     data_types:
       blob: Bolla
       calendar_date: Data e ora
       checkbox: Casella di spunta
-      dataset_link: Link al dataset
+      dataset_link: Collegamento alla sequenza di dati
       date: Data e ora (con fuso orario)
       document: Documento
       drop_down_list: Scelta multipla
@@ -1029,7 +1028,7 @@ it:
       geospatial: Geospaziale
       html: Testo formattato
       line: Stringa di linea
-      link: Link Column
+      link: Colonna di collegamento
       list: Lista
       location: Posizione
       money: Denaro
@@ -1062,17 +1061,17 @@ it:
       current_month_past: questo mese
       current_week_future: questa settimana
       current_week_past: questa settimana
-      current_year_future: questo anno
-      current_year_past: questo anno
-      days_future: "%{time} giorni da ora"
+      current_year_future: quest'anno
+      current_year_past: quest'anno
+      days_future: "%{time} giorni da adesso"
       days_past: "%{time} giorni fa"
-      hours_future: "%{time} ore da oggi"
+      hours_future: "%{time} ore da adesso"
       hours_past: "%{time} ore fa"
-      minutes_future: "%{time} minuti da oggi"
+      minutes_future: "%{time} minuti da adesso"
       minutes_past: "%{time} minuti fa"
-      months_future: "%{time} mesi da oggi"
+      months_future: "%{time} mesi da adesso"
       months_past: "%{time} mesi fa"
-      single_century_future: un secolo da oggi
+      single_century_future: un secolo da adesso
       single_century_past: un secolo fa
       single_day_future: domani
       single_day_past: 1 giorno fa
@@ -1084,8 +1083,8 @@ it:
       single_month_past: mese scorso
       single_week_future: la prossima settimana
       single_week_past: la settimana scorsa
-      single_year_future: anno prossimo
-      single_year_past: anno scorso
+      single_year_future: l'anno prossimo
+      single_year_past: l'anno scorso
       unknown: un giorno
       weeks_future: "%{time} settimane da oggi"
       weeks_past: "%{time} settimane fa"
@@ -1104,7 +1103,7 @@ it:
       logout: Sei stato disconnesso.
       save: Salva
       session_timeout:
-        notice: Per motivi di sicurezza sei stato disconnesso. Per continuare, riaccedi.
+        notice: Per motivi di sicurezza sei stato disconnesso. Per continuare, effettua nuovamente l'accesso.
         warning:
           belay_button: Non disconnettermi!
           body_html: Non abbiamo rilevato alcuna attività negli ultimi minuti. Per ragioni di privacy, verrai disconnesso fra <span id="secondsRemaining"></span> secondi.
@@ -1123,7 +1122,7 @@ it:
         contains: contiene
         equals: uguale a
         greater_than: maggiore di
-        greater_than_or_equals: maggiore di o uguale a
+        greater_than_or_equals: maggiore o uguale a
         is_blank: vuoto
         is_not_blank: non vuoto
         less_than: minore di
@@ -1285,7 +1284,7 @@ it:
     contact_dataset_owner_modal:
       description: Invia un breve messaggio al proprietario della sequenza di dati per fare una domanda o un commento o per segnalare qualcosa di relativo ai dati.
       email: Il tuo indirizzo e-mail
-      email_description: 
+      email_description: "(Il tuo indirizzo e-mail verrà condiviso con il proprietario della sequenza di dati, in modo che egli possa riferirsi a te)"
       error_empty_email: Inserisci il tuo indirizzo e-mail, in modo tale che il proprietario dei dati possa riferirsi a te.
       error_empty_message: Completa il modulo per inviare un messaggio.
       error_empty_recaptcha: Conferma che non sei un robot dando un'occhiata al riquadro sovrastante.
@@ -1331,32 +1330,32 @@ it:
     featured_content:
       manage_prompt:
         button: Gestisci un contenuto menzionato
-        message: 
+        message: Scegli di promuovere fino a 3 risorse Socrata che utilizzano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Se lasci questa sezione in bianco, essa non sarà visibile.
       title: Contenuto menzionato che utilizza questi dati
     featured_content_modal:
-      external: 
+      external: Risorsa esterna
       external_resource_form:
-        description: 
-        header: 
-        invalid_image_message: 
-        invalid_url_message: 
-        message: 
-        preview_image: 
-        title: 
-        url: 
-      header: 
-      introduction: 
-      preview: 
-      remove_error: 
-      remove_prompt: 
-      save_error_message: 
-      story: 
+        description: Descrizione
+        header: Presenta una risorsa esterna
+        invalid_image_message: Questa non sembra essere un'immagine. Prova a caricare un file gif, png o jpg.
+        invalid_url_message: Questo non sembra essere un link valido. Prova ad aggiungere http:// all'inizio del tuo link.
+        message: Crea un link a qualche risorsa esterna correlata a questi dati. Potrebbe essere una fantastica visualizzazione sul web, un post di un blog su come sono stati rilasciati i dati o un link ad un'altra area del sito.
+        preview_image: Anteprima immagine
+        title: Titolo
+        url: Link alla risorsa
+      header: Gestisci il contenuto presentato
+      introduction: Cose vorresti che le persone vedessero quando visualizzano per la prima volta questa sequenza di dati? Promuovi fino a 3 risorse Socrata che usano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Pensa a questa sezione come al volto dei tuoi dati.
+      preview: Anteprima del contenuto presentato
+      remove_error: Oh, no! Si è verificato un errore, ti preghiamo di riprovare.
+      remove_prompt: Sei sicuro di voler rimuovere questo come parte del contenuto presentato?
+      save_error_message: Oh, no! Si è verificato un errore, ti preghiamo di riprovare.
+      story: Storia
       story_form:
-        header: 
-        invalid_url_message: 
-        message_html: 
-        url: Collegamento all'articolo
-      title: Contenuto menzionato
+        header: Presenta una Storia Socrata
+        invalid_url_message: Mmm...si è verificato un errore. Prova ad utilizzare un link valido ad una Storia Socrata
+        message_html: L'utilizzo delle Prospettive Socrata, guiderà i tuoi utenti sui racconti correlati basati su questi dati. Per un elenco completo delle storie pubbliche su questo dominio <a href="/browse?limitTo=story" target="_blank">clicca&nbsp;qui <span class="icon-external"></span></a>
+        url: Collegamento alla storia
+      title: Contenuto presentato
       view_selector_modal:
         header: Presenta una visualizzazione Socrata
         message: Scegli una visualizzazione o prospettiva filtrata che tu pensi possa davvero rappresentare la tua sequenza di dati. Questa sarà una delle prime cose che i tuoi utenti vedranno quando visualizzeranno questa sequenza di dati.
@@ -1367,8 +1366,8 @@ it:
       title: Contenuto popolare che utilizza questi dati
       view: Visualizza
     feedback:
-      panel_details_html: Con uno screenshot, potrai mostrarci esattamente ciò che desideri commentare. Stiamo utilizzando <a href="https://usersnap.com">Usersnap</a> per gli screenshot. Leggi la loro <a href="https://usersnap.com/privacy-policy">informativa sulla privacy</a>.
-      panel_title: Desideri includere uno screenshot commentato della pagina corrente?
+      panel_details_html: Con un'acquisizione di schermata, potrai mostrarci esattamente ciò che desideri commentare. Stiamo utilizzando <a href="https://usersnap.com">Usersnap</a> per le acquisizioni. Leggi la loro <a href="https://usersnap.com/privacy-policy">Informativa sulla privacy</a>.
+      panel_title: Desideri includere un'acquisizione di schermata commentata della pagina corrente?
       screenshot_no: No, grazie
       screenshot_yes: Sì, includi uno screenshot
       title: Feedback
@@ -1378,28 +1377,28 @@ it:
       attachments: Allegati
       category: Categoria
       creation_date: Data di creazione
-      data_last_updated: 
-      data_provided_by: 
-      dataset_owner: 
-      downloads: 
-      edit_metadata: 
-      license: 
-      licensing: 
-      metadata_last_updated: 
-      no_category_value: 
-      no_license_value: 
-      no_tags_value: 
-      no_value: 
-      source_link: 
-      tags: 
-      title: 
-      topics: 
-      view_statistics: 
-      views: 
-    more: 
-    multiple_geo_layers: 
+      data_last_updated: Data ultimo aggiornamento
+      data_provided_by: Dati forniti da
+      dataset_owner: Proprietario della sequenza di dati
+      downloads: Download
+      edit_metadata: Modifica i metadati
+      license: Licenza
+      licensing: Licenze e attibuzioni
+      metadata_last_updated: Ultimo aggiornamento dei metadati
+      no_category_value: Questa sequenza di dati non è stata categorizzata
+      no_license_value: La licenza per questa sequenza di dati non è specificata
+      no_tags_value: Questa sequenza di dati non dispone di alcuna etichetta
+      no_value: "(nessuno)"
+      source_link: Link fonte
+      tags: Etichette
+      title: Informazioni su questa sequenza di dati
+      topics: Temi
+      view_statistics: Visualizza tutte le statistiche relative a questa sequenza di dati
+      views: Visualizzazioni
+    more: Mostra altro
+    multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geo-spaziali dettagliati di seguito
     odata_modal:
-      description: Crea un foglio di calcolo in Microsoft Excel per analizzare o visualizzare questa sequenza di dati. Utilizzando un collegamento OData, i dati saranno aggiornabili.
+      description: 'Crea un foglio di calcolo in Microsoft Excel per analizzare o visualizzare questa sequenza di dati. Utilizzando un collegamento OData: i dati saranno aggiornabili.'
       developer_portal_button: Documentazione OData di Socrata
       endpoint_title: Margine OData
       multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geospaziali. Ciascuno strato contiene il proprio Margine OData di seguito.
@@ -1421,27 +1420,27 @@ it:
     saving: Salvataggio in corso
     schema_preview:
       api_field_name: Nome del Campo API
-      column_name: 
-      data_type: 
+      column_name: Nome della colonna
+      data_type: Tipologia dei dati
       data_types:
-        blob: 
-        calendar_date: 
-        checkbox: 
-        dataset_link: 
-        date: 
-        document: 
-        drop_down_list: 
-        email: 
-        flag: 
-        geospatial: 
-        html: 
-        line: 
-        link: 
-        list: 
-        location: 
-        money: 
-        multiline: 
-        multipoint: 
+        blob: Bolla
+        calendar_date: Marcatura oraria fluttuante
+        checkbox: Casella di spunta
+        dataset_link: Link della sequenza di dati
+        date: Marcatura oraria fissa
+        document: Documento
+        drop_down_list: Testo
+        email: Testo
+        flag: Testo
+        geospatial: Geo-spaziale
+        html: Testo
+        line: Linea
+        link: Testo
+        list: Elenco
+        location: Localizzazione
+        money: Denaro
+        multiline: Linea
+        multipoint: Punto
         multipolygon: Poligono
         nested_table: Tabella nidificata
         number: Numero
@@ -1463,27 +1462,31 @@ it:
     share:
       cancel: Annulla
       email: Condividi via E-mail
-      email_body: 
-      facebook: 
+      email_body: 'Ecco una sequenza di dati proveniente da %{provider} che vorrei condividere con te: %{url}'
+      facebook: Condividi via Facebook
+      title: Condividi questa sequenza di dati
+      twitter: Condividi via Twitter
+      visibility_alert_html: b>Attenzione!</b> Questa sequenza di dati è privata e potrebbe non essere accessibile alle persone con cui la condividi.
+    tour:
+      description: 
+      done: 
       title: 
-      twitter: 
-      visibility_alert_html: 
-    updated: 
+    updated: Aggiornato
     view_widget:
-      external_content: 
-      views: 
+      external_content: Contenuto esterno
+      views: Visualizzazioni
   dataslate:
     component:
       edit: Modificare questo componente
       header:
         height: Altezza
       invalid_config: Questo componente non ha una configurazione valida
-      loading: Sto caricando, cortesemente attendi...
+      loading: Caricamento in corso, attendere prego...
       picture:
         alt_attr: Alt
         alt_attr_prompt: Attributo alt
         full_url: URL completo dell'immagine
-        image_source: Sorgente immagine
+        image_source: Fonte dell'immagine
         large: Grande (220x220)
         medium: Medio (150x150)
         original: Originale
@@ -1507,7 +1510,7 @@ it:
         twitter: Condividi su Twitter
       visualization:
         exploreLink: Esplora i dati
-        exploreLink_prompt: mostra collegamento
+        exploreLink_prompt: Mostra collegamento
     configurator:
       actions_components: Azioni
       advanced_components: Componenti Avanzati
@@ -1515,30 +1518,30 @@ it:
       data_components: Dati
       input_components: Input
       redo_title: Non c'è nulla da rifare
-      report_components: Rapporto sui Componenti
-      undo_title: Non c'è nulla da annullare
+      report_components: Effettua un resoconto dei componenti
+      undo_title: Non c'è niente da annullare
     context_picker:
-      select_dataset: Seleziona il set di Dati
-      view_data: Guarda i Dati
+      select_dataset: Seleziona la sequenza di dati
+      view_data: Visualizza i Dati
     create:
-      cancel: Cancella
+      cancel: Annulla
       create: Crea
       create_page: Crea una Pagina DataSlate
-      page_settings: Settaggi della Pagina
+      page_settings: Impostazioni della pagina
       page_title: Titolo della Pagina
       page_url: URL della Pagina
       title: Crea una Pagina DataSlate
     edit:
-      editing: Sto modificando
-      permissions: Permessi
-      preview_page: Anteprima di pagina
+      editing: Modifica in corso
+      permissions: Autorizzazioni
+      preview_page: Anteprima della pagina
       redo: Rifai
-      revert: Ritorna
+      revert: Ripristina
       save: Salva
-      save_as: Salva come
-      settings: Settaggi
-      undo: Disfai
-      view_editor: Guarda l'editor interattivo
+      save_as: Salva con nome
+      settings: Impostazioni
+      undo: Annulla
+      view_editor: Visualizza l'editor interattivo
     edit_component:
       no_config: Nessuna configurazione disponibile per %{component}
       subtitle: Configura questo componente
@@ -1548,21 +1551,21 @@ it:
       subtitle: Aggiungi le proprietà in base al contesto dati di questo elemento
       title: Proprietà disponibili
     permissions:
-      cancel: Cancella
+      cancel: Annulla
       private: Privato
       private_desc: Visualizzabile solo da te
       public: Pubblico
       public_desc: Visualizzabile da chiunque
       save: Salva
-      shared: Condiviso nel Sito
+      shared: Condiviso sul Sito
       shared_desc: Visualizzabile da tutti i tuoi colleghi, ma non dal pubblico
-      title: Permessi per la Pagina
+      title: Autorizzazioni della pagina
     settings:
-      cancel: Cancella
+      cancel: Annulla
       page_title: Titolo della Pagina
       page_url: Percorso
       save: Salva
-      title: Settaggi della Pagina
+      title: Impostazioni della Pagina
   date:
     abbr_month_names:
     - 
@@ -1595,75 +1598,76 @@ it:
   error:
     back: Indietro
     error_500:
-      description_html: Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href="http://support.socrata.com">segnalare questo errore</a> con i dettagli dell'operazione che stavi tentando di fare.
-      somethings_wrong: Qualcosa non va!
-      were_sorry: Siamo spiacenti, ma c'è stato un problema di elaborazione della tua richiesta.
+      description_html: Ti preghiamo di riprovare tra qualche minuto, oppure di <a href="http://support.socrata.com">segnalare questo errore</a> con i dettagli dell'operazione che stavi tentando di fare.
+      somethings_wrong: Si è verificato un errore!
+      were_sorry: Siamo spiacenti, ma si è verificato un problema di elaborazione della tua richiesta.
     error_site_unavailable:
       description: Questo sito con tecnologia Socrata non è attualmente disponibile.
-      help_html: È possibile controllare lo stato di Socrata all'indirizzo <a href="http://status.socrata.com">http://status.socrata.com</a> o verificare sul nostro account Twitter su <a href="https://twitter.com/socrata">@socrata</a>.
+      help_html: È possibile controllare lo stato di Socrata all'indirizzo <a href="http://status.socrata.com">http://status.socrata.com</a> o verificare sul nostro profilo Twitter su <a href="https://twitter.com/socrata">@socrata</a>.
       title: Sito attualmente non disponibile
     not_acceptable_406:
       page_not_found: Pagina non trovata.
       were_sorry: Siamo spiacenti, ma la pagina non è disponibile nel formato richiesto.
     not_found_404:
       back_to: Torna a
-      description_html: La pagina o non esiste o è stata spostata. Suggeriamo di tornare alla <a href="/">home page</a>. Se il problema persiste chiediamo cortesemente di inviarci una segnalazione. Grazie per la collaborazione.
+      description_html: La pagina non esiste oppure è stata spostata. Suggeriamo di tornare alla <a href="/">home page</a>. Se il problema persiste o se proprio non riesci a trovare quello che cerchi, ti preghiamo di sentirti libero di contattarci. Grazie.
       page_not_found: Pagina non trovata.
-      were_sorry: Siamo spiacenti, ma la pagina richiesta non è in linea.
+      were_sorry: Siamo spiacenti, ma non è stato possibile trovare la pagina richiesta.
     permission_denied_403:
-      description_html: Se credi che questo sia un errore, prova a scollegarsi e ricollegarti con un utente diverso <a href="/login">qui</a>.
-      no_permission: Nessun permesso di accesso alla risorsa.
-      were_sorry: Siamo spiacenti, ma sembra che non hai il permesso di accedere a questa pagina.
+      description_html: Se credi che questo sia un errore, prova a scollegarti e ricollegarti da un'utenza diversa <a href="/login">qui</a>.
+      no_permission: Errore
+      were_sorry: L'utente attuale non ha accesso a questa risorsa.
     to_whence_you_came: da dove sei venuto.
   govstat:
     admin:
       goal_values:
-        status_private: 
-        status_public: 
+        status_private: Privato
+        status_public: Pubblico
       listing:
-        dashboard: 
-        default_alert_message: 
-        goal_page: 
-        goal_status: 
-        manage_on_goal_page: 
-        owner: 
-        rows_per_page: 
-        title: 
-        updated_at: 
-        view_dashboard: 
-        visibility: 
+        dashboard: Cruscotto
+        default_alert_message: "<span><b>Oh, no!</b> Si è verificato un errore ed è stato notificato al nostro team. Nel frattempo, prova di nuovo questa azione oppure aggiorna la pagina.</span>"
+        goal_page: Pagina dell'obiettivo
+        goal_status: Stato dell'obiettivo
+        manage_on_goal_page: Gestisci sulla Pagina dell'Obiettivo
+        of: 
+        owner: Proprietario
+        rows_per_page: Righe per pagina
+        title: Titolo
+        updated_at: Agggiornato
+        view_dashboard: Visualizza Cruscotto
+        visibility: Visibilità
     chrome:
       header:
         links:
-          account: Account
-          account_options: Opzioni dell'Account
-          account_tooltip: Guarda e fai dei cambi al tuo account utente
+          account: Profilo
+          account_options: Opzioni del profilo
+          account_tooltip: Visualizza ed effettua delle modifiche al tuo profilo utente.
           configuration: Configurazione
           configuration_title: Gestisci la configurazione di Open Performance
           data: Dati
           data_title: Naviga e Gestisci i Dati
-          goals: Mete
-          goals_title: Crea e Tieni Traccia delle Mete
-          home: Casa
-          home_title: Casa
-          my_goals: Le mie Mete
-          my_goals_tooltip: Vedi le mete che ho creato.
-          reports: Rapporti
-          reports_title: Vedi e Crea Rapporti
+          goals: Obiettivi
+          goals_title: Crea e Tieni Traccia degli obiettivi
+          home: Pagina iniziale
+          home_title: Pagina iniziale
+          my_goals: I miei obiettivi
+          my_goals_tooltip: Guarda gli obiettivi che ho creato.
+          reports: Resoconti
+          reports_title: Visualizza e crea resoconti
     configuration:
-      analytics: Analytics
+      analytics: Dati analitici
       appearance: Aspetto
       config: Configurazione
       content_moderation: Moderazione dei Contenuti
       data_management: Gestione Dati
-      datasets: Dataset
+      datasets: Sequenze di dati
       federations: Federazioni
-      homepage: Homepage
-      jobs: 
-      metadata: Metadata
-      moderation: Moderazione Commento
-      nomination: Nomina Moderazione
-      routing: Routing ed Approvazione
+      homepage: Pagina iniziale
+      jobs: Lavori
+      metadata: Metadati
+      moderation: Moderazione dei commenti
+      nomination: Moderazione delle nomine
+      routing: Instradamento e approvazione
       sdp_templates: Template per Player dati
       title: Gestisci la Configurazione del Sito
       users: Utenti
@@ -1695,7 +1699,7 @@ it:
         chart: Grafico
         formatted_text: Testo Formattato
         header: Titolazione
-        horizontal_layout: Formato Orizzontale
+        horizontal_layout: Orientamento orizzontale
         map: Mappa
         map_layer: Mappa Strato
         picture: Immagine
@@ -1703,28 +1707,28 @@ it:
         share: Condividi
         table: Tabella
         title: Titolo
-        vertical_layout: Layout Verticale
+        vertical_layout: Orientamento verticale
         visualize: Visualizza
       create:
-        create_report: Crea Rapporto
-        title: Crea Rapporto
+        create_report: Crea resoconto
+        title: Crea resoconto
       manage:
         copy: Copia
-        create_new_report: Crea  Nuovo Rapporto
-        delete: Cancella
+        create_new_report: Crea nuovo resoconto
+        delete: Elimina
         edit: Modifica
-        home: Home
-        other_reports: Altri Rapporti
+        home: Pagina iniziale
+        other_reports: Altri resoconti
         owner: proprietario
-        reports: Rapporti
-        title: Gestisci Rapporti
+        reports: Resoconti
+        title: Gestisci resoconti
         updated: aggiornato
         your_reports: I Tuoi Rapporti
       permissions:
-        title: Permessi RIportati
+        title: Autorizzazioni per i resoconti
       settings:
         page_title: Titolo
-        title: Settaggi del Rapporto
+        title: Impostazioni dei resoconti
     template:
       grid_flow_layout: Grid Layout
       layouts: Layout
@@ -1733,30 +1737,30 @@ it:
   plugins:
     daterangepicker:
       clear: Pulisci
-      date_range: Gamma della Data
+      date_range: Intervallo della data
       done: Fatto
-      end_date: Data finale
-      last_30_days: 
-      last_3_days: 
+      end_date: Data di conclusione
+      last_30_days: Ultimi 30 giorni
+      last_3_days: Ultimi 3 giorni
       last_month: Ultimo Mese
-      last_week: 
-      last_year: 
-      month_to_date: Mesi alla Data
+      last_week: Ultima settimana
+      last_year: Ultimo anno
+      month_to_date: Aggiornato all'ultimo mese
       next: Prossimo
-      preceding_30_days: 
-      preceding_month: 
-      preceding_week: 
-      prev: Precedente
-      specific_date: Data Specifica
+      preceding_30_days: 30 giorni precedenti
+      preceding_month: Mese precedente
+      preceding_week: settimana precedente
+      prev: Prec
+      specific_date: Specifica data
       start_date: Data di Inizio
-      the_day_of: 
+      the_day_of: Il giorno di..
       the_month_of: Il Mese Di...
       the_week_of: La Settimana Di...
       the_year_of: L'Anno Di...
       today: Oggi
-      week_to_date: Settimana alla Data
-      year_to_date: Anno alla Data
-      yesterday: 
+      week_to_date: Aggiornato all'ultima settimana
+      year_to_date: Aggiornato all'ultimo anno
+      yesterday: Ieri
     fileuploader:
       drop_files: Trascina i file qui per caricare
       failed: Non riuscito
@@ -1780,7 +1784,7 @@ it:
       february: Febbraio
       february_short: Feb
       friday: Venerdì
-      friday_min: Ven
+      friday_min: Ve
       friday_short: Ven
       january: Gennaio
       january_short: Gen
@@ -1819,7 +1823,7 @@ it:
       wednesday: Mercoledì
       wednesday_min: Me
       wednesday_short: Mer
-      week_min: Wk
+      week_min: Sett
   recaptcha:
     errors:
       verification_failed: I caratteri inseriti non combaciano con l'immagine.
@@ -1827,32 +1831,36 @@ it:
     about:
       actions: Azione
       activity: Attività
-      admin_debugging: 
+      admin_debugging: Debugging del superamministratore
       attachments: Allegati
       category: Categoria
       comments: Commenti
-      community: Comunità
-      contact_dataset_owner: Contatti
+      community: Valutazione della comunità
+      contact_dataset_owner: Contatta il proprietario della sequenza di dati
       contributors: Collaboratori
       created: creato
       data_provided_by: Dati forniti da
-      datasync_status: 
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
+      datasync_status: Stato di sincronizzazione dei dati
       description: Descrizione
       downloads: Download
-      edit_metadata: Modificare i metadati
-      flag_dataset: Contrassegna dataset
+      edit_metadata: Modifica i metadati
+      flag_dataset: Contrassegna la sequenza di dati
       license: Licenza
-      licensing: Proprietà e licenza
+      licensing: Licenza e attribuzione
       links: Link
       meta: Meta
       none: "(nessuno)"
       permalink: Permalink
       permanent_links: Link permanenti
-      permissions: Visibilità
+      permissions: Autorizzazioni
       private: Privata
       public: Pubblica
       raters: Votanti
-      resource_name: Nome della sorgente
+      resource_name: Nome della risorsa
       row_class: Classe del record
       row_count: Numero di righe
       row_identifier: Identificativo record
@@ -1861,10 +1869,10 @@ it:
       snapshotted: eseguito il backup
       soda2_support: Solo SODA2
       soda2_yes: Si
-      source_link: Origine dato
-      spatial_extent: Regione
-      subject_column: Soggetto Colonna
-      tags: Tags
+      source_link: Link della fonte
+      spatial_extent: Estensione spaziale
+      subject_column: Colonna dell'oggetto
+      tags: Etichette
       terms_of_use: Termini di utilizzo
       updated: aggiornato
       view_full_page: Visualizza la Pagina Completa
@@ -1873,180 +1881,184 @@ it:
       your: La tua valutazione
     admin:
       connector:
-        actions: 
-        add_connector: 
-        add_new: 
-        all_assets: 
-        arcgis_server_address: 
-        assets_connected: 
-        assets_discovered: 
-        back_to_connector_list: 
-        catalog: 
-        connected_assets: 
-        current_status: 
-        data: 
-        discovered_assets: 
-        edit: 
-        edit_connector: 
+        actions: Azioni
+        add_connector: Aggiungi connettore
+        add_new: Aggiungi nuovo
+        all_assets: Connetti tutte le risorse
+        arcgis_server_address: Indirizzo del server ArcGIS
+        assets_connected:
+          one: 1 risorsa connessa
+          other: "%{count} risorse connesse"
+        assets_discovered:
+          one: 1 risorsa scoperta
+          other: "%{count} risorse scoperte"
+        back_to_connector_list: Ritorna all'elenco di connettori
+        catalog: Catalogo
+        connected_assets: Risorse connesse
+        current_status: Stato attuale
+        data: Dati
+        discovered_assets: Risorse scoperte
+        edit: Modifica
+        edit_connector: 'Modifica connettore: %{url}'
         errors:
-          duplicate_server_error: 
-          invalid_attributes_error: 
-          json_format_error: 
-          missing_attributes_error: 
-          not_found_error: 
-          problem_with_errors: 
-          server_ping_error: 
-          unknown_error: 
-        esri_arcgis: 
-        esri_arcgis_url: 
-        failing: 
+          duplicate_server_error: Quel server Esri è stato già connesso a questo dominio.
+          invalid_attributes_error: 'Questi parametri non erano validi: %{invalid}.'
+          json_format_error: Il tuo JSON era malformato.
+          missing_attributes_error: 'Questi parametri erano mancanti: %{missing}.'
+          not_found_error: Quella risorsa non è stata trovata.
+          problem_with_errors: Non è stato possibile elaborare la tua richiesta.
+          server_ping_error: 'Non è stato possibile raggiungere il server: %{url}'
+          unknown_error: 'La tua richiesta non è andata a buon fine per la seguente ragione: %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: 'Indirizzo del server ArcGIS '
+        failing: Errore
         flashes:
-          created: 
-          deleted: 
-          server_not_found: 
-          updated: 
-        ignore: 
-        last_synced: 
-        never: 
-        no_connectors: 
-        not_synced_yet_edit: 
-        not_yet: 
-        save: 
-        search: 
-        selective_connection: 
-        service_unavailable: 
-        some_assets: 
-        source: 
-        success: 
-        terminate: 
-        title: 
+          created: Connessione stabilita! Abbiamo raggiunto il tuo server. Ci vorrà qualche istante per la sincronizzazione del catalogo ArcGIS , dopo il quale potrai modificare le impostazioni del connettore e proseguire con l'installazione.
+          deleted: Il tuo connettore è stato contrassegnato per l'eliminazione.
+          server_not_found: Non siamo riusciti a trovare quel server - potrebbe essere stato recentemente eliminato.
+          updated: Le impostazioni del tuo connettore sono state salvate.
+        ignore: Ignorato
+        last_synced: Sicronizzato l'ultima volta
+        never: Mai
+        no_connectors: Attualmente, non vi sono connettori. Se desideri connettere una fonte esterna al tuo catalogo, clicca su "Aggiungi Nuovo" in alto.
+        not_synced_yet_edit: Potrai modificare le impostazioni del connettore una volta sincronizzato il catalogo ArcGIS.
+        not_yet: Sincronizzazione in corso
+        save: Salva
+        search: Cerca il dominio
+        selective_connection: Connessione selettiva
+        service_unavailable: I servizi di connessione sono attualmente non disponibili.
+        some_assets: Collega soltanto queste risorse
+        source: Fonte di connessione
+        success: Andata a buon fine
+        terminate: Termina
+        title: Gestisci i connettori
       datasets:
         asset_inventory:
-          tooltip: 
-        description: 
-        layout_config: Configurazione del layout
+          tooltip: Questa opzione non è disponibile a causa di un errore. Se il problema persiste dopo 24 ore, ti preghiamo di contattare l'assistenza.
+        description: Elenca le risorse su questo dominio e configura la disposizione della pagina della sequenza di dati
+        layout_config: Configurazione della disposizione
         left: Sinistra
         right: Destra
         saved: Salvato
-        saving: Salvataggio
+        saving: Salvataggio in corso
         sidebar_position: Posizione barra laterale
-        skip_to_dataset_listing: 
-        table_description: 
-        title: Dataset
-        unpublished_datasets: Dataset non pubblicato
-        view_as_a_dataset: 
+        skip_to_dataset_listing: Salta all'elenco delle sequenze di dati
+        table_description: Sequenze di dati
+        title: Inventario delle risorse
+        unpublished_datasets: Copie funzionanti
+        view_as_a_dataset: Visualizza come sequenza di dati
       federation:
-        accept: Accetto
+        accept: Accetta
         accepted: Accettato
         accepted_by: Accettato da
         all: "(tutto)"
-        dataset: Dataset
+        dataset: Sequenza di dati
         flashes:
-          accepted: Accettazione della Federazione riuscita
-          created: Creazione della Federazione riuscita
-          deleted: Eliminazione della Federazione riuscita
-          invalid_domain: 'Impossibile creare federazione dati: domain targe non valido'
-          rejected: Rifiuto Federazione riuscito
-        list_domains: 'Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato "pubblica", un amministratore dal dominio target deve accettare la tua richiesta. '
+          accepted: Federazione accettata con successo
+          created: Federazione creata con successo
+          deleted: Federazione eliminata con successo
+          invalid_domain: 'Impossibile creare una federazione di dati: il dominio di destinazione non è valido'
+          rejected: Federazione rifiutata con successo
+        list_domains: Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato su "pubblica", un amministratore del dominio di destinazione dovrà accettare la tua richiesta.
         no_domains: Nessun dominio disponibile coincide a %{name}.
         no_federations: Per questo dominio non esiste ancora alcuna federazione.
-        no_pub_datasets: 'Nessun dataset coincide con i tuoi criteri di ricerca. '
+        no_pub_datasets: Nessuna sequenza di dati coincide con i tuoi criteri di ricerca.
         pending: In sospeso
         publish: Pubblica
         reject: Rifiuta
         search: Cerca
-        search_boost: Accelera ricerca
-        search_boost_explain: Da 1 a 0. Valori superiori verranno mostrati prima.
+        search_boost: Acceleratore di ricerca
+        search_boost_explain: Intervallo da 1 a 0. Valori superiori danno più probabilità alle sequenze di dati di essere mostrate per prime.
         search_prompt: Cerca i Domini da pubblicare su
-        search_pub_datasets: Cerca i Dati pubblicati
+        search_pub_datasets: Cerca le sequenze di dati pubblicate
         source_domain: Dominio sorgente
         status: Stato
-        target_domain: Dominio target
-        terminate: Cessa
+        target_domain: Dominio di destinazione
+        terminate: Termina
         title: Apri i dati della Federazione
       georegions:
-        actions: 
-        choose_a_dataset: 
+        actions: Azioni
+        choose_a_dataset: Scegli uno strato
         configure_boundary:
-          boundary_geometry_label_field_error: 
-          boundary_geometry_label_page_error: 
-          boundary_name: 
-          boundary_name_description: 
-          boundary_name_required_field_error: 
-          boundary_name_required_page_error: 
-          boundary_name_unique_error: 
-          choose_a_column: 
-          configure_boundary: 
-          confirm_html: 
-          confirm_title: 
-          description: 
-          next: 
-          page_title: 
-          primary_key_column: 
-          primary_key_column_description: 
-          primary_key_column_missing_field_error: 
-          save_core_error: 
-          save_error: 
-          save_success: 
-          shape_label: 
-          shape_label_description: 
-        create_new: 
-        custom_georegions: 
-        date_added: 
-        default: 
-        default_georegions: 
-        default_georegions_flyout: 
-        default_georegions_limit: 
-        default_success: 
-        delete: 
-        description: 
-        disable: 
-        disable_success: 
-        edit: 
-        enable: 
-        enable_success: 
-        enabled?: 
+          boundary_geometry_label_field_error: Il limite deve avere un'etichetta della forma.
+          boundary_geometry_label_page_error: 'Non è possibile salvare: il limite deve avere un''etichetta della forma.'
+          boundary_name: Nome del limite
+          boundary_name_description: 'Il nome del limite (as es: "Stati" o "Vicinato") verrà mostrato nelle mappe delle Lenti Spaziali.'
+          boundary_name_required_field_error: Il limite deve avere un nome.
+          boundary_name_required_page_error: 'Non è possibile salvare: il limite deve avere un nome.'
+          boundary_name_unique_error: Il nome del limite deve essere univoco.
+          choose_a_column: Scegli una colonna...
+          configure_boundary: Configura un limite
+          confirm_html: <p>Clicca su "Crea" per aggiungere un nuovo limite alla Lente Spaziale sulla base della sequenza di dati geo-spaziali "%{boundary_name}".</p><p>Questo nuovo limite di Lenti Spaziali è un'istantanea e non cambierà nemmeno se aggiornerai la sequenza di dati geo-spaziale "%{boundary_name}".</p>
+          confirm_title: Crea la tua Lente Spaziale
+          description: Configura i limiti personalizzati che possono essere utilizzati per creare mappe di Lenti Spaziali
+          next: Successivo
+          page_title: Gestisci limiti
+          primary_key_column: ID della forma
+          primary_key_column_description: La colonna che contiene l'ID univoco che identifica ciascuna forma nel limite. Se tale colonna non fosse presente, considera una colonna unica qualsiasi.
+          primary_key_column_missing_field_error: Devi specificare una colonna per l'ID della forma.
+          save_core_error: 'Non è stato possibile creare il limite: %{error_message}'
+          save_error: Si è verificato un errore durante il tentativo di salvataggio delle modifica. Ti preghiamo di riprovare più tardi o di contattare l'Assistenza Socrata se il problema persiste.
+          save_success: Modifiche salvate con successo
+          shape_label: Etichetta della forma
+          shape_label_description: 'La colonna che dovrebbe essere utilizzata come etichetta per ciascuna forma (ad es: una colonna che contiene "WA" e "NY").'
+        create_new: Crea nuovo
+        custom_georegions: Personalizza limiti
+        date_added: Data aggiunta
+        default: Imposta un'aggiunta rapida per il limite
+        default_georegions: Abilita l'aggiunta rapida per le Nuove Sequenze di Dati (%{count} di %{limit})
+        default_georegions_flyout: Se disponi di un limite che desideri utilizzare sulla maggior parte delle pagine Lens di Dati, questa opzione lo renderà più veloce da visualizzare per qualsiasi sequenza di dati caricata dopo aver abilitato l'aggiunta rapida. Potrai abilitare fino a 5 limiti con aggiunta rapida.
+        default_georegions_limit: Puoi avere al massimo %{limit} limiti con aggiunta rapida.
+        default_success: "%{name} è stato impostato per l'aggiunta rapida. Tutte le nuove sequenze di dati saranno codificate automaticamente a seconda della regione utilizzando il limite della Lente Spaziale."
+        delete: Elimina
+        description: Configura limiti personalizzati che possono essere utilizzati per creare mappe di Lenti Spaziali
+        disable: Disabilita
+        disable_success: "%{name} è stato disabilitato e non sarà più disponibile per la creazione di mappe coropletiche in Data Lens utilizzando questo limite di Lente Spaziale."
+        edit: Modifica
+        enable: Abilita
+        enable_success: '%{name} è stato abilitato. Adesso, potrai creare mappe coropletiche in Data Lens utilizzando il limite di Lente Spaziale. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Consulta maggiori informazioni</a> sull''utilizzo della Lente Spaziale per creare mappe.'
+        enabled?: Abilitato?
         flashes:
-          add_georegion_error: 
-          service_unavailable_html: 
-        learn_more: 
-        page_subtitle: 
-        page_title: 
-        picker_explanation: 
-        picker_explanation_html: 
-        picker_support_html: 
-        region_name: 
-        remove: 
-        status_disabled: 
-        status_enabled: 
-        status_failed: 
-        status_progress: 
-        substatus_failed_html: 
-        substatus_progress: 
-        title: 
-        undefault: 
-        undefault_success: 
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">Maggiori informazioni</a></div>
+          service_unavailable_html: <p>Stiamo riscontrando problemi tecnici con alcuni servizi correlati alla Lente Spaziale. </p><p>Ti preghiamo di contattare <a href="https://support.socrata.com">l'assistenza Socrata</a> qualora il problema persista.</p>
+        learn_more: Consulta maggiori informazioni su come <a href="https://support.socrata.com/hc/en-us/articles/212862177">Gestire la Lente Spaziale sul tuo dominio</a>
+        page_subtitle: Hai impostato %{default_count} di %{available_count} limiti disponibili come limiti auto-codificati.
+        page_title: Gestisci la Lente Spaziale
+        picker_explanation: Scegli uno strato geo-spaziale che desideri utilizzare come base per la tua Lente Spaziale. Puoi cliccare sul nome per visualizzare l'anteprima dello strato in una nuova scheda del browser.
+        picker_explanation_html: "<p>Scegli uno strato geo-spaziale che desideri utilizzare come base per la tua Lente Spaziale.</p><p>Puoi cliccare sul nome per visualizzare l'anteprima dello strato in una nuova scheda del browser.</p>"
+        picker_support_html: Non riesci a trovare quello che cerchi? Visualizza l'articolo <a href="https://support.socrata.com/hc/en-us/articles/217039278">Trova una sequenza di dati per la tua Lente Spaziale</a> per saperne di più.
+        region_name: Nome del limite
+        remove: Rimuovi
+        status_disabled: Non abilitato
+        status_enabled: Pronto all'uso
+        status_failed: Si è verificato un errore...
+        status_progress: Elaborazione in corso
+        substatus_failed_html: Ti preghiamo di contattare <a href="https://support.socrata.com">l'assistenza Socrata</a> ed includere il codice <strong>%{code}</strong>.
+        substatus_progress: Disponibile a breve
+        title: Lente Spaziale
+        undefault: Disimposta l'aggiunta rapida per il limite
+        undefault_success: L'aggiunta rapida è stata disimpostata per %{name}. Le nuove sequenze di dati non saranno più automaticamente codificate in base alla regione utilizzando i limiti della Lente Spaziale.
       home:
-        add_featured_dataset: Aggiungi un nuovo dataset importante
+        add_featured_dataset: Aggiungi una nuova sequenza di dati presentata
         are_you_sure: Sei sicuro? Questa azione non può essere annullata.
-        catalog_layout_configuration: Configurazione layout in catalogo
-        choose_a_dataset: Scegli un dataset da mettere in risalto
+        catalog_layout_configuration: Configurazione della disposizione del catalogo
+        choose_a_dataset: Scegli una sequenza di dati da mettere in risalto
         compact_list: Elenco compatto
         contents: Indice
         create_new_story: Crea un nuovo racconto
-        custom_image: Immagine cliente
-        customize_now: Personalizza ora
+        custom_image: Personalizza immagine
+        customize_now: Personalizza subito
         customize_story_appearance: Personalizza l'aspetto del racconto
-        dataset_display_limit: Solo quattro dataset alla volta possono essere messi in risalto
-        date_published: Data pubblicata
-        default_catalog_layout: Layout in catalogo di default
-        delete: Cancella
+        dataset_display_limit: Solo quattro sequenze di dati per volta possono essere messe in risalto.
+        date_published: Data di pubblicazione
+        default_catalog_layout: Disposizione predefinita del catalogo
+        delete: Elimina
         down: Giù
         edit: Modifica
-        feature_image: fai risaltare l'immagine
-        filetype_error: Tipo file non valido. Scegli un file immagine
+        feature_image: Metti in risalto l'immagine
+        filetype_error: Tipo di file non valido. Scegli un file immagine
         flashes:
-          create_error: 'Un errore si è verificato durante la tua richiesta: %{error_message}'
+          create_error: 'Si è verificato un errore durante la tua richiesta: %{error_message}'
           delete_error: Il racconto che hai provato a cancellare non esiste.
           edit_error: Il racconto che hai provato a modificare non esiste.
           edit_success: Il tuo racconto è stato salvato
@@ -2054,356 +2066,356 @@ it:
           move_success: Il tuo racconto è stato salvato
         image: Immagine
         left: Sinistra
-        manage_featured_dataset: Gestisci il dataset in risalto
+        manage_featured_dataset: Gestisci la sequenza di dati messa in risalto
         manage_story_content: Gestisci il contenuto del racconto
         move_left: Sposta a sinistra
         move_right: Sposta a destra
         remove: Rimuovi
         rich_list: Elenco completo
         right: Destra
-        save_now: Salva adesso
+        save_now: Salva subito
         saved: Salvato
         saved1: Salvato.
-        saving: Salvataggio
+        saving: Salvataggio in corso
         saving1: Salvataggio in corso...
-        set_a_thumbnail: Inserisci una miniatura
+        set_a_thumbnail: Imposta un'anteprima
         text: Testo
-        thumbnail: Miniatura
-        title: Gestisci la Home page
+        thumbnail: Anteprima
+        title: Gestisci la pagina iniziale
         up: Su
       index:
-        comment_moderation: 
-        comment_moderation_description: 
-        connectors: 
-        connectors_description: 
-        dataset_routing_and_approval: 
-        dataset_routing_and_approval_description: 
-        datasets: 
-        datasets_description: 
-        dataslate_pages: 
-        dataslate_pages_description: 
-        federation: 
-        federation_description: 
-        georegions: 
-        georegions_description: 
-        home_page: 
-        home_page_description: 
-        internal: 
-        internal_description: 
-        jobs: 
-        jobs_description: 
-        metadata: 
-        metadata_description: 
-        sdp_templates: 
-        sdp_templates_description: 
-        site_analytics: 
-        site_analytics_description: 
-        site_chrome: 
-        site_chrome_description: 
-        stories: 
-        stories_description: 
-        users: 
-        users_description: 
-        view_moderation: 
-        view_moderation_description: 
+        comment_moderation: Moderazione dei commenti
+        comment_moderation_description: Verifica e modera i commenti per le sequenze di dati presenti sul tuo sito
+        connectors: Connettori
+        connectors_description: Registra un connettore per creare e gestire la maggior parte delle sequenze di dati connesse.
+        dataset_routing_and_approval: Instradamento e approvazione delle sequenze di dati
+        dataset_routing_and_approval_description: Verifica le sequenze di dati che sono in fase di approvazione e gestisci le fasi del relativo processo
+        datasets: Inventario delle risorse
+        datasets_description: Elenca le risorse su questo dominio e configura la disposizione della pagina della sequenza di dati
+        dataslate_pages: Pagine DataSlate
+        dataslate_pages_description: Elenca e gestisci le pagine DataSlate su questo dominio
+        federation: Federazione
+        federation_description: Gestisci le connessioni e le condivisioni dei dati con altri siti attraverso i Servizi di Federazione Open Data
+        georegions: Lente Spaziale
+        georegions_description: Configura i limiti personalizzati che possono essere utilizzati per creare le mappe di Lente Spaziale
+        home_page: Pagina iniziale
+        home_page_description: Configura quale contenuto mettere in risalto sulla pagina iniziale
+        internal: Interno
+        internal_description: Modifica e aggiungi moduli, siti e tanto altro
+        jobs: Lavori
+        jobs_description: Visualizza tutti i lavori di elaborazione di dati a lungo termine attuali e recenti in corso sulla tua piattaforma
+        metadata: Metadati
+        metadata_description: Gestisci i campi relativi alle sequenze di metadati, incluse le categorie e i campi personalizzati
+        sdp_templates: Modelli SDP
+        sdp_templates_description: Gestisci e personalizza i modelli utilizzati per la pubblicazione dei tuoi dati attraverso i lettori di dati Socrata
+        site_analytics: Dati analitici del sito
+        site_analytics_description: Visualizza le statistiche di tutto il sito per sequenza di dati, visualizzazioni, visitatori e altro
+        site_chrome: Aspetto del sito
+        site_chrome_description: Configura l'aspetto del tuo sito Socrata
+        stories: Racconti
+        stories_description: Modifica i temi personalizzati dei racconti
+        users: Utenti
+        users_description: Gestisci gli utenti sul tuo sito e di quali autorizzazioni e abilitazioni dispongono
+        view_moderation: Visualizza moderazione
+        view_moderation_description: Visualizza e gestisci visualizzazioni create dall'utente, che includono filtri, grafici e mappe. Approva una visualizzazione per mostrarla nel tuo catalogo dati.
       jobs:
         actions:
-          geocoding: 
-          import: 
-          replace: 
-          upsert: 
-          working_copy: 
+          geocoding: Geocodifica in corso
+          import: Importa
+          replace: Sostituisci
+          upsert: Inserisci dati aggiornati
+          working_copy: Copia funzionante
         filters:
-          all: 
-          append: 
-          apply_filters: 
-          data_workflow: 
-          delete: 
-          filter_by: 
-          import: 
-          import_activity: 
-          publish: 
-          replace: 
-          restore: 
-          type: 
-          upsert: 
-          working_copy: 
+          all: Tutto
+          append: Allega
+          apply_filters: Vai
+          data_workflow: Flusso di lavoro dei dati
+          delete: Elimina
+          filter_by: Filtra per
+          import: Importa
+          import_activity: Importa attività
+          publish: Pubblica
+          replace: Sostituisci
+          restore: Ripristina
+          type: Tipologia
+          upsert: Inserisci dati aggiornati
+          working_copy: Copia funzionante
         index_page:
-          action: 
-          dataset: 
-          deleted: 
-          deleted_dataset: 
-          deleted_user: 
-          export_as_csv: 
-          initiated_by: 
-          no_jobs: 
-          page_title: 
-          restore_deleted_dataset: 
-          restore_deleted_dataset_confirm: 
-          showing_all_so_far: 
-          showing_most_recent: 
-          started: 
-          status: 
-          title: 
-          to_working_copy: 
-          with_problems: 
+          action: Azione
+          dataset: Sequenza di dati
+          deleted: Eliminata
+          deleted_dataset: Sequenza di dati eliminata
+          deleted_user: L'utente è stato eliminato
+          export_as_csv: Esporta come CSV
+          initiated_by: Iniziato da
+          no_jobs: Nessun lavoro da mostrare
+          page_title: Lavorazione di dati
+          restore_deleted_dataset: Ripristina
+          restore_deleted_dataset_confirm: Sei sicuro di voler ripristinare la sequenza di dati %{dataset}?
+          showing_all_so_far: Mostra tutte le lavorazioni che sono state registrate finora
+          showing_most_recent: 'Mostra tutte le %{limit} lavorazioni più recenti '
+          started: Iniziato
+          status: Stato
+          title: Lavorazioni di dati
+          to_working_copy: in copie funzionanti
+          with_problems: con problemi
         show_page:
-          back: 
-          error_details_heading: 
+          back: Ritorna all'elenco delle lavorazioni
+          error_details_heading: Dettagli dell'errore
           event_messages:
             failure:
               bad_response_from_server:
-                description: 
-                title: 
+                description: Non è stato possibile importare i tuoi dati, poiché si è verificato un errore inatteso. Ti preghiamo di riprovare più tardi.
+                title: Si è verificato un errore
               bad_timestamp_format:
-                description: 
-                title: 
+                description: Il valore dei dati "%{pattern}" è stato formattato in un modo che non riusciamo a comprendere. Ti preghiamo di controllare nuovamente che tutti i dati importati siano conformi agli <a href="https://en.wikipedia.org/wiki/ISO_8601">standard ISO-8601</a>.
+                title: Valore data/ora non riconosciuto
               bad_timezone:
-                description: 
-                title: 
+                description: Non riusciamo a comprendere il fuso orario "%{name}". Ti preghiamo di controllare nuovamente che tutte le date importate siano conformi agli <a href="https://en.wikipedia.org/wiki/ISO_8601">standard ISO-8601</a>.
+                title: Fuso orario non riconosciuto
               completed_with_warnings:
-                description: 
-                title: 
+                description: 'I tuoi dati sono stati importati con degli avvisi, ma si è verificato un errore in fase di salvataggio degli avvisi nella sequenza di dati. Tuttavia, potrai trovare un elenco completo di avvisi qui: %{warnings}'
+                title: Errore durante il salvataggio degli avvisi
               control_file_invalid_json:
-                description: 
-                title: 
+                description: 'Il tuo file di controllo non è stato analizzabile in formato JSON. Messaggio di errore: "%{message}". Ti preghiamo di verificare che si tratti di un valido JSON.'
+                title: File di controllo corrotto
               control_file_malformed:
-                description: 
-                title: 
+                description: Il tuo file di controllo è risultato un valido JSON, ma non corrispondeva al formato atteso. Assicurati che il tuo file di controllo corrisponda a <a href="https://socrata.github.io/datasync/resources/control-config.html">queste caratteristiche</a>.
+                title: File di controllo corrotto
               control_file_too_large:
-                description: 
-                title: 
+                description: Il tuo file di controllo era troppo pesante. Ti preghiamo di ridurne la dimensione a %{limit} caratteri o meno e di riprovare.
+                title: File di controllo troppo pesante
               corrupt_archive:
-                description: 
-                title: 
+                description: 'Non è stato possibile elaborare l''archivio che hai caricato. Messaggio di errore: %{reason}'
+                title: Corrompi archivio
               corrupt_gzip:
-                description: 
-                title: 
+                description: 'Il file compresso GZip da te fornito non è stato estratto correttamente. Messaggio di errore: "%{message}". Ti preghiamo di verificare che si tratti di un file GZip valido.'
+                title: Non è stato possibile procedere all'estrazione del file compresso
               corrupt_shapefile:
-                description: 
-                title: 
+                description: Non è possibile leggere l'intestazione dello shapefile.
+                title: Corrompi shapefile
               corrupt_xz:
-                description: 
-                title: 
+                description: 'Non è stato possibile estrarre correttamente il file XZ da te fornito. Messaggio di errore: "%{message}". Ti preghiamo di verificare che si tratti di un file XZ valido.'
+                title: Non è stato possibile estrarre il file compresso
               delete_without_user_pk:
-                description: 
-                title: 
+                description: Non è possibile elaborare con successo le operazioni di eliminazione, a meno che non venga dichiarato il campo identificatore della riga.
+                title: Non è possibile procedere con l'eliminazione senza l'identificatore della riga
               di2_counts:
-                description: 
-                title: 
+                description: Il tuo file è stato importato ma, a fronte di %{rowCount} righe totale, siamo riusciti a caricare soltanto %{failCount} righe nella sequenza di dati. Se si tratta di un risultato inatteso, ti preghiamo di scaricare le righe non andate a buon fine sulla destra e di verificare che i valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Successivamente, potrai riprovare a importare le righe in questione.
+                title: Completato
               duplicated_fields_in_input:
-                description: 
-                title: 
+                description: Il/i nome/i del/i campo/i %{fieldNames} viene/vengono utilizzato/i molte volte nel tuo file dei dati. Assicurati che i nomi dei campi siano univoci.
+                title: Duplica i nomi relativi ai campi specificati
               field_not_in_dataset:
-                description: 
-                title: 
+                description: Non è stato possibile trovare il/i nome/i del/i campo/i %{fieldNames} nella sequenza di dati in cui stai cercando di importati. Se intendi importare questa colonna, ti preghiamo di controllare la sillabazione e di riprovare.
+                title: Non è stato possibile trovare un campo nella sequenza di dati
               field_not_in_input:
-                description: 
-                title: 
+                description: Non siamo riusciti a trovare, all'interno del file dati da te fornito, una colonna attesa (%{fieldNames}) e non hai specificato una colonna che identifichi le righe. Ti preghiamo di verificare le colonne fornite e di riprovare.
+                title: Non è stato possibile trovare il campo all'interno del file
               field_wrong_format:
-                description: 
-                title: 
+                description: Il nome del campo "%{fieldName}" fornito all'interno del tuo file dati non è legale. I nomi dei campi validi devono contenere soltanto caratteri ASCII ed iniziare con un trattino basso o una lettera.
+                title: Fornito un nome del campo illegale
               generic:
-                description: 
-                title: 
+                description: Siamo spiacenti, non è stato possibile elaborare la tua richiesta di importazione a causa di un errore inatteso.
+                title: Si è verificato un errore
               geocoding_failure:
-                description: 
-                title: 
+                description: Non è stato possibile geo-codificare i dati di origine forniti per una ragione sconosciuta. Ti preghiamo di riprovare più tardi e di contattare <a href="https://support.socrata.com">l'Assistenza Socrata</a> se il problema persiste.
+                title: Geo-codifica non andata a buon fine per cause sconosciute
               geocoding_source_ignored:
-                description: 
-                title: 
+                description: Poiché le colonne %{fieldNames.join(", ")} fanno parte della fonte di geo-codifica che alimenta una colonna portante, non possiamo ignorarle come richiesto.
+                title: Non è possibile ignorare le colonne specificate
               geocoding_source_invalid_type:
-                description: 
-                title: 
+                description: Non è stato possibile utilizzare le colonne %{fieldNames} come fonte per geo-codificare le informazioni di localizzazione. Ti preghiamo di verificare che si tratti di colonne di testo o numeriche valide.
+                title: Non è possibile geo-codificare a partire dalle colonne fornite
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description: 
-                title: 
+                description: Poiché le colonne sono parte integrante della fonte di geo-codifica che alimenta una colonna di localizzazione, non possiamo ignorarle come da richiesta.
+                title: Non è possibile ignorare le colonne specificate
               incomplete_archive:
-                description: 
-                title: 
+                description: L'archivio shapefile che hai caricato è carente di un file con estensione "%{missing}". Assicurati che il tuo archivio disponga di questo file e riprova.
+                title: Archivio shapefile incompleto
               invalid_encoding:
-                description: 
-                title: 
+                description: Non è stato possibile leggere il tuo file poiché era codificato con %{encoding}, mentre noi supportiamo soltanto UTF-8. Per migliori risultati, assicurati che il tuo file sia validamente codificato in UTF-8.
+                title: Codifica del file non valida
               invalid_row_length:
-                description: 
-                title: 
+                description: La riga N° %{record} all'interno del tuo file CSV conteneva %{actual} campi, mentre le altre righe ne contenevano %{expected}. Ti preghiamo di assicurarti che il tuo file abbia un numero coerente di campi per riga.
+                title: Numero in aspettato di campi per riga
               malformed_blueprint:
-                description: 
-                title: 
+                description: 'La planimetria da te fornita non può essere utilizzata. Messaggio di errore: "%{message}".'
+                title: Planimetria corrotta
               malformed_upsert:
-                description: 
-                title: 
+                description: Non è stato possibile analizzare la portata del tuo inserimento di dati aggiornati come JSON, vicino al record %{record}. Ti preghiamo di verificare che si tratti di un JSON valido.
+                title: Inserimento dei dati aggiornati malfatto
               no_field_names_in_input:
-                description: 
-                title: 
+                description: Di solito, questa situazione si verifica perché il file CSV che abbiamo fornito è completamente vuoto. Assicurati che il tuo file contenga dei dati e riprova.
+                title: Non è stato possibile trovare un'intestazione CSV
               no_identity_column:
-                description: 
-                title: 
+                description: Questa sequenza di dati è dotata di una colonna per l'identificazione delle righe ("%{fieldName}"), ma non riusciamo a trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
+                title: Colonna che identifica le righe non trovata
               parse_error:
-                description: 
-                title: 
+                description: L'analisi del file da te caricato non è andata a buon fine in corrispondenza della riga %{lineNumber} con il messaggio "%{reason}".
+                title: Errore in fase di analisi
               permission_denied:
-                description: 
-                title: 
+                description: L'utente che ha avviato questa operazione (%{user}) pare non abbia i diritti necessari per intraprendere questa azione. Assicurati che le tue autorizzazioni siano state impostate correttamente e riprova.
+                title: Autorizzazione negata
               record_too_large:
-                description: 
-                title: 
+                description: Abbiamo interrotto la lettura del tuo file poiché abbiamo trovato una singola voce troppo ampia in corrispondenza della riga %{record} (ha superato il limite di %{limit}). Di solito, ciò è dovuto ad un'evasione non corretta del CSV, che porta alla lettura del valore di parecchie righe come facessero parte di una singola cella. Ti preghiamo di controllare che il tuo file sia valido.
+                title: Singola voce troppo pesante
               row_too_large:
-                description: 
-                title: 
+                description: 'La riga numero %{nearRecord} del tuo file conteneva troppi caratteri: il limite è %{limit}.'
+                title: Riga troppo lunga
               synthetic_location_in_input:
-                description: 
-                title: 
+                description: "È stata trovata una colonna (%{fieldNames}) nel tuo file dati corrispondente ad una colonna sintetica di questa sequenza di dati. Le colonne sintetiche vengono elaborate automaticamente e non vi si possono effettuare importazioni manualmente."
+                title: Non è possibile effettuare importazioni all'interno di una colonna sintetica
               too_many_errors_in_input:
-                description: 
-                title: 
+                description: La lavorazione è stata interrotta a causa dei molti errori trovati nei dati inseriti.
+                title: Troppi errori di inserimento riscontrati
               too_many_records_in_input:
-                description: 
-                title: 
+                description: Il tuo file dati supera il numero massimo di voci che si possono importare simultaneamente (ne hai %{recordCount} su un massimo di %{maxRecordCount}). Riduci il totale delle voci per file e riprova.
+                title: Troppe voci
               uninterpretable_value:
-                description: 
-                title: 
+                description: Il valore "%{value}" alla riga %{record}, colonna "%{column}" non può essere letto come %{expectedType}. Assicurati che tutti i valori siano formattati correttamente per le loro colonne di destinazione.
+                title: Valori delle voci non interpretabili
               unknown_domain:
-                description: 
-                title: 
+                description: Non riconosciamo il dominio di destinazione fornito della tua lavorazione (%{domain}). Assicurati che si tratti di un dominio di destinazione Socrata valido e riprova.
+                title: Dominio non riconosciuto
               unknown_file_type:
-                description: 
-                title: 
+                description: 'Non riconosciamo la tipologia del file che ci hai fornito (estensione: %{extension}). Assicurati di stare utilizzando un tipo di file supportato e che sia valido.'
+                title: Tipologia di file sconosciuta
               unsupported_import_type:
-                description: 
-                title: 
+                description: Il metodo d'importazione "%{importType}" non è supportato. Ti preghiamo di utilizzare "sostituire", "allegare" o "importare"
+                title: Metodo d'importazione non supportato
               upsert_already_in_progress_by_someone_else:
-                description: 
-                title: 
+                description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente su una sequenza di dati e qualcun altro è già nel mezzo di un'operazione di inserimento.
+                title: Inserimento di dati aggiornati già in corso
               upsert_counts:
-                description: 
-                title: 
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe nella tua sequenza di dati. Ti preghiamo di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
+                title: Completato
             success_with_data_errors:
               di2_counts:
-                description: 
-                title: 
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua sequenza di dati. Se si tratta di uno scenario inaspettato, ti prego di scaricare le righe non caricate a destra e di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Potrai, poi, provare nuovamente ad importare solo quelle righe.
+                title: Completato
               upsert_counts:
-                description: 
-                title: 
-          failed_rows: 
-          fallback_event_title: 
-          file_name_unknown: 
-          import: 
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua sequenza di dati. Verifica che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
+                title: Completato
+          failed_rows: Righe non importate
+          fallback_event_title: Errore %{error_code}
+          file_name_unknown: nome file sconosciuto
+          import: Importa
           import_failures:
             bad_timestamp_format:
-              description: 
-              title: 
+              description: Il valore della data "%{pattern}" è stato formattato in un modo che non conosciamo. Ti preghiamo di verificare che tutte le date che stai importando siano conformi agli <a href="https://en.wikipedia.org/wiki/ISO_8601">standard ISO-8601</a>.
+              title: Valore data/ora non ottimale
             bad_timezone:
-              description: 
-              title: 
+              description: Non riusciamo a comprendere il fuso orario  "%{name}". Ti preghiamo di verificare che tutte le date che stai importando siano conformi agli <a href="https://en.wikipedia.org/wiki/ISO_8601">standard ISO-8601</a>.
+              title: Fuso orario non ottimale
             control_file_invalid_json:
-              description: 
-              title: 
+              description: 'Il tuo file di controllo non era analizzabile come JSON. Messaggio di errore: "%{message}". Verifica che si tratti di un JSON valido.'
+              title: File di controllo corrotto
             control_file_malformed:
-              description: 
-              title: 
+              description: Il tuo file di controllo era un valido JSON, ma non corrispondeva al formato atteso. Assicurati che il tuo file di controllo corrisponda a <a href="https://socrata.github.io/datasync/resources/control-config.html">queste indicazioni</a>.
+              title: File di controllo corrotto
             control_file_too_large:
-              description: 
-              title: 
+              description: Il tuo file di controllo era troppo grande. Riducine la grandezza a %{limit} caratteri o meno e riprova.
+              title: File di controllo troppo grande
             corrupt_gzip:
-              description: 
-              title: 
+              description: 'Il file compresso GZip che hai fornito non è stato estratto con successo. Messaggio di errore: "%{message}". Ti preghiamo di verificare che si tratti di un valido file GZip.'
+              title: Non è stato possibile estrarre il file compresso
             corrupt_xz:
-              description: 
-              title: 
+              description: 'Il file compresso XZ da te fornito non è stato estratto con successo. Messaggio di errore: "%{message}". Verifica che si tratti di un file XZ valido.'
+              title: Non è stato possibile estrarre il file compresso
             delete_without_user_pk:
-              description: 
-              title: 
+              description: Non possiamo elaborare correttamente le operazioni di cancellazione se non viene indicata una colonna di identificazione delle righe.
+              title: Non è possibile procedere con l'eliminazione senza un identificatore delle righe
             duplicated_fields_in_input:
-              description: 
-              title: 
+              description: Il/i nome/i del/i campo/i %{fieldNames} viene/vengono utilizzato/i molteplici volte nel tuo file dati. Assicurati che i nomi dei campi siano univoci.
+              title: Specificato un duplicato del nome di un campo
             field_not_in_dataset:
-              description: 
-              title: 
+              description: Il/i nome/i del/i campo/i %{fieldNames} non può/possono essere trovato/i nella sequenza di dati in cui stai cercando di effettuare l'importazione. Se intendi importare questa colonna, ti preghiamo di controllare l'ortografia e di riprovare.
+              title: Non è stato possibile trovare il campo nella sequenza di dati
             field_not_in_input:
-              description: 
-              title: 
+              description: 'Non è stato possibile trovare una colonna attesa (%{fieldNames}) nel file dati da te fornito e non disponi di una colonna specifica per identificare le righe. Ti preghiamo di verificare le colonne fornite e di riprovare. '
+              title: Non è stato possibile reperire il campo nel file
             field_wrong_format:
-              description: 
-              title: 
+              description: Il nome del campo %{fieldName}" fornito nel tuo file dati non è legale. I nomi validi per i campi devono contenere soltanto caratteri ASCII e iniziare con un trattino basso o una lettera.
+              title: Nome del campo fornito illegale
             geocoding_failure:
-              description: 
-              title: 
+              description: Non è stato possibile geo-codificare i dati di origine forniti per una ragione sconosciuta. Ti preghiamo di riprovare più tardi e di contattare <a href="https://support.socrata.com">l'assistenza Socrata</a> se il problema persiste.
+              title: Geo-codifica sconosciuta non andata a buon fine
             geocoding_source_ignored:
-              description: 
-              title: 
+              description: Poiché le colonne %{fieldNames.join(", ")} fanno parte della fonte di geo-codifica che alimenta una colonna portante, non possiamo ignorarle come richiesto.
+              title: Non è stato possibile ignorare le colonne specificate
             geocoding_source_invalid_type:
-              description: 
-              title: 
+              description: Non è stato possibile utilizzare le colonne %{fieldNames} come fonte per geo-codificare le informazioni di localizzazione. Ti preghiamo di verificare che si tratti di colonne di testo o numeriche valide.
+              title: Non è stato possibile procedere alla geo-codifica a partire dalle colonne fornite
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description: 
-              title: 
+              description: Poiché le colonne fanno parte della fonte di geo-codifica che alimenta una colonna di localizzazione, non possiamo ignorarle come richiesto.
+              title: Non è stato possibile ignorare le colonne specificate
             invalid_encoding:
-              description: 
-              title: 
+              description: Non è stato possibile leggere il file in quanto era codificato in %{encoding}, mentre noi supportiamo soltanto il formato UTF-8. Per migliori risultati, assicurati che il tuo, sia un valido file UTF-8.
+              title: Codifica del file non valida
             invalid_row_length:
-              description: 
-              title: 
+              description: La riga n° %{record} all'interno del tuo file CSV conteneva %{actual} campi, mentre le altre righe ne contenevano %{expected}. Assicurati che il tuo file abbia un numero coerente di campi per riga.
+              title: Numero di campi per riga non atteso
             malformed_upsert:
-              description: 
-              title: 
+              description: La portata dell'inserimento dei dati aggiornati non era analizzabile come JSON, vicino alla voce %{record}. Verifica che si tratti di un valido JSON.
+              title: Inserimento di dati aggiornati corrotto
             no_field_names_in_input:
-              description: 
-              title: 
+              description: Di solito, ciò accade perché il file CSV che abbiamo fornito è completamente vuoto. Assicurati che il file contenga dei dati e riprova.
+              title: Non è stato possibile trovare l'intestazione CSV
             no_identity_column:
-              description: 
-              title: 
+              description: Questa sequenza di dati fornisce una colonna che identifica le righe ("%{fieldName}"), ma non è stato possibile trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
+              title: Colonna di identificazione delle righe non trovata
             permission_denied:
-              description: 
-              title: 
+              description: L'utente che ha avviato questa operazione (%{user}) pare non abbia i diritti necessari per metterla in atto. Assicurati che le tue autorizzazioni siano state impostate correttamente e riprova.
+              title: Autorizzazioni negate
             record_too_large:
-              description: 
-              title: 
+              description: Abbiamo interrotto la lettura del tuo file, in quanto abbiamo trovato una singola voce troppo lunga sulla riga %{record} (superava il limite di %{limit}). Ciò è dovuto, di solito, a una non corretta evasione che conduce alla lettura dei valori di molte righe come se appartenessero a una singola cella. Controlla che il tuo file sia valido.
+              title: Una singola voce troppo lunga
             synthetic_location_in_input:
-              description: 
-              title: 
+              description: Abbiamo trovato una colonna (%{fieldNames}), all'interno del tuo file dati, che corrisponde ad una colonna sintetica in questa sequenza di dati. Le colonne sintetiche vengono calcolate automaticamente e non è possibile effettuarvi delle importazioni.
+              title: Non è possibile effettuare delle importazioni all'interno di una colonna sintetica
             too_many_errors_in_input:
-              description: 
-              title: 
+              description: La lavorazione è stata interrotta a causa dei troppi errori riscontrati nell'inserimento dei dati.
+              title: Troppi errori di inserimento riscontrati
             too_many_records_in_input:
-              description: 
-              title: 
+              description: Il tuo file dati superava il numero massimo di voci importabili simultaneamente (disponi di %{recordCount}; il massimo è %{maxRecordCount}). Riduci il totale delle voci per file e riprova.
+              title: Troppe voci
             uninterpretable_value:
-              description: 
-              title: 
+              description: Non è stato possibile leggere il valore "%{value}" alla riga %{record}, colonna "%{column}" come %{expectedType}. Assicurati che tutti i valori siano formattati correttamente per le proprie colonne di destinazione.
+              title: Valore della voce non interpretabile
             unknown_domain:
-              description: 
-              title: 
+              description: Non riconosciamo il dominio di destinazione fornito della tua lavorazione (%{domain}). Assicurati che si tratti di un dominio di destinazione Socrata valido e riprova.
+              title: Dominio non riconosciuto
             unknown_file_type:
-              description: 
-              title: 
+              description: 'Non riconosciamo la tipologia del file che ci hai fornito (estensione: %{extension}). Assicurati di stare utilizzando una tipologia di file supportata e che sia valida.'
+              title: Tipologia di file sconosciuta
             upsert_already_in_progress_by_someone_else:
-              description: 
-              title: 
-          import_method: 
-          initiated_at: 
-          no_events: 
-          page_title: 
+              description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente sulla stessa sequenza di dati e qualcun altro è già nel mezzo di un'operazione di inserimento.
+              title: Inserimento di dati aggiornati già in corso
+          import_method: Metodo d'importazione
+          initiated_at: Avviato a
+          no_events: Non è stato ancora registrato alcun evento di avanzamento per questa lavorazione.
+          page_title: Informazioni sulla lavorazione dei dati
           services:
-            DeltaImporter2: 
-            Imports2: 
-            ResourcesAPI: 
-          started_by: 
-          title: 
-          to: 
+            DeltaImporter2: Sincronizzazione dei dati
+            Imports2: Interfaccia web
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Risorsa API</a>
+          started_by: Avviata da
+          title: Informazioni sulla lavorazione dei dati
+          to: a
         statuses:
-          failure: 
-          in_progress: 
-          not_started: 
-          success: 
-          success_with_data_errors: 
+          failure: Non andata a buon fine
+          in_progress: In lavorazione
+          not_started: Non ancora avviata
+          success: Completata
+          success_with_data_errors: Completata, con problemi
       metadata:
         add_new_category: Aggiungi nuova Categoria
         add_new_field: Aggiungi nuovo Campo
         allowed_values: Permetti i Valori
         are_you_sure: Sei sicuro di voler eliminare questa impostazione del Campo e tutti i campi associati?
         category_name: Nome Categoria
-        category_table_description: 
+        category_table_description: Categorie dei metadati
         create: Crea
         create_new_fieldset: Crea una nuova impostazione del Campo
         define_categories: Definisci categorie di dataset
@@ -2433,7 +2445,7 @@ it:
         metadata_explain1: I metadata personalizzati sono frammentati in <span class="code">impostazioni di campo</span> and <span class="code">dei campi</span>. Una <span class="code">impostazione di campo</span> è un modo per visualizzare logicamente un gruppo o più <span class="code">campi</span> personalizzati assieme.
         metadata_explain2: 'I campi possono essere configurati in vari modi. Possono essere <span class="code">obbligatori</span>, il che li renderà obbligatori quando chi pubblica creerà nuovi database e aggiornerà metadata esistenti. Oppure possono essere <span class="code">privati</span>, rendendoli non visibili ad altre persone. '
         metadata_explain3: Infine, potrai predefinire le ozioni per i tuoi <span class="code">campi</span>, nel caso in cui tu desiderassi ottenere dei valori scelti da un’elenco, piuttosto che inseriti come testo gratuito.
-        metadata_field_table_description: 
+        metadata_field_table_description: Campi dei metadati per '%{name}'
         no_data: Nessun campo con dati impostati è stato definito per il tuo dominio. Inserisci un nome qui sotto e clicca 'Crea' per cominciare.
         no_fields_defined: Questa impostazione di campo non ha ancora alcun campo definito
         page_title: Gestisci i Metadata del Dataset
@@ -2444,133 +2456,133 @@ it:
         'true': vero
         up: Su
       site_chrome:
-        cancel: 
-        description: 
-        preview_changes: 
-        save: 
-        save_changes: 
-        site_appearance: 
+        cancel: Annulla
+        description: Configura l'aspetto del tuo sito Socrata.
+        preview_changes: Anteprima delle modifiche
+        save: Salva
+        save_changes: Salva modifiche
+        site_appearance: Aspetto del sito
         tabs:
           footer:
             fields:
               copyright_notice:
-                description: 
-                label: 
-                title: 
+                description: Aziona la visualizzazione dell'avviso di copyright del tuo sito. Aggiorniamo automaticamente l'avviso per mostrare l'anno solare in corso.
+                label: Mostra avviso di copyright
+                title: Avviso di copyright
               footer_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Colore dello sfondo, colore del testo e dei link mostrati all'interno del piè di pagina.
+                placeholder: "#123456"
+                title: Colore di sfondo del piè di pagina
               footer_display_name:
-                description: 
-                placeholder: 
-                title: 
+                description: Nome mostrato nella barra del piè di pagina. Generalmente, impostato con il nome della tua organizzazione.
+                placeholder: Evergreen Open Data
+                title: Nome del display del piè di pagina
               footer_logo:
-                description: 
-                placeholder: 
-                title: 
+                description: Riferimento URL del logo del piè di pagina. La grandezza minima consigliata è 300px x 200px.
+                placeholder: URL
+                title: Logo del piè di pagina
               footer_text_link_color:
-                placeholder: 
-                title: 
-              link_title_label: 
-              link_title_placeholder: 
+                placeholder: "#ffffff"
+                title: Colore del testo e dei link presenti nel piè di pagina
+              link_title_label: Etichetta del link
+              link_title_placeholder: Testo del link
               menu_links:
-                description: 
-                title: 
-              url_label: 
-              url_placeholder: 
-            title: 
+                description: Mostra fino a 15 link nel piè di pagina. Disponiamo automaticamente questi link in colonne.
+                title: Link del menu del piè di pagina
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Piè di pagina
           general:
             fields:
               google_analytics_token:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Inserisci il token (non lo script intero) del tuo codice di tracciamento Google Analytics per raccogliere dati analitici per il tuo sito.
+                error: Il token dovrebbe corrispondere al formato UA-XXXXX-XXXX
+                placeholder: UA-12345678-1
+                title: Token di Google Analytics
               template:
-                description: 
-                placeholder: 
-                title: 
+                description: Regola l'aspetto dell'intestazione/piè di pagina modificando il modello. I modelli supportati sono "Predefinito" e "Rally".
+                placeholder: Rally
+                title: Modello
               window_icon:
-                description: 
-                placeholder: 
-                title: 
+                description: Riferimento URL all'icona mostrata nella finestra, scheda e campo URL del browser.
+                placeholder: URL
+                title: Icona della finestra o della scheda (favicon)
               window_title_display:
-                description: 
-                placeholder: 
-                title: 
-            title: 
+                description: Nome mostrato nel titolo della finestra o della scheda.
+                placeholder: Evergreen Open Data
+                title: Mostra del titolo della finestra o della scheda
+            title: Impostazioni generali
           header:
             fields:
               bar_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Colore di sfondo della barra d'intestazione e colore del testo e dei link che giacciono in cima alla barra.
+                placeholder: "#123456"
+                title: Colore di sfondo della barra
               bar_text_link_color:
-                placeholder: 
-                title: 
+                placeholder: "#ffffff"
+                title: Colore del testo e del link della barra
               header_bar_logo:
-                description: 
-                placeholder: 
-                title: 
+                description: Riferimento URL al logo della barra d'intestazione. La grandezza minima consigliata è 100 x 40px. Questo logo verrà mostrato a grandezza ridotta.
+                placeholder: URL
+                title: Logo della barra d'intestazione
               header_display_name:
-                description: 
-                placeholder: 
-                title: 
-              link_title_label: 
-              link_title_placeholder: 
+                description: Nome mostrato all'interno della barra d'intestazione. Generalmente impostato con il nome della tua organizzazione.
+                placeholder: Evergreen Open Data
+                title: Nome dell'intestazione da mostrare
+              link_title_label: Etichetta del link
+              link_title_placeholder: Testo del link
               menu_links:
-                description: 
-                title: 
-              url_label: 
-              url_placeholder: 
-            title: 
+                description: Mostra fino a 15 link all'interno della barra d'intestazione. Se le etichette dei link diventano troppo lunghe o un visitatore sta visualizzando il tuo sito su un dispositivo piccolo, allora i link si contrarranno automaticamente in un menu.
+                title: Link del menu
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Barra d'intestazione
           homepage:
             fields: 
-            title: 
+            title: Pagina iniziale
           social:
             fields:
               facebook_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Facebook e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.facebook.com/
+                title: Link al Profilo Facebook
               flickr_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Flickr e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.flickr.com/
+                title: Link al Profilo Flickr
               google_plus_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Google Plus e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.plus.google.com/
+                title: Link al profilo Google Plus
               instagram_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Instagram e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.instagram.com/
+                title: Link al profilo Instagram
               linked_in_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo LinkedIn e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.linkedin.com/
+                title: Link al profilo LinkedIn
               tumblr_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Tumblr e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.tumblr.com/
+                title: Link al Profilo Tumblr
               twitter_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Twitter e il link nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.twitter.com/
+                title: Link al profilo Twitter
               vimeo_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Vimeo nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.vimeo.com/
+                title: Link al profilo Vimeo
               yammer_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Mostra il link al profilo Yammer nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.yammer.com/
+                title: Link al profilo Yammer
               youtube_profile_link:
-                description: 
-                placeholder: 
-                title: 
-            title: 
+                description: Mostra il link al profilo YouTube nell'intestazione e nel piè di pagina, ove presenti.
+                placeholder: http://www.youtube.com/
+                title: Link al Profilo YouTube
+            title: Condivisione sui social
       users:
         actions: Azioni
         all: Tutto
@@ -2580,7 +2592,7 @@ it:
         email_prompt: Inserisci gli indirizzi email per i conti che vuoi creare
         emails: Email
         error_permission_request: Si è verificato un errore durante l'elaborazione della tua richiesta di autorizzazione
-        export_as_csv: 
+        export_as_csv: Esporta come CSV
         filter_by: Filtra per
         flashes:
           accounts_created:
@@ -2600,7 +2612,7 @@ it:
         no_users_found: Non è stato trovato nessun utente esistente
         no_users_match: Nessun utente coincide con il tuo filtro attuale
         pending_users: I seguenti utenti hanno dei conti in sospeso, ma non sono ancora stati attivati
-        pending_users_table_description: 
+        pending_users_table_description: Utenti in sospeso
         reenable_privileges: Riabilita privilegi
         remove: Rimuovi
         reset_password: Resetta la Password
@@ -2610,19 +2622,19 @@ it:
           administrator: amministratore
           designer: designer
           editor: editore
-          editor_stories: 
+          editor_stories: editore + prospettive
           none: nessuno
           publisher: autore
-          publisher_stories: 
+          publisher_stories: autore + prospettive
           viewer: visualizzatore
         search: Cerca
         search_for_users: Cerca utenti da aggiungere
         search_results: Cerca risultati per '%{term}'
         title: Gestisci gli utenti
         user_saved: Utente salvato
-        users_table_description: 
+        users_table_description: Utenti
       view_moderation:
-        table_description: 
+        table_description: Sequenze di dati moderate
     dataset_edit:
       append: Allega
       append_and_replace: Aggiungi e sostituisci i dati
@@ -2663,8 +2675,8 @@ it:
         missing_name: "È obbligatorio inserire il nome del Dataset."
         need_description: Descrivi &ldquo;%{name}&rdquo;
         point:
-          missing_latlong: 
-          suboptimal_column: 
+          missing_latlong: imposta per importare una colonna <strong>%{coordinateType} ma non una colonna <strong>%{missingCoordinateType}. Specifica la coppia completa lat/long.
+          suboptimal_column: imposta per importare il suo <strong>%{field}</strong> dalla colonna di origine <strong>%{originalColumnName}</strong>, ma la nostra analisi mostra che la colonna di origine è una colonna %{suggestion}, mentre %{field} si aspetta una colonna di tipo %{type}. Qualora dovessi scegliere di procedere con queste impostazioni di importazione, è probabile che si verifichino errori di importazione o di geo-codifica.
       finish:
         headline: Il Tuo set di dati è stato creato.
         subheadline: Clicca su Termina per vederlo!
@@ -2698,7 +2710,7 @@ it:
         headers: Intestazioni
         headers_instructions: Le Intestazioni dovrebbero essere ignorate e non importate come dati. Cortesemente indica quante colonne della sorgente dei tuoi file sono intestazioni
         headline: Specifica quante &ldquo;<span class="fileName"></span>&rdquo; dovebbero essere importate.
-        headline_interpolate: 
+        headline_interpolate: Specifica in che modo "{0}" dovrebbe essere importato.
         help_message: Per aiuto, controlla una <a href="%{common_errors}" rel="external">lista di avvisi comuni ed errori</a>.
         more_rows: Più Colonne
         name: Nome
@@ -2714,16 +2726,16 @@ it:
         why_choose_now: Perchè è importante scegliere i tipi di colonne adesso?
       import_help: <strong>Hai bisogno di aiuto?</strong> Noi manteniamo una <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a> che possono aiutarti.
       import_shapefile:
-        abbreviatedSubheadline: 
-        abbreviatedSummary: 
+        abbreviatedSubheadline: La sintetizzazione di questa sequenza di dati potrebbe impiegare del tempo. Clicca su "avanti" per importarla.
+        abbreviatedSummary: Gli strati della mappa in &ldquo;<span class="fileName"></span>&rdquo; verranno creati dopo l'importazione.
         crs: Sistema di Riferimento delle Coordinate
         headline: Specifica come &ldquo;<span class="fileName"></span>&rdquo; deve essere importato.
-        headline_interpolate: 
+        headline_interpolate: Specifica in che modo "{0}" dovrebbe essere importato.
         layers_list: Strati da importare
         name: Nome
         pending: Attendi mentre carichiamo i tuoi strati...
         subheadline: Questo file contiene <span class="featureCount"></span> funzioni in <span class="layerCount"></span> strati.
-        subheadline_interpolate: 
+        subheadline_interpolate: Questo shapefile contiente {0} strati.
       import_warnings:
         headline: Avvertimenti durante l'importazione
         see_docs: <strong>Confuso?</strong> Controlla la nostra <a href="%{publisher_link}" rel="external">documentazione dell'editore</a> sull'importazione dati per una spiegazione su come l'impoter gestisce i dati. Potresti anche volerti riferire alla nostra <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a>.
@@ -2738,12 +2750,12 @@ it:
         private_explain: I miei dati sono <strong>privati</strong>
         prompt: Cortesemente descrivi i tuoi dati
         public_explain: 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
-      notify_me: 
-      notify_me_error_html: 
-      notify_me_messaging: 
-      notify_me_success_addl: 
-      notify_me_success_html: 
-      notify_me_success_html_js: 
+      notify_me: Inviami una notifica
+      notify_me_error_html: Si è verificato un errore durante la programmazione dell'e-mail di notifica. Ti preghiamo di riprovare più tardi o di contattare a href="mailto:support@socrata.com">l'assistenza Socrata</a> qualora il problema persista.
+      notify_me_messaging: via e-mail quando è completa.
+      notify_me_success_addl: Nel frattempo, chiudi il browser per questioni di sicurezza.
+      notify_me_success_html: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>%{email}</strong> quando la tua sequenza di dati sarà pronta."
+      notify_me_success_html_js: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>{0}</strong> quando la tua sequenza di dati sarà pronta."
       processing: Sto elaborando
       title: Nuovo Set di Dati
       upload_accessible: Carica un set di dati accessibile
@@ -2761,7 +2773,7 @@ it:
       bar:
         api_unsavable: Le viste API non possono essere modificate
         based_on_html: Basato su <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html: 
+        based_on_layer_html: Uno strato proveniente dalla sequenza di dati geo-spaziale <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Basato su <a class="parentName"></a>
         based_on_private_view: una vista privata.
         based_on_working_copy_html: Basato sulla copia di lavoro di <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -2778,11 +2790,11 @@ it:
           underline: Sottolineato
           undo: Disfai
         full_screen: Visualizza a schermo intero
-        no_description: 
+        no_description: "(Nessuna descrizione fornita)"
         out_of_date: Questo set di dati non è aggiornato da %{age}
         publish_button: Pubblica Dataset
         publish_prompt: Questo dataset è una copia di lavoro e non è pubblico. Una volta terminate le modifiche, è necessario pubblicare il dataset per renderlo pubblico.
-        publish_prompt_with_dataset_landing_page: 
+        publish_prompt_with_dataset_landing_page: Questa sequenza di dati è una copia di lavoro e non è disponibile pubblicamente. Una volta effettuate le modifiche desiderate, questa sequenza di dati dovrebbe essere pubblicata per renderla disponibile pubblicamente. La pubblicazione di questa pagina avrà effetti anche sulla pubblicazione della landing page della sequenza di dati.
         publish_rights: Solo un proprietario o editore può pubblicare questo dataset
         revert_button: Ripristina
         revert_prompt: Ripristina vista salvata
@@ -2881,7 +2893,7 @@ it:
         success: La tua e-mail è stata inviata con successo.
         title_html: Condividi "<span class="datasetName">%{name}</span>"
       fatrow:
-        edit_layout: 
+        edit_layout: Modifica la disposizione
       grid_sidebar:
         add_column:
           convert_address:
@@ -2914,8 +2926,8 @@ it:
           developer_portal: Portale dello sviluppatore
           endpoint_title: 'Accesso Endpoint API:'
           intro_html: Le <strong>API Open Data Socrata</strong> (SODA) permettono agli sviluppatori software di accedere in programmazione ai dati ospitati nei siti Socrata. Gli sviluppatori software possono creare applicazioni che utilizzano le API SODA per visualizzare e rimaneggiare dataset Socrata in un modo nuovo e creativo. Creare un'applicazione iPhone che visualizza la spesa del governo nel tuo paese, un'applicazione web che permette ai cittadini di conoscere potenziali benefici di governo che avevano trascurato, o un servizio che ti invia automaticamente una email quando viene pubblicato un nuovo dato che vuoi tracciare.
-          multiple_endpoints_intro_html: 
-          no_endpoints_available: 
+          multiple_endpoints_intro_html: L' <a href="http://dev.socrata.com/" target="external">Open Data API di Socrata(SODA)</a> fornisce un accesso programmatico a questa sequenza di dati, che include la possibilità di <a href="http://dev.socrata.com/docs/filtering.html" target="external">filtrare</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">interrogare</a> e <a href="http://dev.socrata.com/docs/aggregation.html" target="external">aggregare</a> i dati. Per maggiori informazioni, consulta i documenti API per questa sequenza di dati, disponibili di seguito, oppure visita il nostro <a href="http://dev.socrata.com" target="external">portale per gli sviluppatori</a>
+          no_endpoints_available: Nessun endpoint disponibile.
           reference_html: Per accedere a questo dataset in programmazione, utilizzare l'endpoint API fornito sotto. Per maggiori informazioni ed esempi su come utilizzare API OpenData di Socrata, fare riferimento alla nostra <a href="http://dev.socrata.com" rel="external">Documentazione per Sviluppatori</a>.
           subtitle: Accedi questo %{view_type} tramite SODA
           title: SODA API
@@ -2939,8 +2951,8 @@ it:
             immutable: Avvia la procedura guidata per la Sostituzione
             mutable: Avvia la procedura guidata per l'Aggiunta e la Sostituzione
         backup:
-          button: 
-          item_html: 
+          button: Esegui il backup di questa sequenza di dati
+          item_html: Backup eseguito alle <span class="backupTime"></span>
         base:
           buttons:
             apply: Applica
@@ -2971,8 +2983,8 @@ it:
             formatted_text: testo formattato
             geospatial: geospaziale
             groups:
-              geometry: 
-              standard: 
+              geometry: Geometria
+              standard: Standard
             list: lista
             location: posizione
             money: denaro
@@ -3167,7 +3179,7 @@ it:
             title: Tipo di Colonna
             type: Tipo di Dato
             type_prompt: Seleziona un tipo di dato
-            working_copy_html: 
+            working_copy_html: Ti preghiamo di <a href="#" class="createWorkingCopy">creare una copia di lavoro</a> per modificare la tipologia di dati di questa colonna
         column_order:
           columns:
             title: Colonne
@@ -3208,8 +3220,8 @@ it:
             currency: Valuta
             format_mask_warning: Questo può sovrascrivere alcune impostazioni fatte sopra.
             groups:
-              all: 
-              common: 
+              all: Tutto
+              common: Comune
             no_precision: Nessuna
             precision: Precisione
             title: Formattazione Moneta
@@ -3242,8 +3254,8 @@ it:
           subtitle: Aggiorna diverse proprietà su questa colonna
           success: La tua colonna è stata aggiornata
           text_formatting:
-            display_style: 
-            title: 
+            display_style: Stile di esposizione
+            title: Formattazione del testo
           title: Proprietà Colonna
           url:
             base_url: Base URL
@@ -3251,7 +3263,7 @@ it:
             title: Opzioni URL
           validation:
             published: Si prega di creare una copia di lavoro o una vista del dataset per modificare le proprietà delle colonne
-            snapshot: 
+            snapshot: Non è possibile modificare le proprietà di una colonna per un'immagine di visualizzazione
             unsaved: Non puoi modificare le proprietà di una colonna per una vista non salvata
         conditional_formatting:
           change_icon: modifica
@@ -3277,10 +3289,10 @@ it:
             no_columns: Questa bìvista non ha colonne da filtrare
             no_icons: Le icone sono significative solo per le mappe
         data_lens:
-          button: 
-          button_flyout: 
-          subtitle: 
-          title: 
+          button: Nuova Data Lens
+          button_flyout: I tuoi dati sono in fase di elaborazione. Aggiorna la pagina tra qualche minuto e potrai creare una nuova Data Lens.
+          subtitle: Una Data Lens è un'esperienza di visualizzazione impegnativa e interattiva che include un'esplorazione avanzata e una migliore cura dei dati. Clicca su <strong>Nuova Data Lens</strong> per crearne una nuova. Da lì, potrai esplorare visivamente i dati, personalizzarne la modalità di esposizione e gestire come verranno presentati nel catalogo.
+          title: Data Lens
         delete:
           confirm: Questo eliminerà %{view_type} in modo permanente. Non è possibile annullare l'eliminazione! Sei sicuro di voler procedere?
           delete_button: Elimina vista %{view_type}
@@ -3306,8 +3318,8 @@ it:
           download_as: Scarica come
           download_dataset: Ti preghiamo di scaricare il set di dati da cui deriva questa vista.
           geo_header: Scarica dati Geospaziali
-          monolayer_header: 
-          multilayer_header: 
+          monolayer_header: Scarica senza i dati geospaziali
+          multilayer_header: Scarica i dati di uno strato specifico
           subtitle: Scarica una copia di questo dataset in formato statico
           title: Scarica
         feed:
@@ -3401,13 +3413,13 @@ it:
           validation:
             hidden_location_html: E' possibile <a href=
             location_column: E' richiesta una colonna di tipo location per creare una mappa.
-            location_column_invalid_dataset: 
+            location_column_invalid_dataset: La sequenza di dati richiesta non esiste.
             viz_limit: Una vista può avere solo una visualizzazione su di essa
         odata:
           endpoint_action: 'Copia questo link:'
           intro_html1: Crea un foglio di calcolo su Microsoft Excel per analizzare o visualizzare questo set di dati. Usando un collegamento OData, i dati saranno aggiornabili.
           intro_html2: Usa Microsoft Excel 2010, Microsoft Excel 2013 o Microsoft Power Query. Segui le istruizioni qui, usando <a href="%{doc_link}">la documentazione oData di Socrata</a>.
-          no_endpoints_available: 
+          no_endpoints_available: Nessun endpoint disponibile.
           subtitle: Accedi a questo set di dati via OData
           title: OData
         ownership:
@@ -3489,7 +3501,7 @@ it:
           subtitle: Imposta quali colonne saranno visibili in questa vista
           title: Mostra Colonne Nascoste
           warnings:
-            active_filter: 
+            active_filter: Non è possibile nascondere questa colonna perché ha un filtro attivo.
         sort_rollup:
           rollup:
             add_group_button: Aggiungi raggruppamento colonna
@@ -3563,6 +3575,8 @@ it:
       new_ux_nbe_warning: 'Solo per uso interno: vecchia vista UX del nuovo set di dati Backend. Gli utenti ordinari sarebbero stati trasferiti su %{url}'
       new_ux_text: Vedi questo dato nella nuova esperienza Data Lens
       new_ux_title: Pronto ad esplorare visivamente?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
@@ -3591,8 +3605,8 @@ it:
       unable_to_find_dataset_page: Non siamo in grado di trovare una pagina Data Lens per questo set di dati.
     edit_metadata:
       about: Informazioni
-      add_link: 
-      add_source: 
+      add_link: Aggiungi link
+      add_source: Aggiungi fonte
       additional_source: Sorgente aggiuntiva
       alternative_access_prompt: Inserisci un punto di accesso alternativo per questo dataset
       api_endpoint: Endpoint API
@@ -3615,10 +3629,10 @@ it:
       dataset_title_prompt: Inserisci un titolo
       dataset_url: URL del Set di Dati
       dataset_url_prompt: Inserisci il posto del tuo det di dati esterno
-      default_row_label: 
+      default_row_label: Riga
       delete: Elimina
-      described_by: 
-      described_by_prompt: 
+      described_by: Dizionario dei dati
+      described_by_prompt: Inserisci un link al dizionario dei dati
       email_address: Indirizzo e-mail
       email_help: L'indirizzo non verrà visualizzato al pubblico. Se il campo viene lasciato vuoto, sarà inserito il tuo indirizzo
       existing_attachments: Allegati esistenti
@@ -3637,8 +3651,8 @@ it:
       licensing_attr: Proprietà e licenza
       list: Elenco
       metadata_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
-      missing_external_dataset: 
-      multiple_extensions: 
+      missing_external_dataset: Ti preghiamo di fornire almeno una sequenza di dati esterna.
+      multiple_extensions: Non è consentito avere più di una estensione dello stesso tipo per lo stesso endpoint.
       new_attachment: Nuovo allegato
       none: "(nessuno)"
       northwest_latitude: Latitudine nord-ovest
@@ -3646,7 +3660,7 @@ it:
       optional: Facoltativo
       private_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
       remove_image: Rimuovi immagine
-      remove_link: 
+      remove_link: Rimuovi link
       required_field: Campo obbligatorio
       resource_name: Nome della sorgente
       resource_name_prompt: Inserisci il nome della sorgente
@@ -3654,9 +3668,9 @@ it:
       row_class: Classe del record
       row_identifier: Identificatore del record
       row_identifier_help_text: Una volta che una vista è stata pubblicata, l'identificatore di riga non può essere modificato.
-      row_label: 
-      row_label_help: 
-      row_label_prompt: 
+      row_label: Etichetta della riga
+      row_label_help: Descrivi cosa rappresenta ciascuna riga all'interno della sequenza di dati (se pertinente).
+      row_label_prompt: 'ad es: crimine, persona, ospedale'
       save: Salva
       save_changes: Salva le modifiche
       semantics_rdf: Semantica e RDF
@@ -3675,7 +3689,7 @@ it:
       upload_help: L'immagine verrà ritagliata in forma quadrata
       upload_image: Carica immagine
       upload_new_attachment: Carica nuovo allegato
-      url: 
+      url: URL
     forgot_password:
       already_authenticated: 'Impossibile effettuare il reset della password: sei già autenticato.'
       failed: Si è verificato un problema durante l’elaborazione della richiesta di reset della password. Si prega di riprovare.
@@ -3701,7 +3715,7 @@ it:
       existing_latlng_cols: Colonne di Latitudine e Longitudine Esistenti
       find: trova
       find_and_replace: Trova e Sostituisci valore...
-      import_from_latlong: 
+      import_from_latlong: Importa dalle colonne della <strong>latitudine</strong> e dell <strong>longitudine</strong>
       import_from_multiple: Importa da <strong>colonne multiple</strong>
       import_from_single: Importa da <strong>colonna singola</strong>
       latitude: Latitudine
@@ -3715,7 +3729,7 @@ it:
       new_source_col: Aggiungi nuova colonna sorgente
       new_transform: Nuova operazione di trasformazione
       options: Opzioni
-      point_source_col: 
+      point_source_col: Colonne di origine del punto
       properly_formatted: La colonna deve essere <a href="%{formatting_link}" rel="external">correttamente formattata</a> prima di poter essere importata.
       regular_expression: espressione regolare
       remove: rimuovi
@@ -3744,9 +3758,9 @@ it:
       one_header: Una delle tue colonne è una titolata.
       problem_importing: C'è stato un problema di importazione di tale file. Cortesemente assicurati che sia valido.
       problem_uploading: C'è stato un problema di caricamento di tale file. Cortesemente assicurati che sia valido.
-      replicating: 
+      replicating: Riproduzione della sequenza di dati in corso.
       rows_imported: "%{num} righe importati finora."
-      rows_imported_js: 
+      rows_imported_js: "{0} righe importate finora."
       try_again: Cortesemente riprova fra un pò.
       unknown_error: E' avvenuto un errore sconosciuto
       uploading: Sto caricando il tuo file
@@ -3768,7 +3782,7 @@ it:
         no_applications: Non hai ancora creato alcuna applicazione. Click a destra su 'Gestisci' per iniziare
         title: Applicazioni %{user}
       bar:
-        edit_info_link: 
+        edit_info_link: Modifica le informazioni di base
         edit_settings_link: Modifica Impostazioni Account
         follow_link: Segui
         join_date: Registrato
@@ -3898,10 +3912,10 @@ it:
         following: Following
         hide_contacts_link: Nascosto
       whats_new:
-        caught_up: 
-        older_news: 
-        read_more: 
-        title: 
+        caught_up: Sei completamente preso! Dai un'occhiata <a target="_blank" href="%{href}">qui</a> ai nostri aggiornamenti più recenti.
+        older_news: Consulta le notizie più datate
+        read_more: Leggi altro
+        title: Ultime da Socrata
     reset_password:
       failed: Si è verificato un problema durante la reimpostazione della password. Riprova più tardi.
       form:
@@ -3919,13 +3933,13 @@ it:
       mismatch: Le password non corrispondono; si prega di riprovare
       prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
       sign_in_with: "<strong>Accedi</strong> with %{provider}"
-      sso_required: 
+      sso_required: L'amministratore di questo sito richiede che gli utenti privilegiati accedano con un profilo diverso dall'ID Socrata. Ti preghiamo di effettuare l'accesso utilizzando un metodo differente.
       tips_html: Utilizza e-mail e password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       email_verification:
-        expired: 
-        sent: 
-        success: 
+        expired: Questo link di verifica via e-mail è scaduto. Ti preghiamo di creare un nuovo profilo con lo stesso indirizzo e-mail e riceverai un'altra e-mail di verifica per completare la registrazione.
+        sent: 'Ti abbiamo inviato un''e-mail di verifica all''indirizzo %{email}: segui le istruzioni contenute al suo interno per completare il processo di registrazione.'
+        success: Il tuo indirizzo e-mail è stato verificato, ti preghiamo di accedere.
       form:
         create_account_button: Crea il Mio Account
         have_account_link: Ho già un account
@@ -3939,7 +3953,7 @@ it:
     stats:
       api: API
       apply: Applica
-      browser_page_views: 
+      browser_page_views: Visualizzazioni della pagina del browser
       bytes_out: Bytes Finiti
       chart_created: grafico creato
       charts: Grafici
@@ -3948,12 +3962,12 @@ it:
       comments: Commenti
       comments_created: commenti creati
       daily: Giornaliero
-      date_range: 
+      date_range: Intervallo di date
       deleted_application: applicazione cancellata
-      delta_decrease: 
-      delta_decrease_compared: 
-      delta_increase: 
-      delta_increase_compared: 
+      delta_decrease: Il numero di {0} diminuito di {1} durante {2}
+      delta_decrease_compared: Il numero di {0} diminuito di {1} durante {2} rispetto a {3}
+      delta_increase: Il numero di {0} aumentato di {1} durante {2}
+      delta_increase_compared: Il numero di {0} aumentato di {1} durante {2} rispetto a {3}
       dependent_metrics: Metriche Dipendenti
       download: download
       downloads: scaricati
@@ -3978,7 +3992,7 @@ it:
       no_data_time_period: Nessun dato per questo intervallo di tempo
       page_viewed: pagina vista
       pages_viewed: pagine viste
-      preceding_period: 
+      preceding_period: Il periodo precedente
       referrals: Referenti
       rows_loaded: Righe Caricate
       sdp: SDP
@@ -4016,9 +4030,9 @@ it:
         name: Nuovo Nome Template
         title: Crea un nuovo Template
       create_new_dataset:
-        explanation_html: 
-        prompt: 
-        title: 
+        explanation_html: Quando premerai su <strong>Salva</strong>, la tua nuova <strong>Sequenza di Dati in Bozza</strong> sarà visibile nel tuo catalogo personale. Nessun altro potrà vederla finché non completerai la creazione guidata di una nuova sequenza di dati.
+        prompt: Dai un nome alla tua nuova sequenza di dati.
+        title: Crea una nuova sequenza di dati
     wizard:
       cancel: Cancella
       finish: Termina
@@ -4032,5 +4046,5 @@ it:
       last_word_connector: ", o "
       two_words_connector: " o "
   table:
-    no_summary_available: 
-    summary: 
+    no_summary_available: Nessun riepilogo disponibile
+    summary: Questa tabella di %{data_description} contiene %{column_heading_count} titolo/i di colonne %{column_headings} per ciascuna delle %{row_heading_count} intestazioni di descrizione della riga %{row_headings}

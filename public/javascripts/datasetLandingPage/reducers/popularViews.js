@@ -24,32 +24,43 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case REQUEST_POPULAR_VIEWS:
-      state.isLoading = true;
-      return state;
+      return {
+        ...state,
+        isLoading: true
+      };
 
     case RECEIVE_POPULAR_VIEWS:
-      state.viewList = state.viewList.concat(_.take(action.popularViews, POPULAR_VIEWS_CHUNK_SIZE));
-      state.hasMore = action.popularViews.length > POPULAR_VIEWS_CHUNK_SIZE;
-      state.hasError = false;
-      state.isLoading = false;
-      return state;
+      var additionalViews = _.take(action.popularViews, POPULAR_VIEWS_CHUNK_SIZE);
+      var viewList = _.clone(state.viewList).concat(additionalViews);
+
+      return {
+        ...state,
+        viewList: viewList,
+        hasMore: action.popularViews.length > POPULAR_VIEWS_CHUNK_SIZE,
+        hasError: false,
+        isLoading: false
+      };
 
     case HANDLE_POPULAR_VIEWS_ERROR:
-      state.hasError = true;
-      state.isLoading = false;
-      return state;
+      return {
+        ...state,
+        hasError: true,
+        isLoading: false
+      };
 
     case DISMISS_POPULAR_VIEWS_ERROR:
-      state.hasError = false;
-      return state;
+      return {
+        ...state,
+        hasError: false
+      };
 
     case TOGGLE_POPULAR_VIEWS:
-      state.isCollapsed = !state.isCollapsed;
-      return state;
+      return {
+        ...state,
+        isCollapsed: !state.isCollapsed
+      };
 
     default:
       return state;

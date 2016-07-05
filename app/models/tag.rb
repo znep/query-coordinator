@@ -1,8 +1,8 @@
 class Tag < Model
 
   # TODO Refactor this to remove the constructor that breaks the Model API
-  def initialize()
-    self.data = Hash.new
+  def initialize(data = {})
+    self.data = data
     self.update_data = Hash.new
   end
 

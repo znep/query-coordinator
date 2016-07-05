@@ -1490,6 +1490,10 @@ nl:
       title: Deze dataset delen
       twitter: Delen via Twitter
       visibility_alert_html: "<b>Opgelet!</b> Deze dataset is persoonlijk en kan mogelijk niet geopend worden door de mensen waarmee je hem deelt."
+    tour:
+      description: 
+      done: 
+      title: 
     updated: Bijgewerkt
     view_widget:
       external_content: Externe inhoud
@@ -1646,12 +1650,13 @@ nl:
         status_public: Openbaar
       listing:
         dashboard: Dashboard
-        default_alert_message: 
+        default_alert_message: "<span><b>Oh nee!</b> Er ging iets mis en ons team werd geïnformeerd. Probeer ondertussen de opdracht opnieuw uit te voeren of hernieuw deze pagina.</span>"
         goal_page: Doelpagina
         goal_status: Doelstatus
         manage_on_goal_page: Doelpagina beheren
+        of: 
         owner: Eigenaar
-        rows_per_page: 
+        rows_per_page: Rijen per pagina
         title: Titel
         updated_at: Bijgewerkt
         view_dashboard: Dashboard bekijken
@@ -1862,6 +1867,10 @@ nl:
       contributors: Bijdragers
       created: aangemaakt
       data_provided_by: Gegevens geleverd door
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: Datasync status
       description: Beschrijving
       downloads: Downloads
@@ -2102,40 +2111,40 @@ nl:
         title: Beheer homepage
         up: Omhoog
       index:
-        comment_moderation: 
-        comment_moderation_description: 
-        connectors: 
-        connectors_description: 
-        dataset_routing_and_approval: 
-        dataset_routing_and_approval_description: 
-        datasets: 
-        datasets_description: 
-        dataslate_pages: 
-        dataslate_pages_description: 
-        federation: 
-        federation_description: 
-        georegions: 
-        georegions_description: 
-        home_page: 
-        home_page_description: 
-        internal: 
-        internal_description: 
-        jobs: 
-        jobs_description: 
-        metadata: 
-        metadata_description: 
-        sdp_templates: 
-        sdp_templates_description: 
-        site_analytics: 
-        site_analytics_description: 
-        site_chrome: 
-        site_chrome_description: 
-        stories: 
-        stories_description: 
-        users: 
-        users_description: 
-        view_moderation: 
-        view_moderation_description: 
+        comment_moderation: Beheren van reacties
+        comment_moderation_description: Beoordeel en beheer reacties voor datasets op uw website
+        connectors: Connectors
+        connectors_description: Registreer een connector om een groot aantal verbonden datasets aan te maken en te beheren.
+        dataset_routing_and_approval: Routing & goedkeuring van dataset
+        dataset_routing_and_approval_description: Beoordeel datasets die zich in het goedkeuringsproces bevinden en beheer de stappen van het goedkeuringsproces
+        datasets: Activa-inventaris
+        datasets_description: Lijst de activa op dit domein en configureer de lay-out van de datasetpagina
+        dataslate_pages: DataSlate-pagina's
+        dataslate_pages_description: Lijst en beheer de DataSlate-pagina's op dit domein
+        federation: Federatie
+        federation_description: Beheer verbindingen en het delen van gegevens met andere websites via Open Data Federation Services
+        georegions: Spatiale lens
+        georegions_description: Configureer aangepaste grenzen die gebruikt kunnen worden om spatiale lenskaarten aan te maken
+        home_page: Startpagina
+        home_page_description: Configureer welke inhoud wordt uitgelicht op de startpagina
+        internal: Intern
+        internal_description: Verander en voeg modules, websites, etc. toe
+        jobs: Jobs
+        jobs_description: Bekijk alle huidige en recente jobs op lange termijn omtrent gegevensverwerking die zich op uw platform bevinden
+        metadata: Metagegevens
+        metadata_description: Beheer de datasetvelden voor metagegevens, waaronder categorieën en aangepaste velden
+        sdp_templates: SDP-sjablonen
+        sdp_templates_description: Beheer en pas de sjablonen aan die gebruikt worden voor het publiceren van uw gegevens via Socrata Data Players
+        site_analytics: Siteanalyse
+        site_analytics_description: Bekijk statistieken voor de hele website over datasets, bezichtigingen, bezoekers, etc.
+        site_chrome: Uiterlijk van de website
+        site_chrome_description: Configureer het uiterlijk van uw Socrata-website
+        stories: Verhalen
+        stories_description: Aangepaste verhaalthema's bewerken
+        users: Gebruikers
+        users_description: Beheer gebruikers en hun toestemmingen en bekwaamheden op uw website
+        view_moderation: Beheer bekijken
+        view_moderation_description: Bekijk en beheer door gebruikers gemaakte bezichtigingen waaronder filters, grafieken en kaarten. Keur een bezichtiging goed zodat deze in uw gegevenscatalogus wordt weergegeven.
       jobs:
         actions:
           geocoding: Geocodering
@@ -2232,208 +2241,208 @@ nl:
                 title: Kon veld niet vinden in bestand
               field_wrong_format:
                 description: De veldnaam "%{fieldName}" die is opgegeven in uw gegevensbestand is niet geldig. Geldige veldnamen mogen enkel ASCII-tekens bevatten en moeten met een underscore of letter beginnen.
-                title: 
+                title: Ongeldige veldnaam opgegeven
               generic:
-                description: 
-                title: 
+                description: Het spijt ons. We konden uw importverzoek niet verwerken wegens een onverwachte foutmelding.
+                title: Er ging iets mis
               geocoding_failure:
-                description: 
-                title: 
+                description: We konden de brongegevens niet geocoderen en de oorzaak is onbekend. Probeer later opnieuw en contacteer <a href="https://support.socrata.com">de helpdesk van Socrata</a> als het probleem zich blijft voordoen.
+                title: Reden mislukte geocodering onbekend
               geocoding_source_ignored:
-                description: 
-                title: 
+                description: Omdat de kolommen %{fieldNames.join(", ")} deel uitmaken van de oorspronkelijke geocodering die naar een puntkolom leidt, konden we ze zoals werd verzocht niet negeren.
+                title: Kon de gespecificeerde kolommen niet negeren
               geocoding_source_invalid_type:
-                description: 
-                title: 
+                description: We konden de kolommen %{fieldNames} niet gebruiken als bron voor het geocoderen van locatie-informatie. Controleer a.u.b. of het om geldige tekst- of nummerkolommen gaat.
+                title: Kon niet geocoderen uit de gegeven kolommen
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description: 
-                title: 
+                description: Omdat de kolommen deel uitmaken van de oorspronkelijke geocodering die naar een locatiekolom leidt, konden we ze zoals werd verzocht niet negeren.
+                title: Kon de gespecificeerde kolommen niet negeren
               incomplete_archive:
-                description: 
-                title: 
+                description: Het shapefile-archief dat u hebt geüpload mist een bestand met extensie "%{missing}". Zorg ervoor dat uw archief over dit bestand beschikt en probeer opnieuw.
+                title: Onvolledig shapefile-archief
               invalid_encoding:
-                description: 
-                title: 
+                description: We konden uw bestand niet lezen omdat het gecodeerd werd met %{encoding} en wij ondersteunen enkel UTF-8. Zorg ervoor dat uw bestand een geldig UTF-8-bestand is voor de beste resultaten.
+                title: Ongeldige bestandscodering
               invalid_row_length:
-                description: 
-                title: 
+                description: 'Rij #%{record} in uw CSV-bestand beschikt over %{actual} velden, hoewel uw andere rijen %{expected} velden hebben. Zorg ervoor dat uw bestand over een consistent aantal velden per rij beschikt.'
+                title: Onverwacht aantal velden in rij
               malformed_blueprint:
-                description: 
-                title: 
+                description: 'De blauwdruk die u opgaf kon niet gebruikt worden. Foutmelding: "%{message}".'
+                title: Ongeldige blauwdruk
               malformed_upsert:
-                description: 
-                title: 
+                description: De payload van het rijen invoegen in de tabel kon niet geanalyseerd worden als een JSON, in de buurt van opname %{record}. Verifieer of het om een geldige JSON gaat.
+                title: Ongeldig invoegen van rijen in de tabel
               no_field_names_in_input:
-                description: 
-                title: 
+                description: De reden is vaak dat het CSV-bestand dat wij kregen helemaal leeg is. Zorg ervoor dat uw bestand gegevens bevat en probeer opnieuw.
+                title: Kon de CSV-hoofding niet vinden
               no_identity_column:
-                description: 
-                title: 
+                description: Deze dataset beschikt over een kolom met rij-id ("%{fieldName}"), maar we konden deze kolom niet terugvinden in het gegevensbestand dat u doorstuurde. Bevestig het bestaan ervan en probeer opnieuw.
+                title: Kolom met rij-id werd niet gevonden
               parse_error:
-                description: 
-                title: 
+                description: De analyse van het bestand dat u hebt geüpload mislukte op lijn %{lineNumber} met als bericht "%{reason}".
+                title: Foutmelding bij analyse
               permission_denied:
-                description: 
-                title: 
+                description: De gebruiker die deze operatie startte (%{user}) lijkt niet over de vereiste rechten te beschikken. Zorg ervoor dat uw toestemmingen correct werden ingesteld en probeer opnieuw.
+                title: Toestemming geweigerd
               record_too_large:
-                description: 
-                title: 
+                description: We hebben het lezen van uw bestand onderbroken omdat één gegeven op lijn %{record} te groot was (het overtrof de limiet van %{limit}). De oorzaak ligt vaak bij een foutieve CSV-ontruiming waardoor gegevens van heel wat rijen worden gelezen in één enkele cel. Controleer of uw bestand geldig is.
+                title: Eén gegeven te groot
               row_too_large:
-                description: 
-                title: 
+                description: Rij nummer %{nearRecord} van uw bestand bevat te veel tekens; de limiet bedraagt %{limit}.
+                title: Rij te groot
               synthetic_location_in_input:
-                description: 
-                title: 
+                description: Er werd een kolom (%{fieldNames}) gevonden in uw gegevensbestand die overeenkomt met een synthetische kolom in deze dataset. Synthetische kolommen worden automatisch geopereerd en er mag niet manueel naar geïmporteerd worden.
+                title: Kan niet importeren naar synthetische kolom
               too_many_errors_in_input:
-                description: 
-                title: 
+                description: De job wordt onderbroken omdat te veel foutmeldingen werden gevonden in uw invoergegevens.
+                title: Te veel foutmeldingen omtrent invoergegevens gevonden
               too_many_records_in_input:
-                description: 
-                title: 
+                description: Uw gegevensbestand overtrof het maximale aantal gegevens die wij in één beurt kunnen importeren (u hebt %{recordCount}; maximaal %{maxRecordCount}). Probeer het aantal gegevens voor elk bestand te verlagen en probeer opnieuw.
+                title: Te veel gegevens
               uninterpretable_value:
-                description: 
-                title: 
+                description: De waarde "%{value}" op rij %{record}, kolom "%{column}" kon niet gelezen worden als een %{expectedType}. Zorg ervoor dat alle waarden correct werden geformatteerd voor hun eindkolommen.
+                title: Onleesbare waarde van gegeven
               unknown_domain:
-                description: 
-                title: 
+                description: We herkennen het opgegeven einddomein van uw job niet (%{domain}). Zorg ervoor dat het om een geldig einddomein van Socrata gaat en probeer opnieuw.
+                title: Domein werd niet herkend
               unknown_file_type:
-                description: 
-                title: 
+                description: 'We herkennen het bestandstype dat u naar ons doorstuurde niet (extension: %{extension}). Zorg ervoor dat u een bestandstype gebruikt dat geldig is en wordt ondersteund.'
+                title: Onbekend bestandstype
               unsupported_import_type:
-                description: 
-                title: 
+                description: De importmethode "%{importType}" wordt niet ondersteund. Gebruik "vervangen", "bijvoegen", of "importeren".
+                title: Importmethode wordt niet ondersteund
               upsert_already_in_progress_by_someone_else:
-                description: 
-                title: 
+                description: Een dubbele toevoeging van rijen in een tabel kan niet worden uitgevoerd in een dataset, en er is reeds iemand aanwezig in het midden van dergelijke operatie.
+                title: Toevoeging van rijen in een tabel wordt uitgevoerd
               upsert_counts:
-                description: 
-                title: 
+                description: Uw bestand voor import werd geïmporteerd, maar op een totaal van %{rowCount} rijen konden we %{failCount} rijen niet laden in uw dataset. Verifieer of uw waarden overeenkomen met <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">de door Socrata aangenomen formaten</a>.
+                title: Voltooid
             success_with_data_errors:
               di2_counts:
-                description: 
-                title: 
+                description: Uw bestand voor import werd geïmporteerd, maar op een totaal van %{rowCount} rijen konden we %{failCount} rijen niet laden in uw dataset. Download de mislukte rijen rechts als dit onverwacht is, en verifieer of uw waarden overeenkomen met <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">de door Socrata aangenomen formaten</a>. Zo kan u enkel deze rijen nogmaals importeren.
+                title: Voltooid
               upsert_counts:
-                description: 
-                title: 
-          failed_rows: 
-          fallback_event_title: 
-          file_name_unknown: 
-          import: 
+                description: Uw bestand voor import werd geïmporteerd, maar op een totaal van %{rowCount} rijen konden we %{failCount} rijen niet laden in uw dataset. Verifieer of uw waarden overeenkomen met <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">de door Socrata aangenomen formaten</a>.
+                title: Voltooid
+          failed_rows: Mislukte rijen
+          fallback_event_title: 'Foutmelding: %{error_code}'
+          file_name_unknown: bestandsnaam onbekend
+          import: Importeren
           import_failures:
             bad_timestamp_format:
-              description: 
-              title: 
+              description: De datumwaarde "%{pattern}" werd geformatteerd op een manier die wij niet begrijpen. Controleer of alle data die u importeert conform de <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standaard</a> zijn.
+              title: Ongeldige datum/tijdswaarde
             bad_timezone:
-              description: 
-              title: 
+              description: We begrijpen de tijdzone "%{name}" niet. Controleer of alle data die u importeert conform de <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standaard</a> zijn.
+              title: Verkeerde tijdzone
             control_file_invalid_json:
-              description: 
-              title: 
+              description: 'Uw controlebestand kon niet worden geanalyseerd als een JSON. Foutmelding: "%{message}". Verifieer of het om een geldig JSON gaat.'
+              title: Ongeldig controlebestand
             control_file_malformed:
-              description: 
-              title: 
+              description: Uw controlebestand was een geldig JSON, maar het kwam niet overeen met het formaat dat wij verwachten. Zorg ervoor dat uw controlebestand overeenkomt met <a href="https://socrata.github.io/datasync/resources/control-config.html">deze specificatie</a>.
+              title: Ongeldig controlebestand
             control_file_too_large:
-              description: 
-              title: 
+              description: Uw controlebestand was te groot. Verklein de grootte tot %{limit} tekens of minder en probeer opnieuw.
+              title: Controlebestand te groot
             corrupt_gzip:
-              description: 
-              title: 
+              description: 'Het met GZip gecomprimeerd bestand dat u naar ons doorstuurde kon niet uitgepakt worden. Foutmelding: "%{message}". Verifieer of het om een geldig GZip-bestand gaat.'
+              title: Kan gecomprimeerd bestand niet uitpakken
             corrupt_xz:
-              description: 
-              title: 
+              description: 'Het met XZ gecomprimeerd bestand dat u naar ons doorstuurde kon niet uitgepakt worden. Foutmelding: "%{message}". Verifieer of het om een geldig XZ-bestand gaat.'
+              title: Kan gecomprimeerd bestand niet uitpakken
             delete_without_user_pk:
-              description: 
-              title: 
+              description: We kunnen verwijderingsoperaties niet verwerken tenzij een rij-id veld werd bepaald.
+              title: Kan niet verwijderen zonder rij-id
             duplicated_fields_in_input:
-              description: 
-              title: 
+              description: De veldnaam/veldnamen %{fieldNames} wordt/worden meerdere keren gebruikt in uw gegevensbestand. Zorg ervoor dat de veldnamen uniek zijn.
+              title: Duplicate veldnamen gespecificeerd
             field_not_in_dataset:
-              description: 
-              title: 
+              description: De veldnaam/veldnamen %{fieldNames} kon/konden niet in de dataset gevonden worden waarnaar u probeert te importeren. Controleer uw spelling en probeer opnieuw als u deze kolom wilt importeren.
+              title: Kon veld in dataset niet vinden
             field_not_in_input:
-              description: 
-              title: 
+              description: Een kolom die wij hadden verwacht (%{fieldNames}) kon niet gevonden worden in het gegevensbestand dat u naar ons doorstuurde, en u heeft geen kolom met rij-id aangeduid. Controleer de doorgestuurde kolommen en probeer opnieuw.
+              title: Kon veld in bestand niet vinden
             field_wrong_format:
-              description: 
-              title: 
+              description: De veldnaam "%{fieldName}" in uw gegevensbestand is ongeldig. Geldige veldnamen mogen enkel bestaan uit ascii-tekens en moeten beginnen met een underscore of letter.
+              title: Ongeldige veldnaam opgegeven
             geocoding_failure:
-              description: 
-              title: 
+              description: We konden de opgegeven brongegevens niet geocoderen wegens een onbekende reden. Probeer later opnieuw en contacteer <a href="https://support.socrata.com">de helpdesk van Socrata</a> als het probleem zich blijft voordoen.
+              title: Onbekende fout bij het geocoderen
             geocoding_source_ignored:
-              description: 
-              title: 
+              description: Omdat de kolommen %{fieldNames.join(", ")} deel uitmaken van de geocoderingsbron die leidt naar een puntkolom, konden we ze niet negeren.
+              title: Kon gespecificeerde kolommen niet negeren
             geocoding_source_invalid_type:
-              description: 
-              title: 
+              description: We konden de kolommen %{fieldNames} niet als de bron gebruiken om locatie-informatie te geocoderen. Controleer of dit geldige tekst- of nummerkolommen zijn.
+              title: Kon niet geocoderen uit opgegeven kolommen
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description: 
-              title: 
+              description: Omdat de kolommen deel uitmaken van de geocoderingsbron die leidt naar een locatiekolom, konden we ze niet negeren.
+              title: Kon gespecificeerde kolommen niet negeren
             invalid_encoding:
-              description: 
-              title: 
+              description: We konden uw bestand niet lezen omdat het gecodeerd was met %{encoding}, en wij ondersteunen enkel UTF-8. Zorg ervoor dat uw bestand een geldig UTF-8 bestand is voor de beste resultaten.
+              title: Ongeldige bestandscodering
             invalid_row_length:
-              description: 
-              title: 
+              description: 'Rij #%{record} van uw CSV-bestand bevat %{actual} velden, terwijl uw andere rijen %{expected} velden hadden. Zorg ervoor dat uw bestand een consistent aantal velden per rij telt.'
+              title: Onverwacht aantal velden in rij
             malformed_upsert:
-              description: 
-              title: 
+              description: Uw payload van de toevoeging van rijen in een tabel kon niet geanalyseerd worden als JSON, in de buurt van gegeven %{record}. Verifieer of het om een geldig JSON gaat.
+              title: Ongeldige toevoeging van rijen in een tabel
             no_field_names_in_input:
-              description: 
-              title: 
+              description: De reden is vaak dat het CSV-bestand dat wij ontvingen helemaal leeg was. Zorg ervoor dat uw bestand gegevens bevat en probeer opnieuw.
+              title: Kon CSV-hoofding niet vinden
             no_identity_column:
-              description: 
-              title: 
+              description: Deze dataset beschikt over een kolom met rij-id ("%{fieldName}"), maar we konden deze kolom niet vinden in het gegevensbestand dat u doorstuurde. Bevestig het bestaan ervan en probeer opnieuw.
+              title: Kolom met rij-id niet gevonden
             permission_denied:
-              description: 
-              title: 
+              description: De gebruiker die deze operatie opstartte (%{user}) lijkt niet te beschikken over de vereiste rechten. Zorg ervoor dat uw toestemmingen correct werden ingesteld en probeer opnieuw.
+              title: Toestemming geweigerd
             record_too_large:
-              description: 
-              title: 
+              description: We hebben het lezen van uw bestand onderbroken omdat we één gegeven hebben gevonden dat te groot was op lijn %{record} (het overtrof de limiet van %{limit}). Een foutieve CSV-ontruiming die leidt tot een te grote hoeveelheid aan rijen met gegevens die worden gelezen in één enkele cel is vaak de oorzaak van dit probleem. Controleer of uw bestand geldig is.
+              title: Eén gegeven te groot
             synthetic_location_in_input:
-              description: 
-              title: 
+              description: Er werd een kolom (%{fieldNames}) gevonden in uw gegevensbestand die overeenkomt met een synthetische kolom van deze dataset. Synthetische kolommen worden automatisch geopereerd en er mag nooit manueel naar geïmporteerd worden.
+              title: Kan niet importeren naar synthetische kolom
             too_many_errors_in_input:
-              description: 
-              title: 
+              description: De job werd onderbroken omdat er te veel fouten werden gevonden in uw invoergegevens.
+              title: Te veel invoerfouten gevonden
             too_many_records_in_input:
-              description: 
-              title: 
+              description: Uw gegevensbestand overtrof het maximale aantal gegevens die we in één beurt kunnen importeren (u hebt %{recordCount}; maximaal %{maxRecordCount}). Verklein het aantal gegevens voor elk bestand en probeer opnieuw.
+              title: Te veel gegevens
             uninterpretable_value:
-              description: 
-              title: 
+              description: De waarde "%{value}" op rij %{record}, kolom "%{column}" kon niet gelezen worden als een %{expectedType}. Zorg ervoor dat alle waarden correct werden geformatteerd voor hun eindkolommen.
+              title: Onleesbare waarde voor gegeven
             unknown_domain:
-              description: 
-              title: 
+              description: We herkennen het opgegeven einddomein voor uw job niet (%{domain}). Zorg ervoor dat het om een geldig Socrata einddomein gaat en probeer opnieuw.
+              title: Domein werd niet herkend
             unknown_file_type:
-              description: 
-              title: 
+              description: 'We herkennen het bestandstype dat u naar ons hebt doorgestuurd niet (extension: %{extension}). Zorg ervoor dat u een bestandstype gebruikt dat geldig is en ondersteund wordt.'
+              title: Onbekend bestandstype
             upsert_already_in_progress_by_someone_else:
-              description: 
-              title: 
-          import_method: 
-          initiated_at: 
-          no_events: 
-          page_title: 
+              description: Een dubbele toevoeging van rijen in een tabel kan niet uitgevoerd worden in een dataset terwijl iemand anders reeds bezig is met dergelijke operatie.
+              title: Toevoeging van rijen in een tabel wordt uitgevoerd
+          import_method: Importmethode
+          initiated_at: Gestart op
+          no_events: Er werd nog geen vooruitgang opgeslagen voor deze job.
+          page_title: Details gegevensjob
           services:
-            DeltaImporter2: 
-            Imports2: 
-            ResourcesAPI: 
-          started_by: 
-          title: 
-          to: 
+            DeltaImporter2: DataSync
+            Imports2: Webinterface
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">API-hulpmiddel</a>
+          started_by: Gestart door
+          title: Details gegevensjob
+          to: naar
         statuses:
-          failure: 
-          in_progress: 
-          not_started: 
-          success: 
-          success_with_data_errors: 
+          failure: Mislukt
+          in_progress: Bezig
+          not_started: Nog niet gestart
+          success: Voltooid
+          success_with_data_errors: Voltooid, met enkele problemen
       metadata:
         add_new_category: Voeg een nieuwe categorie toe
         add_new_field: Voeg een nieuw veld toe
         allowed_values: Toegestane waarden
         are_you_sure: Weet u zeker dat u deze set velden en alle daarmee verbonden velden wilt verwijderen?
         category_name: Naam van de categorie
-        category_table_description: 
+        category_table_description: Categorieën metagegevens
         create: Aanmaken
         create_new_fieldset: Maak een nieuwe set velden aan
         define_categories: Definieer datasetcategorieën
@@ -2463,7 +2472,7 @@ nl:
         metadata_explain1: Aangepaste metadata is onderverdeeld in <span class="code">sets van velden</span> en <span class="code">velden</span>. Een <span class="code">set van velden</span> is een manier om één of meer aangepaste <span class="code">velden</span> logisch en visueel samen te voegen.
         metadata_explain2: Velden kunnen op meerdere manieren worden geconfigureerd. Ze kunnen <span class="code">verplicht</span> zijn, wat afgedwongen zal worden als uitgevers nieuwe datasets aanmaken en bestaande metadata bijwerken. Ze kunnen ook <span class="code">privé</span> zijn, wat betekent dat de ingevoerde waarden niet openbaar zichtbaar zijn.
         metadata_explain3: U kunt er tenslotte ook voor kiezen om de opties voor uw <span class="code">velden</span> van te voren vast te stellen, als u de waarden uit een lijst wilt kiezen in plaats van in een veld in te voeren.
-        metadata_field_table_description: 
+        metadata_field_table_description: Metagegevensvelden voor '%{name}'
         no_data: Voor dit domein zijn nog geen aangepaste datasetvelden gedefinieerd. Voer hieronder een naam in en klik op "Aanmaken" om te beginnen.
         no_fields_defined: Voor dit set van velden zijn nog geen velden gedefinieerd.
         page_title: Beheer dataset metadata
@@ -2474,133 +2483,133 @@ nl:
         'true': true
         up: Omhoog
       site_chrome:
-        cancel: 
-        description: 
-        preview_changes: 
-        save: 
-        save_changes: 
-        site_appearance: 
+        cancel: Annuleren
+        description: Configureer het uiterlijk van uw Socrata-website
+        preview_changes: Voorbeeld van aanpassingen
+        save: Opslaan
+        save_changes: Aanpassingen opslaan
+        site_appearance: Uiterlijk van website
         tabs:
           footer:
             fields:
               copyright_notice:
-                description: 
-                label: 
-                title: 
+                description: Wissel het uitzicht van de kennisgeving van het auteursrecht. We updaten automatisch de kennisgeving zodat deze het huidige kalenderjaar weergeeft.
+                label: Toon kennisgeving auteursrecht
+                title: Kennisgeving auteursrecht
               footer_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Achtergrondkleur van de voettekst en de kleur van de tekst en links van de voettekst.
+                placeholder: "#123456"
+                title: Achtergrondkleur voettekst
               footer_display_name:
-                description: 
-                placeholder: 
-                title: 
+                description: Naam die wordt weergegeven in de balk van de voettekst. Meestal is dit de naam van uw bedrijf.
+                placeholder: Evergreen Open Data
+                title: Weergegeven naam voettekst
               footer_logo:
-                description: 
-                placeholder: 
-                title: 
+                description: URL-referentie naar het logo van de voettekst. Aanbevolen minimum grootte is 300px x 200px.
+                placeholder: URL
+                title: Logo voettekst
               footer_text_link_color:
-                placeholder: 
-                title: 
-              link_title_label: 
-              link_title_placeholder: 
+                placeholder: "#ffffff"
+                title: Voettekst & kleur van link
+              link_title_label: Linklabel
+              link_title_placeholder: Linktekst
               menu_links:
-                description: 
-                title: 
-              url_label: 
-              url_placeholder: 
-            title: 
+                description: Toon tot 15 links in de voettekst. Wij plaatsen deze links automatisch in kolommen.
+                title: Menulinks voettekst
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Voettekst
           general:
             fields:
               google_analytics_token:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Voer het token (niet het volledige script) van uw Google Analytics traceercode om analytische gegevens voor uw website te verzamelen.
+                error: 'Coupon moet overeenkomen met het formaat: UA-XXXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: Google Analytics Token
               template:
-                description: 
-                placeholder: 
-                title: 
+                description: Pas het uiterlijk van de hoofding/onderregel aan door het sjabloon te veranderen. Ondersteunde sjablonen zijn "standaard" en "rally".
+                placeholder: Rally
+                title: Sjabloon
               window_icon:
-                description: 
-                placeholder: 
-                title: 
+                description: URL-referentie naar het icoontje dat wordt weergegeven in venster, tab en het URL-veld van de browser.
+                placeholder: URL
+                title: Venster- of tabicoontje (favicon)
               window_title_display:
-                description: 
-                placeholder: 
-                title: 
-            title: 
+                description: Naam die wordt weergegeven in de titel van het venster of de tab.
+                placeholder: Evergreen Open Data
+                title: Titelweergave van venster of tab
+            title: Algemene instellingen
           header:
             fields:
               bar_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Achtergrondkleur van de hoofding (balk) en de kleur van tekst en links die zich op de balk bevinden.
+                placeholder: "#123456"
+                title: Achtergrondkleur balk
               bar_text_link_color:
-                placeholder: 
-                title: 
+                placeholder: "#ffffff"
+                title: Tekst in balk & kleur van link
               header_bar_logo:
-                description: 
-                placeholder: 
-                title: 
+                description: URL-referentie naar het logo van de balk van de hoofding. Aanbevolen minimum grootte is 100 x 40px. Dit logo zal in een klein formaat getoond worden.
+                placeholder: URL
+                title: Logo in balk van hoofding
               header_display_name:
-                description: 
-                placeholder: 
-                title: 
-              link_title_label: 
-              link_title_placeholder: 
+                description: Naam die wordt weergegeven in de balk van de hoofding. Meestal is dit de naam van uw bedrijf.
+                placeholder: Evergreen Open Data
+                title: Weergegeven naam in hoofding
+              link_title_label: Linklabel
+              link_title_placeholder: Linktekst
               menu_links:
-                description: 
-                title: 
-              url_label: 
-              url_placeholder: 
-            title: 
+                description: Toon tot 15 links in de balk van de hoofding. Als de linklabels te lang worden of als een bezoeker uw website aan het bekijken is op een klein toestel, dan worden de links automatisch opengevouwen in een menu.
+                title: Menulinks
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Balk van hoofding
           homepage:
             fields: 
-            title: 
+            title: Startpagina
           social:
             fields:
               facebook_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Facebook-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.facebook.com/
+                title: Link naar Facebook-profiel
               flickr_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Flickr-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.flickr.com/
+                title: Link naar Flickr-profiel
               google_plus_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Google Plus-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.plus.google.com/
+                title: Link naar Google Plus-profiel
               instagram_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Instagram-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.instagram.com/
+                title: Link naar Instagram-profiel
               linked_in_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar LinkedIn-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.linkedin.com/
+                title: Link naar LinkedIn-profiel
               tumblr_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Tumblr-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.tumblr.com/
+                title: Link naar Tumblr-profiel
               twitter_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Twitter-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.twitter.com/
+                title: Link naar Twitter-profiel
               vimeo_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Vimeo-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.vimeo.com/
+                title: Link naar Vimeo-profiel
               yammer_profile_link:
-                description: 
-                placeholder: 
-                title: 
+                description: Weergeeft link naar Yammer-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.yammer.com/
+                title: Link naar Yammer-profiel
               youtube_profile_link:
-                description: 
-                placeholder: 
-                title: 
-            title: 
+                description: Weergeeft link naar Youtube-profiel in hoofding en voettekst indien aanwezig.
+                placeholder: http://www.youtube.com/
+                title: Link naar Youtube-profiel
+            title: Delen op sociale netwerken
       users:
         actions: Acties
         all: Alles
@@ -2610,7 +2619,7 @@ nl:
         email_prompt: Voer e-mailadressen in voor de accounts die u aan wilt maken
         emails: E-mails
         error_permission_request: Er deed zich een fout voor bij het verwerken van uw verzoek om toestemming
-        export_as_csv: 
+        export_as_csv: Exporten als CSV-bestand
         filter_by: Filteren op
         flashes:
           accounts_created:
@@ -2630,7 +2639,7 @@ nl:
         no_users_found: Geen bestaande gebruikers gevonden
         no_users_match: Geen gebruikers voldoen aan uw huidige filter.
         pending_users: De volgende gebruikers hebben hangende accounts, maar hebben deze nog niet geactiveerd
-        pending_users_table_description: 
+        pending_users_table_description: Gebruikers worden afgehandeld
         reenable_privileges: Privileges opnieuw inschakelen
         remove: Verwijderen
         reset_password: Wachtwoord resetten
@@ -2640,19 +2649,19 @@ nl:
           administrator: beheerder
           designer: ontwerper
           editor: redacteur
-          editor_stories: 
+          editor_stories: redacteur + perspectieven
           none: geen
           publisher: uitgever
-          publisher_stories: 
+          publisher_stories: uitgever + perspectieven
           viewer: kijker
         search: Zoeken
         search_for_users: Zoek naar gebruikers om toe te voegen
         search_results: Zoekresultaten voor '%{term}'
         title: Beheer gebruikers
         user_saved: Gebruiker opgeslagen
-        users_table_description: 
+        users_table_description: Gebruikers
       view_moderation:
-        table_description: 
+        table_description: Beheerde datasets
     dataset_edit:
       append: Toevoegen
       append_and_replace: Voeg data toe of vervang deze
@@ -2693,8 +2702,8 @@ nl:
         missing_name: Naam van dataset is verplicht.
         need_description: Omschrijf &ldquo;%{name}&rdquo;
         point:
-          missing_latlong: 
-          suboptimal_column: 
+          missing_latlong: ingesteld om een <strong>%{coordinateType} kolom te importeren maar geen <strong>%{missingCoordinateType} kolom. Specificeer de volledige breedtegraad/lengtegraad.
+          suboptimal_column: ingesteld om zijn <strong>%{field}</strong> vanuit de bronkolom <strong>%{originalColumnName}</strong> te importeren, maar onze analyse toont aan dat de bronkolom een %{suggestion} kolom is, terwijl %{field} een kolom van het type %{type} verwacht. Als u beslist om met deze instellingen voor importeren verder te gaan, zal u waarschijnlijk te maken krijgen met foutmeldingen op vlak van importeren en geocoderen.
       finish:
         headline: Uw dataset is aangemaakt.
         subheadline: Klik op Afsluiten om het te zien!
@@ -2728,7 +2737,7 @@ nl:
         headers: Kopteksten
         headers_instructions: Kopteksten moeten worden genegeerd en niet als data worden geïmporteerd. Geef alstublieft aan hoeveel rijen van uw bronbestand kopteksten zijn.
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
-        headline_interpolate: 
+        headline_interpolate: Specificeer hoe "{0}" geïmporteerd moet worden.
         help_message: Voor hulp kunt u een <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten bekijken</a>.
         more_rows: Meer rijen
         name: Naam
@@ -2744,16 +2753,16 @@ nl:
         why_choose_now: Waarom is het belangrijk dat ik nu kolomtypes kies?
       import_help: <strong>Hulp nodig?</strong> We houden een <a href="%{common_errors}" rel="external">lijst bij van veelvoorkomende waarschuwingen en fouten</a> die van nut kunnen zijn voor u.
       import_shapefile:
-        abbreviatedSubheadline: 
-        abbreviatedSummary: 
+        abbreviatedSubheadline: Het samenvatten van deze dataset kan veel tijd in beslag nemen. Klik op volgende om te importeren.
+        abbreviatedSummary: Maplagen in &ldquo;<span class="fileName"></span>&rdquo; zullen voorafgaand aan het importeren aangemaakt worden.
         crs: Coördinaat referentiesysteem
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
-        headline_interpolate: 
+        headline_interpolate: Specificeer hoe "{0}" geïmporteerd moet worden.
         layers_list: Lagen die geïmporteerd moeten worden
         name: Naam
         pending: We laden uw lagen, een moment geduld a.u.b.
         subheadline: Deze shapefile bevat <span class="featureCount"></span> functies in <span class="layerCount"></span> lagen.
-        subheadline_interpolate: 
+        subheadline_interpolate: Dit shapefile bevat {0} lagen.
       import_warnings:
         headline: Waarschuwingen tijdens importeren
         see_docs: <strong>Is het niet helemaal duidelijk?</strong> Bekijk onze <a href="%{publisher_link}" rel="external">uitgeversdocumentatie</a> over het importeren van data, voor een uitgebreide uitleg over hoe de importeur met data omgaat. We verwijzen u ook naar onze <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten</a>.
@@ -2768,12 +2777,12 @@ nl:
         private_explain: Mijn data is <strong>privé</strong>
         prompt: Omschrijf uw data
         public_explain: 'Mijn data is <strong>openbaar</strong>: het kan alleen door mij worden gewijzigd, maar iedereen kan het zien'
-      notify_me: 
-      notify_me_error_html: 
-      notify_me_messaging: 
-      notify_me_success_addl: 
-      notify_me_success_html: 
-      notify_me_success_html_js: 
+      notify_me: Verwittig me
+      notify_me_error_html: Er ging iets mis bij het plannen van de notificatiemail. Probeer later opnieuw of contacteer <a href="mailto:support@socrata.com">de helpdesk van Socrata</a> als het probleem zich blijft voordoen.
+      notify_me_messaging: per e-mail na voltooiing
+      notify_me_success_addl: U kan deze browser ondertussen veilig sluiten.
+      notify_me_success_html: "<strong>Fantastisch!</strong> We zullen een e-mail sturen naar <strong>%{email}</strong> zodra uw dataset klaar is."
+      notify_me_success_html_js: "<strong>Fantastisch!</strong> We zullen een e-mail sturen naar <strong>{0}</strong> zodra uw dataset klaar is."
       processing: Wordt verwerkt...
       title: Nieuwe dataset
       upload_accessible: Upload een nieuwe toegankelijke dataset
@@ -2791,7 +2800,7 @@ nl:
       bar:
         api_unsavable: API-views kunnen niet worden gewijzigd
         based_on_html: Gebaseerd op <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html: 
+        based_on_layer_html: Een laag van de geospatiale dataset <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Gebaseerd op <a class="parentName"></a>
         based_on_private_view: een privéview
         based_on_working_copy_html: Gebaseerd op de werkende kopie van <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -2808,11 +2817,11 @@ nl:
           underline: Onderstrepen
           undo: Ongedaan maken
         full_screen: Toggle volledig scherm
-        no_description: 
+        no_description: "(Geen beschrijving voorzien)"
         out_of_date: Dit gegevensbestand is %{age} oud
         publish_button: Dataset publiceren
         publish_prompt: Deze dataset is een werkende kopie en is niet publiek beschikbaar. Nadat u de gewenste wijzigingen hebt aangebracht, moet deze dataset worden gepubliceerd om deze publiek toegankelijk te maken.
-        publish_prompt_with_dataset_landing_page: 
+        publish_prompt_with_dataset_landing_page: Deze dataset is een werkende kopie en is niet beschikbaar in het openbaar. Zodra u de nodige veranderingen hebt doorgevoerd, dient deze dataset gepubliceerd te worden om deze voor het grote publiek beschikbaar te maken. Door deze pagina te publiceren, zal ook de landingspagina van de dataset gepubliceerd worden.
         publish_rights: Alleen een eigenaar of uitgever kan deze dataset publiceren
         revert_button: Terugkeren
         revert_prompt: Terug naar opgeslagen view
@@ -2913,7 +2922,7 @@ nl:
         success: Uw e-mail is met succes verstuurd.
         title_html: Deel &quot;<span class="datasetName">%{name}</span>&quot;
       fatrow:
-        edit_layout: 
+        edit_layout: Lay-out bewerken
       grid_sidebar:
         add_column:
           convert_address:
@@ -2946,8 +2955,8 @@ nl:
           developer_portal: Ontwikkelaarsportaal
           endpoint_title: 'API-toegangseindpunt:'
           intro_html: Met de <strong>Socrata Open Data API</strong> (SODA) kunnen software-ontwikkelaars toegang krijgen tot de gegevens gehost in Socrata datasites op programmabasis. Ontwikkelaars kunnen applicaties aanmaken die de SODA API's gebruiken om "mash-up" Socrata datasets op nieuwe en spannende manieren te visualiseren en te creëren. Maak een iPhone-applicatie die de overheidsuitgaven in uw omgeving weergeven, een webapplicatie waarmee burgers potentiële overheidssubsidies die ze over het hoofd gezien kunnen opzoeken, of een service die automatisch e-mails stuurt wanneer nieuwe oormerken worden toegevoegd aan facturen die u wilt volgen.
-          multiple_endpoints_intro_html: 
-          no_endpoints_available: 
+          multiple_endpoints_intro_html: De <a href="http://dev.socrata.com/" target="external">Socrata Open Data API (SODA)</a> voorziet een programmatische toegang tot deze dataset waaronder de mogelijkheid om gegevens te <a href="http://dev.socrata.com/docs/filtering.html" target="external">filteren</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">op te vragen</a> en te <a href="http://dev.socrata.com/docs/aggregation.html" target="external">combineren</a>. Bekijk de API-documenten voor deze dataset onderaan of bezoek ons <a href="http://dev.socrata.com" target="external">portaal voor ontwikkelaars</a> voor meer informatie
+          no_endpoints_available: Geen eindpunten beschikbaar
           reference_html: Om programmatisch te beginnen met het bezoeken van deze dataset, gebruikt u het API-eindpunt hieronder. Voor meer informatie en voorbeelden over hoe de Socrata Open Data API kunt gebruiken, verwijzen we u naar onze <a href="http://dev.socrata.com" rel="external">ontwikkelaarsdocumentatie</a>.
           subtitle: Krijg toegang tot %{view_type} via SODA
           title: SODA API
@@ -2971,8 +2980,8 @@ nl:
             immutable: Start de Vervangwizard
             mutable: Start de Toevoeg- en Vervangwizard
         backup:
-          button: 
-          item_html: 
+          button: Maak een back-up van deze dataset
+          item_html: Back-up gemaakt om <span class="backupTime"></span>
         base:
           buttons:
             apply: Toepassen
@@ -3003,8 +3012,8 @@ nl:
             formatted_text: geformatteerde tekst
             geospatial: geospatiale
             groups:
-              geometry: 
-              standard: 
+              geometry: Geometrie
+              standard: Standaard
             list: lijst
             location: locatie
             money: geld
@@ -3205,7 +3214,7 @@ nl:
             title: Kolomtype
             type: Datatype
             type_prompt: Selecteer een gegevenstype
-            working_copy_html: 
+            working_copy_html: Maak <a href="#" class="createWorkingCopy">een werkende kopie</a> om het gegevenstype van deze kolom te bewerken
         column_order:
           columns:
             title: Kolommen
@@ -3246,8 +3255,8 @@ nl:
             currency: Valuta
             format_mask_warning: " "
             groups:
-              all: 
-              common: 
+              all: Alles
+              common: Algemeen
             no_precision: Geen
             precision: Precisie
             title: Geldformaat
@@ -3280,8 +3289,8 @@ nl:
           subtitle: Werken verschillende eigenschappen in deze kolom
           success: Uw kolom is bijgewerkt
           text_formatting:
-            display_style: 
-            title: 
+            display_style: Weergavestijl
+            title: Tekstformattering
           title: Eigenschappen kolom
           url:
             base_url: Basis URL
@@ -3289,7 +3298,7 @@ nl:
             title: URL-opties
           validation:
             published: Maak dan een werkende kopie of view van deze dataset om kolomeigenschappen te wijzigen
-            snapshot: 
+            snapshot: U kan de eigenschappen van een kolom niet bewerken voor een momentopname
             unsaved: U kunt geen kolomeigenschappen bewerken voor een niet opgeslagen view
         conditional_formatting:
           change_icon: veranderen
@@ -3315,10 +3324,10 @@ nl:
             no_columns: Deze view heeft geen kolommen om te filteren
             no_icons: Iconen zijn alleen relevant voor kaartweergave
         data_lens:
-          button: 
-          button_flyout: 
-          subtitle: 
-          title: 
+          button: Nieuwe datalens
+          button_flyout: Uw gegevens worden momenteel verwerkt. Hernieuw de pagina binnen enkele minuten en u zal een nieuwe datalens kunnen aanmaken.
+          subtitle: Datalens is een visueel uitnodigende en interactieve ervaring waarmee u op een betere manier gegevens kunt opzoeken en bewaren.  Klik op <strong>Nieuwe datalens</strong> om een nieuwe aan te maken.  Daarna kan u visueel de gegevens bekijken en de manier hoe deze worden getoond en voorgesteld in de catalogus aanpassen.
+          title: Datalens
         delete:
           confirm: Dit zal de %{view_type} definitief verwijderen. En dit kan niet ongedaan worden gemaakt! Weet u zeker dat u wilt doorgaan?
           delete_button: Verwijder deze %{view_type}
@@ -3344,8 +3353,8 @@ nl:
           download_as: Downloaden als
           download_dataset: Download alstublieft het gegevensbestand waar deze weergave aan is ontleend.
           geo_header: Download geogegevens
-          monolayer_header: 
-          multilayer_header: 
+          monolayer_header: Zonder geospatiale gegevens downloaden
+          multilayer_header: Een specifieke laag aan gegevens downloaden
           subtitle: Download een kopie van deze dataset in een statisch formaat
           title: Downloaden
         feed:
@@ -3439,13 +3448,13 @@ nl:
           validation:
             hidden_location_html: U kunt <a href="#showLoc" title="Show a location column">een verborgen locatiekolom tonen</a>.
             location_column: Een locatiekolom is nodig om een ​​kaart te maken.
-            location_column_invalid_dataset: 
+            location_column_invalid_dataset: Opgevraagde dataset bestaat niet.
             viz_limit: Een view mag er slechts een visualisatie op hebben
         odata:
           endpoint_action: 'Kopieer deze link:'
           intro_html1: Maak een spreadsheet in Microsoft Excel om deze dataset te analyseren of te visualiseren. Door een OData link te gebruiken worden deze gegevens verversbaar.
           intro_html2: Gebruik Microsoft Excel 2010, Microsoft Excel 2013 of Microsoft Power Query. Volg de instructies hier, met behulp van <a href="%{doc_link}">Socrata's OData documentatie</a>.
-          no_endpoints_available: 
+          no_endpoints_available: Geen eindpunten beschikbaar.
           subtitle: Krijg toegang tot deze dataset via OData
           title: OData
         ownership:
@@ -3529,7 +3538,7 @@ nl:
           subtitle: Aanpassen welke kolommen zichtbaar zijn in deze view
           title: Kolommen tonen en verbergen
           warnings:
-            active_filter: 
+            active_filter: U kan deze kolom niet verbergen omdat hij een actieve filter heeft.
         sort_rollup:
           rollup:
             add_group_button: Groeperen kolom toevoegen
@@ -3603,6 +3612,8 @@ nl:
       new_ux_nbe_warning: 'Alleen Intern: Oude UX-vertoning van Nieuw Backend-gegevensbestand. Normaal gesproken worden gebruikers doorverwezen naar %{url}'
       new_ux_text: Bekijk deze gegevens in de nieuwe Data Lens beleving
       new_ux_title: Klaar om visueel te ontdekken?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: U hebt niet-opgeslagen gegevens die verloren gaan als u de pagina verlaat. Maak a.u.b. een keuze of u wilt deze view wilt opslaan voordat u vertrekt, of kies Cancel om terug te keren naar de pagina.
@@ -3631,8 +3642,8 @@ nl:
       unable_to_find_dataset_page: We waren niet in staat om een Data Lens pagina te vinden voor dit gegevensbestand.
     edit_metadata:
       about: Over
-      add_link: 
-      add_source: 
+      add_link: Link toevoegen
+      add_source: Bron toevoegen
       additional_source: Extra bron
       alternative_access_prompt: Voer een afwisselend toegangspunt voor deze dataset in.
       api_endpoint: API eindpunt
@@ -3655,10 +3666,10 @@ nl:
       dataset_title_prompt: Voer een titel in
       dataset_url: URL van de dataset
       dataset_url_prompt: Voer de locatie van uw externe dataset in
-      default_row_label: 
+      default_row_label: Rij
       delete: Verwijderen
-      described_by: 
-      described_by_prompt: 
+      described_by: Gegevenswoordenboek
+      described_by_prompt: Voer een link naar een gegevenswoordenboek in
       email_address: E-mailadres
       email_help: Dit adres zal niet voor iedereen zichtbaar zijn. Als het leeg wordt gelaten wordt standaard uw adres gebruikt.
       existing_attachments: Bestaande bijlagen
@@ -3677,8 +3688,8 @@ nl:
       licensing_attr: Licentie & naamsvermelding
       list: Lijst
       metadata_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
-      missing_external_dataset: 
-      multiple_extensions: 
+      missing_external_dataset: Voorzie minstens één externe dataset.
+      multiple_extensions: Meer als één van dezelfde extensie voor hetzelfde eindpunt is niet toegelaten.
       new_attachment: Nieuwe bijlage
       none: "(geen)"
       northwest_latitude: Noordwestelijke breedtegraad
@@ -3686,7 +3697,7 @@ nl:
       optional: Optioneel
       private_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
       remove_image: Afbeelding verwijderen
-      remove_link: 
+      remove_link: Link verwijderen
       required_field: Verplicht veld
       resource_name: Naam van de bron
       resource_name_prompt: Voer een naam van de bron in
@@ -3694,9 +3705,9 @@ nl:
       row_class: Rijklasse
       row_identifier: Rijaanduiding
       row_identifier_help_text: Het rij-ID kan niet meer worden gewijzigd zodra een weergave gepubliceerd is.
-      row_label: 
-      row_label_help: 
-      row_label_prompt: 
+      row_label: Rijlabel
+      row_label_help: Beschrijf wat elke rij in de dataset vertegenwoordigt (indien van toepassing).
+      row_label_prompt: bv. Misdaad, Persoon, Ziekenhuis
       save: Opslaan
       save_changes: Wijzigingen opslaan
       semantics_rdf: Semantiek & RDF
@@ -3715,7 +3726,7 @@ nl:
       upload_help: Deze afbeelding zal worden bijgesneden in een vierkant
       upload_image: Afbeelding uploaden
       upload_new_attachment: Nieuwe bijlage uploaden
-      url: 
+      url: URL
     forgot_password:
       already_authenticated: 'Niet in staat om wachtwoord te resetten: u bent al ingelogd'
       failed: Er is een probleem opgetreden bij het indienen van uw wachtwoord resetaanvraag. Probeer het opnieuw.
@@ -3741,7 +3752,7 @@ nl:
       existing_latlng_cols: Bestaande kolommen voor breedte- en lengtegraden
       find: zoeken
       find_and_replace: Zoek en vervang waarde...
-      import_from_latlong: 
+      import_from_latlong: Importeren uit kolommen met <strong>breedtegraad</strong> en <strong>lengtegraad</strong>
       import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
       import_from_single: Uit <strong>één kolom</strong> importeren
       latitude: Breedtegraad
@@ -3755,7 +3766,7 @@ nl:
       new_source_col: Voeg nieuwe bron kolom toe
       new_transform: Voeg nieuwe transformatie toe
       options: Opties
-      point_source_col: 
+      point_source_col: Puntkolommen met bron
       properly_formatted: Kolom moet in het<a href="%{formatting_link}" rel="external">juiste formaat zijn</a> voordat het geïmporteerd wordt.
       regular_expression: reguliere expressie
       remove: verwijderen
@@ -3784,9 +3795,9 @@ nl:
       one_header: Eén van uw rijen is een koptekst
       problem_importing: Er deed zich een probleem voor bij het importeren van dat bestand. Zorg ervoor dat het een geldig bestand is.
       problem_uploading: Er deed zich een probleem voor bij het uploaden van dit bestand. Zorg ervoor dat het om een geldig bestand gaat.
-      replicating: 
+      replicating: Dataset aan het kopiëren.
       rows_imported: Tot nu toe %{num} rijen geïmporteerd.
-      rows_imported_js: 
+      rows_imported_js: Tot zover {0} rijen geïmporteerd.
       try_again: Probeer het zometeen nog eens.
       unknown_error: Er trad een onbekende fout op
       uploading: Uw bestand wordt geüpload
@@ -3808,7 +3819,7 @@ nl:
         no_applications: U heeft geen toepassingen die zijn gemaakt nog. Klik op 'Beheer' op het recht begonnen
         title: Applicatie van %{user}
       bar:
-        edit_info_link: 
+        edit_info_link: Basisinfo bewerken
         edit_settings_link: Accountinstellingen bewerken
         follow_link: Volgen
         join_date: Geregistreerd op
@@ -3938,10 +3949,10 @@ nl:
         following: Aan het volgen
         hide_contacts_link: Verbergen
       whats_new:
-        caught_up: 
-        older_news: 
-        read_more: 
-        title: 
+        caught_up: Jullie doen allemaal mee! Bekijk <a target="_blank" href="%{href}">hier</a> onze meest recente updates.
+        older_news: Ouder nieuws bekijken
+        read_more: Meer lezen
+        title: De laatste nieuwtjes over Socrata
     reset_password:
       failed: Er is een probleem opgetreden bij het resetten van uw wachtwoord. Probeer het opnieuw.
       form:
@@ -3959,13 +3970,13 @@ nl:
       mismatch: Wachtwoorden komen niet overeen; Probeer het opnieuw
       prompt_html: Meld u aan met uw <strong> Socrata-ID </strong>
       sign_in_with: "<strong>Inloggen</strong> met %{provider}"
-      sso_required: 
+      sso_required: De beheerder van deze website verzoekt bevoorrechte gebruikers om in te loggen met een account dat niet hun Socrata-id is. Log a.u.b. in op een andere manier.
       tips_html: Gebruik uw e-mailadres en wachtwoord om u aan te melden bij alle <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
     sign_up:
       email_verification:
-        expired: 
-        sent: 
-        success: 
+        expired: De bevestigingslink in deze e-mail is verlopen. Maak een nieuw account met hetzelfde e-mailadres aan en u zal opnieuw een bevestigingsmail ontvangen zodat u de registratie kan voltooien.
+        sent: We hebben een bevestigingsmail verzonden naar %{email}, volg a.u.b. de richtlijnen in deze e-mail om het registratieproces te voltooien.
+        success: Uw e-mailadres werd geverifieerd, log a.u.b. in.
       form:
         create_account_button: Mijn account aanmaken
         have_account_link: Ik heb al een account
@@ -3979,7 +3990,7 @@ nl:
     stats:
       api: API
       apply: Toepassen
-      browser_page_views: 
+      browser_page_views: Aantal keer pagina bekeken in de browser
       bytes_out: Verstuurde bytes
       chart_created: grafiek aangemaakt
       charts: Grafieken
@@ -3988,12 +3999,14 @@ nl:
       comments: Reacties
       comments_created: reacties aangemaakt
       daily: Dagelijks
-      date_range: 
+      date_range: Datumbereik
       deleted_application: applicatie verwijderd
-      delta_decrease: 
-      delta_decrease_compared: 
-      delta_increase: 
-      delta_increase_compared: 
+      delta_decrease: Het aantal {0} daalde met {1} tijdens {2}
+      delta_decrease_compared: Het aantal {0} daalde met {1} tijdens {2} vergeleken met {3}
+      delta_increase: Het aantal {0} verhoogde met {1} tijdens {2}
+      delta_increase_compared: |2-
+
+        Het aantal {0} verhoogde met {1} tijdens {2} vergeleken met {3}
       dependent_metrics: Afhankelijke metrische gegevens
       download: downloaden
       downloads: downloads
@@ -4018,7 +4031,7 @@ nl:
       no_data_time_period: Geen data voor deze tijdperiode
       page_viewed: pagina bekeken
       pages_viewed: pagina's bekeken
-      preceding_period: 
+      preceding_period: de voorafgaande periode
       referrals: Verwijzingen
       rows_loaded: Geladen rijen
       sdp: SDP
@@ -4056,9 +4069,9 @@ nl:
         name: Naam voor nieuwe sjabloon
         title: Maak een nieuw sjabloon aan
       create_new_dataset:
-        explanation_html: 
-        prompt: 
-        title: 
+        explanation_html: Wanneer u op <strong>Opslaan</strong> hebt gedrukt, zal uw nieuwe <strong>Datasetontwerp</strong> zichtbaar worden in uw persoonlijke catalogus. Niemand anders zal hem te zien kunnen krijgen zolang u de nieuwe dataset-wizard niet voltooid.
+        prompt: Geef uw nieuwe dataset een naam.
+        title: Een nieuwe dataset aanmaken
     wizard:
       cancel: Annuleren
       finish: Voltooien
@@ -4072,5 +4085,5 @@ nl:
       last_word_connector: ", of"
       two_words_connector: of
   table:
-    no_summary_available: 
-    summary: 
+    no_summary_available: Er is geen samenvatting beschikbaar
+    summary: Deze tabel van %{data_description} telt %{column_heading_count} kolomhoofding(en) %{column_headings} voor elke %{row_heading_count} hoofding met beschrijving per rij %{row_headings}

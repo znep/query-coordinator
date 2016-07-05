@@ -1467,6 +1467,10 @@ de:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1625,6 +1629,7 @@ de:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1835,6 +1840,10 @@ de:
       contributors: Beitragende
       created: erstellt
       data_provided_by: Daten zur Verfügung gestellt von
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Beschreibung
       downloads: Downloads
@@ -3562,6 +3571,8 @@ de:
       new_ux_nbe_warning: 'Nur intern: Alte UX View eines neuen Backend Dataset. Gewöhnliche Benutzer würden zur URL %{url} weitergeleitet werden'
       new_ux_text: Betrachten Sie diese Informationen mit der neuen Data Lens Nutzererfahrung
       new_ux_title: Bereit zur Datenvisualisierung?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Sie haben ungespeicherte Daten, die verloren gehen, wenn Sie diese Seite verlassen. Bitte wählen Sie aus, ob Sie diese Ansicht speichern möchten, bevor Sie diese verlassen oder wählen Sie Abbrechen, um zur Seite zurückzukehren.

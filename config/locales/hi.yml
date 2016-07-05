@@ -1467,6 +1467,10 @@ hi:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1625,6 +1629,7 @@ hi:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1835,6 +1840,10 @@ hi:
       contributors: "योगदानकर्ता"
       created: "बनाया गया"
       data_provided_by: "डेटा प्रदानकर्ता"
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: "विवरण"
       downloads: "डाउनलोड"
@@ -3566,6 +3575,8 @@ hi:
       new_ux_nbe_warning: "केवल आंतरिक: नए बैकएण्ड डेटासेट का पुराना यूएक्स व्यू। साधारण उपयोगकर्ताओं को %{url} पर भेजा जाएगा "
       new_ux_text: "इस डेटा को नए डेटा लेंस के देखने का अनुभव लें "
       new_ux_title: "दृष्टिगत रूप से इसके बारे में जानने के लिए तैयार हैं ?"
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: "आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं। कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। "

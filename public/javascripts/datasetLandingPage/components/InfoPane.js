@@ -55,6 +55,7 @@ export var InfoPane = React.createClass({
     viewDataButton = (
       <a
         href={view.gridUrl}
+        id="tour-anchor"
         className="btn btn-simple btn-sm unstyled-link grid"
         onClick={onClickGrid}
         target="_blank">

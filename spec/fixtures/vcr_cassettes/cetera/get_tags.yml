@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - i am a cookie
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Requestid:
+      - iAmProbablyUnique
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 01 Jul 2016 21:10:29 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" :
+            [
+              { "domain_tag" : "biz", "count" : 1 },
+              { "domain_tag" : "chart", "count" : 1 },
+              { "domain_tag" : "column", "count" : 1 },
+              { "domain_tag" : "d3", "count" : 1 },
+              { "domain_tag" : "test1", "count" : 1 },
+              { "domain_tag" : "test2", "count" : 1 },
+              { "domain_tag" : "test3", "count" : 1 }
+            ],
+          "resultSetSize" : 7,
+          "timings" : { "serviceMillis" : 3, "searchMillis" : [ 1, 1 ] }
+        }
+    http_version: 
+  recorded_at: Fri, 01 Jul 2016 21:10:29 GMT
+recorded_with: VCR 3.0.3

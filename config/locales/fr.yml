@@ -1467,6 +1467,10 @@ fr:
       title: 
       twitter: 
       visibility_alert_html: 
+    tour:
+      description: 
+      done: 
+      title: 
     updated: 
     view_widget:
       external_content: 
@@ -1625,6 +1629,7 @@ fr:
         goal_page: 
         goal_status: 
         manage_on_goal_page: 
+        of: 
         owner: 
         rows_per_page: 
         title: 
@@ -1835,6 +1840,10 @@ fr:
       contributors: Contributeurs
       created: créé
       data_provided_by: Source des données
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: 
       description: Description
       downloads: Téléchargements
@@ -3562,6 +3571,8 @@ fr:
       new_ux_nbe_warning: 'En interne uniquement : ancien affichage UX du nouvel ensemble de données backend. Les utilisateurs ordinaires auront été redirigés vers %{url}'
       new_ux_text: Afficher ces données dans la nouvelle expérience de lentille de données
       new_ux_title: Prêt à explorer visuellement ?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Vous avez des données non sauvegardées qui seront perdues si vous sortez de cette page. Veuillez sauvegarder ou non cette vue avant de sortir, ou utiliser l’option Annuler pour revenir à la page.

@@ -18,6 +18,16 @@ module Cetera
     response
   end
 
+  def self.get_tags(cookie_string, request_id)
+    path = '/catalog/v1/domain_tags'
+    opts = { domains: [CurrentDomain.cname] }
+    query = cetera_soql_params(opts)
+    options = request_options(query, cookie_string, request_id)
+
+    response = get(path, options)
+    response.success? && TagCountResult.new(response)
+  end
+
   # Admins only! For now, do not call this without a search query.
   def self.search_users(search_query, cookie_string, request_id = nil)
     path = '/whitepages'
@@ -38,6 +48,20 @@ module Cetera
 
     response = get(path, options)
     response.success? && CatalogSearchResult.new(response)
+  end
+
+  def self.get_derived_from_views(uid, options = {})
+    cookie_string = options.delete(:cookie_string)
+    request_id = options.delete(:request_id)
+    search_options = options.merge({
+      search_context: CurrentDomain.cname,
+      domains: [CurrentDomain.cname],
+      derived_from: uid
+    }).compact
+
+    response = search_views(search_options, cookie_string, request_id)
+
+    response ? response.results : []
   end
 
   #########
@@ -74,7 +98,7 @@ module Cetera
     {
       boostDomains: opts[:domain_boosts],
       domains: translate_domains(opts[:domains]),
-      offset: translate_page_and_limit(opts[:page], opts[:limit]),
+      offset: translate_offset(opts[:offset], opts[:page], opts[:limit]),
       only: translate_display_type(opts[:limitTo], opts[:datasetView]),
       order: translate_sort_by(opts[:sortBy])
     }.compact
@@ -82,10 +106,6 @@ module Cetera
 
   def self.translate_domains(domains)
     domains.present? && domains.join(',') # Cetera does not yet support domains[]
-  end
-
-  def self.translate_page_and_limit(page, limit)
-    (page && limit) ? (page - 1) * limit : 0
   end
 
   # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
@@ -107,6 +127,17 @@ module Cetera
     end
   end
 
+  # Translate either the offset from either the provided offset of using the provided page
+  def self.translate_offset(offset, page, limit)
+    if offset
+      offset
+    elsif page && limit
+      (page - 1) * limit
+    else
+      0
+    end
+  end
+
   # Translate FE 'sortBy' values to Cetera 'order'
   def self.translate_sort_by(sort_by)
     {
@@ -116,7 +147,9 @@ module Cetera
       'alpha' => 'name',
       'newest' => 'createdAt',
       'oldest' => 'createdAt ASC',
-      'last_modified' => 'updatedAt'
+      'last_modified' => 'updatedAt',
+      'date' => 'createdAt',
+      'name' => 'name'
     }.fetch(sort_by) # For Core/Cly parity, we want no results if sort_by is bogus
   end
 
@@ -132,7 +165,8 @@ module Cetera
 
   # Anything not explicitly supported here will be dropped
   def self.valid_cetera_keys
-    Set.new(%i(boostDomains categories domains for_user limit offset only order q search_context tags))
+    Set.new(%i(boostDomains categories derived_from domains for_user limit offset only order q
+               search_context tags))
   end
 
   # A row of Cetera results
@@ -272,6 +306,7 @@ module Cetera
       super
       data['results'].each do |result|
         result['displayName'] = result['screen_name'] if result['screen_name']
+        result['roleName'] = result['role_name'] if result['role_name']
       end
     end
   end
@@ -279,5 +314,18 @@ module Cetera
   # Search results from the catalog
   class CatalogSearchResult < SearchResult
     @klass = Cetera::CeteraResultRow
+  end
+
+  class TagCountResult < SearchResult
+    @klass = Tag
+
+    def initialize(data = {})
+      super
+      # Format results the same way Cly does so the rest of topics_facet doesn't need to change
+      data['results'].each do |result|
+        result['name'] = result['domain_tag'] if result['domain_tag']
+        result['frequency'] = result['count'] if result['count']
+      end
+    end
   end
 end

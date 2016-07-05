@@ -16,22 +16,26 @@ export default function(state, action) {
     return initialState;
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case REQUESTED_DERIVED_VIEWS:
-      state.isLoading = true;
-      return state;
+      return {
+        ...state,
+        isLoading: true
+      };
 
     case HANDLE_DERIVED_VIEWS_REQUEST_ERROR:
-      state.isLoading = false;
-      state.hasError = true;
-      return state;
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true
+      };
 
     case RECEIVE_DERIVED_VIEWS:
-      state.isLoading = false;
-      state.viewList = action.views;
-      return state;
+      return {
+        ...state,
+        isLoading: false,
+        viewList: action.views
+      };
 
     default:
       return state;

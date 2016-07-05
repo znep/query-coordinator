@@ -2009,7 +2009,7 @@
                         }
                         if ($.subKeyDefined(response, 'details.stage')) {
                             $importingPane.find('.importStatus').text(t(response.details.stage));
-                        } else if ($.subKeyDefined(response, 'details.progress')) {
+                        } else if ($.subKeyDefined(response, 'details.progress') && response.details.progress) {
                             var message = t('rows_imported', {
                                 num: response.details.progress
                             });

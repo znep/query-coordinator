@@ -1469,6 +1469,10 @@ ca:
       title: Compartir aquest conjunt de dades
       twitter: Compartir a través de Twitter
       visibility_alert_html: "<b>Atenció!</b> Aquest conjunt de dades és privat i és possible que hagi persones amb qui ho hagueu compartit que no puguin accedir-hi."
+    tour:
+      description: 
+      done: 
+      title: 
     updated: Actualitzat
     view_widget:
       external_content: Continguts externs
@@ -1627,6 +1631,7 @@ ca:
         goal_page: Pàgina de metes
         goal_status: Estat de la meta
         manage_on_goal_page: Gestionar en pàgina de meta
+        of: 
         owner: Propietari
         rows_per_page: 
         title: Títol
@@ -1837,6 +1842,10 @@ ca:
       contributors: Col·laboradors
       created: creat
       data_provided_by: Dades Proveïdes Per
+      dataset_landing_page:
+        button: 
+        description: 
+        title: 
       datasync_status: Estat de sincronització de dades
       description: Descripció
       downloads: Descàrregues
@@ -2200,7 +2209,7 @@ ca:
                 description: El nom o noms de camp %{fieldNames} es fa servir diverses vegades en el vostre arxiu de dades. Si us plau, assegureu-vos que els noms de camp són únics.
                 title: Noms de camp duplicats especificats
               field_not_in_dataset:
-                description: 
+                description: No s'ha pogut trobar el nom o noms de camp %{fieldNames} en el conjunt de dades al qual esteu intentant importar. Si voleu importar aquesta columna, comproveu bé com està escrit i torneu-ho a provar.
                 title: No s'ha pogut trobar el camp en el conjunt de dades
               field_not_in_input:
                 description: En el vostre arxiu de dades no s'ha pogut trobar una columna (%{fieldNames}) que esperàvem, i no heu especificat una columna d'identificació de fileres. Si us plau, comproveu bé les columnes facilitades i proveu-ho de nou.
@@ -2215,10 +2224,10 @@ ca:
                 description: Per un motiu desconegut, no hem pogut realitzar la geocodificació amb les dades de font facilitades. Si us plau, proveu-ho de nou més tard i poseu-vos en contacte amb el <a href="https://support.socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.
                 title: Error de geocodificació desconegut
               geocoding_source_ignored:
-                description: 
+                description: Ja que les columnes %{fieldNames.join(", ")} són part de la font de geocodificació d'una columna d'ubicació, no hem pogut ignorar-les, tal com s'ha demanat.
                 title: No s'han pogut ignorar les columnes especificades
               geocoding_source_invalid_type:
-                description: 
+                description: No hem pogut fer servir les columnes %{fieldNames} com a font per a geocodificar la informació d'ubicació. Si us plau, comproveu bé que es tracta de text vàlid o de columnes numèriques.
                 title: No s'ha pogut realitzar la geocodificació a partir de les columnes facilitades
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
                 description: Ja que les columnes són part de la font de geocodificació d'una columna d'ubicació, no hem pogut ignorar-les, tal com s'ha demanat.
@@ -2233,8 +2242,8 @@ ca:
                 description: La filera %{record} del vostre arxiu CSV contenia %{actual} camps, mentre que les vostres altres fileres contenien %{expected} camps. Si us plau, assegureu-vos que el vostre arxiu té un nombre regular de camps per filera.
                 title: Nombre de camps no esperat en filera
               malformed_blueprint:
-                description: 
-                title: 
+                description: 'No s''ha pogut fer servir el plànol que heu facilitat. Missatge d''error: "%{message}".'
+                title: Plànol mal format
               malformed_upsert:
                 description: La vostra càrrega d'upsert no es podia analitzar com a JSON, prop del registre %{record}. Si us plau, verifiqueu que és un arxiu JSON vàlid.
                 title: Upsert mal format
@@ -2245,7 +2254,7 @@ ca:
                 description: Aquest conjunt de dades té una columna d'identificador de fileres ("%{fieldName}"), però no hem pogut trobar aquesta columna en les dades que ens heu facilitat. Si us plau, assegureu-vos que existeix, i torneu-ho a provar.
                 title: No s'ha trobat la columna d'identificador de filera
               parse_error:
-                description: 
+                description: L'anàlisi de l'arxiu que heu carregat ha fallat en la línia %{lineNumber} amb el missatge "%{reason}".
                 title: Error d'anàlisi
               permission_denied:
                 description: L'usuari que va iniciar aquesta operació (%{user}) no sembla que tingui els drets necessaris per a realitzar-la. Si us plau, assegureu-vos que heu definit correctament els vostres permisos, i proveu-ho de nou.
@@ -2747,8 +2756,8 @@ ca:
       notify_me_error_html: Quelcom ha anat malament en intentar programar el correu electrònic de notificació. Si us plau, proveu-ho de nou més tard o poseu-vos en contacte amb el <a href="mailto:support@socrata.com">servei d'ajut de Socrata</a> si el problema es continua produint.
       notify_me_messaging: a través de correu electrònic quan hagi acabat.
       notify_me_success_addl: Mentrestant és segur tancar aquest navegador.
-      notify_me_success_html: "<strong>Genial!</strong> Enviarem un correu electrònic <strong>%{email}</strong> quan el vostre conjunt de dades estigui llest."
-      notify_me_success_html_js: 
+      notify_me_success_html: "<strong>Genial!</strong> Enviarem un correu electrònic a <strong>%{email}</strong> quan el vostre conjunt de dades estigui llest."
+      notify_me_success_html_js: "<strong>Genial!</strong> Enviarem un correu electrònic a <strong>{0}</strong> quan el vostre conjunt de dades estigui llest."
       processing: Processant...
       title: Nou Conjunt de Dades
       upload_accessible: Carregui un nou conjunt de dades de forma accessible
@@ -3568,6 +3577,8 @@ ca:
       new_ux_nbe_warning: 'Només intern: Visió antiga UX de la taula de dades New Backend. Els usuaris ordinaris hauran estat redirigits a %{url}'
       new_ux_text: Vegeu aquesta data a la nova experiència visió de dades
       new_ux_title: Esteu preparats per visualitzar explore?
+      page_render_type:
+        edit_layout: 
       save_dialog:
         descriptions:
           leaving: Té dades no desades que es perdran si surt d'aquesta pàgina. Si us plau, indiqui si desitja desar aquesta vista abans de sortir; o seleccioni Cancel·lar per retornar a la pàgina.
@@ -3903,7 +3914,7 @@ ca:
         following: Seguint
         hide_contacts_link: Amagar
       whats_new:
-        caught_up: 
+        caught_up: Atenció! Comproveu <a target="_blank" href="%{href}">aquí</a> les nostres últimes actualitzacions.
         older_news: Veure notícies més antigues
         read_more: Llegir més
         title: L'últim de Socrata
@@ -3955,10 +3966,10 @@ ca:
       daily: Diàriament
       date_range: Rang de dates
       deleted_application: aplicació eliminada
-      delta_decrease: 
-      delta_decrease_compared: 
-      delta_increase: 
-      delta_increase_compared: 
+      delta_decrease: El nombre de {0} ha disminuït en {1} durant {2}
+      delta_decrease_compared: El nombre de {0} ha disminuït en {1} durant {2}, en comparació amb {3}
+      delta_increase: El nombre de {0} ha augmentat en {1} durant {2}
+      delta_increase_compared: El nombre de {0} ha augmentat en {1} durant {2}, en comparació amb {3}
       dependent_metrics: Mètriques Depenents
       download: descarregar
       downloads: descàrregues
@@ -4021,9 +4032,9 @@ ca:
         name: Nou Nom per a la Plantilla
         title: Crear una nova Plantilla
       create_new_dataset:
-        explanation_html: 
+        explanation_html: Quan premeu <strong>Desar</strong>, el vostre <strong>esborrany de conjunt de dades</strong> nou serà visible en el vostre catàleg personal. Ningú més podrà veure'l fins que completeu l'assistent de conjunt de dades nou.
         prompt: Si us plau, poseu un nom al vostre conjunt de dades nou.
-        title: 
+        title: Crear un nou conjunt de dades
     wizard:
       cancel: Cancel·lar
       finish: Finalitzar
@@ -4037,5 +4048,5 @@ ca:
       last_word_connector: ", o "
       two_words_connector: 'o '
   table:
-    no_summary_available: 
-    summary: 
+    no_summary_available: No hi ha resum disponible
+    summary: Aquesta taula de %{data_description} té %{column_heading_count} encapçalament/s de columna %{column_headings} per cada %{row_heading_count} encapçalament de descripció de filera %{row_headings}

@@ -3,6 +3,7 @@ import NavigationControl from './navigationControl';
 
 import { FILE_UPLOAD_COMPLETE } from './uploadFile';
 import * as Utils from '../utils';
+import format from 'stringformat';
 
 export function view({ layers, fileName, dispatch, goToPage, goToPrevious }) {
 
@@ -43,9 +44,9 @@ export function view({ layers, fileName, dispatch, goToPage, goToPrevious }) {
   function shapefilePane() {
     if (layers.length === 0) {
       return (
-        <div className="abbreviatedShapeSummary" style={{display: 'none'}}>
-          <p className="headline">Map layers in “<span className="fileName">School_Districts.zip</span>” will be created upon import.</p>
-          <p className="subheadline">Summarizing this dataset may take a long time. Click next to import it.</p>
+        <div className="abbreviatedShapeSummary">
+          <p className="headline">{format(I18nPrefixed.abbreviatedSummary_js, {fileName: fileName})}</p>
+          <p className="subheadline">{I18nPrefixed.abbreviatedSubheadline}</p>
         </div>
       );
     } else {

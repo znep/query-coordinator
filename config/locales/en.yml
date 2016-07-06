@@ -2729,6 +2729,7 @@ en:
       import_shapefile:
         abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
         abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
+        abbreviatedSummary_js: Map layers in "{fileName}" will be created upon import.
         crs: Coordinate Reference System
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
         headline_interpolate: Specify how "{0}" should be imported.

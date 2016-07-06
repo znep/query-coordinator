@@ -2,6 +2,11 @@
   display: inline-block;
   box-sizing: border-box;
   position: relative;
+  overflow: hidden;
+
+  &.dropdown-opened {
+    overflow: visible;
+  }
 }
 
 .dropdown-hidden {
@@ -30,7 +35,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  z-index: 40;
+  z-index: 50;
 
   &:focus {
     outline: none;
@@ -42,8 +47,6 @@
 
   .dropdown-focused & {
     border-color: #1c81bb;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
   }
 }
 
@@ -69,25 +72,18 @@
   }
 }
 
-.dropdown-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 15;
-}
-
 .dropdown-options-list {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% - 1px);
+  top: 100%;
   background: white;
   border: solid 1px #aaa;
-  z-index: 30;
+  border-top-width: 2px;
+  z-index: 50;
+  overflow-y: auto;
 
-  &.dropdown-options-full-width {
+  &.dropdown-options-true-width {
     right: auto;
   }
 }

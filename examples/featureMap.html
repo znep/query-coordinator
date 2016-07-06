@@ -13,16 +13,9 @@
         font-family: sans-serif;
       }
 
-      #feature-map-1 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 50px auto 0 auto;
-        border: 1px solid #aaa;
-      }
-
-      #feature-map-2 {
+      #feature-map-1,
+      #feature-map-2,
+      #feature-map-3 {
         display: block;
         position: relative;
         width: 640px;
@@ -36,6 +29,7 @@
   <body>
     <div id="feature-map-1"></div>
     <div id="feature-map-2"></div>
+    <div id="feature-map-3"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -119,13 +113,10 @@
         }
       };
 
-      var $featureMap1Element = $('#feature-map-1');
-      $featureMap1Element.socrataFeatureMap(featureMap1VIF);
-
       // Instantiate a second visualizaton with existing dataset metadata to test
       // row inspector events that have access to dataset metadata while we are
       // getting CORS into the frontend routes for metadata.
-      var featureMap2VIF = _.clone(featureMap1VIF);
+      var featureMap2VIF = _.cloneDeep(featureMap1VIF);
       featureMap2VIF.configuration.datasetMetadata = TEST_DATASET_METADATA;
       featureMap2VIF.configuration.panAndZoom = false;
       featureMap2VIF.filters = [
@@ -145,16 +136,29 @@
         }
       ];
 
+      var featureMap3VIF = _.cloneDeep(featureMap1VIF);
+      featureMap3VIF.configuration.mapCenterAndZoom = {
+        center: {
+          lat: 47.5961688328413,
+          lng: -122.3282253742218
+        },
+        zoom: 17
+      };
+
+      var $featureMap1Element = $('#feature-map-1');
+      $featureMap1Element.socrataFeatureMap(featureMap1VIF);
+      $featureMap1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $featureMap1Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+
       var $featureMap2Element = $('#feature-map-2');
       $featureMap2Element.socrataFeatureMap(featureMap2VIF);
-
-      /**
-       * Handle flyout events.
-       * (RowInspector events are handled internally to the RowInspector)
-       */
-
-      $featureMap1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $featureMap2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $featureMap2Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+
+      var $featureMap3Element = $('#feature-map-3');
+      $featureMap3Element.socrataFeatureMap(featureMap3VIF);
+      $featureMap3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $featureMap3Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
 
       function handleFlyout(event) {
 
@@ -168,6 +172,10 @@
         }
       }
 
+      function handleCenterAndZoomChanged(event) {
+        console.log('Map center and zoom changed: ' + JSON.stringify(event.originalEvent.detail));
+      }
+
       /**
        * Destroy the plugin.
        *
@@ -175,11 +183,17 @@
        * `destroy` on the element.
        */
 
-      // $featureMap1Element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
-      // $featureMap1Element.trigger('destroy');
+      // $featureMap1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $featureMap1Element.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $featureMap1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
 
-      // $featureMap2Element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', handleFlyout);
-      // $featureMap2Element.trigger('destroy');
+      // $featureMap2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $featureMap2Element.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $featureMap2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $featureMap3Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $featureMap3Element.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $featureMap3Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
 </html>

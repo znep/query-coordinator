@@ -1,25 +1,27 @@
+@import "breakpoint";
 @import "modular-scale";
 @import "bourbon";
+@import "variables/grid";
 @import "neat";
 
 @import "variables/colors";
 @import "variables/typography";
 
+
 .container {
   @include outer-container();
-
+  padding: 0 1em;
   margin-top: 80px;
-
   &.main {
     margin-top: ms(8);
   }
-
   > .menu {
-    @include span-columns(4);
-
+    @include span-columns(10);
+    @include media($medium) {
+      @include span-columns(4);
+    }
     margin-top: 0;
     z-index: 1999;
-
     .menu-header {
       .menu-header-title {
         margin-top: 3rem;
@@ -31,11 +33,12 @@
         }
       }
     }
-
   }
-
   > .content {
     @include span-columns(12);
+  }
+  @include media($medium) {
+    padding: 0;
   }
 }
 
@@ -110,12 +113,28 @@ body > .responsive-navbar {
   }
 
   .menu-link {
-    border-right: 1px solid lighten($primary, 30%);
-    padding-right: ms(0);
-    transition: color 0.5s;
-    &:hover {
-      cursor: pointer;
-      color: darken($white, 10%);
+    padding-right: 0;
+    @include media($medium) {
+      border-right: 1px solid lighten($primary, 30%);
+      padding-right: ms(0);
+      transition: color 0.5s;
+      &:hover {
+        cursor: pointer;
+        color: darken($white, 10%);
+      }
+    }
+    .menu-link-text {
+      display: none;
+      @include media($medium) {
+        display: inline;
+      }
+    }
+  }
+
+  .responsive-navbar-nav {
+    display: none;
+    @include media($medium) {
+      display: block;
     }
   }
 
@@ -133,13 +152,19 @@ section.styleguide-section {
 }
 
 .meta {
-  @include span-columns(3);
+  @include span-columns(12);
+
+  @include media($medium) {
+    @include span-columns(3);
+  }
 }
 
 .example {
-  @include span-columns(8);
-  @include shift(1);
-
+  @include span-columns(12);
+  @include media($medium) {
+    @include span-columns(8);
+    @include shift(1);
+  }
   .usage.language-markup {
     margin-bottom: ms(12);
   }
@@ -274,7 +299,10 @@ section.styleguide-section {
 }
 
 .half {
-  @include span-columns(6);
+  @include span-columns(12);
+  @include media($medium) {
+    @include span-columns(6);
+  }
 }
 
 .two-thirds {

@@ -292,7 +292,7 @@ class CurrentDomain
   end
 
   def self.member?(user)
-    user && user.rights && user.rights.size > 0
+    !!(user && user.rights && user.rights.size > 0)
   end
 
   def self.user_can?(user, action)

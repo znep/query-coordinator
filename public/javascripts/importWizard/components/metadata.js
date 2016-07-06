@@ -10,6 +10,9 @@ import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
 
+export type Blist = { currentUser: CurrentUser, licenses: licenses }
+declare var blist: Blist;
+
 // == Metadata
 
 type DatasetMetadata = {
@@ -427,7 +430,10 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
   return (
     <div> {fields.map((field, fieldIdx) =>
       <div className="line clearfix">
-        <label className={field.required ? 'required' : 'optional'}>{field.name}</label>
+        <label
+          className={field.required ? 'required' : 'optional'}>
+          {field.name}
+        </label>
         {renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)}
         {(isRequiredCustomFieldMissing(metadata, field, setName, fieldIdx) && metadata.nextClicked)
           ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
@@ -456,6 +462,27 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
+function isProviderRequired(licenseName) {
+  const licenses = blist.licenses.map((l) => {
+    if (_.has(l, 'licenses')) {
+      return l.licenses;
+    } else {
+      return l;
+    }
+  });
+  const flattenedLicenses = [].concat.apply([], licenses);
+
+  const match = flattenedLicenses.filter((l) => {
+    return l.licenseName === licenseName;
+  })[0];
+
+  if (_.has(match, 'attribution_required')) {
+    return "required";
+  } else {
+    return "";
+  }
+}
+
 function renderLicenses(metadata, onMetadataAction) {
   return (
     <div className="licenses">
@@ -464,12 +491,17 @@ function renderLicenses(metadata, onMetadataAction) {
         <label htmlFor="view_licenses">License Type</label>
         <select
           name="view[licenses]"
+          value={metadata.license.licenseName}
           onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
           {Object.keys(licenses).map((name) => <option value={name}>{name}</option> )}
         </select>
       </div>
       <div className="line clearfix">
-        <label htmlFor="view_attribution">{I18n.screens.edit_metadata.data_provided_by}</label>
+        <label
+          htmlFor="view_attribution"
+          className={isProviderRequired(metadata.license.licenseName)}>
+          {I18n.screens.edit_metadata.data_provided_by}
+        </label>
         <input
           type="text"
           name="view[attribution]"

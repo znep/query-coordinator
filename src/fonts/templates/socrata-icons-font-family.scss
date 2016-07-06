@@ -1,11 +1,11 @@
 @font-face {
   font-family: "<%= fontName %>";
-  src: url(socrata-icons-path("<%= fontName %>.eot"));
-  src: url(socrata-icons-path("<%= fontName %>.eot?#iefix")) format("eot"),
-    url(socrata-icons-path("<%= fontName %>.woff2")) format("woff2"),
-    url(socrata-icons-path("<%= fontName %>.woff")) format("woff"),
-    url(socrata-icons-path("<%= fontName %>.ttf")) format("truetype"),
-    url(socrata-icons-path("<%= fontName %>.svg#<%= fontName %>")) format("svg");
+  src: url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.eot"));
+  src: url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.eot?#iefix")) format("eot"),
+    url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.woff2")) format("woff2"),
+    url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.woff")) format("woff"),
+    url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.ttf")) format("truetype"),
+    url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.svg#<%= fontName %>")) format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -13,7 +13,7 @@
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
     font-family: "<%= fontName %>";
-    src: url(socrata-icons-path("<%= fontName %>.svg#<%= fontName %>")) format("svg");
+    src: url(socrata-icons-path("<%= fontName %>-<%= buildTimestamp %>.svg#<%= fontName %>")) format("svg");
   }
 }
 

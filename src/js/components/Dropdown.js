@@ -51,6 +51,30 @@ export const Dropdown = React.createClass({
     };
   },
 
+  componentDidMount() {
+    window.addEventListener('wheel', this.onWheel);
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('wheel', this.onWheel);
+  },
+
+  onWheel() {
+    if (this.options) {
+      let dimensions = this.options.getBoundingClientRect();
+      let browserWindowHeight = window.document.documentElement.clientHeight - 10;
+      let exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + this.options.scrollHeight;
+      let optionHeight = this.options.childNodes[0].clientHeight;
+      let determinedHeight = browserWindowHeight - dimensions.top;
+
+      if (exceedsBrowserWindowHeight) {
+        this.options.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
+      } else if (this.options.style.height !== 'auto') {
+        this.options.style.height = 'auto';
+      }
+    }
+  },
+
   onClickPlaceholder() {
     this.setState({opened: !this.state.opened});
   },
@@ -60,13 +84,15 @@ export const Dropdown = React.createClass({
   },
 
   onBlurPlaceholder() {
-    this.setState({focused: false});
+    this.setState({
+      focused: false,
+      opened: false,
+      highlightedOption: null
+    });
   },
 
   onKeyUpPlaceholder(event) {
-    let { options } = this.props;
     let { UP, DOWN, ENTER, ESCAPE } = KEYS;
-    let { highlightedOption, selectedOption, opened, focused } = this.state;
 
     switch (event.keyCode) {
       case UP:
@@ -82,7 +108,7 @@ export const Dropdown = React.createClass({
         break;
 
       case ESCAPE:
-        this.onClickOverlay();
+        this.onBlurPlaceholder();
         break;
     }
 
@@ -101,15 +127,15 @@ export const Dropdown = React.createClass({
     this.setState({highlightedOption: null});
   },
 
-  onClickOverlay() {
-    this.setState({focused: false, opened: false, highlightedOption: null});
-  },
-
   onClickOption(selectedOption, event) {
     event.stopPropagation();
 
     this.props.onSelection(selectedOption);
-    this.setState({selectedOption, focused: false, opened: false});
+    this.setState({selectedOption, opened: false});
+  },
+
+  onMouseDownOption(event) {
+    event.preventDefault();
   },
 
   moveToNextOption() {
@@ -160,15 +186,15 @@ export const Dropdown = React.createClass({
     let { options, displayTrueWidthOptions } = this.props;
     let separator = <div className="dropdown-options-separator"/>;
     let classes = classNames('dropdown-options-list', {
-      'dropdown-options-full-width': displayTrueWidthOptions,
-      'dropdown-hidden': !opened
+      'dropdown-options-true-width': displayTrueWidthOptions,
+      'dropdown-invisible': !opened
     });
 
     options.forEach((groupOrOption, groupOrOptionIndex) => {
       if (Array.isArray(groupOrOption)) {
         renderedOptions.push(...[
           groupOrOptionIndex > 0 ? separator : null,
-          ...groupOrOption.map((option, optionIndex) => {
+          ...groupOrOption.map(option => {
             return this.renderOption(option, key());
           }),
           groupOrOptionIndex < options.length ? separator : null
@@ -179,7 +205,7 @@ export const Dropdown = React.createClass({
     })
 
     return (
-      <div className={classes} onMouseOver={this.onMouseOverOptions}>
+      <div className={classes} onMouseOver={this.onMouseOverOptions} ref={ref => this.options = ref}>
         {renderedOptions}
       </div>
     );
@@ -199,7 +225,7 @@ export const Dropdown = React.createClass({
       <span className="dropdown-option-title" key={index}>{option.title}</span>;
 
     return (
-      <div className={classes} onClick={onClickOptionBound} key={index}>
+      <div className={classes} onClick={onClickOptionBound} onMouseDown={this.onMouseDownOption} key={index}>
         {content}
       </div>
     );
@@ -239,14 +265,6 @@ export const Dropdown = React.createClass({
     return <div {...attributes}>{placeholder}</div>;
   },
 
-  renderOverlay() {
-    let classes = classNames('dropdown-overlay', {
-      'dropdown-hidden': !this.state.opened
-    });
-
-    return <div className={classes} onClick={this.onClickOverlay}></div>;
-  },
-
   render() {
     let { focused, opened } = this.state;
     let reference = ref => this.container = ref;
@@ -257,12 +275,10 @@ export const Dropdown = React.createClass({
 
     let options = this.renderOptions();
     let placeholder = this.renderPlaceholder();
-    let overlay = this.renderOverlay();
 
     return (
       <div className={classes} ref={reference}>
         {placeholder}
-        {overlay}
         {options}
       </div>
     );

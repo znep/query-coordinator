@@ -19,7 +19,7 @@ module SocrataSiteChrome
         id: config[:id],
         content: site_chrome_config[:content],
         updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
-        current_version: config[:properties].to_a.first.dig(:value, :current_version)
+        current_version: (config[:properties].to_a.first || {}).dig(:value, :current_version)
       }
     end
 

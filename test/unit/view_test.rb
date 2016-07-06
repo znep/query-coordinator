@@ -21,6 +21,7 @@ class ViewTest < Minitest::Test
   end
 
   def test_prefetch
+    init_current_domain
     load_sample_data("test/fixtures/sample-data.json")
     view = View.find("does-not-matter")
     view.prefetch(300)

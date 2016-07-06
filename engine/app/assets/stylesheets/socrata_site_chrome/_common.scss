@@ -1,5 +1,5 @@
-header#chrome-header, footer#chrome-footer {
-  .chrome-btn {
+header#site-chrome-header, footer#site-chrome-footer {
+  .site-chrome-btn {
     color: $btn-color;
     background: transparent;
     padding: 8px 12px;
@@ -19,7 +19,7 @@ header#chrome-header, footer#chrome-footer {
     }
   }
 
-  .chrome-mobile-btn {
+  .site-chrome-mobile-btn {
     color: #fff;
     background: $mobile_btn_color;
     padding: 10px 15px;
@@ -164,7 +164,7 @@ header#chrome-header, footer#chrome-footer {
       .mobile-user-actions {
         margin: 1rem 0;
         padding: 0 $text_padding;
-        a.chrome-mobile-btn {
+        a.site-chrome-mobile-btn {
           display: block;
           margin-bottom: 0.3rem;
         }

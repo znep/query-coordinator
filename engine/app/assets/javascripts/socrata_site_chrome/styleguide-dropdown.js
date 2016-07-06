@@ -95,5 +95,5 @@ $(document).ready(function() {
     }
   }
 
-  DropdownFactory(document.querySelector('#chrome-header'));
+  DropdownFactory(document.querySelector('#site-chrome-header'));
 });

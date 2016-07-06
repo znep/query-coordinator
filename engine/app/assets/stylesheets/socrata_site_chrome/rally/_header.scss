@@ -1,10 +1,9 @@
-header#chrome-header[template="rally"] {
+header#site-chrome-header[template="rally"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
     line-height: 60px;
     font-size: 18px;
-    min-height: 160px;
 
     > .rally-top {
       padding: 1rem;

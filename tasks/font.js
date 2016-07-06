@@ -5,6 +5,7 @@ var consolidate = require('gulp-consolidate');
 var iconfont = require('gulp-iconfont');
 
 var fontName = 'socrata-icons';
+var buildTimestamp = Math.round(Date.now() / 1000);
 
 function compileIconStyles(stream) {
   return (callback) => {
@@ -32,7 +33,8 @@ function compileIconStyles(stream) {
 function compileFontFamily() {
   return (callback) => {
     var locals = {
-      fontName
+      fontName,
+      buildTimestamp
     };
 
     gulp.src('src/fonts/templates/socrata-icons-font-family.scss').
@@ -52,9 +54,9 @@ function compileStream(stream) {
 
 module.exports = (done) => {
   var settings = {
-    fontName: 'socrata-icons',
+    fontName: 'socrata-icons-' + buildTimestamp,
     formats: ['eot', 'svg', 'ttf', 'woff', 'woff2'],
-    timestamp: Math.round(Date.now() / 1000),
+    timestamp: buildTimestamp,
     descent: 128 // Magic! Fuck if I know. It works.
   };
 

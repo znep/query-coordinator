@@ -79,6 +79,8 @@ class Page < Model
     end
 
     def self.write(cache_data)
+      clear # ensure mtime is cached
+
       cache_key = fetch_cache_key
       Rails.logger.info("Writing pages data to cache key: #{cache_key}")
       snapped = Snappy.deflate(Marshal.dump(cache_data))

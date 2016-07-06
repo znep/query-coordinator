@@ -84,8 +84,10 @@ $.fn.socrataTable = function(vif) {
   var getMemoizedDatasetMetadata = _.memoize(
     function(metadataProviderConfig) {
 
+      // TODO: Remove allowObeDataset once we no longer need to support OBE datasets
+      var allowObeDataset = _.get(vifToRender, 'configuration.allowObeDataset', false);
       return new MetadataProvider(metadataProviderConfig).
-        getDatasetMetadata();
+        getDatasetMetadata(allowObeDataset);
     },
     function(metadataProviderConfig) {
 
@@ -390,15 +392,19 @@ $.fn.socrataTable = function(vif) {
             'fieldName'
           ).
             slice(0, MAX_COLUMN_COUNT);
+
+          // TODO: Remove this once we no longer need to support OBE datasets
+          var allowObeDataset = _.get(vifToRender, 'configuration.allowObeDataset', false);
           var soqlRowCountPromise = soqlDataProvider.
-            getRowCount(whereClauseComponents);
+            getRowCount(whereClauseComponents, allowObeDataset);
           var soqlDataPromise = soqlDataProvider.
             getTableData(
               displayableColumnsFieldNames,
               order,
               startIndex,
               pageSize,
-              whereClauseComponents
+              whereClauseComponents,
+              allowObeDataset
             );
 
           return Promise.all([

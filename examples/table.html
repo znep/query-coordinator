@@ -31,6 +31,8 @@
     <div id="table-4"></div>
     <p>Tests rendering an error the table's dataset cannot be found.</p>
     <div id="table-5"></div>
+    <p>Tests rendering a table based on an OBE dataset</p>
+    <div id="table-6"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -132,6 +134,17 @@
     var table5VIF = _.cloneDeep(table4VIF);
     table5VIF.datasetUid = 'notf-ound';
     $table5Element.socrataTable(table5VIF);
+
+    var $table6Element = $('#table-6');
+    var table6VIF = _.cloneDeep(table1VIF);
+    table6VIF.datasetUid = '7uf8-tam8';
+    table6VIF.domain = 'opendata-demo.rc-socrata.com';
+    table6VIF.configuration.allowObeDataset = true;
+    table6VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'plain_text'
+    }];
+    $table6Element.socrataTable(table6VIF);
 
     var $tables = $('[id^=table-]');
 

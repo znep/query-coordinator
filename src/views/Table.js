@@ -14,6 +14,9 @@ module.exports = function Table(element, vif) {
   var _lastRenderOptions;
   var _scrollbarHeightPx;
 
+  var _datasetUid = _.get(vif, 'datasetUid');
+  var _domain = _.get(vif, 'domain');
+
   // If defined, this is an object that maps column name to pixel widths.
   // See freezeColumnWidths().
   var _columnWidths;
@@ -139,10 +142,16 @@ module.exports = function Table(element, vif) {
     return [
       '<td data-cell-render-type="{renderTypeName}">',
         '<div>',
-          DataTypeFormatter.renderCell(cell, column, {
-            latitude: vif.configuration.localization.latitude,
-            longitude: vif.configuration.localization.longitude
-          }),
+          DataTypeFormatter.renderCell(
+            cell,
+            column,
+            {
+              latitude: vif.configuration.localization.latitude,
+              longitude: vif.configuration.localization.longitude
+            },
+            _domain,
+            _datasetUid
+          ),
         '</div>',
       '</td>'
     ].join('').format(column);

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ApplicationHelper do
-  describe '#suppress_govstat?' do
+  describe '#suppress_govstat?', :verify_stubs => false do
     let(:current_user) { double('current_user') }
     let(:member_response) { false }
 

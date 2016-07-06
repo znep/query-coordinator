@@ -18,7 +18,7 @@ declare var blist: Blist;
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: MetadataApiCall,
-  license: LicenseContents,
+  license: LicenseType,
   contents: MetadataContents,
   lastSaved: MetadataContents
 }
@@ -41,8 +41,9 @@ type MetadataContents = {
   privacySettings: String
 }
 
-type LicenseContents = {
+type LicenseType = {
     licenseName: String,
+    licensing: String,
     licenseId: String,
     provider: String,
     sourceLink: String
@@ -76,10 +77,10 @@ export function emptyContents(name: string): MetadataContents {
 }
 
 export function emptyLicense(): LicenseContents {
-  const defaultLicense = Object.keys(licenses)[0];
   return {
-    licenseName: defaultLicense,
-    licenseId: licenses[defaultLicense],
+    licenseName: '',
+    licensing: '',
+    licenseId: '',
     provider: '',
     sourceLink: ''
   }
@@ -149,6 +150,14 @@ export function updateLicenseName(newLicenseName: string) {
   return {
     type: MD_UPDATE_LICENSENAME,
     newLicenseName: newLicenseName
+  };
+}
+
+const MD_UPDATE_LICENSING = 'MD_UPDATE_LICENSING';
+export function updateLicensing(newLicensing: string) {
+  return {
+    type: MD_UPDATE_LICENSING,
+    newLicensing: newLicensing
   };
 }
 
@@ -315,6 +324,11 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
         licenseName: action.newLicenseName,
         licenseId: licenses[action.newLicenseName]
       };
+    case MD_UPDATE_LICENSING:
+      return {
+        ...license,
+        licensing: action.newLicensing
+      }
     case MD_UPDATE_LICENSEPROVIDER:
       return {
         ...license,
@@ -483,6 +497,22 @@ function isProviderRequired(licenseName) {
   }
 }
 
+function hasLicensing(licenseName) {
+  const license = blist.licenses.filter((l) => {
+    return l.name === licenseName;
+  })[0];
+
+  return _.has(license, 'licenses');
+}
+
+function getLicenses(licenseName) {
+  const license = blist.licenses.filter((l) => {
+    return l.name === licenseName;
+  })[0];
+
+  return license.licenses;
+}
+
 function renderLicenses(metadata, onMetadataAction) {
   return (
     <div className="licenses">
@@ -493,9 +523,22 @@ function renderLicenses(metadata, onMetadataAction) {
           name="view[licenses]"
           value={metadata.license.licenseName}
           onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
-          {Object.keys(licenses).map((name) => <option value={name}>{name}</option> )}
+          {blist.licenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
         </select>
       </div>
+
+      {hasLicensing(metadata.license.licenseName) ?
+        <div className="line clearfix">
+          <label htmlFor="view_licensing" className="required">Licensing</label>
+          <select
+            name="view[licensing]"
+            value={metadata.license.licensing}
+            onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
+            {getLicenses(metadata.license.licenseName).map((obj) => <option value={obj.name}>{obj.name}</option> )}
+          </select>
+        </div>
+      : null}
+
       <div className="line clearfix">
         <label
           htmlFor="view_attribution"
@@ -511,6 +554,7 @@ function renderLicenses(metadata, onMetadataAction) {
           onChange={(evt) => onMetadataAction(updateLicenseProvider(evt.target.value))}
           className="textPrompt" />
       </div>
+
       <div className="line clearfix">
         <label htmlFor="view_attributionLink">{I18n.screens.edit_metadata.source_link}</label>
         <input
@@ -522,6 +566,7 @@ function renderLicenses(metadata, onMetadataAction) {
           onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
           className="textPrompt" />
       </div>
+      
     </div>
   );
 }

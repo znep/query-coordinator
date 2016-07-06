@@ -10,7 +10,7 @@ import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
 
-export type Blist = { currentUser: CurrentUser, licenses: licenses }
+export type Blist = { }
 declare var blist: Blist;
 
 // == Metadata
@@ -77,14 +77,14 @@ export function emptyContents(name: string): MetadataContents {
   };
 }
 
-export function emptyLicense(): LicenseContents {
+export function emptyLicense(): LicenseType {
   return {
     licenseName: '',
     licensing: '',
     licenseId: '',
     provider: '',
     sourceLink: ''
-  }
+  };
 }
 
 export function emptyForName(name: string): DatasetMetadata {
@@ -319,22 +319,22 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
-    case MD_UPDATE_LICENSENAME:
-      let newLicensing = "";
-      if (hasLicensing(action.newLicenseNmae)) {
-        newLicensing = getLicenses(action.newLicenseName)[0].name;
-      }
+    case MD_UPDATE_LICENSENAME: {
+      const newLicensing = hasLicensing(action.newLicenseName)
+                            ? getLicenses(action.newLicenseName)[0].name
+                            : '';
       return {
         ...license,
         licenseName: action.newLicenseName,
         licenseId: licenses[action.newLicenseName],
         licensing: newLicensing
       };
+    }
     case MD_UPDATE_LICENSING:
       return {
         ...license,
         licensing: action.newLicensing
-      }
+      };
     case MD_UPDATE_LICENSEPROVIDER:
       return {
         ...license,
@@ -495,12 +495,12 @@ function isProviderRequired(metadata) {
         return l.name === licensing;
       })[0];
 
-      if (_.has(match, 'attribution_required')) {
-        return "required";
-      }
+      return match.attribution_required
+              ? 'required'
+              : '';
     }
   }
-  return "";
+  return '';
 }
 
 function hasLicensing(licenseName) {
@@ -540,7 +540,7 @@ function renderLicenses(metadata, onMetadataAction) {
             name="view[licensing]"
             value={metadata.license.licensing}
             onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
-            {getLicenses(metadata.license.licenseName).map((obj) => <option value={obj.name}>{obj.name}</option> )}
+            {getLicenses(metadata.license.licenseName).map((obj) => <option value={obj.name}>{obj.name}</option>)}
           </select>
         </div>
       : null}

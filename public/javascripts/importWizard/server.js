@@ -21,7 +21,7 @@ export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
 
 declare var I18n: any;
 type CurrentUser = { id: string }
-export type Blist = { currentUser: CurrentUser, licenses: licenses }
+export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
@@ -195,7 +195,7 @@ export function coreViewToModel(view) {
     apiCall: { type: 'In Progress' },
     license: {
       licenseId: view.licenseId,
-      licenseName: view.license.licenseName,
+      licenseName: view.license.name,
       sourceLink: view.attributionLink,
       provider: view.attribution
     }

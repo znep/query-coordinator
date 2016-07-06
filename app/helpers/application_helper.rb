@@ -656,7 +656,7 @@ module ApplicationHelper
   end
 
   def suppress_govstat?
-    @suppress_govstat || CurrentDomain.member?(current_user) == false
+    @suppress_govstat || !CurrentDomain.member?(current_user)
   end
 
   def is_mobile?

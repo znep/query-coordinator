@@ -46,6 +46,7 @@ type LicenseType = {
     licensing: String,
     licenseId: String,
     provider: String,
+    providerRequired: boolean,
     sourceLink: String
 }
 
@@ -319,10 +320,15 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
     case MD_UPDATE_LICENSENAME:
+      let newLicensing = "";
+      if (hasLicensing(action.newLicenseNmae)) {
+        newLicensing = getLicenses(action.newLicenseName)[0].name;
+      }
       return {
         ...license,
         licenseName: action.newLicenseName,
-        licenseId: licenses[action.newLicenseName]
+        licenseId: licenses[action.newLicenseName],
+        licensing: newLicensing
       };
     case MD_UPDATE_LICENSING:
       return {
@@ -476,25 +482,25 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-function isProviderRequired(licenseName) {
-  const licenses = blist.licenses.map((l) => {
-    if (_.has(l, 'licenses')) {
-      return l.licenses;
-    } else {
-      return l;
+function isProviderRequired(metadata) {
+  const licenseName = metadata.license.licenseName;
+  const licensing = metadata.license.licensing;
+  if (licensing !== '') {
+    const licenseArray = blist.licenses.filter((l) => {
+      return l.name === licenseName;
+    })[0];
+
+    if (_.has(licenseArray, 'licenses')) {
+      const match = licenseArray.licenses.filter((l) => {
+        return l.name === licensing;
+      })[0];
+
+      if (_.has(match, 'attribution_required')) {
+        return "required";
+      }
     }
-  });
-  const flattenedLicenses = [].concat.apply([], licenses);
-
-  const match = flattenedLicenses.filter((l) => {
-    return l.licenseName === licenseName;
-  })[0];
-
-  if (_.has(match, 'attribution_required')) {
-    return "required";
-  } else {
-    return "";
   }
+  return "";
 }
 
 function hasLicensing(licenseName) {
@@ -542,7 +548,7 @@ function renderLicenses(metadata, onMetadataAction) {
       <div className="line clearfix">
         <label
           htmlFor="view_attribution"
-          className={isProviderRequired(metadata.license.licenseName)}>
+          className={isProviderRequired(metadata)}>
           {I18n.screens.edit_metadata.data_provided_by}
         </label>
         <input
@@ -566,7 +572,7 @@ function renderLicenses(metadata, onMetadataAction) {
           onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
           className="textPrompt" />
       </div>
-      
+
     </div>
   );
 }

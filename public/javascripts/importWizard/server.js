@@ -146,6 +146,12 @@ export function modelToViewParam(metadata) {
 }
 
 function viewToLicenseInformation(license) {
+  const name = license.licenseName;
+  const licensing = license.licensing;
+  if (licensing !== '') {
+    name.concat(licensing);
+  }
+
   const licenses = blist.licenses.map((l) => {
     if (_.has(l, 'licenses')) {
       return l.licenses;
@@ -156,11 +162,11 @@ function viewToLicenseInformation(license) {
   const flattenedLicenses = [].concat.apply([], licenses);
 
   const match = flattenedLicenses.filter((l) => {
-    return l.licenseName === license.licenseName;
+    return l.name === license.licensing || l.name === license.licenseName;
   })[0];
 
   return {
-    name: match.name,
+    name: name,
     termsLink: match.terms_link
                 ? match.terms_link
                 : '',
@@ -188,7 +194,7 @@ export function coreViewToModel(view) {
     lastSaved: contents,
     apiCall: { type: 'In Progress' },
     license: {
-      licenseType: view.licenseId,
+      licenseId: view.licenseId,
       licenseName: view.license.licenseName,
       sourceLink: view.attributionLink,
       provider: view.attribution

@@ -1,11 +1,16 @@
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
   def social_share_link(type, site_chrome = @site_chrome)
-    social_shares = fetch_content([:general, :social_shares], site_chrome)
+    social_shares = site_chrome.content.to_h.dig('general', 'social_shares')
+
     if social_shares
-      share_type_hash = social_shares.detect { |x| x['type'] == type }
-      if share_type_hash
-        share_type_hash['url']
+      if site_chrome_version_is_greater_than_or_equal?('0.3', site_chrome)
+        social_shares.dig(type, 'url')
+      else
+        share_type_hash = social_shares.detect { |x| x['type'] == type }
+        if share_type_hash
+          share_type_hash['url']
+        end
       end
     end
   end
@@ -32,5 +37,9 @@ module SiteChromeHelper
   # Return links array trimmed to link_count, and create empty placeholders as needed
   def links_with_placeholders(links, link_count)
     Array[*links.to_a[0...link_count] + Array.new(link_count)][0...link_count]
+  end
+
+  def site_chrome_version_is_greater_than_or_equal?(version, site_chrome = @site_chrome)
+    Gem::Version.new(site_chrome.current_version) >= Gem::Version.new(version)
   end
 end

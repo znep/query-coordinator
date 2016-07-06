@@ -47,6 +47,10 @@ class SiteChrome
     }
   end
 
+  def self.latest_version
+    '0.3'
+  end
+
   def attributes
     SiteChrome.attribute_names.each_with_object({}) do |field, hash|
       hash[field] = instance_variable_get("@#{field}")
@@ -77,7 +81,21 @@ class SiteChrome
   end
 
   def config
-    property(SiteChrome.core_configuration_property_name)
+    property(SiteChrome.core_configuration_property_name) || {}
+  end
+
+  def current_version
+    if config.present?
+      config.dig('value', 'current_version') || latest_published_version
+    else
+      # No existing data, use latest version
+      SiteChrome.latest_version
+    end
+
+  end
+
+  def latest_published_version
+    config.dig('value', 'versions').keys.map { |version| Gem::Version.new(version) }.max.to_s
   end
 
   def published
@@ -88,7 +106,7 @@ class SiteChrome
     config.
       try(:[], 'value').
       try(:[], 'versions').
-      try(:[], '0.1').
+      try(:[], current_version).
       try(:[], 'published')
   end
 
@@ -205,9 +223,13 @@ class SiteChrome
 
   # WARN: deep merge!
   def update_published_content(new_content_hash)
+    all_versions_content = config.dig('value') || {
+      'versions' => {}
+    }
     new_content = (content || {}).deep_merge(new_content_hash)
-    wrapped_up = { 'versions' => { '0.1' => { 'published' => { 'content' => new_content } } } }
-    create_or_update_property(SiteChrome.core_configuration_property_name, wrapped_up)
+    all_versions_content['current_version'] = current_version
+    all_versions_content['versions'][current_version] = { 'published' => { 'content' => new_content } }
+    create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
   end
 
   def reload_properties

@@ -26,7 +26,8 @@
 
       <%= hidden_field_tag(key_path, link['key'] || '') %>
       <%= text_field_tag(translated_label_path, translated_label || '', placeholder: label_placeholder) %>
-      <%= text_field_tag(url_path, link['url'] || '', placeholder: url_placeholder) %>
+      <%= text_field_tag(url_path, link['url'] || '', placeholder: url_placeholder,
+        id: "#{url_path}_#{format('%02d', i)}") %>
     </div>
   <% end %>
 </section>

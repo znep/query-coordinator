@@ -215,6 +215,12 @@ $faint-border-color: #ebebeb;
             line-height: 1.5rem;
             font-size: 16px;
             color: $grey;
+
+            &.error {
+              color: $red-text;
+              font-size: 14px;
+              float: right;
+            }
           }
           input {
             padding: 0.5rem;

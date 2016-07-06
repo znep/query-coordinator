@@ -7,6 +7,7 @@
     {
       "name": "siteChromeConfigVars",
       "value": {
+        "current_version": "0.3",
         "versions": {
           "0.1": {
             "published": {
@@ -99,6 +100,356 @@
                       "url": "http://twitter.com"
                     }
                   ],
+                  "styles": {
+                    "bg_color": "#2c97de",
+                    "fg_color": "#eee",
+                    "font_family": "Open Sans"
+                  }
+                },
+                "header": {
+                  "links": [
+                    {
+                      "key": "home",
+                      "url": "/"
+                    },
+                    {
+                      "key": "catalog",
+                      "url": "/browse"
+                    },
+                    {
+                      "key": "developers",
+                      "url": "http://dev.socrata.com"
+                    },
+                    {
+                      "key": "support",
+                      "url": "http://support.socrata.com"
+                    },
+                    {
+                      "key": "evergreen",
+                      "url": "http://data.evergreen.gov"
+                    }
+                  ],
+                  "logo": {
+                    "href": "#",
+                    "src": "http://i.imgur.com/E8wtc6d.png"
+                  },
+                  "styles": {
+                    "bg_color": "#5D7365",
+                    "fg_color": "#eee"
+                  }
+                },
+                "locales": {
+                  "en": {
+                    "footer": {
+                      "links": {
+                        "a": "Link A",
+                        "accessibility": "Accessibility",
+                        "b": "Link B",
+                        "c": "Link C",
+                        "contact_us": "Contact Us",
+                        "d": "Link D",
+                        "e": "Link E",
+                        "f": "Link F",
+                        "g": "Link G with a super long title!!!",
+                        "h": "Link H",
+                        "home": "Home Page",
+                        "i": "Link I",
+                        "j": "Link J",
+                        "privacy": "Privacy Policy",
+                        "terms_of_service": "Terms of Service"
+                      },
+                      "logo_alt": "Evergreen!"
+                    },
+                    "general": {
+                      "site_name": "City of Evergreen",
+                      "social_shares": {
+                        "facebook": "Like us on Facebook",
+                        "twitter": "Follow us on Twitter"
+                      }
+                    },
+                    "header": {
+                      "links": {
+                        "catalog": "Browse",
+                        "developers": "Developers",
+                        "evergreen": "City of Evergreen",
+                        "home": "Home Page",
+                        "support": "Support"
+                      },
+                      "logo_alt": "Evergreen!"
+                    }
+                  }
+                },
+                "pants": "fun",
+                "some_key": "some_fine_value",
+                "superpants": "happy walking"
+              }
+            }
+          },
+          "0.2": {
+            "published": {
+              "content": {
+                "footer": {
+                  "links": [
+                    {
+                      "key": "home",
+                      "url": "/"
+                    },
+                    {
+                      "key": "terms_of_service",
+                      "url": "http://www.socrata.com/terms-of-service"
+                    },
+                    {
+                      "key": "privacy",
+                      "url": "http://www.socrata.com/privacy"
+                    },
+                    {
+                      "key": "accessibility",
+                      "url": "http://www.socrata.com/accessibility"
+                    },
+                    {
+                      "key": "contact_us",
+                      "url": "http://www.socrata.com/contact-us"
+                    },
+                    {
+                      "key": "a",
+                      "url": "#a"
+                    },
+                    {
+                      "key": "b",
+                      "url": "#b"
+                    },
+                    {
+                      "key": "c",
+                      "url": "#c"
+                    },
+                    {
+                      "key": "d",
+                      "url": "#d"
+                    },
+                    {
+                      "key": "e",
+                      "url": "#e"
+                    },
+                    {
+                      "key": "f",
+                      "url": "#f"
+                    },
+                    {
+                      "key": "g",
+                      "url": "#g"
+                    },
+                    {
+                      "key": "h",
+                      "url": "#h"
+                    },
+                    {
+                      "key": "i",
+                      "url": "#i"
+                    },
+                    {
+                      "key": "j",
+                      "url": "#j"
+                    }
+                  ],
+                  "logo": {
+                    "href": "#",
+                    "src": "http://i.imgur.com/rF2EJ4P.gif"
+                  }
+                },
+                "general": {
+                  "default_locale": "en",
+                  "window_icon": "http://foo.png",
+                  "link_text_color": "grey",
+                  "locales": [
+                    "en",
+                    "es",
+                    "fr"
+                  ],
+                  "window_title_display": "Evergreen",
+                  "social_shares": [
+                    {
+                      "type": "facebook",
+                      "url": "http://facebook.com"
+                    },
+                    {
+                      "type": "twitter",
+                      "url": "http://twitter.com"
+                    }
+                  ],
+                  "styles": {
+                    "bg_color": "#2c97de",
+                    "fg_color": "#eee",
+                    "font_family": "Open Sans"
+                  }
+                },
+                "header": {
+                  "links": [
+                    {
+                      "key": "home",
+                      "url": "/"
+                    },
+                    {
+                      "key": "catalog",
+                      "url": "/browse"
+                    },
+                    {
+                      "key": "developers",
+                      "url": "http://dev.socrata.com"
+                    },
+                    {
+                      "key": "support",
+                      "url": "http://support.socrata.com"
+                    },
+                    {
+                      "key": "evergreen",
+                      "url": "http://data.evergreen.gov"
+                    }
+                  ],
+                  "logo": {
+                    "href": "#",
+                    "src": "http://i.imgur.com/E8wtc6d.png"
+                  },
+                  "styles": {
+                    "bg_color": "#5D7365",
+                    "fg_color": "#eee"
+                  }
+                },
+                "locales": {
+                  "en": {
+                    "footer": {
+                      "links": {
+                        "a": "Link A",
+                        "accessibility": "Accessibility",
+                        "b": "Link B",
+                        "c": "Link C",
+                        "contact_us": "Contact Us",
+                        "d": "Link D",
+                        "e": "Link E",
+                        "f": "Link F",
+                        "g": "Link G with a super long title!!!",
+                        "h": "Link H",
+                        "home": "Home Page",
+                        "i": "Link I",
+                        "j": "Link J",
+                        "privacy": "Privacy Policy",
+                        "terms_of_service": "Terms of Service"
+                      },
+                      "logo_alt": "Evergreen!"
+                    },
+                    "general": {
+                      "site_name": "City of Evergreen",
+                      "social_shares": {
+                        "facebook": "Like us on Facebook",
+                        "twitter": "Follow us on Twitter"
+                      }
+                    },
+                    "header": {
+                      "links": {
+                        "catalog": "Browse",
+                        "developers": "Developers",
+                        "evergreen": "City of Evergreen",
+                        "home": "Home Page",
+                        "support": "Support"
+                      },
+                      "logo_alt": "Evergreen!"
+                    }
+                  }
+                },
+                "pants": "fun",
+                "some_key": "some_fine_value",
+                "superpants": "happy walking"
+              }
+            }
+          },
+          "0.3": {
+            "published": {
+              "content": {
+                "footer": {
+                  "links": [
+                    {
+                      "key": "home",
+                      "url": "/"
+                    },
+                    {
+                      "key": "terms_of_service",
+                      "url": "http://www.socrata.com/terms-of-service"
+                    },
+                    {
+                      "key": "privacy",
+                      "url": "http://www.socrata.com/privacy"
+                    },
+                    {
+                      "key": "accessibility",
+                      "url": "http://www.socrata.com/accessibility"
+                    },
+                    {
+                      "key": "contact_us",
+                      "url": "http://www.socrata.com/contact-us"
+                    },
+                    {
+                      "key": "a",
+                      "url": "#a"
+                    },
+                    {
+                      "key": "b",
+                      "url": "#b"
+                    },
+                    {
+                      "key": "c",
+                      "url": "#c"
+                    },
+                    {
+                      "key": "d",
+                      "url": "#d"
+                    },
+                    {
+                      "key": "e",
+                      "url": "#e"
+                    },
+                    {
+                      "key": "f",
+                      "url": "#f"
+                    },
+                    {
+                      "key": "g",
+                      "url": "#g"
+                    },
+                    {
+                      "key": "h",
+                      "url": "#h"
+                    },
+                    {
+                      "key": "i",
+                      "url": "#i"
+                    },
+                    {
+                      "key": "j",
+                      "url": "#j"
+                    }
+                  ],
+                  "logo": {
+                    "href": "#",
+                    "src": "http://i.imgur.com/rF2EJ4P.gif"
+                  }
+                },
+                "general": {
+                  "default_locale": "en",
+                  "window_icon": "http://foo.png",
+                  "link_text_color": "grey",
+                  "locales": [
+                    "en",
+                    "es",
+                    "fr"
+                  ],
+                  "window_title_display": "Evergreen",
+                  "social_shares": {
+                    "facebook": {
+                      "url": "http://facebook.com"
+                    },
+                    "twitter": {
+                      "url": "http://twitter.com"
+                    }
+                  },
                   "styles": {
                     "bg_color": "#2c97de",
                     "fg_color": "#eee",

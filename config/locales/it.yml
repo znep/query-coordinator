@@ -1468,9 +1468,9 @@ it:
       twitter: Condividi via Twitter
       visibility_alert_html: b>Attenzione!</b> Questa sequenza di dati è privata e potrebbe non essere accessibile alle persone con cui la condividi.
     tour:
-      description: 
-      done: 
-      title: 
+      description: Noi la definiamo la Landing Page della sequenza di dati. Ma, in caso tu desiderassi dare uno sguardo alla visualizzazione tabellare dei dati, potrai accedervi da qui.
+      done: OK
+      title: Le sequenze di dati hanno un nuovo aspetto!
     updated: Aggiornato
     view_widget:
       external_content: Contenuto esterno
@@ -1629,7 +1629,7 @@ it:
         goal_page: Pagina dell'obiettivo
         goal_status: Stato dell'obiettivo
         manage_on_goal_page: Gestisci sulla Pagina dell'Obiettivo
-        of: 
+        of: di
         owner: Proprietario
         rows_per_page: Righe per pagina
         title: Titolo
@@ -1841,9 +1841,9 @@ it:
       created: creato
       data_provided_by: Dati forniti da
       dataset_landing_page:
-        button: 
-        description: 
-        title: 
+        button: Portami qui!
+        description: Tutte le informazioni che si trovano in questo pannello, e altre, adesso si trovano sulla Landing Page della sequenza di dati, in un formato più fruibile e più facile da consultare da parte dell'utente.
+        title: Adesso, queste informazioni si trovano sulla Landing Page della sequenza di dati
       datasync_status: Stato di sincronizzazione dei dati
       description: Descrizione
       downloads: Download
@@ -2716,6 +2716,7 @@ it:
         name: Nome
         pending_columns: Cortesemente attendi mentre carichiamo le tue colonne...
         reset_to_preset: Torna alla selezione predefinita
+        restore_suggested_settings: 
         set: Seleziona
         source_column: Fonte della Colonna
         subheadline: Colonne da Importare
@@ -3576,7 +3577,7 @@ it:
       new_ux_text: Vedi questo dato nella nuova esperienza Data Lens
       new_ux_title: Pronto ad esplorare visivamente?
       page_render_type:
-        edit_layout: 
+        edit_layout: Modifica la disposizione
       save_dialog:
         descriptions:
           leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
@@ -3718,6 +3719,7 @@ it:
       import_from_latlong: Importa dalle colonne della <strong>latitudine</strong> e dell <strong>longitudine</strong>
       import_from_multiple: Importa da <strong>colonne multiple</strong>
       import_from_single: Importa da <strong>colonna singola</strong>
+      insert_static_text: 
       latitude: Latitudine
       location_source_col: Posizione Colonne Sorgente
       longitude: Longitudine
@@ -3746,6 +3748,9 @@ it:
       bytes_imported: "%{num} byte finora importati."
       combine_multiple_cols: "(Combina Colonne Multiple...)"
       downloading: Sto scaricando il tuo file...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Cortesemente scegli un file CSV, TSV, XLS, o XLSX.
       filetype_error_shapefile: Cortesemente scegli un file KML, KMZ, o ZIP.
       headline_import: Cortesemente scegli un file da importare
@@ -4038,6 +4043,7 @@ it:
       finish: Termina
       next: Successivo
       previous: Precedente
+      save: 
   support:
     array:
       last_word_connector: ", e "

@@ -2716,6 +2716,7 @@ ru:
         name: "Имя"
         pending_columns: "Подождите, пока мы загрузим ваши столбцы.."
         reset_to_preset: "Восстановить предустановки"
+        restore_suggested_settings: 
         set: "Установить"
         source_column: "Столбец источника"
         subheadline: "Столбцы для импорта"
@@ -3727,6 +3728,7 @@ ru:
       import_from_latlong: 
       import_from_multiple: "Импортировать из <strong>нескольких столбцов</strong>"
       import_from_single: "Импортировать из <strong>одного столбца</strong>"
+      insert_static_text: 
       latitude: "Широта"
       location_source_col: "Расположение исходных столбцов"
       longitude: "Долгота"
@@ -3755,6 +3757,9 @@ ru:
       bytes_imported: "удалось импортировать %{num} \tбайтов"
       combine_multiple_cols: "(Объединить несколько столбцов...)"
       downloading: "Загрузка вашего файла..."
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: "Выберите файл CSV, TSV, XLS или XLSX."
       filetype_error_shapefile: "Выберите файл KML, KMZ или ZIP."
       headline_import: "Выберите файл для импорта"
@@ -4047,6 +4052,7 @@ ru:
       finish: "Завершить"
       next: "Следующий"
       previous: "Предыдущий"
+      save: 
   support:
     array:
       last_word_connector: ", и "

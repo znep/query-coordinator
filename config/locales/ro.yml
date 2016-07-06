@@ -2713,6 +2713,7 @@ ro:
         name: Nume
         pending_columns: Vă rugăm să aşteptaţi cât timp vă încărcăm coloanele...
         reset_to_preset: Resetaţi pentru a preseta
+        restore_suggested_settings: 
         set: Setare
         source_column: Coloană sursă
         subheadline: Coloane de importat
@@ -3715,6 +3716,7 @@ ro:
       import_from_latlong: 
       import_from_multiple: Importaţi din <strong>coloane multiple</strong>
       import_from_single: Importaţi dintr-o <strong>singură coloană</strong>
+      insert_static_text: 
       latitude: Latitudine
       location_source_col: Coloane sursă localizare
       longitude: Longitudine
@@ -3743,6 +3745,9 @@ ro:
       bytes_imported: "%{num}octeți importați până acum."
       combine_multiple_cols: "(Combinaţi coloane multiple...)"
       downloading: Fişierul dvs. se descarcă...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Vă rugăm să alegeţi un fişier CSV, TSV, XLS sau XLSX.
       filetype_error_shapefile: Vă rugăm să alegeţi un fişier KML, KMZ sau ZIP.
       headline_import: Vă rugăm să alegeţi un fişier de importat
@@ -4035,6 +4040,7 @@ ro:
       finish: "Încheiere"
       next: Următor
       previous: Anterior
+      save: 
   support:
     array:
       last_word_connector: "şi"

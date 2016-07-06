@@ -1276,7 +1276,7 @@ ca:
       title: Accediu a aquest conjunt de dades a través de l'API SODA
     back: Enrere
     bootstrap_button: Crear visualització
-    bootstrap_disabled_notice: En aquests moments les vostres dades estan sent processades. Refresqueu la pàgina en uns pocs minuts i podreu crear una nova lent de dades.
+    bootstrap_disabled_notice: En aquests moments les vostres dades s'estan processant. Refresqueu la pàgina d'aquí a uns minuts i podreu crear una nova lent de dades.
     bootstrap_message: Aquest conjunt de dades no té cap visualització relacionada. Us agradaria crear-ne una, ara?
     cancel: Cancel·lar
     change: Canviar
@@ -1470,9 +1470,9 @@ ca:
       twitter: Compartir a través de Twitter
       visibility_alert_html: "<b>Atenció!</b> Aquest conjunt de dades és privat i és possible que hagi persones amb qui ho hagueu compartit que no puguin accedir-hi."
     tour:
-      description: 
-      done: 
-      title: 
+      description: En diem pàgina destí del conjunt de dades. Però si mai voleu a la vista tabular, podeu accedir-hi des d'aquí.
+      done: D'acord
+      title: Les dades tenen una aparença nova!
     updated: Actualitzat
     view_widget:
       external_content: Continguts externs
@@ -1627,13 +1627,13 @@ ca:
         status_public: Públic
       listing:
         dashboard: Tauler
-        default_alert_message: 
+        default_alert_message: "<span><b>Oh no!</b> Alguna cosa ha fallat i s'ha notificat al nostre equip. Mentrestant, torneu-ho a probar o torneu a carregar la pàgina.</span>"
         goal_page: Pàgina de metes
         goal_status: Estat de la meta
         manage_on_goal_page: Gestionar en pàgina de meta
-        of: 
+        of: de
         owner: Propietari
-        rows_per_page: 
+        rows_per_page: Files per pàgina
         title: Títol
         updated_at: Actualitzat
         view_dashboard: Veure tauler
@@ -1843,9 +1843,9 @@ ca:
       created: creat
       data_provided_by: Dades Proveïdes Per
       dataset_landing_page:
-        button: 
-        description: 
-        title: 
+        button: Porta-m'hi!
+        description: Tota la informació que es troba en aquest panell ara es troba al conjunt de dades de pàgines de destí, en un format més agradable per a l'usuari.
+        title: Aquesta informació ara es troba al conjunt de dades de pàgines destí
       datasync_status: Estat de sincronització de dades
       description: Descripció
       downloads: Descàrregues
@@ -2086,40 +2086,40 @@ ca:
         title: Administrar Pàgina d'Inici
         up: Dalt
       index:
-        comment_moderation: 
-        comment_moderation_description: 
-        connectors: 
-        connectors_description: 
-        dataset_routing_and_approval: 
-        dataset_routing_and_approval_description: 
-        datasets: 
-        datasets_description: 
-        dataslate_pages: 
-        dataslate_pages_description: 
-        federation: 
-        federation_description: 
-        georegions: 
-        georegions_description: 
-        home_page: 
-        home_page_description: 
-        internal: 
-        internal_description: 
-        jobs: 
-        jobs_description: 
-        metadata: 
-        metadata_description: 
-        sdp_templates: 
-        sdp_templates_description: 
-        site_analytics: 
-        site_analytics_description: 
-        site_chrome: 
-        site_chrome_description: 
-        stories: 
-        stories_description: 
-        users: 
-        users_description: 
-        view_moderation: 
-        view_moderation_description: 
+        comment_moderation: Moderació de comentaris
+        comment_moderation_description: Revisió i comentaris moderats pel conjunts de dades al vostre lloc
+        connectors: Connectors
+        connectors_description: Registrar un connector per crear-ne i administrar els conjunts de dades connectats.
+        dataset_routing_and_approval: Conjunt de dades d'enrutament i aprovació
+        dataset_routing_and_approval_description: Revisió dels conjunts de dades que es troben en el procés d'aprovació i gestió dels passos del procés d'aprovació
+        datasets: Inventari d'eines
+        datasets_description: Ennumereu les eines d'aquest domini i configureu-ne el disseny de la pàgina de dades
+        dataslate_pages: Pàgines DataSlate
+        dataslate_pages_description: Ennumereu i gestioneu les pàgines DataSlate d'aquest domini
+        federation: Federació
+        federation_description: Administreu les connexions i l'intercanvi de dades amb altres llocs via els Serveis federals de dades obertes
+        georegions: Lents spacials
+        georegions_description: Configureu els límits personalitzats que es podenutilitzar per crear mapes espacials de la lent
+        home_page: Pàgina d'inici
+        home_page_description: Configureu el contingut que s'ofereix en la pàgina d'inici
+        internal: Intern
+        internal_description: Canvieu i afegiu mòduls, llocs webs i més
+        jobs: Tasques
+        jobs_description: Veure totes les tasques de treball actuals i recents de processament de dades que e sprodueixen a la vostra plataforma
+        metadata: Metadates
+        metadata_description: Administrar els camps de dades de metadades incloses les categories i els camps personalitzats
+        sdp_templates: Plantilles SDP
+        sdp_templates_description: Administrar i personalitzar les plantilles utilitzades per a la publicació de les vostres dades a través de Socrata Data Players
+        site_analytics: Anàlisi de llocs web
+        site_analytics_description: Veure estadístiques de dades de l'amplada del lloc web , vistes, visitants i més
+        site_chrome: Aparença del lloc web
+        site_chrome_description: Configureu l'aparença del vostre lloc Socrata
+        stories: Històries
+        stories_description: Editar temes dels contes personalitzats
+        users: Usuaris
+        users_description: Adminstrar els usuaris al vostre lloc web i els permisos i les habilitats que tenen
+        view_moderation: Veure moderació
+        view_moderation_description: Veure i administrar les vistes creades per l'usuari, incloent-hi els filtres, les taules i els mapes. Aprovar una vista per aconseguir que es mostri en el vostre catàleg de dades.
       jobs:
         actions:
           geocoding: Geocodificació
@@ -2497,14 +2497,14 @@ ca:
           general:
             fields:
               google_analytics_token:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Introduïu el token (no tot el guió) del vostre codi de seguiment de Google Analytics per recopilar-ne les dades analítiques per al vostre lloc web.
+                error: 'Token ha de ser compatible amb el format: UA-XXXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: Google Analytics Token
               template:
-                description: 
-                placeholder: 
-                title: 
+                description: Ajusteu l'aspecte de la capçadelar i el peu canviant-ne la plantilla. Les plantilles compatibles són "default" i "rally".
+                placeholder: Ralli
+                title: Mostra
               window_icon:
                 description: URL de referència per a la icona mostrada en els camps URL de finestra, pestanya i navegador.
                 placeholder: URL
@@ -2678,7 +2678,7 @@ ca:
         need_description: Si us plau, descrigui &ldquo;%{name}&rdquo;
         point:
           missing_latlong: configurat per a importar un <strong>%{coordinateType} però no una <strong>columna %{missingCoordinateType}. Si us plau, especifiqueu per complet la parella de latitud i longitud.
-          suboptimal_column: 
+          suboptimal_column: conjunt per importar la seva <strong>%{field}</strong> a la columna de la font <strong>%{originalColumnName}</strong>, però el nostre anàlisi mostra que la columna d'origen és una columna %{suggestion}, mentre que el %{field} espera una columna de tipus %{type}. Si decidiu procedir amb aquests paràmetres d'importació, és probable que es produeixin  errors d'importació o de geocodificació.
       finish:
         headline: El seu Conjunt de Dades ha estat creat.
         subheadline: Cliqui en Finalitzar per veure-ho!
@@ -2718,6 +2718,7 @@ ca:
         name: Nom
         pending_columns: Si us plau, esperi mentre carreguem les seves columnes...
         reset_to_preset: Reinicia a predeterminat
+        restore_suggested_settings: 
         set: Conjunt
         source_column: Columna Font
         subheadline: Columnes a importar
@@ -2729,7 +2730,7 @@ ca:
       import_help: <strong>Necessita ajuda?</strong> Mantenim una <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a> que li pot ajudar.
       import_shapefile:
         abbreviatedSubheadline: El resum d'aquest conjunt de dades pot trigar molt. Feu clic en "Següent" per a importar-lo.
-        abbreviatedSummary: 
+        abbreviatedSummary: Les capes del mapa a  &ldquo;<span class="fileName"></span>&rdquo; es crearan sobre la importació.
         crs: Sistema de Referència de Coordinades
         headline: Especifiqui com s'importarà &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifiqueu com "{0}" s'ha d'importar.
@@ -2796,7 +2797,7 @@ ca:
         out_of_date: Aquesta taula de dades és obsoleta des de%{age}
         publish_button: Publicar el Conjunt de Dades
         publish_prompt: Aquest conjunt de dades és una còpia de treball i no està disponible públicament. Una vegada hagi realitzat els canvis desitjats, aquest conjunt de dades podrà ser publicat per fer-lo disponible públicmanet.
-        publish_prompt_with_dataset_landing_page: 
+        publish_prompt_with_dataset_landing_page: Aquest conjunt de dades és una còpia de treball i no està disponible públicament. Una vegada s'hagin realitzat els canvis desitjats, aquesta base de dades s'ha de publicar per fer-la públicament disponible. La publicació d'aquesta pàgina també publicarà la pàgina de destí del conjunt de dades.
         publish_rights: "Únicament un propietari o un editor poder publicar aquest conjunt de dades"
         revert_button: Revertir
         revert_prompt: Revertir a una vista desada
@@ -3293,7 +3294,7 @@ ca:
         data_lens:
           button: Nova lent de dades
           button_flyout: Ara mateix s'estan processant les vostres dades. Refresqueu la pàgina en uns minuts i podreu crear una lent de dades nova.
-          subtitle: 
+          subtitle: Data Lens és una experiència visualment atractiva i interactiva que inclou millores en l'exploració de les dades millorada i millors ldades de curació. Cliqueu sobre <strong>New Data Lens</strong> per crear-ne una de nova.  A partir d'aquí, es pot explorar visualment les dades, personalitzar la forma en què es mostren, i administrar la forma en què es presentarà en el catàleg.
           title: Lent de dades
         delete:
           confirm: Açò eliminarà el %{view_type} permanentment. No hi ha volta de fulla! Segur que desitja continuar?
@@ -3578,7 +3579,7 @@ ca:
       new_ux_text: Vegeu aquesta data a la nova experiència visió de dades
       new_ux_title: Esteu preparats per visualitzar explore?
       page_render_type:
-        edit_layout: 
+        edit_layout: Editar el disseny
       save_dialog:
         descriptions:
           leaving: Té dades no desades que es perdran si surt d'aquesta pàgina. Si us plau, indiqui si desitja desar aquesta vista abans de sortir; o seleccioni Cancel·lar per retornar a la pàgina.
@@ -3720,6 +3721,7 @@ ca:
       import_from_latlong: Importar de columnes de <strong>latitud</strong> i <strong>longitud</strong>
       import_from_multiple: Importar des de <strong>múltiples columnes</strong>
       import_from_single: Importar des d'una <strong>columna única</strong>
+      insert_static_text: 
       latitude: Latitud
       location_source_col: Columnes de Font de Localització
       longitude: Longitud
@@ -3748,6 +3750,9 @@ ca:
       bytes_imported: "%{num} bytes que s'han important fins ara."
       combine_multiple_cols: "(Combinar Columnes Múltiples...)"
       downloading: Descarregant el seu fitxer...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Si us plau, seleccioni un fitxer CSV, TSV, XLS, o XLSX.
       filetype_error_shapefile: Si us plau, seleccioni un fitxer KML, KMZ, o ZIP.
       headline_import: Si us plau, seleccioni un fitxer a importar
@@ -4040,6 +4045,7 @@ ca:
       finish: Finalitzar
       next: Següent
       previous: Previ
+      save: 
   support:
     array:
       last_word_connector: ", i "

@@ -165,26 +165,31 @@
 
       var $choroplethElement1 = $('#choropleth-map-1');
       $choroplethElement1.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement1.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $choroplethElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement1.socrataChoroplethMap(choropleth1VIF);
 
       var $choroplethElement2 = $('#choropleth-map-2');
       $choroplethElement2.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement2.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $choroplethElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement2.socrataChoroplethMap(choropleth2VIF);
 
       var $choroplethElement3 = $('#choropleth-map-3');
       $choroplethElement3.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement3.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $choroplethElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement3.socrataChoroplethMap(choropleth3VIF);
 
       var $choroplethElement4 = $('#choropleth-map-4');
       $choroplethElement4.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement4.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $choroplethElement4.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement4.socrataChoroplethMap(choropleth4VIF);
 
       var $choroplethElement5 = $('#choropleth-map-5');
       $choroplethElement5.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $choroplethElement5.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $choroplethElement5.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $choroplethElement5.socrataChoroplethMap(choropleth5VIF);
 
@@ -204,6 +209,10 @@
         }
       }
 
+      function handleCenterAndZoomChanged(event) {
+        console.log('Map center and zoom changed: ' + JSON.stringify(event.originalEvent.detail));
+      }
+
       function handleVifUpdated(event) {
         var payload = event.originalEvent.detail;
         var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
@@ -220,22 +229,27 @@
        */
 
       // $choroplethElement1.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement1.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       // $choroplethElement1.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement1.trigger('destroy');
 
       // $choroplethElement2.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement2.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       // $choroplethElement2.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement2.trigger('destroy');
 
       // $choroplethElement3.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement3.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       // $choroplethElement3.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement3.trigger('destroy');
 
       // $choroplethElement4.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement4.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       // $choroplethElement4.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement4.trigger('destroy');
 
       // $choroplethElement5.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $choroplethElement5.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       // $choroplethElement5.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $choroplethElement5.trigger('destroy');
     });

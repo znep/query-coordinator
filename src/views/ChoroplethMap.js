@@ -100,31 +100,21 @@ function ChoroplethMap(element, vif) {
   // still selects on single clicks.
   var lastClick = 0;
   var lastClickTimeout = null;
+  var centerAndZoomDefined;
+  var extentsDefined;
 
   // Render layout
   renderTemplate(self.$element);
+
+  // Hide the map until we are ready to show it (otherwise there's a flash of
+  // it zoomed out all the way).
+  choroplethMapContainer.css('opacity', 0);
 
   // Construct leaflet map
   map = L.map(choroplethMapContainer[0], mapOptions);
 
   // Attach Miscellaneous Events
   attachEvents();
-
-  // Initialize map's bounds if provided with that data
-  //
-  // TODO: Deprecate extentsDefined in favor of centerAndZoomDefined.
-  var extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
-  var centerAndZoomDefined = (
-    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
-    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
-    _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
-  );
-
-  // If bounds are not defined, this will get handled when render is first
-  // called, as the fallback bounds calculation requires the geoJSON data.
-  if (firstRender && extentsDefined) {
-    initializeMap(choroplethContainer);
-  }
 
   // Setup legend
   var LegendType = LegendContinuous;
@@ -183,14 +173,37 @@ function ChoroplethMap(element, vif) {
     // as another property on `options`.
     lastRenderedVif = options.vif;
 
+
     // Calling initializeMap should only occur here if bounds were not specified in the VIF.
     // We call it here because the fallback bounds calculation requires geoJSON.
     if (firstRender) {
+
+      // Initialize map's bounds if provided with that data
+      //
+      // TODO: Deprecate extentsDefined in favor of centerAndZoomDefined.
+      centerAndZoomDefined = (
+        _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
+        _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
+        _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
+      );
+      extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
+
+      // Note that we prefer center and zoom over extents, since we intend to
+      // deprecate the latter and the former will be set by the new authoring
+      // experience.
+      if (centerAndZoomDefined) {
+        updateCenterAndZoom(data, vif.configuration.mapCenterAndZoom);
+      } else if (extentsDefined) {
+        updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
+      }
+
       initializeMap(choroplethContainer, data);
     }
 
     updateFeatureLayer(data);
 
+    // Set opacity to 1 now that we have updated the map with regions.
+    choroplethMapContainer.css('opacity', 1);
     // TODO: React to active filters being cleared.
   };
 
@@ -287,15 +300,6 @@ function ChoroplethMap(element, vif) {
     // Otherwise, Leaflet will fit the bounds to an incorrectly sized viewport.
     // This manifests itself as the map being zoomed all of the way out.
     map.invalidateSize();
-
-    // Note that we prefer center and zoom over extents, since we intend to
-    // deprecate the latter and the former will be set by the new authoring
-    // experience.
-    if (centerAndZoomDefined) {
-      updateCenterAndZoom(data, vif.configuration.mapCenterAndZoom);
-    } else if (extentsDefined) {
-      updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
-    }
 
     firstRender = false;
 
@@ -510,10 +514,10 @@ function ChoroplethMap(element, vif) {
   }
 
   function emitMapCenterAndZoomChange() {
-    var leafletCenter = map.getCenter();
+    var center = map.getCenter();
     var zoom = map.getZoom();
-    var lat = leafletCenter.lat;
-    var lng = leafletCenter.lng;
+    var lat = center.lat;
+    var lng = center.lng;
     var centerAndZoom;
 
     utils.assertIsOneOfTypes(

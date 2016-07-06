@@ -56,6 +56,7 @@ function FeatureMap(element, vif) {
   var _baseTileLayer;
   var _map;
   var _lastRenderOptions;
+  var centerAndZoomDefined;
 
   // We buffer feature layers so that there isn't a visible flash
   // of emptiness when we transition from one to the next. This is accomplished
@@ -73,7 +74,6 @@ function FeatureMap(element, vif) {
   _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
   _panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
   _locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
-
   _mapOptions = _.merge(_defaultMapOptions, vif.configuration.mapOptions);
 
   // Render template here so that we can modify the map container's styles
@@ -106,7 +106,6 @@ function FeatureMap(element, vif) {
   this.render = function(renderOptions) {
 
     if (_mapElement.width() > 0 && _mapElement.height() > 0) {
-
       var boundsChanged;
       var baseLayerChanged;
       var vectorTileGetterChanged;
@@ -118,24 +117,38 @@ function FeatureMap(element, vif) {
 
         // Construct leaflet map
         _map = L.map(_mapElement[0], _mapOptions);
+
         // Attach events on first render only
         _attachEvents();
-      }
 
-      boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
-      baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
-      vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
+        centerAndZoomDefined = (
+          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
+          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
+          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
+        );
+        boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
+        baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
+        vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
-      _lastRenderOptions = _.cloneDeep(renderOptions);
-      _lastRenderOptions.bounds = new L.LatLngBounds(
-        renderOptions.bounds.getSouthWest(),
-        renderOptions.bounds.getNorthEast()
-      );
+        _lastRenderOptions = _.cloneDeep(renderOptions);
+        _lastRenderOptions.bounds = new L.LatLngBounds(
+          renderOptions.bounds.getSouthWest(),
+          renderOptions.bounds.getNorthEast()
+        );
 
-      if (_userCurrentPositionBounds) {
-        _fitBounds(_userCurrentPositionBounds);
-      } else if (boundsChanged) {
-        _fitBounds(renderOptions.bounds);
+        if (_userCurrentPositionBounds) {
+          _fitBounds(_userCurrentPositionBounds);
+        // Note that we prefer mapCenterAndZoom over defaultExtent or savedExtent
+        // properties in the VIF.
+        } else if (centerAndZoomDefined) {
+          updateCenterAndZoom(_.get(vif, 'configuration.mapCenterAndZoom'));
+        // If centerAndZoom is not set we then check for the bounds that have
+        // been saved in the VIF.
+        //
+        // TODO: Deprecate this.
+        } else if (boundsChanged) {
+          _fitBounds(renderOptions.bounds);
+        }
       }
 
       if (baseLayerChanged) {
@@ -311,7 +324,9 @@ function FeatureMap(element, vif) {
       );
 
       _map.on('resize', _handleMapResize);
-      _map.on('resize zoomend dragend', _handleExtentChange);
+      _map.on('dragend zoomend', emitMapCenterAndZoomChange);
+      // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
+      _map.on('resize dragend zoomend', _handleExtentChange);
       _map.on('dragstart zoomstart', _handlePanAndZoom);
       _map.on('mouseout', _hideFlyout);
 
@@ -350,6 +365,8 @@ function FeatureMap(element, vif) {
     if (_map) {
 
       _map.off('resize', _handleMapResize);
+      _map.off('dragend zoomend', emitMapCenterAndZoomChange);
+      // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
       _map.off('resize dragend zoomend', _handleExtentChange);
       _map.off('dragstart zoomstart', _handlePanAndZoom);
       _map.off('mouseout', _hideFlyout);
@@ -397,6 +414,72 @@ function FeatureMap(element, vif) {
     // In the best case, this will be called RESIZE_DEBOUNCE_INTERVAL
     // milliseconds after the resize event is captured by this handler.
     _completeResizeFn();
+  }
+
+  function emitMapCenterAndZoomChange() {
+    var center = _map.getCenter();
+    var zoom = _map.getZoom();
+    var lat = center.lat;
+    var lng = center.lng;
+    var centerAndZoom;
+
+    utils.assertIsOneOfTypes(
+      lat,
+      'number'
+    );
+
+    utils.assert(
+      lat >= -90,
+      'Latitude is out of bounds ({0} < -90)'.format(lat)
+    );
+
+    utils.assert(
+      lat <= 90,
+      'Latitude is out of bounds ({0} > 90)'.format(lat)
+    );
+
+    utils.assertIsOneOfTypes(
+      lng,
+      'number'
+    );
+
+    utils.assert(
+      lng >= -180,
+      'Longitude is out of bounds ({0} < -180)'.format(lng)
+    );
+
+    utils.assert(
+      lng <= 180,
+      'Longitude is out of bounds ({0} > 180)'.format(lng)
+    );
+
+    utils.assertIsOneOfTypes(
+      zoom,
+      'number'
+    );
+
+    utils.assert(
+      zoom > 0,
+      'Leaflet zoom is out of bounds ({0} < 1)'.format(zoom)
+    );
+
+    utils.assert(
+      zoom < 19,
+      'Leaflet zoom is out of bounds ({0} > 18)'.format(zoom)
+    );
+
+    centerAndZoom = {
+      center: {
+        lat: lat,
+        lng: lng
+      },
+      zoom: zoom
+    };
+
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE',
+      centerAndZoom
+    );
   }
 
   function _handleExtentChange() {
@@ -835,6 +918,20 @@ function FeatureMap(element, vif) {
     );
 
     _map.addLayer(_baseTileLayer);
+  }
+
+  /**
+   * Reads center and zoom overrides from the vif and updates the map to render
+   * with those parameters.
+   *
+   * @param centerAndZoom - The centerAndZoom subtree from the vif.
+   */
+  function updateCenterAndZoom(centerAndZoom) {
+    utils.assertHasProperties(centerAndZoom, 'center', 'zoom');
+    utils.assertHasProperties(centerAndZoom.center, 'lat', 'lng');
+    utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
+
+    _map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
   }
 
   /**

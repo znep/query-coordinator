@@ -194,6 +194,7 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
     $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
     $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    $element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
     $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
@@ -203,6 +204,7 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
     $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
     $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    $element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
     $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
   }
@@ -439,6 +441,21 @@ $.fn.socrataFeatureMap = function(vif) {
             error: true,
             message: vif.configuration.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
           },
+          bubbles: true
+        }
+      )
+    );
+  }
+
+  function handleMapCenterAndZoomChange(event) {
+
+    event.originalEvent.stopPropagation();
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED',
+        {
+          detail: event.originalEvent.detail,
           bubbles: true
         }
       )

@@ -21,5 +21,11 @@
       margin: 0;
       text-align: left;
     }
+
+    @media(max-width: $small) {
+      .socrata-pager {
+        justify-content: center;
+      }
+    }
   }
 }

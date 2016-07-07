@@ -1,0 +1,22 @@
+section.landing-page-section.featured-content {
+  .manage-prompt {
+    display: flex;
+    margin-bottom: 22px;
+
+    .manage-prompt-message {
+      flex: 0 1 auto;
+    }
+
+    .manage-prompt-button {
+      flex: 1 0 auto;
+      margin-left: 10px;
+      align-self: flex-start;
+    }
+  }
+
+  .media-results {
+    .result-card {
+      margin-bottom: 0;
+    }
+  }
+}

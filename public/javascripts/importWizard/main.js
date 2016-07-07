@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
 
+import airbrake from './airbrake';
 import * as Wizard from './wizard';
 import * as Upload from './components/uploadFile';
 import * as Metadata from './components/metadata';
@@ -14,6 +15,10 @@ import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
 
 import view from 'view';
+
+if (serverConfig.environment !== 'development') {
+  airbrake.init();
+}
 
 const enhancer = compose(
   applyMiddleware(createLogger(), thunk)

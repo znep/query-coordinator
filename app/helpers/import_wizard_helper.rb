@@ -35,7 +35,16 @@ module ImportWizardHelper
 
   def render_licenses
     javascript_tag("blist.namespace.fetch('blist.licenses');"\
-                   "blist.licenses = #{ safe_json(ExternalConfig.for(:license).licenses) };")
+                   "blist.licenses = #{safe_json(ExternalConfig.for(:license).licenses)};")
+  end
+
+  def render_server_config
+    server_config = {
+      airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
+      environment: Rails.env
+    }
+
+    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)}")
   end
 
   def render_view(view)

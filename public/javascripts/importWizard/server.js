@@ -8,6 +8,7 @@ import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import { goToPage } from './wizard';
+import airbrake from './airbrake';
 
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
@@ -374,12 +375,17 @@ function importData(onError) {
         }
 
         default:
+          airbrake.notify({
+            error: `Unexpected status code received while importing: ${response.status}`,
+            context: { component: 'Server' }
+          });
           onError();
-          // TODO: AIRBRAKE THIS STUFF: EN-6942
-          console.error('IMPORTING DATA FAILED', response);
       }
-    }).catch(() => {
-      // TODO: airbrake these errors (EN-6942)
+    }).catch((err) => {
+      airbrake.notify({
+        error: err,
+        context: { component: 'Server' }
+      });
       onError();
     });
   };

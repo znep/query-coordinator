@@ -74,9 +74,9 @@ window.blist = {
   currentUser: {
     id: 'abcd-1234',
     email: 'test@example.com'
-  },
-  licenses: []
+  }
 };
+window.blistLicenses = {};
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));

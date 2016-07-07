@@ -316,8 +316,9 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
     case MD_UPDATE_LICENSENAME: {
-      if (hasLicensing(action.newLicenseName)) {
-        const firstLicensing = getLicenses(action.newLicenseName)[0];
+      const licenseByName = licenseFind(action.newLicenseName);
+      if (_.has(licenseByName, 'licenses')) {
+        const firstLicensing = licenseByName.licenses[0];
 
         return {
           ...license,
@@ -334,10 +335,10 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
       }
     }
     case MD_UPDATE_LICENSING: {
-      const licensing = getLicenses(license.licenseName);
-      const newLicenseId = licensing.filter((l) => {
+      const licensing = getLicensing(license.licenseName);
+      const newLicenseId = licensing.find((l) => {
         return l.name === action.newLicensing;
-      })[0].id;
+      }).id;
       return {
         ...license,
         licensing: action.newLicensing,
@@ -491,18 +492,16 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-function isProviderRequired(metadata) {
+export function isProviderRequired(metadata) {
   const licenseName = metadata.license.licenseName;
   const licensing = metadata.license.licensing;
   if (licensing !== '') {
-    const licenseArray = blistLicenses.filter((l) => {
-      return l.name === licenseName;
-    })[0];
+    const licenseByName = licenseFind(licenseName);
 
-    if (_.has(licenseArray, 'licenses')) {
-      const match = licenseArray.licenses.filter((l) => {
+    if (_.has(licenseByName, 'licenses')) {
+      const match = licenseByName.licenses.find((l) => {
         return l.name === licensing;
-      })[0];
+      });
 
       return match.attribution_required
               ? 'required'
@@ -512,23 +511,14 @@ function isProviderRequired(metadata) {
   return '';
 }
 
-function hasLicensing(licenseName) {
-  const license = blistLicenses.filter((l) => {
+function licenseFind(licenseName) {
+  return blistLicenses.find((l) => {
     return l.name === licenseName;
-  })[0];
-
-  return _.has(license, 'licenses');
-}
-
-function getLicenses(licenseName) {
-  const license = blistLicenses.filter((l) => {
-    return l.name === licenseName;
-  })[0];
-
-  return license.licenses;
+  });
 }
 
 function renderLicenses(metadata, onMetadataAction) {
+  const licensesByName = licenseFind(metadata.license.licenseName);
   return (
     <div className="licenses">
       <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
@@ -542,14 +532,14 @@ function renderLicenses(metadata, onMetadataAction) {
         </select>
       </div>
 
-      {hasLicensing(metadata.license.licenseName) ?
+      {_.has(licensesByName, 'licenses') ?
         <div className="line clearfix">
           <label htmlFor="view_licensing" className="required">Licensing</label>
           <select
             name="view[licensing]"
             value={metadata.license.licensing}
             onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
-            {getLicenses(metadata.license.licenseName).map((obj) => <option value={obj.name}>{obj.name}</option>)}
+            {licensesByName.licenses.map((obj) => <option value={obj.name}>{obj.name}</option>)}
           </select>
         </div>
       : null}

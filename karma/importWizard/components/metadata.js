@@ -22,7 +22,8 @@ import {
   isEmailValid,
   isMetadataValid,
   isMetadataUnsaved,
-  view
+  view,
+  isProviderRequired
 } from 'components/metadata';
 
 import { initialNewDatasetModel } from 'wizard';

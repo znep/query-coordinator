@@ -2,7 +2,7 @@ class DatasetLandingPageController < ApplicationController
   include ApplicationHelper
   include CommonMetadataMethods
 
-  before_filter :initialize_current_user
+  skip_before_filter :require_user
 
   def popular_views
     begin
@@ -91,10 +91,6 @@ class DatasetLandingPageController < ApplicationController
   end
 
   private
-
-  def initialize_current_user
-    current_user_session
-  end
 
   def dataset_landing_page
     @dataset_landing_page ||= DatasetLandingPage.new

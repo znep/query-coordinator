@@ -288,7 +288,7 @@ main.container.landing-page-container {
     }
 
     &.popular-views {
-      .result-card {
+      .result-card:not(.loading-card) {
         opacity: 0;
       }
     }

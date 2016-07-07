@@ -180,8 +180,6 @@ export const Dropdown = React.createClass({
   },
 
   renderOptions() {
-    let index = 0;
-    let key = () => index++;
     let renderedOptions = [];
 
     let { opened } = this.state;

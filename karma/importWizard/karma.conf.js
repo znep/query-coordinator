@@ -48,7 +48,8 @@ module.exports = function(karma) {
         'importableTypes': 'importableTypes',
         'enabledModules': 'enabledModules',
         'customMetadataSchema': 'customMetadataSchema',
-        'licenses': 'licenses'
+        'licenses': 'licenses',
+        'blistLicenses': 'blistLicenses'
       }
     },
 

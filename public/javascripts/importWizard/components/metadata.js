@@ -335,8 +335,8 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
       }
     }
     case MD_UPDATE_LICENSING: {
-      const licensing = getLicensing(license.licenseName);
-      const newLicenseId = licensing.find((l) => {
+      const licenseByName = licenseFind(license.licenseName).licenses;
+      const newLicenseId = _.find(licenseByName, (l) => {
         return l.name === action.newLicensing;
       }).id;
       return {
@@ -499,7 +499,7 @@ export function isProviderRequired(metadata) {
     const licenseByName = licenseFind(licenseName);
 
     if (_.has(licenseByName, 'licenses')) {
-      const match = licenseByName.licenses.find((l) => {
+      const match = _.find(licenseByName.licenses, (l) => {
         return l.name === licensing;
       });
 
@@ -512,7 +512,7 @@ export function isProviderRequired(metadata) {
 }
 
 function licenseFind(licenseName) {
-  return blistLicenses.find((l) => {
+  return _.find(blistLicenses, (l) => {
     return l.name === licenseName;
   });
 }

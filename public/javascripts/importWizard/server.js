@@ -156,7 +156,7 @@ function licenseToView(license) {
   });
 
   const flattenedLicenses = [].concat.apply([], licenseList);
-  const match = flattenedLicenses.find((l) => {
+  const match = _.find(flattenedLicenses, (l) => {
     return l.id === license.licenseId;
   });
 
@@ -197,7 +197,6 @@ function coreViewLicense(view) {
   const name = view.license.name;
   const titles = blistLicenses.map(obj => (obj.name));
   if (titles.indexOf(name) >= 0) {
-  // if (true) {
     return {
       licenseId: id,
       licenseName: name,
@@ -206,7 +205,7 @@ function coreViewLicense(view) {
       provider: view.attribution
     };
   } else {
-    const title = titles.find((t) => {
+    const title = _.find(titles, (t) => {
       return name.indexOf(t) === 0;
     });
 

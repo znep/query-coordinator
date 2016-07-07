@@ -35,11 +35,11 @@ describe('ImportStatus reducer', () => {
 describe("testing for API responses", () => {
   const metadata = {
     license: {
-      licenseName: '',
-      licensing: '',
-      licenseId: '',
-      sourceLink: '',
-      provider: ''
+      licenseId: "PDDL",
+      licenseName: "Open Data Commons",
+      licensing: "Public Domain Dedication and License",
+      provider: "Me",
+      sourceLink: ""
     },
     contents: {
       name: 'name',

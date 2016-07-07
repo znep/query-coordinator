@@ -198,6 +198,7 @@ function coreViewLicense(view) {
   const id = view.licenseId;
   const name = view.license.name;
   // const titles = blist.licenses.map(obj => (obj.name));
+  // if (titles.indexOf(name) >= 0) {
   if (true) {
     return {
       licenseId: id,

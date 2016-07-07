@@ -558,6 +558,10 @@ function renderLicenses(metadata, onMetadataAction) {
       : null}
 
       <div className="line clearfix">
+        <div className="additionalHelp">{I18n.screens.edit_metadata.license_help}</div>
+      </div>
+
+      <div className="line clearfix">
         <label
           htmlFor="view_attribution"
           className={isProviderRequired(metadata)}>
@@ -675,6 +679,7 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               value={metadata.contents.tags}
               className="textPrompt"
               onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
+            <div className="additionalHelp">{I18nPrefixed.keywords_help}</div>
           </div>
 
           <div className="line clearfix">
@@ -685,6 +690,7 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               className="textPrompt"
               value={metadata.contents.rowLabel}
               onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
+            <div className="additionalHelp">{I18nPrefixed.row_label_help}</div>
           </div>
         </div>
 

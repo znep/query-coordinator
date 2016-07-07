@@ -20,8 +20,15 @@ export const Dropdown = React.createClass({
   },
 
   getInitialState() {
+    let selectedOption;
     let { value, options } = this.props;
-    let selectedOption = options.find(item => item.value === value);
+
+    for (let option of options) {
+      if (option.value === value) {
+        selectedOption = option;
+        break;
+      }
+    }
 
     return {
       highlightedOption: null,

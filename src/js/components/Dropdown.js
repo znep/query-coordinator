@@ -41,20 +41,31 @@ export const Dropdown = React.createClass({
   },
 
   componentDidMount() {
-    this.onWheel();
+    window.addEventListener('scroll', this.onWheel);
     window.addEventListener('wheel', this.onWheel);
     window.addEventListener('resize', this.onWheel);
   },
 
   componentWillUnmount() {
+    window.removeEventListener('scroll', this.onWheel);
     window.removeEventListener('wheel', this.onWheel);
     window.removeEventListener('resize', this.onWheel);
   },
 
   onWheel() {
     if (this.options) {
-      let dimensions = this.options.getBoundingClientRect();
+      let { displayTrueWidthOptions } = this.props;
+      let containerDimensions = this.container.getBoundingClientRect();
       let browserWindowHeight = window.document.documentElement.clientHeight - 10;
+
+      // Calculate Position
+
+      this.options.style.top = `${this.container.clientHeight + containerDimensions.top - 1}px`;
+      this.options.style.left = `${containerDimensions.left}px`;
+
+      // Calculate Height
+
+      let dimensions = this.options.getBoundingClientRect();
       let exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + this.options.scrollHeight;
       let optionHeight = this.options.childNodes[0].clientHeight;
       let determinedHeight = browserWindowHeight - dimensions.top;
@@ -64,10 +75,15 @@ export const Dropdown = React.createClass({
       } else if (this.options.style.height !== 'auto') {
         this.options.style.height = 'auto';
       }
+
+      if (!displayTrueWidthOptions) {
+        this.options.style.width = `${containerDimensions.width}px`;
+      }
     }
   },
 
   onClickPlaceholder() {
+    this.onWheel();
     this.setState({opened: !this.state.opened});
   },
 

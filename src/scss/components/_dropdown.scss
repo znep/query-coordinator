@@ -82,13 +82,10 @@
 }
 
 .dropdown-options-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% - 1px);
+  position: fixed;
   background: $white;
   border: solid 1px $light-grey-1;
-  z-index: 60;
+  z-index: 99999;
   overflow-y: auto;
 
   &.dropdown-options-true-width {

@@ -74,7 +74,8 @@ window.blist = {
   currentUser: {
     id: 'abcd-1234',
     email: 'test@example.com'
-  }
+  },
+  licenses: []
 };
 
 // Run all the tests

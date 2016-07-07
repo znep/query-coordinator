@@ -34,6 +34,13 @@ describe('ImportStatus reducer', () => {
 
 describe("testing for API responses", () => {
   const metadata = {
+    license: {
+      licenseName: '',
+      licensing: '',
+      licenseId: '',
+      sourceLink: '',
+      provider: ''
+    },
     contents: {
       name: 'name',
       description: 'desc',

@@ -149,7 +149,7 @@ export function modelToViewParam(metadata) {
 function licenseToView(license) {
   const name = invertedLicenses[license.id];
 
-  const licenseList = blist.licenses.map((l) => {
+  const licenseList = blistLicenses.map((l) => {
     if (_.has(l, 'licenses')) {
       return l.licenses;
     } else {
@@ -197,9 +197,9 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 function coreViewLicense(view) {
   const id = view.licenseId;
   const name = view.license.name;
-  // const titles = blist.licenses.map(obj => (obj.name));
-  // if (titles.indexOf(name) >= 0) {
-  if (true) {
+  const titles = blistLicenses.map(obj => (obj.name));
+  if (titles.indexOf(name) >= 0) {
+  // if (true) {
     return {
       licenseId: id,
       licenseName: name,

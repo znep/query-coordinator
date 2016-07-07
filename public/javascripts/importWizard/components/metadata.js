@@ -10,9 +10,6 @@ import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
 
-export type Blist = { }
-declare var blist: Blist;
-
 // == Metadata
 
 type DatasetMetadata = {
@@ -498,7 +495,7 @@ function isProviderRequired(metadata) {
   const licenseName = metadata.license.licenseName;
   const licensing = metadata.license.licensing;
   if (licensing !== '') {
-    const licenseArray = blist.licenses.filter((l) => {
+    const licenseArray = blistLicenses.filter((l) => {
       return l.name === licenseName;
     })[0];
 
@@ -516,7 +513,7 @@ function isProviderRequired(metadata) {
 }
 
 function hasLicensing(licenseName) {
-  const license = blist.licenses.filter((l) => {
+  const license = blistLicenses.filter((l) => {
     return l.name === licenseName;
   })[0];
 
@@ -524,7 +521,7 @@ function hasLicensing(licenseName) {
 }
 
 function getLicenses(licenseName) {
-  const license = blist.licenses.filter((l) => {
+  const license = blistLicenses.filter((l) => {
     return l.name === licenseName;
   })[0];
 
@@ -541,7 +538,7 @@ function renderLicenses(metadata, onMetadataAction) {
           name="view[licenses]"
           value={metadata.license.licenseName}
           onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
-          {blist.licenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
+          {blistLicenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
         </select>
       </div>
 

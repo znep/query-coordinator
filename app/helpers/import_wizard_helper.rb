@@ -34,8 +34,7 @@ module ImportWizardHelper
   end
 
   def render_licenses
-    javascript_tag("blist.namespace.fetch('blist.licenses');"\
-                   "blist.licenses = #{ safe_json(ExternalConfig.for(:license).licenses) };")
+    javascript_tag("var blistLicenses = #{json_escape(ExternalConfig.for(:license).licenses.to_json)};")
   end
 
   def render_view(view)

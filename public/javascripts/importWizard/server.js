@@ -8,6 +8,8 @@ import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import { goToPage } from './wizard';
+import licenses from 'licenses';
+const invertedLicenses = _.invert(licenses);
 
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
@@ -144,8 +146,9 @@ export function modelToViewParam(metadata) {
   };
 }
 
-function licenseToView(license) {
-  const name = license.licenseName;
+export function licenseToView(license) {
+  const licenseId = license.licenseId;
+  const name = invertedLicenses[licenseId];
 
   const licenseList = blistLicenses.map((l) => {
     if (_.has(l, 'licenses')) {
@@ -157,7 +160,7 @@ function licenseToView(license) {
 
   const flattenedLicenses = [].concat.apply([], licenseList);
   const match = _.find(flattenedLicenses, (l) => {
-    return l.id === license.licenseId;
+    return l.id === licenseId;
   });
 
   return {
@@ -169,7 +172,6 @@ function licenseToView(license) {
               ? match.logo
               : ''
   };
-
 }
 
 export function coreViewToModel(view) {

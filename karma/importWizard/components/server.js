@@ -5,6 +5,7 @@ import TestUtils from 'react-addons-test-utils';
 import {
   modelToViewParam,
   customMetadataModelToCoreView,
+  licenseToView,
   coreViewToModel,
   transformToImports2Translation,
   update,
@@ -39,7 +40,7 @@ describe("testing for API responses", () => {
       licenseName: "Open Data Commons",
       licensing: "Public Domain Dedication and License",
       provider: "Me",
-      sourceLink: ""
+      sourceLink: "google.com"
     },
     contents: {
       name: 'name',
@@ -99,7 +100,7 @@ describe("testing for API responses", () => {
   describe('privacyCustomMetadata', () => {
     const customMetadata = metadata.contents.customMetadata;
 
-    it('test that public values are correctly returned', () => {
+    it('test that public metadata values are correctly returned', () => {
       const publicCustom = customMetadataModelToCoreView(customMetadata, false);
 
       expect(publicCustom).to.deep.equal({
@@ -116,7 +117,7 @@ describe("testing for API responses", () => {
       });
     });
 
-    it('test that private values are correctly returned', () => {
+    it('test that private metadata values are correctly returned', () => {
       const privateCustom = customMetadataModelToCoreView(customMetadata, true);
       const jack = privateCustom.jack;
       const second = privateCustom.second;
@@ -126,8 +127,21 @@ describe("testing for API responses", () => {
     });
   });
 
+  describe('licenseToView', () => {
+    it.only('test that license values are correctly returned', () => {
+      const license = licenseToView(metadata.license);
+      console.log(license);
+
+      expect(license).to.deep.equal({
+        name: 'Open Data Commons Public Domain Dedication and License',
+        termsLink: "http://opendatacommons.org/licenses/pddl/1.0/",
+        logoUrl: ''
+      });
+    });
+  });
+
   describe('modelToViewParam', () => {
-    it('test that public values are correctly returned', () => {
+    it('test everything else', () => {
       const coreView = modelToViewParam(metadata);
       const viewMetadata = coreView.metadata;
 
@@ -138,7 +152,9 @@ describe("testing for API responses", () => {
       expect(viewMetadata.rowLabel).to.equal('row');
       expect(viewMetadata.attributionLink).to.equal('link');
       expect(coreView.privateMetadata.contactEmail).to.equal('email@email.com');
-
+      expect(coreView.attribution).to.equal('Me');
+      expect(coreView.attributionLink).to.equal('google.com');
+      expect(coreView.licenseId).to.equal('PDDL');
     });
   });
 

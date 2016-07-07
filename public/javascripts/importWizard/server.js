@@ -8,6 +8,8 @@ import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import { goToPage } from './wizard';
+import licenses from 'licenses';
+const invertedLicenses = _.invert(licenses);
 
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
@@ -25,7 +27,6 @@ export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
 
 export function saveMetadataThenProceed() {
-  console.log(JSON.stringify(blist.licenses));
   return (dispatch) => {
     dispatch(goToPage('Working'));
     dispatch(saveMetadataToViewsApi()).
@@ -141,28 +142,24 @@ export function modelToViewParam(metadata) {
       custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
     },
     licenseId: metadata.license.licenseId,
-    license: viewToLicenseInformation(metadata.license)
+    license: licenseToView(metadata.license)
   };
 }
 
-function viewToLicenseInformation(license) {
-  const name = license.licenseName;
-  const licensing = license.licensing;
-  if (licensing !== '') {
-    name.concat(licensing);
-  }
+function licenseToView(license) {
+  const name = invertedLicenses[license.id];
 
-  const licenses = blist.licenses.map((l) => {
+  const licenseList = blist.licenses.map((l) => {
     if (_.has(l, 'licenses')) {
       return l.licenses;
     } else {
       return l;
     }
   });
-  const flattenedLicenses = [].concat.apply([], licenses);
 
+  const flattenedLicenses = [].concat.apply([], licenseList);
   const match = flattenedLicenses.filter((l) => {
-    return l.name === license.licensing || l.name === license.licenseName;
+    return l.id === license.licenseId;
   })[0];
 
   return {
@@ -177,6 +174,17 @@ function viewToLicenseInformation(license) {
 
 }
 
+export function coreViewToModel(view) {
+  const contents = coreViewContents(view);
+  return {
+    nextClicked: false,
+    contents: contents,
+    lastSaved: contents,
+    apiCall: { type: 'In Progress' },
+    license: coreViewLicense(view)
+  };
+}
+
 export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean) {
   return _.mapValues(customMetadata, (fieldSet) => {
     const pairs = fieldSet.
@@ -186,20 +194,33 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
   });
 }
 
-export function coreViewToModel(view) {
-  const contents = coreViewContents(view);
-  return {
-    nextClicked: false,
-    contents: contents,
-    lastSaved: contents,
-    apiCall: { type: 'In Progress' },
-    license: {
-      licenseId: view.licenseId,
-      licenseName: view.license.name,
+function coreViewLicense(view) {
+  const id = view.licenseId;
+  const name = view.license.name;
+  // const titles = blist.licenses.map(obj => (obj.name));
+  if (true) {
+    return {
+      licenseId: id,
+      licenseName: name,
+      licensing: '',
       sourceLink: view.attributionLink,
       provider: view.attribution
-    }
-  };
+    };
+  } else {
+    const title = titles.filter((t) => {
+      return name.indexOf(t) === 0;
+    })[0];
+
+    const licensing = name.slice(title.length).trim();
+
+    return {
+      licenseId: id,
+      licenseName: title,
+      licensing: licensing,
+      sourceLink: view.attributionLink,
+      provider: view.attribution
+    };
+  }
 }
 
 export function coreViewContents(view) {

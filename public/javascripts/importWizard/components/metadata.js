@@ -46,7 +46,6 @@ type LicenseType = {
     licensing: String,
     licenseId: String,
     provider: String,
-    providerRequired: boolean,
     sourceLink: String
 }
 
@@ -320,21 +319,34 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
     case MD_UPDATE_LICENSENAME: {
-      const newLicensing = hasLicensing(action.newLicenseName)
-                            ? getLicenses(action.newLicenseName)[0].name
-                            : '';
+      if (hasLicensing(action.newLicenseName)) {
+        const firstLicensing = getLicenses(action.newLicenseName)[0];
+
+        return {
+          ...license,
+          licenseName: action.newLicenseName,
+          licenseId: firstLicensing.id,
+          licensing: firstLicensing.name
+        };
+      } else {
+        return {
+          ...license,
+          licenseName: action.newLicenseName,
+          licenseId: licenses[action.newLicenseName]
+        };
+      }
+    }
+    case MD_UPDATE_LICENSING: {
+      const licensing = getLicenses(license.licenseName);
+      const newLicenseId = licensing.filter((l) => {
+        return l.name === action.newLicensing;
+      })[0].id;
       return {
         ...license,
-        licenseName: action.newLicenseName,
-        licenseId: licenses[action.newLicenseName],
-        licensing: newLicensing
+        licensing: action.newLicensing,
+        licenseId: newLicenseId
       };
     }
-    case MD_UPDATE_LICENSING:
-      return {
-        ...license,
-        licensing: action.newLicensing
-      };
     case MD_UPDATE_LICENSEPROVIDER:
       return {
         ...license,

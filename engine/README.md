@@ -206,7 +206,7 @@ config.styleguide = false
             ],
             "logo": {
               "href": "#",
-              "src": "/stylesheets/images/common/socrata_logo_light.png"
+              "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
             },
             "styles": {
               "bg_color": "#3b3a3c",

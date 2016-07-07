@@ -11,29 +11,17 @@ const KEYS = {
 
 export const Dropdown = React.createClass({
   propTypes: {
+    disabled: React.PropTypes.bool,
     value: React.PropTypes.string,
-    options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-      React.PropTypes.array,
-      React.PropTypes.object
-    ])),
-    onSelection: React.PropTypes.func
+    options: React.PropTypes.arrayOf(React.PropTypes.object),
+    onSelection: React.PropTypes.func,
+    placeholder: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.func]),
+    displayTrueWidthOptions: React.PropTypes.bool
   },
 
   getInitialState() {
-    let selectedOption;
     let { value, options } = this.props;
-
-    for (let option of options) {
-      if (selectedOption) {
-        break;
-      }
-
-      if (Array.isArray(option)) {
-        selectedOption = option.find(item => item.value === value);
-      } else if (option.value === value) {
-        selectedOption = option;
-      }
-    }
+    let selectedOption = options.find(item => item.value === value);
 
     return {
       highlightedOption: null,
@@ -45,6 +33,7 @@ export const Dropdown = React.createClass({
 
   getDefaultProps() {
     return {
+      disabled: false,
       options: [],
       placeholder: null,
       onSelection: () => {}
@@ -52,11 +41,14 @@ export const Dropdown = React.createClass({
   },
 
   componentDidMount() {
+    this.onWheel();
     window.addEventListener('wheel', this.onWheel);
+    window.addEventListener('resize', this.onWheel);
   },
 
   componentWillUnmount() {
     window.removeEventListener('wheel', this.onWheel);
+    window.removeEventListener('resize', this.onWheel);
   },
 
   onWheel() {
@@ -84,6 +76,7 @@ export const Dropdown = React.createClass({
   },
 
   onBlurPlaceholder() {
+    this.options.scrollTop = 0;
     this.setState({
       focused: false,
       opened: false,
@@ -140,14 +133,8 @@ export const Dropdown = React.createClass({
 
   moveToNextOption() {
     let { options } = this.props;
-    let optionsLength = options.reduce((previous, next) => {
-      return Array.isArray(next) ?
-        previous + next.length :
-        previous + 1;
-    }, 0);
-
     let { highlightedOption } = this.state;
-    let previousOption = highlightedOption === null ?  0 : Math.min(highlightedOption + 1, optionsLength - 1);
+    let previousOption = highlightedOption === null ?  0 : Math.min(highlightedOption + 1, options.length - 1);
 
     this.setState({ opened: true, highlightedOption: previousOption });
   },
@@ -164,8 +151,7 @@ export const Dropdown = React.createClass({
 
     if (opened && highlightedOption !== null) {
       let { options } = this.props;
-      let flattenedOptions = options.reduce((previous, next) => previous.concat(next), []);
-      let selectedOption = flattenedOptions[highlightedOption];
+      let selectedOption = options[highlightedOption];
 
       this.setState({
         opened: false,
@@ -184,25 +170,28 @@ export const Dropdown = React.createClass({
 
     let { opened } = this.state;
     let { options, displayTrueWidthOptions } = this.props;
-    let separator = <div className="dropdown-options-separator"/>;
+
+    let header = (groupName, key) => <div className="dropdown-options-group-header" key={key}>{groupName}</div>;
+    let separator = (key) => <div className="dropdown-options-separator" key={key} />;
+
     let classes = classNames('dropdown-options-list', {
       'dropdown-options-true-width': displayTrueWidthOptions,
       'dropdown-invisible': !opened
     });
 
-    options.forEach((groupOrOption, groupOrOptionIndex) => {
-      if (Array.isArray(groupOrOption)) {
-        renderedOptions.push(...[
-          groupOrOptionIndex > 0 ? separator : null,
-          ...groupOrOption.map(option => {
-            return this.renderOption(option, key());
-          }),
-          groupOrOptionIndex < options.length ? separator : null
-        ]);
-      } else {
-        renderedOptions.push(this.renderOption(groupOrOption, key()));
+    options.forEach((option, index) => {
+      let previousOption = options[index - 1];
+      let differentGroup = previousOption && previousOption.group !== option.group;
+
+      if (differentGroup) {
+        renderedOptions.push(separator(`${option.group}-separator`));
+        renderedOptions.push(header(option.group, `${option.group}-header`));
+      } else if (index === 0 && option.group) {
+        renderedOptions.push(header(option.group, `${option.group}-header`));
       }
-    })
+
+      renderedOptions.push(this.renderOption(option, index));
+    });
 
     return (
       <div className={classes} onMouseOver={this.onMouseOverOptions} ref={ref => this.options = ref}>
@@ -234,7 +223,8 @@ export const Dropdown = React.createClass({
   renderPlaceholder() {
     let { placeholder } = this.props;
     let { selectedOption } = this.state;
-    let caret = <div className="dropdown-caret"></div>;
+    let caret = <div className="dropdown-caret" key="caret"></div>;
+    let placeholderText = text => <span key="placeholder">{text}</span>;
     let placeholderIsFunction = typeof placeholder === 'function';
     let placeholderIsString = typeof placeholder === 'string';
     let classes = classNames({
@@ -255,22 +245,24 @@ export const Dropdown = React.createClass({
     if (placeholderIsFunction) {
       placeholder = placeholder();
     } else if (selectedOption) {
-      placeholder = [<span>{selectedOption.title}</span>, caret];
+      placeholder = [placeholderText(selectedOption.title), caret];
     } else if (placeholderIsString) {
-      placeholder = [<span>{placeholder}</span>, caret];
+      placeholder = [placeholderText(placeholder), caret];
     } else if (placeholder === null) {
-      placeholder = [<span>Select...</span>, caret];
+      placeholder = [placeholderText('Select...'), caret];
     }
 
     return <div {...attributes}>{placeholder}</div>;
   },
 
   render() {
+    let { disabled } = this.props;
     let { focused, opened } = this.state;
     let reference = ref => this.container = ref;
     let classes = classNames('dropdown-container', {
       'dropdown-focused': focused,
-      'dropdown-opened': opened
+      'dropdown-opened': opened,
+      'dropdown-disabled': disabled
     });
 
     let options = this.renderOptions();

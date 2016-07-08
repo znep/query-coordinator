@@ -203,7 +203,8 @@ function renderHero($element, componentData) {
 
   $element.
     find('.hero').
-    attr('data-crop', crop);
+    attr('data-crop', crop).
+    attr('data-url', url);
 
   $template.css(
     'background-image',

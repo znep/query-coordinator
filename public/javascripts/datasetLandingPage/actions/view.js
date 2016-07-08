@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { checkStatus, defaultHeaders } from '../lib/http';
+import { checkStatus, defaultHeaders, getCoreCSRFToken } from '../lib/http';
 
 import {
   REQUESTED_VIEW_PUBLISH,
@@ -29,7 +29,9 @@ export function publishView() {
     var viewId = getState().view.id;
     var fetchOptions = {
       method: 'POST',
-      headers: defaultHeaders,
+      headers: _.merge({}, defaultHeaders, {
+        'X-CSRF-Token': getCoreCSRFToken() // Override the rails CSRF token with the core CSRF token
+      }),
       credentials: 'same-origin'
     };
 

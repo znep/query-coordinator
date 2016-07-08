@@ -1,3 +1,5 @@
+import utils from 'socrata-utils';
+
 export var defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
@@ -13,4 +15,8 @@ export function checkStatus(response) {
   var error = new Error(response.statusText);
   error.response = response;
   throw error;
+}
+
+export function getCoreCSRFToken() {
+  return utils.getCookie('socrata-csrf-token');
 }

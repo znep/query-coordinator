@@ -1274,7 +1274,7 @@ en:
       title: Access this Dataset via SODA API
     back: Back
     bootstrap_button: Create a Visualization
-    bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new Data Lens.
+    bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
     cancel: Cancel
     change: Change

@@ -1,6 +1,6 @@
 $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
 
-section.landing-page-section.schema-preview {
+.container section.landing-page-section.schema-preview {
   h3.landing-page-section-header {
     font-size: 17px;
     font-weight: 400;
@@ -91,7 +91,7 @@ section.landing-page-section.schema-preview {
 
             .schema-detail-group-title {
               margin: 0;
-              color: $light-grey-1;
+              color: $dark-grey-2;
               font-weight: 600;
             }
 
@@ -109,7 +109,7 @@ section.landing-page-section.schema-preview {
       &.column-name {
         width: auto;
         font-weight: 600;
-        color: $primary-base;
+        color: $primary-text;
       }
 
       &.column-description {

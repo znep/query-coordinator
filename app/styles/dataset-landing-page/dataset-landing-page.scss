@@ -90,7 +90,7 @@ body {
       }
 
       .dropdown {
-        z-index: 10;
+        z-index: 5;
 
         &:after {
           display: none;
@@ -793,10 +793,10 @@ a {
   }
 
   .feedback-panel-button {
-    background-color: $primary-alt-1-light;
-    border: 1px solid $primary-alt-1-dark;
+    background-color: $alternate-1-light;
+    border: 1px solid $alternate-1-dark;
     border-bottom: none;
-    color: $primary-alt-1-dark;
+    color: $alternate-1-dark;
     padding: 0.5rem 1rem 1rem 1rem;
     position: fixed;
     bottom: -0.35rem;

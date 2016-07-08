@@ -125,7 +125,7 @@
     "redux": "3.5.2",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
-    "socrata-styleguide": "4.0.1",
+    "socrata-styleguide": "4.0.2",
     "socrata-utils": "2.0.0",
     "socrata-visualizations": "11.0.0",
     "stringformat": "0.0.5",

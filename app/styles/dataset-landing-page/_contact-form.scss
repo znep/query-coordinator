@@ -2,7 +2,7 @@
   .modal-container {
     max-width: 600px;
     max-height: 600px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .modal-header {
       .modal-header-title {

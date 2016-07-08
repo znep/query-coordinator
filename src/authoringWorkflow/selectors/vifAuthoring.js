@@ -20,6 +20,14 @@ export const getDimension = createSelector(
   vif => _.get(vif, 'series[0].dataSource.dimension', null)
 );
 
+// Warning: This should only be used if you know what you're doing.
+// In other words, this is going to randomly choose a VIF and grab its
+// dimension.
+export const getAnyDimension = createSelector(
+  getVifs,
+  vifs => _.get(vifs, 'columnChart.series[0].dataSource.dimension')
+);
+
 export const getMeasure = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].dataSource.measure', null)
@@ -63,7 +71,7 @@ export const getColorScale = createSelector(
 
 export const getBaseLayer = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.baseLayerUri')
+  vif => _.get(vif, 'configuration.baseLayerUrl')
 );
 
 export const getBaseLayerOpacity = createSelector(

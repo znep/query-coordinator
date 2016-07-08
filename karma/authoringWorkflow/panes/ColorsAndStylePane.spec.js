@@ -10,11 +10,11 @@ function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onChangeBaseColor: sinon.spy(),
-    onChangeBaseLayer: sinon.spy(),
+    onSelectBaseLayer: sinon.spy(),
     onChangeBaseLayerOpacity: sinon.spy(),
     onChangePointColor: sinon.spy(),
     onChangePointOpacity: sinon.spy(),
-    onChangeColorScale: sinon.spy()
+    onSelectColorScale: sinon.spy()
   });
 
   return {
@@ -27,9 +27,9 @@ describe('ColorsAndStylePane', function() {
   var component;
   var props;
 
-  function emitsEvent(id, eventName) {
+  function emitsEvent(selector, eventName, eventType) {
     it(`should emit an ${eventName} event`, function() {
-      TestUtils.Simulate.change(component.querySelector(id));
+      TestUtils.Simulate[eventType || 'change'](component.querySelector(selector));
       sinon.assert.calledOnce(props[eventName]);
     });
   }
@@ -57,11 +57,11 @@ describe('ColorsAndStylePane', function() {
 
     describe('events', function() {
       describe('when changing the color scale', function() {
-        emitsEvent('#color-scale', 'onChangeColorScale');
+        emitsEvent('#color-scale .dropdown-option', 'onSelectColorScale', 'click');
       });
 
       describe('when changing the map type', function() {
-        emitsEvent('#base-layer', 'onChangeBaseLayer');
+        emitsEvent('#base-layer .dropdown-option', 'onSelectBaseLayer', 'click');
       });
 
       describe('when changing map opacity', function() {
@@ -111,7 +111,7 @@ describe('ColorsAndStylePane', function() {
 
     describe('events', function() {
       emitsEvent('#point-opacity', 'onChangePointOpacity');
-      emitsEvent('#base-layer', 'onChangeBaseLayer');
+      emitsEvent('#base-layer .dropdown-option', 'onSelectBaseLayer', 'click');
       emitsEvent('#base-layer-opacity', 'onChangeBaseLayerOpacity');
     });
   });

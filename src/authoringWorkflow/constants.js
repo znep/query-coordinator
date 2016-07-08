@@ -2,22 +2,45 @@ import { translate } from './I18n';
 
 export const INPUT_DEBOUNCE_MILLISECONDS = 300;
 
+export const DIMENSION_TYPES = [
+  {
+    type: 'text',
+    preferredVisualizationTypes: ['columnChart']
+  },
+  {
+    type: 'point',
+    preferredVisualizationTypes: ['featureMap', 'choroplethMap']
+  },
+  {
+    type: 'number',
+    preferredVisualizationTypes: ['columnChart']
+  },
+  {
+    type: 'calendar_date',
+    preferredVisualizationTypes: ['timelineChart']
+  }
+];
+
 export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
-    title: translate('visualizations.column_chart.title')
+    title: translate('visualizations.column_chart.title'),
+    preferredDimensionTypes: ['text', 'number']
   },
   {
     type: 'choroplethMap',
-    title: translate('visualizations.choropleth_map.title')
+    title: translate('visualizations.choropleth_map.title'),
+    preferredDimensionTypes: ['point']
   },
   {
     type: 'featureMap',
-    title: translate('visualizations.feature_map.title')
+    title: translate('visualizations.feature_map.title'),
+    preferredDimensionTypes: ['point']
   },
   {
     type: 'timelineChart',
-    title: translate('visualizations.timeline_chart.title')
+    title: translate('visualizations.timeline_chart.title'),
+    preferredDimensionTypes: ['calendar_date']
   }
 ];
 

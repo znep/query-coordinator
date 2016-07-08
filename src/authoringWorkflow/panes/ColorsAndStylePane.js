@@ -36,9 +36,9 @@ export var ColorsAndStylePane = React.createClass({
     };
   },
 
-  onChangeColorScale(event) {
+  onSelectColorScale(event) {
     var colorScale = _.find(this.props.colorScales, {value: event.target.value}).scale;
-    this.props.onChangeColorScale(colorScale);
+    this.props.onSelectColorScale(colorScale);
   },
 
   baseColor() {
@@ -61,23 +61,26 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   featureMap() {
-    var pointColor = getPointColor(this.props.vifAuthoring);
-    var pointOpacity = getPointOpacity(this.props.vifAuthoring);
+    var { vifAuthoring, onChangePointColor, onChangePointOpacity } = this.props;
+    var pointColor = getPointColor(vifAuthoring);
+    var pointOpacity = getPointOpacity(vifAuthoring);
 
     return (
       <div>
         <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}:</label>
-        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangePointColor} value={pointColor} />
+        <Styleguide.components.ColorPicker handleColorChange={onChangePointColor} value={pointColor} />
         <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}:</label>
-        <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={this.props.onChangePointOpacity} />
+        <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={onChangePointOpacity} />
         {this.mapLayerControls()}
       </div>
     );
   },
 
   choroplethMap() {
-    var defaultColorScale = getColorScale(this.props.vifAuthoring);
-    var defaultColorScaleKey = _.find(this.props.colorScales, colorScale => {
+    var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
+    var defaultColorScale = getColorScale(vifAuthoring);
+
+    var defaultColorScaleKey = _.find(colorScales, colorScale => {
       var negativeColorsMatch = defaultColorScale.negativeColor === colorScale.scale[0];
       var zeroColorsMatch = defaultColorScale.zeroColor === colorScale.scale[1];
       var positiveColorsMatch = defaultColorScale.positiveColor === colorScale.scale[2];
@@ -85,17 +88,18 @@ export var ColorsAndStylePane = React.createClass({
       return negativeColorsMatch && zeroColorsMatch && positiveColorsMatch;
     }).value;
 
-    var colorScaleOptions = _.map(this.props.colorScales, colorScale => {
-      return <option key={colorScale.value} value={colorScale.value}>{colorScale.title}</option>
-    });
+    var colorScaleAttributes = {
+      id: 'color-scale',
+      options: colorScales,
+      value: defaultColorScaleKey,
+      onSelection: onSelectColorScale
+    };
 
     return (
       <div>
         <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}:</label>
         <div className="color-scale-dropdown-container">
-          <select id="color-scale" onChange={this.onChangeColorScale} defaultValue={defaultColorScaleKey}>
-            {colorScaleOptions}
-          </select>
+          <Styleguide.components.Dropdown {...colorScaleAttributes} />
         </div>
         {this.mapLayerControls()}
       </div>
@@ -103,12 +107,16 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   mapLayerControls() {
-    var defaultBaseLayer = getBaseLayer(this.props.vifAuthoring);
-    var defaultBaseLayerOpacity = getBaseLayerOpacity(this.props.vifAuthoring);
+    var { vifAuthoring, baseLayers, onSelectBaseLayer, onChangeBaseLayerOpacity } = this.props;
+    var defaultBaseLayer = getBaseLayer(vifAuthoring);
+    var defaultBaseLayerOpacity = getBaseLayerOpacity(vifAuthoring);
 
-    var baseLayerOptions = _.map(this.props.baseLayers, baseLayer => {
-      return <option key={baseLayer.value} value={baseLayer.value}>{baseLayer.title}</option>;
-    });
+    var baseLayerAttributes = {
+      id: 'base-layer',
+      options: _.map(baseLayers, baseLayer => ({title: baseLayer.title, value: baseLayer.value})),
+      value: defaultBaseLayer,
+      onSelection: onSelectBaseLayer
+    };
 
     var baseLayerOpacityAttributes = {
       id: 'base-layer-opacity',
@@ -117,16 +125,14 @@ export var ColorsAndStylePane = React.createClass({
       max: '1',
       step: '0.1',
       defaultValue: defaultBaseLayerOpacity,
-      onChange: this.props.onChangeBaseLayerOpacity
+      onChange: onChangeBaseLayerOpacity
     };
 
     return (
       <div>
         <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}:</label>
         <div className="base-layer-dropdown-container">
-          <select id="base-layer" onChange={this.props.onChangeBaseLayer} defaultValue={defaultBaseLayer}>
-            {baseLayerOptions}
-          </select>
+          <Styleguide.components.Dropdown {...baseLayerAttributes} />
         </div>
         <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}:</label>
         <input {...baseLayerOpacityAttributes}/>
@@ -168,9 +174,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setBaseColor(baseColor));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeBaseLayer: event => {
-      var baseLayer = event.target.value;
-      dispatch(setBaseLayer(baseLayer));
+    onSelectBaseLayer: baseLayer => {
+      dispatch(setBaseLayer(baseLayer.value));
     },
 
     onChangeBaseLayerOpacity: _.debounce(event => {
@@ -187,8 +192,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setPointOpacity(pointOpacity));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeColorScale: colorScale => {
-      dispatch(setColorScale(...colorScale));
+    onSelectColorScale: colorScale => {
+      dispatch(setColorScale(...colorScale.scale));
     }
   };
 }

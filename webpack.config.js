@@ -33,6 +33,7 @@ module.exports = [
       'lodash': '_',
       'moment': 'moment',
       'leaflet': 'L',
+      'socrata-styleguide': 'styleguide',
       'react': {
         root: 'React',
         commonjs2: 'react',

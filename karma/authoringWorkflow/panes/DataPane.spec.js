@@ -23,7 +23,7 @@ describe('DataPane', function() {
       });
 
       it('does not render dropdowns', function() {
-        expect(component.querySelectorAll('select').length).to.equal(0);
+        expect(component.querySelectorAll('.dropdown-container').length).to.equal(0);
       });
     });
 
@@ -36,19 +36,15 @@ describe('DataPane', function() {
       });
 
       it('renders dimension selection', function() {
-        expect(component.querySelector('#dimension-selection')).to.exist;
+        expect(component.querySelector('.dimension-dropdown-container')).to.exist;
       });
 
-      it('renders measure selection', function() {
-        expect(component.querySelector('#measure-selection')).to.exist;
-      });
-
-      it('renders measure aggregation selection', function() {
-        expect(component.querySelector('#measure-aggregation-selection')).to.exist;
+      it('renders measure and measure aggregation selection', function() {
+        expect(component.querySelector('.measure-dropdown-container')).to.exist;
       });
 
       it('renders visualization type selection', function() {
-        expect(component.querySelector('#visualization-type-selection')).to.exist;
+        expect(component.querySelector('.visualization-type-dropdown-container')).to.exist;
       });
     });
   });
@@ -57,16 +53,16 @@ describe('DataPane', function() {
     var props;
     var component;
     var spies = {
-      onChangeDimension: sinon.stub(),
-      onChangeMeasure: sinon.stub(),
-      onChangeMeasureAggregation: sinon.stub(),
-      onChangeVisualizationType: sinon.stub(),
-      onChangeRegion: sinon.stub()
+      onSelectDimension: sinon.stub(),
+      onSelectMeasure: sinon.stub(),
+      onSelectMeasureAggregation: sinon.stub(),
+      onSelectVisualizationType: sinon.stub(),
+      onSelectRegion: sinon.stub()
     };
     var emitsDropdownEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
-        var dropdown = component.querySelector(selector);
-        TestUtils.Simulate.change(dropdown);
+        var option = component.querySelector(`${selector} .dropdown-option`);
+        TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });
     };
@@ -79,33 +75,31 @@ describe('DataPane', function() {
     });
 
     describe('when changing the dimension dropdown', function() {
-      emitsDropdownEvent('#dimension-selection', 'onChangeDimension');
+      emitsDropdownEvent('#dimension-selection', 'onSelectDimension');
     });
 
     describe('when changing the measure dropdown', function() {
-      emitsDropdownEvent('#measure-selection', 'onChangeMeasure');
+      emitsDropdownEvent('#measure-selection', 'onSelectMeasure');
     });
 
     describe('when changing the measure aggregation dropdown', function() {
-      emitsDropdownEvent('#measure-aggregation-selection', 'onChangeMeasureAggregation');
+      emitsDropdownEvent('#measure-aggregation-selection', 'onSelectMeasureAggregation');
     });
 
     describe('when changing the visualization type dropdown', function() {
-      emitsDropdownEvent('#visualization-type-selection', 'onChangeVisualizationType');
+      emitsDropdownEvent('#visualization-type-selection', 'onSelectVisualizationType');
     });
 
     describe('when rendering a Choropleth map', function() {
       beforeEach(function() {
         props = defaultProps(spies);
-        props.metadata.data = {};
-        props.metadata.curatedRegions = [{uid: '', fieldName: ''}];
         props.vifAuthoring.authoring.selectedVisualizationType = 'choroplethMap';
 
         component = renderComponent(DataPane, props);
       });
 
       describe('when changing the region dropdown', function() {
-        emitsDropdownEvent('#region-selection', 'onChangeRegion');
+        emitsDropdownEvent('#region-selection', 'onSelectRegion');
       });
     });
   });

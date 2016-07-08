@@ -11,8 +11,9 @@ export default function(overrides) {
       vifs: vifs()
     },
     metadata: _.merge({}, defaultMetadata, {
-      data: {},
-      phidippidesMetadata: {columns: []}
+      data: {columns: [{fieldName: 'test', name: 'Testing'}]},
+      phidippidesMetadata: {columns: {'test': {renderTypeName: 'text', name: 'Testing'}}},
+      curatedRegions: [{name: 'Region', uid: 'four-four'}]
     }),
   }, overrides);
 }

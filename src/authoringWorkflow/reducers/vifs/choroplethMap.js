@@ -1,11 +1,11 @@
 import _ from 'lodash';
+import utils from 'socrata-utils';
 
 import { translate } from '../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setValueOrDefaultValue } from '../../helpers';
 import {
   RECEIVE_METADATA,
-  HANDLE_METADATA_ERROR,
   SET_DIMENSION,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
@@ -27,6 +27,14 @@ export default function choroplethMap(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RECEIVE_METADATA:
+      forEachSeries(state, series => {
+        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.units.one'));
+        setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
+        setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
+      });
+      break;
+
     case SET_DIMENSION:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);

@@ -11,7 +11,7 @@ function render(type) {
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onChangeUnitsOne: sinon.spy(),
     onChangeUnitsOther: sinon.spy(),
-    onChangeFlyoutTitle: sinon.spy()
+    onSelectFlyoutTitle: sinon.spy()
   });
 
   return {
@@ -24,9 +24,9 @@ describe('LegendsAndFlyoutsPane', function() {
   var component;
   var props;
 
-  function emitsEvent(id, eventName) {
+  function emitsEvent(id, eventName, eventType) {
     it(`should emit an ${eventName} event`, function() {
-      TestUtils.Simulate.change(component.querySelector(id));
+      TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
       sinon.assert.calledOnce(props[eventName]);
     });
   }
@@ -97,13 +97,13 @@ describe('LegendsAndFlyoutsPane', function() {
       rendersEditableUnits();
 
       it('should render a dropdown with columns', function() {
-        expect(component.querySelector('#flyout-title')).to.exist;
+        expect(component.querySelector('#flyout-title-column')).to.exist;
       });
     });
 
     describe('events', function() {
       emitsEventsForUnits();
-      emitsEvent('#flyout-title', 'onChangeFlyoutTitle');
+      emitsEvent('#flyout-title-column .dropdown-option', 'onSelectFlyoutTitle', 'click');
     });
   });
 

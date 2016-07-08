@@ -301,6 +301,7 @@ en:
       full_month_10: 'October'
       full_month_11: 'November'
       full_month_12: 'December'
+    downtime: 'This Socrata-powered site may be unavailable for routine maintenance<br>from {0} to {1}.'
     # Translations common with OpenPerformance
     open_performance:
       measure:

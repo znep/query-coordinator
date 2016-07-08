@@ -44,7 +44,11 @@ class StorytellerService
 
     begin
       # within a given environment, downtimes may be specified as a hash or array of hashes
-      downtime_config = Diplomat::Kv.get(CONSUL_KEYS[:downtime])
+      downtime_config = if Rails.env.development?
+        IO.read(Rails.root.join('config/downtime.yml'))
+      else
+        Diplomat::Kv.get(CONSUL_KEYS[:downtime])
+      end
       downtimes = [YAML.load(downtime_config).try(:[], Rails.application.config.downtime_config_env)].flatten.compact
     rescue Psych::SyntaxError => error
       Rails.logger.warn("Invalid YAML in Consul KV #{CONSUL_KEYS[:downtime]}: #{error.message}")

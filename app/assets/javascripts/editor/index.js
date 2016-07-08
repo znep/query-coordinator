@@ -230,6 +230,9 @@ $(document).on('ready', function() {
   // Draft or Published status
   $('#story-publication-status').storyPublicationStatus(Environment.STORY_UID);
 
+  // Downtime notice
+  $('#downtime-notice-bar').downtimeNoticeBar();
+
   // Save status
   $('#story-saving-indicator').storySavingStatus();
   $('#story-save-error-bar').storySaveErrorBar();

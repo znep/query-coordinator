@@ -202,14 +202,14 @@ body .header-main {
   }
 }
 
-#story-save-error-bar {
+#story-save-error-bar, #downtime-notice-bar {
   display: inline-flex;
   position: fixed;
   top: 6rem;
   left: 0;
   right: 0;
-  min-height: $story-save-error-bar-reserved-height;
   text-align: center;
+  line-height: 1.4;
   font-size: 1.5rem;
   z-index: $story-save-error-z-index;
   transition: opacity $transition-duration;
@@ -242,6 +242,18 @@ body .header-main {
     .btn-busy {
       vertical-align: middle;
     }
+  }
+}
+
+#story-save-error-bar {
+  min-height: $story-save-error-bar-reserved-height;
+}
+
+#downtime-notice-bar {
+  min-height: $downtime-notice-bar-reserved-height;
+  a {
+    color: $story-save-error-bar-color;
+    cursor: pointer;
   }
 }
 

@@ -6,6 +6,10 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
   top: $story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
 }
 
+body.downtime-notice #rich-text-editor-toolbar-wrapper {
+  top: $downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
+}
+
 #rich-text-editor-toolbar-wrapper { // for positioning
   position: fixed;
   top: $rich-text-editor-toolbar-top-offset;

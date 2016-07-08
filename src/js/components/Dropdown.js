@@ -292,7 +292,7 @@ export const Dropdown = React.createClass({
     let placeholder = this.renderPlaceholder();
 
     return (
-      <div className={classes} ref={reference}>
+      <div className={classes} ref={reference} {...this.props}>
         {placeholder}
         {options}
       </div>

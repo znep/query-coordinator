@@ -28,7 +28,7 @@ module.exports = function SuggestionService(http, $window) {
         function(response) {
           return _.chain(response).
             get('data.options', []).
-            pluck('text').
+            map('text').
             value();
         },
         function() {

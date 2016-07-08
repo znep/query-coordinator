@@ -1,5 +1,5 @@
-import React from 'react';
 import _ from 'lodash';
+import React from 'react';
 import classNames from 'classnames/bind';
 
 import './mobileChartFlyout.scss';

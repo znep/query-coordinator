@@ -49,7 +49,7 @@ module.exports = function ManageLensDialogOwnershipController(
   var suggestionObjects$ = suggestionsRequests$.switchLatest().
     map(function(suggestions) {
       return _.filter(suggestions, function(suggestion) {
-        return _.where(suggestion.displayName, $scope.ownerInput);
+        return _.filter(suggestion.displayName, $scope.ownerInput);
       }).sort();
     });
 
@@ -206,7 +206,7 @@ module.exports = function ManageLensDialogOwnershipController(
   // and whether the necessary service for owner change is available
   $scope.isUserSearchAvailable = true;
   var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
-    return _.contains(user.rights, UserRights.CHOWN_DATASETS);
+    return _.includes(user.rights, UserRights.CHOWN_DATASETS);
   });
   var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
   var hasPermission$ = Rx.Observable.combineLatest(
@@ -222,7 +222,7 @@ module.exports = function ManageLensDialogOwnershipController(
   var currentOwnerId = $scope.page.getCurrentValue('ownerId');
   var nextOwnerId = currentOwnerId;
   UserSearchService.find(currentOwnerId).then(function(results) {
-    $scope.ownerInput = _.where(results, {id: currentOwnerId})[0].displayName;
+    $scope.ownerInput = _.filter(results, {id: currentOwnerId})[0].displayName;
   })['catch'](disableInput);
 
   // initialize component structure

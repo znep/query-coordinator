@@ -94,7 +94,7 @@ export var ExternalResourceForm = React.createClass({
   renderInputField: function(key, inputProps) {
     var prefix = 'external-resource';
     var value = this.props[key];
-    var onChange = this[`onChange${_.capitalize(key)}`];
+    var onChange = this[`onChange${_.upperFirst(key)}`];
     var kebabKey = _.kebabCase(key);
 
     inputProps = _.defaults(inputProps, {

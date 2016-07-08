@@ -50,7 +50,7 @@ export var FeaturedContent = React.createClass({
     var { contentList } = this.props;
     var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
-    if (!defaultToDatasetLandingPage || (!_.any(contentList) && !isUserAdminOrPublisher())) {
+    if (!defaultToDatasetLandingPage || (!_.some(contentList) && !isUserAdminOrPublisher())) {
       return null;
     }
 

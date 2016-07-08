@@ -148,7 +148,7 @@ module.exports = function customizeCardDialog(
     currentBucketOption$.subscribe(function(bucketType) {
 
       // Throw an error if invalid bucket type.
-      if (!_.contains(['logarithmic', 'linear'], bucketType)) {
+      if (!_.includes(['logarithmic', 'linear'], bucketType)) {
         throw new Error(`Unknown bucket type: ${bucketType}`);
       }
 
@@ -183,7 +183,7 @@ module.exports = function customizeCardDialog(
 
       $scope.$bindObservable('shouldShowAggregationSelector',
         $scope.customizedCard.observe('cardType').map(function(cardType) {
-          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.includes(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
       $scope.$bindObservable('availableCardTypes',

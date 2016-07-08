@@ -29,13 +29,13 @@ module.exports = function ManageLensDialogController($scope, $window, ViewRights
   };
 
   $scope.$watch(function() {
-    return _.some(_.pluck($scope.components, 'hasChanges'));
+    return _.some(_.map($scope.components, 'hasChanges'));
   }, function(hasChanges) {
     $scope.dialogHasChanges = hasChanges;
   });
 
   $scope.$watch(function() {
-    return _.some(_.pluck($scope.components, 'hasErrors'));
+    return _.some(_.map($scope.components, 'hasErrors'));
   }, function(hasErrors) {
     $scope.dialogHasErrors = hasErrors;
   });

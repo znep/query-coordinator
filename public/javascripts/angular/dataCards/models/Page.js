@@ -124,7 +124,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
           if (_.isEmpty(cardFilterInfo.filters)) {
             return null;
           } else {
-            return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.filteredColumn).
+            return _.invokeMap(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.filteredColumn).
               join(' AND ');
           }
         });

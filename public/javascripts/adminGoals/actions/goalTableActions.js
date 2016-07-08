@@ -72,19 +72,19 @@ export function tableLoadPage() {
 
       switch (sortColumn) {
         case 'title':
-          sortedArray = _.sortByOrder(goals, 'name', sortDirection);
+          sortedArray = _.orderBy(goals, 'name', sortDirection);
           break;
         case 'owner':
-          sortedArray = _.sortByOrder(goals, 'created_by.displayName', sortDirection);
+          sortedArray = _.orderBy(goals, 'created_by.displayName', sortDirection);
           break;
         case 'updated_at':
-          sortedArray = _.sortByOrder(goals, 'updated_at', sortDirection);
+          sortedArray = _.orderBy(goals, 'updated_at', sortDirection);
           break;
         case 'visibility':
-          sortedArray = _.sortByOrder(goals, 'is_public', sortDirection);
+          sortedArray = _.orderBy(goals, 'is_public', sortDirection);
           break;
         case 'dashboard':
-          sortedArray = _.sortByOrder(goals, 'dashboardName', sortDirection);
+          sortedArray = _.orderBy(goals, 'dashboardName', sortDirection);
           break;
         case 'goal_status':
         default:
@@ -119,7 +119,7 @@ export function tableLoadPage() {
       ]);
 
       function getOwnerDetails() {
-        let goalOwnerDetailPromises = _(goals).uniq('created_by').map(goal =>
+        let goalOwnerDetailPromises = _(goals).uniqBy('created_by').map(goal =>
           _.get(cachedUsers, goal.created_by) ?
             Promise.resolve(cachedUsers[goal.created_by]) :
             fetch(`/api/users/${goal.created_by}.json`, fetchOptions).

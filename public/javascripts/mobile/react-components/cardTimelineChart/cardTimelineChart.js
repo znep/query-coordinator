@@ -1,5 +1,5 @@
-import React from 'react';
 import _ from 'lodash';
+import React from 'react';
 
 require('socrata-visualizations').TimelineChart;
 
@@ -64,7 +64,7 @@ class CardTimelineChart extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!_.eq(this.props.filters, this.state.filters)) {
+    if (!_.isEqual(this.props.filters, this.state.filters)) {
       this.setState({
         filters: this.props.filters
       }, () => {

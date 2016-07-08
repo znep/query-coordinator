@@ -45,7 +45,10 @@ module.exports = _.defaultsDeep({
   resolve: {
     alias: {
       'angular_templates': path.resolve(common.root, 'public/angular_templates'),
-      plugins: path.resolve(common.root, 'public/javascripts/plugins')
+      plugins: path.resolve(common.root, 'public/javascripts/plugins'),
+      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
+      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
+      '_': 'lodash'
     }
   },
   externals: common.packageJson.config.dataLensWebpackExternals,

@@ -67,7 +67,7 @@ describe('ManageLensDialogSharingController', function() {
 
       expect($scope.inheritedShares).to.be.an.array;
       expect($scope.inheritedShares).to.have.length(2);
-      expect(_.pluck($scope.inheritedShares, 'name')).to.deep.equal(['email1@example.com', 'email2@example.com']);
+      expect(_.map($scope.inheritedShares, 'name')).to.deep.equal(['email1@example.com', 'email2@example.com']);
     });
 
     it('sets showInheritedSharingSection to false if there are no inherited shares', function() {
@@ -82,7 +82,7 @@ describe('ManageLensDialogSharingController', function() {
 
       expect($scope.shares).to.be.an.array;
       expect($scope.shares).to.have.length(2);
-      expect(_.pluck($scope.shares, 'name')).to.deep.equal(['email4@example.com', 'email3@example.com']);
+      expect(_.map($scope.shares, 'name')).to.deep.equal(['email4@example.com', 'email3@example.com']);
     });
   });
 

@@ -115,7 +115,7 @@ module.exports = function FeatureMapService(DataTypeFormatService, linkyFilter) 
         });
 
         // Format address following US postal format if any of its components are present
-        if (_.any(addressColumns, _.isPresent)) {
+        if (_.some(addressColumns, _.isPresent)) {
           var address = addressColumns[0];
           var city = addressColumns[1];
           var state = addressColumns[2];

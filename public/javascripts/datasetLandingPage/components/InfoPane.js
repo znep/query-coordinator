@@ -50,7 +50,7 @@ export var InfoPane = React.createClass({
         title={I18n.private_notice} /> : null;
 
     categoryBadge = view.category ?
-      <span className="tag-category">{_.capitalize(view.category)}</span> : null;
+      <span className="tag-category">{_.upperFirst(view.category)}</span> : null;
 
     viewDataButton = (
       <a

@@ -40,7 +40,7 @@ module.exports = function SuggestionToolPanel(SuggestionService, ServerConfig, C
       ).
       debounce(300, Rx.Scheduler.timeout). // Don't hammer the suggestions service.
       map(function(suggestionRequest) {
-        if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, suggestionRequest.physicalDatatype)) {
+        if (_.includes(Constants.SUGGESTION_DISABLED_DATA_TYPES, suggestionRequest.physicalDatatype)) {
           return Rx.Observable.returnValue([]);
         } else {
           return Rx.Observable.fromPromise(

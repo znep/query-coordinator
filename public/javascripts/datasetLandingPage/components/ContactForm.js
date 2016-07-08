@@ -63,7 +63,7 @@ export var ContactForm = React.createClass({
     var { onClickSend } = this.props;
     var errors = this.validateForm();
 
-    if (_.any(errors)) {
+    if (_.some(errors)) {
       var invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
       if (invalidField) {
         invalidField.focus();
@@ -269,7 +269,7 @@ export var ContactForm = React.createClass({
   renderErrorMessages: function() {
     var { errors } = this.state;
 
-    if (_.any(errors)) {
+    if (_.some(errors)) {
       var messages = _.map(errors, function(error, i) {
         return <p key={i}>{error}</p>;
       });

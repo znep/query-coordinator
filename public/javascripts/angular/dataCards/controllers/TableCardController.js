@@ -38,7 +38,7 @@ module.exports = function TableCardController(
   };
 
   function isUnsortableColumn(column, fieldName) {
-    var datatypeIsUnsortable = _.contains(
+    var datatypeIsUnsortable = _.includes(
       Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES,
       _.get(column, 'physicalDatatype', false)
     );
@@ -54,7 +54,7 @@ module.exports = function TableCardController(
   }
 
   function keepOnlyDisplayableColumns(columns) {
-    return _.pick(
+    return _.pickBy(
       _.cloneDeep(columns),
       isDisplayableColumn
     );
@@ -62,7 +62,7 @@ module.exports = function TableCardController(
 
   function addExtraAttributesToColumns(columns) {
     return _.transform(columns, function(result, column, fieldName) {
-      column.sortable = !_.contains(
+      column.sortable = !_.includes(
         Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES,
         column.physicalDatatype
       );
@@ -175,8 +175,8 @@ module.exports = function TableCardController(
 
       var computedLayout = layout.doLayout(sizedCards);
       var sortedCardSizes = _.keys(computedLayout).sort();
-      var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
-      return _.first(cardsInFirstSize).model.fieldName;
+      var cardsInFirstSize = _.flatten(computedLayout[_.head(sortedCardSizes)]);
+      return _.head(cardsInFirstSize).model.fieldName;
     }
   );
 

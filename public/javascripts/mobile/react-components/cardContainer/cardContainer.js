@@ -1,6 +1,7 @@
 // Note: no-unused-vars is disabled for this file because eslint thinks
 // some of the files that are being imported aren't being used.
 /* eslint-disable no-unused-vars */
+import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames/bind';
 import MobileChartFlyout from '../mobileFlyout/mobileChartFlyout';
@@ -11,6 +12,7 @@ import CardColumnChart from '../cardColumnChart/cardColumnChart';
 import CardChoroplethMap from '../cardChoroplethMap/cardChoroplethMap';
 import CardFeatureMap from '../cardFeatureMap/cardFeatureMap';
 import CardTable from '../cardTable/cardTable';
+import utils from 'socrata-utils';
 
 import './cardContainer.scss';
 /* eslint-enable no-unused-vars */
@@ -107,14 +109,14 @@ class CardContainer extends React.Component {
 
     switch (_.get(this.state, 'chartValues.aggregationFunction', '')) {
       case 'sum':
-        title = 'Sum of {0} by'.format(socrata.utils.pluralize(this.state.chartValues.aggregationMetadata.name));
+        title = 'Sum of {0} by'.format(utils.pluralize(this.state.chartValues.aggregationMetadata.name));
         break;
       case 'mean':
         title = 'Average {0} by'.format(this.state.chartValues.aggregationMetadata.name);
         break;
       case 'count':
       default:
-        title = _.contains(['feature', 'table'], this.state.cardType) ?
+        title = _.includes(['feature', 'table'], this.state.cardType) ?
           '' : 'Number of {0} by'.format(this.state.chartValues.unit.other);
         break;
     }

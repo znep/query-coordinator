@@ -727,7 +727,7 @@ describe('CardDataService', function() {
           return acc + datum.value;
         }, 0);
         expect(sum).to.equal(1508 + 238 + 624 + 718);
-        var values = _.compact(_.pluck(response.data, 'value'));
+        var values = _.compact(_.map(response.data, 'value'));
         expect(values).to.deep.equal([624, 238, 718, 1508]); // Note their order from old-new.
         done();
       });
@@ -744,7 +744,7 @@ describe('CardDataService', function() {
       fakeDataRequestHandler.respond(fakeData);
       var promise = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       promise.then(function(response) {
-        var values = _.pluck(response.data, 'value');
+        var values = _.map(response.data, 'value');
         expect(values).to.deep.equal([1508, null, 624, 718]);
         done();
       });

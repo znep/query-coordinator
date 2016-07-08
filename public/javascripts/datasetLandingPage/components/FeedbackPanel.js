@@ -94,19 +94,19 @@ export var FeedbackPanel = React.createClass({
   },
 
   showButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-0.35rem' }, _.callback(cb));
+    velocity(this.refs.button, { bottom: '-0.35rem' }, _.iteratee(cb));
   },
 
   showContent: function(cb) {
-    velocity(this.refs.content, { bottom: 0 }, _.callback(cb));
+    velocity(this.refs.content, { bottom: 0 }, _.iteratee(cb));
   },
 
   hideButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-10rem' }, _.callback(cb));
+    velocity(this.refs.button, { bottom: '-10rem' }, _.iteratee(cb));
   },
 
   hideContent: function(cb) {
-    velocity(this.refs.content, { bottom: '-22rem' }, _.callback(cb));
+    velocity(this.refs.content, { bottom: '-22rem' }, _.iteratee(cb));
   },
 
   render: function() {

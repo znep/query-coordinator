@@ -67,7 +67,7 @@ module.exports = function($log, ServerConfig, CardOptions, Model, Schemas, Filte
         'isCustomizableMap',
         self.observe('cardType').map(
           function(cardType) {
-            return _.contains(CUSTOMIZABLE_MAP_TYPES, cardType);
+            return _.includes(CUSTOMIZABLE_MAP_TYPES, cardType);
           }
         )
       );
@@ -76,7 +76,7 @@ module.exports = function($log, ServerConfig, CardOptions, Model, Schemas, Filte
         'isExportable',
         self.observe('cardType').map(
           function(cardType) {
-            return _.contains(EXPORTABLE_CARD_TYPES, cardType);
+            return _.includes(EXPORTABLE_CARD_TYPES, cardType);
           }
         )
       );

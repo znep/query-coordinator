@@ -99,9 +99,9 @@ module.exports = function() {
     var tiers = _.groupBy(items, this.options.tierAccessor);
 
     var out = {};
-    _.forOwn(tiers, function(tierItems, tierId) {
+    _.forOwn(tiers, _.bind(function(tierItems, tierId) {
       out[tierId] = splitRows(this.options.tiers[tierId], tierItems);
-    }, this);
+    }, this));
 
     return out;
   };

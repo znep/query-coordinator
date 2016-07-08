@@ -181,7 +181,7 @@ module.exports = function ManageLensDialogSharingController($scope, $q, $window,
     _.each(changedShares, function(share) {
       var pageShare = _.find(pageShares, { member_name: share.name });
       if (pageShare) {
-        pageShare.type = _.capitalize(share.type);
+        pageShare.type = _.upperFirst(share.type);
       }
     });
 
@@ -195,7 +195,7 @@ module.exports = function ManageLensDialogSharingController($scope, $q, $window,
         is_user: newShare.userId,
         member_name: newShare.name,
         member_id: newShare.userId || newShare.name,
-        type: _.capitalize(newShare.type),
+        type: _.upperFirst(newShare.type),
         user_member: null
       };
 

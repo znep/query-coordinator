@@ -132,6 +132,9 @@ describe('featureMap', function() {
 
     var el = testHelpers.TestDom.compileAndAppend(html, scope);
 
+    el.find('.feature-map').width(options.width);
+    el.find('.feature-map').height(options.height);
+
     // Advance the Rx scheduler for dimension de-bouncing
     testTimeoutScheduler.advanceTo(500);
 

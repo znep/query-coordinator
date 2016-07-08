@@ -211,7 +211,7 @@ export var MetadataTable = React.createClass({
     }
 
     if (view.category) {
-      category = <td>{_.capitalize(view.category)}</td>;
+      category = <td>{_.upperFirst(view.category)}</td>;
     } else {
       category = <td className="empty">{I18n.metadata.no_category_value}</td>;
     }

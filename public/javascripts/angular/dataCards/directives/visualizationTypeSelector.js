@@ -101,7 +101,7 @@ module.exports = function visualizationTypeSelector(
         }
 
         var defaultCuratedRegion = _.get(
-          _.first(accessibleCuratedRegions),
+          _.head(accessibleCuratedRegions),
          'view.id'
         );
 
@@ -115,7 +115,7 @@ module.exports = function visualizationTypeSelector(
           } else {
             selectedCuratedRegion = shapefile.substring(1);
           }
-        } else if (_.any(accessibleCuratedRegions, 'view.id', defaultCuratedRegion)) {
+        } else if (_.some(accessibleCuratedRegions, 'view.id', defaultCuratedRegion)) {
           selectedCuratedRegion = defaultCuratedRegion;
         }
 
@@ -231,7 +231,7 @@ module.exports = function visualizationTypeSelector(
           return;
         }
 
-        if (_.isNull($scope.cardModel) || !_.contains($scope.availableCardTypes, cardType)) {
+        if (_.isNull($scope.cardModel) || !_.includes($scope.availableCardTypes, cardType)) {
           $log.error(`Could not set card type of "${cardType}".`);
           return;
         }

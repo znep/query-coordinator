@@ -143,7 +143,7 @@ describe('tableCard', function() {
       reversedFixtureNullData = [].concat(fixtureData).reverse();
       fixtureMetadata = testHelpers.getTestJson(testMetaJson);
 
-      var columnNames = _.pluck(fixtureMetadata['testColumnDetailsAsTableWantsThem'], 'fieldName');
+      var columnNames = _.map(fixtureMetadata['testColumnDetailsAsTableWantsThem'], 'fieldName');
       beatColumnIndex = columnNames.indexOf('beat');
       dateColumnIndex = columnNames.indexOf('date');
       descriptionColumnIndex = columnNames.indexOf('description');
@@ -342,7 +342,7 @@ describe('tableCard', function() {
       // Find the names of all columns with a cardinality of one.
       var uniformColumnNames = _(columnDetails).filter(function(column) {
         return column.cardinality === 1;
-      }).pluck('name').value();
+      }).map('name').value();
 
       // Find all column elements whose text matches one of the above column names.
       var uniformColumnElements = columnHeader.filter(function() {

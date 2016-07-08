@@ -182,13 +182,13 @@ module.exports = function CardsViewController(
     currentUser$.
     map(function(user) {
       var roleName = user.roleName;
-      return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+      return _.includes(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
     });
 
   var userCanManageView$ = $scope.isEphemeral ?
     Rx.Observable.returnValue(false) :
     page.observe('rights').map(function(rights) {
-      return _.any(rights, function(right) {
+      return _.some(rights, function(right) {
         return right === ViewRights.UPDATE_VIEW || right === ViewRights.GRANT;
       });
     });
@@ -567,7 +567,7 @@ module.exports = function CardsViewController(
       // NOTE! The complete property has bugs in Firefox. Fortunately,
       // this should only be running in PhantomJS, which has no problems
       // here.
-      return _.all($('img'), 'complete');
+      return _.every($('img'), 'complete');
     });
 
     // Sequence containing a count of all the cards to be rendered

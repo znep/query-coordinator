@@ -109,7 +109,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     Simulate.click(button);
 
     var buttons = element.querySelectorAll('.featured-item:first-child .btn');
-    var hasStoryOption = _.any(buttons, function(button) {
+    var hasStoryOption = _.some(buttons, function(button) {
       return button.innerText === I18n.featured_content_modal.story
     });
 

@@ -25,9 +25,6 @@ module.exports = function ( karma ) {
       'bower_components/jquery/dist/jquery.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/javascript-detect-element-resize/jquery.resize.js',
-      'bower_components/lodash-compat/lodash.js',
-      'public/javascripts/util/jquery-extensions.js',
-      'public/javascripts/util/lodash-mixins.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
@@ -47,7 +44,6 @@ module.exports = function ( karma ) {
       'bower_components/moment/moment.js',
       'public/javascripts/plugins/modernizr.js',
       'public/javascripts/plugins/squire.js',
-      'public/javascripts/bower/socrata.utils.js',
 
       'karma/dataCards/test-data/**/*.json',
       // https://github.com/karma-runner/karma/issues/1532
@@ -104,7 +100,10 @@ module.exports = function ( karma ) {
       plugins: [ new WebpackFailurePlugin() ],
       resolve: {
         alias: {
-          angular_templates: templateDir
+          angular_templates: templateDir,
+          'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
+          'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
+          '_': 'lodash'
         },
         root: [ path.resolve('.') ],
         modulesDirectories: [ 'node_modules', 'bower_components' ]

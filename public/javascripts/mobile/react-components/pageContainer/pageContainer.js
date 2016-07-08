@@ -3,10 +3,11 @@
 // Note: no-unused-vars is disabled for this file because eslint thinks
 // some of the files that are being imported aren't being used.
 /* eslint-disable no-unused-vars */
+import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames/bind';
-import _ from 'lodash';
 import CardContainer from '../cardContainer/cardContainer';
+import utils from 'socrata-utils';
 /* eslint-enable no-unused-vars */
 
 const TABLE_UNSORTABLE_PHYSICAL_DATATYPES = ['geo_entity', 'point'];
@@ -139,7 +140,7 @@ class PageContainer extends React.Component {
         filters: self.props.filters,
         unit: {
           one: _.get(datasetMetadata, 'rowDisplayUnit', 'row'),
-          other: socrata.utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
+          other: utils.pluralize(_.get(datasetMetadata, 'rowDisplayUnit', 'row'), 2)
         },
         id: '{0}_{1}_{2}'.format(card.cardType, (card.aggregationField || card.fieldName), idNumber),
         metadata: datasetMetadata.columns[card.fieldName],

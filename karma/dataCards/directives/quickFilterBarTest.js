@@ -133,26 +133,26 @@ describe('quickFilterBar', function() {
 
       // Just one card
       cards[0].set('activeFilters', [ filterOne ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
 
       // Two filtered cards
       cards[1].set('activeFilters', [ filterTwo ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not', 'is' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not', 'is' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
 
       // One filtered card, with two filters.
       cards[0].set('activeFilters', [ filterOne, filterTwo ]);
       cards[1].set('activeFilters', []);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
 
       // Two identical filtered cards
       cards[0].set('activeFilters', []);
       cards[1].set('activeFilters', [ filterOne ]);
       cards[2].set('activeFilters', [ filterTwo ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not', 'is' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not', 'is' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
     });
 
     it('should render a whitespace-only operand filter the same way as a null filter', function() {
@@ -165,16 +165,16 @@ describe('quickFilterBar', function() {
       cards[0].set('activeFilters', [ filterOne ]);
       cards[1].set('activeFilters', [ filterTwo ]);
 
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is', 'is' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is', 'is' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
 
       // Two identical filtered cards
       cards[0].set('activeFilters', []);
       cards[1].set('activeFilters', [ filterOne ]);
       cards[2].set('activeFilters', [ filterTwo ]);
 
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is', 'is' ]);
-      expect(_.pluck($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is', 'is' ]);
+      expect(_.map($scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
     });
   });
 });

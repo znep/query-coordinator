@@ -175,7 +175,7 @@ module.exports = function tableCard(
         var sortOnColumn = function(columnId) {
 
           var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
-          if (_.contains(unsortableTypes, getColumn(columnId).physicalDatatype)) {
+          if (_.includes(unsortableTypes, getColumn(columnId).physicalDatatype)) {
             return;
           }
 
@@ -338,7 +338,7 @@ module.exports = function tableCard(
         });
 
         var updateExpanderHeight = function() {
-          var lastLoadedBlock = _.max(element.find('.row-block'), function(block) {
+          var lastLoadedBlock = _.maxBy(element.find('.row-block'), function(block) {
             return $(block).data().blockId;
           });
           var height = 0;
@@ -459,7 +459,7 @@ module.exports = function tableCard(
           });
 
           _.each(currentBlocks, function(blockId) {
-            if (!_.contains(blocksToLoad, blockId)) {
+            if (!_.includes(blocksToLoad, blockId)) {
               $expander.find('.row-block.' + blockId).remove();
               // Cancel HTTP request if in progress.
               if (httpRequests[blockId]) {
@@ -492,14 +492,14 @@ module.exports = function tableCard(
 
             if ($scope.filteredRowCount <= 1) {
               $scope.tableLabel = I18n.t('table.nonRangeLabel',
-                _.escape(_.capitalize($scope.rowDisplayUnit)),
+                _.escape(_.upperFirst($scope.rowDisplayUnit)),
                 $window.socrata.utils.commaify(topRow),
                 $window.socrata.utils.commaify($scope.filteredRowCount)
               );
             } else {
               var rowDisplayUnit = PluralizeService.pluralize($scope.rowDisplayUnit);
               $scope.tableLabel = I18n.t('table.rangeLabel',
-                _.escape(_.capitalize(rowDisplayUnit)),
+                _.escape(_.upperFirst(rowDisplayUnit)),
                 $window.socrata.utils.commaify(topRow),
                 $window.socrata.utils.commaify(bottomRow),
                 $window.socrata.utils.commaify($scope.filteredRowCount)
@@ -703,7 +703,7 @@ module.exports = function tableCard(
         }));
 
         $scope.$destroyAsObservable(element).subscribe(function() {
-          _.invoke(subscriptions, 'dispose');
+          _.invokeMap(subscriptions, 'dispose');
         });
       }
     }

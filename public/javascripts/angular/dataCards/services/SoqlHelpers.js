@@ -71,7 +71,7 @@ module.exports = function(Constants, DateHelpers, $window) {
 
     $window.socrata.utils.assert(_.isPresent(fieldName), 'fieldName cannot be blank');
     $window.socrata.utils.assert(_.isArray(activeFilters), 'activeFilters must be an array');
-    var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
+    var myWhereClauseFragments = _.invokeMap(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {
       whereClause = whereClause.replace(fragment, '(1=1)');

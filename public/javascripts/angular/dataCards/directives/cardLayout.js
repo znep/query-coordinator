@@ -977,7 +977,7 @@ module.exports = function cardLayout(
 
       // Destroy observable
       $scope.$destroyAsObservable(cardContainer).subscribe(function() {
-        _.invoke(subscriptions, 'dispose');
+        _.invokeMap(subscriptions, 'dispose');
       });
     }
   };

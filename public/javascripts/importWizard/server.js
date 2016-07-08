@@ -135,7 +135,7 @@ export function modelToViewParam(metadata) {
     tags: metadata.contents.tags,
     metadata: {
       rowLabel: metadata.contents.rowLabel,
-      attributionLink: metadata.contents.attributionLink,
+      attributionLink: metadata.contents.mapLayer,
       custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
     },
     privateMetadata: {
@@ -231,7 +231,7 @@ export function coreViewContents(view) {
     category: view.category,
     tags: view.tags,
     rowLabel: view.metadata.rowLabel,
-    attributionLink: view.metadata.attributionLink,
+    mapLayer: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
     contactEmail: view.privateMetadata.contactEmail,
     privacySettings: _.has(view, 'grants')

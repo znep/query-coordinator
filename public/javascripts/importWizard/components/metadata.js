@@ -32,7 +32,7 @@ type MetadataContents = {
   category: String,
   tags: Array,
   rowLabel: String,
-  attributionLink: String,
+  mapLayer: String,
   customMetadata: Object,
   contactEmail: String,
   privacySettings: String
@@ -66,7 +66,7 @@ export function emptyContents(name: string): MetadataContents {
     category: '',
     tags: [],
     rowLabel: '',
-    attributionLink: '',
+    mapLayer: '',
     customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',
     privacySettings: 'private'
@@ -138,11 +138,11 @@ export function updateRowLabel(newRowLabel: string) {
   };
 }
 
-const MD_UPDATE_ATTRIBUTIONLINK = 'MD_UPDATE_ATTRIBUTIONLINK';
-export function updateAttributionLink(newAttributionLink: string) {
+const MD_UPDATE_MAPLAYER = 'MD_UPDATE_MAPLAYER';
+export function updateMapLayer(newMapLayer: string) {
   return {
-    type: MD_UPDATE_ATTRIBUTIONLINK,
-    newAttributionLink: newAttributionLink
+    type: MD_UPDATE_MAPLAYER,
+    newMapLayer: newMapLayer
   };
 }
 
@@ -291,10 +291,10 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         ...contents,
         rowLabel: action.newRowLabel
       };
-    case MD_UPDATE_ATTRIBUTIONLINK:
+    case MD_UPDATE_MAPLAYER:
       return {
         ...contents,
-        attributionLink: action.newAttributionLink
+        mapLayer: action.newMapLayer
       };
     case MD_UPDATE_CUSTOMMETADATA: {
       const newCustomMetadata = _.cloneDeep(contents.customMetadata);
@@ -391,19 +391,19 @@ export function updateApiCallState(apiCallState = {type: 'Not Started'}, action)
 
 type MetadataValidationErrors = {
   name: bool,
-  attributionLink: bool
+  mapLayer: bool
 }
 
 export function validate(metadata): MetadataValidationErrors {
   return {
     name: metadata.contents.name.length !== 0,
-    attributionLink: metadata.contents.attributionLink.length !== 0
+    mapLayer: metadata.contents.mapLayer.length !== 0
   };
 }
 
 export function isStandardMetadataValid(contents) {
   const valid = validate(contents);
-  return valid.name && valid.attributionLink;
+  return valid.name && valid.mapLayer;
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
@@ -578,7 +578,7 @@ function renderLicenses(metadata, onMetadataAction) {
           onChange={(evt) => onMetadataAction(updateLicenseAttribution(evt.target.value))}
           className="textPrompt" />
           {(!isAttributionValid(metadata) && metadata.nextClicked)
-            ? <label htmlFor="view_attributionLink" className="error">{I18n.screens.edit_metadata.data_provider_required}</label>
+            ? <label htmlFor="view_attribution" className="error">{I18n.screens.edit_metadata.data_provider_required}</label>
             : null}
       </div>
 
@@ -699,19 +699,19 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
           </div>
         </div>
 
-        <div className="attributionLinkMetadata">
+        <div className="mapLayerMetadata">
           <div className="line clearfix">
-            <label htmlFor="view_attributionLink" className="required">
+            <label htmlFor="view_mapLayer" className="required">
               {I18n.screens.dataset_new.metadata.esri_map_layer_url}
             </label>
             <input
               type="text"
-              name="view[attributionLink]"
+              name="view[esri_src]"
               className="textPrompt required"
-              value={metadata.contents.attributionLink}
-              onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
-            {(!validationErrors.attributionLink && metadata.nextClicked)
-              ? <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
+              value={metadata.contents.mapLayer}
+              onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
+            {(!validationErrors.mapLayer && metadata.nextClicked)
+              ? <label htmlFor="view_esri" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
               : null}
           </div>
         </div>

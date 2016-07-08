@@ -23,7 +23,9 @@ export const Dropdown = React.createClass({
     let selectedOption;
     let { value, options } = this.props;
 
-    for (let option of options) {
+    for (let i = 0; i < options.length; i++) {
+      let option = options[i];
+
       if (option.value === value) {
         selectedOption = option;
         break;

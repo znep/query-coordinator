@@ -84,13 +84,17 @@ export function emptyLicense(): LicenseType {
 }
 
 export function emptyForName(name: string): DatasetMetadata {
-  const lastMetadataSaved = _.cloneDeep(emptyContents(name));
+  const lastSavedContents = _.cloneDeep(emptyContents(name));
+  const lastLicenseSaved = _.cloneDeep(emptyLicense());
   return {
     nextClicked: false,
     apiCall: {type: 'Not Started'},
     contents: emptyContents(name),
     license: emptyLicense(),
-    lastSaved: lastMetadataSaved
+    lastSaved: {
+      lastSavedContents: lastSavedContents,
+      lastSavedLicense: lastLicenseSaved
+    }
   };
 }
 
@@ -250,7 +254,10 @@ export const update =
 export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
   switch (action.type) {
     case MD_LAST_SAVED:
-      return _.cloneDeep(action.savedMetadata.contents);
+      return {
+        lastSavedContents: action.savedMetadata.contents,
+        lastSavedLicense: action.savedMetadata.license
+      };
     default:
       return lastSavedMetadata;
   }

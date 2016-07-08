@@ -375,11 +375,13 @@ describe('testing for lastSaved', () => {
 
   describe('last saved testing', () => {
     it('returns that wizard intializes metadata and lastSaved equally', () => {
-      const state = initialNewDatasetModel({});
-      contents = state.metadata.contents;
-      lastSavedMetadata = state.metadata.lastSaved;
-
-      expect(contents).to.deep.equal(lastSavedMetadata);
+      metadata = initialNewDatasetModel({}).metadata;
+      lastSavedMetadata = metadata.lastSaved;
+      
+      expect(lastSavedMetadata).to.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
 
     it('returns that an unsaved wizard does not update lastSaved to equal metadata', () => {
@@ -387,20 +389,24 @@ describe('testing for lastSaved', () => {
       metadata = state.metadata;
       lastSavedMetadata = state.metadata.lastSaved;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-      contents = metadata.contents;
 
-      expect(contents).to.not.deep.equal(lastSavedMetadata);
+      expect(lastSavedMetadata).to.not.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
 
     it('returns that the saved wizard updates lastSaved to equal metadata', () => {
       const state = initialNewDatasetModel({});
       metadata = state.metadata;
-      lastSavedMetadata = state.metadata.lastSaved;
+      const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-      lastSavedMetadata = updateForLastSaved(lastSavedMetadata, updateLastSaved(metadata));
-      contents = metadata.contents;
+      lastSavedMetadata = updateForLastSaved(tempLastSaved, updateLastSaved(metadata));
 
-      expect(contents).to.deep.equal(lastSavedMetadata);
+      expect(lastSavedMetadata).to.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
   });
 

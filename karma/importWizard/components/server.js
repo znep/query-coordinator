@@ -39,7 +39,7 @@ describe("testing for API responses", () => {
       licenseId: "PDDL",
       licenseName: "Open Data Commons",
       licensing: "Public Domain Dedication and License",
-      provider: "Me",
+      attribution: "Me",
       sourceLink: "google.com"
     },
     contents: {

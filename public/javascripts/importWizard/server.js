@@ -128,7 +128,7 @@ export function modelToViewParam(metadata) {
   return {
     name: metadata.contents.name,
     attributionLink: metadata.license.sourceLink,
-    attribution: metadata.license.provider,
+    attribution: metadata.license.attribution,
     description: metadata.contents.description,
     category: metadata.contents.category,
     tags: metadata.contents.tags,
@@ -176,12 +176,16 @@ export function licenseToView(license) {
 
 export function coreViewToModel(view) {
   const contents = coreViewContents(view);
+  const license = coreViewLicense(view);
   return {
     nextClicked: false,
     contents: contents,
-    lastSaved: contents,
+    lastSaved: {
+      lastSavedContents: _.cloneDeep(contents),
+      lastSavedLicense: _.cloneDeep(license)
+    },
     apiCall: { type: 'In Progress' },
-    license: coreViewLicense(view)
+    license: license
   };
 }
 
@@ -204,7 +208,7 @@ function coreViewLicense(view) {
       licenseName: name,
       licensing: '',
       sourceLink: view.attributionLink,
-      provider: view.attribution
+      attribution: view.attribution
     };
   } else {
     const title = _.find(titles, (t) => {

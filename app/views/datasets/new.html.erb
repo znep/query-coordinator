@@ -10,16 +10,16 @@
 
 <div id="app"></div>
 
-<%= render_server_config %>
+<%= render_import_wizard_server_config %>
 <%= render_import_wizard_translations %>
-<%= render_custom_metadata %>
-<%= render_importable_types %>
-<%= render_enabled_modules %>
-<%= render_dataset_categories %>
-<%= render_view(@view) %>
+<%= render_import_wizard_custom_metadata %>
+<%= render_import_wizard_importable_types %>
+<%= render_import_wizard_enabled_modules %>
+<%= render_import_wizard_dataset_categories %>
+<%= render_import_wizard_view(@view) %>
 
 <% content_for :js_footer do %>
-  <%= render_licenses %>
+  <%= render_import_wizard_licenses %>
 <% end %>
 
 <%= include_webpack_bundle 'import-wizard/main.js' %>

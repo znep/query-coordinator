@@ -1,5 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/featureMap.html');
 const FeatureMap = require('socrata-visualizations').views.FeatureMap;
+const VifHelpers = require('socrata-visualizations').helpers.VifHelpers;
 const RowInspector = require('socrata-visualizations').views.RowInspector;
 
 module.exports = function featureMap(
@@ -44,18 +45,20 @@ module.exports = function featureMap(
       var queryHandler;
       var scrollSubscription;
 
-      featureMapConfig = {
+      // We need to migrate the VIF in order to render properly. Once we're using the jQuery
+      // plugins, we won't need to do this anymore.
+      featureMapConfig = VifHelpers.migrateVif({
         configuration: {
           baseLayerOpacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY,
           baseLayerUrl: Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL,
           debug: ServerConfig.get('debugDataLens'),
           hover: ServerConfig.get('oduxEnableFeatureMapHover'),
           localization: {
-            FLYOUT_FILTER_NOTICE: I18n.flyout.filterPrompt,
-            FLYOUT_FILTER_OR_ZOOM_NOTICE: I18n.flyout.zoomOrFilterPrompt,
-            FLYOUT_DENSE_DATA_NOTICE: I18n.flyout.denseData,
-            FLYOUT_CLICK_TO_INSPECT_NOTICE: I18n.flyout.details,
-            FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE: I18n.featureMap.zoomDisabled
+            flyout_filter_notice: I18n.flyout.filterPrompt,
+            flyout_filter_or_zoom_notice: I18n.flyout.zoomOrFilterPrompt,
+            flyout_dense_data_notice: I18n.flyout.denseData,
+            flyout_click_to_inspect_notice: I18n.flyout.details,
+            flyout_pan_zoom_disabled_warning_title: I18n.featureMap.zoomDisabled
           },
           mapOptions: {
             zoomAnimation: !Constants.DISABLE_LEAFLET_ZOOM_ANIMATION
@@ -68,7 +71,7 @@ module.exports = function featureMap(
           one: $scope.rowDisplayUnit,
           other: PluralizeService.pluralize($scope.rowDisplayUnit)
         }
-      };
+      });
 
       // The visualizationRenderOptions may change in response to user actions
       // and are passed as an argument to every render call.

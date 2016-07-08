@@ -25,14 +25,14 @@ class CardTable extends React.Component {
       configuration: {
         isMobile: true,
         localization: {
-          PREVIOUS: 'Previous',
-          NEXT: 'Next',
-          NO_ROWS: 'No {unitOther}',
-          ONLY_ROW: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
-          MANY_ROWS: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
-          LATITUDE: 'Latitude',
-          LONGITUDE: 'Longitude',
-          NO_COLUMN_DESCRIPTION: 'No description provided.'
+          previous: 'Previous',
+          next: 'Next',
+          no_rows: 'No {unitOther}',
+          only_row: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
+          many_rows: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
+          latitude: 'Latitude',
+          longitude: 'Longitude',
+          no_column_description: 'No description provided.'
         },
         order: [{
           ascending: true,

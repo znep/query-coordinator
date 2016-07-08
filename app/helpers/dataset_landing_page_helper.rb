@@ -18,7 +18,7 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
-  def render_mixpanel_config
+  def render_dataset_landing_page_mixpanel_config
     mixpanel_config = {
       :token => APP_CONFIG.mixpanel_token
     }
@@ -33,7 +33,7 @@ module DatasetLandingPageHelper
     javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
   end
 
-  def render_session_data
+  def render_dataset_landing_page_session_data
     session_data = {
       :userId => current_user.try(:id) || 'N/A',
       :ownerId => @view.try(:owner).try(:id) || 'N/A',

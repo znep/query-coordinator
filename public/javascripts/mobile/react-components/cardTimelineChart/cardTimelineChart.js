@@ -25,10 +25,10 @@ class CardTimelineChart extends React.Component {
       configuration: {
         isMobile: true,
         localization: {
-          NO_VALUE: 'No value',
-          FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-          FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-          FLYOUT_SELECTED_NOTICE: 'This column is selected'
+          no_value: 'No value',
+          flyout_unfiltered_amount_label: 'Total',
+          flyout_filtered_amount_label: 'Filtered',
+          flyout_selected_notice: 'This column is selected'
         }
       },
       datasetUid: this.props.values.datasetUid,

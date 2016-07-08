@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { checkStatus } from '../lib/http';
+import { checkStatus, defaultHeaders } from '../lib/http';
 import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
 
 import {
@@ -54,7 +54,8 @@ export function loadMorePopularViews() {
     var limit = POPULAR_VIEWS_CHUNK_SIZE + 1;
     var fetchUrl = `/dataset_landing_page/${viewId}/popular_views?limit=${limit}&offset=${offset}`;
     var fetchOptions = {
-      credentials: 'same-origin'
+      credentials: 'same-origin',
+      headers: defaultHeaders
     };
 
     dispatch(requestPopularViews());

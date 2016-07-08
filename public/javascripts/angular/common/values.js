@@ -143,7 +143,7 @@ const MIXPANEL_PROPERTIES = [
 
 function asObject(stringArray) {
   return _.zipObject(
-    _.invoke(stringArray, String.prototype.toUpperCase),
+    _.invokeMap(stringArray, String.prototype.toUpperCase),
     stringArray
   );
 }

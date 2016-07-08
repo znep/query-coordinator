@@ -825,7 +825,7 @@ describe('Model', function() {
         expect(changes).to.deep.equal(expectedChanges);
 
         // Set properties on BOTH sets of children. Expect notification ONLY on B.
-        _.invoke(childrenA, 'set', 'testProp', 'badvalue');
+        _.invokeMap(childrenA, 'set', 'testProp', 'badvalue');
 
         _.each(childrenB, function(child, index) {
           child.set('testProp', index * 100);
@@ -839,7 +839,7 @@ describe('Model', function() {
         expect(changes).to.deep.equal(expectedChanges);
 
         // Set child array with one child from sets A and B each. Expect notification from parent.
-        var firstChildrenFromAAndB = [ childrenA[0], childrenB[0] ]; 
+        var firstChildrenFromAAndB = [ childrenA[0], childrenB[0] ];
 
         parent.set('children', firstChildrenFromAAndB);
         expectedChanges.push({

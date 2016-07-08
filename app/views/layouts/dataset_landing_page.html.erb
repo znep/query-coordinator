@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="<%= I18n.locale.to_s %>">
   <head>
     <meta name="description" content="<%= meta_description %>">
 
@@ -35,9 +35,9 @@
 
     <%= render_dataset_landing_page_translations %>
 
-    <%= render_mixpanel_config %>
-    <%= render_session_data %>
-    <%= render_server_config %>
+    <%= render_dataset_landing_page_mixpanel_config %>
+    <%= render_dataset_landing_page_session_data %>
+    <%= render_dataset_landing_page_server_config %>
 
     <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
     <%= site_chrome_javascript_tag %>

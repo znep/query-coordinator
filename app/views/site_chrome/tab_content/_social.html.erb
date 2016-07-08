@@ -1,24 +1,20 @@
 <%= form_tag update_site_chrome_path(anchor: {tab: :social}), id: 'tab_form_social', method: :put, remote: true do %>
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-  <% form_field_prefix = 'content[general][social_shares][]' %>
-  <% form_field_url = "#{form_field_prefix}[url]" %>
-  <% form_field_type = "#{form_field_prefix}[type]" %>
-
   <% social_media_sections =
     %w(facebook twitter youtube linked_in flickr instagram tumblr yammer google_plus vimeo) %>
 
   <% social_media_sections.each do |social_media_section| %>
+
+    <% form_field_url = "content[general][social_shares][#{social_media_section}][url]" %>
+
     <section class="settings-group">
       <% translation = translations["#{social_media_section}_profile_link".to_sym] %>
       <div class="settings-form">
-        <%= label_tag(form_field_url, translation[:title]) %>
+        <%= label_tag(form_field_url, translation[:title], id: "#{form_field_url}_label") %>
         <%= text_field_tag(form_field_url, social_share_link(social_media_section), placeholder: translation[:placeholder]) %>
-        <%= hidden_field_tag(form_field_type, social_media_section) %>
       </div>
       <aside><p><%= translation[:description] %></p></aside>
     </section>
   <% end %>
-
-  <%= submit_tag 'put_social', id: 'submit_social', style: 'display: none;' %>
 <% end %>

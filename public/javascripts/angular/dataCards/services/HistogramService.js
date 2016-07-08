@@ -1,7 +1,7 @@
 // Returns an object mapping magnitudes to buckets. Also merges the
 // bucket with magnitude zero into the bucket with magnitude one.
 function getDataByMagnitude(data) {
-  var dataByMagnitude = _.indexBy(_.cloneDeep(data), 'magnitude');
+  var dataByMagnitude = _.keyBy(_.cloneDeep(data), 'magnitude');
 
   // Merge zero-bucket into one-bucket.
   if (_.isPresent(dataByMagnitude[0])) {
@@ -19,7 +19,7 @@ function getDataByMagnitude(data) {
 // continuous because of the use of an ordinal scale. The zero bucket
 // must be eliminated due to the current way zero buckets are treated.
 function getMagnitudeRange(dataByMagnitude) {
-  var extent = d3.extent(_.pluck(dataByMagnitude, 'magnitude'));
+  var extent = d3.extent(_.map(dataByMagnitude, 'magnitude'));
   var min = extent[0];
   var max = extent[1];
 
@@ -203,7 +203,7 @@ module.exports = function HistogramService(Constants, $log) {
     // can either render something sane (which is a bit of a long shot) or get
     // the "no data" error.
     // See CORE-6648 for the browser-crashing fun times that surfaced the issue.
-    if (_.all(extent, _.isUndefined)) {
+    if (_.every(extent, _.isUndefined)) {
       return 'histogram';
     }
 
@@ -223,7 +223,7 @@ module.exports = function HistogramService(Constants, $log) {
   // expected by the column chart.
   function transformDataForColumnChart(unfiltered, filtered, selectedValue, isFiltered) {
     if (filtered) {
-      filtered = _.indexBy(filtered, 'name');
+      filtered = _.keyBy(filtered, 'name');
     }
 
     // Fill in gaps of the unfiltered data with zero-value buckets.

@@ -1472,9 +1472,9 @@ es:
       twitter: Compartir mediante Twitter
       visibility_alert_html: "<b>¡Atención!</b> Este conjunto de datos es privado y podría no ser accesible para las personas con las que lo compartes."
     tour:
-      description: 
-      done: 
-      title: 
+      description: La llamamos la Página de Inicio del Conjunto de Datos. Pero si alguna vez quisiera ver la vista de pestañas de los datos, puede acceder a ella desde aquí.
+      done: Vale
+      title: "¡Los conjuntos de datos tienen un aspecto nuevo!"
     updated: Actualizado
     view_widget:
       external_content: Contenido externo
@@ -1629,13 +1629,13 @@ es:
         status_public: Público
       listing:
         dashboard: Panel de control
-        default_alert_message: 
+        default_alert_message: "<span><b>¡Oh, no!</b> Algo ha ido mal y se ha notificado a nuestro equipo. Mientras tanto, vuelva a intentar la acción o actualice esta página.</span>"
         goal_page: Página del objetivo
         goal_status: Estado del objetivo
         manage_on_goal_page: Administrar en la página del objetivo
-        of: 
+        of: de
         owner: Propietario
-        rows_per_page: 
+        rows_per_page: Filas por página
         title: Título
         updated_at: Actualizado
         view_dashboard: Ver panel de control
@@ -1845,9 +1845,9 @@ es:
       created: creado
       data_provided_by: Datos suministrados por
       dataset_landing_page:
-        button: 
-        description: 
-        title: 
+        button: "¡Llévame ahí!"
+        description: Toda la información que está en este panel, y más, está ahora en la Página de Inicio del Conjunto de Datos, en un formato más fácil de usar y asimilable.
+        title: Esta información está ahora en la Página de Inicio del Conjunto de Datos
       datasync_status: Estado de sincronización de datos
       description: Descripción
       downloads: Descargas
@@ -2088,40 +2088,40 @@ es:
         title: Administrar página de inicio
         up: Arriba
       index:
-        comment_moderation: 
-        comment_moderation_description: 
-        connectors: 
-        connectors_description: 
-        dataset_routing_and_approval: 
-        dataset_routing_and_approval_description: 
-        datasets: 
-        datasets_description: 
-        dataslate_pages: 
-        dataslate_pages_description: 
-        federation: 
-        federation_description: 
-        georegions: 
-        georegions_description: 
-        home_page: 
-        home_page_description: 
-        internal: 
-        internal_description: 
-        jobs: 
-        jobs_description: 
-        metadata: 
-        metadata_description: 
-        sdp_templates: 
-        sdp_templates_description: 
-        site_analytics: 
-        site_analytics_description: 
-        site_chrome: 
-        site_chrome_description: 
-        stories: 
-        stories_description: 
-        users: 
-        users_description: 
-        view_moderation: 
-        view_moderation_description: 
+        comment_moderation: Moderación de los comentarios
+        comment_moderation_description: Revise y modere los comentarios de los conjuntos de datos en su página web
+        connectors: Conectores
+        connectors_description: Registre un conector para crear en masa y controlar los conjuntos de datos conectados.
+        dataset_routing_and_approval: Aprobación y enrutamiento de los conjuntos de datos
+        dataset_routing_and_approval_description: Revise los conjuntos de datos que están en proceso de aprobación y controle los pasos del proceso de aprobación
+        datasets: Inventario de bienes
+        datasets_description: Enumere los bienes en este dominio y configure el diseño de la página del conjunto de datos
+        dataslate_pages: Páginas DataSlate
+        dataslate_pages_description: Enumere y controle las páginas DataSlate en este dominio
+        federation: Federación
+        federation_description: Controla las conexiones y la distribución de los datos con otros sitios web mediante los Servicios de la Federación Open Data
+        georegions: Lentes espaciales
+        georegions_description: Configura los límites personalizados que se pueden usar para crear mapas con Lentes Espaciales
+        home_page: Página de Inicio
+        home_page_description: Configura qué contenido aparece en la página de inicio
+        internal: Interno
+        internal_description: Cambia y añade módulos, sitios web y más
+        jobs: Trabajos
+        jobs_description: Ve todos los trabajos largos actuales y recientes de procesamiento de datos que están ocurriendo en tu plataforma
+        metadata: Metadata
+        metadata_description: Controla los campos de metadata del conjunto de datos, incluidas las categorías y los campos personalizados
+        sdp_templates: Plantillas de PDS
+        sdp_templates_description: Controla y personaliza las plantillas usadas para publicar tus datos mediante los  Reproductores de Datos de Socrata
+        site_analytics: Analytics del sitio web
+        site_analytics_description: Ve las estadísticas globales de los conjuntos de datos, vistas, visitantes y más
+        site_chrome: Aspecto del sitio web
+        site_chrome_description: Configura el aspecto de tu sitio web de Socrata
+        stories: Historias
+        stories_description: Modifica los temas de historia personalizados
+        users: Usuarios
+        users_description: Controla a los usuarios en tu sitio web y qué permisos y capacidades tienen
+        view_moderation: Ver Moderación
+        view_moderation_description: Ver y controlar las vistas creadas por los usuarios, incluidos los filtros, gráficos y mapas. Aprueba una vista para que aparezca en tu catálogo de datos.
       jobs:
         actions:
           geocoding: Geocodificación
@@ -2499,14 +2499,14 @@ es:
           general:
             fields:
               google_analytics_token:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Introduce el identificador (no el script entero) de tu código de seguimiento de Google Analytics para recopilar datos analíticos para tu sitio web.
+                error: 'El identificador debe tener este formato: UA-XXXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: Identificador de Google Analytics
               template:
-                description: 
-                placeholder: 
-                title: 
+                description: Ajusta la apariencia del encabezado o pie de página cambiando la plantilla. Las plantillas compatibles son «default» y «rally».
+                placeholder: Rally
+                title: Plantilla
               window_icon:
                 description: Referencia de URL con el icono mostrado en el campo de la URL de la ventana, la etiqueta y el navegador.
                 placeholder: URL
@@ -2720,6 +2720,7 @@ es:
         name: Nombre
         pending_columns: Por favor, espere mientras cargamos sus columnas...
         reset_to_preset: Reiniciar a la preconfiguración
+        restore_suggested_settings: 
         set: Configurar
         source_column: Columna fuente
         subheadline: Columnas para importar
@@ -2759,7 +2760,7 @@ es:
       notify_me_messaging: por correo electrónico cuando esto se complete.
       notify_me_success_addl: Mientras tanto, es seguro cerrar este navegador.
       notify_me_success_html: "<strong>¡Genial!</strong> Enviaremos un correo electrónico a <strong>%{email}</strong> cuando tu conjunto de datos esté listo."
-      notify_me_success_html_js: 
+      notify_me_success_html_js: "<strong>¡Genial!</strong> Enviaremos un e-mail a <strong>{0}</strong> cuando tu conjunto de datos esté listo."
       processing: Procesando...
       title: Nuevo conjunto de datos
       upload_accessible: Subir un nuevo conjunto de datos accesiblemente
@@ -3580,7 +3581,7 @@ es:
       new_ux_text: Ver estos datos en la nueva experiencia de Data Lens
       new_ux_title: "¿Está listo para explorar de forma visual?"
       page_render_type:
-        edit_layout: 
+        edit_layout: Modificar el diseño
       save_dialog:
         descriptions:
           leaving: 'Tiene datos sin guardar que se perderán si sale de esta página. Por favor, elija guardar o no está vista antes de dejar la página; o seleccione “Cancelar” para regresar a la página. '
@@ -3722,6 +3723,7 @@ es:
       import_from_latlong: Importar desde las columnas de <strong>latitud</strong> y <strong>longitud</strong>
       import_from_multiple: Importar de <strong>columnas múltiples</strong>
       import_from_single: Importar de <strong>una sola columna</strong>
+      insert_static_text: 
       latitude: Latitud
       location_source_col: Columnas fuente de localización
       longitude: Longitud
@@ -3750,6 +3752,9 @@ es:
       bytes_imported: "%{num} bytes importados hasta ahora."
       combine_multiple_cols: "(Combinar múltiples columnas...)"
       downloading: Descargando su archivo..
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Por favor, elija un archivo CSV, TSV, XLS o XLSX.
       filetype_error_shapefile: Por favor, elija un archivo KML, KMZ o ZIP.
       headline_import: Por favor, elija un archivo para importar
@@ -4042,6 +4047,7 @@ es:
       finish: Finalizar
       next: Siguiente
       previous: Anterior
+      save: 
   support:
     array:
       last_word_connector: ", y"

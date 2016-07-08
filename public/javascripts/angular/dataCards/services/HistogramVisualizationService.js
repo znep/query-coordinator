@@ -489,7 +489,7 @@ module.exports = function HistogramVisualizationService(
     // First, generate an array of bucket boundaries. This includes all of the
     // bucket 'start' values, as well as the 'end' value of the last bucket.
     // This array is the domain of the ordinal scale.
-    var buckets = _.pluck(data.unfiltered, 'start');
+    var buckets = _.map(data.unfiltered, 'start');
     if (!_.isEmpty(buckets)) {
       buckets.push(_.last(data.unfiltered).end);
     }
@@ -570,7 +570,7 @@ module.exports = function HistogramVisualizationService(
 
   function updateSVG(svg, data, scale) {
     _.each(['filtered', 'unfiltered', 'selected'], function(type) {
-      var first = _.first(data[type]).value;
+      var first = _.head(data[type]).value;
       var last = _.last(data[type]).value;
 
       var line = svg[type].line;
@@ -1071,7 +1071,7 @@ module.exports = function HistogramVisualizationService(
     function fixXTickEdgeLabels(selection) {
       var labels = selection.selectAll('.tick text')[0];
       if (labels.length >= 2) {
-        _.first(labels).style.textAnchor = 'start';
+        _.head(labels).style.textAnchor = 'start';
         _.last(labels).style.textAnchor = 'end';
       }
     }

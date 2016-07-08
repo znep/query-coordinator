@@ -386,7 +386,7 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
 
     it('should be sorted in order of the position keys of the scope variable', function() {
-      var expectedFieldNameOrder = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
+      var expectedFieldNameOrder = _.map(_.sortBy(currentColumns, 'position'), 'fieldName');
       expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
     });
 
@@ -500,7 +500,7 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
 
     it('should be sorted in order of the position keys of the column', function() {
-      var currentColumnFieldNames = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
+      var currentColumnFieldNames = _.map(_.sortBy(currentColumns, 'position'), 'fieldName');
 
       makeAllColumnsUnsupported();
 

@@ -38,7 +38,7 @@ module.exports = function SingleCardViewController($scope, $rootScope, $log, $wi
     // NOTE! The complete property has bugs in Firefox. Fortunately,
     // this should only be running in PhantomJS, which has no problems
     // here.
-    return _.all(allImages, _.property('complete'));
+    return _.every(allImages, _.property('complete'));
   });
 
   // Sequence like imagesComplete$, but only begins after renderComplete$ emits.

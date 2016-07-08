@@ -108,7 +108,7 @@ module.exports = function DistributionChartController(
 
   // Fires either 'column' or 'histogram'.
   var visualizationType$ = groupBySample$.map(function(groupBySample) {
-    return HistogramService.getVisualizationTypeForData(_.pluck(groupBySample, 'name'));
+    return HistogramService.getVisualizationTypeForData(_.map(groupBySample, 'name'));
   }).shareReplay(1);
 
   // Use a different observable to fetch data depending on the chart type.

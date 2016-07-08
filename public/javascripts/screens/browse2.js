@@ -298,7 +298,8 @@ $(function() {
     // Slide out other main elements on page when the mobile facet section slides in
     var $mainPageElements = $(
       ['.siteContentWrapper > ul.featuredViews', '.browse2-search', '.browse2-mobile-filter',
-        '.browse2-results-pane', '#siteHeader', '#siteFooter'].join(', ')
+        '.browse2-results-pane', '#siteHeader', '#site-chrome-header', '#siteFooter', '#site-chrome-footer'].
+      join(', ')
     );
 
     var action = 'slide';

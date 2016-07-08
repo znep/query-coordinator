@@ -40,7 +40,7 @@ module.exports = function manageLensDialog(http, FlyoutService, I18n, ServerConf
           return;
         }
 
-        var promises = _.invoke($scope.components, 'save');
+        var promises = _.invokeMap($scope.components, 'save');
 
         $scope.saveStatus = 'saving';
         $scope.manageLensState.saveInProgress = true;
@@ -48,12 +48,12 @@ module.exports = function manageLensDialog(http, FlyoutService, I18n, ServerConf
         $q.all(promises).then(function() {
           $scope.saveStatus = 'saved';
 
-          _.invoke($scope.components, 'postSave');
+          _.invokeMap($scope.components, 'postSave');
 
           // Now close the dialog after 1.5 seconds
           $timeout(function() {
             $scope.manageLensState.show = false;
-            _.invoke($scope.components, 'postClose');
+            _.invokeMap($scope.components, 'postClose');
           }, 1500);
         })['catch'](function(failureResponse) {
           $scope.saveStatus = 'failed';

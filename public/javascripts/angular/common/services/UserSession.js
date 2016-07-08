@@ -66,7 +66,7 @@ module.exports = function UserSessionService($http, $q, rx) {
   function isAdmin(user) {
     var flags = _.get(user, 'flags', []);
     var roleName = _.get(user, 'roleName');
-    return _.contains(flags, 'admin') || roleName === 'administrator';
+    return _.includes(flags, 'admin') || roleName === 'administrator';
   }
 
   return {

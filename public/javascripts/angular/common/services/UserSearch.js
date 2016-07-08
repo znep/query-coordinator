@@ -62,7 +62,7 @@ module.exports = function UserSearchService($http, $q, rx) {
         // and resolve the promise chain.
         var exactResults = exactSearchResponse.data.results || [];
 
-        return _.uniq([].concat(fuzzyResults, exactResults), 'id');
+        return _.uniqBy([].concat(fuzzyResults, exactResults), 'id');
       }, reject);
     }, reject);
   }

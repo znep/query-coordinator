@@ -2712,6 +2712,7 @@ fr:
         name: Nom
         pending_columns: Veuillez attendre pendant que nous chargeons vos colonnes...
         reset_to_preset: Réinitialiser pour prédéfinir
+        restore_suggested_settings: 
         set: Définir
         source_column: Colonne Source
         subheadline: Colonnes à importer
@@ -3714,6 +3715,7 @@ fr:
       import_from_latlong: 
       import_from_multiple: Importer de <strong>plusieurs colonnes</strong>
       import_from_single: Importer d'une <strong>colonne unique</strong>
+      insert_static_text: 
       latitude: Latitude
       location_source_col: Colonnes Source d'Emplacement
       longitude: Longitude
@@ -3742,6 +3744,9 @@ fr:
       bytes_imported: "%{num} octets importés jusqu'à présent."
       combine_multiple_cols: "(Combiner Plusieurs Colonnes...)"
       downloading: Téléchargement de votre fichier...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Veuillez choisir un fichier CSV, TSV, XLS ou XLSX.
       filetype_error_shapefile: Veuillez choisir un fichier KML, KMZ ou ZIP.
       headline_import: Veuillez choisir un fichier à importer
@@ -4034,6 +4039,7 @@ fr:
       finish: Finir
       next: Suivant
       previous: Précédent
+      save: 
   support:
     array:
       last_word_connector: ", et "

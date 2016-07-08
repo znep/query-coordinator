@@ -321,7 +321,7 @@ function mapDispatchToProps(dispatch) {
         name: 'Expanded Column Info',
         properties: {
           'Name': row.find('.column-name').text().trim(),
-          'Type': _.capitalize(row.find('.type-name').data('name'))
+          'Type': _.upperFirst(row.find('.type-name').data('name'))
         }
       };
 

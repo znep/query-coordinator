@@ -18,7 +18,7 @@ module.exports = function ColumnChartService(Filter) {
           (_.isNumber(datumName) && !_.isFinite(datumName)) ||
           (_.isString(datumName) && datumName.length === 0);
 
-        var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(currentFilter) {
+        var isFilteringOnClickedDatum = _.some($scope.model.getCurrentValue('activeFilters'), function(currentFilter) {
           if (currentFilter instanceof Filter.BinaryOperatorFilter) {
             return currentFilter.operand === datumName;
           } else if (currentFilter instanceof Filter.IsNullFilter) {

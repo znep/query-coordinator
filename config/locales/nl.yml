@@ -1491,9 +1491,9 @@ nl:
       twitter: Delen via Twitter
       visibility_alert_html: "<b>Opgelet!</b> Deze dataset is persoonlijk en kan mogelijk niet geopend worden door de mensen waarmee je hem deelt."
     tour:
-      description: 
-      done: 
-      title: 
+      description: Dit noemen wij de landingspagina van de dataset. Maar indien u de gegevens in tabelvorm wilt zien, kan u via deze weg verdergaan.
+      done: OK
+      title: Datasets hebben een nieuwe look!
     updated: Bijgewerkt
     view_widget:
       external_content: Externe inhoud
@@ -1654,7 +1654,7 @@ nl:
         goal_page: Doelpagina
         goal_status: Doelstatus
         manage_on_goal_page: Doelpagina beheren
-        of: 
+        of: van
         owner: Eigenaar
         rows_per_page: Rijen per pagina
         title: Titel
@@ -1868,9 +1868,9 @@ nl:
       created: aangemaakt
       data_provided_by: Gegevens geleverd door
       dataset_landing_page:
-        button: 
-        description: 
-        title: 
+        button: Breng me daarheen!
+        description: Alle informatie (en meer) die zich in dit venster bevindt, kan u nu ook terugvinden in een gebruiksvriendelijker formaat op de landingspagina van de dataset
+        title: Deze informatie bevindt zich nu op de landingspagina van de dataset
       datasync_status: Datasync status
       description: Beschrijving
       downloads: Downloads
@@ -2743,6 +2743,7 @@ nl:
         name: Naam
         pending_columns: We laden uw kolommen, een moment geduld a.u.b.
         reset_to_preset: Terugzetten naar standaardinstellingen
+        restore_suggested_settings: 
         set: Instellen
         source_column: Bronkolom
         subheadline: Kolommen om te importeren
@@ -3613,7 +3614,7 @@ nl:
       new_ux_text: Bekijk deze gegevens in de nieuwe Data Lens beleving
       new_ux_title: Klaar om visueel te ontdekken?
       page_render_type:
-        edit_layout: 
+        edit_layout: Lay-out bewerken
       save_dialog:
         descriptions:
           leaving: U hebt niet-opgeslagen gegevens die verloren gaan als u de pagina verlaat. Maak a.u.b. een keuze of u wilt deze view wilt opslaan voordat u vertrekt, of kies Cancel om terug te keren naar de pagina.
@@ -3755,6 +3756,7 @@ nl:
       import_from_latlong: Importeren uit kolommen met <strong>breedtegraad</strong> en <strong>lengtegraad</strong>
       import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
       import_from_single: Uit <strong>één kolom</strong> importeren
+      insert_static_text: 
       latitude: Breedtegraad
       location_source_col: Locatie bron kolommen
       longitude: Lengtegraad
@@ -3783,6 +3785,9 @@ nl:
       bytes_imported: Tot nu toe %{num} bytes geïmporteerd.
       combine_multiple_cols: "(Combineer meerdere kolommen...)"
       downloading: Uw bestand wordt gedownload...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Kies een CSV-, TSV-, XLS- of XLSX-bestand.
       filetype_error_shapefile: Kies een KML-, KMZ of ZIP-bestand.
       headline_import: Kies een bestand om te importeren
@@ -4077,6 +4082,7 @@ nl:
       finish: Voltooien
       next: Volgende
       previous: Vorige
+      save: 
   support:
     array:
       last_word_connector: ", en"

@@ -14,41 +14,49 @@ $dark-grey-3: #3d3d3d;
 $black: #2c2c2c;
 
 // Blue
-$primary-base: #1f6a9b;
-$primary-light: #d4e8f3;
-$primary-dark: #1c6387;
-
-// Slate
-$secondary-base: #8e98a1;
-$secondary-light: #e8eaec;
-$secondary-dark: #636a71;
+$primary-base: #288dc1;
+$primary-light: #eaf4f9;
+$primary-text: #2279a6;
+$primary-dark: #176289;
 
 // Orange
-$primary-alt-1-base: #e28432;
-$primary-alt-1-light: #f9e6d6;
-$primary-alt-1-dark: #9e5c23;
+$alternate-1-base: #e48424;
+$alternate-1-light: #fcf3eb;
+$alternate-1-text: #9e5c23;
+$alternate-1-dark: #9e5c23;
 
 // Teal
-$primary-alt-2-base: #00a1af;
-$primary-alt-2-light: #ccecef;
-$primary-alt-2-dark: #00717b;
+$alternate-2-base: #00a1af;
+$alternate-2-light: #e6f6f7;
+$alternate-2-text: #008a97;
+$alternate-2-dark: #00717c;
 
 // Mint
-$primary-alt-3-base: #00be9b;
-$primary-alt-3-light: #ccf2eb;
-$primary-alt-3-dark: #00856d;
+$alternate-3-base: #00bf9b;
+$alternate-3-light: #e5f9f5;
+$alternate-3-text: #00987c;
+$alternate-3-dark: #00856d;
+
+// Slate
+$alternate-4-base: #8e98a1;
+$alternate-4-light: #f4f5f6;
+$alternate-4-text: #555b61;
+$alternate-4-dark: #636a71;
 
 // Yellow
-$warning-base: #eeb500;
-$warning-light: #fcf0cc;
-$warning-dark: #a77f00;
+$warning-base: #e7b000;
+$warning-light: #fdf9ec;
+$warning-text: #8b6a00;
+$warning-dark: #a27c00;
 
 // Red
-$error-base: #ce6565;
-$error-light: #f5e0e0;
-$error-dark: #904747;
+$error-base: #d06463;
+$error-light: #faf0f0;
+$error-text: #b35655;
+$error-dark: #914646;
 
 // Green
-$success-base: #2baf5f;
-$success-light: #d5efdf;
-$success-dark: #1e7b43;
+$success-base: #20b05c;
+$success-light: #eaf7ef;
+$success-text: #1c974f;
+$success-dark: #177b41;

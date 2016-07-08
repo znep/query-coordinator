@@ -1274,7 +1274,7 @@ en:
       title: Access this Dataset via SODA API
     back: Back
     bootstrap_button: Create a Visualization
-    bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new Data Lens.
+    bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
     cancel: Cancel
     change: Change
@@ -2716,6 +2716,7 @@ en:
         name: Name
         pending_columns: Please wait while we load your columns...
         reset_to_preset: Reset to preset
+        restore_suggested_settings: Restore suggested settings
         set: Set
         source_column: Source Column
         subheadline: Columns to import
@@ -2728,6 +2729,7 @@ en:
       import_shapefile:
         abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
         abbreviatedSummary: Map layers in &ldquo;<span class="fileName"></span>&rdquo; will be created upon import.
+        abbreviatedSummary_js: Map layers in "{fileName}" will be created upon import.
         crs: Coordinate Reference System
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
         headline_interpolate: Specify how "{0}" should be imported.
@@ -3718,6 +3720,7 @@ en:
       import_from_latlong: Import from <strong>latitude</strong> and <strong>longitude</strong> columns
       import_from_multiple: Import from <strong>multiple columns</strong>
       import_from_single: Import from <strong>single column</strong>
+      insert_static_text: "(Insert static text...)"
       latitude: Latitude
       location_source_col: Location Source Columns
       longitude: Longitude
@@ -3746,6 +3749,9 @@ en:
       bytes_imported: "%{num} bytes imported so far."
       combine_multiple_cols: "(Combine Multiple Columns...)"
       downloading: Downloading your file...
+      errors:
+        http_error: 'We were unable to save your metadata due to an error: {0}'
+        network_error: We were unable to save your metadata due to a network error.
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
       filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
       headline_import: Please choose a file to import

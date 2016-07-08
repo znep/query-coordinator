@@ -325,7 +325,7 @@ module.exports = function CardDataService(
           return $q.reject('Bad date: ' + invalidDate[dateAlias]._i);
         }
 
-        var dates = _.pluck(data, dateAlias);
+        var dates = _.map(data, dateAlias);
         var timeStart = _.min(dates);
         var timeEnd = _.max(dates);
         var timeData = Array(timeEnd.diff(timeStart, precision));
@@ -402,7 +402,7 @@ module.exports = function CardDataService(
 
       return http.get(url.href, config).then(
         function(response) {
-          return _.chain(response).get('data.options', []).pluck('text').value();
+          return _.chain(response).get('data.options', []).map('text').value();
         },
         function(data) {
           $log.error(data);

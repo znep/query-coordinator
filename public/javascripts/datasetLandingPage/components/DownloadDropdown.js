@@ -23,7 +23,7 @@ function generateDownloadLink(view, format, className, callback) {
     type = 'JSON (without geospatial data)';
   }
 
-  var queryString = _.pairs(params).map(function(param) { return param.join('='); }).join('&');
+  var queryString = _.toPairs(params).map(function(param) { return param.join('='); }).join('&');
   var url = `/api/views/${view.id}/rows.${extension}?${queryString}`;
   var label = I18n.download[format] || format.toUpperCase();
 

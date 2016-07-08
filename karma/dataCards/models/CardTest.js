@@ -64,7 +64,7 @@ describe('Card model', function() {
     expect(instance.getCurrentValue('activeFilters')).to.deep.equal([
         new Filter.IsNullFilter(false)
       ]);
-    readBackProperties['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+    readBackProperties['activeFilters'] = _.invokeMap(instance.getCurrentValue('activeFilters'), 'serialize');
     readBackProperties['cardType'] = instance.getCurrentValue('cardType');
 
     _.each(requiredKeys, function(field) {

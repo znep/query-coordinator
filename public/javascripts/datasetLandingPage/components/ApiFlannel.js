@@ -14,7 +14,7 @@ export var ApiFlannel = React.createClass({
   getInitialState: function() {
     var formats = _.chain(this.props.view).
       concat(this.props.view.geospatialChildLayers).
-      indexBy('id').
+      keyBy('id').
       mapValues(_.constant('json')).
       value();
 

@@ -1,5 +1,9 @@
-// Miscellaneous dependencies
+// Miscellaneous dependencies that require global scope
 window.DOMPurify = require('DOMPurify');
+window._ = require('lodash');
+window.socrata = window.socrata || {};
+window.socrata.utils = require('socrata-utils');
+require('public/javascripts/util/jquery-extensions.js');
 require('public/javascripts/util/dompurify-extensions.js');
 require('public/javascripts/lib/RxExtensions.js');
 
@@ -10,6 +14,11 @@ require('public/javascripts/angular/dataCards/module.js');
 require('../helpers/TestHelpers.js');
 require('./mockTranslations.js');
 angular.module('test').service('Mockumentary', require('public/javascripts/angular/dataCards/services/Mockumentary.js'));
+
+beforeEach(function() {
+  window._ = require('lodash');
+  require('public/javascripts/util/lodash-mixins.js');
+});
 
 function requireAll(context) {
   context.keys().forEach(context);

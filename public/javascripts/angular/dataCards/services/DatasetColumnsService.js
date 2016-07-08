@@ -28,8 +28,8 @@ module.exports = function DatasetColumnsService(Dataset) {
         // Filter out unwanted columns, then transform them into an array of objects, each with a
         // fieldName key and a columnInfo key.
         return _.chain(columns).
-          omit(shouldHideColumnFromDropdown).
-          pairs().
+          omitBy(shouldHideColumnFromDropdown).
+          toPairs().
           map(assignKeysToColumnPairs).
           value();
       }).

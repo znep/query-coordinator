@@ -255,8 +255,8 @@ export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action
   switch (action.type) {
     case MD_LAST_SAVED:
       return {
-        lastSavedContents: action.savedMetadata.contents,
-        lastSavedLicense: action.savedMetadata.license
+        lastSavedContents: _.cloneDeep(action.savedMetadata.contents),
+        lastSavedLicense: _.cloneDeep(action.savedMetadata.license)
       };
     default:
       return lastSavedMetadata;
@@ -751,21 +751,21 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               </RadioGroup>
             </fieldset>
           </div>
+        </div>
 
-          <div className="line clearfix">
-            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
-              {I18nPrefixed.contact_email}
-            </label>
-            <input
-              type="text"
-              name="view[contactEmail]'"
-              value={metadata.contents.contactEmail}
-              title={I18nPrefixed.email_address} className="textPrompt contactEmail"
-              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
-            <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            {!isEmailValid(metadata) ?
-              <label className="error email_help">{I18n.core.validation.email}</label> : null}
-          </div>
+        <div className="line clearfix">
+          <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
+            {I18nPrefixed.contact_email}
+          </label>
+          <input
+            type="text"
+            name="view[contactEmail]'"
+            value={metadata.contents.contactEmail}
+            title={I18nPrefixed.email_address} className="textPrompt contactEmail"
+            onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
+          <div className="additionalHelp">{I18nPrefixed.email_help}</div>
+          {!isEmailValid(metadata) ?
+            <label className="error email_help">{I18n.core.validation.email}</label> : null}
         </div>
 
         <div className="required">{I18nPrefixed.required_field}</div>

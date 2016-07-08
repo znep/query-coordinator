@@ -1,5 +1,6 @@
 var inputTypeValidations = {
-  google_analytics: /ua-\d+-\d+/i
+  google_analytics: /^ua-\d+-\d+$/i,
+  color: /^#(?=[a-z\d]*$)(?:.{3}|.{6})$/i
 };
 
 var validationRules = {
@@ -8,10 +9,28 @@ var validationRules = {
     'content[general][window_icon]': { url: true }
   },
   header: {
-    'content[header][logo][src]': { url: true }
+    'content[header][logo][src]': { url: true },
+    'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
+    'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
+    'content[header]links[][url]': { url: true }
   },
   footer: {
-    'content[footer][logo][src]': { url: true }
+    'content[footer][logo][src]': { url: true },
+    'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
+    'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color },
+    'content[footer]links[][url]': { url: true }
+  },
+  social: {
+    'content[general][social_shares][facebook][url]': { url: true },
+    'content[general][social_shares][twitter][url]': { url: true },
+    'content[general][social_shares][youtube][url]': { url: true },
+    'content[general][social_shares][linked_in][url]': { url: true },
+    'content[general][social_shares][flickr][url]': { url: true },
+    'content[general][social_shares][instagram][url]': { url: true },
+    'content[general][social_shares][tumblr][url]': { url: true },
+    'content[general][social_shares][yammer][url]': { url: true },
+    'content[general][social_shares][google_plus][url]': { url: true },
+    'content[general][social_shares][vimeo][url]': { url: true }
   }
 };
 

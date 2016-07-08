@@ -246,7 +246,7 @@ describe('HistogramVisualizationService', function() {
 
     it('should set the domain of the x scale to be the union of all start and end keys of the unfiltered data', function() {
       updateWithData(testData);
-      var domain = _.union(_.pluck(testData.unfiltered, 'start'), _.pluck(testData.unfiltered, 'end'));
+      var domain = _.union(_.map(testData.unfiltered, 'start'), _.map(testData.unfiltered, 'end'));
       expect(scale.x.domain()).to.deep.equal(domain);
     });
 

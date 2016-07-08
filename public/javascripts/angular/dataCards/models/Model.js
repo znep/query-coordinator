@@ -32,7 +32,7 @@ module.exports = function(Class, ModelHelper, rx) {
       //call observePropertyChangesRecursively on the root.
       this.observePropertyWrites().subscribe(function(changeNotification) {
         var oldChildrenUnderThisProperty = self._children[changeNotification.property];
-        _.invoke(oldChildrenUnderThisProperty, '_setParentModel', null);
+        _.invokeMap(oldChildrenUnderThisProperty, '_setParentModel', null);
         delete self._children[changeNotification.property];
 
         var candidateModels = _.isArray(changeNotification.newValue) ?
@@ -199,7 +199,7 @@ module.exports = function(Class, ModelHelper, rx) {
           // Keep traversing, but wait for undefined/non-nulls to become
           // something.
           return thisLevelObs.filter(isTraversible).map(function(value) {
-            return deepGet(value, _.rest(props));
+            return deepGet(value, _.tail(props));
           }).switchLatest();
         }
 

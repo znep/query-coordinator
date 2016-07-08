@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import TestUtils from 'react-addons-test-utils';
 
+import * as ExampleData from './exampleData';
 import {
   modelToViewParam,
   customMetadataModelToCoreView,
@@ -97,7 +98,7 @@ describe("testing for API responses", () => {
     }
   };
 
-  describe('privacyCustomMetadata', () => {
+  describe('translation between Redux model and /api/views payloads', () => {
     const customMetadata = metadata.contents.customMetadata;
 
     it('test that public metadata values are correctly returned', () => {
@@ -168,18 +169,28 @@ describe("testing for API responses", () => {
 
 });
 
-describe('server.js testing', () => {
+describe('transformToImports2Translation', () => {
 
-  describe('basic blueprint generation', () => {
-    const transform = JSON.parse('[{"sourceColumn":{"name":"user_id","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":0},"name":"user_id","chosenType":"number","transforms":[],"showColumnTransforms":true},{"sourceColumn":{"name":"first","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":1},"name":"first","chosenType":"number","transforms":[]},{"sourceColumn":{"name":"second","processed":3,"suggestion":"text","types":{"number":0,"text":3,"calendar_date":0,"money":0,"percent":0},"index":2},"name":"second","chosenType":"text","transforms":[]},{"sourceColumn":{"name":"third","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":3},"name":"third","chosenType":"number","transforms":[]},{"sourceColumn":{"name":"fourth","processed":3,"suggestion":"text","types":{"number":0,"text":3,"calendar_date":0,"money":0,"percent":0},"index":4},"name":"fourth","chosenType":"text","transforms":[]}]');
-    const result = transformToImports2Translation(transform);
+  it('generates the correct translation when there are no transforms, composite columns, or location columns', () => {
+    const result = transformToImports2Translation(ExampleData.translationWithoutTransforms);
     expect(result).to.equal('[col1,col2,col3,col4,col5]');
   });
 
-  describe('more complicated blueprint generation', () => {
-      const transform = JSON.parse('[{"sourceColumn":{"name":"user_id","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":0},"name":"user_id","chosenType":"number","transforms":[{"type":"title"},{"type":"upper"},{"type":"lower"},{"type":"toStateCode"},{"type":"findReplace","findText":"abc","replaceText":"def","caseSensitive":true}],"showColumnTransforms":true},{"sourceColumn":{"name":"first","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":1},"name":"first","chosenType":"number","transforms":[]},{"sourceColumn":{"name":"second","processed":3,"suggestion":"text","types":{"number":0,"text":3,"calendar_date":0,"money":0,"percent":0},"index":2},"name":"second","chosenType":"text","transforms":[]},{"sourceColumn":{"name":"third","processed":3,"suggestion":"number","types":{"number":3,"text":3,"calendar_date":3,"money":3,"percent":3},"index":3},"name":"third","chosenType":"number","transforms":[]},{"sourceColumn":{"name":"fourth","processed":3,"suggestion":"text","types":{"number":0,"text":3,"calendar_date":0,"money":0,"percent":0},"index":4},"name":"fourth","chosenType":"text","transforms":[]}]');
-      const result = transformToImports2Translation(transform);
-      expect(result).to.equal('[(toStateCode(lower(upper(title(col1))))).replace(/abc/g, "def"),col2,col3,col4,col5]');
+  it('generates the correct translation when there are transforms, but no composite or location columns', () => {
+    const result = transformToImports2Translation(ExampleData.translationWithTransforms);
+    expect(result).to.equal('[(toStateCode(lower(upper(title(col1))))).replace(/abc/g, "def"),col2,col3,col4,col5]');
+  });
+
+  // TODO: test non-trivial regexes in transforms
+
+  it('generates the correct translation when there are composite columns', () => {
+    const result = transformToImports2Translation(ExampleData.translationWithCompositeCol);
+    expect(result).to.equal('[col1,col2 + "some constant text" + col4]')
+  });
+
+  it('generates the correct translation when there are composite columns and translations', () => {
+    const result = transformToImports2Translation(ExampleData.translationWithCompositeColAndTransform);
+    expect(result).to.equal('[col1,upper(col2 + "some constant text" + col4)]')
   });
 
 });

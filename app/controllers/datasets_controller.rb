@@ -56,7 +56,8 @@ class DatasetsController < ApplicationController
           return render 'shared/error', :status => :not_found
         end
 
-        render 'new'
+        # need to return so we exit this function and render/redirect don't get called again
+        return render 'new'
       end
     end
 
@@ -139,7 +140,7 @@ class DatasetsController < ApplicationController
     if display_dataset_landing_page_notice?
       flash.now[:notice] = %{
         Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
-        <a href="?enable_dataset_landing_page=true&default_to_dataset_landing_page=true">
+        <a href="#{seo_friendly_url(@view)}/about?enable_dataset_landing_page=true">
         Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>
         visit the support portal</a> for additional details.
       }.html_safe

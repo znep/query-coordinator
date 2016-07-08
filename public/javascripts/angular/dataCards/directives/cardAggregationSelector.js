@@ -42,13 +42,13 @@ module.exports = function cardAggregationSelector(Constants, I18n, PluralizeServ
       var aggregationColumns$ = columns$.map(function(columns) {
         var validColumnFilter = function(column, fieldName) {
           var isValidType = column.physicalDatatype === 'number' || column.physicalDatatype === 'money';
-          var isReservedColumn = column.isSystemColumn || fieldName === '*' || _.contains(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName);
+          var isReservedColumn = column.isSystemColumn || fieldName === '*' || _.includes(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName);
 
           return isValidType && !isReservedColumn;
         };
 
         return _.chain(columns).
-          pick(validColumnFilter).
+          pickBy(validColumnFilter).
           map(function(column, fieldName) {
             return {
               id: fieldName,

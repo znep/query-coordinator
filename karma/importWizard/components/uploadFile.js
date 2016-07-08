@@ -10,6 +10,8 @@ import {
   view
 } from 'components/uploadFile';
 
+import * as ExampleData from './exampleData';
+
 describe("uploadFile's reducer", () => {
   var state;
 
@@ -65,14 +67,14 @@ describe("uploadFile's reducer", () => {
   describe('FILE_UPLOAD_COMPLETE',  () => {
     it('reacts to file upload complete', () => {
       const stateAfter = update(stateBefore, fileUploadComplete(
-        "abceasyas123",
-        "thisisfine"
+        ExampleData.imports2ScanResponse.fileId,
+        ExampleData.imports2ScanResponse.summary
       ));
       expect(stateAfter).to.deep.equal({
         progress: {
           type: 'Complete',
-          fileId: 'abceasyas123',
-          summary: 'thisisfine'
+          fileId: ExampleData.imports2ScanResponse.fileId,
+          summary: ExampleData.imports2ScanResponse.summary
         }
       });
     });

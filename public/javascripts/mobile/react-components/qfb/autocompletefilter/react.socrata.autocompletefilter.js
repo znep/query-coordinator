@@ -155,7 +155,7 @@ class SocrataAutocompletefilter extends React.Component {
 
     aSelecteds.splice(selectedIndex, 1);
     aOptions.push(selectedObj);
-    aOptions = _.sortByOrder(aOptions, 'text', 'asc');
+    aOptions = _.orderBy(aOptions, 'text', 'asc');
 
     this.setState({
       selected: aSelecteds,

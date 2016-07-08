@@ -73,7 +73,7 @@ module.exports = function FeatureMapController(
   function reformatCellName(cellName) {
     return cellName.split('_').
       map(function(word) {
-        return _.capitalize(word);
+        return _.upperFirst(word);
       }).
       join(' ');
   }
@@ -86,7 +86,7 @@ module.exports = function FeatureMapController(
     var subColumnMatch = existingName.match(/\(([^()]+)\)$/);
     if (subColumnMatch) {
       var existingNameSuffix = subColumnMatch[1];
-      if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
+      if (_.includes(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
         return existingNameSuffix;
       }
     }

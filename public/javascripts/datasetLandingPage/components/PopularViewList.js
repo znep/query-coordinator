@@ -25,9 +25,23 @@ export var PopularViewList = React.createClass({
     isLoading: PropTypes.bool.isRequired,
     loadMore: PropTypes.func.isRequired,
     onClickWidget: PropTypes.func.isRequired,
-    onScrollList: PropTypes.func.isRequired,
     toggleList: PropTypes.func.isRequired,
     viewList: PropTypes.arrayOf(PropTypes.object).isRequired
+  },
+
+  onScrollList: function(event) {
+    var { isDesktop, hasMore, isLoading, loadMore } = this.props;
+
+    if (isDesktop || !hasMore || isLoading) {
+      return;
+    }
+
+    var el = event.target;
+    var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
+
+    if (isAtRightEdge) {
+      loadMore();
+    }
   },
 
   getAnimation: function() {
@@ -71,7 +85,6 @@ export var PopularViewList = React.createClass({
       hasMore,
       isCollapsed,
       onClickWidget,
-      onScrollList,
       isDesktop,
       isLoading
     } = this.props;
@@ -115,7 +128,7 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <div className="media-results popular-views" onScroll={onScrollList}>
+      <div className="media-results popular-views" onScroll={this.onScrollList}>
         {popularViews}
       </div>
     );
@@ -208,7 +221,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     loadMore: function() {
       dispatch(loadMorePopularViews());
@@ -239,18 +252,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       };
 
       dispatch(emitMixpanelEvent(payload));
-    },
-
-    onScrollList: _.throttle(function(event) {
-      var el = event.target;
-      var isDesktop = ownProps.isDesktop;
-      var hasMore = event.target.querySelector('.loading-card');
-      var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
-
-      if (!isDesktop && hasMore && isAtRightEdge) {
-        dispatch(loadMorePopularViews());
-      }
-    }, 200)
+    }
   };
 }
 

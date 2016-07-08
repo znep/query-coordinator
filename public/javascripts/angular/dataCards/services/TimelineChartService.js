@@ -69,8 +69,8 @@ module.exports = function TimelineChartService(I18n, PluralizeService) {
       configuration: {
         interactive: allowFilterChange,
         localization: {
-          FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
-          FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount
+          flyout_unfiltered_amount_label: I18n.flyout.total,
+          flyout_filtered_amount_label: I18n.flyout.filteredAmount
         }
       },
       unit: getUnitConfiguration(rowDisplayUnit)

@@ -1,5 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/choropleth.html');
 const ChoroplethMap = require('socrata-visualizations').views.ChoroplethMap;
+const VifHelpers = require('socrata-visualizations').helpers.VifHelpers;
 
 // A WORD ON TERMINOLOGY:
 //
@@ -64,8 +65,11 @@ module.exports = function choropleth(
       * Setup VIF *
       ************/
 
-     // Note that configuration.shapefile.primaryKey gets set before rendering
-      var vif = {
+      // We need to migrate the VIF in order to render properly. Once we're using the jQuery
+      // plugins, we won't need to do this anymore.
+      //
+      // Note that configuration.shapefile.primaryKey gets set before rendering
+      var vif = VifHelpers.migrateVif({
         configuration: {
           defaultExtent: $scope.defaultExtent,
           interactive: true,
@@ -73,11 +77,11 @@ module.exports = function choropleth(
             type: $scope.stops
           },
           localization: {
-            NO_VALUE: `(${I18n.common.noValue})`,
-            FLYOUT_SELECTED_NOTICE: $scope.allowFilterChange ? I18n.flyout.clearFilterLong : '',
-            FLYOUT_UNFILTERED_AMOUNT_LABEL: I18n.flyout.total,
-            FLYOUT_FILTERED_AMOUNT_LABEL: I18n.flyout.filteredAmount,
-            CLEAR_FILTER_LABEL: I18n.flyout.clear_filter
+            no_value: `(${I18n.common.noValue})`,
+            flyout_selected_notice: $scope.allowFilterChange ? I18n.flyout.clearFilterLong : '',
+            flyout_unfiltered_amount_label: I18n.flyout.total,
+            flyout_filtered_amount_label: I18n.flyout.filteredAmount,
+            clear_filter_label: I18n.flyout.clear_filter
           },
           savedExtent: $scope.savedExtent,
           shapefile: {
@@ -97,7 +101,7 @@ module.exports = function choropleth(
           one: PluralizeService.pluralize($scope.rowDisplayUnit, 1),
           other: PluralizeService.pluralize($scope.rowDisplayUnit, 2)
         }
-      };
+      });
 
       attachEvents();
 

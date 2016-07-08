@@ -59,7 +59,7 @@ export var ExternalResourceForm = React.createClass({
     var { onChangePreviewImage } = this.props;
 
     var file = event.target.files[0];
-    var isFileImage = file && /\.(jpe?g|png|gif)$/.test(file.name);
+    var isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
 
     this.setState({
       isImageInvalid: !isFileImage
@@ -94,7 +94,7 @@ export var ExternalResourceForm = React.createClass({
   renderInputField: function(key, inputProps) {
     var prefix = 'external-resource';
     var value = this.props[key];
-    var onChange = this[`onChange${_.capitalize(key)}`];
+    var onChange = this[`onChange${_.upperFirst(key)}`];
     var kebabKey = _.kebabCase(key);
 
     inputProps = _.defaults(inputProps, {

@@ -2712,6 +2712,7 @@ de:
         name: Name
         pending_columns: Bitte warten Sie, während Ihre Spalten geladen werden ...
         reset_to_preset: Auf Voreinstellungen zurücksetzen
+        restore_suggested_settings: 
         set: Einstellen
         source_column: Quell-Spalte
         subheadline: Spalten zum Importieren
@@ -3714,6 +3715,7 @@ de:
       import_from_latlong: 
       import_from_multiple: Von <strong>mehreren Spalten</strong> importieren
       import_from_single: Von <strong>einzelner Spalte</strong> importieren
+      insert_static_text: 
       latitude: Breitengrad
       location_source_col: Standort-Quellen-Spalten
       longitude: Längengrad
@@ -3742,6 +3744,9 @@ de:
       bytes_imported: Bis jetzt %{num} Bytes importiert.
       combine_multiple_cols: "(Kombinieren mehrerer Spalten ...)"
       downloading: Herunterladen Ihrer Datei ...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Bitte wählen Sie eine CSV-, TSV-, XLS- oder XLSX-Datei aus.
       filetype_error_shapefile: Bitte wählen Sie eine KML-, KMZ- oder ZIP-Datei aus.
       headline_import: Bitte wählen Sie eine Datei zum Importieren aus
@@ -4034,6 +4039,7 @@ de:
       finish: Beenden
       next: Weiter
       previous: Zurück
+      save: 
   support:
     array:
       last_word_connector: ", und"

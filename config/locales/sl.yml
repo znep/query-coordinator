@@ -2723,6 +2723,7 @@ sl:
         name: Ime
         pending_columns: Počakajte, da naložimo vaše stolpce ...
         reset_to_preset: Ponastavite za prednastavitev
+        restore_suggested_settings: 
         set: Nastavi
         source_column: Izvorni stolpec
         subheadline: Stolpci za izvoz
@@ -3737,6 +3738,7 @@ sl:
       import_from_latlong: 
       import_from_multiple: uvozi iz <strong>več stolpcev</strong>
       import_from_single: Uvozi iz <strong>enega stolpca</strong>
+      insert_static_text: 
       latitude: Zemljepisna širina
       location_source_col: Lokacija izvornih stolpcev
       longitude: Zemljepisna dolžina
@@ -3765,6 +3767,9 @@ sl:
       bytes_imported: Do tega trenutka ste uvozili %{num} bytov.
       combine_multiple_cols: "(Nadaljuj z več stolpci ...)"
       downloading: Prenašam vašo datoteko ...
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Prosimo, izberite datoteko vrste CSV, TSV, XLS ali XLSX.
       filetype_error_shapefile: Prosimo, izberite datoteko vrste KML, KMZ ali ZIP.
       headline_import: Prosimo, izberite datoteko za uvoz
@@ -4057,6 +4062,7 @@ sl:
       finish: Končaj
       next: Naslednji
       previous: Prejšnji
+      save: 
   support:
     array:
       last_word_connector: in

@@ -2710,6 +2710,7 @@ zh:
         name: "名称"
         pending_columns: "我们上传列时请稍候..."
         reset_to_preset: "重置为预设"
+        restore_suggested_settings: 
         set: "设置"
         source_column: "源列"
         subheadline: "要导入的列"
@@ -3712,6 +3713,7 @@ zh:
       import_from_latlong: 
       import_from_multiple: "从<strong>多列</strong>导入"
       import_from_single: "从<strong>单列</strong>导入"
+      insert_static_text: 
       latitude: "纬度"
       location_source_col: "位置源列"
       longitude: "经度"
@@ -3740,6 +3742,9 @@ zh:
       bytes_imported: "目前已导入%{num}字节。"
       combine_multiple_cols: "（合并多个列...）"
       downloading: "正在下载你的文件..."
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: "请选择一个CSV、 TSV、XLS或 XLSX文件。"
       filetype_error_shapefile: "请选择一个KML、KMZ或 ZIP文件。"
       headline_import: "请选择要导入的文件"
@@ -4032,6 +4037,7 @@ zh:
       finish: "完成"
       next: "下一"
       previous: "上一"
+      save: 
   support:
     array:
       last_word_connector: "与"

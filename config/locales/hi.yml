@@ -2712,6 +2712,7 @@ hi:
         name: "नाम"
         pending_columns: "कृपया प्रतीक्षा कीजिये जब तक हम आपके कॉलम लोड करते हैं..."
         reset_to_preset: "प्रीसेट के लिए रीसेट करें"
+        restore_suggested_settings: 
         set: "सेट करें"
         source_column: "स्रोत कॉलम"
         subheadline: "इम्पोर्ट करने वाली कॉलम"
@@ -3718,6 +3719,7 @@ hi:
       import_from_latlong: 
       import_from_multiple: "<strong>एक से अधिक कॉलमों</strong> में से आयात करें"
       import_from_single: "<strong>एकल कॉलम</strong> में से आयात करें"
+      insert_static_text: 
       latitude: "अक्षांश"
       location_source_col: "स्थान स्रोत कॉलम"
       longitude: "देशांतर"
@@ -3746,6 +3748,9 @@ hi:
       bytes_imported: "अभी तक %{num} बाइट्स आयात कर ली गई हैं।"
       combine_multiple_cols: "(एकाधिक कॉलमों का संयोजन कीजिये...)"
       downloading: "आपकी फ़ाइल डाउनलोड की जा रही है..."
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: "कृपया सीएसवी (CSV), टीएसवी (TSV), एक्सएलएस (XLS), या एक्सएलएसएक्स (XLSX) फ़ाइल का चयन करें।"
       filetype_error_shapefile: "कृपया केएमएल (KML), केएमज़ेड (KMZ), या ज़िप (ZIP) फ़ाइल का चयन करें।"
       headline_import: "कृपया आयात करने के लिए एक फ़ाइल का चयन करें"
@@ -4038,6 +4043,7 @@ hi:
       finish: "समाप्त करें"
       next: "अगला"
       previous: "पिछला"
+      save: 
   support:
     array:
       last_word_connector: ", और"

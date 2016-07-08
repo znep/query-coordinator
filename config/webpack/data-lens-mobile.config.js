@@ -34,6 +34,13 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
+  resolve: {
+    alias: {
+      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
+      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
+      '_': 'lodash'
+    }
+  },
   externals: common.packageJson.config.dataLensWebpackExternals,
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

@@ -359,7 +359,7 @@ $(document).ready(function() {
       return { 'Header Item Type': linkType };
     });
 
-    mixpanelNS.delegateLinks('#chrome-header', 'a', 'Clicked Header Item', false, function(element) {
+    mixpanelNS.delegateLinks('#site-chrome-header', 'a', 'Clicked Header Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
       return { 'Header Item Type': linkType };
     });
@@ -370,7 +370,7 @@ $(document).ready(function() {
       return { 'Footer Item Type': linkType };
     });
 
-    mixpanelNS.delegateLinks('#chrome-footer', 'a', 'Clicked Footer Item', false, function(element) {
+    mixpanelNS.delegateLinks('#site-chrome-footer', 'a', 'Clicked Footer Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
       return { 'Footer Item Type': linkType };
     });

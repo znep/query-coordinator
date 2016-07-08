@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 
 require('socrata-visualizations').Table;
@@ -24,14 +25,14 @@ class CardTable extends React.Component {
       configuration: {
         isMobile: true,
         localization: {
-          PREVIOUS: 'Previous',
-          NEXT: 'Next',
-          NO_ROWS: 'No {unitOther}',
-          ONLY_ROW: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
-          MANY_ROWS: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
-          LATITUDE: 'Latitude',
-          LONGITUDE: 'Longitude',
-          NO_COLUMN_DESCRIPTION: 'No description provided.'
+          previous: 'Previous',
+          next: 'Next',
+          no_rows: 'No {unitOther}',
+          only_row: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
+          many_rows: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
+          latitude: 'Latitude',
+          longitude: 'Longitude',
+          no_column_description: 'No description provided.'
         },
         order: [{
           ascending: true,
@@ -67,7 +68,7 @@ class CardTable extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!_.eq(this.props.filters, this.state.filters)) {
+    if (!_.isEqual(this.props.filters, this.state.filters)) {
       this.setState({
         filters: this.props.filters
       }, () => {

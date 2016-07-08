@@ -669,11 +669,27 @@
     }
   }
 
+  .columnsToolbar {
+    display: block;
+  }
+
   .workingPane {
     p.subheadline {
       margin: 1em 0 -2em;
       height: 1em;
     }
+  }
+
+  .importColumnsPane {
+    li .detailsLine > div {
+      display: block;
+    }
+    .staticSourceText {
+      display: inline-block;
+    }
+  }
+  .remove {
+    cursor: pointer;
   }
 
   div.button.navButtons {

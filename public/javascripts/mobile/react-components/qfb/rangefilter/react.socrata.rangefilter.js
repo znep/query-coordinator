@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import _ from 'lodash';
 import $ from 'jquery';
 import InputRange from 'react-input-range';
 import './rangefilter.scss';
@@ -306,7 +307,7 @@ class SocrataRangeFilter extends React.Component {
         };
       } else {
         labelsObject = {
-          min: (values.min == _.first(this.domain)) ? 'No Min' : this.domain[values.min],
+          min: (values.min == _.head(this.domain)) ? 'No Min' : this.domain[values.min],
           max: (values.max == _.last(this.domain)) ? 'No Max' : this.domain[values.max]
         };
       }

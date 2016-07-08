@@ -19,15 +19,6 @@ _.mixin({
   },
   otherwise: _.instead,
   /**
-   * @param {Function} f the function to run.
-   * @return {Function} a function that will call the given function in the next frame.
-   */
-  deferred: function(f) {
-    return function() {
-      _.defer(f);
-    };
-  },
-  /**
    * @return {Number} the log, base 10, of the given number.
    */
   log10: Math.log10 || function(n) {
@@ -48,5 +39,5 @@ _.mixin({
 });
 
 _.mixin({
-  isDefined: _.compose(_.negateValue, _.isUndefined)
+  isDefined: _.flowRight(_.negateValue, _.isUndefined)
 });

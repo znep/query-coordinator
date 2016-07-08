@@ -2755,6 +2755,7 @@ sw:
         name: Jina
         pending_columns: Tafadhali subiri wakati tunapakiza safu zako…
         reset_to_preset: Panga tena ili kupanga awali
+        restore_suggested_settings: 
         set: Panga
         source_column: Safu ya Chanzo
         subheadline: Safu za kuleta
@@ -3802,6 +3803,7 @@ sw:
       import_from_latlong: 
       import_from_multiple: Leta kutoka <strong>safu nyingi</strong>
       import_from_single: Leta kutoka <strong>safu moja</strong>
+      insert_static_text: 
       latitude: Latitudo
       location_source_col: 'Safu za Chanzo za Mahali '
       longitude: Longitudo
@@ -3830,6 +3832,9 @@ sw:
       bytes_imported: 
       combine_multiple_cols: "(Changanya safu nyingi...)"
       downloading: Inapakua faili lako…
+      errors:
+        http_error: 
+        network_error: 
       filetype_error_blist: Tafadhali chagua faili CSV, TSV, XLS, au XLSX.
       filetype_error_shapefile: Tafadhali chagua faili KML, KMZ, au ZIP.
       headline_import: Tafadhali chagua faili la kuleta
@@ -4136,6 +4141,7 @@ sw:
       finish: Maliza
       next: Ijayo
       previous: Iliyotangulia
+      save: 
   support:
     array:
       last_word_connector: ", na "

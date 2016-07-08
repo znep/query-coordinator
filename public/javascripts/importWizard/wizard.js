@@ -97,7 +97,7 @@ export function goToPrevious() {
   };
 }
 
-export function updateNavigation(navigation = initialNavigation: Navigation, action): Navigation {
+export function updateNavigation(navigation: Navigation = initialNavigation, action): Navigation {
 
   let nextPage = navigation.page;
   switch (action.type) {
@@ -212,6 +212,7 @@ export function view({ state, dispatch }) {
                 <ImportColumns.view
                   transform={state.transform}
                   fileName={state.upload.fileName}
+                  sourceColumns={state.upload.progress.summary.columns}
                   dispatch={dispatch}
                   goToPage={(page) => dispatch(goToPage(page))}
                   goToPrevious={() => dispatch(goToPrevious())} />

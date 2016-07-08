@@ -20,7 +20,7 @@ module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersServ
       var customTitle$ = model$.observeOnLatest('customTitle');
 
       var dynamicTitle$ = PageHelpersService.dynamicCardAggregationTitle(model$).
-        map(_.capitalize).
+        map(_.upperFirst).
         map(function(title) {
           return `${title} by`;
         });
@@ -28,7 +28,7 @@ module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersServ
       var displayDynamicTitle$ = model$.
         observeOnLatest('cardType').
         map(function(cardType) {
-          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.includes(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         });
 
       $scope.$bindObservable('customTitle', customTitle$);

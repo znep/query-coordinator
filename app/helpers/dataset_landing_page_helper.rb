@@ -18,7 +18,7 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
-  def render_mixpanel_config
+  def render_dataset_landing_page_mixpanel_config
     mixpanel_config = {
       :token => APP_CONFIG.mixpanel_token
     }
@@ -33,7 +33,7 @@ module DatasetLandingPageHelper
     javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
   end
 
-  def render_session_data
+  def render_dataset_landing_page_session_data
     session_data = {
       :userId => current_user.try(:id) || 'N/A',
       :ownerId => @view.try(:owner).try(:id) || 'N/A',
@@ -47,7 +47,7 @@ module DatasetLandingPageHelper
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
   end
 
-  def render_server_config
+  def render_dataset_landing_page_server_config
     # Figure out if we need a locale prefix on links
     locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
 

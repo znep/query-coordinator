@@ -13,8 +13,8 @@ module.exports = {
     };
 
     var searchParams = _.chain((urlSearch || '').split('&')).
-      invoke('split', '=').
-      zipObject().
+      invokeMap('split', '=').
+      fromPairs().
       value();
 
     var cardsViewUrlMatch = urlPathname.match(

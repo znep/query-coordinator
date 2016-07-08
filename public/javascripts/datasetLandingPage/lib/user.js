@@ -7,7 +7,7 @@ export var isUserAdminOrPublisher = function() {
     return false;
   }
 
-  return _.contains(currentUser.flags, 'admin') ||
+  return _.includes(currentUser.flags, 'admin') ||
     currentUser.roleName === 'administrator' ||
     currentUser.roleName === 'publisher';
 };

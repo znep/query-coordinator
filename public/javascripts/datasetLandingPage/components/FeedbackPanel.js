@@ -31,6 +31,8 @@ export var FeedbackPanel = React.createClass({
 
     // Initialize UserSnap.
     usersnap.init({
+      // Inject locale to localize the popup
+      locale: _.get(window.serverConfig, 'locale', 'en'),
       // Restore the feedback button after the user quits UserSnap.
       // UserSnap politely exposes event listeners.
       onClose: _.partial(this.showButton, this.resetButtonHover),
@@ -40,6 +42,8 @@ export var FeedbackPanel = React.createClass({
 
     // Initialize Zendesk.
     zendesk.init({
+      // Inject locale to localize the popup
+      locale: _.get(window.serverConfig, 'locale', 'en'),
       // Inject the user so we can auto-fill some information.
       user: window.serverConfig.currentUser
     });
@@ -94,19 +98,19 @@ export var FeedbackPanel = React.createClass({
   },
 
   showButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-0.35rem' }, _.callback(cb));
+    velocity(this.refs.button, { bottom: '-0.35rem' }, _.iteratee(cb));
   },
 
   showContent: function(cb) {
-    velocity(this.refs.content, { bottom: 0 }, _.callback(cb));
+    velocity(this.refs.content, { bottom: 0 }, _.iteratee(cb));
   },
 
   hideButton: function(cb) {
-    velocity(this.refs.button, { bottom: '-10rem' }, _.callback(cb));
+    velocity(this.refs.button, { bottom: '-10rem' }, _.iteratee(cb));
   },
 
   hideContent: function(cb) {
-    velocity(this.refs.content, { bottom: '-22rem' }, _.callback(cb));
+    velocity(this.refs.content, { bottom: '-22rem' }, _.iteratee(cb));
   },
 
   render: function() {

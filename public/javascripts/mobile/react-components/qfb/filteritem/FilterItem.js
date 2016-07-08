@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import $ from 'jquery';
 import './filteritem.scss';
@@ -152,7 +153,7 @@ class FilterItem extends React.Component {
             scale={ this.props.filter.scale }
             dataHandler={ this.handleFilterData }/>;
         } else {
-          var rangeMin = Number(_.first(this.props.filter.scale));
+          var rangeMin = Number(_.head(this.props.filter.scale));
           var rangeMax = Number(_.last(this.props.filter.scale));
 
           filter = <SocrataRangefilter

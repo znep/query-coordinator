@@ -50,7 +50,7 @@ module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVis
     } else {
       return rx.Observable.fromPromise(spatialLensService.getCuratedRegions()).
         map(function(curatedRegions) {
-          return _.uniq(curatedRegions.concat(existingRegions), 'view.id');
+          return _.uniqBy(curatedRegions.concat(existingRegions), 'view.id');
         });
     }
   }

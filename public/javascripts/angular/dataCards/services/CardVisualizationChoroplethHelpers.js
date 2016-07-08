@@ -66,7 +66,7 @@ module.exports = function CardVisualizationChoroplethHelpers(Constants, $log) {
     var primaryKeyPath = `properties.${primaryKey}`;
     var geometryLabelPath = `properties.${geometryLabel}`;
 
-    var activeFilterNames = _.pluck(activeFilters, 'operand');
+    var activeFilterNames = _.map(activeFilters, 'operand');
 
     var reducer = function(acc, datum) {
       acc[datum.name] = datum.value;
@@ -99,7 +99,7 @@ module.exports = function CardVisualizationChoroplethHelpers(Constants, $log) {
         properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME] =
           unfilteredDataAsHash[name];
 
-        properties[Constants.SELECTED_PROPERTY_NAME] = _.contains(activeFilterNames, name);
+        properties[Constants.SELECTED_PROPERTY_NAME] = _.includes(activeFilterNames, name);
 
         properties[Constants.HUMAN_READABLE_PROPERTY_NAME] =
           humanReadableName;

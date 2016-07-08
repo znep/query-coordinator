@@ -5,16 +5,27 @@ import * as url from 'url';
 import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
+import airbrake from '../airbrake';
 
 type FileName = string
 
 type FileId = string
 
-type Summary = {
-  headers: number,
-  columns: Array<SharedTypes.SourceColumn>,
-  locations: Array<{ latitude: number, longitude: number }>,
-  sample: Array<Array<string>>,
+type Summary
+  = { // normal tabular
+      headers: number,
+      columns: Array<SharedTypes.SourceColumn>,
+      locations: Array<{ latitude: number, longitude: number }>,
+      sample: Array<Array<string>>,
+    }
+  | { // geo
+      totalFeatureCount: number,
+      layers: Array<GeoLayer>
+    }
+
+type GeoLayer = {
+  name: string,
+  referenceSystem: string
 }
 
 type UploadProgress
@@ -69,24 +80,45 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       switch (xhr.status) {
         case 200:
           response = JSON.parse(xhr.responseText);
-          dispatch(fileUploadComplete(response.fileId, response.summary));
+          dispatch(fileUploadComplete(response.fileId, addColumnIndicesToSummary(response.summary)));
           break;
         case 400:
-          // TODO: airbrake these errors (EN-6942)
+          airbrake.notify({
+            error: '400 response received during upload',
+            context: { component: 'UploadFile' }
+          });
           response = JSON.parse(xhr.responseText);
           dispatch(fileUploadError(response.message));
           break;
         default:
-        // TODO: airbrake these errors (EN-6942)
+          airbrake.notify({
+            error: `Unexpected response received during upload: ${xhr.status}`,
+            context: { component: 'UploadFile' }
+          });
           dispatch(fileUploadError());
       }
     });
-    upload.on('error', () => {
-      // TODO: airbrake these errors (EN-6942)
+    upload.on('error', (err) => {
+      airbrake.notify({
+        error: err,
+        context: { component: 'UploadFile' }
+      });
       dispatch(fileUploadError());
     });
     dispatch(fileUploadStart(file));
   };
+}
+
+
+function addColumnIndicesToSummary(summary: Summary): Summary {
+  if (summary.columns) {
+    return {
+      ...summary,
+      columns: summary.columns.map((col, idx) => ({ ...col, index: idx }))
+    };
+  } else {
+    return summary;
+  }
 }
 
 

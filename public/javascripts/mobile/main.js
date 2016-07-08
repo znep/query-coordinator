@@ -602,7 +602,7 @@ import 'socrata-visualizations/dist/socrata-visualizations.css';
       }
 
       function __getBuckets(promiseArguments) {
-        var data = _.map(_.first(promiseArguments[0].rows), parseFloat);
+        var data = _.map(_.head(promiseArguments[0].rows), parseFloat);
         var fieldName = promiseArguments[1];
         var bucketingOptions = {};
         var absMax = Math.max(Math.abs(data[0]), Math.abs(data[1]));

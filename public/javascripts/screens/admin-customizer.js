@@ -63,224 +63,208 @@
  */
 
 
-(function($)
-{
+(function($) {
 
-var publishNS = blist.namespace.fetch('blist.publish');
+  var publishNS = blist.namespace.fetch('blist.publish');
 
-/////////////////////////////////////
-// SECTION: Sidebar Options Helpers
+  /////////////////////////////////////
+  // SECTION: Sidebar Options Helpers
 
-blist.publish.dimensionOptions = [
-    { text: 'ems', value: 'em' },
-    { text: 'points', value: 'pt' },
-    { text: 'pixels', value: 'px' },
-    { text: 'inches', value: 'in' } ];
+  blist.publish.dimensionOptions = [{
+    text: 'ems',
+    value: 'em'
+  }, {
+    text: 'points',
+    value: 'pt'
+  }, {
+    text: 'pixels',
+    value: 'px'
+  }, {
+    text: 'inches',
+    value: 'in'
+  }];
 
-blist.publish.fontOptions = [
-    { text: 'Palatino', value: '\'palatino linotype\', palatino, \'book antiqua\', serif' },
-    { text: 'Arial', value: 'helvetica, arial, sans-serif' }, // protecting people from themselves!
-    { text: 'Times', value: 'times, \'times new roman\', serif' },
-    { text: 'Verdana', value: 'verdana, sans-serif' },
-    { text: 'Georgia', value: 'georgia, serif' },
-    { text: 'Trebuchet', value: '\'trebuchet ms\', sans-serif'} ];
-
-// get latest instance of data in spite of sidebar declaration
-blist.publish.resolveWorkingTheme = function()
-{
-    return publishNS.workingTheme;
-};
-
-
-/////////////////////////////////////
-// SECTION: Applicator Methods
-
-blist.publish.applicator = function(subapply, subhash)
-{
-    for (var key in subapply)
+  blist.publish.fontOptions = [{
+      text: 'Palatino',
+      value: '\'palatino linotype\', palatino, \'book antiqua\', serif'
+    }, {
+      text: 'Arial',
+      value: 'helvetica, arial, sans-serif'
+    }, // protecting people from themselves!
     {
-        if (_.isArray(subapply[key]))
-        {
-            for (var curapply in subapply[key])
-            {
-                var value = subapply[key][curapply];
-                if ((value['css'] !== undefined) && (value['outsideWidget'] !== true))
-                {
-                    _.each(value['css'].split(/, */), function(cssProperty)
-                    {
-                        if (value['hasUnit'] !== undefined)
-                        {
-                            publishNS.writeStyle(value['selector'], cssProperty,
-                                subhash[key]['value'] + subhash[key]['unit']);
-                        }
-                        else if (value['map'] !== undefined)
-                        {
-                            publishNS.writeStyle(value['selector'], cssProperty,
-                                value['map'][subhash[key].toString()]);
-                        }
-                        else if (value['callback'] !== undefined)
-                        {
-                            publishNS.writeStyle(value['selector'], cssProperty,
-                                value['callback'](subhash[key]));
-                        }
-                        else if ((cssProperty == 'background-color') ||
-                                (cssProperty == 'color') ||
-                                (cssProperty == 'border-color'))
-                        {
-                            var v = subhash[key];
-                            if (!v.startsWith('#')) { v = '#' + v; }
-                            publishNS.writeStyle(value['selector'], cssProperty, v);
-                        }
-                        else
-                        {
-                            var subhashValue = subhash[key];
-                            if (value['toProportion'] === true)
-                                subhashValue = (100.0 / subhashValue) + '%';
-
-                            publishNS.writeStyle(value['selector'], cssProperty,
-                                subhashValue);
-                        }
-                    });
-                }
-                else if (value['selector'] !== undefined)
-                {
-                    if (value['outsideWidget'] === true)
-                        var $elem = $(value['selector']);
-                    else
-                        var $elem = publishNS.findContextElem(value['selector']);
-
-                    if (value['attr'] !== undefined)
-                        $elem.attr(value['attr'], subhash[key]);
-
-                    if (value['hideShow'] === true)
-                    {
-                        if (subhash[key])
-                            $elem.show();
-                        else
-                            $elem.hide();
-                    }
-
-                    if (value['callback'] !== undefined)
-                        value['callback']($elem, subhash[key]);
-                }
-                else
-                {
-                    if (value['callback'] !== undefined)
-                        value['callback'](subhash[key]);
-                }
-            }
-        }
-        else if (typeof subapply[key] == 'object')
-        {
-            publishNS.applicator(subapply[key], subhash[key]);
-        }
-        else
-        {
-            throw('malformed hash?');
-        }
+      text: 'Times',
+      value: 'times, \'times new roman\', serif'
+    }, {
+      text: 'Verdana',
+      value: 'verdana, sans-serif'
+    }, {
+      text: 'Georgia',
+      value: 'georgia, serif'
+    }, {
+      text: 'Trebuchet',
+      value: '\'trebuchet ms\', sans-serif'
     }
-};
+  ];
 
-/////////////////////////////////////
-// SECTION: Stylesheet Helpers
+  // get latest instance of data in spite of sidebar declaration
+  blist.publish.resolveWorkingTheme = function() {
+    return publishNS.workingTheme;
+  };
 
-blist.publish.stylesheet = null;
-blist.publish.styleRules = {};
-blist.publish.writeStyle = function(selector, key, value)
-{
-    if (publishNS.stylesheet === null)
-    {
-        // initialize the stylesheet
-        var styleNode = publishNS.generateStyleNode();
 
-        var stylesheets = publishNS.retrieveStylesheets();
-        for (var i = 0; i < stylesheets.length; i++)
-        {
-            publishNS.stylesheet = stylesheets[i];
-            if ((publishNS.stylesheet.ownerNode || publishNS.stylesheet.owningElement) == styleNode)
-            {
-                break;
+  /////////////////////////////////////
+  // SECTION: Applicator Methods
+
+  blist.publish.applicator = function(subapply, subhash) {
+    for (var key in subapply) {
+      if (_.isArray(subapply[key])) {
+        for (var curapply in subapply[key]) {
+          var value = subapply[key][curapply];
+          if ((value.css !== undefined) && (value.outsideWidget !== true)) {
+            _.each(value.css.split(/, */), function(cssProperty) {
+              if (value.hasUnit !== undefined) {
+                publishNS.writeStyle(value.selector, cssProperty,
+                  subhash[key].value + subhash[key].unit);
+              } else if (value.map !== undefined) {
+                publishNS.writeStyle(value.selector, cssProperty,
+                  value.map[subhash[key].toString()]);
+              } else if (value.callback !== undefined) {
+                publishNS.writeStyle(value.selector, cssProperty,
+                  value.callback(subhash[key]));
+              } else if ((cssProperty == 'background-color') ||
+                (cssProperty == 'color') ||
+                (cssProperty == 'border-color')) {
+                var v = subhash[key];
+                if (!v.startsWith('#')) {
+                  v = '#' + v;
+                }
+                publishNS.writeStyle(value.selector, cssProperty, v);
+              } else {
+                var subhashValue = subhash[key];
+                if (value.toProportion === true)
+                  subhashValue = (100.0 / subhashValue) + '%';
+
+                publishNS.writeStyle(value.selector, cssProperty,
+                  subhashValue);
+              }
+            });
+          } else if (value.selector !== undefined) {
+            var $elem;
+            if (value.outsideWidget === true) {
+              $elem = $(value.selector);
+            } else {
+              $elem = publishNS.findContextElem(value.selector);
             }
+
+            if (value.attr !== undefined) {
+              $elem.attr(value.attr, subhash[key]);
+            }
+
+            if (value.hideShow === true) {
+              if (subhash[key]) {
+                $elem.show();
+              } else {
+                $elem.hide();
+              }
+            }
+
+            if (value.callback !== undefined)
+              value.callback($elem, subhash[key]);
+          } else {
+            if (value.callback !== undefined)
+              value.callback(subhash[key]);
+          }
         }
+      } else if (typeof subapply[key] == 'object') {
+        publishNS.applicator(subapply[key], subhash[key]);
+      } else {
+        throw ('malformed hash?');
+      }
+    }
+  };
+
+  /////////////////////////////////////
+  // SECTION: Stylesheet Helpers
+
+  blist.publish.stylesheet = null;
+  blist.publish.styleRules = {};
+  blist.publish.writeStyle = function(selector, key, value) {
+    if (publishNS.stylesheet === null) {
+      // initialize the stylesheet
+      var styleNode = publishNS.generateStyleNode();
+
+      var stylesheets = publishNS.retrieveStylesheets();
+      for (var index = 0; index < stylesheets.length; index++) {
+        publishNS.stylesheet = stylesheets[index];
+        if ((publishNS.stylesheet.ownerNode || publishNS.stylesheet.owningElement) == styleNode) {
+          break;
+        }
+      }
     }
 
     var selectors = selector.split(/,\s*/);
-    for (var i = 0; i < selectors.length; i++)
-    {
-        if (publishNS.styleRules[selectors[i]] === undefined)
-        {
-            // Define and store the rule if it does not already exist
-            var rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
-            var compare = selectors[i].toLowerCase();
-            if (publishNS.stylesheet.insertRule)
-    		{
-    		    publishNS.stylesheet.insertRule(selectors[i] + " {}", rules.length);
-    		}
-    		else
-    		{
-                publishNS.stylesheet.addRule(selectors[i], null, rules.length);
-                compare = selectors[i].toLowerCase().replace(/(\.\w+)+/g, function(match)
-                {
-                    // IE reverses the order of the classes
-                    return '.' + match.slice(1).split('.').reverse().join('.');
-                });
-    		}
-            rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
-
-            // Find the new rule
-            for (var j = 0; j < rules.length; j++)
-            {
-                if (rules[j].selectorText.toLowerCase() === compare)
-                {
-                    publishNS.styleRules[selectors[i]] = rules[j];
-                }
-            }
+    for (var i = 0; i < selectors.length; i++) {
+      if (publishNS.styleRules[selectors[i]] === undefined) {
+        // Define and store the rule if it does not already exist
+        var rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
+        var compare = selectors[i].toLowerCase();
+        if (publishNS.stylesheet.insertRule) {
+          publishNS.stylesheet.insertRule(selectors[i] + ' {}', rules.length);
+        } else {
+          publishNS.stylesheet.addRule(selectors[i], null, rules.length);
+          compare = selectors[i].toLowerCase().replace(/(\.\w+)+/g, function(match) {
+            // IE reverses the order of the classes
+            return '.' + match.slice(1).split('.').reverse().join('.');
+          });
         }
+        rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
 
-        // Grab the appropriate rule and set the appropriate style
-        publishNS.styleRules[selectors[i]].style[
-            key.replace(/-[a-z]/g, function(match) { return match.charAt(1).toUpperCase(); })]
-              = value;
+        // Find the new rule
+        for (var j = 0; j < rules.length; j++) {
+          if (rules[j].selectorText.toLowerCase() === compare) {
+            publishNS.styleRules[selectors[i]] = rules[j];
+          }
+        }
+      }
+
+      // Grab the appropriate rule and set the appropriate style
+      publishNS.styleRules[selectors[i]].style[
+        key.replace(/-[a-z]/g, function(match) {
+          return match.charAt(1).toUpperCase();
+        })] = value;
     }
-};
+  };
 
-blist.publish.clearStyles = function()
-{
-    if (publishNS.stylesheet === null)
-    {
-        return;
+  blist.publish.clearStyles = function() {
+    if (publishNS.stylesheet === null) {
+      return;
     }
 
     var rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
 
     // Firefox doesn't like using a function pointer here.
-    if (typeof publishNS.stylesheet.deleteRule === 'function')
-    {
-        for (var j = 0; j < rules.length; j++)
-        {
-            publishNS.stylesheet.deleteRule(j);
-        }
-    }
-    else
-    {
-        for (var j = 0; j < rules.length; j++)
-        {
-            publishNS.stylesheet.removeRule(j);
-        }
+    if (typeof publishNS.stylesheet.deleteRule === 'function') {
+      for (var j = 0; j < rules.length; j++) {
+        publishNS.stylesheet.deleteRule(j);
+      }
+    } else {
+      for (var k = 0; k < rules.length; k++) {
+        publishNS.stylesheet.removeRule(k);
+      }
     }
 
     publishNS.styleRules = {};
-};
+  };
 
-/////////////////////////////////////
-// SECTION: Data Handling Methods
+  /////////////////////////////////////
+  // SECTION: Data Handling Methods
 
-blist.publish.valueChangedFired = false;
-blist.publish.handleValueChanged = function()
-{
+  blist.publish.valueChangedFired = false;
+  blist.publish.handleValueChanged = function() {
     // prevent double fire on the same execution loop
-    if (blist.publish.valueChangedFired === true)
-    { return; }
+    if (blist.publish.valueChangedFired === true) {
+      return;
+    }
 
     // get values from current form section
     var hash = this._getFormValues();
@@ -292,78 +276,77 @@ blist.publish.handleValueChanged = function()
     publishNS.applyCustomizationToPreview(publishNS.cleanData(publishNS.workingTheme));
     $('.publisherHeader').addClass('unsaved');
 
-    if (_.isFunction(publishNS.updateCustomUI))
-    { publishNS.updateCustomUI(); }
+    if (_.isFunction(publishNS.updateCustomUI)) {
+      publishNS.updateCustomUI();
+    }
 
     blist.publish.valueChangedFired = true;
-    _.defer(function() { blist.publish.valueChangedFired = false; });
-};
+    _.defer(function() {
+      blist.publish.valueChangedFired = false;
+    });
+  };
 
 
-// document.ready must be deferred so this happens after the page document.ready
-$(function() { _.defer(function()
-{
-    var adjustSizes = function()
-    {
+  // document.ready must be deferred so this happens after the page document.ready
+  $(function() {
+    _.defer(function() {
+      var adjustSizes = function() {
         // match page height
         var $content = $('.publisherMain');
         var $contentBox = $('.contentBox');
         $content.height($(window).height() -
-            $('#siteHeader').outerHeight(false) -
-            $('#siteFooter').outerHeight(false) -
-            $('.publisherHeader').outerHeight(true) -
-            ($contentBox.outerHeight(true) - $contentBox.height()));
-    };
-    adjustSizes();
-    $(window).resize(adjustSizes);
+          $('#siteHeader').outerHeight(false) -
+          $('#site-chrome-header').outerHeight(false) -
+          $('#siteFooter').outerHeight(false) -
+          $('#site-chrome-footer').outerHeight(false) -
+          $('.publisherHeader').outerHeight(true) -
+          ($contentBox.outerHeight(true) - $contentBox.height()));
+      };
+      adjustSizes();
+      $(window).resize(adjustSizes);
 
-    $('#sidebarOptions a[data-paneName]').each(function()
-    {
+      $('#sidebarOptions a[data-paneName]').each(function() {
         var $a = $(this);
-        $a.click(function(e)
-        {
-            e.preventDefault();
-            publishNS.sidebar.show($a.attr('data-paneName'));
+        $a.click(function(e) {
+          e.preventDefault();
+          publishNS.sidebar.show($a.attr('data-paneName'));
         });
-    });
+      });
 
-    // Publishing action buttons
-    $('.saveButton').click(function(event)
-    {
+      // Publishing action buttons
+      $('.saveButton').click(function(event) {
         event.preventDefault();
 
         $('.publisherActions .loadingIcon').show().css('display', 'inline-block');
-        publishNS.saveCustomization(function()
-        {
-            publishNS.applyCustomizationToPreview(publishNS.workingTheme);
-            if (_.isFunction(publishNS.updateCustomUI))
-            { publishNS.updateCustomUI(); }
+        publishNS.saveCustomization(function() {
+          publishNS.applyCustomizationToPreview(publishNS.workingTheme);
+          if (_.isFunction(publishNS.updateCustomUI)) {
+            publishNS.updateCustomUI();
+          }
 
-            $('.headerBar').removeClass('unsaved noRevert');
-            $('.publisherActions .loadingIcon').hide();
+          $('.headerBar').removeClass('unsaved noRevert');
+          $('.publisherActions .loadingIcon').hide();
         });
-    });
-    $('.revertButton').click(function(event)
-    {
+      });
+      $('.revertButton').click(function(event) {
         event.preventDefault();
         publishNS.initCustomization();
         publishNS.applyCustomizationToPreview(publishNS.workingTheme);
-        if (_.isFunction(publishNS.updateCustomUI))
-        { publishNS.updateCustomUI(); }
-    });
+        if (_.isFunction(publishNS.updateCustomUI)) {
+          publishNS.updateCustomUI();
+        }
+      });
 
-    // Warn on leaving
-    if ($.isBlank(publishNS.dontPromptOnLeaving))
-    {
-        window.onbeforeunload = function()
-        {
-            if ($('.headerBar').hasClass('unsaved'))
-            {
-                return 'You will lose your changes to the current theme.';
-            }
+      // Warn on leaving
+      if ($.isBlank(publishNS.dontPromptOnLeaving)) {
+        window.onbeforeunload = function() {
+          if ($('.headerBar').hasClass('unsaved')) {
+            return 'You will lose your changes to the current theme.';
+          }
         };
-    }
+      }
 
-}); });
+    });
+  });
 
 })(jQuery);

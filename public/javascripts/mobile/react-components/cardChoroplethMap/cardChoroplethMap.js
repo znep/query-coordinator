@@ -1,5 +1,5 @@
-import React from 'react';
 import _ from 'lodash';
+import React from 'react';
 
 require('socrata-visualizations').ChoroplethMap;
 
@@ -37,11 +37,11 @@ class CardChoroplethMap extends React.Component {
           negativeColor: '#CE6565'
         },
         localization: {
-          FLYOUT_SELECTED_NOTICE: 'The page is currently filtered by this value, click to clear it',
-          FLYOUT_UNFILTERED_AMOUNT_LABEL: 'Total',
-          FLYOUT_FILTERED_AMOUNT_LABEL: 'Filtered',
-          NO_VALUE: '(No Value)',
-          CLEAR_FILTER_LABEL: 'Clear filter'
+          flyout_selected_notice: 'The page is currently filtered by this value, click to clear it',
+          flyout_unfiltered_amount_label: 'Total',
+          flyout_filtered_amount_label: 'Filtered',
+          no_value: '(No Value)',
+          clear_filter_label: 'Clear filter'
         },
         shapefile: {
           columns: {
@@ -83,7 +83,7 @@ class CardChoroplethMap extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!_.eq(this.props.filters, this.state.filters)) {
+    if (!_.isEqual(this.props.filters, this.state.filters)) {
       this.setState({
         filters: this.props.filters
       }, () => {

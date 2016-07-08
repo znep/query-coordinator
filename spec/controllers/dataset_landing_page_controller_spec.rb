@@ -32,12 +32,12 @@ describe DatasetLandingPageController do
       expect(response.body).to eq(views_json)
     end
 
-    it 'returns nothing when a core error is thrown' do
+    it 'returns an error message when a core error is thrown' do
       allow_any_instance_of(DatasetLandingPage).to receive(:get_popular_views).and_raise(error)
 
       get :popular_views, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
-      expect(response.body).to eq('')
+      expect(response.body).to match(/Failed/)
     end
   end
 
@@ -50,12 +50,12 @@ describe DatasetLandingPageController do
       expect(response.body).to eq(views_json)
     end
 
-    it 'returns nothing when a core error is thrown' do
+    it 'returns an error message when a core error is thrown' do
       allow_any_instance_of(DatasetLandingPage).to receive(:get_featured_content).and_raise(error)
 
       get :get_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
-      expect(response.body).to eq('')
+      expect(response.body).to match(/Failed/)
     end
   end
 
@@ -69,12 +69,12 @@ describe DatasetLandingPageController do
       expect(response.body).to eq(view_json)
     end
 
-    it 'returns nothing when a core error is thrown' do
+    it 'returns an error message when a core error is thrown' do
       allow_any_instance_of(DatasetLandingPage).to receive(:add_featured_content).and_raise(error)
 
       post :post_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
-      expect(response.body).to eq('')
+      expect(response.body).to match(/Failed/)
     end
   end
 
@@ -88,13 +88,13 @@ describe DatasetLandingPageController do
       expect(response.body).to eq(view_json)
     end
 
-    it 'returns nothing when a core error is thrown' do
+    it 'returns an error message when a core error is thrown' do
       allow_any_instance_of(DatasetLandingPage).to receive(:get_formatted_view_widget_by_id).
         and_raise(error)
 
       get :get_formatted_view_by_id, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
-      expect(response.body).to eq('')
+      expect(response.body).to match(/Failed/)
     end
   end
 end

@@ -78,7 +78,7 @@ module.exports = function HistogramController(
   });
 
   function convertFiltersToWhereClauseFragments(cardFilter) {
-    return _.invoke(cardFilter.filters, 'generateSoqlWhereFragment', cardFilter.filteredColumn);
+    return _.invokeMap(cardFilter.filters, 'generateSoqlWhereFragment', cardFilter.filteredColumn);
   }
 
   var whereClauseExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').
@@ -87,7 +87,7 @@ module.exports = function HistogramController(
       function(activeFilters, cardId) {
         return _.chain(activeFilters).
           reject(_.matchesProperty('uniqueId', cardId)).
-          omit(_.isEmpty).
+          omitBy(_.isEmpty).
           map(convertFiltersToWhereClauseFragments).
           flatten().
           value().

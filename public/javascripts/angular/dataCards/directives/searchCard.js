@@ -15,7 +15,7 @@ module.exports = function searchCard(CardDataService, ServerConfig, SoqlHelpers,
       model.observeOnLatest('page.baseSoqlFilter'),
       model.observeOnLatest('aggregation'),
       function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, aggregation) {
-        if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
+        if (_.includes(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
           return Rx.Observable.returnValue([]);
         } else {
           return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, aggregation));
@@ -137,7 +137,7 @@ module.exports = function searchCard(CardDataService, ServerConfig, SoqlHelpers,
           whereClause$,
           function(signal, searchValue, fieldName, physicalDatatype, externalWhereClause) {
             var whereClause;
-            if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
+            if (_.includes(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
               var numericSearchValue = parseFloat(searchValue);
               if (_.isNaN(numericSearchValue)) {
                 invalidSearchInputSubject.onNext(true);
@@ -254,7 +254,7 @@ module.exports = function searchCard(CardDataService, ServerConfig, SoqlHelpers,
           ).distinctUntilChanged(),
           // Metadata-based observable for datatypes which can trigger suggestions
           physicalDatatype$.map(function(physicalDatatype) {
-            return !_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype);
+            return !_.includes(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype);
           }),
           function(isActionTriggerForSuggestionPanel, isDatatypeCompatibleWithSuggestionPanel) {
             return isActionTriggerForSuggestionPanel && isDatatypeCompatibleWithSuggestionPanel;

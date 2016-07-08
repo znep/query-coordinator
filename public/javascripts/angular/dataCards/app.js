@@ -3,6 +3,7 @@ var templateUrl3 = require('angular_templates/dataCards/pages/single-card-view.h
 var templateUrl2 = require('angular_templates/dataCards/pages/cards-view.html');
 var templateUrl1 = require('angular_templates/dataCards/pages/test-page.html');
 const angular = require('angular');
+const _ = require('lodash');
 
 require('./module');
 

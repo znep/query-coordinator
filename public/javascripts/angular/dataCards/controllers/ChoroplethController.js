@@ -378,7 +378,7 @@ module.exports = function ChoroplethController(
     unfilteredData$,
     function(geojsonRegions, unfilteredData) {
       var noRegions = _.isEmpty(_.get(geojsonRegions, 'features', []));
-      var noData = _.every(_.pluck(unfilteredData, 'name'), _.isUndefined);
+      var noData = _.every(_.map(unfilteredData, 'name'), _.isUndefined);
       return noRegions || noData;
     });
 
@@ -409,7 +409,7 @@ module.exports = function ChoroplethController(
       var humanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
       var filters = [];
 
-      var hasFiltersOnCard = _.any(
+      var hasFiltersOnCard = _.some(
         $scope.model.getCurrentValue('activeFilters'),
         'operand',
         featureId

@@ -75,11 +75,11 @@ module.exports = function columnAndVisualizationSelector(
                 supportedCardTypes
               );
 
-              if (_.include(supportedAndAvailableCardTypes, defaultColumnCardType)) {
+              if (_.includes(supportedAndAvailableCardTypes, defaultColumnCardType)) {
                 defaultCardType = defaultColumnCardType;
               }
 
-              if (!_.include(supportedAndAvailableCardTypes, defaultCardType)) {
+              if (!_.includes(supportedAndAvailableCardTypes, defaultCardType)) {
                 defaultCardType = supportedAndAvailableCardTypes[0] || 'invalid';
               }
             }
@@ -115,7 +115,7 @@ module.exports = function columnAndVisualizationSelector(
             return null;
           }
 
-          if (_.include(availableColumns, fieldName)) {
+          if (_.includes(availableColumns, fieldName)) {
             column = columns[fieldName];
           }
 
@@ -160,7 +160,7 @@ module.exports = function columnAndVisualizationSelector(
       $scope.$bindObservable('shouldShowAggregationSelector', selectedCardModel$.
         observeOnLatest('cardType').
         map(function(cardType) {
-          return !_.contains(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
+          return !_.includes(Constants.AGGREGATION_CARDTYPE_BLACKLIST, cardType);
         }));
 
       $scope.$bindObservable(

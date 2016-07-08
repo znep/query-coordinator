@@ -96,7 +96,7 @@ module.exports = function quickFilterBar(
                 if (cardFilterInfo.filters.length > 1) {
                   $log.warn('Cannot apply multiple filters to a single card.');
                 }
-                var filter = _.first(cardFilterInfo.filters);
+                var filter = _.head(cardFilterInfo.filters);
                 accumulator.push({
                   column: columns[cardFilterInfo.fieldName],
                   operator: humanReadableOperator(filter),

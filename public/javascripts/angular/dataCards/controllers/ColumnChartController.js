@@ -132,14 +132,14 @@ module.exports = function ColumnChartController($scope, CardDataService, rx) {
 
         var results = [];
 
-        _.pluck(unfilteredData, 'name').forEach(function(name) {
+        _.map(unfilteredData, 'name').forEach(function(name) {
 
           var datumIsSpecial = false;
 
-          if (_.contains(activeFilterNames, null)) {
+          if (_.includes(activeFilterNames, null)) {
             datumIsSpecial = _.isNaN(name) || _.isNull(name) || _.isUndefined(name);
           } else {
-            datumIsSpecial = _.contains(activeFilterNames, name);
+            datumIsSpecial = _.includes(activeFilterNames, name);
           }
 
           results.push([

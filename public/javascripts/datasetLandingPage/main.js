@@ -37,7 +37,7 @@ ReactDOM.render(
 );
 
 // Show the footer
-var footer = document.querySelector('#chrome-footer');
+var footer = document.querySelector('#site-chrome-footer');
 if (footer) {
   footer.style.visibility = 'visible';
 }

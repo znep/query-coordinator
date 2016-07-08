@@ -113,7 +113,93 @@ class CustomContentController < ApplicationController
     false
   end
 
+  def page_without_caching
+    @debug = params['debug'] == 'true'
+    @edit_mode = params['_edit_mode'] == 'true'
+
+    routing = DataslateRouting.for(CurrentDomain.cname)
+    @page = routing.page_for(params[:path], { ext: params[:ext].try(:downcase) })
+
+    full_path = @page.full_path
+
+    # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
+    # whether to render the site chrome header/footer based on the corresponding feature flags.
+    @using_dataslate = true
+    @on_homepage = @page.homepage?
+
+    if @page.nil? || !@page.viewable_by?(@current_user)
+      if @page.homepage?
+        self.action_name = 'homepage'
+        homepage
+      else
+        render_404
+      end
+      return true
+    end
+
+    Canvas2::DataContext.reset
+    Canvas2::Util.reset
+    Canvas2::Util.set_params(params)
+    Canvas2::Util.set_request(request)
+    Canvas2::Util.set_debug(@debug || @edit_mode)
+    Canvas2::Util.set_no_cache(@page.max_age.try(:<=, 0) || false)
+    Canvas2::Util.set_path(full_path)
+    # Set without user before we load pages
+    Canvas2::Util.set_env({
+      domain: CurrentDomain.cname,
+      renderTime: Time.now.to_i,
+      path: full_path,
+      siteTheme: CurrentDomain.theme,
+      currentUser: (@current_user.try(:id) if @page.private_data?),
+      current_locale: I18n.locale,
+      available_locales: request.env['socrata.available_locales']
+    })
+    Canvas2::Util.is_private(@page.private_data?)
+
+    # check for redirects:
+    if @page.redirect?
+      redirect_info = @page.redirect_info
+      redirect_to(redirect_info[:path], :status => redirect_info[:code])
+      return true # dunno why! but if i don't do this the canvas env is horked for the next req.
+    end
+
+    # suppress govstat toolbar chrome and styling if requested:
+    if CurrentDomain.module_enabled?(:govStat)
+      # suppress govstat chrome on homepage
+      @suppress_govstat ||= @page.homepage?
+
+      # suppress govstat chrome for selected urls
+      @suppress_govstat ||= CurrentDomain.configuration('gov_stat').
+        try(:properties).
+        try(:suppress_govstat).
+        try(:any?) { |route| request.path =~ Regexp.new(route) }
+    end
+
+    @body_class = @page.body_class
+    @minimal_render = params['no_render'] == 'true'
+
+    # XXX: TERRIBLE THING WE DO. TODO: BETTERNESS
+    # Move to different variable so we can control rendering in our own
+    # template, instead of the main layout
+    @custom_meta = @meta
+    @meta = nil
+  end
+
   def page
+    if params[:raw]
+      routing = DataslateRouting.for(CurrentDomain.cname)
+      page = routing.page_for(params[:path], { ext: params[:ext].try(:downcase) })
+      cache_state = Page.last_updated_at(page.uid) if page.present?
+
+      render :json => { pid: Process.pid, page: page, cache_state: cache_state }.to_json
+      return
+    end
+
+    if FeatureFlags.value_for(:route_dataslate_without_caching, request: request)
+      return page_without_caching
+    end
+
+
     # FIXME: should probably make sure you're a Socrata admin before allowing debugging
     @debug = params['debug'] == 'true'
     @edit_mode = params['_edit_mode'] == 'true'

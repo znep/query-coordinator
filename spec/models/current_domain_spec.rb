@@ -38,4 +38,39 @@ describe CurrentDomain, :type => :model do
     CurrentDomain.check_for_theme_update('youthere')
   end
 
+  context 'membership test' do
+
+    let(:mock_user) { double('user', rights: mock_rights) }
+    let(:mock_rights) { nil }
+
+    context 'when user is nil' do
+      it 'returns false' do
+        assert_equal(false, CurrentDomain.member?(nil))
+      end
+    end
+
+    context 'when rights are nil' do
+      it 'returns false' do
+        assert_equal(false, CurrentDomain.member?(mock_user))
+      end
+    end
+
+    context 'when rights are empty' do
+      let(:mock_rights) { [] }
+
+      it 'returns false' do
+        assert_equal(false, CurrentDomain.member?(mock_user))
+      end
+    end
+
+    context 'when rights are present' do
+      let(:mock_rights) { %w(right) }
+
+      it 'returns true' do
+        assert_equal(true, CurrentDomain.member?(mock_user))
+      end
+    end
+
+  end
+
 end

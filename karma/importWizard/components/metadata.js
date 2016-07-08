@@ -44,7 +44,6 @@ describe("metadata's reducer testing", () => {
     it('sets the name of the dataset', () => {
       const result = update(state, updateName('wombats'));
       expect(result.contents.name).to.equal('wombats');
-
     });
   });
 

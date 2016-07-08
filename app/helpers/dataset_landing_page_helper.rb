@@ -47,7 +47,7 @@ module DatasetLandingPageHelper
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
   end
 
-  def render_server_config
+  def render_dataset_landing_page_server_config
     # Figure out if we need a locale prefix on links
     locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
 

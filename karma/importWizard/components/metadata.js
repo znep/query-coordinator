@@ -237,97 +237,106 @@ describe('validators', () => {
   });
 
   describe('validation testing', () => {
-    it('returns false for each key in metadata if they are empty', () => {
+    describe('validate', () => {
+      it('returns false for empty required keys in metadata', () => {
+        const standardValid = isStandardMetadataValid(metadata);
+        expect(standardValid).to.equal(false);
+
+        const result = validate(metadata);
+        expect(result.name).to.equal(false);
+        expect(result.attributionLink).to.equal(false);
+      });
+    });
+
+    it('returns true for valid values', () => {
+      metadata.contents.name = 'panda',
+      metadata.contents.attributionLink = 'wombat'
+
       const standardValid = isStandardMetadataValid(metadata);
-      expect(standardValid).to.equal(false);
+      expect(standardValid).to.equal(true);
 
       const result = validate(metadata);
-      expect(result.name).to.equal(false);
-      expect(result.attributionLink).to.equal(false);
+      expect(result.name).to.equal(true);
+      expect(result.attributionLink).to.equal(true);
+    });
+
+  });
+
+  describe('isCustomMetadataValid', () => {
+    it('returns false if not all required fields of customMetadata are filled', () => {
+      const customRequired = isCustomMetadataValid(metadata);
+      expect(customRequired).to.equal(false);
+    });
+
+    it('returns true if all required fields of customMetadata are nonempty', () => {
+      //fields 1 and venus are the required fields.
+      metadata.contents.customMetadata['second'][1].value = 'venus';
+
+      const customRequired = isCustomMetadataValid(metadata);
+      expect(customRequired).to.equal(true);
     });
   });
 
-  it('returns true if customMetadata has empty keys', () => {
-    metadata.contents.name = 'panda',
-    metadata.contents.attributionLink = 'wombat'
-
-    const standardValid = isStandardMetadataValid(metadata);
-    expect(standardValid).to.equal(true);
-
-    const result = validate(metadata);
-    expect(result.name).to.equal(true);
-    expect(result.attributionLink).to.equal(true);
-  });
-
-  it('returns false if not all required fields of customMetadata are filled', () => {
-    const customRequired = isCustomMetadataValid(metadata);
-    expect(customRequired).to.equal(false);
-  });
-
-  it('returns true if all required fields of customMetadata are nonempty', () => {
-    //fields 1 and venus are the required fields.
-    metadata.contents.customMetadata['second'][1].value = 'venus';
-
-    const customRequired = isCustomMetadataValid(metadata);
-    expect(customRequired).to.equal(true);
-  });
-
-  it('returns true if email is empty', () => {
+  it('validEmail returns true if email is empty', () => {
     const validEmail = isEmailValid(metadata);
     expect(validEmail).to.equal(true);
   });
 
-  it('returns false if not all required metadata are filled', () => {
-    const standardValid = isMetadataValid(metadata);
-    expect(standardValid).to.equal(false);
+  describe('isMetadataValid', () => {
+    it('returns false if not all required metadata are filled', () => {
+      const standardValid = isMetadataValid(metadata);
+      expect(standardValid).to.equal(false);
+    });
+
+    it('returns true if all required metadata are nonempty', () => {
+      metadata.contents.name = 'name';
+      metadata.contents.attributionLink = 'google.com';
+      metadata.contents.customMetadata['second'][1].value = 'venus';
+      metadata.license.attribution = 'attribution';
+
+      const valid = isMetadataValid(metadata);
+      expect(valid).to.equal(true);
+    });
   });
 
-  it('returns true if all required metadata are nonempty', () => {
-    metadata.contents.name = 'name';
-    metadata.contents.attributionLink = 'google.com';
-    metadata.contents.customMetadata['second'][1].value = 'venus';
-    metadata.license.attribution = 'attribution';
+  describe('isMetadataUnsaved', () => {
+    it('returns false if metadata has not been updated', () => {
+      metadata.lastSaved = metadata.contents;
+      const unsaved = isMetadataUnsaved(metadata);
 
-    const valid = isMetadataValid(metadata);
-    expect(valid).to.equal(true);
+      expect(unsaved).to.equal(false);
+    });
+
+    it('returns true if metadata has been updated', () => {
+      metadata.lastSaved = _.cloneDeep(metadata.contents);
+      metadata.contents.name = 'new name';
+      const unsaved = isMetadataUnsaved(metadata);
+
+      expect(unsaved).to.equal(true);
+    });
   });
 
-  it('returns false if metadata has not been updated', () => {
-    metadata.lastSaved = metadata.contents;
-    const unsaved = isMetadataUnsaved(metadata);
+  describe('isAttributionValid', () => {
+    it('returns true if attribution is not required', () => {
+      metadata = update(metadata, updateLicenseName('Public Domain'));
+      const attributionvalid = isAttributionValid(metadata);
 
-    expect(unsaved).to.equal(false);
+      expect(attributionvalid).to.equal(true);
+    });
+
+    it('returns false if attribution is required and not provided', () => {
+      const attributionvalid = isAttributionValid(metadata);
+
+      expect(attributionvalid).to.equal(false);
+    });
+
+    it('returns true if attribution is provided', () => {
+      metadata.license.attribution = 'attribution';
+      const attributionvalid = isAttributionValid(metadata);
+
+      expect(attributionvalid).to.equal(true);
+    });
   });
-
-  it('returns true if metadata has been updated', () => {
-    metadata.lastSaved = _.cloneDeep(metadata.contents);
-    metadata.contents.name = 'new name';
-    const unsaved = isMetadataUnsaved(metadata);
-
-    expect(unsaved).to.equal(true);
-  });
-
-  it('returns true if attribution is not required', () => {
-    metadata = update(metadata, updateLicenseName('Public Domain'));
-    const attributionvalid = isAttributionValid(metadata);
-
-    expect(attributionvalid).to.equal(true);
-  });
-
-  it('returns false if attribution has not been provided', () => {
-    const attributionvalid = isAttributionValid(metadata);
-
-    expect(attributionvalid).to.equal(false);
-  });
-
-  it('returns true if attribution is provided', () => {
-    metadata.license.attribution = 'attribution';
-    const attributionvalid = isAttributionValid(metadata);
-
-    expect(attributionvalid).to.equal(true);
-  });
-
-
 });
 
 describe('view testing', () => {

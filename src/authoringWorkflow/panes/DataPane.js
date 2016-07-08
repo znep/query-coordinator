@@ -1,13 +1,40 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Styleguide from 'socrata-styleguide';
 
 import CustomizationTabPane from '../CustomizationTabPane';
 
 import { translate } from '../I18n';
 import { VISUALIZATION_TYPES, AGGREGATION_TYPES } from '../constants';
-import { setDimension, setMeasure, setVisualizationType, setDataSource, setComputedColumn, setMeasureAggregation } from '../actions';
-import { isLoading, hasData, hasError, getValidRegions, getValidMeasures, getValidDimensions } from '../selectors/metadata';
-import { getCurrentVif, isFeatureMap, isChoroplethMap, getShapefileUid } from '../selectors/vifAuthoring';
+
+import {
+  setDimension,
+  setMeasure,
+  setVisualizationType,
+  setDataSource,
+  setComputedColumn,
+  setMeasureAggregation
+} from '../actions';
+
+import {
+  isLoading,
+  hasData,
+  hasError,
+  getValidRegions,
+  getValidMeasures,
+  getValidDimensions,
+  getRecommendedDimensions,
+  getRecommendedVisualizationTypes
+} from '../selectors/metadata';
+
+import {
+  getCurrentVif,
+  isFeatureMap,
+  isChoroplethMap,
+  getShapefileUid,
+  getVisualizationType,
+  getAnyDimension
+} from '../selectors/vifAuthoring';
 
 export var DataPane = React.createClass({
   propTypes: {
@@ -17,10 +44,10 @@ export var DataPane = React.createClass({
     metadata: React.PropTypes.object,
     defaultOptionKey: React.PropTypes.string,
     visualizationTypes: React.PropTypes.array,
-    onChangeMeasure: React.PropTypes.func,
-    onChangeMeasureAggregation: React.PropTypes.func,
-    onChangeVisualizationType: React.PropTypes.func,
-    onChangeRegion: React.PropTypes.func
+    onSelectMeasure: React.PropTypes.func,
+    onSelectMeasureAggregation: React.PropTypes.func,
+    onSelectVisualizationType: React.PropTypes.func,
+    onSelectRegion: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -30,76 +57,90 @@ export var DataPane = React.createClass({
     }
   },
 
-  onChangeRegion(event) {
-    var computedColumnUid = event.target.value;
+  onSelectRegion(selection) {
+    var computedColumnUid = selection.value;
     var regions = getValidRegions(this.props.metadata);
     var region = _.find(regions, {uid: computedColumnUid});
 
-    this.props.onChangeRegion(computedColumnUid, region.fieldName);
+    this.props.onSelectRegion(computedColumnUid, region.fieldName);
   },
 
   dimensionDropdown() {
-    var dimensions = getValidDimensions(this.props.metadata);
-    var dimensionOptions = [
-      <option key="" value="" disabled>{translate('panes.data.fields.dimension.placeholder')}</option>,
-      ...dimensions.map(dimension => {
-        return <option value={dimension.fieldName} key={dimension.fieldName}>{dimension.name}</option>;
-      })
+    var { metadata, onSelectDimension, vifAuthoring } = this.props;
+    var type = getVisualizationType(vifAuthoring);
+    var toRenderableRecommendedOption = dimension => {
+      return {
+        title: dimension.name,
+        value: dimension.fieldName,
+        group: translate('panes.data.fields.dimension.groups.recommended_columns')
+      };
+    };
+    var toRenderableOption = dimension => {
+      return {
+        title: dimension.name,
+        value: dimension.fieldName,
+        group: translate('panes.data.fields.dimension.groups.all_columns')
+      };
+    };
+
+    var dimensions = [
+      ..._.map(getRecommendedDimensions(metadata, type), toRenderableRecommendedOption),
+      ..._.map(getValidDimensions(metadata), toRenderableOption)
     ];
+
+    var dimensionAttributes = {
+      id: 'dimension-selection',
+      placeholder: translate('panes.data.fields.dimension.placeholder'),
+      options: dimensions,
+      onSelection: onSelectDimension
+    };
 
     return (
       <div className="dimension-dropdown-container">
         <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}:</label>
-        <select onChange={this.props.onChangeDimension} defaultValue="" id="dimension-selection">{dimensionOptions}</select>
+        <Styleguide.components.Dropdown {...dimensionAttributes} />
       </div>
     );
   },
 
   measureDropdown() {
-    var measures = getValidMeasures(this.props.metadata);
-    var visualizationType = _.get(this.props.vif, 'series[0].type');
-    var selectAttributes = {
-      onChange: this.props.onChangeMeasure,
-      defaultValue: '',
+    var {
+      metadata,
+      vif,
+      onSelectMeasure,
+      onSelectMeasureAggregation,
+      vifAuthoring,
+      aggregationTypes
+    } = this.props;
+    var measures = getValidMeasures(metadata);
+    var visualizationType = _.get(vif, 'series[0].type');
+
+    var measureAttributes = {
+      options: [
+        {title: translate('panes.data.fields.measure.no_value'), value: null},
+        ...measures.map(measure => ({title: measure.name, value: measure.fieldName}))
+      ],
+      onSelection: onSelectMeasure,
+      value: null,
       id: 'measure-selection',
-      disabled: isFeatureMap(this.props.vifAuthoring)
+      disabled: isFeatureMap(vifAuthoring)
     };
 
-    var measureOptions = [
-      <option key="" value="">{translate('panes.data.fields.measure.no_value')}</option>,
-      ...measures.map(measure => {
-        return <option value={measure.fieldName} key={measure.fieldName}>{measure.name}</option>;
-      })
-    ];
-
-    return (
-      <div className="measure-dropdown-container">
-        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}:</label>
-        <select {...selectAttributes}>{measureOptions}</select>
-      </div>
-    );
-  },
-
-  measureAggregationDropdown() {
-    var visualizationType = _.get(this.props.vif, 'series[0].type');
-    var isFeatureMap = visualizationType === 'featureMap';
-    var selectAttributes = {
-      onChange: this.props.onChangeMeasureAggregation,
-      defaultValue: 'count',
+    var measureAggregationAttributes = {
+      options: aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type})),
+      onSelection: onSelectMeasureAggregation,
+      value: 'count',
       id: 'measure-aggregation-selection',
-      disabled: isFeatureMap
+      disabled: isFeatureMap(vifAuthoring)
     };
 
-    var measureAggregationOptions = [
-      ..._.map(this.props.aggregationTypes, aggregationType => {
-        return <option value={aggregationType.type} key={aggregationType.type}>{aggregationType.title}</option>;
-      })
-    ];
-
     return (
-      <div className="measure-dropdown-container">
-        <label className="block-label" htmlFor="measure-aggregation-selection">{translate('panes.data.fields.measure_aggregation.title')}:</label>
-        <select {...selectAttributes}>{measureAggregationOptions}</select>
+      <div>
+        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}:</label>
+        <div className="measure-dropdown-container">
+          <Styleguide.components.Dropdown {...measureAttributes} />
+          <Styleguide.components.Dropdown {...measureAggregationAttributes} />
+        </div>
       </div>
     );
   },
@@ -108,40 +149,58 @@ export var DataPane = React.createClass({
     var metadata = this.props.metadata;
     var regions = getValidRegions(metadata);
     var defaultRegion = getShapefileUid(this.props.vifAuthoring);
-    var regionOptions = [
-      <option key="" value="" disabled>{translate('panes.data.fields.region.placeholder')}</option>,
-      ...regions.map(region => {
-        return <option value={region.uid} key={region.uid}>{region.name}</option>
-      })
-    ];
+    var regionAttributes = {
+      id: 'region-selection',
+      placeholder: translate('panes.data.fields.region.placeholder'),
+      options: regions.map(region => ({title: region.name, value: region.uid})),
+      value: defaultRegion,
+      onSelection: this.onSelectRegion
+    };
 
     return (
       <div className="region-dropdown-container">
         <label className="block-label" htmlFor="region-selection">{translate('panes.data.fields.region.title')}:</label>
-        <select onChange={this.onChangeRegion} defaultValue={defaultRegion || ''} id="region-selection">{regionOptions}</select>
+        <Styleguide.components.Dropdown {...regionAttributes} />
       </div>
     );
   },
 
   visualizationTypeDropdown() {
-    var types = this.props.visualizationTypes;
-    var selectedVisualizationType = _.get(
-      this.props,
-      'vifAuthoring.selectedVisualizationType',
-      ''
-    );
+    var { visualizationTypes, vifAuthoring, metadata, onSelectVisualizationType } = this.props;
+    var types = visualizationTypes;
+    var selectedVisualizationType = _.get(vifAuthoring, 'selectedVisualizationType', '');
+    var toRenderableRecommendedOption = visualizationType => {
+      return {
+        title: visualizationType.title,
+        value: visualizationType.type,
+        group: translate('panes.data.fields.visualization_type.groups.recommended_visualizations')
+      };
+    };
+    var toRenderableOption = visualizationType => {
+      return {
+        title: visualizationType.title,
+        value: visualizationType.type,
+        group: translate('panes.data.fields.visualization_type.groups.all_visualizations')
+      };
+    };
 
-    var visualizationTypeOptions = [
-      <option key="" value="" disabled>{translate('panes.data.fields.visualization_type.placeholder')}</option>,
-      ...types.map(visualizationType => {
-        return <option value={visualizationType.type} key={visualizationType.type}>{visualizationType.title}</option>;
-      })
+    var visualizationTypes = [
+      ..._.map(getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring)), toRenderableRecommendedOption),
+      ..._.map(types, toRenderableOption)
     ];
+
+    var visualizationTypesAttributes = {
+      id: 'visualization-type-selection',
+      options: visualizationTypes,
+      placeholder: translate('panes.data.fields.visualization_type.placeholder'),
+      value: selectedVisualizationType,
+      onSelection: onSelectVisualizationType
+    };
 
     return (
       <div className="visualization-type-dropdown-container">
         <label className="block-label" htmlFor="visualization-type-selection">{translate('panes.data.fields.visualization_type.title')}:</label>
-        <select onChange={this.props.onChangeVisualizationType} defaultValue={selectedVisualizationType} id="visualization-type-selection">{visualizationTypeOptions}</select>
+        <Styleguide.components.Dropdown {...visualizationTypesAttributes} />
       </div>
     );
   },
@@ -181,7 +240,6 @@ export var DataPane = React.createClass({
     if (hasData(metadata)) {
       dimensionDropdown = this.dimensionDropdown();
       measureDropdown = this.measureDropdown();
-      measureAggregationDropdown = this.measureAggregationDropdown();
       visualizationTypeDropdown = this.visualizationTypeDropdown();
 
       if (isChoroplethMap(this.props.vifAuthoring)) {
@@ -195,7 +253,6 @@ export var DataPane = React.createClass({
 
         {visualizationTypeDropdown}
         {measureDropdown}
-        {measureAggregationDropdown}
         {dimensionDropdown}
 
         {regionsDropdown}
@@ -205,36 +262,34 @@ export var DataPane = React.createClass({
 });
 
 function mapStateToProps(state) {
+  var { vifAuthoring, metadata } = state;
+
   return {
-    vifAuthoring: state.vifAuthoring,
-    vif: getCurrentVif(state.vifAuthoring),
-    metadata: state.metadata
+    vifAuthoring,
+    metadata,
+    vif: getCurrentVif(vifAuthoring)
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeDimension: event => {
-      var dimension = event.target.value;
-      dispatch(setDimension(dimension));
+    onSelectDimension(dimension) {
+      dispatch(setDimension(dimension.value));
     },
 
-    onChangeMeasure: event => {
-      var measure = event.target.value;
-      dispatch(setMeasure(measure));
+    onSelectMeasure(measure) {
+      dispatch(setMeasure(measure.value));
     },
 
-    onChangeMeasureAggregation: event => {
-      var measureAggregation = event.target.value;
-      dispatch(setMeasureAggregation(measureAggregation));
+    onSelectMeasureAggregation(measureAggregation) {
+      dispatch(setMeasureAggregation(measureAggregation.value));
     },
 
-    onChangeVisualizationType: event => {
-      var visualizationType = event.target.value;
-      dispatch(setVisualizationType(visualizationType));
+    onSelectVisualizationType(visualizationType) {
+      dispatch(setVisualizationType(visualizationType.value));
     },
 
-    onChangeRegion: (computedColumnUid, computedColumnName) => {
+    onSelectRegion(computedColumnUid, computedColumnName) {
       dispatch(setComputedColumn(computedColumnUid, computedColumnName));
     }
   };

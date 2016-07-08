@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
+import styleguide from 'socrata-styleguide';
 
 import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
@@ -60,14 +61,21 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   featureMap() {
-    var defaultFlyoutTitleColumn = getFlyoutTitleColumn(this.props.vifAuthoring);
-    var columns = _.get(this.props, 'metadata.data.columns', []);
+    var { onSelectFlyoutTitle, vifAuthoring, metadata } = this.props;
+    var defaultFlyoutTitleColumn = getFlyoutTitleColumn(vifAuthoring);
+    var columns = _.get(metadata, 'data.columns', []);
     var columnOptions = [
-      <option key="">{translate('panes.legends_and_flyouts.fields.flyout_title.no_value')}</option>,
       ..._.map(columns, column => {
         return <option key={column.fieldName} value={column.fieldName}>{column.name}</option>;
       })
     ];
+
+    var columnAttributes = {
+      id: 'flyout-title-column',
+      placeholder: translate('panes.legends_and_flyouts.fields.flyout_title.no_value'),
+      options: _.map(columns, column => ({title: column.name, value: column.fieldName})),
+      onSelection: onSelectFlyoutTitle
+    };
 
     return (
       <div>
@@ -75,9 +83,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
         <h5>{translate('panes.legends_and_flyouts.subheaders.flyout_title')}</h5>
         <label className="block-label" htmlFor="flyout-title-column">Column</label>
         <div className="flyout-title-dropdown-container">
-          <select id="flyout-title" onChange={this.props.onChangeFlyoutTitle} defaultValue={defaultFlyoutTitleColumn}>
-            {columnOptions}
-          </select>
+          <styleguide.components.Dropdown {...columnAttributes} />
         </div>
       </div>
     );
@@ -124,8 +130,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setUnitsOther(other));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeFlyoutTitle: event => {
-      var columnName = event.target.value;
+    onSelectFlyoutTitle: flyoutTitle => {
+      var columnName = flyoutTitle.value;
       dispatch(setFlyoutTitle(columnName));
     }
   };

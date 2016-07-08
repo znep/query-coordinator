@@ -1,4 +1,5 @@
 import { translate, translateGroup } from '../I18n';
+import { BASE_LAYERS } from '../constants';
 
 export default {
   format: {
@@ -6,7 +7,7 @@ export default {
     version: 2
   },
   configuration: {
-    baseLayerUrl: null,
+    baseLayerUrl: BASE_LAYERS[0].value,
     baseLayerOpacity: 0.8,
     datasetMetadata: false,
     pointColor: '#eb6900',

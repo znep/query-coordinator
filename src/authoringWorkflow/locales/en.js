@@ -32,7 +32,11 @@ export default {
       fields: {
         dimension: {
           title: 'Dimension',
-          placeholder: 'Select a dimension...'
+          placeholder: 'Select a dimension...',
+          groups: {
+            recommended_columns: 'Recommended Columns',
+            all_columns: 'All Columns'
+          }
         },
         measure: {
           title: 'Measure',
@@ -44,7 +48,11 @@ export default {
         },
         visualization_type: {
           title: 'Visualization Type',
-          placeholder: 'Select a visualization type...'
+          placeholder: 'Select a visualization type...',
+          groups: {
+            recommended_visualizations: 'Recommended Visualizations',
+            all_visualizations: 'All Visualizations'
+          }
         },
         region: {
           title: 'Region',

@@ -1,4 +1,7 @@
+import _ from 'lodash';
 import { createSelector } from 'reselect';
+
+import { VISUALIZATION_TYPES, DIMENSION_TYPES } from '../constants';
 
 const getLoading = state => state.isLoading;
 const getDatasetMetadata = state => state.data;
@@ -22,12 +25,35 @@ export const getValidDimensions = createSelector(
   }
 );
 
+export const getRecommendedDimensions = (state, type) => {
+  var dimensions = getValidDimensions(state);
+  var visualizationType = _.find(VISUALIZATION_TYPES, visualization => visualization.type === type);
+
+  return _.filter(dimensions, dimension => {
+    return visualizationType && _.includes(visualizationType.preferredDimensionTypes, dimension.renderTypeName);
+  });
+};
+
+export const getRecommendedVisualizationTypes = (state, column) => {
+  var dimension = _.find(getValidDimensions(state), dimension => {
+    return column && column.columnName === dimension.fieldName
+  });
+
+  var dimensionType = _.find(DIMENSION_TYPES, column => {
+    return dimension && dimension.renderTypeName === column.type
+  });
+
+  return _.filter(VISUALIZATION_TYPES, visualization => {
+    return dimensionType && _.includes(dimensionType.preferredVisualizationTypes, visualization.type);
+  });
+};
+
 export const getValidMeasures = createSelector(
   getPhidippidesMetadata,
   (phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
-      filter({ dataTypeName: 'number' }).
+      filter({ renderTypeName: 'number' }).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
       sortBy('name').

@@ -151,11 +151,11 @@ export function licenseToView(license) {
   const licenseId = license.licenseId;
   const name = invertedLicenses[licenseId];
 
-  const licenseList = blistLicenses.map((l) => {
-    if (_.has(l, 'licenses')) {
-      return l.licenses;
+  const licenseList = blistLicenses.map((mapLicense) => {
+    if (_.has(mapLicense, 'licenses')) {
+      return mapLicense.licenses;
     } else {
-      return l;
+      return mapLicense;
     }
   });
 
@@ -166,12 +166,8 @@ export function licenseToView(license) {
 
   return {
     name: name,
-    termsLink: match.terms_link
-                ? match.terms_link
-                : '',
-    logoUrl: match.logo
-              ? match.logo
-              : ''
+    termsLink: match.terms_link || '',
+    logoUrl: match.logo || ''
   };
 }
 

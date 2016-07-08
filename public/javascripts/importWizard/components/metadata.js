@@ -39,11 +39,11 @@ type MetadataContents = {
 }
 
 type LicenseType = {
-    licenseName: String,
-    licensing: String,
-    licenseId: String,
-    attribution: String,
-    sourceLink: String
+  licenseName: String,
+  licensing: String,
+  licenseId: String,
+  attribution: String,
+  sourceLink: String
 }
 
 export function defaultCustomData() {
@@ -433,10 +433,10 @@ export function isAttributionValid(metadata) {
 }
 
 export function isMetadataValid(metadata: DatasetMetadata) {
-  return isStandardMetadataValid(metadata)
-          && isCustomMetadataValid(metadata)
-          && isEmailValid(metadata)
-          && isAttributionValid(metadata);
+  return isStandardMetadataValid(metadata) &&
+         isCustomMetadataValid(metadata) &&
+         isEmailValid(metadata) &&
+         isAttributionValid(metadata);
 }
 
 export function isMetadataUnsaved(metadata) {
@@ -759,13 +759,14 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
           </label>
           <input
             type="text"
-            name="view[contactEmail]'"
+            name="view[contactEmail]"
             value={metadata.contents.contactEmail}
             title={I18nPrefixed.email_address} className="textPrompt contactEmail"
             onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
           <div className="additionalHelp">{I18nPrefixed.email_help}</div>
           {!isEmailValid(metadata) ?
-            <label className="error email_help">{I18n.core.validation.email}</label> : null}
+            <label className="error email_help">{I18n.core.validation.email}</label>
+            : null}
         </div>
 
         <div className="required">{I18nPrefixed.required_field}</div>

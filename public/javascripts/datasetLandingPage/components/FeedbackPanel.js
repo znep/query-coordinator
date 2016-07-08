@@ -31,6 +31,8 @@ export var FeedbackPanel = React.createClass({
 
     // Initialize UserSnap.
     usersnap.init({
+      // Inject locale to localize the popup
+      locale: _.get(window.serverConfig, 'locale', 'en'),
       // Restore the feedback button after the user quits UserSnap.
       // UserSnap politely exposes event listeners.
       onClose: _.partial(this.showButton, this.resetButtonHover),
@@ -40,6 +42,8 @@ export var FeedbackPanel = React.createClass({
 
     // Initialize Zendesk.
     zendesk.init({
+      // Inject locale to localize the popup
+      locale: _.get(window.serverConfig, 'locale', 'en'),
       // Inject the user so we can auto-fill some information.
       user: window.serverConfig.currentUser
     });

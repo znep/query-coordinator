@@ -4,6 +4,7 @@ import _ from 'lodash';
 var loaded = false;
 
 // One-time setup options.
+var locale = null;
 var user = {};
 var onClose = _.noop;
 
@@ -18,6 +19,7 @@ function generateConfig() {
     commentBoxPlaceholder: 'Please add comments here',
     commentRequired: true,
     tools: ['note', 'pen', 'arrow'],
+    lang: getLocalizationKey(),
     loadHandler: function() {
       // Fill in some additional info which we can't expose via the widget.
       UserSnap.on('beforeSend', function(message) {
@@ -32,6 +34,13 @@ function generateConfig() {
       UserSnap.on('error', onClose);
     }
   };
+}
+
+// Get the UserSnap-supported locale key. UserSnap supports approximately 20 locales,
+// all of which correspond to the locale keys we use, except for German, which has
+// informal and formal options. If a locale isn't recognized, UserSnap defaults to English.
+function getLocalizationKey() {
+  return locale === 'de' ? 'de-informal' : locale;
 }
 
 // Script loader provided by UserSnap.
@@ -57,6 +66,7 @@ module.exports = {
   init: function(options) {
     if (!loaded) {
       options = options || {};
+      locale = options.locale;
 
       if (_.isPlainObject(options.user)) {
         user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);

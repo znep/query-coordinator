@@ -225,6 +225,9 @@ restore_dataset_filter:
 robots_txt_disallow_analytics_add:
   description: Adds "/analytics/add" to the Disallow list for robots.txt
   defaultValue: false
+route_dataslate_without_caching:
+  description: Use DataslateRouting to handle a per-page fetch of dataslate pages, rather than scraping the Pages Service/Dataset for updates without caching the contents in Memcached.
+  defaultValue: false
 see_socrata_news:
   description: Enable the "What's New" news widget and updated profile page
   defaultValue: true

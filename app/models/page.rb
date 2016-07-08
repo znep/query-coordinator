@@ -139,6 +139,8 @@ class Page < Model
       page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
       return page
     end
+
+
     # If fetching by ID with additional args, handle specially
     if !options[:id].nil?
       path = "/pages.json?#{options.to_param}"
@@ -186,6 +188,35 @@ class Page < Model
     pages.reverse! if sort.length > 1 && sort[1] == 'desc'
 
     pages
+  end
+
+  def self.find_by_uid(uid, custom_headers = {}, batch = nil, is_anon = false)
+    path = "/pages/#{uid}.json"
+    parse(with_path(path, custom_headers, batch, is_anon))
+  end
+
+  def self.find_by_unique_path(path, custom_headers = {}, batch = nil, is_anon = false )
+    path = "/pages.json?method=getPageByPath&path=#{path}"
+    parse(with_path(path, custom_headers, batch, is_anon))
+  end
+
+  def self.last_updated_at(uid, custom_headers = {})
+    path = "/pages/#{uid}.json?method=getLastUpdated"
+    timestamp = with_path(path, custom_headers)
+    Time.at(timestamp.strip.to_i) unless timestamp.nil?
+  end
+
+  def self.with_path(path, custom_headers = {}, batch = nil, is_anon = false)
+    begin
+      CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon)
+    rescue CoreServer::ResourceNotFound
+      nil
+    rescue CoreServer::CoreServerError => e
+      case e.error_code.to_sym
+        when :authentication_required then nil
+        else raise
+      end
+    end
   end
 
   def set_context(vars)
@@ -254,6 +285,16 @@ class Page < Model
     @update_data['metadata'] || @data['metadata'] || {}
   end
 
+  def redirect?
+    metadata['redirect']
+  end
+
+  def redirect_info
+    { path: metadata['redirect'],
+      code: metadata['redirectCode'] || 301
+    }
+  end
+
   def cache_info
     @update_data['cacheInfo'] || @data['cacheInfo'] || {}
   end
@@ -281,6 +322,30 @@ class Page < Model
   def private_data?
     @data.key?('privateData') ? @data['privateData'] :
       !content.blank? && (content['privateData'] == true || content['privateData'] == 'true')
+  end
+
+  def viewable_by?(user)
+    case permission
+    when 'private'
+      user.present? && (user.id == owner_id || user.has_right?(UserRights::EDIT_PAGES))
+    when 'domain_private'
+      user.present? && (user.id == owner_id || !CurrentDomain.member?(user))
+    when 'public'
+      true
+    end
+  end
+
+  def full_path(ext = nil)
+    @full_path ||=
+      begin
+        full_path = "/#{path}"
+        full_path << ".#{ext}" if ext.present?
+        full_path
+      end
+  end
+
+  def homepage?
+    @homepage ||= full_path == '/'
   end
 
   def format

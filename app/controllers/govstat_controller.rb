@@ -45,11 +45,11 @@ class GovstatController < ApplicationController
 
     begin
       reports = Page.find('$order' => ':updated_at desc', 'status' => 'all',
-        '$select' => 'name,path,content,metadata,owner,:updated_at')
+        '$select' => 'name,path,metadata,owner,:updated_at')
     rescue Exception => e
       # In case Pages doesn't have the owner column, fall-back to the safe items
       reports = Page.find('$order' => ':updated_at desc', 'status' => 'all',
-        '$select' => 'name,path,content,metadata,:updated_at')
+        '$select' => 'name,path,metadata,:updated_at')
     end
     # HACK
     reports.select! { |r| r.path.start_with?('/reports/') }

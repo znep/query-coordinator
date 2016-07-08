@@ -120,15 +120,15 @@ class CustomContentController < ApplicationController
     routing = DataslateRouting.for(CurrentDomain.cname)
     @page = routing.page_for(params[:path], { ext: params[:ext].try(:downcase) })
 
-    full_path = @page.full_path
+    full_path = @page.try(:full_path)
 
     # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
     # whether to render the site chrome header/footer based on the corresponding feature flags.
     @using_dataslate = true
-    @on_homepage = @page.homepage?
+    @on_homepage = @page.try(:homepage?)
 
     if @page.nil? || !@page.viewable_by?(@current_user)
-      if @page.homepage?
+      if @on_homepage
         self.action_name = 'homepage'
         homepage
       else

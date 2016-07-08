@@ -59,7 +59,7 @@ export var ExternalResourceForm = React.createClass({
     var { onChangePreviewImage } = this.props;
 
     var file = event.target.files[0];
-    var isFileImage = file && /\.(jpe?g|png|gif)$/.test(file.name);
+    var isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
 
     this.setState({
       isImageInvalid: !isFileImage

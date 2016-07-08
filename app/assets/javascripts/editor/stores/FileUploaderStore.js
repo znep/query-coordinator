@@ -351,8 +351,8 @@ export default function FileUploaderStore() {
         completeFile(id, resource);
         resolve(resource);
       } else {
-        var retryInterval = Constants.CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL || 1000;
-        var retryMaxSeconds = Constants.CHECK_DOCUMENT_PROCESSED_MAX_RETRY_SECONDS || 30;
+        var errorMessage = I18n.t('editor.asset_selector.image_upload.errors.exception');
+        var retryMaxSeconds = Constants.CHECK_DOCUMENT_PROCESSED_MAX_RETRY_SECONDS;
         var docRequestRetryEndTime = new Date();
 
         docRequestRetryEndTime.setSeconds(docRequestRetryEndTime.getSeconds() + retryMaxSeconds);
@@ -372,11 +372,14 @@ export default function FileUploaderStore() {
               if (documentResource.status === 'processed') {
                 completeFile(id, documentResource);
                 resolve(documentResource);
+              } else if (documentResource.status === 'error') {
+                errorFile(id, errorMessage);
+                reject();
               } else {
-                setTimeout(queryResourceById, retryInterval);
+                setTimeout(queryResourceById, Constants.CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL);
               }
             }, function() {
-              errorFile(id, I18n.t('editor.asset_selector.image_upload.errors.exception'));
+              errorFile(id, errorMessage);
               reject();
             });
         };

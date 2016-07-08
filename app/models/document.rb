@@ -57,7 +57,7 @@ class Document < ActiveRecord::Base
     xlarge: 2180
   }.freeze
 
-  enum status: { unprocessed: 0, processed: 1 }
+  enum status: { unprocessed: 0, processed: 1, error: 2 }
 
   has_attached_file :upload,
     styles: lambda { |a| a.instance.attachment_styles_from_thumbnail_sizes },

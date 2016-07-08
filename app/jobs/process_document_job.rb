@@ -13,9 +13,12 @@ class ProcessDocumentJob < ActiveJob::Base
 
   rescue_from(StandardError) do |error|
     document_id = self.arguments.first
-    document = Document.find_by_id(document_id)
+    document = Document.find(document_id)
     story_uid = document.try(:story_uid)
     user_uid = document.try(:created_by)
+
+    document.status = 'error'
+    document.save
 
     AirbrakeNotifier.report_error(
       error,

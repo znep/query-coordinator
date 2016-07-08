@@ -30,16 +30,23 @@ RSpec.describe ProcessDocumentJob do
     end
 
     context 'when save fails' do
-      it 'notifies airbrake' do
-        error = StandardError.new('Y U NO AIRBRAKE?')
+      let(:error) { StandardError.new('Y U NO AIRBRAKE?') }
+
+      before do
         allow_any_instance_of(ProcessDocumentJob).to receive(:perform).and_raise(error)
         allow(AirbrakeNotifier).to receive(:report_error)
 
         expect {
           ProcessDocumentJob.perform_now(document.id)
         }.to raise_error(error)
+      end
 
+      it 'notifies airbrake' do
         expect(AirbrakeNotifier).to have_received(:report_error).with(error, on_method: "ProcessDocumentJob#perform(document_id: #{document.id}, story_uid: #{document.story_uid}, user: #{document.created_by})")
+      end
+
+      it 'sets document status to "error"' do
+        expect(document.status).to eq('error')
       end
     end
   end

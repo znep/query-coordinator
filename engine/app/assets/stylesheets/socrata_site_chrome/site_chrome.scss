@@ -5,9 +5,11 @@
 
 @import 'styleguide-dropdown';
 
-// TODO - find a good way to add only the current_template styles
+// TODO - find a good way to add only the current_template styles (default vs rally)
 @import 'default/header';
-@import 'default/footer';
 
 @import 'rally/header';
-@import 'rally/footer';
+@import 'rally/small_header';
+
+@import 'footer';
+@import 'small_footer';

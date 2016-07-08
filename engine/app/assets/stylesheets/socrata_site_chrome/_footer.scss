@@ -1,4 +1,4 @@
-footer#chrome-footer[template="rally"] {
+footer#site-chrome-footer {
   display: block;
   min-height: 200px;
   padding: 37px;
@@ -41,9 +41,8 @@ footer#chrome-footer[template="rally"] {
           margin-right: 1.75rem;
 
           span.monosocial {
-            margin-right: 5px;
             position: relative;
-            top: 2px;
+            top: 3px;
           }
 
           &:hover, &:focus, &:active {
@@ -70,7 +69,7 @@ footer#chrome-footer[template="rally"] {
           margin: 1px;
           overflow: hidden;
           text-overflow: ellipsis;
-          line-height: 1.2rem;
+          line-height: 1.4rem;
 
           a.footer-link {
             color: $footer_fg_color;
@@ -140,10 +139,12 @@ footer#chrome-footer[template="rally"] {
 
   .copyright {
     display: block;
-    margin-top: 46px;
     text-align: center;
     font-size: 12px;
     color: $footer_fg_color;
     opacity: 0.7;
+    max-width: 68rem;
+    margin: 46px auto 0;
+    overflow: hidden;
   }
 }

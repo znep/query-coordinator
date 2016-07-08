@@ -7,8 +7,8 @@ setTimeout(function() {
 })}, 1000); // TODO HACK Don't do this.
 
 function mobileMenuFlyout() {
-  var $menu = $('#chrome-header .mobile-menu');
-  var $menuToggle = $('#chrome-header .menu-toggle');
+  var $menu = $('#site-chrome-header .mobile-menu');
+  var $menuToggle = $('#site-chrome-header .menu-toggle');
   var initialBodyOverflow = $('body').css('overflow');
 
   $menuToggle.click(function() {

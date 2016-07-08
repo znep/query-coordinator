@@ -423,12 +423,20 @@ export function isCustomMetadataValid(metadata: DatasetMetadata) {
   });
 }
 
-export function isEmailValid(contactEmail) {
+export function isEmailValid(metadata) {
+  const contactEmail = metadata.contents.contactEmail;
   return isEmail(contactEmail) || contactEmail.length === 0;
 }
 
+export function isAttributionValid(metadata) {
+  return !(attributionRequiredTag(metadata) === 'required' && metadata.license.attribution.length === 0);
+}
+
 export function isMetadataValid(metadata: DatasetMetadata) {
-  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata)) && isEmailValid(metadata.contents.contactEmail);
+  return isStandardMetadataValid(metadata)
+          && isCustomMetadataValid(metadata)
+          && isEmailValid(metadata)
+          && isAttributionValid(metadata);
 }
 
 export function isMetadataUnsaved(metadata) {
@@ -499,7 +507,7 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-export function isAttributionRequired(metadata) {
+export function attributionRequiredTag(metadata) {
   const licenseName = metadata.license.licenseName;
   const licensing = metadata.license.licensing;
   if (licensing !== '') {
@@ -558,7 +566,7 @@ function renderLicenses(metadata, onMetadataAction) {
       <div className="line clearfix">
         <label
           htmlFor="view_attribution"
-          className={isAttributionRequired(metadata)}>
+          className={attributionRequiredTag(metadata)}>
           {I18n.screens.edit_metadata.data_provided_by}
         </label>
         <input
@@ -569,6 +577,9 @@ function renderLicenses(metadata, onMetadataAction) {
           placeholder={I18n.screens.edit_metadata.data_provided_prompt}
           onChange={(evt) => onMetadataAction(updateLicenseAttribution(evt.target.value))}
           className="textPrompt" />
+          {(!isAttributionValid(metadata) && metadata.nextClicked)
+            ? <label htmlFor="view_attributionLink" className="error">{I18n.screens.edit_metadata.data_provider_required}</label>
+            : null}
       </div>
 
       <div className="line clearfix">
@@ -699,8 +710,9 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               className="textPrompt required"
               value={metadata.contents.attributionLink}
               onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
-            {(!validationErrors.attributionLink && metadata.nextClicked) ?
-              <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
+            {(!validationErrors.attributionLink && metadata.nextClicked)
+              ? <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
+              : null}
           </div>
         </div>
 
@@ -751,7 +763,7 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               title={I18nPrefixed.email_address} className="textPrompt contactEmail"
               onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            {!isEmailValid(metadata.contents.contactEmail) ?
+            {!isEmailValid(metadata) ?
               <label className="error email_help">{I18n.core.validation.email}</label> : null}
           </div>
         </div>

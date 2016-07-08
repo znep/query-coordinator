@@ -222,7 +222,7 @@ function coreViewLicense(view) {
       licenseName: title,
       licensing: licensing,
       sourceLink: view.attributionLink,
-      provider: view.attribution
+      attribution: view.attribution
     };
   }
 }

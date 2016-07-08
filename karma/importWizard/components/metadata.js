@@ -26,6 +26,7 @@ import {
   isEmailValid,
   isMetadataValid,
   isMetadataUnsaved,
+  isAttributionValid,
   view,
   isProviderRequired
 } from 'components/metadata';
@@ -174,6 +175,14 @@ describe('validators', () => {
 
   beforeEach(() => {
     metadata = {
+      nextClicked: false,
+      license: {
+        licenseName: 'Creative Commons',
+        licensing: 'Attribution | Share Alike 3.0 Unported',
+        licenseId: 'CC_30_BY_SA',
+        attribution: '',
+        sourceLink: ''
+      },
       contents: {
         name: '',
         attributionLink: '',
@@ -264,7 +273,7 @@ describe('validators', () => {
   });
 
   it('returns true if email is empty', () => {
-    const validEmail = isEmailValid(metadata.contents.contactEmail);
+    const validEmail = isEmailValid(metadata);
     expect(validEmail).to.equal(true);
   });
 
@@ -277,9 +286,10 @@ describe('validators', () => {
     metadata.contents.name = 'name';
     metadata.contents.attributionLink = 'google.com';
     metadata.contents.customMetadata['second'][1].value = 'venus';
+    metadata.license.attribution = 'attribution';
 
-    const standardValid = isMetadataValid(metadata);
-    expect(standardValid).to.equal(true);
+    const valid = isMetadataValid(metadata);
+    expect(valid).to.equal(true);
   });
 
   it('returns false if metadata has not been updated', () => {
@@ -296,6 +306,27 @@ describe('validators', () => {
 
     expect(unsaved).to.equal(true);
   });
+
+  it('returns true if attribution is not required', () => {
+    metadata = update(metadata, updateLicenseName('Public Domain'));
+    const attributionvalid = isAttributionValid(metadata);
+
+    expect(attributionvalid).to.equal(true);
+  });
+
+  it('returns false if attribution has not been provided', () => {
+    const attributionvalid = isAttributionValid(metadata);
+
+    expect(attributionvalid).to.equal(false);
+  });
+
+  it('returns true if attribution is provided', () => {
+    metadata.license.attribution = 'attribution';
+    const attributionvalid = isAttributionValid(metadata);
+
+    expect(attributionvalid).to.equal(true);
+  });
+
 
 });
 
@@ -377,7 +408,7 @@ describe('testing for lastSaved', () => {
     it('returns that wizard intializes metadata and lastSaved equally', () => {
       metadata = initialNewDatasetModel({}).metadata;
       lastSavedMetadata = metadata.lastSaved;
-      
+
       expect(lastSavedMetadata).to.deep.equal({
         lastSavedContents: metadata.contents,
         lastSavedLicense: metadata.license

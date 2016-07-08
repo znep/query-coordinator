@@ -18,6 +18,10 @@ class ProcessDocumentJob < ActiveJob::Base
     user_uid = document.try(:created_by)
 
     document.status = 'error'
+    # We don't use a save! because we don't wait to
+    # raise here. So don't put one! The JS has a timeout
+    # that will stop the pinging process in the case where
+    # we can't set status (after some *really* long time).
     document.save
 
     AirbrakeNotifier.report_error(

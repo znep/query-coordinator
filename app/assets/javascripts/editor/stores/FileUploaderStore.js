@@ -352,7 +352,19 @@ export default function FileUploaderStore() {
         resolve(resource);
       } else {
         var errorMessage = I18n.t('editor.asset_selector.image_upload.errors.exception');
+        var retryMaxSeconds = Constants.CHECK_DOCUMENT_PROCESSED_MAX_RETRY_SECONDS;
+        var docRequestRetryEndTime = new Date();
+
+        docRequestRetryEndTime.setSeconds(docRequestRetryEndTime.getSeconds() + retryMaxSeconds);
+
         var queryResourceById = function() {
+          var passedRetryPeriod = new Date() > docRequestRetryEndTime;
+
+          if (passedRetryPeriod) {
+            errorFile(id, I18n.t('editor.asset_selector.image_upload.errors.upload_timeout'));
+            return reject();
+          }
+
           request('/documents/' + resourceId, 'GET').
             then(function(responseData) {
               var documentResource = responseData.document;

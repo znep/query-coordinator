@@ -42,7 +42,7 @@ type LicenseType = {
     licenseName: String,
     licensing: String,
     licenseId: String,
-    provider: String,
+    attribution: String,
     sourceLink: String
 }
 
@@ -78,7 +78,7 @@ export function emptyLicense(): LicenseType {
     licenseName: '',
     licensing: '',
     licenseId: '',
-    provider: '',
+    attribution: '',
     sourceLink: ''
   };
 }
@@ -158,11 +158,11 @@ export function updateLicensing(newLicensing: string) {
   };
 }
 
-const MD_UPDATE_LICENSEPROVIDER = 'MD_UPDATE_LICENSEPROVIDER';
-export function updateLicenseProvider(newLicenseProvider: string) {
+const MD_UPDATE_LICENSEATTRIBUTION = 'MD_UPDATE_LICENSEATTRIBUTION';
+export function updateLicenseAttribution(newLicenseAttribution: string) {
   return {
-    type: MD_UPDATE_LICENSEPROVIDER,
-    newLicenseProvider: newLicenseProvider
+    type: MD_UPDATE_LICENSEATTRIBUTION,
+    newLicenseAttribution: newLicenseAttribution
   };
 }
 
@@ -319,7 +319,6 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
       const licenseByName = licenseFind(action.newLicenseName);
       if (_.has(licenseByName, 'licenses')) {
         const firstLicensing = licenseByName.licenses[0];
-
         return {
           ...license,
           licenseName: action.newLicenseName,
@@ -330,6 +329,7 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
         return {
           ...license,
           licenseName: action.newLicenseName,
+          licensing: '',
           licenseId: licenses[action.newLicenseName]
         };
       }
@@ -345,10 +345,10 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
         licenseId: newLicenseId
       };
     }
-    case MD_UPDATE_LICENSEPROVIDER:
+    case MD_UPDATE_LICENSEATTRIBUTION:
       return {
         ...license,
-        provider: action.newLicenseProvider
+        attribution: action.newLicenseAttribution
       };
     case MD_UPDATE_LICENSESOURCELINK:
       return {
@@ -492,7 +492,7 @@ function renderCustomMetadata(metadata, onMetadataAction) {
   );
 }
 
-export function isProviderRequired(metadata) {
+export function isAttributionRequired(metadata) {
   const licenseName = metadata.license.licenseName;
   const licensing = metadata.license.licensing;
   if (licensing !== '') {
@@ -551,16 +551,16 @@ function renderLicenses(metadata, onMetadataAction) {
       <div className="line clearfix">
         <label
           htmlFor="view_attribution"
-          className={isProviderRequired(metadata)}>
+          className={isAttributionRequired(metadata)}>
           {I18n.screens.edit_metadata.data_provided_by}
         </label>
         <input
           type="text"
           name="view[attribution]"
           id="view_attribution"
-          value={metadata.license.provider}
+          value={metadata.license.attribution}
           placeholder={I18n.screens.edit_metadata.data_provided_prompt}
-          onChange={(evt) => onMetadataAction(updateLicenseProvider(evt.target.value))}
+          onChange={(evt) => onMetadataAction(updateLicenseAttribution(evt.target.value))}
           className="textPrompt" />
       </div>
 

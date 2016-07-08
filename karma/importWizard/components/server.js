@@ -128,9 +128,8 @@ describe("testing for API responses", () => {
   });
 
   describe('licenseToView', () => {
-    it.only('test that license values are correctly returned', () => {
+    it('test that license values are correctly returned', () => {
       const license = licenseToView(metadata.license);
-      console.log(license);
 
       expect(license).to.deep.equal({
         name: 'Open Data Commons Public Domain Dedication and License',

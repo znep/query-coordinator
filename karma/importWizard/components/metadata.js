@@ -16,6 +16,10 @@ import {
   updateContactEmail,
   updateNextClicked,
   updateLastSaved,
+  updateLicenseName,
+  updateLicensing,
+  updateLicenseSourceLink,
+  updateLicenseAttribution,
   validate,
   isStandardMetadataValid,
   isCustomMetadataValid,
@@ -114,6 +118,53 @@ describe("metadata's reducer testing", () => {
 
       const result = update(state, updateNextClicked());
       expect(result.nextClicked).to.equal(true);
+    });
+  });
+
+  describe('SET_LICENSE', () => {
+    it('sets licenseName to Public Domain', () => {
+      const result = update(state, updateLicenseName('Public Domain'));
+      expect(result.license.licenseName).to.equal('Public Domain');
+      expect(result.license.licensing).to.equal('');
+      expect(result.license.licenseId).to.equal('PUBLIC_DOMAIN')
+    });
+
+    it('sets licenseName to Creative Commons and expect a licensing', () => {
+      const result = update(state, updateLicenseName('Creative Commons'));
+
+      expect(result.license.licenseName).to.equal('Creative Commons');
+      expect(result.license.licensing).to.equal('1.0 Universal (Public Domain Dedication)');
+      expect(result.license.licenseId).to.equal('CC0_10');
+    });
+
+    it('sets licenseName to Creative Commons then back to Public Domain and expect no licensing', () => {
+      const temp = update(state, updateLicenseName('Creative Commons'));
+      const result = update(temp, updateLicenseName('Public Domain'));
+
+      expect(result.license.licenseName).to.equal('Public Domain');
+      expect(result.license.licensing).to.equal('');
+      expect(result.license.licenseId).to.equal('PUBLIC_DOMAIN');
+    });
+
+    it('sets licensing', () => {
+      const temp = update(state, updateLicenseName('Creative Commons'));
+      const result = update(temp, updateLicensing('Attribution | No Derivative Works 3.0 Unported'));
+
+      expect(result.license.licenseName).to.equal('Creative Commons');
+      expect(result.license.licensing).to.equal('Attribution | No Derivative Works 3.0 Unported');
+      expect(result.license.licenseId).to.equal('CC_30_BY_ND');
+    });
+
+    it('sets sourceLink', () => {
+      const result = update(state, updateLicenseSourceLink('google.com'));
+
+      expect(result.license.sourceLink).to.equal('google.com');
+    });
+
+    it('sets attribution', () => {
+      const result = update(state, updateLicenseAttribution('me'));
+
+      expect(result.license.attribution).to.equal('me');
     });
   });
 });

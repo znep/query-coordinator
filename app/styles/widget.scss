@@ -23,12 +23,13 @@ html, body {
   h1.logo {
     @include text-hiding;
     background-image: $logo_image;
+    background-size: contain;
     float: left;
     height: $logo_image_height;
-    margin: 2px {
+    width: $logo_image_width;
+    margin: 4px {
       left: 10px;
     };
-    width: $logo_image_width;
   }
   .mainMenu {
     float: right;

@@ -49,7 +49,8 @@
           }
         }
         .previewLogo {
-          background-image: url(/stylesheets/images/logos/socrata_sdp_logo_black.png);
+          background-image: url(/stylesheets/images/common/logo_with_name.svg);
+          background-size: contain;
           background-position: 5px center;
           background-repeat: no-repeat;
           height: 35px;

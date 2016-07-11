@@ -159,6 +159,7 @@ describe("testing for API responses", () => {
       expect(coreView.attribution).to.equal('Me');
       expect(coreView.attributionLink).to.equal('google.com');
       expect(coreView.licenseId).to.equal('PDDL');
+      expect(coreView.displayType).to.equal('draft');
     });
   });
 

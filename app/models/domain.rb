@@ -132,8 +132,14 @@ class Domain < Model
     FeatureFlags.merge({}, conf.try(:properties) || {})
   end
 
+  # For definition, see "ID Field Type" section here:
+  # https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/field_types.htm#i1435616
+  #
+  # For clarity, since this is using a magical regex:
+  # There are valid 15-character SFDC IDs and valid 18-character SFDC IDs.
+  # The only valid characters are digits, uppercase letters, and lowercase letters.
   def has_valid_salesforce_id?
-    self.salesforceId =~ /^00\w{16}/
+    /^[0-9A-Za-z]{15}[0-9A-Za-z]{3}?$/.match(self.salesforceId)
   end
 
 end

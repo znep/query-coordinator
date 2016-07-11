@@ -83,8 +83,10 @@ header#site-chrome-header[template="rally"] {
             }
             a.profile-link, a.admin-link, a.logout-link {
               padding: 0 $text_padding;
-              // color: $header_fg_color;
               text-decoration: none;
+              &.in-header {
+                color: $header_fg_color;
+              }
               &:hover, &:focus, &:active {
                 text-decoration: underline;
               }

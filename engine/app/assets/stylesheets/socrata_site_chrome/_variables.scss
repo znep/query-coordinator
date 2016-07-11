@@ -18,8 +18,6 @@ $breakpoint_mobile_sm: 670px;
   }
 }
 
-$header-top-content-height: 80px;
-
 $dark_text_color: #2c2c2c;
 
 // Default variables (can be over-written by site_chrome styles)
@@ -29,9 +27,17 @@ $font_family: 'Open Sans';
 
 $header_bg_color: $bg_color;
 $header_fg_color: $fg_color;
+$header_logo_height: 60px;
+$header_logo_width: auto;
+
+$header_dropdown_bg_color: #fff;
+$header_dropdown_option_color: mix(black, #767676, 20%);
+$header_dropdown_option_bg_color_hover: mix(white, #767676, 90%);
 
 $footer_bg_color: #3b3a3c;
 $footer_fg_color: $fg_color;
+$footer_logo_height: 80px;
+$footer_logo_width: auto;
 
 $btn-color: #fff;
 $btn-color-dark: #999;
@@ -41,7 +47,3 @@ $inverse_btn_color: #20719a;
 $inverse_btn_background_color: #fff;
 
 $text_padding: 11px;
-
-$header_dropdown_bg_color: #fff;
-$header_dropdown_option_color: mix(black, #767676, 20%);
-$header_dropdown_option_bg_color_hover: mix(white, #767676, 90%);

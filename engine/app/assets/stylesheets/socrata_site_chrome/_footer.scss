@@ -13,7 +13,8 @@ footer#site-chrome-footer {
 
     > div.logo {
       > img {
-        height: 30px;
+        height: $footer_logo_height;
+        width: $footer_logo_width;
         margin-right: 0.5rem;
         vertical-align: middle;
       }

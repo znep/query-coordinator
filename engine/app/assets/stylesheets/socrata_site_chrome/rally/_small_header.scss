@@ -1,9 +1,7 @@
-$small-header-top-content-height: 50px;
-
 body.action_datasets_show {
   header#site-chrome-header[template="rally"] {
     .banner {
-      line-height: $small-header-top-content-height;
+      line-height: $header_logo_height;
       font-size: 16px;
 
       .rally-top {
@@ -11,7 +9,7 @@ body.action_datasets_show {
 
         a.logo {
           img {
-            height: $small-header-top-content-height;
+            height: $header_logo_height;
           }
           .site-name {
             font-size: 22px;
@@ -19,15 +17,15 @@ body.action_datasets_show {
         }
 
         .searchbox {
-          height: $small-header-top-content-height;
+          height: $header_logo_height;
           form {
-            line-height: $small-header-top-content-height;
+            line-height: $header_logo_height;
           }
         }
       }
 
       .rally-bottom {
-        height: $small-header-top-content-height;
+        height: $header_logo_height;
 
         .desktop {
           .navbar-left {

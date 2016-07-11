@@ -84,6 +84,18 @@ $(document).ready(function() {
       alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
     }
   });
+
+  $('#content_general_show_signin_signout').on('click change', function() {
+    var value = $(this).attr('checked');
+    var $knockonEffects = $('#content_general_show_signup, #content_general_show_profile');
+    if (value) {
+      $knockonEffects.attr('checked', value).
+                      removeAttr('disabled');
+    } else {
+      $knockonEffects.removeAttr('checked').
+                      attr('disabled', 'disabled');
+    }
+  });
 });
 
 // Figure out which tab is active (current) and get its id

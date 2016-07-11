@@ -151,6 +151,9 @@ $faint-border-color: #ebebeb;
               width: 12px;
               margin: 0 0.5em 0 0;
             }
+            &.indented {
+              margin-left: 1em;
+            }
           }
         }
 

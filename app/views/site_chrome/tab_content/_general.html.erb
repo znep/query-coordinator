@@ -16,4 +16,16 @@
   <%= render('site_chrome/tab_content/form_field',
              fields: [:general, :google_analytics_token],
              translation: translations[:google_analytics_token]) %>
+
+  <section class="settings-group">
+    <div class="settings-form full">
+      <%- fields = [:general] %>
+      <%- translation = translations[:show_signin_signout] %>
+      <h3><%= translation[:title] %></h3>
+      <p><%= translation[:description] %></p>
+      <%= signin_signout_checkbox(:show_signin_signout, translation) %>
+      <%= signin_signout_checkbox(:show_signup, translation, indent: true) %>
+      <%= signin_signout_checkbox(:show_profile, translation, indent: true) %>
+    </div>
+  </section>
 <% end %>

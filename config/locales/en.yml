@@ -2509,6 +2509,12 @@ en:
                 error: 'Token should match the format: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
+              show_signin_signout:
+                title: Sign In / Sign Out
+                description: Show these options if your site requires a user Profile / Sign In.
+                show_profile: Show a link to Profile after Signed In
+                show_signin_signout: Show Sign In / Sign Out
+                show_signup: Show ability to create an account via Sign Up
               template:
                 description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
                 placeholder: Rally

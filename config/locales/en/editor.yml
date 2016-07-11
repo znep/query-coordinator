@@ -194,7 +194,7 @@ en:
         tab_getty: 'Photos by Getty'
         drag_label: 'Drag an image here to upload it.'
         input_label: 'Images can be JPG, PNG, or GIF format and up to 10MB file size.'
-        input_button_text: 'Or choose an image.'
+        input_button_text: 'Or choose an image'
         uploading_message: 'Uploading...'
         show_more: 'Show More'
         thats_everything: "That's everything!"

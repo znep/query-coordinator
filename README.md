@@ -387,7 +387,6 @@ Variable Name | Type | Source | Description
 `metrics_dir` | String | Configuration | Directory into which runtime metrics are written for collection into balboa by a separate agent.
 `mixpanel_token` | String | Configuration | API token used to report runtime metrics to MixPanel.
 `odux_enable_feature_map` | Boolean | Configuration | Enables to use of the feature map (point map) in Data Lens.
-`odysseus_uri` | URI | Configuration | URI used to connect to `Odysseus` service from within the Rails app.
 `odysseus_app_name` | String | Configuration | The name of the `Odysseus` application server. _Not the name of the app_.
 `opendata_ga_tracking_code` | String | Configuration | Google Analytics tracking code used for the Open Data Portal.
 `path_info` | String | Rails | The path portion of the incoming request. Used to determine `locale` in some cases. See also `request_path` and `request_uri`. See also `RequestLoggerMiddleware`.

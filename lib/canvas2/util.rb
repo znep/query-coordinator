@@ -229,7 +229,10 @@ module Canvas2
 
 
     def self.odysseus_request(path, opts = {}, is_anon = false)
-      uri = URI::HTTP.build(host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port, path: path, query: opts.to_param)
+      odysseus_addr = ::ZookeeperDiscovery.get(:odysseus)
+      raise 'odysseus_request failed: no available nodes in zookeeper' if odysseus_addr.nil?
+      odysseus_uri = URI.parse('http://' + odysseus_addr)
+      uri = URI::HTTP.build(host: odysseus_uri.host, port: odysseus_uri.port, path: path, query: opts.to_param)
       req = Net::HTTP::Get.new(uri.request_uri)
 
       req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname

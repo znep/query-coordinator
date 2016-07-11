@@ -651,8 +651,9 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               className="textPrompt required error"
               value={metadata.contents.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
-              {(!validationErrors.name && metadata.nextClicked) ?
-                <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
+              {(!validationErrors.name && metadata.nextClicked)
+                ? <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label>
+                : null}
           </div>
 
           <div className="line clearfix">
@@ -764,8 +765,8 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
             title={I18nPrefixed.email_address} className="textPrompt contactEmail"
             onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
           <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-          {!isEmailValid(metadata) ?
-            <label className="error email_help">{I18n.core.validation.email}</label>
+          {!isEmailValid(metadata)
+            ? <label className="error email_help">{I18n.core.validation.email}</label>
             : null}
         </div>
 

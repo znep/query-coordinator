@@ -25,7 +25,8 @@ describe('Pager', function() {
           'next': 'translation for next button',
           'no_rows': 'translation for no rows',
           'only_row': 'translation for only one row',
-          'many_rows': 'translation for many rows'
+          'many_rows': 'translation for many rows',
+          'all_rows': 'translation for all rows'
         },
         'order': [{
           ascending: true,
@@ -109,6 +110,20 @@ describe('Pager', function() {
     verifyNextButtonDisabledBehavior();
   });
 
+  describe('pager buttons', function() {
+    describe('with a page size equal to dataset row count', function() {
+      renderPagerWithOptions({
+        startIndex: 0,
+        endIndex: 5,
+        datasetRowCount: 5
+      });
+
+      it('should hide each button using a class on the parent', function() {
+        assert.isTrue(element.find('.socrata-pager').hasClass('socrata-pager-single-page'));
+      });
+    });
+  });
+
   describe('pager label', function() {
     beforeEach(function() {
       vif.configuration.localization.no_rows = { format: sinon.stub().returns('translation for no rows') };
@@ -162,6 +177,20 @@ describe('Pager', function() {
           }
         );
       });
+    });
+
+    describe('with a page size equal to dataset row count', function() {
+      beforeEach(function() {
+        vif.configuration.localization.all_rows = { format: sinon.stub().returns('translation for all rows') };
+      });
+
+      renderPagerWithOptions({
+        startIndex: 0,
+        endIndex: 5,
+        datasetRowCount: 5
+      });
+
+      verifyPagerLabelText('translation for all rows');
     });
 
     describe('with a page size of 10', function() {

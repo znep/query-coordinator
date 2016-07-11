@@ -15,6 +15,7 @@ describe('views/Table', function() {
         no_rows: 'translation for no rows',
         only_row: 'translation for only one row',
         many_rows: 'translation for many rows',
+        all_rows: 'translation for all rows',
         latitude: 'translation for latitude',
         longitude: 'translation for longitude'
       },

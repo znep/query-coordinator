@@ -49,7 +49,7 @@ describe("testing for API responses", () => {
       category: 'cat',
       tags: ['one', 'two'],
       rowLabel: 'row',
-      attributionLink: 'link',
+      mapLayer: 'link',
       contactEmail: 'email@email.com',
       privacySettings: 'private',
       customMetadata: {

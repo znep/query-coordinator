@@ -11,7 +11,7 @@ import {
   updateCategory,
   updateTags,
   updateRowLabel,
-  updateAttributionLink,
+  updateMapLayer,
   updatePrivacySettings,
   updateContactEmail,
   updateNextClicked,
@@ -76,10 +76,10 @@ describe("metadata's reducer testing", () => {
     });
   });
 
-  describe('SET_ATTRIBUTIONLINK', () => {
+  describe('SET_MAPLAYER', () => {
     it('sets the attribution link url of the dataset', () => {
-      const result = update(state, updateAttributionLink('wombats.au'));
-      expect(result.contents.attributionLink).to.equal('wombats.au');
+      const result = update(state, updateMapLayer('wombats.au'));
+      expect(result.contents.mapLayer).to.equal('wombats.au');
     });
   });
 
@@ -184,7 +184,7 @@ describe('validators', () => {
       },
       contents: {
         name: '',
-        attributionLink: '',
+        mapLayer: '',
         contactEmail: '',
         description: '',
         tags: [],
@@ -243,20 +243,20 @@ describe('validators', () => {
 
         const result = validate(metadata);
         expect(result.name).to.equal(false);
-        expect(result.attributionLink).to.equal(false);
+        expect(result.mapLayer).to.equal(false);
       });
     });
 
     it('returns true for valid values', () => {
       metadata.contents.name = 'panda',
-      metadata.contents.attributionLink = 'wombat'
+      metadata.contents.mapLayer = 'wombat'
 
       const standardValid = isStandardMetadataValid(metadata);
       expect(standardValid).to.equal(true);
 
       const result = validate(metadata);
       expect(result.name).to.equal(true);
-      expect(result.attributionLink).to.equal(true);
+      expect(result.mapLayer).to.equal(true);
     });
 
   });
@@ -289,7 +289,7 @@ describe('validators', () => {
 
     it('returns true if all required metadata are nonempty', () => {
       metadata.contents.name = 'name';
-      metadata.contents.attributionLink = 'google.com';
+      metadata.contents.mapLayer = 'google.com';
       metadata.contents.customMetadata['second'][1].value = 'venus';
       metadata.license.attribution = 'attribution';
 
@@ -360,7 +360,7 @@ describe('view testing', () => {
 
  it('returns that there is no required text if next has been clicked but all required fields are filled', () => {
    state.contents.name = 'name';
-   state.contents.attributionLink = 'google.com';
+   state.contents.mapLayer = 'google.com';
    state.contents.customMetadata['second'][1].value = 'venus';
    state.contents.nextClicked = true;
 

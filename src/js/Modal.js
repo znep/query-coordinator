@@ -8,6 +8,7 @@ var ModalFactory = module.exports = function(element) {
   this.root = element;
   this.dismissals = Array.prototype.slice.apply(element.querySelectorAll('[data-modal-dismiss]'));
   this.openers = Array.prototype.slice.apply(element.querySelectorAll('[data-modal]'));
+  this.lastFocusedItem = null;
   this.attachEvents();
 }
 
@@ -30,9 +31,10 @@ ModalFactory.prototype = {
         modals.forEach(function(modal) {
           modal.classList.add('modal-hidden');
           document.body.classList.remove('modal-open');
-        });
+          this.restoreFocus(modal);
+        }.bind(this));
       }
-    });
+    }.bind(this));
 
     window.addEventListener('resize', function() {
       var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
@@ -63,6 +65,15 @@ ModalFactory.prototype = {
       });
     }
 
+    // Store last focused on element
+    this.lastFocusedItem = document.querySelector(':focus');
+
+    // Shift focus to the modal
+    var elementToFocus = modalContainer.children[0] || modalContainer;
+    elementToFocus.setAttribute('tabindex', '0');
+    elementToFocus.focus();
+    elementToFocus.style.outline = 'none';
+
     this.reposition(modalContainer);
   },
 
@@ -92,6 +103,8 @@ ModalFactory.prototype = {
       if (closeable) {
         document.body.classList.remove('modal-open');
         modal.classList.add('modal-hidden');
+
+        self.restoreFocus(modal);
       }
     }
 
@@ -108,6 +121,18 @@ ModalFactory.prototype = {
       });
     } else {
       hideModal();
+    }
+  },
+
+  restoreFocus: function(modal) {
+    var elementToFocus = modal.querySelector('.modal-container').children[0] || modal;
+    elementToFocus.removeAttribute('tabindex');
+    elementToFocus.style.outline = '';
+
+    // Return focus to the last previously focused on element
+    if (this.lastFocusedItem) {
+      this.lastFocusedItem.focus();
+      this.lastFocusedItem = null;
     }
   },
 

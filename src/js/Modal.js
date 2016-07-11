@@ -49,7 +49,7 @@ ModalFactory.prototype = {
 
     document.body.classList.add('modal-open');
 
-    var windowWidth = document.body.offsetWidth;
+    var windowWidth = window.innerWidth;
     var modalContainer = modal.querySelector('.modal-container');
 
     if (windowWidth <= mobileBreakpoint) {
@@ -95,7 +95,7 @@ ModalFactory.prototype = {
       }
     }
 
-    var windowWidth = document.body.offsetWidth;
+    var windowWidth = window.innerWidth;
     var modalContainer = modal.querySelector('.modal-container');
 
     if (windowWidth <= mobileBreakpoint && closeable) {
@@ -116,9 +116,9 @@ ModalFactory.prototype = {
       return;
     }
 
-    var windowWidth = document.body.offsetWidth;
+    var windowWidth = window.innerWidth;
 
-    if (windowWidth >= mobileBreakpoint) {
+    if (windowWidth > mobileBreakpoint) {
       modal.style.margin = '';
     } else {
       modal.style.margin = 0;

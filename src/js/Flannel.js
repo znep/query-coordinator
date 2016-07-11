@@ -8,16 +8,16 @@ module.exports = function FlannelFactory() {
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flannel]'));
 
   function hideFlannel(flannel, hoverable) {
-    if (document.body.offsetWidth < mobileBreakpoint) {
+    if (window.innerWidth <= mobileBreakpoint) {
+      document.body.classList.remove('modal-open');
       velocity(flannel, {
-        left: document.body.offsetWidth
+        left: window.innerWidth
       }, {
         duration: animationDuration,
         easing: animationEasing,
         complete: function() {
           flannel.classList.add('flannel-hidden');
           hoverable.classList.remove('active');
-          document.body.classList.remove('modal-open');
         }
       });
     } else {
@@ -31,7 +31,15 @@ module.exports = function FlannelFactory() {
     var left = 0;
     var top = 0;
     var flannelWidth = flannel.getBoundingClientRect().width;
-    var windowWidth = document.body.offsetWidth;
+    var bodyWidth = document.body.offsetWidth; // Without scrollbar
+    var windowWidth = window.innerWidth; // With scrollbar
+
+    if (windowWidth <= mobileBreakpoint) {
+      document.body.classList.add('modal-open');
+      flannel.style.left = 0;
+      flannel.style.top = 0;
+      return;
+    }
 
     do {
       left += node.offsetLeft;
@@ -41,7 +49,7 @@ module.exports = function FlannelFactory() {
     left = left + hoverable.offsetWidth / 2;
     top = top + hoverable.offsetHeight + padding;
 
-    if (left + flannelWidth > windowWidth && windowWidth >= mobileBreakpoint) {
+    if (left + flannelWidth > bodyWidth && windowWidth > mobileBreakpoint) {
       flannel.classList.remove('flannel-right');
       flannel.classList.add('flannel-left');
       left -= flannelWidth;
@@ -50,23 +58,9 @@ module.exports = function FlannelFactory() {
       flannel.classList.add('flannel-right');
     }
 
-    if (windowWidth >= mobileBreakpoint) {
-      flannel.style.left = left + 'px';
-      flannel.style.top = top + 'px';
-      document.body.classList.remove('modal-open');
-    } else {
-      flannel.style.left = windowWidth + 'px';
-      flannel.style.top = 0;
-      velocity(flannel, {
-        left: 0
-      }, {
-        duration: animationDuration,
-        easing: animationEasing,
-        complete: function() {
-          document.body.classList.add('modal-open');
-        }
-      });
-    }
+    flannel.style.left = left + 'px';
+    flannel.style.top = top + 'px';
+    document.body.classList.remove('modal-open');
   }
 
   hoverables.forEach(function(hoverable) {
@@ -81,10 +75,25 @@ module.exports = function FlannelFactory() {
     });
 
     hoverable.addEventListener('click', function(event) {
+      var windowWidth = window.innerWidth;
       event.preventDefault();
 
-      flannel.classList.toggle('flannel-hidden');
-      positionFlannel(flannel, hoverable);
+      if (windowWidth > mobileBreakpoint) {
+        flannel.classList.toggle('flannel-hidden');
+        positionFlannel(flannel, hoverable);
+      } else {
+        flannel.classList.remove('flannel-hidden');
+        flannel.style.left = windowWidth + 'px';
+        flannel.style.top = 0;
+        document.body.classList.add('modal-open');
+
+        velocity(flannel, {
+          left: 0
+        }, {
+          duration: animationDuration,
+          easing: animationEasing
+        });
+      }
     });
 
     document.body.addEventListener('click', function(event) {

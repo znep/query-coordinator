@@ -14,7 +14,8 @@ header#site-chrome-header[template="rally"] {
         text-decoration: none;
 
         > img {
-          height: $header-top-content-height;
+          height: $header_logo_height;
+          width: $header_logo_width;
           margin-right: 1rem;
           vertical-align: middle;
         }

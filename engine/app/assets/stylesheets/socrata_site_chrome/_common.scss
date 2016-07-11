@@ -64,14 +64,14 @@ header#site-chrome-header, footer#site-chrome-footer {
 
   .searchbox {
     float: right;
-    height: $header-top-content-height;
+    height: $header_logo_height;
 
     @include mobile-med {
       display: none;
     }
 
     form {
-      line-height: $header-top-content-height;
+      line-height: $header_logo_height;
       input {
         width: 250px;
         border: solid 1px #c8c8c8;

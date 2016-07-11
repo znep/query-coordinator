@@ -1,13 +1,15 @@
+$banner_height: $header_logo_height + 20;
+
 header#site-chrome-header[template="default"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
   .banner {
     color: $header_fg_color;
     background-color: $header_bg_color;
-    line-height: 60px;
+    line-height: $banner_height;
     font-size: 18px;
     padding: 0 1rem;
-    min-height: 60px;
+    min-height: $banner_height;
 
     > a.logo {
       float: left;
@@ -15,7 +17,8 @@ header#site-chrome-header[template="default"] {
       color: $header_fg_color;
 
       > img {
-        height: 28px;
+        height: $header_logo_height;
+        width: $header_logo_width;
         vertical-align: middle;
         margin-right: 0.5rem;
       }

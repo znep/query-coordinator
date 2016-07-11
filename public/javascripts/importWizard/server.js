@@ -60,23 +60,27 @@ export function saveMetadataToViewsApi() {
 
 export function proceedFromMetadataPane() {
   return (dispatch, getState) => {
-    const { navigation } = getState();
-    const onImportError = () => {
-      dispatch(importError());
+    const { navigation, metadata } = getState();
+    if (metadata.apiCall.type === 'Error') {
       dispatch(goToPage('Metadata'));
-    };
-    switch (navigation.operation) {
-      case 'UploadData':
-        dispatch(importData(onImportError));
-        break;
-      case 'UploadGeospatial':
-        dispatch(importGeospatial(onImportError));
-        break;
-      case 'CreateFromScratch':
-        dispatch(goToPage('Finish'));
-        break;
-      default:
-        console.error('Unkown operation!', navigation.operation);
+    } else {
+      const onImportError = () => {
+        dispatch(importError());
+        dispatch(goToPage('Metadata'));
+      };
+      switch (navigation.operation) {
+        case 'UploadData':
+          dispatch(importData(onImportError));
+          break;
+        case 'UploadGeospatial':
+          dispatch(importGeospatial(onImportError));
+          break;
+        case 'CreateFromScratch':
+          dispatch(goToPage('Finish'));
+          break;
+        default:
+          console.error('Unkown operation!', navigation.operation);
+      }
     }
   };
 }
@@ -126,28 +130,52 @@ export function socrataFetch(path, options): Promise {
 }
 
 export function modelToViewParam(metadata, navigation) {
-  return {
-    name: metadata.contents.name,
-    attributionLink: metadata.license.sourceLink,
-    attribution: metadata.license.attribution,
-    description: metadata.contents.description,
-    category: metadata.contents.category,
-    tags: metadata.contents.tags,
-    metadata: {
-      rowLabel: metadata.contents.rowLabel,
-      attributionLink: metadata.contents.mapLayer,
-      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
-    },
-    privateMetadata: {
-      contactEmail: metadata.contents.contactEmail,
-      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
-    },
-    licenseId: metadata.license.licenseId,
-    license: licenseToView(metadata.license),
-    displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
-                  ? 'table'
-                  : 'draft'
-  };
+  const license = metadata.license;
+  if (license.licenseName !== '') {
+    return {
+      name: metadata.contents.name,
+      attributionLink: license.sourceLink,
+      attribution: license.attribution,
+      description: metadata.contents.description,
+      category: metadata.contents.category,
+      tags: metadata.contents.tags,
+      metadata: {
+        rowLabel: metadata.contents.rowLabel,
+        attributionLink: metadata.contents.mapLayer,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
+      },
+      privateMetadata: {
+        contactEmail: metadata.contents.contactEmail,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+      },
+      licenseId: license.licenseId,
+      license: licenseToView(license),
+      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
+                    ? 'table'
+                    : 'draft'
+    };
+  } else {
+    return {
+      name: metadata.contents.name,
+      attributionLink: metadata.license.sourceLink,
+      attribution: metadata.license.attribution,
+      description: metadata.contents.description,
+      category: metadata.contents.category,
+      tags: metadata.contents.tags,
+      metadata: {
+        rowLabel: metadata.contents.rowLabel,
+        attributionLink: metadata.contents.mapLayer,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
+      },
+      privateMetadata: {
+        contactEmail: metadata.contents.contactEmail,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+      },
+      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
+                    ? 'table'
+                    : 'draft'
+    };
+  }
 }
 
 export function licenseToView(license) {
@@ -176,7 +204,9 @@ export function licenseToView(license) {
 
 export function coreViewToModel(view) {
   const contents = coreViewContents(view);
-  const license = coreViewLicense(view);
+  const license = view.licenseId
+                  ? coreViewLicense(view)
+                  : Metadata.emptyLicense();
   return {
     nextClicked: false,
     contents: contents,

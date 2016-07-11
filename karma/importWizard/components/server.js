@@ -98,6 +98,10 @@ describe("testing for API responses", () => {
     }
   };
 
+  const navigation = {
+    path: []
+  };
+
   describe('translation between Redux model and /api/views payloads', () => {
     const customMetadata = metadata.contents.customMetadata;
 
@@ -142,7 +146,7 @@ describe("testing for API responses", () => {
 
   describe('modelToViewParam', () => {
     it('test everything else', () => {
-      const coreView = modelToViewParam(metadata);
+      const coreView = modelToViewParam(metadata, navigation);
       const viewMetadata = coreView.metadata;
 
       expect(coreView.name).to.equal('name');
@@ -160,7 +164,7 @@ describe("testing for API responses", () => {
 
   describe('coreViewToModel', () => {
     it('test round trip', () => {
-      const view = modelToViewParam(metadata);
+      const view = modelToViewParam(metadata, navigation);
       const meta = coreViewToModel(view);
 
       expect(metadata.contents).to.deep.equal(meta.contents);

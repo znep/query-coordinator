@@ -108,6 +108,14 @@ module SocrataSiteChrome
       end
     end
 
+    def show_profile?
+      get_site_chrome.general.fetch(:show_profile, 'true') == 'true'
+    end
+
+    def show_signin_signout?
+      get_site_chrome.general.fetch(:show_signin_signout, 'true') == 'true'
+    end
+
     def localized(locale_key, locales)
       # TODO - actually handle different locales
       locales['en'].dig(*locale_key.split('.'))

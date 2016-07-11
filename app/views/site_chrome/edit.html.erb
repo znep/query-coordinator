@@ -36,7 +36,6 @@
 
   <% tab_sections.each_with_index do |section, i| %>
     <div class="tab-content" data-tab-id="<%= section %>">
-      <h2 class="section-title"><%= t("screens.admin.site_chrome.tabs.#{section}.title") %></h2>
       <%= render(
         "site_chrome/tab_content/#{section}",
         :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")

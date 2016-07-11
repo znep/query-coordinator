@@ -5,22 +5,36 @@
 
   <% #TODO: factor these out into a single lookup table %>
   <%= render('site_chrome/tab_content/form_field',
-             fields: [:header, :logo, :src],
-             translation: translations[:header_bar_logo]) %>
-
-  <%= render('site_chrome/tab_content/form_field',
-             fields: [:locales, current_locale(suppress_locale = false), :header, :site_name],
-             translation: translations[:header_display_name]) %>
+    fields: [:header, :logo, :src],
+    translation: translations[:header_bar_logo]) %>
 
   <%= render('site_chrome/tab_content/form_field_pair',
-             left: { fields: [:header, :styles, :bg_color],
-                     translation: translations[:bar_background_color] },
-             right: { fields: [:header, :styles, :fg_color],
-                      translation: translations[:bar_text_link_color] }) %>
+    left: {
+      fields: [:header, :styles, :logo_height],
+      translation: translations[:header_logo_height]
+    },
+    right: {
+      fields: [:header, :styles, :logo_width],
+      translation: translations[:header_logo_width]
+    }) %>
+
+  <%= render('site_chrome/tab_content/form_field',
+    fields: [:locales, current_locale(suppress_locale = false), :header, :site_name],
+    translation: translations[:header_display_name]) %>
+
+  <%= render('site_chrome/tab_content/form_field_pair',
+    left: {
+      fields: [:header, :styles, :bg_color],
+      translation: translations[:bar_background_color]
+    },
+    right: {
+      fields: [:header, :styles, :fg_color],
+      translation: translations[:bar_text_link_color]
+    }) %>
 
   <%= render('list_of_links',
-             :link_count => 15,
-             :links => header['links'],
-             :content_key => :header,
-             :translations => translations) %>
+    :link_count => 15,
+    :links => header['links'],
+    :content_key => :header,
+    :translations => translations) %>
 <% end %>

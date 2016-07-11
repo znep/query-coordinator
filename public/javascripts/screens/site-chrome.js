@@ -1,6 +1,7 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
-  color: /^#(?=[a-z\d]*$)(?:.{3}|.{6})$/i
+  color: /^#(?=[a-z\d]*$)(?:.{3}|.{6})$/i,
+  dimensions: /^\d{1,3}px$/
 };
 
 var validationRules = {
@@ -10,12 +11,16 @@ var validationRules = {
   },
   header: {
     'content[header][logo][src]': { url: true },
+    'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+    'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
     'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
     'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
     'content[header]links[][url]': { url: true }
   },
   footer: {
     'content[footer][logo][src]': { url: true },
+    'content[footer][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+    'content[footer][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
     'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
     'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color },
     'content[footer]links[][url]': { url: true }
@@ -41,8 +46,18 @@ var validationMessages = function(tab) {
       'content[general][google_analytics_token]':
         $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error')
     },
-    header: {},
-    footer: {},
+    header: {
+      'content[header][styles][logo_height]':
+        $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
+      'content[header][styles][logo_width]':
+        $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error')
+    },
+    footer: {
+      'content[footer][styles][logo_height]':
+        $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
+      'content[footer][styles][logo_width]':
+        $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
+    },
     social: {},
     homepage: {}
   }[tab];

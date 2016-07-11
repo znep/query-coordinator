@@ -2466,28 +2466,38 @@ en:
           footer:
             fields:
               copyright_notice:
-                description: Toggle the display of your site copyright notice. We automatically update the notice to display the current calendar year.
+                description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
                 label: Show Copyright Notice
                 title: Copyright Notice
               footer_background_color:
-                description: Background color of the footer and the color of the text and links displayed inside the footer.
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
                 placeholder: "#123456"
                 title: Footer Background Color
               footer_display_name:
-                description: Name displayed in the Footer Bar. Usually set to your organization's name.
+                description: This is the name displayed in the Footer area. Usually set to your organization's name.
                 placeholder: Evergreen Open Data
                 title: Footer Display Name
               footer_logo:
-                description: URL reference the footer logo. Recommended minimum size is 300px x 200px.
+                description: URL reference to the Footer logo. Recommended minimum size is 300px x 200px.
                 placeholder: URL
                 title: Footer Logo
+              footer_logo_height:
+                description: You can optionally set a height and width for your footer logo.
+                error: "Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px"
+                placeholder: 80px
+                title: Footer Logo Height
+              footer_logo_width:
+                description: You can optionally set a height and width for your footer logo.
+                error: "Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px"
+                placeholder: 80px
+                title: Footer Logo Width
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Footer Text & Link Color
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:
-                description: Display up to 15 links in the Footer. We automatically place these links in columns.
+                description: You may display up to 15 links in the Footer. These will automatically be placed in columns.
                 title: Footer Menu Links
               url_label: URL
               url_placeholder: http://data.evergreen.gov
@@ -2500,17 +2510,17 @@ en:
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
               template:
-                description: Adjust the appearance of the header/footer by changing the template. Supported templates are "default" and "rally".
+                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
                 placeholder: Rally
                 title: Template
               window_icon:
-                description: URL reference to the icon displayed in the window, tab, and browser URL field.
+                description: URL reference to the icon displayed in the browser window, tab and URL field.
                 placeholder: URL
-                title: Window or Tab Icon (favicon)
+                title: Browser Window or Tab Icon (favicon)
               window_title_display:
-                description: Name displayed in the window or tab title.
+                description: This is the name displayed in the browser window or tab title.
                 placeholder: Evergreen Open Data
-                title: Window or Tab Title Display
+                title: Browser Window or Tab Title Display
             title: General Settings
           header:
             fields:
@@ -2522,13 +2532,23 @@ en:
                 placeholder: "#ffffff"
                 title: Bar Text & Link Color
               header_bar_logo:
-                description: URL reference to the header bar logo. Recommended minimum size is 100 x 40px. This logo will be displayed at a small size.
+                description: URL reference to the header bar logo.
                 placeholder: URL
                 title: Header Bar Logo
               header_display_name:
                 description: Name displayed in the Header Bar. Usually set to your organization's name.
                 placeholder: Evergreen Open Data
                 title: Header Display Name
+              header_logo_height:
+                description: You can optionally set a height and width for your header bar logo.
+                error: "Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px"
+                placeholder: 80px
+                title: Header Logo Height
+              header_logo_width:
+                description: You can optionally set a height and width for your header bar logo.
+                error: "Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px"
+                placeholder: 80px
+                title: Header Logo Width
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:
@@ -2543,43 +2563,43 @@ en:
           social:
             fields:
               facebook_profile_link:
-                description: Displays Facebook profile link link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Facebook profile in both the Header and Footer.
                 placeholder: http://www.facebook.com/
                 title: Facebook Profile Link
               flickr_profile_link:
-                description: Displays Flickr profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Flickr profile in both the Header and Footer.
                 placeholder: http://www.flickr.com/
                 title: Flickr Profile Link
               google_plus_profile_link:
-                description: Displays Google Plus profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Google Plus profile in both the Header and Footer.
                 placeholder: http://www.plus.google.com/
                 title: Google Plus Profile Link
               instagram_profile_link:
-                description: Displays Instagram profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Instagram profile in both the Header and Footer.
                 placeholder: http://www.instagram.com/
                 title: Instagram Profile Link
               linked_in_profile_link:
-                description: Displays LinkedIn profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
                 placeholder: http://www.linkedin.com/
                 title: LinkedIn Profile Link
               tumblr_profile_link:
-                description: Displays Tumblr profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
                 placeholder: http://www.tumblr.com/
                 title: Tumblr Profile Link
               twitter_profile_link:
-                description: Displays Twitter profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Twitter profile in both the Header and Footer.
                 placeholder: http://www.twitter.com/
                 title: Twitter Profile Link
               vimeo_profile_link:
-                description: Displays Vimeo profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Vimeo profile in both the Header and Footer.
                 placeholder: http://www.vimeo.com/
                 title: Vimeo Profile Link
               yammer_profile_link:
-                description: Displays Yammer profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's Yammer profile in both the Header and Footer.
                 placeholder: http://www.yammer.com/
                 title: Yammer Profile Link
               youtube_profile_link:
-                description: Displays YouTube profile link in Header and Footer when present.
+                description: Add the URL here to display a link to your organization's YouTube profile in both the Header and Footer.
                 placeholder: http://www.youtube.com/
                 title: YouTube Profile Link
             title: Social Sharing

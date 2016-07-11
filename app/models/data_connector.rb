@@ -33,7 +33,8 @@ class DataConnector
     EsriCrawler.post_request('/servers', {
       :url => "https://#{esri_domain}",
       :sync_type => sync_type,
-      :socrata_domain => CurrentDomain.cname
+      :socrata_domain => CurrentDomain.cname,
+      :domain_id => CurrentDomain.domain.id
     })
   end
 

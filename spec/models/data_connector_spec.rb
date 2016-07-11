@@ -159,7 +159,8 @@ describe DataConnector do
         expect(body).to eq({
           :url => "https://#{esri_domain}",
           :sync_type => sync_type,
-          :socrata_domain => CurrentDomain.cname
+          :socrata_domain => CurrentDomain.cname,
+          :domain_id => CurrentDomain.domain.id
         })
       end
       DataConnector.create(esri_domain, sync_type)

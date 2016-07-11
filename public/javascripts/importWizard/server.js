@@ -40,11 +40,11 @@ export function saveMetadataThenProceed() {
 export function saveMetadataToViewsApi() {
   return (dispatch, getState) => {
     dispatch(Metadata.metadataSaveStart());
-    const { datasetId, metadata } = getState();
+    const { datasetId, metadata, navigation } = getState();
     return socrataFetch(`/api/views/${datasetId}`, {
       method: 'PUT',
       credentials: 'same-origin',
-      body: JSON.stringify(modelToViewParam(metadata))
+      body: JSON.stringify(modelToViewParam(metadata, navigation))
     }).then(checkStatus)
       .then((response) => {
         console.log(response);
@@ -125,7 +125,7 @@ export function socrataFetch(path, options): Promise {
   return fetch(path, mergedOptions);
 }
 
-export function modelToViewParam(metadata) {
+export function modelToViewParam(metadata, navigation) {
   return {
     name: metadata.contents.name,
     attributionLink: metadata.license.sourceLink,
@@ -143,7 +143,10 @@ export function modelToViewParam(metadata) {
       custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
     },
     licenseId: metadata.license.licenseId,
-    license: licenseToView(metadata.license)
+    license: licenseToView(metadata.license),
+    displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
+                  ? 'table'
+                  : 'draft'
   };
 }
 

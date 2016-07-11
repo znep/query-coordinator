@@ -18,6 +18,16 @@ FactoryGirl.define do
       end
     end
 
+    factory :draft_story_with_image_components do
+      after(:build) do |story|
+        story.block_ids.push(
+          FactoryGirl.create(:block_with_image).id,
+          FactoryGirl.create(:block_with_hero).id,
+          FactoryGirl.create(:block_with_author).id
+        )
+      end
+    end
+
     factory :draft_story_with_getty_image do
       after(:build) do |story|
         story.block_ids.push(

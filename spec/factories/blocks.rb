@@ -9,13 +9,29 @@ FactoryGirl.define do
 
   factory :block_with_image, class: Block do
     layout '12'
-    components { [ { type: 'image', value: { url: 'http://example.com/image.jpg' } } ] }
+    components { [ { type: 'image', value: { documentId: 1, url: 'http://example.com/image.jpg' } } ] }
     created_by 'test_user@socrata.com'
   end
 
   factory :block_with_hero, class: Block do
     layout '12'
-    components { [ { type: 'hero', value: { url: 'http://example.com/hero-image.jpg' } } ] }
+    components { [ { type: 'hero', value: { documentId: 2, url: 'http://example.com/hero-image.jpg' } } ] }
+    created_by 'test_user@socrata.com'
+  end
+
+  factory :block_with_author, class: Block do
+    layout '12'
+    components do
+      [{
+        type: 'author',
+        value: {
+          image: {
+            documentId: 3,
+            url: 'http://example.com/hero-image.jpg'
+          }
+        }
+      }]
+    end
     created_by 'test_user@socrata.com'
   end
 

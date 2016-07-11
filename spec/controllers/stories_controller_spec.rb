@@ -512,6 +512,35 @@ RSpec.describe StoriesController, type: :controller do
 
           expect(assigns(:story).theme).to eq(story_revision.theme)
         end
+
+        context 'when the draft story contains image components' do
+          let!(:story_revision) { FactoryGirl.create(:draft_story_with_image_components) }
+          let(:document) { FactoryGirl.create(:document) }
+
+          before do
+            allow(Document).to receive(:find).and_return(document)
+          end
+
+          it 'makes a copy of all documents' do
+            get :copy, uid: story_revision.uid, title: story_copy_title
+
+            story = assigns(:story)
+
+            old_block_one_document_id = Block.find(story_revision.block_ids[0]).components[0]['value']['documentId']
+            block_one_document_id = Block.find(story.block_ids[0]).components[0]['value']['documentId']
+
+            old_block_two_document_id = Block.find(story_revision.block_ids[1]).components[0]['value']['documentId']
+            block_two_document_id = Block.find(story.block_ids[1]).components[0]['value']['documentId']
+
+            old_block_three_document_id = Block.find(story_revision.block_ids[2]).components[0]['value']['image']['documentId']
+            block_three_document_id = Block.find(story.block_ids[2]).components[0]['value']['image']['documentId']
+
+            expect(story.block_ids.length).to eq(3)
+            expect(block_one_document_id).to_not eq(old_block_one_document_id)
+            expect(block_two_document_id).to_not eq(old_block_two_document_id)
+            expect(block_three_document_id).to_not eq(old_block_three_document_id)
+          end
+        end
       end
     end
 

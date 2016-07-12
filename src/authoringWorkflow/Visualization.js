@@ -84,75 +84,90 @@ export var Visualization = React.createClass({
     );
   },
 
+  detachVisualizationEvents() {
+    $(this.visualizationPreview()).
+      off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
+      off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
+      off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
+      off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
+  },
+
   columnChart() {
     var { vif } = this.props;
-    var onFlyout = event => this.onFlyout(event);
     var $visualizationPreview = $(this.visualizationPreview());
     var alreadyRendered = $visualizationPreview.has('.column-chart').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
+
+      this.detachVisualizationEvents();
+
       $visualizationPreview.
         trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataSvgColumnChart(vif);
+
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
   },
 
   choroplethMap() {
     var { vif } = this.props;
-    var onFlyout = event => this.onFlyout(event);
-    var onCenterAndZoomChanged = event => this.onCenterAndZoomChanged(event);
     var $visualizationPreview = $(this.visualizationPreview());
     var alreadyRendered = $visualizationPreview.has('.choropleth-map-container').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
+      this.detachVisualizationEvents();
+
       $visualizationPreview.
         trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataChoroplethMap(vif);
+
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', onFlyout).
-        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', onCenterAndZoomChanged);
+        on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
 
   featureMap() {
     var { vif } = this.props;
-    var onFlyout = event => this.onFlyout(event);
-    var onCenterAndZoomChanged = event => this.onCenterAndZoomChanged(event);
     var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.feature-map').length === 1;
+    var alreadyRendered = $visualizationPreview.find('.feature-map').children().length > 0;
 
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
+      this.detachVisualizationEvents();
+
       $visualizationPreview.
         trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataFeatureMap(vif);
+
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', onFlyout).
-        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', onCenterAndZoomChanged);
+        on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
 
   timelineChart() {
     var { vif } = this.props;
-    var onFlyout = event => this.onFlyout(event);
     var $visualizationPreview = $(this.visualizationPreview());
     var alreadyRendered = $visualizationPreview.has('.timeline-chart').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
+      this.detachVisualizationEvents();
+
       $visualizationPreview.
         trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataSvgTimelineChart(vif);
+
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
   },
 

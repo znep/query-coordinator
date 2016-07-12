@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { handleKeyPress } from '../../lib/a11yHelpers';
 import ViewWidget from '../ViewWidget';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
@@ -21,6 +20,7 @@ export var StoryForm = React.createClass({
     hasSaveError: PropTypes.bool,
     hasValidationError: PropTypes.bool,
     isLoadingStory: PropTypes.bool,
+    isPrivate: PropTypes.bool,
     isSaved: PropTypes.bool,
     isSaving: PropTypes.bool,
     loadRequestedStory: PropTypes.func,
@@ -43,6 +43,8 @@ export var StoryForm = React.createClass({
 
   componentDidMount: function() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
+
+    this.loadRequestedStory = _.debounce(this.loadRequestedStory, 500, { leading: true });
     this.loadStoryIfNeeded();
   },
 
@@ -61,18 +63,20 @@ export var StoryForm = React.createClass({
     this.props.onChangeUrl(event.target.value);
   },
 
-  loadStoryIfNeeded: function() {
-    var { loadRequestedStory, shouldLoadStory } = this.props;
+  loadRequestedStory: function() {
+    this.props.loadRequestedStory();
+  },
 
-    if (shouldLoadStory) {
-      loadRequestedStory();
+  loadStoryIfNeeded: function() {
+    if (this.props.shouldLoadStory) {
+      this.loadRequestedStory();
     }
   },
 
   I18n: I18n.featured_content_modal.story_form,
 
   renderForm: function() {
-    var { url, hasSaveError, hasValidationError, onClickSave } = this.props;
+    var { url, hasSaveError, hasValidationError } = this.props;
 
     var validationWarning = hasValidationError ?
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
@@ -92,8 +96,7 @@ export var StoryForm = React.createClass({
           placeholder="https://example.com/stories/s/abcd-efgh"
           aria-labelledby="story-url-label"
           aria-invalid={hasValidationError || hasSaveError}
-          onChange={this.onChangeUrl}
-          onKeyDown={handleKeyPress(onClickSave, true)} />
+          onChange={this.onChangeUrl} />
 
         {validationWarning}
       </form>
@@ -108,7 +111,8 @@ export var StoryForm = React.createClass({
       createdAt,
       viewCount,
       canSave,
-      isLoadingStory
+      isLoadingStory,
+      isPrivate
     } = this.props;
 
     if (canSave) {
@@ -116,6 +120,7 @@ export var StoryForm = React.createClass({
         name: title,
         description: description,
         displayType: 'story',
+        isPrivate: isPrivate,
         viewCount: viewCount,
         updatedAt: createdAt
       };

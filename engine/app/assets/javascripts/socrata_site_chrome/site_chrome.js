@@ -9,15 +9,15 @@ setTimeout(function() {
 function mobileMenuFlyout() {
   var $menu = $('#site-chrome-header .mobile-menu');
   var $menuToggle = $('#site-chrome-header .menu-toggle');
-  var initialBodyOverflow = $('body').css('overflow');
+  var initialBodyOverflowY = $('body').css('overflow-y');
 
   $menuToggle.click(function() {
     $menu.toggleClass('active');
     if ($menu.hasClass('active')) {
       // Disable body from scrolling while menu is open
-      $('body').css('overflow', 'hidden');
+      $('body').css('overflow-y', 'hidden');
     } else {
-      $('body').css('overflow', initialBodyOverflow);
+      $('body').css('overflow-y', initialBodyOverflowY);
     }
   });
 }

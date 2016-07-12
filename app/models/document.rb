@@ -21,6 +21,8 @@
 class MissingContentTypeError < StandardError; end
 
 class Document < ActiveRecord::Base
+  include Paperclip::CopyAttachments
+
   validates :story_uid, presence: true
   validates :created_by, presence: true, format: FOUR_BY_FOUR_PATTERN
 

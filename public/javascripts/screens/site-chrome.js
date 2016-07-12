@@ -1,6 +1,6 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
-  color: /^#(?=[a-z\d]*$)(?:.{3}|.{6})$/i,
+  color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
   dimensions: /^\d{1,3}px$/
 };
 
@@ -14,6 +14,7 @@ var validationRules = {
     'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
     'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
     'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
+    'content[header][styles][bg_color_secondary]': { pattern: inputTypeValidations.color },
     'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
     'content[header]links[][url]': { url: true }
   },

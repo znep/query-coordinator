@@ -2531,10 +2531,15 @@ en:
           header:
             fields:
               bar_background_color:
-                description: Background color of the header bar and the color of text and links that sit atop the bar.
+                description: Primary and secondary background colors of the header bar. The secondary color is only used in the Rally template.
                 placeholder: "#123456"
-                title: Bar Background Color
+                title: Bar Background Color (Primary)
+              bar_secondary_background_color:
+                description: Primary and secondary background colors of the header bar. The secondary color is only used in the Rally template.
+                placeholder: "#123456"
+                title: Bar Background Color (Secondary)
               bar_text_link_color:
+                description: Foreground color of the text and links that sit atop the header bar.
                 placeholder: "#ffffff"
                 title: Bar Text & Link Color
               header_bar_logo:

@@ -17,5 +17,9 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,public}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
   s.test_files = Dir['test/**/*']
 
+  s.add_dependency 'airbrake', '4.3.0'
+  s.add_dependency 'hashie'
+  s.add_dependency 'httparty'
   s.add_dependency 'rails', '~> 4.2', '>= 4.2.6'
+  s.add_dependency 'request_store'
 end

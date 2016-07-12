@@ -178,6 +178,43 @@ describe SiteChrome do
         expect(after).to eq(before)
       end
     end
+
+    def default_site_chrome
+      SiteChrome.new(
+        name: 'Site Chrome',
+        default: false, # so that find_default won't find this
+        domainCName: 'localhost',
+        type: 'site_chrome'
+      )
+    end
+
+    describe '#current_version' do
+      it 'returns the latest version if no config is present' do
+        site_chrome = default_site_chrome
+        allow(site_chrome).to receive(:config).and_return(nil)
+        allow(SiteChrome).to receive(:latest_version).and_return('0.1.2.3')
+        expect(site_chrome.current_version).to eq('0.1.2.3')
+      end
+
+      it 'returns the latest version if a config is present but does not have the a versions key' do
+        site_chrome = default_site_chrome
+        allow(site_chrome).to receive(:config).and_return(value: {})
+        allow(SiteChrome).to receive(:latest_version).and_return('4.5.6')
+        expect(site_chrome.current_version).to eq('4.5.6')
+      end
+
+      it 'returns the current version specified in the config instead of the latest version' do
+        site_chrome = default_site_chrome
+        allow(site_chrome).to receive(:config).and_return(
+          'value' => {
+            'versions' => { '1.2': {}},
+            'current_version' => '1.2'
+          }
+        )
+        allow(SiteChrome).to receive(:latest_version).and_return('4.5.6')
+        expect(site_chrome.current_version).to eq('1.2')
+      end
+    end
   end
 
 end

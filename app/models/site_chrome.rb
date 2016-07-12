@@ -85,7 +85,7 @@ class SiteChrome
   end
 
   def current_version
-    if config.present?
+    if config.present? && config.dig('value', 'versions').present?
       config.dig('value', 'current_version') || latest_published_version
     else
       # No existing data, use latest version
@@ -228,7 +228,8 @@ class SiteChrome
     }
     new_content = (content || {}).deep_merge(new_content_hash)
     all_versions_content['current_version'] = current_version
-    all_versions_content['versions'][current_version] = { 'published' => { 'content' => new_content } }
+    (all_versions_content['versions'] ||= {})[current_version] =
+      { 'published' => { 'content' => new_content } }
     create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
   end
 

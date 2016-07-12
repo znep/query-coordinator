@@ -7,8 +7,9 @@ header#site-chrome-header[template="rally"] {
 
     > .rally-top {
       background-color: $header_bg_color_secondary;
+      min-height: 2rem;
+      height: $header_logo_height;
       padding: 1rem;
-      overflow: hidden;
 
       > a.logo {
         float: left;
@@ -18,13 +19,14 @@ header#site-chrome-header[template="rally"] {
           height: $header_logo_height;
           width: $header_logo_width;
           margin-right: 1rem;
-          vertical-align: middle;
+          float: left;
         }
 
         > span.site-name {
           font-weight: 300;
-          font-size: 28px;
-          vertical-align: middle;
+          font-size: 24px;
+          line-height: $header_logo_height;
+          float: left;
         }
       }
     }
@@ -32,8 +34,9 @@ header#site-chrome-header[template="rally"] {
     > .rally-bottom {
       color: $header_fg_color;
       background-color: $header_bg_color;
-      height: 63px;
+      height: 58px;
       padding: 0 1rem;
+      clear: both;
 
       > nav {
         font-size: 15px;

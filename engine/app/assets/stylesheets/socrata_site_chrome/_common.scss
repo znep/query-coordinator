@@ -64,6 +64,7 @@ header#site-chrome-header, footer#site-chrome-footer {
 
   .searchbox {
     float: right;
+    min-height: 2rem;
     height: $header_logo_height;
 
     @include mobile-med {

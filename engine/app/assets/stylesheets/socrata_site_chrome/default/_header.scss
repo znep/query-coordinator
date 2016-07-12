@@ -25,6 +25,9 @@ header#site-chrome-header[template="default"] {
 
       > span.site-name {
         font-weight: 300;
+        font-size: 24px;
+        line-height: $header_logo_height;
+        vertical-align: middle;
       }
     }
 

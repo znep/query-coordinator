@@ -6,6 +6,7 @@ module.exports = function FlannelFactory() {
   var animationEasing = [.645, .045, .355, 1];
   var padding = 10;
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flannel]'));
+  var lastFocusedItem = null;
 
   function hideFlannel(flannel, hoverable) {
     if (window.innerWidth <= mobileBreakpoint) {
@@ -23,6 +24,16 @@ module.exports = function FlannelFactory() {
     } else {
       flannel.classList.add('flannel-hidden');
       hoverable.classList.remove('active');
+    }
+
+    var elementToFocus = flannel.children[0] || flannel;
+    elementToFocus.removeAttribute('tabindex');
+    elementToFocus.style.outline = '';
+
+    // Return focus to the last previously focused on element
+    if (lastFocusedItem) {
+      lastFocusedItem.focus();
+      lastFocusedItem = null;
     }
   }
 
@@ -94,6 +105,15 @@ module.exports = function FlannelFactory() {
           easing: animationEasing
         });
       }
+
+      // Store last focused on element
+      lastFocusedItem = document.querySelector(':focus');
+
+      // Shift focus to the flannel
+      var elementToFocus = flannel.children[0] || flannel;
+      elementToFocus.setAttribute('tabindex', '0');
+      elementToFocus.focus();
+      elementToFocus.style.outline = 'none';
     });
 
     document.body.addEventListener('click', function(event) {

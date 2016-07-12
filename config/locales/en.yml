@@ -2141,7 +2141,7 @@ en:
           upsert: Upsert
           working_copy: Working Copy
         index_page:
-          action: Action
+          action: Type
           dataset: Dataset
           deleted: Deleted
           deleted_dataset: Deleted dataset

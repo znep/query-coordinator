@@ -206,7 +206,7 @@ config.styleguide = false
             ],
             "logo": {
               "href": "#",
-              "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+              "src": "https://evergreen.gov/logo.png"
             },
             "styles": {
               "bg_color": "#3b3a3c",

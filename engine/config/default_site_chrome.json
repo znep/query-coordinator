@@ -35,7 +35,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
@@ -84,7 +84,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#22b479",
@@ -160,7 +160,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
@@ -212,7 +212,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#22b479",
@@ -289,7 +289,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
@@ -337,7 +337,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "/stylesheets/images/common/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
                   },
                   "styles": {
                     "bg_color": "#22b479",

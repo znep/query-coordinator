@@ -3,7 +3,10 @@ PATH
   specs:
     socrata_site_chrome (0.0.28)
       airbrake (= 4.3.0)
+      hashie
+      httparty
       rails (~> 4.2, >= 4.2.6)
+      request_store
 
 GEM
   remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/

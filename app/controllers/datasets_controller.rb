@@ -67,10 +67,6 @@ class DatasetsController < ApplicationController
     @page_custom_chrome = ''
     @suppress_content_wrapper = true
 
-    if is_mobile?
-      return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
-    end
-
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
     user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
 
@@ -134,6 +130,10 @@ class DatasetsController < ApplicationController
     end
 
     # We're going to some version of the grid/viz page
+
+    if is_mobile?
+      return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
+    end
 
     # TODO: Remove this after DSLP launch (note that this is not being localized
     # intentionally and we plan on removing it post-launch)

@@ -6,6 +6,7 @@ header#site-chrome-header[template="rally"] {
     font-size: 18px;
 
     > .rally-top {
+      background-color: $header_bg_color_secondary;
       padding: 1rem;
       overflow: hidden;
 

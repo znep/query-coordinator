@@ -1,6 +1,7 @@
 'use strict';
 var utils = require('socrata-utils');
 var moment = require('moment');
+var wkt = require('wellknown');
 
 module.exports = {
   renderCell: renderCell,
@@ -36,11 +37,16 @@ function renderCell(cellContent, column, i18n, domain, datasetUid) {
       cellText = _.escape(renderNumberCell(cellContent, column));
       break;
     // Avoid escaping because cell content is HTML.
-    // TODO: Is it? I don't think so... let's verify next time we're in this
-    // code.
     case 'geo_entity':
-    case 'point':
       cellText = renderGeoCellHTML(cellContent, column, i18n);
+      break;
+    case 'point':
+    case 'line':
+    case 'polygon':
+    case 'multipoint':
+    case 'multiline':
+    case 'multipolygon':
+      cellText = renderWKTCell(cellContent);
       break;
     case 'calendar_date':
       cellText = _.escape(renderTimestampCell(cellContent, column));
@@ -235,6 +241,13 @@ function renderGeoCellHTML(cellContent, columnMetadata, i18n) {
   } else {
     return '';
   }
+}
+
+/**
+* Renders any GeoJSON column by serializing to Well Known Text.
+*/
+function renderWKTCell(cellContent) {
+  return wkt.stringify(cellContent);
 }
 
 /**

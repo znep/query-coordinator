@@ -13,6 +13,8 @@ import { localizeLink } from '../lib/locale';
 
 export var MetadataTable = React.createClass({
   propTypes: {
+    onClickEditMetadata: PropTypes.func,
+    onClickStats: PropTypes.func,
     onExpandMetadataTable: PropTypes.func,
     onExpandTags: PropTypes.func,
     view: PropTypes.object.isRequired
@@ -117,7 +119,7 @@ export var MetadataTable = React.createClass({
   },
 
   render: function() {
-    var view = this.props.view;
+    var { view, onClickEditMetadata, onClickStats } = this.props;
     var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var attachments;
@@ -262,7 +264,7 @@ export var MetadataTable = React.createClass({
     if (view.statsUrl) {
       statsSection = (
         <div className="metadata-row middle">
-          <a className="metadata-detail-group-value" href={view.statsUrl}>
+          <a className="metadata-detail-group-value" href={view.statsUrl} onClick={onClickStats}>
             {I18n.metadata.view_statistics}
           </a>
         </div>
@@ -271,7 +273,10 @@ export var MetadataTable = React.createClass({
 
     if (view.editMetadataUrl) {
       editMetadata = (
-        <a href={view.editMetadataUrl} className="btn btn-sm btn-default">
+        <a
+          href={view.editMetadataUrl}
+          className="btn btn-sm btn-default"
+          onClick={onClickEditMetadata}>
           {I18n.metadata.edit_metadata}
         </a>
       );
@@ -483,6 +488,28 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onClickEditMetadata: function() {
+      var payload = {
+        name: 'Edited Metadata',
+        properties: {
+          'From Page': 'DSLP'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onClickStats: function() {
+      var payload = {
+        name: 'Viewed Dataset Statistics',
+        properties: {
+          'From Page': 'DSLP'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
     onExpandTags: function() {
       var payload = {
         name: 'Expanded Details',

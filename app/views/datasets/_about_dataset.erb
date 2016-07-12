@@ -181,7 +181,7 @@
       <dd><%= @view.contributor_users.length %></dd>
       <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
         <dt class="widenedItem">
-          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view) %>
+          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view), { :class => 'statsButton' } %>
         </dt>
         <dd>&nbsp;</dd>
       <%- end -%>

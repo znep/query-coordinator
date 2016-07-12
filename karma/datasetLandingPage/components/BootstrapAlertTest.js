@@ -1,4 +1,4 @@
-import BootstrapAlert from 'components/BootstrapAlert';
+import { BootstrapAlert } from 'components/BootstrapAlert';
 import mockView from 'data/mockView';
 
 describe('components/BootstrapAlert', function() {

@@ -1,6 +1,8 @@
 import 'whatwg-fetch';
 import { defaultHeaders, checkStatus } from '../lib/http';
 import { UID_REGEX } from '../lib/constants';
+import { getSemanticNameForDisplayType } from '../lib/displayTypeMetadata';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 
 import {
   ADD_FEATURED_ITEM,
@@ -87,6 +89,15 @@ export function saveFeaturedItem(options) {
     var payload;
     var fetchOptions;
 
+    var mixpanelPayload = {
+      name: 'Saved a Featured Item',
+      properties: {
+        'Content Type': 'Unknown',
+        'Display Type': 'N/A',
+        'Item Position': editPosition
+      }
+    };
+
     // The payload differs depending on the type of item that is being featured.
     if (editType === 'visualization') {
       dispatch(setSavingFeaturedItem(options.featuredLensUid));
@@ -96,6 +107,13 @@ export function saveFeaturedItem(options) {
         contentType: 'internal',
         position: editPosition
       };
+
+      var viewList = featuredContent.viewSelector.viewList;
+      var selectedView = _.find(viewList, { id: options.featuredLensUid });
+      var displayType = _.get(selectedView, 'displayType');
+
+      mixpanelPayload.properties['Content Type'] = 'Visualization';
+      mixpanelPayload.properties['Display Type'] = getSemanticNameForDisplayType(displayType);
     } else if (editType === 'story') {
       payload = {
         featuredLensUid: parseUid(featuredContent.story.url),
@@ -103,6 +121,9 @@ export function saveFeaturedItem(options) {
         contentType: 'internal',
         url: trimEditFromUrl(featuredContent.story.url)
       };
+
+      mixpanelPayload.properties['Content Type'] = 'Visualization';
+      mixpanelPayload.properties['Display Type'] = 'Story';
     } else if (editType === 'externalResource') {
       var previewImage = _.get(featuredContent.externalResource, 'previewImage', '');
       var matches = previewImage.match(/base64,([^\s]+)$/);
@@ -116,6 +137,8 @@ export function saveFeaturedItem(options) {
         position: editPosition,
         contentType: 'external'
       };
+
+      mixpanelPayload.properties['Content Type'] = 'External Resource';
     } else {
       return console.error(
         `Asked to save a featured item, but the current editType is "${editType}". ` +
@@ -138,6 +161,7 @@ export function saveFeaturedItem(options) {
       then(response => response.json()).
       then(function(response) {
         dispatch(handleFeaturedItemSaveSuccess(response, editPosition));
+        dispatch(emitMixpanelEvent(mixpanelPayload));
         _.delay(dispatch, 1500, cancelFeaturedItemEdit());
       }).
       catch(() => dispatch(handleFeaturedItemSaveError()));

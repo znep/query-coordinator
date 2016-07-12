@@ -57,7 +57,7 @@ describe('components/PopularViewList', function() {
   describe('contents', function() {
     it('renders an alert if the viewList of popular views is empty and the user is privileged', function() {
       window.serverConfig.currentUser = { roleName: 'publisher' };
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponentWithStore(PopularViewList, _.assign(defaultProps, {
         viewList: []
       }));
 

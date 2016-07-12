@@ -25,12 +25,17 @@ $(document).ready(function() {
     'Clicked Socrata News Link',
     'Clicked Pane in Sidebar',
     'Clicked a Related View',
+    'Clicked to Add a Featured Item',
+    'Clicked to Edit a Featured Item',
+    'Clicked to Remove a Featured Item',
     'Clicked to Show More Views',
     'Closed Tour',
+    'Created a Data Lens',
     'Contacted Dataset Owner',
     'Copied API Link',
     'Copied OData Link',
     'Downloaded Data',
+    'Edited Metadata',
     'Encountered Error Message',
     'Expanded Column Info',
     'Expanded Details',
@@ -38,9 +43,11 @@ $(document).ready(function() {
     'Ingress: Left Wizard Page',
     'Navigated to Gridpage',
     'Opened Goal Chart',
+    'Saved a Featured Item',
     'Shared Dataset',
     'Used Search Facets',
-    'Used Search Field'
+    'Used Search Field',
+    'Viewed Dataset Statistics'
   ];
 
   // This is duplicated in angular/common/values.js and datasetLandingPage/lib/mixpanelTracking.js
@@ -48,7 +55,9 @@ $(document).ready(function() {
     'Catalog Version',
     'Chart/Map Type',
     'Click Position',
+    'Content Type',
     'Dataset Owner',
+    'Display Type',
     'Domain',
     'Expanded Target',
     'Facet Name',
@@ -56,9 +65,12 @@ $(document).ready(function() {
     'Facet Type Name',
     'Facet Value',
     'Footer Item Type',
+    'From Page',
     'Header Item Type',
     'Ingress Step',
     'IP',
+    'Item Position',
+    'Item Type',
     'Limit',
     'Message Shown',
     'Name',
@@ -419,6 +431,21 @@ $(document).ready(function() {
     //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
     mixpanelNS.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
       return {'Pane Name': element.text};
+    });
+
+    // Edit Metadata Button
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.editMetadataButton', 'Edited Metadata', false, function(element) {
+      return { 'From Page': 'Grid Page' };
+    });
+
+    // Stats Metadata Button
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.statsButton', 'Viewed Dataset Statistics', false, function(element) {
+      return { 'From Page': 'Grid Page' };
+    });
+
+    // Bootstrap Data Lens Button
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.bootstrapButton', 'Created a Data Lens', false, function(element) {
+      return { 'From Page': 'Grid Page' };
     });
 
     //In the visualize pane - the different visualization types

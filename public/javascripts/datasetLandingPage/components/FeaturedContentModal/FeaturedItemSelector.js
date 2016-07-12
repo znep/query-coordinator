@@ -3,6 +3,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import FeaturedItemWidget from '../FeaturedItemWidget';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
+import { getEditTypeFromFeaturedItem } from '../../lib/featuredContent';
+
+import { emitMixpanelEvent } from '../../actions/mixpanel';
 
 import {
   addFeaturedItem,
@@ -69,7 +72,7 @@ export var FeaturedItemSelector = React.createClass({
       <button
         className="btn btn-alternate-2 edit-button"
         key="change"
-        onClick={_.partial(onClickEdit, contentList[index])}>
+        onClick={_.partial(onClickEdit, index, contentList[index])}>
         <span className="icon-edit" />
         {I18n.change}
       </button>
@@ -77,7 +80,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderRemoveButton: function(index) {
-    var { isRemoving, removePosition, onClickRemove } = this.props;
+    var { contentList, isRemoving, removePosition, onClickRemove } = this.props;
 
     var contents;
     var onClick;
@@ -89,7 +92,7 @@ export var FeaturedItemSelector = React.createClass({
       style = { paddingBottom: 6 };
     } else {
       contents = <div><span className="icon-close" />{I18n.remove}</div>;
-      onClick = _.partial(onClickRemove, index);
+      onClick = _.partial(onClickRemove, index, contentList[index]);
       style = null;
     }
 
@@ -232,8 +235,33 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  function getMixpanelEditType(featuredItem) {
+    switch (getEditTypeFromFeaturedItem(featuredItem)) {
+      case 'visualization':
+        return 'Visualization';
+
+      case 'story':
+        return 'Story';
+
+      case 'externalResource':
+        return 'External Resource';
+
+      default:
+        return 'Unknown';
+    }
+  }
+
   return {
     onClickAdd: function(type, position) {
+      var mixpanelPayload = {
+        name: 'Clicked to Add a Featured Item',
+        properties: {
+          'Item Type': _.upperFirst(type),
+          'Item Position': position
+        }
+      };
+
+      dispatch(emitMixpanelEvent(mixpanelPayload));
       dispatch(addFeaturedItem(type, position));
     },
 
@@ -245,13 +273,31 @@ function mapDispatchToProps(dispatch) {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickEdit: function(position) {
-      dispatch(editFeaturedItem(position));
+    onClickEdit: function(position, featuredItem) {
+      var mixpanelPayload = {
+        name: 'Clicked to Edit a Featured Item',
+        properties: {
+          'Item Type': getMixpanelEditType(featuredItem),
+          'Item Position': position
+        }
+      };
+
+      dispatch(emitMixpanelEvent(mixpanelPayload));
+      dispatch(editFeaturedItem(featuredItem));
     },
 
-    onClickRemove: function(position) {
+    onClickRemove: function(position, featuredItem) {
+      var mixpanelPayload = {
+        name: 'Clicked to Remove a Featured Item',
+        properties: {
+          'Item Type': getMixpanelEditType(featuredItem),
+          'Item Position': position
+        }
+      };
+
       /* eslint-disable no-alert */
       if (window.confirm(I18n.featured_content_modal.remove_prompt)) {
+        dispatch(emitMixpanelEvent(mixpanelPayload));
         dispatch(removeFeaturedItem(position));
       }
       /* eslint-enable no-alert */

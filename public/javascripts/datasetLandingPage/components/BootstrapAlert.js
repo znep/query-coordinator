@@ -1,12 +1,15 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import styleguide from 'socrata-styleguide';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 
-var BootstrapAlert = React.createClass({
+export var BootstrapAlert = React.createClass({
   propTypes: {
-    bootstrapUrl: PropTypes.string
+    bootstrapUrl: PropTypes.string,
+    onClickBootstrap: PropTypes.func
   },
 
   componentWillMount: function() {
@@ -20,7 +23,7 @@ var BootstrapAlert = React.createClass({
   },
 
   render: function() {
-    var { bootstrapUrl } = this.props;
+    var { bootstrapUrl, onClickBootstrap } = this.props;
     var isDisabled = !_.isString(bootstrapUrl);
     var className = 'btn btn-sm btn-alternate-2';
     var flyoutId;
@@ -46,7 +49,8 @@ var BootstrapAlert = React.createClass({
           href={bootstrapUrl}
           className={className}
           target="_blank"
-          data-flyout={flyoutId}>
+          data-flyout={flyoutId}
+          onClick={onClickBootstrap}>
           {I18n.bootstrap_button}
         </a>
         {flyout}
@@ -55,4 +59,19 @@ var BootstrapAlert = React.createClass({
   }
 });
 
-export default BootstrapAlert;
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickBootstrap: function() {
+      var payload = {
+        name: 'Created a Data Lens',
+        properties: {
+          'From Page': 'DSLP'
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(BootstrapAlert);

@@ -39,4 +39,45 @@ function getIconClassForDisplayType(displayType) {
   }
 }
 
-export { getIconClassForDisplayType };
+function getSemanticNameForDisplayType(displayType) {
+  if (_.isEmpty(displayType)) {
+    return 'Unknown';
+  }
+
+  switch (displayType) {
+    case 'grouped':
+    case 'filter':
+      return 'Filtered View';
+
+    case 'href':
+      return 'External';
+
+    case 'data_lens':
+      return 'Data Lens';
+
+    case 'story':
+      return 'Story';
+
+    case 'map':
+    case 'intensitymap':
+    case 'geomap':
+    case 'data_lens_map':
+      return 'Map';
+
+    case 'chart':
+    case 'annotatedtimeline':
+    case 'imagesparkline':
+    case 'areachart':
+    case 'barchart':
+    case 'columnchart':
+    case 'linechart':
+    case 'piechart':
+    case 'data_lens_chart':
+      return 'Chart';
+
+    default:
+      return 'Unknown';
+  }
+}
+
+export { getIconClassForDisplayType, getSemanticNameForDisplayType };

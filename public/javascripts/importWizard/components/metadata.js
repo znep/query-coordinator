@@ -538,7 +538,7 @@ function renderLicenses(metadata, onMetadataAction) {
     <div className="licenses">
       <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
       <div className="line clearfix">
-        <label htmlFor="view_licenses">License Type</label>
+        <label htmlFor="view_licenses">{I18n.screens.edit_metadata.license_tyoe}</label>
         <select
           name="view[licenses]"
           value={metadata.license.licenseName}
@@ -549,7 +549,7 @@ function renderLicenses(metadata, onMetadataAction) {
 
       {_.has(licensesByName, 'licenses') ?
         <div className="line clearfix">
-          <label htmlFor="view_licensing" className="required">Licensing</label>
+          <label htmlFor="view_licensing" className="required">{I18n.screens.edit_metadata.licensing}</label>
           <select
             name="view[licensing]"
             value={metadata.license.licensing}

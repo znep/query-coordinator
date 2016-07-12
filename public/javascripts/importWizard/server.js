@@ -42,11 +42,11 @@ export function saveMetadataThenProceed() {
 export function saveMetadataToViewsApi() {
   return (dispatch, getState) => {
     dispatch(Metadata.metadataSaveStart());
-    const { datasetId, metadata } = getState();
+    const { datasetId, metadata, navigation } = getState();
     return socrataFetch(`/api/views/${datasetId}`, {
       method: 'PUT',
       credentials: 'same-origin',
-      body: JSON.stringify(modelToViewParam(metadata))
+      body: JSON.stringify(modelToViewParam(metadata, navigation))
     }).then(checkStatus)
       .then((response) => {
         console.log(response);
@@ -62,23 +62,27 @@ export function saveMetadataToViewsApi() {
 
 export function proceedFromMetadataPane() {
   return (dispatch, getState) => {
-    const { navigation } = getState();
-    const onImportError = () => {
-      dispatch(importError());
+    const { navigation, metadata } = getState();
+    if (metadata.apiCall.type === 'Error') {
       dispatch(goToPage('Metadata'));
-    };
-    switch (navigation.operation) {
-      case 'UploadData':
-        dispatch(importData(onImportError));
-        break;
-      case 'UploadGeospatial':
-        dispatch(importGeospatial(onImportError));
-        break;
-      case 'CreateFromScratch':
-        dispatch(goToPage('Finish'));
-        break;
-      default:
-        console.error('Unkown operation!', navigation.operation);
+    } else {
+      const onImportError = () => {
+        dispatch(importError());
+        dispatch(goToPage('Metadata'));
+      };
+      switch (navigation.operation) {
+        case 'UploadData':
+          dispatch(importData(onImportError));
+          break;
+        case 'UploadGeospatial':
+          dispatch(importGeospatial(onImportError));
+          break;
+        case 'CreateFromScratch':
+          dispatch(goToPage('Finish'));
+          break;
+        default:
+          console.error('Unkown operation!', navigation.operation);
+      }
     }
   };
 }
@@ -127,9 +131,9 @@ export function socrataFetch(path, options): Promise {
   return fetch(path, mergedOptions);
 }
 
-export function modelToViewParam(metadata) {
+export function modelToViewParam(metadata, navigation) {
   const license = metadata.license;
-  if (license.licenseId !== '') {
+  if (license.licenseName !== '') {
     return {
       name: metadata.contents.name,
       attributionLink: license.sourceLink,
@@ -147,7 +151,10 @@ export function modelToViewParam(metadata) {
         custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
       },
       licenseId: license.licenseId,
-      license: licenseToView(license)
+      license: licenseToView(license),
+      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
+                    ? 'table'
+                    : 'draft'
     };
   } else {
     return {
@@ -165,7 +172,10 @@ export function modelToViewParam(metadata) {
       privateMetadata: {
         contactEmail: metadata.contents.contactEmail,
         custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
-      }
+      },
+      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
+                    ? 'table'
+                    : 'draft'
     };
   }
 }
@@ -196,7 +206,9 @@ export function licenseToView(license) {
 
 export function coreViewToModel(view) {
   const contents = coreViewContents(view);
-  const license = coreViewLicense(view);
+  const license = view.licenseId
+                  ? coreViewLicense(view)
+                  : Metadata.emptyLicense();
   return {
     nextClicked: false,
     contents: contents,

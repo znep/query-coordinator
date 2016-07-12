@@ -540,7 +540,7 @@ function renderLicenses(metadata, onMetadataAction) {
     <div className="licenses">
       <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
       <div className="line clearfix">
-        <label htmlFor="view_licenses">License Type</label>
+        <label htmlFor="view_licenses">{I18n.screens.edit_metadata.license_type}</label>
         <select
           name="view[licenses]"
           value={metadata.license.licenseName}

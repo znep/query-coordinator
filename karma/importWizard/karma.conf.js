@@ -47,7 +47,9 @@ module.exports = function(karma) {
         'datasetCategories': 'datasetCategories',
         'importableTypes': 'importableTypes',
         'enabledModules': 'enabledModules',
-        'customMetadataSchema': 'customMetadataSchema'
+        'customMetadataSchema': 'customMetadataSchema',
+        'licenses': 'licenses',
+        'blistLicenses': 'blistLicenses'
       }
     },
 

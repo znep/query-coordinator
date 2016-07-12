@@ -17,9 +17,7 @@
 <%= render_import_wizard_enabled_modules %>
 <%= render_import_wizard_dataset_categories %>
 <%= render_import_wizard_view(@view) %>
-
-<% content_for :js_footer do %>
-  <%= render_import_wizard_licenses %>
-<% end %>
+<%= render_import_wizard_blist_licenses %>
+<%= render_import_wizard_license_options %>
 
 <%= include_webpack_bundle 'import-wizard/main.js' %>

@@ -11,18 +11,24 @@ import {
   updateCategory,
   updateTags,
   updateRowLabel,
-  updateAttributionLink,
+  updateMapLayer,
   updatePrivacySettings,
   updateContactEmail,
   updateNextClicked,
   updateLastSaved,
+  updateLicenseName,
+  updateLicensing,
+  updateLicenseSourceLink,
+  updateLicenseAttribution,
   validate,
   isStandardMetadataValid,
   isCustomMetadataValid,
   isEmailValid,
   isMetadataValid,
   isMetadataUnsaved,
-  view
+  isAttributionValid,
+  view,
+  isProviderRequired
 } from 'components/metadata';
 
 import { initialNewDatasetModel } from 'wizard';
@@ -70,10 +76,10 @@ describe("metadata's reducer testing", () => {
     });
   });
 
-  describe('SET_ATTRIBUTIONLINK', () => {
+  describe('SET_MAPLAYER', () => {
     it('sets the attribution link url of the dataset', () => {
-      const result = update(state, updateAttributionLink('wombats.au'));
-      expect(result.contents.attributionLink).to.equal('wombats.au');
+      const result = update(state, updateMapLayer('wombats.au'));
+      expect(result.contents.mapLayer).to.equal('wombats.au');
     });
   });
 
@@ -114,6 +120,53 @@ describe("metadata's reducer testing", () => {
       expect(result.nextClicked).to.equal(true);
     });
   });
+
+  describe('SET_LICENSE', () => {
+    it('sets licenseName to Public Domain', () => {
+      const result = update(state, updateLicenseName('Public Domain'));
+      expect(result.license.licenseName).to.equal('Public Domain');
+      expect(result.license.licensing).to.equal('');
+      expect(result.license.licenseId).to.equal('PUBLIC_DOMAIN')
+    });
+
+    it('sets licenseName to Creative Commons and expect a licensing', () => {
+      const result = update(state, updateLicenseName('Creative Commons'));
+
+      expect(result.license.licenseName).to.equal('Creative Commons');
+      expect(result.license.licensing).to.equal('1.0 Universal (Public Domain Dedication)');
+      expect(result.license.licenseId).to.equal('CC0_10');
+    });
+
+    it('sets licenseName to Creative Commons then back to Public Domain and expect no licensing', () => {
+      const temp = update(state, updateLicenseName('Creative Commons'));
+      const result = update(temp, updateLicenseName('Public Domain'));
+
+      expect(result.license.licenseName).to.equal('Public Domain');
+      expect(result.license.licensing).to.equal('');
+      expect(result.license.licenseId).to.equal('PUBLIC_DOMAIN');
+    });
+
+    it('sets licensing', () => {
+      const temp = update(state, updateLicenseName('Creative Commons'));
+      const result = update(temp, updateLicensing('Attribution | No Derivative Works 3.0 Unported'));
+
+      expect(result.license.licenseName).to.equal('Creative Commons');
+      expect(result.license.licensing).to.equal('Attribution | No Derivative Works 3.0 Unported');
+      expect(result.license.licenseId).to.equal('CC_30_BY_ND');
+    });
+
+    it('sets sourceLink', () => {
+      const result = update(state, updateLicenseSourceLink('google.com'));
+
+      expect(result.license.sourceLink).to.equal('google.com');
+    });
+
+    it('sets attribution', () => {
+      const result = update(state, updateLicenseAttribution('me'));
+
+      expect(result.license.attribution).to.equal('me');
+    });
+  });
 });
 
 describe('validators', () => {
@@ -121,9 +174,17 @@ describe('validators', () => {
 
   beforeEach(() => {
     metadata = {
+      nextClicked: false,
+      license: {
+        licenseName: 'Creative Commons',
+        licensing: 'Attribution | Share Alike 3.0 Unported',
+        licenseId: 'CC_30_BY_SA',
+        attribution: '',
+        sourceLink: ''
+      },
       contents: {
         name: '',
-        attributionLink: '',
+        mapLayer: '',
         contactEmail: '',
         description: '',
         tags: [],
@@ -175,75 +236,106 @@ describe('validators', () => {
   });
 
   describe('validation testing', () => {
-    it('returns false for each key in metadata if they are empty', () => {
+    describe('validate', () => {
+      it('returns false for empty required keys in metadata', () => {
+        const standardValid = isStandardMetadataValid(metadata);
+        expect(standardValid).to.equal(false);
+
+        const result = validate(metadata);
+        expect(result.name).to.equal(false);
+        expect(result.mapLayer).to.equal(false);
+      });
+    });
+
+    it('returns true for valid values', () => {
+      metadata.contents.name = 'panda',
+      metadata.contents.mapLayer = 'wombat'
+
       const standardValid = isStandardMetadataValid(metadata);
-      expect(standardValid).to.equal(false);
+      expect(standardValid).to.equal(true);
 
       const result = validate(metadata);
-      expect(result.name).to.equal(false);
-      expect(result.attributionLink).to.equal(false);
+      expect(result.name).to.equal(true);
+      expect(result.mapLayer).to.equal(true);
+    });
+
+  });
+
+  describe('isCustomMetadataValid', () => {
+    it('returns false if not all required fields of customMetadata are filled', () => {
+      const customRequired = isCustomMetadataValid(metadata);
+      expect(customRequired).to.equal(false);
+    });
+
+    it('returns true if all required fields of customMetadata are nonempty', () => {
+      //fields 1 and venus are the required fields.
+      metadata.contents.customMetadata['second'][1].value = 'venus';
+
+      const customRequired = isCustomMetadataValid(metadata);
+      expect(customRequired).to.equal(true);
     });
   });
 
-  it('returns true if customMetadata has empty keys', () => {
-    metadata.contents.name = 'panda',
-    metadata.contents.attributionLink = 'wombat'
-
-    const standardValid = isStandardMetadataValid(metadata);
-    expect(standardValid).to.equal(true);
-
-    const result = validate(metadata);
-    expect(result.name).to.equal(true);
-    expect(result.attributionLink).to.equal(true);
-  });
-
-  it('returns false if not all required fields of customMetadata are filled', () => {
-    const customRequired = isCustomMetadataValid(metadata);
-    expect(customRequired).to.equal(false);
-  });
-
-  it('returns true if all required fields of customMetadata are nonempty', () => {
-    //fields 1 and venus are the required fields.
-    metadata.contents.customMetadata['second'][1].value = 'venus';
-
-    const customRequired = isCustomMetadataValid(metadata);
-    expect(customRequired).to.equal(true);
-  });
-
-  it('returns true if email is empty', () => {
-    const validEmail = isEmailValid(metadata.contents.contactEmail);
+  it('validEmail returns true if email is empty', () => {
+    const validEmail = isEmailValid(metadata);
     expect(validEmail).to.equal(true);
   });
 
-  it('returns false if not all required metadata are filled', () => {
-    const standardValid = isMetadataValid(metadata);
-    expect(standardValid).to.equal(false);
+  describe('isMetadataValid', () => {
+    it('returns false if not all required metadata are filled', () => {
+      const standardValid = isMetadataValid(metadata);
+      expect(standardValid).to.equal(false);
+    });
+
+    it('returns true if all required metadata are nonempty', () => {
+      metadata.contents.name = 'name';
+      metadata.contents.mapLayer = 'google.com';
+      metadata.contents.customMetadata['second'][1].value = 'venus';
+      metadata.license.attribution = 'attribution';
+
+      const valid = isMetadataValid(metadata);
+      expect(valid).to.equal(true);
+    });
   });
 
-  it('returns true if all required metadata are nonempty', () => {
-    metadata.contents.name = 'name';
-    metadata.contents.attributionLink = 'google.com';
-    metadata.contents.customMetadata['second'][1].value = 'venus';
+  describe('isMetadataUnsaved', () => {
+    it('returns false if metadata has not been updated', () => {
+      metadata.lastSaved = metadata.contents;
+      const unsaved = isMetadataUnsaved(metadata);
 
-    const standardValid = isMetadataValid(metadata);
-    expect(standardValid).to.equal(true);
+      expect(unsaved).to.equal(false);
+    });
+
+    it('returns true if metadata has been updated', () => {
+      metadata.lastSaved = _.cloneDeep(metadata.contents);
+      metadata.contents.name = 'new name';
+      const unsaved = isMetadataUnsaved(metadata);
+
+      expect(unsaved).to.equal(true);
+    });
   });
 
-  it('returns false if metadata has not been updated', () => {
-    metadata.lastSaved = metadata.contents;
-    const unsaved = isMetadataUnsaved(metadata);
+  describe('isAttributionValid', () => {
+    it('returns true if attribution is not required', () => {
+      metadata = update(metadata, updateLicenseName('Public Domain'));
+      const attributionvalid = isAttributionValid(metadata);
 
-    expect(unsaved).to.equal(false);
+      expect(attributionvalid).to.equal(true);
+    });
+
+    it('returns false if attribution is required and not provided', () => {
+      const attributionvalid = isAttributionValid(metadata);
+
+      expect(attributionvalid).to.equal(false);
+    });
+
+    it('returns true if attribution is provided', () => {
+      metadata.license.attribution = 'attribution';
+      const attributionvalid = isAttributionValid(metadata);
+
+      expect(attributionvalid).to.equal(true);
+    });
   });
-
-  it('returns true if metadata has been updated', () => {
-    metadata.lastSaved = _.cloneDeep(metadata.contents);
-    metadata.contents.name = 'new name';
-    const unsaved = isMetadataUnsaved(metadata);
-
-    expect(unsaved).to.equal(true);
-  });
-
 });
 
 describe('view testing', () => {
@@ -268,7 +360,7 @@ describe('view testing', () => {
 
  it('returns that there is no required text if next has been clicked but all required fields are filled', () => {
    state.contents.name = 'name';
-   state.contents.attributionLink = 'google.com';
+   state.contents.mapLayer = 'google.com';
    state.contents.customMetadata['second'][1].value = 'venus';
    state.contents.nextClicked = true;
 
@@ -322,11 +414,13 @@ describe('testing for lastSaved', () => {
 
   describe('last saved testing', () => {
     it('returns that wizard intializes metadata and lastSaved equally', () => {
-      const state = initialNewDatasetModel({});
-      contents = state.metadata.contents;
-      lastSavedMetadata = state.metadata.lastSaved;
+      metadata = initialNewDatasetModel({}).metadata;
+      lastSavedMetadata = metadata.lastSaved;
 
-      expect(contents).to.deep.equal(lastSavedMetadata);
+      expect(lastSavedMetadata).to.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
 
     it('returns that an unsaved wizard does not update lastSaved to equal metadata', () => {
@@ -334,20 +428,24 @@ describe('testing for lastSaved', () => {
       metadata = state.metadata;
       lastSavedMetadata = state.metadata.lastSaved;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-      contents = metadata.contents;
 
-      expect(contents).to.not.deep.equal(lastSavedMetadata);
+      expect(lastSavedMetadata).to.not.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
 
     it('returns that the saved wizard updates lastSaved to equal metadata', () => {
       const state = initialNewDatasetModel({});
       metadata = state.metadata;
-      lastSavedMetadata = state.metadata.lastSaved;
+      const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
       metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-      lastSavedMetadata = updateForLastSaved(lastSavedMetadata, updateLastSaved(metadata));
-      contents = metadata.contents;
+      lastSavedMetadata = updateForLastSaved(tempLastSaved, updateLastSaved(metadata));
 
-      expect(contents).to.deep.equal(lastSavedMetadata);
+      expect(lastSavedMetadata).to.deep.equal({
+        lastSavedContents: metadata.contents,
+        lastSavedLicense: metadata.license
+      });
     });
   });
 

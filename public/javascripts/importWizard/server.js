@@ -3,11 +3,15 @@
 /* everything having to do with making API calls, incl. turning parts of the Redux
 model into the JSON needed for those calls */
 
+/* global blistLicenses */
+
 import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import { goToPage } from './wizard';
+import licenses from 'licenses';
+const invertedLicenses = _.invert(licenses);
 import airbrake from './airbrake';
 
 import formurlencoded from 'form-urlencoded';
@@ -124,20 +128,84 @@ export function socrataFetch(path, options): Promise {
 }
 
 export function modelToViewParam(metadata) {
-  return {
-    name: metadata.contents.name,
-    description: metadata.contents.description,
-    category: metadata.contents.category,
-    tags: metadata.contents.tags,
-    metadata: {
-      rowLabel: metadata.contents.rowLabel,
-      attributionLink: metadata.contents.attributionLink,
-      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
-    },
-    privateMetadata: {
-      contactEmail: metadata.contents.contactEmail,
-      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+  const license = metadata.license;
+  if (license.licenseId !== '') {
+    return {
+      name: metadata.contents.name,
+      attributionLink: license.sourceLink,
+      attribution: license.attribution,
+      description: metadata.contents.description,
+      category: metadata.contents.category,
+      tags: metadata.contents.tags,
+      metadata: {
+        rowLabel: metadata.contents.rowLabel,
+        attributionLink: metadata.contents.mapLayer,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
+      },
+      privateMetadata: {
+        contactEmail: metadata.contents.contactEmail,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+      },
+      licenseId: license.licenseId,
+      license: licenseToView(license)
+    };
+  } else {
+    return {
+      name: metadata.contents.name,
+      attributionLink: metadata.license.sourceLink,
+      attribution: metadata.license.attribution,
+      description: metadata.contents.description,
+      category: metadata.contents.category,
+      tags: metadata.contents.tags,
+      metadata: {
+        rowLabel: metadata.contents.rowLabel,
+        attributionLink: metadata.contents.mapLayer,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
+      },
+      privateMetadata: {
+        contactEmail: metadata.contents.contactEmail,
+        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+      }
+    };
+  }
+}
+
+export function licenseToView(license) {
+  const licenseId = license.licenseId;
+  const name = invertedLicenses[licenseId];
+
+  const licenseList = blistLicenses.map((mapLicense) => {
+    if (_.has(mapLicense, 'licenses')) {
+      return mapLicense.licenses;
+    } else {
+      return mapLicense;
     }
+  });
+
+  const flattenedLicenses = [].concat.apply([], licenseList);
+  const match = _.find(flattenedLicenses, (l) => {
+    return l.id === licenseId;
+  });
+
+  return {
+    name: name,
+    termsLink: match.terms_link || '',
+    logoUrl: match.logo || ''
+  };
+}
+
+export function coreViewToModel(view) {
+  const contents = coreViewContents(view);
+  const license = coreViewLicense(view);
+  return {
+    nextClicked: false,
+    contents: contents,
+    lastSaved: {
+      lastSavedContents: _.cloneDeep(contents),
+      lastSavedLicense: _.cloneDeep(license)
+    },
+    apiCall: { type: 'In Progress' },
+    license: license
   };
 }
 
@@ -150,14 +218,33 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
   });
 }
 
-export function coreViewToModel(view) {
-  const contents = coreViewContents(view);
-  return {
-    nextClicked: false,
-    contents: contents,
-    lastSaved: contents,
-    apiCall: {}
-  };
+function coreViewLicense(view) {
+  const id = view.licenseId;
+  const name = view.license.name;
+  const titles = blistLicenses.map(obj => (obj.name));
+  if (titles.indexOf(name) >= 0) {
+    return {
+      licenseId: id,
+      licenseName: name,
+      licensing: '',
+      sourceLink: view.attributionLink,
+      attribution: view.attribution
+    };
+  } else {
+    const title = _.find(titles, (t) => {
+      return name.indexOf(t) === 0;
+    });
+
+    const licensing = name.slice(title.length).trim();
+
+    return {
+      licenseId: id,
+      licenseName: title,
+      licensing: licensing,
+      sourceLink: view.attributionLink,
+      attribution: view.attribution
+    };
+  }
 }
 
 export function coreViewContents(view) {
@@ -167,7 +254,7 @@ export function coreViewContents(view) {
     category: view.category,
     tags: view.tags,
     rowLabel: view.metadata.rowLabel,
-    attributionLink: view.metadata.attributionLink,
+    mapLayer: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
     contactEmail: view.privateMetadata.contactEmail,
     privacySettings: _.has(view, 'grants')

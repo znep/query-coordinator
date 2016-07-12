@@ -1,21 +1,25 @@
+/* global blistLicenses */
+
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
-import customMetadataSchema from 'customMetadataSchema';
-import datasetCategories from 'datasetCategories';
 import * as Server from '../server';
 import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
+import customMetadataSchema from 'customMetadataSchema';
+import datasetCategories from 'datasetCategories';
+import licenses from 'licenses';
 
 // == Metadata
 
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: MetadataApiCall,
-  lastSaved: MetadataContents,
-  contents: MetadataContents
+  license: LicenseType,
+  contents: MetadataContents,
+  lastSaved: MetadataContents
 }
 
 type MetadataApiCall
@@ -30,10 +34,18 @@ type MetadataContents = {
   category: String,
   tags: Array,
   rowLabel: String,
-  attributionLink: String,
+  mapLayer: String,
   customMetadata: Object,
   contactEmail: String,
   privacySettings: String
+}
+
+type LicenseType = {
+  licenseName: String,
+  licensing: String,
+  licenseId: String,
+  attribution: String,
+  sourceLink: String
 }
 
 export function defaultCustomData() {
@@ -56,20 +68,35 @@ export function emptyContents(name: string): MetadataContents {
     category: '',
     tags: [],
     rowLabel: '',
-    attributionLink: '',
-    customMetadata: Object.freeze(defaultCustomData(customMetadataSchema)),
+    mapLayer: '',
+    customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',
     privacySettings: 'private'
   };
 }
 
+export function emptyLicense(): LicenseType {
+  return {
+    licenseName: '',
+    licensing: '',
+    licenseId: '',
+    attribution: '',
+    sourceLink: ''
+  };
+}
+
 export function emptyForName(name: string): DatasetMetadata {
-  const lastMetadataSaved = _.cloneDeep(emptyContents(name));
+  const lastSavedContents = _.cloneDeep(emptyContents(name));
+  const lastLicenseSaved = _.cloneDeep(emptyLicense());
   return {
     nextClicked: false,
     apiCall: {type: 'Not Started'},
-    lastSaved: lastMetadataSaved,
-    contents: emptyContents(name)
+    contents: emptyContents(name),
+    license: emptyLicense(),
+    lastSaved: {
+      lastSavedContents: lastSavedContents,
+      lastSavedLicense: lastLicenseSaved
+    }
   };
 }
 
@@ -113,11 +140,43 @@ export function updateRowLabel(newRowLabel: string) {
   };
 }
 
-const MD_UPDATE_ATTRIBUTIONLINK = 'MD_UPDATE_ATTRIBUTIONLINK';
-export function updateAttributionLink(newAttributionLink: string) {
+const MD_UPDATE_MAPLAYER = 'MD_UPDATE_MAPLAYER';
+export function updateMapLayer(newMapLayer: string) {
   return {
-    type: MD_UPDATE_ATTRIBUTIONLINK,
-    newAttributionLink: newAttributionLink
+    type: MD_UPDATE_MAPLAYER,
+    newMapLayer: newMapLayer
+  };
+}
+
+const MD_UPDATE_LICENSENAME = 'MD_UPDATE_LICENSENAME';
+export function updateLicenseName(newLicenseName: string) {
+  return {
+    type: MD_UPDATE_LICENSENAME,
+    newLicenseName: newLicenseName
+  };
+}
+
+const MD_UPDATE_LICENSING = 'MD_UPDATE_LICENSING';
+export function updateLicensing(newLicensing: string) {
+  return {
+    type: MD_UPDATE_LICENSING,
+    newLicensing: newLicensing
+  };
+}
+
+const MD_UPDATE_LICENSEATTRIBUTION = 'MD_UPDATE_LICENSEATTRIBUTION';
+export function updateLicenseAttribution(newLicenseAttribution: string) {
+  return {
+    type: MD_UPDATE_LICENSEATTRIBUTION,
+    newLicenseAttribution: newLicenseAttribution
+  };
+}
+
+const MD_UPDATE_LICENSESOURCELINK = 'MD_UPDATE_LICENSESOURCELINK';
+export function updateLicenseSourceLink(newLicenseSourceLink: string) {
+  return {
+    type: MD_UPDATE_LICENSESOURCELINK,
+    newLicenseSourceLink: newLicenseSourceLink
   };
 }
 
@@ -190,13 +249,17 @@ export const update =
     nextClicked: updateForNextClicked,
     apiCall: updateApiCallState,
     contents: updateContents,
+    license: updateLicense,
     lastSaved: updateForLastSaved
   });
 
 export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
   switch (action.type) {
     case MD_LAST_SAVED:
-      return _.cloneDeep(action.savedMetadata.contents);
+      return {
+        lastSavedContents: _.cloneDeep(action.savedMetadata.contents),
+        lastSavedLicense: _.cloneDeep(action.savedMetadata.license)
+      };
     default:
       return lastSavedMetadata;
   }
@@ -230,10 +293,10 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         ...contents,
         rowLabel: action.newRowLabel
       };
-    case MD_UPDATE_ATTRIBUTIONLINK:
+    case MD_UPDATE_MAPLAYER:
       return {
         ...contents,
-        attributionLink: action.newAttributionLink
+        mapLayer: action.newMapLayer
       };
     case MD_UPDATE_CUSTOMMETADATA: {
       const newCustomMetadata = _.cloneDeep(contents.customMetadata);
@@ -256,6 +319,53 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
       };
     default:
       return contents;
+  }
+}
+
+export function updateLicense(license = emptyLicense(), action): LicenseType {
+  switch (action.type) {
+    case MD_UPDATE_LICENSENAME: {
+      const licenseByName = licenseFind(action.newLicenseName);
+      if (_.has(licenseByName, 'licenses')) {
+        const firstLicensing = licenseByName.licenses[0];
+        return {
+          ...license,
+          licenseName: action.newLicenseName,
+          licenseId: firstLicensing.id,
+          licensing: firstLicensing.name
+        };
+      } else {
+        return {
+          ...license,
+          licenseName: action.newLicenseName,
+          licensing: '',
+          licenseId: licenses[action.newLicenseName]
+        };
+      }
+    }
+    case MD_UPDATE_LICENSING: {
+      const licenseByName = licenseFind(license.licenseName).licenses;
+      const newLicenseId = _.find(licenseByName, (l) => {
+        return l.name === action.newLicensing;
+      }).id;
+      return {
+        ...license,
+        licensing: action.newLicensing,
+        licenseId: newLicenseId
+      };
+    }
+    case MD_UPDATE_LICENSEATTRIBUTION:
+      return {
+        ...license,
+        attribution: action.newLicenseAttribution
+      };
+    case MD_UPDATE_LICENSESOURCELINK:
+      return {
+        ...license,
+        sourceLink: action.newLicenseSourceLink
+      };
+    default:
+      return license;
   }
 }
 
@@ -283,19 +393,19 @@ export function updateApiCallState(apiCallState = {type: 'Not Started'}, action)
 
 type MetadataValidationErrors = {
   name: bool,
-  attributionLink: bool
+  mapLayer: bool
 }
 
 export function validate(metadata): MetadataValidationErrors {
   return {
     name: metadata.contents.name.length !== 0,
-    attributionLink: metadata.contents.attributionLink.length !== 0
+    mapLayer: metadata.contents.mapLayer.length !== 0
   };
 }
 
 export function isStandardMetadataValid(contents) {
   const valid = validate(contents);
-  return valid.name && valid.attributionLink;
+  return valid.name && valid.mapLayer;
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
@@ -315,12 +425,20 @@ export function isCustomMetadataValid(metadata: DatasetMetadata) {
   });
 }
 
-export function isEmailValid(contactEmail) {
+export function isEmailValid(metadata) {
+  const contactEmail = metadata.contents.contactEmail;
   return isEmail(contactEmail) || contactEmail.length === 0;
 }
 
+export function isAttributionValid(metadata) {
+  return !(attributionRequiredTag(metadata) === 'required' && metadata.license.attribution.length === 0);
+}
+
 export function isMetadataValid(metadata: DatasetMetadata) {
-  return (isStandardMetadataValid(metadata) && isCustomMetadataValid(metadata)) && isEmailValid(metadata.contents.contactEmail);
+  return isStandardMetadataValid(metadata) &&
+         isCustomMetadataValid(metadata) &&
+         isEmailValid(metadata) &&
+         isAttributionValid(metadata);
 }
 
 export function isMetadataUnsaved(metadata) {
@@ -359,7 +477,10 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
   return (
     <div> {fields.map((field, fieldIdx) =>
       <div className="line clearfix">
-        <label className={field.required ? 'required' : 'optional'}>{field.name}</label>
+        <label
+          className={field.required ? 'required' : 'optional'}>
+          {field.name}
+        </label>
         {renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)}
         {(isRequiredCustomFieldMissing(metadata, field, setName, fieldIdx) && metadata.nextClicked)
           ? <label htmlFor="view_fields" className="error customField">{I18n.core.validation.required}</label>
@@ -380,10 +501,102 @@ function renderCustomMetadata(metadata, onMetadataAction) {
     <div className="customMetadataSchema">
       {customMetadataSchema.map((set) =>
         <div>
-          <h1 htmlFor="view_customMetadataName">{set.name}</h1>
+          <h2 htmlFor="view_customMetadataName">{set.name}</h2>
           {renderFieldSet(metadata, set, set.name, onMetadataAction)}
         </div>
       )}
+    </div>
+  );
+}
+
+export function attributionRequiredTag(metadata) {
+  const licenseName = metadata.license.licenseName;
+  const licensing = metadata.license.licensing;
+  if (licensing !== '') {
+    const licenseByName = licenseFind(licenseName);
+
+    if (_.has(licenseByName, 'licenses')) {
+      const match = _.find(licenseByName.licenses, (l) => {
+        return l.name === licensing;
+      });
+
+      return match.attribution_required
+              ? 'required'
+              : '';
+    }
+  }
+  return '';
+}
+
+function licenseFind(licenseName) {
+  return _.find(blistLicenses, (l) => {
+    return l.name === licenseName;
+  });
+}
+
+function renderLicenses(metadata, onMetadataAction) {
+  const licensesByName = licenseFind(metadata.license.licenseName);
+  return (
+    <div className="licenses">
+      <h2 htmlFor="view_licenses">{I18n.screens.edit_metadata.licensing_attr}</h2>
+      <div className="line clearfix">
+        <label htmlFor="view_licenses">License Type</label>
+        <select
+          name="view[licenses]"
+          value={metadata.license.licenseName}
+          onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
+          {blistLicenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
+        </select>
+      </div>
+
+      {_.has(licensesByName, 'licenses')
+      ?
+        <div className="line clearfix">
+          <label htmlFor="view_licensing" className="required">Licensing</label>
+          <select
+            name="view[licensing]"
+            value={metadata.license.licensing}
+            onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
+            {licensesByName.licenses.map((obj) => <option value={obj.name}>{obj.name}</option>)}
+          </select>
+        </div>
+      : null}
+
+      <div className="line clearfix">
+        <div className="additionalHelp">{I18n.screens.edit_metadata.license_help}</div>
+      </div>
+
+      <div className="line clearfix">
+        <label
+          htmlFor="view_attribution"
+          className={attributionRequiredTag(metadata)}>
+          {I18n.screens.edit_metadata.data_provided_by}
+        </label>
+        <input
+          type="text"
+          name="view[attribution]"
+          id="view_attribution"
+          value={metadata.license.attribution}
+          placeholder={I18n.screens.edit_metadata.data_provided_prompt}
+          onChange={(evt) => onMetadataAction(updateLicenseAttribution(evt.target.value))}
+          className="textPrompt" />
+          {(!isAttributionValid(metadata) && metadata.nextClicked)
+            ? <label htmlFor="view_attribution" className="error">{I18n.screens.edit_metadata.data_provider_required}</label>
+            : null}
+      </div>
+
+      <div className="line clearfix">
+        <label htmlFor="view_attributionLink">{I18n.screens.edit_metadata.source_link}</label>
+        <input
+          type="text"
+          name="view[attributionLink]"
+          id="view_attributionLink"
+          value={metadata.license.sourceLink}
+          placeholder={I18n.screens.edit_metadata.source_link_prompt}
+          onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
+          className="textPrompt" />
+      </div>
+
     </div>
   );
 }
@@ -441,8 +654,9 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               className="textPrompt required error"
               value={metadata.contents.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
-              {(!validationErrors.name && metadata.nextClicked) ?
-                <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label> : null}
+              {(!validationErrors.name && metadata.nextClicked)
+                ? <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label>
+                : null}
           </div>
 
           <div className="line clearfix">
@@ -474,6 +688,7 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               value={metadata.contents.tags}
               className="textPrompt"
               onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
+            <div className="additionalHelp">{I18nPrefixed.keywords_help}</div>
           </div>
 
           <div className="line clearfix">
@@ -484,24 +699,28 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               className="textPrompt"
               value={metadata.contents.rowLabel}
               onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
+            <div className="additionalHelp">{I18nPrefixed.row_label_help}</div>
           </div>
         </div>
 
-        <div className="attributionLinkMetadata">
+        <div className="mapLayerMetadata">
           <div className="line clearfix">
-            <label htmlFor="view_attributionLink" className="required">
+            <label htmlFor="view_mapLayer" className="required">
               {I18n.screens.dataset_new.metadata.esri_map_layer_url}
             </label>
             <input
               type="text"
-              name="view[attributionLink]"
+              name="view[esri_src]"
               className="textPrompt required"
-              value={metadata.contents.attributionLink}
-              onChange={(evt) => onMetadataAction(updateAttributionLink(evt.target.value))} />
-            {(!validationErrors.attributionLink && metadata.nextClicked) ?
-              <label htmlFor="view_attributionLink" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label> : null}
+              value={metadata.contents.mapLayer}
+              onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
+            {(!validationErrors.mapLayer && metadata.nextClicked)
+              ? <label htmlFor="view_esri" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
+              : null}
           </div>
         </div>
+
+        {renderLicenses(metadata, onMetadataAction)}
 
         {renderCustomMetadata(metadata, onMetadataAction)}
 
@@ -536,21 +755,22 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
               </RadioGroup>
             </fieldset>
           </div>
+        </div>
 
-          <div className="line clearfix">
-            <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
-              {I18nPrefixed.contact_email}
-            </label>
-            <input
-              type="text"
-              name="view[contactEmail]'"
-              value={metadata.contents.contactEmail}
-              title={I18nPrefixed.email_address} className="textPrompt contactEmail"
-              onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
-            <div className="additionalHelp">{I18nPrefixed.email_help}</div>
-            {!isEmailValid(metadata.contents.contactEmail) ?
-              <label className="error email_help">{I18n.core.validation.email}</label> : null}
-          </div>
+        <div className="line clearfix">
+          <label htmlFor="{sanitize_to_id('view[contactEmail]')}">
+            {I18nPrefixed.contact_email}
+          </label>
+          <input
+            type="text"
+            name="view[contactEmail]"
+            value={metadata.contents.contactEmail}
+            title={I18nPrefixed.email_address} className="textPrompt contactEmail"
+            onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
+          <div className="additionalHelp">{I18nPrefixed.email_help}</div>
+          {!isEmailValid(metadata)
+            ? <label className="error email_help">{I18n.core.validation.email}</label>
+            : null}
         </div>
 
         <div className="required">{I18nPrefixed.required_field}</div>

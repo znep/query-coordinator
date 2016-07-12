@@ -6,6 +6,7 @@ import * as ExampleData from './exampleData';
 import {
   modelToViewParam,
   customMetadataModelToCoreView,
+  licenseToView,
   coreViewToModel,
   transformToImports2Translation,
   update,
@@ -35,13 +36,20 @@ describe('ImportStatus reducer', () => {
 
 describe("testing for API responses", () => {
   const metadata = {
+    license: {
+      licenseId: "PDDL",
+      licenseName: "Open Data Commons",
+      licensing: "Public Domain Dedication and License",
+      attribution: "Me",
+      sourceLink: "google.com"
+    },
     contents: {
       name: 'name',
       description: 'desc',
       category: 'cat',
       tags: ['one', 'two'],
       rowLabel: 'row',
-      attributionLink: 'link',
+      mapLayer: 'link',
       contactEmail: 'email@email.com',
       privacySettings: 'private',
       customMetadata: {
@@ -93,7 +101,7 @@ describe("testing for API responses", () => {
   describe('translation between Redux model and /api/views payloads', () => {
     const customMetadata = metadata.contents.customMetadata;
 
-    it('test that public values are correctly returned', () => {
+    it('test that public metadata values are correctly returned', () => {
       const publicCustom = customMetadataModelToCoreView(customMetadata, false);
 
       expect(publicCustom).to.deep.equal({
@@ -110,7 +118,7 @@ describe("testing for API responses", () => {
       });
     });
 
-    it('test that private values are correctly returned', () => {
+    it('test that private metadata values are correctly returned', () => {
       const privateCustom = customMetadataModelToCoreView(customMetadata, true);
       const jack = privateCustom.jack;
       const second = privateCustom.second;
@@ -120,8 +128,20 @@ describe("testing for API responses", () => {
     });
   });
 
+  describe('licenseToView', () => {
+    it('test that license values are correctly returned', () => {
+      const license = licenseToView(metadata.license);
+
+      expect(license).to.deep.equal({
+        name: 'Open Data Commons Public Domain Dedication and License',
+        termsLink: "http://opendatacommons.org/licenses/pddl/1.0/",
+        logoUrl: ''
+      });
+    });
+  });
+
   describe('modelToViewParam', () => {
-    it('test that public values are correctly returned', () => {
+    it('test everything else', () => {
       const coreView = modelToViewParam(metadata);
       const viewMetadata = coreView.metadata;
 
@@ -132,7 +152,9 @@ describe("testing for API responses", () => {
       expect(viewMetadata.rowLabel).to.equal('row');
       expect(viewMetadata.attributionLink).to.equal('link');
       expect(coreView.privateMetadata.contactEmail).to.equal('email@email.com');
-
+      expect(coreView.attribution).to.equal('Me');
+      expect(coreView.attributionLink).to.equal('google.com');
+      expect(coreView.licenseId).to.equal('PDDL');
     });
   });
 

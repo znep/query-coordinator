@@ -129,15 +129,16 @@ function _updateVisualization($element, componentData) {
 
     vif.configuration = vif.configuration || {};
     vif.configuration.localization = {
-      'PREVIOUS': 'Previous',// TODO actually get from I18n
-      'NEXT': 'Next',
-      'NO_ROWS': 'No {unitOther}',
-      'ONLY_ROW': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
-      'MANY_ROWS': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
-      'LATITUDE': 'Latitude',
-      'LONGITUDE': 'Longitude',
-      'NO_COLUMN_DESCRIPTION': 'No description provided.',
-      'UNABLE_TO_RENDER': StorytellerUtils.format(
+      'previous': 'Previous',// TODO actually get from I18n
+      'next': 'Next',
+      'no_rows': 'No {unitOther}',
+      'only_row': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
+      'many_rows': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
+      'all_rows': 'Showing all rows',
+      'latitude': 'Latitude',
+      'longitude': 'Longitude',
+      'no_column_description': 'No description provided.',
+      'unable_to_render': StorytellerUtils.format(
         'We\'re having trouble displaying this table. Check to make sure the {0} hasn\'t been deleted or unpublished.',
         link
       )

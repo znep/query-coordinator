@@ -39,6 +39,8 @@ module.exports = {
       'socrata-utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
       'socrata.utils': path.resolve('.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
       'socrata-visualizations': path.resolve('.', 'node_modules/socrata-visualizations/dist/socrata-visualizations.js'),
+      'socrata-styleguide': path.resolve('.', 'node_modules/socrata-styleguide/dist/js/styleguide.js'),
+      'styleguide': path.resolve('.', 'node_modules/socrata-styleguide/dist/js/styleguide.js'),
       'squire': path.resolve('.', 'node_modules/squire-rte/build/squire-raw.js'),
       'lodash': path.resolve('.', 'node_modules/lodash/index.js'),
       '_': path.resolve('.', 'node_modules/lodash/index.js'),

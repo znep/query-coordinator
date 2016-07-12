@@ -44,7 +44,7 @@
                 },
                 "general": {
                   "default_locale": "en",
-                  "window_icon": "",
+                  "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
                   "link_text_color": "blue",
                   "window_title_display": null,
                   "social_shares": [
@@ -170,7 +170,7 @@
                 "general": {
                   "template": null,
                   "default_locale": "en",
-                  "window_icon": "",
+                  "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
                   "link_text_color": "blue",
                   "window_title_display": null,
                   "show_signin_signout": "true",
@@ -299,7 +299,7 @@
                 "general": {
                   "template": null,
                   "default_locale": "en",
-                  "window_icon": "",
+                  "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
                   "link_text_color": "blue",
                   "window_title_display": null,
                   "social_shares": {

@@ -216,7 +216,7 @@ config.styleguide = false
           "general": {
             "template": "rally",
             "default_locale": "en",
-            "window_icon": "",
+            "window_icon": "https://evergreen.gov/favicon.ico",
             "link_text_color": "blue",
             "window_title_display": "Evergreen",
             "social_shares": {

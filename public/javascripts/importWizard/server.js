@@ -3,6 +3,8 @@
 /* everything having to do with making API calls, incl. turning parts of the Redux
 model into the JSON needed for those calls */
 
+/* global blistLicenses */
+
 import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';

@@ -4,17 +4,17 @@ module.exports = {
   context: __dirname,
   entry: './src/index.js',
   externals: {
-    'jquery': 'jQuery',
-    'lodash': '_'
+    'jquery': true,
+    'lodash': true
   },
   output: {
     path: __dirname + '/dist',
-    filename: 'socrata.utils.js',
+    filename: 'socrata-utils.js',
     libraryTarget: 'umd',
     library: ['socrata', 'utils']
   },
   resolve: {
-    modulesDirectories: ['node_modules', 'bower_components']
+    modulesDirectories: ['node_modules']
   },
-  devtool: 'cheap-source-map'
+  devtool: 'source-map'
 };

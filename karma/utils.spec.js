@@ -1,5 +1,6 @@
-var utils = require('../src/utils');
+var _ = require('lodash');
 var $ = jQuery = require('jquery');
+var utils = require('../src/utils');
 
 describe('utils.js', function() {
 

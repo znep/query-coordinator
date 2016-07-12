@@ -1,14 +1,22 @@
 // Karma configuration
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
+var path = require('path');
+
 var webpackConfig = require('./webpack.config');
+
 delete webpackConfig.entry;
 delete webpackConfig.output;
-webpackConfig.output = {
-  libraryTarget: 'var',
-  pathinfo: true
-};
+delete webpackConfig.externals;
+
 webpackConfig.devtool = 'inline-source-map';
+webpackConfig.resolve = {
+  modulesDirectories: ['node_modules'],
+  alias: {
+    'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
+    'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
+  }
+};
 
 module.exports = function(config) {
   config.set({
@@ -24,8 +32,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/lodash/index.js',
-      'node_modules/jquery/dist/jquery.js',
       'node_modules/sinon/pkg/sinon.js',
       'karma/**/*spec.js'
     ],
@@ -39,7 +45,6 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'node_modules/lodash/*': ['webpack'],
       'karma/**/*spec.js': ['webpack', 'sourcemap'],
       'socrata-utils.js': ['coverage']
     },

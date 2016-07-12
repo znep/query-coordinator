@@ -125,7 +125,7 @@ class CustomContentController < ApplicationController
     # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
     # whether to render the site chrome header/footer based on the corresponding feature flags.
     @using_dataslate = true
-    @on_homepage = @page.try(:homepage?)
+    @on_homepage = @page.try(:homepage?) || (@page.nil? && full_path.nil?)
 
     if @page.nil? || !@page.viewable_by?(@current_user)
       if @on_homepage

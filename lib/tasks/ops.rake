@@ -86,7 +86,6 @@ namespace :ops do
     desc 'Create a new release and build it'
     task :new_release do
       NewReleaseUi.new.open
-      ui.open
     end
 
     desc 'Manage deployed versions (activate/rollback)'

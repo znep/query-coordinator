@@ -1,11 +1,11 @@
-window.jQuery = window.$ = require('jQuery');
-window.lodash = window._ = require('lodash');
-window.React = require('react');
-window.ReactDOM = require('react-dom');
-window.d3 = require('d3');
-window.leaflet = window.L = require('leaflet');
-window.moment = require('moment');
-window.styleguide = require('socrata-styleguide');
-window.socrata = {
-  utils: require('socrata-utils')
-};
+// These map directly to our webpack.config.js's externals.
+// Update them accordingly!
+window['jquery'] = window['$'] = require('jquery');
+window['lodash'] = require('lodash');
+window['react'] = require('react');
+window['react-dom'] = require('react-dom');
+window['d3'] = require('d3');
+window['leaflet'] = require('leaflet');
+window['moment'] = require('moment');
+window['socrata-styleguide'] = require('socrata-styleguide');
+window['socrata-utils'] = require('socrata-utils');

@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var $ = require('jquery');
 var Table = require('../../src/views/Table');
 
 describe('Table', function() {

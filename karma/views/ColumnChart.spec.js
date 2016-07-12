@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var $ = require('jquery');
 var ColumnChart = require('../../src/views/ColumnChart');
 
 describe('ColumnChart', function() {

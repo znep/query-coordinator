@@ -13,8 +13,7 @@ module.exports = [
       modulesDirectories: ['node_modules'],
       alias: {
         'socrata-utils': path.join(__dirname, '.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
-        '_': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
-        'jQuery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
+        'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
       }
     }
   },
@@ -22,30 +21,15 @@ module.exports = [
     context: __dirname,
     entry: './src/index.js',
     externals: {
-      'jquery': 'jQuery',
-      'socrata-utils': {
-        root: ['socrata', 'utils'],
-        commonjs2: 'socrata.utils',
-        commonjs: 'socrata.utils',
-        amd: 'socrata.utils'
-      },
-      'd3': 'd3',
-      'lodash': '_',
-      'moment': 'moment',
-      'leaflet': 'L',
-      'socrata-styleguide': 'styleguide',
-      'react': {
-        root: 'React',
-        commonjs2: 'react',
-        commonjs: 'react',
-        amd: 'react'
-      },
-      'react-dom': {
-        root: 'ReactDOM',
-        commonjs2: 'react-dom',
-        cmmonjs: 'react-dom',
-        amd: 'react-dom'
-      }
+      'jquery': true,
+      'socrata-utils': true,
+      'd3': true,
+      'lodash': true,
+      'moment': true,
+      'leaflet': true,
+      'socrata-styleguide': true,
+      'react': true,
+      'react-dom': true
     },
     output: {
       path: __dirname + '/dist',
@@ -60,13 +44,6 @@ module.exports = [
           exclude: /node_modules/,
           loader: 'babel'
         },
-      ],
-      loaders: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'strict'
-        }
       ]
     },
     resolve: {
@@ -75,6 +52,6 @@ module.exports = [
     plugins: [
       new Rewire()
     ],
-    devtool: 'eval'
+    devtool: 'source-map'
   }
 ];

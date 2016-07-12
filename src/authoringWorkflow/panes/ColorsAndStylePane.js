@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';

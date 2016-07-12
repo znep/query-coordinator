@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import vifs from 'src/authoringWorkflow/vifs';
 import * as selector from 'src/authoringWorkflow/selectors/vifAuthoring';
 

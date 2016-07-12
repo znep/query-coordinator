@@ -1,3 +1,6 @@
+var _ = require('lodash');
+var $ = require('jquery');
+var chroma = require('chroma-js');
 var ChoroplethMap = require('../../src/views/ChoroplethMap.js');
 
 describe('ChoroplethMap', function() {

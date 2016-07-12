@@ -1,4 +1,5 @@
 var constants = require('./DistributionChartConstants');
+var d3 = require('d3');
 var _ = require('lodash');
 
 var helpers = module.exports = {

@@ -1,8 +1,8 @@
+var $ = require('jquery');
 var Pager = require('../../src/views/Pager');
 var COLUMN_NAME = 'column_name';
 var DATASET_UID = 'asdf-fdsa';
 var DOMAIN = 'localhost';
-
 
 describe('Pager', function() {
   var element;

@@ -4,13 +4,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import { translate } from './I18n';
-import { requestCenterAndZoom } from './actions';
 import RowInspector from '../views/RowInspector';
 import FlyoutRenderer from '../views/FlyoutRenderer';
 
+import '../views/SvgColumnChart';
+import '../views/SvgTimelineChart';
+import '../views/FeatureMap';
+import '../views/ChoroplethMap';
+
+import { translate } from './I18n';
+import { requestCenterAndZoom } from './actions';
 import {
-  getVisualizationType,
   hasVisualizationType,
   isTimelineChart,
   isValidTimelineChartVif,

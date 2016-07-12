@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "12.3.1",
+  "version": "13.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"
@@ -109,7 +109,7 @@
     "redux-thunk": "2.1.0",
     "reselect": "2.5.1",
     "simple-statistics": "0.8.1",
-    "socrata-utils": "2.0.0",
+    "socrata-utils": "3.0.0",
     "vector-tile": "0.1.1"
   },
   "files": [

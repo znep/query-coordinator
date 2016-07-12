@@ -102,6 +102,13 @@ module ApplicationHelper
   end
 
 # PAGE-HEADER
+  def get_favicon_tag
+    if enable_site_chrome?
+      site_chrome_favicon_tag
+    else
+      favicon_link_tag(theme_image_url(CurrentDomain.theme.images.favicon))
+    end
+  end
 
 # meta
   def meta_tags(meta)

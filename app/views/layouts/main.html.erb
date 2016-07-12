@@ -67,11 +67,11 @@ http://www.socrata.com
     <link type="text/css" media="all" rel="stylesheet" href="/styles/govstat_site.css?<%= asset_revision_key %>"/>
   <%- end -%>
 
-  <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
-
   <%= render_ga_tracking %>
 
   <%= render :partial => 'templates/mixpanel_tracking' %>
+
+  <%= get_favicon_tag %>
 
   <%- if enable_site_chrome? -%>
     <%= site_chrome_meta_viewport_tag %>

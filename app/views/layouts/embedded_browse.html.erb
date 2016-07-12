@@ -50,7 +50,7 @@ http://www.socrata.com
   <%- end -%>
 
   <%= rendered_stylesheet_tag 'strip-chrome' %>
-  <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
+  <%= get_favicon_tag %>
 
   <% if use_ga_tracking_code? %>
     <script type="text/javascript">

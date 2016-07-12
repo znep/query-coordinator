@@ -9,15 +9,18 @@
 
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-air.css?<%= asset_revision_key %>"/>
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-icons/socrata-icons.css?<%= asset_revision_key %>"/>
-    <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 
     <%= angular_theme_tag %>
 
     <%= angular_stylesheet_tag %>
     <!--[if IE 9]><%= rendered_stylesheet_tag 'ie9' %><![endif]-->
 
-    <%= site_chrome_meta_viewport_tag if site_chrome_enabled? %>
-    <%= site_chrome_stylesheet_tag if site_chrome_enabled? %>
+    <%= get_favicon_tag %>
+
+    <%- if site_chrome_enabled? -%>
+      <%= site_chrome_meta_viewport_tag %>
+      <%= site_chrome_stylesheet_tag %>
+    <%- end -%>
 
     <%= yield :head %>
 

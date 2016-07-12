@@ -53,6 +53,10 @@
 
     tr {
       height: $row-height;
+
+      &.null-row td {
+        border-color: transparent;
+      }
     }
 
     th, td {
@@ -125,7 +129,7 @@
 .socrata-pager {
   display: flex;
   background: #f8f8f8;
-  padding: 10px 7.5px;
+  padding: 5px;
   border: solid 1px #e4e4e4;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -133,6 +137,17 @@
   .pager-buttons,
   .pager-label {
     display: inline-flex;
+  }
+
+  &.socrata-pager-single-page {
+    .pager-buttons {
+      display: none;
+    }
+
+    .pager-label {
+      margin: auto;
+      margin-right: 0;
+    }
   }
 
   .pager-buttons {

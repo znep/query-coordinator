@@ -1,13 +1,13 @@
+var _ = require('lodash');
 var $ = require('jquery');
 var utils = require('socrata-utils');
 var Visualization = require('./Visualization.js');
-var _ = require('lodash');
 
 module.exports = function Pager(element, vif) {
   _.extend(this, new Visualization(element, vif));
 
   var self = this;
-  var _lastRenderOptions;
+  var lastRenderOptions;
 
   utils.assertHasProperties(vif,
     'configuration.localization.previous',
@@ -15,28 +15,29 @@ module.exports = function Pager(element, vif) {
     'configuration.localization.no_rows',
     'configuration.localization.only_row',
     'configuration.localization.many_rows',
+    'configuration.localization.all_rows',
     'unit.one',
     'unit.other'
   );
 
-  _attachEvents(this.element);
+  attachEvents(this.element);
 
   /**
    * Public Methods
    */
 
   this.render = function(options) {
-    if (_.isEqual(options, _lastRenderOptions)) {
+    if (_.isEqual(options, lastRenderOptions)) {
       return;
     }
 
-    _lastRenderOptions = options;
+    lastRenderOptions = options;
 
-    _render(options);
+    render(options);
   };
 
   this.destroy = function() {
-    _detachEvents(this.element);
+    detachEvents(this.element);
     this.element.find('.socrata-pager').remove();
   };
 
@@ -44,7 +45,7 @@ module.exports = function Pager(element, vif) {
    * Private Methods
    */
 
-  function _templatePagerLabel(options) {
+  function templatePagerLabel(options) {
     var message;
     var endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
@@ -52,6 +53,8 @@ module.exports = function Pager(element, vif) {
       message = vif.configuration.localization.no_rows;
     } else if (options.endIndex === options.startIndex + 1) {
       message = vif.configuration.localization.only_row;
+    } else if (hasOnlyOnePage(options)) {
+      message = vif.configuration.localization.all_rows;
     } else {
       message = vif.configuration.localization.many_rows;
     }
@@ -67,7 +70,7 @@ module.exports = function Pager(element, vif) {
     return '<span class="pager-label">{0}</span>'.format(message);
   }
 
-  function _templatePagerButtons(options) {
+  function templatePagerButtons(options) {
     var template = [
       '<span class="pager-buttons">',
         '<button{previousDisabled} class="pager-button-previous"><span class="icon-arrow-left"></span> {previous}</button>',
@@ -83,36 +86,47 @@ module.exports = function Pager(element, vif) {
     });
   }
 
-  function _templatePager(options) {
+  function templatePager(options) {
     return [
-      '<div class="socrata-pager">',
-        _templatePagerButtons(options),
-        _templatePagerLabel(options),
+      '<div class="socrata-pager{classes}">',
+        templatePagerButtons(options),
+        templatePagerLabel(options),
       '</div>'
     ].join('\n');
   }
 
-  function _render(options) {
-    var $template = $(_templatePager(options));
+  function render(options) {
+    var template = templatePager(options).format({
+      'classes': hasOnlyOnePage(options) ? ' socrata-pager-single-page' : ''
+    });
+
+    var $template = $(template);
     self.element.find('.socrata-pager').remove(); // Enhancement: Incremental updates (vs. rerender every time).
     self.element.append($template);
   }
 
-  function _attachEvents() {
-    self.element.on('click', '.pager-buttons .pager-button-previous', _handlePrevious);
-    self.element.on('click', '.pager-buttons .pager-button-next', _handleNext);
+  function attachEvents() {
+    self.element.on('click', '.pager-buttons .pager-button-previous', handlePrevious);
+    self.element.on('click', '.pager-buttons .pager-button-next', handleNext);
   }
 
-  function _detachEvents() {
-    self.element.off('click', '.pager-buttons .pager-button-previous', _handlePrevious);
-    self.element.off('click', '.pager-buttons .pager-button-next', _handleNext);
+  function detachEvents() {
+    self.element.off('click', '.pager-buttons .pager-button-previous', handlePrevious);
+    self.element.off('click', '.pager-buttons .pager-button-next', handleNext);
   }
 
-  function _handleNext() {
+  function handleNext() {
     self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_NEXT');
   }
 
-  function _handlePrevious() {
+  function handlePrevious() {
     self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
+  }
+
+  function hasOnlyOnePage(options) {
+    var atTheStart = options.startIndex === 0;
+    var atTheEnd = options.endIndex === options.datasetRowCount;
+
+    return atTheStart && atTheEnd;
   }
 };

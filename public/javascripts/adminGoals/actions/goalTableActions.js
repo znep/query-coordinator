@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
-
+import { fetchOptions } from '../constants';
 import {
   TABLE_SHOW_PAGE,
   CACHE_DASHBOARDS,
@@ -18,8 +18,6 @@ import {
 import {
   displayGoalTableAlert
 } from './alertActions';
-
-const fetchOptions = {credentials: 'same-origin'};
 
 export function tableLoadPage() {
   return (dispatch, getState) => {

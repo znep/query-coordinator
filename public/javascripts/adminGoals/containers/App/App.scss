@@ -8,12 +8,16 @@
 
 .modal-container {
   .externalLink {
+    text-decoration: none;
+
     .icon-external {
       margin-left: 5px;
       display: none;
     }
 
     &:hover {
+      text-decoration: underline;
+
       .icon-external {
         display: initial;
       }

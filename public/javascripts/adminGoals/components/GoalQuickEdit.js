@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
+import $ from 'jquery';
 import React from 'react';
 import Immutable from 'immutable';
 import classNames from 'classnames/bind';
@@ -8,9 +9,9 @@ import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/goalQuickEditA
 import Select from 'react-select';
 import moment from 'moment';
 import QuickEditAlert from './Alert';
+import { fetchOptions } from '../constants';
 
 const mobileBreakpoint = 420;
-const fetchOptions = {credentials: 'same-origin'};
 
 class GoalQuickEdit extends React.Component {
   constructor(props) {
@@ -32,25 +33,26 @@ class GoalQuickEdit extends React.Component {
       goal: nextProps.goal,
       visibility: nextProps.goal.get('is_public') ? 'public' : 'private',
       title: nextProps.goal.get('name'),
-      alert: nextProps.alert.toJS()
+      alert: nextProps.alert.toJS(),
+      noChangesMade: true
     };
 
     this.setState(newState);
 
-    if (_.isNull(nextProps.goalId)) {
-      document.removeEventListener('keyup', this.onKeyUp);
+    if (nextProps.goal.isEmpty()) {
+      this.unBindEvents();
     } else {
-      document.addEventListener('keyup', this.onKeyUp.bind(this));
-    }
-
-    fetch('/api/views/6syt-4pv9.json', fetchOptions).
-      then(response => response.json()).
-      then(metadata => {
-        this.setState({
-          datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
-          datasetOwner: _.get(metadata, 'owner.displayName')
+      fetch(`/api/views/${nextProps.goal.get('datasetId')}.json`, _.clone(fetchOptions)).
+        then(response => response.json()).
+        then(metadata => {
+          this.setState({
+            datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
+            datasetOwner: _.get(metadata, 'owner')
+          });
         });
-      });
+
+      $(window).one('keyup', this.onKeyUp.bind(this));
+    }
   }
 
   onKeyUp(event) {
@@ -67,6 +69,10 @@ class GoalQuickEdit extends React.Component {
       visibility: selected.value,
       noChangesMade: false
     });
+  }
+
+  unBindEvents() {
+    $(window).off('keyup');
   }
 
   save() {
@@ -192,7 +198,7 @@ class GoalQuickEdit extends React.Component {
             <div>{ moment.unix(this.state.datasetUpdatedAt).format('ll') }</div>
 
             <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'dataset_owner']) }</h6>
-            <div>{ this.state.datasetOwner }</div>
+            <div>{ _.get(this.state, 'datasetOwner.displayName') }</div>
           </div>
         </section>
 

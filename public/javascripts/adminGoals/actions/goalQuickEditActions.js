@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import { fetchOptions } from '../constants';
 
 import {
   OPEN_GOAL_QUICK_EDIT,
@@ -25,8 +26,7 @@ export function closeGoalQuickEdit() {
 export function saveGoalQuickEdit(goalId, version, values) {
   return dispatch => {
     let sendUpdateRequest = () => {
-      return fetch(`/stat/api/v1/goals/${goalId}`, {
-        credentials: 'same-origin',
+      return fetch(`/stat/api/v1/goals/${goalId}`, _.merge(_.clone(fetchOptions), {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
@@ -34,7 +34,7 @@ export function saveGoalQuickEdit(goalId, version, values) {
           'If-Match': version
         },
         body: JSON.stringify(values)
-      }).
+      })).
         then(checkXhrStatus).
         then(response => response.json());
     };

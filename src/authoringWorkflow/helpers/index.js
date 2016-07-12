@@ -1,16 +1,5 @@
 import _ from 'lodash';
 
-const unset = (object, path) => {
-  var lastKeyMatches = path.match(/\[([^\[\.\]]+)\]|\.([^\[\.\]]+)$/);
-  var pathWithoutLastKey = path.replace(lastKeyMatches[0], '');
-  var lastKey = lastKeyMatches[1] || lastKeyMatches[2];
-
-  if (lastKey) {
-    var lastObject = _.get(object, pathWithoutLastKey);
-    delete lastObject[lastKey];
-  }
-};
-
 export const setValueOrDefaultValue = (object, path, value, defaultValue) => {
   var hasPath = _.has(object, path);
 
@@ -27,7 +16,7 @@ export const setValueOrDeleteProperty = (object, path, value) => {
   if (isNonEmptyString(value)) {
     _.set(object, path, value);
   } else if (hasPath) {
-    unset(object, path);
+    _.unset(object, path);
   }
 }
 

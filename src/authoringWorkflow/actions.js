@@ -222,3 +222,11 @@ export function setFlyoutTitle(flyoutTitleColumnName) {
     flyoutTitleColumnName
   };
 }
+
+export var SET_CENTER_AND_ZOOM = 'SET_CENTER_AND_ZOOM';
+export function setCenterAndZoom(centerAndZoom) {
+  return {
+    type: SET_CENTER_AND_ZOOM,
+    centerAndZoom
+  };
+}

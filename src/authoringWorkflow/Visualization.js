@@ -5,14 +5,20 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import { translate } from './I18n';
-import { getVisualizationType, hasVisualizationType } from './selectors/vifAuthoring';
+import { setCenterAndZoom } from './actions';
 import RowInspector from '../views/RowInspector';
 import FlyoutRenderer from '../views/FlyoutRenderer';
 
 import {
+  getVisualizationType,
+  hasVisualizationType,
+  isTimelineChart,
   isValidTimelineChartVif,
+  isFeatureMap,
   isValidFeatureMapVif,
+  isColumnChart,
   isValidColumnChartVif,
+  isChoroplethMap,
   isValidChoroplethMapVif,
   getCurrentVif
 } from './selectors/vifAuthoring';
@@ -57,45 +63,111 @@ export var Visualization = React.createClass({
     }
   },
 
-  renderVisualization() {
-    if (hasVisualizationType(this.props.vifAuthoring)) {
-      var self = this;
-      var onFlyout = event => this.onFlyout(event);
-      var chartType = getVisualizationType(this.props.vifAuthoring);
-      var $visualizationPreview = $(ReactDOM.findDOMNode(self)).
-        find('.visualization-preview');
+  onCenterAndZoomChanged(event) {
+    var centerAndZoom = _.get(event, 'originalEvent.detail');
+    this.props.onCenterAndZoomChanged(centerAndZoom);
+  },
 
+  visualizationPreview() {
+    return ReactDOM.findDOMNode(this).querySelector('.visualization-preview');
+  },
+
+  updateVisualization() {
+    this.visualizationPreview().dispatchEvent(
+      new CustomEvent(
+        'SOCRATA_VISUALIZATION_RENDER_VIF',
+        {
+          detail: this.props.vif,
+          bubbles: true
+        }
+      )
+    );
+  },
+
+  columnChart() {
+    var { vif } = this.props;
+    var onFlyout = event => this.onFlyout(event);
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.column-chart').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
       $visualizationPreview.
         trigger('SOCRATA_VISUALIZATION_DESTROY').
-        off('SOCRATA_VISUALIZATION_FLYOUT').
-        off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT').
-        off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT');
+        socrataSvgColumnChart(vif);
+      $visualizationPreview.
+        on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
+    }
+  },
 
-      switch (chartType) {
-        case 'columnChart':
-          if (isValidColumnChartVif(self.props.vifAuthoring)) {
-            $visualizationPreview.socrataSvgColumnChart(self.props.vif);
-            $visualizationPreview.on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
-          }
-          break;
-        case 'timelineChart':
-          if (isValidTimelineChartVif(self.props.vifAuthoring)) {
-            $visualizationPreview.socrataSvgTimelineChart(self.props.vif);
-            $visualizationPreview.on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
-          }
-          break;
-        case 'featureMap':
-          if (isValidFeatureMapVif(self.props.vifAuthoring)) {
-            $visualizationPreview.socrataFeatureMap(self.props.vif);
-            $visualizationPreview.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', onFlyout);
-          }
-          break;
-        case 'choroplethMap':
-          if (isValidChoroplethMapVif(self.props.vifAuthoring)) {
-            $visualizationPreview.socrataChoroplethMap(self.props.vif);
-            $visualizationPreview.on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', onFlyout);
-          }
-          break;
+  choroplethMap() {
+    var { vif } = this.props;
+    var onFlyout = event => this.onFlyout(event);
+    var onCenterAndZoomChanged = event => this.onCenterAndZoomChanged(event);
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.choropleth-map-container').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      $visualizationPreview.
+        trigger('SOCRATA_VISUALIZATION_DESTROY').
+        socrataChoroplethMap(vif);
+      $visualizationPreview.
+        on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', onFlyout).
+        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', onCenterAndZoomChanged);
+    }
+  },
+
+  featureMap() {
+    var { vif } = this.props;
+    var onFlyout = event => this.onFlyout(event);
+    var onCenterAndZoomChanged = event => this.onCenterAndZoomChanged(event);
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.feature-map').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      $visualizationPreview.
+        trigger('SOCRATA_VISUALIZATION_DESTROY').
+        socrataFeatureMap(vif);
+      $visualizationPreview.
+        on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', onFlyout).
+        on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', onCenterAndZoomChanged);
+    }
+  },
+
+  timelineChart() {
+    var { vif } = this.props;
+    var onFlyout = event => this.onFlyout(event);
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.timeline-chart').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      $visualizationPreview.
+        trigger('SOCRATA_VISUALIZATION_DESTROY').
+        socrataSvgTimelineChart(vif);
+      $visualizationPreview.
+        on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
+    }
+  },
+
+  renderVisualization() {
+    var { vif, vifAuthoring } = this.props;
+
+    if (hasVisualizationType(vifAuthoring)) {
+      if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
+        this.columnChart();
+      } else if (isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring)) {
+        this.timelineChart();
+      } else if (isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring)) {
+        this.featureMap();
+      } else if (isChoroplethMap(vifAuthoring) && isValidChoroplethMapVif(vifAuthoring)) {
+        this.choroplethMap();
       }
     }
   },
@@ -119,8 +191,12 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch) {
+  return {
+    onCenterAndZoomChanged(centerAndZoom) {
+      dispatch(setCenterAndZoom(centerAndZoom));
+    }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Visualization);

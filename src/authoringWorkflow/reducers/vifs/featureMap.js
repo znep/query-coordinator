@@ -15,7 +15,8 @@ import {
   SET_BASE_LAYER_OPACITY,
   SET_UNITS_ONE,
   SET_UNITS_OTHER,
-  SET_FLYOUT_TITLE
+  SET_FLYOUT_TITLE,
+  SET_CENTER_AND_ZOOM
 } from '../../actions';
 
 export default function featureMap(state, action) {
@@ -35,6 +36,8 @@ export default function featureMap(state, action) {
       break;
 
     case SET_DIMENSION:
+      _.unset(state, 'configuration.mapCenterAndZoom');
+
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
@@ -80,6 +83,10 @@ export default function featureMap(state, action) {
 
     case SET_FLYOUT_TITLE:
       _.set(state, 'configuration.flyoutTitleColumnName', action.flyoutTitleColumnName);
+      break;
+
+    case SET_CENTER_AND_ZOOM:
+      _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
   }
 

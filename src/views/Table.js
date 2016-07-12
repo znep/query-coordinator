@@ -213,7 +213,7 @@ module.exports = function Table(element, vif) {
           '<tbody>',
             _.map(data.rows, function(row) {
               if (!row) {
-                return '<tr class="null-row"></tr>';
+                return '<tr class="null-row"><td></td></tr>';
               }
 
               return '<tr>' + data.columns.map(function(column, columnIndex) {

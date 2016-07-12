@@ -1,3 +1,4 @@
+require 'airbrake'
 require 'httparty'
 
 module SocrataSiteChrome
@@ -46,7 +47,7 @@ module SocrataSiteChrome
           published_site_chrome_config = site_chrome_config.dig(:value, :versions, current_version, :published)
         else
           message = "Invalid site_chrome configuration in domain: #{domain}"
-          Airbrake.notify(
+          ::Airbrake.notify(
             :error_class => 'InvalidSiteChromeConfiguration',
             :error_message => message
           )

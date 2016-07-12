@@ -1965,7 +1965,7 @@ es:
           rejected: Federación rechazada correctamente
         list_domains: La siguiente es una lista de dominios con los que puede comenzar la federación de datos. Una vez que haga clic en publicar, un administrador del dominio objetivo debe aceptar su solicitud.
         no_domains: Ningún dominio disponible coincide con %{name}.
-        no_federations: No existen todavía fereraciones para este dominio.
+        no_federations: No existen todavía federaciones para este dominio.
         no_pub_datasets: Ningún conjunto de datos publicado coincide con sus criterios de búsqueda.
         pending: Pendiente
         publish: Publicar

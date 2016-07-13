@@ -8,13 +8,6 @@ export var FeaturedContent = React.createClass({
     contentList: PropTypes.array.isRequired
   },
 
-  focusModal: function() {
-    var featuredContentModal = document.querySelector('#featured-content-modal');
-    if (featuredContentModal) {
-      featuredContentModal.focus();
-    }
-  },
-
   renderManagePrompt: function() {
     if (!isUserAdminOrPublisher()) {
       return null;
@@ -28,8 +21,7 @@ export var FeaturedContent = React.createClass({
 
         <button
           className="btn btn-sm btn-default manage-prompt-button"
-          data-modal="featured-content-modal"
-          onClick={this.focusModal}>
+          data-modal="featured-content-modal">
           {I18n.featured_content.manage_prompt.button}
         </button>
       </div>

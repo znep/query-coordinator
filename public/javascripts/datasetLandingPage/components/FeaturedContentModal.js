@@ -20,12 +20,6 @@ export var FeaturedContentModal = React.createClass({
     document.addEventListener('keyup', this.onKeyUp);
   },
 
-  componentDidUpdate: function(prevProps) {
-    if (!this.props.isEditing && prevProps.isEditing) {
-      this.resetFocus();
-    }
-  },
-
   componentWillUnmount: function() {
     document.removeEventListener('keyup', this.onKeyUp);
   },
@@ -39,25 +33,17 @@ export var FeaturedContentModal = React.createClass({
     }
   },
 
-  resetFocus: function() {
-    ReactDOM.findDOMNode(this).focus();
-  },
-
   renderContent: function() {
     var { isEditing, editType } = this.props;
 
-    var props = {
-      resetFocus: this.resetFocus
-    };
-
     if (!isEditing) {
-      return <FeaturedItemSelector {...props} />;
+      return <FeaturedItemSelector />;
     } else if (editType === 'externalResource') {
-      return <ExternalResourceForm {...props} />;
+      return <ExternalResourceForm />;
     } else if (editType === 'story') {
-      return <StoryForm {...props} />;
+      return <StoryForm />;
     } else if (editType === 'visualization') {
-      return <ViewSelectorModal {...props} />;
+      return <ViewSelectorModal />;
     }
   },
 
@@ -65,11 +51,7 @@ export var FeaturedContentModal = React.createClass({
     var modalClassNames = 'modal modal-overlay modal-full modal-hidden';
 
     return (
-      <div
-        id="featured-content-modal"
-        className={modalClassNames}
-        data-modal-dismiss
-        tabIndex="0">
+      <div id="featured-content-modal" className={modalClassNames} data-modal-dismiss>
         {this.renderContent()}
       </div>
     );

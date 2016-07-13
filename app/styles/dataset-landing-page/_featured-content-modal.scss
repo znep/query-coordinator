@@ -21,6 +21,10 @@
   .modal-content {
     .container {
       max-width: $container-width;
+
+      h2:focus {
+        outline: none;
+      }
     }
 
     .no-wrap {

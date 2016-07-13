@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../lib/constants';
 import FeaturedItemWidget from '../FeaturedItemWidget';
@@ -26,7 +27,6 @@ export var ExternalResourceForm = React.createClass({
     onClickCancel: PropTypes.func,
     onClickClose: PropTypes.func,
     onClickSave: PropTypes.func,
-    resetFocus: PropTypes.func,
     title: PropTypes.string,
     url: PropTypes.string
   },
@@ -48,7 +48,7 @@ export var ExternalResourceForm = React.createClass({
   },
 
   componentDidMount: function() {
-    this.props.resetFocus();
+    ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
   onChangeDescription: function(event) {
@@ -177,7 +177,7 @@ export var ExternalResourceForm = React.createClass({
         <div className="container">
           {backButton}
 
-          <h2>{this.I18n.header}</h2>
+          <h2 tabIndex="0">{this.I18n.header}</h2>
 
           <p>{this.I18n.message}</p>
 
@@ -242,7 +242,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     onChangeDescription: function(description) {
       dispatch(setExternalResourceField('description', description));
@@ -262,7 +262,6 @@ function mapDispatchToProps(dispatch, ownProps) {
 
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
-      ownProps.resetFocus();
     },
 
     onClickClose: function() {

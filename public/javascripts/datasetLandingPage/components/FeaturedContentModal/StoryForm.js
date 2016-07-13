@@ -28,7 +28,6 @@ export var StoryForm = React.createClass({
     onClickCancel: PropTypes.func,
     onClickClose: PropTypes.func,
     onClickSave: PropTypes.func,
-    resetFocus: PropTypes.func,
     shouldLoadStory: PropTypes.bool,
     title: PropTypes.string,
     url: PropTypes.string,
@@ -43,8 +42,8 @@ export var StoryForm = React.createClass({
   },
 
   componentDidMount: function() {
+    ReactDOM.findDOMNode(this).querySelector('h2').focus();
     this.loadStoryIfNeeded();
-    this.props.resetFocus();
   },
 
   componentDidUpdate: function() {
@@ -158,7 +157,7 @@ export var StoryForm = React.createClass({
         <div className="container">
           {backButton}
 
-          <h2>{this.I18n.header}</h2>
+          <h2 tabIndex="0">{this.I18n.header}</h2>
 
           <p dangerouslySetInnerHTML={{ __html: this.I18n.message_html }} />
 
@@ -211,7 +210,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     loadRequestedStory: function() {
       dispatch(loadStory());
@@ -219,7 +218,6 @@ function mapDispatchToProps(dispatch, ownProps) {
 
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
-      ownProps.resetFocus();
     },
 
     onClickClose: function() {

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import {
   cancelFeaturedItemEdit,
@@ -23,15 +24,15 @@ export var ViewSelectorModal = React.createClass({
     onClickChoose: PropTypes.func,
     onClickClose: PropTypes.func,
     fetchViews: PropTypes.func,
-    resetFocus: PropTypes.func,
     viewList: PropTypes.array.isRequired
   },
 
   componentWillMount: function() {
-    var { fetchViews, resetFocus } = this.props;
+    this.props.fetchViews();
+  },
 
-    fetchViews();
-    resetFocus();
+  componentDidMount: function() {
+    ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
   I18n: I18n.featured_content_modal.view_selector_modal,
@@ -120,7 +121,7 @@ export var ViewSelectorModal = React.createClass({
         <div className="modal-content">
           <div className="container">
             {this.renderBackButton()}
-            <h2>{this.I18n.header}</h2>
+            <h2 tabIndex="0">{this.I18n.header}</h2>
             <p>{this.I18n.message}</p>
             {this.renderSaveError()}
             {this.renderContent()}
@@ -142,11 +143,10 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     onClickCancel: function() {
       dispatch(cancelFeaturedItemEdit());
-      ownProps.resetFocus();
     },
 
     onClickChoose: function(uid) {

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import FeaturedItemWidget from '../FeaturedItemWidget';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
@@ -41,6 +42,10 @@ export var FeaturedItemSelector = React.createClass({
     return {
       showPlaceholderDetails: [false, false, false]
     };
+  },
+
+  componentDidMount: function() {
+    ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
   // When we click the add button that shows more add buttons.
@@ -189,7 +194,7 @@ export var FeaturedItemSelector = React.createClass({
     return (
       <div className="modal-content">
         <div className="container">
-          <h2>{I18n.featured_content_modal.title}</h2>
+          <h2 tabIndex="0">{I18n.featured_content_modal.title}</h2>
 
           <p>{I18n.featured_content_modal.introduction}</p>
 

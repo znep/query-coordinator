@@ -2477,6 +2477,16 @@ zh:
                 description: 
                 placeholder: 
                 title: 
+              footer_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              footer_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               footer_text_link_color:
                 placeholder: 
                 title: 
@@ -2494,6 +2504,12 @@ zh:
                 description: 
                 error: 
                 placeholder: 
+                title: 
+              show_signin_signout:
+                description: 
+                show_profile: 
+                show_signin_signout: 
+                show_signup: 
                 title: 
               template:
                 description: 
@@ -2514,7 +2530,12 @@ zh:
                 description: 
                 placeholder: 
                 title: 
+              bar_secondary_background_color:
+                description: 
+                placeholder: 
+                title: 
               bar_text_link_color:
+                description: 
                 placeholder: 
                 title: 
               header_bar_logo:
@@ -2523,6 +2544,16 @@ zh:
                 title: 
               header_display_name:
                 description: 
+                placeholder: 
+                title: 
+              header_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              header_logo_width:
+                description: 
+                error: 
                 placeholder: 
                 title: 
               link_title_label: 
@@ -2723,6 +2754,7 @@ zh:
       import_shapefile:
         abbreviatedSubheadline: 
         abbreviatedSummary: 
+        abbreviatedSummary_js: 
         crs: "坐标参考系统"
         headline: 指定&ldquo;<span class="fileName"></span>&rdquo; 应如何导入。
         headline_interpolate: 
@@ -3812,6 +3844,7 @@ zh:
               comment_to_moderate: "有人提交了评论，需要审核"
               nomination_created: "有人创建了新提名"
               nomination_moderated: "审核所有提名"
+              other_label: 
               privileged_account_created: "用户创建了特权账户"
               user_affected: "直接对您产生影响的操作，如评论回复和状态更新"
               view_deleted: "任何视图都删除"
@@ -3900,6 +3933,7 @@ zh:
           my_blog: "我的博客"
           my_company: "我的单位"
           my_site: "我的网址"
+          other_label: 
           twitter: Twitter
         no_description: "没有提供内容"
         other_ext_link: "其他"

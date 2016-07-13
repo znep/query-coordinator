@@ -2485,6 +2485,16 @@ es:
                 description: Referencia de URL del logotipo del pie de página. El tamaño mínimo recomendado es de 300 px x 200 px.
                 placeholder: URL
                 title: Logotipo del pie de página
+              footer_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              footer_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Color del texto y el enlace del texto del pie de página
@@ -2503,6 +2513,12 @@ es:
                 error: 'El identificador debe tener este formato: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Identificador de Google Analytics
+              show_signin_signout:
+                description: 
+                show_profile: 
+                show_signin_signout: 
+                show_signup: 
+                title: 
               template:
                 description: Ajusta la apariencia del encabezado o pie de página cambiando la plantilla. Las plantillas compatibles son «default» y «rally».
                 placeholder: Rally
@@ -2522,7 +2538,12 @@ es:
                 description: Color de fondo de la barra del encabezado y el color del texto y los enlaces situados encima de la barra
                 placeholder: "#123456"
                 title: Color de fondo de la barra
+              bar_secondary_background_color:
+                description: 
+                placeholder: 
+                title: 
               bar_text_link_color:
+                description: 
                 placeholder: "#ffffff"
                 title: Color del texto y el enlace de la barra
               header_bar_logo:
@@ -2533,6 +2554,16 @@ es:
                 description: Nombre mostrado en la barra del encabezado. Normalmente configurado con el nombre de tu organización.
                 placeholder: Datos Abiertos Evergreen
                 title: Nombre en pantalla del encabezado
+              header_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              header_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               link_title_label: Etiqueta del enlace
               link_title_placeholder: Texto del enlace
               menu_links:
@@ -2733,6 +2764,7 @@ es:
       import_shapefile:
         abbreviatedSubheadline: Resumir este conjunto de datos podría llevar mucho tiempo. Haz clic en siguiente para importarlo.
         abbreviatedSummary: Las capas de  mapas en &ldquo;<span class="fileName"></span>&rdquo; se crearán al importar.
+        abbreviatedSummary_js: 
         crs: Coordinar el sistema de referencia
         headline: Especifique cómo se debería importar &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifica cómo debería importarse "{0}".
@@ -3822,6 +3854,7 @@ es:
               comment_to_moderate: Se envió un comentario pidiendo moderación
               nomination_created: Se creó una nueva nominación
               nomination_moderated: Se moderó cualquier nominación
+              other_label: Otro
               privileged_account_created: Un usuario crea su cuenta privilegiada
               user_affected: Acciones que lo afectan directamente, como respuestas a comentarios y actualizaciones de estados
               view_deleted: Se borra cualquier vista
@@ -3910,6 +3943,7 @@ es:
           my_blog: Mi blog
           my_company: Mi empresa
           my_site: Mi sitio
+          other_label: Otro
           twitter: Twitter
         no_description: No hay descripción
         other_ext_link: Otro

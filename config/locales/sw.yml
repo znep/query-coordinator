@@ -2514,6 +2514,16 @@ sw:
                 description: 
                 placeholder: 
                 title: 
+              footer_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              footer_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               footer_text_link_color:
                 placeholder: 
                 title: 
@@ -2531,6 +2541,12 @@ sw:
                 description: 
                 error: 
                 placeholder: 
+                title: 
+              show_signin_signout:
+                description: 
+                show_profile: 
+                show_signin_signout: 
+                show_signup: 
                 title: 
               template:
                 description: 
@@ -2551,7 +2567,12 @@ sw:
                 description: 
                 placeholder: 
                 title: 
+              bar_secondary_background_color:
+                description: 
+                placeholder: 
+                title: 
               bar_text_link_color:
+                description: 
                 placeholder: 
                 title: 
               header_bar_logo:
@@ -2560,6 +2581,16 @@ sw:
                 title: 
               header_display_name:
                 description: 
+                placeholder: 
+                title: 
+              header_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              header_logo_width:
+                description: 
+                error: 
                 placeholder: 
                 title: 
               link_title_label: 
@@ -2768,6 +2799,7 @@ sw:
       import_shapefile:
         abbreviatedSubheadline: 
         abbreviatedSummary: 
+        abbreviatedSummary_js: 
         crs: Ratibu Mfumo wa Marejeo
         headline: |
           Eleza namna &ldquo;<span class="fileName"></span>&rdquo; inapaswa kuletwa.
@@ -3903,6 +3935,7 @@ sw:
               comment_to_moderate: Maoni yanatumwa yakihitaji marekebisho
               nomination_created: Pendekezo mpya linaundwa
               nomination_moderated: Pendekezo lolote litarekebishwa
+              other_label: 
               privileged_account_created: Mtumiaji ataunda akaunti yake ya bahati
               user_affected: Matendo ambayo yanakuathiri moja kwa moja, kama vile majibu ya maoni na usasishaji wa hadhi
               view_deleted: Mwonekano wowote utafutwa
@@ -3996,6 +4029,7 @@ sw:
           my_blog: Blog Yangu
           my_company: Kampuni Yangu
           my_site: Tovuti Yangu
+          other_label: 
           twitter: Twitter
         no_description: Maelezo hayajatolewa
         other_ext_link: Mingine

@@ -73,7 +73,9 @@
         -%>
         <div class="line clearfix">
           <%= hidden_field_tag "links[#{existing_link.id}][linkType]", link_type.first.downcase %>
-          <label for="links_<%= existing_link.id %>_url"><%= t('screens.profile.info.links.' + link_type.last) %></label>
+          <%# 'other' is reserved in i18n for pluralization -%>
+          <% link_type_label_key = link_type.last == 'other' ? 'other_label' : link_type.last -%>
+          <label for="links_<%= existing_link.id %>_url"><%= t('screens.profile.info.links.' + link_type_label_key) %></label>
           <%= text_field_tag "links[#{existing_link.id}][url]", existing_link.url, :class => 'textPrompt url', :title => t('screens.profile.edit.info.link_prompt') %>
         </div>
       <%- end -%>
@@ -84,4 +86,3 @@
     <%= link_to t('core.dialogs.cancel'), profile_path(current_user), :class => 'button' %>
   </div>
 </div>
-

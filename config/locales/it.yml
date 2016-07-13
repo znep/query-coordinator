@@ -2481,6 +2481,16 @@ it:
                 description: Riferimento URL del logo del piè di pagina. La grandezza minima consigliata è 300px x 200px.
                 placeholder: URL
                 title: Logo del piè di pagina
+              footer_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              footer_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Colore del testo e dei link presenti nel piè di pagina
@@ -2499,6 +2509,12 @@ it:
                 error: Il token dovrebbe corrispondere al formato UA-XXXXX-XXXX
                 placeholder: UA-12345678-1
                 title: Token di Google Analytics
+              show_signin_signout:
+                description: 
+                show_profile: 
+                show_signin_signout: 
+                show_signup: 
+                title: 
               template:
                 description: Regola l'aspetto dell'intestazione/piè di pagina modificando il modello. I modelli supportati sono "Predefinito" e "Rally".
                 placeholder: Rally
@@ -2518,7 +2534,12 @@ it:
                 description: Colore di sfondo della barra d'intestazione e colore del testo e dei link che giacciono in cima alla barra.
                 placeholder: "#123456"
                 title: Colore di sfondo della barra
+              bar_secondary_background_color:
+                description: 
+                placeholder: 
+                title: 
               bar_text_link_color:
+                description: 
                 placeholder: "#ffffff"
                 title: Colore del testo e del link della barra
               header_bar_logo:
@@ -2529,6 +2550,16 @@ it:
                 description: Nome mostrato all'interno della barra d'intestazione. Generalmente impostato con il nome della tua organizzazione.
                 placeholder: Evergreen Open Data
                 title: Nome dell'intestazione da mostrare
+              header_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              header_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               link_title_label: Etichetta del link
               link_title_placeholder: Testo del link
               menu_links:
@@ -2729,6 +2760,7 @@ it:
       import_shapefile:
         abbreviatedSubheadline: La sintetizzazione di questa sequenza di dati potrebbe impiegare del tempo. Clicca su "avanti" per importarla.
         abbreviatedSummary: Gli strati della mappa in &ldquo;<span class="fileName"></span>&rdquo; verranno creati dopo l'importazione.
+        abbreviatedSummary_js: 
         crs: Sistema di Riferimento delle Coordinate
         headline: Specifica come &ldquo;<span class="fileName"></span>&rdquo; deve essere importato.
         headline_interpolate: Specifica in che modo "{0}" dovrebbe essere importato.
@@ -3818,6 +3850,7 @@ it:
               comment_to_moderate: Un commento inserito che richiede moderazione
               nomination_created: Una nuova nomination è stata creata
               nomination_moderated: Ogni nomination è moderata
+              other_label: Altro
               privileged_account_created: Un utente crea il proprio account privilegiato
               user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
               view_deleted: Ogni vista è cancellata
@@ -3906,6 +3939,7 @@ it:
           my_blog: Il mio Blog
           my_company: La mia Azienda
           my_site: Il mio Sito
+          other_label: Altro
           twitter: Twitter
         no_description: Nessuna descrizione fornita
         other_ext_link: Altro

@@ -2478,6 +2478,16 @@ ro:
                 description: 
                 placeholder: 
                 title: 
+              footer_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              footer_logo_width:
+                description: 
+                error: 
+                placeholder: 
+                title: 
               footer_text_link_color:
                 placeholder: 
                 title: 
@@ -2495,6 +2505,12 @@ ro:
                 description: 
                 error: 
                 placeholder: 
+                title: 
+              show_signin_signout:
+                description: 
+                show_profile: 
+                show_signin_signout: 
+                show_signup: 
                 title: 
               template:
                 description: 
@@ -2515,7 +2531,12 @@ ro:
                 description: 
                 placeholder: 
                 title: 
+              bar_secondary_background_color:
+                description: 
+                placeholder: 
+                title: 
               bar_text_link_color:
+                description: 
                 placeholder: 
                 title: 
               header_bar_logo:
@@ -2524,6 +2545,16 @@ ro:
                 title: 
               header_display_name:
                 description: 
+                placeholder: 
+                title: 
+              header_logo_height:
+                description: 
+                error: 
+                placeholder: 
+                title: 
+              header_logo_width:
+                description: 
+                error: 
                 placeholder: 
                 title: 
               link_title_label: 
@@ -2726,6 +2757,7 @@ ro:
       import_shapefile:
         abbreviatedSubheadline: 
         abbreviatedSummary: 
+        abbreviatedSummary_js: 
         crs: Coordonată sistem de referinţă
         headline: Specificaţi modul în care &ldquo;<span class="fileName"></span>&rdquo; trebuie importat.
         headline_interpolate: 
@@ -3815,6 +3847,7 @@ ro:
               comment_to_moderate: Un comentariu este trimis şi necesită moderare
               nomination_created: Este creată o nouă nominalizare
               nomination_moderated: Este moderată orice nominalizare
+              other_label: 
               privileged_account_created: Un utilizator îşi crează contul privilegiat
               user_affected: Acţiuni care vă afectează în mod direct, precum răspunsuri la comentarii şi actualizări de status
               view_deleted: Orice vizualizare este ștearsă
@@ -3903,6 +3936,7 @@ ro:
           my_blog: Blogul meu
           my_company: Compania mea
           my_site: Site-ul meu
+          other_label: 
           twitter: Twitter
         no_description: Nu a fost furnizată nicio descriere
         other_ext_link: Altele

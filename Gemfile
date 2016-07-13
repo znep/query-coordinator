@@ -1,4 +1,3 @@
-# source 'https://rubygems.org'
 source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 
 ruby '2.3.0'

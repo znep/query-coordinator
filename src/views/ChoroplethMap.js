@@ -556,8 +556,8 @@ function ChoroplethMap(element, vif) {
     );
 
     utils.assert(
-      zoom > 0,
-      'Leaflet zoom is out of bounds ({0} < 1)'.format(zoom)
+      zoom > -1,
+      'Leaflet zoom is out of bounds ({0} < 0)'.format(zoom)
     );
 
     utils.assert(

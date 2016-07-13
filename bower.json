@@ -28,7 +28,6 @@
     "pbf": "0.0.3",
     "requestAnimationFrame-polyfill": "*",
     "rxjs": "2.5",
-    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master",
     "vector-tile-js": "devTristan/vector-tile-js#0.1.1"
   },
   "devDependencies": {

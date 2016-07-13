@@ -41,6 +41,7 @@ export var DatasetPreview = React.createClass({
           no_rows: I18n.dataset_preview.no_rows,
           only_row: I18n.dataset_preview.only_rows,
           many_rows: I18n.dataset_preview.many_rows,
+          no_row_count: I18n.dataset_preview.no_row_count,
           latitude: I18n.dataset_preview.latitude,
           longitude: I18n.dataset_preview.longitude,
           no_column_description: I18n.dataset_preview.no_column_description,

@@ -2,20 +2,14 @@
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
 var webpackConfig = require('./webpack.config');
+
 delete webpackConfig[1].entry;
 delete webpackConfig[1].output;
-webpackConfig[1].output = {
-  libraryTarget: 'var',
-  pathinfo: true
-};
-webpackConfig[1].devtool = 'inline-source-map';
+delete webpackConfig[1].externals;
 
-webpackConfig[1].externals['socrata-utils'] = 'socrata.utils';
-delete webpackConfig[1].externals['react'];
-delete webpackConfig[1].externals['react-dom'];
-delete webpackConfig[1].externals['socrata-styleguide'];
-
+webpackConfig[1].resolve = webpackConfig[0].resolve;
 webpackConfig[1].resolve.root = [ __dirname ];
+webpackConfig[1].devtool = 'inline-source-map';
 
 module.exports = function(config) {
   config.set({
@@ -31,22 +25,14 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'karma/testData.js',
+      'karma/choroplethTestData/*.js',
+      'karma/featureTestData/*.js',
+      'karma/timelineTestData/*.js',
       'karma/chai.conf.js',
       'karma/testHelpers.js',
-      'node_modules/d3/d3.js',
-      'node_modules/jquery/dist/jquery.js',
-      'node_modules/leaflet/dist/leaflet.js',
-      'node_modules/leaflet/dist/leaflet.css',
-      'node_modules/lodash/index.js',
-      'node_modules/moment/moment.js',
-      'node_modules/socrata-utils/dist/socrata.utils.js',
-      'node_modules/simple-statistics/src/simple_statistics.js',
-      'node_modules/chroma-js/chroma.js',
       'src/views/styles/*.scss',
-      'karma/testData.js',
-      'karma/**/*spec.js',
-      'karma/choroplethTestData/*.js',
-      'karma/timelineTestData/*.js'
+      'karma/**/*spec.js'
     ],
 
 
@@ -58,7 +44,6 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'node_modules/lodash/index.js': ['webpack'],
       'src/views/styles/*.scss': ['scss'],
       'karma/**/*spec.js': ['webpack', 'sourcemap']
     },

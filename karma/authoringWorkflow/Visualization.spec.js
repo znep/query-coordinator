@@ -53,6 +53,7 @@ describe('Visualization', function() {
     $.fn.socrataSvgTimelineChart = cachedSvgTimelineChart;
     $.fn.socrataFeatureMap = cachedFeatureMap;
     $.fn.socrataChoroplethMap = cachedChoroplethMap;
+    $('#socrata-row-inspector').remove();
   });
 
   it('with an invalid vif renders an empty <div>', function() {

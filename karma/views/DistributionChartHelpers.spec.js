@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 describe('DistributionChartHelpers', function() {
   var helpers = require('../../src/views/DistributionChartHelpers');
 

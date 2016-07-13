@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var DataTypeFormatter = require('../../src/views/DataTypeFormatter');
 
 // 123% | -12,345.678%

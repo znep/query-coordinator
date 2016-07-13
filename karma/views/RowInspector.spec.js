@@ -1,3 +1,5 @@
+var _ = require('lodash');
+var $ = require('jquery');
 var RowInspector = require('../../src/views/RowInspector');
 
 describe('socrata.visualizations.views.RowInspector', function() {

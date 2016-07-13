@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 describe('DistributionChart renderer', function() {
   var React = require('react');
   var ReactDOM = require('react-dom');

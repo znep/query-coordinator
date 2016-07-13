@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import choroplethMapVif from './choroplethMapVif';
 import columnChartVif from './columnChartVif';
 import featureMapVif from './featureMapVif';

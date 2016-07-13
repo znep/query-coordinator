@@ -158,6 +158,12 @@
             case 'timelineChart':
               $chart.socrataSvgTimelineChart(result.vif);
               break;
+            case 'featureMap':
+              $chart.socrataFeatureMap(result.vif);
+              break;
+            case 'choroplethMap':
+              $chart.socrataChoroplethMap(result.vif);
+              break;
           }
 
           authoringWorkflow.destroy();

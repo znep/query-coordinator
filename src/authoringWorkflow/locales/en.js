@@ -142,7 +142,9 @@ export default {
   preview: {
     tabs: {
       visualization: 'Visualization'
-    }
+    },
+    center_and_zoom: 'Your current zoom level and centering will be preserved on insertion.',
+    saving_center_and_zoom: 'Saving zoom level and centering...'
   },
 
   visualizations: {

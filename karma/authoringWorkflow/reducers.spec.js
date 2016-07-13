@@ -38,6 +38,21 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('vif setters', function() {
+      function resetsCenterAndZoomWhenChangingDimensions() {
+        it('resets center and zoom when reconfiguring dimension', function() {
+          var objectPath = 'vifAuthoring.vifs.featureMap.configuration';
+          var action = actions.setDimension('dimension');
+          var state = getTestState();
+
+          _.set(state, `${objectPath}.mapCenterAndZoom`, {});
+
+          var newState = reducer(getTestState(), action);
+          var configuration = _.get(newState, objectPath);
+
+          expect(configuration).to.not.have.property('mapCenterAndZoom');
+        });
+      }
+
       function shouldSetVif(actionName, value, vifPath, vifTypes) {
         it(`sets ${vifPath} to ${value} using ${actionName} for ${vifTypes}`, function() {
           var action;
@@ -57,7 +72,7 @@ describe('AuthoringWorkflow reducer', function() {
               if (_.isArray(value)) {
                 expect(value).to.include(newValue);
               } else {
-                expect(newValue).to.equal(value);
+                expect(newValue).to.eql(value);
               }
             }
           });
@@ -93,7 +108,11 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setFlyoutTitle', 'columnName', 'configuration.flyoutTitleColumnName', ['featureMap']);
 
+      shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'choroplethMap']);
+
       describe('when configuring a Feature map', function() {
+        resetsCenterAndZoomWhenChangingDimensions();
+
         it('sets configuration.pointOpacity', function() {
           var action = actions.setPointOpacity('1');
           var newState = reducer(getTestState(), action);
@@ -110,6 +129,8 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       describe('when configuring a Choropleth map', function() {
+        resetsCenterAndZoomWhenChangingDimensions();
+
         it('sets configuration.shapefile.uid and configuration.computedColumnName', function() {
           var shapefileUid = 'walr-uses';
           var computedColumnName = 'hello';

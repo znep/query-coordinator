@@ -10,10 +10,6 @@ export default {
     baseLayerUrl: BASE_LAYERS[0].value,
     baseLayerOpacity: 0.8,
     computedColumnName: null,
-    // defaultExtent: {
-    //   southwest: [Infinity, Infinity],
-    //   northeast: [Infinity, Infinity]
-    // },
     defaultFeatureStrokeWidth: 1,
     highlightFeatureStrokeWidth: 4,
     legend: {
@@ -27,10 +23,6 @@ export default {
     mapMinZoom: 1,
     mapZoomAnimation: false,
     maxJenksClassBreaks: 7,
-    // savedExtent: {
-    //   southwest: [Infinity, Infinity],
-    //   northeast: [Infinity, Infinity]
-    // },
     shapefile: {
       columns: {
         name: '__SOCRATA_HUMAN_READABLE_NAME__',

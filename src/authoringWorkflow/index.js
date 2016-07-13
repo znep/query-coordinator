@@ -48,7 +48,8 @@ module.exports = function(element, configuration) {
     vifAuthoring: {
       vifs: propagateUserDefinedVifValuesToAllVifs(vif),
       authoring: {
-        selectedVisualizationType: vifType
+        selectedVisualizationType: vifType,
+        showCenteringAndZoomingSaveMessage: false
       }
     }
   };

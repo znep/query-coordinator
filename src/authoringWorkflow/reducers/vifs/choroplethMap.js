@@ -16,7 +16,8 @@ import {
   SET_BASE_LAYER,
   SET_BASE_LAYER_OPACITY,
   SET_UNITS_ONE,
-  SET_UNITS_OTHER
+  SET_UNITS_OTHER,
+  SET_CENTER_AND_ZOOM
 } from '../../actions';
 
 export default function choroplethMap(state, action) {
@@ -36,6 +37,8 @@ export default function choroplethMap(state, action) {
       break;
 
     case SET_DIMENSION:
+      _.unset(state, 'configuration.mapCenterAndZoom');
+
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
@@ -91,6 +94,10 @@ export default function choroplethMap(state, action) {
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.units.other'));
       });
+      break;
+
+    case SET_CENTER_AND_ZOOM:
+      _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
   }
 

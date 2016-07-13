@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 export const getVifs = state => _.get(state, 'vifs', {})
 
 export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
+export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
 
 export const getCurrentVif = createSelector(
   getVifs,
@@ -219,8 +220,19 @@ export const isInsertableVisualization = createSelector(
   isValidFeatureMapVif,
   isTimelineChart,
   isValidTimelineChartVif,
-  (isChoroplethMap, validChoropleth, isColumnChart, validColumnChart, isFeatureMap, validFeatureMap, isTimelineChart, validTimelineChart) => {
-    return (
+  getShowCenteringAndZoomingSaveMessage,
+  (
+    isChoroplethMap,
+    validChoropleth,
+    isColumnChart,
+    validColumnChart,
+    isFeatureMap,
+    validFeatureMap,
+    isTimelineChart,
+    validTimelineChart,
+    showCenteringAndZoomingSaveMessage
+  ) => {
+    return !showCenteringAndZoomingSaveMessage && (
       isChoroplethMap && validChoropleth ||
       isColumnChart && validColumnChart ||
       isFeatureMap && validFeatureMap ||
@@ -229,3 +241,12 @@ export const isInsertableVisualization = createSelector(
   }
 );
 
+export const isRenderableMap = createSelector(
+  isChoroplethMap,
+  isValidChoroplethMapVif,
+  isFeatureMap,
+  isValidFeatureMapVif,
+  (isChoroplethMap, isValidChoroplethMapVif, isFeatureMap, isValidFeatureMapVif) => {
+    return (isFeatureMap && isValidFeatureMapVif) || (isChoroplethMap && isValidChoroplethMapVif);
+  }
+);

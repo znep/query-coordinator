@@ -193,7 +193,7 @@ function ChoroplethMap(element, vif) {
       // experience.
       if (centerAndZoomDefined) {
         updateCenterAndZoom(data, vif.configuration.mapCenterAndZoom);
-      } else if (extentsDefined) {
+      } else {
         updateBounds(data, vif.configuration.defaultExtent, vif.configuration.savedExtent);
       }
 

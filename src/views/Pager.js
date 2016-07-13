@@ -55,6 +55,8 @@ module.exports = function Pager(element, vif) {
       message = vif.configuration.localization.only_row;
     } else if (hasOnlyOnePage(options)) {
       message = vif.configuration.localization.all_rows;
+    } else if (!_.isFinite(options.datasetRowCount)) {
+      message = vif.configuration.localization.no_row_count;
     } else {
       message = vif.configuration.localization.many_rows;
     }

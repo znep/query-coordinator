@@ -1,7 +1,7 @@
 var templateUrl = require('angular_templates/common/pageHeader.html');
 
 module.exports = function pageHeader(ServerConfig, I18n, $window) {
-  var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
+  var DEFAULT_LOGO_URL = '/stylesheets/images/common/white_logo_with_name.svg';
 
   var DEFAULT_VALUES = {
     sign_in: { label: I18n.pageHeader.signIn, url: '/login?referer_redirect=1' },

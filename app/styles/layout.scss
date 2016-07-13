@@ -36,6 +36,7 @@ html, body {
     a {
       @include text-hiding;
       background-image: $images_logo_header;
+      background-size: contain;
       height: $images_logo_header_height;
       width: $images_logo_header_width;
     }
@@ -107,6 +108,7 @@ html, body {
   .footerLogo {
     @include text-hiding;
     background-image: $images_logo_footer;
+    background-size: contain;
     float: left;
     height: $images_logo_footer_height;
     margin: 1em;

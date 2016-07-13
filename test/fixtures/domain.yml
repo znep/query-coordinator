@@ -225,12 +225,12 @@ default_configs:
               height: "20"
               width: "89"
               type: static
-              href: /stylesheets/images/common/socrata_logo_footer.png
+              href: /stylesheets/images/common/logo_with_name.svg
             logo_header:
               height: "34"
               width: "129"
               type: static
-              href: /stylesheets/images/common/socrata_logo.png
+              href: /stylesheets/images/common/logo_with_name.svg
             favicon:
               type: static
               href: /stylesheets/images/common/favicon.ico
@@ -238,7 +238,7 @@ default_configs:
               height: 110
               width: 94
               type: static
-              href: /stylesheets/images/common/socrata_logo_square.png
+              href: /stylesheets/images/common/logo.png
           buttons:
             default:
               text: ffffff

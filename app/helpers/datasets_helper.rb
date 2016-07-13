@@ -362,6 +362,12 @@ module DatasetsHelper
     ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XML']
   end
 
+  def display_dataset_landing_page_link
+    view.has_landing_page? &&
+      FeatureFlags.derive(view, request).enable_dataset_landing_page &&
+      FeatureFlags.derive(view, request).default_to_dataset_landing_page
+  end
+
   def configuration
     hash = Hashie::Mash.new
 

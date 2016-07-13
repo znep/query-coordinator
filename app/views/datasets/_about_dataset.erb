@@ -1,5 +1,5 @@
 <div class="aboutDataset">
-  <%- if @view.has_landing_page? && FeatureFlags.derive(@view, request).default_to_dataset_landing_page -%>
+  <%- if display_dataset_landing_page_link -%>
     <div class="dslpLink">
       <h4 class="formHeader"><%= t('screens.about.dataset_landing_page.title') %></h4>
       <p><%= t('screens.about.dataset_landing_page.description') %></p>

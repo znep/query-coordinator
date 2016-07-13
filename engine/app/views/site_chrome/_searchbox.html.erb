@@ -1,8 +1,14 @@
 <div class="searchbox">
   <form action="<%= path %>" method="get">
-    <input type="text" name="q" placeholder="Search">
-    <button type="submit" class="search-button" value="">
-      <span class="icon-search" title="Search"></span>
+    <% unless local_assigns[:mobile] %><span class="icon-search" title="Search"></span><% end %>
+    <%= text_field_tag('q', nil, id: nil, placeholder: 'Search',
+      onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
+    <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
+      <% if local_assigns[:mobile] %>
+        <span class="icon-search" title="Search"></span>
+      <% else %>
+        Search
+      <% end %>
     </button>
   </form>
 </div>

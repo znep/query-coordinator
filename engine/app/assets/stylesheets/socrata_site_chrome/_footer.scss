@@ -47,9 +47,11 @@ footer#site-chrome-footer {
           }
 
           &:hover, &:focus, &:active {
-            text-decoration: underline;
             span.monosocial {
               text-decoration: none;
+            }
+            span.social-link-label {
+              text-decoration: underline;
             }
           }
         }

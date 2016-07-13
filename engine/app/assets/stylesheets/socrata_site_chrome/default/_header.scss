@@ -1,4 +1,5 @@
 $banner_height: $header_logo_height + 20;
+$searchbox-height: 36px;
 
 header#site-chrome-header[template="default"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
@@ -38,7 +39,6 @@ header#site-chrome-header[template="default"] {
 
       &.desktop {
         a.nav-link {
-          display: inline-block;
           padding: 0 $text_padding;
           color: $header_fg_color;
           text-decoration: none;
@@ -48,11 +48,57 @@ header#site-chrome-header[template="default"] {
 
           &.social-link {
             padding: 0 5px;
+            &:hover, &:focus, &:active {
+              text-decoration: none;
+            }
           }
         }
 
-        .nav-links, .social-links {
+        .nav-links, .social-links, .collapsible-search {
           float: left;
+        }
+
+        .collapsible-search {
+          position: relative;
+
+          .collapsible-search-toggle {
+            cursor: pointer;
+            font-size: 19px;
+          }
+
+          .searchbox {
+            opacity: 0;
+            z-index: -1;
+
+            -webkit-transition: opacity 0.1s;
+            transition: opacity 0.1s;
+
+            input {
+              -webkit-transition: width 0.4s;
+              transition: width 0.4s;
+              width: 50px;
+            }
+            &.expanded {
+              opacity: 1;
+              z-index: 10;
+              input {
+                width: 250px;
+              }
+            }
+
+            position: absolute;
+            top: ($banner_height - $searchbox-height) / 2;
+            right: 0;
+
+            form {
+              display: flex;
+
+              button.search-button {
+                height: $searchbox_height - 2;
+                display: none; // appears with toggleSearchButton()
+              }
+            }
+          }
         }
 
         a.sign-in-toggle {
@@ -61,6 +107,7 @@ header#site-chrome-header[template="default"] {
         }
         a.profile-link, a.admin-link, a.logout-link {
           padding: 0 $text_padding;
+          line-height: 3rem;
           text-decoration: none;
           &.in-header {
             color: $header_fg_color;
@@ -71,13 +118,7 @@ header#site-chrome-header[template="default"] {
         }
 
         span.divider {
-          display: inline-block;
-          vertical-align: middle;
-          position: relative;
-          top: -2px;
-          margin: 0 $text_padding;
-          padding: 14px 0;
-          border-left: 1px solid rgba(255, 255, 255, 0.3);
+          margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
         }
       }
 

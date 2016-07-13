@@ -193,6 +193,20 @@ describe('Pager', function() {
       verifyPagerLabelText('translation for all rows');
     });
 
+    describe('with an invalid dataset row count', function() {
+      beforeEach(function() {
+        vif.configuration.localization.no_row_count = { format: sinon.stub().returns('translation for no row count') };
+      });
+
+      renderPagerWithOptions({
+        startIndex: 0,
+        endIndex: 5,
+        datasetRowCount: NaN
+      });
+
+      verifyPagerLabelText('translation for no row count');
+    });
+
     describe('with a page size of 10', function() {
       beforeEach(function() {
         vif.configuration.localization.many_rows = { format: sinon.stub().returns('translation for many rows') };

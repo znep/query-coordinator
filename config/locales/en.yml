@@ -2483,12 +2483,12 @@ en:
                 title: Footer Logo
               footer_logo_height:
                 description: You can optionally set a height and width for your footer logo.
-                error: "Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px"
+                error: 'Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
                 description: You can optionally set a height and width for your footer logo.
-                error: "Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px"
+                error: 'Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
               footer_text_link_color:
@@ -2510,11 +2510,11 @@ en:
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
               show_signin_signout:
-                title: Sign In / Sign Out
                 description: Show these options if your site requires a user Profile / Sign In.
                 show_profile: Show a link to Profile after Signed In
                 show_signin_signout: Show Sign In / Sign Out
                 show_signup: Show ability to create an account via Sign Up
+                title: Sign In / Sign Out
               template:
                 description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
                 placeholder: Rally
@@ -2552,12 +2552,12 @@ en:
                 title: Header Display Name
               header_logo_height:
                 description: You can optionally set a height and width for your header bar logo.
-                error: "Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px"
+                error: 'Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
                 description: You can optionally set a height and width for your header bar logo.
-                error: "Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px"
+                error: 'Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
               link_title_label: Link Label
@@ -3853,6 +3853,7 @@ en:
               comment_to_moderate: A comment is submitted requiring moderation
               nomination_created: A new nomination is created
               nomination_moderated: Any nomination is moderated
+              other_label: Other
               privileged_account_created: A user creates their privileged account
               user_affected: Actions directly affecting you, such as comment replies and status updates
               view_deleted: Any view is deleted
@@ -3941,6 +3942,7 @@ en:
           my_blog: My Blog
           my_company: My Company
           my_site: My Site
+          other_label: Other
           twitter: Twitter
         no_description: No description provided
         other_ext_link: Other

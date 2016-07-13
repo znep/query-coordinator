@@ -36,6 +36,7 @@ export var DatasetPreview = React.createClass({
       configuration: {
         allowObeDataset: true,
         localization: {
+          all_rows: I18n.dataset_preview.all_rows,
           previous: I18n.dataset_preview.previous,
           next: I18n.dataset_preview.next,
           no_rows: I18n.dataset_preview.no_rows,

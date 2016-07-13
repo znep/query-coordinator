@@ -373,6 +373,7 @@ Rails.application.routes.draw do
       get 'd/:id/alt', :action => 'alt'
       get 'd/:id/stats', :action => 'stats'
       get 'd/:id/about', :action => 'about'
+      get 'd/:id/data', :action => 'show', :bypass_dslp => true
 
       get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
     end

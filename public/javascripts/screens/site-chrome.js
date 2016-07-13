@@ -6,38 +6,22 @@ var inputTypeValidations = {
 
 var validationRules = {
   general: {
-    'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
-    'content[general][window_icon]': { url: true }
+    'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics }
   },
   header: {
-    'content[header][logo][src]': { url: true },
     'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
     'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
     'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
     'content[header][styles][bg_color_secondary]': { pattern: inputTypeValidations.color },
-    'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
-    'content[header]links[][url]': { url: true }
+    'content[header][styles][fg_color]': { pattern: inputTypeValidations.color }
   },
   footer: {
-    'content[footer][logo][src]': { url: true },
     'content[footer][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
     'content[footer][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
     'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
-    'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color },
-    'content[footer]links[][url]': { url: true }
+    'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color }
   },
-  social: {
-    'content[general][social_shares][facebook][url]': { url: true },
-    'content[general][social_shares][twitter][url]': { url: true },
-    'content[general][social_shares][youtube][url]': { url: true },
-    'content[general][social_shares][linked_in][url]': { url: true },
-    'content[general][social_shares][flickr][url]': { url: true },
-    'content[general][social_shares][instagram][url]': { url: true },
-    'content[general][social_shares][tumblr][url]': { url: true },
-    'content[general][social_shares][yammer][url]': { url: true },
-    'content[general][social_shares][google_plus][url]': { url: true },
-    'content[general][social_shares][vimeo][url]': { url: true }
-  }
+  social: {}
 };
 
 // Note: This needs to be a function rather than an object because $.t is not defined on load.

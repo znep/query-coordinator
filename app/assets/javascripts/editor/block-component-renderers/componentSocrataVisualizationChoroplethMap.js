@@ -74,10 +74,10 @@ function _updateVisualization($element, componentData) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
     vif.configuration.localization = {
-      'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
-      'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
-      'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-      'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label')
+      'no_value': I18n.t('editor.visualizations.no_value_placeholder'),
+      'flyout_unfiltered_amount_label': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
+      'flyout_filtered_amount_label': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
+      'flyout_selected_notice': I18n.t('editor.visualizations.flyout.datum_selected_label')
     };
 
     vif.unit = {

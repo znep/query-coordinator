@@ -78,6 +78,8 @@
   }
 
   .visualization-preview-container {
+    position: relative;
+
     .visualization-toggler {
       margin-bottom: 0.25rem;
     }
@@ -86,6 +88,41 @@
       background-color: #f2f2f2;
       width: 100%;
       height: 490px;
+    }
+
+    .visualization-preview-map-saving,
+    .visualization-preview-map-message {
+      display: inline-flex;
+      position: absolute;
+      line-height: normal;
+      opacity: 0.9;
+      z-index: 100;
+
+      .visualization-preview-map-text,
+      .visualization-preview-map-icon,
+      .visualization-preview-map-saving-text,
+      .visualization-preview-map-saving-icon {
+        margin: auto;
+      }
+
+      .visualization-preview-map-icon,
+      .visualization-preview-map-saving-icon {
+        margin: auto;
+        margin-top: 0;
+        margin-right: 5px;
+      }
+    }
+
+    .visualization-preview-map-saving {
+      bottom: 52px;
+      right: 5px;
+      margin-left: 5px;
+    }
+
+    .visualization-preview-map-message {
+      bottom: 5px;
+      right: 5px;
+      margin-left: 5px;
     }
   }
 

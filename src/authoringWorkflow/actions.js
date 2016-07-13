@@ -230,3 +230,14 @@ export function setCenterAndZoom(centerAndZoom) {
     centerAndZoom
   };
 }
+
+export var REQUEST_CENTER_AND_ZOOM = 'REQUEST_CENTER_AND_ZOOM';
+export function requestCenterAndZoom(centerAndZoom) {
+  return (dispatch) => {
+    dispatch({ type: REQUEST_CENTER_AND_ZOOM });
+
+    setTimeout(() => {
+      dispatch(setCenterAndZoom(centerAndZoom));
+    }, 3000);
+  };
+}

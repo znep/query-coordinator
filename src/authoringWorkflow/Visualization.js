@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import { translate } from './I18n';
-import { setCenterAndZoom } from './actions';
+import { requestCenterAndZoom } from './actions';
 import RowInspector from '../views/RowInspector';
 import FlyoutRenderer from '../views/FlyoutRenderer';
 
@@ -20,7 +20,8 @@ import {
   isValidColumnChartVif,
   isChoroplethMap,
   isValidChoroplethMapVif,
-  getCurrentVif
+  getCurrentVif,
+  isRenderableMap
 } from './selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
@@ -49,7 +50,11 @@ export var Visualization = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.vif, nextProps.vif);
+    var { vif, vifAuthoring } = this.props;
+    var { showCenteringAndZoomingSaveMessage } = nextProps.vifAuthoring.authoring;
+    var vifChanged = !_.isEqual(vif, nextProps.vif);
+
+    return vifChanged || vifAuthoring.authoring.showCenteringAndZoomingSaveMessage !== showCenteringAndZoomingSaveMessage;
   },
 
   onFlyout(event) {
@@ -84,8 +89,9 @@ export var Visualization = React.createClass({
     );
   },
 
-  detachVisualizationEvents() {
+  destroyVisualizationPreview() {
     $(this.visualizationPreview()).
+      trigger('SOCRATA_VISUALIZATION_DESTROY').
       off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
@@ -100,13 +106,10 @@ export var Visualization = React.createClass({
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
-
-      this.detachVisualizationEvents();
+      this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataSvgColumnChart(vif);
-
       $visualizationPreview.
         on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
@@ -120,12 +123,10 @@ export var Visualization = React.createClass({
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
-      this.detachVisualizationEvents();
+      this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataChoroplethMap(vif);
-
       $visualizationPreview.
         on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
@@ -140,12 +141,10 @@ export var Visualization = React.createClass({
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
-      this.detachVisualizationEvents();
+      this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataFeatureMap(vif);
-
       $visualizationPreview.
         on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
@@ -160,12 +159,10 @@ export var Visualization = React.createClass({
     if (alreadyRendered) {
       this.updateVisualization();
     } else {
-      this.detachVisualizationEvents();
+      this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        trigger('SOCRATA_VISUALIZATION_DESTROY').
         socrataSvgTimelineChart(vif);
-
       $visualizationPreview.
         on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
@@ -187,13 +184,42 @@ export var Visualization = React.createClass({
     }
   },
 
+  renderMapInfo() {
+    var { vifAuthoring } = this.props;
+
+    if (isRenderableMap(vifAuthoring)) {
+      return (
+        <div className="visualization-preview-map-message alert info">
+          <span className="visualization-preview-map-icon icon-info" />
+          <small className="visualization-preview-map-text">{translate('preview.center_and_zoom')}</small>
+        </div>
+      );
+    }
+  },
+
+  renderMapSaving() {
+    var { vifAuthoring } = this.props;
+    var { showCenteringAndZoomingSaveMessage } = vifAuthoring.authoring;
+
+    if (showCenteringAndZoomingSaveMessage && isRenderableMap(vifAuthoring)) {
+      return (
+        <div className="visualization-preview-map-saving alert success">
+          <span className="visualization-preview-map-saving-icon icon-checkmark3" />
+          <small className="visualization-preview-map-saving-text">{translate('preview.saving_center_and_zoom')}</small>
+        </div>
+      );
+    }
+  },
+
   render() {
     return (
       <div className="visualization-preview-container">
         <div className="visualization-toggler">
           <small>{translate('preview.tabs.visualization')}</small>
         </div>
-        <div className="visualization-preview"></div>
+        <div className="visualization-preview" />
+        {this.renderMapInfo()}
+        {this.renderMapSaving()}
       </div>
     );
   }
@@ -209,7 +235,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onCenterAndZoomChanged(centerAndZoom) {
-      dispatch(setCenterAndZoom(centerAndZoom));
+      dispatch(requestCenterAndZoom(centerAndZoom));
     }
   };
 }

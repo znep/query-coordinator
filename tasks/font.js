@@ -54,7 +54,7 @@ function compileStream(stream) {
 
 module.exports = (done) => {
   var settings = {
-    fontName: 'socrata-icons-' + buildTimestamp,
+    fontName: 'socrata-icons.' + buildTimestamp,
     formats: ['eot', 'svg', 'ttf', 'woff', 'woff2'],
     timestamp: buildTimestamp,
     descent: 128 // Magic! Fuck if I know. It works.

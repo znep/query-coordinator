@@ -40,13 +40,17 @@ $form-checkbox-hover-check-color: #999;
 
   .loading {
     display: block;
-    text-align: left;
-    background: transparent url('/images/admin/geo/snuffleupasnake.gif') no-repeat 0 0;
     height: 16px;
     width: 16px;
     position: absolute;
     top: calc(50% - 8px);
     left: calc(50% - 8px);
+    // mimic styleguide spinner
+    animation: spin 0.9s linear infinite;
+    border: 3px solid #288dc1;
+    border-right-color: #eaf4f9;
+    border-radius: 50%;
+    box-sizing: border-box;
   }
 }
 
@@ -164,20 +168,40 @@ $form-checkbox-hover-check-color: #999;
     padding-bottom: 1em;
   }
 
+  .iframe-spinner {
+    display: block;
+    position: absolute;
+    height: 64px;
+    width: 64px;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+    z-index: -1;
+    // mimic styleguide spinner
+    animation: spin 0.9s linear infinite;
+    border: 8px solid #288dc1;
+    border-right-color: #eaf4f9;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
   iframe {
     border: none;
     height: 55em;
     width: 100%;
-    background: transparent url('/stylesheets/images/common/BrandedSpinner.gif') no-repeat 50% 45%;
   }
 }
 
 .status-icon-progress {
+  margin-top: 0.5rem;
   display: inline-block;
-  background: transparent url('/images/admin/geo/snuffleupasnake.gif') no-repeat 0 0;
   height: 16px;
   width: 16px;
-  margin: 4px 0.5em 0 0;
+  // mimic styleguide spinner
+  animation: spin 0.9s linear infinite;
+  border: 3px solid #288dc1;
+  border-right-color: #eaf4f9;
+  border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .georegion-spinner {
@@ -190,11 +214,19 @@ $form-checkbox-hover-check-color: #999;
   width: 100%;
   z-index: 1;
 
-  > img {
-    $img-size: 48px;
+  > span {
+    display: block;
     position: absolute;
-    top: calc(50% - #{$img-size / 2});
-    left: calc(50% - #{$img-size / 2});
+    height: 64px;
+    width: 64px;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+    // mimic styleguide spinner
+    animation: spin 0.9s linear infinite;
+    border: 8px solid #288dc1;
+    border-right-color: #eaf4f9;
+    border-radius: 50%;
+    box-sizing: border-box;
   }
 }
 
@@ -251,3 +283,24 @@ $form-checkbox-hover-check-color: #999;
   }
 }
 
+// for spinner
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

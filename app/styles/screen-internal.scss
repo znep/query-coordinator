@@ -116,8 +116,22 @@ form.wide {
     width: 95%;
   }
   &.loading {
-    .domainAwesomeComplete {
-      background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
+    > div {
+      position: relative;
+    }
+    .spinner {
+      display: block;
+      height: 14px;
+      width: 14px;
+      position: absolute;
+      top: calc(50% - 11px);
+      right: 5%;
+      // mimic styleguide spinner
+      animation: spin 0.9s linear infinite;
+      border: 2px solid #288dc1;
+      border-right-color: #eaf4f9;
+      border-radius: 50%;
+      box-sizing: border-box;
     }
     &:after {
       content: 'Please wait for a moment before typing..';

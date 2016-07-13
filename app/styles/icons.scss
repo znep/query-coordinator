@@ -732,17 +732,17 @@ $data-lens-color: #80acca;
   width: 24px;
 }
 
-// content/snuffleupasnake.gif
 @mixin throbber-icon {
   @include text-hiding;
-  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
   height: 16px;
   width: 16px;
-}
-
-@mixin throbber-image {
-  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
-  background-repeat: no-repeat;
+  display: inline-block;
+  // mimic styleguide spinner
+  animation: spin 0.9s linear infinite;
+  border: 3px solid #288dc1;
+  border-right-color: #eaf4f9;
+  border-radius: 50%;
+  box-sizing: border-box;
 }
 
 // Grid header icons
@@ -1337,5 +1337,27 @@ $data-lens-color: #80acca;
     &.notes {
       background-position: 0 -20px;
     }
+  }
+}
+
+// for spinner
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }

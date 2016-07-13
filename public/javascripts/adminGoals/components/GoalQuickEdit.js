@@ -169,6 +169,7 @@ class GoalQuickEdit extends React.Component {
                   options={ visibilityOptions }
                   value={ this.state.visibility }
                   onChange={ this.onVisibilityChange.bind(this) }
+                  searchable={ false }
                   clearable={ false } />
               </div>
 

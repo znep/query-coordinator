@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.socrata.com:frontend.git"
+    "url": "git@github.com:socrata/frontend.git"
   },
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "UNLICENSED",

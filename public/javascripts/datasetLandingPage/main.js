@@ -14,6 +14,11 @@ import datasetLandingPage from './reducers';
 import App from './App';
 import DynamicContent from './DynamicContent';
 
+// Update the csrf cookie to match the one from serverConfig, this is necessary to properly
+// authenticate with core.
+var csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
+document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
+
 var middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {

@@ -161,10 +161,6 @@ function FeatureMap(element, vif) {
     }
   };
 
-  this.renderError = function() {
-    console.error('There was an error rendering this feature map');
-  };
-
   this.invalidateSize = function() {
     if (_map) {
       _map.invalidateSize();

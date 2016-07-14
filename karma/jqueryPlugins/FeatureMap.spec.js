@@ -49,7 +49,9 @@ describe('FeatureMap jQuery component', function() {
         'row_inspector_row_data_query_failed': 'Detailed information about these points cannot be loaded at this time',
         'user_current_position': 'Your current location (estimated)',
         'unit_one': 'record',
-        'unit_other': 'records'
+        'unit_other': 'records',
+        'column_incompatibility_error': 'It\'s incompatible, yo.',
+        'feature_extent_query_error': 'It\'s a feature extent error, yo.'
       }
     },
     filters: [],

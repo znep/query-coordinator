@@ -189,7 +189,9 @@ export default {
       row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time',
       user_current_position: 'Your current location (estimated)',
       latitude: 'Latitude',
-      longitude: 'Longitude'
+      longitude: 'Longitude',
+      column_incompatibility_error: 'That dimension is incompatible with the feature map. Please pick a location-based dimension.',
+      feature_extent_query_error: 'Oh no! We failed to get the proper zoom and centering. You\'ll have to try again later.'
     },
     timeline_chart: {
       title: 'Timeline Chart',

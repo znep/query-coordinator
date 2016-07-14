@@ -67,7 +67,9 @@ $.fn.socrataFeatureMap = function(vif) {
     'flyout_locate_user_error_notice',
     'flyout_pan_zoom_disabled_warning_title',
     'row_inspector_row_data_query_failed',
-    'user_current_position'
+    'user_current_position',
+    'column_incompatibility_error',
+    'feature_extent_query_error'
   );
 
   var $element = $(this);
@@ -171,7 +173,7 @@ $.fn.socrataFeatureMap = function(vif) {
     getFeatureExtent(columnName).
     then(
       handleFeatureExtentQuerySuccess,
-      handleFeatureExtentQueryError
+      handleFeatureExtentQueryError.bind(this)
     )['catch'](function(e) {
       logError(e);
     });
@@ -251,8 +253,17 @@ $.fn.socrataFeatureMap = function(vif) {
     renderIfReady();
   }
 
-  function handleFeatureExtentQueryError() {
-    renderError();
+  function handleFeatureExtentQueryError(error) {
+    var message;
+    var errorCode = _.get(error, 'soqlError.errorCode');
+
+    if (errorCode === 'query.soql.type-mismatch') {
+      message = vif.configuration.localization.column_incompatibility_error;
+    } else {
+      message = vif.configuration.localization.feature_extent_query_error;
+    }
+
+    renderError(message);
   }
 
   function handleVisualizationFlyoutShow(event) {
@@ -504,8 +515,8 @@ $.fn.socrataFeatureMap = function(vif) {
     }
   }
 
-  function renderError() {
-    visualization.renderError();
+  function renderError(message) {
+    visualization.renderError(message);
   }
 
   function formatRowInspectorData(datasetMetadata, data) {

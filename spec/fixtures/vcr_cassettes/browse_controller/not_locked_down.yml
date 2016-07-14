@@ -1,0 +1,477 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 6xvj32rvi5ro8tf6rytqbzhbg
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/tags?method=viewsTags
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 5x0s6txi9d3pvx01sci5lz4ar
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "frequency" : 1,
+          "name" : "tag"
+        } ]
+    http_version: 
+  recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - at3im7qd1owrl7rbrakk4cnnf
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/search/views.json?limit=10&page=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 72tqstydqx7zkplfnfrefk2x0
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "count" : 5,
+          "searchType" : "views",
+          "results" : [ {
+            "totalRows" : 0,
+            "view" : {
+              "id" : "ij2u-iwtx",
+              "name" : "google",
+              "averageRating" : 0,
+              "createdAt" : 1465246408,
+              "displayType" : "href",
+              "downloadCount" : 0,
+              "newBackend" : false,
+              "numberOfComments" : 0,
+              "oid" : 11,
+              "publicationAppendEnabled" : false,
+              "publicationDate" : 1465246837,
+              "publicationGroup" : 11,
+              "publicationStage" : "published",
+              "rowsUpdatedAt" : 1465246408,
+              "tableId" : 11,
+              "totalTimesRated" : 0,
+              "viewCount" : 0,
+              "viewLastModified" : 1465255684,
+              "viewType" : "href",
+              "columns" : [ ],
+              "grants" : [ {
+                "inherited" : false,
+                "type" : "viewer",
+                "flags" : [ "public" ]
+              } ],
+              "metadata" : {
+                "renderTypeConfig" : {
+                  "visible" : {
+                    "href" : true
+                  }
+                },
+                "availableDisplayTypes" : [ "href" ],
+                "rowLabel" : "Row",
+                "accessPoints" : {
+                  "com" : "http://www.google.com"
+                }
+              },
+              "owner" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "query" : { },
+              "rights" : [ "read" ],
+              "tableAuthor" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "flags" : [ "default" ]
+            }
+          }, {
+            "totalRows" : 0,
+            "view" : {
+              "id" : "jhpt-dwhi",
+              "name" : "google test published",
+              "averageRating" : 0,
+              "createdAt" : 1465246137,
+              "displayType" : "href",
+              "downloadCount" : 0,
+              "newBackend" : false,
+              "numberOfComments" : 0,
+              "oid" : 10,
+              "publicationAppendEnabled" : false,
+              "publicationDate" : 1465247434,
+              "publicationGroup" : 10,
+              "publicationStage" : "published",
+              "rowsUpdatedAt" : 1465246137,
+              "tableId" : 10,
+              "totalTimesRated" : 0,
+              "viewCount" : 0,
+              "viewLastModified" : 1465247440,
+              "viewType" : "href",
+              "columns" : [ ],
+              "grants" : [ {
+                "inherited" : false,
+                "type" : "viewer",
+                "flags" : [ "public" ]
+              } ],
+              "metadata" : {
+                "renderTypeConfig" : {
+                  "visible" : {
+                    "href" : true
+                  }
+                },
+                "availableDisplayTypes" : [ "href" ],
+                "rowLabel" : "Row",
+                "accessPoints" : {
+                  "com" : "http://www.google.com"
+                }
+              },
+              "owner" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "query" : { },
+              "rights" : [ "read" ],
+              "tableAuthor" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "flags" : [ "default" ]
+            }
+          }, {
+            "totalRows" : 0,
+            "view" : {
+              "id" : "xxik-zkrp",
+              "name" : "google",
+              "averageRating" : 0,
+              "createdAt" : 1463788770,
+              "displayType" : "href",
+              "downloadCount" : 0,
+              "newBackend" : false,
+              "numberOfComments" : 0,
+              "oid" : 8,
+              "publicationAppendEnabled" : false,
+              "publicationDate" : 1463788785,
+              "publicationGroup" : 8,
+              "publicationStage" : "published",
+              "rowsUpdatedAt" : 1463788770,
+              "tableId" : 8,
+              "totalTimesRated" : 0,
+              "viewCount" : 0,
+              "viewLastModified" : 1466632645,
+              "viewType" : "href",
+              "columns" : [ ],
+              "grants" : [ {
+                "inherited" : false,
+                "type" : "viewer",
+                "flags" : [ "public" ]
+              } ],
+              "metadata" : {
+                "renderTypeConfig" : {
+                  "visible" : {
+                    "href" : true
+                  }
+                },
+                "rowLabel" : "Row",
+                "availableDisplayTypes" : [ "href" ],
+                "accessPoints" : {
+                  "com" : "http://www.google.com"
+                }
+              },
+              "owner" : {
+                "id" : "qp2v-ypgh",
+                "displayName" : "Disco Ricky",
+                "screenName" : "Disco Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "query" : { },
+              "rights" : [ "read" ],
+              "tableAuthor" : {
+                "id" : "qp2v-ypgh",
+                "displayName" : "Disco Ricky",
+                "screenName" : "Disco Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "flags" : [ "default" ]
+            }
+          }, {
+            "totalRows" : 0,
+            "view" : {
+              "id" : "r8n6-3khp",
+              "name" : "adsfda",
+              "averageRating" : 0,
+              "createdAt" : 1463164855,
+              "description" : "afdsafdafdsaadf",
+              "displayType" : "href",
+              "downloadCount" : 0,
+              "newBackend" : false,
+              "numberOfComments" : 0,
+              "oid" : 6,
+              "publicationAppendEnabled" : false,
+              "publicationDate" : 1463164863,
+              "publicationGroup" : 6,
+              "publicationStage" : "published",
+              "rowsUpdatedAt" : 1463164855,
+              "tableId" : 6,
+              "totalTimesRated" : 0,
+              "viewCount" : 0,
+              "viewLastModified" : 1463786725,
+              "viewType" : "href",
+              "columns" : [ ],
+              "grants" : [ {
+                "inherited" : false,
+                "type" : "viewer",
+                "flags" : [ "public" ]
+              } ],
+              "metadata" : {
+                "renderTypeConfig" : {
+                  "visible" : {
+                    "href" : true
+                  }
+                },
+                "availableDisplayTypes" : [ "href" ],
+                "rowLabel" : "Row",
+                "accessPoints" : {
+                  "com" : "http://google.com"
+                },
+                "additionalAccessPoints" : [ {
+                  "urls" : {
+                    "com" : "http://google.com"
+                  }
+                } ]
+              },
+              "owner" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "query" : { },
+              "rights" : [ "read" ],
+              "tableAuthor" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "flags" : [ "default" ]
+            }
+          }, {
+            "view" : {
+              "id" : "vkji-3zrf",
+              "name" : "Acronyms For Snu!",
+              "averageRating" : 0,
+              "category" : "Business",
+              "createdAt" : 1463006083,
+              "displayType" : "table",
+              "downloadCount" : 0,
+              "newBackend" : false,
+              "numberOfComments" : 0,
+              "oid" : 12,
+              "publicationAppendEnabled" : false,
+              "publicationDate" : 1466632545,
+              "publicationGroup" : 1,
+              "publicationStage" : "published",
+              "rowClass" : "",
+              "rowsUpdatedAt" : 1466632542,
+              "rowsUpdatedBy" : "tugg-ikce",
+              "tableId" : 12,
+              "totalTimesRated" : 0,
+              "viewCount" : 0,
+              "viewLastModified" : 1467413629,
+              "viewType" : "tabular",
+              "columns" : [ {
+                "id" : 2,
+                "name" : "Acronym",
+                "dataTypeName" : "text",
+                "fieldName" : "acronym",
+                "position" : 2,
+                "renderTypeName" : "text",
+                "tableColumnId" : 1,
+                "width" : 184,
+                "cachedContents" : {
+                  "non_null" : 3,
+                  "smallest" : "asdfda",
+                  "null" : 0,
+                  "largest" : "asdfdsafdsafdsa",
+                  "top" : [ {
+                    "count" : 20,
+                    "item" : "asdfdsa"
+                  }, {
+                    "count" : 19,
+                    "item" : "asdfdsafdsafdsa"
+                  }, {
+                    "count" : 18,
+                    "item" : "asdfda"
+                  } ]
+                },
+                "format" : { }
+              } ],
+              "grants" : [ {
+                "inherited" : false,
+                "type" : "viewer",
+                "flags" : [ "public" ]
+              } ],
+              "metadata" : {
+                "renderTypeConfig" : {
+                  "visible" : {
+                    "table" : true
+                  }
+                },
+                "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+                "rowLabel" : "Row",
+                "rdfSubject" : "0",
+                "rowIdentifier" : "0",
+                "rdfClass" : ""
+              },
+              "owner" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "query" : { },
+              "rights" : [ "read" ],
+              "tableAuthor" : {
+                "id" : "tugg-ikce",
+                "displayName" : "Ricky",
+                "screenName" : "Ricky",
+                "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story" ],
+                "flags" : [ "admin" ]
+              },
+              "tags" : [ "tag" ],
+              "flags" : [ "default" ]
+            }
+          } ]
+        }
+    http_version: 
+  recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
+recorded_with: VCR 3.0.3

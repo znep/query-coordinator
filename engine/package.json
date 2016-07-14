@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "description": "The \"Chrome\" is the header (including navigation bar) and footer of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.",
   "scripts": {
+    "lint": "./node_modules/.bin/eslint -- app/assets/javascripts",
     "postinstall": "sh ./tools/postinstall.sh"
   },
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "UNLICENSED",
   "dependencies": {
     "socrata-styleguide": "2.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.0.1"
   }
 }

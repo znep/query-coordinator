@@ -1,11 +1,11 @@
 // Stolen and butchered from styleguide.
 $(document).ready(function() {
-  var DropdownFactory = function(element) {
+  var dropdownFactory = function(element) {
     this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
     this.dropdowns.forEach(function(dropdown) {
       new Dropdown(dropdown);
     });
-  }
+  };
 
   var Dropdown = function(element) {
     this.dd = element;
@@ -93,7 +93,7 @@ $(document).ready(function() {
         }
       }
     }
-  }
+  };
 
-  DropdownFactory(document.querySelector('#site-chrome-header'));
+  dropdownFactory(document.querySelector('#site-chrome-header'));
 });

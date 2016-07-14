@@ -190,12 +190,16 @@ Aborted.'
   end
 
   def user_approves_manifest?
+    # Note that we're removing backticks and double quotes herehere.
+    # If there are backticks in the commit messages, sh will try to run the text inside the backticks.
+    # If there are double quotes, MRDialog will construct a bad command and fail.
+    # Can we get rid of MRDialog?
     dialog.yesno("----------
 Here is the manifest. Does this look good? Scroll with j/k/pgup/pgdown.
 You'll have an opportunity to copy this to the clipboard momentarily.
 ----------
 
-#{manifest_text}")
+#{manifest_text.tr('`', "'").tr('"', "'")}")
   end
 
   def user_approves_task_summary?

@@ -113,6 +113,8 @@ $external-blue: #1c6387;;
   .btn {
     margin-right: auto;
     margin-left: auto;
+    width: 100px;
+    max-width: 100px;
 
     &:first-child {
       margin-top: auto;

@@ -212,9 +212,16 @@
   }
 
   .internal-view-list {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+
     .result-card.view-widget {
-      flex: 0 0 $view-widget-width;
+      flex: 0 0 auto;
+      width: 31.9%;
       height: $view-widget-height;
+      margin-right: 2%;
 
       @media(max-width: $medium) {
         margin-right: 50%;

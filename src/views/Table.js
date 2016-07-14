@@ -8,6 +8,7 @@ module.exports = function Table(element, vif) {
   _.extend(this, new SvgVisualization(element, vif));
 
   var SORT_ICON_WIDTH = 32;
+  var MINIMUM_COLUMN_WIDTH = 48;
 
   var self = this;
   // Because we need to hook into the renderError function call but want to be
@@ -27,6 +28,12 @@ module.exports = function Table(element, vif) {
   // If defined, this is an object that maps column name to pixel widths.
   // See freezeColumnWidths().
   var _columnWidths;
+  var columnWidthsFromVif = {};
+
+  // Handle column width resizing
+  var activeResizeColumnName = null;
+  var activeResizeXStart = 0;
+  var activeResizeXEnd = 0;
 
   utils.assertHasProperties(
     vif,
@@ -51,6 +58,20 @@ module.exports = function Table(element, vif) {
 
     _lastRenderData = data;
     _lastRenderOptions = options;
+
+    columnWidthsFromVif = {};
+    _.get(vif, 'configuration.tableColumnWidths', []).
+      forEach(
+        function(columnWidthFromVif) {
+
+          if (
+            columnWidthFromVif.hasOwnProperty('columnName') &&
+            columnWidthFromVif.hasOwnProperty('width')
+          ) {
+            columnWidthsFromVif[columnWidthFromVif.columnName] = columnWidthFromVif.width;
+          }
+        }
+      );
 
     _render(data, options);
   };
@@ -131,8 +152,8 @@ module.exports = function Table(element, vif) {
   };
 
   this.destroy = function() {
-    _detachEvents(this.element);
-    this.element.find('.socrata-table').remove();
+    _detachEvents();
+    this.$element.find('.socrata-table').remove();
   };
 
   // Causes all columns to maintain their absolute widths, regardless of any new content.
@@ -142,9 +163,18 @@ module.exports = function Table(element, vif) {
     // TODO If we implement persistent column resizing, this function
     // should be modified to simply return columnWidths for later use
     // as a render option.
-    var headerWidths = element.find('thead th').map(function() {
-      return this.getBoundingClientRect().width;
-    });
+    var headerWidths = self.
+      $element.
+        find('thead th').
+          map(
+            function() {
+              var columnName = $(this).find('.column-header-content').attr('data-column-name');
+
+              return (columnWidthsFromVif.hasOwnProperty(columnName)) ?
+                columnWidthsFromVif[columnName] :
+                this.getBoundingClientRect().width;
+            }
+          );
     var columns = _.map(_lastRenderData.columns, 'fieldName');
 
     _columnWidths = _.zipObject(
@@ -178,28 +208,55 @@ module.exports = function Table(element, vif) {
     ].join('').format(column);
   }
 
-  function _templateTableSortedHeader() {
+  function _templateTableSortedHeader(options) {
+    var resizeTarget = (options.isLastColumn) ?
+      '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
+      '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
+
     return [
-      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort scope="col">',
-        '<div>{columnTitle}<span class="icon-{sortDirection}"></span></div>',
+      '<th scope="col">',
+        '<div class="column-header-content" data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" data-sort>',
+          '<span class="column-header-content-column-name">{columnTitle}</span>',
+          '<span class="icon-{sortDirection}"></span></div>',
+        resizeTarget,
       '</th>'
-    ].join('');
+    ].
+      join('').
+      format(options);
   }
 
-  function _templateTableUnsortableHeader() {
+  function _templateTableUnsortableHeader(options) {
+    var resizeTarget = (options.isLastColumn) ?
+      '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
+      '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
+
     return [
-      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
-        '<div>{columnTitle}</div>',
+      '<th scope="col">',
+        '<div class="column-header-content" data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}">',
+          '<span class="column-header-content-column-name">{columnTitle}</span>',
+        '</div>',
+        resizeTarget,
       '</th>'
-    ].join('');
+    ].
+      join('').
+      format(options);
   }
 
-  function _templateTableHeader() {
+  function _templateTableHeader(options) {
+    var resizeTarget = (options.isLastColumn) ?
+      '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
+      '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
+
     return [
-      '<th data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}" scope="col">',
-        '<div>{columnTitle}<span class="icon-arrow-down"></span></div>',
+      '<th scope="col">',
+        '<div class="column-header-content" data-column-name="{columnName}" data-column-description="{columnDescription}" data-column-render-type="{renderTypeName}">',
+          '<span class="column-header-content-column-name">{columnTitle}</span>',
+          '<span class="icon-arrow-down"></span></div>',
+        resizeTarget,
       '</th>'
-    ].join('');
+    ].
+      join('').
+      format(options);
   }
 
   function _templateTable(data, options) {
@@ -210,24 +267,27 @@ module.exports = function Table(element, vif) {
         '<table>',
           '<thead>',
             '<tr>',
-              data.columns.map(function(column) {
+              data.columns.map(function(column, i) {
                 var template;
-
-                if (_isGeometryType(column)) {
-                  template = _templateTableUnsortableHeader();
-                } else {
-                  template = activeSort.columnName === column.fieldName ?
-                    _templateTableSortedHeader() :
-                    _templateTableHeader();
-                }
-
-                return template.format({
+                var templateOptions = {
                   columnName: column.fieldName,
                   columnTitle: (column && column.name) || column.fieldName,
                   columnDescription: (column && column.description) || '',
                   renderTypeName: (column && column.renderTypeName) || '',
-                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up'
-                });
+                  sortDirection: activeSort.ascending ? 'arrow-down' : 'arrow-up',
+                  isLastColumn: (i === (data.columns.length - 1)),
+                  isResizingThisColumn: (column.fieldName === activeResizeColumnName) ? ' resizing' : ''
+                };
+
+                if (_isGeometryType(column)) {
+                  template = _templateTableUnsortableHeader(templateOptions);
+                } else if (activeSort.columnName === column.fieldName) {
+                  template = _templateTableSortedHeader(templateOptions);
+                } else {
+                  template = _templateTableHeader(templateOptions);
+                }
+
+                return template;
               }),
             '</tr>',
           '</thead>',
@@ -258,6 +318,7 @@ module.exports = function Table(element, vif) {
     if ($existingTable.length) {
 
       $existingTable.replaceWith($template);
+
     } else {
 
       self.
@@ -269,6 +330,10 @@ module.exports = function Table(element, vif) {
 
     $newTable = self.$element.find('.socrata-table');
     $newTable[0].scrollLeft = scrollLeft;
+
+    if (activeResizeColumnName !== null) {
+      $('.column-resize-target[data-column-name="{0}"]'.format(activeResizeColumnName)).addClass('resizing');
+    }
 
     // Cache the scrollbar height for later use.
     _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
@@ -284,8 +349,11 @@ module.exports = function Table(element, vif) {
   }
 
   function _attachEvents() {
+    $(window).on('mousemove', _handleMousemove);
+    $(window).on('mouseup', _handleMouseup);
 
-    self.$element.on('click', '.socrata-table thead th', _handleColumnHeaderClick);
+    self.$element.on('mousedown', '.socrata-table thead th .column-resize-target', _handleResizeTargetMousedown);
+    self.$element.on('click', '.socrata-table thead th .column-header-content', _handleColumnHeaderClick);
 
     self.$element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
     self.$element.on('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
@@ -295,8 +363,11 @@ module.exports = function Table(element, vif) {
   }
 
   function _detachEvents() {
+    $(window).off('mousemove', _handleMousemove);
+    $(window).off('mouseup', _handleMouseup);
 
-    self.$element.off('click', '.socrata-table thead th', _handleColumnHeaderClick);
+    self.$element.off('mousedown', '.socrata-table thead th .column-resize-target', _handleResizeTargetMousedown);
+    self.$element.off('click', '.socrata-table thead th .column-header-content', _handleColumnHeaderClick);
 
     self.$element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
     self.$element.off('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
@@ -306,17 +377,23 @@ module.exports = function Table(element, vif) {
   }
 
   function _showDescriptionFlyout(event) {
-    var $target = $(event.currentTarget);
+    var $target = $(event.currentTarget).find('.column-header-content');
+    var title = $target.find('.column-header-content-column-name').text();
     var noColumnDescription = '<em>{noColumnDescription}</em>';
-    var description = $target.data('column-description') || noColumnDescription;
+    var description = $target.attr('data-column-description') || noColumnDescription;
     var content = [
       '<span>{title}</span><br>',
       '<span>{description}</span>'
     ].join('\n');
 
+    // Don't distract the user if they are resizing a column
+    // (activeResizeColumnName is set to the name of the column being resized
+    // at the start of the resize action, and reset to null when the resize
+    // action is complete).
+    if (activeResizeColumnName === null) {
 
       content = content.format({
-        title: $target.text(),
+        title: title,
         description: description,
         noColumnDescription: vif.configuration.localization.no_column_description
       });
@@ -331,6 +408,7 @@ module.exports = function Table(element, vif) {
           dark: true
         }
       );
+    }
   }
 
   function _hideDescriptionFlyout() {
@@ -343,9 +421,13 @@ module.exports = function Table(element, vif) {
   function _showCellFlyout(event) {
     var $target = $(event.currentTarget).find('div');
     var data = $target.text();
-    var overflowing = $target[0].clientWidth < $target[0].scrollWidth;
+    // Sometimes $target doesn't seem to have any elements associated with it.
+    var isOverflowing = (!_.isUndefined($target[0])) ?
+      $target[0].clientWidth < $target[0].scrollWidth :
+      false;
 
-    if (overflowing) {
+    // IE will incorrectly set isOverflowing to true for empty cells.
+    if (isOverflowing && String(data).length > 0) {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_CELL_FLYOUT',
         {
@@ -378,6 +460,68 @@ module.exports = function Table(element, vif) {
     ], column.renderTypeName);
   }
 
+  function _handleResizeTargetMousedown(event) {
+    var columnName = this.getAttribute('data-column-name');
+
+    event.originalEvent.stopPropagation();
+    event.originalEvent.preventDefault();
+
+    $(this).addClass('resizing');
+
+    // We need to set this for when the table gets re-rendered.
+    activeResizeColumnName = columnName;
+    activeResizeXStart = event.originalEvent.clientX;
+  }
+
+  function _handleMousemove(event) {
+
+    // If we are currently resizing a column activeResizeColumnName will be
+    // non-null; it is reset to null once the resize operation is complete.
+    if (activeResizeColumnName !== null) {
+
+      activeResizeXEnd = event.originalEvent.clientX;
+      _columnWidths[activeResizeColumnName] += (activeResizeXEnd - activeResizeXStart);
+      activeResizeXStart = activeResizeXEnd;
+
+      delete columnWidthsFromVif[activeResizeColumnName];
+
+      _render(_lastRenderData, _lastRenderOptions);
+    }
+  }
+
+  function _handleMouseup(event) {
+    var columnWidths = [];
+
+    // If we are currently resizing a column activeResizeColumnName will be
+    // non-null; it is reset to null once the resize operation is complete.
+    if (activeResizeColumnName !== null) {
+
+      activeResizeColumnName = null;
+      // Just do a blanket removeClass instead of trying to remove it only from
+      // the one that was active (there will probably be less than 100 of these
+      // elements in most meaningful situations).
+      $('.column-resize-target').removeClass('resizing');
+
+      self.
+        $element.
+          find('thead th').
+            each(
+              function() {
+                var $th = $(this);
+                var columnName = $th.find('.column-header-content').attr('data-column-name');
+                var columnWidth = parseInt($th.width(), 10);
+
+                columnWidths.push({
+                  columnName: columnName,
+                  width: columnWidth
+                });
+              }
+            );
+
+      self.emitEvent('SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED', columnWidths);
+    }
+  }
+
   function _handleColumnHeaderClick() {
     var columnName = this.getAttribute('data-column-name');
     var columnRenderType = this.getAttribute('data-column-render-type');
@@ -387,13 +531,39 @@ module.exports = function Table(element, vif) {
     }
   }
 
+  // What does it mean to "apply frozen columns"?
+  //
+  // Because we need to render multiple pages of results in the table, we need
+  // to choose column widths that persist across pages. If we were to let the
+  // table auto-size its widths each time it was rendered, the specific values
+  // in the rows of each page might cause the column widths to vary across
+  // pages. This would be jarring and appear broken. Instead, when we first
+  // render values we choose 'default' widths for each column that will be used
+  // across all pages.
+  //
+  // This function is called each time we render a page of results and
+  // reapplies these widths so that regardless of the content of any individual
+  // set of rows that appear on a page the column widths remain consistent.
+  //
+  // Since we cache any overridden column widths that exist in the vif being
+  // rendered, this function will prefer those over the calculated widths;
+  // resizing the column will invalidate the cached width for that column that
+  // may have been read out of the vif and instead uses the new value (which
+  // is tracked internally to the instance in _columnWidths).
   function _applyFrozenColumns($template) {
     $template.toggleClass('frozen-columns', !!_columnWidths);
-    $template.find('thead th').each(function() {
-      var $th = $(this);
-      var columnName = $th.attr('data-column-name');
-      var frozenWidth = _.get(_columnWidths, columnName, 150);
-      $th.width(frozenWidth + SORT_ICON_WIDTH);
-    });
+
+    $template.find('thead th').each(
+      function() {
+        var $th = $(this);
+        var columnName = $th.find('.column-header-content').attr('data-column-name');
+        var width = Math.max(
+          _.get(_columnWidths, columnName, 150) + SORT_ICON_WIDTH,
+          MINIMUM_COLUMN_WIDTH
+        );
+
+        $th.width(width);
+      }
+    );
   }
 };

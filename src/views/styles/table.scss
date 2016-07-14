@@ -12,6 +12,8 @@
  */
 .socrata-table {
   $row-height: 55px;
+  $cell-height: 54px;
+  $sort-icon-height: 52px;
 
   width: 100%;
   overflow-x: scroll;
@@ -35,14 +37,15 @@
     th, td {
       box-sizing: border-box;
       height: 15px;
-      padding: 10px;
-      border: solid 1px #c0c0c0;
+      border: 1px solid #c0c0c0;
       text-align: left;
       vertical-align: middle;
       line-height: 1.5;
     }
 
     td {
+      padding: 10px;
+
       &[data-cell-render-type="checkbox"] {
         text-align: center;
       }
@@ -57,42 +60,88 @@
 
     th {
       position: relative;
-      background-color: #e8e8e8;
-      color: #555;
+      color: #6a6a6a;
+      background-color: #f6f6f6;
       cursor: pointer;
       white-space: nowrap;
 
-      div {
-        margin: auto 0;
+      div.column-header-content {
+        /**
+         * The negative margins are required for the layout of borders to
+         * appear correct in non-Chrome browsers.
+         */
+        margin: 0 -2px -2px -2px;
+        padding: 0 10px;
+        height: $cell-height;
+        line-height: $cell-height;
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        margin-right: 15px;
-      }
+        border: 1px solid #c8c8c8;
+        border-top: none;
+        box-sizing: content-box;
 
-      span[class^="icon-"] {
-        position: absolute;
-        right: 15px;
-        top: calc(38px / 2);
-        background: #e8e8e8;
-        box-shadow: -10px 0 7px #e8e8e8;
-        opacity: 0;
-        transition: opacity 0.15s;
-      }
+        span[class^="icon-"] {
+          position: absolute;
+          height: $sort-icon-height;
+          right: 10px;
+          top: 1px;
+          background: #f6f6f6;
+          box-shadow: -10px 0 7px #f6f6f6;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
 
-      &[data-column-render-type="point"] {
-        cursor: default;
-      }
+        &[data-column-render-type="point"] {
+          cursor: default;
+        }
 
-      &[data-sort] {
-        span {
-          opacity: 1;
+        &[data-sort] {
+          span {
+            opacity: 1;
+          }
         }
       }
 
+      div.column-resize-target,
+      div.column-resize-target-last {
+        position: absolute;
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 5px;
+        height: 100%;
+        right: -3px;
+        top: 0;
+        background-color: #c0c0c0;
+        opacity: 0;
+        transition: opacity 0.15s;
+        cursor: ew-resize;
+        z-index: 2;
+
+        &:hover,
+        &.resizing {
+          opacity: 0.5;
+          background-color: #288dc1;
+        }
+      }
+
+      div.column-resize-target-last {
+        width: 3px;
+        left: auto;
+        right: 0px;
+      }
+
       &:hover {
-        span {
-          opacity: 1;
+        div.column-header-content {
+          span[class^="icon-"] {
+            opacity: 1;
+          }
+        }
+
+        div.column-resize-target,
+        div.column-resize-target-last {
+          opacity: 0.75;
         }
       }
     }

@@ -328,7 +328,7 @@ describe('views/Table', function() {
 
     describe('on SOCRATA_VISUALIZATION_CELL_FLYOUT', function() {
       it('emits a flyout render event', function(done) {
-        $container.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+        $container.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
           assert.deepEqual(event.originalEvent.detail, {
             stuff: 'things'
           });
@@ -343,7 +343,7 @@ describe('views/Table', function() {
 
     describe('on SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function() {
       it('emits a flyout render event', function(done) {
-        $container.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+        $container.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
           assert.deepEqual(event.originalEvent.detail, {
             stuff: 'things'
           });

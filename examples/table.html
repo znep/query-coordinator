@@ -156,7 +156,30 @@
 
     var $table7Element = $('#table-7');
     var table7VIF = _.cloneDeep(table1VIF);
-    table7VIF.configuration.tableColumnWidths = [{"columnName":"id","width":66},{"columnName":"case_number","width":66},{"columnName":"date","width":66},{"columnName":"block","width":66},{"columnName":"iucr","width":66},{"columnName":"primary_type","width":66},{"columnName":"description","width":66},{"columnName":"location_description","width":66},{"columnName":"arrest","width":66},{"columnName":"domestic","width":65},{"columnName":"beat","width":65},{"columnName":"district","width":65},{"columnName":"ward","width":65},{"columnName":"community_area","width":65},{"columnName":"fbi_code","width":65},{"columnName":"x_coordinate","width":65},{"columnName":"y_coordinate","width":65},{"columnName":"year","width":65},{"columnName":"updated_on","width":65},{"columnName":"latitude","width":65},{"columnName":"longitude","width":65},{"columnName":"location","width":65}];
+    table7VIF.configuration.tableColumnWidths = [
+      {"columnName":"id","width":66},
+      {"columnName":"case_number","width":76},
+      {"columnName":"date","width":86},
+      {"columnName":"block","width":96},
+      {"columnName":"iucr","width":106},
+      {"columnName":"primary_type","width":116},
+      {"columnName":"description","width":126},
+      {"columnName":"location_description","width":136},
+      {"columnName":"arrest","width":146},
+      {"columnName":"domestic","width":156},
+      {"columnName":"beat","width":166},
+      {"columnName":"district","width":176},
+      {"columnName":"ward","width":186},
+      {"columnName":"community_area","width":196},
+      {"columnName":"fbi_code","width":206},
+      {"columnName":"x_coordinate","width":216},
+      {"columnName":"y_coordinate","width":226},
+      {"columnName":"year","width":236},
+      {"columnName":"updated_on","width":246},
+      {"columnName":"latitude","width":256},
+      {"columnName":"longitude","width":266},
+      {"columnName":"location","width":276}
+    ];
     $table7Element.socrataTable(table7VIF);
 
     var $tables = $('[id^=table-]');

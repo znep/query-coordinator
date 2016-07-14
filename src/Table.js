@@ -46,7 +46,7 @@ $.fn.socrataTable = function(vif) {
     _.pick(vif, 'datasetUid', 'domain')
   );
   var visualization = new Table($element, vif);
-  var pager = new Pager($element, vif);
+  var pager = null;
 
   // Holds all state regarding the table's visual presentation.
   // Do _NOT_ update this directly, use _setState() or _updateState().
@@ -155,7 +155,6 @@ $.fn.socrataTable = function(vif) {
   function _render() {
 
     if (_renderState.error) {
-
       visualization.renderError();
     } else if (_renderState.fetchedData) {
 
@@ -164,7 +163,7 @@ $.fn.socrataTable = function(vif) {
         _renderState.fetchedData.order
       );
 
-      pager.render({
+      renderPager({
         unit: vif.unit,
         startIndex: _renderState.fetchedData.startIndex,
         endIndex: Math.min(
@@ -181,7 +180,7 @@ $.fn.socrataTable = function(vif) {
 
       // No fetched data. Render placeholders so that we can determine pager
       // heights.
-      pager.render({
+      renderPager({
         unit: vif.unit,
         startIndex: 0,
         endIndex: 0,
@@ -189,6 +188,15 @@ $.fn.socrataTable = function(vif) {
         disabled: true
       });
     }
+  }
+
+  function renderPager(options) {
+
+    if (pager === null) {
+      pager = new Pager($element.find('.visualization-container'), vif);
+    }
+
+    pager.render(options);
   }
 
   function _handleColumnClicked(event) {

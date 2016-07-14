@@ -36,8 +36,8 @@ module.exports = function Pager(element, vif) {
   };
 
   this.destroy = function() {
-    detachEvents(this.element);
-    this.element.find('.socrata-pager').remove();
+    detachEvents();
+    this.$element.find('.socrata-pager').remove();
   };
 
   /**
@@ -108,7 +108,6 @@ module.exports = function Pager(element, vif) {
           remove(); // Enhancement: Incremental updates (vs. rerender every time).
     self.
       $element.
-        find('.visualization-container').
           append($template);
   }
 

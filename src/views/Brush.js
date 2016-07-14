@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var React = require('react');
 var utils = require('socrata-utils');
 var constants = require('./DistributionChartConstants');

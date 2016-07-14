@@ -1,3 +1,4 @@
+var d3 = require('d3');
 var $ = require('jquery');
 var _ = require('lodash');
 var utils = require('socrata-utils');

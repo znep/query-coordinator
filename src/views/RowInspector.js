@@ -215,6 +215,11 @@ function setup(config, $target) {
     // but we only want our bindings set once.
     _attachEventsOnce();
 
+    // Replacing the template means we need to rebind these
+    // events.
+    _$paginationButtonPrevious.on('click', _decrementPageByOne);
+    _$paginationButtonNext.on('click', _incrementPageByOne);
+
   } else {
 
     _$rowInspectorContainer = _$target.find('#socrata-row-inspector');
@@ -264,9 +269,6 @@ var _attachEventsOnce = _.once(function() {
 
   $document.on('click', _captureLeftClickAndHide);
   $document.on('keydown', _captureEscapeAndHide);
-
-  _$paginationButtonPrevious.on('click', _decrementPageByOne);
-  _$paginationButtonNext.on('click', _incrementPageByOne);
 });
 
 function _assignChildren() {

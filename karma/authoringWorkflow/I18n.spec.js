@@ -4,6 +4,11 @@ import es from 'src/authoringWorkflow/locales/es';
 import { setLocale, translate, translateGroup } from 'src/authoringWorkflow/I18n';
 
 describe('I18n', function() {
+
+  afterEach(function() {
+    setLocale('en');
+  });
+
   describe('translate', function() {
     describe('when a non-String is passed', function() {
       it('throws', function() {

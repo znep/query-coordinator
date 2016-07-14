@@ -6,7 +6,7 @@ module CommonSocrataMethods
   def forwardable_session_cookies(local_cookies = cookies)
     # select only the cookies that interest us
     session_cookies = valid_cookies.map do |key|
-      value = local_cookies[key]
+      value = local_cookies.to_h[key]
       "#{key}=#{value}" unless value.nil?
     end
     session_cookies = session_cookies.compact

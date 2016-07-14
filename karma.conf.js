@@ -32,7 +32,7 @@ module.exports = function(config) {
       'karma/chai.conf.js',
       'karma/testHelpers.js',
       'src/views/styles/*.scss',
-      'karma/**/*spec.js'
+      'karma/index.js'
     ],
 
 
@@ -45,7 +45,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/views/styles/*.scss': ['scss'],
-      'karma/**/*spec.js': ['webpack', 'sourcemap']
+      'karma/index.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

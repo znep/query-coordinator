@@ -1,4 +1,6 @@
 'use strict';
+var $ = require('jquery');
+var _ = require('lodash');
 var utils = require('socrata-utils');
 var moment = require('moment');
 var wkt = require('wellknown');

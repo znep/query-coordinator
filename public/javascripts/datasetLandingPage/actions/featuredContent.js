@@ -27,7 +27,7 @@ import {
 
 function parseUid(url) {
   var trimmedUrl = trimEditFromUrl(url);
-  return trimmedUrl.match(UID_REGEX)[0] || '';
+  return trimmedUrl.match(UID_REGEX)[1] || '';
 }
 
 function trimEditFromUrl(url) {

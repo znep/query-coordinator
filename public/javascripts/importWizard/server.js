@@ -133,7 +133,7 @@ export function socrataFetch(path, options): Promise {
 
 export function modelToViewParam(metadata, navigation) {
   const license = metadata.license;
-  if (license.licenseName !== '') {
+  if (license.licenseId !== '') {
     return {
       name: metadata.contents.name,
       attributionLink: license.sourceLink,

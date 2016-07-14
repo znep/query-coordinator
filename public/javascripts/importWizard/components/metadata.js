@@ -13,7 +13,6 @@ import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
 
 // == Metadata
-
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: MetadataApiCall,
@@ -552,7 +551,7 @@ function renderLicenses(metadata, onMetadataAction) {
       {_.has(licensesByName, 'licenses')
       ?
         <div className="line clearfix">
-          <label htmlFor="view_licensing" className="required">Licensing</label>
+          <label htmlFor="view_licensing" className="required">{I18n.screens.edit_metadata.licensing}</label>
           <select
             name="view[licensing]"
             value={metadata.license.licensing}

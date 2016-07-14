@@ -279,6 +279,9 @@ timeline:
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
+use_auth0_login_flow:
+  description: When a site has multiple connection configurations ('auth0_connections' is set in the auth0 internal config), use auth0 sign-in when 'Sign In with Socrata ID' is clicked. 'use_auth0' flag must be true!!!
+  defaultValue: false 
 use_data_lens_choropleth_custom_boundary:
   description: If this is true and you have filled out choropleth_custom_boundary in the data_lens_config configuration, then choropleths will be limited to the boundary entered in choropleth_custom_boundary.
   defaultValue: false

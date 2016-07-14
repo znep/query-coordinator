@@ -1,20 +1,39 @@
-import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
 
-import { hideAlert } from '../actions/alertActions';
-
 class Alert extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      label: this.props.label,
+      message: this.props.message,
+      hidden: true
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      label: nextProps.label,
+      message: nextProps.message,
+      hidden: false
+    });
+  }
+
+  clickOnClose() {
+    this.setState({
+      hidden: true
+    });
+  }
+
   render() {
     let alertProps = {
-      className: classNames('alert', this.props.label, {
-        hidden: _.isUndefined(this.props.label) || _.isEmpty(this.props.label)
-      }),
-      onClick: this.props.hide,
+      onClick: this.clickOnClose.bind(this),
+      className: classNames('alert', this.state.label, { hidden: this.state.hidden }),
       dangerouslySetInnerHTML: {
-        __html: this.props.message ||
-        this.props.translations.getIn(['admin', 'listing', 'default_alert_message'])
+        __html: this.state.message ||
+          this.props.translations.getIn(['admin', 'listing', 'default_alert_message'])
       }
     };
 
@@ -23,13 +42,9 @@ class Alert extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
-  label: state.getIn(['goalTableData', 'alert', 'label']),
-  message: state.getIn(['goalTableData', 'alert', 'message'])
+  translations: state.getIn(['goalTableData', 'translations'])
 });
 
-const mapDispatchToProps = dispatch => ({
-  hide: () => dispatch(hideAlert())
-});
+const mapDispatchToProps = () => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Alert);

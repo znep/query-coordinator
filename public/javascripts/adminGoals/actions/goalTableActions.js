@@ -1,10 +1,11 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
-
+import { fetchOptions } from '../constants';
 import {
   TABLE_SHOW_PAGE,
   CACHE_DASHBOARDS,
   CACHE_USERS,
+  CACHE_GOALS,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
@@ -15,10 +16,8 @@ import {
 } from '../actionTypes';
 
 import {
-  displayAlert
+  displayGoalTableAlert
 } from './alertActions';
-
-const fetchOptions = {credentials: 'same-origin'};
 
 export function tableLoadPage() {
   return (dispatch, getState) => {
@@ -32,20 +31,25 @@ export function tableLoadPage() {
       then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
-      catch(() => dispatch(displayAlert({ label: 'error' })));// eslint-disable-line dot-notation
+      catch(() => dispatch(displayGoalTableAlert({ label: 'error' })));// eslint-disable-line dot-notation
 
     function getDashboards() {
       const dashboardFetchUrl = '/stat/api/v1/dashboards';
-      let cachedDashboards = _.get(state, 'cachedDashboards', {});
+      let cachedDashboards = state.getIn(['goalTableData', 'dashboards']);
 
-      return _.isEmpty(cachedDashboards) ?
-        fetch(dashboardFetchUrl, fetchOptions).then(checkXhrStatus).then(response => response.json()) :
-        Promise.resolve(cachedDashboards);
+      return cachedDashboards.isEmpty() ?
+        fetch(dashboardFetchUrl, fetchOptions).
+          then(checkXhrStatus).
+          then(response => response.json()).
+          then(response => {
+            let dashboards = _.zipObject(_.map(response, 'id'), response);
+            dispatch(cacheDashboards(dashboards));
+            return dashboards;
+          }) :
+        Promise.resolve(state.getIn(['goalTableData', 'dashboards']).toJS());
     }
 
     function getGoals(dashboards) {
-      dispatch(cacheDashboards(_.zipObject(_.map(dashboards, 'id'), dashboards)));
-
       let dashboardDetailFetchBatch = _.map(dashboards, getDashboardDetail);
 
       return Promise.all(dashboardDetailFetchBatch);
@@ -57,7 +61,7 @@ export function tableLoadPage() {
         flatten().
         map(category => _.map(category.goals, (goal) =>
           _.assign(goal, {
-            category: category.id,
+            category: _.omit(category, 'goals'),
             dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name
           }))).
         reject(_.isEmpty).
@@ -131,8 +135,9 @@ export function tableLoadPage() {
       }
 
       function getGoalDetails() {
-        let goalDetailPromises = _.map(goals, goal => fetch(`/stat/api/v1/goals/${goal.id}`, fetchOptions).
-         then(response => response.json()));
+        let goalDetailPromises = _.map(goals, goal => state.hasIn(['goalTableData', 'cachedGoals', goal.id]) ?
+          Promise.resolve(state.getIn(['goalTableData', 'cachedGoals', goal.id]).toJS()) :
+          fetch(`/stat/api/v1/goals/${goal.id}`, fetchOptions).then(response => response.json()));
 
         return Promise.all(goalDetailPromises);
       }
@@ -155,10 +160,17 @@ export function tableLoadPage() {
 
       let goalsWithExtras = _.map(goals, goal => {
         goal.created_by = users[goal.created_by];
-        goal.prevailingMeasureProgress = _.get(goalDetails, `${goal.id}.prevailing_measure.computed_values.progress.progress`, '');
+        goal.prevailingMeasureProgress = _.get(goalDetails,
+          `${goal.id}.prevailing_measure.computed_values.progress.progress`,
+          _.get(goalDetails, `${goal.id}.prevailingMeasureProgress`));
+        goal.datasetId = _.get(goalDetails, `${goal.id}.prevailing_measure.metric.dataset`);
+
         return goal;
       });
 
+      let goalsCache = _.zipObject(_.map(goalsWithExtras, 'id'), goalsWithExtras);
+
+      dispatch(cacheGoals(goalsCache));
       dispatch(tableShowPage(goalsWithExtras));
     }
 
@@ -166,7 +178,7 @@ export function tableLoadPage() {
       return fetch(`/stat/api/v1/dashboards/${dashboard.id}`, fetchOptions).
         then(checkXhrStatus).
         then(response => response.json()).
-        catch(() => dispatch(displayAlert({ label: 'error' }))); // eslint-disable-line dot-notation
+        catch(() => dispatch(displayGoalTableAlert({ label: 'error' }))); // eslint-disable-line dot-notation
     }
   };
 }
@@ -189,6 +201,13 @@ export function cacheUsers(users) {
   return {
     type: CACHE_USERS,
     users
+  };
+}
+
+export function cacheGoals(goals) {
+  return {
+    type: CACHE_GOALS,
+    goals
   };
 }
 

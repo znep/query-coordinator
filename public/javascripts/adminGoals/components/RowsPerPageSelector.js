@@ -28,6 +28,7 @@ class RowsPerPageSelector extends React.Component {
         options={ options }
         value={ this.state.selectedValue }
         clearable={ false }
+        searchable={ false }
         onChange={ this.valueChanged.bind(this) }
       />
     </div>;

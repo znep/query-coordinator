@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectRow, deselectRow } from '../actions/goalTableActions';
+import { openGoalQuickEdit } from '../actions/goalQuickEditActions';
 import Flyout from './Flyout';
 
 class GoalTableRow extends React.Component {
@@ -20,7 +21,7 @@ class GoalTableRow extends React.Component {
 
   render() {
     let selected = this.props.selectedRows.indexOf(this.props.goal.get('id')) > -1;
-    let goalPageUrl = `/stat/goals/${this.props.goal.get('base_dashboard')}/${this.props.goal.get('category')}/${this.props.goal.get('id')}/edit`;
+    let goalPageUrl = `/stat/goals/${this.props.goal.get('base_dashboard')}/${this.props.goal.getIn(['category', 'id'])}/${this.props.goal.get('id')}/edit`;
     let dashboardUrl = `/stat/goals/${this.props.goal.get('base_dashboard')}`;
     let rowClass = classNames({ selected });
 
@@ -44,7 +45,10 @@ class GoalTableRow extends React.Component {
             { this.props.dashboard.get('name') } <span className="icon-external" /></a>
         </Flyout>
       </td>
-      <td className="editLinkContainer"><a href="" className="goalEditLink">Edit</a></td>
+      <td className="editLinkContainer">
+        <a onClick={ this.props.openQuickEdit } style={ { cursor : 'pointer' } }
+           data-goalId={ this.props.goal.get('id') } className="goalEditLink">Edit</a>
+      </td>
     </tr>;
   }
 }
@@ -56,7 +60,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   rowSelected: goalId => dispatch(selectRow(goalId)),
-  rowDeselected: goalId => dispatch(deselectRow(goalId))
+  rowDeselected: goalId => dispatch(deselectRow(goalId)),
+  openQuickEdit: event => dispatch(openGoalQuickEdit(event.target.getAttribute('data-goalId')))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalTableRow);

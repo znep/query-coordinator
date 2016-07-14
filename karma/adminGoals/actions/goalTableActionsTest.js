@@ -68,6 +68,7 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should load all goals with details', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
+        dashboards: {},
         rowsPerPage: 100,
         currentPage: 1
       }
@@ -94,6 +95,7 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should just load 2 goals', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
+        dashboards: {},
         rowsPerPage: 2,
         currentPage: 1
       }
@@ -112,6 +114,7 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should order goals ascending', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
+        dashboards: {},
         rowsPerPage: 100,
         currentPage: 1,
         tableOrder: {
@@ -134,6 +137,7 @@ describe('actions/goalTableActions', function() {
   it('tableLoadPage should order goals descending', function(done) {
     const store = mockStore(Immutable.fromJS({
       goalTableData: {
+        dashboards: {},
         rowsPerPage: 100,
         currentPage: 1,
         tableOrder: {

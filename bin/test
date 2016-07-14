@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Log the author name and email of the last commit
+echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
+
+set -ex
+
+rbenv install -s `cat .ruby-version`
+
+gem install bundler --conservative
+bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
+
+bin/test_setup
+( cd engine && bundle exec rake test )
+
+EXIT_CODE=$?
+exit ${EXIT_CODE}

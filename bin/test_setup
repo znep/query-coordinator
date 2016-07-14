@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'pathname'
+
+APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
+ENGINE_PATH = Pathname.new File.expand_path("#{APP_ROOT}/engine",  __FILE__)
+
+Dir.chdir ENGINE_PATH do
+  puts '== Installing dependencies =='
+  system 'bundle check || bundle install'
+  system 'npm install --depth 0'
+end

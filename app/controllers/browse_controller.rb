@@ -8,6 +8,7 @@ class BrowseController < ApplicationController
   skip_before_filter :disable_frame_embedding, :only => :embed
 
   def show
+    @meta[:page_name] = 'Public Catalog'
     @processed_browse = process_browse(request, suppress_dataset_creation: true, row_count: 3)
   end
 

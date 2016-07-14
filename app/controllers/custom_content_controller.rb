@@ -15,7 +15,7 @@ class CustomContentController < ApplicationController
 
   def homepage
     Canvas::Environment.context = :homepage
-
+    @meta[:page_name] = 'Homepage Catalog'
     @cache_key = app_helper.cache_key('homepage', cache_hash(params))
     @cached_fragment = read_fragment(@cache_key)
     if @cached_fragment.nil?

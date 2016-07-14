@@ -22,6 +22,7 @@ class ProfileController < ApplicationController
 
   def show
     begin
+      @meta[:page_name] = 'Personal Catalog'
       @port = request.port
 
       ### @createdOnDomain = Domain.findById(@user.data['createdOnDomainId'])

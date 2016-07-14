@@ -92,13 +92,19 @@ class ApplicationHelperTest < ActionView::TestCase
     # Tests output of render_ga_tracking. Be careful of tiny formatting
     # differences that may cause tests to fail
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true})
+    application_helper.stubs(:current_user => nil)
+    general_extra_dimension_regex = /_gaSocrata\('socrata\.send', 'pageview', extraDimensions\);/
+    assert(application_helper.render_ga_tracking =~ general_extra_dimension_regex)
+
     stub_user('john', 'admin')
-    admin_present_regex = /_gaSocrata\('socrata\.send', 'pageview', {"dimension2":"john","dimension3":"admin"}\);/
-    assert(application_helper.render_ga_tracking =~ admin_present_regex)
+    generated_admin_present = application_helper.render_ga_tracking
+    assert(generated_admin_present =~ /"dimension2":"john"/)
+    assert(generated_admin_present =~ /"dimension3":"admin"/)
 
     application_helper.stubs(:current_user => nil)
-    no_user_regex = /_gaSocrata\('socrata\.send', 'pageview', {"dimension2":"none","dimension3":"none"}\);/ 
-    assert(application_helper.render_ga_tracking =~ no_user_regex)
+    generated_no_user = application_helper.render_ga_tracking
+    assert(generated_no_user =~ /"dimension2":"none"/)
+    assert(generated_no_user =~ /"dimension3":"none"/)
   end
 
   def test_render_airbrake_shim_does_not_render

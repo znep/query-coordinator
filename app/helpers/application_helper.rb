@@ -774,8 +774,14 @@ module ApplicationHelper
           })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
         }
 
+        var extraDimensions = #{tracking_param};
+        var metaTag = $('meta[name=page_name]')[0];
+        if (metaTag) {
+          extraDimensions['dimension4'] =  metaTag.getAttribute('content');
+        }
+
         _gaSocrata('create', '#{get_ga_tracking_code}', 'auto', 'socrata');
-        _gaSocrata('socrata.send', 'pageview', #{tracking_param});
+        _gaSocrata('socrata.send', 'pageview', extraDimensions);
       eos
     end
   end

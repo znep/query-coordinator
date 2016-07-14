@@ -19,6 +19,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   def datasets
+    @meta[:page_name] = 'Admin Catalog'
     unless AssetInventory.find.present?
       Airbrake.notify(:error_class => 'Asset Inventory missing for domain',
         :error_message => 'Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.',

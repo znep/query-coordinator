@@ -215,6 +215,10 @@ class DatasetsController < ApplicationController
     @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
     @meta[:description] = @meta['og:description'] = @view.meta_description
     @meta['og:url'] = request.url.to_s
+
+    display_name = @view.display.name.to_s
+    page_name = display_name.split.map(&:capitalize).join(' ')
+    @meta[:page_name] = page_name
     # TODO: when we support a dataset image, allow that here if of appropriate size
 
     # Shuffle the default tags into the keywords list
@@ -758,6 +762,7 @@ class DatasetsController < ApplicationController
 
   def about
     @view = get_view(params[:id])
+    @meta[:page_name] = 'Classic Metadata'
     return if @view.nil?
 
     if dataset_landing_page_enabled? && view.has_landing_page?

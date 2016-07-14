@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'paperclip_processors/manual_cropper'
+require 'paperclip/manual_cropper'
 
 RSpec.describe Paperclip::ManualCropper do
   let(:file) { File.new(fixture('image.jpg')) }

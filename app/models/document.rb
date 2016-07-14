@@ -21,6 +21,8 @@
 class MissingContentTypeError < StandardError; end
 
 class Document < ActiveRecord::Base
+  include Paperclip::CopyAttachments
+
   validates :story_uid, presence: true
   validates :created_by, presence: true, format: FOUR_BY_FOUR_PATTERN
 
@@ -57,7 +59,7 @@ class Document < ActiveRecord::Base
     xlarge: 2180
   }.freeze
 
-  enum status: { unprocessed: 0, processed: 1 }
+  enum status: { unprocessed: 0, processed: 1, error: 2 }
 
   has_attached_file :upload,
     styles: lambda { |a| a.instance.attachment_styles_from_thumbnail_sizes },

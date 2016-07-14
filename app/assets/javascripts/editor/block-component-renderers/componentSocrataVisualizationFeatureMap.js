@@ -73,18 +73,18 @@ function _updateVisualization($element, componentData) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
     vif.configuration.localization = {
-      'FLYOUT_FILTER_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_filter_notice'),
-      'FLYOUT_FILTER_OR_ZOOM_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_filter_or_zoom_notice'),
-      'FLYOUT_DENSE_DATA_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_dense_data_notice'),
-      'FLYOUT_CLICK_TO_INSPECT_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_click_to_inspect_notice'),
-      'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_title'),
-      'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_notice'),
-      'FLYOUT_LOCATING_USER_TITLE': I18n.t('editor.visualizations.feature_map.flyout_locating_user_title'),
-      'FLYOUT_LOCATE_USER_ERROR_TITLE': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_title'),
-      'FLYOUT_LOCATE_USER_ERROR_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
-      'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
-      'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
-      'USER_CURRENT_POSITION': I18n.t('editor.visualizations.feature_map.user_current_position')
+      'flyout_filter_notice': I18n.t('editor.visualizations.feature_map.flyout_filter_notice'),
+      'flyout_filter_or_zoom_notice': I18n.t('editor.visualizations.feature_map.flyout_filter_or_zoom_notice'),
+      'flyout_dense_data_notice': I18n.t('editor.visualizations.feature_map.flyout_dense_data_notice'),
+      'flyout_click_to_inspect_notice': I18n.t('editor.visualizations.feature_map.flyout_click_to_inspect_notice'),
+      'flyout_click_to_locate_user_title': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_title'),
+      'flyout_click_to_locate_user_notice': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_notice'),
+      'flyout_locating_user_title': I18n.t('editor.visualizations.feature_map.flyout_locating_user_title'),
+      'flyout_locate_user_error_title': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_title'),
+      'flyout_locate_user_error_notice': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
+      'flyout_pan_zoom_disabled_warning_title': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
+      'row_inspector_row_data_query_failed': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
+      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position')
     };
 
     vif.unit = {

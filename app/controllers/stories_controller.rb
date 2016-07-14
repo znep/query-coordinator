@@ -134,7 +134,9 @@ class StoriesController < ApplicationController
     } unless should_create_draft_story?(view_copy)
 
     copy_uid = view_copy['id']
-    blocks = story.blocks.map do |block|
+
+    blocks = copy_attachments(story)
+    blocks = blocks.map do |block|
       block.as_json.symbolize_keys
     end
 
@@ -202,6 +204,35 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def copy_attachments(story)
+    story.blocks.map do |block|
+      components = block.components.clone.select do |component|
+        ['image', 'author', 'hero'].include?(component['type'])
+      end
+
+      components.each do |component|
+        value = component['type'] == 'author' ?
+          component['value']['image'] :
+          component['value']
+
+        document_id = value['documentId']
+        document = Document.find(document_id)
+
+        document_copy = document.dup
+        document_copy.status = 'unprocessed'
+        document_copy.save!
+
+        document_copy.copy_attachments_from(document)
+        document_copy.update_attribute(:status, 'processed')
+
+        value['documentId'] = document_copy.id
+        value['url'] = document_copy.canonical_url
+      end
+
+      block
+    end
+  end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'
   # somewhere, but that clearly won't work with an embeddable tile so we

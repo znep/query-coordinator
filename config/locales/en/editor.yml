@@ -194,7 +194,7 @@ en:
         tab_getty: 'Photos by Getty'
         drag_label: 'Drag an image here to upload it.'
         input_label: 'Images can be JPG, PNG, or GIF format and up to 10MB file size.'
-        input_button_text: 'Or choose an image.'
+        input_button_text: 'Or choose an image'
         uploading_message: 'Uploading...'
         show_more: 'Show More'
         thats_everything: "That's everything!"
@@ -301,6 +301,7 @@ en:
       full_month_10: 'October'
       full_month_11: 'November'
       full_month_12: 'December'
+    downtime: 'This Socrata-powered site may be unavailable for routine maintenance<br>from {0} to {1}.'
     # Translations common with OpenPerformance
     open_performance:
       measure:

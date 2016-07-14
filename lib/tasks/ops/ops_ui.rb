@@ -7,6 +7,8 @@ class OpsUi
   attr_reader :dialog
 
   def initialize
+    `sh -c 'command -v dialog'`
+    raise '"dialog" executable not found. Install it first (i.e. "sudo apt-get install dialog" or "brew install dialog")' unless $?.success?
     @dialog = MRDialog.new
   end
 

@@ -23,6 +23,7 @@
     window.STORY_VIEW_URL = '<%= @story_view_url %>';
     window.PUBLISHED_STORY_DATA = <%== @published_story.to_json %>;
     window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
+    window.DOWNTIMES = <%== downtimes.to_json %>;
     window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
     window.PRIMARY_OWNER_UID = '<%== @primary_owner_uid %>';
     window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;

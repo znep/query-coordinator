@@ -351,9 +351,9 @@ function SvgVisualization($element, vif) {
                     'Not all values shown: click and drag to pan the chart'
                   )
                 ]),
-              $('<div>', {'class': 'error-container'}).
+              $('<div>', {'class': 'error-container error light'}).
                 append([
-                  $('<span>', {'class': 'error-message'})
+                  $('<span>', {'class': 'error-message text'})
                 ])
             ])
         );

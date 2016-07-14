@@ -25,6 +25,15 @@ class GoalQuickEdit extends React.Component {
       title: '',
       alert: {}
     };
+
+    this.onWindowKeyUp = (event) => {
+      var key = event.which || event.keyCode;
+
+      // ESC
+      if (key === 27) {
+        this.props.closeQuickEdit();
+      }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,9 +48,7 @@ class GoalQuickEdit extends React.Component {
 
     this.setState(newState);
 
-    if (nextProps.goal.isEmpty()) {
-      this.unBindEvents();
-    } else {
+    if (!nextProps.goal.isEmpty()) {
       fetch(`/api/views/${nextProps.goal.get('datasetId')}.json`, _.clone(fetchOptions)).
         then(response => response.json()).
         then(metadata => {
@@ -50,18 +57,15 @@ class GoalQuickEdit extends React.Component {
             datasetOwner: _.get(metadata, 'owner')
           });
         });
-
-      $(window).one('keyup', this.onKeyUp.bind(this));
     }
   }
 
-  onKeyUp(event) {
-    var key = event.which || event.keyCode;
+  componentDidMount() {
+    $(window).on('keyup', this.onWindowKeyUp);
+  }
 
-    // ESC
-    if (key === 27) {
-      this.props.closeQuickEdit();
-    }
+  componentWillUnmount() {
+    $(window).off('keyup', this.onWindowKeyUp);
   }
 
   onVisibilityChange(selected) {
@@ -69,10 +73,6 @@ class GoalQuickEdit extends React.Component {
       visibility: selected.value,
       noChangesMade: false
     });
-  }
-
-  unBindEvents() {
-    $(window).off('keyup');
   }
 
   save() {

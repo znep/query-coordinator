@@ -202,8 +202,6 @@
             # CALENDARS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "calendar"),
             # CHARTS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "chart", "annotatedtimeline", "imagesparkline", "areachart", "barchart", "columnchart", "linechart", "piechart", "data_lens_chart"),
             # FORMS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "form"),
-            # APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api"),
-            # PREDEPLOY_APIS(ViewFinderConst.COLUMN_DISPLAY_TYPE, "api-predeploy"),
             # DRAFT(ViewFinderConst.COLUMN_DISPLAY_TYPE, "draft");
 
             case result.display.type
@@ -270,17 +268,6 @@
             when 'form'
               result_display_type_icon_class = 'icon-check'
               result_display_title = t('controls.browse.browse2.display_types.form')
-
-            # APIS
-            when 'api'
-              result_display_type_icon_class = 'icon-data'
-              result_display_title = t('controls.browse.browse2.display_types.api')
-
-            # PREDEPLOY_APIS
-            when 'api-predeploy'
-              result_display_type_icon_class = 'icon-data'
-              result_display_title = t('controls.browse.browse2.display_types.predeply_api')
-            end
 
             # Certain values must be derived differently based on whether this
             # is a result from Cetera or Clytemnestra/Core Server

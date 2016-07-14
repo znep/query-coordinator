@@ -124,13 +124,6 @@ $(function() {
 
     var ds = getDS($row);
     $content.append($.renderTemplate('expandedInfo', ds, {
-      '.manageApi.button@href': function(v) {
-        return '/api_foundry/manage/' + v.context.id;
-      },
-      '.manageApi.button@class+': function(v) {
-        return v.context.isAPI() && v.context.hasRight(blist.rights.view.UPDATE_VIEW) &&
-          !v.context.isFederated() ? '' : 'hide';
-      },
       '.permissions.button': function(v) {
         return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html');
       },

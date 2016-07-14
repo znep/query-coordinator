@@ -95,7 +95,7 @@ class BrowseController < ApplicationController
         render :json => {
           id: CurrentDomain.domain.id,
           cname: CurrentDomain.cname,
-          hasApi: module_enabled?(:api_foundry)
+          hasApi: false
         }.to_json
       }
     end

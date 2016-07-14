@@ -206,33 +206,6 @@ class DatasetsHelperTest < Minitest::Test
 
     @view.stubs(:is_published => true, :non_tabular? => false, :is_form? => true, :is_api? => false, :geoParent => nil, :is_grouped => false)
     assert @object.send(:hide_form_create?), 'should be hidden'
-
-  end
-
-  def test_hide_api_foundry
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_api_foundry_pane => false))
-    assert @object.send(:hide_api_foundry?), 'should be hidden if the feature flag is disabled'
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_api_foundry_pane => true))
-    @object.stubs(:module_enabled? => true)
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    refute @object.send(:hide_api_foundry?), 'should not be hidden'
-    @view.stubs(:is_blist? => false, :is_api? => false, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => false, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => false, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => false, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => true, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => true, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => Model.new)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
-    @object.stubs(:module_enabled? => false)
-    @view.stubs(:is_blist? => true, :is_api? => true, :is_published? => true, :has_rights? => true, :can_publish? => true, :new_backend? => false, :is_arcgis? => false, :geoParent => nil)
-    assert @object.send(:hide_api_foundry?), 'should be hidden'
   end
 
   def test_hide_update_column # aka columnOrder

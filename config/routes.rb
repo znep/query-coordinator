@@ -21,23 +21,6 @@ Rails.application.routes.draw do
   # optional locale scope for all routes to teach rails how to make links
   scope '(:locale)', :locale => /en|it|es|fr|zh|nyan/ do
 
-    scope :path => '/api_foundry', :controller => 'api_foundry' do
-      get '/forge/:id', :action => 'forge'
-      get '/customize/:id', :action => 'customize'
-      get '/manage/:id/apps/setThrottle', :action => 'setThrottle'
-      delete '/manage/:id/apps/rmThrottle', :action => 'rmThrottle'
-      get '/manage/:id',                :action => 'manage', :admin_section => 'admin_list'
-      get '/manage/:id/permission',     :action => 'manage', :admin_section => 'permission'
-      get '/manage/:id/apps',           :action => 'manage', :admin_section => 'apps_list'
-      get '/manage/:id/apps/:token',    :action => 'manage', :admin_section => 'apps_edit'
-      get '/manage/:id/metrics',        :action => 'manage', :admin_section => 'metrics'
-      get '/manage/:id/naming',         :action => 'manage', :admin_section => 'naming_list'
-      get '/manage/:id/rename',         :action => 'manage', :admin_section => 'rename'
-      get '/manage/:id/naming/:column', :action => 'manage', :admin_section => 'naming_edit'
-      get '/manage/:id/transfer',       :action => 'manage', :admin_section => 'transfer'
-      get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'
-    end
-
     # Open Performance pages
     get '/stat/version(.:format)' => 'odysseus#version'
     scope :controller => 'odysseus'do

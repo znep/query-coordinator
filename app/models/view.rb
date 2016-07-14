@@ -114,12 +114,6 @@ class View < Model
   end
   def federation_headers; self.class.federation_headers; end
 
-  def self.get_predeploy_api_view(baseUid)
-    parse(CoreServer::Base.connection.get_request(
-      "/views/#{baseUid}/publication.json?#{{'method' => 'getPredeployApiView'}.to_param}"
-    ))
-  end
-
   def migrations
     self.class.migrations(id)
   end

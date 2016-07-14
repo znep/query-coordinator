@@ -399,7 +399,6 @@ module DatasetsHelper
     hash.manage!.permissions = hide_permissions?
     hash.manage!.plagiarize = hide_plagiarize?
     hash.manage!.deleteDataset = hide_delete_dataset?
-    hash.manage!.api_foundry = hide_api_foundry?
 
     hash.columnProperties = view.non_tabular?
 
@@ -540,21 +539,6 @@ module DatasetsHelper
       view.is_api_geospatial?,
       view.is_grouped?,
       current_user_does_not_own && !CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
-    ].any?
-  end
-
-  def hide_api_foundry?
-    return true unless FeatureFlags.derive(view, request).enable_api_foundry_pane
-
-    [
-      !module_enabled?(:api_foundry),
-      !view.is_blist? && !view.is_api?,
-      !view.is_published?,
-      !view.has_rights?(ViewRights::UPDATE_VIEW),
-      !view.can_publish?,
-      view.new_backend?,
-      view.is_arcgis?,
-      view.geoParent.present?
     ].any?
   end
 

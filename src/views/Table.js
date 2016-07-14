@@ -1,15 +1,22 @@
 var $ = require('jquery');
 var utils = require('socrata-utils');
-var Visualization = require('./Visualization.js');
+var SvgVisualization = require('./SvgVisualization.js');
 var _ = require('lodash');
 var DataTypeFormatter = require('./DataTypeFormatter.js');
 
 module.exports = function Table(element, vif) {
-  _.extend(this, new Visualization(element, vif));
+  _.extend(this, new SvgVisualization(element, vif));
 
   var SORT_ICON_WIDTH = 32;
 
   var self = this;
+  // Because we need to hook into the renderError function call but want to be
+  // able to call the 'super' once we do so, we cache the original version of
+  // this.renderError for use in our overridden version later.
+  //
+  // Note that we lose the 'this' context when we do this so we need to re-bind
+  // it.
+  var superRenderError = this.renderError.bind(this);
   var _lastRenderData;
   var _lastRenderOptions;
   var _scrollbarHeightPx;
@@ -29,7 +36,7 @@ module.exports = function Table(element, vif) {
     'configuration.localization.no_column_description'
   );
 
-  _attachEvents(this.element);
+  _attachEvents();
 
   /**
    * Public Methods
@@ -48,8 +55,14 @@ module.exports = function Table(element, vif) {
     _render(data, options);
   };
 
-  this.renderError = function() {
-    _renderError();
+  this.renderError = function(error) {
+
+    self.
+      $element.
+        find('.visualization-container').
+          removeClass('loaded');
+
+    superRenderError(_.get(vif, 'configuration.localization.unable_to_render'));
   };
 
   /**
@@ -74,12 +87,21 @@ module.exports = function Table(element, vif) {
     // If there is none there, render a placeholder.
     if (!alreadyHasData) {
       // Render sample data into the table. Used for UI element measurement.
-      self.render(
-        {
-          columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
-          rows: [ [ 'placeholder' ] ]
-        },
-        [ {} ]
+      //
+      // We assign the values below in the same way that they are assigned in
+      // the public this.render() function, but we call the private _render()
+      // function directly so that we can pass extra arguments to it without
+      // having to make the public interface understand these extra arguments.
+      _lastRenderData = {
+        columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
+        rows: [ [ 'placeholder' ] ]
+      };
+      _lastRenderOptions = [ {} ];
+
+      _render(
+        _lastRenderData,
+        _lastRenderOptions,
+        true
       );
     }
 
@@ -123,7 +145,6 @@ module.exports = function Table(element, vif) {
     var headerWidths = element.find('thead th').map(function() {
       return this.getBoundingClientRect().width;
     });
-
     var columns = _.map(_lastRenderData.columns, 'fieldName');
 
     _columnWidths = _.zipObject(
@@ -226,64 +247,62 @@ module.exports = function Table(element, vif) {
     ]).join('\n');
   }
 
-  function _render(data, options) {
-    var $errorMessage = self.element.find('.alert.error');
-    var $existingTable = self.element.find('.socrata-table');
+  function _render(data, options, skipLoadedEvent) {
+    var $existingTable = self.$element.find('.socrata-table');
     var $template = $(_templateTable(data, options));
     var scrollLeft = _.get($existingTable, '[0].scrollLeft') || 0;
     var $newTable;
 
     _applyFrozenColumns($template);
 
-    if ($errorMessage.length) {
-      self.element.removeClass('failed');
-      $errorMessage.remove();
-    }
-
     if ($existingTable.length) {
+
       $existingTable.replaceWith($template);
     } else {
-      self.element.append($template);
+
+      self.
+        $element.
+          find('.visualization-container').
+            empty().
+            append($template);
     }
 
-    $newTable = self.element.find('.socrata-table');
+    $newTable = self.$element.find('.socrata-table');
     $newTable[0].scrollLeft = scrollLeft;
 
     // Cache the scrollbar height for later use.
     _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
-  }
 
-  function _renderError() {
-    var $errorMessage = $([
-      '<div class="alert error">',
-        '<p>{0}</p>'.format(vif.configuration.localization.unable_to_render),
-      '</div>'
-    ].join(''));
+    // Because we render placeholder data for measurement
+    if (!skipLoadedEvent) {
 
-    self.element.
-      empty().
-      addClass('failed').
-      append($errorMessage);
+      self.
+        $element.
+          find('.visualization-container').
+            addClass('loaded');
+    }
   }
 
   function _attachEvents() {
-    self.element.on('click', '.socrata-table thead th', _handleRowHeaderClick);
 
-    self.element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
-    self.element.on('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+    self.$element.on('click', '.socrata-table thead th', _handleColumnHeaderClick);
 
-    self.element.on('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
-    self.element.on('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+    self.$element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
+    self.$element.on('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+
+    self.$element.on('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
+    self.$element.on('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
   }
 
   function _detachEvents() {
-    self.element.off('click', '.socrata-table thead th', _handleRowHeaderClick);
 
-    self.element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
-    self.element.off('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+    self.$element.off('click', '.socrata-table thead th', _handleColumnHeaderClick);
 
-    self.element.off('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
-    self.element.off('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+    self.$element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
+    self.$element.off('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+
+    self.$element.off('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
+    self.$element.off('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
   }
 
   function _showDescriptionFlyout(event) {
@@ -295,21 +314,23 @@ module.exports = function Table(element, vif) {
       '<span>{description}</span>'
     ].join('\n');
 
-    content = content.format({
-      title: $target.text(),
-      description: description,
-      noColumnDescription: vif.configuration.localization.no_column_description
-    });
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-      {
-        element: $target[0],
-        content: content,
-        belowTarget: true,
-        rightSideHint: false
-      }
-    );
+      content = content.format({
+        title: $target.text(),
+        description: description,
+        noColumnDescription: vif.configuration.localization.no_column_description
+      });
+
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+        {
+          element: $target[0],
+          content: content,
+          belowTarget: true,
+          rightSideHint: false,
+          dark: true
+        }
+      );
   }
 
   function _hideDescriptionFlyout() {
@@ -331,7 +352,8 @@ module.exports = function Table(element, vif) {
           element: $target[0],
           content: data,
           belowTarget: true,
-          rightSideHint: false
+          rightSideHint: false,
+          dark: true
         }
       );
     }
@@ -356,7 +378,7 @@ module.exports = function Table(element, vif) {
     ], column.renderTypeName);
   }
 
-  function _handleRowHeaderClick() {
+  function _handleColumnHeaderClick() {
     var columnName = this.getAttribute('data-column-name');
     var columnRenderType = this.getAttribute('data-column-render-type');
 

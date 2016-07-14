@@ -1,30 +1,7 @@
-.socrata-paginated-table {
-  font-family: "Open Sans", sans-serif;
-  opacity: 0;
-
-  &.loaded,
-  &.failed {
-    transition: opacity 0.25s;
+.visualization-container.loaded {
+  .socrata-table {
+   transition: opacity 0.25s;
     opacity: 1;
-  }
-
-  &.failed {
-    display: flex;
-    background-color: #f2f2f2;
-
-    .socrata-table {
-      display: none;
-    }
-  }
-
-  .alert.error {
-    width: 100%;
-    margin: auto 1rem;
-    text-align: center;
-
-    p {
-      margin: 0;
-    }
   }
 }
 
@@ -38,12 +15,8 @@
 
   width: 100%;
   overflow-x: scroll;
-
-  &.frozen-columns {
-    table {
-      table-layout: fixed;
-    }
-  }
+  font-family: "Open Sans", sans-serif;
+  opacity: 0;
 
   table {
     width: 100%;
@@ -122,6 +95,12 @@
           opacity: 1;
         }
       }
+    }
+  }
+
+  &.frozen-columns {
+    table {
+      table-layout: fixed;
     }
   }
 }

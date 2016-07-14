@@ -92,7 +92,7 @@ module Auth0Helper
 
   ##
   # Generate an authorization URI that can be used to
-  # authenticate a user with the give Auth0 connection string.
+  # authenticate a user with the given Auth0 connection string.
   #
   # Connection strings correspond to providers. If the provider
   # is unavailable, then the system will fail.

@@ -147,7 +147,7 @@ class UserSessionsController < ApplicationController
 
   ##
   # Tests an Auth0 connection string for redirection eligibility.
-  # A client is redirect if:
+  # A client is redirected if:
   # 1. The connection is present.
   # 2. The connection actually exists in our Auth0 account.
   # 3. The client is making a fresh login attempt.
@@ -199,7 +199,7 @@ class UserSessionsController < ApplicationController
 
       # Auth0 Redirection when auth0 configuration is set
       connection = properties.try(:auth0_always_redirect_connection)
-      callback_uri = properties.try(:auth0_callback_uri)
+      callback_uri = properties.try(:auth0_callback_uri) || "https://#{CurrentDomain.cname}/auth/auth0/callback"
 
       # Only redirect if this isn't a redirect from /logout.
       if should_auth0_redirect?(connection)

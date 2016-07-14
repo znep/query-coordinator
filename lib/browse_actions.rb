@@ -413,6 +413,7 @@ module BrowseActions
             # WARN: federated domains are not showing up highlighted in facet bar
 
             # Domain ids have to be translated to domain cnames for Cetera
+            # TODO: we could easily construct a domain ids filter in Cetera if desired
             fed_id = browse_options[:search_options][:federation_filter]
             browse_options[:search_options][:domains] = Federation.federated_domain_cnames(fed_id)
 
@@ -424,6 +425,9 @@ module BrowseActions
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             browse_options[:search_options][:search_context] = CurrentDomain.cname
+
+            # localize catalog links if locale is present
+            browse_options[:search_options][:locale] = locale unless locale.nil?
 
             Cetera.search_views(
               browse_options[:search_options],

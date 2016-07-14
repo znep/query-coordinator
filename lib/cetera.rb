@@ -25,12 +25,12 @@ module Cetera
     options = request_options(query, cookie_string, request_id)
 
     response = get(path, options)
-    response.success? && TagCountResult.new(response)
+    response.success? ? TagCountResult.new(response) : TagCountResult.new('results' => [])
   end
 
   # Admins only! For now, do not call this without a search query.
   def self.search_users(search_query, cookie_string, request_id = nil)
-    path = '/whitepages'
+    path = '/whitepages/v1'
     options = request_options({ q: search_query }.compact, cookie_string, request_id)
 
     response = get(path, options)
@@ -53,10 +53,12 @@ module Cetera
   def self.get_derived_from_views(uid, options = {})
     cookie_string = options.delete(:cookie_string)
     request_id = options.delete(:request_id)
+    locale_string = options.delete(:locale)
     search_options = options.merge({
       search_context: CurrentDomain.cname,
       domains: [CurrentDomain.cname],
-      derived_from: uid
+      derived_from: uid,
+      locale: locale_string
     }).compact
 
     response = search_views(search_options, cookie_string, request_id)

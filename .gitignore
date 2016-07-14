@@ -27,3 +27,4 @@ socrata-node/DEPEND
 socrata-node/node_modules
 vendor/bundle
 vendor/bundler_gems
+coverage

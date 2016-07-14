@@ -66,9 +66,10 @@ describe DatasetLandingPage do
           with(
             uid_to_query,
             {
-              :sortBy => 'most_accessed',
               :cookie_string => 'cookie',
-              :request_id => 'request_id'
+              :locale => nil,
+              :request_id => 'request_id',
+              :sortBy => 'most_accessed'
             }
           ).
           at_least(:once).
@@ -111,9 +112,10 @@ describe DatasetLandingPage do
           with(
             'peng-uins',
             {
-              :sortBy => 'date',
               :cookie_string => 'cookie',
-              :request_id => 'request_id'
+              :locale => nil,
+              :request_id => 'request_id',
+              :sortBy => 'date'
             }
           ).
           and_return([])

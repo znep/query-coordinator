@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:5704/whitepages?q=katie
+    uri: http://localhost:5704/whitepages/v1?q=katie
     body:
       encoding: US-ASCII
       string: ''

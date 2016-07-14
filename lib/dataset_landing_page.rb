@@ -5,7 +5,7 @@ class DatasetLandingPage
   # Our different search services accept different sort_by values.
   # Cly: name, date, most_accessed
   # Cetera: relevance, most_accessed, alpha/name, newest/date, oldest, last_modified
-  def get_related_views(uid, cookie_string, request_id, sort_by = 'most_accessed')
+  def get_related_views(uid, cookie_string, request_id, sort_by = 'most_accessed', locale = nil)
     view = View.find(uid)
 
     return [] if view.nil?
@@ -16,6 +16,7 @@ class DatasetLandingPage
         {
           :cookie_string => cookie_string,
           :request_id => request_id,
+          :locale => locale,
           :sortBy => sort_by
         }
       )
@@ -26,7 +27,7 @@ class DatasetLandingPage
     related_views.map(&method(:format_view_widget))
   end
 
-  def get_popular_views(uid, cookie_string, request_id, limit = nil, offset = nil)
+  def get_popular_views(uid, cookie_string, request_id, limit = nil, offset = nil, locale = nil)
     view = View.find(uid)
 
     return [] if view.nil?
@@ -37,6 +38,7 @@ class DatasetLandingPage
         :request_id => request_id,
         :limit => limit,
         :offset => offset,
+        :locale => locale,
         :sortBy => 'most_accessed'
       }.compact
 

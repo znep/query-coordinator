@@ -66,8 +66,12 @@ module Socrata
     # a snippet that can be included before any non-localized url
     # to provide a localized url without unnecessary path segments
     # in the case of the default locale
+    def locale
+      I18n.locale.to_s == CurrentDomain.default_locale ? nil : I18n.locale
+    end
+
     def locale_url_prefix
-      I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale}"
+      locale.nil? ? '' : "/#{locale}"
     end
 
 

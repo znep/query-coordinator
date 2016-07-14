@@ -349,12 +349,12 @@ describe Cetera do
       end
     end
 
-    it 'returns false when Cetera returns a bad response' do
+    it 'returns empty result set when Cetera returns a bad response' do
       VCR.use_cassette('cetera/failed_get_tags') do
         # fails because CurrentDomain.cname is not set
         results = Cetera.get_tags(cookies, request_id)
 
-        expect(results).to eq(false)
+        expect(results.results).to eq([])
       end
     end
   end

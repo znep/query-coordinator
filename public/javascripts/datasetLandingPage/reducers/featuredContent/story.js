@@ -46,7 +46,8 @@ function updatePreviewValues(state, story) {
     description: story.description,
     title: story.title || story.name,
     createdAt: story.createdAt,
-    viewCount: story.viewCount
+    viewCount: story.viewCount,
+    isPrivate: story.isPrivate
   });
 }
 

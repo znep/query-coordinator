@@ -3,8 +3,9 @@
 
 setTimeout(function() {
   $(document).ready(function() {
-  mobileMenuFlyout();
-})}, 1000); // TODO HACK Don't do this.
+    mobileMenuFlyout();
+  });
+}, 1000); // TODO HACK Don't do this.
 
 function mobileMenuFlyout() {
   var $menu = $('#site-chrome-header .mobile-menu');

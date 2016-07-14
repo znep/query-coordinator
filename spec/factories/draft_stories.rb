@@ -36,5 +36,13 @@ FactoryGirl.define do
         )
       end
     end
+
+    factory :draft_story_with_legacy_getty_image do
+      after(:build) do |story|
+        story.block_ids.push(
+          FactoryGirl.create(:block_with_legacy_getty_image).id
+        )
+      end
+    end
   end
 end

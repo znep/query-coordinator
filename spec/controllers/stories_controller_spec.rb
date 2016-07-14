@@ -518,7 +518,7 @@ RSpec.describe StoriesController, type: :controller do
           let(:document) { FactoryGirl.create(:document) }
 
           before do
-            allow(Document).to receive(:find).and_return(document)
+            allow(Document).to receive(:find_by_id).and_return(document)
           end
 
           it 'makes a copy of all documents' do
@@ -539,6 +539,22 @@ RSpec.describe StoriesController, type: :controller do
             expect(block_one_document_id).to_not eq(old_block_one_document_id)
             expect(block_two_document_id).to_not eq(old_block_two_document_id)
             expect(block_three_document_id).to_not eq(old_block_three_document_id)
+          end
+        end
+
+        context 'when the original story has a legacy getty image block' do
+          let!(:story_revision) { FactoryGirl.create(:draft_story_with_legacy_getty_image) }
+
+          it 'copies getty image block' do
+            get :copy, uid: story_revision.uid, title: story_copy_title
+
+            story = assigns(:story)
+            new_getty_image_component = story.blocks.first.components.first
+            original_getty_image_component = story_revision.blocks.first.components.first
+
+            expect(new_getty_image_component['type']).to eq('image')
+            expect(new_getty_image_component.dig('value', 'documentId')).to be_nil
+            expect(new_getty_image_component).to eq(original_getty_image_component)
           end
         end
       end

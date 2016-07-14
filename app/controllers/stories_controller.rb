@@ -217,7 +217,10 @@ class StoriesController < ApplicationController
           component['value']
 
         document_id = value['documentId']
-        document = Document.find(document_id)
+        document = Document.find_by_id(document_id)
+
+        # old getty image blocks didn't have a documentId configured because they didn't have a document.
+        next if document.nil?
 
         document_copy = document.dup
         document_copy.status = 'unprocessed'

@@ -95,12 +95,12 @@ describe('AuthoringWorkflow', function() {
     });
   });
 
-  describe('columnChart', function() {
+  xdescribe('columnChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
     rendersXAxisScalingModeAndEmitsEvents();
   });
 
-  describe('timelineChart', function() {
+  xdescribe('timelineChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
     rendersXAxisScalingModeAndEmitsEvents();
   });

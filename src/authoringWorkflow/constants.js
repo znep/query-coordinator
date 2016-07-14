@@ -30,12 +30,12 @@ export const VISUALIZATION_TYPES = [
   {
     type: 'choroplethMap',
     title: translate('visualizations.choropleth_map.title'),
-    preferredDimensionTypes: ['point']
+    preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'featureMap',
     title: translate('visualizations.feature_map.title'),
-    preferredDimensionTypes: ['point']
+    preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'timelineChart',

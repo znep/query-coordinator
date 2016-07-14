@@ -11,6 +11,7 @@ function getDefaultState() {
         {renderTypeName: 'text', fieldName: 'text'},
         {renderTypeName: 'number', fieldName: 'number'},
         {renderTypeName: 'point', fieldName: 'point'},
+        {renderTypeName: 'location', fieldName: 'location'},
         {renderTypeName: 'calendar_date', fieldName: 'calendar_date'}
       ]
     },
@@ -19,6 +20,7 @@ function getDefaultState() {
         'text': {renderTypeName: 'text', name: 'Text'},
         'number': {renderTypeName: 'number', name: 'Number'},
         'point': {renderTypeName: 'point', name: 'Point'},
+        'location': {renderTypeName: 'location', name: 'Location'},
         'calendar_date': {renderTypeName: 'calendar_date', name: 'Calendar Date', fieldName: 'calendar_date'}
       }
     }

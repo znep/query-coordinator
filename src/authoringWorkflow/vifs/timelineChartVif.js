@@ -25,7 +25,7 @@ export default {
         domain: '',
         measure: {
           columnName: null,
-          aggregationFunction: null
+          aggregationFunction: 'count'
         },
         type: 'socrata.soql',
         filters: []

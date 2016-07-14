@@ -53,6 +53,12 @@
     .measure-dropdown-container {
       display: flex;
 
+      &.measure-dropdown-container-count-rows {
+        .dropdown-container {
+          width: 100%;
+        }
+      }
+
       .dropdown-container {
         width: 75%;
       }

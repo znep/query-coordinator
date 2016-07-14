@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Styleguide from 'socrata-styleguide';
 
@@ -34,7 +35,8 @@ import {
   isChoroplethMap,
   getShapefileUid,
   getVisualizationType,
-  getAnyDimension
+  getAnyDimension,
+  getAnyMeasure
 } from '../selectors/vifAuthoring';
 
 export var DataPane = React.createClass({
@@ -109,41 +111,67 @@ export var DataPane = React.createClass({
       metadata,
       vif,
       onSelectMeasure,
-      onSelectMeasureAggregation,
-      vifAuthoring,
-      aggregationTypes
+      vifAuthoring
     } = this.props;
+    var measure = getAnyMeasure(vifAuthoring);
+    var isCountingRows = _.isNull(measure.columnName);
     var measures = getValidMeasures(metadata);
     var visualizationType = _.get(vif, 'series[0].type');
 
-    var measureAttributes = {
-      options: [
-        {title: translate('panes.data.fields.measure.no_value'), value: null},
-        ...measures.map(measure => ({title: measure.name, value: measure.fieldName}))
-      ],
-      onSelection: onSelectMeasure,
-      value: null,
-      id: 'measure-selection',
-      disabled: isFeatureMap(vifAuthoring)
-    };
+    var classes = classNames('measure-dropdown-container', {
+      'measure-dropdown-container-count-rows': isCountingRows
+    });
 
-    var measureAggregationAttributes = {
-      options: aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type})),
-      onSelection: onSelectMeasureAggregation,
-      value: 'count',
-      id: 'measure-aggregation-selection',
+    var options = [
+      {title: translate('panes.data.fields.measure.no_value'), value: null},
+      ...measures.map(measure => ({title: measure.name, value: measure.fieldName}))
+    ];
+
+    var measureAttributes = {
+      options,
+      onSelection: onSelectMeasure,
+      value: measure.columnName,
+      id: 'measure-selection',
       disabled: isFeatureMap(vifAuthoring)
     };
 
     return (
       <div>
         <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}:</label>
-        <div className="measure-dropdown-container">
+        <div className={classes}>
           <Styleguide.components.Dropdown {...measureAttributes} />
-          <Styleguide.components.Dropdown {...measureAggregationAttributes} />
+          {this.measureAggregationDropdown()}
         </div>
       </div>
     );
+  },
+
+  measureAggregationDropdown() {
+    var {
+      aggregationTypes,
+      onSelectMeasureAggregation,
+      vifAuthoring
+    } = this.props;
+
+    var measure = getAnyMeasure(vifAuthoring);
+    var isNotCountingRows = !_.isNull(measure.columnName);
+
+    if (isNotCountingRows) {
+      var options = [
+        {title: translate('aggregations.none'), value: null},
+        ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
+      ];
+
+      var measureAggregationAttributes = {
+        options,
+        onSelection: onSelectMeasureAggregation,
+        value: measure.aggregationFunction,
+        id: 'measure-aggregation-selection',
+        disabled: isFeatureMap(vifAuthoring)
+      };
+
+      return <Styleguide.components.Dropdown {...measureAggregationAttributes} />;
+    }
   },
 
   regionDropdown() {
@@ -227,7 +255,6 @@ export var DataPane = React.createClass({
     var regionsDropdown;
     var dimensionDropdown;
     var measureDropdown;
-    var measureAggregationDropdown;
     var visualizationTypeDropdown;
     var metadata = this.props.metadata;
     var datasetUid = _.get(metadata, 'data.uid');

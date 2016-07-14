@@ -27,12 +27,17 @@ export const getDimension = createSelector(
 // dimension.
 export const getAnyDimension = createSelector(
   getVifs,
-  vifs => _.get(vifs, 'columnChart.series[0].dataSource.dimension')
+  vifs => _.get(vifs, 'columnChart.series[0].dataSource.dimension', null)
 );
 
 export const getMeasure = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].dataSource.measure', null)
+);
+
+export const getAnyMeasure = createSelector(
+  getVifs,
+  vifs => _.get(vifs, 'columnChart.series[0].dataSource.measure', null)
 );
 
 export const getTitle = createSelector(

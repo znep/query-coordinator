@@ -36,15 +36,19 @@ describe('DataPane', function() {
       });
 
       it('renders dimension selection', function() {
-        expect(component.querySelector('.dimension-dropdown-container')).to.exist;
+        expect(component.querySelector('#dimension-selection')).to.exist;
       });
 
-      it('renders measure and measure aggregation selection', function() {
-        expect(component.querySelector('.measure-dropdown-container')).to.exist;
+      it('renders measure selection', function() {
+        expect(component.querySelector('#measure-selection')).to.exist;
+      });
+
+      it('does not render measure aggregation selection', function() {
+        expect(component.querySelector('#measure-aggregation-selection')).to.not.exist;
       });
 
       it('renders visualization type selection', function() {
-        expect(component.querySelector('.visualization-type-dropdown-container')).to.exist;
+        expect(component.querySelector('#visualization-type-selection')).to.exist;
       });
     });
   });
@@ -82,10 +86,6 @@ describe('DataPane', function() {
       emitsDropdownEvent('#measure-selection', 'onSelectMeasure');
     });
 
-    describe('when changing the measure aggregation dropdown', function() {
-      emitsDropdownEvent('#measure-aggregation-selection', 'onSelectMeasureAggregation');
-    });
-
     describe('when changing the visualization type dropdown', function() {
       emitsDropdownEvent('#visualization-type-selection', 'onSelectVisualizationType');
     });
@@ -101,6 +101,25 @@ describe('DataPane', function() {
       describe('when changing the region dropdown', function() {
         emitsDropdownEvent('#region-selection', 'onSelectRegion');
       });
+    });
+
+    describe('when choosing a measure', function() {
+      beforeEach(function() {
+        props = defaultProps(spies);
+
+        props.metadata.data = {};
+        props.metadata.phidippidesMetadata = {
+          columns: {
+            'number': {renderTypeName: 'number', name: 'Number'},
+          }
+        };
+
+        props.vifAuthoring.vifs.columnChart.series[0].dataSource.measure = 'number';
+
+        component = renderComponent(DataPane, props);
+      });
+
+      emitsDropdownEvent('#measure-aggregation-selection', 'onSelectMeasureAggregation');
     });
   });
 });

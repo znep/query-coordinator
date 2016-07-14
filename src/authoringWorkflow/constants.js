@@ -46,10 +46,6 @@ export const VISUALIZATION_TYPES = [
 
 export const AGGREGATION_TYPES = [
   {
-    type: 'count',
-    title: translate('aggregations.count')
-  },
-  {
     type: 'sum',
     title: translate('aggregations.sum')
   }

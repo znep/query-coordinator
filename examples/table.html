@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Example Usage: Table.js</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
     <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
     <style type="text/css">
@@ -14,14 +14,17 @@
       }
 
       [id^=table-] {
+        margin: 0 2%;
+        width: 96%;
         height: 640px;
+        border: 1px solid #ccc;
       }
 
     </style>
   </head>
   <body>
     <button id="kill-btn">Destroy all</button>
-    <p>Chicago crimes, unfiltered.</p>
+    <p>Chicago crimes, unfiltered</p>
     <div id="table-1"></div>
     <p>Chicago crimes filtered via VIF (description = POSS: CRACK)</p>
     <div id="table-2"></div>
@@ -29,14 +32,16 @@
     <div id="table-3"></div>
     <p>Staging derived view filtered inherently (type = bunnies)</p>
     <div id="table-4"></div>
-    <p>Tests rendering an error the table's dataset cannot be found.</p>
+    <p>Tests rendering an error the table's dataset cannot be found</p>
     <div id="table-5"></div>
     <p>Tests rendering a table based on an OBE dataset</p>
     <div id="table-6"></div>
+    <p>Tests rendering a table with specified column widths</p>
+    <div id="table-7"></div>
   </body>
 
   <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
+  <script type="text/javascript" src="./vendor.js" charset="utf-8"></script>
 
   <!-- Include bundle -->
   <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
@@ -75,6 +80,7 @@
       },
       'createdAt': '2014-01-01T00:00:00',
       'datasetUid': DATASET_UID,
+      'description': 'This is a table. There are many like it but this one is mine.',
       'domain': DOMAIN,
       'filters': [],
       'format': {
@@ -148,18 +154,50 @@
     }];
     $table6Element.socrataTable(table6VIF);
 
+    var $table7Element = $('#table-7');
+    var table7VIF = _.cloneDeep(table1VIF);
+    table7VIF.configuration.tableColumnWidths = [
+      {"columnName":"id","width":66},
+      {"columnName":"case_number","width":76},
+      {"columnName":"date","width":86},
+      {"columnName":"block","width":96},
+      {"columnName":"iucr","width":106},
+      {"columnName":"primary_type","width":116},
+      {"columnName":"description","width":126},
+      {"columnName":"location_description","width":136},
+      {"columnName":"arrest","width":146},
+      {"columnName":"domestic","width":156},
+      {"columnName":"beat","width":166},
+      {"columnName":"district","width":176},
+      {"columnName":"ward","width":186},
+      {"columnName":"community_area","width":196},
+      {"columnName":"fbi_code","width":206},
+      {"columnName":"x_coordinate","width":216},
+      {"columnName":"y_coordinate","width":226},
+      {"columnName":"year","width":236},
+      {"columnName":"updated_on","width":246},
+      {"columnName":"latitude","width":256},
+      {"columnName":"longitude","width":266},
+      {"columnName":"location","width":276}
+    ];
+    $table7Element.socrataTable(table7VIF);
+
     var $tables = $('[id^=table-]');
 
     $(window).resize(function() {
       $tables.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
     });
 
-    $tables.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+    $tables.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
       if (event.originalEvent.detail) {
         flyoutRenderer.render(event.originalEvent.detail);
       } else {
         flyoutRenderer.clear();
       }
+    });
+
+    $tables.on('SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED', function(event) {
+      console.log(JSON.stringify(event.originalEvent.detail));
     });
 
     /**

@@ -96,6 +96,7 @@ $axisPadding: 42px;
       top: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
+      cursor: text;
     }
   }
 
@@ -179,7 +180,7 @@ $axisPadding: 42px;
     }
   }
 
-  &.error {
+  &.visualization-error {
 
     .error-container {
       display: block;

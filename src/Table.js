@@ -46,7 +46,7 @@ $.fn.socrataTable = function(vif) {
     _.pick(vif, 'datasetUid', 'domain')
   );
   var visualization = new Table($element, vif);
-  var pager = new Pager($element, vif);
+  var pager = null;
 
   // Holds all state regarding the table's visual presentation.
   // Do _NOT_ update this directly, use _setState() or _updateState().
@@ -153,8 +153,8 @@ $.fn.socrataTable = function(vif) {
   }
 
   function _render() {
-    if (_renderState.error) {
 
+    if (_renderState.error) {
       visualization.renderError();
     } else if (_renderState.fetchedData) {
 
@@ -163,7 +163,7 @@ $.fn.socrataTable = function(vif) {
         _renderState.fetchedData.order
       );
 
-      pager.render({
+      renderPager({
         unit: vif.unit,
         startIndex: _renderState.fetchedData.startIndex,
         endIndex: Math.min(
@@ -176,22 +176,27 @@ $.fn.socrataTable = function(vif) {
         datasetRowCount: _renderState.datasetRowCount,
         disabled: _renderState.busy || !_.isFinite(_renderState.datasetRowCount)
       });
-
-      $element.addClass('loaded');
     } else {
 
       // No fetched data. Render placeholders so that we can determine pager
       // heights.
-      $element.removeClass('loaded');
-      pager.render({
+      renderPager({
         unit: vif.unit,
         startIndex: 0,
         endIndex: 0,
         datasetRowCount: 0,
         disabled: true
       });
-
     }
+  }
+
+  function renderPager(options) {
+
+    if (pager === null) {
+      pager = new Pager($element.find('.visualization-container'), vif);
+    }
+
+    pager.render(options);
   }
 
   function _handleColumnClicked(event) {
@@ -208,7 +213,7 @@ $.fn.socrataTable = function(vif) {
         _.map(_renderState.fetchedData.columns, 'fieldName'),
         columnName
       ),
-      'column name not found to sort by: {0}'.format(columnName)
+      'Column name not found to sort by: {0}'.format(columnName)
     );
 
     alreadySorted = _renderState.fetchedData.order[0].columnName === columnName;
@@ -238,7 +243,7 @@ $.fn.socrataTable = function(vif) {
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
-        'SOCRATA_VISUALIZATION_TABLE_FLYOUT',
+        'SOCRATA_VISUALIZATION_FLYOUT',
         {
           detail: payload,
           bubbles: true
@@ -252,7 +257,7 @@ $.fn.socrataTable = function(vif) {
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
-        'SOCRATA_VISUALIZATION_TABLE_FLYOUT',
+        'SOCRATA_VISUALIZATION_FLYOUT',
         {
           detail: payload,
           bubbles: true
@@ -338,7 +343,7 @@ $.fn.socrataTable = function(vif) {
       return 0;
     }
 
-    var overallHeight = $element.height();
+    var overallHeight = $element.find('.visualization-container').height();
     var pagerHeight = $element.find('.socrata-pager').outerHeight();
     var heightRemaining = overallHeight - pagerHeight;
 

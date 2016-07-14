@@ -43,7 +43,7 @@ describe('Table', function() {
 
     if (table && table.table && table.table.hasOwnProperty('destroy')) {
       table.table.destroy();
-      assert.lengthOf(table.element.children(), 0);
+      assert.lengthOf(table.element.find('.socrata-table'), 0);
     }
 
     $('#table').remove();
@@ -190,8 +190,8 @@ describe('Table', function() {
         });
 
         assert.lengthOf(table.element.find('th'), 2);
-        assert.match(table.element.find('th:first-child').text(), /hello/);
-        assert.match(table.element.find('th:nth-child(2)').text(), /world/);
+        assert.match(table.element.find('th:first-child').find('.column-header-content-column-name').text(), /hello/);
+        assert.match(table.element.find('th:nth-child(2)').find('.column-header-content-column-name').text(), /world/);
       });
 
       it('chooses the specified sort column', function() {
@@ -200,7 +200,7 @@ describe('Table', function() {
           renderOptions: [{ascending: true, columnName: 'hello'}]
         });
 
-        assert.match(table.element.find('th[data-sort]').text(), /hello/);
+        assert.match(table.element.find('th div[data-sort]').find('.column-header-content-column-name').text(), /hello/);
       });
     });
 
@@ -338,7 +338,7 @@ describe('Table', function() {
           done();
         });
 
-        table.element.find('th:first-child').click();
+        table.element.find('th:first-child').find('.column-header-content').click();
       });
 
       it('does not emit an event when the column is a geometry type', function(done) {
@@ -348,7 +348,7 @@ describe('Table', function() {
           done('SOCRATA_VISUALIZATION_COLUMN_CLICKED should not be emitted.');
         });
 
-        table.element.find('th:nth-child(2)').click();
+        table.element.find('th:nth-child(2)').find('.column-header-content').click();
 
         _.delay(function() {
           done();

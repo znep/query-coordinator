@@ -1,11 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var utils = require('socrata-utils');
-var Visualization = require('./Visualization.js');
 
 module.exports = function Pager(element, vif) {
-  _.extend(this, new Visualization(element, vif));
-
   var self = this;
   var lastRenderOptions;
 
@@ -20,7 +17,9 @@ module.exports = function Pager(element, vif) {
     'unit.other'
   );
 
-  attachEvents(this.element);
+  this.$element = $(element);
+
+  attachEvents();
 
   /**
    * Public Methods
@@ -37,8 +36,8 @@ module.exports = function Pager(element, vif) {
   };
 
   this.destroy = function() {
-    detachEvents(this.element);
-    this.element.find('.socrata-pager').remove();
+    detachEvents();
+    this.$element.find('.socrata-pager').remove();
   };
 
   /**
@@ -101,28 +100,33 @@ module.exports = function Pager(element, vif) {
     var template = templatePager(options).format({
       'classes': hasOnlyOnePage(options) ? ' socrata-pager-single-page' : ''
     });
-
     var $template = $(template);
-    self.element.find('.socrata-pager').remove(); // Enhancement: Incremental updates (vs. rerender every time).
-    self.element.append($template);
+
+    self.
+      $element.
+        find('.socrata-pager').
+          remove(); // Enhancement: Incremental updates (vs. rerender every time).
+    self.
+      $element.
+          append($template);
   }
 
   function attachEvents() {
-    self.element.on('click', '.pager-buttons .pager-button-previous', handlePrevious);
-    self.element.on('click', '.pager-buttons .pager-button-next', handleNext);
+    self.$element.on('click', '.pager-buttons .pager-button-previous', handlePrevious);
+    self.$element.on('click', '.pager-buttons .pager-button-next', handleNext);
   }
 
   function detachEvents() {
-    self.element.off('click', '.pager-buttons .pager-button-previous', handlePrevious);
-    self.element.off('click', '.pager-buttons .pager-button-next', handleNext);
+    self.$element.off('click', '.pager-buttons .pager-button-previous', handlePrevious);
+    self.$element.off('click', '.pager-buttons .pager-button-next', handleNext);
   }
 
   function handleNext() {
-    self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_NEXT');
+    emitEvent('SOCRATA_VISUALIZATION_PAGINATION_NEXT');
   }
 
   function handlePrevious() {
-    self.emitEvent('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
+    emitEvent('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
   }
 
   function hasOnlyOnePage(options) {
@@ -130,5 +134,15 @@ module.exports = function Pager(element, vif) {
     var atTheEnd = options.endIndex === options.datasetRowCount;
 
     return atTheStart && atTheEnd;
+  }
+
+  function emitEvent(name, payload) {
+
+    self.$element[0].dispatchEvent(
+      new window.CustomEvent(
+        name,
+        { detail: payload, bubbles: true }
+      )
+    );
   }
 };

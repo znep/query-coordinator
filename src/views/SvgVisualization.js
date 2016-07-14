@@ -166,14 +166,14 @@ function SvgVisualization($element, vif) {
     var $container = this.$element.find('.visualization');
 
     $container.find('.error-message').text(message || 'Error');
-    $container.addClass('error');
+    $container.addClass('visualization-error');
   };
 
   this.clearError = function() {
     var $container = this.$element.find('.visualization');
 
     $container.find('.error-message').text('');
-    $container.removeClass('error');
+    $container.removeClass('visualization-error');
   };
 
   this.showPanningNotice = function() {

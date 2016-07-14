@@ -1312,6 +1312,7 @@ en:
       latitude: Latitude
       longitude: Longitude
       many_rows: Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}
+      no_row_count: Row count unavailable
       next: Next
       no_column_description: No description provided.
       no_rows: No {unitOther}

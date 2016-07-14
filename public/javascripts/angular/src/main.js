@@ -8,8 +8,8 @@ require('../../util/jquery-extensions');
 require('../../util/lodash-mixins');
 require('../../util/dompurify-extensions');
 
-import 'script!plugins/modernizr';
-import '../../lib/RxExtensions';
+require('script!plugins/modernizr');
+require('../../lib/RxExtensions');
 
-import '../dataCards/styles';
-import '../dataCards/app';
+require('../dataCards/styles');
+require('../dataCards/app');

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -ex
+
+# Log the author name and email of the last commit
+echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
+
+# Testing, duh.
+if $RUN_TESTS; then
+  bin/test
+else
+  echo "Skipping tests because RUN_TESTS is false"
+fi
+
+rm -f dockerize.properties
+touch dockerize.properties
+
+SERVICE_NAME='storyteller'
+SERVICE_VERSION=`bundle exec semver format "%M.%m.%p"`
+
+echo "DOCKER_PATH=." >> dockerize.properties
+echo "SERVICE=${SERVICE_NAME}" >> dockerize.properties
+echo "SERVICE_BUILD_NUMBER=${BUILD_NUMBER}" >> dockerize.properties
+echo "CURRENT_REVISION_FILE_NAME=REVISION" >> dockerize.properties
+echo "SERVICE_VERSION=${SERVICE_VERSION}"
+
+# Write REVISION file
+echo ${SERVICE_SHA} > "$WORKSPACE/REVISION"
+
+ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
+

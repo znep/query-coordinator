@@ -39,3 +39,7 @@ REVISION
 marathon.properties
 /coverage
 .sass-cache
+
+# Build-related stuff
+/ops-tools
+dockerize.properties

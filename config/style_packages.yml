@@ -33,6 +33,7 @@ ie9:
 includes:
 - scss-common
 - icons
+- spinner
 base:
 - base
 - layout

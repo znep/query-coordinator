@@ -1,0 +1,68 @@
+// polyfill for styleguide-like spinner in old UX.
+
+$spinner-primary-color: #288dc1;
+$spinner-secondary-color: #eaf4f9;
+
+// base mixin, which may be called directly or consumed via a helper (below).
+@mixin spinner(
+  $size,
+  $ring-width,
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  animation: busy-spinner 0.9s linear infinite;
+  border: $ring-width solid $primary-color;
+  border-radius: 50%;
+  border-right-color: $secondary-color;
+  box-sizing: border-box;
+  display: inline-block;
+  height: $size;
+  width: $size;
+}
+
+// helper mixins for common spinner sizes.
+@mixin spinner-mini(
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  @include spinner(14px, 2px, $primary-color, $secondary-color);
+}
+
+@mixin spinner-small(
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  @include spinner(16px, 3px, $primary-color, $secondary-color);
+}
+
+@mixin spinner-medium(
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  @include spinner(32px, 6px, $primary-color, $secondary-color);
+}
+
+@mixin spinner-large(
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  @include spinner(48px, 8px, $primary-color, $secondary-color);
+}
+
+@mixin spinner-mega(
+  $primary-color: $spinner-primary-color,
+  $secondary-color: $spinner-secondary-color)
+{
+  @include spinner(64px, 8px, $primary-color, $secondary-color);
+}
+
+// animation.
+@keyframes busy-spinner {
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

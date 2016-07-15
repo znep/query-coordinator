@@ -39,18 +39,10 @@ $form-checkbox-hover-check-color: #999;
   position: relative;
 
   .loading {
-    display: block;
-    height: 16px;
-    width: 16px;
+    @include spinner-small;
     position: absolute;
     top: calc(50% - 8px);
     left: calc(50% - 8px);
-    // mimic styleguide spinner
-    animation: spin 0.9s linear infinite;
-    border: 3px solid #288dc1;
-    border-right-color: #eaf4f9;
-    border-radius: 50%;
-    box-sizing: border-box;
   }
 }
 
@@ -169,19 +161,12 @@ $form-checkbox-hover-check-color: #999;
   }
 
   .iframe-spinner {
+    @include spinner-mega;
     display: block;
     position: absolute;
-    height: 64px;
-    width: 64px;
     left: calc(50% - 32px);
     top: calc(50% - 32px);
     z-index: -1;
-    // mimic styleguide spinner
-    animation: spin 0.9s linear infinite;
-    border: 8px solid #288dc1;
-    border-right-color: #eaf4f9;
-    border-radius: 50%;
-    box-sizing: border-box;
   }
 
   iframe {
@@ -192,16 +177,11 @@ $form-checkbox-hover-check-color: #999;
 }
 
 .status-icon-progress {
-  margin-top: 0.5rem;
-  display: inline-block;
-  height: 16px;
-  width: 16px;
-  // mimic styleguide spinner
-  animation: spin 0.9s linear infinite;
-  border: 3px solid #288dc1;
-  border-right-color: #eaf4f9;
-  border-radius: 50%;
-  box-sizing: border-box;
+  @include spinner-small;
+  margin: {
+    top: 0.5rem;
+    right: 0.5em;
+  }
 }
 
 .georegion-spinner {
@@ -215,18 +195,10 @@ $form-checkbox-hover-check-color: #999;
   z-index: 1;
 
   > span {
-    display: block;
+    @include spinner-mega;
     position: absolute;
-    height: 64px;
-    width: 64px;
     left: calc(50% - 32px);
     top: calc(50% - 32px);
-    // mimic styleguide spinner
-    animation: spin 0.9s linear infinite;
-    border: 8px solid #288dc1;
-    border-right-color: #eaf4f9;
-    border-radius: 50%;
-    box-sizing: border-box;
   }
 }
 
@@ -280,27 +252,5 @@ $form-checkbox-hover-check-color: #999;
       padding-top: 0.25em;
       font-size: 1em;
     }
-  }
-}
-
-// for spinner
-@-webkit-keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@-moz-keyframes spin {
-  100% {
-    -moz-transform: rotate(360deg);
-  }
-}
-
-@keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    transform: rotate(360deg);
   }
 }

@@ -112,7 +112,7 @@ export var AuthoringWorkflow = React.createClass({
     var vifAuthoring = this.props.vifAuthoring;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
     var isColumnOrTimeline = isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring);
-    var scalingMode = isColumnOrTimeline ? this.scalingMode() : null;
+    var scalingMode = null; // This feature is hidden for now.
 
     return (
       <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>

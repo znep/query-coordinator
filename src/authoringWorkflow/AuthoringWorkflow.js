@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'lodash';
+import $ from 'jquery';
 import { connect } from 'react-redux';
 
 import { translate } from './I18n';
@@ -66,6 +68,11 @@ export var AuthoringWorkflow = React.createClass({
     };
   },
 
+  componentDidMount() {
+    // Prevents the form from submitting and refreshing the page.
+    $(this.modal).on('submit', _.constant(false));
+  },
+
   onComplete() {
     this.props.onComplete({
       vif: this.props.vif
@@ -115,7 +122,7 @@ export var AuthoringWorkflow = React.createClass({
     var scalingMode = null; // This feature is hidden for now.
 
     return (
-      <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp}>
+      <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
         <div className="modal-container">
 
           <header className="modal-header">

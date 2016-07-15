@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import TestUtils from 'react-addons-test-utils';
 
 import defaultProps from './defaultProps';
@@ -72,6 +73,13 @@ describe('AuthoringWorkflow', function() {
   });
 
   describe('events', function() {
+    it('handles "submit" event and returns false', function() {
+      // This prevents the form from submitting and refreshing the page.
+      var submitEvent = $.Event('submit');
+      $(component).trigger(submitEvent);
+      assert.strictEqual(submitEvent.result, false, 'Unexpected event handler result');
+    });
+
     it('calls the onComplete callback when the done button is clicked', function() {
       // Make a valid visualization
       _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.domain', 'something');

@@ -114,7 +114,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
 
             default:
               return Promise.reject(
-                'Invalid series dataSource.type: "{0}".'.
+                'Invalid/unsupported series dataSource.type: "{0}".'.
                   format(series.dataSource.type)
               );
           }
@@ -564,23 +564,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
                     queryResponse.rows
                 }
               }
-            )
-            ['catch'](
-              function(error) {
-
-                if (window.console && console.error) {
-                  console.error(error);
-                }
-
-                return Promise.resolve(
-                  {
-                    columns: [],
-                    rows: []
-                  }
-                );
-              }
             );
-
         }
       );
   }

@@ -16,7 +16,57 @@ describe DatasetsController do
   let(:view_json) { view_data.to_json }
   let(:view) { View.new(view_data) }
 
-  describe 'SEO friendly datase show page' do
+  describe 'Accessing public forms on private datasets' do
+
+    before(:each) do
+      init_current_domain
+      init_core_session
+    end
+
+    before do
+      stub_request(:get, 'http://localhost:8080/manifest_version.json?uid=test-data').
+        with(:headers => request_headers).
+        to_return(:status => 200, :body => view_json, :headers => {})
+    end
+
+    context 'when logged out' do
+
+      it 'loads the page without error' do
+        expect(View).to receive(:find).and_return(view)
+        expect(subject).to receive(:using_canonical_url?).and_return(true)
+        view.stub(
+          :is_form? => true,
+          :can_add? => true,
+          :can_read? => false
+        )
+        logout
+        get :show, :id => 'dont-matr'
+        expect(response).to have_http_status(:success)
+      end
+
+    end
+
+    context 'when logged in' do
+
+      it 'loads the page without error' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        expect(subject).to receive(:using_canonical_url?).and_return(true)
+        view.stub(
+          :is_form? => true,
+          :can_add? => true,
+          :can_read? => false
+        )
+        get :show, :id => 'dont-matr'
+        expect(response).to have_http_status(:success)
+      end
+
+    end
+
+  end
+
+  describe 'SEO friendly dataset show page' do
 
     before(:each) do
       init_core_session

@@ -158,16 +158,20 @@ export var MetadataTable = React.createClass({
     if (!_.isEmpty(view.customMetadataFieldsets)) {
       customMetadataFieldsets = _.map(view.customMetadataFieldsets, function(fieldset, i) {
         var fields = _.map(fieldset.fields, function(field, j) {
-          return (
-            <tr key={j}>
-              <td>{field.displayName || field.name}</td>
-              <td>
-                <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
-                  {fieldset.existing_fields[field.name]}
-                </Linkify>
-              </td>
-            </tr>
-          );
+          if (fieldset.existing_fields[field.name]) {
+            return (
+              <tr key={j}>
+                <td>{field.displayName || field.name}</td>
+                <td>
+                  <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
+                    {fieldset.existing_fields[field.name]}
+                  </Linkify>
+                </td>
+              </tr>
+            );
+          } else {
+            return null;
+          }
         });
 
         return (

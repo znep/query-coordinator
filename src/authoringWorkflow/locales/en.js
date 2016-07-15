@@ -1,7 +1,8 @@
 export default {
   aggregations: {
     sum: 'Sum',
-    count: 'Count'
+    count: 'Count',
+    none: 'None'
   },
 
   base_layers: {

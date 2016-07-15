@@ -54,6 +54,12 @@ export default function columnChart(state, action) {
     case SET_MEASURE:
       forEachSeries(state, series => {
         series.dataSource.measure.columnName = action.measure;
+
+        if (_.isNull(action.measure)) {
+          series.dataSource.measure.aggregationFunction = 'count';
+        } else {
+          series.dataSource.measure.aggregationFunction = null;
+        }
       });
       break;
 

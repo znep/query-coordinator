@@ -22,10 +22,9 @@ echo "DOCKER_PATH=." >> dockerize.properties
 echo "SERVICE=${SERVICE_NAME}" >> dockerize.properties
 echo "SERVICE_BUILD_NUMBER=${BUILD_NUMBER}" >> dockerize.properties
 echo "CURRENT_REVISION_FILE_NAME=REVISION" >> dockerize.properties
-echo "SERVICE_VERSION=${SERVICE_VERSION}"
+echo "SERVICE_VERSION=${SERVICE_VERSION}" >> dockerize.properties
 
 # Write REVISION file
 echo ${SERVICE_SHA} > "$WORKSPACE/REVISION"
 
 ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
-

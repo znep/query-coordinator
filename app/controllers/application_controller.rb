@@ -18,6 +18,9 @@ class ApplicationController < ActionController::Base
   prepend_before_filter :set_story_uid
   before_filter :handle_authorization
 
+  # Force SSL redirect for all traffic
+  force_ssl
+
   # Returns the current user, or nil
   #
   # ==== Examples
@@ -35,10 +38,6 @@ class ApplicationController < ActionController::Base
 
   def downtimes
     @downtimes ||= StorytellerService.downtimes
-  end
-
-  def ssl_disabled?
-    Rails.env.test?
   end
 
   def render_404

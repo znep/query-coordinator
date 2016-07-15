@@ -1,5 +1,4 @@
 class Api::V1::DraftsController < ApplicationController
-  force_ssl
 
   def latest
     @story = DraftStory.find_by_uid(params[:uid])

@@ -1,5 +1,4 @@
 class Api::V1::PublishedController < ApplicationController
-  force_ssl
 
   # Takes a draft story and creates a published version of it, then sets the published story
   # as publicly visible in core.

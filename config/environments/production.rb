@@ -41,9 +41,8 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
-  # Requiring SSL is the exceptional case, so we manually add force_ssl to the controllers that we
-  # want to force secure traffic to.
-  config.force_ssl = false
+  # Enforced cookie session to be secure
+  config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.

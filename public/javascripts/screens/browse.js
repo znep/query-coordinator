@@ -771,7 +771,8 @@ $(function() {
             visible: {
               story: true
             }
-          }
+          },
+          tileConfig: {}
         },
         name: newStoryName,
         query: {}

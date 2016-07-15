@@ -254,8 +254,11 @@ export var MetadataTable = React.createClass({
       attributionLink = (
         <tr>
           <td>{I18n.metadata.source_link}</td>
-          <td>
-            <a href={view.attributionLink} rel="nofollow external">{view.attributionLink}</a>
+          <td className="attribution">
+            <a href={view.attributionLink} target="_blank" rel="nofollow external">
+              {view.attributionLink}
+              <span className="icon-external-square" />
+            </a>
           </td>
         </tr>
       );

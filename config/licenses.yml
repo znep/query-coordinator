@@ -9,7 +9,7 @@
 # The `display_name` is the name displayed on the /about description and the view JSON.
 # Both will fallback to `name` if unavailable.
 #
----
+--- 
 - id: PUBLIC_DOMAIN
   name: Public Domain
 - id: IODL
@@ -91,11 +91,6 @@
     name: Attribution | Share Alike 4.0 International
     logo: images/licenses/cc30bysa.png
     terms_link: http://creativecommons.org/licenses/by-sa/4.0/legalcode
-    attribution_required: true
-  - id: CC_40_BY_ND
-    name: Attribution | NoDerivatives 4.0 International License
-    logo: images/licenses/cc40bynd.png
-    terms_link: http://creativecommons.org/licenses/by-nd/4.0/legalcode
     attribution_required: true
 - id: ODC
   name: Open Data Commons

@@ -1,3 +1,5 @@
+require 'pry'
+
 # TODO: replace this REST API & wrapper with GraphQL
 class ImportActivity
   include JobsHelper
@@ -14,7 +16,11 @@ class ImportActivity
     
     # get names of deleted datasets
     views = Hash[views.map do |uid, value|
-      [uid, value ? value : View.new('id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true)]
+      if value.nil?
+        value = View.find_deleted(uid)
+        value.deleted = true
+      end
+      [uid, value]
     end]
     
     user_ids = activities.pluck(:user_id)

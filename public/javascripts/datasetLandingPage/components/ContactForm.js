@@ -138,6 +138,7 @@ export var ContactForm = React.createClass({
     var element = ReactDOM.findDOMNode(this);
 
     element.classList.add('modal-hidden');
+    document.body.classList.remove('modal-open');
 
     var container = element.querySelector('.modal-container');
 

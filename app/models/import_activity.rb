@@ -1,5 +1,3 @@
-require 'pry'
-
 # TODO: replace this REST API & wrapper with GraphQL
 class ImportActivity
   include JobsHelper

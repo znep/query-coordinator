@@ -116,7 +116,7 @@ describe JobsHelper do
     it "doesn't show restore button on non-deleted events" do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
-        { :activity_type => 'delete', :created_at => Date.today},
+        { :activity_type => 'delete', :created_at => Date.today },
         nil,
         View.new('deleted' => false),
         nil
@@ -124,12 +124,18 @@ describe JobsHelper do
       expect(display_restore_button(event)).to eq(false)
     end
 
-    it "shows restore button on recent deleted events" do
+    it 'shows restore button on recent deleted events that are published default views' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
-        { :activity_type => 'delete', :created_at => Date.today.to_s},
+        { :activity_type => 'delete', :created_at => Date.today.to_s },
         nil,
-        View.new('deleted' => true),
+        View.new(
+          'deleted' => true,
+          'publicationStage' => 'published',
+          'displayType' => 'table',
+          'viewType' => 'tabular',
+          'flags' => ['default']
+        ),
         nil
       )
       expect(display_restore_button(event)).to eq(true)
@@ -143,7 +149,53 @@ describe JobsHelper do
           :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s
         },
         nil,
-        View.new('deleted' => true),
+        View.new(
+          'deleted' => true,
+          'publicationStage' => 'published',
+          'displayType' => 'table',
+          'viewType' => 'tabular',
+          'flags' => ['default']
+        ),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(false)
+    end
+
+    it "doesn't show restore button on non-default views" do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { 
+          :activity_type => 'delete',
+          :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s
+        },
+        nil,
+        View.new(
+          'deleted' => true,
+          'publicationStage' => 'published',
+          'displayType' => 'table',
+          'viewType' => 'tabular',
+          'flags' => []
+        ),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(false)
+    end
+
+    it "doesn't show restore button on unpublished views" do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { 
+          :activity_type => 'delete',
+          :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s
+        },
+        nil,
+        View.new(
+          'deleted' => true,
+          'publicationStage' => 'unpublished',
+          'displayType' => 'table',
+          'viewType' => 'tabular',
+          'flags' => ['default']
+        ),
         nil
       )
       expect(display_restore_button(event)).to eq(false)

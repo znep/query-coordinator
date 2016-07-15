@@ -170,7 +170,7 @@ export default {
       flyout_unfiltered_amount_label: 'Total',
       flyout_filtered_amount_label: 'Filtered',
       flyout_selected_notice: 'This column is selected',
-      error_column_chart_generic: 'Sorry! There was an error rendering this column chart.',
+      error_column_chart_generic: 'An error was encountered when rendering this column chart. Please try again in a few minutes.',
       error_column_chart_exceeded_max_column_count: 'For optimal performance and legibility column charts are limited to {0} columns. Use filters to render a more specific chart.',
       error_column_chart_exceeded_max_column_count_without_pan: 'For optimal performance and legibility column charts for which panning is disabled are limited to {0} columns. Enable panning or use filters to render a more specific chart.'
     },
@@ -199,7 +199,7 @@ export default {
       flyout_unfiltered_amount_label: 'Total',
       flyout_filtered_amount_label: 'Filtered',
       flyout_selected_notice: 'This column is selected',
-      error_timeline_chart_generic: 'An error was encountered when rendering this chart. Please try again in a few minutes.',
+      error_timeline_chart_generic: 'An error was encountered when rendering this timeline chart. Please try again in a few minutes.',
       error_timeline_chart_exceeded_max_point_without_pan: 'For optimal performance and legibility timeline charts for which panning is disabled are limited to {0} points. Enable panning or use filters to render a more specific chart.',
       error_timeline_chart_exceeded_max_point_count: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.'
     }

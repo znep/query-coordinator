@@ -11,6 +11,7 @@
   "scripts": {
     "postinstall": "npm rebuild node-sass",
     "build": "webpack && npm run compile-css",
+    "webpack": "webpack",
     "prebuild": "rimraf dist",
     "prepublish": "npm run build",
     "lint": "eslint -c package.json  --ignore-path .eslintignore src/**/*.js",

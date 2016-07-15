@@ -30,7 +30,6 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */
 $.fn.socrataFeatureMap = function(vif) {
-
   utils.assert(
     _.isPlainObject(vif),
     'You must pass in a valid VIF to use socrataFeatureMap'
@@ -69,11 +68,13 @@ $.fn.socrataFeatureMap = function(vif) {
     'row_inspector_row_data_query_failed',
     'user_current_position',
     'column_incompatibility_error',
-    'feature_extent_query_error'
+    'general_error'
   );
 
   var $element = $(this);
   var datasetMetadata;
+  var datasetMetadataRequest;
+  var extentRequest;
 
   var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
   var domain = _.get(vif, 'series[0].dataSource.domain');
@@ -116,7 +117,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
     // If the caller already has datasetMetadata, it can be passed through as
     // a configuration property.
-    datasetMetadata = vif.configuration.datasetMetadata;
+    datasetMetadataRequest = Promise.resolve(vif.configuration.datasetMetadata);
 
   } else {
 
@@ -138,14 +139,13 @@ $.fn.socrataFeatureMap = function(vif) {
     // If this request fails, we will fall back to listing columns
     // alphabetically instead of in the order in which they appear in the
     // dataset grid view.
-    metadataProvider.
-      getDatasetMetadata().
-      then(
-        handleDatasetMetadataRequestSuccess,
-        handleDatasetMetadataRequestError
-      )['catch'](function(e) {
-        logError(e);
-      });
+    datasetMetadataRequest = metadataProvider.getDatasetMetadata();
+  }
+
+  if (_.has(vif, 'configuration.mapCenterAndZoom')) {
+    extentRequest = Promise.resolve();
+  } else {
+    extentRequest = geospaceDataProvider.getFeatureExtent(columnName);
   }
 
   var visualization = new FeatureMap(
@@ -154,12 +154,7 @@ $.fn.socrataFeatureMap = function(vif) {
   );
   // The visualizationRenderOptions may change in response to user actions
   // and are passed as an argument to every render call.
-  var visualizationRenderOptions = {
-    baseLayer: {
-      url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
-      opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
-    }
-  };
+  var visualizationRenderOptions = {};
   var rerenderOnResizeTimeout;
 
   /**
@@ -169,16 +164,15 @@ $.fn.socrataFeatureMap = function(vif) {
   // We query the extent of the features we are rendering in order to make
   // individual tile requests more performant (through the use of a
   // WITHIN_BOX query clause).
-  geospaceDataProvider.
-    getFeatureExtent(columnName).
-    then(
-      handleFeatureExtentQuerySuccess,
-      handleFeatureExtentQueryError.bind(this)
-    )['catch'](function(e) {
-      logError(e);
-    });
-
-  initializeVisualization();
+  Promise.all([
+    datasetMetadataRequest,
+    extentRequest
+  ]).then(
+    (resolutions) => initializeVisualization(resolutions[0], resolutions[1]),
+    handleError
+  )['catch'](function(e) {
+    logError(e);
+  });
 
   /**
    * Events
@@ -216,11 +210,17 @@ $.fn.socrataFeatureMap = function(vif) {
    */
 
   function _handleRenderVif(event) {
-    var newVif = event.originalEvent.detail;
+    vif = event.originalEvent.detail;
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0), newVif.configuration.useOriginHost);
-
-    renderIfReady();
+    visualization.render(
+      vif,
+      {
+        vectorTileGetter: buildVectorTileGetter(
+          SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0),
+          vif.configuration.useOriginHost
+        )
+      }
+    );
   }
 
   function _handleWindowResize() {
@@ -228,7 +228,7 @@ $.fn.socrataFeatureMap = function(vif) {
     clearTimeout(rerenderOnResizeTimeout);
 
     rerenderOnResizeTimeout = setTimeout(
-      renderIfReady,
+      visualization.render,
       // Add some jitter in order to make sure multiple visualizations are
       // unlikely to all attempt to rerender themselves at the exact same
       // moment.
@@ -236,34 +236,14 @@ $.fn.socrataFeatureMap = function(vif) {
     );
   }
 
-  function handleDatasetMetadataRequestSuccess(data) {
-
-    datasetMetadata = data;
-  }
-
-  function handleDatasetMetadataRequestError(error) {
-
-    // The only consumer of dataset metadata is the row inspector flyout.
-    // If the request fails, we won't show the row inspector on click.
-    console.error('Failed to fetch dataset metadata: {0}'.format(error));
-  }
-
-  function handleFeatureExtentQuerySuccess(response) {
-    updateRenderOptionsBounds(response);
-    renderIfReady();
-  }
-
-  function handleFeatureExtentQueryError(error) {
-    var message;
+  function handleError(error) {
     var errorCode = _.get(error, 'soqlError.errorCode');
 
     if (errorCode === 'query.soql.type-mismatch') {
       message = vif.configuration.localization.column_incompatibility_error;
     } else {
-      message = vif.configuration.localization.feature_extent_query_error;
+      message = vif.configuration.localization.general_error;
     }
-
-    renderError(message);
   }
 
   function handleVisualizationFlyoutShow(event) {
@@ -419,11 +399,12 @@ $.fn.socrataFeatureMap = function(vif) {
   }
 
   function handleRowInspectorQuerySuccess(data) {
+    var flyoutTitleColumnName = _.get(vif, 'configuration.flyoutTitleColumnName');
     var getPageTitle = function(page) {
-      return _.find(page, {column: vif.configuration.flyoutTitleColumnName}).value;
+      return _.find(page, {column: flyoutTitleColumnName}).value;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
-    var titles = vif.configuration.flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
+    var titles = flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
@@ -450,7 +431,7 @@ $.fn.socrataFeatureMap = function(vif) {
           detail: {
             data: null,
             error: true,
-            message: vif.configuration.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
+            message: vif.configuration.localization.row_inspector_row_data_query_failed
           },
           bubbles: true
         }
@@ -477,13 +458,21 @@ $.fn.socrataFeatureMap = function(vif) {
    * Helper functions
    */
 
-  function initializeVisualization() {
+  function initializeVisualization(metadata, extent) {
+    datasetMetadata = metadata;
 
     attachEvents();
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0), vif.configuration.useOriginHost);
-
-    renderIfReady();
+    visualization.render(
+      false,
+      {
+        extent,
+        vectorTileGetter: buildVectorTileGetter(
+          SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0),
+          vif.configuration.useOriginHost
+        )
+      }
+    );
   }
 
   function updateRenderOptionsBounds(extent) {
@@ -494,25 +483,12 @@ $.fn.socrataFeatureMap = function(vif) {
     visualizationRenderOptions.bounds = L.latLngBounds(southWest, northEast);
   }
 
-  function updateRenderOptionsVectorTileGetter(whereClause, useOriginHost) {
+  function buildVectorTileGetter(whereClause, useOriginHost) {
 
-    useOriginHost = useOriginHost || false;
-
-    visualizationRenderOptions.vectorTileGetter = tileserverDataProvider.buildTileGetter(
+    return tileserverDataProvider.buildTileGetter(
       whereClause,
-      useOriginHost
+      useOriginHost || false
     );
-  }
-
-  function renderIfReady() {
-
-    var hasBounds = visualizationRenderOptions.hasOwnProperty('bounds');
-    var hasTileGetter = visualizationRenderOptions.hasOwnProperty('vectorTileGetter');
-
-    if (hasBounds && hasTileGetter) {
-
-      visualization.render(visualizationRenderOptions);
-    }
   }
 
   function renderError(message) {

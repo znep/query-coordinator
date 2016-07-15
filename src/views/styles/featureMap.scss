@@ -9,6 +9,14 @@
 .feature-map {
   width: 100%;
   height: 100%;
+
+  // We are now rendering layers through updates
+  // which can change the ordering. We set the default z-index
+  // for all newly added layers to 1 and set the more important
+  // layers to higher indexes.
+  .leaflet-layer {
+    z-index: 1;
+  }
 }
 
 .feature-map-pan-zoom-disabled-warning {

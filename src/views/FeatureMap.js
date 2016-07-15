@@ -3,6 +3,7 @@ var SvgVisualization = require('./SvgVisualization');
 var L = require('leaflet');
 var _ = require('lodash');
 var $ = require('jquery');
+var SoqlHelpers = require('../dataProviders/SoqlHelpers');
 
 var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
@@ -33,7 +34,7 @@ function FeatureMap(element, vif) {
   // reference so that we can remove the existing marker if the user
   // clicks the 'locate me' button more than one time.
   var _userCurrentPositionMarker;
-  var _userCurrentPositionBounds;
+  var userCurrentPositionBounds;
 
   var _defaultMapOptions = {
     attributionControl: false,
@@ -54,9 +55,11 @@ function FeatureMap(element, vif) {
   var _startResizeFn;
   var _completeResizeFn;
   var _baseTileLayer;
-  var _map;
+  var map;
   var _lastRenderOptions;
-  var centerAndZoomDefined;
+  var lastRenderedVif;
+  var lastRenderedData;
+  var lastRenderedVectorTileGetter;
 
   // We buffer feature layers so that there isn't a visible flash
   // of emptiness when we transition from one to the next. This is accomplished
@@ -103,79 +106,59 @@ function FeatureMap(element, vif) {
    * Public methods
    */
 
-  this.render = function(renderOptions) {
+  this.render = function(newVif, newData) {
+    var hasMapDimensions = _mapElement.width() > 0 && _mapElement.height() > 0;
+    var extent = newData.extent;
+    var vectorTileGetter = newData.vectorTileGetter;
 
-    if (_mapElement.width() > 0 && _mapElement.height() > 0) {
-      var boundsChanged;
-      var baseLayerChanged;
-      var vectorTileGetterChanged;
+    emitRenderStart();
 
-      // Emit render start event
-      _emitRenderStart();
+    if (newVif) {
+      this.updateVif(newVif);
 
-      if (!_map) {
+      updateBaseLayer(newVif);
+      updateFeatureLayer(newVif, vectorTileGetter);
 
-        // Construct leaflet map
-        _map = L.map(_mapElement[0], _mapOptions);
-
-        // Attach events on first render only
-        _attachEvents();
-
-        centerAndZoomDefined = (
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
-        );
-        boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
-        baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
-        vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
-
-        _lastRenderOptions = _.cloneDeep(renderOptions);
-        _lastRenderOptions.bounds = new L.LatLngBounds(
-          renderOptions.bounds.getSouthWest(),
-          renderOptions.bounds.getNorthEast()
-        );
-
-        if (_userCurrentPositionBounds) {
-          _fitBounds(_userCurrentPositionBounds);
-        // Note that we prefer mapCenterAndZoom over defaultExtent or savedExtent
-        // properties in the VIF.
-        } else if (centerAndZoomDefined) {
-          updateCenterAndZoom(_.get(vif, 'configuration.mapCenterAndZoom'));
-        // If centerAndZoom is not set we then check for the bounds that have
-        // been saved in the VIF.
-        //
-        // TODO: Deprecate this.
-        } else if (boundsChanged) {
-          _fitBounds(renderOptions.bounds);
-        }
+      if (vifsAreEqualIgnoringCenterAndZoom(lastRenderedVif, newVif)) {
+        updateCenterAndZoom(newVif);
       }
+    } else if (hasMapDimensions && !map) {
 
-      if (baseLayerChanged) {
-        _updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
-      }
+      // Construct leaflet map
+      map = L.map(_mapElement[0], _mapOptions);
 
-      if (vectorTileGetterChanged) {
-        _createNewFeatureLayer(renderOptions.vectorTileGetter);
+      // Attach events on first render only
+      attachEvents();
+
+      updateBaseLayer(vif);
+      updateFeatureLayer(vif, vectorTileGetter);
+      updateCenterAndZoom(vif);
+
+      if (extent) {
+        fitBounds(buildBoundsFromExtent(extent));
       }
     }
+
+    lastRenderedVectorTileGetter = vectorTileGetter;
+    lastRenderedVif = newVif;
+    lastRenderedData = newData;
   };
 
   this.invalidateSize = function() {
-    if (_map) {
-      _map.invalidateSize();
+    if (map) {
+      map.invalidateSize();
     }
   };
 
   this.destroy = function() {
 
-    if (_map) {
+    if (map) {
 
       _detachEvents();
 
       // Remove the map after detaching events since `_detachEvents()` expects
-      // the `_map` instance to exist.
-      _map.remove();
+      // the `map` instance to exist.
+      map.remove();
     }
 
     // Finally, clear out the container.
@@ -187,6 +170,51 @@ function FeatureMap(element, vif) {
   /**
    * Private methods
    */
+
+  function vifsAreEqualIgnoringCenterAndZoom(vifOne, vifTwo) {
+    var vifs = [vifOne, vifTwo].map(_.cloneDeep);
+    vifs.forEach((vif) => _.unset(vif, 'configuration.mapCenterAndZoom'));
+
+    return _.isEqual(vifs[0], vifs[1]);
+  }
+
+  function didBaseLayerChange(newVif) {
+    var newBaseLayerUri = _.get(newVif, 'configuration.baseLayerUrl');
+    var lastRenderedBaseLayerUri = _.get(lastRenderedVif, 'configuration.baseLayerUrl');
+
+    var newBaseLayerOpacity = _.get(newVif, 'configuration.baseLayerOpacity');
+    var lastRenderedBaseLayerOpacity = _.get(lastRenderedVif, 'configuration.baseLayerOpacity');
+
+    return newBaseLayerUri !== lastRenderedBaseLayerUri || newBaseLayerOpacity !== lastRenderedBaseLayerOpacity;
+  }
+
+  function didBoundsChange(newVif) {
+    var newSavedExtent = _.get(newVif, 'configuration.savedExtent');
+    var lastRenderedSavedExtent = _.get(lastRenderedVif, 'configuration.savedExtent');
+
+    var newDefaultExtent = _.get(newVif, 'configuration.defaultExtent');
+    var lastRenderedDefaultExtent = _.get(lastRenderedVif, 'configuration.defaultExtent');
+
+    if (newSavedExtent && _.isEqual(newSavedExtent, lastRenderedSavedExtent)) {
+      return false;
+    } else if (newDefaultExtent && _.isEqual(newDefaultExtent, lastRenderedDefaultExtent)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function didBoundsChangeNew(newVif) {
+    var boundsRelatedPaths = [
+      'configuration.savedExtent',
+      'configuration.defaultExtent'
+    ];
+
+    return _.isEqual(
+      _.at(lastRenderedVif, boundsRelatedPaths),
+      _.at(newVif, boundsRelatedPaths)
+    );
+  }
 
   function _renderTemplate() {
 
@@ -279,11 +307,11 @@ function FeatureMap(element, vif) {
           append(mapContainer);
   }
 
-  function _attachEvents() {
+  function attachEvents() {
     var $document = $(document);
 
     // Only attach map events if the map has actually been instantiated.
-    if (_map) {
+    if (map) {
       // Map resizes are messy because our map containers are animated. This
       // causes Leaflet to believe that we are resizing the map n times when
       // we are really just doing it once but lerping between the container
@@ -319,12 +347,12 @@ function FeatureMap(element, vif) {
         }
       );
 
-      _map.on('resize', _handleMapResize);
-      _map.on('dragend zoomend', emitMapCenterAndZoomChange);
+      map.on('resize', _handleMapResize);
+      map.on('dragend zoomend', emitMapCenterAndZoomChange);
       // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
-      _map.on('resize dragend zoomend', _handleExtentChange);
-      _map.on('dragstart zoomstart', _handlePanAndZoom);
-      _map.on('mouseout', _hideFlyout);
+      map.on('resize dragend zoomend', _handleExtentChange);
+      map.on('dragstart zoomstart', _handlePanAndZoom);
+      map.on('mouseout', _hideFlyout);
 
       // react to the interactions that would close the RowInspector flannel
       if (_hover) {
@@ -358,14 +386,14 @@ function FeatureMap(element, vif) {
     var $document = $(document);
 
     // Only detach map events if the map has actually been instantiated.
-    if (_map) {
+    if (map) {
 
-      _map.off('resize', _handleMapResize);
-      _map.off('dragend zoomend', emitMapCenterAndZoomChange);
+      map.off('resize', _handleMapResize);
+      map.off('dragend zoomend', emitMapCenterAndZoomChange);
       // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
-      _map.off('resize dragend zoomend', _handleExtentChange);
-      _map.off('dragstart zoomstart', _handlePanAndZoom);
-      _map.off('mouseout', _hideFlyout);
+      map.off('resize dragend zoomend', _handleExtentChange);
+      map.off('dragstart zoomstart', _handlePanAndZoom);
+      map.off('mouseout', _hideFlyout);
 
       if (_hover) {
         $document.on('click', _captureLeftClickAndClearHighlight);
@@ -388,7 +416,7 @@ function FeatureMap(element, vif) {
     $(window).off('resize', _hideRowInspector);
   }
 
-  function _emitRenderStart() {
+  function emitRenderStart() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
       null
@@ -413,8 +441,8 @@ function FeatureMap(element, vif) {
   }
 
   function emitMapCenterAndZoomChange() {
-    var center = _map.getCenter();
-    var zoom = _map.getZoom();
+    var center = map.getCenter();
+    var zoom = map.getZoom();
     var lat = center.lat;
     var lng = center.lng;
     var centerAndZoom;
@@ -481,7 +509,7 @@ function FeatureMap(element, vif) {
   function _handleExtentChange() {
 
     var formattedBounds;
-    var bounds = _map.getBounds();
+    var bounds = map.getBounds();
 
     if (bounds.isValid()) {
       formattedBounds = {
@@ -538,7 +566,7 @@ function FeatureMap(element, vif) {
       position.coords.latitude,
       position.coords.longitude
     );
-    var featureBounds = _lastRenderOptions.bounds;
+    var featureBounds = buildBoundsFromExtent(lastRenderedData.extent);
     var distanceFromBoundsSouthWest;
     var distanceFromBoundsNorthEast;
 
@@ -556,7 +584,7 @@ function FeatureMap(element, vif) {
     // adjust the rendered bounds.
     if (latLngIsInsideBounds(userLatLng, featureBounds)) {
 
-      _userCurrentPositionBounds = featureBounds;
+      userCurrentPositionBounds = featureBounds;
 
     // Otherwise, figure out which edge to extend and update the bounds.
     } else {
@@ -566,11 +594,11 @@ function FeatureMap(element, vif) {
 
       if (distanceFromBoundsSouthWest <= distanceFromBoundsNorthEast) {
 
-        _userCurrentPositionBounds = L.latLngBounds(userLatLng, featureBounds.getNorthEast());
+        userCurrentPositionBounds = L.latLngBounds(userLatLng, featureBounds.getNorthEast());
 
       } else {
 
-        _userCurrentPositionBounds = L.latLngBounds(featureBounds.getSouthWest(), userLatLng);
+        userCurrentPositionBounds = L.latLngBounds(featureBounds.getSouthWest(), userLatLng);
 
       }
     }
@@ -587,7 +615,7 @@ function FeatureMap(element, vif) {
         }
       );
 
-      _userCurrentPositionMarker.addTo(_map);
+      _userCurrentPositionMarker.addTo(map);
 
     } else {
 
@@ -595,8 +623,8 @@ function FeatureMap(element, vif) {
 
     }
 
-    _map.fitBounds(
-      _userCurrentPositionBounds,
+    map.fitBounds(
+      userCurrentPositionBounds,
       {
         animate: true
       }
@@ -702,7 +730,7 @@ function FeatureMap(element, vif) {
       };
 
       if (vif.configuration.isMobile) {
-        _map.panTo(event.latlng);
+        map.panTo(event.latlng);
         var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
         inspectorDataQueryConfig.position.pageX = 0;
         inspectorDataQueryConfig.position.pageY = bottom;
@@ -724,7 +752,7 @@ function FeatureMap(element, vif) {
     _removeOldFeatureLayers();
 
     if (_hover) {
-      _map.fire('clearhighlightrequest');
+      map.fire('clearhighlightrequest');
     }
 
     // Emit render complete event
@@ -757,7 +785,7 @@ function FeatureMap(element, vif) {
 
     if (manyRows || denseData) {
 
-      if (_map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
+      if (map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
         payload.notice = self.getLocalization('flyout_filter_notice');
       } else {
         payload.notice = self.getLocalization('flyout_filter_or_zoom_notice');
@@ -870,13 +898,13 @@ function FeatureMap(element, vif) {
       'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
     );
 
-    _map.fire('clearhighlightrequest');
+    map.fire('clearhighlightrequest');
   }
 
   function _captureEscapeAndClearHighlight(event) {
 
     if (event.which === 27) {
-      _map.fire('clearhighlightrequest');
+      map.fire('clearhighlightrequest');
     }
   }
 
@@ -889,7 +917,7 @@ function FeatureMap(element, vif) {
     var isRowInspector = $target.parents('#socrata-row-inspector').length > 0 && !isIconClose;
 
     if (isLeftClick && (isOutsideOfCurrentMap || isIconClose) && !isRowInspector) {
-      _map.fire('clearhighlightrequest');
+      map.fire('clearhighlightrequest');
     }
   }
 
@@ -897,37 +925,71 @@ function FeatureMap(element, vif) {
    * Map behavior
    */
 
-  function _updateBaseLayer(url, opacity) {
+  function buildBoundsFromVif(newVif) {
+    var extent = _.get(newVif, 'configuration.savedExtent') || _.get(newVif, 'configuration.defaultExtent');
+    return buildBoundsFromExtent(extent);
+  }
 
-    if (_baseTileLayer) {
-      _map.removeLayer(_baseTileLayer);
+  function buildBoundsFromExtent(extent) {
+    var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);
+    var northEast = L.latLng(extent.northeast[0], extent.northeast[1]);
+
+    return L.latLngBounds(southWest, northEast);
+  }
+
+  function updateBounds(newVif) {
+    var hasExtent = _.has(newVif, 'configuration.savedExtent') || _.has(newVif, 'configuration.defaultExtent');
+
+    if (hasExtent && didBoundsChange(newVif)) {
+      fitBounds(buildBoundsFromVif(newVif));
     }
+  }
 
-    _baseTileLayer = L.tileLayer(
-      url,
-      {
-        attribution: '',
-        detectRetina: false,
-        opacity: opacity,
-        unloadInvisibleTiles: true
+  function updateBaseLayer(newVif) {
+    if (didBaseLayerChange(newVif)) {
+      if (_baseTileLayer) {
+        map.removeLayer(_baseTileLayer);
       }
-    );
 
-    _map.addLayer(_baseTileLayer);
+      _baseTileLayer = L.tileLayer(
+        _.get(newVif, 'configuration.baseLayerUrl'),
+        {
+          attribution: '',
+          detectRetina: false,
+          opacity: _.get(newVif, 'configuration.baseLayerOpacity'),
+          unloadInvisibleTiles: true,
+          zIndex: 0
+        }
+      );
+
+      map.addLayer(_baseTileLayer);
+    }
   }
 
   /**
    * Reads center and zoom overrides from the vif and updates the map to render
    * with those parameters.
-   *
-   * @param centerAndZoom - The centerAndZoom subtree from the vif.
    */
-  function updateCenterAndZoom(centerAndZoom) {
-    utils.assertHasProperties(centerAndZoom, 'center', 'zoom');
-    utils.assertHasProperties(centerAndZoom.center, 'lat', 'lng');
-    utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
+  function updateCenterAndZoom(newVif) {
+    var newCenter = _.get(newVif, 'configuration.mapCenterAndZoom.center');
+    var lastRenderedCenter = _.get(lastRenderedVif, 'configuration.mapCenterAndZoom.center');
 
-    _map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
+    var newZoom = _.get(newVif, 'configuration.mapCenterAndZoom.zoom');
+    var lastRenderedZoom = _.get(lastRenderedVif, 'configuration.mapCenterAndZoom.zoom');
+
+    var centerAndZoomDefined = _.chain(newVif).at(
+      'configuration.mapCenterAndZoom.center.lat',
+      'configuration.mapCenterAndZoom.center.lng',
+      'configuration.mapCenterAndZoom.zoom'
+    ).every(_.isNumber);
+
+    if (userCurrentPositionBounds) {
+      fitBounds(userCurrentPositionBounds);
+    } else if (centerAndZoomDefined && !_.isEqual(newCenter, lastRenderedCenter) || newZoom !== lastRenderedZoom) {
+      map.setView(newCenter, newZoom, {animate: false});
+    } else {
+      updateBounds(newVif);
+    }
   }
 
   /**
@@ -937,14 +999,14 @@ function FeatureMap(element, vif) {
    * @param bounds - The Leaflet LatLngBounds object that represents the
    *   extents of the column's features.
    */
-  function _fitBounds(bounds) {
+  function fitBounds(bounds) {
 
     // It is critical to invalidate size prior to updating bounds.
     // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
     // This manifests itself as the map being zoomed all of the way out.
-    _map.invalidateSize();
+    map.invalidateSize();
 
-    _map.fitBounds(
+    map.fitBounds(
       bounds,
       {
         animate: false,
@@ -965,45 +1027,80 @@ function FeatureMap(element, vif) {
    * so that there is only ever one active feature layer attached to the
    * map at a time.
    *
-   * @param {Object} map - The Leaflet map object.
+   * We update when:
+   * - the dataset uid changed.
+   * - a new list of tileserver hosts.
+   * - filtering in the VIF has changed.
+   *
+   * @param {Object} vectorTileGetter - Function that gets a vector tile
    * @param {Function} vectorTileGetter - Function that gets a vector tile
    */
-  function _createNewFeatureLayer(vectorTileGetter) {
+  function updateFeatureLayer(newVif, vectorTileGetter) {
+    var datasetUidPath = 'series[0].dataSource.datasetUid';
+    var datasetUidChanged = !_.isEqual(
+      _.get(newVif, datasetUidPath),
+      _.get(lastRenderedVif, datasetUidPath)
+    );
 
-    var layer;
-    var layerId = _.uniqueId();
-    var featureLayerOptions = {
-      // Data requests
-      vectorTileGetter: vectorTileGetter,
-      // Behavior
-      debug: _debug,
-      hover: _hover,
-      debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
-      rowInspectorMaxRowDensity: _maxRowInspectorDensity,
-      maxZoom: FEATURE_MAP_MAX_ZOOM,
-      maxTileDensity: _maxTileDensity,
-      tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
-      // Helper functions
-      getFeatureId: _getFeatureId,
-      getFeatureStyle: _getFeatureStyle,
-      getHoverThreshold: _getHoverThreshold,
-      // Event handlers
-      onRenderStart: _handleVectorTileRenderStart,
-      onRenderComplete: _handleVectorTileRenderComplete,
-      onMousemove: _handleVectorTileMousemove,
-      onClick: _handleVectorTileClick,
-      onTap: _.get(vif, 'configuration.isMobile') ? _handleVectorTileMousemove : null
-    };
+    var newUseOriginHost = _.get(newVif, 'configuration.useOriginHost');
+    var tileserverHostsPath = 'configuration.tileserverHosts';
+    var tileserverHostsChanged = !newUseOriginHost && !_.isEqual(
+      _.get(newVif, tileserverHostsPath),
+      _.get(lastRenderedVif, tileserverHostsPath)
+    );
 
-    // Don't create duplicate layers.
-    if (!_featureLayers.hasOwnProperty(layerId)) {
+    var newWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0);
+    var lastRenderedWhereClause = (lastRenderedVif) ?
+      SoqlHelpers.whereClauseNotFilteringOwnColumn(lastRenderedVif, 0) :
+      '';
 
-      layer = new L.TileLayer.VectorTileManager(featureLayerOptions);
+    var pointColorPath = 'configuration.pointColor';
+    var pointColorChanged = !_.isEqual(
+      _.get(newVif, pointColorPath),
+      _.get(lastRenderedVif, pointColorPath)
+    );
 
-      _map.addLayer(layer);
+    var pointOpacityPath = 'configuration.pointOpacity';
+    var pointOpacityChanged = !_.isEqual(
+      _.get(newVif, pointOpacityPath),
+      _.get(lastRenderedVif, pointOpacityPath)
+    );
 
-      _featureLayers[layerId] = layer;
-      _currentLayerId = layerId;
+    if (datasetUidChanged || tileserverHostsChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged) {
+      var layer;
+      var layerId = _.uniqueId();
+      var featureLayerOptions = {
+        // Data requests
+        vectorTileGetter: vectorTileGetter,
+        // Behavior
+        debug: _debug,
+        hover: _hover,
+        debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
+        rowInspectorMaxRowDensity: _maxRowInspectorDensity,
+        maxZoom: FEATURE_MAP_MAX_ZOOM,
+        maxTileDensity: _maxTileDensity,
+        tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
+        // Helper functions
+        getFeatureId: _getFeatureId,
+        getFeatureStyle: _getFeatureStyle,
+        getHoverThreshold: _getHoverThreshold,
+        // Event handlers
+        onRenderStart: _handleVectorTileRenderStart,
+        onRenderComplete: _handleVectorTileRenderComplete,
+        onMousemove: _handleVectorTileMousemove,
+        onClick: _handleVectorTileClick,
+        onTap: _.get(vif, 'configuration.isMobile') ? _handleVectorTileMousemove : null
+      };
+
+      // Don't create duplicate layers.
+      if (!_featureLayers.hasOwnProperty(layerId)) {
+        layer = new L.TileLayer.VectorTileManager(featureLayerOptions);
+
+        map.addLayer(layer);
+
+        _featureLayers[layerId] = layer;
+        _currentLayerId = layerId;
+      }
     }
   }
 
@@ -1016,7 +1113,7 @@ function FeatureMap(element, vif) {
     Object.keys(_featureLayers).forEach(function(layerId) {
 
       if (layerId !== _currentLayerId) {
-        _map.removeLayer(_featureLayers[layerId]);
+        map.removeLayer(_featureLayers[layerId]);
         delete _featureLayers[layerId];
       }
     });
@@ -1044,7 +1141,7 @@ function FeatureMap(element, vif) {
    */
   function _getQueryBounds(leafletContainerPoint) {
 
-    var hoverThreshold = _getHoverThreshold(_map.getZoom());
+    var hoverThreshold = _getHoverThreshold(map.getZoom());
     var delta = FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING + hoverThreshold;
     var northeastContainerPoint = L.point(
       leafletContainerPoint.x - delta,
@@ -1056,8 +1153,8 @@ function FeatureMap(element, vif) {
     );
 
     return {
-      northeast: _map.containerPointToLatLng(northeastContainerPoint),
-      southwest: _map.containerPointToLatLng(southwestContainerPoint)
+      northeast: map.containerPointToLatLng(northeastContainerPoint),
+      southwest: map.containerPointToLatLng(southwestContainerPoint)
     };
   }
 
@@ -1141,7 +1238,7 @@ function FeatureMap(element, vif) {
 
   function _calculatePointColor(zoomLevel) {
     var rgb = [235, 105, 0];
-    var color = _.get(vif, 'configuration.pointColor', '');
+    var color = _.get(lastRenderedVif, 'configuration.pointColor', '');
     var shorthandHexRegex = /^#([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})$/;
     var hexRegex = /^#([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})$/;
 
@@ -1149,7 +1246,7 @@ function FeatureMap(element, vif) {
     var expandShorthandHex = function(hex) { return hex.length === 1 ? hex + hex : hex; };
     var matches = color.match(shorthandHexRegex) || color.match(hexRegex);
 
-    var opacity = _.get(vif, 'configuration.pointOpacity', null);
+    var opacity = _.get(lastRenderedVif, 'configuration.pointOpacity', null);
 
     if (_.isNull(opacity)) {
       opacity = _calculatePointOpacity(zoomLevel);

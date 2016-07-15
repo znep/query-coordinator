@@ -12,8 +12,6 @@ class StoriesController < ApplicationController
 
   helper_method :needs_view_assets?, :contributor?
 
-  force_ssl except: [:show, :tile], unless: :ssl_disabled?
-
   def show
     @site_chrome = SiteChrome.for_current_domain
     respond_with_story(PublishedStory.find_by_uid(params[:uid]))

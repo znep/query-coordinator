@@ -2,7 +2,6 @@
 # after uploading that file via the URL generated with the UploadsController#create
 # endpoint.
 class Api::V1::DocumentsController < ApplicationController
-  force_ssl
 
   # NOTE Not happy with this, but gets us working again until we can rev the api to make documents
   # children of stories, which technically, they already are.

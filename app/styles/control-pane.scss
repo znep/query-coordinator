@@ -203,25 +203,6 @@
         padding-top: 0.2em;
         padding-left: 1.2em;
       }
-      .ui-spinner {
-        .ui-button-text {
-          padding: 0.1em 0em 0.3em 0em;
-          line-height: 100%;
-          font-size: 1.2em;
-        }
-        .ui-spinner-input {
-          width: 70%;
-        }
-        &.ui-widget-content {
-          border: none;
-        }
-        .ui-spinner-down {
-          @include border-radius(0px, 4px, 4px, 0px);
-        }
-        .ui-spinner-up {
-          @include border-radius(0px);
-        }
-      }
       .ui-slider {
         display: block;
         margin: {

@@ -34,28 +34,6 @@ $wide-desktop-width: 1450px;
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
 
-// Busy spinner animation
-@-webkit-keyframes busy-spinner {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@-moz-keyframes busy-spinner {
-  100% {
-    -moz-transform: rotate(360deg);
-  }
-}
-
-@keyframes busy-spinner {
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
 html {
   // http://stackoverflow.com/questions/2710764/preserve-html-font-size-when-iphone-orientation-changes-from-portrait-to-landsca
   -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
@@ -199,23 +177,13 @@ html {
         }
 
         .browse2-create-story-button-busy-spinner::after {
-          display: block;
+          @include spinner(1em, 0.25em, $panel-border-color, #47b);
           position: absolute;
           left: 50%;
           top: 50%;
           content: '';
-          width: 1em;
-          height: 1em;
           margin-top: -0.65em;
           margin-left: -0.65em;
-          border: 0.25em solid;
-          border-color: $panel-border-color;
-          border-right-color: #47b;
-          border-radius: 60%;
-          display: inline-block;
-          -webkit-animation: busy-spinner 0.9s linear infinite;
-          -moz-animation: busy-spinner 0.9s linear infinite;
-          animation: busy-spinner 0.9s linear infinite;
         }
 
         &[data-status="busy"] {
@@ -1853,16 +1821,8 @@ html {
   display: none;
 
   .browse2-loading-spinner {
-    border: 4px solid $loading-spinner-color-1;
-    border-right-color: $loading-spinner-color-2;
-    border-radius: 60%;
+    @include spinner($loading-spinner-size, 4px, $loading-spinner-color-1, $loading-spinner-color-2);
     position: relative;
-    display: inline-block;
-    width: $loading-spinner-size;
-    height: $loading-spinner-size;
     top: calc(50% - #{$loading-spinner-size / 2});
-    -webkit-animation: busy-spinner 0.9s linear infinite;
-    -moz-animation: busy-spinner 0.9s linear infinite;
-    animation: busy-spinner 0.9s linear infinite;
   }
 }

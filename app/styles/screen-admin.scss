@@ -100,22 +100,27 @@
           padding-left: 0;
         }
       }
-      .statusText {
+      .statusTextWrapper {
+        position: absolute;
+        top: 0.5rem;
+        left: 20rem;
         display: none;
         font: {
           size: 1.1em;
           weight: bold;
         };
-        left: 27em;
-        position: absolute;
-        top: 0.2em;
-        &.saved {
+
+        .saved {
           color: #999999;
         }
-        &.saving {
-          @include throbber-image;
-          background-position: right 1px;
-          padding-right: 24px;
+        .saving, .saved {
+          display: none;
+        }
+        .saving .icon {
+          @include throbber-icon;
+          margin-right: 0.5rem;
+          display: inline-block;
+          float: left;
         }
       }
     }

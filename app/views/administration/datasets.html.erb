@@ -50,8 +50,15 @@
             <%= sidebar_position == 'left' ? 'checked="checked"' : '' %> />
           <label for="sidebarPosition_left"><%= t("#{prefix}.left") %></label>
         </div>
-        <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
-        <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
+        <div class="statusTextWrapper">
+          <span class="saving">
+            <span class="icon"></span>
+            <span class="statusText"><%= t("#{prefix}.saving") %></span>
+          </span>
+          <span class="saved">
+            <span class="statusText"><%= t("#{prefix}.saved") %></span>
+          </span>
+        </div>
       </fieldset>
       <input type="submit" value="<%= t('core.dialogs.save') %>" />
     </form>

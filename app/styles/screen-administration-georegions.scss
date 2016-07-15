@@ -39,11 +39,7 @@ $form-checkbox-hover-check-color: #999;
   position: relative;
 
   .loading {
-    display: block;
-    text-align: left;
-    background: transparent url('/images/admin/geo/snuffleupasnake.gif') no-repeat 0 0;
-    height: 16px;
-    width: 16px;
+    @include spinner-small;
     position: absolute;
     top: calc(50% - 8px);
     left: calc(50% - 8px);
@@ -164,20 +160,28 @@ $form-checkbox-hover-check-color: #999;
     padding-bottom: 1em;
   }
 
+  .iframe-spinner {
+    @include spinner-mega;
+    display: block;
+    position: absolute;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+    z-index: -1;
+  }
+
   iframe {
     border: none;
     height: 55em;
     width: 100%;
-    background: transparent url('/stylesheets/images/common/BrandedSpinner.gif') no-repeat 50% 45%;
   }
 }
 
 .status-icon-progress {
-  display: inline-block;
-  background: transparent url('/images/admin/geo/snuffleupasnake.gif') no-repeat 0 0;
-  height: 16px;
-  width: 16px;
-  margin: 4px 0.5em 0 0;
+  @include spinner-small;
+  margin: {
+    top: 0.5rem;
+    right: 0.5em;
+  }
 }
 
 .georegion-spinner {
@@ -190,11 +194,11 @@ $form-checkbox-hover-check-color: #999;
   width: 100%;
   z-index: 1;
 
-  > img {
-    $img-size: 48px;
+  > span {
+    @include spinner-mega;
     position: absolute;
-    top: calc(50% - #{$img-size / 2});
-    left: calc(50% - #{$img-size / 2});
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
   }
 }
 
@@ -250,4 +254,3 @@ $form-checkbox-hover-check-color: #999;
     }
   }
 }
-

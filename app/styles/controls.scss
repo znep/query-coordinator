@@ -426,8 +426,7 @@ ul.wizardButtons {
 
 // Standard loading spinner
 .loadingSpinner {
-  background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
-  height: 48px;
+  @include spinner-large;
   left: 50%;
   margin: {
     left: -24px;
@@ -435,8 +434,8 @@ ul.wizardButtons {
   };
   position: absolute;
   top: 50%;
-  width: 48px;
   z-index: 10000;
+
   &.minimal {
     @include throbber-icon;
     margin: {

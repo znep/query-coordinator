@@ -732,17 +732,9 @@ $data-lens-color: #80acca;
   width: 24px;
 }
 
-// content/snuffleupasnake.gif
 @mixin throbber-icon {
   @include text-hiding;
-  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
-  height: 16px;
-  width: 16px;
-}
-
-@mixin throbber-image {
-  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
-  background-repeat: no-repeat;
+  @include spinner-small;
 }
 
 // Grid header icons

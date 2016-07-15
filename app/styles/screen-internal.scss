@@ -116,8 +116,14 @@ form.wide {
     width: 95%;
   }
   &.loading {
-    .domainAwesomeComplete {
-      background: url(/stylesheets/images/content/snuffleupasnake.gif) no-repeat center right;
+    > div {
+      position: relative;
+    }
+    .spinner {
+      @include spinner-mini;
+      position: absolute;
+      top: calc(50% - 11px);
+      right: 5%;
     }
     &:after {
       content: 'Please wait for a moment before typing..';

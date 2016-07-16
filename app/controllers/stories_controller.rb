@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
 
   helper_method :needs_view_assets?, :contributor?
 
-  force_ssl except: [:show, :tile], unless: :ssl_disabled?
+  force_ssl unless: :ssl_disabled?
 
   def show
     @site_chrome = SiteChrome.for_current_domain

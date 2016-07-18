@@ -98,6 +98,21 @@ $.fn.socrataTable = function(vif) {
     }
   );
 
+  var getMemoizedRowCount = _.memoize(
+    function(soqlDataProvider, whereClauseComponents, allowObeDataset) {
+      return soqlDataProvider.getRowCount(whereClauseComponents, allowObeDataset);
+    },
+    function(soqlDataProvider, whereClauseComponents, allowObeDataset, rowsUpdatedAt) {
+      return '{0}_{1}_{2}_{3}_{4}'.format(
+        soqlDataProvider.getConfigurationProperty('domain'),
+        soqlDataProvider.getConfigurationProperty('datasetUid'),
+        whereClauseComponents,
+        allowObeDataset,
+        rowsUpdatedAt
+      );
+    }
+  );
+
   _attachEvents();
 
   $element.addClass('socrata-paginated-table');
@@ -155,14 +170,17 @@ $.fn.socrataTable = function(vif) {
   function _render() {
 
     if (_renderState.error) {
-      visualization.renderError();
-    } else if (_renderState.fetchedData) {
+      return visualization.renderError();
+    }
 
+    if (_renderState.fetchedData) {
       visualization.render(
         _renderState.fetchedData,
         _renderState.fetchedData.order
       );
+    }
 
+    if (_renderState.fetchedData && _renderState.datasetRowCount) {
       renderPager({
         unit: vif.unit,
         startIndex: _renderState.fetchedData.startIndex,
@@ -400,8 +418,12 @@ $.fn.socrataTable = function(vif) {
 
           // TODO: Remove this once we no longer need to support OBE datasets
           var allowObeDataset = _.get(vifToRender, 'configuration.allowObeDataset', false);
-          var soqlRowCountPromise = soqlDataProvider.
-            getRowCount(whereClauseComponents, allowObeDataset);
+          var soqlRowCountPromise = getMemoizedRowCount(
+            soqlDataProvider,
+            whereClauseComponents,
+            allowObeDataset,
+            datasetMetadata.rowsUpdatedAt
+          );
           var soqlDataPromise = soqlDataProvider.
             getTableData(
               displayableColumnsFieldNames,
@@ -412,15 +434,16 @@ $.fn.socrataTable = function(vif) {
               allowObeDataset
             );
 
-          return Promise.all([
-            soqlRowCountPromise,
-            soqlDataPromise
-          ]).then(
-            function(resolutions) {
-              $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+          soqlRowCountPromise.then(function(rowCount) {
+            _updateState({
+              datasetRowCount: rowCount
+            });
+          })
+          ['catch'](_handleSetDataQueryError);
 
-              var rowCount = resolutions[0];
-              var soqlData = resolutions[1];
+          return soqlDataPromise.then(
+            function(soqlData) {
+              $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
               // Rows can either be undefined OR of the exact length of the
               // displayableColumns OR MAX_COLUMN_COUNT, if the
@@ -445,11 +468,9 @@ $.fn.socrataTable = function(vif) {
                   order: order,
                   whereClauseComponents: whereClauseComponents
                 },
-                datasetRowCount: rowCount,
                 busy: false,
                 error: false
               });
-
             }
           )
           ['catch'](_handleSetDataQueryError);

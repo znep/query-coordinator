@@ -119,6 +119,7 @@ describe('views/Table', function() {
         SoqlDataProvider: function() {
           this.getTableData = getTableDataSpy;
           this.getRowCount = _.constant(Promise.resolve(123));
+          this.getConfigurationProperty = _.constant('configProperty')
         },
         Table: function() {
           this.howManyRowsCanFitInHeight = _.constant(6);

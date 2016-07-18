@@ -1,12 +1,20 @@
 # helper for logic around displaying connector pages
 module DataConnectorHelper
 
+  # private :get_service_display_string
+
   # for a service hash, get the most preferred way to represent it as a string
   def service_display_string(service_data)
+    display_string = get_service_display_string(service_data)
+    return service_data['url'] if display_string.blank?
+    return "#{display_string} (#{service_data['kind'].titleize})"
+  end
+
+  def get_service_display_string(service_data)
     return service_data['name'] unless service_data['name'].blank?
     return service_data['service_description'] unless service_data['service_description'].blank?
     return service_data['description'] unless service_data['description'].blank?
-    service_data['url']
+    return ''
   end
 
   def layer_display_string(layer_data)

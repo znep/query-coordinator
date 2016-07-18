@@ -28,6 +28,18 @@ class DataConnector
     EsriCrawler.get_request("/servers/#{id}/tree")
   end
 
+  def self.all_layers(id, offset, limit)
+    query = {
+      :filters => {
+        :sync_type => 'catalog'
+      },
+      :offset => offset,
+      :limit => limit
+
+    }
+    return EsriCrawler.get_request("/servers/#{id}/layers", query)
+  end
+
   # create a new connector by posting it to the EsriCrawler
   def self.create(esri_domain, sync_type = 'ignored')
     EsriCrawler.post_request('/servers', {

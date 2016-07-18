@@ -1990,6 +1990,9 @@ en:
         success: Success
         terminate: Terminate
         title: Manage Connectors
+        show_title: ArcGIS Server Federation
+        arcgis_layer: ArcGIS Layer
+        dataset: Dataset
       datasets:
         asset_inventory:
           tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.

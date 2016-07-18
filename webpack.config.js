@@ -1,5 +1,4 @@
 var path = require('path');
-var Rewire = require('rewire-webpack');
 
 module.exports = [
   {
@@ -10,11 +9,7 @@ module.exports = [
       filename: 'vendor.js'
     },
     resolve: {
-      modulesDirectories: ['node_modules'],
-      alias: {
-        'socrata-utils': path.join(__dirname, '.', 'node_modules/socrata-utils/dist/socrata.utils.js'),
-        'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
-      }
+      modulesDirectories: ['node_modules']
     }
   },
   {
@@ -49,9 +44,6 @@ module.exports = [
     resolve: {
       modulesDirectories: ['node_modules']
     },
-    plugins: [
-      new Rewire()
-    ],
     devtool: 'source-map'
   }
 ];

@@ -1,6 +1,7 @@
 // Karma configuration
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
+var Rewire = require('rewire-webpack');
 var webpackConfig = require('./webpack.config');
 
 delete webpackConfig[1].entry;
@@ -10,6 +11,7 @@ delete webpackConfig[1].externals;
 webpackConfig[1].resolve = webpackConfig[0].resolve;
 webpackConfig[1].resolve.root = [ __dirname ];
 webpackConfig[1].devtool = 'inline-source-map';
+webpackConfig[1].plugins = [new Rewire()];
 
 module.exports = function(config) {
   config.set({

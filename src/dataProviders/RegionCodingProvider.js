@@ -19,6 +19,27 @@ export default function RegionCodingProvider(config) {
       then(response => response.json());
   };
 
+  this.awaitRegionCodingCompletion = (shapefileId) => {
+    return new Promise((resolve, reject) => {
+      var await = () => {
+        this.getRegionCodingStatus(shapefileId).
+          then(handleResponse);
+      };
+
+      var handleResponse = (response) => {
+        if (response.success && response.status === 'completed') {
+          resolve(response);
+        } else if (response.success && response.status === 'failed') {
+          reject(null); // TODO: provide an error so upstream consumers have something to work with
+        } else {
+          resolve(this.awaitRegionCodingCompletion(shapefileId));
+        }
+      };
+
+      _.delay(await, 5000);
+    });
+  };
+
   this.initiateRegionCoding = (shapefileId, sourceColumn) => {
     var options = {
       method: 'POST',

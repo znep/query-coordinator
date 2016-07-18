@@ -87,20 +87,38 @@ export function setVisualizationType(visualizationType) {
 export var INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
 export function initiateRegionCoding(domain, datasetUid, shapefileId, sourceColumn) {
   return dispatch => {
-    let regionCodingProvider = new RegionCodingProvider({domain, datasetUid});
+    var regionCodingProvider = new RegionCodingProvider({domain, datasetUid});
 
-    let handleError = error => {
+    var handleError = error => {
       dispatch(handleRegionCodingError(error))
     };
 
-    let handleInitiation = response => {
-      dispatch(setComputedColumn(response));
+    var handleInitiation = response => {
+      if (response.success) {
+        regionCodingProvider.awaitRegionCodingCompletion(shapefileId).
+          then(() => {
+            var datasetMetadataProvider = new MetadataProvider({
+              domain: dataSource.domain,
+              datasetUid: dataSource.datasetUid
+            });
+
+            datasetMetadataProvider.getPhidippidesMetadata().
+              then((metadata) => {
+                // find the info for the corresponding computed column so we can
+                dispatch(setComputedColumn(computedColumnUid, computedColumnName));
+              }).
+              catch(handleError);
+          }).
+          catch(handleError);
+      } else {
+        handleError();
+      }
     };
 
-    let handleStatus = response => {
+    var handleStatus = response => {
       if (response.success && response.status === 'unknown') {
         regionCodingProvider.
-          initiateRegionCoding(datasetUid, shapefileUid, sourceColumn).
+          initiateRegionCoding(datasetUid, shapefileId, sourceColumn).
           then(handleInitiation).
           catch(handleError);
       } else {

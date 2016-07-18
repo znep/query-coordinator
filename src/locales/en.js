@@ -53,7 +53,11 @@ export default {
         },
         region: {
           title: 'Region',
-          placeholder: 'Select a region...'
+          placeholder: 'Select a region...',
+          groups: {
+            processed_regions: 'Processed Regions',
+            unprocessed_regions: 'Unprocessed Regions'
+          }
         }
       }
     },

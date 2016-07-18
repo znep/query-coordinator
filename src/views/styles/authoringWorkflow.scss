@@ -50,6 +50,26 @@
       width: 100%;
     }
 
+    .region-general-info,
+    .region-processing-info {
+      margin-bottom: 10px;
+
+      *:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .region-general-info.hidden {
+      display: none;
+    }
+
+    .region-dropdown-container {
+      .icon-question {
+        margin-left: 2px;
+        cursor: pointer;
+      }
+    }
+
     .measure-dropdown-container {
       display: flex;
 

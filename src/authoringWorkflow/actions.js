@@ -1,7 +1,8 @@
-var MetadataProvider = require('../dataProviders/MetadataProvider');
+import MetadataProvider from '../dataProviders/MetadataProvider';
+import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
 export function setDataSource(dataSource) {
-  return function(dispatch) {
+  return dispatch => {
     if (!/\w{4}\-\w{4}/.test(dataSource.datasetUid)) {
       return;
     }
@@ -17,9 +18,9 @@ export function setDataSource(dataSource) {
       datasetMetadataProvider.getDatasetMetadata(),
       datasetMetadataProvider.getPhidippidesMetadata(),
       datasetMetadataProvider.getCuratedRegions()
-    ]).then(function(resolutions) {
+    ]).then(resolutions => {
       dispatch(receiveMetadata(resolutions));
-    }).catch(function(error) {
+    }).catch(error => {
       console.error(error);
       dispatch(handleMetadataError());
     });
@@ -82,6 +83,53 @@ export function setVisualizationType(visualizationType) {
     visualizationType
   };
 }
+
+export var INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
+export function initiateRegionCoding(domain, datasetUid, shapefileId, sourceColumn) {
+  return dispatch => {
+    let regionCodingProvider = new RegionCodingProvider({domain, datasetUid});
+
+    let handleError = error => {
+      dispatch(handleRegionCodingError(error))
+    };
+
+    let handleInitiation = response => {
+      dispatch(setComputedColumn(response));
+    };
+
+    let handleStatus = response => {
+      if (response.success && response.status === 'unknown') {
+        regionCodingProvider.
+          initiateRegionCoding(datasetUid, shapefileUid, sourceColumn).
+          then(handleInitiation).
+          catch(handleError);
+      } else {
+        handleError();
+      }
+    };
+
+    dispatch(requestRegionCoding());
+
+    return regionCodingProvider.
+      getRegionCodingStatus(shapefileId).
+      then(handleStatus);
+  };
+};
+
+export var REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
+export function requestRegionCoding() {
+  return {
+    type: REQUEST_REGION_CODING
+  };
+};
+
+export var HANDLE_REGION_CODING_ERROR = 'HANDLE_REGION_CODING_ERROR';
+export function handleRegionCodingError(error) {
+  return {
+    type: HANDLE_REGION_CODING_ERROR,
+    error
+  };
+};
 
 export var SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
 export function setComputedColumn(computedColumnUid, computedColumnName) {

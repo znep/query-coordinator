@@ -168,12 +168,12 @@
       };
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
-        // vif: choroplethVif,
-        // vif: ufoSightingsVif,
-        vif: featureMapVif,
-        // vif: iowaMathAndReadingProficiency,
-        // vif: licenseeTax,
-        // vif: citizenSatisfaction,
+        vif: choroplethVif,
+        //vif: ufoSightingsVif,
+        //vif: featureMapVif,
+        //vif: iowaMathAndReadingProficiency,
+        //vif: licenseeTax,
+        //vif: citizenSatisfaction,
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);
           $chart.empty();

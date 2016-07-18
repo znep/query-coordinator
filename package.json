@@ -101,7 +101,8 @@
     "simple-statistics": "0.8.1",
     "socrata-utils": "3.0.1",
     "vector-tile": "0.1.1",
-    "wellknown": "0.4.2"
+    "wellknown": "0.4.2",
+    "whatwg-fetch": "1.0.0"
   },
   "files": [
     "dist"

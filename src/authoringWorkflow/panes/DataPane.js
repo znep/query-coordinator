@@ -15,7 +15,8 @@ import {
   setVisualizationType,
   setDataSource,
   setComputedColumn,
-  setMeasureAggregation
+  setMeasureAggregation,
+  initiateRegionCoding
 } from '../actions';
 
 import {
@@ -23,6 +24,8 @@ import {
   hasData,
   hasError,
   getValidRegions,
+  getValidComputedColumns,
+  getValidCuratedRegions,
   getValidMeasures,
   getValidDimensions,
   getRecommendedDimensions,
@@ -37,7 +40,10 @@ import {
   getVisualizationType,
   getSelectedVisualizationType,
   getAnyDimension,
-  getAnyMeasure
+  getAnyMeasure,
+  getDatasetUid,
+  getDimension,
+  getDomain,
 } from '../selectors/vifAuthoring';
 
 export var DataPane = React.createClass({
@@ -54,6 +60,12 @@ export var DataPane = React.createClass({
     onSelectRegion: React.PropTypes.func
   },
 
+  getInitialState() {
+    return {
+      showRegionCodingInfo: false
+    };
+  },
+
   getDefaultProps() {
     return {
       visualizationTypes: VISUALIZATION_TYPES,
@@ -62,31 +74,50 @@ export var DataPane = React.createClass({
   },
 
   onSelectRegion(selection) {
+    var {
+      metadata,
+      vifAuthoring,
+      onSelectRegion,
+      onSelectCuratedRegion
+    } = this.props;
+
     var computedColumnUid = selection.value;
-    var regions = getValidRegions(this.props.metadata);
+    var regions = getValidRegions(metadata);
     var region = _.find(regions, {uid: computedColumnUid});
 
-    this.props.onSelectRegion(computedColumnUid, region.fieldName);
+    if (region.fieldName) {
+      onSelectRegion(computedColumnUid, region.fieldName);
+    } else {
+      onSelectCuratedRegion(
+        getDomain(vifAuthoring),
+        getDatasetUid(vifAuthoring),
+        computedColumnUid,
+        getDimension(vifAuthoring)
+      );
+    }
+  },
+
+  onClickRegionInfo() {
+    this.setState({
+      showRegionCodingInfo: !this.state.showRegionCodingInfo
+    });
   },
 
   dimensionDropdown() {
     var { metadata, onSelectDimension, vifAuthoring } = this.props;
     var dimension = getAnyDimension(vifAuthoring);
     var type = getVisualizationType(vifAuthoring);
-    var toRenderableRecommendedOption = dimension => {
-      return {
+
+    var buildOption = group => {
+      return dimension => ({
         title: dimension.name,
         value: dimension.fieldName,
-        group: translate('panes.data.fields.dimension.groups.recommended_columns')
-      };
+        group
+      });
     };
-    var toRenderableOption = dimension => {
-      return {
-        title: dimension.name,
-        value: dimension.fieldName,
-        group: translate('panes.data.fields.dimension.groups.all_columns')
-      };
-    };
+
+    var toRenderableRecommendedOption = buildOption(translate('panes.data.fields.dimension.groups.recommended_columns'));
+    var toRenderableOption = buildOption(translate('panes.data.fields.dimension.groups.all_columns'));
 
     var dimensions = [
       ..._.map(getRecommendedDimensions(metadata, type), toRenderableRecommendedOption),
@@ -177,22 +208,82 @@ export var DataPane = React.createClass({
     }
   },
 
+  regionInfo() {
+    var { showRegionCodingInfo } = this.state;
+    var classes = classNames('region-general-info alert info', {
+      'hidden': !showRegionCodingInfo
+    });
+
+    return (
+      <div className={classes}>
+        <p>There are two types of regions:</p>
+        <ul>
+          <li><em>Processed Region</em>: A previously processed region that renders instantly for this dataset.</li>
+          <li><em>Unprocessed Region</em>: An unprocessed region that will be processed at demand.</li>
+        </ul>
+      </div>
+    );
+  },
+
+  regionProcessing() {
+    var { showRegionCodingProcessingMessage } = this.props.vifAuthoring.authoring;
+
+    if (showRegionCodingProcessingMessage) {
+      return (
+        <div className="region-processing-info alert warning">
+          <p>The selected column is currently being processed and region coded.</p>
+          <p>An unprocessed region can still be applied to your visualization but will not be viewable until processing is complete.</p>
+        </div>
+      );
+    }
+  },
+
+  regionProcessingError() {
+    var { regionCodingError } = this.props.vifAuthoring.authoring;
+
+    if (regionCodingError) {
+      return (
+        <div className="region-processing-error alert error">
+          <p>Oh no! There was an error trying to process your region selection.</p>
+        </div>
+      );
+    }
+  },
+
   regionDropdown() {
     var metadata = this.props.metadata;
-    var regions = getValidRegions(metadata);
     var defaultRegion = getShapefileUid(this.props.vifAuthoring);
+
+    var buildOption = group => {
+      return (region) => ({title: region.name, value: region.uid, group});
+    };
+
+    var toComputedColumnOption = buildOption(translate('panes.data.fields.region.groups.processed_regions'));
+    var toCuratedRegionOption = buildOption(translate('panes.data.fields.region.groups.unprocessed_regions'));
+
+    var options = [
+      ..._.map(getValidComputedColumns(metadata), toComputedColumnOption),
+      ..._.map(getValidCuratedRegions(metadata), toCuratedRegionOption)
+    ];
+
     var regionAttributes = {
       id: 'region-selection',
       placeholder: translate('panes.data.fields.region.placeholder'),
-      options: regions.map(region => ({title: region.name, value: region.uid})),
+      options,
       value: defaultRegion,
       onSelection: this.onSelectRegion
     };
 
     return (
       <div className="region-dropdown-container">
-        <label className="block-label" htmlFor="region-selection">{translate('panes.data.fields.region.title')}:</label>
+        <label className="block-label" htmlFor="region-selection">
+          {translate('panes.data.fields.region.title')}
+          <span className="icon-question" onClick={this.onClickRegionInfo}></span>:
+        </label>
+        {this.regionInfo()}
         <Styleguide.components.Dropdown {...regionAttributes} />
+        {this.regionProcessing()}
+        {this.regionProcessingError()}
       </div>
     );
   },
@@ -201,20 +292,16 @@ export var DataPane = React.createClass({
     var { visualizationTypes, vifAuthoring, metadata, onSelectVisualizationType } = this.props;
     var types = visualizationTypes;
     var selectedVisualizationType = getSelectedVisualizationType(vifAuthoring);
-    var toRenderableRecommendedOption = visualizationType => {
-      return {
+    var buildOption = group => {
+      return visualizationType => ({
         title: visualizationType.title,
         value: visualizationType.type,
-        group: translate('panes.data.fields.visualization_type.groups.recommended_visualizations')
-      };
+        group
+      });
     };
-    var toRenderableOption = visualizationType => {
-      return {
-        title: visualizationType.title,
-        value: visualizationType.type,
-        group: translate('panes.data.fields.visualization_type.groups.all_visualizations')
-      };
-    };
+
+    var toRenderableRecommendedOption = buildOption(translate('panes.data.fields.visualization_type.groups.recommended_visualizations'));
+    var toRenderableOption = buildOption(translate('panes.data.fields.visualization_type.groups.all_visualizations'));
 
     var visualizationTypes = [
       ..._.map(getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring)), toRenderableRecommendedOption),
@@ -255,11 +342,11 @@ export var DataPane = React.createClass({
 
   render() {
     var metadataInfo;
-    var regionsDropdown;
+    var regionDropdown;
     var dimensionDropdown;
     var measureDropdown;
     var visualizationTypeDropdown;
-    var metadata = this.props.metadata;
+    var { metadata, vifAuthoring } = this.props;
     var datasetUid = _.get(metadata, 'data.uid');
 
     if (hasError(metadata)) {
@@ -273,20 +360,20 @@ export var DataPane = React.createClass({
       measureDropdown = this.measureDropdown();
       visualizationTypeDropdown = this.visualizationTypeDropdown();
 
-      if (isChoroplethMap(this.props.vifAuthoring)) {
-        regionsDropdown = this.regionDropdown();
+      if (isChoroplethMap(vifAuthoring) && getDimension(vifAuthoring).columnName) {
+        regionDropdown = this.regionDropdown();
       }
     }
 
     return (
-      <form>
+      <form ref={(ref) => { this.container = ref; }}>
         {metadataInfo}
 
         {visualizationTypeDropdown}
         {measureDropdown}
         {dimensionDropdown}
 
-        {regionsDropdown}
+        {regionDropdown}
       </form>
     );
   }
@@ -322,6 +409,10 @@ function mapDispatchToProps(dispatch) {
 
     onSelectRegion(computedColumnUid, computedColumnName) {
       dispatch(setComputedColumn(computedColumnUid, computedColumnName));
+    },
+
+    onSelectCuratedRegion(domain, datasetUid, shapefileId, sourceColumn) {
+      dispatch(initiateRegionCoding(domain, datasetUid, shapefileId, sourceColumn));
     }
   };
 }

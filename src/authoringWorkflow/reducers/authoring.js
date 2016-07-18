@@ -1,11 +1,19 @@
 import _ from 'lodash';
-import { SET_VISUALIZATION_TYPE, REQUEST_CENTER_AND_ZOOM, SET_CENTER_AND_ZOOM } from '../actions';
+import {
+  SET_VISUALIZATION_TYPE,
+  REQUEST_REGION_CODING,
+  HANDLE_REGION_CODING_ERROR,
+  REQUEST_CENTER_AND_ZOOM,
+  SET_CENTER_AND_ZOOM
+} from '../actions';
 
 export default function authoring(state, action) {
   if (_.isUndefined(state)) {
     return {
       selectedVisualizationType: null,
-      showCenteringAndZoomingSaveMessage: false
+      showCenteringAndZoomingSaveMessage: false,
+      showRegionCodingProcessingMessage: false,
+      regionCodingError: null
     };
   }
 
@@ -23,6 +31,15 @@ export default function authoring(state, action) {
     case SET_CENTER_AND_ZOOM:
       state.showCenteringAndZoomingSaveMessage = false;
       break;
+
+    case REQUEST_REGION_CODING:
+      state.showRegionCodingProcessingMessage = true;
+      state.regionCodingError = null;
+      break;
+
+    case HANDLE_REGION_CODING_ERROR:
+      state.showRegionCodingProcessingMessage = false;
+      state.regionCodingError = action.error;
   }
 
   return state;

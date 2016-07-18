@@ -61,26 +61,39 @@ export const getValidMeasures = createSelector(
   }
 );
 
-export const getValidRegions = createSelector(
-  getDatasetMetadata,
-  getCuratedRegions,
+export const getValidComputedColumns = createSelector(
   getPhidippidesMetadata,
-  (datasetMetadata, curatedRegions, phidippidesMetadata) => {
-    var validCuratedRegions = _.chain(curatedRegions).
-      map(pluckCuratedRegionNameAndUid).
-      sortBy('name').
-      value();
-    var validComputedColumns = _.chain(phidippidesMetadata.columns).
+  (phidippidesMetadata) => {
+    return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter(isComputedColumn).
       map(pluckComputedColumnNameAndUid).
       sortBy('name').
       value();
+  }
+);
 
-    return [
-      ...validComputedColumns,
-      ...validCuratedRegions
-    ];
+export const getValidCuratedRegions = createSelector(
+  getCuratedRegions,
+  getValidComputedColumns,
+  (curatedRegions, computedColumns) =>  {
+    var notInDataset = (region) => {
+      return !_.includes(computedColumns, region.uid);
+    };
+
+    return _.chain(curatedRegions).
+      filter(notInDataset).
+      map(pluckCuratedRegionNameAndUid).
+      sortBy('name').
+      value();
+  }
+);
+
+export const getValidRegions = createSelector(
+  getValidCuratedRegions,
+  getValidComputedColumns,
+  (curatedRegions, computedColumns) => {
+    return [...curatedRegions, ...computedColumns];
   }
 );
 

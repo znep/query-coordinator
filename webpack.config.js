@@ -14,7 +14,7 @@ module.exports = [
   },
   {
     context: __dirname,
-    entry: './src/index.js',
+    entry: ['whatwg-fetch', './src/index.js'],
     externals: {
       'jquery': true,
       'socrata-utils': true,

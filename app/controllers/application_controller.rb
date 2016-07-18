@@ -18,9 +18,6 @@ class ApplicationController < ActionController::Base
   prepend_before_filter :set_story_uid
   before_filter :handle_authorization
 
-  # Force SSL redirect for all traffic
-  force_ssl unless: :ssl_disabled?
-
   # Returns the current user, or nil
   #
   # ==== Examples
@@ -41,7 +38,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ssl_disabled?
-   Rails.env.test?
+    Rails.env.test?
   end
 
   def render_404

@@ -30,6 +30,7 @@ module.exports = {
     alias: {
       'airbrake': path.resolve('.', 'node_modules/airbrake-js/lib/client.js'),
       'd3': path.resolve('.', 'node_modules/d3/d3.js'),
+      'jquery': path.resolve('.', 'node_modules/jquery/dist/jquery.js'),
       'jQuery': path.resolve('.', 'node_modules/jquery/dist/jquery.js'),
       'jQuery-sidebar': path.resolve('.', 'node_modules/jquery-sidebar/src/jquery.sidebar.js'),
       'jQuery-ujs': path.resolve('.', 'node_modules/jquery-ujs/src/rails.js'),

@@ -37,7 +37,7 @@ class PageSelector extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   rowsPerPage: state.getIn(['goalTableData', 'rowsPerPage']),
   totalGoalCount: state.getIn(['goalTableData', 'totalGoalCount']),
   currentPage: state.getIn(['goalTableData', 'currentPage'])

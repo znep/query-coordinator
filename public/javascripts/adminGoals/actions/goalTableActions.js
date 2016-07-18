@@ -6,6 +6,7 @@ import {
   CACHE_DASHBOARDS,
   CACHE_USERS,
   CACHE_GOALS,
+  CACHED_GOALS_UPDATED,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
@@ -207,6 +208,13 @@ export function cacheUsers(users) {
 export function cacheGoals(goals) {
   return {
     type: CACHE_GOALS,
+    goals
+  };
+}
+
+export function updateCachedGoals(goals) {
+  return {
+    type: CACHED_GOALS_UPDATED,
     goals
   };
 }

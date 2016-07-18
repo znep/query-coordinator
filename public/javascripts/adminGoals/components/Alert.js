@@ -42,7 +42,7 @@ class Alert extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations'])
+  translations: state.get('translations')
 });
 
 const mapDispatchToProps = () => ({});

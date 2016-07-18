@@ -225,7 +225,7 @@ class GoalQuickEdit extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   goal: _.isNull(state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])) ?
     Immutable.Map({}) :
     state.getIn(['goalTableData', 'cachedGoals', state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])]),

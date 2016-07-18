@@ -37,7 +37,7 @@ class GoalTableHead extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   currentColumn: state.getIn(['goalTableData', 'tableOrder', 'column']),
   currentDirection: state.getIn(['goalTableData', 'tableOrder', 'direction'])
 });

@@ -22,6 +22,10 @@ class GoalTable extends React.Component {
     });
   }
 
+  onEditMultipleItemsClick (e) {
+	console.log('Edit multiple items');
+  }
+
   render() {
     return <div>
       <Alert { ...this.state.alert }/>

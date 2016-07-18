@@ -24,7 +24,7 @@ class GoalTableBody extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   goals: state.getIn(['goalTableData', 'goals']),
   dashboards: state.getIn(['goalTableData', 'dashboards'])
 });

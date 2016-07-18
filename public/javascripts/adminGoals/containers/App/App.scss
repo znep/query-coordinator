@@ -6,6 +6,32 @@
   }
 }
 
+.sc-check-indicator {
+  display: inline;
+  margin-left: 10px;
+
+  .sc-check-indicator-revert { display: none; }
+
+  .btn {
+    border-color: #00BF9B;
+    background-color: #E5F9F5;
+    color: #00987c;
+
+    padding: 4px 6px;
+  }
+
+  &:hover {
+    .sc-check-indicator-check { display: none; }
+    .sc-check-indicator-revert { display: inline; }
+
+    .btn {
+      border-color: #E48424;
+      background-color: #FCF3EB;
+      color: #9e5c23;
+    }
+  }
+}
+
 .modal-container {
   .externalLink {
     text-decoration: none;
@@ -25,12 +51,17 @@
   }
 
   .modal-content {
-    width: 1100px;
+    //width: 1100px;
     margin-left: auto;
     margin-right: auto;
 
     .Select-menu-outer {
       left: 0;
+    }
+
+    .visibilitySelect {
+      width: 100px;
+      display: inline-flex;
     }
 
     .goal-quick-edit-form {
@@ -46,11 +77,6 @@
         width: 175px;
         text-align: right;
         padding-right: 20px;
-      }
-
-      .visibilitySelect {
-        width: 100px;
-        display: inline-flex;
       }
 
       .text-input {
@@ -70,6 +96,11 @@
   }
 
   .modal-footer {
+    position: relative;
+    margin: -16px;
+    margin-top: 30px;
+    width: auto;
+
     .link-container {
       float: left;
       margin-top: 12px;

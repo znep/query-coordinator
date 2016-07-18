@@ -17,12 +17,13 @@ if (window.serverConfig.environment === 'development') {
 }
 
 const initialState = Immutable.fromJS({
+	translations: window.translations,
+
   goalTableData: {
-    dashboards: {},
     goals: [],
+    dashboards: {},
     cachedUsers: {},
     cachedGoalExtras: {},
-    translations: window.translations,
     selectedRows: [],
     rowsPerPage: 25,
     currentPage: 1,
@@ -30,6 +31,12 @@ const initialState = Immutable.fromJS({
     goalQuickEditOpenGoalId: null,
     goalTableAlert: {},
     goalQuickEditAlert: {}
+  },
+
+  editMultipleItemsForm: {
+    visible: false,
+    goal: {},
+    updateInProgress: false
   }
 });
 

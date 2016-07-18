@@ -54,7 +54,7 @@ class GoalTableRow extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   selectedRows: state.getIn(['goalTableData', 'selectedRows'])
 });
 

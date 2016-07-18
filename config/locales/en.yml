@@ -1776,6 +1776,13 @@ en:
       goal_values:
         status_public: Public
         status_private: Private
+      bulk_edit:
+        button_title: Edit Multiple Items...
+        title: Edit Multiple Items
+        items_selected: Items Selected
+        visibility: Visibility
+        update: Update
+        cancel: Cancel
       quick_edit:
         quick_edit_measure: Quick Edit Measure
         manage_on_goal_page: Manage on Goal Page

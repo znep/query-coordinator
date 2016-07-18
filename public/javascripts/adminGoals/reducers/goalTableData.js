@@ -7,6 +7,7 @@ import {
   CACHE_DASHBOARDS,
   CACHE_USERS,
   CACHE_GOALS,
+  CACHED_GOALS_UPDATED,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
@@ -19,6 +20,24 @@ import {
   REMOVE_GOAL_FROM_CACHE
 } from '../actionTypes';
 
+// TODO: Change this after goals kept in a Map structure
+function updateGoals(cachedGoals, updatedGoals) {
+  const goalIds = [];
+  const goalsMap = updatedGoals.reduce((map, goal) => {
+    map[goal.id] = goal;
+    goalIds.push(goal.id);
+    return map;
+  }, {});
+
+  return cachedGoals.map(goal => {
+    if (goalIds.indexOf(goal.get('id')) >= 0) {
+      return goal.merge(goalsMap[goal.get('id')]);
+    }
+
+    return goal;
+  });
+}
+
 export default createReducer(Immutable.fromJS({}), {
   // Sets goals list for, this list will be shown on table
   [TABLE_SHOW_PAGE]: (state, action) => state.merge({goals: action.goals}),
@@ -29,6 +48,7 @@ export default createReducer(Immutable.fromJS({}), {
   [CACHE_DASHBOARDS]: (state, action) => state.merge({dashboards: action.dashboards}),
   [CACHE_USERS]: (state, action) => state.merge({users: action.users}),
   [CACHE_GOALS]: (state, action) => state.merge({cachedGoals: action.goals}),
+  [CACHED_GOALS_UPDATED]: (state, action) => state.updateIn(['goals'], goals => updateGoals(goals, action.goals)),
   [TABLE_ROW_SELECTED]: (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId)),
   [TABLE_ROW_DESELECTED]: (state, action) => state.updateIn(['selectedRows'],
     list => list.delete(list.indexOf(action.goalId))), // eslint-disable-line dot-notation

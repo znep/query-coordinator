@@ -121,9 +121,28 @@ module SocrataSiteChrome
       locales['en'].dig(*locale_key.split('.'))
     end
 
+    def site_chrome_test_config
+      site_chrome_config = JSON.parse(
+        File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")
+      ).with_indifferent_access
+      site_chrome_config_values = site_chrome_config[:properties].first.dig(:value)
+      current_version = site_chrome_config_values[:current_version]
+      {
+        id: site_chrome_config[:id],
+        content: site_chrome_config_values.dig(:versions, current_version, :published, :content),
+        updated_at: site_chrome_config[:updatedAt],
+        current_version: current_version
+      }
+    end
+
     def get_site_chrome
-      RequestStore.store[:site_chrome] ||=
-        SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config)
+      RequestStore.store[:site_chrome] ||= SocrataSiteChrome::SiteChrome.new(
+        if Rails.env.test?
+          site_chrome_test_config
+        else
+          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config
+        end
+      )
     end
 
     def request_current_user

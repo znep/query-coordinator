@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames/bind';
-import { connect } from 'react-redux';
 
 export default class SCButton extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  render () {
+  render() {
     const props = this.props;
     const isPrimary = props.primary == true;
     const isAlternate = props.alternate == true;

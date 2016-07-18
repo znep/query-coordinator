@@ -4,7 +4,7 @@ import { openEditMultipleItemsModal } from '../actions/bulkEditActions';
 
 import SCButton from '../components/SCButton';
 
-function SCBulkActions (props) {
+function SCBulkActions(props) {
   const editTitle = props.translations.getIn(['admin', 'bulk_edit', 'button_title']);
 
   return (
@@ -16,7 +16,7 @@ function SCBulkActions (props) {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  selectedRowsCount: state.getIn(['goalTableData', 'selectedRows']).count(),
+  selectedRowsCount: state.getIn(['goalTableData', 'selectedRows']).count()
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,6 +1,6 @@
 import * as api from './basic';
 
-const goalsPrefix = 'goals'
+const goalsPrefix = 'goals';
 
 export function update(goalId, goalVersion, data) {
   const path = `${goalsPrefix}/${goalId}`;

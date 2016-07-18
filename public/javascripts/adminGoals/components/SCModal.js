@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 
-export function Header (props) {
+export function Header(props) {
   return (
     <header className="modal-header">
       <h1 className="h5 modal-header-title">
@@ -14,7 +14,7 @@ export function Header (props) {
   );
 }
 
-export function Content (props) {
+export function Content(props) {
   return (
     <section className="modal-content">
       { props.children }
@@ -22,7 +22,7 @@ export function Content (props) {
   );
 }
 
-export function Footer (props) {
+export function Footer(props) {
   return (
     <footer className="modal-footer">
       <div className="modal-footer-actions">
@@ -32,7 +32,7 @@ export function Footer (props) {
   );
 }
 
-export function Modal (props) {
+export function Modal(props) {
   const modalClasses = classNames({
     modal: true,
     'modal-overlay': props.overlay !== false,
@@ -46,5 +46,5 @@ export function Modal (props) {
       </div>
     </div>
   );
-};
+}
 

@@ -6,7 +6,7 @@ import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsFor
 import SCBulkActions from '../SCBulkActions';
 import './App.scss';
 
-function App ({openEditMultipleItemsModal, showEditMultipleItemsForm}) {
+function App({ showEditMultipleItemsForm }) {
   return (
     <div>
       <SCBulkActions />
@@ -18,7 +18,7 @@ function App ({openEditMultipleItemsModal, showEditMultipleItemsForm}) {
 }
 
 const mapStateToProps = state => ({
-  showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible']),
+  showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible'])
 });
 
 const mapDispatchToProps = dispatch => ({});

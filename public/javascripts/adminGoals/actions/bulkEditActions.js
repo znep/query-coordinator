@@ -12,53 +12,53 @@ import {
   UPDATE_MULTIPLE_ITEMS_FAILED
 } from '../actionTypes';
 
-export function setMultipleItemsVisibility (visibility) {
+export function setMultipleItemsVisibility(visibility) {
   return {
     type: SET_MULTIPLE_ITEMS_VISIBILITY,
     visibility
   };
-};
+}
 
-export function revertMultipleItemsVisibility () {
+export function revertMultipleItemsVisibility() {
   return {
     type: REVERT_MULTIPLE_ITEMS_VISIBILITY
   };
-};
+}
 
-export function closeEditMultipleItemsModal () {
+export function closeEditMultipleItemsModal() {
   return {
     type: CLOSE_EDIT_MULTIPLE_ITEMS_MODAL
   };
 }
 
-function updateMultipleItemsStarted (goalIds) {
+function updateMultipleItemsStarted(goalIds) {
   return {
     type: UPDATE_MULTIPLE_ITEMS_STARTED,
     goalIds
   };
 }
 
-function updateMultipleItemsSucceeded (goalIds) {
+function updateMultipleItemsSucceeded(goalIds) {
   return {
     type: UPDATE_MULTIPLE_ITEMS_SUCCESS,
     goalIds
   };
 }
 
-function updateMultipleItemsFailed (reason) {
+function updateMultipleItemsFailed(reason) {
   return {
     type: UPDATE_MULTIPLE_ITEMS_FAILED,
     reason
   };
 }
 
-export function openEditMultipleItemsModal () {
+export function openEditMultipleItemsModal() {
   return {
     type: OPEN_EDIT_MULTIPLE_ITEMS_MODAL
   };
 }
 
-export function updateMultipleGoals (goals, updatedData) {
+export function updateMultipleGoals(goals, updatedData) {
   const goalIds = goals.map(goal => goal.get('id'));
 
   return (dispatch) => {
@@ -66,10 +66,10 @@ export function updateMultipleGoals (goals, updatedData) {
 
     const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), updatedData));
     return Promise.all(updateRequests)
-      .then(goals => {
-        dispatch(updateCachedGoals(goals))
-        dispatch(updateMultipleItemsSucceeded(goals.map(goal => goal.id)));
-        return goals;
+      .then(updatedGoals => {
+        dispatch(updateCachedGoals(updatedGoals));
+        dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
+        return updatedGoals;
       })
       .catch(err => dispatch(updateMultipleItemsFailed(err)));
   };

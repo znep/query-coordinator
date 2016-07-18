@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import Immutable from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import selectedGoals from '../../selectors/selectedGoals';
@@ -8,7 +6,7 @@ import {
   setMultipleItemsVisibility,
   revertMultipleItemsVisibility,
   closeEditMultipleItemsModal,
-  updateMultipleGoals,
+  updateMultipleGoals
 } from '../../actions/bulkEditActions';
 
 import Select from 'react-select';
@@ -22,7 +20,7 @@ import Perf from 'react-addons-perf';
 window.Perf = Perf;
 
 class EditMultipleItemsForm extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.onVisibilityChanged = this.onVisibilityChanged.bind(this);
@@ -31,23 +29,23 @@ class EditMultipleItemsForm extends React.Component {
     this.dismissModal = this.dismissModal.bind(this);
   }
 
-  onVisibilityChanged (value) {
+  onVisibilityChanged(value) {
     this.props.setVisibility(value.value === 'public');
   }
 
-  onRevertVisibility (e) {
+  onRevertVisibility() {
     this.props.revertVisibility();
   }
 
-  onUpdateClicked (e) {
+  onUpdateClicked() {
     this.props.updateGoals(this.props.goals, this.props.formData.get('goal').toJS());
   }
 
-  dismissModal () {
+  dismissModal() {
     this.props.dismissModal();
   }
 
-  render () {
+  render() {
     const translations = this.props.translations.get('admin').toJS();
 
     const commonData = this.props.commonData;
@@ -63,7 +61,7 @@ class EditMultipleItemsForm extends React.Component {
 
     const updateInProgress = this.props.formData.get('updateInProgress');
 
-    const visibilityRevertButton = 
+    const visibilityRevertButton =
       visibilityChanged ? <SCChangeIndicator onRevert={ this.onRevertVisibility } /> : null;
 
     const isUpdateDisabled = !visibilityChanged;

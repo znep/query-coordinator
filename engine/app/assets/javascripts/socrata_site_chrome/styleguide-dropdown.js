@@ -1,6 +1,7 @@
 // Stolen and butchered from styleguide.
 $(document).ready(function() {
   var dropdownFactory = function(element) {
+    if (!element) { return; }
     this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
     this.dropdowns.forEach(function(dropdown) {
       new Dropdown(dropdown);

@@ -44,8 +44,14 @@ class View < Model
   end
 
   def self.find_deleted(id)
-    path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedViewById', 'id' => id}.to_param
-    parse(CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'}))
+    params = { 'method' => 'getDeletedViewById', 'id' => id }.to_param
+    path = "/#{name.pluralize.downcase}.json?#{params}"
+    name = CoreServer::Base.connection.get_request(
+      path,
+      'X-Socrata-Federation' => 'Honey Badger'
+    )
+    # core returns a quoted string, so parse it as json to un-quote it
+    JSON.parse("[#{name}]").first
   end
 
   def self.find_for_user(id)

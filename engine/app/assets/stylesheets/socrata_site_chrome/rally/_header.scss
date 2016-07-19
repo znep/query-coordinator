@@ -1,3 +1,6 @@
+$banner_height: 58px;
+$divider_height: 14px;
+
 header#site-chrome-header[template="rally"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
@@ -29,12 +32,18 @@ header#site-chrome-header[template="rally"] {
           float: left;
         }
       }
+
+      .searchbox {
+        .search-button {
+          display: none; // appears with toggleSearchButton()
+        }
+      }
     }
 
     > .rally-bottom {
       color: $header_fg_color;
       background-color: $header_bg_color;
-      height: 58px;
+      height: $banner_height;
       padding: 0 1rem;
       clear: both;
 
@@ -76,7 +85,14 @@ header#site-chrome-header[template="rally"] {
             float: right;
 
             .social-links {
+              height: 100%;
               float: left;
+
+              .social-link {
+                &:hover, &:focus, &:active {
+                  text-decoration: none;
+                }
+              }
             }
             a.nav-link {
               padding: 0 5px;
@@ -86,6 +102,7 @@ header#site-chrome-header[template="rally"] {
               margin-left: $text_padding;
             }
             a.profile-link, a.admin-link, a.logout-link {
+              line-height: 3rem;
               padding: 0 $text_padding;
               text-decoration: none;
               &.in-header {
@@ -97,11 +114,7 @@ header#site-chrome-header[template="rally"] {
             }
 
             span.divider {
-              display: inline-block;
-              vertical-align: middle;
-              margin: 0 $text_padding;
-              padding: 14px 0;
-              border-left: 1px solid rgba(255, 255, 255, 0.3);
+              margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
             }
           }
         }

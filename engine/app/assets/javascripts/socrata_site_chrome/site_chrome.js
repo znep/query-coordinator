@@ -16,3 +16,33 @@ function mobileMenuToggle() {
     $('body').css('overflow-y', initialBodyOverflowY || 'visible');
   }
 }
+
+function toggleCollapsibleSearch(self) {
+  var $searchbox = $(self).siblings('.searchbox');
+  $searchbox.toggleClass('expanded');
+  $searchbox.find('input').focus();
+
+  // Close searchbox on click outside of box
+  $(document).mouseup(function(e) {
+    if (!$searchbox.is(e.target) && $searchbox.has(e.target).length === 0) {
+      $searchbox.removeClass('expanded');
+    }
+  });
+
+  // Close searchbox on ESCAPE key
+  $(document).keyup(function(e) {
+    if (e.keyCode === 27) {
+      $searchbox.removeClass('expanded');
+    }
+  });
+}
+
+// Button appears only if text has been entered.
+function toggleSearchButton(self) {
+  var $searchButton = $(self).siblings('.search-button');
+  if (self.value !== '') {
+    $searchButton.fadeIn(50);
+  } else {
+    $searchButton.fadeOut(50);
+  }
+}

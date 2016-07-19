@@ -1,3 +1,6 @@
+$divider_height: 14px;
+$searchbox_height: 36px;
+
 header#site-chrome-header, footer#site-chrome-footer {
   .site-chrome-btn {
     color: $btn-color;
@@ -51,7 +54,6 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   span.monosocial {
-    display: inline-block;
     font-size: 40px;
     text-align: center;
   }
@@ -59,7 +61,14 @@ header#site-chrome-header, footer#site-chrome-footer {
   .user-actions {
     float: right;
     cursor: pointer;
-    padding-left: 0.5rem;
+  }
+
+  span.divider {
+    float: left;
+    display: inline-block;
+    vertical-align: middle;
+    padding: $divider_height 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .searchbox {
@@ -73,34 +82,49 @@ header#site-chrome-header, footer#site-chrome-footer {
 
     form {
       line-height: $header_logo_height;
+      position: relative;
+
+      span.icon-search {
+        position: absolute;
+        left: 8px;
+        top: 3px;
+        font-size: 16px;
+        pointer-events: none;
+        color: $grey_text_color;
+        z-index: 4;
+      }
+
       input {
-        width: 250px;
-        border: solid 1px #c8c8c8;
-        border-radius: 1px;
+        width: 220px;
+        border: solid 1px $searchbox_border_color;
+        border-radius: 3px;
         box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
-        font-size: 15px;
-        padding: 8px;
+        font-size: 16px;
+        padding: 8px 74px 8px 30px;
         vertical-align: middle;
+        z-index: 3;
+        height: $searchbox_height - 18; // 16px padding + 2px border
       }
 
       button.search-button {
-        cursor: pointer;
-        border: 1px solid #cacaca;
-        border-left: none;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        background-color: #e3e3e3;
-        color: #5f5f5f;
-        position: relative;
+        position: absolute;
+        top: 1px;
+        right: 0;
+        color: #5e5e5e;
+        background-color: #f1f1f1;
+        padding: 0px 12px;
+        outline: none;
+        letter-spacing: 0;
+        border: 1px solid $searchbox_border_color;
+        border-top-right-radius: 1px;
+        border-bottom-right-radius: 1px;
         margin: 0;
-        font-size: 18px;
-        margin-left: -5px;
-        width: 48px;
-        height: 36px;
+        font-size: 13px;
+        height: $searchbox_height;
         vertical-align: middle;
-
-        &:hover {
-          background-color: #f0f0f0;
+        z-index: 3;
+        &:hover, &:focus, &:active {
+          background: #e4e4e4;
         }
       }
     }
@@ -173,6 +197,10 @@ header#site-chrome-header, footer#site-chrome-footer {
       .social-links {
         clear: both;
         .social-link {
+          text-decoration: none;
+          &:hover, &:focus, &:active {
+            text-decoration: none;
+          }
           .monosocial {
             font-size: 36px;
             float: right;
@@ -203,6 +231,14 @@ header#site-chrome-header, footer#site-chrome-footer {
             color: $dark_text_color;
             background-color: transparent;
             border: none;
+
+            span.icon-search {
+              top: 0;
+              left: 0;
+              font-size: 20px;
+              position: relative;
+              color: $dark_text_color;
+            }
           }
         }
       }

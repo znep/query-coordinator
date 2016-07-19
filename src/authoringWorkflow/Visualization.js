@@ -9,7 +9,7 @@ import FlyoutRenderer from '../views/FlyoutRenderer';
 
 import '../views/SvgColumnChart';
 import '../views/SvgTimelineChart';
-import '../views/FeatureMap';
+import '../views/SvgFeatureMap';
 import '../views/ChoroplethMap';
 
 import { translate } from './I18n';
@@ -148,7 +148,7 @@ export var Visualization = React.createClass({
       this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        socrataFeatureMap(vif);
+        socrataSvgFeatureMap(vif);
       $visualizationPreview.
         on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);

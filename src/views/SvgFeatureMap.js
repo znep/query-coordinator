@@ -3,6 +3,7 @@ var SvgVisualization = require('./SvgVisualization');
 var L = require('leaflet');
 var _ = require('lodash');
 var $ = require('jquery');
+var SoqlHelpers = require('../dataProviders/SoqlHelpers');
 
 var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
@@ -17,25 +18,24 @@ var FEATURE_MAP_DEFAULT_HOVER = true;
 var FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
 var FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
-function FeatureMap(element, vif) {
-
+function SvgFeatureMap(element, vif) {
   _.extend(this, new SvgVisualization(element, vif));
 
   var self = this;
 
-  var _mapContainer;
-  var _mapElement;
-  var _mapPanZoomDisabledWarning;
-  var _mapLocateUserButton;
+  var mapContainer;
+  var mapElement;
+  var mapPanZoomDisabledWarning;
+  var mapLocateUserButton;
   // This is the element that will be displayed as a marker.
-  var _userCurrentPositionIcon;
+  var userCurrentPositionIcon;
   // This is the actual marker as it exists on the map. We keep this
   // reference so that we can remove the existing marker if the user
   // clicks the 'locate me' button more than one time.
-  var _userCurrentPositionMarker;
-  var _userCurrentPositionBounds;
+  var userCurrentPositionMarker;
+  var userCurrentPositionBounds;
 
-  var _defaultMapOptions = {
+  var defaultMapOptions = {
     attributionControl: false,
     center: [47.609895, -122.330259], // Center on Seattle by default.
     keyboard: false,
@@ -44,19 +44,21 @@ function FeatureMap(element, vif) {
     zoomControlPosition: 'topleft',
     maxZoom: FEATURE_MAP_MAX_ZOOM
   };
-  var _mapOptions;
-  var _maxTileDensity;
-  var _maxRowInspectorDensity;
-  var _debug;
-  var _hover;
-  var _panAndZoom;
-  var _locateUser;
-  var _startResizeFn;
-  var _completeResizeFn;
-  var _baseTileLayer;
-  var _map;
-  var _lastRenderOptions;
-  var centerAndZoomDefined;
+
+  var mapOptions;
+  var maxTileDensity;
+  var maxRowInspectorDensity;
+  var debug;
+  var hover;
+  var panAndZoom;
+  var locateUser;
+  var startResizeFn;
+  var completeResizeFn;
+  var baseTileLayer;
+  var map;
+  var lastRenderedVif;
+  var lastRenderedData;
+  var lastRenderedVectorTileGetter;
 
   // We buffer feature layers so that there isn't a visible flash
   // of emptiness when we transition from one to the next. This is accomplished
@@ -64,27 +66,26 @@ function FeatureMap(element, vif) {
 
   // We also keep a handle on the current feature layer Url so we know which of
   // the existing layers we can safely remove (i.e. not the current one).
-  var _featureLayers = {};
-  var _flyoutData = {};
-  var _currentLayerId;
+  var featureLayers = {};
+  var flyoutData = {};
+  var currentLayerId;
 
-  _maxTileDensity = vif.configuration.maxTileDensity || FEATURE_MAP_MAX_TILE_DENSITY;
-  _maxRowInspectorDensity = vif.configuration.maxRowInspectorDensity || FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
-  _debug = vif.configuration.debug;
-  _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
-  _panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
-  _locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
-  _mapOptions = _.merge(_defaultMapOptions, vif.configuration.mapOptions);
+  maxTileDensity = vif.configuration.maxTileDensity || FEATURE_MAP_MAX_TILE_DENSITY;
+  maxRowInspectorDensity = vif.configuration.maxRowInspectorDensity || FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
+  debug = vif.configuration.debug;
+  hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
+  panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
+  locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
+  mapOptions = _.merge(defaultMapOptions, vif.configuration.mapOptions);
 
   // Render template here so that we can modify the map container's styles
   // below.
-  _renderTemplate();
+  renderTemplate();
 
   // CORE-4832: Disable pan and zoom on feature map
-  if (!_panAndZoom) {
-
-    _mapOptions = _.merge(
-      _mapOptions,
+  if (!panAndZoom) {
+    mapOptions = _.merge(
+      mapOptions,
       {
         dragging: false,
         zoomControl: false,
@@ -95,202 +96,164 @@ function FeatureMap(element, vif) {
       }
     );
 
-    _mapContainer.css('cursor', 'default');
-    _mapPanZoomDisabledWarning.show();
+    mapContainer.css('cursor', 'default');
+    mapPanZoomDisabledWarning.show();
   }
 
   /**
    * Public methods
    */
 
-  this.render = function(renderOptions) {
+  this.render = function(newVif, newData) {
+    var hasMapDimensions = mapElement.width() > 0 && mapElement.height() > 0;
+    var extent = newData.extent;
+    var vectorTileGetter = newData.vectorTileGetter;
 
-    if (_mapElement.width() > 0 && _mapElement.height() > 0) {
-      var boundsChanged;
-      var baseLayerChanged;
-      var vectorTileGetterChanged;
+    emitRenderStart();
 
-      // Emit render start event
-      _emitRenderStart();
+    if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
+      this.updateVif(newVif);
 
-      if (!_map) {
+      updateBaseLayer(newVif);
+      updateFeatureLayer(newVif, vectorTileGetter);
 
-        // Construct leaflet map
-        _map = L.map(_mapElement[0], _mapOptions);
-
-        // Attach events on first render only
-        _attachEvents();
-
-        centerAndZoomDefined = (
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
-          _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
-        );
-        boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
-        baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
-        vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
-
-        _lastRenderOptions = _.cloneDeep(renderOptions);
-        _lastRenderOptions.bounds = new L.LatLngBounds(
-          renderOptions.bounds.getSouthWest(),
-          renderOptions.bounds.getNorthEast()
-        );
-
-        if (_userCurrentPositionBounds) {
-          _fitBounds(_userCurrentPositionBounds);
-        // Note that we prefer mapCenterAndZoom over defaultExtent or savedExtent
-        // properties in the VIF.
-        } else if (centerAndZoomDefined) {
-          updateCenterAndZoom(_.get(vif, 'configuration.mapCenterAndZoom'));
-        // If centerAndZoom is not set we then check for the bounds that have
-        // been saved in the VIF.
-        //
-        // TODO: Deprecate this.
-        } else if (boundsChanged) {
-          _fitBounds(renderOptions.bounds);
-        }
+      if (!vifsAreEqualIgnoringCenterAndZoom(lastRenderedVif, newVif)) {
+        updateCenterAndZoom(newVif);
       }
+    } else if (hasMapDimensions && !map) {
 
-      if (baseLayerChanged) {
-        _updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
-      }
+      // Construct leaflet map
+      map = L.map(mapElement[0], mapOptions);
 
-      if (vectorTileGetterChanged) {
-        _createNewFeatureLayer(renderOptions.vectorTileGetter);
+      // Attach events on first render only
+      attachEvents();
+
+      updateBaseLayer(vif);
+      updateFeatureLayer(vif, vectorTileGetter);
+      updateCenterAndZoom(vif);
+
+      if (extent) {
+        fitBounds(buildBoundsFromExtent(extent));
       }
     }
+
+    lastRenderedVectorTileGetter = vectorTileGetter;
+    lastRenderedVif = newVif || lastRenderedVif || vif;
+    lastRenderedData = newData;
   };
 
   this.invalidateSize = function() {
-    if (_map) {
-      _map.invalidateSize();
+    if (map) {
+      map.invalidateSize();
     }
   };
 
   this.destroy = function() {
+    if (map) {
+      detachEvents();
 
-    if (_map) {
-
-      _detachEvents();
-
-      // Remove the map after detaching events since `_detachEvents()` expects
-      // the `_map` instance to exist.
-      _map.remove();
+      // Remove the map after detaching events since `detachEvents()` expects
+      // the `map` instance to exist.
+      map.remove();
     }
 
     // Finally, clear out the container.
-    self.
-      $element.
-        empty();
+    self.$element.empty();
   };
 
   /**
    * Private methods
    */
 
-  function _renderTemplate() {
+  function vifsAreEqualIgnoringCenterAndZoom(vifOne, vifTwo) {
+    var vifs = [vifOne, vifTwo].map(_.cloneDeep);
+    vifs.forEach((item) => _.unset(item, 'configuration.mapCenterAndZoom'));
 
-    var mapElement = $(
-      '<div>',
-      {
-        'class': 'feature-map'
-      }
-    );
+    return _.isEqual(vifs[0], vifs[1]);
+  }
 
-    var mapLegend = $(
-      '<div>',
-      {
-        'class': 'feature-map-legend'
-      }
-    );
+  function didBaseLayerChange(newVif) {
+    var baseLayerPath = 'configuration.baseLayerUrl';
+    var newBaseLayerUri = _.get(newVif, baseLayerPath);
+    var lastRenderedBaseLayerUri = _.get(lastRenderedVif, baseLayerPath);
 
-    var mapPanZoomDisabledWarningIcon = $(
-      '<div>',
-      {
-        'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon'
-      }
-    );
+    var baseLayerOpacityPath = 'configuration.baseLayerOpacity';
+    var newBaseLayerOpacity = _.get(newVif, baseLayerOpacityPath);
+    var lastRenderedBaseLayerOpacity = _.get(lastRenderedVif, baseLayerOpacityPath);
 
-    var mapPanZoomDisabledWarning = $(
-      '<div>',
-      {
-        'class': 'feature-map-pan-zoom-disabled-warning'
-      }
-    ).append(mapPanZoomDisabledWarningIcon);
+    return newBaseLayerUri !== lastRenderedBaseLayerUri || newBaseLayerOpacity !== lastRenderedBaseLayerOpacity;
+  }
 
-    var mapContainer = $(
-      '<div>',
-      {
-        'class': 'feature-map-container'
-      }
-    ).append([
-      mapElement,
-      mapLegend,
-      mapPanZoomDisabledWarning
-    ]);
+  function renderTemplate() {
+    var $mapElement = $('<div>', { 'class': 'feature-map' });
+    var $mapLegend = $('<div>', { 'class': 'feature-map-legend' });
+    var $mapPanZoomDisabledWarningIcon = $('<div>', { 'class': 'icon-warning feature-map-pan-zoom-disabled-warning-icon' });
 
-    if (_locateUser) {
+    var $mapPanZoomDisabledWarning = $('<div>', { 'class': 'feature-map-pan-zoom-disabled-warning' }).
+      append($mapPanZoomDisabledWarningIcon);
 
-      var mapLocateUserIcon = $(
+    var $mapContainer = $('<div>', { 'class': 'feature-map-container' }).
+      append([
+        $mapElement,
+        $mapLegend,
+        $mapPanZoomDisabledWarning
+      ]);
+
+    if (locateUser) {
+      var $mapLocateUserIcon = $(
         '<svg class="feature-map-locate-user-icon" viewBox="-289 381 32 32">' +
         '<polygon class="st0" points="-262.5,386.5 -285.5,398 -274,398 -274,409.5 "/>' +
         '</svg>'
       );
 
-      var mapLocateUserBusySpinner = $(
+      var $mapLocateUserBusySpinner = $(
         '<div>',
         {
           'class': 'feature-map-locate-user-busy-spinner'
         }
       );
 
-      var mapLocateUserErrorIcon = $(
+      var $mapLocateUserErrorIcon = $(
         '<svg class="feature-map-locate-user-error-icon" viewBox="0 0 1024 1024">' +
         '<path fill="rgb(68, 68, 68)" d="M978.77 846.495c16.932 33.178 15.816 64.164-3.348 95.176-19.907 31.693-48.312 46.49-85.212 46.49h-756.762c-36.869 0-65.275-14.802-85.181-46.49-18.417-30.264-19.907-61.788-4.434-95.713l378.399-756.495c19.164-36.869 49.055-55.183 89.615-55.183 41.303 0 70.825 18.519 88.561 55.388l378.363 756.828zM455.409 867.517c15.503 15.442 34.324 23.194 56.438 23.194 22.139 0 40.929-7.752 56.438-23.194 15.442-15.503 23.194-34.294 23.194-56.438s-7.752-40.929-23.194-56.438c-15.503-15.503-34.294-23.255-56.438-23.255-22.108 0-40.929 7.752-56.438 23.255-15.473 15.503-23.224 34.294-23.224 56.438s7.752 40.934 23.224 56.438zM450.56 291.84v337.92h122.88v-337.92h-122.88z"/>' +
         '</svg>'
       );
 
-      var mapLocateUserButton = $(
-        '<button>',
-        {
-          'class': 'feature-map-locate-user-btn',
-          'data-locate-user-status': 'ready'
-        }
-      ).append([
-        mapLocateUserIcon,
-        mapLocateUserBusySpinner,
-        mapLocateUserErrorIcon
+      var $mapLocateUserButton = $('<button>', {
+        'class': 'feature-map-locate-user-btn',
+        'data-locate-user-status': 'ready'
+      }).append([
+        $mapLocateUserIcon,
+        $mapLocateUserBusySpinner,
+        $mapLocateUserErrorIcon
       ]);
 
-      mapContainer.append(mapLocateUserButton);
+      $mapContainer.append($mapLocateUserButton);
 
-      _userCurrentPositionIcon = L.divIcon({ className: 'feature-map-user-current-position-icon' });
+      userCurrentPositionIcon = L.divIcon({ className: 'feature-map-user-current-position-icon' });
     }
 
     // Cache element selections
-    _mapContainer = mapContainer;
-    _mapElement = mapElement;
-    _mapPanZoomDisabledWarning = mapPanZoomDisabledWarning;
-    _mapLocateUserButton = mapLocateUserButton;
+    mapContainer = $mapContainer;
+    mapElement = $mapElement;
+    mapPanZoomDisabledWarning = $mapPanZoomDisabledWarning;
+    mapLocateUserButton = $mapLocateUserButton;
 
-    self.
-      $element.
-        find('.visualization-container').
-          append(mapContainer);
+    self.$element.find('.visualization-container').append(mapContainer);
   }
 
-  function _attachEvents() {
+  function attachEvents() {
     var $document = $(document);
 
     // Only attach map events if the map has actually been instantiated.
-    if (_map) {
+    if (map) {
       // Map resizes are messy because our map containers are animated. This
       // causes Leaflet to believe that we are resizing the map n times when
       // we are really just doing it once but lerping between the container
       // sizes. To work around this we can debounce the event twice--once on
       // the leading edge and once on the trailing edge--to simulate 'start'
       // and 'stop' events for the resize.
-      _startResizeFn = _.debounce(
+      startResizeFn = _.debounce(
         function() {
           // We will need to record the current min and max latitude of the
           // viewport here so that we can reset the viewport to capture a
@@ -303,7 +266,7 @@ function FeatureMap(element, vif) {
         }
       );
 
-      _completeResizeFn = _.debounce(
+      completeResizeFn = _.debounce(
         function() {
           // We will need to reset the viewport using a center point and a
           // zoom level in order to preserve the 'perceptual' area covered by
@@ -319,102 +282,97 @@ function FeatureMap(element, vif) {
         }
       );
 
-      _map.on('resize', _handleMapResize);
-      _map.on('dragend zoomend', emitMapCenterAndZoomChange);
-      // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
-      _map.on('resize dragend zoomend', _handleExtentChange);
-      _map.on('dragstart zoomstart', _handlePanAndZoom);
-      _map.on('mouseout', _hideFlyout);
+      map.on('resize', handleMapResize);
+      map.on('dragend zoomend', emitMapCenterAndZoomChange);
+      map.on('dragstart zoomstart', handlePanAndZoom);
+      map.on('mouseout', hideFlyout);
 
       // react to the interactions that would close the RowInspector flannel
-      if (_hover) {
-        $document.on('click', _captureLeftClickAndClearHighlight);
-        $document.on('keydown', _captureEscapeAndClearHighlight);
+      if (hover) {
+        $document.on('click', captureLeftClickAndClearHighlight);
+        $document.on('keydown', captureEscapeAndClearHighlight);
       }
 
-      _mapPanZoomDisabledWarning.on('mousemove', _handlePanZoomDisabledWarningMousemove);
-      _mapPanZoomDisabledWarning.on('mouseout', _handlePanZoomDisabledWarningMouseout);
+      mapPanZoomDisabledWarning.on('mousemove', handlePanZoomDisabledWarningMousemove);
+      mapPanZoomDisabledWarning.on('mouseout', handlePanZoomDisabledWarningMouseout);
 
       // While this element does not rely on the map existing, it cannot
       // have any purpose if the map does not exist so we include it in
       // the check for map existence anyway.
-      if (_locateUser) {
-        _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
+      if (locateUser) {
+        mapLocateUserButton.on('click', handleLocateUserButtonClick);
 
         if (!_.get(vif, 'configuration.isMobile')) {
-          _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
+          mapLocateUserButton.on('mousemove', handleLocateUserButtonMousemove);
         }
 
         if (!vif.configuration.isMobile) {
-          _mapLocateUserButton.on('mouseout', _hideFlyout);
+          mapLocateUserButton.on('mouseout', hideFlyout);
         }
       }
     }
 
-    $(window).on('resize', _hideRowInspector);
+    $(window).on('resize', hideRowInspector);
   }
 
-  function _detachEvents() {
+  function detachEvents() {
     var $document = $(document);
 
     // Only detach map events if the map has actually been instantiated.
-    if (_map) {
+    if (map) {
 
-      _map.off('resize', _handleMapResize);
-      _map.off('dragend zoomend', emitMapCenterAndZoomChange);
-      // TODO: Deprecate _handleExtentChange in favor of emitMapCenterAndZoomChange
-      _map.off('resize dragend zoomend', _handleExtentChange);
-      _map.off('dragstart zoomstart', _handlePanAndZoom);
-      _map.off('mouseout', _hideFlyout);
+      map.off('resize', handleMapResize);
+      map.off('dragend zoomend', emitMapCenterAndZoomChange);
+      map.off('dragstart zoomstart', handlePanAndZoom);
+      map.off('mouseout', hideFlyout);
 
-      if (_hover) {
-        $document.on('click', _captureLeftClickAndClearHighlight);
-        $document.on('keydown', _captureEscapeAndClearHighlight);
+      if (hover) {
+        $document.on('click', captureLeftClickAndClearHighlight);
+        $document.on('keydown', captureEscapeAndClearHighlight);
       }
 
-      _mapPanZoomDisabledWarning.off('mousemove', _handlePanZoomDisabledWarningMousemove);
-      _mapPanZoomDisabledWarning.off('mouseout', _handlePanZoomDisabledWarningMouseout);
+      mapPanZoomDisabledWarning.off('mousemove', handlePanZoomDisabledWarningMousemove);
+      mapPanZoomDisabledWarning.off('mouseout', handlePanZoomDisabledWarningMouseout);
 
       // While this element does not rely on the map existing, it cannot
       // have any purpose if the map does not exist so we include it in
       // the check for map existence anyway.
-      if (_locateUser) {
-        _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
-        _mapLocateUserButton.off('mousemove', _handleLocateUserButtonMousemove);
-        _mapLocateUserButton.off('mouseout', _hideFlyout);
+      if (locateUser) {
+        mapLocateUserButton.off('click', handleLocateUserButtonClick);
+        mapLocateUserButton.off('mousemove', handleLocateUserButtonMousemove);
+        mapLocateUserButton.off('mouseout', hideFlyout);
       }
     }
 
-    $(window).off('resize', _hideRowInspector);
+    $(window).off('resize', hideRowInspector);
   }
 
-  function _emitRenderStart() {
+  function emitRenderStart() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_START',
       null
     );
   }
 
-  function _emitRenderComplete() {
+  function emitRenderComplete() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_FEATURE_MAP_RENDER_COMPLETE',
       null
     );
   }
 
-  function _handleMapResize() {
-
+  function handleMapResize() {
     // This is debounced and will fire on the leading edge.
-    _startResizeFn();
+    startResizeFn();
     // This is debounced and will fire on the trailing edge.
     // In the best case, this will be called RESIZE_DEBOUNCE_INTERVAL
     // milliseconds after the resize event is captured by this handler.
-    _completeResizeFn();
+    completeResizeFn();
   }
 
   function emitMapCenterAndZoomChange() {
-    var center = _map.getCenter();
-    var zoom = _map.getZoom();
+    var center = map.getCenter();
+    var zoom = map.getZoom();
     var lat = center.lat;
     var lng = center.lng;
     var centerAndZoom;
@@ -478,56 +436,33 @@ function FeatureMap(element, vif) {
     );
   }
 
-  function _handleExtentChange() {
-
-    var formattedBounds;
-    var bounds = _map.getBounds();
-
-    if (bounds.isValid()) {
-      formattedBounds = {
-        southwest: [bounds.getSouth(), bounds.getWest()],
-        northeast: [bounds.getNorth(), bounds.getEast()]
-      };
-
-      self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_EXTENT_CHANGE',
-        formattedBounds
-      );
-
-      return formattedBounds;
-    }
+  function handlePanAndZoom() {
+    hideFlyout();
+    hideRowInspector();
   }
 
-  function _handlePanAndZoom() {
-
-    _hideFlyout();
-    _hideRowInspector();
+  function handlePanZoomDisabledWarningMousemove() {
+    showPanZoomDisabledWarningFlyout();
   }
 
-  function _handlePanZoomDisabledWarningMousemove() {
-    _showPanZoomDisabledWarningFlyout();
+  function handlePanZoomDisabledWarningMouseout() {
+    hideFlyout();
   }
 
-  function _handlePanZoomDisabledWarningMouseout() {
-    _hideFlyout();
-  }
-
-  function _handleLocateUserButtonClick() {
-
-    _updateLocateUserButtonStatus('busy');
+  function handleLocateUserButtonClick() {
+    updateLocateUserButtonStatus('busy');
 
     if (!_.get(vif, 'configuration.isMobile')) {
-      _showLocateUserButtonFlyout();
+      showLocateUserButtonFlyout();
     }
 
     navigator.geolocation.getCurrentPosition(
-      _handleLocateUserSuccess,
-      _handleLocateUserError
+      handleLocateUserSuccess,
+      handleLocateUserError
     );
   }
 
-  function _handleLocateUserSuccess(position) {
-
+  function handleLocateUserSuccess(position) {
     // Test position (City Lights bookstore in San Francisco):
     //
     // var userLatLng = new L.LatLng(
@@ -538,7 +473,7 @@ function FeatureMap(element, vif) {
       position.coords.latitude,
       position.coords.longitude
     );
-    var featureBounds = _lastRenderOptions.bounds;
+    var featureBounds = buildBoundsFromExtent(lastRenderedData.extent);
     var distanceFromBoundsSouthWest;
     var distanceFromBoundsNorthEast;
 
@@ -556,7 +491,7 @@ function FeatureMap(element, vif) {
     // adjust the rendered bounds.
     if (latLngIsInsideBounds(userLatLng, featureBounds)) {
 
-      _userCurrentPositionBounds = featureBounds;
+      userCurrentPositionBounds = featureBounds;
 
     // Otherwise, figure out which edge to extend and update the bounds.
     } else {
@@ -566,56 +501,54 @@ function FeatureMap(element, vif) {
 
       if (distanceFromBoundsSouthWest <= distanceFromBoundsNorthEast) {
 
-        _userCurrentPositionBounds = L.latLngBounds(userLatLng, featureBounds.getNorthEast());
+        userCurrentPositionBounds = L.latLngBounds(userLatLng, featureBounds.getNorthEast());
 
       } else {
 
-        _userCurrentPositionBounds = L.latLngBounds(featureBounds.getSouthWest(), userLatLng);
+        userCurrentPositionBounds = L.latLngBounds(featureBounds.getSouthWest(), userLatLng);
 
       }
     }
 
-    if (!_userCurrentPositionMarker) {
+    if (!userCurrentPositionMarker) {
 
-      _userCurrentPositionMarker = L.marker(
+      userCurrentPositionMarker = L.marker(
         userLatLng,
         {
-          icon: _userCurrentPositionIcon,
+          icon: userCurrentPositionIcon,
           clickable: false,
           title: self.getLocalization('user_current_position'),
           alt: self.getLocalization('user_current_position')
         }
       );
 
-      _userCurrentPositionMarker.addTo(_map);
+      userCurrentPositionMarker.addTo(map);
 
     } else {
 
-      _userCurrentPositionMarker.update(userLatLng);
+      userCurrentPositionMarker.update(userLatLng);
 
     }
 
-    _map.fitBounds(
-      _userCurrentPositionBounds,
+    map.fitBounds(
+      userCurrentPositionBounds,
       {
         animate: true
       }
     );
 
-    _updateLocateUserButtonStatus('ready');
+    updateLocateUserButtonStatus('ready');
   }
 
-  function _handleLocateUserError() {
-
-    _updateLocateUserButtonStatus('error');
+  function handleLocateUserError() {
+    updateLocateUserButtonStatus('error');
 
     if (!_.get(vif, 'configuration.isMobile')) {
-      _showLocateUserButtonFlyout();
+      showLocateUserButtonFlyout();
     }
   }
 
-  function _updateLocateUserButtonStatus(status) {
-
+  function updateLocateUserButtonStatus(status) {
     utils.assert(
       status === 'ready' ||
       status === 'busy' ||
@@ -626,15 +559,15 @@ function FeatureMap(element, vif) {
     switch (status) {
 
       case 'ready':
-        _mapLocateUserButton.attr('data-locate-user-status', 'ready');
+        mapLocateUserButton.attr('data-locate-user-status', 'ready');
         break;
 
       case 'busy':
-        _mapLocateUserButton.attr('data-locate-user-status', 'busy');
+        mapLocateUserButton.attr('data-locate-user-status', 'busy');
         break;
 
       case 'error':
-        _mapLocateUserButton.attr('data-locate-user-status', 'error');
+        mapLocateUserButton.attr('data-locate-user-status', 'error');
         break;
 
       default:
@@ -642,12 +575,11 @@ function FeatureMap(element, vif) {
     }
   }
 
-  function _handleLocateUserButtonMousemove() {
-
-    _showLocateUserButtonFlyout();
+  function handleLocateUserButtonMousemove() {
+    showLocateUserButtonFlyout();
   }
 
-  function _sumPointsByCount(points) {
+  function sumPointsByCount(points) {
     return _.chain(points).
       map('count').
       map(_.toNumber).
@@ -655,98 +587,91 @@ function FeatureMap(element, vif) {
       value();
   }
 
-  function _handleVectorTileMousemove(event) {
+  function handleVectorTileMousemove(event) {
     if (event.hasOwnProperty('tile')) {
 
       // Set flyout data and force a refresh of the flyout
-      _flyoutData.offset = {
+      flyoutData.offset = {
         x: event.originalEvent.clientX,
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
       };
-      _flyoutData.count = _sumPointsByCount(event.points);
-      _flyoutData.totalPoints = event.tile.totalPoints;
+      flyoutData.count = sumPointsByCount(event.points);
+      flyoutData.totalPoints = event.tile.totalPoints;
 
-      if (_flyoutData.count > 0) {
+      if (flyoutData.count > 0) {
         event.originalEvent.target.style.cursor = 'pointer';
-        _showFeatureFlyout(event);
+        showFeatureFlyout(event);
       } else {
         event.originalEvent.target.style.cursor = 'inherit';
-        _hideFlyout();
+        hideFlyout();
       }
     }
   }
 
-  function _handleVectorTileClick(event) {
-
+  function handleVectorTileClick(event) {
     if (vif.configuration.isMobile) {
-      _flyoutData.offset = {
+      flyoutData.offset = {
         x: event.originalEvent.clientX,
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
       };
 
-      _flyoutData.count = _sumPointsByCount(event.points);
+      flyoutData.count = sumPointsByCount(event.points);
     }
 
     var inspectorDataQueryConfig;
     var position = vif.configuration.isMobile ?
-      { pageX: 0, pageY: (_mapContainer.height() + _mapContainer.offset().top) } :
+      { pageX: 0, pageY: (mapContainer.height() + mapContainer.offset().top) } :
       { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
 
-    if (_flyoutData.count > 0 &&
-      _flyoutData.count <= _maxRowInspectorDensity) {
+    if (flyoutData.count > 0 &&
+      flyoutData.count <= maxRowInspectorDensity) {
 
       inspectorDataQueryConfig = {
         latLng: event.latlng,
         position: position,
-        rowCount: _sumPointsByCount(event.points),
-        queryBounds: _getQueryBounds(event.containerPoint)
+        rowCount: sumPointsByCount(event.points),
+        queryBounds: getQueryBounds(event.containerPoint)
       };
 
       if (vif.configuration.isMobile) {
-        _map.panTo(event.latlng);
+        map.panTo(event.latlng);
         var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
         inspectorDataQueryConfig.position.pageX = 0;
         inspectorDataQueryConfig.position.pageY = bottom;
       }
 
-      _showRowInspector(inspectorDataQueryConfig);
+      showRowInspector(inspectorDataQueryConfig);
 
     }
   }
 
-  function _handleVectorTileRenderStart() {
-
-    _hideFlyout();
-    _hideRowInspector();
+  function handleVectorTileRenderStart() {
+    hideFlyout();
+    hideRowInspector();
   }
 
-  function _handleVectorTileRenderComplete() {
+  function handleVectorTileRenderComplete() {
+    removeOldFeatureLayers();
 
-    _removeOldFeatureLayers();
-
-    if (_hover) {
-      _map.fire('clearhighlightrequest');
+    if (hover) {
+      map.fire('clearhighlightrequest');
     }
 
     // Emit render complete event
-    _emitRenderComplete();
+    emitRenderComplete();
   }
 
-  function _showFeatureFlyout(event) {
-    var rowCountUnit;
+  function showFeatureFlyout(event) {
     var payload;
-    var manyRows = _flyoutData.count > _maxRowInspectorDensity;
-    var denseData = _flyoutData.totalPoints >= _maxTileDensity;
-
-    if (_flyoutData.count === 1) {
-      rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : _.get(vif, 'series[0].unit.one');
-    } else {
-      rowCountUnit = (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'series[0].unit.other');
-    }
+    var manyRows = flyoutData.count > maxRowInspectorDensity;
+    var denseData = flyoutData.totalPoints >= maxTileDensity;
+    var unitOne = _.get(lastRenderedVif, 'series[0].unit.one');
+    var unitOther = _.get(lastRenderedVif, 'series[0].unit.other');
+    var rowCountUnit = flyoutData.count === 1 ? unitOne : unitOther;
 
     payload = {
       title: '{0} {1}'.format(
-        _flyoutData.count,
+        flyoutData.count,
         rowCountUnit
       ),
       notice: self.getLocalization('flyout_click_to_inspect_notice'),
@@ -758,7 +683,7 @@ function FeatureMap(element, vif) {
 
     if (manyRows || denseData) {
 
-      if (_map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
+      if (map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
         payload.notice = self.getLocalization('flyout_filter_notice');
       } else {
         payload.notice = self.getLocalization('flyout_filter_or_zoom_notice');
@@ -771,7 +696,7 @@ function FeatureMap(element, vif) {
       if (denseData) {
         payload.title = '{0} {1}'.format(
           self.getLocalization('flyout_dense_data_notice'),
-          (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'series[0].unit.other')
+          unitOther
         );
       }
     }
@@ -784,10 +709,9 @@ function FeatureMap(element, vif) {
     }
   }
 
-  function _showPanZoomDisabledWarningFlyout() {
-
+  function showPanZoomDisabledWarningFlyout() {
     var payload = {
-      element: _mapPanZoomDisabledWarning[0],
+      element: mapPanZoomDisabledWarning[0],
       title: self.getLocalization('flyout_pan_zoom_disabled_warning_title')
     };
 
@@ -797,15 +721,14 @@ function FeatureMap(element, vif) {
     );
   }
 
-  function _showLocateUserButtonFlyout() {
-
-    var locateUserStatus = _mapLocateUserButton.attr('data-locate-user-status');
+  function showLocateUserButtonFlyout() {
+    var locateUserStatus = mapLocateUserButton.attr('data-locate-user-status');
     var payload;
 
     if (locateUserStatus === 'ready') {
 
       payload = {
-        element: _mapLocateUserButton[0],
+        element: mapLocateUserButton[0],
         title: self.getLocalization('flyout_click_to_locate_user_title'),
         notice: self.getLocalization('flyout_click_to_locate_user_notice')
       };
@@ -813,7 +736,7 @@ function FeatureMap(element, vif) {
     } else if (locateUserStatus === 'busy') {
 
       payload = {
-        element: _mapLocateUserButton[0],
+        element: mapLocateUserButton[0],
         title: self.getLocalization('flyout_locating_user_title'),
         notice: null
       };
@@ -821,7 +744,7 @@ function FeatureMap(element, vif) {
     } else {
 
       payload = {
-        element: _mapLocateUserButton[0],
+        element: mapLocateUserButton[0],
         title: self.getLocalization('flyout_locate_user_error_title'),
         notice: self.getLocalization('flyout_locate_user_error_notice')
       };
@@ -834,16 +757,14 @@ function FeatureMap(element, vif) {
     );
   }
 
-  function _hideFlyout() {
-
+  function hideFlyout() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_FLYOUT_HIDE',
       null
     );
   }
 
-  function _showRowInspector(inspectorDataQueryConfig) {
-
+  function showRowInspector(inspectorDataQueryConfig) {
     var payload = {
       data: null,
       position: inspectorDataQueryConfig.position,
@@ -865,32 +786,29 @@ function FeatureMap(element, vif) {
     );
   }
 
-  function _hideRowInspector() {
-
+  function hideRowInspector() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
     );
 
-    _map.fire('clearhighlightrequest');
+    map.fire('clearhighlightrequest');
   }
 
-  function _captureEscapeAndClearHighlight(event) {
-
+  function captureEscapeAndClearHighlight(event) {
     if (event.which === 27) {
-      _map.fire('clearhighlightrequest');
+      map.fire('clearhighlightrequest');
     }
   }
 
-  function _captureLeftClickAndClearHighlight(event) {
-
+  function captureLeftClickAndClearHighlight(event) {
     var $target = $(event.target);
     var isLeftClick = event.which === 1;
-    var isOutsideOfCurrentMap = $target.closest('.feature-map-container')[0] !== _mapContainer[0];
+    var isOutsideOfCurrentMap = $target.closest('.feature-map-container')[0] !== mapContainer[0];
     var isIconClose = $target.is('.icon-close');
     var isRowInspector = $target.parents('#socrata-row-inspector').length > 0 && !isIconClose;
 
     if (isLeftClick && (isOutsideOfCurrentMap || isIconClose) && !isRowInspector) {
-      _map.fire('clearhighlightrequest');
+      map.fire('clearhighlightrequest');
     }
   }
 
@@ -898,37 +816,61 @@ function FeatureMap(element, vif) {
    * Map behavior
    */
 
-  function _updateBaseLayer(url, opacity) {
+  function buildBoundsFromVif(newVif) {
+    var extent = _.get(newVif, 'configuration.savedExtent') || _.get(newVif, 'configuration.defaultExtent');
+    return buildBoundsFromExtent(extent);
+  }
 
-    if (_baseTileLayer) {
-      _map.removeLayer(_baseTileLayer);
-    }
+  function buildBoundsFromExtent(extent) {
+    var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);
+    var northEast = L.latLng(extent.northeast[0], extent.northeast[1]);
 
-    _baseTileLayer = L.tileLayer(
-      url,
-      {
-        attribution: '',
-        detectRetina: false,
-        opacity: opacity,
-        unloadInvisibleTiles: true
+    return L.latLngBounds(southWest, northEast);
+  }
+
+  function updateBaseLayer(newVif) {
+    if (didBaseLayerChange(newVif)) {
+      if (baseTileLayer) {
+        map.removeLayer(baseTileLayer);
       }
-    );
 
-    _map.addLayer(_baseTileLayer);
+      baseTileLayer = L.tileLayer(
+        _.get(newVif, 'configuration.baseLayerUrl'),
+        {
+          attribution: '',
+          detectRetina: false,
+          opacity: _.get(newVif, 'configuration.baseLayerOpacity'),
+          unloadInvisibleTiles: true,
+          zIndex: 0
+        }
+      );
+
+      map.addLayer(baseTileLayer);
+    }
   }
 
   /**
    * Reads center and zoom overrides from the vif and updates the map to render
    * with those parameters.
-   *
-   * @param centerAndZoom - The centerAndZoom subtree from the vif.
    */
-  function updateCenterAndZoom(centerAndZoom) {
-    utils.assertHasProperties(centerAndZoom, 'center', 'zoom');
-    utils.assertHasProperties(centerAndZoom.center, 'lat', 'lng');
-    utils.assertIsOneOfTypes(centerAndZoom.zoom, 'number');
+  function updateCenterAndZoom(newVif) {
+    var newCenter = _.get(newVif, 'configuration.mapCenterAndZoom.center');
+    var lastRenderedCenter = _.get(lastRenderedVif, 'configuration.mapCenterAndZoom.center');
 
-    _map.setView(centerAndZoom.center, centerAndZoom.zoom, {animate: false});
+    var newZoom = _.get(newVif, 'configuration.mapCenterAndZoom.zoom');
+    var lastRenderedZoom = _.get(lastRenderedVif, 'configuration.mapCenterAndZoom.zoom');
+
+    var centerAndZoomDefined = _.chain(newVif).at(
+      'configuration.mapCenterAndZoom.center.lat',
+      'configuration.mapCenterAndZoom.center.lng',
+      'configuration.mapCenterAndZoom.zoom'
+    ).every(_.isNumber);
+
+    if (userCurrentPositionBounds) {
+      fitBounds(userCurrentPositionBounds);
+    } else if (centerAndZoomDefined && !_.isEqual(newCenter, lastRenderedCenter) || newZoom !== lastRenderedZoom) {
+      map.setView(newCenter, newZoom, {animate: false});
+    }
   }
 
   /**
@@ -938,14 +880,14 @@ function FeatureMap(element, vif) {
    * @param bounds - The Leaflet LatLngBounds object that represents the
    *   extents of the column's features.
    */
-  function _fitBounds(bounds) {
+  function fitBounds(bounds) {
 
     // It is critical to invalidate size prior to updating bounds.
     // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
     // This manifests itself as the map being zoomed all of the way out.
-    _map.invalidateSize();
+    map.invalidateSize();
 
-    _map.fitBounds(
+    map.fitBounds(
       bounds,
       {
         animate: false,
@@ -966,45 +908,81 @@ function FeatureMap(element, vif) {
    * so that there is only ever one active feature layer attached to the
    * map at a time.
    *
-   * @param {Object} map - The Leaflet map object.
+   * We update when:
+   * - the dataset uid changed.
+   * - a new list of tileserver hosts.
+   * - filtering in the VIF has changed.
+   *
+   * @param {Object} newVif - The most current VIF
    * @param {Function} vectorTileGetter - Function that gets a vector tile
    */
-  function _createNewFeatureLayer(vectorTileGetter) {
+  function updateFeatureLayer(newVif, vectorTileGetter) {
+    var datasetUidPath = 'series[0].dataSource.datasetUid';
+    var datasetUidChanged = !_.isEqual(
+      _.get(newVif, datasetUidPath),
+      _.get(lastRenderedVif, datasetUidPath)
+    );
 
-    var layer;
-    var layerId = _.uniqueId();
-    var featureLayerOptions = {
-      // Data requests
-      vectorTileGetter: vectorTileGetter,
-      // Behavior
-      debug: _debug,
-      hover: _hover,
-      debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
-      rowInspectorMaxRowDensity: _maxRowInspectorDensity,
-      maxZoom: FEATURE_MAP_MAX_ZOOM,
-      maxTileDensity: _maxTileDensity,
-      tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
-      // Helper functions
-      getFeatureId: _getFeatureId,
-      getFeatureStyle: _getFeatureStyle,
-      getHoverThreshold: _getHoverThreshold,
-      // Event handlers
-      onRenderStart: _handleVectorTileRenderStart,
-      onRenderComplete: _handleVectorTileRenderComplete,
-      onMousemove: _handleVectorTileMousemove,
-      onClick: _handleVectorTileClick,
-      onTap: _.get(vif, 'configuration.isMobile') ? _handleVectorTileMousemove : null
-    };
+    var newUseOriginHost = _.get(newVif, 'configuration.useOriginHost');
+    var tileserverHostsPath = 'configuration.tileserverHosts';
+    var tileserverHostsChanged = !newUseOriginHost && !_.isEqual(
+      _.get(newVif, tileserverHostsPath),
+      _.get(lastRenderedVif, tileserverHostsPath)
+    );
 
-    // Don't create duplicate layers.
-    if (!_featureLayers.hasOwnProperty(layerId)) {
+    var newWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0);
+    var lastRenderedWhereClause = (lastRenderedVif) ?
+      SoqlHelpers.whereClauseNotFilteringOwnColumn(lastRenderedVif, 0) :
+      '';
+    var whereClauseChanged = newWhereClause !== lastRenderedWhereClause;
 
-      layer = new L.TileLayer.VectorTileManager(featureLayerOptions);
+    var pointColorPath = 'configuration.pointColor';
+    var pointColorChanged = !_.isEqual(
+      _.get(newVif, pointColorPath),
+      _.get(lastRenderedVif, pointColorPath)
+    );
 
-      _map.addLayer(layer);
+    var pointOpacityPath = 'configuration.pointOpacity';
+    var pointOpacityChanged = !_.isEqual(
+      _.get(newVif, pointOpacityPath),
+      _.get(lastRenderedVif, pointOpacityPath)
+    );
 
-      _featureLayers[layerId] = layer;
-      _currentLayerId = layerId;
+    if (datasetUidChanged || tileserverHostsChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged) {
+      var layer;
+      var layerId = _.uniqueId();
+      var featureLayerOptions = {
+        // Data requests
+        vectorTileGetter: vectorTileGetter,
+        // Behavior
+        debug: debug,
+        hover: hover,
+        debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
+        rowInspectorMaxRowDensity: maxRowInspectorDensity,
+        maxZoom: FEATURE_MAP_MAX_ZOOM,
+        maxTileDensity: maxTileDensity,
+        tileOverlapZoomThreshold: FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD,
+        // Helper functions
+        getFeatureId: getFeatureId,
+        getFeatureStyle: getFeatureStyle,
+        getHoverThreshold: getHoverThreshold,
+        // Event handlers
+        onRenderStart: handleVectorTileRenderStart,
+        onRenderComplete: handleVectorTileRenderComplete,
+        onMousemove: handleVectorTileMousemove,
+        onClick: handleVectorTileClick,
+        onTap: _.get(vif, 'configuration.isMobile') ? handleVectorTileMousemove : null
+      };
+
+      // Don't create duplicate layers.
+      if (!featureLayers.hasOwnProperty(layerId)) {
+        layer = new L.TileLayer.VectorTileManager(featureLayerOptions);
+
+        map.addLayer(layer);
+
+        featureLayers[layerId] = layer;
+        currentLayerId = layerId;
+      }
     }
   }
 
@@ -1012,13 +990,11 @@ function FeatureMap(element, vif) {
    * Removes existing but out of date feature layers from the map.
    * This is used in conjunction with `_createNewFeatureLayer()`.
    */
-  function _removeOldFeatureLayers() {
-
-    Object.keys(_featureLayers).forEach(function(layerId) {
-
-      if (layerId !== _currentLayerId) {
-        _map.removeLayer(_featureLayers[layerId]);
-        delete _featureLayers[layerId];
+  function removeOldFeatureLayers() {
+    Object.keys(featureLayers).forEach(function(layerId) {
+      if (layerId !== currentLayerId) {
+        map.removeLayer(featureLayers[layerId]);
+        delete featureLayers[layerId];
       }
     });
   }
@@ -1043,9 +1019,8 @@ function FeatureMap(element, vif) {
    *     @property {Number} lat - The latitude of the point.
    *     @property {Number} lng - The longitude of the point.
    */
-  function _getQueryBounds(leafletContainerPoint) {
-
-    var hoverThreshold = _getHoverThreshold(_map.getZoom());
+  function getQueryBounds(leafletContainerPoint) {
+    var hoverThreshold = getHoverThreshold(map.getZoom());
     var delta = FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING + hoverThreshold;
     var northeastContainerPoint = L.point(
       leafletContainerPoint.x - delta,
@@ -1057,8 +1032,8 @@ function FeatureMap(element, vif) {
     );
 
     return {
-      northeast: _map.containerPointToLatLng(northeastContainerPoint),
-      southwest: _map.containerPointToLatLng(southwestContainerPoint)
+      northeast: map.containerPointToLatLng(northeastContainerPoint),
+      southwest: map.containerPointToLatLng(southwestContainerPoint)
     };
   }
 
@@ -1073,7 +1048,7 @@ function FeatureMap(element, vif) {
    *
    * @return {String}
    */
-  function _getFeatureId(feature, index) {
+  function getFeatureId(feature, index) {
     return String(index);
   }
 
@@ -1085,10 +1060,9 @@ function FeatureMap(element, vif) {
   *
   * @return {Number}
   */
-  function _getHoverThreshold(zoomLevel) {
-
+  function getHoverThreshold(zoomLevel) {
     return Math.max(
-      _scalePointFeatureRadiusByZoomLevel(zoomLevel),
+      scalePointFeatureRadiusByZoomLevel(zoomLevel),
       FEATURE_MAP_MIN_HOVER_THRESHOLD
     );
   }
@@ -1101,8 +1075,7 @@ function FeatureMap(element, vif) {
    *
    * @return {Number}
    */
-  function _scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-
+  function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
     // This was created somewhat arbitrarily by Chris to
     // result in point features which get slightly larger
     // as the map is zoomed in. It can be replaced with
@@ -1121,14 +1094,13 @@ function FeatureMap(element, vif) {
    * @return {Object} - A style object that will be used to render the
    *   feature.
    */
-  function _getPointStyle() {
-
+  function getPointStyle() {
     return {
-      color: _calculatePointColor,
+      color: calculatePointColor,
       highlightColor: 'rgba(255, 255, 255, .5)',
-      radius: _scalePointFeatureRadiusByZoomLevel,
+      radius: scalePointFeatureRadiusByZoomLevel,
       lineWidth: 1,
-      strokeStyle: _calculateStrokeStyleColor
+      strokeStyle: calculateStrokeStyleColor
     };
   }
 
@@ -1136,13 +1108,13 @@ function FeatureMap(element, vif) {
    * Determine the point opacity at a given zoom level.
    * When you zoom in the opacity increases.
    */
-  function _calculatePointOpacity(zoomLevel) {
+  function calculatePointOpacity(zoomLevel) {
     return (0.2 * Math.pow(zoomLevel / 18, 5) + 0.6);
   }
 
-  function _calculatePointColor(zoomLevel) {
+  function calculatePointColor(zoomLevel) {
     var rgb = [235, 105, 0];
-    var color = _.get(vif, 'configuration.pointColor', '');
+    var color = _.get(lastRenderedVif, 'configuration.pointColor', '');
     var shorthandHexRegex = /^#([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})$/;
     var hexRegex = /^#([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})$/;
 
@@ -1150,10 +1122,10 @@ function FeatureMap(element, vif) {
     var expandShorthandHex = function(hex) { return hex.length === 1 ? hex + hex : hex; };
     var matches = color.match(shorthandHexRegex) || color.match(hexRegex);
 
-    var opacity = _.get(vif, 'configuration.pointOpacity', null);
+    var opacity = _.get(lastRenderedVif, 'configuration.pointOpacity', null);
 
     if (_.isNull(opacity)) {
-      opacity = _calculatePointOpacity(zoomLevel);
+      opacity = calculatePointOpacity(zoomLevel);
     } else {
       // Clamp to [0, 1].
       opacity = Math.max(0, Math.min(parseFloat(opacity), 1));
@@ -1173,7 +1145,7 @@ function FeatureMap(element, vif) {
   * Determine stroke style (point outline) at given zoom level.
   * Dims point outline color as map zooms out.
   */
-  function _calculateStrokeStyleColor(zoomLevel) {
+  function calculateStrokeStyleColor(zoomLevel) {
     return 'rgba(255,255,255,' + (0.8 * Math.pow(zoomLevel / 18, 8) + 0.1) + ')';
   }
 
@@ -1187,8 +1159,7 @@ function FeatureMap(element, vif) {
    * @return {Object} - A style object that will be used to render the
    *   feature.
    */
-  function _getLineStringStyle() {
-
+  function getLineStringStyle() {
     return {
       color: 'rgba(161,217,155,0.8)',
       size: 3
@@ -1205,8 +1176,7 @@ function FeatureMap(element, vif) {
    * @return {Object} - A style object that will be used to render the
    *   feature.
    */
-  function _getPolygonStyle() {
-
+  function getPolygonStyle() {
     return {
       color: 'rgba(149,139,255,0.4)',
       outline: {
@@ -1226,19 +1196,18 @@ function FeatureMap(element, vif) {
    * @return {Object} - A function that can be used to generate a style
    *   object.
    */
-  function _getFeatureStyle(feature) {
-
+  function getFeatureStyle(feature) {
     switch (feature.type) {
       case 1:
-        return _getPointStyle();
+        return getPointStyle();
       case 2:
-        return _getLineStringStyle();
+        return getLineStringStyle();
       case 3:
-        return _getPolygonStyle();
+        return getPolygonStyle();
       default:
         throw new Error('Cannot apply style to unknown feature type "' + feature.type + '".');
     }
   }
 }
 
-module.exports = FeatureMap;
+module.exports = SvgFeatureMap;

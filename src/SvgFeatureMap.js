@@ -2,7 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var L = require('leaflet');
 var utils = require('socrata-utils');
-var FeatureMap = require('./views/FeatureMap');
+var SvgFeatureMap = require('./views/SvgFeatureMap');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
@@ -10,6 +10,10 @@ var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var VifHelpers = require('./helpers/VifHelpers');
 var DataTypeFormatter = require('./views/DataTypeFormatter');
+
+var COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
+var DOMAIN_PATH = 'series[0].dataSource.domain';
+var DATASET_UID_PATH = 'series[0].dataSource.datasetUid';
 
 var DEFAULT_TILESERVER_HOSTS = [
   'https://tileserver1.api.us.socrata.com',
@@ -29,11 +33,10 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */
-$.fn.socrataFeatureMap = function(vif) {
-
+$.fn.socrataSvgFeatureMap = function(vif) {
   utils.assert(
     _.isPlainObject(vif),
-    'You must pass in a valid VIF to use socrataFeatureMap'
+    'You must pass in a valid VIF to use socrataSvgFeatureMap'
   );
 
   vif = VifHelpers.migrateVif(vif);
@@ -54,8 +57,7 @@ $.fn.socrataFeatureMap = function(vif) {
   utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
   utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
 
-  utils.assertHasProperties(
-    vif.configuration.localization,
+  var localization = [
     'flyout_filter_notice',
     'flyout_filter_or_zoom_notice',
     'flyout_dense_data_notice',
@@ -69,116 +71,25 @@ $.fn.socrataFeatureMap = function(vif) {
     'row_inspector_row_data_query_failed',
     'user_current_position',
     'column_incompatibility_error',
-    'feature_extent_query_error'
-  );
+    'general_error'
+  ];
+
+  var missingKeys = _.difference(localization, _.keys(vif.configuration.localization));
+  _.forEach(missingKeys, (missingKey) => console.warn(`Warning: A SvgFeatureMap localization key is missing: ${missingKey}.`));
 
   var $element = $(this);
   var datasetMetadata;
-
-  var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
-  var domain = _.get(vif, 'series[0].dataSource.domain');
-  var datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-
-  // Geospace has knowledge of the extents of a column, which
-  // we use to modify point data queries with a WITHIN_BOX clause.
-  var geospaceDataProviderConfig = {
-    domain: domain,
-    datasetUid: datasetUid
-  };
-  var geospaceDataProvider = new GeospaceDataProvider(
-    geospaceDataProviderConfig
-  );
-
-  // Tileserver serves tile data using the standard {z}/{x}/{y} URL
-  // format. It returns protocol buffers containing point offsets from
-  // the tile origin (top left).
-  var tileserverDataProviderConfig = {
-    domain: domain,
-    datasetUid: datasetUid,
-    columnName: columnName,
-    featuresPerTile: DEFAULT_FEATURES_PER_TILE,
-    tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
-  };
-  var tileserverDataProvider = new TileserverDataProvider(
-    tileserverDataProviderConfig
-  );
-
-  // SoQL returns row results for display in the row inspector
-  var soqlDataProviderConfig = {
-    domain: domain,
-    datasetUid: datasetUid
-  };
-  var soqlDataProvider = new SoqlDataProvider(
-    soqlDataProviderConfig
-  );
-
-  if (vif.configuration.datasetMetadata) {
-
-    // If the caller already has datasetMetadata, it can be passed through as
-    // a configuration property.
-    datasetMetadata = vif.configuration.datasetMetadata;
-
-  } else {
-
-    // Otherwise, we also need to fetch the dataset metadata for the
-    // specified dataset so that we can use its column definitions when
-    // formatting data for the row inspector.
-    var metadataProviderConfig = {
-      domain: domain,
-      datasetUid: datasetUid
-    };
-    var metadataProvider = new MetadataProvider(
-      metadataProviderConfig
-    );
-
-    // Make the dataset metadata request before initializing the visualization
-    // in order to ensure that the column metadata is present before any of the
-    // row inspector events (which expect it to be present) can be fired.
-    //
-    // If this request fails, we will fall back to listing columns
-    // alphabetically instead of in the order in which they appear in the
-    // dataset grid view.
-    metadataProvider.
-      getDatasetMetadata().
-      then(
-        handleDatasetMetadataRequestSuccess,
-        handleDatasetMetadataRequestError
-      )['catch'](function(e) {
-        logError(e);
-      });
-  }
-
-  var visualization = new FeatureMap(
-    $element,
-    vif
-  );
-  // The visualizationRenderOptions may change in response to user actions
-  // and are passed as an argument to every render call.
-  var visualizationRenderOptions = {
-    baseLayer: {
-      url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
-      opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
-    }
-  };
+  var datasetMetadataRequest;
+  var extentRequest;
+  var geospaceDataProvider;
+  var tileserverDataProvider;
+  var soqlDataProvider;
+  var metadataProvider;
+  var visualization;
   var rerenderOnResizeTimeout;
+  var lastRenderedVif;
 
-  /**
-   * Initial data requests to set up visualization state
-   */
-
-  // We query the extent of the features we are rendering in order to make
-  // individual tile requests more performant (through the use of a
-  // WITHIN_BOX query clause).
-  geospaceDataProvider.
-    getFeatureExtent(columnName).
-    then(
-      handleFeatureExtentQuerySuccess,
-      handleFeatureExtentQueryError.bind(this)
-    )['catch'](function(e) {
-      logError(e);
-    });
-
-  initializeVisualization();
+  initializeVisualization(vif);
 
   /**
    * Events
@@ -198,7 +109,7 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
     $element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
-    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
   function detachEvents() {
@@ -208,59 +119,54 @@ $.fn.socrataFeatureMap = function(vif) {
     $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
     $element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
     $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
-    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
   /**
    * Event handlers
    */
 
-  function _handleRenderVif(event) {
+  function handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
+    var rerender = () => {
+      var vectorTileGetter = buildVectorTileGetter(
+        SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0),
+        newVif.configuration.useOriginHost
+      );
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0), newVif.configuration.useOriginHost);
+      visualization.clearError();
+      visualization.render(newVif, { vectorTileGetter });
+    };
 
-    renderIfReady();
+    if (didChangeDataSource(newVif, lastRenderedVif)) {
+      initializeDataProviders(newVif);
+      getDataFromProviders(newVif).then((resolutions) => {
+        datasetMetadata = resolutions[0];
+        rerender();
+      }).catch(handleError);
+    } else {
+      rerender();
+    }
+
+    lastRenderedVif = newVif;
   }
 
-  function _handleWindowResize() {
-
-    clearTimeout(rerenderOnResizeTimeout);
-
-    rerenderOnResizeTimeout = setTimeout(
-      renderIfReady,
-      // Add some jitter in order to make sure multiple visualizations are
-      // unlikely to all attempt to rerender themselves at the exact same
-      // moment.
-      WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+  function didChangeDataSource(newVif, lastRenderedVif) {
+    var dataSourcePath = 'series[0].dataSource';
+    return !_.isEqual(
+      _.get(newVif, dataSourcePath),
+      _.get(lastRenderedVif, dataSourcePath)
     );
   }
 
-  function handleDatasetMetadataRequestSuccess(data) {
-
-    datasetMetadata = data;
-  }
-
-  function handleDatasetMetadataRequestError(error) {
-
-    // The only consumer of dataset metadata is the row inspector flyout.
-    // If the request fails, we won't show the row inspector on click.
-    console.error('Failed to fetch dataset metadata: {0}'.format(error));
-  }
-
-  function handleFeatureExtentQuerySuccess(response) {
-    updateRenderOptionsBounds(response);
-    renderIfReady();
-  }
-
-  function handleFeatureExtentQueryError(error) {
+  function handleError(error) {
     var message;
     var errorCode = _.get(error, 'soqlError.errorCode');
 
     if (errorCode === 'query.soql.type-mismatch') {
-      message = vif.configuration.localization.column_incompatibility_error;
+      message = lastRenderedVif.configuration.localization.column_incompatibility_error;
     } else {
-      message = vif.configuration.localization.feature_extent_query_error;
+      message = lastRenderedVif.configuration.localization.general_error;
     }
 
     renderError(message);
@@ -383,8 +289,9 @@ $.fn.socrataFeatureMap = function(vif) {
     }
 
     var payload = event.originalEvent.detail;
+    var columnName = _.get(lastRenderedVif, COLUMN_NAME_PATH);
 
-    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+    var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(lastRenderedVif, 0);
     var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}{5}'.
       format(
         payload.rowCount,
@@ -419,11 +326,12 @@ $.fn.socrataFeatureMap = function(vif) {
   }
 
   function handleRowInspectorQuerySuccess(data) {
+    var flyoutTitleColumnName = _.get(lastRenderedVif, 'configuration.flyoutTitleColumnName');
     var getPageTitle = function(page) {
-      return _.find(page, {column: vif.configuration.flyoutTitleColumnName}).value;
+      return _.find(page, {column: flyoutTitleColumnName}).value;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
-    var titles = vif.configuration.flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
+    var titles = flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
@@ -450,7 +358,7 @@ $.fn.socrataFeatureMap = function(vif) {
           detail: {
             data: null,
             error: true,
-            message: vif.configuration.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
+            message: lastRenderedVif.configuration.localization.row_inspector_row_data_query_failed
           },
           bubbles: true
         }
@@ -477,42 +385,104 @@ $.fn.socrataFeatureMap = function(vif) {
    * Helper functions
    */
 
-  function initializeVisualization() {
+  function initializeDataProviders(newVif) {
+    var domain = _.get(newVif, DOMAIN_PATH);
+    var datasetUid = _.get(newVif, DATASET_UID_PATH);
+    var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-    attachEvents();
+    // Geospace has knowledge of the extents of a column, which
+    // we use to modify point data queries with a WITHIN_BOX clause.
+    geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid });
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0), vif.configuration.useOriginHost);
+    // Tileserver serves tile data using the standard {z}/{x}/{y} URL
+    // format. It returns protocol buffers containing point offsets from
+    // the tile origin (top left).
+    tileserverDataProvider = new TileserverDataProvider({
+      domain,
+      datasetUid,
+      columnName,
+      featuresPerTile: DEFAULT_FEATURES_PER_TILE,
+      tileserverHosts: newVif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
+    });
 
-    renderIfReady();
+    // SoQL returns row results for display in the row inspector
+    soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });
+
+    metadataProvider = newVif.configuration.datasetMetadata ?
+      null :
+      new MetadataProvider({ domain, datasetUid });
   }
 
-  function updateRenderOptionsBounds(extent) {
+  function initializeVisualization(newVif) {
+    var domain = _.get(newVif, DOMAIN_PATH);
+    var datasetUid = _.get(newVif, DATASET_UID_PATH);
+    var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-    var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);
-    var northEast = L.latLng(extent.northeast[0], extent.northeast[1]);
+    visualization = new SvgFeatureMap($element, newVif);
+    lastRenderedVif = newVif;
 
-    visualizationRenderOptions.bounds = L.latLngBounds(southWest, northEast);
+    // Binds all globally-scoped dataProviders.
+    initializeDataProviders(newVif);
+    getDataFromProviders(newVif).then((resolutions) => {
+      var [metadata, extent] = resolutions;
+      datasetMetadata = metadata;
+
+      attachEvents();
+
+      visualization.render(
+        false,
+        {
+          extent,
+          vectorTileGetter: buildVectorTileGetter(
+            SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0),
+            newVif.configuration.useOriginHost
+          )
+        }
+      );
+    }).catch((e) => {
+      handleError(e);
+      logError(e);
+    });
   }
 
-  function updateRenderOptionsVectorTileGetter(whereClause, useOriginHost) {
+  function getDataFromProviders(newVif) {
+    var datasetMetadataRequest;
+    var extentRequest;
+    var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-    useOriginHost = useOriginHost || false;
-
-    visualizationRenderOptions.vectorTileGetter = tileserverDataProvider.buildTileGetter(
-      whereClause,
-      useOriginHost
-    );
-  }
-
-  function renderIfReady() {
-
-    var hasBounds = visualizationRenderOptions.hasOwnProperty('bounds');
-    var hasTileGetter = visualizationRenderOptions.hasOwnProperty('vectorTileGetter');
-
-    if (hasBounds && hasTileGetter) {
-
-      visualization.render(visualizationRenderOptions);
+    if (_.isPlainObject(newVif.configuration.datasetMetadata)) {
+      datasetMetadataRequest = newVif.configuration.datasetMetadata;
+    } else if (metadataProvider) {
+      datasetMetadataRequest = metadataProvider.getDatasetMetadata();
+    } else {
+      handleError();
     }
+
+    if (_.has(newVif, 'configuration.mapCenterAndZoom')) {
+      extentRequest = Promise.resolve();
+    } else {
+      extentRequest = geospaceDataProvider.getFeatureExtent(columnName);
+    }
+
+    /**
+     * Initial data requests to set up visualization state
+     */
+
+    // We query the extent of the features we are rendering in order to make
+    // individual tile requests more performant (through the use of a
+    // WITHIN_BOX query clause).
+    return Promise.all([
+      datasetMetadataRequest,
+      extentRequest
+    ]);
+  }
+
+  function buildVectorTileGetter(whereClause, useOriginHost) {
+
+    return tileserverDataProvider.buildTileGetter(
+      whereClause,
+      useOriginHost || false
+    );
   }
 
   function renderError(message) {
@@ -601,7 +571,7 @@ $.fn.socrataFeatureMap = function(vif) {
             // we should format it slightly differently.
             formattedRowData[columnMetadata.position] = {
               column: columnName,
-              value: DataTypeFormatter.renderCell(columnValue, columnMetadata, vif.configuration.localization),
+              value: DataTypeFormatter.renderCell(columnValue, columnMetadata, lastRenderedVif.configuration.localization),
               format: _.isObject(columnValue) ? undefined : columnMetadata.format,
               physicalDatatype: columnMetadata.physicalDatatype
             };
@@ -633,4 +603,4 @@ $.fn.socrataFeatureMap = function(vif) {
   return this;
 };
 
-module.exports = $.fn.socrataFeatureMap;
+module.exports = $.fn.socrataSvgFeatureMap;

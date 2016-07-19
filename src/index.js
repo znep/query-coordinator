@@ -8,6 +8,7 @@ var ColumnChart = require('./ColumnChart');
 var SvgColumnChart = require('./SvgColumnChart');
 var DistributionChart = require('./DistributionChart');
 var FeatureMap = require('./FeatureMap');
+var SvgFeatureMap = require('./SvgFeatureMap');
 var Table = require('./Table');
 var TimelineChart = require('./TimelineChart');
 var SvgTimelineChart = require('./SvgTimelineChart');
@@ -25,6 +26,7 @@ module.exports = {
   SvgColumnChart: SvgColumnChart,
   DistributionChart: DistributionChart,
   FeatureMap: FeatureMap,
+  SvgFeatureMap: SvgFeatureMap,
   Table: Table,
   TimelineChart: TimelineChart,
   SvgTimelineChart: SvgTimelineChart

@@ -81,6 +81,13 @@
                 if (_.isNull(pos)) { pos = ['bottom', 'top']; }
                 else if (pos == 'auto') { pos = ['most']; }
 
+                // gross hack for changing flyout behavior on stories-enabled domains
+                // because forcing to top/bottom may cut off part of the flyout
+                // in smaller iframes.
+                if (blist.feature_flags.stories_enabled) {
+                    pos = ['most'];
+                }
+
                 var content = sTipObj.settings.content;
                 if ($.isBlank(content))
                 {
@@ -263,7 +270,7 @@
                 else if (parseInt($tip.css('margin-left')) > 0) { pos = 'right'; }
 
                 return pos;
-            } 
+            }
         }
     });
 

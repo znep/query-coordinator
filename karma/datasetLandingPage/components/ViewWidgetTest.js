@@ -53,16 +53,38 @@ describe('components/ViewWidget', function() {
       expect(metadataRow.querySelector('.second').innerText).to.eq('99 Views');
     });
 
-    it('renders an image if provided', function() {
-      var element = renderComponent(ViewWidget, getProps({
-        imageUrl: '/image.png'
-      }));
-      expect(element.querySelector('img')).to.exist;
-    });
+    describe('image preview', function() {
+      it('renders an icon if no image is provided', function() {
+        var element = renderComponent(ViewWidget, getProps());
+        expect(element.querySelector('img')).to.not.exist;
+      });
 
-    it('renders an icon if no image is provided', function() {
-      var element = renderComponent(ViewWidget, getProps());
-      expect(element.querySelector('img')).to.not.exist;
+      it('renders an icon if image is provided and feature flag is turned off', function() {
+        window.serverConfig.featureFlags.displayDatasetLandingPagePreviewImages = false;
+        var element = renderComponent(ViewWidget, getProps({
+          imageUrl: '/image.png'
+        }));
+
+        expect(element.querySelector('img')).to.not.exist;
+      });
+
+      it('renders an image if one is provided and feature flag is turned on', function() {
+        window.serverConfig.featureFlags.displayDatasetLandingPagePreviewImages = true;
+        var element = renderComponent(ViewWidget, getProps({
+          imageUrl: '/image.png'
+        }));
+
+        expect(element.querySelector('img')).to.exist;
+      });
+
+      it('renders an image if one is provided and resource is external', function() {
+        var element = renderComponent(ViewWidget, getProps({
+          imageUrl: '/image.png',
+          isExternal: true
+        }));
+
+        expect(element.querySelector('img')).to.exist;
+      });
     });
 
     it('renders the description if provided', function() {

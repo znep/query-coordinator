@@ -56,6 +56,7 @@ module DatasetLandingPageHelper
         :enable_dataset_landing_page,
         :enable_dataset_landing_page_tour,
         :default_to_dataset_landing_page,
+        :display_dataset_landing_page_preview_images,
         :stories_enabled
       ]).map { |k, v| [ k.camelize(:lower), v ] }
     ]

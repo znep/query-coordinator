@@ -122,9 +122,7 @@ module SocrataSiteChrome
     end
 
     def site_chrome_test_config
-      site_chrome_config = JSON.parse(
-        File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")
-      ).with_indifferent_access
+      site_chrome_config = DomainConfig.default_configuration.first.with_indifferent_access
       site_chrome_config_values = site_chrome_config[:properties].first.dig(:value)
       current_version = site_chrome_config_values[:current_version]
       {

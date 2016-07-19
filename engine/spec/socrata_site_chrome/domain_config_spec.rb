@@ -22,19 +22,19 @@ describe SocrataSiteChrome::DomainConfig do
     it 'provides default site_chrome_config if cannot GET the domain configuration' do
       stub_configurations(status: 404, body: 'Page not found')
       configuration = SocrataSiteChrome::DomainConfig.new(domain).config
-      expect(JSON.parse(SocrataSiteChrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
+      expect(SocrataSiteChrome::DomainConfig.default_configuration.first).to eq(configuration)
     end
 
     it 'provides default site_chrome_config if domain configuration is an empty JSON array' do
       stub_configurations(status: 200, body: '[]')
       configuration = SocrataSiteChrome::DomainConfig.new(domain).config
-      expect(JSON.parse(SocrataSiteChrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
+      expect(SocrataSiteChrome::DomainConfig.default_configuration.first).to eq(configuration)
     end
 
     it 'provides default site_chrome_config if domain configuration is an empty string' do
       stub_configurations(status: 200, body: '')
       configuration = SocrataSiteChrome::DomainConfig.new(domain).config
-      expect(JSON.parse(SocrataSiteChrome::DomainConfig.new(nil).send(:default_configuration)).first).to eq(configuration)
+      expect(SocrataSiteChrome::DomainConfig.default_configuration.first).to eq(configuration)
     end
   end
 

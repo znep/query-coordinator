@@ -5,7 +5,8 @@ describe 'layouts/unified' do
   it 'does not make a core request in test mode' do
     render
 
-    expect(rendered).to match('Link G with a super long title!!!')
-    expect(rendered).to match('<a class="footer-link" href="http://www.socrata.com/terms-of-service">Terms of Service</a>')
+    expect(rendered).to match('<a class="logo" href="/"><img onerror="this.style.display=&quot;none&quot;" src="/socrata_site_chrome/images/socrata-logo-2c-dark.png" /><span class="site-name"></span></a>')
+    expect(rendered).to match('<header id="site-chrome-header" template="default">')
+    expect(rendered).to match('<footer id="site-chrome-footer" template="default">')
   end
 end

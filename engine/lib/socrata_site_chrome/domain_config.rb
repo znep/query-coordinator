@@ -28,6 +28,10 @@ module SocrataSiteChrome
       @config = Hash.new(@config).empty? ? get_domain_config : @domain
     end
 
+    def self.default_configuration
+      JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
+    end
+
     private
 
     # Config contains various versions, each having a "published" and "draft" set of
@@ -80,11 +84,7 @@ module SocrataSiteChrome
     def configuration_or_default(configuration_response)
       configuration = configuration_response.to_s
       result = JSON.parse(configuration).first rescue nil
-      result || JSON.parse(default_configuration).first
-    end
-
-    def default_configuration
-      File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json")
+      result || DomainConfig.default_configuration.first
     end
 
   end

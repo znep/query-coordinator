@@ -16,17 +16,6 @@ describe SocrataSiteChrome::SiteChrome do
 
   let(:helper) { SocrataSiteChrome::SiteChrome.new(site_chrome_config) }
 
-  def helper_with_specific_version(version)
-    version_specific_content = JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).
-      with_indifferent_access['properties'].first['value']['versions'][version]['published']['content']
-    SocrataSiteChrome::SiteChrome.new(
-      id: id,
-      content: version_specific_content,
-      updated_at: updated_at,
-      current_version: version
-    )
-  end
-
   it 'does not raise on initialization without parameters' do
     expect { SocrataSiteChrome::SiteChrome.new }.to_not raise_error
   end
@@ -66,7 +55,7 @@ describe SocrataSiteChrome::SiteChrome do
 
   describe '#default_site_chrome_content' do
     it 'finds the latest default content and has necessary keys' do
-      content = helper.send(:default_site_chrome_content)
+      content = SocrataSiteChrome::SiteChrome.default_site_chrome_content
       expect(content[:general]).not_to be_nil
       expect(content[:header]).not_to be_nil
       expect(content[:footer]).not_to be_nil
@@ -74,11 +63,9 @@ describe SocrataSiteChrome::SiteChrome do
     end
 
     it 'returns version-specific content' do
-      v1_helper = helper_with_specific_version('0.1')
-      v1_content = v1_helper.send(:default_site_chrome_content)
+      v1_content = SocrataSiteChrome::SiteChrome.default_site_chrome_content('0.1')
       expect(v1_content[:locales][:en][:general]).to have_key(:site_name)
-      v2_helper = helper_with_specific_version('0.2')
-      v2_content = v2_helper.send(:default_site_chrome_content)
+      v2_content = SocrataSiteChrome::SiteChrome.default_site_chrome_content('0.2')
       expect(v2_content[:locales][:en][:header]).to have_key(:site_name)
       expect(v2_content[:locales][:en][:footer]).to have_key(:site_name)
     end

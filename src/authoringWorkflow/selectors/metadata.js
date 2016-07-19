@@ -78,7 +78,7 @@ export const getValidCuratedRegions = createSelector(
   getValidComputedColumns,
   (curatedRegions, computedColumns) =>  {
     var notInDataset = (region) => {
-      return !_.includes(computedColumns, region.uid);
+      return !_.some(computedColumns, {uid: region.uid});
     };
 
     return _.chain(curatedRegions).

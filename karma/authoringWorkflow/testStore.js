@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 
 import reducer from 'src/authoringWorkflow/reducers';
 import vifs from 'src/authoringWorkflow/vifs';
-import defaultMetadata from 'src/authoringWorkflow/defaultMetadata';
+import { defaultState as defaultMetadata } from 'src/authoringWorkflow/reducers/metadata';
 
 export default function(stateOverrides) {
   var logger = createLogger();

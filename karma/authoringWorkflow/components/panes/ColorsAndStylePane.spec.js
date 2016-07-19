@@ -1,10 +1,10 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
-import defaultProps from '../defaultProps';
-import renderComponent from '../renderComponent';
+import defaultProps from '../../defaultProps';
+import renderComponent from '../../renderComponent';
 import vifs from 'src/authoringWorkflow/vifs';
-import { ColorsAndStylePane } from 'src/authoringWorkflow/panes/ColorsAndStylePane';
+import { ColorsAndStylePane } from 'src/authoringWorkflow/components/panes/ColorsAndStylePane';
 
 function render(type) {
   var props = defaultProps({

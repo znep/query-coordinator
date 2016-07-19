@@ -1,10 +1,10 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
-import defaultProps from '../defaultProps';
-import renderComponent from '../renderComponent';
+import defaultProps from '../../defaultProps';
+import renderComponent from '../../renderComponent';
 import vifs from 'src/authoringWorkflow/vifs';
-import { LegendsAndFlyoutsPane } from 'src/authoringWorkflow/panes/LegendsAndFlyoutsPane';
+import { LegendsAndFlyoutsPane } from 'src/authoringWorkflow/components/panes/LegendsAndFlyoutsPane';
 
 function render(type) {
   var props = defaultProps({

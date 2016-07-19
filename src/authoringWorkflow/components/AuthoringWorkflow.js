@@ -3,24 +3,22 @@ import _ from 'lodash';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 
-import { translate } from '../I18n';
+import { translate } from '../../I18n';
+import { setXAxisScalingMode } from '../actions';
 import {
   getCurrentVif,
   getXAxisScalingMode,
   isInsertableVisualization
-} from './selectors/vifAuthoring';
+} from '../selectors/vifAuthoring';
 
-// TODO: fix linter so it understands JSX.
-import CustomizationTabs from './CustomizationTabs'; //eslint-disable-line no-unused-vars
-import CustomizationTabPanes from './CustomizationTabPanes'; //eslint-disable-line no-unused-vars
-import Visualization from './Visualization'; //eslint-disable-line no-unused-vars
+import CustomizationTabs from './CustomizationTabs';
+import CustomizationTabPanes from './CustomizationTabPanes';
+import Visualization from './Visualization';
 import DataPane from './panes/DataPane';
 import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
-
-import { setXAxisScalingMode } from './actions';
 
 export var AuthoringWorkflow = React.createClass({
   propTypes: {

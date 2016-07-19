@@ -6,11 +6,17 @@ import {
   HANDLE_METADATA_ERROR
 } from '../actions';
 
-import defaultMetadata from '../defaultMetadata';
+export var defaultState = {
+  isLoading: false,
+  data: null,
+  curatedRegions: null,
+  phidippidesMetadata: null,
+  error: null
+};
 
 export default function metadata(state, action) {
   if (_.isUndefined(state)) {
-    return defaultMetadata;
+    return defaultState;
   }
 
   state = _.cloneDeep(state);

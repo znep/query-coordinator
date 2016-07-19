@@ -9,8 +9,8 @@ import thunk from 'redux-thunk';
 
 import reducer from './reducers';
 import vifs from './vifs';
-import defaultMetadata from './defaultMetadata';
-import AuthoringWorkflow from './AuthoringWorkflow';
+import { defaultState as defaultMetadata } from './reducers/metadata';
+import AuthoringWorkflow from './components/AuthoringWorkflow';
 import { setLocale } from '../I18n';
 
 import { getDatasetUid, getDomain } from './selectors/vifAuthoring';

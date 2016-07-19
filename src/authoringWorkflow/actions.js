@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
@@ -85,61 +86,77 @@ export function setVisualizationType(visualizationType) {
 }
 
 export var INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
-export function initiateRegionCoding(domain, datasetUid, shapefileId, sourceColumn) {
+export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRegion) {
   return dispatch => {
-    var regionCodingProvider = new RegionCodingProvider({domain, datasetUid});
+    var providerOptions = { domain, datasetUid };
+    var datasetMetadataProvider = new MetadataProvider(providerOptions);
+    var regionCodingProvider = new RegionCodingProvider(providerOptions);
+    var handleError = error => dispatch(handleRegionCodingError(error));
+    var handleCompletion = () => {
+      datasetMetadataProvider.
+        getPhidippidesMetadata().
+        then(metadata => {
+          var computedColumn = _.find(metadata.columns, column => {
+            return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
+          });
 
-    var handleError = error => {
-      dispatch(handleRegionCodingError(error))
+          dispatch(setComputedColumn(computedColumn.fieldName));
+        }).
+        catch(handleError);
     };
 
     var handleInitiation = response => {
-      if (response.success) {
-        regionCodingProvider.awaitRegionCodingCompletion(shapefileId).
-          then(() => {
-            var datasetMetadataProvider = new MetadataProvider({
-              domain: dataSource.domain,
-              datasetUid: dataSource.datasetUid
-            });
+      switch (response.status) {
+        case 'unknown':
+        case 'processing':
+          dispatch(setShapefile(curatedRegion.uid, curatedRegion.primaryKey, curatedRegion.geometryLabel));
 
-            datasetMetadataProvider.getPhidippidesMetadata().
-              then((metadata) => {
-                // find the info for the corresponding computed column so we can
-                dispatch(setComputedColumn(computedColumnUid, computedColumnName));
-              }).
-              catch(handleError);
-          }).
-          catch(handleError);
-      } else {
-        handleError();
+          regionCodingProvider.
+            awaitRegionCodingCompletion(shapefileId).
+            then(handleCompletion).
+            catch(handleError);
+          break;
+
+        default:
+          handleError();
+          break;
       }
     };
 
     var handleStatus = response => {
-      if (response.success && response.status === 'unknown') {
-        regionCodingProvider.
-          initiateRegionCoding(datasetUid, shapefileId, sourceColumn).
-          then(handleInitiation).
-          catch(handleError);
-      } else {
-        handleError();
+      switch (response.status) {
+        case 'unknown':
+          regionCodingProvider.
+            initiateRegionCoding(curatedRegion.uid, sourceColumn).
+            then(handleInitiation).
+            catch(handleError);
+          break;
+        case 'processing':
+          regionCodingProvider.
+            awaitRegionCodingCompletion({ jobId: response.data.jobId }).
+            then(handleCompletion).
+            catch(handleError);
+          break;
+        default:
+          handleError();
+          break;
       }
     };
 
     dispatch(requestRegionCoding());
 
     return regionCodingProvider.
-      getRegionCodingStatus(shapefileId).
+      getRegionCodingStatus({ shapefileId: curatedRegion.uid }).
       then(handleStatus);
   };
-};
+}
 
 export var REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
 export function requestRegionCoding() {
   return {
     type: REQUEST_REGION_CODING
   };
-};
+}
 
 export var HANDLE_REGION_CODING_ERROR = 'HANDLE_REGION_CODING_ERROR';
 export function handleRegionCodingError(error) {
@@ -147,14 +164,39 @@ export function handleRegionCodingError(error) {
     type: HANDLE_REGION_CODING_ERROR,
     error
   };
-};
+}
 
 export var SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
-export function setComputedColumn(computedColumnUid, computedColumnName) {
+export function setComputedColumn(computedColumn) {
   return {
     type: SET_COMPUTED_COLUMN,
-    computedColumnUid,
-    computedColumnName
+    computedColumn
+  };
+}
+
+export var REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
+export function requestShapefileMetadata(domain, shapefileUid) {
+  return dispatch => {
+    var shapefileMetadataProvider = MetadataProvider({domain, datasetUid: shapefileUid});
+    var handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
+    var handleShapefileMetadata = ({ primaryKey, geometryLabel }) => {
+      dispatch(setShapefile(shapefileUid, primaryKey, geometryLabel));
+    };
+
+    return shapefileMetadataProvider.
+      getShapefileMetadata(shapefileUId).
+      then(handleShapefileMetadata).
+      catch(handleShapefileMetadataError);
+  };
+}
+
+export var SET_SHAPEFILE = 'SET_SHAPEFILE';
+export function setShapefile(shapefileUid, shapefilePrimaryKey, shapefileGeometryLabel) {
+  return {
+    type: SET_SHAPEFILE,
+    shapefileUid,
+    shapefilePrimaryKey,
+    shapefileGeometryLabel
   };
 }
 

@@ -3,8 +3,8 @@ import React from 'react';
 import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';
 
-import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES } from '../constants';
+import { translate } from '../../../I18n';
+import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES } from '../../constants';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 import {
@@ -19,7 +19,7 @@ import {
   isFeatureMap,
   isHistogram,
   isTimelineChart
-} from '../selectors/vifAuthoring';
+} from '../../selectors/vifAuthoring';
 
 import {
   setBaseColor,
@@ -28,7 +28,7 @@ import {
   setColorScale,
   setBaseLayer,
   setBaseLayerOpacity
-} from '../actions';
+} from '../../actions';
 
 export var ColorsAndStylePane = React.createClass({
   getDefaultProps() {

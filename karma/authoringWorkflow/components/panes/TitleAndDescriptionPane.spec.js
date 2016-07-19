@@ -1,9 +1,9 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
-import defaultProps from '../defaultProps';
-import renderComponent from '../renderComponent';
-import { TitleAndDescriptionPane } from 'src/authoringWorkflow/panes/TitleAndDescriptionPane';
+import defaultProps from '../../defaultProps';
+import renderComponent from '../../renderComponent';
+import { TitleAndDescriptionPane } from 'src/authoringWorkflow/components/panes/TitleAndDescriptionPane';
 
 describe('TitleAndDescriptionPane', function() {
   var component;

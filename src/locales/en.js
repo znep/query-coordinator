@@ -55,9 +55,10 @@ export default {
           title: 'Region',
           placeholder: 'Select a region...',
           groups: {
-            processed_regions: 'Processed Regions',
-            unprocessed_regions: 'Unprocessed Regions'
-          }
+            ready_to_use: 'Ready To Use',
+            requires_processing: 'Requires Processing'
+          },
+          region_processing: 'Some regions require processing prior to rendering.'
         }
       }
     },

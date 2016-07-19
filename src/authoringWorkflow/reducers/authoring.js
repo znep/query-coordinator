@@ -1,20 +1,24 @@
 import _ from 'lodash';
+
 import {
   SET_VISUALIZATION_TYPE,
   REQUEST_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
   REQUEST_CENTER_AND_ZOOM,
-  SET_CENTER_AND_ZOOM
+  SET_CENTER_AND_ZOOM,
+  SET_COMPUTED_COLUMN
 } from '../actions';
+
+export var defaultState = {
+  selectedVisualizationType: null,
+  showCenteringAndZoomingSaveMessage: false,
+  showRegionCodingProcessingMessage: false,
+  regionCodingError: null
+};
 
 export default function authoring(state, action) {
   if (_.isUndefined(state)) {
-    return {
-      selectedVisualizationType: null,
-      showCenteringAndZoomingSaveMessage: false,
-      showRegionCodingProcessingMessage: false,
-      regionCodingError: null
-    };
+    return defaultState;
   }
 
   state = _.cloneDeep(state);
@@ -40,6 +44,12 @@ export default function authoring(state, action) {
     case HANDLE_REGION_CODING_ERROR:
       state.showRegionCodingProcessingMessage = false;
       state.regionCodingError = action.error;
+      break;
+
+    case SET_COMPUTED_COLUMN:
+      state.showRegionCodingProcessingMessage = false;
+      state.regionCodingError = null;
+      break;
   }
 
   return state;

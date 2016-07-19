@@ -167,8 +167,23 @@
         ]
       };
 
+      var localhost = {
+        configuration: {
+          tileserverHosts: ['https://localhost']
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'localhost',
+              datasetUid: '7zuy-x2kx'
+            }
+          }
+        ]
+      };
+
       var authoringWorkflow = new AuthoringWorkflow(container, {
-        vif: choroplethVif,
+        //vif: choroplethVif,
+        vif: localhost,
         //vif: ufoSightingsVif,
         //vif: featureMapVif,
         //vif: iowaMathAndReadingProficiency,

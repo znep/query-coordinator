@@ -1,10 +1,9 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
-import defaultProps from '../defaultProps';
-import renderComponent from '../renderComponent';
-import { DataPane } from 'src/authoringWorkflow/panes/DataPane';
-import defaultMetadata from 'src/authoringWorkflow/defaultMetadata';
+import defaultProps from '../../defaultProps';
+import renderComponent from '../../renderComponent';
+import { DataPane } from 'src/authoringWorkflow/components/panes/DataPane';
 import vifs from 'src/authoringWorkflow/vifs';
 
 describe('DataPane', function() {

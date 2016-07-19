@@ -61,6 +61,11 @@
   },
   "eslintConfig": {
     "extends": "./node_modules/eslint-base/.eslintrc.json",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
     "rules": {
       "dot-notation": [
         1,

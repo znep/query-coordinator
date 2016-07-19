@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-import renderComponent from './renderComponent';
-import { Visualization } from 'src/authoringWorkflow/Visualization';
+import renderComponent from '../renderComponent';
+import { Visualization } from 'src/authoringWorkflow/components/Visualization';
 import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {

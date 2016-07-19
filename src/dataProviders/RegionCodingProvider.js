@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import utils from 'socrata-utils';
 
 import DataProvider from './DataProvider';
@@ -14,29 +13,61 @@ export default function RegionCodingProvider(config) {
   var requestOptions = { credentials: 'include' };
   var apiUrl = `https://${domain}/geo`;
 
-  this.getRegionCodingStatus = (shapefileId) => {
-    return fetch(`${apiUrl}/status?datasetId=${datasetUid}&shapefileId=${shapefileId}`, requestOptions).
-      then(response => response.json());
+  var handleJSON = (response) => response.json();
+  var handleStatus = (response) => {
+    if (response.ok) {
+      return response;
+    } else {
+      throw new Error(response.statusText);
+    }
   };
 
-  this.awaitRegionCodingCompletion = (shapefileId) => {
-    return new Promise((resolve, reject) => {
-      var await = () => {
-        this.getRegionCodingStatus(shapefileId).
-          then(handleResponse);
-      };
+  this.getRegionCodingStatus = ({ shapefileId, jobId }) => {
+    var url = `${apiUrl}/status?datasetId=${datasetUid}`;
 
+    if (jobId) {
+      url += `&jobId=${jobId}`;
+    } else if (shapefileId) {
+      url += `&shapefileId=${shapefileId}`;
+    } else {
+      throw new Error('Expected an Object with either shapefileId or jobId to check status.');
+    }
+
+    return fetch(url, requestOptions).
+      then(handleStatus).
+      then(handleJSON);
+  };
+
+  this.awaitRegionCodingCompletion = ({ shapefileId, jobId }) => {
+    return new Promise((resolve, reject) => {
       var handleResponse = (response) => {
-        if (response.success && response.status === 'completed') {
-          resolve(response);
-        } else if (response.success && response.status === 'failed') {
-          reject(null); // TODO: provide an error so upstream consumers have something to work with
-        } else {
-          resolve(this.awaitRegionCodingCompletion(shapefileId));
+        switch (response.status) {
+          case 'completed':
+            resolve(response);
+            break;
+
+          case 'processing':
+            awaitCompletion();
+            break;
+
+          case 'failed':
+            reject(new Error(`The region coding job for ${shapefileId} failed.`));
+            break;
+
+          default:
+            reject(new Error(`We cannot determine the region coding status of ${shapefileId}.`));
+            break;
+
         }
       };
 
-      _.delay(await, 5000);
+      var awaitCompletion = () => {
+        _.delay(() => {
+          this.getRegionCodingStatus({ shapefileId, jobId }).then(handleResponse);
+        }, 5000);
+      };
+
+      awaitCompletion();
     });
   };
 
@@ -54,6 +85,8 @@ export default function RegionCodingProvider(config) {
       })
     };
 
-    return fetch(`${apiUrl}/initiate`, _.merge(options, requestOptions));
+    return fetch(`${apiUrl}/initiate`, _.merge(options, requestOptions)).
+      then(handleStatus).
+      then(handleJSON);
   };
 }

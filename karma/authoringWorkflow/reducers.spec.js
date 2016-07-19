@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import thunk from 'redux-thunk';
+
 import reducer from 'src/authoringWorkflow/reducers';
 import vifs from 'src/authoringWorkflow/vifs';
 import * as actions from 'src/authoringWorkflow/actions';

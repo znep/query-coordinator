@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styleguide from 'socrata-styleguide';
 
-import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
+import { translate } from '../../../I18n';
+import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
 import {
   getFlyoutTitleColumn,
   getUnitOne,
@@ -14,8 +14,8 @@ import {
   isFeatureMap,
   isHistogram,
   isTimelineChart
-} from '../selectors/vifAuthoring';
-import { setUnitsOne, setUnitsOther, setFlyoutTitle } from '../actions';
+} from '../../selectors/vifAuthoring';
+import { setUnitsOne, setUnitsOther, setFlyoutTitle } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 export var LegendsAndFlyoutsPane = React.createClass({

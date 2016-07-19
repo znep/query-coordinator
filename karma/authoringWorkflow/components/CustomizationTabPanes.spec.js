@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-import renderComponent from './renderComponent';
-import { CustomizationTabPanes } from 'src/authoringWorkflow/CustomizationTabPanes';
+import renderComponent from '../renderComponent';
+import { CustomizationTabPanes } from 'src/authoringWorkflow/components/CustomizationTabPanes';
 
 var hiddenClass = 'customization-tab-pane_hidden';
 var showingSelector = `div:not(.${hiddenClass})`;

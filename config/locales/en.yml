@@ -1793,6 +1793,38 @@ en:
         dataset_owner: Dataset Owner
         cancel: Cancel
         save: Save
+        action_type: Action
+        action_types:
+          increase: Increase
+          reduce: Reduce
+          maintain: Maintain
+          measure: Measure
+        subject: Subject
+        unit: Unit
+        override: Override
+        override_types:
+          none: None
+          needs_improvement: Needs Improvements
+          near_target: Near Target
+          on_target: On Target
+          measuring: Measuring
+        date_range: Date Range
+        range: Range
+        range_types:
+          around: Around
+          below: Below
+          above: Above
+        measure_target: Target Value
+        measure_target_type: Kind
+        measure_target_type_types:
+          absolute: To
+          relative: From
+        measure_baseline: Baseline
+        measure_delta: Range Value
+        measure_maintain_types:
+          within: Around
+          below: Below
+          above: Above
   plugins:
     daterangepicker:
       clear: Clear

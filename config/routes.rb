@@ -424,7 +424,7 @@ Rails.application.routes.draw do
       post '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
       post '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
       get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
-      get '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
+      post '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
       post '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
       post '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',

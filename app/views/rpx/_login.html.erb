@@ -7,7 +7,7 @@
 <% if flash[:notice_login]  %>
   <div class="flash notice"><%= flash[:notice_login] %></div>
 <% else %>
-  <p class="chooseMessage loginTips"><%= t('screens.sign_in.third_party') %></p>
+  <p class="chooseMessage loginTips"><%= t('screens.sign_up.third_party') %></p>
 <% end %>
 
 <%= form_for @user_session, :url => rpx_login_path do |f| %>

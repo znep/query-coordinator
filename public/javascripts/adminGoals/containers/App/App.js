@@ -4,23 +4,41 @@ import GoalTable from './../GoalTable/GoalTable';
 import GoalQuickEdit from '../../components/GoalQuickEdit';
 import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsForm';
 import SCBulkActions from '../SCBulkActions';
+import SCAlert from '../../components/SCAlert';
+import { dismissNotification } from '../../actions/notificationActions';
 import './App.scss';
 
-function App({ showEditMultipleItemsForm }) {
+function App({ notification, onDismissNotification, showEditMultipleItemsForm }) {
+  let alert = null;
+  if (notification.get('visible')) {
+    alert = <SCAlert type={ notification.get('type') }
+                     message={ notification.get('message') }
+                     onDismiss={ onDismissNotification } />;
+  }
+
+  let editMultipleItemsForm = null;
+  if (showEditMultipleItemsForm) {
+    editMultipleItemsForm = <EditMultipleItemsForm />;
+  }
+
   return (
     <div>
+      { alert }
       <SCBulkActions />
       <GoalTable />
       <GoalQuickEdit />
-      { showEditMultipleItemsForm ? <EditMultipleItemsForm /> : null }
+      { editMultipleItemsForm }
     </div>
   );
 }
 
 const mapStateToProps = state => ({
-  showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible'])
+  showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible']),
+  notification: state.get('notification')
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  onDismissNotification: () => dispatch(dismissNotification())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

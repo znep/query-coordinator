@@ -6,6 +6,10 @@
   }
 }
 
+.modal .alert {
+  margin: 5px 0 10px;
+}
+
 .sc-check-indicator {
   display: inline;
   margin-left: 10px;
@@ -105,5 +109,13 @@
       float: left;
       margin-top: 12px;
     }
+  }
+}
+
+.modal-full {
+  .modal-footer {
+    position: fixed;
+    width: 100%;
+    margin: 0;
   }
 }

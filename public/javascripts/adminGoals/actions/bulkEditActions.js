@@ -41,7 +41,14 @@ function updateMultipleItemsStarted(goalIds) {
 function updateMultipleItemsSucceeded(goalIds) {
   return {
     type: UPDATE_MULTIPLE_ITEMS_SUCCESS,
-    goalIds
+    goalIds,
+    notification: {
+      type: 'success',
+      message: {
+        path: 'admin.bulk_edit.success_message',
+        values: [goalIds.length.toString()]
+      }
+    }
   };
 }
 

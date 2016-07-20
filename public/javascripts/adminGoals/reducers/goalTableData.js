@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Immutable from 'immutable';
 import { createReducer } from 'redux-immutablejs';
 import {
@@ -21,7 +22,8 @@ import {
 } from '../actionTypes';
 
 // TODO: Change this after goals kept in a Map structure
-function updateGoals(cachedGoals, updatedGoals) {
+const updateGoals = (state, updatedGoals) => {
+  const oldGoals = state.get('goals');
   const goalIds = [];
   const goalsMap = updatedGoals.reduce((map, goal) => {
     map[goal.id] = goal;
@@ -29,14 +31,18 @@ function updateGoals(cachedGoals, updatedGoals) {
     return map;
   }, {});
 
-  return cachedGoals.map(goal => {
+  return oldGoals.map(goal => {
     if (goalIds.indexOf(goal.get('id')) >= 0) {
       return goal.merge(goalsMap[goal.get('id')]);
     }
 
     return goal;
   });
-}
+};
+
+const updateCachedGoals = (state, updatedGoals) => {
+  return state.get('cachedGoals').mergeDeep(_.keyBy(updatedGoals, 'id'));
+};
 
 export default createReducer(Immutable.fromJS({}), {
   // Sets goals list for, this list will be shown on table
@@ -48,7 +54,10 @@ export default createReducer(Immutable.fromJS({}), {
   [CACHE_DASHBOARDS]: (state, action) => state.merge({dashboards: action.dashboards}),
   [CACHE_USERS]: (state, action) => state.merge({users: action.users}),
   [CACHE_GOALS]: (state, action) => state.merge({cachedGoals: action.goals}),
-  [CACHED_GOALS_UPDATED]: (state, action) => state.updateIn(['goals'], goals => updateGoals(goals, action.goals)),
+  [CACHED_GOALS_UPDATED]: (state, action) => state.merge({
+    goals: updateGoals(state, action.goals), 
+    cachedGoals: updateCachedGoals(state, action.goals)
+  }),
   [TABLE_ROW_SELECTED]: (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId)),
   [TABLE_ROW_DESELECTED]: (state, action) => state.updateIn(['selectedRows'],
     list => list.delete(list.indexOf(action.goalId))), // eslint-disable-line dot-notation

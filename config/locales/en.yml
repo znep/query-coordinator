@@ -1777,6 +1777,8 @@ en:
         status_public: Public
         status_private: Private
       bulk_edit:
+        success_message: Success! {0} goals were updated.
+        failure_message: <strong>Error.</strong> There was a problem performing this action. Try again, or cancel.
         button_title: Edit Multiple Items...
         title: Edit Multiple Items
         items_selected: Items Selected

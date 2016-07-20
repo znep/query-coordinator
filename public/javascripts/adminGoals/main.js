@@ -10,14 +10,20 @@ import App from './containers/App/App';
 import {
   tableLoadPage
 } from './actions/goalTableActions';
+import notifyUser from './middlewares/notifyUser';
 
-let middleware = [thunk];
+let middleware = [thunk, notifyUser];
 if (window.serverConfig.environment === 'development') {
   middleware.push(createLogger());
 }
 
 const initialState = Immutable.fromJS({
 	translations: window.translations,
+  notification: {
+    visible: false,
+    type: 'success',
+    message: ''
+  },
 
   goalTableData: {
     goals: [],
@@ -35,8 +41,9 @@ const initialState = Immutable.fromJS({
 
   editMultipleItemsForm: {
     visible: false,
-    goal: {},
-    updateInProgress: false
+    updateInProgress: false,
+    showFailureMessage: false,
+    goal: {}
   }
 });
 

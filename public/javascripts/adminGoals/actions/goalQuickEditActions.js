@@ -4,10 +4,10 @@ import { fetchOptions } from '../constants';
 import {
   OPEN_GOAL_QUICK_EDIT,
   CLOSE_GOAL_QUICK_EDIT,
-  REMOVE_GOAL_FROM_CACHE
+  REMOVE_GOAL_FROM_CACHE,
+  GOAL_QUICK_EDIT_UPDATE_FAILED
 } from '../actionTypes';
 
-import { displayGoalQuickEditAlert } from './alertActions';
 import { tableLoadPage } from './goalTableActions';
 
 export function openGoalQuickEdit(goalId) {
@@ -20,6 +20,19 @@ export function openGoalQuickEdit(goalId) {
 export function closeGoalQuickEdit() {
   return {
     type: CLOSE_GOAL_QUICK_EDIT
+  };
+}
+
+export function goalQuickEditUpdateFailed(reason) {
+  return {
+    type: GOAL_QUICK_EDIT_UPDATE_FAILED,
+    reason,
+    notification: {
+      type: 'error',
+      message: {
+        path: 'admin.listing.default_alert_message'
+      }
+    }
   };
 }
 
@@ -52,7 +65,7 @@ export function saveGoalQuickEdit(goalId, version, values) {
     return sendUpdateRequest().
       then(response => {
         if (response.error) {
-          dispatch(displayGoalQuickEditAlert({ label: 'error' }));
+          dispatch(goalQuickEditUpdateFailed());
         } else {
           dispatch(closeGoalQuickEdit());
           dispatch(removeFromCache(goalId));
@@ -60,7 +73,7 @@ export function saveGoalQuickEdit(goalId, version, values) {
         }
       }).
       catch(() => {
-        dispatch(displayGoalQuickEditAlert({ label: 'error' }));
+        dispatch(goalQuickEditUpdateFailed());
       });
   };
 }

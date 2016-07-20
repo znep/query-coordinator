@@ -6,8 +6,8 @@ var getDefaultStore = require('testStore').getDefaultStore;
 describe('components/GoalTableHead', function() {
   beforeEach(function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         tableOrder: {
           column: 'title',
           direction: 'asc'

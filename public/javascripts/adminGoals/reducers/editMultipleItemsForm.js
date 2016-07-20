@@ -19,11 +19,11 @@ const setMultipleItemsVisibility = (state, action) => state.merge({ goal: { is_p
 
 const revertMultipleItemsVisibility = (state, action) => state.removeIn(['goal', 'is_public']);
 
-const startUpdatingMultipleItems = (state, action) => state.merge({ updateInProgress: true });
+const startUpdatingMultipleItems = (state, action) => state.merge({ updateInProgress: true, showFailureMessage: false });
 
 const updatingMultipleItemsSucceeded = (state, action) => state.merge({ updateInProgress: false, visible: false, goal: {} });
 
-const updatingMultipleItemsFailed = (state, action) => state.merge({ updateInProgress: false });
+const updatingMultipleItemsFailed = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: true });
 
 export default createReducer(Immutable.fromJS({}), {
   [OPEN_EDIT_MULTIPLE_ITEMS_MODAL]: openEditMultipleItemsModal,

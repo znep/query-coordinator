@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/goalQuickEditActions';
 import Select from 'react-select';
 import moment from 'moment';
-import QuickEditAlert from './Alert';
+import SCAlert from './SCAlert';
 import { fetchOptions } from '../constants';
 
 const mobileBreakpoint = 420;
@@ -137,7 +137,7 @@ class GoalQuickEdit extends React.Component {
         </header>
 
         <section className="modal-content">
-          <QuickEditAlert { ...this.state.alert }/>
+          { this.state.alert.label ? <SCAlert { ...this.state.alert }/> : null }
           <div className="goal-quick-edit-form">
             <form>
               <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_title']) }</h5>
@@ -229,7 +229,7 @@ const mapStateToProps = state => ({
   goal: _.isNull(state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])) ?
     Immutable.Map({}) :
     state.getIn(['goalTableData', 'cachedGoals', state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])]),
-  alert: state.getIn(['goalTableData', 'goalQuickEditAlert'])
+  alert: state.getIn(['goalTableData', 'goalTableAlert'])
 });
 
 const mapDispatchToProps = dispatch => ({

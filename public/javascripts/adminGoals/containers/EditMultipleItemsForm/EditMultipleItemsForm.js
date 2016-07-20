@@ -1,7 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import selectedGoals from '../../selectors/selectedGoals';
-import commonGoalDataSelector from '../../selectors/commonGoalData';
+
+import Select from 'react-select';
+import SCAlert from '../../components/SCAlert';
+import SCButton from '../../components/SCButton';
+import SCChangeIndicator from '../../components/SCChangeIndicator';
+import * as SCModal from '../../components/SCModal';
+
 import {
   setMultipleItemsVisibility,
   revertMultipleItemsVisibility,
@@ -9,40 +14,25 @@ import {
   updateMultipleGoals
 } from '../../actions/bulkEditActions';
 
-import Select from 'react-select';
-import SCButton from '../../components/SCButton';
-import SCChangeIndicator from '../../components/SCChangeIndicator';
-import * as SCModal from '../../components/SCModal';
+import selectedGoalsSelector from '../../selectors/selectedGoals';
+import commonGoalDataSelector from '../../selectors/commonGoalData';
 
 import './EditMultipleItemsForm.scss';
-
-import Perf from 'react-addons-perf';
-window.Perf = Perf;
 
 class EditMultipleItemsForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.onVisibilityChanged = this.onVisibilityChanged.bind(this);
-    this.onRevertVisibility = this.onRevertVisibility.bind(this);
     this.onUpdateClicked = this.onUpdateClicked.bind(this);
-    this.dismissModal = this.dismissModal.bind(this);
   }
 
   onVisibilityChanged(value) {
     this.props.setVisibility(value.value === 'public');
   }
 
-  onRevertVisibility() {
-    this.props.revertVisibility();
-  }
-
   onUpdateClicked() {
     this.props.updateGoals(this.props.goals, this.props.formData.get('goal').toJS());
-  }
-
-  dismissModal() {
-    this.props.dismissModal();
   }
 
   render() {
@@ -62,17 +52,21 @@ class EditMultipleItemsForm extends React.Component {
     const updateInProgress = this.props.formData.get('updateInProgress');
 
     const visibilityRevertButton =
-      visibilityChanged ? <SCChangeIndicator onRevert={ this.onRevertVisibility } /> : null;
+      visibilityChanged ? <SCChangeIndicator onRevert={ this.props.revertVisibility } /> : null;
 
     const isUpdateDisabled = !visibilityChanged;
 
+    const failureAlert = this.props.showFailureMessage ?
+      <SCAlert type="error" message={ translations.bulk_edit.failure_message } /> : null;
+
     return (
       <SCModal.Modal>
-        <SCModal.Header title={ translations.bulk_edit.title } onClose={ this.dismissModal } />
+        <SCModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal } />
 
         <SCModal.Content>
+          { failureAlert }
           <div className="selected-rows-indicator">{ this.props.rowsCount } { translations.bulk_edit.items_selected }</div>
-          <label class="block-label">{ translations.bulk_edit.visibility }</label>
+          <label className="block-label">{ translations.bulk_edit.visibility }</label>
 
           <div>
             <Select
@@ -88,7 +82,7 @@ class EditMultipleItemsForm extends React.Component {
         </SCModal.Content>
 
         <SCModal.Footer>
-          <SCButton small onClick={ this.dismissModal }>{ translations.bulk_edit.cancel }</SCButton>
+          <SCButton small onClick={ this.props.dismissModal }>{ translations.bulk_edit.cancel }</SCButton>
           <SCButton small primary onClick={ this.onUpdateClicked } disabled={ isUpdateDisabled } inProgress={ updateInProgress }>
             { translations.bulk_edit.update }
           </SCButton>
@@ -103,7 +97,8 @@ const mapStateToProps = state => ({
   rowsCount: state.getIn(['goalTableData', 'selectedRows']).count(),
   formData: state.get('editMultipleItemsForm'),
   commonData: commonGoalDataSelector(state),
-  goals: selectedGoals(state)
+  goals: selectedGoalsSelector(state),
+  showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage'])
 });
 
 const mapDispatchToProps = (dispatch, props) => ({

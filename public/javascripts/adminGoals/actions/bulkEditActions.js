@@ -3,25 +3,24 @@ import api from '../api/api';
 import { updateCachedGoals } from './goalTableActions';
 
 import {
-  SET_MULTIPLE_ITEMS_VISIBILITY,
-  REVERT_MULTIPLE_ITEMS_VISIBILITY,
   OPEN_EDIT_MULTIPLE_ITEMS_MODAL,
   CLOSE_EDIT_MULTIPLE_ITEMS_MODAL,
+  UPDATE_MULTIPLE_ITEMS_FORM_DATA,
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
   UPDATE_MULTIPLE_ITEMS_FAILED
 } from '../actionTypes';
 
-export function setMultipleItemsVisibility(visibility) {
+/**
+ * Updates multiple items modal form data. Given data
+ * should only include goal data fields.
+ *
+ * @param {Object} newData Goal data known by the form
+ */
+export function updateMultipleItemsFormData(newData) {
   return {
-    type: SET_MULTIPLE_ITEMS_VISIBILITY,
-    visibility
-  };
-}
-
-export function revertMultipleItemsVisibility() {
-  return {
-    type: REVERT_MULTIPLE_ITEMS_VISIBILITY
+    type: UPDATE_MULTIPLE_ITEMS_FORM_DATA,
+    newData
   };
 }
 
@@ -65,6 +64,13 @@ export function openEditMultipleItemsModal() {
   };
 }
 
+/**
+ * Makes an API request to update given list of goals
+ * data.
+ *
+ * @param {Immutable.List} goals List of goal objects
+ * @param {Object} updatedData Updated fields 
+ */
 export function updateMultipleGoals(goals, updatedData) {
   const goalIds = goals.map(goal => goal.get('id'));
 
@@ -72,12 +78,11 @@ export function updateMultipleGoals(goals, updatedData) {
     dispatch(updateMultipleItemsStarted(goalIds));
 
     const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), updatedData));
-    return Promise.all(updateRequests)
-      .then(updatedGoals => {
+    return Promise.all(updateRequests).
+      then(updatedGoals => {
         dispatch(updateCachedGoals(updatedGoals));
         dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
         return updatedGoals;
-      })
-      .catch(err => dispatch(updateMultipleItemsFailed(err)));
+      }).catch(err => dispatch(updateMultipleItemsFailed(err)));
   };
 }

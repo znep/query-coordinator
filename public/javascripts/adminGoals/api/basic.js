@@ -21,9 +21,9 @@ function request(method, version, path, otherOptions) {
     }
   }, otherOptions);
 
-  return fetch(url, options)
-    .then(checkXhrStatus)
-    .then(response => response.json());
+  return fetch(url, options).
+    then(checkXhrStatus).
+    then(response => response.json());
 }
 
 export function get(version, path, options) {

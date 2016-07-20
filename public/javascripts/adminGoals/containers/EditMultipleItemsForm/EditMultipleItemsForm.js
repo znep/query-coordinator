@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -8,8 +9,7 @@ import SCChangeIndicator from '../../components/SCChangeIndicator';
 import * as SCModal from '../../components/SCModal';
 
 import {
-  setMultipleItemsVisibility,
-  revertMultipleItemsVisibility,
+  updateMultipleItemsFormData,
   closeEditMultipleItemsModal,
   updateMultipleGoals
 } from '../../actions/bulkEditActions';
@@ -23,16 +23,31 @@ class EditMultipleItemsForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onVisibilityChanged = this.onVisibilityChanged.bind(this);
-    this.onUpdateClicked = this.onUpdateClicked.bind(this);
+    _.bindAll(this, [
+      'updateVisibility',
+      'revertVisibility',
+      'onUpdateClicked'
+    ]);
   }
 
-  onVisibilityChanged(value) {
-    this.props.setVisibility(value.value === 'public');
+  updateVisibility({ value }) {
+    this.props.updateFormData(this.props.formData.get('goal').set('is_public', value === 'public'));
+  }
+
+  revertVisibility() {
+    const oldVisibility = this.props.commonData.get('is_public');
+    this.props.updateFormData(this.props.formData.get('goal').set('is_public', oldVisibility));
   }
 
   onUpdateClicked() {
     this.props.updateGoals(this.props.goals, this.props.formData.get('goal').toJS());
+  }
+
+  isDataChanged() {
+    const oldData = this.props.commonData;
+    const newData = this.props.formData.get('goal');
+
+    return oldData.get('is_public') != newData.get('is_public');
   }
 
   render() {
@@ -52,9 +67,7 @@ class EditMultipleItemsForm extends React.Component {
     const updateInProgress = this.props.formData.get('updateInProgress');
 
     const visibilityRevertButton =
-      visibilityChanged ? <SCChangeIndicator onRevert={ this.props.revertVisibility } /> : null;
-
-    const isUpdateDisabled = !visibilityChanged;
+      visibilityChanged ? <SCChangeIndicator onRevert={ this.revertVisibility } /> : null;
 
     const failureAlert = this.props.showFailureMessage ?
       <SCAlert type="error" message={ translations.bulk_edit.failure_message } /> : null;
@@ -65,7 +78,7 @@ class EditMultipleItemsForm extends React.Component {
 
         <SCModal.Content>
           { failureAlert }
-          <div className="selected-rows-indicator">{ this.props.rowsCount } { translations.bulk_edit.items_selected }</div>
+          <div className="selected-rows-indicator">{ this.props.goals.count() } { translations.bulk_edit.items_selected }</div>
           <label className="block-label">{ translations.bulk_edit.visibility }</label>
 
           <div>
@@ -73,7 +86,7 @@ class EditMultipleItemsForm extends React.Component {
               className="visibilitySelect"
               clearable={ false }
               searchable={ false }
-              onChange={ this.onVisibilityChanged }
+              onChange={ this.updateVisibility }
               value={ visibility === null ? null : (visibility ? 'public' : 'private') }
               options={ visibilityOptions } />
             {visibilityRevertButton}
@@ -83,7 +96,7 @@ class EditMultipleItemsForm extends React.Component {
 
         <SCModal.Footer>
           <SCButton small onClick={ this.props.dismissModal }>{ translations.bulk_edit.cancel }</SCButton>
-          <SCButton small primary onClick={ this.onUpdateClicked } disabled={ isUpdateDisabled } inProgress={ updateInProgress }>
+          <SCButton small primary onClick={ this.onUpdateClicked } disabled={ !this.isDataChanged() } inProgress={ updateInProgress }>
             { translations.bulk_edit.update }
           </SCButton>
         </SCModal.Footer>
@@ -94,7 +107,6 @@ class EditMultipleItemsForm extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  rowsCount: state.getIn(['goalTableData', 'selectedRows']).count(),
   formData: state.get('editMultipleItemsForm'),
   commonData: commonGoalDataSelector(state),
   goals: selectedGoalsSelector(state),
@@ -102,8 +114,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, props) => ({
-  setVisibility: visibility => dispatch(setMultipleItemsVisibility(visibility)),
-  revertVisibility: () => dispatch(revertMultipleItemsVisibility()),
+  updateFormData: (newData) => dispatch(updateMultipleItemsFormData(newData)),
   dismissModal: () => dispatch(closeEditMultipleItemsModal()),
   updateGoals: (goals, data) => dispatch(updateMultipleGoals(goals, data))
 });

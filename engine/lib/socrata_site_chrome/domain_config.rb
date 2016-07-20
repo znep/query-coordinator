@@ -15,12 +15,14 @@ module SocrataSiteChrome
       raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
       site_chrome_config = current_published_site_chrome
+      site_chrome_content = config[:properties].to_a.first || {}
 
       {
         id: config[:id],
         content: site_chrome_config[:content],
         updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
-        current_version: (config[:properties].to_a.first || {}).dig(:value, :current_version)
+        current_version: site_chrome_content.dig(:value, :current_version) ||
+          latest_existing_version(site_chrome_content)
       }
     end
 
@@ -45,9 +47,9 @@ module SocrataSiteChrome
         end
 
         if site_chrome_config.dig(:value, :versions).present?
-          # If current_version does not exist, use latest version
+          # If current_version does not exist, use latest existing version
           current_version = site_chrome_config.dig(:value, :current_version) ||
-            site_chrome_config.dig(:value, :versions).keys.map { |version| Gem::Version.new(version) }.max.to_s
+            latest_existing_version(site_chrome_config)
           published_site_chrome_config = site_chrome_config.dig(:value, :versions, current_version, :published)
         else
           message = "Invalid site_chrome configuration in domain: #{domain}"
@@ -60,6 +62,11 @@ module SocrataSiteChrome
       end
 
       published_site_chrome_config
+    end
+
+    # Latest version of Site Chrome that exists in the current configuration
+    def latest_existing_version(config)
+      config.dig(:value, :versions).keys.map { |version| Gem::Version.new(version) }.max.to_s
     end
 
     def get_domain_config

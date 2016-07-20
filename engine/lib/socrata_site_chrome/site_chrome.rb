@@ -11,8 +11,7 @@ module SocrataSiteChrome
       @id = config[:id]
       @updated_at = config[:updated_at] || 0
       @content = config[:content] || {}
-      @current_version = config[:current_version] || SiteChrome.default_site_chrome_config.
-        dig(:value, :current_version)
+      @current_version = config[:current_version]
     end
 
     def header

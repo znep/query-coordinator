@@ -24,9 +24,9 @@ module DatasetLandingPageHelper
     }
 
     if CurrentDomain.feature?(:mixpanelTracking)
-      mixpanel_config[:options] = {:cookie_expiration => nil}
+      mixpanel_config[:options] = {:cookie_expiration => nil, :secure_cookie => true}
     elsif CurrentDomain.feature?(:fullMixpanelTracking)
-      mixpanel_config[:options] = {:cookie_expiration => 365}
+      mixpanel_config[:options] = {:cookie_expiration => 365, :secure_cookie => true}
     else
       mixpanel_config[:disable] = true
     end

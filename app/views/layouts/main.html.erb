@@ -275,6 +275,8 @@ http://www.socrata.com
     }
     <%- end -%>
 
+    blist.configuration.googleMapsApiKey = '<%= GOOGLE_MAPS_SITE_KEY %>';
+
     <%- if module_enabled?(:govStat) -%>
       // Setup GovStat Account Link setup to run after the current user has been loaded
       // using a callback which is checked in all-screens.js.

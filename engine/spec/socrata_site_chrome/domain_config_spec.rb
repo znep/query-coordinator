@@ -110,4 +110,13 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
+  describe '#latest_existing_version' do
+    it 'returns the latest existing version of data' do
+      test_site_chrome_config = site_chrome_config[:properties].first
+      test_site_chrome_config[:value][:versions]['99.999'] = { 'test' => true }
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:latest_existing_version, test_site_chrome_config)
+      expect(result).to eq('99.999')
+    end
+  end
+
 end

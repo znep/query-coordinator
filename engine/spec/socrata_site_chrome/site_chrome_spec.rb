@@ -4,13 +4,15 @@ describe SocrataSiteChrome::SiteChrome do
   let(:id) { 2663 }
   let(:updated_at) { '123546789' }
   let(:domain_cname) { 'data.bobloblawslawblog.com' }
-  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access['properties'].first['value']['versions']['0.3']['published'] }
+  let(:site_chrome_config_vars) { JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access['properties'].
+    first['value']['versions'][SocrataSiteChrome::SiteChrome::LATEST_VERSION]['published'] }
 
   let(:site_chrome_config) do
     {
       id: id,
       content: site_chrome_config_vars['content'],
-      updated_at: updated_at
+      updated_at: updated_at,
+      current_version: SocrataSiteChrome::SiteChrome::LATEST_VERSION
     }
   end
 

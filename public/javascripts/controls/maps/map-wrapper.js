@@ -18,8 +18,10 @@
 
         getRequiredJavascripts: function()
         {
-            return { url: 'https://maps.google.com/maps/api/js?sensor=true&libraries=geometry',
-                jsonp: 'callback' };
+            var url = 'https://maps.google.com/maps/api/js?key=' +
+                blist.configuration.googleMapsApiKey +
+                '&sensor=true&libraries=geometry';
+            return { url: url, jsonp: 'callback' };
         },
 
         initializeVisualization: function()

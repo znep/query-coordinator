@@ -76,6 +76,7 @@ http://www.socrata.com
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
+    blist.configuration.googleMapsApiKey = '<%= GOOGLE_MAPS_SITE_KEY %>';
     blist.locale = "<%= I18n.locale %>";
     blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
   </script>

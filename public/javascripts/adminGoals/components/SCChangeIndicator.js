@@ -1,7 +1,14 @@
 import React from 'react';
 import SCButton from './SCButton';
 
-export default function(props) {
+/**
+ * Used for changed form fields to inform user.
+ * It turns into revert button when the mouse hovering.
+ *
+ * @param {Object} props
+ * @param {Function} props.onRevert It's called when user clicked
+ */
+export default function SCChangeIndicator(props) {
   return (
     <div className="sc-check-indicator">
       <SCButton extraSmall onClick={ props.onRevert }>

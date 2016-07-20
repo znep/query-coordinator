@@ -1,6 +1,11 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 
+/**
+ * @param {Object} props
+ * @param {String} props.title Modal title
+ * @param {Function} props.onClick Callback for close button
+ */
 export function Header(props) {
   return (
     <header className="modal-header">
@@ -32,6 +37,13 @@ export function Footer(props) {
   );
 }
 
+/**
+ * Render to open, remove to hide.
+ *
+ * @param {Object} props
+ * @param {Boolean} props.overlay Shows dark background (default: true)
+ * @param {Boolean} props.fullScreen Modal covers the all screen
+ */
 export function Modal(props) {
   const modalClasses = classNames({
     modal: true,

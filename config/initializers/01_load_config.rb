@@ -58,6 +58,8 @@ end
 RECAPTCHA_2_SITE_KEY = ENV['RECAPTCHA_2_SITE_KEY'] || APP_CONFIG.recaptcha_2_site_key
 RECAPTCHA_2_SECRET_TOKEN = ENV['RECAPTCHA_2_SECRET_TOKEN'] || APP_CONFIG.recaptcha_2_secret_token
 
+GOOGLE_MAPS_SITE_KEY = ENV['GOOGLE_MAPS_SITE_KEY'] || APP_CONFIG.google_maps_site_key
+
 if Rails.env.development?
   OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE

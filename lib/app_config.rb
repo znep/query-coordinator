@@ -61,6 +61,7 @@ class AppConfig < Hashie::Dash
   property :publishing_airbrake_api_key
   property :recaptcha_2_site_key
   property :recaptcha_2_secret_token
+  property :google_maps_site_key
   property :mixpanel_token
 
   # Auth0

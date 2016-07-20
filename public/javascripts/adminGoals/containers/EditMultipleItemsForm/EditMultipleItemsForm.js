@@ -83,7 +83,7 @@ class EditMultipleItemsForm extends React.Component {
 
           <div>
             <Select
-              className="visibilitySelect"
+              className="visibility-select"
               clearable={ false }
               searchable={ false }
               onChange={ this.updateVisibility }

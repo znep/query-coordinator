@@ -69,7 +69,7 @@ export function openEditMultipleItemsModal() {
  * data.
  *
  * @param {Immutable.List} goals List of goal objects
- * @param {Object} updatedData Updated fields 
+ * @param {Object} updatedData Updated fields
  */
 export function updateMultipleGoals(goals, updatedData) {
   const goalIds = goals.map(goal => goal.get('id'));

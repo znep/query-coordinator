@@ -126,6 +126,13 @@ and uses the mocha reporter:
 bundle exec rake test:js:dataCards[true,chrome,mocha]
 ```
 
+For the simple case where a single test run under PhantomJS is needed for a
+general pass/fail check, a faster parallelized test run is also available:
+
+```sh
+bundle exec rake test:js:parallel
+```
+
 #### To run a specific Ruby unit test
     ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
 

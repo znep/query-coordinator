@@ -55,7 +55,7 @@ export default createReducer(Immutable.fromJS({}), {
   [CACHE_USERS]: (state, action) => state.merge({users: action.users}),
   [CACHE_GOALS]: (state, action) => state.merge({cachedGoals: action.goals}),
   [CACHED_GOALS_UPDATED]: (state, action) => state.merge({
-    goals: updateGoals(state, action.goals), 
+    goals: updateGoals(state, action.goals),
     cachedGoals: updateCachedGoals(state, action.goals)
   }),
   [TABLE_ROW_SELECTED]: (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId)),

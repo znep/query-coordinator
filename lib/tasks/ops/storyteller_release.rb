@@ -4,12 +4,14 @@ class StorytellerRelease
   MARATHON_ENDPOINTS = {
     'us-west-2-rc' => 'http://marathon.aws-us-west-2-rc.socrata.net',
     'us-west-2-prod' => 'http://marathon.aws-us-west-2-prod.socrata.net',
-    'eu-west-1-prod' => 'http://marathon.aws-eu-west-1-prod.socrata.net'
+    'eu-west-1-prod' => 'http://marathon.aws-eu-west-1-prod.socrata.net',
+    'us-east-1-fedramp-prod' => 'http://marathon.aws-us-east-1-fedramp-prod.socrata.net'
   }
   CONSUL_ENDPOINTS = {
     'us-west-2-rc' => 'http://consul.aws-us-west-2-rc.socrata.net',
     'us-west-2-prod' => 'http://consul.aws-us-west-2-prod.socrata.net',
-    'eu-west-1-prod' => 'http://consul.aws-eu-west-1-prod.socrata.net'
+    'eu-west-1-prod' => 'http://consul.aws-eu-west-1-prod.socrata.net',
+    'us-east-1-fedramp-prod' => 'http://consul.aws-us-east-1-fedramp-prod.socrata.net'
   }
 
   attr_accessor :environment, :full_version, :semver, :marathon_app

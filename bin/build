@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+# Called by Jenkins to build and package frontend in preparation for a deploy
+
 # Write REVISION file
 git rev-parse HEAD > "$WORKSPACE/REVISION"
 

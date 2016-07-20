@@ -13,21 +13,27 @@ bundle install
 npm install --depth 0
 
 # Lint
-MERGE_BASE=$(git merge-base HEAD master)
-NEW_PROBLEMS=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3- | xargs node_modules/.bin/eslint --ignore-path .eslintignore -f compact || true)
-DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
-DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
+MERGE_BASE=$(git merge-base HEAD origin/master)
+JAVASCRIPT_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
 
-if [[ "$DELTA_COUNT" -gt 0 ]]; then
-  echo
-  echo "Lint errors [${DELTA_COUNT}]:"
-  echo
-  echo "${DELTA}"
-  echo
-  echo "Found lint errors, exiting"
-  exit 1
+if ! [[ -z $JAVASCRIPT_FILES ]]; then
+  NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore -f compact ${JAVASCRIPT_FILES} || true)
+  DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
+  DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
+
+  if [[ "$DELTA_COUNT" -gt 0 ]]; then
+    echo
+    echo "Lint errors [${DELTA_COUNT}]:"
+    echo
+    echo "${DELTA}"
+    echo
+    echo "Found lint errors, exiting"
+    exit 1
+  else
+    echo "No lint errors"
+  fi
 else
-  echo "No lint errors"
+  echo "Nothing to lint"
 fi
 
 # Tests

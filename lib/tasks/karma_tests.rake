@@ -71,9 +71,22 @@ namespace :test do
     task :oldUx, [:watch, :browser, :reporter] do |task, args|
       run_karma('oldUx', args)
     end
+
+    # an opinionated JS test runner for a parallelized single run
+    parallel_deps = [
+      'test:update_datacards_translations',
+      'test:update_dataset_landing_page_translations',
+      'test:update_import_wizard_translations',
+      'test:update_admin_goals_translations'
+    ]
+    task :parallel => parallel_deps do
+      cmd = 'node karma/parallelize.js'
+      puts cmd
+      exit($?.exitstatus) unless system(cmd)
+    end
   end
 
   task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx', 'js:adminGoals']
 end
 
-Rake::Task[:test].enhance { Rake::Task['test:js'].invoke }
+Rake::Task[:test].enhance { Rake::Task['test:js:parallel'].invoke }

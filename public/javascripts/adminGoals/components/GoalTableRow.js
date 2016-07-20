@@ -27,6 +27,7 @@ class GoalTableRow extends React.Component {
 
     return <tr ref='tr' onClick={ this.onClick.bind(this) } className={ rowClass }>
       <td><input type="checkbox" checked={ selected }/></td>
+      <td><span className="icon-goal"/></td>
       <td scope="title">{ this.props.goal.get('name') }
         <span className="goalPageLink" >
           <Flyout text={ this.props.translations.getIn(['admin', 'listing', 'manage_on_goal_page']) }>

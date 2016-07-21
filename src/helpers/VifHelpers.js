@@ -176,7 +176,7 @@ function migrateVif1ToVif2(vifToMigrate) {
       break;
 
     case 'choroplethMap':
-      series.type = 'choroplethMap';
+      series.type = 'regionMap';
       break;
 
     case 'featureMap':

@@ -30,6 +30,7 @@ module.exports = function(config) {
       'karma/testData.js',
       'karma/choroplethTestData/*.js',
       'karma/featureTestData/*.js',
+      'karma/svgRegionMapTestData/*.js',
       'karma/timelineTestData/*.js',
       'karma/chai.conf.js',
       'karma/testHelpers.js',

@@ -1,6 +1,6 @@
 footer#site-chrome-footer {
   display: block;
-  min-height: 200px;
+  min-height: 100px;
   padding: 37px;
   color: $footer_fg_color;
   background-color: $footer_bg_color;
@@ -29,7 +29,7 @@ footer#site-chrome-footer {
       .site-chrome-social-links {
         clear: both;
         overflow: hidden;
-        margin: 1.5rem 0;
+        margin: 0;
 
         a.site-chrome-social-link {
           display: block;
@@ -59,6 +59,8 @@ footer#site-chrome-footer {
     }
 
     > div.links {
+      padding-top: 0.7rem;
+
       ul.links-col {
         padding-left: 0;
         -webkit-column-count: 3;
@@ -72,7 +74,7 @@ footer#site-chrome-footer {
           margin: 1px;
           overflow: hidden;
           text-overflow: ellipsis;
-          line-height: 1.4rem;
+          line-height: 1.6rem;
 
           a.footer-link {
             color: $footer_fg_color;
@@ -147,7 +149,6 @@ footer#site-chrome-footer {
     color: $footer_fg_color;
     opacity: 0.7;
     max-width: 68rem;
-    margin: 46px auto 0;
-    overflow: hidden;
+    margin: 36px auto 0;
   }
 }

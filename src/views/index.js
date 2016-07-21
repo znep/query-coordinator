@@ -1,29 +1,31 @@
 var ChoroplethMap = require('./ChoroplethMap');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');
 var ColumnChart = require('./ColumnChart');
-var SvgColumnChart = require('./SvgColumnChart');
 var DistributionChart = require('./DistributionChart');
 var DistributionChartHelpers = require('./DistributionChartHelpers');
-var Pager = require('./Pager');
-var TimelineChart = require('./TimelineChart');
-var SvgTimelineChart = require('./SvgTimelineChart');
-var Table = require('./Table');
 var FeatureMap = require('./FeatureMap');
 var FlyoutRenderer = require('./FlyoutRenderer');
+var Pager = require('./Pager');
 var RowInspector = require('./RowInspector');
+var SvgColumnChart = require('./SvgColumnChart');
+var SvgHistogram = require('./SvgHistogram');
+var SvgTimelineChart = require('./SvgTimelineChart');
+var Table = require('./Table');
+var TimelineChart = require('./TimelineChart');
 
 module.exports = {
   ChoroplethMap: ChoroplethMap,
   ChoroplethMapUtils: ChoroplethMapUtils,
   ColumnChart: ColumnChart,
-  SvgColumnChart: SvgColumnChart,
   DistributionChart: DistributionChart,
   DistributionChartHelpers: DistributionChartHelpers,
-  Pager: Pager,
-  Table: Table,
-  TimelineChart: TimelineChart,
-  SvgTimelineChart: SvgTimelineChart,
   FeatureMap: FeatureMap,
   FlyoutRenderer: FlyoutRenderer,
-  RowInspector: RowInspector
+  Pager: Pager,
+  RowInspector: RowInspector,
+  SvgColumnChart: SvgColumnChart,
+  SvgHistogram: SvgHistogram,
+  SvgTimelineChart: SvgTimelineChart,
+  Table: Table,
+  TimelineChart: TimelineChart
 };

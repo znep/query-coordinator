@@ -92,7 +92,9 @@ DistributionChart.prototype.updateData = function() {
     then(_.partial(DistributionChartHelpers.getBucketingOptions, _, bucketTypeOverride)).
 
     // Make the appropriate query to fetch bucketed data once bucketing scheme is known
-    then(this.fetchBucketedData.bind(this)).
+    then((bucketingOptions) =>
+      this.fetchBucketedData(_.merge({ forceIncludeZero: true }, bucketingOptions))
+    ).
 
     // Update data and scale on props
     then(function(data) {

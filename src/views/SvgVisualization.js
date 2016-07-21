@@ -192,6 +192,8 @@ function SvgVisualization($element, vif) {
     return mobile;
   };
 
+  // NOTE: This is on the path to deprecation.
+  // We should use I18n.js in most places.
   this.getLocalization = function(key) {
     var localizedString = '';
 
@@ -236,7 +238,7 @@ function SvgVisualization($element, vif) {
       'series[{0}].unit.one'.format(seriesIndex)
     );
 
-    return (!_.isUndefined(unitOne)) ?
+    return (_.isString(unitOne)) ?
       unitOne :
       DEFAULT_UNIT_ONE;
   };
@@ -247,7 +249,7 @@ function SvgVisualization($element, vif) {
       'series[{0}].unit.other'.format(seriesIndex)
     );
 
-    return (!_.isUndefined(unitOther)) ?
+    return (_.isString(unitOther)) ?
       unitOther :
       DEFAULT_UNIT_OTHER;
   };

@@ -1227,7 +1227,7 @@ export default function AssetSelectorRenderer(options) {
 
     inputField.on('keyup', function(event) {
       if (event.keyCode === 13) {
-        $('.modal-dialog .btn-apply').click();
+        $('.modal-dialog .image-crop-upload-btn').click();
       }
     });
 

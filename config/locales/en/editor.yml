@@ -71,7 +71,7 @@ en:
         heading: 'Share and Embed Your Story'
         options:
           description_label: 'Embed Description'
-          notice: 'These options override the default story title and description when the story is embedded. Text is truncated to fit the story title.'
+          notice: 'These options override the default story title and description when the story is embedded. Text is truncated to fit the story tile.'
           tab_title: 'Options'
           title_label: 'Embed Headline'
         story_url_label: 'Story URL'

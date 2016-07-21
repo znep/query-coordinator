@@ -60,20 +60,20 @@ class GoalQuickEdit extends React.Component {
         value: 'none'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'needs_improvement']),
-        value: 'needs_improvement'
+        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'bad']),
+        value: 'bad'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'near_target']),
-        value: 'near_target'
+        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'within_tolerance']),
+        value: 'within_tolerance'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'on_target']),
-        value: 'on_target'
+        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'good']),
+        value: 'good'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'measuring']),
-        value: 'measuring'
+        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'no_judgement']),
+        value: 'no_judgement'
       }
     ];
 
@@ -144,10 +144,10 @@ class GoalQuickEdit extends React.Component {
       title: props.goal.get('name'),
       alert: props.alert ? props.alert.toJS() : {},
       noChangesMade: true,
-      actionType: props.goal.getIn(['prevailing_measure', 'metadata', 'edit', 'action_type']) || 'increase',
-      subject: props.goal.getIn(['prevailing_measure', 'metadata', 'name']),
-      override: props.goal.getIn(['prevailing_measure', 'metadata', 'use_progress_override']) ?
-        props.goal.getIn(['prevailing_measure', 'metadata', 'progress_override']) : 'none',
+      actionType: props.goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
+      subject: props.goal.getIn(['prevailing_measure', 'name']),
+      override: props.goal.getIn(['prevailing_measure', 'use_progress_override']) ?
+        props.goal.getIn(['prevailing_measure', 'progress_override']) : 'none',
       unit: props.goal.getIn(['prevailing_measure', 'unit']),
       percentUnit: props.goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
         '%' : props.goal.getIn(['prevailing_measure', 'unit']),
@@ -157,7 +157,7 @@ class GoalQuickEdit extends React.Component {
       measureTargetType: props.goal.getIn(['prevailing_measure', 'target_type']),
       measureBaseline: props.goal.getIn(['prevailing_measure', 'baseline']),
       measureTargetDelta: props.goal.getIn(['prevailing_measure', 'target_delta']),
-      measureMaintainType: props.goal.getIn(['prevailing_measure', 'metadata', 'edit', 'maintain_type']) || 'within'
+      measureMaintainType: props.goal.getIn(['prevailing_measure', 'edit', 'maintain_type']) || 'within'
     };
   }
 
@@ -170,14 +170,14 @@ class GoalQuickEdit extends React.Component {
 
   onStartDateChange(selected) {
     this.setState({
-      start: selected.value,
+      start: selected,
       noChangesMade: false
     });
   }
 
   onEndDateChange(selected) {
     this.setState({
-      end: selected.value,
+      end: selected,
       noChangesMade: false
     });
   }
@@ -205,7 +205,7 @@ class GoalQuickEdit extends React.Component {
 
   onUnitChange(event) {
     this.setState({
-      subject: event.target.value,
+      unit: event.target.value,
       noChangesMade: false
     });
   }
@@ -266,8 +266,8 @@ class GoalQuickEdit extends React.Component {
         'override': this.state.override == 'none' ? '' : this.state.override,
         'unit': this.state.unit,
         'delta_is_percent': this.state.percentUnit == '%',
-        'start': this.state.start,
-        'end': this.state.end,
+        'start': this.state.start.format('YYYY-MM-DDT00:00:00.000'),
+        'end': this.state.end.format('YYYY-MM-DDT00:00:00.000'),
         'target': this.state.measureTarget,
         'target_type': this.state.measureTargetType,
         'baseline': this.state.measureBaseline,
@@ -419,7 +419,7 @@ class GoalQuickEdit extends React.Component {
   renderMeasureMaintainType() {
     return <div className="form-line measure-maintain-type">
       <label className="inline-label">
-        { this.props.translations.getIn(['admin', 'quick_edit', 'measure_target_type']) }
+        { this.props.translations.getIn(['admin', 'quick_edit', 'range']) }
       </label>
       <Select
         className="form-select-small"

@@ -2,7 +2,7 @@ export default {
   "7ndm-ubkq": {
     "base_dashboard": "cfa5-i2ky",
     "created_at": "2016-06-17T11:02:29.806+03:00",
-    "name": "Smmmoo Hot HOT",
+    "name": "Smmmoo Hot HOT very very very very very very very very very very very very very loooong name",
     "created_by": {
       "publicViews": 0,
       "flags": ["admin"],
@@ -12,7 +12,7 @@ export default {
       "displayName": "cagri ekin",
       "publicTables": 0,
       "emailUnsubscribed": false,
-      "lastLogin": 1468830966,
+      "lastLogin": 1469113191,
       "numberOfFollowers": 0,
       "numberOfFriends": 0,
       "screenName": "cagri ekin",
@@ -23,41 +23,26 @@ export default {
     },
     "prevailing_measure": {
       "start": "1988-02-01T00:00:00.000",
-      "unit": "kg",
-      "target_delta_is_percent": false,
-      "baseline": 2,
+      "unit": "lt",
+      "target_delta_is_percent": true,
+      "baseline": 22,
+      "use_progress_override": true,
       "target_type": "relative",
       "comparison": {"comparison_function": ">"},
       "created_at": "2016-06-17T11:03:50.322+03:00",
-      "target_delta": 0,
-      "metadata": {
-        "edit": {
-          "start": {"date": "start", "month": 1, "year": 1988},
-          "end": {"date": "end", "month": "year", "year": 2016},
-          "action_type": "maintain",
-          "target_type": "relative",
-          "maintain_type": ">"
-        },
-        "baseline": {
-          "squishy": {
-            "start": {"date": "start", "month": "year", "year": 2016},
-            "end": {"date": "start", "month": "year", "year": 2016}
-          },
-          "start": "2016-01-01T00:00:00.000",
-          "end": "2016-01-01T23:59:59.000",
-          "metric": {"metadata": "{\"wizard\":{\"filter_ast\":[{\"values\":[{}]}]}}"}
-        },
-        "name": "Speed Kills"
-      },
+      "edit": {"action_type": "maintain", "maintain_type": "within"},
+      "target_delta": 22,
+      "name": "Speed Kills",
       "metric": {"id": "fb43-rvc3"},
       "target": 20,
-      "updated_at": "2016-07-18T11:36:22.108+03:00",
-      "version": "2016-07-18T11:36:22.108+03:00",
-      "end": "2016-12-31T23:59:59.000"
+      "updated_at": "2016-07-21T18:06:53.868+03:00",
+      "version": "2016-07-21T18:06:53.868+03:00",
+      "end": "2016-12-30T00:00:00.000",
+      "progress_override": "good"
     },
     "datasetId": "6syt-4pv9",
-    "updated_at": "2016-07-18T11:36:22.140+03:00",
-    "version": "2016-07-18T11:36:22.140+03:00",
+    "updated_at": "2016-07-21T18:06:53.868+03:00",
+    "version": "2016-07-21T18:06:53.868+03:00",
     "prevailingMeasureProgress": "good",
     "id": "7ndm-ubkq",
     "category": {"id": "sxis-fnb2", "name": "AN OTHER CATEGORY", "version": "2016-06-17T11:02:29.873+03:00"},
@@ -353,24 +338,9 @@ export default {
       "target_type": "maintain",
       "comparison": {"comparison_function": "<"},
       "created_at": "2016-06-13T13:14:14.182+03:00",
+      "edit": {"action_type": "maintain"},
       "target_delta": 20,
-      "metadata": {
-        "edit": {
-          "start": {"date": "start", "month": "year", "year": 1990},
-          "end": {"date": "end", "month": "year", "year": 2016},
-          "action_type": "maintain"
-        },
-        "baseline": {
-          "squishy": {
-            "start": {"date": "start", "month": "year", "year": 2016},
-            "end": {"date": "start", "month": "year", "year": 2016}
-          },
-          "start": "2016-01-01T00:00:00.000",
-          "end": "2016-01-01T23:59:59.000",
-          "metric": {"metadata": "{\"wizard\":{\"filter_ast\":[{\"values\":[{}]}]}}"}
-        },
-        "name": "Something"
-      },
+      "name": "Something",
       "metric": {"id": "m933-w2uc"},
       "target": 1,
       "updated_at": "2016-07-18T11:28:11.907+03:00",
@@ -382,7 +352,7 @@ export default {
     "version": "2016-07-18T11:28:11.907+03:00",
     "prevailingMeasureProgress": "good",
     "id": "59yh-53jg",
-    "category": {"id": "imuv-ja3w", "name": "GREAT NEW CATEGORY", "version": "2016-06-13T13:36:03.459+03:00"},
+    "category": {"id": "imuv-ja3w", "name": "GREAT NEW CATEGORY", "version": "2016-07-18T12:13:09.182+03:00"},
     "is_public": true,
     "dashboardName": "Oh My Dashboard !"
   },
@@ -416,25 +386,9 @@ export default {
       "target_type": "relative",
       "comparison": {"comparison_function": "<"},
       "created_at": "2016-06-16T17:44:09.205+03:00",
+      "edit": {"action_type": "maintain", "maintain_type": "<"},
       "target_delta": 0,
-      "metadata": {
-        "edit": {
-          "start": {"date": "start", "month": "year", "year": 1991},
-          "end": {"date": "end", "month": "year", "year": 2016},
-          "action_type": "maintain",
-          "maintain_type": "<"
-        },
-        "baseline": {
-          "squishy": {
-            "start": {"date": "start", "month": "year", "year": 2016},
-            "end": {"date": "start", "month": "year", "year": 2016}
-          },
-          "start": "2016-01-01T00:00:00.000",
-          "end": "2016-01-01T23:59:59.000",
-          "metric": {"metadata": "{\"wizard\":{\"filter_ast\":[{\"values\":[{}]}]}}"}
-        },
-        "name": "Something"
-      },
+      "name": "Something",
       "metric": {"id": "gqa6-8x5q"},
       "target": 1,
       "updated_at": "2016-07-18T11:33:06.693+03:00",

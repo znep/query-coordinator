@@ -1804,10 +1804,10 @@ en:
         override: Override
         override_types:
           none: None
-          needs_improvement: Needs Improvements
-          near_target: Near Target
-          on_target: On Target
-          measuring: Measuring
+          bad: Needs Improvements
+          within_tolerance: Near Target
+          good: On Target
+          no_judgement: Measuring
         date_range: Date Range
         range: Range
         range_types:

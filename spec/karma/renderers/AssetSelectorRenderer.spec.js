@@ -196,6 +196,76 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
+    describe('event triggered in youtube title field', function() {
+      beforeEach(function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'YOUTUBE'
+        });
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+          url: 'https://youtu.be/m86ae_e_ptU'
+        });
+      });
+
+      it('dispatches an `ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE` action on an input event from the youtube title input field', function(done) {
+        dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE);
+          assert.equal(payload.titleAttribute, '');
+          done();
+        });
+
+        var event = $.Event('input'); //eslint-disable-line new-cap
+
+        container.find('.asset-selector-title-input').trigger(event);
+      });
+    });
+
+    describe('event triggered in embedded html title field', function() {
+      var isUploadingFileStub;
+      var isHTMLFragmentStub;
+      var fileByIdStub;
+
+      beforeEach(function() {
+        // lotsa stubs!
+        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
+        isHTMLFragmentStub = sinon.stub(assetSelectorStoreMock, 'isHTMLFragment', _.constant(true));
+        fileByIdStub = sinon.stub(
+          fileUploaderStoreMock,
+          'fileById',
+          _.constant({raw: true, status: STATUS.COMPLETED, resource: {}})
+        );
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+          provider: 'EMBED_CODE'
+        });
+
+        fileUploaderStoreMock._emitChange();
+      });
+
+      afterEach(function() {
+        isUploadingFileStub.reset();
+        isHTMLFragmentStub.reset();
+        fileByIdStub.reset();
+      });
+
+      it('dispatches an `ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE` action on an input event from the embedded html title input field', function(done) {
+        dispatcher.register(function(payload) {
+          var action = payload.action;
+          assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE);
+          assert.equal(payload.titleAttribute, '');
+          done();
+        });
+
+        var event = $.Event('input'); //eslint-disable-line new-cap
+
+        container.find('.asset-selector-title-input').trigger(event);
+      });
+    });
+
     describe('event triggered in image description (alt attribute) field', function() {
       var getComponentValueStub;
 
@@ -414,6 +484,22 @@ describe('AssetSelectorRenderer', function() {
       getComponentValueStub.reset();
     });
 
+    it('renders the "embed HTML" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+        blockId: testBlockId,
+        componentIndex: testComponentIndex,
+        provider: 'EMBED_CODE'
+      });
+
+      assert.equal(container.find('.modal-title').length, 1);
+      assert.equal(container.find('.modal-close-btn').length, 1);
+      assert.equal(container.find('.asset-selector-embed-code-title-label').length, 1);
+      assert.equal(container.find('.asset-selector-embed-code-title-hint').length, 1);
+      assert.equal(container.find('.asset-selector-title-input').length, 1);
+      assert.isTrue(container.find('[data-asset-selector-field="embedHtml"]').length > 0);
+    });
+
     it('renders the "choose YouTube" content on an appropriate `ASSET_SELECTOR_PROVIDER_CHOSEN` event', function() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -424,6 +510,9 @@ describe('AssetSelectorRenderer', function() {
 
       assert.equal(container.find('.modal-title').length, 1);
       assert.equal(container.find('.modal-close-btn').length, 1);
+      assert.equal(container.find('.asset-selector-youtube-title-label').length, 1);
+      assert.equal(container.find('.asset-selector-youtube-title-hint').length, 1);
+      assert.equal(container.find('.asset-selector-title-input').length, 1);
       assert.isTrue(container.find('[data-asset-selector-validate-field="youtubeId"]').length > 0);
     });
 

@@ -1,15 +1,19 @@
-<%
-# Component format:
-# {
-#   type: "youtube.video",
-#   value: {
-#     id: "jRMHp7_kPec",
-#     url: "https://www.youtube.com/watch?v=jRMHp7_kPec"
-#   }
-# }
+<%#
+Component format:
+{
+  type: "youtube.video",
+  value: {
+    id: "jRMHp7_kPec",
+    url: "https://www.youtube.com/watch?v=jRMHp7_kPec",
+    title: "Taylor Swift - Shake It Off - 1989 (African Hipster Version)"
+  }
+}
 %>
 <iframe
   src="https://www.youtube.com/embed/<%= component['value']['id'] %>?rel=0&amp;showinfo=0"
+  <% if component['value']['title'].present? %>
+  title="<%= component['value']['title'] %>"
+  <% end -%>
   frameborder="0"
   allowfullscreen="true">
 </iframe>

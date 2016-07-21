@@ -24,7 +24,7 @@ export default function componentEmbeddedHtml(componentData, theme, options) {
     _renderEmbeddedHtml($this, componentData);
   }
 
-  _updateSrc($this, componentData);
+  _updateSrcAndTitle($this, componentData);
   _updateIframeHeight($this, componentData);
   $this.componentBase(componentData, theme, _.extend(
     {
@@ -65,7 +65,7 @@ function _renderEmbeddedHtml($element, componentData) {
     });
 }
 
-function _updateSrc($element, componentData) {
+function _updateSrcAndTitle($element, componentData) {
   var embeddedHtmlUrl;
   var documentId;
   var $iframeElement = $element.find('iframe');
@@ -80,6 +80,9 @@ function _updateSrc($element, componentData) {
 
   embeddedHtmlUrl = componentData.value.url;
   documentId = componentData.value.documentId;
+
+  var title = _.get(componentData.value, 'title');
+  $iframeElement.attr('title', title);
 
   if ($iframeElement.attr('src') !== embeddedHtmlUrl || $iframeElement.attr('data-document-id') !== String(documentId)) {
     $iframeElement.attr('src', embeddedHtmlUrl);

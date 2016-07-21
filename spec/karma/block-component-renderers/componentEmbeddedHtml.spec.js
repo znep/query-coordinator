@@ -11,6 +11,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
     type: 'embeddedHtml',
     value: {
       url: 'https://imageuploads.com/embedded_fragment.html',
+      title: 'my title',
       documentId: '4567',
       layout: {
         height: 300
@@ -75,23 +76,32 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
 
     });
 
-    describe('iframe src attribute', function() {
+    describe('iframe src and title attributes', function() {
       it('should start off correct', function() {
         assert.equal(
           $component.find('iframe').attr('src'),
           validComponentData.value.url
+        );
+        assert.equal(
+          $component.find('iframe').attr('title'),
+          validComponentData.value.title
         );
       });
 
       it('should update', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.url = 'https://updated.imageuploads.com/embedded_fragment.html';
+        updatedData.value.title = 'new title';
 
         $component.componentEmbeddedHtml(updatedData);
 
         assert.equal(
           $component.find('iframe').attr('src'),
           updatedData.value.url
+        );
+        assert.equal(
+          $component.find('iframe').attr('title'),
+          updatedData.value.title
         );
       });
     });

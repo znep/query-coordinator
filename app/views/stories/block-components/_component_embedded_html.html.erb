@@ -1,15 +1,19 @@
-<%
-# Component format:
-# {
-#   type: "embeddedHtml",
-#   documentId: "1234",
-#   value: {
-#     url: "https://bucket-name.s3.amazonaws.com/uploads/random/embedded_fragment.html"
-#   }
-# }
+<%#
+Component format:
+{
+  type: "embeddedHtml",
+  documentId: "1234",
+  value: {
+    url: "https://bucket-name.s3.amazonaws.com/uploads/random/embedded_fragment.html",
+    title: "My Embedded Fragment"
+  }
+}
 %>
 <iframe
   src="<%= component['value']['url'] %>"
+  <% if component['value']['title'].present? %>
+  title="<%= component['value']['title'] %>"
+  <% end -%>
   height="<%= component['value']['layout'].try(:[], 'height') %>"
   frameborder="0"
   sandbox="<%= embed_code_iframe_sandbox_allowances %>">

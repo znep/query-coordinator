@@ -116,7 +116,7 @@ describe JobsHelper do
     it "doesn't show restore button on non-deleted events" do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
-        { :activity_type => 'delete', :created_at => Date.today },
+        { :activity_type => 'delete', :created_at => Date.today, :first_deleted_in_list => true },
         nil,
         View.new('deleted' => false),
         nil
@@ -127,7 +127,7 @@ describe JobsHelper do
     it 'shows restore button on recent deleted events that are published default views' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
-        { :activity_type => 'delete', :created_at => Date.today.to_s },
+        { :activity_type => 'delete', :created_at => Date.today.to_s, :first_deleted_in_list => true },
         nil,
         View.new(
           'deleted' => true,
@@ -141,12 +141,24 @@ describe JobsHelper do
       expect(display_restore_button(event)).to eq(true)
     end
 
-    it "doesn't show restore button on old deleted events" do
+    it 'does not show restore button when not first_deleted_in_list' do
+      rspec_stub_feature_flags_with('restore_dataset_button', true)
+      event = ImportActivity.new(
+        { :activity_type => 'delete', :created_at => Date.today.to_s, :first_deleted_in_list => false },
+        nil,
+        View.new('deleted' => true),
+        nil
+      )
+      expect(display_restore_button(event)).to eq(false)
+    end
+
+    it 'does not show restore button on old deleted events' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
         { 
           :activity_type => 'delete',
-          :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s
+          :created_at => ((Date.today - APP_CONFIG.restore_dataset_days) - 1).to_s,
+          :first_deleted_in_list => true
         },
         nil,
         View.new(
@@ -161,7 +173,7 @@ describe JobsHelper do
       expect(display_restore_button(event)).to eq(false)
     end
 
-    it "doesn't show restore button on non-default views" do
+    it 'does not show restore button on non-default views' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
         { 
@@ -181,7 +193,7 @@ describe JobsHelper do
       expect(display_restore_button(event)).to eq(false)
     end
 
-    it "doesn't show restore button on unpublished views" do
+    it 'does not show restore button on unpublished views' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
         { 

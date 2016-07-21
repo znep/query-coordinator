@@ -51,11 +51,18 @@ body.action_datasets_show {
               padding: 11px 0;
             }
             .user-actions {
-              .sign-in-toggle {
+              .sign-in-toggle,  {
                 padding: 4px 12px;
                 font-size: 11px;
               }
             }
+          }
+        }
+
+        .mobile {
+          .menu-toggle {
+            padding: 4px 12px;
+            font-size: 11px;
           }
         }
       }

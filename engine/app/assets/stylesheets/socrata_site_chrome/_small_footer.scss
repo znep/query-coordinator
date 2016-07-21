@@ -1,7 +1,7 @@
 body.action_datasets_show {
   footer#site-chrome-footer {
     min-height: 0;
-    padding: 0.5rem;
+    padding: 1rem;
 
     .content {
       > div.logo {
@@ -42,11 +42,13 @@ body.action_datasets_show {
 
       > div.links {
         width: auto;
+        padding-top: 0;
 
         ul.links-col {
           -webkit-column-count: initial;
           -moz-column-count: initial;
           column-count: initial;
+          margin: 0;
 
           li {
             width: auto;
@@ -55,6 +57,38 @@ body.action_datasets_show {
 
             a.footer-link {
               font-size: 13px;
+            }
+          }
+        }
+      }
+
+      @include mobile-med {
+        > div.logo {
+          max-width: 100%;
+          text-align: left;
+          margin: 0;
+          overflow: hidden;
+
+          img, span.site-name, div.site-chrome-social-links {
+            float: left;
+          }
+        }
+        > div.links {
+          text-align: center;
+          clear: both;
+          margin-top: 0.5rem;
+        }
+      }
+
+      @include mobile-sm {
+        > div.links {
+          margin-top: 0.5rem;
+          .links-col {
+            li {
+              line-height: 1.2rem;
+              margin-right: 1rem;
+              margin-top: 0;
+              display: inline-block;
             }
           }
         }

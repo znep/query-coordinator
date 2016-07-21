@@ -31,7 +31,7 @@ function rendersChartType(props, jqueryFunctionName) {
 describe('Visualization', function() {
   var cachedSvgColumnChart;
   var cachedSvgTimelineChart;
-  var cachedFeatureMap;
+  var cachedSvgFeatureMap;
   var cachedChoroplethMap;
 
   beforeEach(function() {
@@ -41,8 +41,8 @@ describe('Visualization', function() {
     cachedSvgTimelineChart = $.fn.socrataSvgTimelineChart;
     $.fn.socrataSvgTimelineChart = _.noop;
 
-    cachedFeatureMap = $.fn.socrataFeatureMap;
-    $.fn.socrataFeatureMap = _.noop;
+    cachedSvgFeatureMap = $.fn.socrataSvgFeatureMap;
+    $.fn.socrataSvgFeatureMap = _.noop;
 
     cachedChoroplethMap = $.fn.socrataChoroplethMap;
     $.fn.socrataChoroplethMap = _.noop;
@@ -51,7 +51,7 @@ describe('Visualization', function() {
   afterEach(function() {
     $.fn.socrataSvgColumnChart = cachedSvgColumnChart;
     $.fn.socrataSvgTimelineChart = cachedSvgTimelineChart;
-    $.fn.socrataFeatureMap = cachedFeatureMap;
+    $.fn.socrataSvgFeatureMap = cachedSvgFeatureMap;
     $.fn.socrataChoroplethMap = cachedChoroplethMap;
     $('#socrata-row-inspector').remove();
   });
@@ -96,7 +96,7 @@ describe('Visualization', function() {
       _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
       _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
-      rendersChartType(props, 'socrataFeatureMap');
+      rendersChartType(props, 'socrataSvgFeatureMap');
     });
 
     describe('when renderings a choroplethMap', function() {

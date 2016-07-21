@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example Usage: FeatureMap.js</title>
+    <title>Example Usage: SvgFeatureMap.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <!-- `leaflet.css` must be included or the map will render incorrectly -->
     <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
@@ -13,9 +13,9 @@
         font-family: sans-serif;
       }
 
-      #feature-map-1,
-      #feature-map-2,
-      #feature-map-3 {
+      #svg-feature-map-1,
+      #svg-feature-map-2,
+      #svg-feature-map-3 {
         display: block;
         position: relative;
         width: 640px;
@@ -27,9 +27,9 @@
     </style>
   </head>
   <body>
-    <div id="feature-map-1"></div>
-    <div id="feature-map-2"></div>
-    <div id="feature-map-3"></div>
+    <div id="svg-feature-map-1"></div>
+    <div id="svg-feature-map-2"></div>
+    <div id="svg-feature-map-3"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -87,7 +87,7 @@
             'row_inspector_row_data_query_failed': 'Detailed information about these points cannot be loaded at this time',
             'user_current_position': 'Your current location (estimated)',
             'column_incompatibility_error': 'Column Incompatibility Error',
-            'feature_extent_query_error': 'Feature Extent Query Error'
+            'general_error': 'There was an error obtaining data to render this map'
           },
           // Base layer
           'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
@@ -107,7 +107,7 @@
           'type': 'test_data',
           'url': 'localhost'
         },
-        title: 'Example Usage: socrata.visualizations.FeatureMap.js',
+        title: 'Example Usage: socrata.visualizations.SvgFeatureMap.js',
         type: 'featureMap',
         'unit': {
           'one': 'record',
@@ -147,18 +147,18 @@
         zoom: 17
       };
 
-      var $featureMap1Element = $('#feature-map-1');
-      $featureMap1Element.socrataFeatureMap(featureMap1VIF);
+      var $featureMap1Element = $('#svg-feature-map-1');
+      $featureMap1Element.socrataSvgFeatureMap(featureMap1VIF);
       $featureMap1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $featureMap1Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
 
-      var $featureMap2Element = $('#feature-map-2');
-      $featureMap2Element.socrataFeatureMap(featureMap2VIF);
+      var $featureMap2Element = $('#svg-feature-map-2');
+      $featureMap2Element.socrataSvgFeatureMap(featureMap2VIF);
       $featureMap2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $featureMap2Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
 
-      var $featureMap3Element = $('#feature-map-3');
-      $featureMap3Element.socrataFeatureMap(featureMap3VIF);
+      var $featureMap3Element = $('#svg-feature-map-3');
+      $featureMap3Element.socrataSvgFeatureMap(featureMap3VIF);
       $featureMap3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $featureMap3Element.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
 

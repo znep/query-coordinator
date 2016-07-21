@@ -190,8 +190,7 @@ export default {
       user_current_position: 'Your current location (estimated)',
       latitude: 'Latitude',
       longitude: 'Longitude',
-      column_incompatibility_error: 'That dimension is incompatible with the feature map. Please pick a location-based dimension.',
-      feature_extent_query_error: 'Oh no! We failed to get the proper zoom and centering. You\'ll have to try again later.'
+      general_error: 'Oh no! There was an error obtaining data to render this map.'
     },
     timeline_chart: {
       title: 'Timeline Chart',

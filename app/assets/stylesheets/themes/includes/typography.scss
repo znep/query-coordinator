@@ -150,12 +150,21 @@ $th-headings: (
       text-indent: -$list-margin-adjustment;
       padding-left: $list-margin-adjustment;
       &:before {
-        display: inline;
+        // Force an indefinite height for this pseudo-element (see below).
+        display: block;
+        height: 0;
         // Force Sass to interpret the unicode escapes in $list-bullet-character
         // in the way CSS would (i.e., not as the literal string "\2022", but as the dot).
         content: unquote('"' + $list-bullet-character + '"');
         color: $list-bullet-color;
         margin-right: 0.8em;
+      }
+
+      // Force correct layout in conjunction with the :before pseudo-element.
+      // This rule plus the display/height rules above will allow everything
+      // to have correct left alignment.
+      * {
+        display: inline;
       }
     }
   }

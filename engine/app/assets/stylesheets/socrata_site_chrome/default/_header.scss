@@ -94,7 +94,7 @@ header#site-chrome-header[template="default"] {
               display: flex;
 
               button.search-button {
-                height: $searchbox_height - 2;
+                height: $searchbox_height;
                 display: none; // appears with toggleSearchButton()
               }
             }

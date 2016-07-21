@@ -1,19 +1,30 @@
 $divider_height: 14px;
 $searchbox_height: 36px;
 
+$divider_color: $header_fg_color;
+
+$btn_color: $header_fg_color;
+$btn_hover_color: $header_bg_color;
+$btn_hover_bg_color: $header_fg_color;
+
+$mobile_btn_color: $header_bg_color;
+$mobile_btn_bg_color: $header_fg_color;
+$mobile_btn_hover_color: $header_fg_color;
+$mobile_btn_hover_bg_color: $header_bg_color;
+
 header#site-chrome-header, footer#site-chrome-footer {
   .site-chrome-btn {
-    color: $btn-color;
+    color: $btn_color;
     background: transparent;
     padding: 8px 12px;
-    border: 1px solid $btn-color;
+    border: 1px solid $btn_color;
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s, background-color 0.2s;
 
     &:hover, &:focus, &:active {
-      background: $btn-color;
-      color: $btn-color-dark;
+      background: $btn_hover_bg_color;
+      color: $btn_hover_color;
     }
 
     [class*="icon-"] {
@@ -23,18 +34,19 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .site-chrome-mobile-btn {
-    color: #fff;
-    background: $mobile_btn_color;
+    color: $mobile_btn_color;
+    background: $mobile_btn_bg_color;
     padding: 10px 15px;
     font-size: 15px;
-    border: 1px solid $mobile_btn_color;
+    border: 1px solid $mobile_btn_bg_color;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
     transition: color 0.2s, background-color 0.2s;
 
     &:hover, &:focus, &:active {
-      background: $mobile_btn_hover_color;
+      color: $mobile_btn_hover_color;
+      background: $mobile_btn_hover_bg_color;
     }
 
     [class*="icon-"] {
@@ -44,12 +56,12 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .inverse-btn {
-    background: $inverse_btn_background_color;
-    color: $inverse_btn_color;
+    background: $mobile_btn_hover_bg_color;
+    color: $mobile_btn_hover_color;
 
     &:hover {
-      background: $inverse_btn_color;
-      color: $inverse_btn_background_color;
+      background: $mobile_btn_hover_color;
+      color: $mobile_btn_hover_bg_color;
     }
   }
 
@@ -68,7 +80,8 @@ header#site-chrome-header, footer#site-chrome-footer {
     display: inline-block;
     vertical-align: middle;
     padding: $divider_height 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: 1px solid $divider_color;
+    opacity: 0.3;
   }
 
   .searchbox {
@@ -102,14 +115,14 @@ header#site-chrome-header, footer#site-chrome-footer {
         box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
         font-size: 16px;
         padding: 8px 74px 8px 30px;
-        vertical-align: middle;
         z-index: 3;
+        vertical-align: top;
         height: $searchbox_height - 18; // 16px padding + 2px border
       }
 
       button.search-button {
         position: absolute;
-        top: 1px;
+        top: 0;
         right: 0;
         color: #5e5e5e;
         background-color: #f1f1f1;
@@ -117,12 +130,11 @@ header#site-chrome-header, footer#site-chrome-footer {
         outline: none;
         letter-spacing: 0;
         border: 1px solid $searchbox_border_color;
-        border-top-right-radius: 1px;
-        border-bottom-right-radius: 1px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
         margin: 0;
         font-size: 13px;
         height: $searchbox_height;
-        vertical-align: middle;
         z-index: 3;
         &:hover, &:focus, &:active {
           background: #e4e4e4;

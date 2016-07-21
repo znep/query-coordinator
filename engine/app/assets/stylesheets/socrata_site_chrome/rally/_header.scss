@@ -72,6 +72,7 @@ header#site-chrome-header[template="rally"] {
 
               a.site-chrome-nav-link {
                 padding: 0 $text_padding;
+                transition: background-color 0.05s;
                 &:hover, &:focus, &:active {
                   text-decoration: none;
                   background-color: rgba(255, 255, 255, 0.3);

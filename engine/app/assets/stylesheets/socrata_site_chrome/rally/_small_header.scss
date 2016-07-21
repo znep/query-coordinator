@@ -1,3 +1,5 @@
+$small_banner_height: 38px;
+
 body.action_datasets_show {
   header#site-chrome-header[template="rally"] {
     .banner {
@@ -25,13 +27,33 @@ body.action_datasets_show {
       }
 
       .rally-bottom {
-        height: $header_logo_height;
+        height: $small_banner_height;
 
         .desktop {
           .navbar-left {
             .site-chrome-nav-links {
               a.site-chrome-nav-link {
                 font-size: 14px;
+              }
+            }
+          }
+          .navbar-right {
+            .site-chrome-social-links {
+              .site-chrome-social-link {
+                span.monosocial {
+                  font-style: 36px;
+                  vertical-align: middle;
+                }
+              }
+            }
+            .divider {
+              margin: 8px 11px;
+              padding: 11px 0;
+            }
+            .user-actions {
+              .sign-in-toggle {
+                padding: 4px 12px;
+                font-size: 11px;
               }
             }
           }

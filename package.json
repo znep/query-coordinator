@@ -111,7 +111,7 @@
     "component-upload": "0.3.0",
     "dompurify": "0.7.4",
     "dotdotdot": "1.7.0",
-    "eslint-base": "1.0.2",
+    "eslint-base": "1.0.3",
     "form-urlencoded": "1.4.0",
     "leaflet": "0.7.3",
     "lodash": "4.13.1",

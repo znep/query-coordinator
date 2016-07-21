@@ -6,21 +6,35 @@ set -ex
 # Log the author name and email of the last commit
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
-# Dependencies
+## Dependencies
 export RUBYOPT="-E utf-8"
 bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
 bundle install
 npm install --depth 0
 
-# Lint
+## Lint
+
+# Find commit where this pull request branched from
 MERGE_BASE=$(git merge-base HEAD origin/master)
+
+# Find all javascript files that have changed on this PR
 JAVASCRIPT_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
 
+# If this PR changed at least one javascript file
 if ! [[ -z $JAVASCRIPT_FILES ]]; then
-  NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore -f compact ${JAVASCRIPT_FILES} || true)
+
+  # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
+  # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
+  # opportunity to print a nicer list of lint errors.
+  NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
+
+  # Find all lines of eslint output that represent lint errors
   DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
+
+  # Determine how many lint errors there were
   DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
 
+  # Display a friendly message representing the result of the lint job
   if [[ "$DELTA_COUNT" -gt 0 ]]; then
     echo
     echo "Lint errors [${DELTA_COUNT}]:"
@@ -36,5 +50,5 @@ else
   echo "Nothing to lint"
 fi
 
-# Tests
+## Tests
 bundle exec rake test

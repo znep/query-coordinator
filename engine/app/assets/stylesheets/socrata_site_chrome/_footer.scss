@@ -26,12 +26,12 @@ footer#site-chrome-footer {
         vertical-align: middle;
       }
 
-      .social-links {
+      .site-chrome-social-links {
         clear: both;
         overflow: hidden;
         margin: 1.5rem 0;
 
-        a.social-link {
+        a.site-chrome-social-link {
           display: block;
           float: left;
           color: $footer_fg_color;
@@ -116,7 +116,7 @@ footer#site-chrome-footer {
           font-size: 28px;
         }
       }
-      .social-link {
+      .site-chrome-social-link {
         display: block;
         margin-bottom: 0.7rem;
       }

@@ -165,8 +165,8 @@ header#site-chrome-header, footer#site-chrome-footer {
     }
 
     .menu-content {
-      .nav-links {
-        a.nav-link {
+      .site-chrome-nav-links {
+        a.site-chrome-nav-link {
           color: $dark_text_color;
           background-color: #fff;
           display: block;
@@ -194,9 +194,9 @@ header#site-chrome-header, footer#site-chrome-footer {
           margin-bottom: 0.3rem;
         }
       }
-      .social-links {
+      .site-chrome-social-links {
         clear: both;
-        .social-link {
+        .site-chrome-social-link {
           text-decoration: none;
           &:hover, &:focus, &:active {
             text-decoration: none;

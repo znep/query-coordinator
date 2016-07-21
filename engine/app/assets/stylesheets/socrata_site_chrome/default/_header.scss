@@ -38,7 +38,7 @@ header#site-chrome-header[template="default"] {
       float: right;
 
       &.desktop {
-        a.nav-link {
+        a.site-chrome-nav-link {
           padding: 0 $text_padding;
           color: $header_fg_color;
           text-decoration: none;
@@ -46,7 +46,7 @@ header#site-chrome-header[template="default"] {
             text-decoration: underline;
           }
 
-          &.social-link {
+          &.site-chrome-social-link {
             padding: 0 5px;
             &:hover, &:focus, &:active {
               text-decoration: none;
@@ -54,7 +54,7 @@ header#site-chrome-header[template="default"] {
           }
         }
 
-        .nav-links, .social-links, .collapsible-search {
+        .site-chrome-nav-links, .site-chrome-social-links, .collapsible-search {
           float: left;
         }
 

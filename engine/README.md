@@ -335,8 +335,6 @@ $header_fg_color: $fg_color;
 $footer_bg_color: #3b3a3c;
 $footer_fg_color: $fg_color;
 
-$mobile_btn_color: #288dc1;
-$mobile_btn_hover_color: #20719a;
 $text_padding: 11px;
 ```
 

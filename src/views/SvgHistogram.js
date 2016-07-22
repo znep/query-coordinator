@@ -1,9 +1,9 @@
-var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization');
-var d3 = require('d3');
-var _ = require('lodash');
-var $ = require('jquery');
-var translate = require('../authoringWorkflow/I18n').translate;
+const utils = require('socrata-utils');
+const SvgVisualization = require('./SvgVisualization');
+const d3 = require('d3');
+const _ = require('lodash');
+const $ = require('jquery');
+const translate = require('../authoringWorkflow/I18n').translate;
 
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
@@ -60,7 +60,6 @@ function SvgHistogram($element, vif) {
 
   _.extend(this, new SvgVisualization($element, vif));
 
-  bindStyles();
   renderTemplate();
 
   /**
@@ -112,6 +111,8 @@ function SvgHistogram($element, vif) {
    */
 
   function renderTemplate() {
+
+    bindStyles();
 
     $chartElement = $(
       '<div>',

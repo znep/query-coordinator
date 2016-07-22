@@ -1,19 +1,19 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var DistributionChartHelpers = require('./views/DistributionChartHelpers');
-var SvgHistogram = require('./views/SvgHistogram');
-var SvgVisualization = require('./views/SvgVisualization');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var VifHelpers = require('./helpers/VifHelpers');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var translate = require('./authoringWorkflow/I18n').translate;
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const DistributionChartHelpers = require('./views/DistributionChartHelpers');
+const SvgHistogram = require('./views/SvgHistogram');
+const SvgVisualization = require('./views/SvgVisualization');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const VifHelpers = require('./helpers/VifHelpers');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const translate = require('./authoringWorkflow/I18n').translate;
 
-var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
-var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
-var AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
+const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
+const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Requests the data required to render the chart, transforms it, and returns a Promise that
@@ -32,7 +32,7 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @returns Promise
  */
-function fetchData(vif, seriesIndex) {
+function getData(vif, seriesIndex) {
 
   // We're able to automatically detect a bucketType, but it's also possible to explicitly override
   // this. This override is stored in the vif's configuration.
@@ -286,7 +286,7 @@ $.fn.socrataSvgHistogram = function(vif) {
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {
-    return fetchData(vifToRender, seriesIndex).then((data) => ({
+    return getData(vifToRender, seriesIndex).then((data) => ({
       bucketType: data.bucketingOptions.bucketType,
       rows: data.bucketedData.map((row) =>
         [ row.start, row.end, row.value ]

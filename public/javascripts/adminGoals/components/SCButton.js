@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames/bind';
+import helpers from '../helpers/helpers';
 
 export default class SCButton extends React.Component {
   constructor(props) {
@@ -13,10 +14,10 @@ export default class SCButton extends React.Component {
     const isAlternate2 = props.alternate2 == true;
     const isSimple = props.simple == true;
     const isInverse = props.inverse == true;
-    const isDefault = !isPrimary && !isAlternate && !isAlternate2 && !isSimple && !isInverse;
     const isSmall = props.small == true;
     const isExtraSmall = props.extraSmall == true;
     const isInProgress = props.inProgress == true;
+    const isDefault = helpers.noneOf([isPrimary, isAlternate, isAlternate2, isSimple, isInverse]);
 
     const classes = {
       btn: true,
@@ -31,11 +32,11 @@ export default class SCButton extends React.Component {
       'btn-busy': false // isInProgress
     };
 
-    const spinner = isInProgress ? <span className="spinner-default spinner-btn-primary"></span> : null;
+    const spinner = isInProgress ? <span className="spinner-default spinner-btn-primary"/> : null;
 
     return (
       <button className={classNames(classes)} disabled={props.disabled} onClick={ isInProgress ? null : this.props.onClick }>
-      { isInProgress ? spinner : this.props.children }
+        { isInProgress ? spinner : this.props.children }
       </button>
     );
   }

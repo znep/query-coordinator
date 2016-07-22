@@ -348,7 +348,7 @@ function SvgTimelineChart($element, vif) {
 
     // Actual execution begins here.
 
-    if (self.getXAxisScalingMode() === 'fit') {
+    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
       width = viewportWidth;
       xAxisPanningEnabled = false;
@@ -439,7 +439,7 @@ function SvgTimelineChart($element, vif) {
         )
     );
 
-    if (self.getXAxisScalingMode() === 'fit') {
+    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
       domainStartDate = parseDate(startDate);
       domainEndDate = parseDate(endDate);

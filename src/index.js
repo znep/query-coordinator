@@ -4,6 +4,7 @@ var helpers = require('./helpers');
 var AuthoringWorkflow = require('./authoringWorkflow');
 // vv these requires have the side effect of registering jQuery plugins vv
 var ChoroplethMap = require('./ChoroplethMap');
+var SvgRegionMap = require('./SvgRegionMap');
 var ColumnChart = require('./ColumnChart');
 var SvgColumnChart = require('./SvgColumnChart');
 var DistributionChart = require('./DistributionChart');
@@ -24,6 +25,7 @@ module.exports = {
   helpers: helpers,
   ChoroplethMap: ChoroplethMap,
   ColumnChart: ColumnChart,
+  svgRegionMap: SvgRegionMap,
   SvgColumnChart: SvgColumnChart,
   DistributionChart: DistributionChart,
   FeatureMap: FeatureMap,

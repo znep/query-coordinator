@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SvgRegionMap.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <!-- `leaflet.css` must be included or the map will render incorrectly -->
+    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #region-map-1,
+      #region-map-2,
+      #region-map-3,
+      #region-map-4,
+      #region-map-5 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 50px auto 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="region-map-1"></div>
+    <div id="region-map-2"></div>
+    <div id="region-map-3"></div>
+    <div id="region-map-4"></div>
+    <div id="region-map-5"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var DATASET_UID = '52my-2pak';
+      var DOMAIN = 'dataspace.demo.socrata.com';
+      var GEOJSON_UID = 'snuk-a5kv';
+
+      var regionMap1Vif = {
+        'aggregation': {
+          // TODO: implement this!
+        },
+        'columnName': 'location_point',
+        'configuration': {
+          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
+          'baseLayerOpacity': 0.8,
+          'computedColumnName': ':@wards',
+          'defaultExtent' : {
+            'southwest': [41.45919537950706, -90.24169921875],
+            'northeast': [42.20817645934742, -85.242919921875]
+          },
+          'interactive': true,
+          'legend': {
+            'type': 'continuous',
+            'negativeColor': '#f00',
+            'zeroColor': '#0f0',
+            'positiveColor': '#00f'
+          },
+          // The localization values should be set by the application but are set
+          // to string literalsfor the purposes of this example.
+          'localization': {
+            'flyout_amount_label': 'Total',
+            'flyout_selected_notice': 'This visualization is being filtered by this item.',
+            'no_value': '(No Value)'
+          },
+          'savedExtent': {
+            'southwest': [41.42625319507272, -88.5662841796875],
+            'northeast': [42.24478535602799, -86.9183349609375]
+          },
+          'shapefile': {
+            'columns': {
+              'name': '__SOCRATA_HUMAN_READABLE_NAME__',
+              'value': '__SOCRATA_FEATURE_VALUE__',
+              'selected': '__SOCRATA_FEATURE_SELECTED__'
+            },
+            'geometryLabel': null,
+            'primaryKey': '_feature_id',
+            'uid': GEOJSON_UID
+          }
+        },
+        'datasetUid': DATASET_UID,
+        'description': 'An example Region Map',
+        'domain': DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'title': 'Example Usage: SvgRegionMap.js',
+        'type': 'choroplethMap',
+        'unit': {
+          'one': 'crime',
+          'other': 'crimes'
+        }
+      };
+
+      var regionMap2Vif = _.cloneDeep(regionMap1Vif);
+      regionMap2Vif.configuration.mapCenterAndZoom = {
+        center: {
+          lat: 47.5961688328413,
+          lng: -122.3282253742218
+        },
+        zoom: 17
+      };
+
+      var regionMap3Vif = _.cloneDeep(regionMap1Vif);
+      regionMap3Vif.configuration.legend = {
+        'type': 'discrete'
+      };
+      regionMap3Vif.filters = [
+        {
+          'columnName': 'location_description',
+          'function': 'binaryOperator',
+          'arguments': {
+            'operator': '=',
+            'operand': 'STREET'
+          }
+        }
+      ];
+
+      var regionMap4Vif = _.cloneDeep(regionMap1Vif);
+      regionMap4Vif.filters = [
+        {
+          'columnName': 'location_point',
+          'function': 'binaryComputedGeoregionOperator',
+          'arguments': {
+            'computedColumnName': ':@wards',
+            'operator': '=',
+            'operand': '47'
+          }
+        }
+      ];
+
+      var regionMap5Vif = _.cloneDeep(regionMap1Vif);
+      regionMap5Vif.aggregation = {
+        'field': 'id',
+        'function': 'sum'
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      var $regionMapElement1 = $('#region-map-1');
+      $regionMapElement1.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement1.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement1.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement1.socrataSvgRegionMap(regionMap1Vif);
+
+      var $regionMapElement2 = $('#region-map-2');
+      $regionMapElement2.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement2.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement2.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement2.socrataSvgRegionMap(regionMap2Vif);
+
+      var $regionMapElement3 = $('#region-map-3');
+      $regionMapElement3.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement3.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement3.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement3.socrataSvgRegionMap(regionMap3Vif);
+
+      var $regionMapElement4 = $('#region-map-4');
+      $regionMapElement4.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement4.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement4.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement4.socrataSvgRegionMap(regionMap4Vif);
+
+      var $regionMapElement5 = $('#region-map-5');
+      $regionMapElement5.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement5.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement5.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement5.socrataSvgRegionMap(regionMap5Vif);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+          flyoutRenderer.render(payload);
+        } else {
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleCenterAndZoomChanged(event) {
+        console.log('Map center and zoom changed: ' + JSON.stringify(event.originalEvent.detail));
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+
+      // $regionMapElement1.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $regionMapElement1.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $regionMapElement1.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $regionMapElement1.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $regionMapElement2.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $regionMapElement2.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $regionMapElement2.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $regionMapElement2.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $regionMapElement3.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $regionMapElement3.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $regionMapElement3.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $regionMapElement3.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $regionMapElement4.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $regionMapElement4.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $regionMapElement4.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $regionMapElement4.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $regionMapElement5.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $regionMapElement5.off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      // $regionMapElement5.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $regionMapElement5.trigger('SOCRATA_VISUALIZATION_DESTROY');
+    });
+  </script>
+</html>

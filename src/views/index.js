@@ -1,4 +1,5 @@
 var ChoroplethMap = require('./ChoroplethMap');
+var SvgRegionMap = require('./SvgRegionMap');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');
 var ColumnChart = require('./ColumnChart');
 var DistributionChart = require('./DistributionChart');
@@ -15,6 +16,7 @@ var TimelineChart = require('./TimelineChart');
 
 module.exports = {
   ChoroplethMap: ChoroplethMap,
+  SvgRegionMap: SvgRegionMap,
   ChoroplethMapUtils: ChoroplethMapUtils,
   ColumnChart: ColumnChart,
   DistributionChart: DistributionChart,

@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
     <style type="text/css">
 
       body {
@@ -20,7 +22,6 @@
         width: 640px;
         height: 480px;
         margin: 100px auto 0 auto;
-        border: 1px solid #aaa;
       }
     </style>
   </head>
@@ -53,7 +54,7 @@
           'An error was encountered when rendering this chart. Please try ' +
           'again in a few minutes.'
         ),
-        'error_timeline_chart_exceeded_max_point_without_pan': (
+        'error_timeline_chart_exceeded_max_point_count_without_pan': (
           'For optimal performance and legibility timeline charts for which ' +
           'panning is disabled are limited to {0} points. Enable panning or ' +
           'use filters to render a more specific chart.'
@@ -74,6 +75,12 @@
         },
         'columnName': COLUMN_NAME,
         'configuration': {
+          'axisLabels': {
+            'top': null,
+            'right': null,
+            'bottom': 'Date',
+            'left': 'Amount'
+          },
           'interactive': true,
           // The localization values should be set by the application but are set
           // to string literals for the purposes of this example.

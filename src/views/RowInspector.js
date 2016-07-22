@@ -142,7 +142,7 @@ function setup(config, $target) {
                   '<div class="pending-content"></div>',
                   '<!-- Error message if row query unsuccessful -->',
                   '<div class="error-content">',
-                    '<div class="icon-warning"></div>',
+                    '<div class="icon-row-inspector-warning"></div>',
                     '<div class="error-message"></div>',
                   '</div>',
                 '</div>',

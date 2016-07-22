@@ -95,15 +95,14 @@ function SvgHistogram($element, vif) {
 
   this.destroy = function() {
 
-    d3.
-      select(self.$element[0]).
-        select('svg').
-          remove();
+    d3.select(self.$element[0]).
+      select('svg').
+      remove();
 
     self.
       $element.
-        find('.visualization-container').
-          remove();
+      find('.visualization-container').
+      remove();
   };
 
   /**
@@ -123,8 +122,8 @@ function SvgHistogram($element, vif) {
 
     self.
       $element.
-        find('.visualization-container').
-          append($chartElement);
+      find('.visualization-container').
+      append($chartElement);
   }
 
   function validateData(newData) {
@@ -209,6 +208,8 @@ function SvgHistogram($element, vif) {
     var xAxisAndSeriesSvg;
     var seriesSvg;
     var bucketGroupSvgs;
+    var columnUnderlaySvgs;
+    var columnSvgs;
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -237,16 +238,16 @@ function SvgHistogram($element, vif) {
 
       xAxisAndSeriesSvg.
         append('g').
-          attr('class', 'x axis').
-          call(d3XAxis);
+        attr('class', 'x axis').
+        call(d3XAxis);
 
       // We don't need these for the baseline.
       d3XAxis.tickFormat('').tickSize(0);
 
       xAxisAndSeriesSvg.
         append('g').
-          attr('class', 'x axis baseline').
-          call(d3XAxis);
+        attr('class', 'x axis baseline').
+        call(d3XAxis);
     });
 
     function renderXAxis() {
@@ -258,29 +259,27 @@ function SvgHistogram($element, vif) {
       // to treat renderXAxis() as idempotent.
       bindXAxisOnce();
 
-      viewportSvg.
-        select('.x.axis').
-          attr(
-            'transform',
-            'translate(0,{0})'.format(chartHeight)
-          ).
-          selectAll('line, path').
-            attr('fill', 'none').
-            attr('stroke', '#888').
-            attr('shape-rendering', 'crispEdges');
+      let viewportSvgXAxis = viewportSvg.select('.x.axis');
 
-      viewportSvg.
-        selectAll('.x.axis text').
-          attr('font-family', FONT_STACK).
-          attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
-          attr('fill', '#888').
-          attr('stroke', 'none').
-          attr(
-            'data-row-index',
-            function(label, rowIndex) {
-              return rowIndex;
-            }
-          );
+      viewportSvgXAxis.attr(
+        'transform',
+        'translate(0,{0})'.format(chartHeight)
+      );
+
+      viewportSvgXAxis.selectAll('line, path').
+        attr('fill', 'none').
+        attr('stroke', '#888').
+        attr('shape-rendering', 'crispEdges');
+
+      viewportSvg.selectAll('.x.axis text').
+        attr('font-family', FONT_STACK).
+        attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
+        attr('fill', '#888').
+        attr('stroke', 'none').
+        attr(
+          'data-row-index',
+          (label, rowIndex) => rowIndex
+        );
 
       if (minYValue > 0) {
         baselineValue = minYValue;
@@ -290,16 +289,16 @@ function SvgHistogram($element, vif) {
         baselineValue = 0;
       }
 
-      viewportSvg.
-        select('.x.axis.baseline').
-          attr(
-            'transform',
-            'translate(0,{0})'.format(d3YScale(baselineValue))
-          ).
-          selectAll('line, path').
-            attr('fill', 'none').
-            attr('stroke', '#888').
-            attr('shape-rendering', 'crispEdges');
+      let xAxisBaseline = viewportSvg.select('.x.axis.baseline').
+        attr(
+          'transform',
+          'translate(0,{0})'.format(d3YScale(baselineValue))
+        );
+
+      xAxisBaseline.selectAll('line, path').
+        attr('fill', 'none').
+        attr('stroke', '#888').
+        attr('shape-rendering', 'crispEdges');
     }
 
     // See comment in renderYAxis() for an explanation as to why this is
@@ -310,17 +309,15 @@ function SvgHistogram($element, vif) {
         orient('left').
         tickFormat(function(d) { return utils.formatNumber(d); });
 
-      chartSvg.
-        select('.y.axis').
-          call(d3YAxis);
+      chartSvg.select('.y.axis').
+        call(d3YAxis);
 
       d3YAxis.
         tickSize(viewportWidth).
         tickFormat('');
 
-      chartSvg.
-        select('.y.grid').
-          call(d3YAxis);
+      chartSvg.select('.y.grid').
+        call(d3YAxis);
     });
 
     function renderYAxis() {
@@ -335,33 +332,31 @@ function SvgHistogram($element, vif) {
       // to treat renderYAxis() as idempotent.
       bindYAxisOnce();
 
-      yAxisSvg.
-        selectAll('line, path').
-          attr('fill', 'none').
-          attr('stroke', '#888').
-          attr('shape-rendering', 'crispEdges');
+      yAxisSvg.selectAll('line, path').
+        attr('fill', 'none').
+        attr('stroke', '#888').
+        attr('shape-rendering', 'crispEdges');
 
-      yAxisSvg.
-        selectAll('text').
-          attr('font-family', FONT_STACK).
-          attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
-          attr('fill', '#888').
-          attr('stroke', 'none');
+      yAxisSvg.selectAll('text').
+        attr('font-family', FONT_STACK).
+        attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
+        attr('fill', '#888').
+        attr('stroke', 'none');
 
       yGridSvg.
         attr(
           'transform',
           'translate(' + (viewportWidth) + ',0)'
-        ).
-        selectAll('path').
-          attr('fill', 'none').
-          attr('stroke', 'none');
+        );
 
-      yGridSvg.
-        selectAll('line').
-          attr('fill', 'none').
-          attr('stroke', DEFAULT_GRID_LINE_COLOR).
-          attr('shape-rendering', 'crispEdges');
+      yGridSvg.selectAll('path').
+        attr('fill', 'none').
+        attr('stroke', 'none');
+
+      yGridSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', DEFAULT_GRID_LINE_COLOR).
+        attr('shape-rendering', 'crispEdges');
     }
 
     // Note that renderXAxis(), renderYAxis() and renderSeries() all update the
@@ -383,137 +378,134 @@ function SvgHistogram($element, vif) {
           'none';
       }
 
-      bucketGroupSvgs.
-        selectAll('.column-underlay').
-          attr('y', 0).
-          attr(
-            'width',
-            (d) => d3DimensionXScale(d.x1) - d3DimensionXScale(d.x0)
-          ).
-          attr('height', chartHeight).
-          attr('stroke', 'none').
-          attr('fill', 'transparent').
-          attr('data-default-fill', getPrimaryColorOrNone);
-
-      bucketGroupSvgs.
-        selectAll('.column').
-          attr(
-            'y',
-            function(d) {
-              var yAttr;
-              var value = d.value;
-
-              // If the value is zero or null we want it to be present at the
-              // baseline for the rest of the bars (at the bottom of the chart
-              // if the minimum value is 0 or more, at the top of the chart if
-              // the maximum value is less than zero.
-              if (value === 0 || !_.isFinite(value)) {
-
-                if (minYValue > 0) {
-                  yAttr = d3YScale(minYValue) - 0.0001;
-                } else if (maxYValue < 0) {
-                  yAttr = d3YScale(maxYValue) + 0.0001;
-                } else {
-                  yAttr = d3YScale(0) - 0.0001;
-                }
-
-              } else if (value > 0) {
-
-                if (minYValue > 0) {
-
-                  yAttr = Math.min(
-                    d3YScale(value),
-                    d3YScale(minYValue) - 1
-                  );
-                } else {
-
-                  yAttr = Math.min(
-                    d3YScale(value),
-                    d3YScale(0) - 1
-                  );
-                }
-
-              } else if (value < 0) {
-
-
-                if (maxYValue <= 0) {
-
-                  yAttr = Math.max(
-                    d3YScale(maxYValue),
-                    1
-                  );
-
-                } else {
-                  yAttr = d3YScale(0);
-                }
-
-              }
-
-              return yAttr;
-            }
-          ).
-          attr('x', COLUMN_MARGIN).
-          attr(
-            'width',
-            (d) => Math.max(1, d3DimensionXScale(d.x1) - d3DimensionXScale(d.x0) - COLUMN_MARGIN)
-          ).
-          attr(
-            'height',
-            function(d) {
-              var baselineValue;
-              var value = d.value;
-
-              if (value === 0 || !_.isFinite(value)) {
-                // We want the flyout for null or zero values to appear
-                // along the x axis, rather than at the top of the chart.
-                // This means that we need to push the container element
-                // for null values down to the x axis, rather than the
-                // default behavior which places it at the top of the
-                // visualization container. This is accomplished by the 'y'
-                // attribute, but that does not have the expected behavior
-                // if the element is not visible (or in this case, has a
-                // height of zero).
-                //
-                // Ultimately the way we force the column's container to
-                // actually do the intended layout is to give the element
-                // a very small height which should be more or less
-                // indiscernable, which causes the layout to do the right
-                // thing.
-                return 0.0001;
-              } else if (value > 0) {
-
-                if (minYValue > 0) {
-                  baselineValue = minYValue;
-                } else {
-                  baselineValue = 0;
-                }
-              } else if (value < 0) {
-
-                if (maxYValue < 0) {
-                  baselineValue = maxYValue;
-                } else {
-                  baselineValue = 0;
-                }
-              }
-
-              // See comment about setting the y attribute above for the
-              // rationale behind ensuring a minimum height of one pixel for
-              // non-null and non-zero values.
-              return Math.max(
-                1,
-                Math.abs(d3YScale(value) - d3YScale(baselineValue))
-              );
-            }
-          ).
-          attr('stroke', 'none').
-          attr('fill', getPrimaryColorOrNone).
-          attr('data-default-fill', getPrimaryColorOrNone);
-
-      xAxisAndSeriesSvg.
+      bucketGroupSvgs.selectAll('.column-underlay').
+        attr('y', 0).
         attr(
-          'transform',
-          'translate(0,0)'
-        );
+          'width',
+          (d) => d3DimensionXScale(d.x1) - d3DimensionXScale(d.x0)
+        ).
+        attr('height', chartHeight).
+        attr('stroke', 'none').
+        attr('fill', 'transparent').
+        attr('data-default-fill', getPrimaryColorOrNone);
+
+      bucketGroupSvgs.selectAll('.column').
+        attr(
+          'y',
+          function(d) {
+            var yAttr;
+            var value = d.value;
+
+            // If the value is zero or null we want it to be present at the
+            // baseline for the rest of the bars (at the bottom of the chart
+            // if the minimum value is 0 or more, at the top of the chart if
+            // the maximum value is less than zero.
+            if (value === 0 || !_.isFinite(value)) {
+
+              if (minYValue > 0) {
+                yAttr = d3YScale(minYValue) - 0.0001;
+              } else if (maxYValue < 0) {
+                yAttr = d3YScale(maxYValue) + 0.0001;
+              } else {
+                yAttr = d3YScale(0) - 0.0001;
+              }
+
+            } else if (value > 0) {
+
+              if (minYValue > 0) {
+
+                yAttr = Math.min(
+                  d3YScale(value),
+                  d3YScale(minYValue) - 1
+                );
+              } else {
+
+                yAttr = Math.min(
+                  d3YScale(value),
+                  d3YScale(0) - 1
+                );
+              }
+
+            } else if (value < 0) {
+
+
+              if (maxYValue <= 0) {
+
+                yAttr = Math.max(
+                  d3YScale(maxYValue),
+                  1
+                );
+
+              } else {
+                yAttr = d3YScale(0);
+              }
+
+            }
+
+            return yAttr;
+          }
+        ).
+        attr('x', COLUMN_MARGIN).
+        attr(
+          'width',
+          (d) => Math.max(1, d3DimensionXScale(d.x1) - d3DimensionXScale(d.x0) - COLUMN_MARGIN)
+        ).
+        attr(
+          'height',
+          function(d) {
+            var baselineValue;
+            var value = d.value;
+
+            if (value === 0 || !_.isFinite(value)) {
+              // We want the flyout for null or zero values to appear
+              // along the x axis, rather than at the top of the chart.
+              // This means that we need to push the container element
+              // for null values down to the x axis, rather than the
+              // default behavior which places it at the top of the
+              // visualization container. This is accomplished by the 'y'
+              // attribute, but that does not have the expected behavior
+              // if the element is not visible (or in this case, has a
+              // height of zero).
+              //
+              // Ultimately the way we force the column's container to
+              // actually do the intended layout is to give the element
+              // a very small height which should be more or less
+              // indiscernable, which causes the layout to do the right
+              // thing.
+              return 0.0001;
+            } else if (value > 0) {
+
+              if (minYValue > 0) {
+                baselineValue = minYValue;
+              } else {
+                baselineValue = 0;
+              }
+            } else if (value < 0) {
+
+              if (maxYValue < 0) {
+                baselineValue = maxYValue;
+              } else {
+                baselineValue = 0;
+              }
+            }
+
+            // See comment about setting the y attribute above for the
+            // rationale behind ensuring a minimum height of one pixel for
+            // non-null and non-zero values.
+            return Math.max(
+              1,
+              Math.abs(d3YScale(value) - d3YScale(baselineValue))
+            );
+          }
+        ).
+        attr('stroke', 'none').
+        attr('fill', getPrimaryColorOrNone).
+        attr('data-default-fill', getPrimaryColorOrNone);
+
+      xAxisAndSeriesSvg.attr(
+        'transform',
+        'translate(0,0)'
+      );
     }
 
     chartWidth = viewportWidth;
@@ -531,25 +523,25 @@ function SvgHistogram($element, vif) {
      */
 
     if (xScaleType === 'linear') {
-      d3DimensionXScale = d3.scale.linear().
-        domain(d3.extent(_.flatMap(
+      d3DimensionXScale = d3.scale.linear().domain(
+        d3.extent(_.flatMap(
           dataToRender,
           (series) =>
             [
               d3.min(series.rows, bucketStartFromRow),
               d3.max(series.rows, bucketEndFromRow)
             ]
-        )));
+      )));
     } else {
-      d3DimensionXScale = d3.scale.log().
-        domain(d3.extent(_.flatMap(
+      d3DimensionXScale = d3.scale.log().domain(
+        d3.extent(_.flatMap(
           dataToRender,
           (series) =>
             [
               d3.min(series.rows, bucketStartFromRow),
               d3.max(series.rows, bucketEndFromRow)
             ]
-        )));
+      )));
 
       // Check if the domain includes or crosses zero.
       // If it does, it is impossible to display the data
@@ -597,83 +589,73 @@ function SvgHistogram($element, vif) {
      * 4. Clear out any existing chart.
      */
 
-    d3.
-      select($chartElement[0]).
-        select('svg').
-          remove();
+    d3.select($chartElement[0]).
+      select('svg').
+      remove();
 
     /**
      * 5. Render the chart.
      */
 
     // Create the top-level <svg> element first.
-    chartSvg = d3.
-      select($chartElement[0]).
-        append('svg').
-          attr(
-            'width',
-            (
-              chartWidth +
-              MARGINS.LEFT +
-              MARGINS.RIGHT
-            )
-          ).
-          attr(
-            'height',
-            (
-              viewportHeight +
-              MARGINS.TOP +
-              MARGINS.BOTTOM
-            )
-          );
+    chartSvg = d3.select($chartElement[0]).append('svg').
+      attr(
+        'width',
+        (
+          chartWidth +
+          MARGINS.LEFT +
+          MARGINS.RIGHT
+        )
+      ).
+      attr(
+        'height',
+        (
+          viewportHeight +
+          MARGINS.TOP +
+          MARGINS.BOTTOM
+        )
+      );
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
-    viewportSvg = chartSvg.
-      append('g').
-        attr('class', 'viewport').
-        attr(
-          'transform',
-          (
-            'translate(' +
-            MARGINS.LEFT +
-            ',' +
-            MARGINS.TOP +
-            ')'
-          )
-        );
+    viewportSvg = chartSvg.append('g').
+      attr('class', 'viewport').
+      attr(
+        'transform',
+        (
+          'translate(' +
+          MARGINS.LEFT +
+          ',' +
+          MARGINS.TOP +
+          ')'
+        )
+      );
 
-    viewportSvg.
-      append('g').
-        attr('class', 'y axis');
+    viewportSvg.append('g').
+      attr('class', 'y axis');
 
-    viewportSvg.
-      append('g').
-        attr('class', 'y grid');
+    viewportSvg.append('g').
+      attr('class', 'y grid');
 
-    xAxisAndSeriesSvg = viewportSvg.
-      append('g').
-        attr('class', 'x-axis-and-series');
+    xAxisAndSeriesSvg = viewportSvg.append('g').
+      attr('class', 'x-axis-and-series');
 
-    xAxisAndSeriesSvg.
-      append('g').
-        attr('class', 'series');
+    xAxisAndSeriesSvg.append('g').
+      attr('class', 'series');
 
-    seriesSvg = xAxisAndSeriesSvg.
-      select('.series');
+    seriesSvg = xAxisAndSeriesSvg.select('.series');
 
-    bucketGroupSvgs = seriesSvg.
-      selectAll('.bucket-group').
-        data(groupedDataToRender).
-          enter().
-            append('g').
-              attr('class', 'bucket-group').
-              attr(
-                'transform',
-                function(d) {
-                  return 'translate(' + d3DimensionXScale(d.x0) + ',0)';
-                }
-              );
+    bucketGroupSvgs = seriesSvg.selectAll('.bucket-group').
+      data(groupedDataToRender);
+
+    bucketGroupSvgs.enter().append('g').
+      attr('class', 'bucket-group').
+      attr(
+        'transform',
+        function(d) {
+          return 'translate(' + d3DimensionXScale(d.x0) + ',0)';
+        }
+      );
 
     /*
      * From: [
@@ -692,51 +674,46 @@ function SvgHistogram($element, vif) {
     const toIndividualColumns = (d) =>
       d.values.map((value) => ({ x0: d.x0, x1: d.x1, value: value }));
 
-    bucketGroupSvgs.
-      selectAll('rect.column-underlay').
-        data(toIndividualColumns).
-          enter().
-            append('rect').
-              attr('class', 'column-underlay').
-              attr(
-                'data-series-index',
-                /* eslint-disable no-unused-vars */
-                function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
-                  return seriesIndex;
-                }
-              ).
-              attr(
-                'data-row-index',
-                // Not sure what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return rowIndex;
-                }
-              );
+    columnUnderlaySvgs = bucketGroupSvgs.selectAll('rect.column-underlay').data(toIndividualColumns);
 
-    bucketGroupSvgs.
-      selectAll('rect.column').
-        data(toIndividualColumns).
-          enter().
-            append('rect').
-              attr('class', 'column').
-              attr(
-                'data-series-index',
-                /* eslint-disable no-unused-vars */
-                function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
-                  return seriesIndex;
-                }
-              ).
-              attr(
-                'data-row-index',
-                // Not sure what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return rowIndex;
-                }
-              );
+    columnUnderlaySvgs.enter().append('rect').
+      attr('class', 'column-underlay').
+      attr(
+        'data-series-index',
+        /* eslint-disable no-unused-vars */
+        function(datum, seriesIndex, rowIndex) {
+        /* eslint-enable no-unused-vars */
+          return seriesIndex;
+        }
+      ).
+      attr(
+        'data-row-index',
+        // Not sure what the second argument actually is, but it is
+        // the third argument that seems to track the row index.
+        function(datum, seriesIndex, rowIndex) {
+          return rowIndex;
+        }
+      );
+
+    columnSvgs = bucketGroupSvgs.selectAll('rect.column').data(toIndividualColumns);
+    columnSvgs.enter().append('rect').
+      attr('class', 'column').
+      attr(
+        'data-series-index',
+        /* eslint-disable no-unused-vars */
+        function(datum, seriesIndex, rowIndex) {
+        /* eslint-enable no-unused-vars */
+          return seriesIndex;
+        }
+      ).
+      attr(
+        'data-row-index',
+        // Not sure what the second argument actually is, but it is
+        // the third argument that seems to track the row index.
+        function(datum, seriesIndex, rowIndex) {
+          return rowIndex;
+        }
+      );
 
     renderXAxis();
     renderSeries();
@@ -752,53 +729,49 @@ function SvgHistogram($element, vif) {
       });
     }
 
-    bucketGroupSvgs.
-      selectAll('.column-underlay, .column').
-        on(
-          'mousemove',
-          function(datum) {
-            const columnElement = this.parentNode.querySelector('.column');
+    bucketGroupSvgs.selectAll('.column-underlay, .column').
+      on(
+        'mousemove',
+        function(datum) {
+          const columnElement = this.parentNode.querySelector('.column');
 
-            showColumnHighlight(columnElement);
-            showColumnFlyout(
-              columnElement,
-              datum,
-              parseInt(this.getAttribute('data-series-index'), 10)
-            );
-          }
-        ).
-        on(
-          'mouseleave',
-          function() {
-            hideHighlight();
-            hideFlyout();
-          }
-        );
+          showColumnHighlight(columnElement);
+          showColumnFlyout(
+            columnElement,
+            datum,
+            parseInt(this.getAttribute('data-series-index'), 10)
+          );
+        }
+      ).
+      on(
+        'mouseleave',
+        function() {
+          hideHighlight();
+          hideFlyout();
+        }
+      );
 
-    chartSvg.
-      selectAll('text').
-        attr('cursor', 'default');
+    chartSvg.selectAll('text').
+      attr('cursor', 'default');
   }
 
   function showColumnHighlight(columnElement) {
 
-    var selection = d3.
-      select(columnElement);
+    var selection = d3.select(columnElement);
 
-      selection.
-        attr(
-          'fill',
-          function() {
-            var seriesIndex = this.getAttribute('data-series-index');
-            var highlightColor = self.getHighlightColorBySeriesIndex(
-              seriesIndex
-            );
-
-            return (highlightColor !== null) ?
-              highlightColor :
-              selection.attr('fill');
-          }
+    selection.attr(
+      'fill',
+      function() {
+        var seriesIndex = this.getAttribute('data-series-index');
+        var highlightColor = self.getHighlightColorBySeriesIndex(
+          seriesIndex
         );
+
+        return (highlightColor !== null) ?
+          highlightColor :
+          selection.attr('fill');
+      }
+    );
   }
 
   function bucketTitle(bucketData) {

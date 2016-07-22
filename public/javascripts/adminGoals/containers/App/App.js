@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import GoalTable from './../GoalTable/GoalTable';
 import GoalQuickEdit from '../../components/GoalQuickEdit';
 import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsForm';
-import SCBulkActions from '../SCBulkActions';
-import SCAlert from '../../components/SCAlert';
+import SocrataBulkActions from '../SocrataBulkActions';
+import SocrataAlert from '../../components/SocrataAlert';
 import { dismissNotification } from '../../actions/notificationActions';
 import './App.scss';
 
 function App({ notification, onDismissNotification, showEditMultipleItemsForm }) {
   let alert = null;
   if (notification.get('visible')) {
-    alert = <SCAlert type={ notification.get('type') }
-                     message={ notification.get('message') }
-                     onDismiss={ onDismissNotification } />;
+    alert = <SocrataAlert type={ notification.get('type') }
+                          message={ notification.get('message') }
+                          onDismiss={ onDismissNotification } />;
   }
 
   let editMultipleItemsForm = null;
@@ -24,7 +24,7 @@ function App({ notification, onDismissNotification, showEditMultipleItemsForm })
   return (
     <div>
       { alert }
-      <SCBulkActions />
+      <SocrataBulkActions />
       <GoalTable />
       <GoalQuickEdit />
       { editMultipleItemsForm }

@@ -1,4 +1,4 @@
-import SCButton from 'components/SCButton';
+import SocrataButton from 'components/SocrataButton';
 import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;
@@ -18,19 +18,19 @@ const SUPPORTED_SIZES = {
 };
 
 
-describe('components/SCButton', function() {
+describe('components/SocrataButton', function() {
   it('should show children as content', function()  {
     const props = {
       children: ['Hello world!']
     };
 
-    const element = renderComponentWithStore(SCButton, props);
+    const element = renderComponentWithStore(SocrataButton, props);
     expect(element.textContent).to.eq('Hello world!');
   });
 
   describe('style', function() {
     it('should be default when not specified', function() {
-      const element = renderComponentWithStore(SCButton, {  })
+      const element = renderComponentWithStore(SocrataButton, {  })
       expect(classes(element)).to.contain('btn-default');
     });
 
@@ -39,7 +39,7 @@ describe('components/SCButton', function() {
         var props = {};
         props[style] = true;
 
-        const element = renderComponentWithStore(SCButton, props);
+        const element = renderComponentWithStore(SocrataButton, props);
         expect(classes(element)).to.contain(SUPPORTED_STYLES[style]);
       });
     });
@@ -51,7 +51,7 @@ describe('components/SCButton', function() {
         var props = {};
         props[size] = true;
 
-        const element = renderComponentWithStore(SCButton, props);
+        const element = renderComponentWithStore(SocrataButton, props);
         expect(classes(element)).to.contain(SUPPORTED_SIZES[size]);
       });
     })
@@ -63,7 +63,7 @@ describe('components/SCButton', function() {
       children: ['Content']
     };
 
-    const element = renderComponentWithStore(SCButton, props);
+    const element = renderComponentWithStore(SocrataButton, props);
     expect(element.textContent).to.eq('');
   });
 });

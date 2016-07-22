@@ -1,11 +1,11 @@
-import * as SCModal from 'components/SCModal';
+import * as SocrataModal from 'components/SocrataModal';
 
-describe('components/SCModal', function () {
+describe('components/SocrataModal', function () {
   it('should call onClose when close button clicked', function () {
     const callback = sinon.spy();
 
-    const modalComponent = SCModal.Modal({children: [
-      SCModal.Header({ onClose: callback })
+    const modalComponent = SocrataModal.Modal({children: [
+      SocrataModal.Header({ onClose: callback })
     ]});
 
     const modalNode = renderPureComponent(modalComponent);

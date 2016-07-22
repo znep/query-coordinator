@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 
 import Select from 'react-select';
 import Flyout from '../../components/Flyout';
-import SCAlert from '../../components/SCAlert';
-import SCButton from '../../components/SCButton';
-import SCChangeIndicator from '../../components/SCChangeIndicator';
-import * as SCModal from '../../components/SCModal';
+import SocrataAlert from '../../components/SocrataAlert';
+import SocrataButton from '../../components/SocrataButton';
+import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
+import * as SocrataModal from '../../components/SocrataModal';
 import helpers from '../../helpers/helpers';
 
 import {
@@ -69,7 +69,7 @@ class EditMultipleItemsForm extends React.Component {
 
     return (
       <Flyout text={ tooltipText } tooltip>
-        <SCChangeIndicator onRevert={ this.revertVisibility }/>
+        <SocrataChangeIndicator onRevert={ this.revertVisibility }/>
       </Flyout>
     );
   }
@@ -90,13 +90,13 @@ class EditMultipleItemsForm extends React.Component {
     const updateInProgress = this.props.formData.get('updateInProgress');
 
     const failureAlert = this.props.showFailureMessage ?
-      <SCAlert type="error" message={ translations.bulk_edit.failure_message }/> : null;
+      <SocrataAlert type="error" message={ translations.bulk_edit.failure_message }/> : null;
 
     return (
-      <SCModal.Modal>
-        <SCModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal }/>
+      <SocrataModal.Modal>
+        <SocrataModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal }/>
 
-        <SCModal.Content>
+        <SocrataModal.Content>
           { failureAlert }
           <div
             className="selected-rows-indicator">{ this.props.goals.count() } { translations.bulk_edit.items_selected }</div>
@@ -113,15 +113,15 @@ class EditMultipleItemsForm extends React.Component {
             { this.visibilityRevertButton() }
           </div>
           <div style={ { height: 100 } }/>
-        </SCModal.Content>
+        </SocrataModal.Content>
 
-        <SCModal.Footer>
-          <SCButton small onClick={ this.props.dismissModal }>{ translations.bulk_edit.cancel }</SCButton>
-          <SCButton small primary onClick={ this.onUpdateClicked } disabled={ !this.isDataChanged() } inProgress={ updateInProgress }>
+        <SocrataModal.Footer>
+          <SocrataButton small onClick={ this.props.dismissModal }>{ translations.bulk_edit.cancel }</SocrataButton>
+          <SocrataButton small primary onClick={ this.onUpdateClicked } disabled={ !this.isDataChanged() } inProgress={ updateInProgress }>
             { translations.bulk_edit.update }
-          </SCButton>
-        </SCModal.Footer>
-      </SCModal.Modal>
+          </SocrataButton>
+        </SocrataModal.Footer>
+      </SocrataModal.Modal>
     );
   }
 }

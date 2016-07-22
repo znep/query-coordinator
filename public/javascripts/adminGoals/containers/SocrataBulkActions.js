@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { openEditMultipleItemsModal } from '../actions/bulkEditActions';
 
-import SCButton from '../components/SCButton';
+import SocrataButton from '../components/SocrataButton';
 
-function SCBulkActions(props) {
+function SocrataBulkActions(props) {
   const editTitle = props.translations.getIn(['admin', 'bulk_edit', 'button_title']);
 
   return (
     <div className="bulk-actions">
-      <SCButton simple disabled={ props.selectedRowsCount < 2 } onClick={ props.openEditMultipleItemsModal }>{ editTitle }</SCButton>
+      <SocrataButton simple disabled={ props.selectedRowsCount < 2 } onClick={ props.openEditMultipleItemsModal }>{ editTitle }</SocrataButton>
     </div>
   );
 }
@@ -23,4 +23,4 @@ const mapDispatchToProps = dispatch => ({
   openEditMultipleItemsModal: () => dispatch(openEditMultipleItemsModal())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SCBulkActions);
+export default connect(mapStateToProps, mapDispatchToProps)(SocrataBulkActions);

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import helpers from '../helpers/helpers';
 
-export default class SCButton extends React.Component {
+export default class SocrataButton extends React.Component {
   constructor(props) {
     super(props);
   }

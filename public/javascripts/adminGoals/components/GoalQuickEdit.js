@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/goalQuickEditActions';
 import Select from 'react-select';
 import moment from 'moment';
-import SCAlert from './SCAlert';
+import SocrataAlert from './SocrataAlert';
 import { fetchOptions } from '../constants';
 
 const mobileBreakpoint = 420;
@@ -137,7 +137,7 @@ class GoalQuickEdit extends React.Component {
         </header>
 
         <section className="modal-content">
-          { this.state.alert.label ? <SCAlert { ...this.state.alert }/> : null }
+          { this.state.alert.label ? <SocrataAlert { ...this.state.alert }/> : null }
           <div className="goal-quick-edit-form">
             <form>
               <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_title']) }</h5>

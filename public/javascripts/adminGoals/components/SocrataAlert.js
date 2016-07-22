@@ -9,7 +9,7 @@ import classNames from 'classnames/bind';
  * @param {String} props.message Alert message
  * @param {Function} props.onDismiss Called when user clicks on it
  */
-export default function SCAlert(props) {
+export default function SocrataAlert(props) {
   let alertProps = {
     onClick: props.onDismiss,
     className: classNames('alert', props.type),

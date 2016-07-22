@@ -1,11 +1,11 @@
 import React from 'react';
-import SCButton from './SCButton';
+import SocrataButton from './SocrataButton';
 
 /**
  * Used for changed form fields to inform user.
  * It turns into revert button when the mouse hovering.
  */
-export default class SCChangeIndicator extends React.Component {
+export default class SocrataChangeIndicator extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -13,15 +13,15 @@ export default class SCChangeIndicator extends React.Component {
   render() {
     return (
       <div className="sc-check-indicator">
-        <SCButton extraSmall onClick={ this.props.onRevert }>
+        <SocrataButton extraSmall onClick={ this.props.onRevert }>
           <span className="sc-check-indicator-check icon-checkmark3" />
           <span className="sc-check-indicator-revert icon-undo" />
-        </SCButton>
+        </SocrataButton>
       </div>
     );
   }
 }
 
-SCChangeIndicator.propTypes = {
+SocrataChangeIndicator.propTypes = {
   onRevert: React.PropTypes.func.isRequired
 };

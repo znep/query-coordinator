@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Select from 'react-select';
 import Flyout from '../../components/Flyout';
-import SCDatePicker from '../../components/SCDatePicker';
+import SocrataDatePicker from '../../components/SocrataDatePicker';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
@@ -166,11 +166,11 @@ class EditMultipleItemsForm extends React.Component {
       <div className="form-row measure-date-range">
         <label className="inline-label"> { label } </label>
         <div className="form-line">
-          <SCDatePicker
+          <SocrataDatePicker
             placeholderText={ toPlaceholder }
             selected={ toValue }
             onChange={ this.updateDateRangeTo }/>
-          <SCDatePicker
+          <SocrataDatePicker
             placeholderText={ fromPlaceholder }
             selected={ fromValue }
             onChange={ this.updateDateRangeFrom }/>

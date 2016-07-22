@@ -12,13 +12,13 @@ import {
 
 const openModal = (state, action) => state.merge({ visible: true });
 
-const closeModal = (state, action) => state.merge({ visible: false, goal: {  } });
+const closeModal = (state, action) => state.merge({ visible: false, goal: {  }, showFailureMessage: false });
 
 const updateFormData = (state, action) => state.merge({ goal: action.newData });
 
 const startUpdate = (state, action) => state.merge({ updateInProgress: true, showFailureMessage: false });
 
-const succeedUpdate = (state, action) => state.merge({ updateInProgress: false, visible: false, goal: {} });
+const succeedUpdate = (state, action) => state.merge({ updateInProgress: false, visible: false, goal: {}, showFailureMessage: false });
 
 const failUpdate = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: true });
 

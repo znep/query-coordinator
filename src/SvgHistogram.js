@@ -233,7 +233,7 @@ $.fn.socrataSvgHistogram = function(vif) {
     }
 
     visualization.renderError(
-      visualization.getLocalization('error_column_chart_generic')
+      translate('visualizations.histogram.error_histogram_generic')
     );
   }
 

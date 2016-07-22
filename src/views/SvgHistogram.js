@@ -3,7 +3,7 @@ const SvgVisualization = require('./SvgVisualization');
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
-const translate = require('../authoringWorkflow/I18n').translate;
+const I18n = require('../authoringWorkflow/I18n');
 
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
@@ -521,7 +521,7 @@ function SvgHistogram($element, vif) {
 
     if (_(dataToRender).map('rows.length').max() >= MAX_BUCKET_COUNT) {
       self.renderError(
-        translate('visualizations.histogram.error_exceeded_max_bucket_count').format(MAX_BUCKET_COUNT)
+        I18n.translate('visualizations.histogram.error_exceeded_max_bucket_count').format(MAX_BUCKET_COUNT)
       );
       return;
     }
@@ -561,7 +561,7 @@ function SvgHistogram($element, vif) {
       let domainCrossesOrIncludesZero = (domain[0] * domain[1]) <= 0;
       if (domainCrossesOrIncludesZero) {
         self.renderError(
-            translate('visualizations.histogram.error_domain_includes_zero')
+          I18n.translate('visualizations.histogram.error_domain_includes_zero')
         );
         return;
       }
@@ -809,7 +809,7 @@ function SvgHistogram($element, vif) {
   function seriesLabel(seriesIndex) {
     return _.get(
       self.getVif(), ['series', seriesIndex, 'label'],
-      translate('visualizations.histogram.default_series_label')
+      I18n.translate('visualizations.histogram.default_series_label')
     );
   }
 
@@ -837,7 +837,7 @@ function SvgHistogram($element, vif) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = translate('visualizations.histogram.no_value');
+      valueString = I18n.translate('visualizations.histogram.no_value');
     } else {
       valueString = '{0} {1}'.
         format(

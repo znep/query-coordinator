@@ -7,7 +7,7 @@ const SvgVisualization = require('./views/SvgVisualization');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const translate = require('./authoringWorkflow/I18n').translate;
+const I18n = require('./authoringWorkflow/I18n');
 
 const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
 const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
@@ -233,7 +233,7 @@ $.fn.socrataSvgHistogram = function(vif) {
     }
 
     visualization.renderError(
-      translate('visualizations.histogram.error_histogram_generic')
+      I18n.translate('visualizations.histogram.error_histogram_generic')
     );
   }
 

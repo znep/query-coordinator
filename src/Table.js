@@ -375,8 +375,7 @@ $.fn.socrataTable = function(vif) {
   function _handleSetDataQueryError(error) {
 
     console.error(
-      'Error while fulfilling table data request: {0}'.
-        format(error)
+      `Error while fulfilling table data request: ${JSON.stringify(error)}`
     );
 
     // There was an issue populating this table with data. Retry?

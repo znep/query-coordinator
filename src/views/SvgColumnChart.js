@@ -512,21 +512,20 @@ function SvgColumnChart($element, vif) {
               var baselineValue;
 
               if (d[1] === null || d[1] === 0) {
-                // We want the flyout for null or zero values to appear
-                // along the x axis, rather than at the top of the chart.
-                // This means that we need to push the container element
-                // for null values down to the x axis, rather than the
-                // default behavior which places it at the top of the
-                // visualization container. This is accomplished by the 'y'
-                // attribute, but that does not have the expected behavior
-                // if the element is not visible (or in this case, has a
-                // height of zero).
+                // We want the flyout for null or zero values to appear along
+                // the x axis, rather than at the top of the chart.
+                //
+                // This means that we need to push the container element for
+                // null values down to the x axis, rather than the default
+                // behavior which places it at the top of the visualization
+                // container. This is accomplished by the 'y' attribute, but
+                // that does not have the expected behavior if the element is
+                // not visible (or in this case, has a height of zero).
                 //
                 // Ultimately the way we force the column's container to
-                // actually do the intended layout is to give the element
-                // a very small height which should be more or less
-                // indiscernable, which causes the layout to do the right
-                // thing.
+                // actually do the intended layout is to give the element a very
+                // small height which should be more or less indiscernable,
+                // which causes the layout to do the right thing.
                 return 0.0001;
               } else if (d[1] > 0) {
 
@@ -656,13 +655,19 @@ function SvgColumnChart($element, vif) {
                 );
 
               return (matchingRows.length > 0) ?
-                [measureLabels[seriesIndex], matchingRows[0][measureIndices[seriesIndex]]] :
-                [measureLabels[seriesIndex], null];
+                [
+                  measureLabels[seriesIndex],
+                  matchingRows[0][measureIndices[seriesIndex]]
+                ] :
+                [
+                  measureLabels[seriesIndex],
+                  null
+                ];
             })
         ]);
     });
 
-    if (self.getXAxisScalingMode() === 'fit') {
+    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
       width = viewportWidth;
       height = viewportHeight - dimensionLabelsHeight;
@@ -928,7 +933,7 @@ function SvgColumnChart($element, vif) {
                 }
               );
 
-    if (self.getXAxisScalingMode() === 'fit') {
+    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
       // If we do not have to support panning then rendering is somewhat more
       // straightforward.
@@ -937,12 +942,12 @@ function SvgColumnChart($element, vif) {
       renderYAxis();
     } else {
 
-      // Unfortunately, we need to render the x-axis and the series before we can
-      // measure whether or not the chart will pan. Since showing the panning
-      // notice also affects the height available to the chart, that means that
-      // we need to render once to measure if the chart to pan and if it does,
-      // show the panning notice and then re-render the x-axis and the series at
-      // the new (smaller) height to accommodate the notice.
+      // Unfortunately, we need to render the x-axis and the series before we
+      // can measure whether or not the chart will pan. Since showing the
+      // panning notice also affects the height available to the chart, that
+      // means that we need to render once to measure if the chart to pan and if
+      // it does, show the panning notice and then re-render the x-axis and the
+      // series at the new (smaller) height to accommodate the notice.
       //
       // Also note that we must render the x-axis before setting up the event
       // handlers for flyouts below, since it attempts to bind data to elements
@@ -982,8 +987,8 @@ function SvgColumnChart($element, vif) {
         self.hidePanningNotice();
       }
 
-      // We only have to render the y-axis once, after we have decided whether we
-      // will show or hide the panning notice.
+      // We only have to render the y-axis once, after we have decided whether
+      // we will show or hide the panning notice.
       renderYAxis();
     }
 
@@ -1158,7 +1163,7 @@ function SvgColumnChart($element, vif) {
             tickFormat(
               function(d, i) {
 
-                if (self.getXAxisScalingMode() === 'fit') {
+                if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
                   if (i < 5) {
                     return conditionallyTruncateLabel(d);
                   } else {
@@ -1378,7 +1383,10 @@ function SvgColumnChart($element, vif) {
   }
 
   function showColumnFlyout(columnElement, datum) {
-    var title = columnElement.getAttribute('data-column-category') || self.getLocalization('no_label');
+    var title = (
+      columnElement.getAttribute('data-column-category') ||
+      self.getLocalization('no_label')
+    );
     var label = datum[0];
     var value = datum[1];
     var seriesIndex = self.getSeriesIndexByLabel(label);

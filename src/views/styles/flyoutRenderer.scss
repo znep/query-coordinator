@@ -1,8 +1,11 @@
 #socrata-flyout {
   position: fixed;
   max-width: 25em;
-  color: #8a8686;
   font-size: 14px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 1.618;
+  color: #8a8686;
   word-wrap: break-word;
   white-space: normal;
   visibility: hidden;

@@ -134,6 +134,10 @@ export default function AssetSelectorStore() {
         _updateImageAltAttribute(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE:
+        _updateFrameTitleAttribute(payload);
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_STORY_URL:
         _updateStoryUrl(payload);
         break;
@@ -1361,6 +1365,24 @@ export default function AssetSelectorStore() {
       throw new Error(
         StorytellerUtils.format(
           'Component type is {0}. Cannot update alt attribute.',
+          _state.componentType
+        )
+      );
+    }
+
+    self._emitChange();
+  }
+
+  function _updateFrameTitleAttribute(payload) {
+    var value = self.getComponentValue();
+    var titleAttribute = payload.titleAttribute;
+
+    if (_state.componentType === 'youtube.video' || _state.componentType === 'embeddedHtml') {
+      value.title = titleAttribute;
+    } else {
+      throw new Error(
+        StorytellerUtils.format(
+          'Component type is {0}. Cannot update title attribute.',
           _state.componentType
         )
       );

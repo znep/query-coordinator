@@ -11,7 +11,8 @@ describe('componentYoutubeVideo jQuery plugin', function() {
   var validComponentData = {
     type: 'youtube.video',
     value: {
-      id: 'videoId'
+      id: 'videoId',
+      title: 'my title'
     }
   };
 
@@ -50,7 +51,7 @@ describe('componentYoutubeVideo jQuery plugin', function() {
       assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
     });
 
-    describe('iframe src attribute', function() {
+    describe('iframe src and title attributes', function() {
       it('should start off correct', function() {
         assert.equal(
           $component.find('iframe').attr('src'),
@@ -59,11 +60,16 @@ describe('componentYoutubeVideo jQuery plugin', function() {
             validComponentData.value.id
           )
         );
+        assert.equal(
+          $component.find('iframe').attr('title'),
+          'my title'
+        );
       });
 
       it('should update', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.id = '1234';
+        updatedData.value.title = 'new title';
 
         $component.componentYoutubeVideo(updatedData);
 
@@ -73,6 +79,10 @@ describe('componentYoutubeVideo jQuery plugin', function() {
             'https://www.youtube.com/embed/{0}?rel=0&showinfo=0',
             '1234'
           )
+        );
+        assert.equal(
+          $component.find('iframe').attr('title'),
+          'new title'
         );
       });
     });

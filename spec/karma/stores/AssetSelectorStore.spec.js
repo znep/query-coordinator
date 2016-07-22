@@ -386,9 +386,63 @@ describe('AssetSelectorStore', function() {
         }
 
         it('throws an error', function() {
-          assert.throws(function() {
-            badProvider();
+          assert.throws(badProvider);
+        });
+      });
+    });
+
+    describe('after an `ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE` action', function() {
+      var payloadTitle = 'Very title';
+
+      describe('.getComponentValue()', function() {
+        beforeEach(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+            blockId: '',
+            componentIndex: '',
+            initialComponentProperties: {}
           });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+            provider: 'YOUTUBE'
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+            url: 'https://youtu.be/m86ae_e_ptU'
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE,
+            titleAttribute: payloadTitle
+          });
+        });
+
+        it('returns object with title', function() {
+          assert.propertyVal(
+            assetSelectorStore.getComponentValue(),
+            'title',
+            payloadTitle
+          );
+        });
+      });
+
+      describe('with a bad provider', function() {
+        function badProvider() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
+            provider: 'IMAGE'
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE,
+            titleAttribute: payloadTitle
+          });
+        }
+
+        it('throws an error', function() {
+          assert.throws(badProvider);
         });
       });
     });

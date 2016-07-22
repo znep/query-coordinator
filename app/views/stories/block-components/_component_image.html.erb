@@ -1,12 +1,12 @@
-<%
-# Component format:
-# {
-#   type: "image",
-#   value: {
-#     documentId: "1234",
-#     url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
-#   }
-# }
+<%#
+Component format:
+{
+  type: "image",
+  value: {
+    documentId: "1234",
+    url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+  }
+}
 %>
 <% image_component = ImageComponent.new(component) -%>
 <%= image_tag(

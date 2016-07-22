@@ -21,7 +21,7 @@ export default function componentYoutubeVideo(componentData, theme, options) {
     _renderYoutube($this, componentData);
   }
 
-  _updateSrc($this, componentData);
+  _updateSrcAndTitle($this, componentData);
   $this.componentBase(componentData, theme, options);
 
   return $this;
@@ -45,12 +45,15 @@ function _renderYoutube($element, componentData) {
     append($iframeElement);
 }
 
-function _updateSrc($element, componentData) {
+function _updateSrcAndTitle($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'value');
   StorytellerUtils.assertHasProperty(componentData.value, 'id');
 
   var $iframeElement = $element.find('iframe');
+  var title = _.get(componentData.value, 'title');
   var youtubeSource = StorytellerUtils.generateYoutubeIframeSrc(componentData.value.id);
+
+  $iframeElement.attr('title', title);
 
   if ($iframeElement.attr('src') !== youtubeSource) {
     $iframeElement.attr('src', youtubeSource);

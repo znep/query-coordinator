@@ -85,6 +85,28 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'input',
+      '.asset-selector-title-input',
+      function(event) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE,
+          titleAttribute: $(event.target).val()
+        });
+      }
+    );
+
+    _container.on(
+      'mouseout',
+      [
+        '.asset-selector-image-alt-hint',
+        '.asset-selector-youtube-title-hint',
+        '.asset-selector-embed-code-title-hint',
+        '.asset-selector-goal-url-hint'
+      ].join(),
+      flyoutRenderer.clear
+    );
+
+    _container.on(
       'mouseenter',
       '.asset-selector-image-alt-hint',
       function() {
@@ -100,10 +122,32 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
-      'mouseout',
-      '.asset-selector-image-alt-hint',
+      'mouseenter',
+      '.asset-selector-youtube-title-hint',
       function() {
-        flyoutRenderer.clear();
+        flyoutRenderer.render({
+          element: this,
+          content: '<span class="tooltip-text">' +
+            I18n.t('editor.asset_selector.youtube.title_attribute_tooltip') +
+            '</span>',
+          rightSideHint: false,
+          belowTarget: false
+        });
+      }
+    );
+
+    _container.on(
+      'mouseenter',
+      '.asset-selector-embed-code-title-hint',
+      function() {
+        flyoutRenderer.render({
+          element: this,
+          content: '<span class="tooltip-text">' +
+            I18n.t('editor.asset_selector.embed_code.title_attribute_tooltip') +
+            '</span>',
+          rightSideHint: false,
+          belowTarget: false
+        });
       }
     );
 
@@ -119,14 +163,6 @@ export default function AssetSelectorRenderer(options) {
           rightSideHint: false,
           belowTarget: false
         });
-      }
-    );
-
-    _container.on(
-      'mouseout',
-      '.asset-selector-goal-url-hint',
-      function() {
-        flyoutRenderer.clear();
       }
     );
 
@@ -336,12 +372,12 @@ export default function AssetSelectorRenderer(options) {
 
         case WIZARD_STEP.ENTER_GOAL_URL:
           selectorTitle = I18n.t('editor.asset_selector.goal_tile.heading');
-          selectorContent = _renderChooseGoalTemplate(componentValue);
+          selectorContent = _renderChooseGoalTemplate();
           break;
 
         case WIZARD_STEP.ENTER_YOUTUBE_URL:
           selectorTitle = I18n.t('editor.asset_selector.youtube.heading');
-          selectorContent = _renderChooseYoutubeTemplate(componentValue);
+          selectorContent = _renderChooseYoutubeTemplate();
           break;
 
         case WIZARD_STEP.SELECT_VISUALIZATION_OPTION:
@@ -407,7 +443,7 @@ export default function AssetSelectorRenderer(options) {
 
         case WIZARD_STEP.ENTER_EMBED_CODE:
           selectorTitle = I18n.t('editor.asset_selector.embed_code.heading');
-          selectorContent = _renderChooseEmbedCodeTemplate(componentValue);
+          selectorContent = _renderChooseEmbedCodeTemplate();
           break;
 
         default:
@@ -1227,7 +1263,7 @@ export default function AssetSelectorRenderer(options) {
 
     inputField.on('keyup', function(event) {
       if (event.keyCode === 13) {
-        $('.modal-dialog .btn-apply').click();
+        $('.modal-dialog .image-crop-upload-btn').click();
       }
     });
 
@@ -1823,12 +1859,45 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
+    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-youtube-title-hint' });
+
+    var titleLabel = $(
+      '<h2>',
+      { 'class': 'asset-selector-youtube-title-label' }
+    ).append(
+      I18n.t('editor.asset_selector.youtube.title_label'),
+      questionIcon
+    );
+
+    var inputField = $('<form>').append($(
+      '<input>',
+      {
+        'class': 'asset-selector-title-input text-input',
+        'type': 'text'
+      }
+    ));
+
+    inputField.on('keyup', function(event) {
+      if (event.keyCode === 13) {
+        $('.modal-dialog .btn-apply').click();
+      }
+    });
+
+    var titleContainer = $(
+      '<div>',
+      { 'class': 'asset-selector-youtube-title-container' }
+    ).append([
+      inputField
+    ]);
+
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
     var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-youtube' }).append([
       inputLabel,
       inputControl,
-      previewContainer
+      previewContainer,
+      titleLabel,
+      titleContainer
     ]);
 
     var buttonGroup = $(
@@ -1856,9 +1925,11 @@ export default function AssetSelectorRenderer(options) {
     var youtubeId = null;
     var youtubeUrl = null;
     var youtubeEmbedUrl;
+    var iframeTitle;
     var iframeElement = _container.find('.asset-selector-preview-iframe');
     var iframeSrc = iframeElement.attr('src');
     var inputControl = _container.find('[data-asset-selector-validate-field="youtubeId"]');
+    var titleControl = _container.find('.asset-selector-title-input');
     var iframeContainer;
     var insertButton = _container.find('.btn-apply');
 
@@ -1870,6 +1941,9 @@ export default function AssetSelectorRenderer(options) {
       youtubeUrl = componentProperties.url;
     }
 
+    iframeTitle = _.get(componentProperties, 'title');
+    titleControl.val(iframeTitle);
+
     if (youtubeId !== null && youtubeUrl !== null) {
       inputControl.val(youtubeUrl);
 
@@ -1880,6 +1954,8 @@ export default function AssetSelectorRenderer(options) {
       if (iframeSrc !== youtubeEmbedUrl) {
         iframeElement.attr('src', youtubeEmbedUrl);
       }
+
+      iframeElement.attr('title', iframeTitle);
 
       insertButton.prop('disabled', false);
 
@@ -1924,6 +2000,7 @@ export default function AssetSelectorRenderer(options) {
     var documentId = null;
     var isUploading = assetSelectorStore.isUploadingFile();
     var errorReason = null;
+    var iframeTitle;
     var iframeContainer = _container.find('.asset-selector-preview-container');
     var iframeElement = _container.find('.asset-selector-preview-iframe');
     var invalidMessageContainer = _container.find('.asset-selector-invalid-message');
@@ -1933,6 +2010,7 @@ export default function AssetSelectorRenderer(options) {
     var insertButton = _container.find('.btn-apply');
     var insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
     var textareaElement = _container.find('.asset-selector-text-input');
+    var titleControl = _container.find('.asset-selector-title-input');
     var isNotUploadingAndDoesNotHaveSource = !isUploading && _.isUndefined(iframeSrc);
     var isUploadingAndHasSource = isUploading && _.isString(iframeSrc);
     var showPlaceholder = isNotUploadingAndDoesNotHaveSource || isUploadingAndHasSource;
@@ -1953,9 +2031,14 @@ export default function AssetSelectorRenderer(options) {
       documentId = componentProperties.documentId;
     }
 
+    if (_.has(componentProperties, 'title')) {
+      iframeTitle = componentProperties.title;
+    }
+
     insecureHtmlWarning.toggle(_warnAboutInsecureHTML);
     loadingButton.toggleClass('hidden', !isUploading);
     iframeContainer.toggleClass('placeholder', showPlaceholder);
+    titleControl.val(iframeTitle);
 
     if (!_.isNull(htmlFragmentUrl)) {
 
@@ -1982,6 +2065,8 @@ export default function AssetSelectorRenderer(options) {
           }, exceptionNotifier.error);
         }
       }
+
+      iframeElement.attr('title', iframeTitle);
 
       iframeContainer.
         removeClass('placeholder').
@@ -2477,6 +2562,37 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
+    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-embed-code-title-hint' });
+
+    var titleLabel = $(
+      '<h2>',
+      { 'class': 'asset-selector-embed-code-title-label' }
+    ).append(
+      I18n.t('editor.asset_selector.embed_code.title_label'),
+      questionIcon
+    );
+
+    var inputField = $('<form>').append($(
+      '<input>',
+      {
+        'class': 'asset-selector-title-input text-input',
+        'type': 'text'
+      }
+    ));
+
+    inputField.on('keyup', function(event) {
+      if (event.keyCode === 13) {
+        $('.modal-dialog .btn-apply').click();
+      }
+    });
+
+    var titleContainer = $(
+      '<div>',
+      { 'class': 'asset-selector-embed-code-title-container' }
+    ).append([
+      inputField
+    ]);
+
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
     backButton.on('click', function() {
@@ -2492,7 +2608,9 @@ export default function AssetSelectorRenderer(options) {
       inputLabel,
       inputControl,
       previewLabel,
-      previewContainer
+      previewContainer,
+      titleLabel,
+      titleContainer
     ]);
 
     var buttonGroup = $(

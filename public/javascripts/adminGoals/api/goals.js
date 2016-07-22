@@ -11,3 +11,7 @@ export function update(goalId, goalVersion, data) {
     return goal;
   });
 }
+
+export function getById(goalId) {
+  const path = `$`
+}

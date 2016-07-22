@@ -1786,6 +1786,10 @@ en:
         visibility: Visibility
         update: Update
         cancel: Cancel
+        revert_changes: Revert changes
+        date_range_label: Date Range
+        date_range_to: To
+        date_range_from: From
       quick_edit:
         quick_edit_measure: Quick Edit Measure
         manage_on_goal_page: Manage on Goal Page

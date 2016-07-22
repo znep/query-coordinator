@@ -10,8 +10,8 @@ function checkXhrStatus(response) {
   throw error;
 }
 
-function request(method, version, path, otherOptions) {
-  const url = `/stat/api/v1/${path}`;
+function request(apiVersion, method, version, path, otherOptions) {
+  const url = `/stat/api/${apiVersion}/${path}`;
   const options = _.merge(_.clone(fetchOptions), {
     method,
     headers: {

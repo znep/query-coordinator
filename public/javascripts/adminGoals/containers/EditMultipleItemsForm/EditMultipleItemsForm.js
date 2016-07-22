@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import Select from 'react-select';
 import Flyout from '../../components/Flyout';
+import SCDatePicker from '../../components/SCDatePicker';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
@@ -20,6 +21,7 @@ import selectedGoalsSelector from '../../selectors/selectedGoals';
 import commonGoalDataSelector from '../../selectors/commonGoalData';
 
 import './EditMultipleItemsForm.scss';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class EditMultipleItemsForm extends React.Component {
   constructor(props) {
@@ -28,99 +30,219 @@ class EditMultipleItemsForm extends React.Component {
     _.bindAll(this, [
       'updateVisibility',
       'revertVisibility',
-      'onUpdateClicked'
+      'updateDateRangeTo',
+      'updateDateRangeFrom',
+      'revertDateRange',
+      'updateGoals'
     ]);
   }
 
+  updateFormData(field, value) {
+    const { goal, updateFormData } = this.props;
+    updateFormData(goal.set(field, value));
+  }
+
   updateVisibility({ value }) {
-    this.props.updateFormData(this.props.formData.get('goal').set('is_public', value === 'public'));
+    this.updateFormData('is_public', value === 'public');
+  }
+
+  updateDateRangeTo(value) {
+    this.updateFormData('date_to', value);
+  }
+
+  updateDateRangeFrom(value) {
+    this.updateFormData('date_from', value);
+  }
+
+  revertFields(...fields) {
+    const { commonData, goal, updateFormData } = this.props;
+
+    const oldData = fields.reduce((data, field) => data.set(field, commonData.get(field)), goal);
+    updateFormData(oldData);
   }
 
   revertVisibility() {
-    const oldVisibility = this.props.commonData.get('is_public');
-    this.props.updateFormData(this.props.formData.get('goal').set('is_public', oldVisibility));
+    this.revertFields('is_public');
   }
 
-  onUpdateClicked() {
-    this.props.updateGoals(this.props.goals, this.props.formData.get('goal').toJS());
+  revertDateRange() {
+    this.revertFields('date_from', 'date_to');
+  }
+
+  updateGoals() {
+    const { updateGoals, goals, goal } = this.props;
+
+    updateGoals(goals, goal.toJS());
   }
 
   isDataChanged() {
-    const oldData = this.props.commonData.toJS();
-    const newData = this.props.formData.get('goal').toJS();
+    const { commonData, goal } = this.props;
+
+    const oldData = commonData.toJS();
+    const newData = goal.toJS();
 
     return helpers.isDifferent(oldData, newData);
   }
 
-  isVisibilityChanged() {
-    const oldData = this.props.commonData;
-    const newData = this.props.formData.get('goal');
+  isFieldsChanged(...fields) {
+    const { commonData, goal } = this.props;
 
-    return newData.has('is_public') && oldData.get('is_public') != newData.get('is_public');
+    return _.some(fields, (field) => {
+      return goal.has(field) && commonData.get(field) != goal.get(field);
+    });
   }
 
-  visibilityRevertButton() {
-    const { translations } = this.props;
-    const tooltipText = translations.getIn(['admin', 'bulk_edit', 'revert_changes']);
+  isVisibilityChanged() {
+    return this.isFieldsChanged('is_public');
+  }
 
-    if (!this.isVisibilityChanged()) {
+  isDateRangeChanged() {
+    return this.isFieldsChanged('date_from', 'date_to');
+  }
+
+  getVisibilityOptions() {
+    const { translations } = this.props;
+    const publicLabel = helpers.translator(translations, 'admin.goal_values.status_public');
+    const privateLabel = helpers.translator(translations, 'admin.goal_values.status_private');
+
+    return [
+      { value: 'public', label: publicLabel },
+      { value: 'private', label: privateLabel }
+    ];
+  }
+
+  renderRevertButton(isValueChanged, onRevert) {
+    const { translations } = this.props;
+    const tooltipText = helpers.translator(translations, 'admin.bulk_edit.revert_changes');
+
+    if (!isValueChanged) {
       return;
     }
 
     return (
       <Flyout text={ tooltipText } tooltip>
-        <SocrataChangeIndicator onRevert={ this.revertVisibility }/>
+        <SocrataChangeIndicator onRevert={ onRevert }/>
       </Flyout>
     );
   }
 
+  renderVisibility() {
+    const { translations, goal, commonData } = this.props;
+
+    const visibility = goal.get('is_public', commonData.get('is_public'));
+    const options = this.getVisibilityOptions();
+
+    const label = helpers.translator(translations, 'admin.bulk_edit.visibility');
+    const value = visibility === null ? null : (visibility ? 'public' : 'private');
+
+    return (
+      <div className="form-line">
+        <label className="block-label">{ label }</label>
+        <div>
+          <Select
+            className="visibility-select"
+            clearable={ false }
+            searchable={ false }
+            onChange={ this.updateVisibility }
+            value={ value }
+            options={ options }/>
+          { this.renderRevertButton(this.isVisibilityChanged(), this.revertVisibility) }
+        </div>
+      </div>
+    );
+  }
+
+  renderDateRange() {
+    const { translations, commonData, goal } = this.props;
+
+    const label = helpers.translator(translations, 'admin.bulk_edit.date_range_label');
+    const toPlaceholder = helpers.translator(translations, 'admin.bulk_edit.date_range_to');
+    const fromPlaceholder = helpers.translator(translations, 'admin.bulk_edit.date_range_from');
+
+    const fromValue = goal.get('date_from', commonData.get('date_from'));
+    const toValue = goal.get('date_to', commonData.get('date_to'));
+
+    return (
+      <div className="form-row measure-date-range">
+        <label className="inline-label"> { label } </label>
+        <div className="form-line">
+          <SCDatePicker
+            placeholderText={ toPlaceholder }
+            selected={ toValue }
+            onChange={ this.updateDateRangeTo }/>
+          <SCDatePicker
+            placeholderText={ fromPlaceholder }
+            selected={ fromValue }
+            onChange={ this.updateDateRangeFrom }/>
+          { this.renderRevertButton(this.isDateRangeChanged(), this.revertDateRange) }
+        </div>
+      </div>
+    );
+  }
+
+  renderFooter() {
+    const { form, translations, dismissModal } = this.props;
+
+    const isUpdateInProgress = form.get('updateInProgress');
+    const isUpdateDisabled = !this.isDataChanged();
+
+    const updateLabel = helpers.translator(translations, 'admin.bulk_edit.update');
+    const cancelLabel = helpers.translator(translations, 'admin.bulk_edit.cancel');
+
+    return (
+      <SocrataModal.Footer>
+        <SocrataButton small
+                       onClick={ dismissModal }>
+          { cancelLabel }
+        </SocrataButton>
+        <SocrataButton small primary
+                       onClick={ this.updateGoals }
+                       disabled={ isUpdateDisabled }
+                       inProgress={ isUpdateInProgress }>
+          { updateLabel }
+        </SocrataButton>
+      </SocrataModal.Footer>
+    );
+  }
+
+  renderSelectedRowsIndicator() {
+    const { translations, goals } = this.props;
+    const numberOfGoals = goals.count();
+    const message = helpers.translator(translations, 'admin.bulk_edit.items_selected', numberOfGoals);
+
+    return <div className="selected-rows-indicator">{ message }</div>;
+  }
+
+  renderFailureAlert() {
+    if (!this.props.showFailureMessage) {
+      return;
+    }
+
+    const { translations } = this.props;
+    const message = helpers.translator(translations, 'admin.bulk_edit.failure_message');
+
+    return <SocrataAlert type="error" message={ message }/>;
+  }
+
   render() {
-    const translations = this.props.translations.get('admin').toJS();
-
-    const commonData = this.props.commonData;
-    const formData = this.props.formData.get('goal');
-
-    const visibility = formData.get('is_public', commonData.get('is_public'));
-
-    const visibilityOptions = [
-      { value: 'public', label: translations.goal_values.status_public },
-      { value: 'private', label: translations.goal_values.status_private }
-    ];
-
-    const updateInProgress = this.props.formData.get('updateInProgress');
-
-    const failureAlert = this.props.showFailureMessage ?
-      <SocrataAlert type="error" message={ translations.bulk_edit.failure_message }/> : null;
+    const { translations } = this.props;
+    const modalTitle = helpers.translator(translations, 'admin.bulk_edit.title');
 
     return (
       <SocrataModal.Modal>
-        <SocrataModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal }/>
+        <SocrataModal.Header title={ modalTitle } onClose={ this.props.dismissModal }/>
 
         <SocrataModal.Content>
-          { failureAlert }
-          <div
-            className="selected-rows-indicator">{ this.props.goals.count() } { translations.bulk_edit.items_selected }</div>
-          <label className="block-label">{ translations.bulk_edit.visibility }</label>
+          { this.renderFailureAlert() }
+          { this.renderSelectedRowsIndicator() }
 
-          <div>
-            <Select
-              className="visibility-select"
-              clearable={ false }
-              searchable={ false }
-              onChange={ this.updateVisibility }
-              value={ visibility === null ? null : (visibility ? 'public' : 'private') }
-              options={ visibilityOptions }/>
-            { this.visibilityRevertButton() }
-          </div>
+          { this.renderVisibility() }
+          { this.renderDateRange() }
+
           <div style={ { height: 100 } }/>
         </SocrataModal.Content>
 
-        <SocrataModal.Footer>
-          <SocrataButton small onClick={ this.props.dismissModal }>{ translations.bulk_edit.cancel }</SocrataButton>
-          <SocrataButton small primary onClick={ this.onUpdateClicked } disabled={ !this.isDataChanged() } inProgress={ updateInProgress }>
-            { translations.bulk_edit.update }
-          </SocrataButton>
-        </SocrataModal.Footer>
+        { this.renderFooter() }
       </SocrataModal.Modal>
     );
   }
@@ -128,7 +250,8 @@ class EditMultipleItemsForm extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  formData: state.get('editMultipleItemsForm'),
+  form: state.get('editMultipleItemsForm'),
+  goal: state.getIn(['editMultipleItemsForm', 'goal']),
   commonData: commonGoalDataSelector(state),
   goals: selectedGoalsSelector(state),
   showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage'])

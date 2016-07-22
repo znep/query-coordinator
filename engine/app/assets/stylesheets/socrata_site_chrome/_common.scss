@@ -86,7 +86,7 @@ header#site-chrome-header, footer#site-chrome-footer {
 
   .searchbox {
     float: right;
-    min-height: 2rem;
+    min-height: 32px;
     height: $header_logo_height;
 
     @include mobile-med {
@@ -165,7 +165,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       font-size: 20px;
       font-weight: 300;
       text-align: center;
-      margin: 1rem;
+      margin: 16px;
       letter-spacing: -0.5px;
     }
 
@@ -173,7 +173,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       position: absolute;
       top: 0;
       right: 0;
-      padding: 1rem;
+      padding: 16px;
       color: $dark_text_color;
     }
 
@@ -184,7 +184,7 @@ header#site-chrome-header, footer#site-chrome-footer {
           background-color: #fff;
           display: block;
           font-size: 15px;
-          line-height: 3rem;
+          line-height: 48px;
           border-top: 1px solid #f4f4f4;
           padding: 0 $text_padding;
           overflow: hidden;
@@ -200,11 +200,11 @@ header#site-chrome-header, footer#site-chrome-footer {
         }
       }
       .mobile-user-actions {
-        margin: 1rem 0;
+        margin: 16px 0;
         padding: 0 $text_padding;
         a.site-chrome-mobile-btn {
           display: block;
-          margin-bottom: 0.3rem;
+          margin-bottom: 5px;
         }
       }
       .site-chrome-social-links {

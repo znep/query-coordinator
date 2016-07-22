@@ -10,9 +10,9 @@ header#site-chrome-header[template="rally"] {
 
     > .rally-top {
       background-color: $header_bg_color_secondary;
-      min-height: 2rem;
+      min-height: 32px;
       height: $header_logo_height;
-      padding: 1rem;
+      padding: 16px;
 
       > a.logo {
         float: left;
@@ -21,7 +21,7 @@ header#site-chrome-header[template="rally"] {
         > img {
           height: $header_logo_height;
           width: $header_logo_width;
-          margin-right: 1rem;
+          margin-right: 16px;
           float: left;
         }
 
@@ -44,7 +44,7 @@ header#site-chrome-header[template="rally"] {
       color: $header_fg_color;
       background-color: $header_bg_color;
       height: $banner_height;
-      padding: 0 1rem;
+      padding: 0 16px;
       clear: both;
 
       > nav {
@@ -103,7 +103,7 @@ header#site-chrome-header[template="rally"] {
               margin-left: $text_padding;
             }
             a.profile-link, a.admin-link, a.logout-link {
-              line-height: 3rem;
+              line-height: 48px;
               padding: 0 $text_padding;
               text-decoration: none;
               &.in-header {

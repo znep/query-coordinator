@@ -90,13 +90,19 @@ function aggregationClause(vif, seriesIndex, dimensionOrMeasure) {
     }
   } else {
 
+    utils.assert(
+      dimensionOrMeasure === 'dimension' || dimensionOrMeasure === 'measure',
+      `dimensionOrMeasure must be "dimension" or "measure", but was: ${dimensionOrMeasure}`
+    );
+    utils.assertIsOneOfTypes(seriesIndex, 'number');
+
     aggregationFunction = _.get(
       vif.series[seriesIndex],
-      'dataSource.{0}.aggregationFunction'.format(dimensionOrMeasure)
+      `dataSource.${dimensionOrMeasure}.aggregationFunction`
     );
     columnName = _.get(
       vif.series[seriesIndex],
-      'dataSource.{0}.columnName'.format(dimensionOrMeasure)
+      `dataSource.${dimensionOrMeasure}.columnName`
     );
 
     switch (aggregationFunction) {

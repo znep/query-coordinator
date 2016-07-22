@@ -165,7 +165,7 @@ var helpers = module.exports = {
     }
 
     var dataByMagnitude = helpers.getDataByMagnitude(input);
-    var range = helpers.getMagnitudeRange(dataByMagnitude);
+    var range = helpers.getMagnitudeRange(dataByMagnitude, options);
 
     // Map over the range, converting magnitudes into start and end keys.
     return _.map(range, function(magnitude) {
@@ -186,7 +186,7 @@ var helpers = module.exports = {
       } else {
         if (options.bucketType !== 'linear') {
           console.warn(
-            'Unknown bucket type "{bucketType}", defaulting to linear'.format(options.bucketType)
+            `Unknown bucket type "${options.bucketType}", defaulting to linear`
           );
         }
 
@@ -215,15 +215,17 @@ var helpers = module.exports = {
   // Returns a range of magnitudes to iterate over. The range must be
   // continuous because of the use of an ordinal scale. The zero bucket
   // must be eliminated due to the current way zero buckets are treated.
-  getMagnitudeRange: function(dataByMagnitude) {
+  getMagnitudeRange: function(dataByMagnitude, options) {
     var extent = d3.extent(_.map(dataByMagnitude, 'magnitude'));
     var min = extent[0];
     var max = extent[1];
 
-    if (min > 0 && max > 0) {
-      min = 0;
-    } else if (min < 0 && max < 0) {
-      max = 0;
+    if (_.get(options, 'forceIncludeZero', false)) {
+      if (min > 0 && max > 0) {
+        min = 0;
+      } else if (min < 0 && max < 0) {
+        max = 0;
+      }
     }
 
     // +1 is there because _.range is a [min, max) range
@@ -239,6 +241,9 @@ var helpers = module.exports = {
       start = Math.pow(10, magnitude - 1);
       end = Math.pow(10, magnitude);
 
+      //TODO we shouldn't be doing this - it groups
+      //an infinite number of orders of magnitude into
+      //one bucket.
       if (start === 1) {
         start = 0;
       }
@@ -246,6 +251,9 @@ var helpers = module.exports = {
       start = -Math.pow(10, Math.abs(magnitude));
       end = -Math.pow(10, Math.abs(magnitude + 1));
 
+      //TODO we shouldn't be doing this - it groups
+      //an infinite number of orders of magnitude into
+      //one bucket.
       if (end === -1) {
         end = 0;
       }

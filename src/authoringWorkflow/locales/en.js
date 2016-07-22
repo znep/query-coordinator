@@ -174,6 +174,14 @@ export default {
       error_column_chart_exceeded_max_column_count: 'For optimal performance and legibility column charts are limited to {0} columns. Use filters to render a more specific chart.',
       error_column_chart_exceeded_max_column_count_without_pan: 'For optimal performance and legibility column charts for which panning is disabled are limited to {0} columns. Enable panning or use filters to render a more specific chart.'
     },
+    histogram: {
+      no_value: 'No value',
+      default_series_label: 'Value',
+      //TODO We've disabled log scales in histogram until we can figure out how we're going to handle these invalid domains.
+      error_domain_includes_zero: 'The chart dimension includes or crosses zero. This is not displayable on a logarithmic scale. Please use a linear scale or use filters to limit the data to a valid range.',
+      error_exceeded_max_bucket_count: 'For optimal performance and legibility histograms are limited to {0} buckets. Use filters to render a more specific chart.',
+      error_histogram_generic: 'An error was encountered when rendering this histogram. Please try again in a few minutes.',
+    },
     feature_map: {
       title: 'Feature Map',
       flyout_filter_notice: 'There are too many points at this location',

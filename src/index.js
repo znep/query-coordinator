@@ -13,6 +13,7 @@ var SvgFeatureMap = require('./SvgFeatureMap');
 var Table = require('./Table');
 var TimelineChart = require('./TimelineChart');
 var SvgTimelineChart = require('./SvgTimelineChart');
+var SvgHistogram = require('./SvgHistogram');
 
 // TODO: add exported function here called `init` which takes a VIF and instantiates the
 // appropriate visualization based on the VIF's `type` field
@@ -31,5 +32,6 @@ module.exports = {
   SvgFeatureMap: SvgFeatureMap,
   Table: Table,
   TimelineChart: TimelineChart,
-  SvgTimelineChart: SvgTimelineChart
+  SvgTimelineChart: SvgTimelineChart,
+  SvgHistogram: SvgHistogram
 };

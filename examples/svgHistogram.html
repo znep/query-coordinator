@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SvgHistogram.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      .sample-chart {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+      }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="kill-btn">Destroy all</button>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+      var chicagoCrimesLongitudeVif = {
+        title: 'Latitude of Crimes in Chicago',
+        description: 'or cowboy hat profile',
+        configuration: {
+          bucketType: 'linear',
+          axisLabels: {
+            top: 'Horizontal offset',
+            right: 'Height of cowboy hat at offset',
+            bottom: 'Latitude',
+            left: 'Count of crimes'
+          }
+        },
+        series: [
+          {
+            color: {
+              primary: 'gray',
+              secondary: null,
+              highlight: '#44aa00'
+            },
+            dataSource: {
+              datasetUid: 'fdqy-yyme',
+              domain: 'dataspace.demo.socrata.com',
+              dimension: {
+                columnName: 'latitude',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            label: 'All crimes',
+            type: 'histogram',
+            unit: {
+              one: 'crime',
+              other: 'crimes'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: {
+          x: {
+            type: 'quantitative'
+          },
+          y: {
+            type: 'quantitative'
+          }
+        }
+      };
+
+      var chicagoCrimesLongitudeWithFilterVif = _.cloneDeep(chicagoCrimesLongitudeVif);
+      _.set(chicagoCrimesLongitudeWithFilterVif, 'series[0].dataSource.filters', [
+        {
+          columnName: 'arrest',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: true
+          },
+          pivot: true
+        }
+      ]);
+
+      chicagoCrimesLongitudeWithFilterVif.description = 'Involving arrest';
+      _.set(chicagoCrimesLongitudeWithFilterVif, 'series[0].label', 'Crimes resulting in arrest');
+      _.set(chicagoCrimesLongitudeWithFilterVif, 'series[0].color.primary', 'red');
+
+      var vifs = [];
+
+      vifs.push({
+        title: 'Fuel Pressure Leakdown Test',
+        description: '25ms sample period',
+        configuration: {
+          bucketType: 'linear',
+          axisLabels: {
+            bottom: 'PSI',
+            left: '# of samples'
+          }
+        },
+        series: [
+          {
+            color: {
+              primary: '#f55',
+              highlight: 'red'
+            },
+            dataSource: {
+              datasetUid: '6w34-4c67',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'fuel_pressure_psi',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram',
+            label: 'Sample count',
+            unit: {
+              one: 'sample',
+              other: 'samples'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+      });
+
+      vifs.push({
+        title: 'Fuel Pressure Driving Test',
+        description: 'Driving to MOD pizza. 25ms sample period.',
+        configuration: {
+          bucketType: 'linear',
+          axisLabels: {
+            bottom: 'PSI',
+            left: '# of samples'
+          }
+        },
+        series: [
+          {
+            color: {
+              primary: '#f55',
+              highlight: 'red'
+            },
+            dataSource: {
+              datasetUid: 'v7up-r6b2',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'fuel_pressure_psi',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram',
+            label: 'Sample count',
+            unit: {
+              one: 'sample',
+              other: 'samples'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+      });
+
+      vifs.push(chicagoCrimesLongitudeVif);
+
+      vifs.push(chicagoCrimesLongitudeWithFilterVif);
+
+      // This is a version 1 VIF, which should be automatically migrated
+      // when passed to the visualization.
+      vifs.push({
+        columnName: 'water_temperature',
+        domain: 'opendata-anu.rc-socrata.com',
+        datasetUid: 'rfcu-t36e',
+        configuration: {
+          bucketType: 'linear'
+        },
+        filters: [],
+        type: 'distributionChart'
+      });
+
+      vifs.push({
+        description: 'Logarithmic (auto chosen)',
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'w4rr-66xn',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'exp_1_01',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram'
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+      });
+
+      vifs.push({
+        description: 'Logarithmic (manually specified)',
+        configuration: {
+          bucketType: 'logarithmic'
+        },
+        series: [
+          {
+            color: {
+              primary: 'orange',
+              highlight: 'chartreuse'
+            },
+            dataSource: {
+              datasetUid: 'w4rr-66xn',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'exp_1_1',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram'
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+      });
+
+      vifs.push({
+        title: 'Logarithmic (includes values between 0 and 1)',
+        description: '(not supported right now because of backend issues)',
+        configuration: {
+          bucketType: 'logarithmic'
+        },
+        series: [
+          {
+            color: {
+              primary: 'orange',
+              highlight: 'chartreuse'
+            },
+            dataSource: {
+              datasetUid: '3cdv-s48z',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'dec',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram'
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+      });
+
+      vifs.push({
+        columnName: 'wave_period',
+        domain: 'opendata-anu.rc-socrata.com',
+        datasetUid: 'rfcu-t36e',
+        configuration: {
+          bucketType: 'linear'
+        },
+        filters: [],
+        type: 'distributionChart',
+        aggregation: {
+          field: 'wave_height',
+          'function': 'sum'
+        }
+      });
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      vifs.forEach((vif, i) => {
+        var $chartElement = $(`<div class="sample-chart" id="chart-${i}"></div>`);
+        $chartElement.
+          appendTo(document.body).
+          on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated).
+          on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout).
+          socrataSvgHistogram(vif);
+
+        var $textarea = $('<textarea>').
+          val(JSON.stringify(vif, null, '  ')).
+          appendTo(document.body);
+        $('<button>').
+          text('Update').
+          click(function() {
+            var newVif;
+            try {
+              newVif = JSON.parse($textarea.val());
+            } catch (e) {
+              console.error(e);
+              alert('Error: ' + e);
+            }
+            var renderVifEvent = $.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+            renderVifEvent.originalEvent = { detail: newVif };
+            $chartElement.trigger(renderVifEvent);
+          }).
+          appendTo(document.body);
+      });
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+      $('#kill-btn').on('click', function() {
+        $('.sample-chart').
+          off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout).
+          off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated).
+          trigger('SOCRATA_VISUALIZATION_DESTROY');
+      });
+    });
+  </script>
+</html>

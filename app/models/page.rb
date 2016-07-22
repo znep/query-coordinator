@@ -214,6 +214,7 @@ class Page < Model
     rescue CoreServer::CoreServerError => e
       case e.error_code.to_sym
         when :authentication_required then nil
+        when :permission_denied then nil
         else raise
       end
     end

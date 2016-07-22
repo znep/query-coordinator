@@ -106,6 +106,10 @@ $action-btn-disabled-font-color: #c6c1bf;
 #socrata-row-inspector {
   display: none;
   font-size: 14px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 1.618;
+  color: #444;
 
   * {
     box-sizing: border-box;
@@ -137,13 +141,14 @@ $action-btn-disabled-font-color: #c6c1bf;
       display: block;
     }
 
-    .error-message, .icon-warning {
+    .error-message, .icon-row-inspector-warning {
       width: 70%;
       margin: 0 auto;
       margin-bottom: 1rem;
     }
 
-    .icon-warning {
+    .icon-row-inspector-warning {
+
       &::after {
         display: block;
         font-size: 3rem;

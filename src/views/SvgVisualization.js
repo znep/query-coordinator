@@ -288,12 +288,20 @@ function SvgVisualization($element, vif) {
   /**
    * Valid options: 'fit', 'pan'
    */
-  this.getXAxisScalingMode = function() {
+  this.getXAxisScalingModeBySeriesIndex = function(seriesIndex) {
+    var chartType = _.get(
+      currentVif,
+      `series[${seriesIndex}].type`,
+      ''
+    );
+    var defaultXAxisScalingModeForChartType = (chartType.match(/^timeline/)) ?
+      'fit' :
+      'pan';
 
     return _.get(
       currentVif,
       'configuration.xAxisScalingMode',
-      'fit'
+      defaultXAxisScalingModeForChartType
     );
   };
 

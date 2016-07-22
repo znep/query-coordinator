@@ -12,7 +12,8 @@
 
 .region-map-legend {
   position: absolute;
-  padding: 15px;
+  margin: 0;
+  padding: 0;
   bottom: 15px;
   right: 15px;
   cursor: default;
@@ -20,7 +21,7 @@
 
   svg {
     display: block;
-    overflow: initial;
+    overflow: initial !important;
 
     rect.region-map-legend-color {
       stroke-width: 1px;
@@ -30,7 +31,7 @@
   &.continuous {
     max-height: 15rem;
     height: 100%;
-    right: 30px;
+    right: 15px;
     bottom: 0;
     width: 1rem;
     box-sizing: content-box;

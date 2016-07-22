@@ -6,6 +6,8 @@
     <!-- `leaflet.css` must be included or the map will render incorrectly -->
     <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
     <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-styleguide/dist/css/styleguide.css">
     <style type="text/css">
 
       body {
@@ -21,9 +23,7 @@
         width: 640px;
         height: 480px;
         margin: 50px auto 0 auto;
-        border: 1px solid #aaa;
       }
-
     </style>
   </head>
   <body>
@@ -90,13 +90,14 @@
             'general_error': 'There was an error obtaining data to render this map'
           },
           // Base layer
-          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+          // 'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png',
           'baseLayerOpacity': 0.8,
           'useOriginHost': false
         },
         'createdAt': '2014-01-01T00:00:00',
         'datasetUid': DATASET_UID,
-        'description': 'An example feature map',
+        'description': 'An example Feature Map',
         'domain': DOMAIN,
         'filters': [],
         'format': {
@@ -107,7 +108,7 @@
           'type': 'test_data',
           'url': 'localhost'
         },
-        title: 'Example Usage: socrata.visualizations.SvgFeatureMap.js',
+        title: 'Example Usage: SvgFeatureMap.js',
         type: 'featureMap',
         'unit': {
           'one': 'record',

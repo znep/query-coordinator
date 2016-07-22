@@ -1,3 +1,6 @@
+$header-background-color: #f6f6f6;
+$row-background-color: transparent;
+
 .visualization-container.loaded {
   .socrata-table {
    transition: opacity 0.25s;
@@ -61,7 +64,7 @@
     th {
       position: relative;
       color: #6a6a6a;
-      background-color: #f6f6f6;
+      background-color: $header-background-color;
       cursor: pointer;
       white-space: nowrap;
 
@@ -145,6 +148,10 @@
         }
       }
     }
+
+    td {
+      background-color: $row-background-color;
+    }
   }
 
   &.frozen-columns {
@@ -223,5 +230,50 @@
     padding: 4px;
     font-size: 15px;
     color: #555;
+  }
+}
+
+.visualization-container {
+
+  .socrata-table {
+
+    th, td {
+      border-top: none;
+    }
+
+    th {
+
+      &:first-child {
+        border-left: 1px solid $header-background-color;
+
+        div.column-header-content {
+          border-left: none;
+        }
+      }
+
+      &:last-child {
+        border-right: 1px solid $header-background-color;
+
+        div.column-header-content {
+          border-right: none;
+        }
+      }
+    }
+
+    td {
+
+      &:first-child {
+        border-left: 1px solid $row-background-color;
+      }
+
+      &:last-child {
+        border-right: 1px solid $row-background-color;
+      }
+    }
+  }
+
+  .socrata-pager {
+    border-left: none;
+    border-right: none;
   }
 }

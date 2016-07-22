@@ -1,5 +1,8 @@
 import _ from 'lodash';
-import { showNotification } from '../actions/notificationActions';
+import {
+  showNotification,
+  dismissNotification
+} from '../actions/notificationActions';
 import translator from '../helpers/translator';
 
 /**
@@ -54,7 +57,18 @@ function warnUserAboutUsage(action) {
   if (isDevelopment) {
     console.error(usageWarning(action));
   }
-};
+}
+
+let lastHideSetTimeout;
+function hideNotificationAfter(seconds, store) {
+  if (lastHideSetTimeout) {
+    clearTimeout(lastHideSetTimeout);
+  }
+
+  lastHideSetTimeout = setTimeout(() => {
+    store.dispatch(dismissNotification());
+  }, seconds * 1000);
+}
 
 export default store => next => action => {
   const result = next(action);
@@ -70,6 +84,8 @@ export default store => next => action => {
     } else {
       store.dispatch(showNotification(notification.type, notification.message));
     }
+
+    hideNotificationAfter(6, store);
   } else if (notification) {
     warnUserAboutUsage(action);
   }

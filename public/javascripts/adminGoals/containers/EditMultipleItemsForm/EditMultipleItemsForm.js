@@ -3,10 +3,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Select from 'react-select';
+import Flyout from '../../components/Flyout';
 import SCAlert from '../../components/SCAlert';
 import SCButton from '../../components/SCButton';
 import SCChangeIndicator from '../../components/SCChangeIndicator';
 import * as SCModal from '../../components/SCModal';
+import helpers from '../../helpers/helpers';
 
 import {
   updateMultipleItemsFormData,
@@ -44,10 +46,32 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   isDataChanged() {
+    const oldData = this.props.commonData.toJS();
+    const newData = this.props.formData.get('goal').toJS();
+
+    return helpers.isDifferent(oldData, newData);
+  }
+
+  isVisibilityChanged() {
     const oldData = this.props.commonData;
     const newData = this.props.formData.get('goal');
 
-    return oldData.get('is_public') != newData.get('is_public');
+    return newData.has('is_public') && oldData.get('is_public') != newData.get('is_public');
+  }
+
+  visibilityRevertButton() {
+    const { translations } = this.props;
+    const tooltipText = translations.getIn(['admin', 'bulk_edit', 'revert_changes']);
+
+    if (!this.isVisibilityChanged()) {
+      return;
+    }
+
+    return (
+      <Flyout text={ tooltipText } tooltip>
+        <SCChangeIndicator onRevert={ this.revertVisibility }/>
+      </Flyout>
+    );
   }
 
   render() {
@@ -57,7 +81,6 @@ class EditMultipleItemsForm extends React.Component {
     const formData = this.props.formData.get('goal');
 
     const visibility = formData.get('is_public', commonData.get('is_public'));
-    const visibilityChanged = formData.has('is_public') && commonData.get('is_public') != formData.get('is_public');
 
     const visibilityOptions = [
       { value: 'public', label: translations.goal_values.status_public },
@@ -66,19 +89,17 @@ class EditMultipleItemsForm extends React.Component {
 
     const updateInProgress = this.props.formData.get('updateInProgress');
 
-    const visibilityRevertButton =
-      visibilityChanged ? <SCChangeIndicator onRevert={ this.revertVisibility } /> : null;
-
     const failureAlert = this.props.showFailureMessage ?
-      <SCAlert type="error" message={ translations.bulk_edit.failure_message } /> : null;
+      <SCAlert type="error" message={ translations.bulk_edit.failure_message }/> : null;
 
     return (
       <SCModal.Modal>
-        <SCModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal } />
+        <SCModal.Header title={ translations.bulk_edit.title } onClose={ this.props.dismissModal }/>
 
         <SCModal.Content>
           { failureAlert }
-          <div className="selected-rows-indicator">{ this.props.goals.count() } { translations.bulk_edit.items_selected }</div>
+          <div
+            className="selected-rows-indicator">{ this.props.goals.count() } { translations.bulk_edit.items_selected }</div>
           <label className="block-label">{ translations.bulk_edit.visibility }</label>
 
           <div>
@@ -88,10 +109,10 @@ class EditMultipleItemsForm extends React.Component {
               searchable={ false }
               onChange={ this.updateVisibility }
               value={ visibility === null ? null : (visibility ? 'public' : 'private') }
-              options={ visibilityOptions } />
-            {visibilityRevertButton}
+              options={ visibilityOptions }/>
+            { this.visibilityRevertButton() }
           </div>
-          <div style={ { height: 100 } } />
+          <div style={ { height: 100 } }/>
         </SCModal.Content>
 
         <SCModal.Footer>

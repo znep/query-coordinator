@@ -9,7 +9,7 @@ function SCBulkActions(props) {
 
   return (
     <div>
-      <SCButton simple disabled={ props.selectedRowsCount < 1 } onClick={ props.openEditMultipleItemsModal }>{ editTitle }</SCButton>
+      <SCButton simple disabled={ props.selectedRowsCount < 2 } onClick={ props.openEditMultipleItemsModal }>{ editTitle }</SCButton>
     </div>
   );
 }

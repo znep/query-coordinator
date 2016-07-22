@@ -118,3 +118,38 @@
     margin: 0;
   }
 }
+
+.flyout-container {
+  display: inline-block;
+
+  .flyout {
+    pointer-events: none;
+  }
+
+  .flyout-tooltip {
+    border-radius: 0;
+
+    .flyout-content {
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    &::before {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -16px;
+      left: 13px;
+      margin-left: -2px;
+      border-width: 8px;
+    }
+
+    &::after {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -14px;
+      left: 25px;
+      border-width: 7px;
+      margin-left: -13px;
+    }
+  }
+}

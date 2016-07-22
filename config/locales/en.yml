@@ -1777,6 +1777,7 @@ en:
         status_public: Public
         status_private: Private
       bulk_edit:
+        revert_changes: Revert changes
         success_message: Success! {0} goals were updated.
         failure_message: <strong>Error.</strong> There was a problem performing this action. Try again, or cancel.
         button_title: Edit Multiple Items...

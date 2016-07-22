@@ -17,6 +17,7 @@ export default class SCButton extends React.Component {
     const isSmall = props.small == true;
     const isExtraSmall = props.extraSmall == true;
     const isInProgress = props.inProgress == true;
+
     const isDefault = helpers.noneOf([isPrimary, isAlternate, isAlternate2, isSimple, isInverse]);
 
     const classes = {

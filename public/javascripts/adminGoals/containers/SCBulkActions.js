@@ -8,7 +8,7 @@ function SCBulkActions(props) {
   const editTitle = props.translations.getIn(['admin', 'bulk_edit', 'button_title']);
 
   return (
-    <div>
+    <div className="bulk-actions">
       <SCButton simple disabled={ props.selectedRowsCount < 2 } onClick={ props.openEditMultipleItemsModal }>{ editTitle }</SCButton>
     </div>
   );

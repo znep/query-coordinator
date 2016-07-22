@@ -153,3 +153,11 @@
     }
   }
 }
+
+.bulk-actions {
+  overflow: auto;
+
+  button {
+    float: right;
+  }
+}

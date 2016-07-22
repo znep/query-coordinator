@@ -8,7 +8,7 @@ describe('components/SCChangeIndicator', function() {
       onRevert: callback
     };
 
-    const element = renderPureComponent(SCChangeIndicator(props));
+    const element = renderComponent(SCChangeIndicator, props);
     TestUtils.Simulate.click(element.querySelector('button'));
 
     callback.should.have.been.calledOnce;

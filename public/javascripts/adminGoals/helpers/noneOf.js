@@ -4,5 +4,5 @@
  * @returns {Boolean}
  */
 export default (items) => {
-  return items.reduce((item, result) => result && !item, true);
+  return items.reduce((result, item) => result && !item, true);
 };

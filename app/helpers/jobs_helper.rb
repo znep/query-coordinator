@@ -67,14 +67,18 @@ module JobsHelper
   end
 
   def display_restore_button(event)
-    FeatureFlags.derive(nil, request).restore_dataset_button &&
-    event.first_deleted_in_list &&
-    event.dataset.deleted && event.activity_type == 'delete' &&
-    event.dataset.publicationStage == 'published' &&
-    event.dataset.flags.any? { |flag| flag.data == 'default' } &&
-    event.dataset.displayType == 'table' &&
-    event.dataset.viewType == 'tabular' &&
-    (Date.today - event.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days
+    if event.dataset.nil?
+      false
+    else
+      FeatureFlags.derive(nil, request).restore_dataset_button &&
+      event.first_deleted_in_list &&
+      event.dataset.deleted && event.activity_type == 'delete' &&
+      event.dataset.publicationStage == 'published' &&
+      event.dataset.flags.any? { |flag| flag.data == 'default' } &&
+      event.dataset.displayType == 'table' &&
+      event.dataset.viewType == 'tabular' &&
+      (Date.today - event.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days
+    end
   end
 
 end

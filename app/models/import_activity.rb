@@ -16,7 +16,7 @@ class ImportActivity
     views = Hash[views.map do |uid, value|
       if value.nil?
         value = View.find_deleted(uid)
-        value.deleted = true
+        value.deleted = true unless value.nil?
       end
       [uid, value]
     end]

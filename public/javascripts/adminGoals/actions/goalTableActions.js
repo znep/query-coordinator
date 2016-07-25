@@ -148,7 +148,7 @@ export function tableLoadPage() {
       function getGoalDetails() {
         let goalDetailPromises = _.map(goals, goal => state.hasIn(['goalTableData', 'cachedGoals', goal.id]) ?
           Promise.resolve(state.getIn(['goalTableData', 'cachedGoals', goal.id]).toJS()) :
-          fetch(`/stat/api/v2/goals/${goal.id}`, fetchOptions).then(response => response.json()));
+          fetch(`/stat/api/v1/goals/${goal.id}`, fetchOptions).then(response => response.json()));
 
         return Promise.all(goalDetailPromises);
       }

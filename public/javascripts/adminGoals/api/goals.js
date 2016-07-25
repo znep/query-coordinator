@@ -19,5 +19,5 @@ export function update(goalId, goalVersion, data) {
 
 export function getById(goalId) {
   const path = `${goalsPrefix}/${goalId}`;
-  return api.get('v2', path, {});
+  return api.get('v1', path, {});
 }

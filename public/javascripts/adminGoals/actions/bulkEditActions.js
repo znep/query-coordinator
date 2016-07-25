@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import api from '../api/api';
 
 import { updateCachedGoals } from './goalTableActions';
@@ -65,6 +66,17 @@ export function openEditMultipleItemsModal() {
 }
 
 /**
+ * Goal update api expects prevailing_measure data normalized.
+ * @param {Object} updatedData
+ */
+function normalizeUpdatedData(updatedData) {
+  let normalized = _.merge(updatedData, updatedData.prevailing_measure || {});
+  delete normalized.prevailing_measure;
+
+  return normalized;
+}
+
+/**
  * Makes an API request to update given list of goals
  * data.
  *
@@ -73,16 +85,16 @@ export function openEditMultipleItemsModal() {
  */
 export function updateMultipleGoals(goals, updatedData) {
   const goalIds = goals.map(goal => goal.get('id'));
+  const normalizedData = normalizeUpdatedData(updatedData);
 
   return (dispatch) => {
     dispatch(updateMultipleItemsStarted(goalIds));
 
-    const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), updatedData));
-    return Promise.all(updateRequests).
-      then(updatedGoals => {
-        dispatch(updateCachedGoals(updatedGoals));
-        dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
-        return updatedGoals;
-      }).catch(err => dispatch(updateMultipleItemsFailed(err)));
+    const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
+    return Promise.all(updateRequests).then(updatedGoals => {
+      dispatch(updateCachedGoals(updatedGoals));
+      dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
+      return updatedGoals;
+    }).catch(err => dispatch(updateMultipleItemsFailed(err)));
   };
 }

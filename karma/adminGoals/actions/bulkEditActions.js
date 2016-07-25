@@ -40,22 +40,22 @@ const initialState = Immutable.fromJS({
 
 
 describe('actions/bulkEditActions', () => {
-  let server;
   let store;
+  let server;
 
   beforeEach(() => {
     store = mockStore(initialState);
-
     server = sinon.fakeServer.create();
     server.autoRespond = true;
   });
 
-  afterEach(() => server.restore());
+  afterEach(() => {
+    server.restore()
+  });
 
-  it('updateMultipleGoals should update given goals', done => {
-    SERVER_RESPONDS.forEach(({ url, respond }) => {
-      server.respondWith(url, JSON.stringify(respond));
-    });
+  it('updateMultipleGoals should update given goals', (done) => {
+    server.respondWith(/goals/, JSON.stringify({ is_public: true }));
+    server.respondWith(/goals/, JSON.stringify({ is_public: true }));
 
     store.dispatch(updateMultipleGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
       const [ started, updateGoals, succeeded ] = store.getActions();
@@ -75,9 +75,9 @@ describe('actions/bulkEditActions', () => {
     }).catch(done);
   });
 
-  it('should dispatch failure action when something went wrong', done => {
-    SERVER_RESPONDS.forEach(({ url, respond }) => {
-      server.respondWith(url, 'notajsonstring');
+  it('should dispatch failure action when something went wrong', function (done) {
+    server.respondWith(xhr => {
+      xhr.respond();
     });
 
     store.dispatch(updateMultipleGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { fetchOptions } from '../constants';
 
 function checkXhrStatus(response) {
@@ -12,7 +13,7 @@ function checkXhrStatus(response) {
 
 function request(apiVersion, method, path, otherOptions) {
   const url = `/stat/api/${apiVersion}/${path}`;
-  const options = _.mergeDeep(_.clone(fetchOptions), {
+  const options = _.merge(_.clone(fetchOptions), {
     method,
     headers: {
       'Accept': 'application/json',
@@ -37,6 +38,6 @@ export function post(apiVersion, path, options) {
   return request(apiVersion, 'POST', path, options);
 }
 
-export function destroy(path, options) {
+export function destroy(apiVersion, path, options) {
   return request(apiVersion, 'DELETE', path, options);
 }

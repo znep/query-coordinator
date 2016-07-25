@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import Select from 'react-select';
 import Flyout from '../../components/Flyout';
@@ -37,9 +38,10 @@ class EditMultipleItemsForm extends React.Component {
     ]);
   }
 
-  updateFormData(field, value) {
-    const { goal, updateFormData } = this.props;
-    updateFormData(goal.set(field, value));
+  updateFormData(pathArr, value) {
+    const { goal } = this.props;
+    const path = _.isArray(pathArr) ? pathArr : [pathArr];
+    this.props.updateFormData(goal.setIn(path, value));
   }
 
   updateVisibility({ value }) {
@@ -47,17 +49,20 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateDateRangeTo(value) {
-    this.updateFormData('date_to', value);
+    this.updateFormData(['prevailing_measure', 'end'], value.toISOString().replace('Z',''));
   }
 
   updateDateRangeFrom(value) {
-    this.updateFormData('date_from', value);
+    this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z',''));
   }
 
   revertFields(...fields) {
     const { commonData, goal, updateFormData } = this.props;
 
-    const oldData = fields.reduce((data, field) => data.set(field, commonData.get(field)), goal);
+    const oldData = fields.reduce((data, field) => {
+      const path = _.isArray(field) ? field : [field];
+      return data.setIn(path, commonData.getIn(path));
+    }, goal);
     updateFormData(oldData);
   }
 
@@ -66,7 +71,7 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   revertDateRange() {
-    this.revertFields('date_from', 'date_to');
+    this.revertFields(['prevailing_measure', 'start'], ['prevailing_measure', 'end']);
   }
 
   updateGoals() {
@@ -88,7 +93,8 @@ class EditMultipleItemsForm extends React.Component {
     const { commonData, goal } = this.props;
 
     return _.some(fields, (field) => {
-      return goal.has(field) && commonData.get(field) != goal.get(field);
+      const path = _.isArray(field) ? field : [field];
+      return goal.hasIn(path) && commonData.getIn(path) != goal.getIn(path);
     });
   }
 
@@ -97,7 +103,7 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   isDateRangeChanged() {
-    return this.isFieldsChanged('date_from', 'date_to');
+    return this.isFieldsChanged(['prevailing_measure', 'start'], ['prevailing_measure', 'end']);
   }
 
   getVisibilityOptions() {
@@ -159,8 +165,8 @@ class EditMultipleItemsForm extends React.Component {
     const toPlaceholder = helpers.translator(translations, 'admin.bulk_edit.date_range_to');
     const fromPlaceholder = helpers.translator(translations, 'admin.bulk_edit.date_range_from');
 
-    const fromValue = goal.get('date_from', commonData.get('date_from'));
-    const toValue = goal.get('date_to', commonData.get('date_to'));
+    const fromValue = goal.getIn(['prevailing_measure', 'start'], commonData.getIn(['prevailing_measure', 'start']));
+    const toValue = goal.getIn(['prevailing_measure', 'end'], commonData.getIn(['prevailing_measure', 'end']));
 
     return (
       <div className="form-row measure-date-range">
@@ -168,11 +174,11 @@ class EditMultipleItemsForm extends React.Component {
         <div className="form-line">
           <SocrataDatePicker
             placeholderText={ toPlaceholder }
-            selected={ toValue }
+            selected={ moment.utc(toValue) }
             onChange={ this.updateDateRangeTo }/>
           <SocrataDatePicker
             placeholderText={ fromPlaceholder }
-            selected={ fromValue }
+            selected={ moment.utc(fromValue) }
             onChange={ this.updateDateRangeFrom }/>
           { this.renderRevertButton(this.isDateRangeChanged(), this.revertDateRange) }
         </div>

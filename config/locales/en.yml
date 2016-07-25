@@ -1417,6 +1417,7 @@ en:
     published: Published
     published_by: Data Provided by
     remove: Remove
+    render_error: There was a problem rendering this page.
     save: Save
     saved: Saved
     saving: Saving

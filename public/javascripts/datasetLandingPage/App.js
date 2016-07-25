@@ -8,24 +8,27 @@ import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import DatasetPreview from './components/DatasetPreview';
 import PopularViewList from './components/PopularViewList';
+import { VelocityComponent } from 'velocity-react';
 
-export default function() {
+export default function App() {
   return (
-    <div>
-      <PublishNotice />
-      <PrivateNotice />
-      <InfoPane />
+    <VelocityComponent animation={{ opacity: 1 }} runOnMount duration={275}>
+      <div style={{ opacity: 0 }}>
+        <PublishNotice />
+        <PrivateNotice />
+        <InfoPane />
 
-      <main className="container landing-page-container">
-        <FeaturedContent />
-        <MetadataTable />
-        <DatasetContents />
-        <DatasetPreview />
+        <main className="container landing-page-container">
+          <FeaturedContent />
+          <MetadataTable />
+          <DatasetContents />
+          <DatasetPreview />
 
-        <Responsive>
-          <PopularViewList />
-        </Responsive>
-      </main>
-    </div>
+          <Responsive>
+            <PopularViewList />
+          </Responsive>
+        </main>
+      </div>
+    </VelocityComponent>
   );
 }

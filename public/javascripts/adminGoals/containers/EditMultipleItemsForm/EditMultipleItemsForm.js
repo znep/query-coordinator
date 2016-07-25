@@ -34,6 +34,8 @@ class EditMultipleItemsForm extends React.Component {
       'updateDateRangeTo',
       'updateDateRangeFrom',
       'revertDateRange',
+      'updateOverride',
+      'revertOverride',
       'updateGoals'
     ]);
   }
@@ -56,6 +58,10 @@ class EditMultipleItemsForm extends React.Component {
     this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z',''));
   }
 
+  updateOverride({ value }) {
+    this.updateFormData(['prevailing_measure', 'progress_override'], value);
+  }
+
   revertFields(...fields) {
     const { commonData, goal, updateFormData } = this.props;
 
@@ -68,6 +74,10 @@ class EditMultipleItemsForm extends React.Component {
 
   revertVisibility() {
     this.revertFields('is_public');
+  }
+
+  revertOverride() {
+    this.revertFields(['prevailing_measure', 'progress_override']);
   }
 
   revertDateRange() {
@@ -102,6 +112,10 @@ class EditMultipleItemsForm extends React.Component {
     return this.isFieldsChanged('is_public');
   }
 
+  isOverrideChanged() {
+    return this.isFieldsChanged(['prevailing_measure', 'progress_override']);
+  }
+
   isDateRangeChanged() {
     return this.isFieldsChanged(['prevailing_measure', 'start'], ['prevailing_measure', 'end']);
   }
@@ -114,6 +128,19 @@ class EditMultipleItemsForm extends React.Component {
     return [
       { value: 'public', label: publicLabel },
       { value: 'private', label: privateLabel }
+    ];
+  }
+
+  getOverrideOptions() {
+    const { translations } = this.props;
+    const translationBase = 'admin.bulk_edit.override_types';
+
+    return [
+      { value: 'bad', label: helpers.translator(translations, `${translationBase}.bad`) },
+      { value: '', label: helpers.translator(translations, `${translationBase}.none`) },
+      { value: 'good', label: helpers.translator(translations, `${translationBase}.good`) },
+      { value: 'no_judgement', label: helpers.translator(translations, `${translationBase}.no_judgement`) },
+      { value: 'within_tolerance', label: helpers.translator(translations, `${translationBase}.within_tolerance`)}
     ];
   }
 
@@ -158,6 +185,32 @@ class EditMultipleItemsForm extends React.Component {
     );
   }
 
+  renderOverride() {
+    const { translations, commonData, goal } = this.props;
+    const valuePath = ['prevailing_measure', 'progress_override'];
+
+    const label = helpers.translator(translations, 'admin.bulk_edit.override_label');
+    const overrideValue = goal.getIn(valuePath, commonData.getIn(valuePath));
+
+    const options = this.getOverrideOptions();
+
+    return (
+      <div className="form-line">
+        <label className="block-label">{ label }</label>
+        <div>
+          <Select
+            className="override-select"
+            clearable={ false }
+            searchable={ false }
+            onChange={ this.updateOverride }
+            value={ overrideValue }
+            options={ options }/>
+          { this.renderRevertButton(this.isOverrideChanged(), this.revertOverride) }
+        </div>
+      </div>
+    );
+  }
+
   renderDateRange() {
     const { translations, commonData, goal } = this.props;
 
@@ -174,11 +227,11 @@ class EditMultipleItemsForm extends React.Component {
         <div className="form-line">
           <SocrataDatePicker
             placeholderText={ toPlaceholder }
-            selected={ moment.utc(toValue) }
+            selected={ toValue && moment.utc(toValue) }
             onChange={ this.updateDateRangeTo }/>
           <SocrataDatePicker
             placeholderText={ fromPlaceholder }
-            selected={ moment.utc(fromValue) }
+            selected={ fromValue && moment.utc(fromValue) }
             onChange={ this.updateDateRangeFrom }/>
           { this.renderRevertButton(this.isDateRangeChanged(), this.revertDateRange) }
         </div>
@@ -238,14 +291,13 @@ class EditMultipleItemsForm extends React.Component {
       <SocrataModal.Modal>
         <SocrataModal.Header title={ modalTitle } onClose={ this.props.dismissModal }/>
 
-        <SocrataModal.Content>
+        <SocrataModal.Content className="bulk-edit-modal-content">
           { this.renderFailureAlert() }
           { this.renderSelectedRowsIndicator() }
 
           { this.renderVisibility() }
           { this.renderDateRange() }
-
-          <div style={ { height: 100 } }/>
+          { this.renderOverride() }
         </SocrataModal.Content>
 
         { this.renderFooter() }

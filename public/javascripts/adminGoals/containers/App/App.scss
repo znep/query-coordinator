@@ -63,6 +63,7 @@
   .modal-content {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 0;
 
     .Select-menu-outer {
       left: 0;
@@ -70,6 +71,11 @@
 
     .visibility-select {
       width: 100px;
+      display: inline-flex;
+    }
+
+    .override-select {
+      width: 200px;
       display: inline-flex;
     }
 
@@ -102,8 +108,7 @@
 
   .modal-footer {
     position: relative;
-    margin: -1rem;
-    margin-top: 30px;
+    margin: 0 -1rem -1rem -1rem;
     width: auto;
 
     .link-container {
@@ -162,6 +167,10 @@
   button {
     float: right;
   }
+}
+
+.modal-content.bulk-edit-modal-content {
+  min-height: 400px;
 }
 
 .datepicker-wrapper {

@@ -15,7 +15,8 @@ export default createSelector(
     is_public: getSameValue(goals, 'is_public'),
     prevailing_measure: {
       start: getSameValue(goals, 'prevailing_measure', 'start'),
-      end: getSameValue(goals, 'prevailing_measure', 'end')
+      end: getSameValue(goals, 'prevailing_measure', 'end'),
+      progress_override: getSameValue(goals, 'prevailing_measure', 'progress_override')
     }
   })
 );

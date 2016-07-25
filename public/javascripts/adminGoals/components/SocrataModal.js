@@ -8,7 +8,7 @@ import classNames from 'classnames/bind';
  */
 export function Header(props) {
   return (
-    <header className="modal-header">
+    <header className={ `modal-header ${props.className || ''}` }>
       <h1 className="h5 modal-header-title">
         { props.title }
       </h1>
@@ -21,7 +21,7 @@ export function Header(props) {
 
 export function Content(props) {
   return (
-    <section className="modal-content">
+    <section className={ `modal-content ${props.className || ''}` }>
       { props.children }
     </section>
   );
@@ -29,7 +29,7 @@ export function Content(props) {
 
 export function Footer(props) {
   return (
-    <footer className="modal-footer">
+    <footer className={ `modal-footer ${props.className || ''}` }>
       <div className="modal-footer-actions">
         { props.children }
       </div>
@@ -48,7 +48,8 @@ export function Modal(props) {
   const modalClasses = classNames({
     modal: true,
     'modal-overlay': props.overlay !== false,
-    'modal-full': props.fullScreen
+    'modal-full': props.fullScreen,
+    [props.className]: true
   });
 
   return (

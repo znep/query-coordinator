@@ -48,26 +48,26 @@ class ApplicationHelperTest < ActionView::TestCase
     assert(application_helper.get_ga_tracking_code =~ /UA-51039907-4/)
   end
 
-  def stub_user(display_name, role)
-    user = User.new('roleName' => role, 'displayName' => display_name)
+  def stub_user(user_id, role)
+    user = User.new('roleName' => role, 'id' => user_id)
     application_helper.stubs(:current_user => user)
   end
 
-  def test_find_user_name_and_role
-    stub_user('john', 'admin')
-    assert_match(application_helper.find_user_name, 'john')
+  def test_find_user_id_and_role
+    stub_user('tugg-ikce', 'admin')
+    assert_match(application_helper.find_user_id, 'tugg-ikce')
     assert_match(application_helper.find_user_role, 'admin')
 
     stub_user(nil, 'publisher')
-    assert_match(application_helper.find_user_name, 'none')
+    assert_match(application_helper.find_user_id, 'none')
     assert_match(application_helper.find_user_role, 'publisher')
 
-    stub_user('jane', nil)
-    assert_match(application_helper.find_user_name, 'jane')
+    stub_user('abcd-efgh', nil)
+    assert_match(application_helper.find_user_id, 'abcd-efgh')
     assert_match(application_helper.find_user_role, 'none')
 
     application_helper.stubs(:current_user => nil)
-    assert_match(application_helper.find_user_name, 'none')
+    assert_match(application_helper.find_user_id, 'none')
     assert_match(application_helper.find_user_role, 'none')
   end
 
@@ -96,15 +96,15 @@ class ApplicationHelperTest < ActionView::TestCase
     general_extra_dimension_regex = /_gaSocrata\('socrata\.send', 'pageview', extraDimensions\);/
     assert(application_helper.render_ga_tracking =~ general_extra_dimension_regex)
 
-    stub_user('john', 'admin')
+    stub_user('abcd-efgh', 'admin')
     generated_admin_present = application_helper.render_ga_tracking
-    assert(generated_admin_present =~ /"dimension2":"john"/)
     assert(generated_admin_present =~ /"dimension3":"admin"/)
+    assert(generated_admin_present =~ /"dimension5":"abcd-efgh"/)
 
     application_helper.stubs(:current_user => nil)
     generated_no_user = application_helper.render_ga_tracking
-    assert(generated_no_user =~ /"dimension2":"none"/)
     assert(generated_no_user =~ /"dimension3":"none"/)
+    assert(generated_no_user =~ /"dimension5":"none"/)
   end
 
   def test_render_airbrake_shim_does_not_render

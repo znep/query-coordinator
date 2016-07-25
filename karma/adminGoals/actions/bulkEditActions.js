@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';
@@ -14,14 +15,11 @@ import {
   CACHED_GOALS_UPDATED
 } from 'actionTypes'
 
-const GOALS = [
-  { id: 'a', is_public: false },
-  { id: 'b', is_public: true }
-];
+const START_TIME = moment.utc().toISOString();
 
-const SERVER_RESPONDS = [
-  { url: '/stat/api/v1/goals/a', respond: { is_public: true } },
-  { url: '/stat/api/v1/goals/b', respond: { is_public: true } }
+const GOALS = [
+  { id: 'a', is_public: false, start: moment.utc().add(1, 'day').toISOString() },
+  { id: 'b', is_public: true,  start: moment.utc().toISOString() }
 ];
 
 const mockStore = configureStore([thunk]);
@@ -54,8 +52,8 @@ describe('actions/bulkEditActions', () => {
   });
 
   it('updateMultipleGoals should update given goals', (done) => {
-    server.respondWith(/goals/, JSON.stringify({ is_public: true }));
-    server.respondWith(/goals/, JSON.stringify({ is_public: true }));
+    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
+    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
     store.dispatch(updateMultipleGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
       const [ started, updateGoals, succeeded ] = store.getActions();
@@ -69,6 +67,9 @@ describe('actions/bulkEditActions', () => {
 
       expect(updateGoals.goals[0].is_public).to.eq(true);
       expect(updateGoals.goals[1].is_public).to.eq(true);
+
+      expect(updateGoals.goals[0].prevailing_measure.start).to.eq(START_TIME);
+      expect(updateGoals.goals[1].prevailing_measure.start).to.eq(START_TIME);
 
       expect(succeeded.goalIds.length).to.eq(2);
       done();

@@ -165,7 +165,7 @@ class GoalQuickEdit extends React.Component {
                   { this.props.translations.getIn(['admin', 'quick_edit', 'visibility']) }
                 </label>
                 <Select
-                  className="visibilitySelect"
+                  className="visibility-select"
                   options={ visibilityOptions }
                   value={ this.state.visibility }
                   onChange={ this.onVisibilityChange.bind(this) }

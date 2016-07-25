@@ -1716,6 +1716,14 @@ class View < Model
       "title='#{rating}'><span>#{rating}</span></div>"
   end
 
+  def get_preview_image_url(cookie_string, request_id)
+    if story?
+      Storyteller.get_tile_image(id, cookie_string, request_id)
+    elsif previewImageId
+      "/api/views/#{id}/files/#{previewImageId}"
+    end
+  end
+
   def custom_image(size = 'medium')
     if self.iconUrl
       if self.iconUrl.start_with?('fileId:')

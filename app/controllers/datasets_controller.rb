@@ -117,7 +117,11 @@ class DatasetsController < ApplicationController
       end
 
       begin
-        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+        @featured_content = dataset_landing_page.get_featured_content(
+          params[:id],
+          forwardable_session_cookies,
+          request_id
+        )
       rescue CoreServer::CoreServerError => e
         @featured_content = []
       end
@@ -781,7 +785,11 @@ class DatasetsController < ApplicationController
       end
 
       begin
-        @featured_content = dataset_landing_page.get_featured_content(params[:id])
+        @featured_content = dataset_landing_page.get_featured_content(
+          params[:id],
+          forwardable_session_cookies,
+          request_id
+        )
       rescue CoreServer::CoreServerError => e
         @featured_content = []
       end

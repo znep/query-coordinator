@@ -258,7 +258,13 @@ describe DatasetLandingPage do
         and_return(formatted_featured_item).
         exactly(3).times
 
-      expect(dataset_landing_page.get_featured_content('view-wooo').length).to eq(3)
+      result = dataset_landing_page.get_featured_content(
+        'view-wooo',
+        'cookies',
+        'request_id'
+      )
+
+      expect(result.length).to eq(3)
     end
   end
 
@@ -270,7 +276,11 @@ describe DatasetLandingPage do
         and_return(formatted_featured_item).
         exactly(1).times
 
-      result = dataset_landing_page.get_formatted_view_widget_by_id('abcd-1234')
+      result = dataset_landing_page.get_formatted_view_widget_by_id(
+        'abcd-1234',
+        'cookies',
+        'request_id'
+      )
 
       expect(result).to eq(formatted_featured_item)
     end

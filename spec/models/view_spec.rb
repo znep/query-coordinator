@@ -138,4 +138,27 @@ describe View do
       expect(View.new(view_data).featured_content).to eq([1, 2, 3])
     end
   end
+
+  describe '.get_preview_image_url' do
+    it 'returns the url for stories' do
+      view = View.new({ 'id' => '1234-5678', 'previewImageId' => 'awesome-image-id' })
+      expect(view).to receive(:story?).and_return(true)
+      expect(Storyteller).to receive(:get_tile_image).and_return('neat-picture')
+
+      expect(view.get_preview_image_url('cookies', 'request_id')).to eq('neat-picture')
+    end
+
+    it 'returns the url when previewImageId is present' do
+      view_data = { 'id' => '1234-5678', 'previewImageId' => 'awesome-image-id' }
+      expected_url = '/api/views/1234-5678/files/awesome-image-id'
+
+      expect(View.new(view_data).get_preview_image_url('cookies', 'request_id')).to eq(expected_url)
+    end
+
+    it 'returns nil if the previewImageId is not present' do
+      view_data = { 'id' => '1234-5678' }
+
+      expect(View.new(view_data).get_preview_image_url('cookies', 'request_id')).to be_nil
+    end
+  end
 end

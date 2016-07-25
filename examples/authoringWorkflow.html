@@ -56,6 +56,13 @@
         'https://tileserver3.api.us.test-socrata.com',
       ];
 
+      var axisLabels = {
+        top: 'Top Axis Label',
+        right: 'Right Axis Label',
+        bottom: 'Bottom Axis Label',
+        left: 'Left Axis Label'
+      };
+
       var choroplethVif = {
         configuration: {
           tileserverHosts: productionTileServerHosts
@@ -114,20 +121,40 @@
 
       var iowaMathAndReadingProficiency = {
         configuration: {
-          tileserverHosts: stagingTileServerHosts
+          axisLabels: axisLabels
         },
         series: [
           {
+            color: {
+              primary: 'pink',
+              highlight: 'indigo'
+            },
             dataSource: {
+              datasetUid: 'vc2c-3mst',
+              dimension: {
+                columnName: 'grade',
+                aggregationFunction: null
+              },
               domain: 'vertex-stories.test-socrata.com',
-              datasetUid: 'vc2c-3mst'
+              measure: {
+                columnName: 'proficient_2',
+                aggregationFunction: 'sum'
+              }
+            },
+            type: 'columnChart',
+            unit: {
+              one: 'Custom Unit',
+              other: 'Custom Units'
             }
           }
-        ]
+        ],
+        title: 'My Great Column Chart',
+        description: 'Iowa Math and Reading Proficienty'
       };
 
       var citizenSatisfaction = {
         configuration: {
+          axisLabels: axisLabels,
           tileserverHosts: stagingTileServerHosts
         },
         series: [
@@ -141,12 +168,12 @@
       };
 
       var authoringWorkflow = new AuthoringWorkflow(container, {
-        //vif: choroplethVif,
-        //vif: ufoSightingsVif,
+        // vif: choroplethVif,
+        // vif: ufoSightingsVif,
         vif: featureMapVif,
-        //vif: iowaMathAndReadingProficiency,
-        //vif: licenseeTax,
-        //vif: citizenSatisfaction,
+        // vif: iowaMathAndReadingProficiency,
+        // vif: licenseeTax,
+        // vif: citizenSatisfaction,
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);
           $chart.empty();

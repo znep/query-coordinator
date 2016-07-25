@@ -32,8 +32,16 @@ export default function timelineChart(state, action) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.units.one'));
-        setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
-        setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
+        let unitOne = _.get(series, 'unit.one', null);
+        let unitOther = _.get(series, 'unit.other', null);
+
+        if (unitOne === null) {
+          setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
+        }
+
+        if (unitOther === null) {
+          setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
+        }
       });
       break;
 

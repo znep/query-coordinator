@@ -54,11 +54,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'choroplethMap',
-      unit: {
-        one: translate('visualizations.common.units.one'),
-        other: translate('visualizations.common.units.other')
-      }
+      type: 'choroplethMap'
     }
   ],
   title: ''

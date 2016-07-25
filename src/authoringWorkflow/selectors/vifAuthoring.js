@@ -116,6 +116,11 @@ export const getDomain = createSelector(
   vif =>  _.get(vif, 'series[0].dataSource.domain')
 );
 
+export const getAxisLabels = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.axisLabels')
+);
+
 export const getXAxisScalingMode = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'configuration.xAxisScalingMode')

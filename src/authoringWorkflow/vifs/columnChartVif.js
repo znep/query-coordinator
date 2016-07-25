@@ -31,11 +31,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'columnChart',
-      unit: {
-        one: translate('visualizations.common.units.one'),
-        other: translate('visualizations.common.units.other')
-      }
+      type: 'columnChart'
     }
   ],
   title: ''

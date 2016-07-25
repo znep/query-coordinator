@@ -55,7 +55,9 @@ class NewReleaseUi
 
     @jenkins_build_number = wait_for_jenkins_build
 
-    puts("\nComplete. Manifest written to #{MANIFEST_FILE}")
+    @docker_tag = find_docker_tag(@jenkins_build_number)
+
+    puts("\nComplete.\nDocker tag is #{@docker_tag}\nManifest written to #{MANIFEST_FILE}")
   end
 
   private
@@ -112,6 +114,11 @@ Aborted.'
     dialog.msgbox("Build complete (Build #{build_number})")
 
     build_number
+  end
+
+  def find_docker_tag(release_build_number)
+    main_build_number = Jenkins.find_downstream_storyteller_build(release_build_number)
+    Jenkins.get_docker_tag_from_build(main_build_number)
   end
 
   def input_release_commit

@@ -19,7 +19,7 @@ class GoalQuickEdit extends React.Component {
 
     this.state = {
       hidden: true,
-      goal: Immutable.Map(this.props.goal || {}),
+      goal: this.props.goal || new Immutable.Map({}),
       visibility: 'public',
       noChangesMade: true,
       title: '',
@@ -227,7 +227,7 @@ class GoalQuickEdit extends React.Component {
 const mapStateToProps = state => ({
   translations: state.getIn(['goalTableData', 'translations']),
   goal: _.isNull(state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])) ?
-    Immutable.Map({}) :
+    new Immutable.Map({}) :
     state.getIn(['goalTableData', 'cachedGoals', state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])]),
   alert: state.getIn(['goalTableData', 'goalQuickEditAlert'])
 });

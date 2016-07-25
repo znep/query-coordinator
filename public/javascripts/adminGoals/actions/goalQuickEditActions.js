@@ -59,9 +59,7 @@ export function saveGoalQuickEdit(goalId, version, values) {
           dispatch(tableLoadPage());
         }
       }).
-      catch(() => {
-        dispatch(displayGoalQuickEditAlert({ label: 'error' }));
-      });
+      catch(() => dispatch(displayGoalQuickEditAlert({ label: 'error' })));// eslint-disable-line dot-notation
   };
 }
 

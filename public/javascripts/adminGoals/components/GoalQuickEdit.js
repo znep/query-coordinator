@@ -130,9 +130,9 @@ class GoalQuickEdit extends React.Component {
           });
         });
 
-      $(window).on('keyup', this.onWindowKeyUp);
+      $(window).on('keyup.socrata', this.onWindowKeyUp);
     } else {
-      $(window).off('keyup', this.onWindowKeyUp);
+      $(window).off('keyup.socrata', this.onWindowKeyUp);
     }
   }
 
@@ -141,12 +141,12 @@ class GoalQuickEdit extends React.Component {
       hidden: props.goal.isEmpty(),
       goal: props.goal,
       visibility: props.goal.get('is_public') ? 'public' : 'private',
-      title: props.goal.get('name'),
+      name: props.goal.get('name'),
       alert: props.alert ? props.alert.toJS() : {},
       noChangesMade: true,
       actionType: props.goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
-      subject: props.goal.getIn(['prevailing_measure', 'name']),
-      override: props.goal.getIn(['prevailing_measure', 'use_progress_override']) ?
+      prevailingMeasureName: props.goal.getIn(['prevailing_measure', 'name']),
+      prevailingMeasureProgressOverride: props.goal.getIn(['prevailing_measure', 'use_progress_override']) ?
         props.goal.getIn(['prevailing_measure', 'progress_override']) : 'none',
       unit: props.goal.getIn(['prevailing_measure', 'unit']),
       percentUnit: props.goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
@@ -184,7 +184,7 @@ class GoalQuickEdit extends React.Component {
 
   onOverrideChange(selected) {
     this.setState({
-      override: selected.value,
+      prevailingMeasureProgressOverride: selected.value,
       noChangesMade: false
     });
   }
@@ -196,9 +196,9 @@ class GoalQuickEdit extends React.Component {
     });
   }
 
-  onSubjectChange(event) {
+  onPrevailingMeasureNameChange(event) {
     this.setState({
-      subject: event.target.value,
+      prevailingMeasureName: event.target.value,
       noChangesMade: false
     });
   }
@@ -260,10 +260,11 @@ class GoalQuickEdit extends React.Component {
       this.props.goal.get('version'),
       {
         'is_public': this.state.visibility == 'public',
-        'name': this.state.title,
+        'name': this.state.name,
         'action': this.state.actionType,
-        'subject': this.state.subject,
-        'override': this.state.override == 'none' ? '' : this.state.override,
+        'subject': this.state.prevailingMeasureName,
+        'override': this.state.prevailingMeasureProgressOverride == 'none' ?
+          '' : this.state.prevailingMeasureProgressOverride,
         'unit': this.state.unit,
         'delta_is_percent': this.state.percentUnit == '%',
         'start': this.state.start.format('YYYY-MM-DDT00:00:00.000'),
@@ -277,22 +278,22 @@ class GoalQuickEdit extends React.Component {
     );
   }
 
-  onGoalTitleChange(event) {
+  onGoalNameChange(event) {
     this.setState({
       noChangesMade: false,
-      title: event.target.value
+      name: event.target.value
     });
   }
 
   renderSubjectPart() {
     return <div className="form-line measure-subject">
       <label className="inline-label">
-        { this.props.translations.getIn(['admin', 'quick_edit', 'subject']) }
+        { this.props.translations.getIn(['admin', 'quick_edit', 'prevailing_measure_name']) }
       </label>
       <input
         className="text-input"
-        onChange={ this.onSubjectChange.bind(this) }
-        value={ this.state.subject } />
+        onChange={ this.onPrevailingMeasureNameChange.bind(this) }
+        value={ this.state.prevailingMeasureName } />
     </div>;
   }
 
@@ -358,7 +359,7 @@ class GoalQuickEdit extends React.Component {
       <Select
         className="form-select-wide"
         options={ this.overrideOptions }
-        value={ this.state.override }
+        value={ this.state.prevailingMeasureProgressOverride }
         onChange={ this.onOverrideChange.bind(this) }
         searchable={ false }
         clearable={ false } />
@@ -520,16 +521,16 @@ class GoalQuickEdit extends React.Component {
           <QuickEditAlert { ...this.state.alert }/>
           <div className="goal-quick-edit-form">
             <form onSubmit={ this.save.bind(this) }>
-              <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_title']) }</h5>
+              <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_name']) }</h5>
 
               <div className="form-line">
                 <label className="inline-label">
-                  { this.props.translations.getIn(['admin', 'quick_edit', 'goal_title']) }
+                  { this.props.translations.getIn(['admin', 'quick_edit', 'goal_name']) }
                 </label>
                 <input
                   className="text-input"
-                  value={ this.state.title }
-                  onChange={ this.onGoalTitleChange.bind(this) }/>
+                  value={ this.state.name }
+                  onChange={ this.onGoalNameChange.bind(this) }/>
               </div>
 
               <div className="form-line">

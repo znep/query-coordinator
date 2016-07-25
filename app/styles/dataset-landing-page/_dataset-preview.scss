@@ -8,13 +8,23 @@
     }
   }
 
-  #table-container {
+  .table-contents {
     background: $white;
     border: 1px $light-grey-4 solid;
     border-bottom-width: 2px;
+    height: 668px;
 
-    .socrata-table {
-      height: 606px;
+    .table-spinner {
+      display: flex;
+      height: 100%;
+
+      .spinner-default {
+        margin: auto;
+      }
+    }
+
+    #table-container {
+      height: 100%;
     }
 
     .alert.error {

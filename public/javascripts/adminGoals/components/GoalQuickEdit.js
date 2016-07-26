@@ -75,7 +75,9 @@ class GoalQuickEdit extends React.Component {
     });
   }
 
-  save() {
+  save(event) {
+    event.preventDefault();
+
     this.props.saveGoalQuickEdit(
       this.props.goal.get('id'),
       this.props.goal.get('version'),
@@ -139,7 +141,7 @@ class GoalQuickEdit extends React.Component {
         <section className="modal-content">
           <QuickEditAlert { ...this.state.alert }/>
           <div className="goal-quick-edit-form">
-            <form>
+            <form onSubmit={ this.save.bind(this) }>
               <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_title']) }</h5>
 
               <div className="form-line">

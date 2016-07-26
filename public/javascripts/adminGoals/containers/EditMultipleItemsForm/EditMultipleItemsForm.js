@@ -173,7 +173,7 @@ class EditMultipleItemsForm extends React.Component {
         <label className="block-label">{ label }</label>
         <div>
           <Select
-            className="visibility-select"
+            className="form-select-small"
             clearable={ false }
             searchable={ false }
             onChange={ this.updateVisibility }
@@ -199,7 +199,7 @@ class EditMultipleItemsForm extends React.Component {
         <label className="block-label">{ label }</label>
         <div>
           <Select
-            className="override-select"
+            className="form-select-medium"
             clearable={ false }
             searchable={ false }
             onChange={ this.updateOverride }

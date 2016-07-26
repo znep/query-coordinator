@@ -69,13 +69,18 @@
       left: 0;
     }
 
-    .visibility-select {
-      width: 100px;
+    .form-select-small {
+      width: 150px;
       display: inline-flex;
     }
 
-    .override-select {
-      width: 200px;
+    .form-select-medium {
+      width: 250px;
+      display: inline-flex;
+    }
+
+    .form-select-wide {
+      width: 300px;
       display: inline-flex;
     }
 
@@ -90,42 +95,12 @@
         padding-right: 20px;
       }
 
-      .form-select-small {
-        width: 150px;
-        display: inline-flex;
-      }
-
-      .form-select-wide {
-        width: 300px;
-        display: inline-flex;
-      }
-
-      .datepicker-wrapper {
-        position: relative;
-        display: inline-block;
-        margin-right: 20px;
-        width: 140px;
-
-        .text-input {
-          margin-bottom: 0;
-        }
-
-        .icon-date {
-          position: absolute;
-          top: 50%;
-          margin-top: -12px;
-          left: 10px;
-        }
-
-        .datepicker-input {
-          padding-left: 30px;
-          width: 140px;
-          background: transparent;
-        }
-      }
-
       .text-input {
         width: 300px;
+      }
+
+      .datepicker-input.text-input {
+        width: 140px;
       }
     }
 

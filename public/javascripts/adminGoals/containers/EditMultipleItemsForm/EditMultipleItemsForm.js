@@ -315,7 +315,7 @@ const mapStateToProps = state => ({
   showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage'])
 });
 
-const mapDispatchToProps = (dispatch, props) => ({
+const mapDispatchToProps = (dispatch) => ({
   updateFormData: (newData) => dispatch(updateMultipleItemsFormData(newData)),
   dismissModal: () => dispatch(closeEditMultipleItemsModal()),
   updateGoals: (goals, data) => dispatch(updateMultipleGoals(goals, data))

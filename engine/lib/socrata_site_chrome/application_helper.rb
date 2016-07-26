@@ -43,11 +43,7 @@ module SocrataSiteChrome
 
     def copyright
       copy_with_year = "\u00A9 #{Time.now.year}"
-      if (footer_title && !footer_title.empty?) then
-        "#{copy_with_year}, #{footer_title}"
-      else
-        copy_with_year
-      end
+      footer_title.present? ? "#{copy_with_year}, #{footer_title}" : copy_with_year
     end
 
     def show_copyright?

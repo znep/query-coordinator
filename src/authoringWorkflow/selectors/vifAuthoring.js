@@ -180,6 +180,25 @@ export const isValidColumnChartVif = createSelector(
   }
 );
 
+export const isHistogram = createSelector(
+  getVisualizationType,
+  type => type === 'histogram'
+);
+
+export const isValidHistogramVif = createSelector(
+  getDimension,
+  getMeasure,
+  getDatasetUid,
+  getDomain,
+  (dimension, measure, datasetUid, domain) => {
+    var hasDimension = _.isString(_.get(dimension, 'columnName'));
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
+  }
+);
+
 export const isFeatureMap = createSelector(
   getVisualizationType,
   type => type === 'featureMap'
@@ -226,6 +245,8 @@ export const isInsertableVisualization = createSelector(
   isValidFeatureMapVif,
   isTimelineChart,
   isValidTimelineChartVif,
+  isHistogram,
+  isValidHistogramVif,
   getShowCenteringAndZoomingSaveMessage,
   (
     isChoroplethMap,
@@ -236,13 +257,16 @@ export const isInsertableVisualization = createSelector(
     validFeatureMap,
     isTimelineChart,
     validTimelineChart,
+    isHistogram,
+    validHistogramVif,
     showCenteringAndZoomingSaveMessage
   ) => {
     return !showCenteringAndZoomingSaveMessage && (
       isChoroplethMap && validChoropleth ||
       isColumnChart && validColumnChart ||
       isFeatureMap && validFeatureMap ||
-      isTimelineChart && validTimelineChart
+      isTimelineChart && validTimelineChart ||
+      isHistogram && validHistogramVif
     );
   }
 );

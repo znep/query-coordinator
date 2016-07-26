@@ -175,6 +175,7 @@ export default {
       error_column_chart_exceeded_max_column_count_without_pan: 'For optimal performance and legibility column charts for which panning is disabled are limited to {0} columns. Enable panning or use filters to render a more specific chart.'
     },
     histogram: {
+      title: 'Histogram',
       no_value: 'No value',
       default_series_label: 'Value',
       //TODO We've disabled log scales in histogram until we can figure out how we're going to handle these invalid domains.

@@ -5,7 +5,16 @@ import styleguide from 'socrata-styleguide';
 
 import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
-import { isColumnChart, isFeatureMap, isTimelineChart, isChoroplethMap, getUnitOne, getUnitOther, getFlyoutTitleColumn } from '../selectors/vifAuthoring';
+import {
+  getFlyoutTitleColumn,
+  getUnitOne,
+  getUnitOther,
+  isChoroplethMap,
+  isColumnChart,
+  isFeatureMap,
+  isHistogram,
+  isTimelineChart
+} from '../selectors/vifAuthoring';
 import { setUnitsOne, setUnitsOther, setFlyoutTitle } from '../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
@@ -56,6 +65,10 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return this.units();
   },
 
+  histogram() {
+    return this.units();
+  },
+
   timelineChart() {
     return this.units();
   },
@@ -97,6 +110,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
       configuration = this.choroplethMap();
     } else if (isColumnChart(vifAuthoring)) {
       configuration = this.columnChart();
+    } else if (isHistogram(vifAuthoring)) {
+      configuration = this.histogram();
     } else if (isFeatureMap(vifAuthoring)) {
       configuration = this.featureMap();
     } else if (isTimelineChart(vifAuthoring)) {

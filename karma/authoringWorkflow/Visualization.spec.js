@@ -18,41 +18,39 @@ function defaultProps() {
   }
 };
 
-function rendersChartType(props, jqueryFunctionName) {
-  var type = _.get(props.vif, 'series[0].type');
-  it(`calls $.fn.${type}`, function() {
-    var spy = sinon.stub($.fn, jqueryFunctionName);
-    var element = renderComponent(Visualization, props);
+// Replace chart implementations
+// with Sinon stubs.
+function stubCharts() {
+  const stubbedCharts = [
+    'socrataSvgColumnChart',
+    'socrataSvgTimelineChart',
+    'socrataSvgHistogram',
+    'socrataSvgFeatureMap',
+    'socrataChoroplethMap'
+  ];
+  var originalChartImplementations;
 
-    sinon.assert.calledOnce(spy);
+  beforeEach(function() {
+    originalChartImplementations = _.pick($.fn, stubbedCharts);
+    stubbedCharts.forEach((fnName) => $.fn[fnName] = sinon.stub());
+  });
+
+  afterEach(function() {
+    _.assign($.fn, originalChartImplementations);
+  });
+}
+
+function rendersChartType(props, jqueryFunctionName) {
+  it(`calls $.fn.${jqueryFunctionName}`, function() {
+    renderComponent(Visualization, props);
+    sinon.assert.calledOnce($.fn[jqueryFunctionName]);
   });
 }
 
 describe('Visualization', function() {
-  var cachedSvgColumnChart;
-  var cachedSvgTimelineChart;
-  var cachedSvgFeatureMap;
-  var cachedChoroplethMap;
-
-  beforeEach(function() {
-    cachedSvgColumnChart = $.fn.socrataSvgColumnChart;
-    $.fn.socrataSvgColumnChart = _.noop;
-
-    cachedSvgTimelineChart = $.fn.socrataSvgTimelineChart;
-    $.fn.socrataSvgTimelineChart = _.noop;
-
-    cachedSvgFeatureMap = $.fn.socrataSvgFeatureMap;
-    $.fn.socrataSvgFeatureMap = _.noop;
-
-    cachedChoroplethMap = $.fn.socrataChoroplethMap;
-    $.fn.socrataChoroplethMap = _.noop;
-  });
+  stubCharts();
 
   afterEach(function() {
-    $.fn.socrataSvgColumnChart = cachedSvgColumnChart;
-    $.fn.socrataSvgTimelineChart = cachedSvgTimelineChart;
-    $.fn.socrataSvgFeatureMap = cachedSvgFeatureMap;
-    $.fn.socrataChoroplethMap = cachedChoroplethMap;
     $('#socrata-row-inspector').remove();
   });
 
@@ -74,6 +72,18 @@ describe('Visualization', function() {
       _.set(props, 'vif.series[0].dataSource.domain','example.com');
 
       rendersChartType(props, 'socrataSvgColumnChart');
+    });
+
+    describe('when rendering a histogram', function() {
+      var props = defaultProps();
+      _.set(props, 'vif.series[0].type', 'histogram');
+
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName', 'example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
+
+      rendersChartType(props, 'socrataSvgHistogram');
     });
 
     describe('when rendering a timelineChart', function() {

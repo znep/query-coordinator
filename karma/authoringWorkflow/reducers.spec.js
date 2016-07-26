@@ -80,16 +80,16 @@ describe('AuthoringWorkflow reducer', function() {
         });
       }
 
-      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'choroplethMap', 'featureMap', 'timelineChart']);
-      shouldSetVif('setDescription', 'Description', 'description', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
-      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'choroplethMap', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setDescription', 'Description', 'description', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['choroplethMap', 'columnChart', 'timelineChart']);
+      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['choroplethMap', 'columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setMeasureAggregation', 'count', 'series[0].dataSource.measure.aggregationFunction');
 
 
-      shouldSetVif('setBaseColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart']);
-      shouldSetVif('setBaseColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart']);
+      shouldSetVif('setBaseColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setBaseColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart', 'histogram']);
 
       shouldSetVif('setPointColor', '#00F', 'configuration.pointColor', ['featureMap']);
 
@@ -99,13 +99,13 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['choroplethMap', 'featureMap']);
 
-      shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart']);
-      shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart']);
-      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart']);
-      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart']);
+      shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
-      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart']);
+      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
 
       shouldSetVif('setFlyoutTitle', 'columnName', 'configuration.flyoutTitleColumnName', ['featureMap']);
 

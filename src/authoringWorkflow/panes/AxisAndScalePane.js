@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 
 import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
-import { isColumnChart, isTimelineChart } from '../selectors/vifAuthoring';
+import {
+  isColumnChart,
+  isHistogram,
+  isTimelineChart
+} from '../selectors/vifAuthoring';
 import CustomizationTabPane from '../CustomizationTabPane';
 import { setLabelTop, setLabelBottom, setLabelLeft, setLabelRight } from '../actions';
 
@@ -30,6 +34,10 @@ export var AxisAndScalePane = React.createClass({
     return this.visualizationLabels();
   },
 
+  histogram() {
+    return this.visualizationLabels();
+  },
+
   timelineChart() {
     return this.visualizationLabels();
   },
@@ -40,6 +48,8 @@ export var AxisAndScalePane = React.createClass({
 
     if (isColumnChart(vifAuthoring)) {
       configuration = this.columnChart();
+    } else if (isHistogram(vifAuthoring)) {
+      configuration = this.histogram();
     } else if (isTimelineChart(vifAuthoring)) {
       configuration = this.timelineChart();
     }

@@ -84,6 +84,20 @@ describe('ColorsAndStylePane', function() {
     });
   });
 
+  describe('histogram', function() {
+    beforeEach(function() {
+      var renderedParts = render('histogram');
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+
+    describe('rendering', function() {
+      it('renders an input', function() {
+        expect(component.querySelector('.color-picker')).to.exist;
+      });
+    });
+  });
+
   describe('featureMap', function() {
     beforeEach(function() {
       var renderedParts = render('featureMap');

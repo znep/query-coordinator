@@ -1,8 +1,9 @@
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization.js');
-var _ = require('lodash');
-var DataTypeFormatter = require('./DataTypeFormatter.js');
+const utils = require('socrata-utils');
+const $ = require('jquery');
+const _ = require('lodash');
+const SvgVisualization = require('./SvgVisualization.js');
+const DataTypeFormatter = require('./DataTypeFormatter.js');
+const I18n = require('../I18n');
 
 module.exports = function Table(element, vif) {
   _.extend(this, new SvgVisualization(element, vif));
@@ -34,14 +35,6 @@ module.exports = function Table(element, vif) {
   var activeResizeColumnName = null;
   var activeResizeXStart = 0;
   var activeResizeXEnd = 0;
-
-  utils.assertHasProperties(
-    vif,
-    'configuration.localization.latitude',
-    'configuration.localization.longitude',
-    'configuration.localization.unable_to_render',
-    'configuration.localization.no_column_description'
-  );
 
   _attachEvents();
 
@@ -83,7 +76,9 @@ module.exports = function Table(element, vif) {
         find('.visualization-container').
           removeClass('loaded');
 
-    superRenderError(_.get(vif, 'configuration.localization.unable_to_render'));
+    superRenderError(
+      I18n.translate('visualizations.table.error_unable_to_render')
+    );
   };
 
   /**
@@ -196,10 +191,6 @@ module.exports = function Table(element, vif) {
           DataTypeFormatter.renderCell(
             cell,
             column,
-            {
-              latitude: vif.configuration.localization.latitude,
-              longitude: vif.configuration.localization.longitude
-            },
             _domain,
             _datasetUid
           ),
@@ -395,7 +386,7 @@ module.exports = function Table(element, vif) {
       content = content.format({
         title: title,
         description: description,
-        noColumnDescription: vif.configuration.localization.no_column_description
+        noColumnDescription: I18n.translate('visualizations.table.no_column_description')
       });
 
       self.emitEvent(

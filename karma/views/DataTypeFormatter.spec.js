@@ -548,8 +548,7 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
       POINT_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderGeoCellHTML(
           value,
-          columnMetadata,
-          { latitude: 'translation for latitude', longitude: 'translation for longitude' }
+          columnMetadata
         );
         var pointCellSpans = cellContent.split(',').map(function(span) {
           return span.trim();
@@ -559,10 +558,10 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
 
         expect(pointCellSpans[0]).to.match(COORDINATES_HTML_REGEX);
         var matchLat = COORDINATES_HTML_REGEX.exec(pointCellSpans[0]);
-        expect(matchLat[1]).to.equal('translation for latitude');
+        expect(matchLat[1]).to.equal('Latitude');
         expect(pointCellSpans[1]).to.match(COORDINATES_HTML_REGEX);
         var matchLng = COORDINATES_HTML_REGEX.exec(pointCellSpans[1]);
-        expect(matchLng[1]).to.equal('translation for longitude');
+        expect(matchLng[1]).to.equal('Longitude');
       });
     });
 

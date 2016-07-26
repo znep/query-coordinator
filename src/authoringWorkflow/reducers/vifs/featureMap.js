@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 
-import { translate } from '../../I18n';
+import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setValueOrDefaultValue } from '../../helpers';
 import {
@@ -79,13 +79,13 @@ export default function featureMap(state, action) {
 
     case SET_UNITS_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.units.one'));
+        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNITS_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.units.other'));
+        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
 

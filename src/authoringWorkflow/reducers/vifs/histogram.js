@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 
-import { translate } from '../../I18n';
+import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setValueOrDeleteProperty, setValueOrDefaultValue, isNonEmptyString } from '../../helpers';
 import {

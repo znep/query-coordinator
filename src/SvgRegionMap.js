@@ -1,20 +1,20 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var SvgRegionMap = require('./views/SvgRegionMap');
-var MetadataProvider = require('./dataProviders/MetadataProvider');
-var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var VifHelpers = require('./helpers/VifHelpers');
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const SvgRegionMap = require('./views/SvgRegionMap');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
+const GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const VifHelpers = require('./helpers/VifHelpers');
 
-var NAME_ALIAS = '__NAME_ALIAS__';
-var VALUE_ALIAS = '__VALUE_ALIAS__';
-var BASE_QUERY = (
+const NAME_ALIAS = '__NAME_ALIAS__';
+const VALUE_ALIAS = '__VALUE_ALIAS__';
+const BASE_QUERY = (
   'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2} DESC NULL ' +
   'LAST LIMIT 200'
 );
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata Region Map Visualization from the
@@ -444,7 +444,6 @@ $.fn.socrataSvgRegionMap = function(vif) {
 
     utils.assertHasProperties(
       vifToRender,
-      'configuration.localization',
       'configuration.computedColumnName',
       'configuration.shapefile.primaryKey',
       'configuration.shapefile.uid',

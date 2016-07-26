@@ -601,7 +601,7 @@ $.fn.socrataFeatureMap = function(vif) {
             // we should format it slightly differently.
             formattedRowData[columnMetadata.position] = {
               column: columnName,
-              value: DataTypeFormatter.renderCell(columnValue, columnMetadata, vif.configuration.localization),
+              value: DataTypeFormatter.renderCell(columnValue, columnMetadata),
               format: _.isObject(columnValue) ? undefined : columnMetadata.format,
               physicalDatatype: columnMetadata.physicalDatatype
             };

@@ -1,22 +1,13 @@
-var utils = require('socrata-utils');
-var _ = require('lodash');
-var $ = require('jquery');
+const utils = require('socrata-utils');
+const _ = require('lodash');
+const $ = require('jquery');
+const I18n = require('../I18n');
 
-var ROW_INSPECTOR_WIDTH = 350;
-var ROW_INSPECTOR_MAX_CONTENT_HEIGHT = 250;
-var ROW_INSPECTOR_WINDOW_PADDING = 22;
-var ROW_INSPECTOR_PADDING_COMPENSATION = 3;
-var ROW_INSPECTOR_HINT_WIDTH = 10;
-
-var ROW_INSPECTOR_DEFAULT_TRANSLATIONS = {
-  previous: 'Previous',
-  next: 'Next',
-  default_label_unit: 'Row',
-  showing: 'Showing {0}',
-  paging: '{0} of {1}',
-  longitude: 'Longitude',
-  latitude: 'Latitude'
-};
+const ROW_INSPECTOR_WIDTH = 350;
+const ROW_INSPECTOR_MAX_CONTENT_HEIGHT = 250;
+const ROW_INSPECTOR_WINDOW_PADDING = 22;
+const ROW_INSPECTOR_PADDING_COMPENSATION = 3;
+const ROW_INSPECTOR_HINT_WIDTH = 10;
 
 var _$rowInspectorContainer;
 var _$rowInspectorToolPanel;
@@ -99,10 +90,6 @@ var _$target;
  */
 function setup(config, $target) {
   _config = _.cloneDeep(config || {});
-
-  _config.localization = _config.localization || {};
-  _config.localization = _.merge({}, ROW_INSPECTOR_DEFAULT_TRANSLATIONS, _config.localization);
-
   _$target = $target || $('body');
 
   if (_$target.find('#socrata-row-inspector').length === 0) {
@@ -228,8 +215,12 @@ function setup(config, $target) {
 
   // Add translations
   if (!_config.isMobile) {
-    _$paginationButtonPrevious.find('span').text(_config.localization.previous);
-    _$paginationButtonNext.find('span').text(_config.localization.next);
+    _$paginationButtonPrevious.find('span').text(
+      I18n.translate('visualizations.row_inspector.previous')
+    );
+    _$paginationButtonNext.find('span').text(
+      I18n.translate('visualizations.row_inspector.next')
+    );
   }
 }
 
@@ -441,8 +432,14 @@ function _renderPagination() {
   var labelUnit = _state.labelUnit;
 
   if (numRows > 1) {
-    _$paginationMessage.text(_config.localization.showing.format(labelUnit));
-    _$paginationPosition.text(_config.localization.paging.format(_state.pageIndex + 1, numRows));
+    _$paginationMessage.text(
+      I18n.translate('visualizations.row_inspector.showing').
+        format(labelUnit)
+    );
+    _$paginationPosition.text(
+      I18n.translate('visualizations.row_inspector.paging').
+        format(_state.pageIndex + 1, numRows)
+    );
     _$paginationButtonPrevious.prop('disabled', _state.pageIndex === 0);
     _$paginationButtonNext.prop('disabled', _state.pageIndex === numRows - 1);
 
@@ -480,7 +477,7 @@ function _setState(payload) {
   _state = {
     rows: payload.error ? null : payload.data,
     titles: payload.error ? null : payload.titles,
-    labelUnit: payload.labelUnit || _config.localization.default_label_unit,
+    labelUnit: payload.labelUnit || I18n.translate('visualizations.row_inspector.default_label_unit'),
     error: payload.error,
     message: payload.message,
     position: payload.position,

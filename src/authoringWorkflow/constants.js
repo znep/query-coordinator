@@ -1,4 +1,4 @@
-import { translate } from './I18n';
+import { translate } from '../I18n';
 
 export const INPUT_DEBOUNCE_MILLISECONDS = 300;
 

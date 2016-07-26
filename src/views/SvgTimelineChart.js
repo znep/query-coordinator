@@ -1,22 +1,26 @@
-var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization');
-var d3 = require('d3');
-var _ = require('lodash');
-var $ = require('jquery');
+const utils = require('socrata-utils');
+const d3 = require('d3');
+const _ = require('lodash');
+const $ = require('jquery');
+const SvgVisualization = require('./SvgVisualization');
+const I18n = require('../I18n');
 
-var MARGINS = {
+// These values have been eyeballed to provide enough space for axis labels
+// that have been observed 'in the wild'. They may need to be adjusted slightly
+// in the future, but the adjustments will likely be small in scale.
+const MARGINS = {
   TOP: 16,
   RIGHT: 0,
   BOTTOM: 24,
   LEFT: 50
 };
-var FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-var DEFAULT_GRID_LINE_COLOR = '#ebebeb';
-var DIMENSION_LABEL_FONT_SIZE = 14;
-var MEASURE_LABEL_FONT_SIZE = 14;
-var MINIMUM_DESKTOP_DATUM_WIDTH = 20;
-var MINIMUM_MOBILE_DATUM_WIDTH = 50;
-var MAX_POINT_COUNT_WITHOUT_PAN = 500;
+const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+const DEFAULT_GRID_LINE_COLOR = '#ebebeb';
+const DIMENSION_LABEL_FONT_SIZE = 14;
+const MEASURE_LABEL_FONT_SIZE = 14;
+const MINIMUM_DESKTOP_DATUM_WIDTH = 20;
+const MINIMUM_MOBILE_DATUM_WIDTH = 50;
+const MAX_POINT_COUNT_WITHOUT_PAN = 500;
 
 /**
  * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
@@ -356,11 +360,9 @@ function SvgTimelineChart($element, vif) {
       if (maxPointCount > MAX_POINT_COUNT_WITHOUT_PAN) {
 
         self.renderError(
-          self.
-            getLocalization(
-              'error_timeline_chart_exceeded_max_point_count_without_pan'
-            ).
-            format(MAX_POINT_COUNT_WITHOUT_PAN)
+          I18n.translate(
+            'visualizations.timeline_chart.error_exceeded_max_point_count_without_pan'
+          ).format(MAX_POINT_COUNT_WITHOUT_PAN)
         );
         return;
       }
@@ -949,7 +951,8 @@ function SvgTimelineChart($element, vif) {
               indexOf('measure');
             var label = _.get(
               self.getVif(),
-              'series[{0}].label'.format(value.seriesIndex)
+              'series[{0}].label'.format(value.seriesIndex),
+              I18n.translate('visualizations.common.flyout_value_label')
             );
             var datumValue = value.datum[measureIndex];
             var datumValueString;
@@ -962,7 +965,9 @@ function SvgTimelineChart($element, vif) {
             var $valueCell;
 
             if (datumValue === null) {
-              datumValueString = self.getLocalization('no_value');
+              datumValueString = I18n.translate(
+                'visualizations.common.no_value'
+              );
             } else {
               datumValueString = '{0} {1}'.
                 format(

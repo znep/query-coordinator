@@ -1,21 +1,11 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const I18n = require('../I18n');
 
 module.exports = function Pager(element, vif) {
   var self = this;
   var lastRenderOptions;
-
-  utils.assertHasProperties(vif,
-    'configuration.localization.previous',
-    'configuration.localization.next',
-    'configuration.localization.no_rows',
-    'configuration.localization.only_row',
-    'configuration.localization.many_rows',
-    'configuration.localization.all_rows',
-    'unit.one',
-    'unit.other'
-  );
 
   this.$element = $(element);
 
@@ -49,15 +39,15 @@ module.exports = function Pager(element, vif) {
     var endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
-      message = vif.configuration.localization.no_rows;
+      message = I18n.translate('visualizations.table.no_rows');
     } else if (options.endIndex === options.startIndex + 1) {
-      message = vif.configuration.localization.only_row;
+      message = I18n.translate('visualizations.table.only_row');
     } else if (hasOnlyOnePage(options)) {
-      message = vif.configuration.localization.all_rows;
+      message = I18n.translate('visualizations.table.all_rows');
     } else if (!_.isFinite(options.datasetRowCount)) {
-      message = vif.configuration.localization.no_row_count;
+      message = I18n.translate('visualizations.table.no_row_count');
     } else {
-      message = vif.configuration.localization.many_rows;
+      message = I18n.translate('visualizations.table.many_rows');
     }
 
     message = message.format({
@@ -80,8 +70,8 @@ module.exports = function Pager(element, vif) {
     ].join('\n');
 
     return template.format({
-      previous: vif.configuration.localization.previous,
-      next: vif.configuration.localization.next,
+      previous: I18n.translate('visualizations.table.previous'),
+      next: I18n.translate('visualizations.table.next'),
       previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
       nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount) ? ' disabled' : ''
     });

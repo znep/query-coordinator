@@ -1,18 +1,19 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var SvgColumnChart = require('./views/SvgColumnChart');
-var SvgVisualization = require('./views/SvgVisualization');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var VifHelpers = require('./helpers/VifHelpers');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const SvgColumnChart = require('./views/SvgColumnChart');
+const SvgVisualization = require('./views/SvgVisualization');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const VifHelpers = require('./helpers/VifHelpers');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const I18n = require('./I18n');
 
-var MAX_COLUMN_COUNT = 1000;
-var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
-var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
-var AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const MAX_COLUMN_COUNT = 1000;
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
+const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
+const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(vif) {
   var $element = $(this);
@@ -77,7 +78,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
     }
 
     visualization.renderError(
-      visualization.getLocalization('error_column_chart_generic')
+      I18n.translate('visualizations.common.error_generic')
     );
   }
 
@@ -123,8 +124,8 @@ $.fn.socrataSvgColumnChart = function(vif) {
           if (overMaxRowCount) {
 
             visualization.renderError(
-              visualization.getLocalization(
-                'error_column_chart_exceeded_max_column_count'
+              I18n.translate(
+                'visualizations.column_chart.error_exceeded_max_column_count'
               ).format(MAX_COLUMN_COUNT)
             );
           } else {

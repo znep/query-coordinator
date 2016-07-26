@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "13.4.1",
+  "version": "14.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"

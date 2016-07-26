@@ -1,12 +1,12 @@
-var utils = require('socrata-utils');
-var d3 = require('d3');
-var ss = require('simple-statistics');
-var chroma = require('chroma-js');
-var $ = require('jquery');
-var _ = require('lodash');
-var L = require('leaflet');
-
-var SvgVisualization = require('./SvgVisualization');
+const utils = require('socrata-utils');
+const d3 = require('d3');
+const ss = require('simple-statistics');
+const chroma = require('chroma-js');
+const $ = require('jquery');
+const _ = require('lodash');
+const L = require('leaflet');
+const SvgVisualization = require('./SvgVisualization');
+const I18n = require('../I18n');
 
 function SvgRegionMap(element, vif) {
 
@@ -379,10 +379,16 @@ function SvgRegionMap(element, vif) {
       clientX: event.originalEvent.clientX,
       clientY: event.originalEvent.clientY,
       title: feature.properties[labelPropertyName],
-      valueLabel: self.getLocalization('flyout_amount_label'),
+      valueLabel: _.get(
+        self.getVif(),
+        'series[0].label',
+        I18n.translate('visualizations.common.flyout_value_label')
+      ),
       // value will be overridden below if there is one.
-      value: self.getLocalization('no_value'),
-      selectedNotice: self.getLocalization('flyout_selected_notice'),
+      value: I18n.translate('visualizations.common.no_value'),
+      selectedNotice: I18n.translate(
+        'visualizations.region_map.flyout_selected_notice'
+      ),
       selected: feature.properties[selectedPropertyName]
     };
     var value = feature.properties[valuePropertyName];

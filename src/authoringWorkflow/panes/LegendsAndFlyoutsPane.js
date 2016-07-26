@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styleguide from 'socrata-styleguide';
 
-import { translate } from '../I18n';
+import { translate } from '../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import {
   getFlyoutTitleColumn,

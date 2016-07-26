@@ -1,23 +1,23 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var moment = require('moment');
-var TimelineChart = require('./views/TimelineChart');
-var SvgTimelineChart = require('./views/SvgTimelineChart');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var VifHelpers = require('./helpers/VifHelpers');
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const moment = require('moment');
+const TimelineChart = require('./views/TimelineChart');
+const SvgTimelineChart = require('./views/SvgTimelineChart');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const VifHelpers = require('./helpers/VifHelpers');
+const I18n = require('./I18n');
 
-var MAX_POINT_COUNT = 1000;
-var MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
-var SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-var SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
-var PRECISION_BASE_QUERY = 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\'';
-var UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}';
-var AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}';
-var SOQL_DATE_GUARDS = '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)';
-
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const MAX_POINT_COUNT = 1000;
+const MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
+const PRECISION_BASE_QUERY = 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\'';
+const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}';
+const AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}';
+const SOQL_DATE_GUARDS = '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)';
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata ColumnChart Visualization from the
@@ -93,7 +93,7 @@ $.fn.socrataSvgTimelineChart = function(vif) {
     }
 
     visualization.renderError(
-      visualization.getLocalization('error_timeline_chart_generic')
+      I18n.translate('visualizations.common.error_generic')
     );
   }
 
@@ -139,8 +139,8 @@ $.fn.socrataSvgTimelineChart = function(vif) {
           if (overMaxRowCount) {
 
             visualization.renderError(
-              visualization.getLocalization(
-                'error_column_chart_exceeded_max_column_count'
+              I18n.translate(
+                'visualizations.timeline_chart.error_exceeded_max_point_count'
               ).format(MAX_POINT_COUNT)
             );
           } else {

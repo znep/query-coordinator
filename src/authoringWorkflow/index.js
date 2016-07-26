@@ -11,7 +11,7 @@ import reducer from './reducers';
 import vifs from './vifs';
 import defaultMetadata from './defaultMetadata';
 import AuthoringWorkflow from './AuthoringWorkflow';
-import { setLocale } from './I18n';
+import { setLocale } from '../I18n';
 
 import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { setDataSource } from './actions';

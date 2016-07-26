@@ -12,7 +12,7 @@ import '../views/SvgTimelineChart';
 import '../views/SvgFeatureMap';
 import '../views/ChoroplethMap';
 
-import { translate } from './I18n';
+import { translate } from '../I18n';
 import { requestCenterAndZoom } from './actions';
 import {
   hasVisualizationType,

@@ -68,10 +68,10 @@ describe('socrata.visualizations.views.RowInspector', function() {
     });
   }
 
-  function runTestCasesAndAssertTranslations(i18nStrings) {
+  function runTestCases() {
     it('should apply the correct translations to the html', function() {
-      assert.equal($rowInspector.find('.paging-btn.previous').text().trim(), i18nStrings.previous);
-      assert.equal($rowInspector.find('.paging-btn.next').text().trim(), i18nStrings.next);
+      assert.equal($rowInspector.find('.paging-btn.previous').text().trim(), 'Previous');
+      assert.equal($rowInspector.find('.paging-btn.next').text().trim(), 'Next');
     });
 
     describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function() {
@@ -179,33 +179,21 @@ describe('socrata.visualizations.views.RowInspector', function() {
   describe('setup', function() {
 
     describe('given no params', function() {
-
-      var i18nStrings = {
-        previous: 'Previous',
-        next: 'Next'
-      };
-
       beforeEach(function() {
         RowInspector.setup();
       });
 
-      runTestCasesAndAssertTranslations(i18nStrings);
+      runTestCases();
     });
 
     describe('given a configuration object', function() {
       describe('with i18n strings', function() {
-        var i18nStrings = {
-          previous: 'something resembling a previous button',
-          next: 'a next button'
-        };
 
         beforeEach(function() {
-          RowInspector.setup({
-            localization: i18nStrings
-          });
+          RowInspector.setup();
         });
 
-        runTestCasesAndAssertTranslations(i18nStrings);
+        runTestCases();
       });
     });
   });

@@ -1,22 +1,23 @@
-var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization');
-var L = require('leaflet');
-var _ = require('lodash');
-var $ = require('jquery');
-var SoqlHelpers = require('../dataProviders/SoqlHelpers');
+const utils = require('socrata-utils');
+const L = require('leaflet');
+const _ = require('lodash');
+const $ = require('jquery');
+const SvgVisualization = require('./SvgVisualization');
+const SoqlHelpers = require('../dataProviders/SoqlHelpers');
+const I18n = require('../I18n');
 
-var FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
-var FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
-var FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;
-var FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD = 6;
-var FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL = 200;
-var FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
-var FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
-var FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING = 1;
-var FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
-var FEATURE_MAP_DEFAULT_HOVER = true;
-var FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
-var FEATURE_MAP_DEFAULT_LOCATE_USER = false;
+const FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
+const FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
+const FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;
+const FEATURE_MAP_TILE_OVERLAP_ZOOM_THRESHOLD = 6;
+const FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL = 200;
+const FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
+const FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
+const FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING = 1;
+const FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
+const FEATURE_MAP_DEFAULT_HOVER = true;
+const FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
+const FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
 function SvgFeatureMap(element, vif) {
   _.extend(this, new SvgVisualization(element, vif));
@@ -517,8 +518,8 @@ function SvgFeatureMap(element, vif) {
         {
           icon: userCurrentPositionIcon,
           clickable: false,
-          title: self.getLocalization('user_current_position'),
-          alt: self.getLocalization('user_current_position')
+          title: I18n.translate('visualizations.common.map_user_current_position'),
+          alt: I18n.translate('visualizations.common.map_user_current_position')
         }
       );
 
@@ -674,7 +675,9 @@ function SvgFeatureMap(element, vif) {
         flyoutData.count,
         rowCountUnit
       ),
-      notice: self.getLocalization('flyout_click_to_inspect_notice'),
+      notice: I18n.translate(
+        'visualizations.feature_map.flyout_click_to_inspect_notice'
+      ),
       flyoutOffset: {
         left: event.originalEvent.clientX,
         top: event.originalEvent.clientY
@@ -684,9 +687,13 @@ function SvgFeatureMap(element, vif) {
     if (manyRows || denseData) {
 
       if (map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
-        payload.notice = self.getLocalization('flyout_filter_notice');
+        payload.notice = I18n.translate(
+          'visualizations.feature_map.flyout_filter_notice'
+        );
       } else {
-        payload.notice = self.getLocalization('flyout_filter_or_zoom_notice');
+        payload.notice = I18n.translate(
+          'visualizations.feature_map.flyout_filter_or_zoom_notice'
+        );
       }
 
       // If the tile we are hovering over has more points then the
@@ -695,13 +702,18 @@ function SvgFeatureMap(element, vif) {
       // prompt the user to filter and/or zoom in for accurate data.
       if (denseData) {
         payload.title = '{0} {1}'.format(
-          self.getLocalization('flyout_dense_data_notice'),
+          I18n.translate(
+            'visualizations.feature_map.flyout_dense_data_notice'
+          ),
           unitOther
         );
       }
     }
 
-    if (!_.get(vif, 'configuration.isMobile') || _.get(vif, 'configuration.isMobile') && (manyRows || denseData)) {
+    if (
+      !_.get(vif, 'configuration.isMobile') ||
+      (_.get(vif, 'configuration.isMobile') && (manyRows || denseData))
+    ) {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
         payload
@@ -712,7 +724,9 @@ function SvgFeatureMap(element, vif) {
   function showPanZoomDisabledWarningFlyout() {
     var payload = {
       element: mapPanZoomDisabledWarning[0],
-      title: self.getLocalization('flyout_pan_zoom_disabled_warning_title')
+      title: I18n.translate(
+        'visualizations.common.map_pan_zoom_disabled_warning_title'
+      )
     };
 
     self.emitEvent(
@@ -729,15 +743,21 @@ function SvgFeatureMap(element, vif) {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: self.getLocalization('flyout_click_to_locate_user_title'),
-        notice: self.getLocalization('flyout_click_to_locate_user_notice')
+        title: I18n.translate(
+          'visualizations.common.map_click_to_locate_user_title'
+        ),
+        notice: I18n.translate(
+          'visualizations.common.map_click_to_locate_user_notice'
+        )
       };
 
     } else if (locateUserStatus === 'busy') {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: self.getLocalization('flyout_locating_user_title'),
+        title: I18n.translate(
+          'visualizations.common.map_locating_user_title'
+        ),
         notice: null
       };
 
@@ -745,8 +765,12 @@ function SvgFeatureMap(element, vif) {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: self.getLocalization('flyout_locate_user_error_title'),
-        notice: self.getLocalization('flyout_locate_user_error_notice')
+        title: I18n.translate(
+          'visualizations.common.map_locate_user_error_title'
+        ),
+        notice: I18n.translate(
+          'visualizations.common.map_locate_user_error_notice'
+        )
       };
 
     }

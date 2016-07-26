@@ -13,10 +13,10 @@ var getDefaultStore = require('testStore').getDefaultStore;
 describe('components/GoalTableBody', function() {
   beforeEach(function() {
     var state = {
+      translations: translations,
       goalTableData: {
         goals: goals,
         dashboards: dashboards,
-        translations: translations,
         selectedRows: []
       }
     };

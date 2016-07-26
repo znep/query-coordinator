@@ -20,12 +20,12 @@ describe('components/Flyout', function() {
   });
 
   it('should be visible when mouse hovers', function() {
-    TestUtils.Simulate.mouseEnter(this.output.querySelectorAll('.custom-text')[0]);
+    TestUtils.Simulate.mouseEnter(this.output.querySelector('.custom-text').parentNode);
     expect(this.output.querySelectorAll('.flyout')[0].className).to.not.contain('flyout-hidden')
   });
 
   it('should not be visible when mouse leaves', function() {
-    TestUtils.Simulate.mouseLeave(this.output.querySelectorAll('.custom-text')[0]);
+    TestUtils.Simulate.mouseLeave(this.output.querySelector('.custom-text').parentNode);
     expect(this.output.querySelectorAll('.flyout')[0].className).to.contain('flyout-hidden')
   });
 });

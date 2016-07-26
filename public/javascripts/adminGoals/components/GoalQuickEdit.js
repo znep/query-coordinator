@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/goalQuickEditActions';
 import Select from 'react-select';
 import moment from 'moment';
-import QuickEditAlert from './Alert';
+import SocrataAlert from './SocrataAlert';
 import { fetchOptions } from '../constants';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -518,7 +518,7 @@ class GoalQuickEdit extends React.Component {
         </header>
 
         <section className="modal-content">
-          <QuickEditAlert { ...this.state.alert }/>
+          { this.state.alert.label ? <SocrataAlert { ...this.state.alert }/> : null }
           <div className="goal-quick-edit-form">
             <form onSubmit={ this.save.bind(this) }>
               <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_name']) }</h5>
@@ -634,11 +634,11 @@ class GoalQuickEdit extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.getIn(['goalTableData', 'translations']),
+  translations: state.get('translations'),
   goal: _.isNull(state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])) ?
     new Immutable.Map({}) :
     state.getIn(['goalTableData', 'cachedGoals', state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])]),
-  alert: state.getIn(['goalTableData', 'goalQuickEditAlert'])
+  alert: state.getIn(['goalTableData', 'goalTableAlert'])
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -5,6 +5,7 @@
 .npmrc
 .sass-cache
 /.idea/
+.vimrc
 app/styles/vendor
 dev-server/*.pid
 dev-server/logs

@@ -6,6 +6,36 @@
   }
 }
 
+.modal .alert {
+  margin: 5px 0 10px;
+}
+
+.sc-check-indicator {
+  display: inline;
+  margin-left: 10px;
+
+  .sc-check-indicator-revert { display: none; }
+
+  .btn {
+    border-color: #00BF9B;
+    background-color: #E5F9F5;
+    color: #00987c;
+
+    padding: 4px 6px;
+  }
+
+  &:hover {
+    .sc-check-indicator-check { display: none; }
+    .sc-check-indicator-revert { display: inline; }
+
+    .btn {
+      border-color: #E48424;
+      background-color: #FCF3EB;
+      color: #9e5c23;
+    }
+  }
+}
+
 .modal-container {
   .externalLink {
     text-decoration: none;
@@ -25,13 +55,16 @@
   }
 
   .modal-content {
-    width: 1100px;
-    height: calc(100vh - 120px);
     margin-left: auto;
     margin-right: auto;
 
     .Select-menu-outer {
       left: 0;
+    }
+
+    .visibility-select {
+      width: 100px;
+      display: inline-flex;
     }
 
     .goal-quick-edit-form {
@@ -100,9 +133,70 @@
   }
 
   .modal-footer {
+    position: relative;
+    margin: -1rem;
+    margin-top: 30px;
+    width: auto;
+
     .link-container {
       float: left;
       margin-top: 12px;
     }
+  }
+}
+
+.modal-full {
+  .modal-footer {
+    position: fixed;
+    width: 100%;
+    margin: 0;
+  }
+
+  .modal-content {
+    width: 1100px;
+    height: calc(100vh - 120px);
+  }
+}
+
+.flyout-container {
+  display: inline-block;
+
+  .flyout {
+    pointer-events: none;
+  }
+
+  .flyout-tooltip {
+    border-radius: 0;
+
+    .flyout-content {
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    &::before {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -16px;
+      left: 13px;
+      margin-left: -2px;
+      border-width: 8px;
+    }
+
+    &::after {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -14px;
+      left: 25px;
+      border-width: 7px;
+      margin-left: -13px;
+    }
+  }
+}
+
+.bulk-actions {
+  overflow: auto;
+
+  button {
+    float: right;
   }
 }

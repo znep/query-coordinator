@@ -3,11 +3,11 @@ import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;
 
-describe('components/GoalTableHead', function() {
+describe('components/PageSelector', function() {
   it('should have correct offset numbers', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 2,
         totalGoalCount: 100
@@ -21,8 +21,8 @@ describe('components/GoalTableHead', function() {
 
   it('should start with 1 in first page', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 1,
         totalGoalCount: 100
@@ -36,8 +36,8 @@ describe('components/GoalTableHead', function() {
 
   it('prev link should be disabled in first page', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 1,
         totalGoalCount: 100
@@ -51,8 +51,8 @@ describe('components/GoalTableHead', function() {
 
   it('next link should be disabled in last page', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 10,
         totalGoalCount: 100
@@ -66,8 +66,8 @@ describe('components/GoalTableHead', function() {
 
   it('prev & next link shouldnt be disabled in middle pages', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 5,
         totalGoalCount: 100
@@ -82,8 +82,8 @@ describe('components/GoalTableHead', function() {
 
   it('prev & next link should be disabled if there is only 1 page', function() {
     var state = {
+      translations: translations,
       goalTableData: {
-        translations: translations,
         rowsPerPage: 10,
         currentPage: 1,
         totalGoalCount: 9

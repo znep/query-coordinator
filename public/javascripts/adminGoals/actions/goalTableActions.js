@@ -3,9 +3,11 @@ import _ from 'lodash';
 import { fetchOptions } from '../constants';
 import {
   TABLE_SHOW_PAGE,
+  TABLE_LOAD_PAGE_FAILED,
   CACHE_DASHBOARDS,
   CACHE_USERS,
   CACHE_GOALS,
+  CACHED_GOALS_UPDATED,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
@@ -15,9 +17,18 @@ import {
   SET_TABLE_ORDER
 } from '../actionTypes';
 
-import {
-  displayGoalTableAlert
-} from './alertActions';
+function tableLoadPageFailed(reason) {
+  return {
+    type: TABLE_LOAD_PAGE_FAILED,
+    reason,
+    notification: {
+      type: 'error',
+      message: {
+        path: 'admin.listing.default_alert_message'
+      }
+    }
+  };
+}
 
 export function tableLoadPage() {
   return (dispatch, getState) => {
@@ -31,7 +42,7 @@ export function tableLoadPage() {
       then(trimToPageSize).
       then(getGoalsExtras).
       then(prepareGoals).
-      catch(() => dispatch(displayGoalTableAlert({ label: 'error' })));// eslint-disable-line dot-notation
+      catch(reason => dispatch(tableLoadPageFailed(reason)));// eslint-disable-line dot-notation
 
     function getDashboards() {
       const dashboardFetchUrl = '/stat/api/v1/dashboards';
@@ -178,7 +189,7 @@ export function tableLoadPage() {
       return fetch(`/stat/api/v1/dashboards/${dashboard.id}`, fetchOptions).
         then(checkXhrStatus).
         then(response => response.json()).
-        catch(() => dispatch(displayGoalTableAlert({ label: 'error' }))); // eslint-disable-line dot-notation
+        catch(reason => dispatch(tableLoadPageFailed(reason))); // eslint-disable-line dot-notation
     }
   };
 }
@@ -207,6 +218,13 @@ export function cacheUsers(users) {
 export function cacheGoals(goals) {
   return {
     type: CACHE_GOALS,
+    goals
+  };
+}
+
+export function updateCachedGoals(goals) {
+  return {
+    type: CACHED_GOALS_UPDATED,
     goals
   };
 }

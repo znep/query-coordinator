@@ -1,0 +1,32 @@
+import Immutable from 'immutable';
+import { createReducer } from 'redux-immutablejs';
+
+import {
+  OPEN_EDIT_MULTIPLE_ITEMS_MODAL,
+  CLOSE_EDIT_MULTIPLE_ITEMS_MODAL,
+  UPDATE_MULTIPLE_ITEMS_FORM_DATA,
+  UPDATE_MULTIPLE_ITEMS_STARTED,
+  UPDATE_MULTIPLE_ITEMS_SUCCESS,
+  UPDATE_MULTIPLE_ITEMS_FAILED
+} from '../actionTypes';
+
+const openModal = (state, action) => state.merge({ visible: true });
+
+const closeModal = (state, action) => state.merge({ visible: false, goal: {  }, showFailureMessage: false });
+
+const updateFormData = (state, action) => state.merge({ goal: action.newData });
+
+const startUpdate = (state, action) => state.merge({ updateInProgress: true, showFailureMessage: false });
+
+const succeedUpdate = (state, action) => state.merge({ updateInProgress: false, visible: false, goal: {}, showFailureMessage: false });
+
+const failUpdate = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: true });
+
+export default createReducer(Immutable.fromJS({}), {
+  [OPEN_EDIT_MULTIPLE_ITEMS_MODAL]: openModal,
+  [CLOSE_EDIT_MULTIPLE_ITEMS_MODAL]: closeModal,
+  [UPDATE_MULTIPLE_ITEMS_FORM_DATA]: updateFormData,
+  [UPDATE_MULTIPLE_ITEMS_STARTED]: startUpdate,
+  [UPDATE_MULTIPLE_ITEMS_SUCCESS]: succeedUpdate,
+  [UPDATE_MULTIPLE_ITEMS_FAILED]: failUpdate
+});

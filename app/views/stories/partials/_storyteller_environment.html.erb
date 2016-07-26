@@ -1,0 +1,27 @@
+  <script id="storyteller-environment" type="text/javascript">
+    var meta = document.querySelector('meta[name="csrf-token"]');
+
+    // StorytellerEnvironment bindings.
+    window.AIRBRAKE = <%= airbrake_config_for_js.to_json.html_safe %>;
+    window.CORE_SERVICE_APP_TOKEN = '<%= Rails.application.config.core_service_app_token %>';
+    window.CSRF_TOKEN = (meta && meta.content) || '';
+    window.DOWNTIMES = <%== downtimes.to_json %>;
+    window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
+    window.ENABLE_FILTERED_TABLE_CREATION = <%= Rails.application.config.enable_filtered_table_creation %>;
+    window.ENABLE_GETTY_IMAGES_GALLERY = <%= Rails.application.config.enable_getty_images_gallery %>;
+    window.ENABLE_SVG_VISUALIZATIONS = <%= Rails.application.config.enable_svg_visualizations %>;
+    window.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW = <%= Rails.application.config.enable_visualization_authoring_workflow %>;
+    window.ENVIRONMENT = '<%= Rails.env %>';
+    window.IMAGES = { COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>' };
+    window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
+    window.PRIMARY_OWNER_UID = '<%== @primary_owner_uid %>';
+    window.PUBLISHED_STORY_DATA = <%== @published_story.to_json %>;
+    window.RELATIVE_URL_ROOT = '<%= config.relative_url_root %>';
+    window.STORY_DATA = <%== user_story_json %>;
+    window.STORY_UID = window.STORY_DATA.uid;
+    window.STORY_VIEW_URL = '<%= @story_view_url %>';
+    window.THEMES_ASSET_PATH = '<%= asset_path("themes/themes.css") %>';
+    window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
+  </script>
+
+

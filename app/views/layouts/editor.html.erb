@@ -11,35 +11,13 @@
   <style id="themes"><%== @bootstrap_styles[:themes] %></style>
   <style id="custom"><%== @bootstrap_styles[:custom] %></style>
 
-  <script type="text/javascript">
-    var meta = document.querySelector('meta[name="csrf-token"]');
+  <%= render partial: 'stories/partials/storyteller_environment' %>
+  <script id="storyteller-editor-environment" type="text/javascript">
 
-    // StorytellerEnvironment bindings.
-    window.CSRF_TOKEN = (meta && meta.content) || '';
     window.CURRENT_USER = <%== current_user.to_json %>;
     window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;
-    window.STORY_DATA = <%== user_story_json %>;
-    window.STORY_UID = window.STORY_DATA.uid;
-    window.STORY_VIEW_URL = '<%= @story_view_url %>';
-    window.PUBLISHED_STORY_DATA = <%== @published_story.to_json %>;
-    window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
-    window.DOWNTIMES = <%== downtimes.to_json %>;
     window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
-    window.PRIMARY_OWNER_UID = '<%== @primary_owner_uid %>';
-    window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
-    window.CORE_SERVICE_APP_TOKEN = '<%= Rails.application.config.core_service_app_token %>';
-    window.ENVIRONMENT = '<%= Rails.env %>';
-    window.AIRBRAKE = <%= airbrake_config_for_js.to_json.html_safe %>;
-    window.RELATIVE_URL_ROOT = '<%= config.relative_url_root %>';
-    window.THEMES_ASSET_PATH = '<%= asset_path("themes/themes.css") %>';
-    window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
-    window.IMAGES = {
-      COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>'
-    };
-    window.ENABLE_SVG_VISUALIZATIONS = <%= Rails.application.config.enable_svg_visualizations %>;
-    window.ENABLE_FILTERED_TABLE_CREATION = <%= Rails.application.config.enable_filtered_table_creation %>;
-    window.ENABLE_GETTY_IMAGES_GALLERY = <%= Rails.application.config.enable_getty_images_gallery %>;
-    window.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW = <%= Rails.application.config.enable_visualization_authoring_workflow %>;
+    window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
   </script>
 
   <% if Rails.env.test? -%>

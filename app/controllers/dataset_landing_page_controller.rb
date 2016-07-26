@@ -24,7 +24,11 @@ class DatasetLandingPageController < ApplicationController
 
   def get_featured_content
     begin
-      featured_content = dataset_landing_page.get_featured_content(params[:id])
+      featured_content = dataset_landing_page.get_featured_content(
+        params[:id],
+        forwardable_session_cookies,
+        request_id
+      )
     rescue CoreServer::ResourceNotFound => error
       return render :json => error.message, :status => :not_found
     rescue CoreServer::CoreServerError => error
@@ -56,7 +60,12 @@ class DatasetLandingPageController < ApplicationController
 
   def post_featured_content
     begin
-      featured_item = dataset_landing_page.add_featured_content(params[:id], request.body.read)
+      featured_item = dataset_landing_page.add_featured_content(
+        params[:id],
+        request.body.read,
+        forwardable_session_cookies,
+        request_id
+      )
     rescue CoreServer::ResourceNotFound => error
       return render :json => error.message, :status => :not_found
     rescue CoreServer::CoreServerError => error
@@ -80,7 +89,11 @@ class DatasetLandingPageController < ApplicationController
 
   def get_formatted_view_by_id
     begin
-      view = dataset_landing_page.get_formatted_view_widget_by_id(params[:id])
+      view = dataset_landing_page.get_formatted_view_widget_by_id(
+        params[:id],
+        forwardable_session_cookies,
+        request_id
+      )
     rescue CoreServer::ResourceNotFound => error
       return render :json => error.message, :status => :not_found
     rescue CoreServer::CoreServerError => error

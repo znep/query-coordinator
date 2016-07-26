@@ -6,33 +6,15 @@ import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
+import {addColumnIndicesToSummary} from '../importUtils';
 
 type FileName = string
-
-type FileId = string
-
-type Summary
-  = { // normal tabular
-      headers: number,
-      columns: Array<SharedTypes.SourceColumn>,
-      locations: Array<{ latitude: number, longitude: number }>,
-      sample: Array<Array<string>>,
-    }
-  | { // geo
-      totalFeatureCount: number,
-      layers: Array<GeoLayer>
-    }
-
-type GeoLayer = {
-  name: string,
-  referenceSystem: string
-}
 
 type UploadProgress
 	= { type: 'InProgress', percent: number }
 	| { type: 'Failed', error: string }
 	| { type: 'Analyzing' }
-	| { type: 'Complete', fileId: string, summary: Summary }
+	| { type: 'Complete', fileId: string, summary: SharedTypes.Summary }
 
 type FileUpload
 	= { type: 'NothingSelected' }
@@ -109,19 +91,6 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
   };
 }
 
-
-function addColumnIndicesToSummary(summary: Summary): Summary {
-  if (summary.columns) {
-    return {
-      ...summary,
-      columns: summary.columns.map((col, idx) => ({ ...col, index: idx }))
-    };
-  } else {
-    return summary;
-  }
-}
-
-
 const FILE_UPLOAD_START = 'FILE_UPLOAD_START';
 export function fileUploadStart(file: File) {
   return {
@@ -146,7 +115,7 @@ export function fileUploadAnalyzing() {
 }
 
 export const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
-export function fileUploadComplete(fileId: FileId, summary: Summary) {
+export function fileUploadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.Summary) {
   return {
     type: FILE_UPLOAD_COMPLETE,
     fileId: fileId,

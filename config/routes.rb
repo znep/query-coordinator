@@ -141,7 +141,8 @@ Rails.application.routes.draw do
         get '/', :action => 'connectors', :as => 'connectors'
         post '/', :action => 'create_connector'
         get '/new', :action => 'new_connector', :as => 'new_connector'
-        get '/:server_id', :action => 'edit_connector', :as => 'edit_connector'
+        get '/:server_id/edit', :action => 'edit_connector', :as => 'edit_connector'
+        get '/:server_id', :action => 'show_connector', :as => 'show_connector'
         post '/:server_id', :action => 'update_connector'
         delete '/:server_id/delete', :action => 'delete_connector'
       end
@@ -423,7 +424,7 @@ Rails.application.routes.draw do
       post '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
       post '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
       get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
-      get '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
+      post '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
       post '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
       post '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',

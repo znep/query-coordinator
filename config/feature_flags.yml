@@ -61,6 +61,9 @@ disable_dataset_search_box:
 display_dataset_landing_page_notice:
   description: Display the notice informing site admins that the page they are seeing will soon be replaced by the dataset landing page.
   defaultValue: false
+display_dataset_landing_page_preview_images:
+  description: Display view preview images in view widgets on Dataset Landing Page
+  defaultValue: false
 enable_data_lens_export_menu:
   description: Toggles visibility of the export menu, which also allows export of the current filter.
   defaultValue: true

@@ -743,20 +743,24 @@ module ApplicationHelper
       standard_ga_tracking_code : custom_ga_tracking_code
   end
 
-  def find_user_name
-    current_user.try(:displayName) || 'none'
-  end
-
   def find_user_role
     current_user.try(:role_name) || 'none'
+  end
+
+  def find_user_id
+    current_user.try(:id) || 'none'
   end
 
   def build_tracking_info_param
     # How to send custom dimensions
     # https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
     #
-    # dimension2 is user name and dimension3 is user type
-    {dimension2: find_user_name, dimension3: find_user_role}.to_json
+    # Dimensions:
+    #   dimension2: DEPRECATED - User name
+    #   dimension3: User type [admin, editor, etc]
+    #   dimension4: Page type [personal catalog, profile page, etc]
+    #   dimension5: User id (send this instead of user name)
+    {dimension3: find_user_role, dimension5: find_user_id}.to_json
   end
 
   # Given that the Google Analytics feature flag is either set to true or an explicit value

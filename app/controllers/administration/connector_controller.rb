@@ -6,7 +6,7 @@ class Administration::ConnectorController < AdministrationController
   #
 
   before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_auth_level(UserRights::CREATE_DATASETS)}
-  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_feature_flag('enable_catalog_connector')}
+  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector, :show_connector] {|c| c.check_feature_flag('enable_catalog_connector')}
 
   def connectors
     begin
@@ -119,6 +119,31 @@ class Administration::ConnectorController < AdministrationController
       flash[:error] = t("screens.admin.connector.errors.problem_with_errors")
     end
     redirect_to :action => redirection
+  end
+
+  def show_connector
+    page_size = 50
+    all_threshold = 8
+    page_idx = params.fetch(:page, '1').to_i
+    offset = (page_idx - 1) * page_size
+
+    begin
+      @server = DataConnector.server(params[:server_id])
+      layer_resp = DataConnector.all_layers(params[:server_id], offset, page_size)
+      @layers = layer_resp['items']
+      count = layer_resp['count']
+    rescue EsriCrawler::ResourceNotFound => error
+      flash[:error] = t('screens.admin.connector.flashes.server_not_found')
+      redirect_to :action => :connectors
+    rescue EsriCrawler::ServerError => error
+      return display_external_error(error, :connectors)
+    rescue StandardError => error
+      handle_failed_connection(error)
+    end
+
+    @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
+
+
   end
 
 end

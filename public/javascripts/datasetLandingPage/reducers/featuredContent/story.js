@@ -15,7 +15,8 @@ var initialState = _.merge(
     hasValidationError: false,
     isLoadingStory: false,
     shouldLoadStory: false,
-    url: ''
+    url: '',
+    imageUrl: ''
   },
   initialPreviewWidgetState()
 );
@@ -47,6 +48,7 @@ function updatePreviewValues(state, story) {
     title: story.title || story.name,
     createdAt: story.createdAt,
     viewCount: story.viewCount,
+    imageUrl: story.imageUrl,
     isPrivate: story.isPrivate
   });
 }

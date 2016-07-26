@@ -57,7 +57,6 @@ export var DatasetPreview = React.createClass({
         type: 'visualization_interchange_format',
         version: 1
       },
-      title: view.name,
       type: 'table',
       unit: {
         one: view.rowLabel,
@@ -122,7 +121,7 @@ export var DatasetPreview = React.createClass({
   renderLoadingSpinner: function() {
     if (this.state.isLoading) {
       return (
-        <div className="desktop-spinner">
+        <div className="table-spinner">
           <span className="spinner-default spinner-large" />
         </div>
       );
@@ -149,8 +148,10 @@ export var DatasetPreview = React.createClass({
             </a>
           </div>
 
-          <div id="table-container" ref={(ref) => this.table = ref}>
+          <div className="table-contents">
             {this.renderLoadingSpinner()}
+
+            <div id="table-container" ref={(ref) => this.table = ref} />
           </div>
         </section>
       );

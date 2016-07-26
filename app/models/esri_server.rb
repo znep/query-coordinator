@@ -41,4 +41,5 @@ class EsriServer
     @sync_type == 'catalog'
   end
 
+
 end

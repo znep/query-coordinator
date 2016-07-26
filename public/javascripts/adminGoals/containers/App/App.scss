@@ -90,15 +90,49 @@
         padding-right: 20px;
       }
 
+      .form-select-small {
+        width: 150px;
+        display: inline-flex;
+      }
+
+      .form-select-wide {
+        width: 300px;
+        display: inline-flex;
+      }
+
+      .datepicker-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-right: 20px;
+        width: 140px;
+
+        .text-input {
+          margin-bottom: 0;
+        }
+
+        .icon-date {
+          position: absolute;
+          top: 50%;
+          margin-top: -12px;
+          left: 10px;
+        }
+
+        .datepicker-input {
+          padding-left: 30px;
+          width: 140px;
+          background: transparent;
+        }
+      }
+
       .text-input {
         width: 300px;
       }
     }
 
     .goal-quick-edit-details {
-      float: left;
+      float: right;
       width: 400px;
-      margin-left: 50px;
+      margin-left: 40px;
 
       div {
         margin-bottom: 20px;
@@ -119,6 +153,11 @@
 }
 
 .modal-full {
+  .modal-content {
+    width: 1100px;
+    height: calc(100vh - 120px);
+  }
+
   .modal-footer {
     position: fixed;
     width: 100%;

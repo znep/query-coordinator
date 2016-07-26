@@ -50,6 +50,8 @@
       // D3 charts are currently broken for our thumbnailer. So, force old charts for now.
       blist.configuration.oldChartsForced = true;
 
+      blist.configuration.googleMapsApiKey = '<%= GOOGLE_MAPS_SITE_KEY %>';
+
       blist.snapshot.takeSnapshot = true;
       blist.snapshot.name = '<%= @snapshot_name %>';
       <%- if @snapshot_timeout -%>

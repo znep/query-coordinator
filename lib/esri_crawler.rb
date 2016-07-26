@@ -1,4 +1,6 @@
 # Use this module to make requests to the socrata esri_crawler_http service
+require 'securerandom'
+
 module EsriCrawler
   include HTTParty
 
@@ -53,6 +55,7 @@ module EsriCrawler
       base_uri "#{hostname}:#{port}"
       default_options.update(headers: {
         'X-Socrata-Host' => CurrentDomain.cname,
+        'X-Socrata-RequestId' => SecureRandom.uuid,
         'X-Socrata-User' => User.current_user.email
       })
       response = yield

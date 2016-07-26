@@ -1,0 +1,103 @@
+<%- connector = 'screens.admin.connector' %>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-connectors' %>
+  <title><%= t("#{connector}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="connector-content" class="contentBox withLeftNavigation">
+
+  <div class="adminHeader connectors flexbox-space-between">
+    <div class="connectors-header left-content">
+      <h1><%= t("#{connector}.show_title") %></h1>
+      <p class= "connector-show-url">
+        <%= link_to(@server.url, @server.url, :target => "_blank") %>
+      </p>
+    </div>
+    <div class="connectors-header right-content">
+      <% if !@failed_esri_connection %>
+        <div class="connector-top-page-status" \>
+
+          <p class= "connector-status-label">
+            <span class="connector-icon connector-icon-<%=@server.status_key.dasherize %> icon-<%= connector_icon(@server.status_key)%>"></span>
+            <%= t("#{connector}.#{@server.status_key}") %>
+          </p>
+
+          <p class= "connector-status-last-synced">  <%= t("#{connector}.last_synced") %>: </p>
+          <p class="result-time-stamp time-stamp">
+            <%- if @server.last_synced -%>
+              <%= @server.parse_last_synced %>
+              (<%= HumaneDateHelper.humane_date(Time.parse(@server.last_synced)) %>)
+            <%- else -%>
+              <%= t("#{connector}.never") %>
+            <%- end -%>
+          </p>
+        </div>
+      <% end %>
+
+      <div class="connector-list-go-back">
+        <%= link_to(t("#{connector}.back_to_connector_list"),
+                    :controller => '/administration/connector',
+                    :action => 'connectors') %>
+      </div>
+    </div>
+  </div>
+
+  <%= display_standard_flashes %>
+  <%- if !@failed_esri_connection -%>
+  <div class="connector-dataset-list">
+    <div class="gridListWrapper">
+      <table class="gridList templatesList" cellspacing="0">
+        <colgroup>
+          <col class="name" />
+          <col class="federatedAssets" />
+          <col class="status" />
+          <col class="endedAt" />
+          <col class="actions" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="acgis_layer" scope="col">
+              <span>
+                <%= t("#{connector}.arcgis_layer") %>
+              </span>
+            </th>
+            <th class="dataset" scope="col">
+              <span>
+                <%= t("#{connector}.Dataset") %>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @layers.each do |layer| -%>
+            <tr>
+              <td class="acgis_layer" scope="row">
+                <%= link_to(layer['name'], layer['url'], :target => "_blank") %>
+              </td>
+              <td class="dataset" scope="row">
+                <%= link_to(layer['name'], "/dataset/#{layer['fourfour']}", :target => "_blank") %>
+              </td>
+            </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+  <div class="pager">
+    <% @pager_elements.each do |element| %>
+      <% if element.page? %>
+        <%= link_to(element.index, "/admin/connectors/#{@server.id}?page=#{element.index}&#{element.get_params}",
+                    :class => 'pager-element page ' + (element.selected ? 'pager-page-selected' : '')) %>
+      <% else %>
+        <span class="pager-element ellipsis">…</span>
+      <% end %>
+    <% end %>
+  </div>
+<%- end %>
+
+<%= render_admin_userzoom %>

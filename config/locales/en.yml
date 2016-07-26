@@ -1417,6 +1417,7 @@ en:
     published: Published
     published_by: Data Provided by
     remove: Remove
+    render_error: There was a problem rendering this page.
     save: Save
     saved: Saved
     saving: Saving
@@ -1801,7 +1802,7 @@ en:
         quick_edit_measure: Quick Edit Measure
         manage_on_goal_page: Manage on Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
-        goal_title: Goal Title
+        goal_name: Goal Title
         status: Status
         visibility: Visibility
         prevailing_measure: Prevailing Measure
@@ -1813,6 +1814,38 @@ en:
         dataset_owner: Dataset Owner
         cancel: Cancel
         save: Save
+        action_type: Action
+        action_types:
+          increase: Increase
+          reduce: Reduce
+          maintain: Maintain
+          measure: Measure
+        prevailing_measure_name: Subject
+        unit: Unit
+        override: Override
+        override_types:
+          none: None
+          bad: Needs Improvements
+          within_tolerance: Near Target
+          good: On Target
+          no_judgement: Measuring
+        date_range: Date Range
+        range: Range
+        range_types:
+          around: Around
+          below: Below
+          above: Above
+        measure_target: Target Value
+        measure_target_type: Kind
+        measure_target_type_types:
+          absolute: To
+          relative: From
+        measure_baseline: Baseline
+        measure_delta: Range Value
+        measure_maintain_types:
+          within: Around
+          below: Below
+          above: Above
   plugins:
     daterangepicker:
       clear: Clear
@@ -2011,6 +2044,9 @@ en:
         success: Success
         terminate: Terminate
         title: Manage Connectors
+        show_title: ArcGIS Server Federation
+        arcgis_layer: ArcGIS Layer
+        dataset: Dataset
       datasets:
         asset_inventory:
           tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.

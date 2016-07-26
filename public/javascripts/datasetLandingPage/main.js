@@ -34,29 +34,44 @@ if (window.serverConfig.environment === 'development') {
 
 var store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
-// Render the main content
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.querySelector('#app')
-);
-
-// Show the footer
-var footer = document.querySelector('#site-chrome-footer');
-if (footer) {
-  footer.style.visibility = 'visible';
-}
-
-// Render the modals, flannels, etc. and bind styleguide events.
+// Defer rendering so the spinner in the erb can render.
 _.defer(function() {
-  ReactDOM.render(
-    <Provider store={store}>
-      <DynamicContent />
-    </Provider>,
-    document.querySelector('#dynamic-content')
-  );
 
-  // Initialize the styleguide javascript components
-  styleguide.attachTo(document);
+  // Render the App, falling back to rendering an error if it fails.
+  try {
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.querySelector('#app')
+    );
+  } catch (e) {
+    console.error(e);
+
+    ReactDOM.render(
+      <div className="alert error alert-full-width-top">{I18n.render_error}</div>,
+      document.querySelector('#app')
+    );
+
+    return;
+  }
+
+  // Show the footer
+  var footer = document.querySelector('#site-chrome-footer');
+  if (footer) {
+    footer.style.visibility = 'visible';
+  }
+
+  // Flush the app to the browser and render the modals, flannels, etc.
+  _.defer(function() {
+    ReactDOM.render(
+      <Provider store={store}>
+        <DynamicContent />
+      </Provider>,
+      document.querySelector('#dynamic-content')
+    );
+
+    // Initialize the styleguide javascript components
+    styleguide.attachTo(document);
+  });
 });

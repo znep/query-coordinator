@@ -21,7 +21,8 @@ export function view({goToPage, goToPrevious}) {
           <a
             href="#web"
             className="byCrossload"
-            title={I18nPrefixed.web_explain}>
+            title={I18nPrefixed.web_explain}
+            onClick={() => goToPage('DownloadFile')}>
             <span className="icon"></span>
             <p>{I18nPrefixed.web}</p>
           </a>

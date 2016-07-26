@@ -31,7 +31,7 @@ export default function timelineChart(state, action) {
   switch (action.type) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
-        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.units.one'));
+        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
         let unitOne = _.get(series, 'unit.one', null);
         let unitOther = _.get(series, 'unit.other', null);
 

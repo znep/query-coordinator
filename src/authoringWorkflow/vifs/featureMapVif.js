@@ -37,11 +37,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'featureMap',
-      unit: {
-        one: translate('visualizations.common.units.one'),
-        other: translate('visualizations.common.units.other')
-      }
+      type: 'featureMap'
     }
   ],
   title: ''

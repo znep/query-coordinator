@@ -76,17 +76,15 @@ export var LegendsAndFlyoutsPane = React.createClass({
   featureMap() {
     var { onSelectFlyoutTitle, vifAuthoring, metadata } = this.props;
     var defaultFlyoutTitleColumn = getFlyoutTitleColumn(vifAuthoring);
-    var columns = _.get(metadata, 'data.columns', []);
-    var columnOptions = [
-      ..._.map(columns, column => {
-        return <option key={column.fieldName} value={column.fieldName}>{column.name}</option>;
-      })
-    ];
+    // We don't want to allow system columns as the title for row inspector pages
+    // since they don't have human-readable names.
+    var nonSystemColumns = _.get(metadata, 'data.columns', []).
+      filter((column) => (column.fieldName.charAt(0) !== ':'));
 
     var columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.flyout_title.no_value'),
-      options: _.map(columns, column => ({title: column.name, value: column.fieldName})),
+      options: _.map(nonSystemColumns, column => ({title: column.name, value: column.fieldName})),
       onSelection: onSelectFlyoutTitle
     };
 

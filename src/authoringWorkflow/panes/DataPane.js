@@ -35,6 +35,7 @@ import {
   isChoroplethMap,
   getShapefileUid,
   getVisualizationType,
+  getSelectedVisualizationType,
   getAnyDimension,
   getAnyMeasure
 } from '../selectors/vifAuthoring';
@@ -70,6 +71,7 @@ export var DataPane = React.createClass({
 
   dimensionDropdown() {
     var { metadata, onSelectDimension, vifAuthoring } = this.props;
+    var dimension = getAnyDimension(vifAuthoring);
     var type = getVisualizationType(vifAuthoring);
     var toRenderableRecommendedOption = dimension => {
       return {
@@ -93,9 +95,10 @@ export var DataPane = React.createClass({
 
     var dimensionAttributes = {
       id: 'dimension-selection',
-      placeholder: translate('panes.data.fields.dimension.placeholder'),
       options: dimensions,
-      onSelection: onSelectDimension
+      onSelection: onSelectDimension,
+      placeholder: translate('panes.data.fields.dimension.placeholder'),
+      value: dimension.columnName
     };
 
     return (
@@ -128,11 +131,11 @@ export var DataPane = React.createClass({
     ];
 
     var measureAttributes = {
+      id: 'measure-selection',
       options,
       onSelection: onSelectMeasure,
-      value: measure.columnName,
-      id: 'measure-selection',
-      disabled: isFeatureMap(vifAuthoring)
+      disabled: isFeatureMap(vifAuthoring),
+      value: measure.columnName
     };
 
     return (
@@ -197,7 +200,7 @@ export var DataPane = React.createClass({
   visualizationTypeDropdown() {
     var { visualizationTypes, vifAuthoring, metadata, onSelectVisualizationType } = this.props;
     var types = visualizationTypes;
-    var selectedVisualizationType = _.get(vifAuthoring, 'selectedVisualizationType', '');
+    var selectedVisualizationType = getSelectedVisualizationType(vifAuthoring);
     var toRenderableRecommendedOption = visualizationType => {
       return {
         title: visualizationType.title,

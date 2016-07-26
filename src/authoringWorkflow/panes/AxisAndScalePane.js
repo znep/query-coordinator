@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { translate } from '../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import {
+  getAxisLabels,
   isColumnChart,
   isHistogram,
   isTimelineChart
@@ -15,17 +16,24 @@ import { setLabelTop, setLabelBottom, setLabelLeft, setLabelRight } from '../act
 export var AxisAndScalePane = React.createClass({
 
   visualizationLabels() {
+    var vifAuthoring = this.props.vifAuthoring;
+    var axisLabels = getAxisLabels(vifAuthoring);
+    var topAxisLabel = _.get(axisLabels, 'top', null);
+    var rightAxisLabel = _.get(axisLabels, 'right', null);
+    var bottomAxisLabel = _.get(axisLabels, 'bottom', null);
+    var leftAxisLabel = _.get(axisLabels, 'left', null);
+
     return (
       <div>
         <h5>{translate('panes.axis_and_scale.subheaders.labels')}</h5>
         <label className="block-label" htmlFor="label-top">{translate('panes.axis_and_scale.fields.top.title')}</label>
-        <input className="text-input" id="label-top" type="text" onChange={this.props.onChangeLabelTop} />
+        <input className="text-input" id="label-top" type="text" onChange={this.props.onChangeLabelTop} defaultValue={topAxisLabel} />
         <label className="block-label" htmlFor="label-bottom">{translate('panes.axis_and_scale.fields.bottom.title')}</label>
-        <input className="text-input" id="label-bottom" type="text" onChange={this.props.onChangeLabelBottom} />
+        <input className="text-input" id="label-bottom" type="text" onChange={this.props.onChangeLabelBottom} defaultValue={bottomAxisLabel} />
         <label className="block-label" htmlFor="label-left">{translate('panes.axis_and_scale.fields.left.title')}</label>
-        <input className="text-input" id="label-left" type="text" onChange={this.props.onChangeLabelLeft} />
+        <input className="text-input" id="label-left" type="text" onChange={this.props.onChangeLabelLeft} defaultValue={leftAxisLabel} />
         <label className="block-label" htmlFor="label-right">{translate('panes.axis_and_scale.fields.right.title')}</label>
-        <input className="text-input" id="label-right" type="text" onChange={this.props.onChangeLabelRight} />
+        <input className="text-input" id="label-right" type="text" onChange={this.props.onChangeLabelRight} defaultValue={rightAxisLabel} />
       </div>
     );
   },

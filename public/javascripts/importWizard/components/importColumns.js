@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import * as SharedTypes from '../sharedTypes';
 import * as UploadFile from './uploadFile';
+import * as DownloadFile from './downloadFile';
 import * as ColumnDetail from './importColumns/columnDetail';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
@@ -78,10 +79,11 @@ function removeColumn(index) {
 
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
+    // this is gross because it falls through
+    case DownloadFile.FILE_DOWNLOAD_COMPLETE:
     case UploadFile.FILE_UPLOAD_COMPLETE:
       if (!_.isUndefined(action.summary.columns)) {
         const columns = initialTransform(action.summary);
-
         return {
           columns: columns,
           defaultColumns: columns,
@@ -166,7 +168,10 @@ export const EMPTY_COMPOSITE_COLUMN = { type: 'CompositeColumn', components: [] 
 
 function ViewColumns({columns, dispatch, sourceColumns}) {
   const sourceOptions = [
-    ...sourceColumns.map((column) => ({ type: 'SingleColumn', sourceColumn: column })),
+    ...sourceColumns.map((column) => ({
+      type: 'SingleColumn',
+      sourceColumn: column
+    })),
     EMPTY_COMPOSITE_COLUMN
   ];
 
@@ -195,7 +200,6 @@ function ViewColumns({columns, dispatch, sourceColumns}) {
               event.preventDefault();
               return dispatch(removeColumn(idx));
             }
-
             return (
               <ColumnDetail.view
                 key={idx}

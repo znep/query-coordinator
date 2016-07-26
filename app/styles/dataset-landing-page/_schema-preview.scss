@@ -23,7 +23,7 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
       }
 
       .table-collapse-toggle.more {
-        display: initial;
+        display: inline-block;
       }
 
       .table-collapse-toggle.less {
@@ -45,7 +45,7 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
       }
 
       &.less {
-        display: initial;
+        display: inline-block;
       }
     }
   }

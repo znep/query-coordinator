@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
+import * as DownloadFile from './components/downloadFile';
 import * as ImportColumns from './components/importColumns';
 import * as Importing from './components/importing';
 import * as Working from './components/working';
@@ -21,6 +22,7 @@ type PageName
   = 'SelectType'
   | 'SelectUploadType'
   | 'UploadFile'
+  | 'DownloadFile'
   | 'ImportColumns'
   | 'ImportShapefile'
   | 'Metadata'
@@ -39,6 +41,7 @@ type NewDatasetModel = {
   datasetId: string,                  // this should never change
   navigation: Navigation,
   upload: UploadFile.FileUpload,
+  download: DownloadFile.FileDownload,
   transform: ImportColumns.Transform,               // only used in UploadData operation
   layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata,
@@ -57,6 +60,7 @@ export function initialNewDatasetModel(initialView): NewDatasetModel {
     datasetId: initialView.id,
     navigation: initialNavigation,
     upload: {},
+    download: {},
     transform: null,
     layers: null,
     metadata: initialMetadata(initialView),
@@ -144,7 +148,12 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
         page: nextPage,
         path: [...navigation.path, navigation.page]
       };
-
+    case DownloadFile.FILE_DOWNLOAD_COMPLETE:
+      return {
+        ...navigation,
+        page: 'ImportDownloaded',
+        path: [...navigation.path, navigation.page]
+      };
     case GO_TO_PAGE:
       return {
         ...navigation,
@@ -206,6 +215,15 @@ export function view({ state, dispatch }) {
                   goToPrevious={() => dispatch(goToPrevious())} />
               );
 
+            case 'DownloadFile':
+              return (
+                <DownloadFile.view
+                  onFileDownloadAction={dispatch}
+                  fileDownload={state.download}
+                  operation={state.navigation.operation}
+                  goToPrevious={() => dispatch(goToPrevious())} />
+              );
+
             case 'ImportColumns':
               // TODO: assert validity of fileUpload
               return (
@@ -217,7 +235,16 @@ export function view({ state, dispatch }) {
                   goToPage={(page) => dispatch(goToPage(page))}
                   goToPrevious={() => dispatch(goToPrevious())} />
               );
-
+            case 'ImportDownloaded':
+              return (
+                <ImportColumns.view
+                  transform={state.transform}
+                  fileName={state.download.fileName}
+                  sourceColumns={state.download.summary.columns}
+                  dispatch={dispatch}
+                  goToPage={(page) => dispatch(goToPage(page))}
+                  goToPrevious={() => dispatch(goToPrevious())} />
+              );
             case 'ImportShapefile':
               return (
                 <ImportShapefile.view

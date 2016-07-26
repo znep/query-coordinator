@@ -103,6 +103,7 @@ describe('reducers/featuredContent', function() {
           createdAt: 'some date',
           description: 'some description',
           displayType: 'story',
+          imageUrl: 'http://dinosaur-polaroids.com',
           name: 'some name',
           url: 'http://some-url.com/stories/s/abcd-1234',
           viewCount: 99
@@ -113,6 +114,7 @@ describe('reducers/featuredContent', function() {
       expect(state.story.title).to.equal('');
       expect(state.story.description).to.equal('');
       expect(state.story.url).to.equal('');
+      expect(state.story.imageUrl).to.equal('');
       expect(state.story.createdAt).to.equal('');
       expect(state.story.viewCount).to.equal(null);
 
@@ -121,6 +123,7 @@ describe('reducers/featuredContent', function() {
       expect(state.story.title).to.equal('some name');
       expect(state.story.description).to.equal('some description');
       expect(state.story.url).to.equal('http://some-url.com/stories/s/abcd-1234');
+      expect(state.story.imageUrl).to.equal('http://dinosaur-polaroids.com');
       expect(state.story.createdAt).to.equal('some date');
       expect(state.story.viewCount).to.equal(99);
     });

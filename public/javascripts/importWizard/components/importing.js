@@ -4,7 +4,6 @@ import format from 'stringformat';
 
 function renderProgressText(importStatus, operation) {
   let progressText = null;
-
   switch (operation) {
     case 'UploadData':
       switch (importStatus.type) {

@@ -24,7 +24,16 @@ class DatasetLandingPage
       related_views = view.find_dataset_landing_page_related_content(sort_by) || []
     end
 
-    related_views.map(&method(:format_view_widget))
+    # We are using threads here because stories need a separate request for its preview image
+    formatted_related_views = []
+    related_views_threads = related_views.map do |view|
+      Thread.new do
+        formatted_related_views << format_view_widget(view, cookie_string, request_id)
+      end
+    end
+
+    related_views_threads.each { |thread| thread.join }
+    formatted_related_views
   end
 
   def get_popular_views(uid, cookie_string, request_id, limit = nil, offset = nil, locale = nil)
@@ -49,19 +58,37 @@ class DatasetLandingPage
       popular_views = popular_views.slice(offset.to_i, limit.to_i) || []
     end
 
-    popular_views.map(&method(:format_view_widget))
+    # We are using threads here because stories need a separate request for its preview image
+    formatted_popular_views = []
+    popular_views_threads = popular_views.map do |view|
+      Thread.new do
+        formatted_popular_views << format_view_widget(view, cookie_string, request_id)
+      end
+    end
+
+    popular_views_threads.each { |thread| thread.join }
+    formatted_popular_views
   end
 
-  def get_featured_content(uid)
+  def get_featured_content(uid, cookie_string, request_id)
     view = View.find(uid)
 
-    view.featured_content.map(&method(:format_featured_item))
+    # We are using threads here because stories need a separate request for its preview image
+    formatted_featured_views = []
+    featured_views_threads = view.featured_content.map do |view|
+      Thread.new do
+        formatted_featured_views << format_featured_item(view, cookie_string, request_id)
+      end
+    end
+
+    featured_views_threads.each { |thread| thread.join }
+    formatted_featured_views
   end
 
-  def add_featured_content(uid, featured_item)
+  def add_featured_content(uid, featured_item, cookie_string, request_id)
     path = "/views/#{uid}/featured_content.json"
     response = JSON.parse(CoreServer::Base.connection.create_request(path, featured_item))
-    format_featured_item(response)
+    format_featured_item(response, cookie_string, request_id)
   end
 
   def delete_featured_content(uid, item_position)
@@ -70,8 +97,8 @@ class DatasetLandingPage
     response = JSON.parse(CoreServer::Base.connection.delete_request(path))
   end
 
-  def get_formatted_view_widget_by_id(uid)
-    format_view_widget(View.find(uid))
+  def get_formatted_view_widget_by_id(uid, cookie_string, request_id)
+    format_view_widget(View.find(uid), cookie_string, request_id)
   end
 
   # Formats either a View object instantiated from View json (from api/views) or
@@ -90,7 +117,7 @@ class DatasetLandingPage
   #   },
   #   "link": "https://data.cityofnewyork.us/d/axxb-u7uv"
   # }
-  def format_view_widget(view)
+  def format_view_widget(view, cookie_string, request_id)
     formatted_view = {
       :name => view.name,
       :id => view.id,
@@ -100,7 +127,8 @@ class DatasetLandingPage
       :createdAt => view.try(:time_created_at) || view.createdAt,
       :updatedAt => view.try(:time_last_updated_at) || view.updatedAt,
       :viewCount => view.viewCount,
-      :isPrivate => !view.is_public?
+      :isPrivate => !view.is_public?,
+      :imageUrl => view.get_preview_image_url(cookie_string, request_id)
     }
 
     if view.story?
@@ -110,10 +138,12 @@ class DatasetLandingPage
     formatted_view
   end
 
-  def format_featured_item(featured_item)
+  def format_featured_item(featured_item, cookie_string, request_id)
     if featured_item['contentType'] == 'internal'
       view = View.set_up_model(featured_item['featuredView'])
-      return featured_item.merge(:featuredView => format_view_widget(view))
+      return featured_item.merge(
+        :featuredView => format_view_widget(view, cookie_string, request_id)
+      )
     end
 
     featured_item

@@ -659,7 +659,7 @@ class InternalController < ApplicationController
         end
         if properties.has_key?(flag)
           config.update_property(flag, processed_value, batch_id)
-          notices << %Q{"#{flag} was updated with value "#{processed_value}".}
+          notices << %Q{#{flag} was updated with value "#{processed_value}".}
         else
           config.create_property(flag, processed_value, batch_id)
           notices << %Q{#{flag} was created with value "#{processed_value}".}

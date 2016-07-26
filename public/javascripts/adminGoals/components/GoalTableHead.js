@@ -18,7 +18,7 @@ class GoalTableHead extends React.Component {
         'icon-arrow-down': this.props.currentColumn == label && direction == 'desc'
       });
 
-      return <th key={ _.uniqueId() }>
+      return <th key={ _.uniqueId() } className={ `table-heading-${label}` }>
         <span data-column={ label } data-direction={ direction } onClick={ this.props.sort }>
           { this.props.translations.getIn(['admin', 'listing', label]) }
           <span className={ thClass } />
@@ -29,6 +29,7 @@ class GoalTableHead extends React.Component {
     return <thead>
       <tr>
         <th><input type="checkbox" onClick={ this.props.toggleAllRows } /></th>
+        <th>&nbsp;</th>
         { titles }
         <th>&nbsp;</th>
       </tr>

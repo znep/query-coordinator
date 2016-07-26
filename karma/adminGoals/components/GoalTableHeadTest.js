@@ -23,31 +23,31 @@ describe('components/GoalTableHead', function() {
   });
 
   it('should have 8 columns in a row', function() {
-    expect(this.output.querySelectorAll('tr:first-child th').length).to.eq(8);
+    expect(this.output.querySelectorAll('tr:first-child th').length).to.eq(9);
   });
 
   it('should have columns with correct translations', function() {
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(2)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-title')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.title'));
 
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(3)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-owner')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.owner'));
 
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(4)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-updated_at')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.updated_at'));
 
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(5)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-visibility')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.visibility'));
 
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(6)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-goal_status')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.goal_status'));
 
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(7)')[0].textContent).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-dashboard')[0].textContent).
       to.eq(_.get(translations, 'admin.listing.dashboard'));
   });
 
   it('should have correct order icon', function() {
-    expect(this.output.querySelectorAll('tr:first-child th:nth-child(2) span.order-icon').item(0).getAttribute('class')).
+    expect(this.output.querySelectorAll('tr:first-child th.table-heading-title span.order-icon').item(0).getAttribute('class')).
       to.contain('icon-arrow-down');
   });
 

@@ -289,6 +289,7 @@ function coreViewToCustomMetadataModel(view) {
   ));
 }
 
+
 type ImportProgress
   = { rowsImported: number }
   | { stage: string }
@@ -432,7 +433,18 @@ export function addNotificationInterest() {
   };
 }
 
+
 function importData(onError) {
+  function getFileId({upload, download}) {
+    if (upload && upload.progress) return upload.progress.fileId;
+    if (download) return download.fileId;
+  }
+
+  function getFileName({upload, download}) {
+    if (upload.fileName) return upload.fileName;
+    if (download.fileName) return download.fileName;
+  }
+
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
@@ -443,10 +455,10 @@ function importData(onError) {
       },
       credentials: 'same-origin',
       body: formurlencoded({
-        name: state.upload.fileName,
+        name: getFileName(state),
         translation: transformToImports2Translation(state.transform.columns),
         blueprint: JSON.stringify(transformToBlueprint(state.transform.columns)),
-        fileId: state.upload.progress.fileId,
+        fileId: getFileId(state),
         draftViewUid: state.datasetId
       })
     }).then((response) => {

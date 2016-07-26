@@ -9,6 +9,7 @@ import _ from 'lodash';
 import airbrake from './airbrake';
 import * as Wizard from './wizard';
 import * as Upload from './components/uploadFile';
+import * as Download from './components/downloadFile';
 import * as Metadata from './components/metadata';
 import * as ImportColumns from './components/importColumns';
 import * as Server from './server';
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   datasetId: identityReducer,
   navigation: Wizard.updateNavigation,
   upload: Upload.update,
+  download: Download.update,
   transform: ImportColumns.update, // null except in the UploadData operation
   importStatus: Server.update,
   layers: ImportShapefile.update,

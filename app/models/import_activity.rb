@@ -5,20 +5,38 @@ class ImportActivity
   # throws ISS errors and Core errors
   def self.find_all_by_created_at_descending(params)
     url = "/v2/activity?#{params.delete_if { |k, v| v.nil? }.to_query}"
-    
+
     response = ImportStatusService::get(url)
     activities = response['activities'].map(&:with_indifferent_access)
     view_ids = activities.pluck(:entity_id)
     working_copy_ids = activities.pluck(:working_copy_id)
     views = View.find_multiple_dedup(view_ids + working_copy_ids)
-    
+
     # get names of deleted datasets
     views = Hash[views.map do |uid, value|
-      [uid, value ? value : View.new('id' => uid, 'name' => View.find_deleted_name(uid), 'deleted' => true)]
+      if value.nil?
+        value = View.find_deleted(uid)
+        value.deleted = true unless value.nil?
+      end
+      [uid, value]
     end]
-    
+
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)
+
+    # find the first instance of each activity and flag it
+    views.each do |view|
+      activities.each do |activity|
+        next unless
+          # view[0] is actually the dataset 4x4...
+          activity['entity_id'] == view[0] &&
+          activity['activity_type'] == 'Delete' &&
+          activity['status'] == 'Success'
+        activity['first_deleted_in_list'] = true
+        break
+      end
+    end
+
     {
       :activities =>
           activities.map do |activity|
@@ -100,6 +118,10 @@ class ImportActivity
 
   def service
     @data[:service]
+  end
+
+  def first_deleted_in_list
+    @data[:first_deleted_in_list] == true
   end
 
   # throws ISS errors

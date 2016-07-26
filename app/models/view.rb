@@ -37,10 +37,13 @@ class View < Model
                                                   {'X-Socrata-Federation' => 'Honey Badger'}))
   end
 
-  def self.find_deleted_name(id)
-    path = "/#{self.name.pluralize.downcase}.json?" + {'method' => 'getDeletedNameById', 'id' => id}.to_param
-    name = CoreServer::Base.connection.get_request(path, {'X-Socrata-Federation' => 'Honey Badger'})
-    JSON.parse("[#{name}]").first # core returns this as a quoted string, so parse it as json to un-quote it
+  def self.find_deleted(id)
+    params = { 'method' => 'getDeletedViewById', 'id' => id }.to_param
+    path = "/#{name.pluralize.downcase}.json?#{params}"
+    parse(CoreServer::Base.connection.get_request(
+            path,
+            'X-Socrata-Federation' => 'Honey Badger'
+    ))
   end
 
   def self.find_for_user(id)
@@ -1711,6 +1714,14 @@ class View < Model
     "<div class='rating " +
       "#{get_rating_class(rating)}' " +
       "title='#{rating}'><span>#{rating}</span></div>"
+  end
+
+  def get_preview_image_url(cookie_string, request_id)
+    if story?
+      Storyteller.get_tile_image(id, cookie_string, request_id)
+    elsif previewImageId
+      "/api/views/#{id}/files/#{previewImageId}"
+    end
   end
 
   def custom_image(size = 'medium')

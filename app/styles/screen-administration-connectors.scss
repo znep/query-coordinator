@@ -2,8 +2,30 @@
 $waiting-grey: #646565;
 $failing-red: darkred;
 $success-green: green;
+$timestamp-grey: #888888;
+$pager-blue: #2f4589;
 
 #connector-content {
+
+  .connectors-header {
+
+    .connector-top-page-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .connector-status-label {
+      padding: 10px
+    }
+
+    .connector-status-last-synced {
+      font-size: 1.3em;
+      padding-top: 5px;
+      color: $timestamp-grey;
+    }
+
+  }
 
   .flexbox-space-between {
     display: flex;
@@ -41,6 +63,23 @@ $success-green: green;
     font-size: 2em;
     font-weight: 900;
   }
+
+  .result-time-stamp {
+    color: $timestamp-grey;
+    font-size: 1.2em;
+    padding-top: 8px;
+  }
+
+  .connector-status-label {
+    font-size: 1.5em;
+    font-weight: 900;
+  }
+
+  .connector-show-url {
+    font-size: 1.5em;
+  }
+
+
 }
 
 .selective-connection {
@@ -67,11 +106,13 @@ $success-green: green;
     }
   }
 }
+
 .noResultsMessage {
   font-size: 1.3em;
   margin: 5em 0;
   text-align: center;
 }
+
 
 div.line > div.input-group {
   display: table;
@@ -109,6 +150,38 @@ div.line > div.input-group {
       border-right: 0px;
       border-top-right-radius: 0px;
       border-bottom-right-radius: 0px;
+    }
+  }
+}
+
+.pager {
+
+  margin-left: 19em;
+  overflow: hidden;
+
+  .pager-element {
+
+    margin-right: 5px;
+    display: block;
+    float: left;
+
+    &.page {
+      font-size: .8rem;
+      background-color: white;
+      color: $pager-blue;
+      padding: 5px 7px 5px 7px;
+      border: 1px solid lightgrey;
+      text-align: center;
+
+      &.pager-page-selected {
+        background-color: $pager-blue;
+        color: white;
+      }
+    }
+
+    &.ellipsis {
+      padding-top: 5px;
+      font-size: .9rem;
     }
   }
 }

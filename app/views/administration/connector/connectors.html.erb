@@ -80,10 +80,10 @@
                   ) %>
                 </td>
                 <td class="federatedAssets" scope="row">
-                  <%= t(
-                    "#{connector}.assets_connected",
-                    count: server.synced_count
-                  ) %>
+                    <%= link_to_if(
+                          server.synced_count > 0,
+                          t("#{connector}.assets_connected", count: server.synced_count),
+                          { controller: "connector", action: :show_connector, :server_id => server.id }) %>
                 </td>
                 <td class="status" scope="row">
                   <p class="curent-status">
@@ -136,5 +136,6 @@
 
   </div>
 <%- end %>
+
 
 <%= render_admin_userzoom %>

@@ -59,6 +59,8 @@ class CardFeatureMap extends React.Component {
           zoomControl: false
         },
         localization: {
+          column_incompatibility_error: 'The column used to render this feature map must be a location column',
+          feature_extent_query_error: 'There was a problem fetching the extent for this map',
           flyout_filter_notice: 'There are too many points at this location',
           flyout_filter_or_zoom_notice: 'Zoom in to see details',
           flyout_dense_data_notice: 'Numerous',

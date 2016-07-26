@@ -32,7 +32,9 @@ class CardTable extends React.Component {
           many_rows: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
           latitude: 'Latitude',
           longitude: 'Longitude',
-          no_column_description: 'No description provided.'
+          no_column_description: 'No description provided.',
+          unable_to_render: 'Unable to render this table.',
+          all_rows: 'Showing all rows'
         },
         order: [{
           ascending: true,

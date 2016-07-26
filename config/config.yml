@@ -112,6 +112,7 @@ development: &development
   mixpanel_token: 59b0b54697603105463834afdf20accf
   recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
   recaptcha_2_secret_token: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+  google_maps_site_key: AIzaSyBGFHOk32Yq_Rk9g14EIsAkVFkTARtsuC4
 
   # auth alternatives
   esri_crawler_hostname: localhost

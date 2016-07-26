@@ -10,6 +10,7 @@ const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const DataTypeFormatter = require('./views/DataTypeFormatter');
+const I18n = require('./I18n');
 
 const COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
 const DOMAIN_PATH = 'series[0].dataSource.domain';

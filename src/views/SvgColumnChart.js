@@ -1,27 +1,28 @@
-var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization');
-var d3 = require('d3');
-var _ = require('lodash');
-var $ = require('jquery');
+const utils = require('socrata-utils');
+const d3 = require('d3');
+const _ = require('lodash');
+const $ = require('jquery');
+const SvgVisualization = require('./SvgVisualization');
+const I18n = require('../I18n');
 
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
 // in the future, but the adjustments will likely be small in scale.
-var MARGINS = {
+const MARGINS = {
   TOP: 16,
   RIGHT: 0,
   BOTTOM: 0,
   LEFT: 46
 };
-var FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-var DEFAULT_GRID_LINE_COLOR = '#ebebeb';
-var DIMENSION_LABEL_ANGLE = 45;
-var DIMENSION_LABEL_FONT_SIZE = 14;
-var DIMENSION_LABEL_MAX_CHARACTERS = 14;
-var MEASURE_LABEL_FONT_SIZE = 14;
-var DEFAULT_DESKTOP_COLUMN_WIDTH = 20;
-var DEFAULT_MOBILE_COLUMN_WIDTH = 50;
-var MAX_COLUMN_COUNT_WITHOUT_PAN = 30;
+const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+const DEFAULT_GRID_LINE_COLOR = '#ebebeb';
+const DIMENSION_LABEL_ANGLE = 45;
+const DIMENSION_LABEL_FONT_SIZE = 14;
+const DIMENSION_LABEL_MAX_CHARACTERS = 14;
+const MEASURE_LABEL_FONT_SIZE = 14;
+const DEFAULT_DESKTOP_COLUMN_WIDTH = 20;
+const DEFAULT_MOBILE_COLUMN_WIDTH = 50;
+const MAX_COLUMN_COUNT_WITHOUT_PAN = 30;
 
 /**
  * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
@@ -689,11 +690,9 @@ function SvgColumnChart($element, vif) {
       if (columnCount >= MAX_COLUMN_COUNT_WITHOUT_PAN) {
 
         self.renderError(
-          self.
-            getLocalization(
-              'error_column_chart_exceeded_max_column_count_without_pan'
-            ).
-            format(MAX_COLUMN_COUNT_WITHOUT_PAN)
+          I18n.translate(
+            'visualizations.column_chart.error_exceeded_max_column_count_without_pan'
+          ).format(MAX_COLUMN_COUNT_WITHOUT_PAN)
         );
         return;
       }
@@ -1110,7 +1109,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = label || self.getLocalization('no_label');
+    label = label || I18n.translate('visualizations.common.no_label');
 
     return (label.length >= DIMENSION_LABEL_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1333,7 +1332,7 @@ function SvgColumnChart($element, vif) {
           var $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
 
           if (value === null) {
-            valueString = self.getLocalization('no_value');
+            valueString = I18n.translate('visualizations.common.no_value');
           } else {
             valueString = '{0} {1}'.
               format(
@@ -1385,7 +1384,7 @@ function SvgColumnChart($element, vif) {
   function showColumnFlyout(columnElement, datum) {
     var title = (
       columnElement.getAttribute('data-column-category') ||
-      self.getLocalization('no_label')
+      I18n.translate('visualizations.common.no_label')
     );
     var label = datum[0];
     var value = datum[1];
@@ -1407,7 +1406,7 @@ function SvgColumnChart($element, vif) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = self.getLocalization('no_value');
+      valueString = I18n.translate('visualizations.common.no_value');
     } else {
       valueString = '{0} {1}'.
         format(

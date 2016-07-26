@@ -1,7 +1,7 @@
-import en from 'src/authoringWorkflow/locales/en';
-import es from 'src/authoringWorkflow/locales/es';
+import en from 'src/locales/en';
+import es from 'src/locales/es';
 
-import { setLocale, translate, translateGroup } from 'src/authoringWorkflow/I18n';
+import { setLocale, translate, translateGroup } from 'src/I18n';
 
 describe('I18n', function() {
 

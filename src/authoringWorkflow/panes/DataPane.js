@@ -6,7 +6,7 @@ import Styleguide from 'socrata-styleguide';
 
 import CustomizationTabPane from '../CustomizationTabPane';
 
-import { translate } from '../I18n';
+import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES, AGGREGATION_TYPES } from '../constants';
 
 import {

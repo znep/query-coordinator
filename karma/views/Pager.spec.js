@@ -58,25 +58,6 @@ describe('Pager', function() {
     pager.destroy();
   });
 
-  describe('button localization', function() {
-    renderPagerWithOptions({
-      startIndex: 0,
-      endIndex: 100,
-      datasetRowCount: 1000
-    });
-
-    it('should reflect the localization strings in the vif', function() {
-      assert.include(
-        nextButton.text(),
-        vif.configuration.localization.next
-      );
-      assert.include(
-        previousButton.text(),
-        vif.configuration.localization.previous
-      );
-    });
-  });
-
   describe('at the first of several pages', function() {
     renderPagerWithOptions({
       startIndex: 0,
@@ -125,9 +106,6 @@ describe('Pager', function() {
   });
 
   describe('pager label', function() {
-    beforeEach(function() {
-      vif.configuration.localization.no_rows = { format: sinon.stub().returns('translation for no rows') };
-    });
 
     describe('with no rows', function() {
       renderPagerWithOptions({
@@ -136,26 +114,13 @@ describe('Pager', function() {
         datasetRowCount: 0
       });
 
-      verifyPagerLabelText('translation for no rows');
-
       it('should format the translation with the correct parameters', function() {
-        sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.no_rows.format,
-          {
-            unitOne: 'case',
-            unitOther: 'cases',
-            firstRowOrdinal: undefined,
-            lastRowOrdinal: undefined,
-            datasetRowCount: '0'
-          }
-        );
+
+        assert.match(pagerLabel.text(), /no cases/i);
       });
     });
 
     describe('with a page size of one', function() {
-      beforeEach(function() {
-        vif.configuration.localization.only_row = { format: sinon.stub().returns('translation for only one row') };
-      });
 
       renderPagerWithOptions({
         startIndex: 9,
@@ -163,26 +128,12 @@ describe('Pager', function() {
         datasetRowCount: 10
       });
 
-      verifyPagerLabelText('translation for only one row');
-
       it('should format the translation with the correct parameters', function() {
-        sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.only_row.format,
-          {
-            unitOne: 'case',
-            unitOther: 'cases',
-            firstRowOrdinal: '10',
-            lastRowOrdinal: '10',
-            datasetRowCount: '10'
-          }
-        );
+        assert.match(pagerLabel.text(), /showing case/i);
       });
     });
 
     describe('with a page size equal to dataset row count', function() {
-      beforeEach(function() {
-        vif.configuration.localization.all_rows = { format: sinon.stub().returns('translation for all rows') };
-      });
 
       renderPagerWithOptions({
         startIndex: 0,
@@ -190,13 +141,12 @@ describe('Pager', function() {
         datasetRowCount: 5
       });
 
-      verifyPagerLabelText('translation for all rows');
+      it('should format the translation with the correct parameters', function() {
+        assert.match(pagerLabel.text(), /showing all/i);
+      });
     });
 
     describe('with an invalid dataset row count', function() {
-      beforeEach(function() {
-        vif.configuration.localization.no_row_count = { format: sinon.stub().returns('translation for no row count') };
-      });
 
       renderPagerWithOptions({
         startIndex: 0,
@@ -204,13 +154,12 @@ describe('Pager', function() {
         datasetRowCount: NaN
       });
 
-      verifyPagerLabelText('translation for no row count');
+      it('should format the translation with the correct parameters', function() {
+        assert.match(pagerLabel.text(), /row count unavailable/i);
+      });
     });
 
     describe('with a page size of 10', function() {
-      beforeEach(function() {
-        vif.configuration.localization.many_rows = { format: sinon.stub().returns('translation for many rows') };
-      });
 
       renderPagerWithOptions({
         startIndex: 0,
@@ -218,19 +167,8 @@ describe('Pager', function() {
         datasetRowCount: 10
       });
 
-      verifyPagerLabelText('translation for many rows');
-
       it('should format the translation with the correct parameters', function() {
-        sinon.assert.alwaysCalledWithExactly(
-          vif.configuration.localization.many_rows.format,
-          {
-            unitOne: 'case',
-            unitOther: 'cases',
-            firstRowOrdinal: '1',
-            lastRowOrdinal: '9',
-            datasetRowCount: '10'
-          }
-        );
+        assert.match(pagerLabel.text(), /showing cases/i);
       });
     });
   });
@@ -248,15 +186,6 @@ describe('Pager', function() {
       previousButton = element.find('.pager-button-previous');
       nextButton = element.find('.pager-button-next');
       pagerLabel = element.find('.pager-label');
-    });
-  }
-
-  function verifyPagerLabelText(text) {
-    it('should have text: {0}'.format(text), function() {
-      assert.equal(
-        pagerLabel.text(),
-        text
-      );
     });
   }
 

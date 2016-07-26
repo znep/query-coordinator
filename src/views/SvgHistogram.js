@@ -1,9 +1,9 @@
 const utils = require('socrata-utils');
-const SvgVisualization = require('./SvgVisualization');
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
-const I18n = require('../authoringWorkflow/I18n');
+const SvgVisualization = require('./SvgVisualization');
+const I18n = require('../I18n');
 
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
@@ -782,7 +782,7 @@ function SvgHistogram($element, vif) {
   function seriesLabel(seriesIndex) {
     return _.get(
       self.getVif(), ['series', seriesIndex, 'label'],
-      I18n.translate('visualizations.histogram.default_series_label')
+      I18n.translate('visualizations.common.flyout_value_label')
     );
   }
 
@@ -810,7 +810,7 @@ function SvgHistogram($element, vif) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = I18n.translate('visualizations.histogram.no_value');
+      valueString = I18n.translate('visualizations.common.no_value');
     } else {
       valueString = '{0} {1}'.
         format(

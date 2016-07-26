@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { translate } from '../I18n';
+import { translate } from '../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import {
   getAxisLabels,

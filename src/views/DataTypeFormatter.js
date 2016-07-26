@@ -1,9 +1,11 @@
 'use strict';
-var $ = require('jquery');
-var _ = require('lodash');
-var utils = require('socrata-utils');
-var moment = require('moment');
-var wkt = require('wellknown');
+const $ = require('jquery');
+const _ = require('lodash');
+const utils = require('socrata-utils');
+const moment = require('moment');
+// Converts GeoJSON formats to text
+const wkt = require('wellknown');
+const I18n = require('../I18n');
 
 module.exports = {
   renderCell: renderCell,
@@ -21,7 +23,7 @@ module.exports = {
   renderTimestampCell: renderTimestampCell
 };
 
-function renderCell(cellContent, column, i18n, domain, datasetUid) {
+function renderCell(cellContent, column, domain, datasetUid) {
   var cellText;
 
   utils.assertIsOneOfTypes(column, 'object');
@@ -40,7 +42,7 @@ function renderCell(cellContent, column, i18n, domain, datasetUid) {
       break;
     // Avoid escaping because cell content is HTML.
     case 'geo_entity':
-      cellText = renderGeoCellHTML(cellContent, column, i18n);
+      cellText = renderGeoCellHTML(cellContent, column);
       break;
     case 'point':
     case 'line':
@@ -124,9 +126,9 @@ function renderNumberCell(input, column) {
     precisionStyle: 'standard',
     precision: undefined,
     noCommas: false,
-    currency: '$',
-    decimalSeparator: '.',
-    groupSeparator: ',',
+    currency: I18n.translate('visualizations.common.currency_symbol'),
+    decimalSeparator: I18n.translate('visualizations.common.decimal_separator'),
+    groupSeparator: I18n.translate('visualizations.common.group_separator'),
     mask: null
   }, column.format || {});
 
@@ -220,22 +222,24 @@ function renderGeoCell(cellContent) {
 *
 * Parameters:
 * - cellContent: data for the cell (from soda fountain).
-* - i18n: Object containing localized strings for latitude and longitude. Example:
-*   {
-*     latitude: 'Latitude',
-*     longitude: 'Longitude'
-*   }
+* - columnMetadata: the metadata for the associated column.
 */
-function renderGeoCellHTML(cellContent, columnMetadata, i18n) {
+function renderGeoCellHTML(cellContent, columnMetadata) {
   var latitudeIndex = 1;
   var longitudeIndex = 0;
   var coordinates = _cellCoordinates(cellContent);
 
-  utils.assertHasProperties(i18n, 'latitude', 'longitude');
   if (coordinates) {
     var template = '<span title="{0}">{1}°</span>';
-    var latitude = template.format(i18n.latitude, coordinates[latitudeIndex]);
-    var longitude = template.format(i18n.longitude, coordinates[longitudeIndex]);
+    var latitude = template.format(
+      I18n.translate('visualizations.common.latitude'),
+      coordinates[latitudeIndex]
+    );
+    var longitude = template.format(
+      I18n.translate('visualizations.common.longitude'),
+      coordinates[longitudeIndex]
+    );
+
     return '({latitude}, {longitude})'.format({
       latitude: latitude,
       longitude: longitude

@@ -3,7 +3,7 @@ import React from 'react';
 import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';
 
-import { translate } from '../I18n';
+import { translate } from '../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES } from '../constants';
 import CustomizationTabPane from '../CustomizationTabPane';
 

@@ -1,17 +1,17 @@
-var utils = require('socrata-utils');
-var VifHelpers = require('../helpers/VifHelpers');
-var $ = require('jquery');
-var _ = require('lodash');
+const utils = require('socrata-utils');
+const VifHelpers = require('../helpers/VifHelpers');
+const $ = require('jquery');
+const _ = require('lodash');
 
-var DEFAULT_TYPE_VARIANTS = {
+const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
-var DEFAULT_PRIMARY_COLOR = '#00a1af';
-var DEFAULT_SECONDARY_COLOR = '#00a1af';
-var DEFAULT_HIGHLIGHT_COLOR = '#ccecef';
-var DEFAULT_UNIT_ONE = '';
-var DEFAULT_UNIT_OTHER = '';
+const DEFAULT_PRIMARY_COLOR = '#00a1af';
+const DEFAULT_SECONDARY_COLOR = '#00a1af';
+const DEFAULT_HIGHLIGHT_COLOR = '#ccecef';
+const DEFAULT_UNIT_ONE = '';
+const DEFAULT_UNIT_OTHER = '';
 
 function SvgVisualization($element, vif) {
   var self = this;

@@ -11,12 +11,6 @@ describe('Table', function() {
 
     var tableVIF = {
       configuration: {
-        localization: {
-          'latitude': 'translation for latitude',
-          'longitude': 'translation for longitude',
-          'no_column_description': 'translation for no_column_description',
-          'unable_to_render': 'translation for unable_to_render'
-        }
       },
       type: 'table'
     };
@@ -129,12 +123,6 @@ describe('Table', function() {
       it('throws when missing a VIF', function() {
         assert.throws(function() {
           new Table($('<div>'));
-        });
-      });
-
-      it('throws when missing configuration.localization', function() {
-        assert.throws(function() {
-          new Table($('<div>'), {configuration: {}});
         });
       });
     });
@@ -404,8 +392,7 @@ describe('Table', function() {
           onmouseenter(function(payload) {
             assert.property(payload, 'element');
             assert.property(payload, 'content');
-            assert.match(payload.content, /rawr/);
-            assert.match(payload.content, /translation for/);
+            assert.match(payload.content, /no description provided/i);
           }, done);
 
           mouseenter('th:nth-child(2)');

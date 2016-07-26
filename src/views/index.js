@@ -1,18 +1,18 @@
-var ChoroplethMap = require('./ChoroplethMap');
-var SvgRegionMap = require('./SvgRegionMap');
-var ChoroplethMapUtils = require('./ChoroplethMapUtils');
-var ColumnChart = require('./ColumnChart');
-var DistributionChart = require('./DistributionChart');
-var DistributionChartHelpers = require('./DistributionChartHelpers');
-var FeatureMap = require('./FeatureMap');
-var FlyoutRenderer = require('./FlyoutRenderer');
-var Pager = require('./Pager');
-var RowInspector = require('./RowInspector');
-var SvgColumnChart = require('./SvgColumnChart');
-var SvgHistogram = require('./SvgHistogram');
-var SvgTimelineChart = require('./SvgTimelineChart');
-var Table = require('./Table');
-var TimelineChart = require('./TimelineChart');
+const ChoroplethMap = require('./ChoroplethMap');
+const SvgRegionMap = require('./SvgRegionMap');
+const ChoroplethMapUtils = require('./ChoroplethMapUtils');
+const ColumnChart = require('./ColumnChart');
+const DistributionChart = require('./DistributionChart');
+const DistributionChartHelpers = require('./DistributionChartHelpers');
+const FeatureMap = require('./FeatureMap');
+const FlyoutRenderer = require('./FlyoutRenderer');
+const Pager = require('./Pager');
+const RowInspector = require('./RowInspector');
+const SvgColumnChart = require('./SvgColumnChart');
+const SvgHistogram = require('./SvgHistogram');
+const SvgTimelineChart = require('./SvgTimelineChart');
+const Table = require('./Table');
+const TimelineChart = require('./TimelineChart');
 
 module.exports = {
   ChoroplethMap: ChoroplethMap,

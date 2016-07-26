@@ -3,7 +3,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 
-import { translate } from './I18n';
+import { translate } from '../I18n';
 import {
   getCurrentVif,
   getXAxisScalingMode,

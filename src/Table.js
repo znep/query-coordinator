@@ -1,14 +1,14 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var Table = require('./views/Table');
-var Pager = require('./views/Pager');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var MetadataProvider = require('./dataProviders/MetadataProvider');
+const _ = require('lodash');
+const $ = require('jquery');
+const utils = require('socrata-utils');
+const Table = require('./views/Table');
+const Pager = require('./views/Pager');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
 
-var ROW_HEIGHT_PX = 39;
-var MAX_COLUMN_COUNT = 64;
+const ROW_HEIGHT_PX = 39;
+const MAX_COLUMN_COUNT = 64;
 
 $.fn.socrataTable = function(vif) {
   'use strict';

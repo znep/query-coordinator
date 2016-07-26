@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 
-import { translate } from '../../I18n';
+import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setValueOrDeleteProperty, setValueOrDefaultValue, isNonEmptyString } from '../../helpers';
 import {
@@ -31,7 +31,7 @@ export default function histogram(state, action) {
   switch (action.type) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
-        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.units.one'));
+        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
         setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
         setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
       });
@@ -98,13 +98,13 @@ export default function histogram(state, action) {
 
     case SET_UNITS_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.units.one'));
+        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNITS_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.units.other'));
+        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
   }

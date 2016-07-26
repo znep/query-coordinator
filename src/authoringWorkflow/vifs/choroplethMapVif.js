@@ -1,4 +1,4 @@
-import { translate, translateGroup } from '../I18n';
+import { translate, translateGroup } from '../../I18n';
 import { BASE_LAYERS } from '../constants';
 
 export default {

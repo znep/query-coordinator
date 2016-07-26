@@ -1,4 +1,4 @@
-import { translate, translateGroup } from '../I18n';
+import { translate, translateGroup } from '../../I18n';
 
 export default {
   format: {
@@ -27,11 +27,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'histogram',
-      unit: {
-        one: translate('visualizations.common.units.one'),
-        other: translate('visualizations.common.units.other')
-      }
+      type: 'histogram'
     }
   ],
   title: ''

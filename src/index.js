@@ -1,19 +1,20 @@
-var views = require('./views');
-var dataProviders = require('./dataProviders');
-var helpers = require('./helpers');
-var AuthoringWorkflow = require('./authoringWorkflow');
+const views = require('./views');
+const dataProviders = require('./dataProviders');
+const helpers = require('./helpers');
+const AuthoringWorkflow = require('./authoringWorkflow');
+const I18n = require('./I18n');
 // vv these requires have the side effect of registering jQuery plugins vv
-var ChoroplethMap = require('./ChoroplethMap');
-var SvgRegionMap = require('./SvgRegionMap');
-var ColumnChart = require('./ColumnChart');
-var SvgColumnChart = require('./SvgColumnChart');
-var DistributionChart = require('./DistributionChart');
-var FeatureMap = require('./FeatureMap');
-var SvgFeatureMap = require('./SvgFeatureMap');
-var Table = require('./Table');
-var TimelineChart = require('./TimelineChart');
-var SvgTimelineChart = require('./SvgTimelineChart');
-var SvgHistogram = require('./SvgHistogram');
+const ChoroplethMap = require('./ChoroplethMap');
+const SvgRegionMap = require('./SvgRegionMap');
+const ColumnChart = require('./ColumnChart');
+const SvgColumnChart = require('./SvgColumnChart');
+const DistributionChart = require('./DistributionChart');
+const FeatureMap = require('./FeatureMap');
+const SvgFeatureMap = require('./SvgFeatureMap');
+const Table = require('./Table');
+const TimelineChart = require('./TimelineChart');
+const SvgTimelineChart = require('./SvgTimelineChart');
+const SvgHistogram = require('./SvgHistogram');
 
 // TODO: add exported function here called `init` which takes a VIF and instantiates the
 // appropriate visualization based on the VIF's `type` field

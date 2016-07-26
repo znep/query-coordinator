@@ -1,31 +1,30 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var L = require('leaflet');
-var utils = require('socrata-utils');
-var SvgFeatureMap = require('./views/SvgFeatureMap');
-var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
-var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
-var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var MetadataProvider = require('./dataProviders/MetadataProvider');
-var VifHelpers = require('./helpers/VifHelpers');
-var DataTypeFormatter = require('./views/DataTypeFormatter');
+const _ = require('lodash');
+const $ = require('jquery');
+const L = require('leaflet');
+const utils = require('socrata-utils');
+const SvgFeatureMap = require('./views/SvgFeatureMap');
+const GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
+const TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
+const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
+const VifHelpers = require('./helpers/VifHelpers');
+const DataTypeFormatter = require('./views/DataTypeFormatter');
 
-var COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
-var DOMAIN_PATH = 'series[0].dataSource.domain';
-var DATASET_UID_PATH = 'series[0].dataSource.datasetUid';
-
-var DEFAULT_TILESERVER_HOSTS = [
+const COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
+const DOMAIN_PATH = 'series[0].dataSource.domain';
+const DATASET_UID_PATH = 'series[0].dataSource.datasetUid';
+const DEFAULT_TILESERVER_HOSTS = [
   'https://tileserver1.api.us.socrata.com',
   'https://tileserver2.api.us.socrata.com',
   'https://tileserver3.api.us.socrata.com',
   'https://tileserver4.api.us.socrata.com'
 ];
-var DEFAULT_FEATURES_PER_TILE = 256 * 256;
+const DEFAULT_FEATURES_PER_TILE = 256 * 256;
 // known in data lens as "simple blue"
-var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
-var DEFAULT_BASE_LAYER_OPACITY = 0.42;
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
+const DEFAULT_BASE_LAYER_OPACITY = 0.42;
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata FeatureMap Visualization from the
@@ -43,7 +42,6 @@ $.fn.socrataSvgFeatureMap = function(vif) {
 
   utils.assertHasProperties(
     vif,
-    'configuration.localization',
     'series[0].dataSource.dimension.columnName',
     'series[0].dataSource.datasetUid',
     'series[0].dataSource.domain',
@@ -56,26 +54,6 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
   utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
   utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
-
-  var localization = [
-    'flyout_filter_notice',
-    'flyout_filter_or_zoom_notice',
-    'flyout_dense_data_notice',
-    'flyout_click_to_inspect_notice',
-    'flyout_click_to_locate_user_title',
-    'flyout_click_to_locate_user_notice',
-    'flyout_locating_user_title',
-    'flyout_locate_user_error_title',
-    'flyout_locate_user_error_notice',
-    'flyout_pan_zoom_disabled_warning_title',
-    'row_inspector_row_data_query_failed',
-    'user_current_position',
-    'column_incompatibility_error',
-    'general_error'
-  ];
-
-  var missingKeys = _.difference(localization, _.keys(vif.configuration.localization));
-  _.forEach(missingKeys, (missingKey) => console.warn(`Warning: A SvgFeatureMap localization key is missing: ${missingKey}.`));
 
   var $element = $(this);
   var datasetMetadata;
@@ -164,9 +142,11 @@ $.fn.socrataSvgFeatureMap = function(vif) {
     var errorCode = _.get(error, 'soqlError.errorCode');
 
     if (errorCode === 'query.soql.type-mismatch') {
-      message = lastRenderedVif.configuration.localization.column_incompatibility_error;
+      message = I18n.translate(
+        'visualizations.feature_map.error_incompatible_column'
+      );
     } else {
-      message = lastRenderedVif.configuration.localization.general_error;
+      message = I18n.translate('visualizations.common.error_generic');
     }
 
     renderError(message);
@@ -358,7 +338,9 @@ $.fn.socrataSvgFeatureMap = function(vif) {
           detail: {
             data: null,
             error: true,
-            message: lastRenderedVif.configuration.localization.row_inspector_row_data_query_failed
+            message: I18n.translate(
+              'visualizations.feature_map.row_inspector_row_data_query_failed'
+            )
           },
           bubbles: true
         }
@@ -571,7 +553,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
             // we should format it slightly differently.
             formattedRowData[columnMetadata.position] = {
               column: columnName,
-              value: DataTypeFormatter.renderCell(columnValue, columnMetadata, lastRenderedVif.configuration.localization),
+              value: DataTypeFormatter.renderCell(columnValue, columnMetadata),
               format: _.isObject(columnValue) ? undefined : columnMetadata.format,
               physicalDatatype: columnMetadata.physicalDatatype
             };

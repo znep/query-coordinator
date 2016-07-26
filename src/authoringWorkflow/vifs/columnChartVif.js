@@ -1,4 +1,4 @@
-import { translate, translateGroup } from '../I18n';
+import { translate, translateGroup } from '../../I18n';
 
 export default {
   format: {

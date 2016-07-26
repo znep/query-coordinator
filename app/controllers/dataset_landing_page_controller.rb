@@ -4,9 +4,9 @@ class DatasetLandingPageController < ApplicationController
 
   skip_before_filter :require_user
 
-  def popular_views
+  def related_views
     begin
-      popular_views = dataset_landing_page.get_popular_views(
+      related_views = dataset_landing_page.get_derived_views(
         params[:id],
         forwardable_session_cookies,
         request_id,
@@ -19,7 +19,7 @@ class DatasetLandingPageController < ApplicationController
       return render :json => error.message, :status => :internal_server_error
     end
 
-    render :json => popular_views
+    render :json => related_views
   end
 
   def get_featured_content
@@ -38,15 +38,17 @@ class DatasetLandingPageController < ApplicationController
     render :json => featured_content
   end
 
-  def get_related_views
+  def get_derived_views
     # can be name, date, or most_accessed
     sort_by = params[:sort_by] || 'most_accessed'
 
     begin
-      related_content = dataset_landing_page.get_related_views(
+      derived_content = dataset_landing_page.get_derived_views(
         params[:id],
         forwardable_session_cookies,
         request_id,
+        nil,
+        nil,
         sort_by
       )
     rescue CoreServer::ResourceNotFound => error
@@ -55,7 +57,7 @@ class DatasetLandingPageController < ApplicationController
       return render :json => error.message, :status => :internal_server_error
     end
 
-    render :json => related_content
+    render :json => derived_content
   end
 
   def post_featured_content

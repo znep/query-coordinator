@@ -91,7 +91,7 @@ var ViewWidget = React.createClass({
       <img src={imageUrl} alt={name} /> :
       <span className={`${icon} x-large-icon`}></span>;
 
-    var ariaLabel = `${I18n.popular_views.view} ${name}`;
+    var ariaLabel = `${I18n.related_views.view} ${name}`;
 
     return (
       <div className="result-card media view-widget" data-id={id} data-type={displayType}>

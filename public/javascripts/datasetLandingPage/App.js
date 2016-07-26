@@ -7,7 +7,7 @@ import FeaturedContent from './components/FeaturedContent';
 import MetadataTable from './components/MetadataTable';
 import DatasetContents from './components/DatasetContents';
 import DatasetPreview from './components/DatasetPreview';
-import PopularViewList from './components/PopularViewList';
+import RelatedViewList from './components/RelatedViewList';
 import { VelocityComponent } from 'velocity-react';
 
 export default function App() {
@@ -25,7 +25,7 @@ export default function App() {
           <DatasetPreview />
 
           <Responsive>
-            <PopularViewList />
+            <RelatedViewList />
           </Responsive>
         </main>
       </div>

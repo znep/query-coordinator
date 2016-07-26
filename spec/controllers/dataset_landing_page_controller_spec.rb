@@ -23,19 +23,19 @@ describe DatasetLandingPageController do
     login
   end
 
-  describe 'GET /dataset_landing_page/id/popular_views' do
-    it 'returns the popular views as json' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_popular_views).and_return(views)
+  describe 'GET /dataset_landing_page/id/related_views' do
+    it 'returns the related views as json' do
+      allow_any_instance_of(DatasetLandingPage).to receive(:get_derived_views).and_return(views)
 
-      get :popular_views, :id => 'abcd-1234'
+      get :related_views, :id => 'abcd-1234'
       expect(response).to have_http_status(:success)
       expect(response.body).to eq(views_json)
     end
 
     it 'returns an error message when a core error is thrown' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_popular_views).and_raise(error)
+      allow_any_instance_of(DatasetLandingPage).to receive(:get_derived_views).and_raise(error)
 
-      get :popular_views, :id => 'abcd-1234'
+      get :related_views, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
       expect(response.body).to match(/Failed/)
     end

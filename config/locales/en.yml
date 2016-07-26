@@ -1363,10 +1363,6 @@ en:
         message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
         view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
       visualization: Visualization
-    featured_views:
-      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
-      title: Popular Content Using this Data
-      view: View
     feedback:
       panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
       panel_title: Do you want to include an annotated screenshot of the current page?
@@ -1406,9 +1402,9 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
-    popular_views:
+    related_views:
       load_more_error: There was a problem loading additional content.
-      title: Popular Content Using this Data
+      title: Related Content Using this Data
       view: View
     private_notice: You are looking at a private dataset.
     publish: Publish

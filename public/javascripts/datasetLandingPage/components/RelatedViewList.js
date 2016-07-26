@@ -4,17 +4,17 @@ import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
 import BootstrapAlert from './BootstrapAlert';
 import ViewWidget from './ViewWidget';
-import { POPULAR_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
 import { handleKeyPress } from '../lib/a11yHelpers';
 import { isUserAdminOrPublisher } from '../lib/user';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import {
-  loadMorePopularViews,
-  dismissPopularViewsError,
-  togglePopularViews
-} from '../actions/popularViews';
+  loadMoreRelatedViews,
+  dismissRelatedViewsError,
+  toggleRelatedViews
+} from '../actions/relatedViews';
 
-export var PopularViewList = React.createClass({
+export var RelatedViewList = React.createClass({
   propTypes: {
     bootstrapUrl: PropTypes.string,
     dismissError: PropTypes.func.isRequired,
@@ -51,8 +51,8 @@ export var PopularViewList = React.createClass({
       return;
     }
 
-    var popularViewHeight = 284;
-    var popularViewMargin = 18;
+    var relatedViewHeight = 284;
+    var relatedViewMargin = 18;
 
     if (!isDesktop) {
       return {
@@ -60,8 +60,8 @@ export var PopularViewList = React.createClass({
       };
     }
 
-    var visibleCount = isCollapsed ? POPULAR_VIEWS_CHUNK_SIZE : viewList.length;
-    var rowCount = Math.ceil(visibleCount / POPULAR_VIEWS_CHUNK_SIZE);
+    var visibleCount = isCollapsed ? RELATED_VIEWS_CHUNK_SIZE : viewList.length;
+    var rowCount = Math.ceil(visibleCount / RELATED_VIEWS_CHUNK_SIZE);
 
     // While loading on desktop, we immediately expand the container to make room for the new views.
     if (isLoading) {
@@ -69,7 +69,7 @@ export var PopularViewList = React.createClass({
     }
 
     return {
-      height: (popularViewHeight + popularViewMargin) * rowCount - 1
+      height: (relatedViewHeight + relatedViewMargin) * rowCount - 1
     };
   },
 
@@ -93,7 +93,7 @@ export var PopularViewList = React.createClass({
       return this.renderEmptyListAlert();
     }
 
-    var popularViews = _.map(viewList, function(popularView, i) {
+    var relatedViews = _.map(viewList, function(relatedView, i) {
       var opacity;
 
       if (isDesktop) {
@@ -106,13 +106,13 @@ export var PopularViewList = React.createClass({
 
       return (
         <VelocityComponent key={i} animation={animation} runOnMount={i > 2} duration={400}>
-          <ViewWidget {...popularView} onClick={onClickWidget} />
+          <ViewWidget {...relatedView} onClick={onClickWidget} />
         </VelocityComponent>
       );
     });
 
     if (!isDesktop && hasMore) {
-      popularViews.push(
+      relatedViews.push(
         <div className="result-card loading-card" key="loading">
           <span className="spinner-default spinner-large" />
         </div>
@@ -120,7 +120,7 @@ export var PopularViewList = React.createClass({
     }
 
     if (isDesktop && hasMore && isLoading) {
-      popularViews.push(
+      relatedViews.push(
         <div className="desktop-spinner" key="loading">
           <span className="spinner-default spinner-large" />
         </div>
@@ -128,8 +128,8 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <div className="media-results popular-views" onScroll={this.onScrollList}>
-        {popularViews}
+      <div className="media-results related-views" onScroll={this.onScrollList}>
+        {relatedViews}
       </div>
     );
   },
@@ -164,7 +164,7 @@ export var PopularViewList = React.createClass({
 
     return (
       <div className="alert error">
-        {I18n.popular_views.load_more_error}
+        {I18n.related_views.load_more_error}
         <span role="button" className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
@@ -173,7 +173,7 @@ export var PopularViewList = React.createClass({
   renderCollapseLink: function() {
     var { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
-    if (hasMore || viewList.length <= POPULAR_VIEWS_CHUNK_SIZE || !isDesktop) {
+    if (hasMore || viewList.length <= RELATED_VIEWS_CHUNK_SIZE || !isDesktop) {
       return;
     }
 
@@ -197,9 +197,9 @@ export var PopularViewList = React.createClass({
     }
 
     return (
-      <section className="landing-page-section popular-views">
+      <section className="landing-page-section related-views">
         <h2 className="dataset-landing-page-header">
-          {I18n.popular_views.title}
+          {I18n.related_views.title}
         </h2>
 
         <VelocityComponent animation={this.getAnimation()}>
@@ -217,14 +217,14 @@ export var PopularViewList = React.createClass({
 function mapStateToProps(state) {
   return {
     bootstrapUrl: state.view.bootstrapUrl,
-    ...state.popularViews
+    ...state.relatedViews
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     loadMore: function() {
-      dispatch(loadMorePopularViews());
+      dispatch(loadMoreRelatedViews());
 
       var mixpanelPayload = {
         name: 'Clicked to Show More Views'
@@ -234,11 +234,11 @@ function mapDispatchToProps(dispatch) {
     },
 
     toggleList: function() {
-      dispatch(togglePopularViews());
+      dispatch(toggleRelatedViews());
     },
 
     dismissError: function() {
-      dispatch(dismissPopularViewsError());
+      dispatch(dismissRelatedViewsError());
     },
 
     onClickWidget: function(event) {
@@ -256,4 +256,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PopularViewList);
+export default connect(mapStateToProps, mapDispatchToProps)(RelatedViewList);

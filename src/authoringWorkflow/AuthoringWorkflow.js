@@ -7,14 +7,13 @@ import { translate } from './I18n';
 import {
   getCurrentVif,
   getXAxisScalingMode,
-  isInsertableVisualization,
-  isColumnChart,
-  isTimelineChart
+  isInsertableVisualization
 } from './selectors/vifAuthoring';
 
-import CustomizationTabs from './CustomizationTabs';
-import CustomizationTabPanes from './CustomizationTabPanes';
-import Visualization from './Visualization';
+// TODO: fix linter so it understands JSX.
+import CustomizationTabs from './CustomizationTabs'; //eslint-disable-line no-unused-vars
+import CustomizationTabPanes from './CustomizationTabPanes'; //eslint-disable-line no-unused-vars
+import Visualization from './Visualization'; //eslint-disable-line no-unused-vars
 import DataPane from './panes/DataPane';
 import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
@@ -118,7 +117,6 @@ export var AuthoringWorkflow = React.createClass({
   render() {
     var vifAuthoring = this.props.vifAuthoring;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
-    var isColumnOrTimeline = isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring);
     var scalingMode = null; // This feature is hidden for now.
 
     return (

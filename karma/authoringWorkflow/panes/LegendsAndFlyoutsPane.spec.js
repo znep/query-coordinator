@@ -85,6 +85,23 @@ describe('LegendsAndFlyoutsPane', function() {
     });
   });
 
+  describe('histogram', function() {
+    beforeEach(function() {
+      var renderedParts = render('histogram');
+
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+
+    describe('rendering', function() {
+      rendersEditableUnits();
+    });
+
+    describe('events', function() {
+      emitsEventsForUnits();
+    });
+  });
+
   describe('featureMap', function() {
     beforeEach(function() {
       var renderedParts = render('featureMap');

@@ -14,10 +14,11 @@ import {
   getColorScale,
   getBaseLayer,
   getBaseLayerOpacity,
+  isChoroplethMap,
   isColumnChart,
-  isTimelineChart,
   isFeatureMap,
-  isChoroplethMap
+  isHistogram,
+  isTimelineChart
 } from '../selectors/vifAuthoring';
 
 import {
@@ -54,6 +55,10 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   columnChart() {
+    return this.baseColor();
+  },
+
+  histogram() {
     return this.baseColor();
   },
 
@@ -147,6 +152,8 @@ export var ColorsAndStylePane = React.createClass({
 
     if (isColumnChart(vifAuthoring)) {
       configuration = this.columnChart();
+    } else if (isHistogram(vifAuthoring)) {
+      configuration = this.histogram();
     } else if (isTimelineChart(vifAuthoring)) {
       configuration = this.timelineChart();
     } else if (isFeatureMap(vifAuthoring)) {

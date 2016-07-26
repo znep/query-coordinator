@@ -22,6 +22,8 @@ import {
   isValidFeatureMapVif,
   isColumnChart,
   isValidColumnChartVif,
+  isHistogram,
+  isValidHistogramVif,
   isChoroplethMap,
   isValidChoroplethMapVif,
   getCurrentVif,
@@ -119,6 +121,23 @@ export var Visualization = React.createClass({
     }
   },
 
+  histogram() {
+    var { vif } = this.props;
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.histogram').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      this.destroyVisualizationPreview();
+
+      $visualizationPreview.
+        socrataSvgHistogram(vif);
+      $visualizationPreview.
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
+    }
+  },
+
   choroplethMap() {
     var { vif } = this.props;
     var $visualizationPreview = $(this.visualizationPreview());
@@ -173,7 +192,7 @@ export var Visualization = React.createClass({
   },
 
   renderVisualization() {
-    var { vif, vifAuthoring } = this.props;
+    var { vifAuthoring } = this.props;
 
     if (hasVisualizationType(vifAuthoring)) {
       if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
@@ -184,6 +203,8 @@ export var Visualization = React.createClass({
         this.featureMap();
       } else if (isChoroplethMap(vifAuthoring) && isValidChoroplethMapVif(vifAuthoring)) {
         this.choroplethMap();
+      } else if (isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring)) {
+        this.histogram();
       }
     }
   },

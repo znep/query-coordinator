@@ -84,6 +84,11 @@ describe('AxisAndScalePane', function() {
     rendersLabelsAndEmitsEvents();
   });
 
+  describe('histogram', function() {
+    beforeEach(setUpVisualization('histogram'));
+    rendersLabelsAndEmitsEvents();
+  });
+
   describe('timelineChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
     rendersLabelsAndEmitsEvents();

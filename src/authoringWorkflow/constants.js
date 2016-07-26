@@ -13,7 +13,7 @@ export const DIMENSION_TYPES = [
   },
   {
     type: 'number',
-    preferredVisualizationTypes: ['columnChart']
+    preferredVisualizationTypes: ['columnChart', 'histogram']
   },
   {
     type: 'calendar_date',
@@ -26,6 +26,11 @@ export const VISUALIZATION_TYPES = [
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
     preferredDimensionTypes: ['text', 'number']
+  },
+  {
+    type: 'histogram',
+    title: translate('visualizations.histogram.title'),
+    preferredDimensionTypes: ['number']
   },
   {
     type: 'choroplethMap',

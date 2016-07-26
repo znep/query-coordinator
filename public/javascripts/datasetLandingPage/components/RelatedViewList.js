@@ -137,7 +137,7 @@ export var RelatedViewList = React.createClass({
   renderLoadMoreLink: function() {
     var { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
-    if (!hasMore || !isDesktop || !serverConfig.featureFlags.defaultToDatasetLandingPage) {
+    if (!hasMore || !isDesktop) {
       return null;
     }
 

@@ -46,13 +46,6 @@ describe('components/DatasetPreview', function() {
     expect(element).to.not.exist;
   });
 
-  it('does not render an element if defaultToDatasetLandingPage is false', function() {
-    serverConfig.featureFlags.defaultToDatasetLandingPage = false;
-    var element = renderComponent(DatasetPreview, getProps());
-    expect(element).to.not.exist;
-    serverConfig.featureFlags.defaultToDatasetLandingPage = true;
-  });
-
   it('renders an element if the view is tabular', function() {
     var element = renderComponent(DatasetPreview, getProps());
     expect(element).to.exist;

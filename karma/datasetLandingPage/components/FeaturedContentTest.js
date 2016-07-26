@@ -16,20 +16,6 @@ describe('components/FeaturedContent', function() {
     });
   }
 
-  describe('feature flag', function() {
-    it('renders an element if feature flag is enabled', function() {
-      serverConfig.featureFlags.defaultToDatasetLandingPage = true;
-      var element = renderComponent(FeaturedContent, getProps());
-      expect(element).to.exist;
-    });
-
-    it('does not render an element if feature flag is disabled', function() {
-      serverConfig.featureFlags.defaultToDatasetLandingPage = false;
-      var element = renderComponent(FeaturedContent, getProps());
-      expect(element).to.not.exist;
-    });
-  });
-
   it('does not render anything if the contentList is empty and the user is not logged in', function() {
     serverConfig.currentUser = null;
 

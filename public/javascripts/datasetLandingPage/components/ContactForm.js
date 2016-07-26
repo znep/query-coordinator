@@ -87,10 +87,6 @@ export var ContactForm = React.createClass({
   initializeRecaptcha: function() {
     var { onRecaptchaLoaded } = this.props;
 
-    if (!serverConfig.featureFlags.defaultToDatasetLandingPage) {
-      return;
-    }
-
     recaptcha.init(this.recaptchaContainer, function(id) {
       onRecaptchaLoaded(true);
       this.recaptchaId = id;
@@ -284,10 +280,6 @@ export var ContactForm = React.createClass({
   },
 
   render: function() {
-    if (!serverConfig.featureFlags.defaultToDatasetLandingPage) {
-      return null;
-    }
-
     var { status } = this.props;
     var content;
 

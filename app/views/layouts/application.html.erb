@@ -11,11 +11,7 @@
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
   <%= stylesheet_link_tag 'print', media: 'print' %>
 
-  <script type="text/javascript">
-    // StorytellerEnvironment bindings.
-    window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
-    window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
-  </script>
+  <%= render partial: 'stories/partials/storyteller_environment' %>
 
   <%= google_font_code_embed %>
 

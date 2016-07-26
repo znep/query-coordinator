@@ -101,6 +101,13 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(helper.copyright).to eq("\u00A9 1984")
     end
 
+    it 'returns only the copyright and year if site name is empty' do
+      allow(helper).to receive(:footer_title).and_return("")
+      test_time = Time.parse('Jan 1 1984')
+      allow(Time).to receive(:now).and_return(test_time)
+      expect(helper.copyright).to eq("\u00A9 1984")
+    end
+
     it 'returns the copyright and year and site name' do
       allow(helper).to receive(:footer_title).and_return(%Q(Seattle's silly data!))
       test_time = Time.parse('Jan 1 1984')

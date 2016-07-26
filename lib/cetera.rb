@@ -167,8 +167,9 @@ module Cetera
 
   # Anything not explicitly supported here will be dropped
   def self.valid_cetera_keys
-    Set.new(%i(boostDomains categories derived_from domains for_user limit offset only order q
-               search_context tags))
+    Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
+               boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
+               derived_from domains for_user limit offset only order q search_context tags))
   end
 
   # A row of Cetera results

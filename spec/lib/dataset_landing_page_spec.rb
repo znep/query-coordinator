@@ -68,7 +68,9 @@ describe DatasetLandingPage do
             {
               :cookie_string => 'cookie',
               :request_id => 'request_id',
-              :sortBy => 'most_accessed'
+              :sortBy => 'most_accessed',
+              :boostDatalenses => 1.15,
+              :boostStories => 1.3
             }
           ).
           at_least(:once).
@@ -116,7 +118,9 @@ describe DatasetLandingPage do
               :sortBy => 'most_accessed',
               :limit => 19,
               :offset => 31,
-              :sortBy => 'hue'
+              :sortBy => 'hue',
+              :boostDatalenses => 1.15,
+              :boostStories => 1.3
             }
           ).
           and_return([])

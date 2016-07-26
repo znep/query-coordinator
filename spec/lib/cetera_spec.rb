@@ -298,6 +298,24 @@ describe Cetera do
       Cetera.get_derived_from_views('data-lens', options)
     end
 
+    it 'invokes Cetera with boost parameters' do
+      expect(Cetera).to receive(:search_views).
+        with(
+          {
+            search_context: 'unicorns',
+            domains: ['unicorns'],
+            derived_from: 'data-lens',
+            boostCalendars: 100.0
+          },
+          cookies,
+          request_id
+        ).
+        and_return(cetera_results)
+
+      options = { boostCalendars: 100.0, cookie_string: cookies, request_id: request_id }
+      Cetera.get_derived_from_views('data-lens', options)
+    end
+
     it 'returns an empty array when Cetera returns a bad response' do
       allow(Cetera).to receive(:search_views).and_return(nil)
       options = { offset: nil, limit: 'purple', cookie_string: cookies, request_id: request_id }

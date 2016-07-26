@@ -18,7 +18,9 @@ class DatasetLandingPage
         :limit => limit,
         :offset => offset,
         :locale => locale,
-        :sortBy => sort_by
+        :sortBy => sort_by,
+        :boostStories => 1.3,
+        :boostDatalenses => 1.15
       }.compact
 
       derived_views = Cetera.get_derived_from_views(uid_to_search_cetera(view), options)

@@ -26,7 +26,7 @@ export function closeGoalQuickEdit() {
 export function saveGoalQuickEdit(goalId, version, values) {
   return dispatch => {
     let sendUpdateRequest = () => {
-      return fetch(`/stat/api/v1/goals/${goalId}`, _.merge(_.clone(fetchOptions), {
+      return fetch(`/stat/api/v2/goals/${goalId}`, _.merge(_.clone(fetchOptions), {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',

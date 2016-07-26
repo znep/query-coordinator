@@ -10,19 +10,19 @@ import {
  * Possible Labels; default | info | success | warning | error
  * Message; html
  *
- * @param alert
+ * @param goalTableAlert
  * @returns Object
  */
-export function displayGoalTableAlert(alert) {
+export function displayGoalTableAlert(goalTableAlert) {
   return {
     type: SHOW_GOAL_TABLE_ALERT,
-    alert
+    goalTableAlert
   };
 }
 
-export function displayGoalQuickEditAlert(alert) {
+export function displayGoalQuickEditAlert(goalQuickEditAlert) {
   return {
     type: SHOW_GOAL_QUICK_EDIT_ALERT,
-    alert
+    goalQuickEditAlert
   };
 }

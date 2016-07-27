@@ -2218,6 +2218,12 @@ export default function AssetSelectorRenderer(options) {
         authoringWorkflow.destroy();
       }
     });
+
+    // Need to return something, otherwise the modal will be closed.
+    // Sounds harmless, but the modal code controls story scrolling
+    // behavior. If the modal is closed, the user will be able to
+    // scroll the story underneath the authoring-workflow UI.
+    return $('<div>');
   }
 
   function _renderConfigureVisualizationTemplate() {

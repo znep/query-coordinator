@@ -6,6 +6,9 @@ export default {
     version: 2
   },
   description: '',
+  configuration: {
+    bucketType: 'linear'
+  },
   series: [
     {
       color: {

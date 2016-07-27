@@ -1,8 +1,6 @@
 .color-picker {
   position: relative;
-  display: inline-block;
   align-self: flex-end;
-  padding-bottom: 5px;
   z-index: 2000;
 
   .hidden {
@@ -22,32 +20,48 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  width: 35px;
-  height: 24px;
-  background-color: #d8d8d8;
+  height: 40px;
+  background-color: #efefef;
+  border: solid 1px #d8d8d8;
+  transition: border-color .15s ease-in;
+
+  &:hover {
+    border-color: $primary;
+  }
 
   .caret {
-    margin-left: 1px;
+    width: 26px;
+    height: 100%;
+    display: inline-flex;
+
+    .icon-arrow-down {
+      margin: auto;
+      font-size: 12px;
+    }
   }
 }
 
 .selected-color-frame {
-  width: 24px;
-  height: 24px;
+  width: calc(100% - 26px);
+  height: 100%;
 }
 
 .color-buckets-container {
   display: inline-block;
   position: absolute;
   z-index: 1;
-  top: 29px;
+  top: calc(100% - 1px);
   left: 0;
   padding: 7px;
-  background-color: #f0efef;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.26);
+  background-color: #fff;
+  border: solid 1px #d8d8d8;
 
   &.reveal-from-top {
     top: -121px;
+  }
+
+  input {
+    width: 100%;
   }
 }
 

@@ -901,9 +901,15 @@ export default function AssetSelectorRenderer(options) {
 
         galleryResults.each(function(i, result) {
           var $result = $(result);
-          var isSelectedImage = $result.find('img').attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
+          var $image = $result.find('img');
+          var isSelectedImage = $image.attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
 
           $result.toggleClass('active', isSelectedImage);
+
+          // Work around IE11 automatically adding height/width attributes on
+          // dynamically inserted image elements, causing distortion.
+          // Width isn't an issue in our case; just need to unset height.
+          $image.attr('height', null);
         });
 
         _container.find('.btn-apply').prop('disabled', _.isEmpty(assetSelectorStore.getImageSearchSelected()));

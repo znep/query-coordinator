@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 
-import { VISUALIZATION_TYPES, DIMENSION_TYPES } from '../constants';
+import { VISUALIZATION_TYPES, COLUMN_TYPES } from '../constants';
 
 const getLoading = state => state.isLoading;
 const getDatasetMetadata = state => state.data;
@@ -14,12 +14,13 @@ export const hasData = createSelector(getDatasetMetadata, datasetMetadata => { r
 export const hasError = createSelector(getError, error => { return !_.isNull(error) });
 
 export const getValidDimensions = createSelector(
-  getPhidippidesMetadata,
-  (phidippidesMetadata) => {
+  getDatasetMetadata, getPhidippidesMetadata,
+  (datasetMetadata, phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
+      map(toDatasetMetadata(datasetMetadata)).
       sortBy('name').
       value();
   }
@@ -39,7 +40,7 @@ export const getRecommendedVisualizationTypes = (state, column) => {
     return column && column.columnName === dimension.fieldName
   });
 
-  var dimensionType = _.find(DIMENSION_TYPES, column => {
+  var dimensionType = _.find(COLUMN_TYPES, column => {
     return dimension && dimension.renderTypeName === column.type
   });
 
@@ -49,13 +50,15 @@ export const getRecommendedVisualizationTypes = (state, column) => {
 };
 
 export const getValidMeasures = createSelector(
+  getDatasetMetadata,
   getPhidippidesMetadata,
-  (phidippidesMetadata) => {
+  (datasetMetadata, phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter({ renderTypeName: 'number' }).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
+      map(toDatasetMetadata(datasetMetadata)).
       sortBy('name').
       value();
   }
@@ -96,6 +99,8 @@ export const getValidRegions = createSelector(
     return [...curatedRegions, ...computedColumns];
   }
 );
+
+const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
 
 const isNotSystemColumn = column => {
   return !column.name.startsWith(':');

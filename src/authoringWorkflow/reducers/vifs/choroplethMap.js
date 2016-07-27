@@ -74,7 +74,7 @@ export default function choroplethMap(state, action) {
       break;
 
     case SET_COMPUTED_COLUMN:
-      _.set(state, 'configuration.computedColumnName', action.computedColumnName);
+      _.set(state, 'configuration.computedColumnName', action.computedColumn);
       break;
 
     case SET_SHAPEFILE:

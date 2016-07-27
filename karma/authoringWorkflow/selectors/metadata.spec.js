@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import vifs from 'src/authoringWorkflow/vifs';
 import * as selector from 'src/authoringWorkflow/selectors/metadata';
-import { VISUALIZATION_TYPES, DIMENSION_TYPES } from 'src/authoringWorkflow/constants';
+import { VISUALIZATION_TYPES, COLUMN_TYPES } from 'src/authoringWorkflow/constants';
 
 function getDefaultState() {
   return {
@@ -66,7 +66,7 @@ describe('metadata', function() {
     function returnsRecommendedVisualizationType(dimension) {
       it('returns a list of recommended visualization types', function() {
         var types = selector.getRecommendedVisualizationTypes(getDefaultState(), {columnName: dimension});
-        var columnType = _.find(DIMENSION_TYPES, column => column.type === dimension);
+        var columnType = _.find(COLUMN_TYPES, column => column.type === dimension);
 
         expect(types).to.have.length.above(0);
         expect(columnType).to.exist;

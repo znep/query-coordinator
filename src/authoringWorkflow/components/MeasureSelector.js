@@ -5,7 +5,7 @@ import React, { PropTypes } from 'react';
 import Styleguide from 'socrata-styleguide';
 
 import { translate } from '../../I18n';
-import { AGGREGATION_TYPES } from '../constants';
+import { AGGREGATION_TYPES, COLUMN_TYPES } from '../constants';
 import { setMeasure, setMeasureAggregation } from '../actions';
 import { getAnyMeasure, isFeatureMap } from '../selectors/vifAuthoring';
 import { hasData, getValidMeasures } from '../selectors/metadata';
@@ -52,6 +52,17 @@ export var MeasureSelector = React.createClass({
     }
   },
 
+  renderMeasureOption(option) {
+    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+    var icon = columnType ? columnType.icon : '';
+
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={icon}></span> {option.title}
+      </div>
+    );
+  },
+
   renderMeasureSelector() {
     var {
       metadata,
@@ -70,7 +81,12 @@ export var MeasureSelector = React.createClass({
 
     var options = [
       {title: translate('panes.data.fields.measure.no_value'), value: null},
-      ...measures.map(measure => ({title: measure.name, value: measure.fieldName}))
+      ...measures.map(measure => ({
+        title: measure.name,
+        value: measure.fieldName,
+        type: measure.renderTypeName,
+        render: this.renderMeasureOption
+      }))
     ];
 
     var measureAttributes = {

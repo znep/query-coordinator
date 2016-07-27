@@ -101,25 +101,21 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
           });
 
           dispatch(setComputedColumn(computedColumn.fieldName));
+          dispatch(setDataSource({domain, datasetUid}));
         }).
         catch(handleError);
     };
 
     var handleInitiation = response => {
-      switch (response.status) {
-        case 'unknown':
-        case 'processing':
-          dispatch(setShapefile(curatedRegion.uid, curatedRegion.primaryKey, curatedRegion.geometryLabel));
+      if (response.success) {
+        dispatch(setShapefile(curatedRegion.uid, curatedRegion.primaryKey, curatedRegion.geometryLabel));
 
-          regionCodingProvider.
-            awaitRegionCodingCompletion(shapefileId).
-            then(handleCompletion).
-            catch(handleError);
-          break;
-
-        default:
-          handleError();
-          break;
+        regionCodingProvider.
+          awaitRegionCodingCompletion({ jobId: response.jobId }).
+          then(handleCompletion).
+          catch(handleError);
+      } else {
+        handleError();
       }
     };
 
@@ -147,7 +143,8 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
 
     return regionCodingProvider.
       getRegionCodingStatus({ shapefileId: curatedRegion.uid }).
-      then(handleStatus);
+      then(handleStatus).
+      catch(handleError);
   };
 }
 
@@ -177,16 +174,25 @@ export function setComputedColumn(computedColumn) {
 export var REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
 export function requestShapefileMetadata(domain, shapefileUid) {
   return dispatch => {
-    var shapefileMetadataProvider = MetadataProvider({domain, datasetUid: shapefileUid});
+    var shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
     var handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
-    var handleShapefileMetadata = ({ primaryKey, geometryLabel }) => {
-      dispatch(setShapefile(shapefileUid, primaryKey, geometryLabel));
+    var handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
+      dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));
     };
 
+    dispatch(requestShapefile());
+
     return shapefileMetadataProvider.
-      getShapefileMetadata(shapefileUId).
+      getShapefileMetadata(shapefileUid).
       then(handleShapefileMetadata).
       catch(handleShapefileMetadataError);
+  };
+}
+
+export var REQUEST_SHAPEFILE = 'REQUEST_SHAPEFILE';
+export function requestShapefile() {
+  return {
+    type: REQUEST_SHAPEFILE
   };
 }
 

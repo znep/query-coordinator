@@ -31,7 +31,7 @@ export default {
         selected: '__SOCRATA_FEATURE_SELECTED__'
       },
       geometryLabel: null,
-      primaryKey: null,
+      primaryKey: '_feature_id',
       uid: null
     }
   },

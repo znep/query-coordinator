@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styleguide from 'socrata-styleguide';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
 import {
   getFlyoutTitleColumn,
   getUnitOne,
@@ -73,6 +73,17 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return this.units();
   },
 
+  renderFlyoutTitleColumnOption(option) {
+    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+    var icon = columnType ? columnType.icon : '';
+
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={icon}></span> {option.title}
+      </div>
+    );
+  },
+
   featureMap() {
     var { onSelectFlyoutTitle, vifAuthoring, metadata } = this.props;
     var defaultFlyoutTitleColumn = getFlyoutTitleColumn(vifAuthoring);
@@ -84,7 +95,12 @@ export var LegendsAndFlyoutsPane = React.createClass({
     var columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.flyout_title.no_value'),
-      options: _.map(nonSystemColumns, column => ({title: column.name, value: column.fieldName})),
+      options: _.map(nonSystemColumns, column => ({
+        title: column.name,
+        value: column.fieldName,
+        type: column.renderTypeName,
+        render: this.renderFlyoutTitleColumnOption
+      })),
       onSelection: onSelectFlyoutTitle
     };
 

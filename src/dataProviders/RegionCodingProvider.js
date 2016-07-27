@@ -63,7 +63,9 @@ export default function RegionCodingProvider(config) {
 
       var awaitCompletion = () => {
         _.delay(() => {
-          this.getRegionCodingStatus({ shapefileId, jobId }).then(handleResponse);
+          this.getRegionCodingStatus({ shapefileId, jobId }).
+            then(handleResponse).
+            catch(handleResponse);
         }, 5000);
       };
 

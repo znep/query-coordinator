@@ -5,7 +5,12 @@ import Styleguide from 'socrata-styleguide';
 
 import { translate } from '../../I18n';
 
-import { setComputedColumn, initiateRegionCoding } from '../actions';
+import {
+  initiateRegionCoding,
+  requestShapefileMetadata,
+  setComputedColumn
+} from '../actions';
+
 import {
   isChoroplethMap,
   getDimension,
@@ -33,15 +38,17 @@ export var RegionSelector = React.createClass({
     }
   },
 
-  onSelectRegion({computedColumn, curatedRegion}) {
+  onSelectRegion({computedColumn, curatedRegion, domain}) {
     var {
       vifAuthoring,
       onSelectComputedColumn,
-      onSelectCuratedRegion
+      onSelectCuratedRegion,
+      onSelectComputedColumnShapefile
     } = this.props;
 
     if (computedColumn) {
       onSelectComputedColumn(computedColumn);
+      onSelectComputedColumnShapefile(domain, computedColumn.uid);
     } else if (curatedRegion) {
       onSelectCuratedRegion(
         getDomain(vifAuthoring),
@@ -90,6 +97,7 @@ export var RegionSelector = React.createClass({
   renderSelector() {
     var { metadata, vifAuthoring } = this.props;
     var reference = (ref) => { this.selector = ref; };
+    var domain = getDomain(vifAuthoring);
     var defaultRegion = getShapefileUid(vifAuthoring);
 
     var computedColumns = _.map(getValidComputedColumns(metadata), (computedColumn) => {
@@ -97,7 +105,8 @@ export var RegionSelector = React.createClass({
         title: computedColumn.name,
         value: computedColumn.uid,
         group: translate('panes.data.fields.region.groups.ready_to_use'),
-        computedColumn
+        computedColumn,
+        domain
       };
     });
 

@@ -5,6 +5,7 @@ import Styleguide from 'socrata-styleguide';
 
 import { translate } from '../../I18n';
 import { setDimension } from '../actions';
+import { COLUMN_TYPES } from '../constants';
 import { getAnyDimension, getVisualizationType } from '../selectors/vifAuthoring';
 import { hasData, getRecommendedDimensions, getValidDimensions } from '../selectors/metadata';
 
@@ -15,6 +16,16 @@ export var DimensionSelector = React.createClass({
     onSelectDimension: PropTypes.func
   },
 
+  renderDimensionOption(option) {
+    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={columnType.icon}></span> {option.title}
+      </div>
+    );
+  },
+
   renderDimensionSelector() {
     var { metadata, onSelectDimension, vifAuthoring } = this.props;
     var type = getVisualizationType(vifAuthoring);
@@ -23,6 +34,8 @@ export var DimensionSelector = React.createClass({
       return dimension => ({
         title: dimension.name,
         value: dimension.fieldName,
+        type: dimension.renderTypeName,
+        render: this.renderDimensionOption,
         group
       });
     };

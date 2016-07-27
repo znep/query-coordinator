@@ -2,22 +2,54 @@ import { translate } from '../I18n';
 
 export const INPUT_DEBOUNCE_MILLISECONDS = 300;
 
-export const DIMENSION_TYPES = [
+export const COLUMN_TYPES = [
   {
-    type: 'text',
-    preferredVisualizationTypes: ['columnChart']
-  },
-  {
-    type: 'point',
-    preferredVisualizationTypes: ['featureMap', 'choroplethMap']
-  },
-  {
-    type: 'number',
-    preferredVisualizationTypes: ['columnChart', 'histogram']
+    type: 'blob',
+    icon: 'icon-data'
   },
   {
     type: 'calendar_date',
-    preferredVisualizationTypes: ['timelineChart']
+    preferredVisualizationTypes: ['timelineChart'],
+    icon: 'icon-date'
+  },
+  {
+    type: 'checkbox',
+    icon: 'icon-check'
+  },
+  {
+    type: 'line',
+    icon: 'icon-geo'
+  },
+  {
+    type: 'multiline',
+    icon: 'icon-geo'
+  },
+  {
+    type: 'multipoint',
+    icon: 'icon-geo'
+  },
+  {
+    type: 'multipolygon',
+    icon: 'icon-geo'
+  },
+  {
+    type: 'number',
+    preferredVisualizationTypes: ['columnChart', 'histogram'],
+    icon: 'icon-number'
+  },
+  {
+    type: 'point',
+    preferredVisualizationTypes: ['featureMap', 'choroplethMap'],
+    icon: 'icon-map'
+  },
+  {
+    type: 'polygon',
+    icon: 'icon-geo'
+  },
+  {
+    type: 'text',
+    preferredVisualizationTypes: ['columnChart'],
+    icon: 'icon-text'
   }
 ];
 

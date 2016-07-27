@@ -1,0 +1,372 @@
+const rewire = require('rewire');
+const SoqlVifValidator = rewire('../../src/dataProviders/SoqlVifValidator');
+
+function validatePasses(testCaseFnName, vif, datasetMetadataPerSeries) {
+  describe(testCaseFnName, function() {
+    var validator;
+    beforeEach(function() {
+      validator = SoqlVifValidator.soqlVifValidator(vif, datasetMetadataPerSeries);
+    });
+
+    it('.validate() should return a passing result', function() {
+      validator[testCaseFnName]();
+      assert.propertyVal(validator.validate(), 'ok', true);
+    });
+
+    it('.toPromise() should return promise that successfully resolves', function(done) {
+      validator[testCaseFnName]();
+      validator.toPromise().then(
+        () => { done(); },
+        (error) => { console.error(error); throw error; }
+      );
+    });
+  });
+}
+
+function validateFails(testCaseFnName, vif, datasetMetadataPerSeries) {
+  describe(testCaseFnName, function() {
+    var validator;
+    beforeEach(function() {
+      validator = SoqlVifValidator.soqlVifValidator(vif, datasetMetadataPerSeries);
+    });
+
+    it('.validate() should return a failing result', function() {
+      validator[testCaseFnName]();
+      const validation = validator.validate();
+      assert.propertyVal(validation, 'ok', false);
+      assert.isAtLeast(validation.errorMessages.length, 1);
+    });
+
+    it('.toPromise() should return promise that rejects', function(done) {
+      validator[testCaseFnName]();
+      validator.toPromise().then(
+        () => { console.error('Unexpected resolution'); },
+        (error) => {
+          assert.propertyVal(error, 'ok', false);
+          assert.isAtLeast(error.errorMessages.length, 1);
+          done();
+        }
+      );
+    });
+  });
+}
+
+describe('SoqlVifValidator', function() {
+  describe('soqlVifValidator', function() {
+    it('should throw if dataset metadata is not passed in correctly', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      assert.throws(function() {
+        SoqlVifValidator.soqlVifValidator(vif);
+      });
+      assert.throws(function() {
+        SoqlVifValidator.soqlVifValidator(vif, [{}, {}]);
+      });
+
+      SoqlVifValidator.soqlVifValidator(vif, [{}]);
+    });
+    describe('VIF with no series', function() {
+      const vif = {
+        title: 'no series',
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: []
+      };
+
+      validateFails('requireAtLeastOneSeries', vif, []);
+      validateFails('requireExactlyOneSeries', vif, []);
+      validatePasses('requireNoMeasureAggregation', vif, []);
+      validatePasses('requireMeasureAggregation', vif, []);
+      validatePasses('requireCalendarDateDimension', vif, []);
+      validatePasses('requirePointDimension', vif, []);
+      validatePasses('requireNumericDimension', vif, []);
+    });
+
+    describe('VIF with a numeric, a date, and point dimensioned series', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'date', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'point', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = {
+        columns: [
+          { fieldName: 'number', dataTypeName: 'number' },
+          { fieldName: 'point', dataTypeName: 'point' },
+          { fieldName: 'date', dataTypeName: 'calendar_date' }
+        ]
+      };
+
+      // all series use same dataset.
+      const datasetMetadatas = [ datasetMetadata, datasetMetadata, datasetMetadata ];
+
+      validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
+      validateFails('requireExactlyOneSeries', vif, datasetMetadatas);
+      validateFails('requireNoMeasureAggregation', vif, datasetMetadatas);
+      validatePasses('requireMeasureAggregation', vif, datasetMetadatas);
+      validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
+      validateFails('requirePointDimension', vif, datasetMetadatas);
+      validateFails('requireNumericDimension', vif, datasetMetadatas);
+    });
+
+    describe('VIF with a numeric dimensioned series', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'number', dataTypeName: 'number' }
+      ]};
+
+      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
+      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireNumericDimension', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with a point dimensioned series', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'point', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'point', dataTypeName: 'point' }
+      ]};
+
+      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
+      validatePasses('requirePointDimension', vif, [ datasetMetadata ]);
+      validateFails('requireNumericDimension', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with a date dimensioned series', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'date', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'date', dataTypeName: 'calendar_date' }
+      ]};
+
+      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireCalendarDateDimension', vif, [ datasetMetadata ]);
+      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
+      validateFails('requireNumericDimension', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with an aggregated measure and an unaggregated dimension', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'date', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'date', dataTypeName: 'calendar_date' }
+      ]};
+
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with two series, one of which is aggregated on measure, and the other is not', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: 'number2', aggregationFunction: null },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'number', dataTypeName: 'number' },
+        { fieldName: 'number2', dataTypeName: 'number' }
+      ]};
+
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata, datasetMetadata ]);
+      validateFails('requireMeasureAggregation', vif, [ datasetMetadata, datasetMetadata ]);
+    });
+
+    describe('VIF with a measure aggregated on count', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'number', dataTypeName: 'number' }
+      ]};
+
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with a measure aggregated by sum', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: 'number2', aggregationFunction: 'sum' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'number', dataTypeName: 'number' },
+        { fieldName: 'number2', dataTypeName: 'number' }
+      ]};
+
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with an unaggregated measure', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: 'number2', aggregationFunction: null },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'number', dataTypeName: 'number' }
+      ]};
+
+      validatePasses('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireMeasureAggregation', vif, [ datasetMetadata ]);
+    });
+  });
+});

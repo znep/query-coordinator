@@ -2,6 +2,7 @@ const utils = require('socrata-utils');
 const VifHelpers = require('../helpers/VifHelpers');
 const $ = require('jquery');
 const _ = require('lodash');
+const I18n = require('../I18n');
 
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
@@ -162,10 +163,22 @@ function SvgVisualization($element, vif) {
     }
   };
 
-  this.renderError = function(message) {
-    var $container = this.$element.find('.visualization');
+  this.renderError = function(messages) {
+    const $container = this.$element.find('.visualization');
+    const $message = $container.find('.error-message');
 
-    $container.find('.error-message').text(message || 'Error');
+    if (!messages || _.isString(messages) || messages.length === 1) {
+      $message.text(messages || 'Error');
+    } else {
+      $message.
+        empty().
+        append($('<h1>').text(
+          I18n.translate('visualizations.common.validation.errors.multiple_errors'))
+        ).
+        append($('<ul>').append(
+          messages.map((text) => $('<li>').text(text))
+        ));
+    }
     $container.addClass('visualization-error');
   };
 

@@ -59,7 +59,6 @@ function SvgFeatureMap(element, vif) {
   var map;
   var lastRenderedVif;
   var lastRenderedData;
-  var lastRenderedVectorTileGetter;
 
   // We buffer feature layers so that there isn't a visible flash
   // of emptiness when we transition from one to the next. This is accomplished
@@ -138,7 +137,6 @@ function SvgFeatureMap(element, vif) {
       }
     }
 
-    lastRenderedVectorTileGetter = vectorTileGetter;
     lastRenderedVif = newVif || lastRenderedVif || vif;
     lastRenderedData = newData;
   };
@@ -839,11 +837,6 @@ function SvgFeatureMap(element, vif) {
   /**
    * Map behavior
    */
-
-  function buildBoundsFromVif(newVif) {
-    var extent = _.get(newVif, 'configuration.savedExtent') || _.get(newVif, 'configuration.defaultExtent');
-    return buildBoundsFromExtent(extent);
-  }
 
   function buildBoundsFromExtent(extent) {
     var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);

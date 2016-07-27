@@ -358,6 +358,16 @@
         }
       });
 
+      var chicagoCrimesTime = _.cloneDeep(chicagoCrimesLongitudeVif);
+      chicagoCrimesTime.title = 'Invalid, column type mismatch';
+      _.set(chicagoCrimesTime, 'series[0].dataSource.dimension.columnName', 'block');
+      vifs.push(chicagoCrimesTime);
+
+      var chicagoCrimesTimeNoAggregation = _.cloneDeep(chicagoCrimesTime);
+      chicagoCrimesTimeNoAggregation.title = 'Invalid, column type mismatch AND no aggregation';
+      _.set(chicagoCrimesTimeNoAggregation, 'series[0].dataSource.measure.aggregationFunction', null);
+      vifs.push(chicagoCrimesTimeNoAggregation);
+
       /**
        * Instantiate the plugins
        */

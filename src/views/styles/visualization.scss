@@ -95,6 +95,10 @@ $axis-padding: 42px;
       transform: translate(-50%, -50%);
       text-align: center;
       cursor: text;
+
+      h1 {
+        font-size: 1.5rem;
+      }
     }
   }
 
@@ -182,6 +186,9 @@ $axis-padding: 42px;
 
     .error-container {
       display: block;
+      ul {
+        text-align: left;
+      }
     }
   }
 

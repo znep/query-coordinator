@@ -12,16 +12,26 @@ bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORY
 bundle install
 npm install --depth 0
 
-## Lint
-
 # Find commit where this pull request branched from
 MERGE_BASE=$(git merge-base HEAD origin/master)
 
-# Find all javascript files that have changed on this PR
-JAVASCRIPT_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
+CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)')
 
-# If this PR changed at least one javascript file
-if ! [[ -z $JAVASCRIPT_FILES ]]; then
+# Find all javascript files that have changed on this PR
+JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
+JSON_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.json$' | cut -c3-)
+
+# Find all ruby files that have changed on this PR
+RUBY_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.rb$' | cut -c3-)
+YAML_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.yaml$' | cut -c3-)
+
+if [[ -z $JAVASCRIPT_FILES ]] && [[ -z $RUBY_FILES ]] && [[ -z $JSON_FILES ]] && [[ -z $YAML_FILES ]]; then
+  echo "Nothing to do!"
+  exit 0
+fi
+
+# JavaScript lint and tests
+if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
 
   # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
   # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
@@ -37,18 +47,26 @@ if ! [[ -z $JAVASCRIPT_FILES ]]; then
   # Display a friendly message representing the result of the lint job
   if [[ "$DELTA_COUNT" -gt 0 ]]; then
     echo
-    echo "Lint errors [${DELTA_COUNT}]:"
+    echo "JavaScript lint errors [${DELTA_COUNT}]:"
     echo
     echo "${DELTA}"
     echo
-    echo "Found lint errors, exiting"
+    echo "Found JavaScript lint errors, exiting"
     exit 1
   else
-    echo "No lint errors"
+    echo "No JavaScript lint errors"
   fi
+
+  bundle exec rake test:js:parallel
 else
-  echo "Nothing to lint"
+  echo "No JavaScript files changed, skipping JavaScript linting."
 fi
 
-## Tests
-bundle exec rake test
+# Ruby tests
+if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES]] || ! [[ -z $YAML_FILES ]]; then
+  bundle exec rake test:units
+  bundle exec rake test:functionals
+  bundle exec rspec
+else
+  echo "No Ruby files changed, skipping Ruby tests."
+fi

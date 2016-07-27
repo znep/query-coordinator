@@ -145,6 +145,17 @@ describe('SvgRegionMap jQuery component', function() {
 
         // Mock data providers
         revertDataProviders = SocrataSvgRegionMapAPI.__set__({
+          getSoqlVifValidator: function(vif) {
+            const validator = SoqlVifValidator.soqlVifValidator(vif, [{
+              columns: [{
+                fieldName: 'ward',
+                dataTypeName: 'point'
+              }]
+            }]);
+            return Promise.resolve(
+              validator
+            );
+          },
           MetadataProvider: function() {
             this.getDatasetMetadata = function() {
               return new Promise(function(resolve, reject) { return resolve(SHAPEFILE_METADATA_RESPONSE); });
@@ -215,8 +226,13 @@ describe('SvgRegionMap jQuery component', function() {
 
       // Mock data providers
       revertDataProviders = SocrataSvgRegionMapAPI.__set__({
-        getSoqlVifValidator: function() {
-          const validator = SoqlVifValidator.soqlVifValidator(regionMapVif, []);
+        getSoqlVifValidator: function(vif) {
+          const validator = SoqlVifValidator.soqlVifValidator(vif, [{
+            columns: [{
+              fieldName: 'ward',
+              dataTypeName: 'point'
+            }]
+          }]);
           return Promise.resolve(
             validator
           );

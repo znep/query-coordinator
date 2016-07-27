@@ -253,9 +253,10 @@ export function deselectRow(goalId) {
   };
 }
 
-export function toggleAllRows() {
+export function toggleAllRows(checked) {
   return {
-    type: TABLE_ROW_ALL_SELECTION_TOGGLE
+    type: TABLE_ROW_ALL_SELECTION_TOGGLE,
+    checked
   };
 }
 

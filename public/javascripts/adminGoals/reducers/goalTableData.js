@@ -61,9 +61,9 @@ export default createReducer(Immutable.fromJS({}), {
   [TABLE_ROW_SELECTED]: (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId)),
   [TABLE_ROW_DESELECTED]: (state, action) => state.updateIn(['selectedRows'],
     list => list.delete(list.indexOf(action.goalId))), // eslint-disable-line dot-notation
-  [TABLE_ROW_ALL_SELECTION_TOGGLE]: state => state.get('selectedRows').size == state.get('goals').size ?
-    state.set('selectedRows', new Immutable.List) :
-    state.set('selectedRows', state.get('goals').map(goal => goal.get('id'))),
+  [TABLE_ROW_ALL_SELECTION_TOGGLE]: (state, action) => action.checked ?
+    state.set('selectedRows', state.get('goals').map(goal => goal.get('id'))) :
+    state.set('selectedRows', new Immutable.List),
   [ROWS_PER_PAGE_CHANGED]: (state, action) => state.set('rowsPerPage', action.value),
   [SET_TOTAL_GOAL_COUNT]: (state, action) => state.set('totalGoalCount', action.count),
   [SET_CURRENT_PAGE]: (state, action) => state.set('currentPage', action.page),

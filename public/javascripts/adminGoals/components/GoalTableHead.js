@@ -45,7 +45,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleAllRows: () => dispatch(toggleAllRows()),
+  toggleAllRows: checked => dispatch(toggleAllRows(checked)),
   sort: event => dispatch(sortRows(event.target.getAttribute('data-column'), event.target.getAttribute('data-direction')))
 });
 

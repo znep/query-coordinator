@@ -95,20 +95,7 @@ describe('socrata.visualizations.views.SvgFeatureMap', function() {
         version: 2
       },
       configuration: {
-        localization: {
-          'flyout_filter_notice': 'There are too many points at this location',
-          'flyout_filter_or_zoom_notice': 'Zoom in to see details',
-          'flyout_dense_data_notice': 'Numerous',
-          'flyout_click_to_inspect_notice': 'Click to see details',
-          'flyout_click_to_locate_user_title': 'Click to show your position on the map',
-          'flyout_click_to_locate_user_notice': 'You may have to give your browser permission to share your current location.',
-          'flyout_locating_user_title': 'Your position is being determined.',
-          'flyout_locate_user_error_title': 'There was an error determining your position.',
-          'flyout_locate_user_error_notice': 'You may not have given your browser permission to share your current location, or your browser may be unable to do so.',
-          'row_inspector_row_data_query_failed': 'Detailed information about these points cannot be loaded at this time.',
-          'user_current_position': 'Your current location (estimated)'
-        },
-        hover: true,
+        interactive: true,
         panAndZoom: true,
         locateUser: false,
         baseLayerUrl: VALID_BASE_LAYER,

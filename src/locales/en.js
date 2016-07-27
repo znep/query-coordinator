@@ -118,7 +118,7 @@ export default {
       title: 'Legends & Flyouts',
       subheaders: {
         units: 'Units',
-        flyout_title: 'Flyout Title'
+        row_inspector_title: 'Row Inspector Title'
       },
       fields: {
         units_one: {
@@ -129,8 +129,8 @@ export default {
           title: 'Other',
           placeholder: 'Records'
         },
-        flyout_title: {
-          no_value: 'No Flyout Title'
+        row_inspector_title: {
+          no_value: 'No Row Inspector Title'
         }
       }
     }

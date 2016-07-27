@@ -198,28 +198,28 @@ export function setXAxisScalingMode(shouldFit) {
   };
 }
 
-export var SET_UNITS_ONE = 'SET_UNITS_ONE';
+export var SET_UNIT_ONE = 'SET_UNIT_ONE';
 export function setUnitsOne(one) {
   return {
-    type: SET_UNITS_ONE,
+    type: SET_UNIT_ONE,
     one
   };
 }
 
-export var SET_UNITS_OTHER = 'SET_UNITS_OTHER';
+export var SET_UNIT_OTHER = 'SET_UNIT_OTHER';
 export function setUnitsOther(other) {
   return {
-    type: SET_UNITS_OTHER,
+    type: SET_UNIT_OTHER,
     other
   };
 }
 
 
-export var SET_FLYOUT_TITLE = 'SET_FLYOUT_TITLE';
-export function setFlyoutTitle(flyoutTitleColumnName) {
+export var SET_ROW_INSPECTOR_TITLE_COLUMN_NAME = 'SET_ROW_INSPECTOR_TITLE_COLUMN_NAME';
+export function setRowInspectorTitleColumnName(rowInspectorTitleColumnName) {
   return {
-    type: SET_FLYOUT_TITLE,
-    flyoutTitleColumnName
+    type: SET_ROW_INSPECTOR_TITLE_COLUMN_NAME,
+    rowInspectorTitleColumnName
   };
 }
 

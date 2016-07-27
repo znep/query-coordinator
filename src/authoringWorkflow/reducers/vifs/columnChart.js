@@ -17,8 +17,8 @@ import {
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
   SET_X_AXIS_SCALING_MODE,
-  SET_UNITS_ONE,
-  SET_UNITS_OTHER
+  SET_UNIT_ONE,
+  SET_UNIT_OTHER
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -104,13 +104,13 @@ export default function columnChart(state, action) {
       setValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
 
-    case SET_UNITS_ONE:
+    case SET_UNIT_ONE:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
-    case SET_UNITS_OTHER:
+    case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });

@@ -90,10 +90,10 @@ describe('DataPane', function() {
       emitsDropdownEvent('#visualization-type-selection', 'onSelectVisualizationType');
     });
 
-    describe('when rendering a Choropleth map', function() {
+    describe('when rendering a Region map', function() {
       beforeEach(function() {
         props = defaultProps(spies);
-        props.vifAuthoring.authoring.selectedVisualizationType = 'choroplethMap';
+        props.vifAuthoring.authoring.selectedVisualizationType = 'regionMap';
 
         component = renderComponent(DataPane, props);
       });

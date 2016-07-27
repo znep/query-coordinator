@@ -101,9 +101,9 @@ export const getUnitOther = createSelector(
   vif =>  _.get(vif, 'series[0].unit.other', null)
 );
 
-export const getFlyoutTitleColumn = createSelector(
+export const getRowInspectorTitleColumnName = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'configuration.flyoutTitleColumnName', null)
+  vif =>  _.get(vif, 'configuration.rowInspectorTitleColumnName', null)
 );
 
 export const getDatasetUid = createSelector(
@@ -136,12 +136,12 @@ export const hasVisualizationType = createSelector(
   type => _.isString
 );
 
-export const isChoroplethMap = createSelector(
+export const isRegionMap = createSelector(
   getVisualizationType,
-  type => type === 'choroplethMap'
+  type => type === 'regionMap'
 );
 
-export const isValidChoroplethMapVif = createSelector(
+export const isValidRegionMapVif = createSelector(
   getConfiguration,
   getDimension,
   getMeasure,
@@ -242,8 +242,8 @@ export const isValidTimelineChartVif = createSelector(
 );
 
 export const isInsertableVisualization = createSelector(
-  isChoroplethMap,
-  isValidChoroplethMapVif,
+  isRegionMap,
+  isValidRegionMapVif,
   isColumnChart,
   isValidColumnChartVif,
   isFeatureMap,
@@ -254,8 +254,8 @@ export const isInsertableVisualization = createSelector(
   isValidHistogramVif,
   getShowCenteringAndZoomingSaveMessage,
   (
-    isChoroplethMap,
-    validChoropleth,
+    isRegionMap,
+    validRegionMap,
     isColumnChart,
     validColumnChart,
     isFeatureMap,
@@ -267,7 +267,7 @@ export const isInsertableVisualization = createSelector(
     showCenteringAndZoomingSaveMessage
   ) => {
     return !showCenteringAndZoomingSaveMessage && (
-      isChoroplethMap && validChoropleth ||
+      isRegionMap && validRegionMap ||
       isColumnChart && validColumnChart ||
       isFeatureMap && validFeatureMap ||
       isTimelineChart && validTimelineChart ||
@@ -277,11 +277,11 @@ export const isInsertableVisualization = createSelector(
 );
 
 export const isRenderableMap = createSelector(
-  isChoroplethMap,
-  isValidChoroplethMapVif,
+  isRegionMap,
+  isValidRegionMapVif,
   isFeatureMap,
   isValidFeatureMapVif,
-  (isChoroplethMap, isValidChoroplethMapVif, isFeatureMap, isValidFeatureMapVif) => {
-    return (isFeatureMap && isValidFeatureMapVif) || (isChoroplethMap && isValidChoroplethMapVif);
+  (isRegionMap, isValidRegionMapVif, isFeatureMap, isValidFeatureMapVif) => {
+    return (isFeatureMap && isValidFeatureMapVif) || (isRegionMap && isValidRegionMapVif);
   }
 );

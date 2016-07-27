@@ -10,10 +10,7 @@ export default {
     baseLayerUrl: BASE_LAYERS[0].value,
     baseLayerOpacity: 0.8,
     datasetMetadata: false,
-    pointColor: '#eb6900',
-    flyoutTitleColumnName: null,
-    hover: true,
-    localization: translateGroup('visualizations.feature_map'),
+    rowInspectorTitleColumnName: null,
     locateUser: false,
     panAndZoom: true,
     useOriginHost: false
@@ -21,7 +18,9 @@ export default {
   description: '',
   series: [
     {
-      color: {},
+      color: {
+        primary: '#eb6900'
+      },
       dataSource: {
         datasetUid: null,
         dimension: {

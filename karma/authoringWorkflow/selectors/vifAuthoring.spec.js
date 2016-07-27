@@ -34,45 +34,45 @@ describe('vifAuthoring', function() {
     });
   });
 
-  describe('isChoroplethMap', function() {
-    describe('when it is a choropleth map', function() {
+  describe('isRegionMap', function() {
+    describe('when it is a region map', function() {
       it('returns true', function() {
         var state = getDefaultState();
-        state.authoring.selectedVisualizationType = 'choroplethMap';
+        state.authoring.selectedVisualizationType = 'regionMap';
 
         expect(
-          selector.isChoroplethMap(state)
+          selector.isRegionMap(state)
         ).to.be.true;
       });
     });
 
-    describe('when it is not a choropleth map', function() {
+    describe('when it is not a region map', function() {
       it('returns false', function() {
         var state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
         expect(
-          selector.isChoroplethMap(state)
+          selector.isRegionMap(state)
         ).to.be.false;
       });
     });
   });
 
-  describe('isValidChoroplethMapVif', function() {
+  describe('isValidRegionMapVif', function() {
     describe('when it is valid', function() {
       it('returns true', function() {
         var state = getDefaultState();
-        state.authoring.selectedVisualizationType = 'choroplethMap';
+        state.authoring.selectedVisualizationType = 'regionMap';
 
-        _.set(state, 'vifs.choroplethMap.configuration.computedColumnName', '@computed_column');
-        _.set(state, 'vifs.choroplethMap.configuration.shapefile.uid', 'four-four');
-        _.set(state, 'vifs.choroplethMap.series[0].dataSource.dimension.columnName', 'example_dimension');
-        _.set(state, 'vifs.choroplethMap.series[0].dataSource.measure.aggregationFunction', 'sum');
-        _.set(state, 'vifs.choroplethMap.series[0].dataSource.datasetUid', 'exam-ples');
-        _.set(state, 'vifs.choroplethMap.series[0].dataSource.domain', 'example.com');
+        _.set(state, 'vifs.regionMap.configuration.computedColumnName', '@computed_column');
+        _.set(state, 'vifs.regionMap.configuration.shapefile.uid', 'four-four');
+        _.set(state, 'vifs.regionMap.series[0].dataSource.dimension.columnName', 'example_dimension');
+        _.set(state, 'vifs.regionMap.series[0].dataSource.measure.aggregationFunction', 'sum');
+        _.set(state, 'vifs.regionMap.series[0].dataSource.datasetUid', 'exam-ples');
+        _.set(state, 'vifs.regionMap.series[0].dataSource.domain', 'example.com');
 
         expect(
-          selector.isValidChoroplethMapVif(state)
+          selector.isValidRegionMapVif(state)
         ).to.be.true;
       });
     });
@@ -83,7 +83,7 @@ describe('vifAuthoring', function() {
         state.authoring.selectedVisualizationType = 'featureMap';
 
         expect(
-          selector.isValidChoroplethMapVif(state)
+          selector.isValidRegionMapVif(state)
         ).to.be.false;
       });
     });

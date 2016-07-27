@@ -9,7 +9,7 @@ export const DIMENSION_TYPES = [
   },
   {
     type: 'point',
-    preferredVisualizationTypes: ['featureMap', 'choroplethMap']
+    preferredVisualizationTypes: ['featureMap', 'regionMap']
   },
   {
     type: 'number',
@@ -33,8 +33,8 @@ export const VISUALIZATION_TYPES = [
     preferredDimensionTypes: ['number']
   },
   {
-    type: 'choroplethMap',
-    title: translate('visualizations.choropleth_map.title'),
+    type: 'regionMap',
+    title: translate('visualizations.region_map.title'),
     preferredDimensionTypes: ['point', 'location']
   },
   {

@@ -58,6 +58,7 @@ function SvgRegionMap(element, vif) {
   var lastClick = 0;
   var lastClickTimeout = null;
   var legend;
+  var lastRenderedVif;
 
   renderTemplate();
 
@@ -74,6 +75,8 @@ function SvgRegionMap(element, vif) {
     ) {
       return;
     }
+
+    self.clearError();
 
     if (firstRender) {
       // If the VIF has the center and zoom level of the map specified we can
@@ -101,6 +104,8 @@ function SvgRegionMap(element, vif) {
 
       renderLegend(newVif);
       updateBaseLayer(newVif);
+      lastRenderedVif = newVif;
+      self.updateVif(newVif);
     }
 
     if (newData) {
@@ -109,8 +114,6 @@ function SvgRegionMap(element, vif) {
         newData
       );
     }
-
-    self.updateVif(newVif);
   };
 
   this.invalidateSize = function() {
@@ -613,27 +616,41 @@ function SvgRegionMap(element, vif) {
       'configuration.baseLayerUrl',
       DEFAULT_BASE_LAYER_URL
     );
+    const lastRenderedBaseLayerUrl = _.get(
+      lastRenderedVif,
+      'configuration.baseLayerUrl'
+    );
     const baseLayerOpacity = _.get(
       vifToRender,
       'configuration.baseLayerOpacity',
       DEFAULT_BASE_LAYER_OPACITY
     );
-
-    if (baseLayer) {
-      map.removeLayer(baseLayer);
-    }
-
-    baseLayer = L.tileLayer(
-      baseLayerUrl,
-      {
-        attribution: '',
-        detectRetina: false,
-        opacity: baseLayerOpacity,
-        unloadInvisibleTiles: true
-      }
+    const lastRenderedBaseLayerOpacity = _.get(
+      lastRenderedVif,
+      'configuration.baseLayerOpacity'
     );
 
-    map.addLayer(baseLayer);
+    if (
+      (baseLayerUrl !== lastRenderedBaseLayerUrl) ||
+      (baseLayerOpacity !== lastRenderedBaseLayerOpacity)
+    ) {
+
+      if (baseLayer) {
+        map.removeLayer(baseLayer);
+      }
+
+      baseLayer = L.tileLayer(
+        baseLayerUrl,
+        {
+          attribution: '',
+          detectRetina: false,
+          opacity: baseLayerOpacity,
+          unloadInvisibleTiles: true
+        }
+      );
+
+      map.addLayer(baseLayer);
+    }
   }
 
   function updateRegionLayer(vifToRender, dataToRender) {

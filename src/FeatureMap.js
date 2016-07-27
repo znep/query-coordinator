@@ -8,7 +8,6 @@ var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
-var VifHelpers = require('./helpers/VifHelpers');
 var DataTypeFormatter = require('./views/DataTypeFormatter');
 
 var DEFAULT_TILESERVER_HOSTS = [
@@ -36,23 +35,21 @@ $.fn.socrataFeatureMap = function(vif) {
     'You must pass in a valid VIF to use socrataFeatureMap'
   );
 
-  vif = VifHelpers.migrateVif(vif);
-
   utils.assertHasProperties(
     vif,
     'configuration.localization',
-    'series[0].dataSource.dimension.columnName',
-    'series[0].dataSource.datasetUid',
-    'series[0].dataSource.domain',
-    'series[0].unit.one',
-    'series[0].unit.other'
+    'columnName',
+    'datasetUid',
+    'domain',
+    'unit.one',
+    'unit.other'
   );
 
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.dimension.columnName, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.domain, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
+  utils.assertIsOneOfTypes(vif.columnName, 'string');
+  utils.assertIsOneOfTypes(vif.domain, 'string');
+  utils.assertIsOneOfTypes(vif.datasetUid, 'string');
+  utils.assertIsOneOfTypes(vif.unit.one, 'string');
+  utils.assertIsOneOfTypes(vif.unit.other, 'string');
 
   utils.assertHasProperties(
     vif.configuration.localization,
@@ -75,9 +72,9 @@ $.fn.socrataFeatureMap = function(vif) {
   var $element = $(this);
   var datasetMetadata;
 
-  var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
-  var domain = _.get(vif, 'series[0].dataSource.domain');
-  var datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+  var columnName = _.get(vif, 'columnName');
+  var domain = _.get(vif, 'domain');
+  var datasetUid = _.get(vif, 'datasetUid');
 
   // Geospace has knowledge of the extents of a column, which
   // we use to modify point data queries with a WITHIN_BOX clause.
@@ -420,10 +417,10 @@ $.fn.socrataFeatureMap = function(vif) {
 
   function handleRowInspectorQuerySuccess(data) {
     var getPageTitle = function(page) {
-      return _.find(page, {column: vif.configuration.flyoutTitleColumnName}).value;
+      return _.find(page, {column: vif.configuration.rowInspectorTitleColumnName}).value;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
-    var titles = vif.configuration.flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
+    var titles = vif.configuration.rowInspectorTitleColumnName ? _.map(formattedData, getPageTitle) : [];
 
     $element[0].dispatchEvent(
       new window.CustomEvent(

@@ -8,6 +8,7 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var VifHelpers = require('./helpers/VifHelpers');
 var getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
+var I18n = require('./I18n');
 
 const NAME_ALIAS = '__NAME_ALIAS__';
 const VALUE_ALIAS = '__VALUE_ALIAS__';
@@ -385,7 +386,6 @@ $.fn.socrataSvgRegionMap = function(vif) {
   }
 
   function updateData(vifToRender) {
-
     var columnName = _.get(
       vifToRender,
       'series[0].dataSource.dimension.columnName'
@@ -489,6 +489,7 @@ $.fn.socrataSvgRegionMap = function(vif) {
     );
 
     $.fn.socrataSvgRegionMap.validateVif(vifToRender).then(() => {
+
       if (
         _.isString(
           _.get(
@@ -736,14 +737,9 @@ $.fn.socrataSvgRegionMap = function(vif) {
 $.fn.socrataSvgRegionMap.validateVif = (vif) =>
   getSoqlVifValidator(vif).then(validator =>
     validator.
-      /* TODO:
-       * Region map is currently being updated to use `series` like the rest of the visualizations.
-       * Untl that happens though, we can't really verify much using the regular validator.
-       *
       requireAtLeastOneSeries().
       requireMeasureAggregation().
       requirePointDimension().
-      */
       toPromise()
   );
 

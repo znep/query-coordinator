@@ -756,11 +756,12 @@ module ApplicationHelper
     # https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
     #
     # Dimensions:
+    #   dimension1: domain
     #   dimension2: DEPRECATED - User name
     #   dimension3: User type [admin, editor, etc]
     #   dimension4: Page type [personal catalog, profile page, etc]
     #   dimension5: User id (send this instead of user name)
-    {dimension3: find_user_role, dimension5: find_user_id}.to_json
+    {dimension1: CurrentDomain.cname, dimension3: find_user_role, dimension5: find_user_id}.to_json
   end
 
   # Given that the Google Analytics feature flag is either set to true or an explicit value

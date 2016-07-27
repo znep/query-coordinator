@@ -7,6 +7,7 @@ import '../editor/block-component-renderers/componentSocrataVisualizationChoropl
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
+import '../editor/block-component-renderers/componentSocrataVisualizationHistogram';
 import '../editor/block-component-renderers/componentSocrataVisualizationTable';
 import '../editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
 import '../editor/block-component-renderers/componentStoryTile';
@@ -114,6 +115,11 @@ $(document).on('ready', function() {
         case 'socrata.visualization.columnChart':
           $element.
             componentSocrataVisualizationColumnChart(componentData);
+          break;
+
+        case 'socrata.visualization.histogram':
+          $element.
+            componentSocrataVisualizationHistogram(componentData);
           break;
 
         case 'socrata.visualization.table':

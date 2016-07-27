@@ -66,6 +66,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-table,
   .component-socrata-visualization-timeline-chart,
   .component-story-tile,
@@ -89,6 +90,7 @@
 .component-socrata-visualization-classic,
 .component-socrata-visualization-column-chart,
 .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
 .component-socrata-visualization-table,
 .component-socrata-visualization-timeline-chart,
 .component-story-tile,
@@ -180,6 +182,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart
   .component-youtube-video {
     $small-height: $col3-block-edit-content-width-small * (4/5);
@@ -204,6 +207,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
   .component-youtube-video {
     $small-height: $col4-block-edit-content-width-small * (4/5);
@@ -234,6 +238,7 @@
     .component-socrata-visualization-classic,
     .component-socrata-visualization-column-chart,
     .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
     .component-socrata-visualization-timeline-chart,
     .component-youtube-video {
       @include media-query-property(
@@ -251,6 +256,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
   .component-youtube-video {
     @include media-query-property(
@@ -284,6 +290,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
   .component-youtube-video {
     @include media-query-property(
@@ -318,6 +325,7 @@
   .component-socrata-visualization-classic,
   .component-socrata-visualization-column-chart,
   .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
   .component-youtube-video {
     @include media-query-property(

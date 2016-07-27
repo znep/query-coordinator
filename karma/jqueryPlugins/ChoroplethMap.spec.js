@@ -37,10 +37,14 @@ describe('ChoroplethMap jQuery component', function() {
         type: 'discrete'
       },
       localization: {
-        no_value: 'No value',
+        flyout_selected_notice: 'The page is currently filtered by this value, click to clear it',
         flyout_unfiltered_amount_label: 'Total',
         flyout_filtered_amount_label: 'Filtered',
-        flyout_selected_notice: 'This column is selected',
+        no_value: '(No Value)',
+        clear_filter_label: 'Clear filter',
+        flyout_locate_user_error_title: 'There was an error determining your location',
+        flyout_locate_user_error_notice: 'Click to try again',
+        user_current_position: 'Your current location (estimated)'
       },
       shapefile: {
         columns: {
@@ -273,7 +277,7 @@ describe('ChoroplethMap jQuery component', function() {
       $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
 
         assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
-        assert.equal(event.originalEvent.detail.series[0].dataSource.filters.length, 1);
+        assert.equal(event.originalEvent.detail.filters.length, 1);
         done();
       });
 

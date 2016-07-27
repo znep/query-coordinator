@@ -34,9 +34,9 @@ describe('ColorsAndStylePane', function() {
     });
   }
 
-  describe('choroplethMap', function() {
+  describe('regionMap', function() {
     beforeEach(function() {
-      var renderedParts = render('choroplethMap');
+      var renderedParts = render('regionMap');
       component = renderedParts.component;
       props = renderedParts.props;
     });

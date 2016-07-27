@@ -6,8 +6,7 @@ export default {
     version: 2
   },
   configuration: {
-    xAxisScalingMode: 'fit',
-    localization: translateGroup('visualizations.timeline_chart')
+    xAxisScalingMode: 'fit'
   },
   description: '',
   series: [

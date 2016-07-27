@@ -15,7 +15,7 @@ const FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
 const FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
 const FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING = 1;
 const FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
-const FEATURE_MAP_DEFAULT_HOVER = true;
+const FEATURE_MAP_DEFAULT_INTERACTIVE = true;
 const FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
 const FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
@@ -50,7 +50,7 @@ function SvgFeatureMap(element, vif) {
   var maxTileDensity;
   var maxRowInspectorDensity;
   var debug;
-  var hover;
+  var interactive;
   var panAndZoom;
   var locateUser;
   var startResizeFn;
@@ -73,7 +73,7 @@ function SvgFeatureMap(element, vif) {
   maxTileDensity = vif.configuration.maxTileDensity || FEATURE_MAP_MAX_TILE_DENSITY;
   maxRowInspectorDensity = vif.configuration.maxRowInspectorDensity || FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY;
   debug = vif.configuration.debug;
-  hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
+  interactive = (_.isUndefined(vif.configuration.interactive)) ? FEATURE_MAP_DEFAULT_INTERACTIVE : vif.configuration.interactive;
   panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
   locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
   mapOptions = _.merge(defaultMapOptions, vif.configuration.mapOptions);
@@ -287,7 +287,7 @@ function SvgFeatureMap(element, vif) {
       map.on('mouseout', hideFlyout);
 
       // react to the interactions that would close the RowInspector flannel
-      if (hover) {
+      if (interactive) {
         $document.on('click', captureLeftClickAndClearHighlight);
         $document.on('keydown', captureEscapeAndClearHighlight);
       }
@@ -325,7 +325,7 @@ function SvgFeatureMap(element, vif) {
       map.off('dragstart zoomstart', handlePanAndZoom);
       map.off('mouseout', hideFlyout);
 
-      if (hover) {
+      if (interactive) {
         $document.on('click', captureLeftClickAndClearHighlight);
         $document.on('keydown', captureEscapeAndClearHighlight);
       }
@@ -652,7 +652,7 @@ function SvgFeatureMap(element, vif) {
   function handleVectorTileRenderComplete() {
     removeOldFeatureLayers();
 
-    if (hover) {
+    if (interactive) {
       map.fire('clearhighlightrequest');
     }
 
@@ -953,7 +953,7 @@ function SvgFeatureMap(element, vif) {
       '';
     var whereClauseChanged = newWhereClause !== lastRenderedWhereClause;
 
-    var pointColorPath = 'configuration.pointColor';
+    var pointColorPath = 'series[0].color.primary';
     var pointColorChanged = !_.isEqual(
       _.get(newVif, pointColorPath),
       _.get(lastRenderedVif, pointColorPath)
@@ -973,7 +973,7 @@ function SvgFeatureMap(element, vif) {
         vectorTileGetter: vectorTileGetter,
         // Behavior
         debug: debug,
-        hover: hover,
+        hover: interactive,
         debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
         rowInspectorMaxRowDensity: maxRowInspectorDensity,
         maxZoom: FEATURE_MAP_MAX_ZOOM,
@@ -1131,7 +1131,7 @@ function SvgFeatureMap(element, vif) {
 
   function calculatePointColor(zoomLevel) {
     var rgb = [235, 105, 0];
-    var color = _.get(lastRenderedVif, 'configuration.pointColor', '');
+    var color = _.get(lastRenderedVif, 'series[0].color.primary', '');
     var shorthandHexRegex = /^#([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})([0-9a-zA-Z]{1})$/;
     var hexRegex = /^#([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})([0-9a-zA-Z]{2})$/;
 

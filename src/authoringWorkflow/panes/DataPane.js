@@ -32,7 +32,7 @@ import {
 import {
   getCurrentVif,
   isFeatureMap,
-  isChoroplethMap,
+  isRegionMap,
   getShapefileUid,
   getVisualizationType,
   getSelectedVisualizationType,
@@ -273,7 +273,7 @@ export var DataPane = React.createClass({
       measureDropdown = this.measureDropdown();
       visualizationTypeDropdown = this.visualizationTypeDropdown();
 
-      if (isChoroplethMap(this.props.vifAuthoring)) {
+      if (isRegionMap(this.props.vifAuthoring)) {
         regionsDropdown = this.regionDropdown();
       }
     }

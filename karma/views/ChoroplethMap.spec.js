@@ -32,7 +32,11 @@ describe('ChoroplethMap', function() {
         'flyout_selected_notice': 'The page is currently filtered by this value, click to clear it',
         'flyout_unfiltered_amount_label': 'Total',
         'flyout_filtered_amount_label': 'Filtered',
-        'no_value': '(No Value)'
+        'no_value': '(No Value)',
+        'clear_filter_label': 'Clear filter',
+        'flyout_locate_user_error_title': 'There was an error determining your location',
+        'flyout_locate_user_error_notice': 'Click to try again',
+        'user_current_position': 'Your current location (estimated)'
       },
       shapefile: {
         columns: {

@@ -180,6 +180,11 @@ function migrateVif1ToVif2(vifToMigrate) {
       break;
 
     case 'featureMap':
+
+      if (_.has(vifToMigrate, 'configuration.pointColor')) {
+        _.set(series, 'color.primary', vifToMigrate.configuration.pointColor);
+      }
+
       series.type = 'featureMap';
       break;
 
@@ -196,10 +201,12 @@ function migrateVif1ToVif2(vifToMigrate) {
     migratedVif.configuration,
     vifToMigrate.configuration
   );
-  // 3b. Explicitly remove the interactive and isMobile flags, since we no
-  // longer differentiate.
-  delete migratedVif.configuration.interactive;
-  delete migratedVif.configuration.isMobile;
+  // 3b. Explicitly remove deprecated configuration values.
+  _.unset(migratedVif, 'configuration.localization');
+  _.unset(migratedVif, 'configuration.interactive');
+  _.unset(migratedVif, 'configuration.hover');
+  _.unset(migratedVif, 'configuration.isMobile');
+  _.unset(migratedVif, 'configuration.pointColor');
 
   // 4. Copy over the createdAt timestamp
   migratedVif.createdAt = vifToMigrate.createdAt;

@@ -228,19 +228,6 @@ $.fn.socrataSvgFeatureMap = function(vif) {
           }
         )
       );
-
-      // TODO: Remove the dispatch of the '...FEATURE_MAP_FLYOUT' event once
-      // DataLens is using the new standardized 'SOCRATA_VISUALIZATION_FLYOUT'
-      // event.
-      $element[0].dispatchEvent(
-        new CustomEvent(
-          'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
-          {
-            detail: flyoutPayload,
-            bubbles: true
-          }
-        )
-      );
     }
   }
 
@@ -249,19 +236,6 @@ $.fn.socrataSvgFeatureMap = function(vif) {
     $element[0].dispatchEvent(
       new window.CustomEvent(
         'SOCRATA_VISUALIZATION_FLYOUT',
-        {
-          detail: null,
-          bubbles: true
-        }
-      )
-    );
-
-    // TODO: Remove the dispatch of the '...FEATURE_MAP_FLYOUT' event once
-    // DataLens is using the new standardized 'SOCRATA_VISUALIZATION_FLYOUT'
-    // event.
-    $element[0].dispatchEvent(
-      new window.CustomEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
         {
           detail: null,
           bubbles: true
@@ -316,12 +290,12 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   }
 
   function handleRowInspectorQuerySuccess(data) {
-    var flyoutTitleColumnName = _.get(lastRenderedVif, 'configuration.flyoutTitleColumnName');
+    var rowInspectorTitleColumnName = _.get(lastRenderedVif, 'configuration.rowInspectorTitleColumnName');
     var getPageTitle = function(page) {
-      return _.find(page, {column: flyoutTitleColumnName}).value;
+      return _.find(page, {column: rowInspectorTitleColumnName}).value;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
-    var titles = flyoutTitleColumnName ? _.map(formattedData, getPageTitle) : [];
+    var titles = rowInspectorTitleColumnName ? _.map(formattedData, getPageTitle) : [];
 
     $element[0].dispatchEvent(
       new window.CustomEvent(
@@ -399,10 +373,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
 
     // SoQL returns row results for display in the row inspector
     soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });
-
-    metadataProvider = newVif.configuration.datasetMetadata ?
-      null :
-      new MetadataProvider({ domain, datasetUid });
+    metadataProvider = new MetadataProvider({ domain, datasetUid });
   }
 
   function initializeVisualization(newVif) {
@@ -438,14 +409,13 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   }
 
   function getDataFromProviders(newVif) {
+
     return $.fn.socrataSvgFeatureMap.validateVif(newVif).then(() => {
       var datasetMetadataRequest;
       var extentRequest;
       var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-      if (_.isPlainObject(newVif.configuration.datasetMetadata)) {
-        datasetMetadataRequest = newVif.configuration.datasetMetadata;
-      } else if (metadataProvider) {
+      if (metadataProvider) {
         datasetMetadataRequest = metadataProvider.getDatasetMetadata();
       } else {
         handleError();

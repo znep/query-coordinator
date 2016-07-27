@@ -739,9 +739,9 @@ function FeatureMap(element, vif) {
     var denseData = _flyoutData.totalPoints >= _maxTileDensity;
 
     if (_flyoutData.count === 1) {
-      rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : _.get(vif, 'series[0].unit.one');
+      rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : _.get(vif, 'unit.one');
     } else {
-      rowCountUnit = (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'series[0].unit.other');
+      rowCountUnit = (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'unit.other');
     }
 
     payload = {
@@ -771,7 +771,7 @@ function FeatureMap(element, vif) {
       if (denseData) {
         payload.title = '{0} {1}'.format(
           self.getLocalization('flyout_dense_data_notice'),
-          (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'series[0].unit.other')
+          (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : _.get(vif, 'unit.other')
         );
       }
     }

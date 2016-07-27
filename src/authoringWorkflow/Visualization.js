@@ -10,7 +10,7 @@ import FlyoutRenderer from '../views/FlyoutRenderer';
 import '../views/SvgColumnChart';
 import '../views/SvgTimelineChart';
 import '../views/SvgFeatureMap';
-import '../views/ChoroplethMap';
+import '../views/SvgRegionMap';
 
 import { translate } from '../I18n';
 import { requestCenterAndZoom } from './actions';
@@ -24,8 +24,8 @@ import {
   isValidColumnChartVif,
   isHistogram,
   isValidHistogramVif,
-  isChoroplethMap,
-  isValidChoroplethMapVif,
+  isRegionMap,
+  isValidRegionMapVif,
   getCurrentVif,
   isRenderableMap
 } from './selectors/vifAuthoring';
@@ -98,9 +98,7 @@ export var Visualization = React.createClass({
   destroyVisualizationPreview() {
     $(this.visualizationPreview()).
       trigger('SOCRATA_VISUALIZATION_DESTROY').
-      off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
-      off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
   },
 
@@ -138,10 +136,10 @@ export var Visualization = React.createClass({
     }
   },
 
-  choroplethMap() {
+  regionMap() {
     var { vif } = this.props;
     var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.choropleth-map-container').length === 1;
+    var alreadyRendered = $visualizationPreview.has('.region-map').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -149,9 +147,9 @@ export var Visualization = React.createClass({
       this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        socrataChoroplethMap(vif);
+        socrataSvgRegionMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -169,7 +167,7 @@ export var Visualization = React.createClass({
       $visualizationPreview.
         socrataSvgFeatureMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -201,8 +199,8 @@ export var Visualization = React.createClass({
         this.timelineChart();
       } else if (isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring)) {
         this.featureMap();
-      } else if (isChoroplethMap(vifAuthoring) && isValidChoroplethMapVif(vifAuthoring)) {
-        this.choroplethMap();
+      } else if (isRegionMap(vifAuthoring) && isValidRegionMapVif(vifAuthoring)) {
+        this.regionMap();
       } else if (isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring)) {
         this.histogram();
       }

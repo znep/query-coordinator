@@ -6,8 +6,7 @@ export default {
     version: 2
   },
   configuration: {
-    xAxisScalingMode: 'pan',
-    localization: translateGroup('visualizations.column_chart')
+    xAxisScalingMode: 'pan'
   },
   description: '',
   series: [

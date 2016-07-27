@@ -6,7 +6,6 @@ var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var VifHelpers = require('./helpers/VifHelpers');
 
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
 var DEFAULT_BASE_LAYER_OPACITY = 0.8;
@@ -28,29 +27,27 @@ $.fn.socrataChoroplethMap = function(vif) {
     'You must pass in a valid VIF to use socrataChoroplethMap'
   );
 
-  vif = VifHelpers.migrateVif(vif);
-
   utils.assertHasProperties(
     vif,
     'configuration.localization',
     'configuration.computedColumnName',
     'configuration.shapefile.primaryKey',
     'configuration.shapefile.uid',
-    'series[0].dataSource.dimension.columnName',
-    'series[0].dataSource.domain',
-    'series[0].dataSource.datasetUid',
-    'series[0].unit.one',
-    'series[0].unit.other'
+    'columnName',
+    'domain',
+    'datasetUid',
+    'unit.one',
+    'unit.other'
   );
 
   utils.assertIsOneOfTypes(vif.configuration.computedColumnName, 'string');
   utils.assertIsOneOfTypes(vif.configuration.shapefile.primaryKey, 'string');
   utils.assertIsOneOfTypes(vif.configuration.shapefile.uid, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.dimension.columnName, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.domain, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
+  utils.assertIsOneOfTypes(vif.columnName, 'string');
+  utils.assertIsOneOfTypes(vif.domain, 'string');
+  utils.assertIsOneOfTypes(vif.datasetUid, 'string');
+  utils.assertIsOneOfTypes(vif.unit.one, 'string');
+  utils.assertIsOneOfTypes(vif.unit.other, 'string');
 
   /**
    * Setup visualization
@@ -59,9 +56,9 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   var visualization = new ChoroplethMap($element, vif);
 
-  var columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
-  var domain = _.get(vif, 'series[0].dataSource.domain');
-  var datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+  var columnName = _.get(vif, 'columnName');
+  var domain = _.get(vif, 'domain');
+  var datasetUid = _.get(vif, 'datasetUid');
 
   // Setup Data Providers
   var shapefileMetadataProviderConfig = {
@@ -194,7 +191,7 @@ $.fn.socrataChoroplethMap = function(vif) {
     );
 
   function getRenderOptions(vifToRender) {
-    var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
+    var filters = _.get(vifToRender, 'filters', []);
 
     return {
       baseLayer: {
@@ -323,12 +320,12 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     var unfilteredDataAsHash = _.mapValues(_.keyBy(unfilteredData, 'name'), 'value');
     var filteredDataAsHash = _.mapValues(_.keyBy(filteredData, 'name'), 'value');
-    var filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
+    var filters = _.get(vifToRender, 'filters', []);
 
     var ownFilterOperands = filters.
       filter(
         function(filter) {
-          var columnName = _.get(vifToRender, 'series[0].dataSource.dimension.columnName');
+          var columnName = _.get(vifToRender, 'columnName');
 
           return (
             (filter.columnName === columnName) &&
@@ -484,8 +481,8 @@ $.fn.socrataChoroplethMap = function(vif) {
   function handleSelection(event) {
     var payload = event.originalEvent.detail;
     var newVif = _.cloneDeep(lastRenderedVif);
-    var columnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
-    var filters = _.get(newVif, 'series[0].dataSource.filters', []);
+    var columnName = _.get(newVif, 'columnName');
+    var filters = _.get(newVif, 'filters', []);
     var ownFilterOperands = filters.
       filter(
         function(filter) {
@@ -517,7 +514,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
     if (ownFilterOperands.indexOf(payload.shapefileFeatureId) === -1) {
 
-      filters.
+      newVif.filters.
         push(
           {
             'columnName': columnName,
@@ -559,7 +556,7 @@ $.fn.socrataChoroplethMap = function(vif) {
 
   function handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
-    var type = _.get(newVif, 'series[0].type');
+    var type = _.get(newVif, 'type');
 
     if (type !== 'choroplethMap') {
       throw new Error(

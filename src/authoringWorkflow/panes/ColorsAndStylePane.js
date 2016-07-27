@@ -14,7 +14,7 @@ import {
   getColorScale,
   getBaseLayer,
   getBaseLayerOpacity,
-  isChoroplethMap,
+  isRegionMap,
   isColumnChart,
   isFeatureMap,
   isHistogram,
@@ -82,7 +82,7 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
-  choroplethMap() {
+  regionMap() {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
     var defaultColorScale = getColorScale(vifAuthoring);
 
@@ -158,8 +158,8 @@ export var ColorsAndStylePane = React.createClass({
       configuration = this.timelineChart();
     } else if (isFeatureMap(vifAuthoring)) {
       configuration = this.featureMap();
-    } else if (isChoroplethMap(vifAuthoring)) {
-      configuration = this.choroplethMap();
+    } else if (isRegionMap(vifAuthoring)) {
+      configuration = this.regionMap();
     }
 
     return (

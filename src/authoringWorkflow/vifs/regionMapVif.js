@@ -10,24 +10,16 @@ export default {
     baseLayerUrl: BASE_LAYERS[0].value,
     baseLayerOpacity: 0.8,
     computedColumnName: null,
-    defaultFeatureStrokeWidth: 1,
-    highlightFeatureStrokeWidth: 4,
     legend: {
       type: 'continuous',
       negativeColor: '#c6663d',
       zeroColor: '#ffffff',
       positiveColor: '#003747'
     },
-    localization: translateGroup('visualizations.choropleth_map'),
-    mapMaxZoom: 18,
-    mapMinZoom: 1,
-    mapZoomAnimation: false,
-    maxJenksClassBreaks: 7,
     shapefile: {
       columns: {
         name: '__SOCRATA_HUMAN_READABLE_NAME__',
-        unfiltered: '__SOCRATA_UNFILTERED_VALUE__',
-        filtered: '__SOCRATA_FILTERED_VALUE__',
+        value: '__SOCRATA_FEATURE_VALUE__',
         selected: '__SOCRATA_FEATURE_SELECTED__'
       },
       geometryLabel: null,
@@ -54,7 +46,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'choroplethMap'
+      type: 'regionMap'
     }
   ],
   title: ''

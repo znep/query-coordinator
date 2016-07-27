@@ -36,16 +36,11 @@ export var ColorPicker = React.createClass({
     this.setState({ showingBuckets: !this.state.showingBuckets });
   },
 
-  onMouseOverBucket(color) {
-    this.setState({ selectedColor: color });
-
-    if (this.props.handleColorChange) {
-      this.props.handleColorChange(color);
-    }
-  },
-
-  onClickBucket() {
-    this.setState({ showingBuckets: false });
+  onClickBucket(color) {
+    this.setState({
+      showingBuckets: false,
+      selectedColor: color
+    });
   },
 
   onClose() {
@@ -82,8 +77,7 @@ export var ColorPicker = React.createClass({
         key,
         className: classNames('color-bucket', { 'selected-color': isSelectedColor }),
         style,
-        onClick: this.onClickBucket,
-        onMouseOver: this.onMouseOverBucket.bind(this, color)
+        onClick: this.onClickBucket.bind(this, color)
       };
 
       return <div {...attributes}></div>;
@@ -91,17 +85,18 @@ export var ColorPicker = React.createClass({
 
     var hexInputAttributes = {
       type: 'text',
-      style: { width: 75 },
       value: this.state.selectedColor,
       onChange: this.onChangeInputColor
     };
 
     return (
       <div className="color-picker">
-        <div className={ colorOverlayClassName } onClick={ this.onClose }></div>
+        <div className={ colorOverlayClassName } onClick={ this.onClose } />
         <div className="color-frame" onClick={ this.onClickColorFrame }>
-          <div className="selected-color-frame" style={ colorFrameStyle }></div>
-          <div className="caret"></div>
+          <div className="selected-color-frame" style={ colorFrameStyle } />
+          <div className="caret">
+            <span className="icon-arrow-down" />
+          </div>
         </div>
         <div className={ bucketContainerClassName }>
           <div className={ bucketsClassName }>

@@ -9,6 +9,7 @@
     "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
   },
   "scripts": {
+    "release": "sh tools/release.sh",
     "build": "webpack",
     "prebuild": "rimraf dist",
     "prepublish": "webpack",

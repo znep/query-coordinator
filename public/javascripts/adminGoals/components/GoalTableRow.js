@@ -5,6 +5,7 @@ import moment from 'moment';
 import { selectRow, deselectRow } from '../actions/goalTableActions';
 import { openGoalQuickEdit } from '../actions/goalQuickEditActions';
 import Flyout from './Flyout';
+import SocrataCheckbox from './SocrataCheckbox/SocrataCheckbox';
 
 class GoalTableRow extends React.Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class GoalTableRow extends React.Component {
     let rowClass = classNames({ selected });
 
     return <tr ref='tr' onClick={ this.onClick.bind(this) } className={ rowClass }>
-      <td><input type="checkbox" checked={ selected }/></td>
+      <td><SocrataCheckbox checked={ selected } /></td>
       <td><span className="icon-goal"/></td>
       <td scope="title">{ this.props.goal.get('name') }
         <span className="goalPageLink" >

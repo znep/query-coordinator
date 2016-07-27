@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 import { toggleAllRows, sortRows } from '../actions/goalTableActions';
+import SocrataCheckbox from './SocrataCheckbox/SocrataCheckbox';
 
 class GoalTableHead extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class GoalTableHead extends React.Component {
 
     return <thead>
       <tr>
-        <th><input type="checkbox" onClick={ this.props.toggleAllRows } /></th>
+        <th><SocrataCheckbox onClick={ this.props.toggleAllRows } /></th>
         <th>&nbsp;</th>
         { titles }
         <th>&nbsp;</th>
@@ -44,7 +45,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleAllRows: () => dispatch(toggleAllRows()),
+  toggleAllRows: checked => dispatch(toggleAllRows(checked)),
   sort: event => dispatch(sortRows(event.target.getAttribute('data-column'), event.target.getAttribute('data-direction')))
 });
 

@@ -1,0 +1,21 @@
+.socrata-checkbox {
+  label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .fake-checkbox {
+    border: solid 1px #e2e2e2;
+    border-radius: 1px;
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+    margin-right: ms(-5);
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+    vertical-align: text-bottom;
+    line-height: 1;
+    padding: 2px;
+  }
+}

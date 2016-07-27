@@ -63,7 +63,7 @@ else
 fi
 
 # Ruby tests
-if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES]] || ! [[ -z $YAML_FILES ]]; then
+if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES ]] || ! [[ -z $YAML_FILES ]]; then
   bundle exec rake test:units
   bundle exec rake test:functionals
   bundle exec rspec

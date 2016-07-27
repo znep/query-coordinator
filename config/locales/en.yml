@@ -2840,6 +2840,7 @@ en:
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
         headline_interpolate: Specify how "{0}" should be imported.
         help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+        help_message_js: For help, check out a <a href="{common_errors}" rel="external">list of common warnings and errors</a>.
         more_rows: More Rows
         name: Name
         pending_columns: Please wait while we load your columns...
@@ -2853,6 +2854,24 @@ en:
         suggested_flat: Suggested columns (no composites)
         suggested_plus_discrete: Suggested columns (composites and discrete)
         why_choose_now: Why is it important to choose column types now?
+        errors:
+          multiple_columns:
+            blank_names:
+              one_html: <strong>One</strong> of your columns does not have a name. Please give it a name.
+              many_html: <strong>{instances}</strong> of your columns do not have names. Please give them names.
+            duplicate_names: <strong>{instances}</strong> of your columns are named <strong>“{name}”</strong>. Columns in a dataset cannot share the same name.
+            columns_named_tags:
+              one_html: <strong>One</strong> of your columns is named "tags". Columns may not be named "tags".
+              many_html: <strong>{instances}</strong> of your columns are named "tags". Columns may not be named "tags".
+            source_columns_dropped:
+              one_html: Column {sourceColumns} is in your source data file, but is not currently set to be imported into your dataset.
+              many_html: Columns {sourceColumns} are in your source data file, but are not currently set to be imported into your dataset.
+          single_column:
+            wrong_type: Column <strong>{resultColumnName}</strong> is a <strong>{chosenType}</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>{suggestedType}</strong>. Should you choose to import that column, roughly <strong>{invalidPercent}%</strong> of your data will likely import incorrectly.
+            wrong_type_unknown_count: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong> but our analysis shows that <strong>{suggestedType}</strong> might be a better fit. Unless the column’s data is formatted correctly as {chosenType} data may import incorrectly.
+            type_too_generic: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong>, but our analysis indicates that the column is likely a <strong>{suggestedType}</strong> column. You can import it as {chosenType}, but you will lose some features if you do so. We strongly recommend that you import it as <strong>{suggestedType}</strong>.
+            empty_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but you currently don't have it set to be populated by anything. Please add some source columns or text.
+            non_text_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but it is currently set to import as <strong>{chosenType}</strong>. Please be certain that combining the columns you have specified will yield a valid {chosenType}.
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:
         abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.

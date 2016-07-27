@@ -21,7 +21,6 @@ module.exports = _.defaultsDeep({
   },
   resolve: {
     alias: {
-      '_': 'lodash',
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js'
     }
   },

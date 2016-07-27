@@ -86,10 +86,10 @@ export function updateColumnSourceComposite(action) {
 }
 
 export const ADD_COMPONENT = 'ADD_COMPONENT';
-export function addComponent(firstSourceOption: SharedTypes.SourceColumn) {
+export function addComponent(firstSourceColumn: SharedTypes.SourceColumn) {
   return {
     type: ADD_COMPONENT,
-    firstSourceOption
+    firstSourceColumn
   };
 }
 
@@ -182,7 +182,7 @@ export function update(resultColumn: ImportColumns.ResultColumn, action): Import
 function updateCompositeComponents(components: Array<CompositeComponent>, action): Array<CompositeComponent> {
   switch (action.type) {
     case ADD_COMPONENT:
-      return [...components, action.firstSourceOption];
+      return [...components, action.firstSourceColumn];
 
     case REMOVE_COMPONENT:
       return Utils.removeAt(components, action.index);
@@ -204,8 +204,8 @@ function nameAndValueForColumnSource(source: ImportColumns.ColumnSource): { name
 
 
 function nameAndValueForCompositeComponent(source: ImportColumns.ColumnSource): { name: string, value: string } {
-  return source.type === 'SingleColumn'
-    ? { name: source.sourceColumn.name, value: source.sourceColumn.index.toString() }
+  return _.isObject(source)
+    ? { name: source.name, value: source.index.toString() }
     : { name: I18n.screens.import_common.insert_static_text, value: 'constant' };
 }
 
@@ -317,9 +317,17 @@ view.propTypes = {
 
 
 function ViewCompositeColumnComponents({ components, sourceOptions, dispatch }) {
+  const singleColOptions = sourceOptions.
+    filter(source => source.type === 'SingleColumn').
+    map(source => source.sourceColumn);
+
+  const options = [...singleColOptions, ''];
+
   function compositeComponentAction(index: number, option: string) {
     const parsedIdx = _.parseInt(option);
-    return _.isNaN(parsedIdx) ? updateComponent(index, '') : updateComponent(index, sourceOptions[parsedIdx]);
+    return _.isNaN(parsedIdx)
+      ? updateComponent(index, '')
+      : updateComponent(index, singleColOptions[parsedIdx]);
   }
 
   return (
@@ -338,7 +346,7 @@ function ViewCompositeColumnComponents({ components, sourceOptions, dispatch }) 
               className="compositeColumnSourceSelect"
               value={nameAndValueForCompositeComponent(component).value}
               onChange={(evt) => dispatch(compositeComponentAction(componentIdx, evt.target.value))}>
-              {sourceOptions.map((option) => {
+              {options.map((option) => {
                 // TODO: optimize: these are the same for each instance of this component on the page
                 const {name, value} = nameAndValueForCompositeComponent(option);
                 return <option value={value}>{name}</option>;
@@ -357,7 +365,7 @@ function ViewCompositeColumnComponents({ components, sourceOptions, dispatch }) 
       </ul>
       <a
         className="button add newSourceColumnButton"
-        onClick={() => dispatch(addComponent(sourceOptions[0]))}>
+        onClick={() => dispatch(addComponent(sourceOptions[0].sourceColumn))}>
         <span className="icon"></span>
         {I18n.screens.import_common.new_source_col}
       </a>

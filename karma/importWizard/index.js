@@ -11,7 +11,7 @@ window.datasetCategories = [
   [ 'Business', 'Business' ],
   [ 'Government', 'Government' ]
 ];
-window.importableTypes = ['text', 'date', 'date', 'number'];
+window.importableTypes = ['text', 'date', 'number'];
 window.enabledModules = ['geospatial', 'esri_integration'];
 window.customMetadataSchema = [
   {
@@ -100,6 +100,20 @@ window.blist = {
   currentUser: {
     id: 'abcd-1234',
     email: 'test@example.com'
+  },
+  datatypes: {
+    email: {
+      title: 'Email'
+    },
+    number: {
+      title: 'Number'
+    },
+    text: {
+      title: 'Text'
+    },
+    money: {
+      title: 'Money'
+    }
   }
 };
 window.blistLicenses = [

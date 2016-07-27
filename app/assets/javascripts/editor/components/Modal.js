@@ -61,6 +61,7 @@ export default function Modal(options) {
     this.
       data('modal-rendered', true).
       addClass('modal').
+      addClass('storyteller-modal').
       on('modal-open', function() {
         self.removeClass('hidden');
         $('html').css('overflow', 'hidden');

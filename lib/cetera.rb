@@ -277,6 +277,25 @@ module Cetera
     def domain_icon_href
       "/api/domains/#{domainCName}/icons/smallIcon"
     end
+
+    # TODO: Remove looking up the view in Core once previewImageId is returned by Cetera.
+    # Note that this duplicates view.get_preview_image_url.
+    def get_preview_image_url(cookie_string, request_id)
+      if story?
+        Storyteller.get_tile_image(id, cookie_string, request_id)
+      else
+        begin
+          view = View.find(id)
+          if view && view.previewImageId
+            "/api/views/#{id}/files/#{view.previewImageId}"
+          end
+        rescue CoreServer::ResourceNotFound
+          nil
+        rescue CoreServer::CoreServerError
+          nil
+        end
+      end
+    end
   end
 
   # Parent class for all search result types from Cetera

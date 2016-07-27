@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "Socrata's Product Styleguide",
   "main": "dist/js/styleguide.js",
   "publishConfig": {

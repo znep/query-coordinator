@@ -7,12 +7,8 @@ class DataLensControllerTest < ActionController::TestCase
     init_current_domain
     ::Configuration.stubs(:find_by_type => [])
 
-    @phidippides = Phidippides.new('localhost', 2401)
-    @controller.stubs(:phidippides => @phidippides)
-    @data_lens_manager = DataLensManager.new
-    @page_metadata_manager = PageMetadataManager.new
+    @controller.stubs(:phidippides => Phidippides.new('localhost', 2401))
     load_sample_data('test/fixtures/sample-data.json')
-
 
     test_view = View.find('test-data')
 
@@ -24,26 +20,10 @@ class DataLensControllerTest < ActionController::TestCase
         :obeId => 'obev-rson'
       }
     )
-
   end
 
   test 'should successfully get data_lens' do
-    DataLensManager.any_instance.stubs(:fetch).returns({})
-    PageMetadataManager.any_instance.stubs(
-      :show => data_lens_page_metadata
-    )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :fetch_pages_for_dataset => {
-        :status => '200',
-        :body => v2_pages_for_dataset
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
-
+    stub_basic_data_lens
     # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
@@ -51,23 +31,17 @@ class DataLensControllerTest < ActionController::TestCase
     assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
-  test 'should successfully get data_lens for single card view' do
-    DataLensManager.any_instance.stubs(:fetch).returns({})
-    PageMetadataManager.any_instance.stubs(
-      :show => data_lens_page_metadata
-    )
-    Phidippides.any_instance.stubs(
-      :fetch_dataset_metadata => {
-        :status => '200',
-        :body => v1_dataset_metadata
-      },
-      :fetch_pages_for_dataset => {
-        :status => '200',
-        :body => v2_pages_for_dataset
-      },
-      :set_default_and_available_card_types_to_columns! => {}
-    )
+  test 'should allow frame embedding of data_lens page' do
+    stub_basic_data_lens
+    # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    get :data_lens, :id => '1234-1234', :app => 'dataCards'
+    assert_response :success
+    # Should set the header that allows frame embedding
+    assert_equal('ALLOWALL', @response.headers['X-Frame-Options'])
+  end
 
+  test 'should successfully get data_lens for single card view' do
+    stub_basic_data_lens
     # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :field_id => 'field', :app => 'dataCards'
     assert_response :success
@@ -628,6 +602,24 @@ class DataLensControllerTest < ActionController::TestCase
 
   def visualization_embed_json
     JSON::parse(File.read("#{Rails.root}/test/fixtures/vif.json"))
+  end
+
+  def stub_basic_data_lens
+    DataLensManager.any_instance.stubs(:fetch).returns({})
+    PageMetadataManager.any_instance.stubs(
+      :show => data_lens_page_metadata
+    )
+    Phidippides.any_instance.stubs(
+      :fetch_dataset_metadata => {
+        :status => '200',
+        :body => v1_dataset_metadata
+      },
+      :fetch_pages_for_dataset => {
+        :status => '200',
+        :body => v2_pages_for_dataset
+      },
+      :set_default_and_available_card_types_to_columns! => {}
+    )
   end
 
 end

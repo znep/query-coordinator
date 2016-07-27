@@ -118,14 +118,13 @@ describe DatasetLandingPage do
               :sortBy => 'most_accessed',
               :limit => 19,
               :offset => 31,
-              :sortBy => 'hue',
               :boostDatalenses => 1.15,
               :boostStories => 1.3
             }
           ).
           and_return([])
 
-        dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id', 19, 31, 'hue')
+        dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id', 19, 31, 'most_accessed')
       end
 
       it 'formats the response' do

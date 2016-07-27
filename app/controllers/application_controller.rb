@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include ActionControllerExtensions
   include UserAuthMethods
   include ActionController::Caching::Pages
+  include FrameEmbedding
 
   self.page_cache_directory = "#{Rails.root}/public/page_cache"
 
@@ -172,11 +173,6 @@ class ApplicationController < ActionController::Base
   # +before_filter+
   def create_core_server_connection
     CoreServer::Base.connection = CoreServer::Connection.new(Rails.logger, cookies)
-  end
-
-  # +before_filter+
-  def disable_frame_embedding
-    headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome
   end
 
   # +before_filter+

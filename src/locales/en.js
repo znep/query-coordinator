@@ -163,6 +163,19 @@ export default {
       unit: {
         one: 'Record',
         other: 'Records'
+      },
+      validation: {
+        errors: {
+          dimension_column_should_be_calendar_date:  'This visualization requires its dimension column to be set to a date column. Try setting the dimension to a date column.',
+          dimension_column_should_be_numeric: 'This visualization requires its dimension column to be set to a numeric column. Try setting the dimension to a numeric column.',
+          dimension_column_should_be_point: 'This visualization requires its dimension column to be set to a location column. Try setting the dimension to a location column.',
+          generic: 'An error was encountered when rendering this visualization. Try again in a few minutes.',
+          multiple_errors: 'This visualization encountered multiple errors:',
+          need_aggregation: 'This visualization requires an aggregation to be selected. Try selecting an aggregation or choosing "Count of Rows" from the measure selection.',
+          need_no_aggregation: 'This visualization must not have an aggregation on its measure. Try selecting "none" as the aggregation.',
+          need_at_least_one_series: 'This visualization requires at least one series.',
+          need_single_series: 'This visualization requires a single series.'
+        }
       }
     },
     choropleth_map: {

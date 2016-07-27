@@ -2,6 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
 var SocrataSvgRegionMapAPI = rewire('../../src/SvgRegionMap');
+var SoqlVifValidator = rewire('../../src/dataProviders/SoqlVifValidator');
 
 describe('SvgRegionMap jQuery component', function() {
 
@@ -203,7 +204,7 @@ describe('SvgRegionMap jQuery component', function() {
     });
   });
 
-  describe('ChoroplethMap component', function() {
+  describe('events', function() {
     var revertDataProviders;
 
     beforeEach(function() {
@@ -214,6 +215,12 @@ describe('SvgRegionMap jQuery component', function() {
 
       // Mock data providers
       revertDataProviders = SocrataSvgRegionMapAPI.__set__({
+        getSoqlVifValidator: function() {
+          const validator = SoqlVifValidator.soqlVifValidator(regionMapVif, []);
+          return Promise.resolve(
+            validator
+          );
+        },
         MetadataProvider: function() {
           this.getDatasetMetadata = function() {
             return new Promise(function(resolve, reject) { return resolve(SHAPEFILE_METADATA_RESPONSE); });

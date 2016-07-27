@@ -11,6 +11,7 @@ const MetadataProvider = require('./dataProviders/MetadataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const DataTypeFormatter = require('./views/DataTypeFormatter');
 const I18n = require('./I18n');
+const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
 const DOMAIN_PATH = 'series[0].dataSource.domain';
@@ -139,18 +140,26 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   }
 
   function handleError(error) {
-    var message;
+    var messages;
     var errorCode = _.get(error, 'soqlError.errorCode');
 
     if (errorCode === 'query.soql.type-mismatch') {
-      message = I18n.translate(
+      messages = I18n.translate(
         'visualizations.feature_map.error_incompatible_column'
       );
     } else {
-      message = I18n.translate('visualizations.common.error_generic');
+      if (window.console && console.error) {
+        console.error(error);
+      }
+
+      if (error.errorMessages) {
+        messages = error.errorMessages;
+      } else {
+        messages = I18n.translate('visualizations.common.error_generic')
+      }
     }
 
-    renderError(message);
+    visualization.renderError(messages);
   }
 
   function handleVisualizationFlyoutShow(event) {
@@ -429,35 +438,37 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   }
 
   function getDataFromProviders(newVif) {
-    var datasetMetadataRequest;
-    var extentRequest;
-    var columnName = _.get(newVif, COLUMN_NAME_PATH);
+    return $.fn.socrataSvgFeatureMap.validateVif(newVif).then(() => {
+      var datasetMetadataRequest;
+      var extentRequest;
+      var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-    if (_.isPlainObject(newVif.configuration.datasetMetadata)) {
-      datasetMetadataRequest = newVif.configuration.datasetMetadata;
-    } else if (metadataProvider) {
-      datasetMetadataRequest = metadataProvider.getDatasetMetadata();
-    } else {
-      handleError();
-    }
+      if (_.isPlainObject(newVif.configuration.datasetMetadata)) {
+        datasetMetadataRequest = newVif.configuration.datasetMetadata;
+      } else if (metadataProvider) {
+        datasetMetadataRequest = metadataProvider.getDatasetMetadata();
+      } else {
+        handleError();
+      }
 
-    if (_.has(newVif, 'configuration.mapCenterAndZoom')) {
-      extentRequest = Promise.resolve();
-    } else {
-      extentRequest = geospaceDataProvider.getFeatureExtent(columnName);
-    }
+      if (_.has(newVif, 'configuration.mapCenterAndZoom')) {
+        extentRequest = Promise.resolve();
+      } else {
+        extentRequest = geospaceDataProvider.getFeatureExtent(columnName);
+      }
 
-    /**
-     * Initial data requests to set up visualization state
-     */
+      /**
+       * Initial data requests to set up visualization state
+       */
 
-    // We query the extent of the features we are rendering in order to make
-    // individual tile requests more performant (through the use of a
-    // WITHIN_BOX query clause).
-    return Promise.all([
-      datasetMetadataRequest,
-      extentRequest
-    ]);
+      // We query the extent of the features we are rendering in order to make
+      // individual tile requests more performant (through the use of a
+      // WITHIN_BOX query clause).
+      return Promise.all([
+        datasetMetadataRequest,
+        extentRequest
+      ]);
+    });
   }
 
   function buildVectorTileGetter(whereClause, useOriginHost) {
@@ -585,5 +596,26 @@ $.fn.socrataSvgFeatureMap = function(vif) {
 
   return this;
 };
+
+// Checks a VIF for compatibility with this visualization.
+// The intent of this function is to provide feedback while
+// authoring a visualization, not to provide feedback to a developer.
+// As such, messages returned are worded to make sense to a user.
+//
+// Returns a Promise.
+//
+// If the VIF is usable, the promise will resolve.
+// If the VIF is not usable, the promise will reject with an object:
+// {
+//   ok: false,
+//   errorMessages: Array<String>
+// }
+$.fn.socrataSvgFeatureMap.validateVif = (vif) =>
+  getSoqlVifValidator(vif).then(validator =>
+    validator.
+      requireAtLeastOneSeries().
+      requirePointDimension().
+      toPromise()
+  );
 
 module.exports = $.fn.socrataSvgFeatureMap;

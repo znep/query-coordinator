@@ -136,7 +136,10 @@ function SvgHistogram($element, vif) {
       validateHasColumn(series, 'bucket_start');
       validateHasColumn(series, 'bucket_end');
       validateHasColumn(series, 'measure');
-      series.rows.forEach((row) => utils.assert(row.length === 3, `row has ${row.length} columns, expected 3`));
+      series.rows.forEach((row) => {
+        utils.assert(row.length === 3, `row has ${row.length} columns, expected 3`);
+        row.forEach((item) => utils.assertIsOneOfTypes(item, 'number'));
+      });
     });
 
   }

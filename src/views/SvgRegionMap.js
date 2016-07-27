@@ -35,7 +35,6 @@ function SvgRegionMap(element, vif) {
   const DEFAULT_LEGEND_DISCRETE_NEGATIVE_COLOR = '#c6663d';
 
   const DEFAULT_FEATURE_NULL_COLOR = '#ddd';
-  const DEFAULT_FEATURE_SINGLE_COLOR = 'teal';
   const DEFAULT_FEATURE_STROKE_COLOR = '#fff';
   const DEFAULT_FEATURE_SELECTED_COLOR = '#debb1e';
 

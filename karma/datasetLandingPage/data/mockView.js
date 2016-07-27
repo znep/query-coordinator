@@ -16,7 +16,6 @@ export default {
     }
   ],
   isPrivate: true,
-  isGeospatial: false,
   isTabular: true,
   gridUrl: 'gridUrl',
   downloadOverride: null,
@@ -26,7 +25,6 @@ export default {
   metadataLastUpdatedAt: 'May 5, 2016',
   nbeId: 'abcd-1234',
   createdAt: 'Jan 1, 1970',
-  geospatialChildLayers: [],
   rowCount: 1,
   apiFoundryUrl: 'apiFoundryUrl',
   resourceUrl: 'resourceUrl',

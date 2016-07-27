@@ -128,11 +128,7 @@ module DatasetLandingPageHelper
     end
   end
 
-  def transformed_formats
-    if @view.is_geospatial? || @view.is_api_geospatial?
-      return [ 'KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON' ]
-    end
-
+  def export_formats
     [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
   end
 
@@ -184,10 +180,6 @@ module DatasetLandingPageHelper
   end
 
   def transformed_view
-    if !view.is_geospatial?
-      row_count = @view.row_count
-    end
-
     columns = @view.columns.reject do |column|
       # disregard system columns that aren't hidden, i.e. computed columns
       column.fieldName.start_with?(':') ||
@@ -206,17 +198,15 @@ module DatasetLandingPageHelper
       :columns => columns,
       :isPrivate => !@view.is_public?,
       :isUnpublished => @view.is_unpublished?,
-      :isGeospatial => @view.is_geospatial?,
       :isTabular => @view.is_tabular?,
       :gridUrl => data_grid_path(@view),
       :downloadOverride => @view.downloadOverride,
-      :exportFormats => transformed_formats,
+      :exportFormats => export_formats,
       :lastUpdatedAt => @view.time_last_updated_at,
       :dataLastUpdatedAt => @view.time_data_last_updated_at,
       :metadataLastUpdatedAt => @view.time_metadata_last_updated_at,
       :createdAt => @view.time_created_at,
-      :geospatialChildLayers => transformed_child_layers,
-      :rowCount => row_count,
+      :rowCount => @view.row_count,
       :apiFoundryUrl => @view.api_foundry_url,
       :resourceUrl => @view.resource_url,
       :odataUrl => @view.odata_url,
@@ -236,21 +226,5 @@ module DatasetLandingPageHelper
       :sortOrder => sort_order,
       :bootstrapUrl => bootstrap_url
     }
-  end
-
-  def transformed_child_layers
-    @view.geospatial_child_layers.map do |child_layer|
-      {
-        :id => child_layer.id,
-        :name => child_layer.name,
-        :columns => child_layer.columns,
-        :isGeospatial => true,
-        :apiFoundryUrl => child_layer.api_foundry_url,
-        :resourceUrl => child_layer.resource_url,
-        :odataUrl => child_layer.odata_url,
-        :rowLabel => child_layer.row_label,
-        :rowCount => child_layer.row_count
-      }
-    end
   end
 end

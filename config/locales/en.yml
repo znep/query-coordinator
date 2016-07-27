@@ -1270,7 +1270,6 @@ en:
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
-      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     back: Back
     bootstrap_button: Create a Visualization
@@ -1394,12 +1393,10 @@ en:
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More
-    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
-      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
     related_views:

@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectRow, deselectRow } from '../actions/goalTableActions';
-import { openGoalQuickEdit } from '../actions/goalQuickEditActions';
+import { openGoalQuickEdit } from '../actions/quickEditActions';
 import Flyout from './Flyout';
 
 class GoalTableRow extends React.Component {

@@ -17,6 +17,7 @@ export default class SocrataButton extends React.Component {
     const isSmall = props.small == true;
     const isExtraSmall = props.extraSmall == true;
     const isInProgress = props.inProgress == true;
+    const type = props.type || 'button';
 
     const isDefault = helpers.noneOf([isPrimary, isAlternate, isAlternate2, isSimple, isInverse]);
 
@@ -36,7 +37,11 @@ export default class SocrataButton extends React.Component {
     const spinner = isInProgress ? <span className="spinner-default spinner-btn-primary"/> : null;
 
     return (
-      <button className={classNames(classes)} disabled={props.disabled} onClick={ isInProgress ? null : this.props.onClick }>
+      <button
+        type={ type }
+        className={ classNames(classes) }
+        disabled={ props.disabled }
+        onClick={ isInProgress ? null : this.props.onClick }>
         { isInProgress ? spinner : this.props.children }
       </button>
     );

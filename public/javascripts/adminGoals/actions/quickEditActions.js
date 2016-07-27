@@ -5,7 +5,8 @@ import {
   OPEN_GOAL_QUICK_EDIT,
   CLOSE_GOAL_QUICK_EDIT,
   REMOVE_GOAL_FROM_CACHE,
-  GOAL_QUICK_EDIT_UPDATE_FAILED
+  QUICK_EDIT_SUCCESS,
+  QUICK_EDIT_FAIL
 } from '../actionTypes';
 
 import { tableLoadPage } from './goalTableActions';
@@ -23,14 +24,20 @@ export function closeGoalQuickEdit() {
   };
 }
 
-export function goalQuickEditUpdateFailed(reason) {
+export function goalQuickEditUpdateFailed() {
   return {
-    type: GOAL_QUICK_EDIT_UPDATE_FAILED,
-    reason,
+    type: QUICK_EDIT_FAIL
+  };
+}
+
+export function quickEditSuccess(goalName) {
+  return {
+    type: QUICK_EDIT_SUCCESS,
     notification: {
-      type: 'error',
+      type: 'success',
       message: {
-        path: 'admin.listing.default_alert_message'
+        path: 'admin.quick_edit.success_message',
+        values: [goalName]
       }
     }
   };
@@ -70,9 +77,10 @@ export function saveGoalQuickEdit(goalId, version, values) {
           dispatch(closeGoalQuickEdit());
           dispatch(removeFromCache(goalId));
           dispatch(tableLoadPage());
+          dispatch(quickEditSuccess(values.name));
         }
       }).
-      catch(() => {
+      catch(() => { // eslint-disable-line dot-notation
         dispatch(goalQuickEditUpdateFailed());
       });
   };

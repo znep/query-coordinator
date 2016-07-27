@@ -11,7 +11,7 @@ const showNotification = (state, action) => state.merge({
   message: action.message
 });
 
-const dismissNotification = (state, action) => state.set('visible', false);
+const dismissNotification = state => state.set('visible', false);
 
 export default createReducer(Immutable.fromJS({ visible: false, type: 'success', message: '' }), {
   [SHOW_GLOBAL_NOTIFICATION]: showNotification,

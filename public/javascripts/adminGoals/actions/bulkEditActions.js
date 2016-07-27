@@ -83,6 +83,6 @@ export function updateMultipleGoals(goals, updatedData) {
         dispatch(updateCachedGoals(updatedGoals));
         dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
         return updatedGoals;
-      }).catch(err => dispatch(updateMultipleItemsFailed(err)));
+      }).catch(err => dispatch(updateMultipleItemsFailed(err))); // eslint-disable-line dot-notation
   };
 }

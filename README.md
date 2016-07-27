@@ -62,8 +62,8 @@ Here are the versions we use for externals, which are not included in the webpac
 - `npm run watch` to automatically run the tests when files change.  The tests can be debugged in
   a browser by visiting http://localhost:9876/debug.html.
 - `npm run build` to run webpack and generate output files in `dist`.
-- `npm publish` to publish a new version to the npm registry (after bumping the version in
-  `package.json`).
+- `npm run release` to tag and publish a new version to the npm registry (after bumping the
+  version in `package.json`).
 
 ## Examples
 

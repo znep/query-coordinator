@@ -64,8 +64,10 @@ module SocrataSiteChrome
       published_site_chrome_config
     end
 
-    # Latest version of Site Chrome that exists in the current configuration
+    # Latest version of Site Chrome that exists in the current configuration.
+    # Return nil if config is invalid.
     def latest_existing_version(config)
+      return nil unless config.present? && config.dig(:value, :versions).present?
       config.dig(:value, :versions).keys.map { |version| Gem::Version.new(version) }.max.to_s
     end
 

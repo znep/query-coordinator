@@ -117,6 +117,18 @@ describe SocrataSiteChrome::DomainConfig do
       result = SocrataSiteChrome::DomainConfig.new(domain).send(:latest_existing_version, test_site_chrome_config)
       expect(result).to eq('99.999')
     end
+
+    it 'returns nil if the config is an empty hash' do
+      test_site_chrome_config = {}
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:latest_existing_version, test_site_chrome_config)
+      expect(result).to be_nil
+    end
+
+    it 'returns nil if the config is nil' do
+      test_site_chrome_config = nil
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:latest_existing_version, test_site_chrome_config)
+      expect(result).to be_nil
+    end
   end
 
 end

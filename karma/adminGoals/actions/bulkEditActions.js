@@ -12,14 +12,15 @@ import {
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
   UPDATE_MULTIPLE_ITEMS_FAILED,
+  UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED,
   CACHED_GOALS_UPDATED
 } from 'actionTypes'
 
 const START_TIME = moment.utc().toISOString();
 
 const GOALS = [
-  { id: 'a', is_public: false, start: moment.utc().add(1, 'day').toISOString() },
-  { id: 'b', is_public: true,  start: moment.utc().toISOString() }
+  { id: 'a', is_public: false, start: moment.utc().add(1, 'day').toISOString(), prevailing_measure: {} },
+  { id: 'b', is_public: true,  start: moment.utc().toISOString(), prevailing_measure: {} }
 ];
 
 const mockStore = configureStore([thunk]);
@@ -76,7 +77,7 @@ describe('actions/bulkEditActions', () => {
     }).catch(done);
   });
 
-  it('should dispatch failure action when something went wrong', function (done) {
+  it('should dispatch failure action when something went wrong', (done) => {
     server.respondWith(xhr => {
       xhr.respond();
     });
@@ -87,5 +88,14 @@ describe('actions/bulkEditActions', () => {
       expect(failed.type).to.eq(UPDATE_MULTIPLE_ITEMS_FAILED);
       done();
     }).catch(done);
+  });
+
+  it('should dispatch a warning message if not all the items have prevailing_measure data', () => {
+    const goals = GOALS.concat([{ id: 'not_configured' }]);
+
+    store.dispatch(updateMultipleGoals(goals.map(goal => Immutable.fromJS(goal))), {});
+    const [notConfigured] = store.getActions();
+
+    expect(notConfigured.type).to.eq(UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED);
   });
 });

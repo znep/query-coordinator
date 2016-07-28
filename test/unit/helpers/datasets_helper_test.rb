@@ -91,11 +91,8 @@ class DatasetsHelperTest < Minitest::Test
     refute @object.send(:hide_append_replace?), 'Should be false when geo is true'
     @view.stubs(:is_geo? => true, :new_backend? => true)
     refute @object.send(:hide_append_replace?), 'Should be false when geo is true and nbe is true and flag is true'
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(:geo_imports_to_nbe_enabled => false))
-    @view.stubs(:is_geo? => true, :new_backend? => true)
-    assert @object.send(:hide_append_replace?), 'Should be true when geo is true and nbe is true and flag is false'
     @view.stubs(:is_unpublished? => true, :new_backend? => true )
-    assert @object.send(:hide_append_replace?), 'Should be true when new_backend? is true'
+    refute @object.send(:hide_append_replace?), 'Should be false when new_backend? is true'
     @view.stubs(:is_unpublished? => true, :new_backend? => false )
     FeatureFlags.stubs(:derive => Hashie::Mash.new(:ingress_strategy => 'nbe'))
     refute @object.send(:hide_append_replace?), 'Should be false when Feature Flag is set'

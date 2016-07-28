@@ -471,11 +471,7 @@ module DatasetsHelper
 
   def hide_append_replace_for_nbe_geo?
     return false unless view.new_backend?
-
-    [
-      !view.is_geo? && FeatureFlags.derive(view, request).ingress_strategy == 'obe',
-      view.is_geo? && !FeatureFlags.derive(view, request).geo_imports_to_nbe_enabled
-    ].any?
+    !view.is_geo? && FeatureFlags.derive(view, request).ingress_strategy == 'obe'
   end
 
   def hide_export_section?(section)

@@ -69,12 +69,10 @@ class InternalController < ApplicationController
     @bulk_updates = {
       :enable_nbe => {
         disable_legacy_types: true,
-        enable_export_service: true,
         reenable_ui_for_nbe: true,
         disable_obe_redirection: true,
         disable_nbe_redirection_warning_message: true,
         enable_ingress_geometry_types: true,
-        geo_imports_to_nbe_enabled: true,
         ingress_strategy: 'nbe'
       },
       :enable_govstat => [

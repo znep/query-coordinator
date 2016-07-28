@@ -84,10 +84,7 @@ $.fn.socrataTable = function(vif) {
   var getMemoizedDatasetMetadata = _.memoize(
     function(metadataProviderConfig) {
 
-      // TODO: Remove allowObeDataset once we no longer need to support OBE datasets
-      var allowObeDataset = _.get(vifToRender, 'configuration.allowObeDataset', false);
-      return new MetadataProvider(metadataProviderConfig).
-        getDatasetMetadata(allowObeDataset);
+      return new MetadataProvider(metadataProviderConfig).getDatasetMetadata();
     },
     function(metadataProviderConfig) {
 
@@ -99,15 +96,14 @@ $.fn.socrataTable = function(vif) {
   );
 
   var getMemoizedRowCount = _.memoize(
-    function(soqlDataProvider, whereClauseComponents, allowObeDataset) {
-      return soqlDataProvider.getRowCount(whereClauseComponents, allowObeDataset);
+    function(soqlDataProvider, whereClauseComponents) {
+      return soqlDataProvider.getRowCount(whereClauseComponents);
     },
-    function(soqlDataProvider, whereClauseComponents, allowObeDataset, rowsUpdatedAt) {
-      return '{0}_{1}_{2}_{3}_{4}'.format(
+    function(soqlDataProvider, whereClauseComponents, rowsUpdatedAt) {
+      return '{0}_{1}_{2}_{3}'.format(
         soqlDataProvider.getConfigurationProperty('domain'),
         soqlDataProvider.getConfigurationProperty('datasetUid'),
         whereClauseComponents,
-        allowObeDataset,
         rowsUpdatedAt
       );
     }
@@ -415,12 +411,9 @@ $.fn.socrataTable = function(vif) {
           ).
             slice(0, MAX_COLUMN_COUNT);
 
-          // TODO: Remove this once we no longer need to support OBE datasets
-          var allowObeDataset = _.get(vifToRender, 'configuration.allowObeDataset', false);
           var soqlRowCountPromise = getMemoizedRowCount(
             soqlDataProvider,
             whereClauseComponents,
-            allowObeDataset,
             datasetMetadata.rowsUpdatedAt
           );
           var soqlDataPromise = soqlDataProvider.
@@ -429,8 +422,7 @@ $.fn.socrataTable = function(vif) {
               order,
               startIndex,
               pageSize,
-              whereClauseComponents,
-              allowObeDataset
+              whereClauseComponents
             );
 
           soqlRowCountPromise.then(function(rowCount) {

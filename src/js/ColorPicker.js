@@ -41,6 +41,10 @@ export var ColorPicker = React.createClass({
       showingBuckets: false,
       selectedColor: color
     });
+
+    if (this.props.handleColorChange) {
+      this.props.handleColorChange(color);
+    }
   },
 
   onClose() {

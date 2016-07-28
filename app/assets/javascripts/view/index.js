@@ -2,16 +2,16 @@ import $ from 'jQuery';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import '../editor/componentBase';
+import '../editor/block-component-renderers/componentGoalTile';
 import '../editor/block-component-renderers/componentHero';
-import '../editor/block-component-renderers/componentSocrataVisualizationChoroplethMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationHistogram';
+import '../editor/block-component-renderers/componentSocrataVisualizationRegionMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationTable';
 import '../editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
 import '../editor/block-component-renderers/componentStoryTile';
-import '../editor/block-component-renderers/componentGoalTile';
 
 import StorytellerUtils from '../StorytellerUtils';
 import Environment from '../StorytellerEnvironment';
@@ -107,9 +107,14 @@ $(document).on('ready', function() {
             componentSocrataVisualizationClassic(componentData);
           break;
 
-        case 'socrata.visualization.choroplethMap':
+        case 'socrata.visualization.regionMap':
           $element.
-            componentSocrataVisualizationChoroplethMap(componentData);
+            componentSocrataVisualizationRegionMap(componentData);
+          break;
+
+        case 'socrata.visualization.choroplethMap': // legacy
+          $element.
+            componentSocrataVisualizationRegionMap(componentData);
           break;
 
         case 'socrata.visualization.columnChart':

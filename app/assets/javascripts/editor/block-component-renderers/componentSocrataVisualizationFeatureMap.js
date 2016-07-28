@@ -68,6 +68,9 @@ function _updateVisualization($element, componentData) {
   var $componentContent = $element.find('.component-content');
   var vif = componentData.value.vif;
   var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  var visualizationImplementation = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'socrataSvgFeatureMap' :
+    'socrataFeatureMap';
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
@@ -126,6 +129,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataFeatureMap(vif);
+    $componentContent[visualizationImplementation](vif);
   }
 }

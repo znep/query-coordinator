@@ -7,7 +7,7 @@ html {
     background-color: aliceblue;
     overflow-y: scroll;
 
-    .stories-404-container {
+    .application-error-container {
       position: relative;
       display: block;
       margin: 10vh auto;
@@ -21,7 +21,7 @@ html {
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
       box-sizing: content-box;
 
-      .stories-404-status-code {
+      .application-error-status-code {
         position: absolute;
         width: 100%;
         height: auto;
@@ -33,7 +33,7 @@ html {
         color: #f4f4f4;
       }
 
-      .stories-404-title {
+      .application-error-title {
         position: relative;
         display: block;
         margin: 0 auto;
@@ -44,7 +44,7 @@ html {
         color: #686868;
       }
 
-      .stories-404-image {
+      .application-error-image {
         position: relative;
         display: block;
         width: 100%;
@@ -53,7 +53,7 @@ html {
         border-bottom: 1px solid #ddd;
       }
 
-      .stories-404-description {
+      .application-error-description {
         position: relative;
         display: block;
         margin: 0 auto;

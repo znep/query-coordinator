@@ -2,7 +2,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-# Require the default gems and those in the group for the current environment listed in Gemfile, 
+# Require the default gems and those in the group for the current environment listed in Gemfile,
 Bundler.require(:default, Rails.env)
 
 module Storyteller
@@ -40,5 +40,16 @@ module Storyteller
     # We should be logging to stdout for mesos/sumo
     # Unicorn also writes to STDERR
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+
+    # On exceptions, proceed directly to ErrorsController#show for custom pages.
+    config.exceptions_app = ->(env) do
+      # Since we're bypassing some other middleware, set these properties so
+      # ApplicationController#handle_authorization won't bomb.
+      env['action_dispatch.request.path_parameters'] = {
+        action: 'show',
+        controller: 'errors'
+      }
+      ErrorsController.action(:show).call(env)
+    end
   end
 end

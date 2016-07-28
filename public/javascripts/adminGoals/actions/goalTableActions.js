@@ -11,6 +11,9 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
+  TABLE_ROW_SELECTION_START,
+  TABLE_ROW_SELECTION_END,
+  TABLE_ROW_SELECTION_CANCEL,
   ROWS_PER_PAGE_CHANGED,
   SET_TOTAL_GOAL_COUNT,
   SET_CURRENT_PAGE,
@@ -257,6 +260,26 @@ export function toggleAllRows(checked) {
   return {
     type: TABLE_ROW_ALL_SELECTION_TOGGLE,
     checked
+  };
+}
+
+export function rowSelectionStart(goalId) {
+  return {
+    type: TABLE_ROW_SELECTION_START,
+    goalId
+  };
+}
+
+export function rowSelectionEnd(goalId) {
+  return {
+    type: TABLE_ROW_SELECTION_END,
+    goalId
+  };
+}
+
+export function rowSelectionCancel() {
+  return {
+    type: TABLE_ROW_SELECTION_CANCEL
   };
 }
 

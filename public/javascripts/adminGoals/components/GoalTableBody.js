@@ -1,18 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { rowSelectionCancel } from '../actions/goalTableActions';
 import GoalTableRow from './GoalTableRow';
 
 class GoalTableBody extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      multipleRowSelection: false
+    };
   }
 
   shouldComponentUpdate(nextProps) {
     return this.props.goals !== nextProps.goals;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      multipleRowSelection: nextProps.multipleRowSelection
+    });
+  }
+
+  onClick(event) {
+    event.preventDefault();
+
+    if (this.state.multipleRowSelection && !event.shiftKey) {
+      this.props.rowSelectionCancel();
+    }
+  }
+
   render() {
-    return <tbody>
+    return <tbody onClick={ this.onClick.bind(this) }>
       { this.props.goals.map(goal => <GoalTableRow
         key={ goal.get('id') }
         goal={ goal }
@@ -26,9 +45,12 @@ class GoalTableBody extends React.Component {
 const mapStateToProps = state => ({
   translations: state.get('translations'),
   goals: state.getIn(['goalTableData', 'goals']),
-  dashboards: state.getIn(['goalTableData', 'dashboards'])
+  dashboards: state.getIn(['goalTableData', 'dashboards']),
+  multipleRowSelection: state.getIn(['goalTableData', 'multipleRowSelection'])
 });
 
-const mapDispatchToProps = dispatch => ({});// eslint-disable-line no-unused-vars
+const mapDispatchToProps = dispatch => ({
+  rowSelectionCancel: () => dispatch(rowSelectionCancel())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalTableBody);

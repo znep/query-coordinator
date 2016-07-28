@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 require 'pathname'
+require 'yaml'
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
 
 Dir.chdir APP_ROOT do
 
-  database_config = YAML.load_file('config/database.yml.sample')
+  database_config = YAML.load_file('config/database.yml.test')
 
   temporary_test_db_name = "storyteller_test_#{Time.now.to_i}"
   database_config['test']['database'] = temporary_test_db_name
@@ -17,9 +18,10 @@ Dir.chdir APP_ROOT do
     f.write(test_db_config.to_yaml)
   end
 
-  puts "\n== Creating temporary test db, #{temporary_test_db_name} =="
-  system 'bin/test_setup'
-  system 'bin/test'
-
-  system 'RAILS_ENV=test bundle exec rake db:drop'
+  puts "\n== Running tests with temporary db, #{temporary_test_db_name} =="
+  begin
+    system('bin/test') or abort('`test` script returned a non-zero status')
+  ensure
+    system('RAILS_ENV=test bundle exec rake db:drop')
+  end
 end

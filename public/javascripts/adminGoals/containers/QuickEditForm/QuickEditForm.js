@@ -490,7 +490,7 @@ class GoalQuickEdit extends React.Component {
     return (
       <SocrataModal.Modal fullScreen>
         <form onSubmit={ this.save.bind(this) }>
-          <SocrataModal.Header title={ goalTitle } onClose={ this.props.dismissModal }/>
+          <SocrataModal.Header title={ goalTitle } onClose={ this.props.closeQuickEdit }/>
           <SocrataModal.Content>
             { failureAlert }
 
@@ -591,7 +591,7 @@ class GoalQuickEdit extends React.Component {
                 <span className="icon-external" />
               </a>
             </div>
-            <SocrataButton onClick={ this.props.dismissModal }>
+            <SocrataButton onClick={ this.props.closeQuickEdit }>
               { translations.getIn(['admin', 'quick_edit', 'cancel']) }
             </SocrataButton>
             <SocrataButton type="submit" primary onClick={ this.save.bind(this) } disabled={ this.state.noChangesMade }>

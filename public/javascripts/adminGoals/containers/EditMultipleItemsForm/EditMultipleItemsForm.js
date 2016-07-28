@@ -273,12 +273,13 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   renderFailureAlert() {
-    if (!this.props.showFailureMessage) {
+    const { showFailureMessage, showNotConfiguredMessage, translations } = this.props;
+    if (!showFailureMessage && !showNotConfiguredMessage) {
       return;
     }
 
-    const { translations } = this.props;
-    const message = helpers.translator(translations, 'admin.bulk_edit.failure_message');
+    const translationKey = showFailureMessage ? 'admin.bulk_edit.failure_message' : 'admin.bulk_edit.not_configured_message';
+    const message = helpers.translator(translations, translationKey);
 
     return <SocrataAlert type="error" message={ message }/>;
   }
@@ -312,7 +313,8 @@ const mapStateToProps = state => ({
   goal: state.getIn(['editMultipleItemsForm', 'goal']),
   commonData: commonGoalDataSelector(state),
   goals: selectedGoalsSelector(state),
-  showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage'])
+  showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage']),
+  showNotConfiguredMessage: state.getIn(['editMultipleItemsForm', 'showNotConfiguredMessage'])
 });
 
 const mapDispatchToProps = (dispatch) => ({

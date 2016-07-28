@@ -7,7 +7,8 @@ import {
   UPDATE_MULTIPLE_ITEMS_FORM_DATA,
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
-  UPDATE_MULTIPLE_ITEMS_FAILED
+  UPDATE_MULTIPLE_ITEMS_FAILED,
+  UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED
 } from '../actionTypes';
 
 const openModal = (state, action) => state.merge({ visible: true });
@@ -22,11 +23,14 @@ const succeedUpdate = (state, action) => state.merge({ updateInProgress: false, 
 
 const failUpdate = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: true });
 
+const notConfigured = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: false, showNotConfiguredMessage: true });
+
 export default createReducer(Immutable.fromJS({}), {
   [OPEN_EDIT_MULTIPLE_ITEMS_MODAL]: openModal,
   [CLOSE_EDIT_MULTIPLE_ITEMS_MODAL]: closeModal,
   [UPDATE_MULTIPLE_ITEMS_FORM_DATA]: updateFormData,
   [UPDATE_MULTIPLE_ITEMS_STARTED]: startUpdate,
   [UPDATE_MULTIPLE_ITEMS_SUCCESS]: succeedUpdate,
-  [UPDATE_MULTIPLE_ITEMS_FAILED]: failUpdate
+  [UPDATE_MULTIPLE_ITEMS_FAILED]: failUpdate,
+  [UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED]: notConfigured
 });

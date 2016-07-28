@@ -1781,6 +1781,7 @@ en:
         revert_changes: Revert changes
         success_message: Success! {0} goals were updated.
         failure_message: <strong>Error.</strong> There was a problem performing this action. Try again, or cancel.
+        not_configured_message: <strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured.
         button_title: Edit Multiple Items...
         title: Edit Multiple Items
         items_selected: '{0} Items Selected'

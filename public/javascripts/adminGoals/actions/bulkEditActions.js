@@ -9,7 +9,8 @@ import {
   UPDATE_MULTIPLE_ITEMS_FORM_DATA,
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
-  UPDATE_MULTIPLE_ITEMS_FAILED
+  UPDATE_MULTIPLE_ITEMS_FAILED,
+  UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED
 } from '../actionTypes';
 
 /**
@@ -65,6 +66,12 @@ export function openEditMultipleItemsModal() {
   };
 }
 
+function showNotAllItemsConfiguredWarning() {
+  return {
+    type: UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED
+  };
+}
+
 /**
  * Goal update api expects prevailing_measure data normalized.
  * @param {Object} updatedData
@@ -87,6 +94,14 @@ function normalizeUpdatedData(updatedData) {
  * @param {Object} updatedData Updated fields
  */
 export function updateMultipleGoals(goals, updatedData) {
+  const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
+
+  // Cannot update prevailing measure data for the items
+  // which are not configured properly.
+  if (!allConfigured) {
+    return showNotAllItemsConfiguredWarning();
+  }
+
   const goalIds = goals.map(goal => goal.get('id'));
   const normalizedData = normalizeUpdatedData(updatedData);
 

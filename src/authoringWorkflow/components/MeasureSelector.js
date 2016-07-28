@@ -104,6 +104,9 @@ export var MeasureSelector = React.createClass({
           <Styleguide.components.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationDropdown()}
         </div>
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.measure.description')}</small>
+        </p>
       </div>
     );
   },

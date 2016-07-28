@@ -86,7 +86,6 @@ export const getValidCuratedRegions = createSelector(
 
     return _.chain(curatedRegions).
       filter(notInDataset).
-      map(pluckCuratedRegionNameAndUid).
       sortBy('name').
       value();
   }
@@ -119,13 +118,6 @@ const pluckComputedColumnNameAndUid = region => {
     fieldName: region.fieldName,
     name: region.name,
     uid: region.computationStrategy.parameters.region.slice(1)
-  };
-};
-
-const pluckCuratedRegionNameAndUid = region => {
-  return {
-    name: region.name,
-    uid: region.uid
   };
 };
 

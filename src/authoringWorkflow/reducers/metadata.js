@@ -3,7 +3,8 @@ import _ from 'lodash';
 import {
   REQUEST_METADATA,
   RECEIVE_METADATA,
-  HANDLE_METADATA_ERROR
+  HANDLE_METADATA_ERROR,
+  SET_PHIDIPPIDES_METADATA
 } from '../actions';
 
 export var defaultState = {
@@ -44,6 +45,10 @@ export default function metadata(state, action) {
       state.curatedRegions = null;
       state.phidippidesMetadata = null;
       state.error = action.error;
+      break;
+
+    case SET_PHIDIPPIDES_METADATA:
+      state.phidippidesMetadata = action.phidippidesMetadata;
       break;
   }
 

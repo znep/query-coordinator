@@ -6,7 +6,7 @@ import Styleguide from 'socrata-styleguide';
 import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES } from '../constants';
 import { setVisualizationType } from '../actions';
-import { getAnyDimension } from '../selectors/vifAuthoring';
+import { getAnyDimension, getSelectedVisualizationType } from '../selectors/vifAuthoring';
 import {
   hasData,
   getRecommendedVisualizationTypes
@@ -28,7 +28,7 @@ export var VisualizationTypeSelector = React.createClass({
   renderVisualizationTypeSelector() {
     var { visualizationTypes, vifAuthoring, metadata, onSelectVisualizationType } = this.props;
     var types = visualizationTypes;
-    var selectedVisualizationType = _.get(vifAuthoring, 'selectedVisualizationType', '');
+    var selectedVisualizationType = getSelectedVisualizationType(vifAuthoring);
 
     var buildOption = group => {
       return visualizationType => ({

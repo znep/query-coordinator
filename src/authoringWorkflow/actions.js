@@ -53,6 +53,14 @@ export function handleMetadataError(error) {
   };
 }
 
+export var SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
+export function setPhidippidesMetadata(phidippidesMetadata) {
+  return {
+    type: SET_PHIDIPPIDES_METADATA,
+    phidippidesMetadata
+  };
+}
+
 export var SET_DIMENSION = 'SET_DIMENSION';
 export function setDimension(dimension) {
   return {
@@ -96,19 +104,24 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
       datasetMetadataProvider.
         getPhidippidesMetadata().
         then(metadata => {
-          var computedColumn = _.find(metadata.columns, column => {
+          var columns = _.map(metadata.columns, (column, key) => {
+            column.fieldName = key;
+            return column;
+          });
+
+          var computedColumn = _.find(columns, column => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
           dispatch(setComputedColumn(computedColumn.fieldName));
-          dispatch(setDataSource({domain, datasetUid}));
+          dispatch(setPhidippidesMetadata(metadata));
         }).
         catch(handleError);
     };
 
     var handleInitiation = response => {
       if (response.success) {
-        dispatch(setShapefile(curatedRegion.uid, curatedRegion.primaryKey, curatedRegion.geometryLabel));
+        dispatch(setShapefile(curatedRegion.uid, curatedRegion.featurePk, curatedRegion.geometryLabel));
 
         regionCodingProvider.
           awaitRegionCodingCompletion({ jobId: response.jobId }).

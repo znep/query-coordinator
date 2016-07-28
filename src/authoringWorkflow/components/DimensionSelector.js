@@ -28,6 +28,7 @@ export var DimensionSelector = React.createClass({
 
   renderDimensionSelector() {
     var { metadata, onSelectDimension, vifAuthoring } = this.props;
+    var dimension = getAnyDimension(vifAuthoring);
     var type = getVisualizationType(vifAuthoring);
 
     var buildOption = group => {
@@ -52,13 +53,17 @@ export var DimensionSelector = React.createClass({
       id: 'dimension-selection',
       placeholder: translate('panes.data.fields.dimension.placeholder'),
       options: dimensions,
-      onSelection: onSelectDimension
+      onSelection: onSelectDimension,
+      value: dimension.columnName
     };
 
     return (
       <div className="dimension-dropdown-container">
         <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}:</label>
         <Styleguide.components.Dropdown {...dimensionAttributes} />
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.dimension.description')}</small>
+        </p>
       </div>
     );
   },

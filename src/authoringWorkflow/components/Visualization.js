@@ -17,6 +17,7 @@ import { translate } from '../../I18n';
 import { requestCenterAndZoom } from '../actions';
 import {
   hasVisualizationType,
+  isInsertableVisualization,
   isTimelineChart,
   isValidTimelineChartVif,
   isFeatureMap,
@@ -206,6 +207,10 @@ export var Visualization = React.createClass({
         this.choroplethMap();
       } else if (isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring)) {
         this.histogram();
+      } else {
+        while (this.preview.firstChild) {
+          this.preview.removeChild(this.preview.firstChild);
+        }
       }
     }
   },
@@ -238,14 +243,21 @@ export var Visualization = React.createClass({
   },
 
   render() {
+    var { vifAuthoring } = this.props;
+    var previewClasses = classNames('visualization-preview', {
+      'visualization-preview-rendered': isInsertableVisualization(vifAuthoring)
+    });
+
     return (
       <div className="visualization-preview-container">
         <div className="visualization-toggler">
           <small>{translate('preview.tabs.visualization')}</small>
         </div>
-        <div className="visualization-preview" />
-        {this.renderMapInfo()}
-        {this.renderMapSaving()}
+        <div className={previewClasses} ref={(ref) => this.preview = ref}/>
+        <div className="visualization-preview-map-info-container">
+          {this.renderMapSaving()}
+          {this.renderMapInfo()}
+        </div>
       </div>
     );
   }

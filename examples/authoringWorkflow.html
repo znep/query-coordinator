@@ -25,6 +25,7 @@
 
     <pre id="output" style="white-space: pre-wrap;"></pre>
     <div id="chart"></div>
+    <button id="edit" class="btn btn-default">Edit</button>
   </body>
 
   <!-- Include external vendor -->
@@ -34,13 +35,45 @@
   <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
 
   <script type="text/javascript">
+    var vif;
+    var authoringWorkflow;
     var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
     var container = document.querySelector('#authoring-workflow');
     var output = document.querySelector('#output');
     var $chart = $('#chart');
+    var onComplete = function(result) {
+      vif = result.vif;
+      output.innerHTML = JSON.stringify(result.vif, null, 4);
+      $chart.empty();
+
+      switch (result.vif.series[0].type) {
+        case 'columnChart':
+          $chart.socrataSvgColumnChart(result.vif);
+          break;
+        case 'timelineChart':
+          $chart.socrataSvgTimelineChart(result.vif);
+          break;
+        case 'histogram':
+          $chart.socrataSvgHistogram(result.vif);
+          break;
+        case 'featureMap':
+          $chart.socrataSvgFeatureMap(result.vif);
+          break;
+        case 'regionMap':
+          $chart.socrataSvgRegionMap(result.vif);
+          break;
+      }
+
+      authoringWorkflow.destroy();
+    };
+
+    var onCancel = function() {
+      authoringWorkflow.destroy();
+    };
 
     $('#launch').click(function() {
       output.innerHTML = '';
+      vif = null;
       $chart.empty();
 
       var productionTileServerHosts = [
@@ -175,49 +208,33 @@
           {
             dataSource: {
               domain: 'localhost',
-              datasetUid: '7zuy-x2kx'
+              datasetUid: 'hyxn-h5nh'
             }
           }
         ]
       };
 
-      var authoringWorkflow = new AuthoringWorkflow(container, {
-        vif: choroplethVif,
-        //vif: localhost,
-        //vif: ufoSightingsVif,
+      authoringWorkflow = new AuthoringWorkflow(container, {
+        vif: localhost,
+        // vif: choroplethVif,
+        // vif: ufoSightingsVif,
         //vif: featureMapVif,
-        //vif: iowaMathAndReadingProficiency,
-        //vif: licenseeTax,
-        //vif: citizenSatisfaction,
-        onComplete: function(result) {
-          output.innerHTML = JSON.stringify(result.vif, null, 4);
-          $chart.empty();
-
-          switch (result.vif.series[0].type) {
-            case 'columnChart':
-              $chart.socrataSvgColumnChart(result.vif);
-              break;
-            case 'timelineChart':
-              $chart.socrataSvgTimelineChart(result.vif);
-              break;
-            case 'histogram':
-              $chart.socrataSvgHistogram(result.vif);
-              break;
-            case 'featureMap':
-              $chart.socrataFeatureMap(result.vif);
-              break;
-            case 'choroplethMap':
-              $chart.socrataChoroplethMap(result.vif);
-              break;
-          }
-
-          authoringWorkflow.destroy();
-        },
-
-        onCancel: function() {
-          authoringWorkflow.destroy();
-        }
+        // vif: iowaMathAndReadingProficiency,
+        // vif: licenseeTax,
+        // vif: citizenSatisfaction,
+        onComplete: onComplete,
+        onCancel: onCancel
       });
+    });
+
+    $('#edit').click(function() {
+      if (vif) {
+        authoringWorkflow = new AuthoringWorkflow(container, {
+          vif: vif,
+          onComplete: onComplete,
+          onCancel: onCancel
+        });
+      }
     });
   </script>
 </html>

@@ -1153,10 +1153,10 @@ html {
             border-bottom: 1px solid $panel-internal-border-color;
 
             .browse2-result-type {
-              position: relative;
+              position: absolute;
               display: block;
-              float: right;
-              margin: 0.4rem 0 0 1rem;
+              right: 1rem;
+              top: 1rem;
               font-size: 15px;
               text-align: right;
               color: $grey-text-color;
@@ -1179,6 +1179,7 @@ html {
               position: relative;
               float: left;
               display: block;
+              width: 78%;
 
               .browse2-result-name {
                 @include desktop {

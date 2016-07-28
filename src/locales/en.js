@@ -12,11 +12,12 @@ export default {
   color_scales: {
     simple_blue: 'Simple Blue',
     simple_grey: 'Simple Grey',
-    yellow_blue_green: 'Yellow Blue Green',
-    intrepid_turquoise: 'Intrepid Turquoise'
+    green_white_purple: 'Green White Purple',
+    red_yellow: 'Red Yellow'
   },
   modal: {
     title: 'Create A Visualization',
+    based_on: 'Based on ',
     close: 'Close',
     insert: 'Insert'
   },
@@ -29,6 +30,7 @@ export default {
       fields: {
         dimension: {
           title: 'Dimension',
+          description: 'A dimension is a field that orders, groups, or categorizes your data, such as dates and categories. The dimension is often shown on the x-axis or as points on a map.',
           placeholder: 'Select a dimension...',
           groups: {
             recommended_columns: 'Recommended Columns',
@@ -37,6 +39,7 @@ export default {
         },
         measure: {
           title: 'Measure',
+          description: 'A measure is a numeric field or the count of rows associated with the selected dimension.',
           no_value: '(Count of Rows)'
         },
         measure_aggregation: {
@@ -70,24 +73,34 @@ export default {
     },
     colors_and_style: {
       title: 'Colors & Style',
+      subheaders: {
+        points: 'Points',
+        map: 'Map'
+      },
       fields: {
-        base_color: {
-          title: 'Base Color'
+        bar_color: {
+          title: 'Bar Color'
+        },
+        line_color: {
+          title: 'Line Color'
+        },
+        fill_color: {
+          title: 'Fill Color'
         },
         point_color: {
-          title: 'Point Color'
+          title: 'Color'
         },
         point_opacity: {
-          title: 'Point Opacity'
+          title: 'Opacity'
         },
         color_scale: {
           title: 'Color Scale'
         },
         base_layer: {
-          title: 'Map Type'
+          title: 'Type'
         },
         base_layer_opacity: {
-          title: 'Map Layer Opacity'
+          title: 'Opacity'
         }
       }
     },
@@ -117,20 +130,23 @@ export default {
     legends_and_flyouts: {
       title: 'Legends & Flyouts',
       subheaders: {
-        units: 'Units',
-        row_inspector_title: 'Row Inspector Title'
+        units: {
+          title: 'Units',
+          description: 'Unit label displayed in flyouts describing chart values.'
+        },
+        row_inspector_title: 'Point Inspector Title'
       },
       fields: {
         units_one: {
-          title: 'One',
+          title: 'Singular',
           placeholder: 'Record'
         },
         units_other: {
-          title: 'Other',
+          title: 'Plural',
           placeholder: 'Records'
         },
         row_inspector_title: {
-          no_value: 'No Row Inspector Title'
+          no_value: 'No Point Inspector Title'
         }
       }
     }
@@ -204,7 +220,7 @@ export default {
       flyout_filter_notice: 'There are too many points at this location',
       flyout_filter_or_zoom_notice: 'Zoom in to see details',
       row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time',
-      title: 'Feature Map'
+      title: 'Point Map'
     },
     region_map: {
       flyout_selected_notice: 'The visualization is currently filtered by this value',

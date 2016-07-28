@@ -83,13 +83,21 @@ export const COLOR_SCALES = [
     scale: ['#c8c8c8', '#bdbdbd', '#2c2c2c']
   },
   {
-    title: translate('color_scales.yellow_blue_green'),
-    value: 'YlGnBu',
-    scale: ['#edf8b1', '#7fcdbb', '#2c7fb8']
+    title: translate('color_scales.red_yellow'),
+    value: 'RdOrYl',
+    scale: ['#2482bc', '#fdffac', '#ba001e']
   },
   {
-    title: translate('color_scales.intrepid_turquoise'),
-    value: 'intrepidTurquoise',
-    scale: ['#ff5100', '#ffffff', '#19ffe8']
+    title: translate('color_scales.green_white_purple'),
+    value: 'GrWhPu',
+    scale: ['#008932', '#f7f7f7', '#7c2d96']
   }
+];
+
+export const COLORS = [
+  '#f0f2ff', '#eff8fb', '#eff8fb', '#f7f7f7', '#fdeddd', '#f6eef7', '#feffc8', '#fdebe1', '#fdffac',
+  '#bed7e8', '#b5e3e2', '#b5cce5', '#cccccc', '#fac07e', '#bfc8e3', '#a2deb2', '#f8b2b8', '#fad04b',
+  '#71abd9', '#6ac5a3', '#8f92c9', '#969696', '#f98d27', '#6da7d2', '#4cb6c6', '#f45ca1', '#f98d27',
+  '#3d7ec0', '#31a75a', '#894baa', '#636363', '#e25200', '#2a919a', '#387bbb', '#c3008c', '#ec3001',
+  '#1e489f', '#067126', '#80007f', '#252525', '#a33200', '#0f6f59', '#2d2298', '#79007a', '#ba001e'
 ];

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
@@ -38,7 +39,8 @@ export var Visualization = React.createClass({
 
   getInitialState() {
     return {
-      flyoutRenderer: null
+      flyoutRenderer: null,
+      hasRenderedVisualization: false
     };
   },
 
@@ -193,6 +195,8 @@ export var Visualization = React.createClass({
     var { vifAuthoring } = this.props;
 
     if (hasVisualizationType(vifAuthoring)) {
+      this.setState({hasRenderedVisualization: true});
+
       if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
         this.columnChart();
       } else if (isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring)) {
@@ -209,8 +213,9 @@ export var Visualization = React.createClass({
 
   renderMapInfo() {
     var { vifAuthoring } = this.props;
+    var { hasPannedOrZoomed } = vifAuthoring.authoring;
 
-    if (isRenderableMap(vifAuthoring)) {
+    if (!hasPannedOrZoomed && isRenderableMap(vifAuthoring)) {
       return (
         <div className="visualization-preview-map-message alert info">
           <span className="visualization-preview-map-icon icon-info" />
@@ -235,14 +240,20 @@ export var Visualization = React.createClass({
   },
 
   render() {
+    var previewClasses = classNames('visualization-preview', {
+      'visualization-preview-rendered': this.state.hasRenderedVisualization
+    });
+
     return (
       <div className="visualization-preview-container">
         <div className="visualization-toggler">
           <small>{translate('preview.tabs.visualization')}</small>
         </div>
-        <div className="visualization-preview" />
-        {this.renderMapInfo()}
-        {this.renderMapSaving()}
+        <div className={previewClasses} />
+        <div className="visualization-preview-map-info-container">
+          {this.renderMapSaving()}
+          {this.renderMapInfo()}
+        </div>
       </div>
     );
   }

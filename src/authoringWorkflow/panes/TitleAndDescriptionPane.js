@@ -20,9 +20,9 @@ export var TitleAndDescriptionPane = React.createClass({
 
     return (
       <form>
-        <label className="block-label" htmlFor="title">{translate('panes.title_and_description.fields.title.title')}:</label>
+        <label className="block-label" htmlFor="title">{translate('panes.title_and_description.fields.title.title')}</label>
         <input id="title" className="text-input" type="text" onChange={this.props.onChangeTitle} defaultValue={title} />
-        <label className="block-label" htmlFor="description">{translate('panes.title_and_description.fields.description.title')}:</label>
+        <label className="block-label" htmlFor="description">{translate('panes.title_and_description.fields.description.title')}</label>
         <textarea id="description" className="text-input text-area" onChange={this.props.onChangeDescription} defaultValue={description} />
       </form>
     );

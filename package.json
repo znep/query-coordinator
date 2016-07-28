@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "15.0.2",
+  "version": "15.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/socrata/frontend-visualizations.git"
@@ -55,7 +55,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.3",
-    "socrata-styleguide": "5.1.0",
+    "socrata-styleguide": "5.1.4",
     "strict-loader": "1.1.0",
     "webpack": "1.13.1"
   },

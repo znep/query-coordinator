@@ -4,6 +4,12 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 
 import { translate } from '../I18n';
+
+import {
+  getDatasetLink,
+  getDatasetName
+} from './selectors/metadata';
+
 import {
   getCurrentVif,
   getXAxisScalingMode,
@@ -114,10 +120,22 @@ export var AuthoringWorkflow = React.createClass({
     );
   },
 
+  renderBasedOn() {
+    var { metadata } = this.props;
+
+    return (
+      <p className="authoring-based-on">
+        {translate('modal.based_on')}
+        <a href={getDatasetLink(metadata)} target="_blank">{getDatasetName(metadata)}</a>
+      </p>
+    );
+  },
+
   render() {
-    var vifAuthoring = this.props.vifAuthoring;
+    var { metadata, vifAuthoring } = this.props;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
     var scalingMode = null; // This feature is hidden for now.
+    var basedOn = metadata.data ? this.renderBasedOn() : null;
 
     return (
       <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
@@ -140,6 +158,8 @@ export var AuthoringWorkflow = React.createClass({
                 {scalingMode}
               </div>
             </div>
+
+            {basedOn}
           </section>
 
           <footer className="modal-footer">
@@ -157,7 +177,8 @@ export var AuthoringWorkflow = React.createClass({
 function mapStateToProps(state) {
   return {
     vif: getCurrentVif(state.vifAuthoring),
-    vifAuthoring: state.vifAuthoring
+    vifAuthoring: state.vifAuthoring,
+    metadata: state.metadata
   };
 }
 

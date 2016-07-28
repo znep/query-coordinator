@@ -103,8 +103,11 @@ export var DataPane = React.createClass({
 
     return (
       <div className="dimension-dropdown-container">
-        <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}:</label>
+        <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}</label>
         <Styleguide.components.Dropdown {...dimensionAttributes} />
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.dimension.description')}</small>
+        </p>
       </div>
     );
   },
@@ -134,17 +137,20 @@ export var DataPane = React.createClass({
       id: 'measure-selection',
       options,
       onSelection: onSelectMeasure,
-      disabled: isFeatureMap(vifAuthoring),
+      disabled: isFeatureMap(vifAuthoring) || options.length === 1,
       value: measure.columnName
     };
 
     return (
       <div>
-        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}:</label>
+        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
         <div className={classes}>
           <Styleguide.components.Dropdown {...measureAttributes} />
           {this.measureAggregationDropdown()}
         </div>
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.measure.description')}</small>
+        </p>
       </div>
     );
   },
@@ -191,7 +197,7 @@ export var DataPane = React.createClass({
 
     return (
       <div className="region-dropdown-container">
-        <label className="block-label" htmlFor="region-selection">{translate('panes.data.fields.region.title')}:</label>
+        <label className="block-label" htmlFor="region-selection">{translate('panes.data.fields.region.title')}</label>
         <Styleguide.components.Dropdown {...regionAttributes} />
       </div>
     );
@@ -231,7 +237,7 @@ export var DataPane = React.createClass({
 
     return (
       <div className="visualization-type-dropdown-container">
-        <label className="block-label" htmlFor="visualization-type-selection">{translate('panes.data.fields.visualization_type.title')}:</label>
+        <label className="block-label" htmlFor="visualization-type-selection">{translate('panes.data.fields.visualization_type.title')}</label>
         <Styleguide.components.Dropdown {...visualizationTypesAttributes} />
       </div>
     );
@@ -283,8 +289,8 @@ export var DataPane = React.createClass({
         {metadataInfo}
 
         {visualizationTypeDropdown}
-        {measureDropdown}
         {dimensionDropdown}
+        {measureDropdown}
 
         {regionsDropdown}
       </form>

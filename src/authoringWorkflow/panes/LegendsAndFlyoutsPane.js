@@ -47,12 +47,19 @@ export var LegendsAndFlyoutsPane = React.createClass({
     };
 
     return (
-      <div>
-        <h5>{translate('panes.legends_and_flyouts.subheaders.units')}</h5>
-        <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}:</label>
-        <input {...unitOneAttributes} />
-        <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}:</label>
-        <input {...unitOtherAttributes} />
+      <div className="authoring-field-group">
+        <h5>{translate('panes.legends_and_flyouts.subheaders.units.title')}</h5>
+        <p className="authoring-field-description">
+          <small>{translate('panes.legends_and_flyouts.subheaders.units.description')}</small>
+        </p>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
+          <input {...unitOneAttributes} />
+        </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
+          <input {...unitOtherAttributes} />
+        </div>
       </div>
     );
   },
@@ -91,10 +98,14 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return (
       <div>
         {this.units()}
-        <h5>{translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}</h5>
-        <label className="block-label" htmlFor="flyout-title-column">Column</label>
-        <div className="flyout-title-dropdown-container">
-          <styleguide.components.Dropdown {...columnAttributes} />
+        <div className="authoring-field-group">
+          <h5>{translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}</h5>
+          <div className="authoring-field">
+            <label className="block-label" htmlFor="flyout-title-column">Column</label>
+            <div className="flyout-title-dropdown-container">
+              <styleguide.components.Dropdown {...columnAttributes} />
+            </div>
+          </div>
         </div>
       </div>
     );

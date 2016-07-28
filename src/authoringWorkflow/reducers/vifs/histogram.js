@@ -11,7 +11,8 @@ import {
   SET_MEASURE_AGGREGATION,
   SET_TITLE,
   SET_DESCRIPTION,
-  SET_BASE_COLOR,
+  SET_PRIMARY_COLOR,
+  SET_SECONDARY_COLOR,
   SET_LABEL_TOP,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
@@ -69,10 +70,15 @@ export default function histogram(state, action) {
       });
       break;
 
-    case SET_BASE_COLOR:
+    case SET_PRIMARY_COLOR:
       forEachSeries(state, series => {
-        setValueOrDeleteProperty(series, 'color.primary', action.baseColor);
-        setValueOrDeleteProperty(series, 'color.secondary', action.baseColor);
+        setValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
+      });
+      break;
+
+    case SET_SECONDARY_COLOR:
+      forEachSeries(state, series => {
+        setValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
       });
       break;
 

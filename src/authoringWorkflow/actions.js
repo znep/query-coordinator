@@ -11,7 +11,7 @@ export function setDataSource(dataSource) {
       datasetUid: dataSource.datasetUid
     });
 
-    dispatch(requestMetadata());
+    dispatch(requestMetadata(dataSource.domain, dataSource.datasetUid));
 
     return Promise.all([
       datasetMetadataProvider.getDatasetMetadata(),
@@ -27,9 +27,11 @@ export function setDataSource(dataSource) {
 }
 
 export var REQUEST_METADATA = 'REQUEST_METADATA';
-export function requestMetadata() {
+export function requestMetadata(domain, datasetUid) {
   return {
-    type: REQUEST_METADATA
+    type: REQUEST_METADATA,
+    domain,
+    datasetUid
   };
 }
 
@@ -108,19 +110,19 @@ export function setDescription(description) {
   };
 }
 
-export var SET_BASE_COLOR = 'SET_BASE_COLOR';
-export function setBaseColor(baseColor) {
+export var SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
+export function setPrimaryColor(primaryColor) {
   return {
-    type: SET_BASE_COLOR,
-    baseColor
+    type: SET_PRIMARY_COLOR,
+    primaryColor
   };
 }
 
-export var SET_POINT_COLOR = 'SET_POINT_COLOR';
-export function setPointColor(pointColor) {
+export var SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
+export function setSecondaryColor(secondaryColor) {
   return {
-    type: SET_POINT_COLOR,
-    pointColor
+    type: SET_SECONDARY_COLOR,
+    secondaryColor
   };
 }
 

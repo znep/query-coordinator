@@ -15,14 +15,18 @@ const MARGINS = {
   LEFT: 46
 };
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const DEFAULT_GRID_LINE_COLOR = '#ebebeb';
 const DIMENSION_LABEL_ANGLE = 45;
 const DIMENSION_LABEL_FONT_SIZE = 14;
+const DIMENSION_LABEL_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABEL_MAX_CHARACTERS = 14;
 const MEASURE_LABEL_FONT_SIZE = 14;
+const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
 const DEFAULT_DESKTOP_COLUMN_WIDTH = 20;
 const DEFAULT_MOBILE_COLUMN_WIDTH = 50;
 const MAX_COLUMN_COUNT_WITHOUT_PAN = 30;
+const AXIS_DEFAULT_COLOR = '#979797';
+const AXIS_TICK_COLOR = '#adadad';
+const AXIS_GRID_COLOR = '#f1f1f1';
 
 /**
  * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
@@ -279,6 +283,8 @@ function SvgColumnChart($element, vif) {
     }
 
     function renderXAxis() {
+      var xAxisSvg;
+      var xBaselineSvg;
       var baselineValue;
 
       // Binding the axis to the svg elements is something that only needs to
@@ -287,57 +293,64 @@ function SvgColumnChart($element, vif) {
       // to treat renderXAxis() as idempotent.
       bindXAxisOnce();
 
-      viewportSvg.
-        select('.x.axis').
-          attr(
-            'transform',
-            'translate(0,{0})'.format(height)
-          ).
-          selectAll('line, path').
-            attr('fill', 'none').
-            attr('stroke', '#888').
-            attr('shape-rendering', 'crispEdges');
+      xAxisSvg = viewportSvg.select('.x.axis');
+      xBaselineSvg = viewportSvg.select('.x.axis.baseline');
 
-      viewportSvg.
-        selectAll('.x.axis text').
-          attr('font-family', FONT_STACK).
-          attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
-          attr('fill', '#888').
-          attr('stroke', 'none').
-          attr('style', 'text-anchor: start').
-          attr(
-            'transform',
-            'translate({0}, 0), rotate({1})'.
-              format(
-                (columnWidth / 2),
-                DIMENSION_LABEL_ANGLE
-              )
-          ).
-          attr(
-            'data-row-index',
-            function(label, rowIndex) {
-              return rowIndex;
-            }
-          );
+      xAxisSvg.
+        attr(
+          'transform',
+          'translate(0,{0})'.format(height)
+        );
 
-        if (minYValue > 0) {
-          baselineValue = minYValue;
-        } else if (maxYValue < 0) {
-          baselineValue = maxYValue;
-        } else {
-          baselineValue = 0;
-        }
+      xAxisSvg.selectAll('path').
+        attr('fill', 'none').
+        attr('stroke', AXIS_DEFAULT_COLOR).
+        attr('shape-rendering', 'crispEdges');
 
-        viewportSvg.
-          select('.x.axis.baseline').
-            attr(
-              'transform',
-              'translate(0,{0})'.format(d3YScale(baselineValue))
-            ).
-            selectAll('line, path').
-              attr('fill', 'none').
-              attr('stroke', '#888').
-              attr('shape-rendering', 'crispEdges');
+      xAxisSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', AXIS_TICK_COLOR).
+        attr('shape-rendering', 'crispEdges');
+
+      xAxisSvg.selectAll('text').
+        attr('font-family', FONT_STACK).
+        attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
+        attr('fill', DIMENSION_LABEL_FONT_COLOR).
+        attr('stroke', 'none').
+        attr('style', 'text-anchor: start').
+        attr(
+          'transform',
+          'translate({0}, 0), rotate({1})'.
+            format(
+              (columnWidth / 2),
+              DIMENSION_LABEL_ANGLE
+            )
+        ).
+        attr(
+          'data-row-index',
+          function(label, rowIndex) {
+            return rowIndex;
+          }
+        );
+
+      if (minYValue > 0) {
+        baselineValue = minYValue;
+      } else if (maxYValue < 0) {
+        baselineValue = maxYValue;
+      } else {
+        baselineValue = 0;
+      }
+
+      xBaselineSvg.
+        attr(
+          'transform',
+          'translate(0,{0})'.format(d3YScale(baselineValue))
+        );
+
+      xBaselineSvg.selectAll('line, path').
+        attr('fill', 'none').
+        attr('stroke', AXIS_DEFAULT_COLOR).
+        attr('shape-rendering', 'crispEdges');
     }
 
     // See comment in renderYAxis() for an explanation as to why this is
@@ -374,33 +387,35 @@ function SvgColumnChart($element, vif) {
       // to treat renderYAxis() as idempotent.
       bindYAxisOnce();
 
-      yAxisSvg.
-        selectAll('line, path').
-          attr('fill', 'none').
-          attr('stroke', '#888').
-          attr('shape-rendering', 'crispEdges');
+      yAxisSvg.selectAll('path').
+        attr('fill', 'none').
+        attr('stroke', AXIS_DEFAULT_COLOR).
+        attr('shape-rendering', 'crispEdges');
 
-      yAxisSvg.
-        selectAll('text').
-          attr('font-family', FONT_STACK).
-          attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
-          attr('fill', '#888').
-          attr('stroke', 'none');
+      yAxisSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', AXIS_TICK_COLOR).
+        attr('shape-rendering', 'crispEdges');
+
+      yAxisSvg.selectAll('text').
+        attr('font-family', FONT_STACK).
+        attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
+        attr('fill', MEASURE_LABEL_FONT_COLOR).
+        attr('stroke', 'none');
 
       yGridSvg.
         attr(
           'transform',
           'translate(' + (viewportWidth) + ',0)'
-        ).
-        selectAll('path').
-          attr('fill', 'none').
-          attr('stroke', 'none');
+        );
+      yGridSvg.selectAll('path').
+        attr('fill', 'none').
+        attr('stroke', 'none');
 
-      yGridSvg.
-        selectAll('line').
-          attr('fill', 'none').
-          attr('stroke', DEFAULT_GRID_LINE_COLOR).
-          attr('shape-rendering', 'crispEdges');
+      yGridSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', AXIS_GRID_COLOR).
+        attr('shape-rendering', 'crispEdges');
     }
 
     // Note that renderXAxis(), renderYAxis() and renderSeries() all update the

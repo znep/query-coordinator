@@ -1166,6 +1166,12 @@ L.TileLayer.VectorTileManager = L.TileLayer.Canvas.extend({
     getterPromise.then(
       function(response) {
 
+        // TODO/PERF: This function seems to show up a lot in profiles as
+        // taking a long time. Let's figure out what is actually taking so
+        // long. Is it the _.isEmpty(_.get())? Or is it that the tileLoaded/
+        // callback call is getting folded into this function's timing in the
+        // profile?
+
         // sometimes response is undefined, so access the data property safely
         if (_.isEmpty(_.get(response, 'data', []))) {
           self.tileLoaded(tileId);

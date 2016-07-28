@@ -11,7 +11,7 @@ RSpec.describe Block, type: :model do
       it 'correctly resets the value to an empty array' do
         test_components = [
           {
-            type: 'socrata.visualizations.choroplethMap',
+            type: 'socrata.visualizations.regionMap',
             value: {
               dataset: {
                 datasetUid: 'test-test',
@@ -42,7 +42,7 @@ RSpec.describe Block, type: :model do
                   url: 'https://example.com/view/test-test'
                 },
                 title: 'Incident Location',
-                type: 'choroplethMap',
+                type: 'regionMap',
                 unit: {
                   one: 'row',
                   other: 'rows'

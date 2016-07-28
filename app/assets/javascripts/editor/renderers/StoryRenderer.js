@@ -809,8 +809,10 @@ export default function StoryRenderer(options) {
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':
         return 'componentSocrataVisualizationClassic';
-      case 'socrata.visualization.choroplethMap':
-        return 'componentSocrataVisualizationChoroplethMap';
+      case 'socrata.visualization.regionMap':
+        return 'componentSocrataVisualizationRegionMap';
+      case 'socrata.visualization.choroplethMap': // legacy
+        return 'componentSocrataVisualizationRegionMap';
       case 'socrata.visualization.columnChart':
         return 'componentSocrataVisualizationColumnChart';
       case 'socrata.visualization.timelineChart':

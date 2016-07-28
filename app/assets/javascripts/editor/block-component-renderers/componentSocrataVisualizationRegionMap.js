@@ -8,16 +8,18 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
-$.fn.componentSocrataVisualizationChoroplethMap = componentSocrataVisualizationChoroplethMap;
+// Note that this component supports both socrata.visualization.regionMap and socrata.visualization.choroplethMap.
+$.fn.componentSocrataVisualizationRegionMap = componentSocrataVisualizationRegionMap;
 
-export default function componentSocrataVisualizationChoroplethMap(componentData, theme, options) {
+export default function componentSocrataVisualizationRegionMap(componentData, theme, options) {
   var $this = $(this);
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
+    componentData.type === 'socrata.visualization.regionMap' ||
     componentData.type === 'socrata.visualization.choroplethMap',
     StorytellerUtils.format(
-      'componentSocrataVisualizationChoroplethMap: Tried to render type: {0}',
+      'componentSocrataVisualizationRegionMap: Tried to render type: {0}',
       componentData.type
     )
   );
@@ -45,11 +47,14 @@ function _renderTemplate($element, componentData) {
 
   var $componentContent = $('<div>', { class: 'component-content' });
   var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  var flyoutEvent = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'SOCRATA_VISUALIZATION_FLYOUT' :
+    'SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT';
 
   $element.
     addClass(className).
     on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', function(event) {
+    on(flyoutEvent, function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {
@@ -69,6 +74,9 @@ function _updateVisualization($element, componentData) {
   var renderedVif = $element.attr('data-rendered-vif') || '{}';
   var vif = componentData.value.vif;
   var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  var visualizationImplementation = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'socrataSvgRegionMap' :
+    'socrataChoroplethMap';
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
@@ -105,6 +113,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataChoroplethMap(vif);
+    $componentContent[visualizationImplementation](vif);
   }
 }

@@ -60,7 +60,8 @@ module StoriesHelper
       'horizontalRule' => 'component_horizontal_rule',
       'image' => 'component_image',
       'socrata.visualization.classic' => 'component_socrata_visualization_classic',
-      'socrata.visualization.choroplethMap' => 'component_socrata_visualization_choropleth_map',
+      'socrata.visualization.choroplethMap' => 'component_socrata_visualization_region_map', # legacy
+      'socrata.visualization.regionMap' => 'component_socrata_visualization_region_map',
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
       'socrata.visualization.histogram' => 'component_socrata_visualization_histogram',
       'socrata.visualization.table' => 'component_socrata_visualization_table',

@@ -2,32 +2,24 @@ $small_banner_height: 38px;
 
 body.action_datasets_show {
   header#site-chrome-header[template="rally"] {
-    .banner {
-      line-height: $header_logo_height;
-      font-size: 16px;
-
-      .rally-top {
+    > .banner {
+      > .rally-top {
+        line-height: $header_logo_height;
         padding: 0.5rem;
 
-        a.logo {
-          img {
+        > a.logo {
+          > img {
             height: $header_logo_height;
           }
-          .site-name {
+          > span.site-name {
             font-size: 22px;
-          }
-        }
-
-        .searchbox {
-          height: $header_logo_height;
-          form {
-            line-height: $header_logo_height;
           }
         }
       }
 
-      .rally-bottom {
+      > .rally-bottom {
         height: $small_banner_height;
+        line-height: $small_banner_height;
 
         .desktop {
           .navbar-left {

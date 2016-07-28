@@ -1,9 +1,14 @@
+$content_padding: 8px;
+$link_line_height: 40px;
+
 body.action_datasets_show {
   footer#site-chrome-footer {
     min-height: 0;
-    padding: 16px;
 
     .content {
+      margin: 0 auto;
+      padding: $content_padding;
+
       > div.logo {
         max-width: 50%;
         width: auto;
@@ -30,7 +35,7 @@ body.action_datasets_show {
             margin-right: 16px;
 
             span.monosocial {
-              font-size: 32px;
+              font-size: $link_line_height;
             }
 
             span.social-link-label {
@@ -42,7 +47,7 @@ body.action_datasets_show {
 
       > div.links {
         width: auto;
-        padding-top: 0;
+        margin-top: 0;
 
         ul.links-col {
           -webkit-column-count: initial;
@@ -52,7 +57,7 @@ body.action_datasets_show {
 
           li {
             width: auto;
-            line-height: 32px;
+            line-height: $link_line_height;
             margin-right: 32px;
 
             a.footer-link {
@@ -96,7 +101,8 @@ body.action_datasets_show {
     }
 
     .copyright {
-      margin: 4px auto;
+      margin: 0 auto;
+      padding-bottom: $content_padding;
     }
   }
 }

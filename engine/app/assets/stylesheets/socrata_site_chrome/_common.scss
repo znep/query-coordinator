@@ -87,7 +87,6 @@ header#site-chrome-header, footer#site-chrome-footer {
   .searchbox {
     float: right;
     min-height: 32px;
-    height: $header_logo_height;
 
     @include mobile-med {
       display: none;
@@ -102,7 +101,7 @@ header#site-chrome-header, footer#site-chrome-footer {
         left: 8px;
         top: 2px;
         font-size: 16px;
-        line-height: $header_logo_height;
+        line-height: $searchbox_height - 2;
         pointer-events: none;
         color: $grey_text_color;
         z-index: 4;

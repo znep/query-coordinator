@@ -11,6 +11,7 @@ header#site-chrome-header[template="default"] {
     font-size: 18px;
     padding: 0 1rem;
     min-height: $banner_height;
+    position: relative;
 
     > a.logo {
       float: left;
@@ -36,6 +37,9 @@ header#site-chrome-header[template="default"] {
       font-size: 15px;
       font-weight: 300;
       float: right;
+      position: absolute;
+      top: 0;
+      right: 16px;
 
       &.desktop {
         a.site-chrome-nav-link {

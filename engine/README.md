@@ -353,8 +353,7 @@ gem source -a https://<USERNAME>:<ENCRYPTED_PASSWORD>@socrata.artifactoryonline.
 Add `API_KEY` to `~/.gem/credentials` file:
 
 ```
-curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/api/v1/api_key.yaml
-cat ~/.gem/credentials
+curl -u <USERNAME>:<ENCRYPTED_PASSWORD> https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/api/v1/api_key.yaml >> ~/.gem/credentials
 chmod 0600 ~/.gem/credentials
 ```
 

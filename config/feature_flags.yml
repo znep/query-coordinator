@@ -119,7 +119,7 @@ enable_data_lens_save_as:
   defaultValue: true
 enable_catalog_connector:
   description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
-  defaultValue: false
+  defaultValue: true
 enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
@@ -277,7 +277,7 @@ use_auth0:
   defaultValue: false
 use_auth0_login_flow:
   description: When a site has multiple connection configurations ('auth0_connections' is set in the auth0 internal config), use auth0 sign-in when 'Sign In with Socrata ID' is clicked. 'use_auth0' flag must be true!!!
-  defaultValue: false 
+  defaultValue: false
 use_data_lens_choropleth_custom_boundary:
   description: If this is true and you have filled out choropleth_custom_boundary in the data_lens_config configuration, then choropleths will be limited to the boundary entered in choropleth_custom_boundary.
   defaultValue: false

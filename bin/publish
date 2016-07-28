@@ -7,7 +7,7 @@ echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
 # Testing, duh.
 if $RUN_TESTS; then
-  bin/test
+  bin/test_on_jenkins
 else
   echo "Skipping tests because RUN_TESTS is false"
 fi

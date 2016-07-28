@@ -50,19 +50,6 @@ var obeViewWithFilter = {
     }
   }
 };
-var obeViewWithGroup = {
-  'id' : StandardMocks.validStoryUid,
-  'name' : 'obe grouped',
-  'displayType' : 'table',
-  'newBackend' : false,
-  'viewType' : 'tabular',
-  'query' : {
-    'groupBys' : [ {
-      'columnId' : 9756,
-      'type' : 'column'
-    } ]
-  }
-};
 
 describe('AssetSelectorStore static functions', function() {
   describe('viewIsDirectlyVisualizable', function() {
@@ -71,14 +58,8 @@ describe('AssetSelectorStore static functions', function() {
       it('return true for nbe views', function() {
         assert.isTrue(viewIsDirectlyVisualizable(tableType, nbeView));
       });
-      it('return true for obe views with a filter query', function() {
-        assert.isTrue(viewIsDirectlyVisualizable(tableType, obeViewWithFilter));
-      });
-      it('return false for obe views with a group query', function() {
-        assert.isFalse(viewIsDirectlyVisualizable(tableType, obeViewWithGroup));
-      });
-      it('return false for obe views with no query', function() {
-        assert.isFalse(viewIsDirectlyVisualizable(tableType, obeViewWithNoQuery));
+      it('return true for obe views', function() {
+        assert.isTrue(viewIsDirectlyVisualizable(tableType, obeViewWithNoQuery));
       });
     });
 
@@ -87,13 +68,7 @@ describe('AssetSelectorStore static functions', function() {
       it('return true for nbe views', function() {
         assert.isTrue(viewIsDirectlyVisualizable(columnChart, nbeView));
       });
-      it('return false for obe views with a filter query', function() {
-        assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithFilter));
-      });
-      it('return false for obe views with a group query', function() {
-        assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithGroup));
-      });
-      it('return false for obe views with no query', function() {
+      it('return false for obe views', function() {
         assert.isFalse(viewIsDirectlyVisualizable(columnChart, obeViewWithNoQuery));
       });
     });

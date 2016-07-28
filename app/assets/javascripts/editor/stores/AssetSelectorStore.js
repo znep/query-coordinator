@@ -12,6 +12,10 @@ import { fileUploaderStore, STATUS } from './FileUploaderStore';
 import httpRequest, { storytellerAPIRequestHeaders } from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
+function t(str) {
+  return I18n.t(`editor.asset_selector.${str}`);
+}
+
 // The step in the asset selection flow the user is in.
 export var WIZARD_STEP = {
   // Do you want a Socrata visualization, Youtube, an image, etc?
@@ -57,48 +61,9 @@ export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore()
 // ha ha!).
 export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
   var isNewBackend = _.get(viewData, 'newBackend') === true;
-  var hasGroupBys = !_.isEmpty(_.get(viewData, 'query.groupBys'));
-  var hasQuery = !_.isEmpty(_.get(viewData, 'query'));
   var isCreatingTable = intendedComponentType === 'socrata.visualization.table';
 
-  // Now this is peculiar because our backend is peculiar.
-  // All this stems from the fact that ALL our visualizations
-  // depend on NBE APIs (or are explicitly unsupported on the OBE).
-  //
-  // If the OBE view DOES NOT have a query applied, we cannot
-  // use it via the NBE API and must thus query for the NBE uid.
-  // A missing NBE uid in this case is an error.
-  //
-  // HOWEVER(!!)
-  // if the OBE view DOES have a query applied, and it has NO groupBys,
-  // we can visualize it as a table. We can get away with this because
-  // magic elves have granted us the ability to read with NBE APIs using
-  // the canonical view UID. This does not work for un-queried views,
-  // which don't support NBE APIs directly. However, we don't feel
-  // comfortable supporting anything other than tables in this case.
-  // There's too much of a testing burden to be practical at this time.
-  //
-  // Read the above carefully. It's the opposite of what you might
-  // expect. Maybe even the opposite of that. What.
-
-  if (isNewBackend) {
-    return true;
-  } else if (hasGroupBys) {
-    // Not working with NBE APIs at this time.
-    return false;
-  } else if (hasQuery) {
-    if (isCreatingTable) {
-      // Well okay, but only if you SWEAR you'll create just a table...
-      return true;
-    } else {
-      // Old backend, with query, not creating table. Unsupported.
-      return false;
-    }
-  } else {
-    // No query. This suggests that there is an NBE uid we should be using,
-    // but that's Someone Else's Problem.
-    return false;
-  }
+  return isNewBackend || isCreatingTable;
 }
 
 export default function AssetSelectorStore() {
@@ -586,7 +551,7 @@ export default function AssetSelectorStore() {
 
     _updateImageUploadError({
       error: {
-        reason: I18n.t('editor.asset_selector.image_preview.errors.cropping')
+        reason: t('image_preview.errors.cropping')
       }
     });
 
@@ -627,11 +592,11 @@ export default function AssetSelectorStore() {
 
     if (isNotValidFileSize || (isNotValidImageType && isNotValidFileType)) {
       message = isNotValidFileSize ?
-        'editor.asset_selector.image_upload.errors.validation_file_size' :
-        'editor.asset_selector.image_upload.errors.validation_file_type';
+        'image_upload.errors.validation_file_size' :
+        'image_upload.errors.validation_file_type';
 
       _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
-      _.set(_state.componentProperties, 'reason', I18n.t(message));
+      _.set(_state.componentProperties, 'reason', t(message));
     } else {
       if (!_state.componentProperties) {
         _state.componentProperties = {};
@@ -652,7 +617,7 @@ export default function AssetSelectorStore() {
         });
       reader.
         addEventListener('error', function() {
-          _state.componentProperties.reason = I18n.t('editor.asset_selector.image_preview.errors.cannot_render_image');
+          _state.componentProperties.reason = t('image_preview.errors.cannot_render_image');
           _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
           self._emitChange();
         });
@@ -859,42 +824,32 @@ export default function AssetSelectorStore() {
     }
 
     if (viewIsDirectlyVisualizable(_state.componentType, originalViewData)) {
-
       return Promise.resolve(originalViewData);
-    } else {
-
-      return _getNbeView(originalViewData.domain, originalViewData.id).
-        then(
-          function(nbeViewData) {
-
-            // EN-7322 - No repsonse on choosing some datasets
-            //
-            // Do not assume that we have view data. If the request for
-            // /api/migrations/four-four.json returned 404 it means that there
-            // is no corresponding NBE version of this dataset.
-            if (_.isPlainObject(nbeViewData)) {
-
-              // We should be able to handle all NBE datasets.
-              StorytellerUtils.assert(
-                viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
-                'All versions of this dataset deemed unfit for visualization!'
-              );
-              return nbeViewData;
-            } else {
-
-              // No migration. Give up.
-              /* eslint-disable no-alert */
-              alert(
-                I18n.t(
-                'editor.asset_selector.visualization.choose_dataset_unsupported_error'
-                )
-              );
-              /* eslint-enable no-alert */
-              return Promise.reject(null);
-            }
-          }
-        );
     }
+
+    return _getNbeView(originalViewData.domain, originalViewData.id).
+      then(function(nbeViewData) {
+
+        // EN-7322 - No response on choosing some datasets
+        //
+        // Do not assume that we have view data. If the request for
+        // /api/migrations/four-four.json returned 404 it means that there
+        // is no corresponding NBE version of this dataset.
+        if (_.isPlainObject(nbeViewData)) {
+
+          // We should be able to handle all NBE datasets.
+          StorytellerUtils.assert(
+            viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
+            'All versions of this dataset deemed unfit for visualization!'
+          );
+          return nbeViewData;
+        } else {
+
+          // No migration. Give up.
+          alert(t('visualization.choose_dataset_unsupported_error')); // eslint-disable-line no-alert
+          return Promise.reject(null);
+        }
+      });
   }
 
   function _chooseVisualizationDataset(payload) {
@@ -965,12 +920,7 @@ export default function AssetSelectorStore() {
     StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
 
     var mapChartError = function() {
-
-      /* eslint-disable no-alert */
-      alert(
-        I18n.t('editor.asset_selector.visualization.choose_map_or_chart_error')
-      );
-      /* eslint-enable no-alert */
+      alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert
     };
 
     _getView(payload.domain, payload.mapOrChartUid).
@@ -1135,7 +1085,7 @@ export default function AssetSelectorStore() {
     // (like rowLabel), you'll need to fetch the OBE view separately.
     // Also, I CAN'T BELIEVE I'M WRITING THIS AGAIN
     var viewUrl = StorytellerUtils.format(
-      'https://{0}/api/views/{1}.json?read_from_nbe=true',
+      'https://{0}/api/views/{1}.json',
       domain,
       uid
     );
@@ -1166,9 +1116,7 @@ export default function AssetSelectorStore() {
           self._emitChange();
 
           exceptionNotifier.notify(error);
-          /* eslint-disable no-alert */
-          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_error'));
-          /* eslint-enable no-alert */
+          alert(t('visualization.choose_dataset_error')); // eslint-disable-line no-alert
 
           return null;
         }

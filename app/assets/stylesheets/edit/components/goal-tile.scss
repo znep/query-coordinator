@@ -9,6 +9,7 @@
     border: 1px solid $goal-tile-border-color;
 
     p {
+      align-self: center; // IE11 workaround for margin auto + flex
       margin: auto;
       padding: 1rem;
       color: $goal-tile-error-text-color;

@@ -190,6 +190,11 @@ class Page < Model
     pages
   end
 
+  def self.routing_table(custom_headers = {}, batch = nil, is_anon = false)
+    path = "/pages.json?method=getLightweightRouting"
+    JSON.parse(with_path(path, custom_headers, batch, is_anon))
+  end
+
   def self.find_by_uid(uid, custom_headers = {}, batch = nil, is_anon = false)
     path = "/pages/#{uid}.json"
     parse(with_path(path, custom_headers, batch, is_anon))

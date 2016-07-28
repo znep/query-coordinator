@@ -1,13 +1,18 @@
+$content_padding: 8px;
+$link_line_height: 40px;
+
 body.action_datasets_show {
   footer#site-chrome-footer {
     min-height: 0;
-    padding: 1rem;
 
     .content {
+      margin: 0 auto;
+      padding: $content_padding;
+
       > div.logo {
         max-width: 50%;
         width: auto;
-        margin-right: 3.5rem;
+        margin-right: 56px;
 
         img {
           max-height: 100px;
@@ -24,13 +29,13 @@ body.action_datasets_show {
           margin: 0;
           clear: none;
           float: right;
-          margin-left: 2rem;
+          margin-left: 32px;
 
           .site-chrome-social-link {
-            margin-right: 1rem;
+            margin-right: 16px;
 
             span.monosocial {
-              font-size: 32px;
+              font-size: $link_line_height;
             }
 
             span.social-link-label {
@@ -42,7 +47,7 @@ body.action_datasets_show {
 
       > div.links {
         width: auto;
-        padding-top: 0;
+        margin-top: 0;
 
         ul.links-col {
           -webkit-column-count: initial;
@@ -52,8 +57,8 @@ body.action_datasets_show {
 
           li {
             width: auto;
-            line-height: 2rem;
-            margin-right: 2rem;
+            line-height: $link_line_height;
+            margin-right: 32px;
 
             a.footer-link {
               font-size: 13px;
@@ -85,8 +90,8 @@ body.action_datasets_show {
           margin-top: 0.5rem;
           .links-col {
             li {
-              line-height: 1.2rem;
-              margin-right: 1rem;
+              line-height: 19px;
+              margin-right: 16px;
               margin-top: 0;
               display: inline-block;
             }
@@ -96,7 +101,8 @@ body.action_datasets_show {
     }
 
     .copyright {
-      margin: 4px auto;
+      margin: 0 auto;
+      padding-bottom: $content_padding;
     }
   }
 }

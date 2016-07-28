@@ -22,7 +22,7 @@ module SocrataSiteChrome
         content: site_chrome_config[:content],
         updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
         current_version: site_chrome_content.dig(:value, :current_version) ||
-          latest_existing_version(site_chrome_content)
+          latest_existing_version(site_chrome_content) || SiteChrome::LATEST_VERSION
       }
     end
 

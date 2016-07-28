@@ -9,7 +9,7 @@ import {
   SET_TITLE,
   SET_DESCRIPTION,
   SET_DIMENSION,
-  SET_POINT_COLOR,
+  SET_PRIMARY_COLOR,
   SET_POINT_OPACITY,
   SET_BASE_LAYER,
   SET_BASE_LAYER_OPACITY,
@@ -59,8 +59,8 @@ export default function featureMap(state, action) {
       setValueOrDefaultValue(state, 'description', action.description, null);
       break;
 
-    case SET_POINT_COLOR:
-      _.set(state, 'series[0].color.primary', action.pointColor);
+    case SET_PRIMARY_COLOR:
+      _.set(state, 'series[0].color.primary', action.primaryColor);
       break;
 
     case SET_POINT_OPACITY:

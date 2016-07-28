@@ -50,14 +50,14 @@ export const getDescription = createSelector(
   vif => _.get(vif, 'description', null)
 );
 
-export const getBaseColor = createSelector(
+export const getPrimaryColor = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].color.primary', null)
 );
 
-export const getPointColor = createSelector(
+export const getSecondaryColor = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.pointColor', null)
+  vif => _.get(vif, 'series[0].color.secondary', null)
 );
 
 export const getPointOpacity = createSelector(

@@ -103,7 +103,7 @@ function _updateVisualization($element, componentData) {
     //
     // For now, this should be sufficient.
     vif.configuration.tileserverHosts = [
-      StorytellerUtils.format('https://{0}', vif.domain)
+      'https://' + _.get(vif, 'series[0].dataSource.domain', vif.domain)
     ];
     vif.configuration.baseLayerUrl = Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER;
     vif.configuration.baseLayerOpacity = 0.8;

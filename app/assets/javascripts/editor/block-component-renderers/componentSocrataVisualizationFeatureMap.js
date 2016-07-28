@@ -87,7 +87,9 @@ function _updateVisualization($element, componentData) {
       'flyout_locate_user_error_notice': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
       'flyout_pan_zoom_disabled_warning_title': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
       'row_inspector_row_data_query_failed': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
-      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position')
+      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position'),
+      'column_incompatibility_error': I18n.t('editor.visualizations.feature_map.column_incompatibility_error'),
+      'feature_extent_query_error': I18n.t('editor.visualizations.feature_map.feature_extent_query_error')
     };
 
     vif.unit = {

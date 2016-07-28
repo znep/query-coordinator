@@ -292,6 +292,8 @@ en:
         flyout_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled'
         row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time'
         user_current_position: 'Your current location (estimated)'
+        column_incompatibility_error: 'The data column is incompatible with this visualization'
+        feature_extent_query_error: 'An error occurred when rendering this chart.'
     time:
       full_month_1: 'January'
       full_month_2: 'February'

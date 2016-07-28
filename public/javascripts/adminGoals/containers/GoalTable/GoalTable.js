@@ -6,7 +6,7 @@ import PageSelector from '../../components/PageSelector';
 
 import './GoalTable.scss';
 
-export default function GoalTable(props) {
+export default function GoalTable() {
   return (
     <div>
       <table className="table table-borderless op-admin-table">

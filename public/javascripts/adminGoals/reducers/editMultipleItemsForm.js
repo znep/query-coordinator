@@ -10,17 +10,17 @@ import {
   UPDATE_MULTIPLE_ITEMS_FAILED
 } from '../actionTypes';
 
-const openModal = (state, action) => state.merge({ visible: true });
+const openModal = state => state.merge({ visible: true });
 
-const closeModal = (state, action) => state.merge({ visible: false, goal: {  }, showFailureMessage: false });
+const closeModal = state => state.merge({ visible: false, goal: {  }, showFailureMessage: false });
 
 const updateFormData = (state, action) => state.merge({ goal: action.newData });
 
-const startUpdate = (state, action) => state.merge({ updateInProgress: true, showFailureMessage: false });
+const startUpdate = state => state.merge({ updateInProgress: true, showFailureMessage: false });
 
-const succeedUpdate = (state, action) => state.merge({ updateInProgress: false, visible: false, goal: {}, showFailureMessage: false });
+const succeedUpdate = state => state.merge({ updateInProgress: false, visible: false, goal: {}, showFailureMessage: false });
 
-const failUpdate = (state, action) => state.merge({ updateInProgress: false, showFailureMessage: true });
+const failUpdate = state => state.merge({ updateInProgress: false, showFailureMessage: true });
 
 export default createReducer(Immutable.fromJS({}), {
   [OPEN_EDIT_MULTIPLE_ITEMS_MODAL]: openModal,

@@ -11,9 +11,7 @@ const getSameValue = (items, property) => {
 
 export default createSelector(
   [selectedGoalsSelector],
-  (goals) => Immutable.Map({
+  goals => new Immutable.Map({
     is_public: getSameValue(goals, 'is_public')
   })
 );
-
-

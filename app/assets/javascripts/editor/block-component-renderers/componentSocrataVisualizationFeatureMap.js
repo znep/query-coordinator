@@ -87,7 +87,9 @@ function _updateVisualization($element, componentData) {
       'flyout_locate_user_error_notice': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
       'flyout_pan_zoom_disabled_warning_title': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
       'row_inspector_row_data_query_failed': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
-      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position')
+      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position'),
+      'column_incompatibility_error': I18n.t('editor.visualizations.feature_map.column_incompatibility_error'),
+      'feature_extent_query_error': I18n.t('editor.visualizations.feature_map.feature_extent_query_error')
     };
 
     vif.unit = {
@@ -101,7 +103,7 @@ function _updateVisualization($element, componentData) {
     //
     // For now, this should be sufficient.
     vif.configuration.tileserverHosts = [
-      StorytellerUtils.format('https://{0}', vif.domain)
+      'https://' + _.get(vif, 'series[0].dataSource.domain', vif.domain)
     ];
     vif.configuration.baseLayerUrl = Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER;
     vif.configuration.baseLayerOpacity = 0.8;
@@ -109,20 +111,12 @@ function _updateVisualization($element, componentData) {
     vif.configuration.locateUser = true;
     vif.configuration.panAndZoom = true;
 
-    // EN-7517 - Temporarily override viz title and description with null
+    // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //
     // The new viz implementations actually read from title and description and
     // will display them, but the VisualizationAdd controller will set the
     // title to the name of the column or something.
-    //
-    // Until users have a way to actually change the title and description, we
-    // want to make sure that we override them at runtime to null, which will
-    // prevent them from being displayed.
-    //
-    // TODO: Remove these overrides once the Authorship Experience is available
-    // to customers.
-    if (!Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
-
+    if (_.get(vif, 'format.version') === 1) {
       vif.title = null;
       vif.description = null;
     }

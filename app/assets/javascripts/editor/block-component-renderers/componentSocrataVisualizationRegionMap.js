@@ -93,20 +93,12 @@ function _updateVisualization($element, componentData) {
       other: 'records'
     };
 
-    // EN-7517 - Temporarily override viz title and description with null
+    // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //
     // The new viz implementations actually read from title and description and
     // will display them, but the VisualizationAdd controller will set the
     // title to the name of the column or something.
-    //
-    // Until users have a way to actually change the title and description, we
-    // want to make sure that we override them at runtime to null, which will
-    // prevent them from being displayed.
-    //
-    // TODO: Remove these overrides once the Authorship Experience is available
-    // to customers.
-    if (!Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
-
+    if (_.get(vif, 'format.version') === 1) {
       vif.title = null;
       vif.description = null;
     }

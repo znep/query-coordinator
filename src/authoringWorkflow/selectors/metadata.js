@@ -79,7 +79,7 @@ export const getValidMeasures = createSelector(
   (phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
-      filter({ renderTypeName: 'number' }).
+      filter(isNumericColumn).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
       sortBy('name').
@@ -141,3 +141,8 @@ const injectFieldName = (column, key) => {
   return _.set(column, 'fieldName', key);
 };
 
+const isNumericColumn = (column) => {
+  var renderTypeName = _.get(column, 'renderTypeName');
+
+  return (renderTypeName === 'number' || renderTypeName === 'money');
+};

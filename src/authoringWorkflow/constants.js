@@ -12,6 +12,10 @@ export const DIMENSION_TYPES = [
     preferredVisualizationTypes: ['featureMap', 'regionMap']
   },
   {
+    type: 'money',
+    preferredVisualizationTypes: ['columnChart']
+  },
+  {
     type: 'number',
     preferredVisualizationTypes: ['columnChart', 'histogram']
   },
@@ -25,7 +29,7 @@ export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
-    preferredDimensionTypes: ['text', 'number']
+    preferredDimensionTypes: ['text', 'number', 'money']
   },
   {
     type: 'histogram',

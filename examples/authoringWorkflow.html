@@ -182,6 +182,18 @@
         ]
       };
 
+      var whiteHouseStaff = {
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: '6ta3-xmf3'
+            }
+          }
+        ]
+      };
+
+
       var authoringWorkflow = new AuthoringWorkflow(container, {
         // vif: choroplethVif,
         // vif: ufoSightingsVif,
@@ -190,6 +202,7 @@
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
         vif: ufoSightings,
+        // vif: whiteHouseStaff,
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);
           $chart.empty();

@@ -94,7 +94,7 @@ function aggregationClause(vif, seriesIndex, dimensionOrMeasure) {
       dimensionOrMeasure === 'dimension' || dimensionOrMeasure === 'measure',
       `dimensionOrMeasure must be "dimension" or "measure", but was: ${dimensionOrMeasure}`
     );
-    utils.assertIsOneOfTypes(seriesIndex, 'number');
+    utils.assertIsOneOfTypes(seriesIndex, 'number', 'money');
 
     aggregationFunction = _.get(
       vif.series[seriesIndex],

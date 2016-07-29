@@ -12,7 +12,8 @@ function getDefaultState() {
         {renderTypeName: 'number', fieldName: 'number'},
         {renderTypeName: 'point', fieldName: 'point'},
         {renderTypeName: 'location', fieldName: 'location'},
-        {renderTypeName: 'calendar_date', fieldName: 'calendar_date'}
+        {renderTypeName: 'calendar_date', fieldName: 'calendar_date'},
+        {renderTypeName: 'money', fieldName: 'money' }
       ]
     },
     phidippidesMetadata: {
@@ -21,7 +22,8 @@ function getDefaultState() {
         'number': {renderTypeName: 'number', name: 'Number'},
         'point': {renderTypeName: 'point', name: 'Point'},
         'location': {renderTypeName: 'location', name: 'Location'},
-        'calendar_date': {renderTypeName: 'calendar_date', name: 'Calendar Date', fieldName: 'calendar_date'}
+        'calendar_date': {renderTypeName: 'calendar_date', name: 'Calendar Date', fieldName: 'calendar_date'},
+        'money': {renderTypeName: 'money', name: 'Money', fieldName: 'money'}
       }
     }
   };
@@ -93,6 +95,10 @@ describe('metadata', function() {
 
     describe('calendar_date', function() {
       returnsRecommendedVisualizationType('calendar_date');
+    });
+
+    describe('money', function() {
+      returnsRecommendedVisualizationType('money');
     });
   });
 });

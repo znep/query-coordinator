@@ -15,13 +15,14 @@ import {
   isHistogram,
   isTimelineChart
 } from '../selectors/vifAuthoring';
+import { getDisplayableColumns } from '../selectors/metadata';
 import { setUnitsOne, setUnitsOther, setRowInspectorTitleColumnName } from '../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 export var LegendsAndFlyoutsPane = React.createClass({
   propTypes: {
-    onChangeUnitsOne: React.PropTypes.func,
-    onChangeUnitsOther: React.PropTypes.func,
+    onChangeUnitOne: React.PropTypes.func,
+    onChangeUnitOther: React.PropTypes.func,
     vifAuthoring: React.PropTypes.object
   },
 
@@ -31,7 +32,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
       id: 'units-one',
       className: 'text-input',
       type: 'text',
-      onChange: this.props.onChangeUnitsOne,
+      onChange: this.props.onChangeUnitOne,
       placeholder: translate('panes.legends_and_flyouts.fields.units_one.placeholder'),
       defaultValue: unitOne
     };
@@ -41,7 +42,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
       id: 'units-other',
       className: 'text-input',
       type: 'text',
-      onChange: this.props.onChangeUnitsOther,
+      onChange: this.props.onChangeUnitOther,
       placeholder: translate('panes.legends_and_flyouts.fields.units_other.placeholder'),
       defaultValue: unitOther
     };
@@ -81,18 +82,16 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   featureMap() {
-    var { onSelectFlyoutTitle, vifAuthoring, metadata } = this.props;
+    var { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
     var defaultFlyoutTitleColumn = getRowInspectorTitleColumnName(vifAuthoring);
-    // We don't want to allow system columns as the title for row inspector pages
-    // since they don't have human-readable names.
-    var nonSystemColumns = _.get(metadata, 'data.columns', []).
-      filter((column) => (column.fieldName.charAt(0) !== ':'));
-
     var columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
-      options: _.map(nonSystemColumns, column => ({title: column.name, value: column.fieldName})),
-      onSelection: onSelectFlyoutTitle
+      // EN-8120 - We need to strip out system and composite columns, both of
+      // which are determined to be non-displayable by the MetadataProvider,
+      // which is the criteria used by the row inspector implementation.
+      options: _.map(getDisplayableColumns(metadata), column => ({title: column.name, value: column.fieldName})),
+      onSelection: onSelectRowInspectorTitle
     };
 
     return (
@@ -112,8 +111,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   render() {
-    var configuration;
     var vifAuthoring = this.props.vifAuthoring;
+    var configuration;
 
     if (isRegionMap(vifAuthoring)) {
       configuration = this.regionMap();
@@ -144,17 +143,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeUnitsOne: _.debounce(event => {
+    onChangeUnitOne: _.debounce(event => {
       var one = event.target.value;
       dispatch(setUnitsOne(one));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeUnitsOther: _.debounce(event => {
+    onChangeUnitOther: _.debounce(event => {
       var other = event.target.value;
       dispatch(setUnitsOther(other));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onSelectFlyoutTitle: flyoutTitle => {
+    onSelectRowInspectorTitle: flyoutTitle => {
       var columnName = flyoutTitle.value;
       dispatch(setRowInspectorTitleColumnName(columnName));
     }

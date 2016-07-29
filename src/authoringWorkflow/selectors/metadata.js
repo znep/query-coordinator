@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import MetadataProvider from '../../dataProviders/MetadataProvider';
+
 import { createSelector } from 'reselect';
 
 import { VISUALIZATION_TYPES, DIMENSION_TYPES } from '../constants';
@@ -18,6 +20,17 @@ export const hasError = createSelector(getError, error => { return !_.isNull(err
 export const getDatasetName = createSelector(
   getDatasetMetadata,
   (datasetMetadata) => _.get(datasetMetadata, 'name')
+);
+
+export const getDisplayableColumns = createSelector(
+  getDomain,
+  getDatasetUid,
+  getDatasetMetadata,
+  (domain, datasetUid, datasetMetadata) => {
+    var datasetMetadataProvider = new MetadataProvider({domain, datasetUid});
+
+    return datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+  }
 );
 
 export const getDatasetLink = createSelector(

@@ -10,6 +10,7 @@ import {
   CACHED_GOALS_UPDATED,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
+  TABLE_ROW_DESELECTED_ALL,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
   TABLE_ROW_SELECTION_START,
   TABLE_ROW_SELECTION_END,
@@ -186,6 +187,7 @@ export function tableLoadPage() {
 
       dispatch(cacheGoals(goalsCache));
       dispatch(tableShowPage(goalsWithExtras));
+      dispatch(deselectAllRows());
     }
 
     function getDashboardDetail(dashboard) {
@@ -253,6 +255,12 @@ export function deselectRow(goalId) {
   return {
     type: TABLE_ROW_DESELECTED,
     goalId
+  };
+}
+
+export function deselectAllRows() {
+  return {
+    type: TABLE_ROW_DESELECTED_ALL
   };
 }
 

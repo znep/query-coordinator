@@ -1,0 +1,21 @@
+.page-selector-container {
+  float: right;
+  margin-right: 150px;
+  height: 36px;
+  padding-top: 5px;
+
+  .labels {
+    margin-right: 10px;
+  }
+
+  .page-change-icon {
+    margin-left: 30px;
+    color: #5e5e5e;
+    cursor: pointer;
+
+    &.disabled {
+      color: #999999;
+      cursor: not-allowed;
+    }
+  }
+}

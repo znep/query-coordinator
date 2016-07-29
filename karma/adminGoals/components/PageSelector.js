@@ -1,4 +1,4 @@
-import PageSelector from 'components/PageSelector';
+import PageSelector from 'components/PageSelector/PageSelector';
 import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;

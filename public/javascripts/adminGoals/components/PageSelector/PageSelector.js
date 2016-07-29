@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { setCurrentPage } from '../actions/goalTableActions';
+import { setCurrentPage } from '../../actions/goalTableActions';
 import classNames from 'classnames/bind';
+import './PageSelector.scss';
 
 class PageSelector extends React.Component {
   constructor(props) {
@@ -16,19 +17,19 @@ class PageSelector extends React.Component {
     let endPosition = maxIndex > this.props.totalGoalCount ? this.props.totalGoalCount : maxIndex;
 
     let prevAvailable = this.props.currentPage > 1;
-    let prevProps = { className: classNames('pageChangeIcon', 'icon-arrow-left', { disabled: !prevAvailable }) };
+    let prevProps = { className: classNames('page-change-icon', 'icon-arrow-left', { disabled: !prevAvailable }) };
     if (prevAvailable) {
       prevProps.onClick = _.wrap(this.props.currentPage - 1, this.props.changePage);
     }
 
     let nextAvailable = this.props.currentPage < totalPageCount;
-    let nextProps = { className: classNames('pageChangeIcon', 'icon-arrow-right', { disabled: !nextAvailable }) };
+    let nextProps = { className: classNames('page-change-icon', 'icon-arrow-right', { disabled: !nextAvailable }) };
     if (nextAvailable) {
       nextProps.onClick = _.wrap(this.props.currentPage + 1, this.props.changePage);
     }
 
     let startLabel = startOffset == 0 ? 1 : startOffset;
-    return <div className="pageSelectorContainer">
+    return <div className="page-selector-container">
       <span className="labels">{ startLabel } - { endPosition } { this.props.translations.getIn(['admin', 'listing', 'of']) } { this.props.totalGoalCount }</span>
       <span { ...prevProps } />
       <span { ...nextProps } />

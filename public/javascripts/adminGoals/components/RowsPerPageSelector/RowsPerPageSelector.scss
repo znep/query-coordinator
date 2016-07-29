@@ -1,0 +1,32 @@
+.rows-per-page-container {
+  float: right;
+  margin-right: 50px;
+  height: 36px;
+
+  .Select {
+    vertical-align: middle;
+    display: inline-block;
+    min-width: 60px;
+
+    .Select-value-label {
+      color: #5e5e5e;
+    }
+
+    &.has-value.Select--single > .Select-control > .Select-value .Select-value-label{
+      color: #5e5e5e;
+    }
+
+    .Select-control {
+      border: none;
+    }
+  }
+
+  .dropdown-container {
+    display: inline-flex;
+
+    .dropdown-placeholder {
+      border: none;
+    }
+  }
+
+}

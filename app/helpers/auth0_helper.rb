@@ -40,9 +40,9 @@ module Auth0Helper
         !displayName.empty?
       true
     else
-      firstName = auth0Hash['given_name'];
-      lastName = auth0Hash ['last_name'];
-      !firstName.nil? && !lastName.nil
+      firstName = auth0Hash['given_name']
+      lastName = auth0Hash['family_name']
+      !firstName.nil? && !lastName.nil?
     end
   end
 

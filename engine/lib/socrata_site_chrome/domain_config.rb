@@ -41,7 +41,7 @@ module SocrataSiteChrome
     def current_published_site_chrome
       published_site_chrome_config = {}
 
-      if config.has_key?(:properties)
+      if config.dig(:properties).present?
         site_chrome_config = config[:properties].detect do |config|
           config[:name] == 'siteChromeConfigVars'
         end

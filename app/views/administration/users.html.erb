@@ -74,7 +74,8 @@
   <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
     <label for="username"><%= t("#{prefix}.search_for_users") %></label>
     <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
-     title="<%= t("#{prefix}.search_for_users") %>"<%= raw(" value=\"#{h @search}\"") unless @search.nil? %> />
+      title="<%= t("#{prefix}.search_for_users") %>" value="<%= @search %>" />
+
     <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
   </form>
 

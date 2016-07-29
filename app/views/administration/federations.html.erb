@@ -19,7 +19,7 @@
     <form class="search domainsSearch" method="get">
       <label for="domain"><%= t("#{socrata_federation}.search_prompt") %></label>
       <input type="text" class="textPrompt searchField" name="domain" id="domain"
-        title="<%= t("#{socrata_federation}.search_prompt") %>"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
+        title="<%= t("#{socrata_federation}.search_prompt") %>" value="<%= @search_domain %>" />
       <input type="submit" class="submit" alt="<%= t("#{socrata_federation}.search") %>" value="<%= t("#{socrata_federation}.search") %>" />
     </form>
 
@@ -28,7 +28,7 @@
       <form class="search datasetsSearch" method="get">
         <label for="dataset"><%= t("#{socrata_federation}.search_pub_datasets") %></label>
         <input type="text" class="textPrompt searchField" name="dataset" id="dataset"
-         title="<%= t("#{socrata_federation}.search_pub_datasets") %>"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
+          title="<%= t("#{socrata_federation}.search_pub_datasets") %>" value="<%= @search_dataset %>" />
         <input type="submit" class="submit" alt="<%= t("#{socrata_federation}.search") %>" value="<%= t("#{socrata_federation}.search") %>" />
       </form>
     <%- end -%>

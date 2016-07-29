@@ -26,7 +26,7 @@ function stubCharts() {
     'socrataSvgTimelineChart',
     'socrataSvgHistogram',
     'socrataSvgFeatureMap',
-    'socrataChoroplethMap'
+    'socrataSvgRegionMap'
   ];
   var originalChartImplementations;
 
@@ -109,10 +109,10 @@ describe('Visualization', function() {
       rendersChartType(props, 'socrataSvgFeatureMap');
     });
 
-    describe('when renderings a choroplethMap', function() {
+    describe('when rendering a regionMap', function() {
       var props = defaultProps();
 
-      _.set(props, 'vif.series[0].type', 'choroplethMap');
+      _.set(props, 'vif.series[0].type', 'regionMap');
       _.set(props, 'vif.configuration.computedColumnName', '@computed_column');
       _.set(props, 'vif.configuration.shapefile.uid', 'four-four');
       _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
@@ -120,7 +120,7 @@ describe('Visualization', function() {
       _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
       _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
-      rendersChartType(props, 'socrataChoroplethMap');
+      rendersChartType(props, 'socrataSvgRegionMap');
     });
   });
 });

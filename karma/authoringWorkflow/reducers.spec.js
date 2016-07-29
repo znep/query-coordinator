@@ -81,36 +81,33 @@ describe('AuthoringWorkflow reducer', function() {
         });
       }
 
-      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'choroplethMap', 'featureMap', 'timelineChart', 'histogram']);
-      shouldSetVif('setDescription', 'Description', 'description', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
-      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setTitle', 'Title', 'title', ['columnChart', 'regionMap', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setDescription', 'Description', 'description', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['choroplethMap', 'columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['regionMap', 'columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setMeasureAggregation', 'count', 'series[0].dataSource.measure.aggregationFunction');
 
+      shouldSetVif('setPrimaryColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
+      shouldSetVif('setSecondaryColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setBaseColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram']);
-      shouldSetVif('setBaseColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.negativeColor', ['regionMap']);
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['regionMap']);
+      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['regionMap']);
 
-      shouldSetVif('setPointColor', '#00F', 'configuration.pointColor', ['featureMap']);
-
-      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.negativeColor', ['choroplethMap']);
-      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['choroplethMap']);
-      shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['choroplethMap']);
-
-      shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['choroplethMap', 'featureMap']);
+      shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap']);
 
       shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
-      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['choroplethMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
+      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram']);
 
-      shouldSetVif('setFlyoutTitle', 'columnName', 'configuration.flyoutTitleColumnName', ['featureMap']);
+      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 
-      shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'choroplethMap']);
+      shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
 
       describe('when configuring a Feature map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
@@ -130,7 +127,7 @@ describe('AuthoringWorkflow reducer', function() {
         });
       });
 
-      describe('when configuring a Choropleth map', function() {
+      describe('when configuring a Region map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
 
         it('sets configuration.shapefile.uid and configuration.computedColumnName', function() {
@@ -139,15 +136,15 @@ describe('AuthoringWorkflow reducer', function() {
           var action = actions.setComputedColumn(shapefileUid, computedColumnName);
           var newState = reducer(getTestState(), action);
 
-          expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.shapefile.uid')).to.equal(shapefileUid);
-          expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
+          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.shapefile.uid')).to.equal(shapefileUid);
+          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
         });
 
         it('sets configuration.baseLayerOpacity', function() {
           var action = actions.setBaseLayerOpacity('0.5');
           var newState = reducer(getTestState(), action);
 
-          expect(_.get(newState.vifAuthoring.vifs.choroplethMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
         });
       });
     });

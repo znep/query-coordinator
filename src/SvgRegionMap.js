@@ -1,12 +1,14 @@
-const _ = require('lodash');
-const $ = require('jquery');
-const utils = require('socrata-utils');
-const SvgRegionMap = require('./views/SvgRegionMap');
-const MetadataProvider = require('./dataProviders/MetadataProvider');
-const GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
-const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const VifHelpers = require('./helpers/VifHelpers');
+var _ = require('lodash');
+var $ = require('jquery');
+var utils = require('socrata-utils');
+var SvgRegionMap = require('./views/SvgRegionMap');
+var MetadataProvider = require('./dataProviders/MetadataProvider');
+var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
+var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
+var SoqlHelpers = require('./dataProviders/SoqlHelpers');
+var VifHelpers = require('./helpers/VifHelpers');
+var getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
+var I18n = require('./I18n');
 
 const NAME_ALIAS = '__NAME_ALIAS__';
 const VALUE_ALIAS = '__VALUE_ALIAS__';
@@ -486,59 +488,61 @@ $.fn.socrataSvgRegionMap = function(vif) {
       'string'
     );
 
-    if (
-      _.isString(
-        _.get(
-          vifToRender,
-          'configuration.shapefile.geometryLabel'
+    $.fn.socrataSvgRegionMap.validateVif(vifToRender).then(() => {
+
+      if (
+        _.isString(
+          _.get(
+            vifToRender,
+            'configuration.shapefile.geometryLabel'
+          )
         )
-      )
-    ) {
+      ) {
 
-      // This fake shapefile dataset metadata response is used so that we can
-      // conform to the promise chain all the way down to visualization render,
-      // rather than conditionally requiring one or two requests to complete
-      // before proceeding.
-      shapefileMetadataRequest = Promise.resolve({
-        geometryLabel: vif.configuration.shapefile.geometryLabel
-      });
-    } else {
+        // This fake shapefile dataset metadata response is used so that we can
+        // conform to the promise chain all the way down to visualization render,
+        // rather than conditionally requiring one or two requests to complete
+        // before proceeding.
+        shapefileMetadataRequest = Promise.resolve({
+          geometryLabel: vif.configuration.shapefile.geometryLabel
+        });
+      } else {
 
-      shapefileMetadataRequest = shapefileMetadataProvider.
-        getShapefileMetadata().
-        catch(
-          function(error) {
-            logError(error);
+        shapefileMetadataRequest = shapefileMetadataProvider.
+          getShapefileMetadata().
+          catch(
+            function(error) {
+              logError(error);
 
-            // If the shapefile metadata request fails, we can still proceed,
-            // albeit with degraded flyout behavior. This is because the only
-            // thing we're trying to get from the shapefile metadata is the
-            // geometryLabel (the column in the shapefile that corresponds to a
-            // human-readable name for each region) and, if it is not present,
-            // the visualization will simply not show the human-readable name in
-            // the flyout at all (it will still show values).
-            //
-            // Accordingly, we still want to resolve this promise in its error
-            // state.
-            return {
-              geometryLabel: null
-            };
-          }
-        );
-    }
+              // If the shapefile metadata request fails, we can still proceed,
+              // albeit with degraded flyout behavior. This is because the only
+              // thing we're trying to get from the shapefile metadata is the
+              // geometryLabel (the column in the shapefile that corresponds to a
+              // human-readable name for each region) and, if it is not present,
+              // the visualization will simply not show the human-readable name in
+              // the flyout at all (it will still show values).
+              //
+              // Accordingly, we still want to resolve this promise in its error
+              // state.
+              return {
+                geometryLabel: null
+              };
+            }
+          );
+      }
 
-    featureExtentRequest = datasetGeospaceDataProvider.
-      getFeatureExtent(columnName);
+      featureExtentRequest = datasetGeospaceDataProvider.
+        getFeatureExtent(columnName);
 
-    soqlQueryRequest = soqlDataProvider.
-      query(queryString, NAME_ALIAS, VALUE_ALIAS);
+      soqlQueryRequest = soqlDataProvider.
+        query(queryString, NAME_ALIAS, VALUE_ALIAS);
 
-    Promise.
-      all([
-        shapefileMetadataRequest,
-        featureExtentRequest,
-        soqlQueryRequest
-      ]).
+      return Promise.
+        all([
+          shapefileMetadataRequest,
+          featureExtentRequest,
+          soqlQueryRequest
+        ]).
         then(function(values) {
           var shapefileMetadata = values[0];
           var featureExtent = values[1];
@@ -613,12 +617,25 @@ $.fn.socrataSvgRegionMap = function(vif) {
             }).
             catch(handleError);
           }
-        ).
-        catch(handleError);
+        )
+    }).
+    catch(handleError);
   }
 
   function handleError(error) {
-    visualization.renderError(error.toString());
+    var messages;
+
+    if (window.console && console.error) {
+      console.error(error);
+    }
+
+    if (error.errorMessages) {
+      messages = error.errorMessages;
+    } else {
+      messages = I18n.translate('visualizations.common.error_generic')
+    }
+
+    visualization.renderError(messages);
   }
 
   /**
@@ -703,5 +720,27 @@ $.fn.socrataSvgRegionMap = function(vif) {
 
   return this;
 };
+
+// Checks a VIF for compatibility with this visualization.
+// The intent of this function is to provide feedback while
+// authoring a visualization, not to provide feedback to a developer.
+// As such, messages returned are worded to make sense to a user.
+//
+// Returns a Promise.
+//
+// If the VIF is usable, the promise will resolve.
+// If the VIF is not usable, the promise will reject with an object:
+// {
+//   ok: false,
+//   errorMessages: Array<String>
+// }
+$.fn.socrataSvgRegionMap.validateVif = (vif) =>
+  getSoqlVifValidator(vif).then(validator =>
+    validator.
+      requireAtLeastOneSeries().
+      requireMeasureAggregation().
+      requirePointDimension().
+      toPromise()
+  );
 
 module.exports = $.fn.socrataSvgRegionMap;

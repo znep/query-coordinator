@@ -11,14 +11,15 @@ import {
   SET_MEASURE_AGGREGATION,
   SET_TITLE,
   SET_DESCRIPTION,
-  SET_BASE_COLOR,
+  SET_PRIMARY_COLOR,
+  SET_SECONDARY_COLOR,
   SET_LABEL_TOP,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
   SET_X_AXIS_SCALING_MODE,
-  SET_UNITS_ONE,
-  SET_UNITS_OTHER
+  SET_UNIT_ONE,
+  SET_UNIT_OTHER
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -77,10 +78,15 @@ export default function columnChart(state, action) {
       });
       break;
 
-    case SET_BASE_COLOR:
+    case SET_PRIMARY_COLOR:
       forEachSeries(state, series => {
-        setValueOrDeleteProperty(series, 'color.primary', action.baseColor);
-        setValueOrDeleteProperty(series, 'color.secondary', action.baseColor);
+        setValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
+      });
+      break;
+
+    case SET_SECONDARY_COLOR:
+      forEachSeries(state, series => {
+        setValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
       });
       break;
 
@@ -104,13 +110,13 @@ export default function columnChart(state, action) {
       setValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
 
-    case SET_UNITS_ONE:
+    case SET_UNIT_ONE:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
-    case SET_UNITS_OTHER:
+    case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });

@@ -12,7 +12,7 @@ import {
 } from '../actions';
 
 import {
-  isChoroplethMap,
+  isRegionMap,
   getDimension,
   getShapefileUid,
   getDomain,
@@ -131,7 +131,7 @@ export var RegionSelector = React.createClass({
       <div className="region-dropdown-container" ref={reference}>
         <label className="block-label" htmlFor="region-selection">
           {translate('panes.data.fields.region.title')}
-          <span className="icon-question" data-flyout="region-info-flyout"></span>:
+          <span className="icon-question" data-flyout="region-info-flyout"></span>
         </label>
         {this.renderRegionInfo()}
         <Styleguide.components.Dropdown {...regionAttributes} />
@@ -144,7 +144,7 @@ export var RegionSelector = React.createClass({
   render() {
     var { vifAuthoring } = this.props;
 
-    return isChoroplethMap(vifAuthoring) && getDimension(vifAuthoring).columnName ?
+    return isRegionMap(vifAuthoring) && getDimension(vifAuthoring).columnName ?
       this.renderSelector() :
       null;
   }

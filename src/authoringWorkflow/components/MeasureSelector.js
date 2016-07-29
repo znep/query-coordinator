@@ -94,12 +94,12 @@ export var MeasureSelector = React.createClass({
       onSelection: onSelectMeasure,
       value: measure.columnName,
       id: 'measure-selection',
-      disabled: isFeatureMap(vifAuthoring)
+      disabled: isFeatureMap(vifAuthoring) || options.length === 1
     };
 
     return (
       <div>
-        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}:</label>
+        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
         <div className={classes}>
           <Styleguide.components.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationDropdown()}

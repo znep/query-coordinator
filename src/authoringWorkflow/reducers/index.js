@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import metadata from './metadata';
 import authoring from './authoring';
 
-import choroplethMap from './vifs/choroplethMap';
+import regionMap from './vifs/regionMap';
 import columnChart from './vifs/columnChart';
 import featureMap from './vifs/featureMap';
 import histogram from './vifs/histogram';
@@ -14,7 +14,7 @@ module.exports = combineReducers({
   vifAuthoring: combineReducers({
     authoring,
     vifs: combineReducers({
-      choroplethMap,
+      regionMap,
       columnChart,
       featureMap,
       histogram,

@@ -6,15 +6,15 @@ export default {
     version: 2
   },
   configuration: {
-    xAxisScalingMode: 'fit',
-    localization: translateGroup('visualizations.timeline_chart')
+    xAxisScalingMode: 'fit'
   },
   description: '',
   series: [
     {
       color: {
-        primary: '#00a1af',
-        secondary: '#00a1af'
+        primary: '#71abd9',
+        secondary: '#71abd9',
+        highlight: '#cccccc'
       },
       dataSource: {
         datasetUid: null,

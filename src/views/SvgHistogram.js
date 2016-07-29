@@ -19,10 +19,14 @@ const CHART_PADDING = {
 };
 const COLUMN_MARGIN = 1;
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const DEFAULT_GRID_LINE_COLOR = '#ebebeb';
-const MEASURE_LABEL_FONT_SIZE = 14;
 const DIMENSION_LABEL_FONT_SIZE = 14;
+const DIMENSION_LABEL_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_HEIGHT = 30;
+const MEASURE_LABEL_FONT_SIZE = 14;
+const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
+const AXIS_DEFAULT_COLOR = '#979797';
+const AXIS_TICK_COLOR = '#adadad';
+const AXIS_GRID_COLOR = '#f1f1f1';
 
 // Just a safeguard; the data fetching code should never make a huge # of buckets.
 const MAX_BUCKET_COUNT = 500;
@@ -136,7 +140,10 @@ function SvgHistogram($element, vif) {
       validateHasColumn(series, 'bucket_start');
       validateHasColumn(series, 'bucket_end');
       validateHasColumn(series, 'measure');
-      series.rows.forEach((row) => utils.assert(row.length === 3, `row has ${row.length} columns, expected 3`));
+      series.rows.forEach((row) => {
+        utils.assert(row.length === 3, `row has ${row.length} columns, expected 3`);
+        row.forEach((item) => utils.assertIsOneOfTypes(item, 'number'));
+      });
     });
 
   }
@@ -251,6 +258,8 @@ function SvgHistogram($element, vif) {
     });
 
     function renderXAxis() {
+      var xAxisSvg;
+      var xBaselineSvg;
       var baselineValue;
 
       // Binding the axis to the svg elements is something that only needs to
@@ -259,22 +268,29 @@ function SvgHistogram($element, vif) {
       // to treat renderXAxis() as idempotent.
       bindXAxisOnce();
 
-      let viewportSvgXAxis = viewportSvg.select('.x.axis');
+      xAxisSvg = viewportSvg.select('.x.axis');
+      xBaselineSvg = viewportSvg.select('.x.axis.baseline');
 
-      viewportSvgXAxis.attr(
-        'transform',
-        'translate(0,{0})'.format(chartHeight)
-      );
+      xAxisSvg.
+        attr(
+          'transform',
+          'translate(0,{0})'.format(chartHeight)
+        );
 
-      viewportSvgXAxis.selectAll('line, path').
+      xAxisSvg.selectAll('path').
         attr('fill', 'none').
-        attr('stroke', '#888').
+        attr('stroke', AXIS_DEFAULT_COLOR).
         attr('shape-rendering', 'crispEdges');
 
-      viewportSvg.selectAll('.x.axis text').
+      xAxisSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', AXIS_TICK_COLOR).
+        attr('shape-rendering', 'crispEdges');
+
+      xAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
         attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
-        attr('fill', '#888').
+        attr('fill', DIMENSION_LABEL_FONT_COLOR).
         attr('stroke', 'none').
         attr(
           'data-row-index',
@@ -289,16 +305,15 @@ function SvgHistogram($element, vif) {
         baselineValue = 0;
       }
 
-      let xAxisBaseline = viewportSvg.select('.x.axis.baseline').
+      xBaselineSvg.
         attr(
           'transform',
           'translate(0,{0})'.format(d3YScale(baselineValue))
-        );
-
-      xAxisBaseline.selectAll('line, path').
-        attr('fill', 'none').
-        attr('stroke', '#888').
-        attr('shape-rendering', 'crispEdges');
+        ).
+        selectAll('path').
+          attr('fill', 'none').
+          attr('stroke', AXIS_DEFAULT_COLOR).
+          attr('shape-rendering', 'crispEdges');
     }
 
     // See comment in renderYAxis() for an explanation as to why this is
@@ -332,15 +347,20 @@ function SvgHistogram($element, vif) {
       // to treat renderYAxis() as idempotent.
       bindYAxisOnce();
 
-      yAxisSvg.selectAll('line, path').
+      yAxisSvg.selectAll('path').
         attr('fill', 'none').
-        attr('stroke', '#888').
+        attr('stroke', AXIS_DEFAULT_COLOR).
+        attr('shape-rendering', 'crispEdges');
+
+      yAxisSvg.selectAll('line').
+        attr('fill', 'none').
+        attr('stroke', AXIS_TICK_COLOR).
         attr('shape-rendering', 'crispEdges');
 
       yAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
         attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
-        attr('fill', '#888').
+        attr('fill', MEASURE_LABEL_FONT_COLOR).
         attr('stroke', 'none');
 
       yGridSvg.
@@ -355,7 +375,7 @@ function SvgHistogram($element, vif) {
 
       yGridSvg.selectAll('line').
         attr('fill', 'none').
-        attr('stroke', DEFAULT_GRID_LINE_COLOR).
+        attr('stroke', AXIS_GRID_COLOR).
         attr('shape-rendering', 'crispEdges');
     }
 

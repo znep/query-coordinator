@@ -418,10 +418,10 @@ function ChoroplethMap(element, vif) {
       selected: feature.properties[SELECTED_GEOJSON_PROPERTY_NAME]
     };
 
-    var aggregationField = _.get(lastRenderOptions, 'vif.series[0].dataSource.measure.columnName');
-    var aggregationFunction = _.get(lastRenderOptions, 'vif.series[0].dataSource.measure.aggregationFunction');
-    var unitOne = _.get(vif, 'series[0].unit.one');
-    var unitOther = _.get(vif, 'series[0].unit.other');
+    var aggregationField = _.get(lastRenderOptions, 'vifToRender.columnName');
+    var aggregationFunction = _.get(lastRenderOptions, 'vifToRender.aggregation.function');
+    var unitOne = _.get(vif, 'unit.one');
+    var unitOther = _.get(vif, 'unit.other');
 
     if (aggregationFunction === 'sum') {
 

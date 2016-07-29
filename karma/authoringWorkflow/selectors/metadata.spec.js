@@ -45,8 +45,8 @@ describe('metadata', function() {
       });
     }
 
-    describe('choroplethMap', function() {
-      returnsRecommendedDimensions('choroplethMap');
+    describe('regionMap', function() {
+      returnsRecommendedDimensions('regionMap');
     });
 
     describe('columnChart', function() {

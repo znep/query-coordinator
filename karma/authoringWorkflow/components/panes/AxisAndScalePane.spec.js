@@ -9,10 +9,8 @@ import { AxisAndScalePane } from 'src/authoringWorkflow/components/panes/AxisAnd
 function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
-    onChangeLabelTop: sinon.spy(),
     onChangeLabelBottom: sinon.spy(),
-    onChangeLabelLeft: sinon.spy(),
-    onChangeLabelRight: sinon.spy()
+    onChangeLabelLeft: sinon.spy()
   });
 
   return {
@@ -43,10 +41,6 @@ describe('AxisAndScalePane', function() {
 
   function rendersLabelsAndEmitsEvents() {
     describe('rendering', function() {
-      it('renders a top label input', function() {
-        expect(component.querySelector('#label-top')).to.exist;
-      });
-
       it('renders a bottom label input', function() {
         expect(component.querySelector('#label-bottom')).to.exist;
       });
@@ -54,27 +48,15 @@ describe('AxisAndScalePane', function() {
       it('renders a left label input', function() {
         expect(component.querySelector('#label-left')).to.exist;
       });
-
-      it('renders a right label input', function() {
-        expect(component.querySelector('#label-right')).to.exist;
-      });
     });
 
     describe('events', function() {
-      describe('when changing the top label', function() {
-        emitsEvent('#label-top', 'onChangeLabelTop');
-      });
-
       describe('when changing the bottom label', function() {
         emitsEvent('#label-bottom', 'onChangeLabelBottom');
       });
 
       describe('when changing the left label', function() {
         emitsEvent('#label-left', 'onChangeLabelLeft');
-      });
-
-      describe('when changing the right label', function() {
-        emitsEvent('#label-right', 'onChangeLabelRight');
       });
     });
   }

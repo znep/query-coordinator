@@ -1,3 +1,5 @@
+$flyout-background-color-dark: #2f2f2f;
+
 #socrata-flyout {
   position: fixed;
   max-width: 25em;
@@ -126,15 +128,17 @@
 }
 
 #socrata-flyout.dark {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 200;
-  color: #f8f8f8;
-  background-color: #444;
+  color: #fff;
+  background-color: $flyout-background-color-dark;
   border: none;
-  border-radius: 3px;
+  border-radius: 1px;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0px 0px 4px 1px rgba(44,44,44,0.10);
 
   .socrata-flyout-content .socrata-flyout-title {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 200;
   }
 
@@ -147,11 +151,11 @@
   }
 
   &.southwest .socrata-flyout-hint:before {
-    border-color: #444 transparent transparent transparent;
+    border-color: $flyout-background-color-dark transparent transparent transparent;
   }
 
   &.southeast .socrata-flyout-hint:after {
-    border-color: transparent #444 transparent transparent;
+    border-color: transparent $flyout-background-color-dark transparent transparent;
   }
 
   &.southeast .socrata-flyout-hint:before {
@@ -163,7 +167,7 @@
   }
 
   &.northwest .socrata-flyout-hint:after {
-    border-color: transparent transparent transparent #444;
+    border-color: transparent transparent transparent $flyout-background-color-dark;
   }
 
   &.northwest .socrata-flyout-hint:before {
@@ -171,7 +175,7 @@
   }
 
   &.northeast .socrata-flyout-hint:after {
-    border-color: transparent transparent #444 transparent;
+    border-color: transparent transparent $flyout-background-color-dark transparent;
   }
 
   &.northeast .socrata-flyout-hint:before {

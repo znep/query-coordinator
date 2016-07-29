@@ -6,16 +6,16 @@ import styleguide from 'socrata-styleguide';
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
 import {
-  getFlyoutTitleColumn,
+  getRowInspectorTitleColumnName,
   getUnitOne,
   getUnitOther,
-  isChoroplethMap,
+  isRegionMap,
   isColumnChart,
   isFeatureMap,
   isHistogram,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
-import { setUnitsOne, setUnitsOther, setFlyoutTitle } from '../../actions';
+import { setUnitsOne, setUnitsOther, setRowInspectorTitleColumnName } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 export var LegendsAndFlyoutsPane = React.createClass({
@@ -47,17 +47,24 @@ export var LegendsAndFlyoutsPane = React.createClass({
     };
 
     return (
-      <div>
-        <h5>{translate('panes.legends_and_flyouts.subheaders.units')}</h5>
-        <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}:</label>
-        <input {...unitOneAttributes} />
-        <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}:</label>
-        <input {...unitOtherAttributes} />
+      <div className="authoring-field-group">
+        <h5>{translate('panes.legends_and_flyouts.subheaders.units.title')}</h5>
+        <p className="authoring-field-description">
+          <small>{translate('panes.legends_and_flyouts.subheaders.units.description')}</small>
+        </p>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
+          <input {...unitOneAttributes} />
+        </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
+          <input {...unitOtherAttributes} />
+        </div>
       </div>
     );
   },
 
-  choroplethMap() {
+  regionMap() {
     return this.units();
   },
 
@@ -86,7 +93,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
 
   featureMap() {
     var { onSelectFlyoutTitle, vifAuthoring, metadata } = this.props;
-    var defaultFlyoutTitleColumn = getFlyoutTitleColumn(vifAuthoring);
+    var defaultFlyoutTitleColumn = getRowInspectorTitleColumnName(vifAuthoring);
     // We don't want to allow system columns as the title for row inspector pages
     // since they don't have human-readable names.
     var nonSystemColumns = _.get(metadata, 'data.columns', []).
@@ -94,7 +101,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
 
     var columnAttributes = {
       id: 'flyout-title-column',
-      placeholder: translate('panes.legends_and_flyouts.fields.flyout_title.no_value'),
+      placeholder: translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
       options: _.map(nonSystemColumns, column => ({
         title: column.name,
         value: column.fieldName,
@@ -107,10 +114,14 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return (
       <div>
         {this.units()}
-        <h5>{translate('panes.legends_and_flyouts.subheaders.flyout_title')}</h5>
-        <label className="block-label" htmlFor="flyout-title-column">Column</label>
-        <div className="flyout-title-dropdown-container">
-          <styleguide.components.Dropdown {...columnAttributes} />
+        <div className="authoring-field-group">
+          <h5>{translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}</h5>
+          <div className="authoring-field">
+            <label className="block-label" htmlFor="flyout-title-column">Column</label>
+            <div className="flyout-title-dropdown-container">
+              <styleguide.components.Dropdown {...columnAttributes} />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -120,8 +131,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
     var configuration;
     var vifAuthoring = this.props.vifAuthoring;
 
-    if (isChoroplethMap(vifAuthoring)) {
-      configuration = this.choroplethMap();
+    if (isRegionMap(vifAuthoring)) {
+      configuration = this.regionMap();
     } else if (isColumnChart(vifAuthoring)) {
       configuration = this.columnChart();
     } else if (isHistogram(vifAuthoring)) {
@@ -161,7 +172,7 @@ function mapDispatchToProps(dispatch) {
 
     onSelectFlyoutTitle: flyoutTitle => {
       var columnName = flyoutTitle.value;
-      dispatch(setFlyoutTitle(columnName));
+      dispatch(setRowInspectorTitleColumnName(columnName));
     }
   };
 }

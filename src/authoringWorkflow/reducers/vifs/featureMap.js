@@ -9,13 +9,13 @@ import {
   SET_TITLE,
   SET_DESCRIPTION,
   SET_DIMENSION,
-  SET_POINT_COLOR,
+  SET_PRIMARY_COLOR,
   SET_POINT_OPACITY,
   SET_BASE_LAYER,
   SET_BASE_LAYER_OPACITY,
-  SET_UNITS_ONE,
-  SET_UNITS_OTHER,
-  SET_FLYOUT_TITLE,
+  SET_UNIT_ONE,
+  SET_UNIT_OTHER,
+  SET_ROW_INSPECTOR_TITLE_COLUMN_NAME,
   SET_CENTER_AND_ZOOM
 } from '../../actions';
 
@@ -59,8 +59,8 @@ export default function featureMap(state, action) {
       setValueOrDefaultValue(state, 'description', action.description, null);
       break;
 
-    case SET_POINT_COLOR:
-      _.set(state, 'configuration.pointColor', action.pointColor);
+    case SET_PRIMARY_COLOR:
+      _.set(state, 'series[0].color.primary', action.primaryColor);
       break;
 
     case SET_POINT_OPACITY:
@@ -77,20 +77,20 @@ export default function featureMap(state, action) {
       _.set(state, 'configuration.baseLayerOpacity', _.isFinite(opacity) ? opacity : null);
       break;
 
-    case SET_UNITS_ONE:
+    case SET_UNIT_ONE:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
-    case SET_UNITS_OTHER:
+    case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
 
-    case SET_FLYOUT_TITLE:
-      _.set(state, 'configuration.flyoutTitleColumnName', action.flyoutTitleColumnName);
+    case SET_ROW_INSPECTOR_TITLE_COLUMN_NAME:
+      _.set(state, 'configuration.rowInspectorTitleColumnName', action.rowInspectorTitleColumnName);
       break;
 
     case SET_CENTER_AND_ZOOM:

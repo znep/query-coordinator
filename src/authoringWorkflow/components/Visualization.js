@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
@@ -11,7 +12,7 @@ import '../../views/SvgHistogram';
 import '../../views/SvgColumnChart';
 import '../../views/SvgTimelineChart';
 import '../../views/SvgFeatureMap';
-import '../../views/ChoroplethMap';
+import '../../views/SvgRegionMap';
 
 import { translate } from '../../I18n';
 import { requestCenterAndZoom } from '../actions';
@@ -26,8 +27,8 @@ import {
   isValidColumnChartVif,
   isHistogram,
   isValidHistogramVif,
-  isChoroplethMap,
-  isValidChoroplethMapVif,
+  isRegionMap,
+  isValidRegionMapVif,
   getCurrentVif,
   isRenderableMap
 } from '../selectors/vifAuthoring';
@@ -40,7 +41,8 @@ export var Visualization = React.createClass({
 
   getInitialState() {
     return {
-      flyoutRenderer: null
+      flyoutRenderer: null,
+      hasRenderedVisualization: false
     };
   },
 
@@ -100,9 +102,7 @@ export var Visualization = React.createClass({
   destroyVisualizationPreview() {
     $(this.visualizationPreview()).
       trigger('SOCRATA_VISUALIZATION_DESTROY').
-      off('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
-      off('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
   },
 
@@ -140,10 +140,10 @@ export var Visualization = React.createClass({
     }
   },
 
-  choroplethMap() {
+  regionMap() {
     var { vif } = this.props;
     var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.choropleth-map-container').length === 1;
+    var alreadyRendered = $visualizationPreview.has('.region-map').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -151,9 +151,9 @@ export var Visualization = React.createClass({
       this.destroyVisualizationPreview();
 
       $visualizationPreview.
-        socrataChoroplethMap(vif);
+        socrataSvgRegionMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_CHOROPLETH_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -171,7 +171,7 @@ export var Visualization = React.createClass({
       $visualizationPreview.
         socrataSvgFeatureMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', this.onFlyout).
+        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -197,14 +197,16 @@ export var Visualization = React.createClass({
     var { vifAuthoring } = this.props;
 
     if (hasVisualizationType(vifAuthoring)) {
+      this.setState({hasRenderedVisualization: true});
+
       if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
         this.columnChart();
       } else if (isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring)) {
         this.timelineChart();
       } else if (isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring)) {
         this.featureMap();
-      } else if (isChoroplethMap(vifAuthoring) && isValidChoroplethMapVif(vifAuthoring)) {
-        this.choroplethMap();
+      } else if (isRegionMap(vifAuthoring) && isValidRegionMapVif(vifAuthoring)) {
+        this.regionMap();
       } else if (isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring)) {
         this.histogram();
       } else {
@@ -217,8 +219,9 @@ export var Visualization = React.createClass({
 
   renderMapInfo() {
     var { vifAuthoring } = this.props;
+    var { hasPannedOrZoomed } = vifAuthoring.authoring;
 
-    if (isRenderableMap(vifAuthoring)) {
+    if (!hasPannedOrZoomed && isRenderableMap(vifAuthoring)) {
       return (
         <div className="visualization-preview-map-message alert info">
           <span className="visualization-preview-map-icon icon-info" />

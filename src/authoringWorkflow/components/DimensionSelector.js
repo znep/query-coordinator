@@ -59,7 +59,7 @@ export var DimensionSelector = React.createClass({
 
     return (
       <div className="dimension-dropdown-container">
-        <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}:</label>
+        <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}</label>
         <Styleguide.components.Dropdown {...dimensionAttributes} />
         <p className="authoring-field-description">
           <small>{translate('panes.data.fields.dimension.description')}</small>

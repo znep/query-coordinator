@@ -8,6 +8,7 @@ const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const VifHelpers = require('./helpers/VifHelpers');
 const I18n = require('./I18n');
+const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const MAX_POINT_COUNT = 1000;
 const MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
@@ -87,68 +88,73 @@ $.fn.socrataSvgTimelineChart = function(vif) {
   }
 
   function handleError(error) {
+    var messages;
 
     if (window.console && console.error) {
       console.error(error);
     }
 
-    visualization.renderError(
-      I18n.translate('visualizations.common.error_generic')
-    );
+    if (error.errorMessages) {
+      messages = error.errorMessages;
+    } else {
+      messages = I18n.translate('visualizations.common.error_generic')
+    }
+
+    visualization.renderError(messages);
   }
 
   function updateData(newVif) {
-    var dataRequests = [];
+    $.fn.socrataSvgTimelineChart.validateVif(newVif).then(() => {
 
-    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+      $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    dataRequests = newVif.
-      series.
-      map(
-        function(series, seriesIndex) {
+      const dataRequests = newVif.
+        series.
+        map(
+          function(series, seriesIndex) {
 
-          switch (series.dataSource.type) {
+            switch (series.dataSource.type) {
 
-            case 'socrata.soql':
-              return makeSocrataDataRequest(newVif, seriesIndex);
+              case 'socrata.soql':
+                return makeSocrataDataRequest(newVif, seriesIndex);
 
-            default:
-              return Promise.reject(
-                'Invalid/unsupported series dataSource.type: "{0}".'.
-                  format(series.dataSource.type)
+              default:
+                return Promise.reject(
+                  'Invalid/unsupported series dataSource.type: "{0}".'.
+                    format(series.dataSource.type)
+                );
+            }
+          }
+        );
+
+      Promise.
+        all(dataRequests).
+        then(
+          function(dataResponses) {
+            var overMaxRowCount;
+
+            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+
+            overMaxRowCount = dataResponses.
+              some(
+                function(dataResponse) {
+                  return dataResponse.rows.length > MAX_POINT_COUNT;
+                }
               );
+
+            if (overMaxRowCount) {
+
+              visualization.renderError(
+                I18n.translate(
+                  'visualizations.timeline_chart.error_exceeded_max_point_count'
+                ).format(MAX_POINT_COUNT)
+              );
+            } else {
+              visualization.render(newVif, dataResponses);
+            }
           }
-        }
-      );
-
-    Promise.
-      all(dataRequests).
-      then(
-        function(dataResponses) {
-          var overMaxRowCount;
-
-          $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-
-          overMaxRowCount = dataResponses.
-            some(
-              function(dataResponse) {
-                return dataResponse.rows.length > MAX_POINT_COUNT;
-              }
-            );
-
-          if (overMaxRowCount) {
-
-            visualization.renderError(
-              I18n.translate(
-                'visualizations.timeline_chart.error_exceeded_max_point_count'
-              ).format(MAX_POINT_COUNT)
-            );
-          } else {
-            visualization.render(newVif, dataResponses);
-          }
-        }
-      )
-      ['catch'](handleError);
+        )
+    })['catch'](handleError);
   }
 
   function decorateVifWithPrecision(vifToRender, seriesIndex) {
@@ -580,5 +586,26 @@ $.fn.socrataSvgTimelineChart = function(vif) {
 
   return this;
 };
+
+// Checks a VIF for compatibility with this visualization.
+// The intent of this function is to provide feedback while
+// authoring a visualization, not to provide feedback to a developer.
+// As such, messages returned are worded to make sense to a user.
+//
+// Returns a Promise.
+//
+// If the VIF is usable, the promise will resolve.
+// If the VIF is not usable, the promise will reject with an object:
+// {
+//   ok: false,
+//   errorMessages: Array<String>
+// }
+$.fn.socrataSvgTimelineChart.validateVif = (vif) =>
+  getSoqlVifValidator(vif).then(validator =>
+    validator.
+      requireAtLeastOneSeries().
+      requireCalendarDateDimension().
+      toPromise()
+  );
 
 module.exports = $.fn.socrataSvgTimelineChart;

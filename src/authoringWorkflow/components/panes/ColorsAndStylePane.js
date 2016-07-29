@@ -4,17 +4,18 @@ import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES } from '../../constants';
+import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES, COLORS } from '../../constants';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 import {
-  getBaseColor,
+  getPrimaryColor,
+  getSecondaryColor,
   getPointColor,
   getPointOpacity,
   getColorScale,
   getBaseLayer,
   getBaseLayerOpacity,
-  isChoroplethMap,
+  isRegionMap,
   isColumnChart,
   isFeatureMap,
   isHistogram,
@@ -22,7 +23,8 @@ import {
 } from '../../selectors/vifAuthoring';
 
 import {
-  setBaseColor,
+  setPrimaryColor,
+  setSecondaryColor,
   setPointColor,
   setPointOpacity,
   setColorScale,
@@ -43,46 +45,69 @@ export var ColorsAndStylePane = React.createClass({
     this.props.onSelectColorScale(colorScale);
   },
 
-  baseColor() {
-    var baseColor = getBaseColor(this.props.vifAuthoring);
+  renderPrimaryColor(labelText) {
+    var primaryColor = getPrimaryColor(this.props.vifAuthoring);
 
     return (
       <div>
-        <label className="block-label" htmlFor="base-color">{translate('panes.colors_and_style.fields.base_color.title')}:</label>
-        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangeBaseColor} value={baseColor} />
+        <label className="block-label" htmlFor="primary-color">{labelText}</label>
+        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+      </div>
+    );
+  },
+
+  renderSecondaryColor(labelText) {
+    var secondaryColor = getSecondaryColor(this.props.vifAuthoring);
+
+    return (
+      <div>
+        <label className="block-label" htmlFor="secondary-color">{labelText}</label>
+        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
       </div>
     );
   },
 
   columnChart() {
-    return this.baseColor();
+    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
   },
 
   histogram() {
-    return this.baseColor();
+    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.fill_color.title'));
   },
 
   timelineChart() {
-    return this.baseColor();
-  },
-
-  featureMap() {
-    var { vifAuthoring, onChangePointColor, onChangePointOpacity } = this.props;
-    var pointColor = getPointColor(vifAuthoring);
-    var pointOpacity = getPointOpacity(vifAuthoring);
-
     return (
       <div>
-        <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}:</label>
-        <Styleguide.components.ColorPicker handleColorChange={onChangePointColor} value={pointColor} />
-        <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}:</label>
-        <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={onChangePointOpacity} />
-        {this.mapLayerControls()}
+        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.fill_color.title'))}
+        {this.renderSecondaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
       </div>
     );
   },
 
-  choroplethMap() {
+  featureMap() {
+    var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity } = this.props;
+    var pointColor = getPrimaryColor(vifAuthoring);
+    var pointOpacity = getPointOpacity(vifAuthoring);
+
+    return (
+      <div>
+        <div className="authoring-field-group">
+          <h5>{translate('panes.colors_and_style.subheaders.points')}</h5>
+          <div className="authoring-field">
+            <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
+            <Styleguide.components.ColorPicker handleColorChange={onChangePrimaryColor} value={pointColor} palette={COLORS} />
+          </div>
+          <div className="authoring-field">
+            <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
+            <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={onChangePointOpacity} />
+          </div>
+          {this.mapLayerControls()}
+        </div>
+      </div>
+    );
+  },
+
+  regionMap() {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
     var defaultColorScale = getColorScale(vifAuthoring);
 
@@ -103,7 +128,7 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <div>
-        <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}:</label>
+        <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Styleguide.components.Dropdown {...colorScaleAttributes} />
         </div>
@@ -135,13 +160,18 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     return (
-      <div>
-        <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}:</label>
-        <div className="base-layer-dropdown-container">
-          <Styleguide.components.Dropdown {...baseLayerAttributes} />
+      <div className="authoring-field-group">
+        <h5>{translate('panes.colors_and_style.subheaders.map')}</h5>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
+          <div className="base-layer-dropdown-container">
+            <Styleguide.components.Dropdown {...baseLayerAttributes} />
+          </div>
         </div>
-        <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}:</label>
-        <input {...baseLayerOpacityAttributes}/>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}</label>
+          <input {...baseLayerOpacityAttributes}/>
+        </div>
       </div>
     );
   },
@@ -158,8 +188,8 @@ export var ColorsAndStylePane = React.createClass({
       configuration = this.timelineChart();
     } else if (isFeatureMap(vifAuthoring)) {
       configuration = this.featureMap();
-    } else if (isChoroplethMap(vifAuthoring)) {
-      configuration = this.choroplethMap();
+    } else if (isRegionMap(vifAuthoring)) {
+      configuration = this.regionMap();
     }
 
     return (
@@ -178,8 +208,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeBaseColor: _.debounce(baseColor => {
-      dispatch(setBaseColor(baseColor));
+    onChangePrimaryColor: _.debounce(primaryColor => {
+      dispatch(setPrimaryColor(primaryColor));
+    }, INPUT_DEBOUNCE_MILLISECONDS),
+
+    onChangeSecondaryColor: _.debounce(secondaryColor => {
+      dispatch(setSecondaryColor(secondaryColor));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
     onSelectBaseLayer: baseLayer => {

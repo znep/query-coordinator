@@ -15,15 +15,15 @@ import {
   SET_DESCRIPTION,
   SET_BASE_LAYER,
   SET_BASE_LAYER_OPACITY,
-  SET_UNITS_ONE,
-  SET_UNITS_OTHER,
+  SET_UNIT_ONE,
+  SET_UNIT_OTHER,
   SET_CENTER_AND_ZOOM,
   SET_SHAPEFILE
 } from '../../actions';
 
-export default function choroplethMap(state, action) {
+export default function regionMap(state, action) {
   if (_.isUndefined(state)) {
-    return vifs().choroplethMap;
+    return vifs().regionMap;
   }
 
   state = _.cloneDeep(state);
@@ -98,13 +98,13 @@ export default function choroplethMap(state, action) {
       _.set(state, 'configuration.legend.positiveColor', action.positiveColor);
       break;
 
-    case SET_UNITS_ONE:
+    case SET_UNIT_ONE:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
-    case SET_UNITS_OTHER:
+    case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });

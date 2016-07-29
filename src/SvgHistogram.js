@@ -8,6 +8,7 @@ const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const I18n = require('./I18n');
+const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__DIMENSION_ALIAS__';
 const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__MEASURE_ALIAS__';
@@ -174,7 +175,7 @@ $.fn.socrataSvgHistogram = function(vif) {
   var $element = $(this);
   var visualization = new SvgHistogram(
     $element,
-    applyDistributionChartSpecificDefaults(VifHelpers.migrateVif(vif))
+    VifHelpers.migrateVif(vif)
   );
   var rerenderOnResizeTimeout;
 
@@ -227,62 +228,53 @@ $.fn.socrataSvgHistogram = function(vif) {
   }
 
   function handleError(error) {
+    var messages;
 
     if (window.console && console.error) {
       console.error(error);
     }
 
-    visualization.renderError(
-      I18n.translate('visualizations.common.error_generic')
-    );
-  }
+    if (error.errorMessages) {
+      messages = error.errorMessages;
+    } else {
+      messages = I18n.translate('visualizations.common.error_generic')
+    }
 
-  function applyDistributionChartSpecificDefaults(vif) {
-    return _.defaultsDeep(
-      _.cloneDeep(vif),
-      {
-        configuration: {
-          xAxisScalingMode: 'fit',
-          columnXAxisPaddingPercent: 0
-        }
-      }
-    );
+    visualization.renderError(messages);
   }
 
   function updateData(newVif) {
-    var dataRequests = [];
-    newVif = applyDistributionChartSpecificDefaults(newVif);
-
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    dataRequests = newVif.
-      series.
-      map(
-        function(series, seriesIndex) {
+    $.fn.socrataSvgHistogram.validateVif(newVif).then(() => {
+      const dataRequests = newVif.
+        series.
+        map(
+          function(series, seriesIndex) {
 
-          switch (series.dataSource.type) {
+            switch (series.dataSource.type) {
 
-            case 'socrata.soql':
-              return makeSocrataDataRequest(newVif, seriesIndex);
+              case 'socrata.soql':
+                return makeSocrataDataRequest(newVif, seriesIndex);
 
-            default:
-              return Promise.reject(
-                'Invalid/unsupported series dataSource.type: "{0}".'.
-                  format(series.dataSource.type)
-              );
+              default:
+                return Promise.reject(
+                  'Invalid/unsupported series dataSource.type: "{0}".'.
+                    format(series.dataSource.type)
+                );
+            }
           }
-        }
-      );
+        );
 
-    Promise.
-      all(dataRequests).
-      then(
-        function(dataResponses) {
-          $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-          visualization.render(newVif, dataResponses);
-        }
-      )
-      ['catch'](handleError);
+      return Promise.
+        all(dataRequests).
+        then(
+          function(dataResponses) {
+            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+            visualization.render(newVif, dataResponses);
+          }
+        )
+    })['catch'](handleError);
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {
@@ -309,4 +301,26 @@ $.fn.socrataSvgHistogram = function(vif) {
   return this;
 };
 
-module.exports = $.fn.socrataSvgHistogram
+// Checks a VIF for compatibility with this visualization.
+// The intent of this function is to provide feedback while
+// authoring a visualization, not to provide feedback to a developer.
+// As such, messages returned are worded to make sense to a user.
+//
+// Returns a Promise.
+//
+// If the VIF is usable, the promise will resolve.
+// If the VIF is not usable, the promise will reject with an object:
+// {
+//   ok: false,
+//   errorMessages: Array<String>
+// }
+$.fn.socrataSvgHistogram.validateVif = (vif) =>
+  getSoqlVifValidator(vif).then(validator =>
+    validator.
+      requireExactlyOneSeries().
+      requireNumericDimension().
+      requireMeasureAggregation().
+      toPromise()
+  );
+
+module.exports = $.fn.socrataSvgHistogram;

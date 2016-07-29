@@ -4,6 +4,8 @@ import { createSelector } from 'reselect';
 import { VISUALIZATION_TYPES, COLUMN_TYPES } from '../constants';
 
 const getLoading = state => state.isLoading;
+const getDomain = state => state.domain;
+const getDatasetUid = state => state.datasetUid;
 const getDatasetMetadata = state => state.data;
 const getCuratedRegions = state => state.curatedRegions;
 const getPhidippidesMetadata = state => state.phidippidesMetadata;
@@ -12,6 +14,17 @@ const getError = state => state.error;
 export const isLoading = createSelector(getLoading, isLoading => isLoading);
 export const hasData = createSelector(getDatasetMetadata, datasetMetadata => { return !_.isNull(datasetMetadata); });
 export const hasError = createSelector(getError, error => { return !_.isNull(error) });
+
+export const getDatasetName = createSelector(
+  getDatasetMetadata,
+  (datasetMetadata) => _.get(datasetMetadata, 'name')
+);
+
+export const getDatasetLink = createSelector(
+  getDomain,
+  getDatasetUid,
+  (domain, datasetUid) => `https://${domain}/d/${datasetUid}`
+);
 
 export const getValidDimensions = createSelector(
   getDatasetMetadata, getPhidippidesMetadata,

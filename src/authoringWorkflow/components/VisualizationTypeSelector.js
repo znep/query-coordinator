@@ -56,7 +56,7 @@ export var VisualizationTypeSelector = React.createClass({
 
     return (
       <div className="visualization-type-dropdown-container">
-        <label className="block-label" htmlFor="visualization-type-selection">{translate('panes.data.fields.visualization_type.title')}:</label>
+        <label className="block-label" htmlFor="visualization-type-selection">{translate('panes.data.fields.visualization_type.title')}</label>
         <Styleguide.components.Dropdown {...visualizationTypesAttributes} />
       </div>
     );

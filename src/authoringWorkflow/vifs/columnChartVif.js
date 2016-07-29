@@ -6,15 +6,15 @@ export default {
     version: 2
   },
   configuration: {
-    xAxisScalingMode: 'pan',
-    localization: translateGroup('visualizations.column_chart')
+    xAxisScalingMode: 'pan'
   },
   description: '',
   series: [
     {
       color: {
-        primary: '#00a1af',
-        secondary: '#00a1af'
+        primary: '#71abd9',
+        secondary: '#71abd9',
+        highlight: '#cccccc'
       },
       dataSource: {
         datasetUid: null,

@@ -819,10 +819,10 @@ blist.namespace.fetch('blist.datatypes');
     var numericAlignment = [alignRight, alignLeft, alignCenter];
 
     // Text Formatting
-    var textAsText = {text: 'Plain Text', value: 'plain'};
-    var textAsEmail = {text: 'Email', value: 'email'};
-    var textAsUrl = {text: 'Url', value: 'url'};
-    var textAsPhone = {text: 'Phone', value: 'phone'};
+    var textAsText = {text: $.t('core.data_types.text'), value: 'plain'};
+    var textAsEmail = {text: $.t('core.data_types.email'), value: 'email'};
+    var textAsUrl = {text: $.t('core.data_types.url'), value: 'url'};
+    var textAsPhone = {text: $.t('core.data_types.phone'), value: 'phone'};
 
     var textFormattingOptions = [ textAsText, textAsEmail, textAsPhone, textAsUrl ];
 

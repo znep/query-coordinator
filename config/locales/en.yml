@@ -4192,6 +4192,22 @@ en:
         explanation_html: When you press <strong>Save</strong>, your new <strong>Draft Dataset</strong> will be visible in your personal catalog. Nobody else will be able to see it until you complete the New Dataset Wizard.
         prompt: Please give your new dataset a name.
         title: Create a New Dataset
+      menu:
+        about: About the Socrata Open Data Platform
+        api: API
+        api_subtext: Access this Dataset via SODA
+        discuss: Discuss
+        discuss_subtext: Discuss this Dataset
+        download: Download
+        download_subtext: Download in various formats
+        embed: Embed
+        embed_subtext: Embed this player on your site
+        more_views: More Views
+        more_views_subtext: Filters, charts, and maps
+        odata: OData
+        odata_subtext: Access this Dataset via OData
+        print: Print
+        print_subtext: Print this dataset
     wizard:
       cancel: Cancel
       finish: Finish

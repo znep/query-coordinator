@@ -300,6 +300,10 @@ blist.widget.showDataView = function()
 
 $(function()
 {
+    function t(str) {
+        return $.t('screens.widget.' + str);
+    }
+
     blist.dataset.setAccessType('WIDGET');
 
     // keep track of some stuff for easy access
@@ -324,28 +328,28 @@ $(function()
             menuButtonTitle: 'Access additional information about this dataset.',
             menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
             contents: [
-                { text: 'More Views', className: 'views', targetPane: 'views',
-                    subtext: 'Filters, Charts, and Maps', href: '#views',
+                { text: t('menu.more_views'), className: 'views', targetPane: 'views',
+                    subtext: t('menu.more_views_subtext'), href: '#views',
                     iconColor: '#57b6dd', onlyIf: widgetNS.isTabular && menuOptions['more_views'] },
-                { text: 'Download', className: 'downloads', targetPane: 'downloads',
-                    subtext: 'Download in various formats', href: '#downloads',
+                { text: t('menu.download'), className: 'downloads', targetPane: 'downloads',
+                    subtext: t('menu.download_subtext'), href: '#downloads',
                     iconColor: '#959595', onlyIf: widgetNS.isTabular && menuOptions['downloads'] },
-                { text: 'Discuss', className: 'comments', targetPane: 'feed',
-                    subtext: 'Discuss this Dataset', href: '#comments',
+                { text: t('menu.discuss'), className: 'comments', targetPane: 'feed',
+                    subtext: t('menu.discuss_subtext'), href: '#comments',
                     iconColor: '#bed62b', onlyIf: menuOptions['comments'] && enabledModules['allow_comments'] == true },
-                { text: 'Embed', className: 'embed', targetPane: 'embed',
-                    subtext: 'Embed this player on your site', href: '#embed',
+                { text: t('menu.embed'), className: 'embed', targetPane: 'embed',
+                    subtext: t('menu.embed_subtext'), href: '#embed',
                     iconColor: '#e44044', onlyIf: menuOptions['embed'] },
-                { text: 'API', className: 'api', targetPane: 'api',
-                    subtext: 'Access this Dataset via SODA', href: '#api',
+                { text: t('menu.api'), className: 'api', targetPane: 'api',
+                    subtext: t('menu.api_subtext'), href: '#api',
                     iconColor: '#f93f06', onlyIf: widgetNS.isTabular && menuOptions['api'] },
-                { text: 'OData', className: 'api', targetPane: 'odata',
-                    subtext: 'Access this Dataset via OData', href: '#odata',
+                { text: t('menu.odata'), className: 'api', targetPane: 'odata',
+                    subtext: t('menu.odata_subtext'), href: '#odata',
                     iconColor: '#f93f06', onlyIf: widgetNS.isTabular && menuOptions['odata'] },
-                { text: 'Print', className: 'print', targetPane: 'print',
-                    subtext: 'Print this dataset', href: '#print',
+                { text: t('menu.print'), className: 'print', targetPane: 'print',
+                    subtext: t('menu.print_subtext'), href: '#print',
                     iconColor: '#a460c4', onlyIf: blist.dataset.isTabular() && menuOptions['print'] },
-                { text: 'About the Socrata Open Data Platform', className: 'about',
+                { text: t('menu.about'), className: 'about',
                     href: 'http://www.socrata.com/', rel: 'external',
                     onlyIf: menuOptions['about_sdp'] }
             ],

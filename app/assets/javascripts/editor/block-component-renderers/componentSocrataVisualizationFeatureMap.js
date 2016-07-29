@@ -44,11 +44,14 @@ function _renderTemplate($element, componentData) {
 
   var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   var $componentContent = $('<div>', { class: 'component-content' });
+  var flyoutEvent = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
+    'SOCRATA_VISUALIZATION_FLYOUT' :
+    'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT';
 
   $element.
     addClass(className).
     on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', function(event) {
+    on(flyoutEvent, function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {

@@ -1,4 +1,4 @@
-$component-resize-handle-z-index: 15;
+$flyout-z-index: 65535;
 $modal-z-index: 14;
 $settings-panel-z-index: 14;
 $resizing-block: 13;
@@ -6,10 +6,9 @@ $block-ghost-z-index: 12;
 $add-content-panel-z-index: 10;
 $link-tip-z-index: 10;
 $style-and-presentation-panel-z-index: 9;
+$site-header-z-index: 9;
 $story-save-error-z-index: 8;
 $rich-text-editor-toolbar-z-index: 8;
-$site-header-z-index: 9;
-$flyout-z-index: 15;
 $active-block-edit-z-index: 3;
 $user-story-header-z-index: 3;
 $user-story-header-menu-z-index: 2;
@@ -17,5 +16,6 @@ $settings-panel-overlay-z-index: 1;
 $user-story-container-z-index: 1;
 
 // The following z-indexes apply inside block components
-$component-content-z-index: 1;
 $component-edit-controls-z-index: 15;
+$component-resize-handle-z-index: 15;
+$component-content-z-index: 1;

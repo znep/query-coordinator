@@ -2,7 +2,7 @@
 <% valid_social_shares.each do |social_share| %>
   <% label = localized("general.social_shares.#{social_share[:type]}", get_site_chrome.locales) %>
   <%= link_to(social_share[:url],
-    :class => 'site-chrome-nav-link site-chrome-social-link noselect') do %>
+    :class => 'site-chrome-nav-link site-chrome-social-link noselect', :target => '_blank') do %>
     <%= content_tag(:span, social_link_icon(social_share[:type]), :class => 'monosocial', :title => label) -%>
     <%= content_tag(:span, label, :class => 'social-link-label') if show_label -%>
   <% end -%>

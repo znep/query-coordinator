@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
+import moment from 'moment';
 import { fetchOptions } from '../constants';
 import {
   TABLE_SHOW_PAGE,
@@ -76,7 +77,8 @@ export function tableLoadPage() {
         map(category => _.map(category.goals, (goal) =>
           _.assign(goal, {
             category: _.omit(category, 'goals'),
-            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name
+            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name,
+            updatedAtTimestamp: moment(goal.updated_at).unix()
           }))).
         reject(_.isEmpty).
         flatten().
@@ -96,7 +98,7 @@ export function tableLoadPage() {
           sortedArray = _.orderBy(goals, 'created_by.displayName', sortDirection);
           break;
         case 'updated_at':
-          sortedArray = _.orderBy(goals, 'updated_at', sortDirection);
+          sortedArray = _.orderBy(goals, 'updatedAtTimestamp', sortDirection);
           break;
         case 'visibility':
           sortedArray = _.orderBy(goals, 'is_public', sortDirection);

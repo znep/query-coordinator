@@ -5,7 +5,8 @@ body.action_datasets_show {
     > .banner {
       > .rally-top {
         line-height: $header_logo_height;
-        padding: 0.5rem;
+        padding: 8px;
+        box-sizing: content-box;
 
         > a.logo {
           > img {

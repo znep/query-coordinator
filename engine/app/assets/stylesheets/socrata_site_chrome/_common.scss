@@ -234,6 +234,7 @@ header#site-chrome-header, footer#site-chrome-footer {
             font-style: 16px;
             box-shadow: none;
             border-color: #f4f4f4;
+            box-sizing: content-box;
           }
           button {
             height: 50px;

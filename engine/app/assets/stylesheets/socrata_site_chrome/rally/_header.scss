@@ -11,6 +11,7 @@ header#site-chrome-header[template="rally"] {
       height: $header_logo_height;
       line-height: $header_logo_height;
       padding: 16px;
+      box-sizing: content-box;
 
       > a.logo {
         float: left;

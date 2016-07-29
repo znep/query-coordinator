@@ -327,7 +327,7 @@ function SvgTimelineChart($element, vif) {
               attr('cx', function(d) { return d3XScale(parseDate(d[dimensionIndex])); }).
               attr('cy', function(d) { return (d[measureIndex] !== null) ? d3YScale(d[measureIndex]) : -100; }).
               attr('fill', self.getPrimaryColorBySeriesIndex(seriesIndex)).
-              attr('stroke', self.getSecondaryColorBySeriesIndex(seriesIndex));
+              attr('stroke', self.getPrimaryColorBySeriesIndex(seriesIndex));
       });
     }
 

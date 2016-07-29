@@ -84,8 +84,8 @@ export default {
         line_color: {
           title: 'Line Color'
         },
-        fill_color: {
-          title: 'Fill Color'
+        area_color: {
+          title: 'Area Color'
         },
         point_color: {
           title: 'Color'

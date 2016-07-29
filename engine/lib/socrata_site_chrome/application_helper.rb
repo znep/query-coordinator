@@ -84,7 +84,7 @@ module SocrataSiteChrome
 
       social_links.select do |link|
         link[:url].present?
-      end.sort_by { |x| social_link_order.find_index(x[:type]) }
+      end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
     end
 
     def valid_links(links)

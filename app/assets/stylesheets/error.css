@@ -12,6 +12,6 @@
  *
  *= require lib/normalize
  *= require_tree ./lib
- *= require_tree ./404
+ *= require_tree ./error
  *= require_self
  */

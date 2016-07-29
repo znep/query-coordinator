@@ -5,13 +5,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # If someone requests a URL with a file extension that we do not explicitly
-  # handle then Rails will 'helpfully' display a default error page after
-  # alerting Airbrake. We don't care about that, and we want to show our own
-  # error page. This line presumably will rescue all of the below class of
-  # exceptions and just render our 404 page.
-  rescue_from ActionController::UnknownFormat, with: :render_404
-
   # Expose helper_methods for use in all views
   helper_method :current_user, :current_user_story_authorization, :downtimes
 
@@ -41,11 +34,21 @@ class ApplicationController < ActionController::Base
     Rails.env.test?
   end
 
-  def render_404
+  def render_story_404
+    @status = 404
+    @title = I18n.t('error_pages.stories_404.title')
+    @description = I18n.t('error_pages.stories_404.description')
+
     respond_to do |format|
-      format.html { render('stories/404', layout: '404', status: 404) }
-      format.json { render(json: {error: '404 Not Found'}, status: 404) }
-      format.any { render('stories/404', layout: '404', formats: [:html], content_type: 'text/html', status: 404) }
+      format.json do
+        render status: @status, json: { status: @status.to_s, error: @title }
+      end
+      format.html do
+        render 'errors/show', status: @status, layout: 'error'
+      end
+      format.any do
+        render 'errors/show', status: @status, layout: 'error', formats: [:html], content_type: 'text/html'
+      end
     end
   end
 
@@ -75,6 +78,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_published
       when 'api/v1/uploads'
         require_sufficient_rights_for_api_uploads
+      when 'errors'
+        true
       when 'consul_checks'
         require_sufficient_rights_for_consul_checks
       when 'post_login'
@@ -303,7 +308,7 @@ class ApplicationController < ActionController::Base
       if current_user.present?
 
         # always check that the user has access to the 4x4
-        return render_404 unless CoreServer.view_accessible?(story_uid)
+        return render_story_404 unless CoreServer.view_accessible?(story_uid)
 
         # If that passes, check additional storyteller-specific
         # permission rules.
@@ -311,21 +316,21 @@ class ApplicationController < ActionController::Base
           when 'show'
             #pass
           when 'preview'
-            render_404 unless can_view_unpublished_story?
+            render_story_404 unless can_view_unpublished_story?
           when 'tile'
             # pass
           when 'new'
-            render_404 unless can_create_story?
+            render_story_404 unless can_create_story?
           when 'create'
-            render_404 unless can_create_story?
+            render_story_404 unless can_create_story?
           when 'about'
             #pass
           when 'copy'
             render text: 'It seems that you don\'t have access to do that. Sorry!', status: 403 unless can_make_copy?
           when 'edit'
-            render_404 unless can_edit_story?
+            render_story_404 unless can_edit_story?
           when 'stats'
-            render_404 unless can_see_story_stats?
+            render_story_404 unless can_see_story_stats?
           else
             raise_undefined_authorization_handler_error
         end
@@ -333,7 +338,7 @@ class ApplicationController < ActionController::Base
         if action != 'show' && action != 'tile'
           handle_unauthorized_request
         elsif CoreServer.view_inaccessible?(story_uid)
-          render_404
+          render_story_404
         end
       end
     end

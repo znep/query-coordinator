@@ -14,6 +14,9 @@ class StoriesController < ApplicationController
 
   force_ssl unless: :ssl_disabled?
 
+  # Use more specific handler for handling unknown format on stories.
+  rescue_from ActionController::UnknownFormat, with: :render_story_404
+
   def show
     @site_chrome = SiteChrome.for_current_domain
     respond_with_story(PublishedStory.find_by_uid(params[:uid]))
@@ -47,7 +50,7 @@ class StoriesController < ApplicationController
         format.json { render json: @tile_properties }
       end
     else
-      render_404
+      render_story_404
     end
   end
 
@@ -66,10 +69,10 @@ class StoriesController < ApplicationController
           RuntimeError.new("TEMPORARY/DEBUG: No story title on view '#{view}'"),
           on_method: 'stories_controller#new'
         )
-        render_404
+        render_story_404
       end
     else
-      render_404
+      render_story_404
     end
   end
 
@@ -108,7 +111,7 @@ class StoriesController < ApplicationController
     if story.present?
       redirect_to "/datasets/#{params[:uid]}/about"
     else
-      render_404
+      render_story_404
     end
   end
 
@@ -191,7 +194,7 @@ class StoriesController < ApplicationController
         end
       end
     else
-      render_404
+      render_story_404
     end
   end
 
@@ -259,7 +262,7 @@ class StoriesController < ApplicationController
         format.json { render json: @story }
       end
     else
-      render_404
+      render_story_404
     end
   end
 

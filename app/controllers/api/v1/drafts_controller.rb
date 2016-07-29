@@ -7,7 +7,7 @@ class Api::V1::DraftsController < ApplicationController
     if @story
       render json: @story
     else
-      render_404
+      render_story_404
     end
   end
 

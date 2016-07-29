@@ -20,6 +20,10 @@ RSpec.describe ApplicationController, :type => :controller do
     }
   end
 
+  after do
+    Rails.application.reload_routes!
+  end
+
   describe '#current_user' do
     it 'calls authenticate on stored session' do
       mock_session = double()

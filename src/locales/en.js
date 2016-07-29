@@ -175,7 +175,6 @@ export default {
       map_locate_user_error_notice: 'Click to try again',
       map_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
       no_value: '(No value)',
-      no_label: '(No label)',
       unit: {
         one: 'Record',
         other: 'Records'

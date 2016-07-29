@@ -12,7 +12,7 @@ const MARGINS = {
   TOP: 16,
   RIGHT: 0,
   BOTTOM: 0,
-  LEFT: 46
+  LEFT: 50
 };
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
 const DIMENSION_LABEL_ANGLE = 45;
@@ -27,7 +27,7 @@ const MAX_COLUMN_COUNT_WITHOUT_PAN = 30;
 const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
-
+const NO_VALUE_SENTINEL = '__NO_VALUE__';
 /**
  * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
  * are using. This is called `clampValue` in order to prevent confusion due to
@@ -877,7 +877,11 @@ function SvgColumnChart($element, vif) {
           enter().
             append('g').
               attr('class', 'dimension-group').
-              attr('data-group-category', function(d) { return d[0]; }).
+              attr('data-group-category', function(d) {
+                return (d[0] === null || typeof d[0] === 'undefined') ?
+                  NO_VALUE_SENTINEL :
+                  d[0];
+              }).
               attr(
                 'transform',
                 function(d) {
@@ -1063,9 +1067,12 @@ function SvgColumnChart($element, vif) {
         on(
           'mousemove',
           function(d) {
+            var groupCategory = (d[0] === null || typeof d[0] === 'undefined') ?
+              NO_VALUE_SENTINEL :
+              d[0];
             var dimensionGroup = xAxisAndSeriesSvg.
               select(
-                '.dimension-group[data-group-category="{0}"]'.format(d[0])
+                '.dimension-group[data-group-category="{0}"]'.format(groupCategory)
               );
 
             showGroupHighlight(dimensionGroup);
@@ -1124,7 +1131,7 @@ function SvgColumnChart($element, vif) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = label || I18n.translate('visualizations.common.no_label');
+    label = label || I18n.translate('visualizations.common.no_value');
 
     return (label.length >= DIMENSION_LABEL_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1324,7 +1331,9 @@ function SvgColumnChart($element, vif) {
       append(
         $('<td>', {'colspan': 2}).
           text(
-            (title) ? title : ''
+            (title === NO_VALUE_SENTINEL) ?
+              I18n.translate('visualizations.common.no_value') :
+              title
           )
         );
     var labelValuePairs = groupElement.data()[0][1];
@@ -1399,7 +1408,7 @@ function SvgColumnChart($element, vif) {
   function showColumnFlyout(columnElement, datum) {
     var title = (
       columnElement.getAttribute('data-column-category') ||
-      I18n.translate('visualizations.common.no_label')
+      I18n.translate('visualizations.common.no_value')
     );
     var label = datum[0];
     var value = datum[1];

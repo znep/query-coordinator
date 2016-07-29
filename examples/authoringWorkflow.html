@@ -167,13 +167,29 @@
         ]
       };
 
+      var ufoSightings = {
+        configuration: {
+          axisLabels: axisLabels,
+          tileserverHosts: stagingTileServerHosts,
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: 'k6cs-ww27'
+            }
+          }
+        ]
+      };
+
       var authoringWorkflow = new AuthoringWorkflow(container, {
         // vif: choroplethVif,
         // vif: ufoSightingsVif,
-        vif: featureMapVif,
+        // vif: featureMapVif,
         // vif: iowaMathAndReadingProficiency,
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
+        vif: ufoSightings,
         onComplete: function(result) {
           output.innerHTML = JSON.stringify(result.vif, null, 4);
           $chart.empty();

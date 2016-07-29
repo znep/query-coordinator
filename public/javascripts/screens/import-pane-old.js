@@ -1443,7 +1443,7 @@
             'class': 'columnSelect',
             contents: optionsForSelect([{
                 value: '',
-                label: '(No Source Column)',
+                label: t('no_source_column'),
                 'class': 'special'
             }].concat(columnSelectOptions))
         });
@@ -1452,7 +1452,7 @@
             'class': 'compositeColumnSourceSelect',
             contents: optionsForSelect(columnSelectOptions.concat([{
                 value: '[static]',
-                label: '(Insert static text...)',
+                label: $.t('screens.import_common.insert_static_text'),
                 'class': 'special'
             }]))
         });

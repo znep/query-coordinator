@@ -352,6 +352,10 @@ ul.quick-action-menu {
 
 #authoring-workflow {
   line-height: 1.618; // Styleguide expects this.
+
+  .nav-tabs {
+    margin-bottom: 24.27px;
+  }
 }
 
 // Developer mode Rack Mini Profiler.

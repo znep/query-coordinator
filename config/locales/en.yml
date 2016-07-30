@@ -2691,6 +2691,10 @@ en:
                 description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
                 placeholder: http://www.linkedin.com/
                 title: LinkedIn Profile Link
+              pinterest_profile_link:
+                description: Add the URL here to display a link to your organization's Pinterest profile in both the Header and Footer.
+                placeholder: http://www.pinterest.com/
+                title: Pinterest Profile Link
               tumblr_profile_link:
                 description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
                 placeholder: http://www.tumblr.com/

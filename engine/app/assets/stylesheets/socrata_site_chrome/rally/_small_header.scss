@@ -1,62 +1,60 @@
 $small_banner_height: 38px;
 
-body.action_datasets_show {
-  header#site-chrome-header[template="rally"] {
-    > .banner {
-      > .rally-top {
-        line-height: $header_logo_height;
-        padding: 8px;
-        box-sizing: content-box;
+header#site-chrome-header[template="rally"].small {
+  > .banner {
+    > .rally-top {
+      line-height: $header_logo_height;
+      padding: 8px;
+      box-sizing: content-box;
 
-        > a.logo {
-          > img {
-            height: $header_logo_height;
+      > a.logo {
+        > img {
+          height: $header_logo_height;
+        }
+        > span.site-name {
+          font-size: 22px;
+        }
+      }
+    }
+
+    > .rally-bottom {
+      height: $small_banner_height;
+      line-height: $small_banner_height;
+
+      .desktop {
+        .navbar-left {
+          .site-chrome-nav-links {
+            a.site-chrome-nav-link {
+              font-size: 14px;
+            }
           }
-          > span.site-name {
-            font-size: 22px;
+        }
+        .navbar-right {
+          .site-chrome-social-links {
+            .site-chrome-social-link {
+              span.monosocial {
+                font-style: 36px;
+                vertical-align: middle;
+              }
+            }
+          }
+          .divider {
+            margin: 8px 11px;
+            padding: 11px 0;
+          }
+          .user-actions {
+            .sign-in-toggle,  {
+              padding: 4px 12px;
+              font-size: 11px;
+            }
           }
         }
       }
 
-      > .rally-bottom {
-        height: $small_banner_height;
-        line-height: $small_banner_height;
-
-        .desktop {
-          .navbar-left {
-            .site-chrome-nav-links {
-              a.site-chrome-nav-link {
-                font-size: 14px;
-              }
-            }
-          }
-          .navbar-right {
-            .site-chrome-social-links {
-              .site-chrome-social-link {
-                span.monosocial {
-                  font-style: 36px;
-                  vertical-align: middle;
-                }
-              }
-            }
-            .divider {
-              margin: 8px 11px;
-              padding: 11px 0;
-            }
-            .user-actions {
-              .sign-in-toggle,  {
-                padding: 4px 12px;
-                font-size: 11px;
-              }
-            }
-          }
-        }
-
-        .mobile {
-          .menu-toggle {
-            padding: 4px 12px;
-            font-size: 11px;
-          }
+      .mobile {
+        .menu-toggle {
+          padding: 4px 12px;
+          font-size: 11px;
         }
       }
     }

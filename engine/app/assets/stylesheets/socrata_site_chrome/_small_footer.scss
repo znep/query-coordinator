@@ -1,108 +1,106 @@
 $content_padding: 8px;
 $link_line_height: 40px;
 
-body.action_datasets_show {
-  footer#site-chrome-footer {
-    min-height: 0;
+footer#site-chrome-footer.small {
+  min-height: 0;
 
-    .content {
-      margin: 0 auto;
-      padding: $content_padding;
+  .content {
+    margin: 0 auto;
+    padding: $content_padding;
 
+    > div.logo {
+      max-width: 50%;
+      width: auto;
+      margin-right: 56px;
+
+      img {
+        max-height: 60px;
+        vertical-align: middle;
+      }
+
+      > span.site-name {
+        font-size: 20px;
+        line-height: 40px;
+        vertical-align: middle;
+      }
+
+      > .site-chrome-social-links {
+        margin: 0;
+        clear: none;
+        float: right;
+        margin-left: 32px;
+
+        .site-chrome-social-link {
+          margin-right: 16px;
+
+          span.monosocial {
+            font-size: $link_line_height;
+          }
+
+          span.social-link-label {
+            display: none;
+          }
+        }
+      }
+    }
+
+    > div.links {
+      width: auto;
+      margin-top: 0;
+
+      ul.links-col {
+        -webkit-column-count: initial;
+        -moz-column-count: initial;
+        column-count: initial;
+        margin: 0;
+
+        li {
+          width: auto;
+          line-height: $link_line_height;
+          margin-right: 32px;
+
+          a.footer-link {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+
+    @include mobile-med {
       > div.logo {
-        max-width: 50%;
-        width: auto;
-        margin-right: 56px;
+        max-width: 100%;
+        text-align: left;
+        margin: 0;
+        overflow: hidden;
 
-        img {
-          max-height: 100px;
-          vertical-align: middle;
-        }
-
-        > span.site-name {
-          font-size: 20px;
-          line-height: 40px;
-          vertical-align: middle;
-        }
-
-        > .site-chrome-social-links {
-          margin: 0;
-          clear: none;
-          float: right;
-          margin-left: 32px;
-
-          .site-chrome-social-link {
-            margin-right: 16px;
-
-            span.monosocial {
-              font-size: $link_line_height;
-            }
-
-            span.social-link-label {
-              display: none;
-            }
-          }
+        img, span.site-name, div.site-chrome-social-links {
+          float: left;
         }
       }
-
       > div.links {
-        width: auto;
-        margin-top: 0;
+        text-align: center;
+        clear: both;
+        margin-top: 0.5rem;
+      }
+    }
 
-        ul.links-col {
-          -webkit-column-count: initial;
-          -moz-column-count: initial;
-          column-count: initial;
-          margin: 0;
-
+    @include mobile-sm {
+      > div.links {
+        margin-top: 0.5rem;
+        .links-col {
           li {
-            width: auto;
-            line-height: $link_line_height;
-            margin-right: 32px;
-
-            a.footer-link {
-              font-size: 13px;
-            }
-          }
-        }
-      }
-
-      @include mobile-med {
-        > div.logo {
-          max-width: 100%;
-          text-align: left;
-          margin: 0;
-          overflow: hidden;
-
-          img, span.site-name, div.site-chrome-social-links {
-            float: left;
-          }
-        }
-        > div.links {
-          text-align: center;
-          clear: both;
-          margin-top: 0.5rem;
-        }
-      }
-
-      @include mobile-sm {
-        > div.links {
-          margin-top: 0.5rem;
-          .links-col {
-            li {
-              line-height: 19px;
-              margin-right: 16px;
-              margin-top: 0;
-              display: inline-block;
-            }
+            line-height: 19px;
+            margin-right: 16px;
+            margin-top: 0;
+            display: inline-block;
           }
         }
       }
     }
+  }
 
-    .copyright {
-      margin: 0 auto;
-      padding-bottom: $content_padding;
-    }
+  .copyright {
+    margin: 0 auto;
+    padding-bottom: $content_padding;
   }
 }

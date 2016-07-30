@@ -112,7 +112,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       allow(helper).to receive(:footer_title).and_return(%Q(Seattle's silly data!))
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
-      expect(helper.copyright).to eq(%Q(\u00A9 1984, Seattle's silly data!))
+      expect(helper.copyright).to eq(%Q(\u00A9 1984 Seattle's silly data!))
     end
   end
 

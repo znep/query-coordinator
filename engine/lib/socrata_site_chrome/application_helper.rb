@@ -58,6 +58,7 @@ module SocrataSiteChrome
         'linked_in' => 'linkedin',
         'flickr' => 'flickr',
         'instagram' => 'instagram',
+        'pinterest' => 'pinterest',
         'tumblr' => 'tumblr',
         'yammer' => 'y', # Doesn't exist for yammer. Just show a "y" because y not
         'google_plus' => 'googleplus',
@@ -66,7 +67,7 @@ module SocrataSiteChrome
     end
 
     def social_link_order
-      %w(facebook twitter youtube linked_in flickr instagram tumblr yammer google_plus vimeo)
+      %w(facebook twitter youtube linked_in flickr instagram pinterest tumblr yammer google_plus vimeo)
     end
 
     def valid_social_links(links)

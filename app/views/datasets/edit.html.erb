@@ -38,7 +38,7 @@
         <li class="uploadFilePane" data-wizardpanename="uploadFile">
           <p class="headline"></p>
           <div class="uploadFileContainer">
-            <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="No file selected yet."/></div>
+            <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="<%= t('screens.dataset_new.upload_file.no_file_selected') %>"/></div>
             <div class="button uploadFileButtonWrapper"><%= t("#{prefix}.choose_a_file") %></div>
             <div class="uploadThrobber"><span class="icon"></span><span class="text"><%= t("#{prefix}.uploading") %></span></div>
             <%- if @view.is_geo? -%>

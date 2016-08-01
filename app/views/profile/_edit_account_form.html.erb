@@ -101,7 +101,7 @@
           </div>
         <%- end -%>
         <div class="line emailSubscribeLine clearfix">
-          <label><%= t('screens.profile.edit.account.email.interests.other_label') %></label>
+          <label>&nbsp;</label>
           <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
           <label for="user_email_subscribe" class="description">
             <%= t('screens.profile.edit.account.email.interests.user_affected') %>

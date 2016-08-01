@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styleguide from 'socrata-styleguide';
 
-import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
+import { translate } from '../../../I18n';
+import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
 import {
   getRowInspectorTitleColumnName,
   getUnitOne,
@@ -14,9 +14,10 @@ import {
   isFeatureMap,
   isHistogram,
   isTimelineChart
-} from '../selectors/vifAuthoring';
-import { getDisplayableColumns } from '../selectors/metadata';
-import { setUnitsOne, setUnitsOther, setRowInspectorTitleColumnName } from '../actions';
+} from '../../selectors/vifAuthoring';
+
+import { getDisplayableColumns } from '../../selectors/metadata';
+import { setUnitsOne, setUnitsOther, setRowInspectorTitleColumnName } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 export var LegendsAndFlyoutsPane = React.createClass({
@@ -81,16 +82,29 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return this.units();
   },
 
+  renderFlyoutTitleColumnOption(option) {
+    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+    var icon = columnType ? columnType.icon : '';
+
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={icon}></span> {option.title}
+      </div>
+    );
+  },
+
   featureMap() {
     var { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
     var defaultFlyoutTitleColumn = getRowInspectorTitleColumnName(vifAuthoring);
     var columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
-      // EN-8120 - We need to strip out system and composite columns, both of
-      // which are determined to be non-displayable by the MetadataProvider,
-      // which is the criteria used by the row inspector implementation.
-      options: _.map(getDisplayableColumns(metadata), column => ({title: column.name, value: column.fieldName})),
+      options: _.map(getDisplayableColumns(metadata), column => ({
+        title: column.name,
+        value: column.fieldName,
+        type: column.renderTypeName,
+        render: this.renderFlyoutTitleColumnOption
+      })),
       onSelection: onSelectRowInspectorTitle
     };
 

@@ -2,10 +2,10 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
-import { getTitle, getDescription } from '../selectors/vifAuthoring';
-import { setTitle, setDescription } from '../actions';
+import { translate } from '../../../I18n';
+import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { getTitle, getDescription } from '../../selectors/vifAuthoring';
+import { setTitle, setDescription } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 
 export var TitleAndDescriptionPane = React.createClass({

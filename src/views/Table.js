@@ -69,7 +69,7 @@ module.exports = function Table(element, vif) {
     _render(data, options);
   };
 
-  this.renderError = function(error) {
+  this.renderError = function() {
 
     self.
       $element.
@@ -480,7 +480,7 @@ module.exports = function Table(element, vif) {
     }
   }
 
-  function _handleMouseup(event) {
+  function _handleMouseup() {
     var columnWidths = [];
 
     // If we are currently resizing a column activeResizeColumnName will be

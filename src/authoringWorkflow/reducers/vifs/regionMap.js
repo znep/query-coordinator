@@ -17,7 +17,8 @@ import {
   SET_BASE_LAYER_OPACITY,
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
-  SET_CENTER_AND_ZOOM
+  SET_CENTER_AND_ZOOM,
+  SET_SHAPEFILE
 } from '../../actions';
 
 export default function regionMap(state, action) {
@@ -73,8 +74,13 @@ export default function regionMap(state, action) {
       break;
 
     case SET_COMPUTED_COLUMN:
-      _.set(state, 'configuration.computedColumnName', action.computedColumnName);
-      _.set(state, 'configuration.shapefile.uid', action.computedColumnUid);
+      _.set(state, 'configuration.computedColumnName', action.computedColumn);
+      break;
+
+    case SET_SHAPEFILE:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
       break;
 
     case SET_BASE_LAYER:

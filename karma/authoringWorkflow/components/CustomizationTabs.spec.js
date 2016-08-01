@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-import renderComponent from './renderComponent';
-import { CustomizationTabs } from 'src/authoringWorkflow/CustomizationTabs';
+import renderComponent from '../renderComponent';
+import { CustomizationTabs } from 'src/authoringWorkflow/components/CustomizationTabs';
 
 function defaultProps() {
   return {

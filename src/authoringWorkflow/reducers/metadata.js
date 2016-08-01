@@ -3,14 +3,23 @@ import _ from 'lodash';
 import {
   REQUEST_METADATA,
   RECEIVE_METADATA,
-  HANDLE_METADATA_ERROR
+  HANDLE_METADATA_ERROR,
+  SET_PHIDIPPIDES_METADATA
 } from '../actions';
 
-import defaultMetadata from '../defaultMetadata';
+export var defaultState = {
+  isLoading: false,
+  error: null,
+  domain: null,
+  datasetUid: null,
+  data: null,
+  curatedRegions: null,
+  phidippidesMetadata: null
+};
 
 export default function metadata(state, action) {
   if (_.isUndefined(state)) {
-    return defaultMetadata;
+    return defaultState;
   }
 
   state = _.cloneDeep(state);
@@ -42,6 +51,10 @@ export default function metadata(state, action) {
       state.data = null;
       state.curatedRegions = null;
       state.phidippidesMetadata = null;
+      break;
+
+    case SET_PHIDIPPIDES_METADATA:
+      state.phidippidesMetadata = action.phidippidesMetadata;
       break;
   }
 

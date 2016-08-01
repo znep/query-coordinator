@@ -1,7 +1,10 @@
-var MetadataProvider = require('../dataProviders/MetadataProvider');
+import _ from 'lodash';
+import moment from 'moment';
+import MetadataProvider from '../dataProviders/MetadataProvider';
+import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
 export function setDataSource(dataSource) {
-  return function(dispatch) {
+  return dispatch => {
     if (!/\w{4}\-\w{4}/.test(dataSource.datasetUid)) {
       return;
     }
@@ -17,9 +20,9 @@ export function setDataSource(dataSource) {
       datasetMetadataProvider.getDatasetMetadata(),
       datasetMetadataProvider.getPhidippidesMetadata(),
       datasetMetadataProvider.getCuratedRegions()
-    ]).then(function(resolutions) {
+    ]).then(resolutions => {
       dispatch(receiveMetadata(resolutions));
-    }).catch(function(error) {
+    }).catch(error => {
       console.error(error);
       dispatch(handleMetadataError());
     });
@@ -50,6 +53,14 @@ export function handleMetadataError(error) {
   return {
     type: HANDLE_METADATA_ERROR,
     error
+  };
+}
+
+export var SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
+export function setPhidippidesMetadata(phidippidesMetadata) {
+  return {
+    type: SET_PHIDIPPIDES_METADATA,
+    phidippidesMetadata
   };
 }
 
@@ -85,12 +96,148 @@ export function setVisualizationType(visualizationType) {
   };
 }
 
+export var INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
+export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRegion) {
+  return dispatch => {
+    var providerOptions = { domain, datasetUid };
+    var datasetMetadataProvider = new MetadataProvider(providerOptions);
+    var regionCodingProvider = new RegionCodingProvider(providerOptions);
+    var handleError = error => {
+      dispatch(handleRegionCodingError(error));
+    };
+    var handleCompletion = () => {
+      datasetMetadataProvider.
+        getPhidippidesMetadata().
+        then(metadata => {
+          var columns = _.map(metadata.columns, (column, key) => {
+            column.fieldName = key;
+            return column;
+          });
+
+          var computedColumn = _.find(columns, column => {
+            return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
+          });
+
+          dispatch(finishRegionCoding());
+          dispatch(setComputedColumn(computedColumn.fieldName));
+          dispatch(setPhidippidesMetadata(metadata));
+        }).
+        catch(handleError);
+    };
+
+    var handleInitiation = response => {
+      if (response.success) {
+        dispatch(setComputedColumn(null));
+        dispatch(setShapefile(curatedRegion.uid, curatedRegion.featurePk, curatedRegion.geometryLabel));
+
+        regionCodingProvider.
+          awaitRegionCodingCompletion({ jobId: response.jobId }, () => dispatch(awaitRegionCoding())).
+          then(handleCompletion).
+          catch(handleError);
+      } else {
+        handleError();
+      }
+    };
+
+    var handleStatus = response => {
+      switch (response.status) {
+        case 'unknown':
+          regionCodingProvider.
+            initiateRegionCoding(curatedRegion.uid, sourceColumn).
+            then(handleInitiation).
+            catch(handleError);
+          break;
+        case 'processing':
+          regionCodingProvider.
+            awaitRegionCodingCompletion({ jobId: response.data.jobId }).
+            then(handleCompletion).
+            catch(handleError);
+          break;
+        default:
+          handleError();
+          break;
+      }
+    };
+
+    dispatch(requestRegionCoding());
+
+    return regionCodingProvider.
+      getRegionCodingStatus({ shapefileId: curatedRegion.uid }).
+      then(handleStatus).
+      catch(handleError);
+  };
+}
+
+export var REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
+export function requestRegionCoding() {
+  return {
+    type: REQUEST_REGION_CODING
+  };
+}
+
+export var AWAIT_REGION_CODING = 'AWAIT_REGION_CODING';
+export function awaitRegionCoding() {
+  return {
+    type: AWAIT_REGION_CODING,
+    updatedAt: moment().calendar()
+  };
+}
+
+export var FINISH_REGION_CODING = 'FINISH_REGION_CODING';
+export function finishRegionCoding() {
+  return {
+    type: FINISH_REGION_CODING
+  };
+}
+
+export var HANDLE_REGION_CODING_ERROR = 'HANDLE_REGION_CODING_ERROR';
+export function handleRegionCodingError(error) {
+  return {
+    type: HANDLE_REGION_CODING_ERROR,
+    error
+  };
+}
+
 export var SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
-export function setComputedColumn(computedColumnUid, computedColumnName) {
+export function setComputedColumn(computedColumn) {
   return {
     type: SET_COMPUTED_COLUMN,
-    computedColumnUid,
-    computedColumnName
+    computedColumn
+  };
+}
+
+export var REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
+export function requestShapefileMetadata(domain, shapefileUid) {
+  return dispatch => {
+    var shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
+    var handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
+    var handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
+      dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));
+    };
+
+    dispatch(requestShapefile());
+
+    return shapefileMetadataProvider.
+      getShapefileMetadata(shapefileUid).
+      then(handleShapefileMetadata).
+      catch(handleShapefileMetadataError);
+  };
+}
+
+export var REQUEST_SHAPEFILE = 'REQUEST_SHAPEFILE';
+export function requestShapefile() {
+  return {
+    type: REQUEST_SHAPEFILE
+  };
+}
+
+export var SET_SHAPEFILE = 'SET_SHAPEFILE';
+export function setShapefile(shapefileUid, shapefilePrimaryKey, shapefileGeometryLabel) {
+  return {
+    type: SET_SHAPEFILE,
+    shapefileUid,
+    shapefilePrimaryKey,
+    shapefileGeometryLabel
   };
 }
 

@@ -5,18 +5,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import RowInspector from '../views/RowInspector';
-import FlyoutRenderer from '../views/FlyoutRenderer';
+import RowInspector from '../../views/RowInspector';
+import FlyoutRenderer from '../../views/FlyoutRenderer';
 
-import '../views/SvgColumnChart';
-import '../views/SvgTimelineChart';
-import '../views/SvgFeatureMap';
-import '../views/SvgRegionMap';
+import '../../views/SvgHistogram';
+import '../../views/SvgColumnChart';
+import '../../views/SvgTimelineChart';
+import '../../views/SvgFeatureMap';
+import '../../views/SvgRegionMap';
 
-import { translate } from '../I18n';
-import { requestCenterAndZoom } from './actions';
+import { translate } from '../../I18n';
+import { requestCenterAndZoom } from '../actions';
 import {
   hasVisualizationType,
+  isInsertableVisualization,
   isTimelineChart,
   isValidTimelineChartVif,
   isFeatureMap,
@@ -29,7 +31,7 @@ import {
   isValidRegionMapVif,
   getCurrentVif,
   isRenderableMap
-} from './selectors/vifAuthoring';
+} from '../selectors/vifAuthoring';
 
 export var Visualization = React.createClass({
   propTypes: {
@@ -207,6 +209,10 @@ export var Visualization = React.createClass({
         this.regionMap();
       } else if (isHistogram(vifAuthoring) && isValidHistogramVif(vifAuthoring)) {
         this.histogram();
+      } else {
+        while (this.preview.firstChild) {
+          this.preview.removeChild(this.preview.firstChild);
+        }
       }
     }
   },
@@ -240,8 +246,9 @@ export var Visualization = React.createClass({
   },
 
   render() {
+    var { vifAuthoring } = this.props;
     var previewClasses = classNames('visualization-preview', {
-      'visualization-preview-rendered': this.state.hasRenderedVisualization
+      'visualization-preview-rendered': isInsertableVisualization(vifAuthoring)
     });
 
     return (
@@ -249,7 +256,7 @@ export var Visualization = React.createClass({
         <div className="visualization-toggler">
           <small>{translate('preview.tabs.visualization')}</small>
         </div>
-        <div className={previewClasses} />
+        <div className={previewClasses} ref={(ref) => this.preview = ref}/>
         <div className="visualization-preview-map-info-container">
           {this.renderMapSaving()}
           {this.renderMapInfo()}

@@ -3,7 +3,7 @@ import MetadataProvider from '../../dataProviders/MetadataProvider';
 
 import { createSelector } from 'reselect';
 
-import { VISUALIZATION_TYPES, DIMENSION_TYPES } from '../constants';
+import { VISUALIZATION_TYPES, COLUMN_TYPES } from '../constants';
 
 const getLoading = state => state.isLoading;
 const getDomain = state => state.domain;
@@ -14,8 +14,8 @@ const getPhidippidesMetadata = state => state.phidippidesMetadata;
 const getError = state => state.error;
 
 export const isLoading = createSelector(getLoading, isLoading => isLoading);
-export const hasData = createSelector(getDatasetMetadata, datasetMetadata => { return !_.isNull(datasetMetadata); });
-export const hasError = createSelector(getError, error => { return !_.isNull(error) });
+export const hasData = createSelector(getDatasetMetadata, datasetMetadata => !_.isNull(datasetMetadata));
+export const hasError = createSelector(getError, error => !_.isNull(error));
 
 export const getDatasetName = createSelector(
   getDatasetMetadata,
@@ -40,12 +40,13 @@ export const getDatasetLink = createSelector(
 );
 
 export const getValidDimensions = createSelector(
-  getPhidippidesMetadata,
-  (phidippidesMetadata) => {
+  getDatasetMetadata, getPhidippidesMetadata,
+  (datasetMetadata, phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
+      map(toDatasetMetadata(datasetMetadata)).
       sortBy('name').
       value();
   }
@@ -65,7 +66,7 @@ export const getRecommendedVisualizationTypes = (state, column) => {
     return column && column.columnName === dimension.fieldName
   });
 
-  var dimensionType = _.find(DIMENSION_TYPES, column => {
+  var dimensionType = _.find(COLUMN_TYPES, column => {
     return dimension && dimension.renderTypeName === column.type
   });
 
@@ -75,40 +76,56 @@ export const getRecommendedVisualizationTypes = (state, column) => {
 };
 
 export const getValidMeasures = createSelector(
+  getDatasetMetadata,
   getPhidippidesMetadata,
-  (phidippidesMetadata) => {
+  (datasetMetadata, phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter(isNumericColumn).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
+      map(toDatasetMetadata(datasetMetadata)).
+      sortBy('name').
+      value();
+  }
+);
+
+export const getValidComputedColumns = createSelector(
+  getPhidippidesMetadata,
+  (phidippidesMetadata) => {
+    return _.chain(phidippidesMetadata.columns).
+      map(injectFieldName).
+      filter(isComputedColumn).
+      map(pluckComputedColumnNameAndUid).
+      sortBy('name').
+      value();
+  }
+);
+
+export const getValidCuratedRegions = createSelector(
+  getCuratedRegions,
+  getValidComputedColumns,
+  (curatedRegions, computedColumns) =>  {
+    var notInDataset = (region) => {
+      return !_.some(computedColumns, {uid: region.uid});
+    };
+
+    return _.chain(curatedRegions).
+      filter(notInDataset).
       sortBy('name').
       value();
   }
 );
 
 export const getValidRegions = createSelector(
-  getDatasetMetadata,
-  getCuratedRegions,
-  getPhidippidesMetadata,
-  (datasetMetadata, curatedRegions, phidippidesMetadata) => {
-    var validCuratedRegions = _.chain(curatedRegions).
-      map(pluckCuratedRegionNameAndUid).
-      sortBy('name').
-      value();
-    var validComputedColumns = _.chain(phidippidesMetadata.columns).
-      map(injectFieldName).
-      filter(isComputedColumn).
-      map(pluckComputedColumnNameAndUid).
-      sortBy('name').
-      value();
-
-    return [
-      ...validComputedColumns,
-      ...validCuratedRegions
-    ];
+  getValidCuratedRegions,
+  getValidComputedColumns,
+  (curatedRegions, computedColumns) => {
+    return [...curatedRegions, ...computedColumns];
   }
 );
+
+const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
 
 const isNotSystemColumn = column => {
   return !column.name.startsWith(':');
@@ -127,13 +144,6 @@ const pluckComputedColumnNameAndUid = region => {
     fieldName: region.fieldName,
     name: region.name,
     uid: region.computationStrategy.parameters.region.slice(1)
-  };
-};
-
-const pluckCuratedRegionNameAndUid = region => {
-  return {
-    name: region.name,
-    uid: region.uid
   };
 };
 

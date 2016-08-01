@@ -2,9 +2,9 @@ import React from 'react';
 import $ from 'jquery';
 import TestUtils from 'react-addons-test-utils';
 
-import defaultProps from './defaultProps';
-import renderComponent from './renderComponent';
-import { AuthoringWorkflow } from 'src/authoringWorkflow/AuthoringWorkflow';
+import defaultProps from '../defaultProps';
+import renderComponent from '../renderComponent';
+import { AuthoringWorkflow } from 'src/authoringWorkflow/components/AuthoringWorkflow';
 import vifs from 'src/authoringWorkflow/vifs';
 
 function render(type) {

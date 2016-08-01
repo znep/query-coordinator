@@ -101,7 +101,6 @@ function ChoroplethMap(element, vif) {
   var lastClick = 0;
   var lastClickTimeout = null;
   var centerAndZoomDefined;
-  var extentsDefined;
 
   // Render layout
   renderTemplate(self.$element);
@@ -186,7 +185,6 @@ function ChoroplethMap(element, vif) {
         _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
         _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
       );
-      extentsDefined = (!_.isEmpty(vif.configuration.defaultExtent) || !_.isEmpty(vif.configuration.savedExtent));
 
       // Note that we prefer center and zoom over extents, since we intend to
       // deprecate the latter and the former will be set by the new authoring
@@ -292,7 +290,7 @@ function ChoroplethMap(element, vif) {
           append(choroplethContainer);
   }
 
-  function initializeMap(el, data) {
+  function initializeMap(el) {
     // Only update bounds on the first render so we can persist
     // users' panning and zooming.
     //

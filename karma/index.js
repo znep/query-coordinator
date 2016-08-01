@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 function requireAll(context) {
   return context.keys().map(context);
 }

@@ -103,6 +103,50 @@
       width: 100%;
     }
 
+    .dataset-column-dropdown-option [class^="icon"] {
+      margin-right: 5px;
+    }
+
+    .region-general-info {
+      line-height: 1.2;
+      z-index: 9999999;
+
+      section {
+        padding: 10px;
+      }
+    }
+
+    .region-dropdown-container {
+      .alert {
+        *:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .region-processing-info {
+      margin-bottom: 10px;
+    }
+
+    .region-processing-info-last-checked {
+      display: flex;
+
+      > span {
+        margin: auto 0;
+      }
+
+      > span:last-child {
+        margin-left: 8px;
+      }
+    }
+
+    .region-dropdown-container {
+      .icon-question {
+        margin-left: 2px;
+        cursor: pointer;
+      }
+    }
+
     .measure-dropdown-container {
       display: flex;
 

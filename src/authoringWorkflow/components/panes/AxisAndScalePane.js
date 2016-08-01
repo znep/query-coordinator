@@ -2,16 +2,16 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
+import { translate } from '../../../I18n';
+import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
 import {
   getAxisLabels,
   isColumnChart,
   isHistogram,
   isTimelineChart
-} from '../selectors/vifAuthoring';
+} from '../../selectors/vifAuthoring';
 import CustomizationTabPane from '../CustomizationTabPane';
-import { setLabelBottom, setLabelLeft } from '../actions';
+import { setLabelBottom, setLabelLeft } from '../../actions';
 
 export var AxisAndScalePane = React.createClass({
 

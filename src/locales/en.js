@@ -56,7 +56,14 @@ export default {
         },
         region: {
           title: 'Region',
-          placeholder: 'Select a region...'
+          placeholder: 'Select a region...',
+          groups: {
+            ready_to_use: 'Ready To Use',
+            requires_processing: 'Requires Processing'
+          },
+          region_processing: 'Some regions require processing prior to rendering.',
+          last_checked: 'Last checked:',
+          never: 'Never'
         }
       }
     },
@@ -131,7 +138,7 @@ export default {
       title: 'Legends & Flyouts',
       subheaders: {
         units: {
-          title: 'Units',
+          title: 'Flyout Unit Label',
           description: 'Unit label displayed in flyouts describing chart values.'
         },
         row_inspector_title: 'Point Inspector Title'

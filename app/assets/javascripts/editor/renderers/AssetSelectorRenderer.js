@@ -2189,7 +2189,11 @@ export default function AssetSelectorRenderer(options) {
           domain: value.dataset.domain,
           datasetUid: value.dataset.datasetUid
         }
-      }]
+      }],
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      }
     };
     var vifDatasetUid = _.get(value, 'vif.series[0].dataSource.datasetUid');
     var selectedDatasetUid = _.get(value, 'dataset.datasetUid');

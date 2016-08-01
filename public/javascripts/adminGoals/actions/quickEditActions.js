@@ -6,7 +6,8 @@ import {
   CLOSE_GOAL_QUICK_EDIT,
   REMOVE_GOAL_FROM_CACHE,
   QUICK_EDIT_SUCCESS,
-  QUICK_EDIT_FAIL
+  QUICK_EDIT_FAIL,
+  QUICK_EDIT_UNSAVED_CHANGES
 } from '../actionTypes';
 
 import { tableLoadPage } from './goalTableActions';
@@ -18,7 +19,7 @@ export function openGoalQuickEdit(goalId) {
   };
 }
 
-export function closeGoalQuickEdit() {
+export function dismissModal() {
   return {
     type: CLOSE_GOAL_QUICK_EDIT
   };
@@ -74,7 +75,7 @@ export function saveGoalQuickEdit(goalId, version, values) {
         if (response.error) {
           dispatch(goalQuickEditUpdateFailed());
         } else {
-          dispatch(closeGoalQuickEdit());
+          dispatch(dismissModal());
           dispatch(removeFromCache(goalId));
           dispatch(tableLoadPage());
           dispatch(quickEditSuccess(values.name));
@@ -90,5 +91,11 @@ export function removeFromCache(goalId) {
   return {
     type: REMOVE_GOAL_FROM_CACHE,
     goalId
+  };
+}
+
+export function unsavedChanges() {
+  return {
+    type: QUICK_EDIT_UNSAVED_CHANGES
   };
 }

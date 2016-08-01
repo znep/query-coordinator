@@ -3,9 +3,10 @@ import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeGoalQuickEdit, saveGoalQuickEdit } from '../../actions/quickEditActions';
+import { dismissModal, saveGoalQuickEdit, unsavedChanges } from '../../actions/quickEditActions';
 import Select from 'react-select';
 import moment from 'moment';
+import { modalQuitEventHandler } from '../../components/ModalQuitEventHandler';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import * as SocrataModal from '../../components/SocrataModal';
@@ -21,7 +22,7 @@ class GoalQuickEdit extends React.Component {
 
     this.state = {
       goal: goal,
-      noChangesMade: true,
+      unsavedChanges: false,
       visibility: goal.get('is_public') ? 'public' : 'private',
       name: goal.get('name'),
       actionType: goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
@@ -31,22 +32,13 @@ class GoalQuickEdit extends React.Component {
       unit: goal.getIn(['prevailing_measure', 'unit']),
       percentUnit: goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
         '%' : goal.getIn(['prevailing_measure', 'unit']),
-      start: moment(goal.getIn(['prevailing_measure', 'start'])),
-      end: moment(goal.getIn(['prevailing_measure', 'end'])),
+      startDate: moment(goal.getIn(['prevailing_measure', 'start'])),
+      endDate: moment(goal.getIn(['prevailing_measure', 'end'])),
       measureTarget: goal.getIn(['prevailing_measure', 'target']),
       measureTargetType: goal.getIn(['prevailing_measure', 'target_type']),
       measureBaseline: goal.getIn(['prevailing_measure', 'baseline']),
       measureTargetDelta: goal.getIn(['prevailing_measure', 'target_delta']),
       measureMaintainType: goal.getIn(['prevailing_measure', 'edit', 'maintain_type']) || 'within'
-    };
-
-    this.onWindowKeyUp = (event) => {
-      var key = event.which || event.keyCode;
-
-      // ESC
-      if (key === 27) {
-        this.props.closeQuickEdit();
-      }
     };
 
     this.actionTypeOptions = [
@@ -134,118 +126,46 @@ class GoalQuickEdit extends React.Component {
 
     if (goal.get('datasetId')) {
       fetch(`/api/views/${goal.get('datasetId')}.json`, _.clone(fetchOptions)).
-      then(response => response.json()).
-      then(metadata => {
-        this.setState({
-          datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
-          datasetOwner: _.get(metadata, 'owner')
+        then(response => response.json()).
+        then(metadata => {
+          this.setState({
+            datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
+            datasetOwner: _.get(metadata, 'owner')
+          });
         });
-      });
     } else {
       this.setState({
         datasetUpdatedAt: false,
         datasetOwner: false
       });
     }
-
-    $(window).on('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
     $('body').css('overflow', 'hidden');
   }
 
   componentWillUnmount() {
-    $(window).off('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
     $('body').css('overflow', 'initial');
   }
 
-  onVisibilityChange(selected) {
-    this.setState({
-      visibility: selected.value,
-      noChangesMade: false
-    });
+  componentWillUpdate(nextProps, nextState) {
+    if (!nextProps.unsavedChanges && nextState.unsavedChanges) {
+      this.props.dispatchUnsavedChanges();
+    }
   }
 
-  onStartDateChange(selected) {
-    this.setState({
-      start: selected,
-      noChangesMade: false
-    });
+  onInputChange(event) {
+    let newState = {};
+    newState[event.target.name] = event.target.value;
+    newState.unsavedChanges = true;
+
+    this.setState(newState);
   }
 
-  onEndDateChange(selected) {
-    this.setState({
-      end: selected,
-      noChangesMade: false
-    });
-  }
+  onSelectChange(name, selected) {
+    let newState = {};
+    newState[name] = selected instanceof moment ? selected : selected.value;
+    newState.unsavedChanges = true;
 
-  onOverrideChange(selected) {
-    this.setState({
-      prevailingMeasureProgressOverride: selected.value,
-      noChangesMade: false
-    });
-  }
-
-  onActionTypeChange(selected) {
-    this.setState({
-      actionType: selected.value,
-      noChangesMade: false
-    });
-  }
-
-  onPrevailingMeasureNameChange(event) {
-    this.setState({
-      prevailingMeasureName: event.target.value,
-      noChangesMade: false
-    });
-  }
-
-  onUnitChange(event) {
-    this.setState({
-      unit: event.target.value,
-      noChangesMade: false
-    });
-  }
-
-  onPercentUnitChange(selected) {
-    this.setState({
-      percentUnit: selected.value,
-      noChangesMade: false
-    });
-  }
-
-  onMeasureTargetChange(event) {
-    this.setState({
-      measureTarget: event.target.value,
-      noChangesMade: false
-    });
-  }
-
-  onMeasureTypeChange(selected) {
-    this.setState({
-      measureTargetType: selected.value,
-      noChangesMade: false
-    });
-  }
-
-  onMeasureBaselineChange(event) {
-    this.setState({
-      measureBaseline: event.target.value,
-      noChangesMade: false
-    });
-  }
-
-  onMeasureTargetDeltaChange(event) {
-    this.setState({
-      measureTargetDelta: event.target.value,
-      noChangesMade: false
-    });
-  }
-
-  onMeasureMaintainTypeChange(selected) {
-    this.setState({
-      measureMaintainType: selected.value,
-      noChangesMade: false
-    });
+    this.setState(newState);
   }
 
   save(event) {
@@ -263,8 +183,8 @@ class GoalQuickEdit extends React.Component {
           '' : this.state.prevailingMeasureProgressOverride,
         'unit': this.state.unit,
         'delta_is_percent': this.state.percentUnit == '%',
-        'start': this.state.start.format('YYYY-MM-DDT00:00:00.000'),
-        'end': this.state.end.format('YYYY-MM-DDT00:00:00.000'),
+        'start': this.state.startDate.format('YYYY-MM-DDT00:00:00.000'),
+        'end': this.state.endDate.format('YYYY-MM-DDT00:00:00.000'),
         'target': this.state.measureTarget,
         'target_type': this.state.measureTargetType,
         'baseline': this.state.measureBaseline,
@@ -274,21 +194,15 @@ class GoalQuickEdit extends React.Component {
     );
   }
 
-  onGoalNameChange(event) {
-    this.setState({
-      noChangesMade: false,
-      name: event.target.value
-    });
-  }
-
   renderSubjectPart() {
     return <div className="form-line measure-subject">
       <label className="inline-label">
         { this.props.translations.getIn(['admin', 'quick_edit', 'prevailing_measure_name']) }
       </label>
       <input
+        name="prevailingMeasureName"
         className="text-input"
-        onChange={ this.onPrevailingMeasureNameChange.bind(this) }
+        onChange={ this.onInputChange.bind(this) }
         value={ this.state.prevailingMeasureName } />
     </div>;
   }
@@ -299,8 +213,9 @@ class GoalQuickEdit extends React.Component {
         { this.props.translations.getIn(['admin', 'quick_edit', 'unit']) }
       </label>
       <input
+        name="unit"
         className="text-input"
-        onChange={ this.onUnitChange.bind(this) }
+        onChange={ this.onInputChange.bind(this) }
         value={ this.state.unit } />
     </div>;
   }
@@ -319,7 +234,7 @@ class GoalQuickEdit extends React.Component {
         className="form-select-wide"
         options={ options }
         value={ this.state.percentUnit }
-        onChange={ this.onPercentUnitChange.bind(this) }
+        onChange={ this.onSelectChange.bind(this, 'percentUnit') }
         searchable={ false }
         clearable={ false } />
     </div>;
@@ -334,15 +249,15 @@ class GoalQuickEdit extends React.Component {
         <span className="icon-date"/>
         <DatePicker
           className="text-input datepicker-input"
-          onChange={ this.onStartDateChange.bind(this) }
-          selected={ this.state.start } />
+          onChange={ this.onSelectChange.bind(this, 'startDate') }
+          selected={ this.state.startDate } />
       </div>
       <div className="datepicker-wrapper">
         <span className="icon-date"/>
         <DatePicker
           className="text-input datepicker-input"
-          onChange={ this.onEndDateChange.bind(this) }
-          selected={ this.state.end } />
+          onChange={ this.onSelectChange.bind(this, 'endDate') }
+          selected={ this.state.endDate } />
       </div>
     </div>;
   }
@@ -356,7 +271,7 @@ class GoalQuickEdit extends React.Component {
         className="form-select-wide"
         options={ this.overrideOptions }
         value={ this.state.prevailingMeasureProgressOverride }
-        onChange={ this.onOverrideChange.bind(this) }
+        onChange={ this.onSelectChange.bind(this, 'prevailingMeasureProgressOverride') }
         searchable={ false }
         clearable={ false } />
     </div>;
@@ -368,8 +283,9 @@ class GoalQuickEdit extends React.Component {
         { this.props.translations.getIn(['admin', 'quick_edit', 'measure_target']) }
       </label>
       <input
+        name="measureTarget"
         className="text-input"
-        onChange={ this.onMeasureTargetChange.bind(this) }
+        onChange={ this.onInputChange.bind(this) }
         value={ this.state.measureTarget } />
     </div>;
   }
@@ -383,7 +299,7 @@ class GoalQuickEdit extends React.Component {
         className="form-select-small"
         options={ this.measureTargetTypeOptions }
         value={ this.state.measureTargetType }
-        onChange={ this.onMeasureTypeChange.bind(this) }
+        onChange={ this.onSelectChange.bind(this, 'measureTargetType') }
         searchable={ false }
         clearable={ false } />
     </div>;
@@ -395,8 +311,9 @@ class GoalQuickEdit extends React.Component {
         { this.props.translations.getIn(['admin', 'quick_edit', 'measure_baseline']) }
       </label>
       <input
+        name="measureBaseline"
         className="text-input"
-        onChange={ this.onMeasureBaselineChange.bind(this) }
+        onChange={ this.onInputChange.bind(this) }
         value={ this.state.measureBaseline } />
     </div>;
   }
@@ -407,8 +324,9 @@ class GoalQuickEdit extends React.Component {
         { this.props.translations.getIn(['admin', 'quick_edit', 'measure_delta']) }
       </label>
       <input
+        name="measureTargetDelta"
         className="text-input"
-        onChange={ this.onMeasureTargetDeltaChange.bind(this) }
+        onChange={ this.onInputChange.bind(this) }
         value={ this.state.measureTargetDelta } />
     </div>;
   }
@@ -422,7 +340,7 @@ class GoalQuickEdit extends React.Component {
         className="form-select-small"
         options={ this.measureMaintainTypeOptions }
         value={ this.state.measureMaintainType }
-        onChange={ this.onMeasureMaintainTypeChange.bind(this) }
+        onChange={ this.onSelectChange.bind(this, 'measureMaintainType') }
         searchable={ false }
         clearable={ false } />
     </div>;
@@ -492,7 +410,7 @@ class GoalQuickEdit extends React.Component {
     return (
       <SocrataModal.Modal fullScreen>
         <form onSubmit={ this.save.bind(this) }>
-          <SocrataModal.Header title={ goalTitle } onClose={ this.props.closeQuickEdit }/>
+          <SocrataModal.Header title={ goalTitle } onClose={ this.props.handleNavigateAway }/>
           <SocrataModal.Content>
             { failureAlert }
 
@@ -504,9 +422,10 @@ class GoalQuickEdit extends React.Component {
                   { translations.getIn(['admin', 'quick_edit', 'goal_name']) }
                 </label>
                 <input
+                  name="name"
                   className="text-input"
                   value={ this.state.name }
-                  onChange={ this.onGoalNameChange.bind(this) }/>
+                  onChange={ this.onInputChange.bind(this) }/>
               </div>
 
               <div className="form-line">
@@ -524,7 +443,7 @@ class GoalQuickEdit extends React.Component {
                   className="form-select-small"
                   options={ this.visibilityOptions }
                   value={ this.state.visibility }
-                  onChange={ this.onVisibilityChange.bind(this) }
+                  onChange={ this.onSelectChange.bind(this, 'visibility') }
                   searchable={ false }
                   clearable={ false } />
               </div>
@@ -540,7 +459,7 @@ class GoalQuickEdit extends React.Component {
                     className="form-select-small"
                     options={ this.actionTypeOptions }
                     value={ this.state.actionType }
-                    onChange={ this.onActionTypeChange.bind(this) }
+                    onChange={ this.onSelectChange.bind(this, 'actionType') }
                     searchable={ false }
                     clearable={ false } />
                 </div>
@@ -593,10 +512,10 @@ class GoalQuickEdit extends React.Component {
                 <span className="icon-external" />
               </a>
             </div>
-            <SocrataButton onClick={ this.props.closeQuickEdit }>
+            <SocrataButton onClick={ this.props.dismissModal }>
               { translations.getIn(['admin', 'quick_edit', 'cancel']) }
             </SocrataButton>
-            <SocrataButton type="submit" primary onClick={ this.save.bind(this) } disabled={ this.state.noChangesMade }>
+            <SocrataButton type="submit" primary onClick={ this.save.bind(this) } disabled={ !this.state.unsavedChanges }>
               { translations.getIn(['admin', 'quick_edit', 'save']) }
             </SocrataButton>
           </SocrataModal.Footer>
@@ -609,12 +528,14 @@ class GoalQuickEdit extends React.Component {
 const mapStateToProps = state => ({
   translations: state.get('translations'),
   goal: state.getIn(['goalTableData', 'cachedGoals', state.getIn(['quickEditForm', 'goalId'])]),
-  showFailureMessage: state.getIn(['quickEditForm', 'showFailureMessage'])
+  showFailureMessage: state.getIn(['quickEditForm', 'showFailureMessage']),
+  unsavedChanges: state.getIn(['quickEditForm', 'unsavedChanges'])
 });
 
 const mapDispatchToProps = dispatch => ({
-  closeQuickEdit: () => dispatch(closeGoalQuickEdit()),
-  saveGoalQuickEdit: (goalId, version, values) => dispatch(saveGoalQuickEdit(goalId, version, values))
+  dismissModal: () => dispatch(dismissModal()),
+  saveGoalQuickEdit: (goalId, version, values) => dispatch(saveGoalQuickEdit(goalId, version, values)),
+  dispatchUnsavedChanges: () => dispatch(unsavedChanges())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GoalQuickEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(modalQuitEventHandler(GoalQuickEdit));

@@ -222,11 +222,16 @@
         },
 
         isAvailable: function() {
-            return !this._view.temporary || this._view.minorChange;
+            return this._view.hasRight(blist.rights.view.UPDATE_COLUMN) &&
+                (!this._view.temporary || this._view.minorChange);
         },
 
         getDisabledSubtitle: function() {
-            return $.t('screens.ds.grid_sidebar.column_properties.validation.unsaved');
+            if (!this._view.hasRight(blist.rights.view.UPDATE_COLUMN)) {
+                return $.t('screens.ds.grid_sidebar.column_properties.validation.notallowed');
+            } else {
+                return $.t('screens.ds.grid_sidebar.column_properties.validation.unsaved');
+            }
         },
 
         render: function(data, isTempData) {

@@ -622,56 +622,80 @@ class InternalController < ApplicationController
 
   def update_feature_flags(updates, domain_cname)
     domain = Domain.find(domain_cname)
-    config = domain.default_configuration('feature_flags')
 
-    # If the cname is different, then this is a merged parent domain's config and
-    # consequently means we'd be setting the properties on the wrong config object.
-    # If `config` is wrong in any way, that means it doesn't exist and we should create it.
-
-    if config.nil? || (config && config.domainCName != domain.cname)
-      begin
-        config = ::Configuration.create(
-          'name' => 'Feature Flags',
-          'default' => true,
-          'type' => 'feature_flags',
-          'parentId' => nil,
-          'domainCName' => domain_cname
-        )
-      rescue CoreServer::CoreServerError => e
-        flash.now[:error] = e.error_message
-        return (render 'shared/error', :status => :internal_server_error)
-      end
-    end
-
-    properties = config.properties
-    CoreServer::Base.connection.batch_request do |batch_id|
-      (updates['feature_flags'] || []).each do |flag, value|
-        unless FeatureFlags.list.include?(flag)
-          errors << "#{flag} is not a valid feature flag."
-          next
-        end
-        processed_value = FeatureFlags.process_value(value).to_s
-        if properties[flag] == processed_value
-          notices << %Q{#{flag} was already set to "#{processed_value}".}
-          next
-        end
-        if properties.has_key?(flag)
-          config.update_property(flag, processed_value, batch_id)
-          notices << %Q{#{flag} was updated with value "#{processed_value}".}
-        else
-          config.create_property(flag, processed_value, batch_id)
-          notices << %Q{#{flag} was created with value "#{processed_value}".}
+    if FeatureFlags.using_signaller?
+      updates['feature_flags'].try(:each) do |flag, value|
+        response =
+          if updates['reset_to_default'].try(:[], flag)
+            message = %Q{reset to its default value of "#{FeatureFlags.default_for(flag)}".}
+            FeatureFlags.reset_value(flag, domain: domain_cname)
+          else
+            processed_value = FeatureFlags.process_value(value)
+            message = %Q{set with value "#{processed_value}".}
+            FeatureFlags.set_value(flag, processed_value, domain: domain_cname)
+          end
+        case response.code
+          when 200
+            notices << "#{flag} was #{message}"
+          else
+            err_msg = "#{flag} could not be #{message}"
+            err_msg << " Reason: #{JSON.parse(response.body)['error']}."
+            errors << err_msg
         end
       end
+    else # if not using signaller
 
-      (updates['reset_to_default'] || {}).keys.each do |flag|
-        if config.has_property?(flag)
-          config.delete_property(flag, false, batch_id)
-          default_value = FeatureFlags.default_for(flag).to_s
-          notices << %Q{#{flag} was reset to its default value of "#{default_value}".}
-        else
-          # Failure is not an error.
-          notices << "#{flag} could not be reset since it was not set in the first place."
+      config = domain.default_configuration('feature_flags')
+
+      # If the cname is different, then this is a merged parent domain's config and
+      # consequently means we'd be setting the properties on the wrong config object.
+      # If `config` is wrong in any way, that means it doesn't exist and we should create it.
+
+      if config.nil? || (config && config.domainCName != domain.cname)
+        begin
+          config = ::Configuration.create(
+            'name' => 'Feature Flags',
+            'default' => true,
+            'type' => 'feature_flags',
+            'parentId' => nil,
+            'domainCName' => domain_cname
+          )
+        rescue CoreServer::CoreServerError => e
+          flash.now[:error] = e.error_message
+          return (render 'shared/error', :status => :internal_server_error)
+        end
+      end
+
+      properties = config.properties
+      CoreServer::Base.connection.batch_request do |batch_id|
+        (updates['feature_flags'] || []).each do |flag, value|
+          unless FeatureFlags.list.include?(flag)
+            errors << "#{flag} is not a valid feature flag."
+            next
+          end
+          processed_value = FeatureFlags.process_value(value).to_s
+          if properties[flag] == processed_value
+            notices << %Q{#{flag} was already set to "#{processed_value}".}
+            next
+          end
+          if properties.has_key?(flag)
+            config.update_property(flag, processed_value, batch_id)
+            notices << %Q{#{flag} was updated with value "#{processed_value}".}
+          else
+            config.create_property(flag, processed_value, batch_id)
+            notices << %Q{#{flag} was created with value "#{processed_value}".}
+          end
+        end
+
+        (updates['reset_to_default'] || {}).keys.each do |flag|
+          if config.has_property?(flag)
+            config.delete_property(flag, false, batch_id)
+            default_value = FeatureFlags.default_for(flag).to_s
+            notices << %Q{#{flag} was reset to its default value of "#{default_value}".}
+          else
+            # Failure is not an error.
+            notices << "#{flag} could not be reset since it was not set in the first place."
+          end
         end
       end
     end

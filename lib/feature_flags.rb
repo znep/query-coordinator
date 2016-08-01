@@ -50,6 +50,38 @@ module FeatureFlags
     end
   end
 
+  def self.using_signaller?
+    !!APP_CONFIG.feature_flag_signaller_uri
+  end
+
+  def self.endpoint(options = {})
+    @signaller_uri ||= URI.parse(APP_CONFIG.feature_flag_signaller_uri)
+    uri = @signaller_uri.dup
+    uri.path =
+      if options.key?(:with_path) then options.fetch(:with_path)
+      else options.key?(:for_flag)
+        if options[:for_domain]
+          "/flag/#{options.fetch(:for_flag)}/#{options.fetch(:for_domain)}.json"
+        else
+          "/flag/#{options.fetch(:for_flag)}.json"
+        end
+      end
+    uri
+  end
+
+  def self.set_value(flag_name, flag_value, options = {})
+    uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
+    body = flag_value.is_a?(String) ? flag_value : flag_value.to_json
+    auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
+    HTTParty.put(uri, body: body, headers: auth_header)
+  end
+
+  def self.reset_value(flag_name, options = {})
+    uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
+    auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
+    HTTParty.delete(uri, headers: auth_header)
+  end
+
   def self.list
     ExternalConfig.for(:feature_flag).keys
   end

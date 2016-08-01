@@ -5,13 +5,34 @@ class FeatureFlagConfig < ExternalConfig
   attr_reader :categories
 
   def filename
-    @filename ||= "#{Rails.root}/config/feature_flags.yml"
+    @filename ||=
+      if FeatureFlags.using_signaller?
+        APP_CONFIG.feature_flag_signaller_uri
+      else
+        "#{Rails.root}/config/feature_flags.yml"
+      end
+  end
+
+  def cache_period
+    FeatureFlags.using_signaller? ? 5.minutes : 0
   end
 
   def update!
     Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
 
-    @feature_flags = (YAML.load_file(filename) || {}).with_indifferent_access
+    if FeatureFlags.using_signaller?
+      @feature_flags =
+        begin
+          uri = FeatureFlags.endpoint(with_path: '/describe.json')
+          JSON.parse(HTTParty.get(uri).body)
+        rescue
+          Rails.logger.error('Feature Flag Signaller is unreachable!')
+          {}
+        end.with_indifferent_access
+    else
+      @feature_flags = (YAML.load_file(filename) || {}).with_indifferent_access
+    end
+
     category_list = @feature_flags.collect { |_, fc| fc['category'] }.compact.uniq
     @categories = category_list.inject({}) do |memo, category|
       memo[category] = @feature_flags.dup.keep_if { |_, fc| category == fc['category'] }.keys

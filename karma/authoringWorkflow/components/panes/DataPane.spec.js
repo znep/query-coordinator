@@ -6,7 +6,7 @@ import renderComponent from '../../renderComponent';
 import { DataPane } from 'src/authoringWorkflow/components/panes/DataPane';
 import vifs from 'src/authoringWorkflow/vifs';
 
-describe('DataPane', function() {
+describe.only('DataPane', function() {
   var component;
 
   beforeEach(function() {
@@ -18,6 +18,7 @@ describe('DataPane', function() {
       beforeEach(function() {
         var props = defaultProps();
         props.metadata.data = null;
+
         component = renderComponent(DataPane, props);
       });
 

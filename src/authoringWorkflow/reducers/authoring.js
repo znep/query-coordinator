@@ -6,19 +6,17 @@ import {
   HANDLE_REGION_CODING_ERROR,
   REQUEST_CENTER_AND_ZOOM,
   SET_CENTER_AND_ZOOM,
-  SET_COMPUTED_COLUMN
+  SET_COMPUTED_COLUMN,
+  AWAIT_REGION_CODING,
+  FINISH_REGION_CODING
 } from '../actions';
 
 export var defaultState = {
   selectedVisualizationType: null,
   showCenteringAndZoomingSaveMessage: false,
   showRegionCodingProcessingMessage: false,
-  regionCodingError: null
-};
-
-export var defaultState = {
-  selectedVisualizationType: null,
-  showCenteringAndZoomingSaveMessage: false,
+  regionCodingError: null,
+  regionCodingLastChecked: null,
   hasPannedOrZoomed: false
 };
 
@@ -47,6 +45,7 @@ export default function authoring(state, action) {
     case REQUEST_REGION_CODING:
       state.showRegionCodingProcessingMessage = true;
       state.regionCodingError = null;
+      state.regionCodingLastChecked = null;
       break;
 
     case HANDLE_REGION_CODING_ERROR:
@@ -54,9 +53,13 @@ export default function authoring(state, action) {
       state.regionCodingError = action.error;
       break;
 
-    case SET_COMPUTED_COLUMN:
+    case FINISH_REGION_CODING:
       state.showRegionCodingProcessingMessage = false;
       state.regionCodingError = null;
+      break;
+
+    case AWAIT_REGION_CODING:
+      state.regionCodingLastChecked = action.updatedAt;
       break;
   }
 

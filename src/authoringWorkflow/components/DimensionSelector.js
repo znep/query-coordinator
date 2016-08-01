@@ -71,6 +71,7 @@ export var DimensionSelector = React.createClass({
   render() {
     var { metadata } = this.props;
 
+    console.log(metadata);
     return hasData(metadata) ?
       this.renderDimensionSelector() :
       null;

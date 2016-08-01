@@ -12,8 +12,8 @@ const getPhidippidesMetadata = state => state.phidippidesMetadata;
 const getError = state => state.error;
 
 export const isLoading = createSelector(getLoading, isLoading => isLoading);
-export const hasData = createSelector(getDatasetMetadata, datasetMetadata => { return !_.isNull(datasetMetadata); });
-export const hasError = createSelector(getError, error => { return !_.isNull(error) });
+export const hasData = createSelector(getDatasetMetadata, datasetMetadata => !_.isNull(datasetMetadata));
+export const hasError = createSelector(getError, error => !_.isNull(error));
 
 export const getDatasetName = createSelector(
   getDatasetMetadata,

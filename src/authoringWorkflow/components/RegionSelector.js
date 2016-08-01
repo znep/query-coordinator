@@ -70,13 +70,23 @@ export var RegionSelector = React.createClass({
   },
 
   renderRegionProcessingMessage() {
-    var { showRegionCodingProcessingMessage } = this.props.vifAuthoring.authoring;
+    var {
+      showRegionCodingProcessingMessage,
+      regionCodingLastChecked
+    } = this.props.vifAuthoring.authoring;
+
+    var lastCheckedMessage = translate('panes.data.fields.region.last_checked');
+
+    lastCheckedMessage += regionCodingLastChecked ?
+      ` ${regionCodingLastChecked}` :
+      ` ${translate('panes.data.fields.region.never')}`;
 
     if (showRegionCodingProcessingMessage) {
       return (
         <div className="region-processing-info alert warning">
           <p>The selected region is currently being processed and geocoded.</p>
           <p>You can apply this region to your visualization, but it will not be viewable until processing is completed.</p>
+          <p className="region-processing-info-last-checked"><span className="spinner-default"/> {lastCheckedMessage}</p>
         </div>
       );
     }

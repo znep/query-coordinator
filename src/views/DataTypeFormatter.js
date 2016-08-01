@@ -42,7 +42,7 @@ function renderCell(cellContent, column, domain, datasetUid) {
       break;
     // Avoid escaping because cell content is HTML.
     case 'geo_entity':
-      cellText = renderGeoCellHTML(cellContent, column);
+      cellText = renderGeoCellHTML(cellContent);
       break;
     case 'point':
     case 'line':
@@ -222,9 +222,8 @@ function renderGeoCell(cellContent) {
 *
 * Parameters:
 * - cellContent: data for the cell (from soda fountain).
-* - columnMetadata: the metadata for the associated column.
 */
-function renderGeoCellHTML(cellContent, columnMetadata) {
+function renderGeoCellHTML(cellContent) {
   var latitudeIndex = 1;
   var longitudeIndex = 0;
   var coordinates = _cellCoordinates(cellContent);

@@ -122,6 +122,18 @@
       margin-bottom: 10px;
     }
 
+    .region-processing-info-last-checked {
+      display: flex;
+
+      > span {
+        margin: auto 0;
+      }
+
+      > span:last-child {
+        margin-left: 8px;
+      }
+    }
+
     .region-dropdown-container {
       .icon-question {
         margin-left: 2px;

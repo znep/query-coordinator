@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
@@ -101,7 +102,9 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
     var providerOptions = { domain, datasetUid };
     var datasetMetadataProvider = new MetadataProvider(providerOptions);
     var regionCodingProvider = new RegionCodingProvider(providerOptions);
-    var handleError = error => dispatch(handleRegionCodingError(error));
+    var handleError = error => {
+      dispatch(handleRegionCodingError(error));
+    };
     var handleCompletion = () => {
       datasetMetadataProvider.
         getPhidippidesMetadata().
@@ -115,6 +118,7 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
+          dispatch(finishRegionCoding());
           dispatch(setComputedColumn(computedColumn.fieldName));
           dispatch(setPhidippidesMetadata(metadata));
         }).
@@ -123,10 +127,11 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
 
     var handleInitiation = response => {
       if (response.success) {
+        dispatch(setComputedColumn(null));
         dispatch(setShapefile(curatedRegion.uid, curatedRegion.featurePk, curatedRegion.geometryLabel));
 
         regionCodingProvider.
-          awaitRegionCodingCompletion({ jobId: response.jobId }).
+          awaitRegionCodingCompletion({ jobId: response.jobId }, () => dispatch(awaitRegionCoding())).
           then(handleCompletion).
           catch(handleError);
       } else {
@@ -167,6 +172,21 @@ export var REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
 export function requestRegionCoding() {
   return {
     type: REQUEST_REGION_CODING
+  };
+}
+
+export var AWAIT_REGION_CODING = 'AWAIT_REGION_CODING';
+export function awaitRegionCoding() {
+  return {
+    type: AWAIT_REGION_CODING,
+    updatedAt: moment().calendar()
+  };
+}
+
+export var FINISH_REGION_CODING = 'FINISH_REGION_CODING';
+export function finishRegionCoding() {
+  return {
+    type: FINISH_REGION_CODING
   };
 }
 

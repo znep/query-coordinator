@@ -38,7 +38,7 @@ export default function RegionCodingProvider(config) {
       then(handleJSON);
   };
 
-  this.awaitRegionCodingCompletion = ({ shapefileId, jobId }) => {
+  this.awaitRegionCodingCompletion = ({ shapefileId, jobId }, processingCallback) => {
     return new Promise((resolve, reject) => {
       var handleResponse = (response) => {
         switch (response.status) {
@@ -47,6 +47,10 @@ export default function RegionCodingProvider(config) {
             break;
 
           case 'processing':
+            if (_.isFunction(processingCallback)) {
+              processingCallback();
+            }
+
             awaitCompletion();
             break;
 

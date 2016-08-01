@@ -61,7 +61,9 @@ export default {
             ready_to_use: 'Ready To Use',
             requires_processing: 'Requires Processing'
           },
-          region_processing: 'Some regions require processing prior to rendering.'
+          region_processing: 'Some regions require processing prior to rendering.',
+          last_checked: 'Last checked:',
+          never: 'Never'
         }
       }
     },

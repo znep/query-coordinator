@@ -2,15 +2,14 @@
 set -ex
 
 # Called by Jenkins to build and package frontend in preparation for a deploy
+# Note that dependencies should be installed before running this script.
+bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
+bundle check || bundle install
 
 # Write REVISION file
 git rev-parse HEAD > "$WORKSPACE/REVISION"
 
-# Install dependencies
-bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
-bundle install --without=development --deployment
-npm install --depth 0
-#bundle exec rake assets:webpack
+# Package assets
 npm run build:prod
 
 # Dammit Jammit

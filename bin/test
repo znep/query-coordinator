@@ -2,15 +2,11 @@
 set -ex
 
 # Called by Jenkins to ensure tests pass and code is free of lint.
+# Note that dependencies should be installed before running this script.  To do this,
+# run `bundle install && npm install`
 
 # Log the author name and email of the last commit
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
-
-## Dependencies
-export RUBYOPT="-E utf-8"
-bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
-bundle install
-npm install --depth 0
 
 # Find commit where this pull request branched from
 MERGE_BASE=$(git merge-base HEAD origin/master)

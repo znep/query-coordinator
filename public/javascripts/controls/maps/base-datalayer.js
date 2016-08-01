@@ -609,7 +609,7 @@
             $.extend(queryClone.namedFilters, newQuery.namedFilters || {});
 
             this._query = queryClone;
-            this._view.update({ query: this._query });
+            this._view.update({ query: this._query }, false, this._ignoreTemporary);
         }
     }, {}, null, false);
 

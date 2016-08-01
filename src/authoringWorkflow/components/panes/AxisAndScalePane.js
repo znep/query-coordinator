@@ -4,18 +4,20 @@ import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { setLabelBottom, setLabelLeft } from '../../actions';
 import {
   getAxisLabels,
   isColumnChart,
   isHistogram,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
+
 import CustomizationTabPane from '../CustomizationTabPane';
-import { setLabelBottom, setLabelLeft } from '../../actions';
+import EmptyPane from './EmptyPane';
 
 export var AxisAndScalePane = React.createClass({
 
-  visualizationLabels() {
+  renderVisualizationLabels() {
     var vifAuthoring = this.props.vifAuthoring;
     var axisLabels = getAxisLabels(vifAuthoring);
     var leftAxisLabel = _.get(axisLabels, 'left', null);
@@ -32,16 +34,20 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
-  columnChart() {
-    return this.visualizationLabels();
+  renderColumnChartControls() {
+    return this.renderVisualizationLabels();
   },
 
-  histogram() {
-    return this.visualizationLabels();
+  renderHistogramControls() {
+    return this.renderVisualizationLabels();
   },
 
-  timelineChart() {
-    return this.visualizationLabels();
+  renderTimelineChartControls() {
+    return this.renderVisualizationLabels();
+  },
+
+  renderEmptyPane() {
+    return <EmptyPane />;
   },
 
   render() {
@@ -49,11 +55,13 @@ export var AxisAndScalePane = React.createClass({
     var vifAuthoring = this.props.vifAuthoring;
 
     if (isColumnChart(vifAuthoring)) {
-      configuration = this.columnChart();
+      configuration = this.renderColumnChartControls();
     } else if (isHistogram(vifAuthoring)) {
-      configuration = this.histogram();
+      configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {
-      configuration = this.timelineChart();
+      configuration = this.renderTimelineChartControls();
+    } else {
+      configuration = this.renderEmptyPane();
     }
 
     return (

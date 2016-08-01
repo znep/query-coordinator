@@ -66,6 +66,16 @@
       }
     }
 
+    .authoring-empty-pane {
+      .icon-info {
+        margin-right: 8px;
+      }
+
+      *:last-child {
+        margin-bottom: 0;
+      }
+    }
+
     .authoring-field {
       margin: 12px 0;
     }

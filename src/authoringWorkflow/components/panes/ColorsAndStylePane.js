@@ -4,13 +4,19 @@ import Styleguide from 'socrata-styleguide';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS, BASE_LAYERS, COLOR_SCALES, COLORS } from '../../constants';
+import {
+  BASE_LAYERS,
+  COLOR_SCALES,
+  COLORS,
+  INPUT_DEBOUNCE_MILLISECONDS
+} from '../../constants';
+
 import CustomizationTabPane from '../CustomizationTabPane';
+import EmptyPane from './EmptyPane';
 
 import {
   getPrimaryColor,
   getSecondaryColor,
-  getPointColor,
   getPointOpacity,
   getColorScale,
   getBaseLayer,
@@ -25,7 +31,6 @@ import {
 import {
   setPrimaryColor,
   setSecondaryColor,
-  setPointColor,
   setPointOpacity,
   setColorScale,
   setBaseLayer,
@@ -67,15 +72,15 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
-  columnChart() {
+  renderColumnChartControls() {
     return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
   },
 
-  histogram() {
+  renderHistogramControls() {
     return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
   },
 
-  timelineChart() {
+  renderTimelineChartControls() {
     return (
       <div>
         {this.renderPrimaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
@@ -84,7 +89,7 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
-  featureMap() {
+  renderFeatureMapControls() {
     var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity } = this.props;
     var pointColor = getPrimaryColor(vifAuthoring);
     var pointOpacity = getPointOpacity(vifAuthoring);
@@ -101,13 +106,13 @@ export var ColorsAndStylePane = React.createClass({
             <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
             <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={onChangePointOpacity} />
           </div>
-          {this.mapLayerControls()}
+          {this.renderMapLayerControls()}
         </div>
       </div>
     );
   },
 
-  regionMap() {
+  renderRegionMapControls() {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
     var defaultColorScale = getColorScale(vifAuthoring);
 
@@ -132,12 +137,12 @@ export var ColorsAndStylePane = React.createClass({
         <div className="color-scale-dropdown-container">
           <Styleguide.components.Dropdown {...colorScaleAttributes} />
         </div>
-        {this.mapLayerControls()}
+        {this.renderMapLayerControls()}
       </div>
     );
   },
 
-  mapLayerControls() {
+  renderMapLayerControls() {
     var { vifAuthoring, baseLayers, onSelectBaseLayer, onChangeBaseLayerOpacity } = this.props;
     var defaultBaseLayer = getBaseLayer(vifAuthoring);
     var defaultBaseLayerOpacity = getBaseLayerOpacity(vifAuthoring);
@@ -176,20 +181,26 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
+  renderEmptyPane() {
+    return <EmptyPane />;
+  },
+
   render() {
     var configuration;
     var vifAuthoring = this.props.vifAuthoring;
 
     if (isColumnChart(vifAuthoring)) {
-      configuration = this.columnChart();
+      configuration = this.renderColumnChartControls();
     } else if (isHistogram(vifAuthoring)) {
-      configuration = this.histogram();
+      configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {
-      configuration = this.timelineChart();
+      configuration = this.renderTimelineChartControls();
     } else if (isFeatureMap(vifAuthoring)) {
-      configuration = this.featureMap();
+      configuration = this.renderFeatureMapControls();
     } else if (isRegionMap(vifAuthoring)) {
-      configuration = this.regionMap();
+      configuration = this.renderRegionMapControls();
+    } else {
+      configuration = this.renderEmptyPane();
     }
 
     return (
@@ -223,10 +234,6 @@ function mapDispatchToProps(dispatch) {
     onChangeBaseLayerOpacity: _.debounce(event => {
       var baseLayerOpacity = event.target.value;
       dispatch(setBaseLayerOpacity(baseLayerOpacity));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
-
-    onChangePointColor: _.debounce(pointColor => {
-      dispatch(setPointColor(pointColor));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
     onChangePointOpacity: _.debounce(event => {

@@ -52,6 +52,21 @@ describe('LegendsAndFlyoutsPane', function() {
     });
   }
 
+  describe('without a visualization type', function() {
+    beforeEach(function() {
+      var renderedParts = render(null);
+
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+
+    describe('rendering', function() {
+      it('renders an empty pane info message', function() {
+        expect(component.querySelector('.authoring-empty-pane')).to.exist;
+      });
+    });
+  });
+
   describe('regionMap', function() {
     beforeEach(function() {
       var renderedParts = render('regionMap');

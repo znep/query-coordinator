@@ -5,6 +5,7 @@ import styleguide from 'socrata-styleguide';
 
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { getDisplayableColumns } from '../../selectors/metadata';
 import {
   getRowInspectorTitleColumnName,
   getUnitOne,
@@ -16,9 +17,14 @@ import {
   isTimelineChart
 } from '../../selectors/vifAuthoring';
 
-import { getDisplayableColumns } from '../../selectors/metadata';
-import { setUnitsOne, setUnitsOther, setRowInspectorTitleColumnName } from '../../actions';
+import {
+  setRowInspectorTitleColumnName,
+  setUnitsOne,
+  setUnitsOther
+} from '../../actions';
+
 import CustomizationTabPane from '../CustomizationTabPane';
+import EmptyPane from './EmptyPane';
 
 export var LegendsAndFlyoutsPane = React.createClass({
   propTypes: {
@@ -27,7 +33,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
     vifAuthoring: React.PropTypes.object
   },
 
-  units() {
+  renderUnits() {
     var unitOne = getUnitOne(this.props.vifAuthoring);
     var unitOneAttributes = {
       id: 'units-one',
@@ -66,34 +72,23 @@ export var LegendsAndFlyoutsPane = React.createClass({
     );
   },
 
-  regionMap() {
-    return this.units();
+  renderRegionMapControls() {
+    return this.renderUnits();
   },
 
-  columnChart() {
-    return this.units();
+  renderColumnChartControls() {
+    return this.renderUnits();
   },
 
-  histogram() {
-    return this.units();
+  renderHistogramControls() {
+    return this.renderUnits();
   },
 
-  timelineChart() {
-    return this.units();
+  renderTimelineChartControls() {
+    return this.renderUnits();
   },
 
-  renderFlyoutTitleColumnOption(option) {
-    var columnType = _.find(COLUMN_TYPES, {type: option.type});
-    var icon = columnType ? columnType.icon : '';
-
-    return (
-      <div className="dataset-column-dropdown-option">
-        <span className={icon}></span> {option.title}
-      </div>
-    );
-  },
-
-  featureMap() {
+  renderFeatureMapControls() {
     var { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
     var defaultFlyoutTitleColumn = getRowInspectorTitleColumnName(vifAuthoring);
     var columnAttributes = {
@@ -110,7 +105,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
 
     return (
       <div>
-        {this.units()}
+        {this.renderUnits()}
         <div className="authoring-field-group">
           <h5>{translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}</h5>
           <div className="authoring-field">
@@ -124,20 +119,37 @@ export var LegendsAndFlyoutsPane = React.createClass({
     );
   },
 
+  renderFlyoutTitleColumnOption(option) {
+    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+    var icon = columnType ? columnType.icon : '';
+
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={icon}></span> {option.title}
+      </div>
+    );
+  },
+
+  renderEmptyPane() {
+    return <EmptyPane />;
+  },
+
   render() {
     var vifAuthoring = this.props.vifAuthoring;
     var configuration;
 
     if (isRegionMap(vifAuthoring)) {
-      configuration = this.regionMap();
+      configuration = this.renderRegionMapControls();
     } else if (isColumnChart(vifAuthoring)) {
-      configuration = this.columnChart();
+      configuration = this.renderColumnChartControls();
     } else if (isHistogram(vifAuthoring)) {
-      configuration = this.histogram();
+      configuration = this.renderHistogramControls();
     } else if (isFeatureMap(vifAuthoring)) {
-      configuration = this.featureMap();
+      configuration = this.renderFeatureMapControls();
     } else if (isTimelineChart(vifAuthoring)) {
-      configuration = this.timelineChart();
+      configuration = this.renderTimelineChartControls();
+    } else {
+      configuration = this.renderEmptyPane();
     }
 
     return (

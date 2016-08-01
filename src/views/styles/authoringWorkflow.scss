@@ -1,3 +1,9 @@
+.authoring-modal {
+  .modal-header {
+    z-index: 60;
+  }
+}
+
 .authoring-controls {
   display: flex;
   flex-direction: row;

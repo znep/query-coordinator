@@ -136,7 +136,7 @@ export var AuthoringWorkflow = React.createClass({
     var basedOn = metadata.data ? this.renderBasedOn() : null;
 
     return (
-      <div className="modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
+      <div className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
         <div className="modal-container">
 
           <header className="modal-header">

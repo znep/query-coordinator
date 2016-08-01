@@ -91,6 +91,12 @@ In the main layout that you are using for your application (usually `app/views/l
 
 Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing `</body>` tag.
 
+
+There are also "small" versions of the header and footer that you can choose to render. For example, on dataset/view pages, where the full header/footer takes up too much screen real estate.
+To do this, just use the argument `size: 'small'` when rendering the header or footer.
+
+`<%= render 'site_chrome/header', size: 'small' %>`
+
 An example layout is shown below:
 
 ```erb

@@ -105,7 +105,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
         type: column.renderTypeName,
         render: this.renderFlyoutTitleColumnOption
       })),
-      onSelection: onSelectFlyoutTitle
+      onSelection: onSelectRowInspectorTitle
     };
 
     return (

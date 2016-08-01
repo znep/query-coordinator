@@ -44,8 +44,8 @@ export var DataPane = React.createClass({
       <form>
         {metadataInfo}
         <VisualizationTypeSelector/>
-        <MeasureSelector/>
         <DimensionSelector/>
+        <MeasureSelector/>
         <RegionSelector/>
       </form>
     );

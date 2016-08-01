@@ -138,7 +138,7 @@ export default {
       title: 'Legends & Flyouts',
       subheaders: {
         units: {
-          title: 'Units',
+          title: 'Flyout Unit Label',
           description: 'Unit label displayed in flyouts describing chart values.'
         },
         row_inspector_title: 'Point Inspector Title'

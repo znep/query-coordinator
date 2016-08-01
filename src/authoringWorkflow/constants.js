@@ -34,7 +34,8 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'money',
-    preferredVisualizationTypes: ['columnChart']
+    preferredVisualizationTypes: ['columnChart'],
+    icon: 'icon-number'
   },
   {
     type: 'number',

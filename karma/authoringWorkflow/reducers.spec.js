@@ -130,21 +130,35 @@ describe('AuthoringWorkflow reducer', function() {
       describe('when configuring a Region map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
 
-        it('sets configuration.shapefile.uid and configuration.computedColumnName', function() {
-          var shapefileUid = 'walr-uses';
+        it('sets configuration.computedColumnName', function() {
           var computedColumnName = 'hello';
-          var action = actions.setComputedColumn(shapefileUid, computedColumnName);
+          var action = actions.setComputedColumn(computedColumnName);
           var newState = reducer(getTestState(), action);
+          var regionMap = newState.vifAuthoring.vifs.regionMap;
 
-          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.shapefile.uid')).to.equal(shapefileUid);
-          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
+          expect(_.get(regionMap, 'configuration.computedColumnName')).to.equal(computedColumnName);
+        });
+
+        it('sets configuration.shapefile', function() {
+          var shapefileUid = 'walr-uses';
+          var primaryKey = 'primaryKey';
+          var geometryLabel = 'geometryLabel';
+
+          var action = actions.setShapefile(shapefileUid, primaryKey, geometryLabel);
+          var newState = reducer(getTestState(), action);
+          var regionMap = newState.vifAuthoring.vifs.regionMap;
+
+          expect(_.get(regionMap, 'configuration.shapefile.uid')).to.equal(shapefileUid);
+          expect(_.get(regionMap, 'configuration.shapefile.primaryKey')).to.equal(primaryKey);
+          expect(_.get(regionMap, 'configuration.shapefile.geometryLabel')).to.equal(geometryLabel);
         });
 
         it('sets configuration.baseLayerOpacity', function() {
           var action = actions.setBaseLayerOpacity('0.5');
           var newState = reducer(getTestState(), action);
+          var regionMap = newState.vifAuthoring.vifs.regionMap;
 
-          expect(_.get(newState.vifAuthoring.vifs.regionMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+          expect(_.get(regionMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
         });
       });
     });
@@ -160,10 +174,12 @@ describe('AuthoringWorkflow reducer', function() {
 
     describe('REQUEST_METADATA', function() {
       var state, action, newState;
+      var domain = 'https://somewhere.com';
+      var datasetUid = 'asdf-qwer';
 
       beforeEach(function() {
         state = getDefaultState();
-        action = actions.requestMetadata('asdf-qwer');
+        action = actions.requestMetadata(domain, datasetUid);
         newState = reducer(state, action);
       });
 
@@ -181,6 +197,14 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('clears the curatedRegions key', function() {
         expect(newState.metadata.curatedRegions).to.equal(null);
+      });
+
+      it('sets the domain', function() {
+        expect(newState.metadata.domain).to.equal(domain);
+      });
+
+      it('sets the datasetUid', function() {
+        expect(newState.metadata.datasetUid).to.equal(datasetUid);
       });
     });
 
@@ -234,6 +258,33 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('sets the error key', function() {
         expect(newState.metadata.error).to.equal('error!');
+      });
+
+      it('clears domain', function() {
+        expect(newState.metadata.domain).to.be.null;
+      });
+
+      it('clears datasetUid', function() {
+        expect(newState.metadata.datasetUid).to.be.null;
+      });
+    });
+
+    describe('SET_PHIDIPPIDES_METADATA', function() {
+      var state, action, newState;
+
+      beforeEach(function() {
+        state = _.merge(getDefaultState(), {
+          metadata: {
+            phidippidesMetadata: 'oldphi'
+          }
+        });
+
+        action = actions.setPhidippidesMetadata('newphi');
+        newState = reducer(state, action);
+      });
+
+      it('sets phidippides metadata', function() {
+        expect(newState.metadata.phidippidesMetadata).to.equal('newphi');
       });
     });
   });

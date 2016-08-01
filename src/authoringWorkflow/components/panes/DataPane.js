@@ -24,7 +24,7 @@ export var DataPane = React.createClass({
 
   renderMetadataError() {
     return (
-      <div className="alert error">
+      <div className="metadata-error alert error">
         <strong>{translate('panes.data.uhoh')}</strong> {translate('panes.data.loading_metadata_error')}
       </div>
     );
@@ -33,7 +33,6 @@ export var DataPane = React.createClass({
   render() {
     var metadataInfo;
     var { metadata } = this.props;
-    var reference = (ref) => (this.container = ref);
 
     if (hasError(metadata)) {
       metadataInfo = this.renderMetadataError();
@@ -42,7 +41,7 @@ export var DataPane = React.createClass({
     }
 
     return (
-      <form ref={reference}>
+      <form>
         {metadataInfo}
         <VisualizationTypeSelector/>
         <MeasureSelector/>

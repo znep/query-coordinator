@@ -31,7 +31,7 @@ export var DataPane = React.createClass({
 
   metadataError() {
     return (
-      <div className="alert error">
+      <div className="metadata-error alert error">
         <strong>{translate('panes.data.uhoh')}</strong> {translate('panes.data.loading_metadata_error')}
       </div>
     );

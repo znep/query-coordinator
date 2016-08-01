@@ -10,7 +10,7 @@ export default function(overrides) {
   });
 
   var metadata = _.merge({}, defaultMetadata, {
-    data: {columns: [{fieldName: 'test', name: 'Testing'}]},
+    data: {columns: [{fieldName: 'test', name: 'Testing', renderTypeName: 'text'}]},
     phidippidesMetadata: {columns: {'test': {renderTypeName: 'text', name: 'Testing'}}},
     curatedRegions: [{name: 'Region', uid: 'four-four'}]
   });
@@ -20,6 +20,6 @@ export default function(overrides) {
       authoring,
       vifs: vifs()
     },
-    metadata,
+    metadata
   }, overrides);
 }

@@ -7,6 +7,16 @@ import SocrataCheckbox from './SocrataCheckbox/SocrataCheckbox';
 class GoalTableHead extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      selectAllChecked: false
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectAllChecked: nextProps.selectedRows.size == nextProps.goals.size
+    });
   }
 
   render() {
@@ -29,7 +39,7 @@ class GoalTableHead extends React.Component {
 
     return <thead>
       <tr>
-        <th><SocrataCheckbox onClick={ this.props.toggleAllRows } /></th>
+        <th><SocrataCheckbox checked={ this.state.selectAllChecked } onClick={ this.props.toggleAllRows } /></th>
         <th>&nbsp;</th>
         { titles }
         <th>&nbsp;</th>
@@ -40,6 +50,8 @@ class GoalTableHead extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
+  selectedRows: state.getIn(['goalTableData', 'selectedRows']),
+  goals: state.getIn(['goalTableData', 'goals']),
   currentColumn: state.getIn(['goalTableData', 'tableOrder', 'column']),
   currentDirection: state.getIn(['goalTableData', 'tableOrder', 'direction'])
 });

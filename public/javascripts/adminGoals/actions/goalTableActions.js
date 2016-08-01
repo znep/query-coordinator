@@ -186,6 +186,7 @@ export function tableLoadPage() {
 
       dispatch(cacheGoals(goalsCache));
       dispatch(tableShowPage(goalsWithExtras));
+      dispatch(toggleAllRows(false));
     }
 
     function getDashboardDetail(dashboard) {

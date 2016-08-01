@@ -112,6 +112,7 @@
 
       var ufoSightingsVif = {
         configuration: {
+          axisLabels: axisLabels,
           tileserverHosts: stagingTileServerHosts
         },
         series: [
@@ -214,14 +215,26 @@
         ]
       };
 
+      var whiteHouseStaff = {
+        series: [
+          {
+            dataSource: {
+              domain: 'vertex-stories.test-socrata.com',
+              datasetUid: '6ta3-xmf3'
+            }
+          }
+        ]
+      };
+
       authoringWorkflow = new AuthoringWorkflow(container, {
         vif: localhost,
         // vif: choroplethVif,
         // vif: ufoSightingsVif,
-        //vif: featureMapVif,
+        // vif: featureMapVif,
         // vif: iowaMathAndReadingProficiency,
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
+        // vif: whiteHouseStaff,
         onComplete: onComplete,
         onCancel: onCancel
       });

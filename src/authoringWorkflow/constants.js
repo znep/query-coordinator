@@ -33,6 +33,10 @@ export const COLUMN_TYPES = [
     icon: 'icon-geo'
   },
   {
+    type: 'money',
+    preferredVisualizationTypes: ['columnChart']
+  },
+  {
     type: 'number',
     preferredVisualizationTypes: ['columnChart', 'histogram'],
     icon: 'icon-number'
@@ -57,7 +61,7 @@ export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
-    preferredDimensionTypes: ['text', 'number']
+    preferredDimensionTypes: ['text', 'number', 'money']
   },
   {
     type: 'histogram',

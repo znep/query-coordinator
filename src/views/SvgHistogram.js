@@ -10,9 +10,9 @@ const I18n = require('../I18n');
 // in the future, but the adjustments will likely be small in scale.
 const MARGINS = {
   TOP: 16,
-  RIGHT: 16,
+  RIGHT: 24,
   BOTTOM: 0,
-  LEFT: 46
+  LEFT: 50
 };
 const CHART_PADDING = {
   RIGHT: 16

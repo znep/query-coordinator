@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import MetadataProvider from '../../dataProviders/MetadataProvider';
+
 import { createSelector } from 'reselect';
 
 import { VISUALIZATION_TYPES, COLUMN_TYPES } from '../constants';
@@ -18,6 +20,17 @@ export const hasError = createSelector(getError, error => !_.isNull(error));
 export const getDatasetName = createSelector(
   getDatasetMetadata,
   (datasetMetadata) => _.get(datasetMetadata, 'name')
+);
+
+export const getDisplayableColumns = createSelector(
+  getDomain,
+  getDatasetUid,
+  getDatasetMetadata,
+  (domain, datasetUid, datasetMetadata) => {
+    var datasetMetadataProvider = new MetadataProvider({domain, datasetUid});
+
+    return datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+  }
 );
 
 export const getDatasetLink = createSelector(
@@ -68,7 +81,7 @@ export const getValidMeasures = createSelector(
   (datasetMetadata, phidippidesMetadata) => {
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
-      filter({ renderTypeName: 'number' }).
+      filter(isNumericColumn).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
       map(toDatasetMetadata(datasetMetadata)).
@@ -138,3 +151,8 @@ const injectFieldName = (column, key) => {
   return _.set(column, 'fieldName', key);
 };
 
+const isNumericColumn = (column) => {
+  var renderTypeName = _.get(column, 'renderTypeName');
+
+  return (renderTypeName === 'number' || renderTypeName === 'money');
+};

@@ -144,7 +144,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
-        if (dataTypeName !== 'number') {
+        if (dataTypeName !== 'number' && dataTypeName !== 'money') {
           addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_numeric'));
         }
       });

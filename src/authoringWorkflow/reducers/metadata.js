@@ -45,12 +45,12 @@ export default function metadata(state, action) {
 
     case HANDLE_METADATA_ERROR:
       state.isLoading = false;
+      state.error = action.error;
       state.domain = null;
       state.datasetUid = null;
       state.data = null;
       state.curatedRegions = null;
       state.phidippidesMetadata = null;
-      state.error = action.error;
       break;
 
     case SET_PHIDIPPIDES_METADATA:

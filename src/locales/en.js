@@ -91,8 +91,8 @@ export default {
         line_color: {
           title: 'Line Color'
         },
-        fill_color: {
-          title: 'Fill Color'
+        area_color: {
+          title: 'Area Color'
         },
         point_color: {
           title: 'Color'
@@ -182,7 +182,6 @@ export default {
       map_locate_user_error_notice: 'Click to try again',
       map_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
       no_value: '(No value)',
-      no_label: '(No label)',
       unit: {
         one: 'Record',
         other: 'Records'

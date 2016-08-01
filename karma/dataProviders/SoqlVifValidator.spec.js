@@ -179,6 +179,35 @@ describe('SoqlVifValidator', function() {
       validatePasses('requireNumericDimension', vif, [ datasetMetadata ]);
     });
 
+    describe('VIF with a money dimensioned series', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'money', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = { columns: [
+        { fieldName: 'money', dataTypeName: 'money' }
+      ]};
+
+      validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
+      validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
+      validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
+      validateFails('requirePointDimension', vif, [ datasetMetadata ]);
+      validatePasses('requireNumericDimension', vif, [ datasetMetadata ]);
+    });
+
     describe('VIF with a point dimensioned series', function() {
       const vif = {
         format: { type: 'visualization_interchange_format', version: 2 },

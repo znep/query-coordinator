@@ -72,14 +72,14 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   histogram() {
-    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.fill_color.title'));
+    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
   },
 
   timelineChart() {
     return (
       <div>
-        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.fill_color.title'))}
-        {this.renderSecondaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
+        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
+        {this.renderSecondaryColor(translate('panes.colors_and_style.fields.area_color.title'))}
       </div>
     );
   },

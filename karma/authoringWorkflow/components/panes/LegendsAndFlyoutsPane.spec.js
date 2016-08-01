@@ -9,9 +9,10 @@ import { LegendsAndFlyoutsPane } from 'src/authoringWorkflow/components/panes/Le
 function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
-    onChangeUnitsOne: sinon.spy(),
-    onChangeUnitsOther: sinon.spy(),
-    onSelectFlyoutTitle: sinon.spy()
+    onChangeUnitOne: sinon.spy(),
+    onChangeUnitOther: sinon.spy(),
+    onSelectRowInspectorTitle: sinon.spy(),
+    metadata: { domain: 'example.com', datasetUid: 'four-four', data: { columns: [] } }
   });
 
   return {
@@ -43,11 +44,11 @@ describe('LegendsAndFlyoutsPane', function() {
 
   function emitsEventsForUnits() {
     describe('when changing the units for one', function() {
-      emitsEvent('#units-one', 'onChangeUnitsOne');
+      emitsEvent('#units-one', 'onChangeUnitOne');
     });
 
     describe('when changing the units for other', function() {
-      emitsEvent('#units-other', 'onChangeUnitsOther');
+      emitsEvent('#units-other', 'onChangeUnitOther');
     });
   }
 
@@ -120,7 +121,7 @@ describe('LegendsAndFlyoutsPane', function() {
 
     describe('events', function() {
       emitsEventsForUnits();
-      emitsEvent('#flyout-title-column .dropdown-option', 'onSelectFlyoutTitle', 'click');
+      emitsEvent('#flyout-title-column .dropdown-option', 'onSelectRowInspectorTitle', 'click');
     });
   });
 

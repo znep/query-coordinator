@@ -10,7 +10,7 @@ const I18n = require('../I18n');
 // in the future, but the adjustments will likely be small in scale.
 const MARGINS = {
   TOP: 16,
-  RIGHT: 0,
+  RIGHT: 24,
   BOTTOM: 24,
   LEFT: 50
 };
@@ -285,7 +285,7 @@ function SvgTimelineChart($element, vif) {
         var dimensionIndex = dimensionIndices[seriesIndex];
         var measureIndex = measureIndices[seriesIndex];
 
-        // If we are *not* drawing a line chart, we need to draw the area fill
+        // If we *are not* drawing a line chart, we need to draw the area fill
         // first so that the line sits on top of it in the z-stack.
         if (seriesTypeVariant !== 'line') {
 
@@ -327,7 +327,7 @@ function SvgTimelineChart($element, vif) {
               attr('cx', function(d) { return d3XScale(parseDate(d[dimensionIndex])); }).
               attr('cy', function(d) { return (d[measureIndex] !== null) ? d3YScale(d[measureIndex]) : -100; }).
               attr('fill', self.getPrimaryColorBySeriesIndex(seriesIndex)).
-              attr('stroke', self.getSecondaryColorBySeriesIndex(seriesIndex));
+              attr('stroke', self.getPrimaryColorBySeriesIndex(seriesIndex));
       });
     }
 
@@ -918,7 +918,7 @@ function SvgTimelineChart($element, vif) {
       select($chartElement[0]).
         select('.highlight').
           attr('display', 'block').
-          attr('width', scaledEndDate - scaledStartDate - 2).
+          attr('width', Math.max(2, scaledEndDate - scaledStartDate - 2)).
           attr('transform', 'translate(' + scaledStartDate + ',0)');
   }
 

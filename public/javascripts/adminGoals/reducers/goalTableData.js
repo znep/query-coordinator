@@ -9,7 +9,6 @@ import {
   CACHED_GOALS_UPDATED,
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
-  TABLE_ROW_DESELECTED_ALL,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
   TABLE_ROW_SELECTION_START,
   TABLE_ROW_SELECTION_END,
@@ -46,6 +45,9 @@ const updateCachedGoals = (state, updatedGoals) => {
 
 const rowSelect = (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId));
 
+const rowDeselect = (state, action) => state.updateIn(['selectedRows'],
+  list => list.delete(list.indexOf(action.goalId))); // eslint-disable-line dot-notation
+
 const rowSelectionStart = (state, action) => state.set('multipleRowSelection', action.goalId);
 
 const rowSelectionEnd = (state, action) => {
@@ -73,6 +75,10 @@ const rowSelectionCancel = state => state.set('multipleRowSelection', false);
 
 const deselectAllRows = state => state.set('selectedRows', new Immutable.List);
 
+const selectAllRows = state => state.set('selectedRows', state.get('goals').map(goal => goal.get('id')));
+
+const toggleSelectAll = (state, action) => action.checked ? selectAllRows(state) : deselectAllRows(state);
+
 export default createReducer(new Immutable.Map, {
   // Sets goals list for, this list will be shown on table
   [TABLE_SHOW_PAGE]: (state, action) => state.merge({goals: action.goals}),
@@ -85,12 +91,8 @@ export default createReducer(new Immutable.Map, {
     cachedGoals: updateCachedGoals(state, action.goals)
   }),
   [TABLE_ROW_SELECTED]: rowSelect,
-  [TABLE_ROW_DESELECTED]: (state, action) => state.updateIn(['selectedRows'],
-    list => list.delete(list.indexOf(action.goalId))), // eslint-disable-line dot-notation
-  [TABLE_ROW_DESELECTED_ALL]: deselectAllRows,
-  [TABLE_ROW_ALL_SELECTION_TOGGLE]: (state, action) => action.checked ?
-    state.set('selectedRows', state.get('goals').map(goal => goal.get('id'))) :
-    state.set('selectedRows', new Immutable.List),
+  [TABLE_ROW_DESELECTED]: rowDeselect,
+  [TABLE_ROW_ALL_SELECTION_TOGGLE]: toggleSelectAll,
   [TABLE_ROW_SELECTION_START]: rowSelectionStart,
   [TABLE_ROW_SELECTION_END]: rowSelectionEnd,
   [TABLE_ROW_SELECTION_CANCEL]: rowSelectionCancel,

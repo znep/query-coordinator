@@ -1,5 +1,5 @@
 var utils = require('socrata-utils');
-var SvgVisualization = require('./SvgVisualization');
+var Visualization = require('./Visualization');
 var L = require('leaflet');
 var _ = require('lodash');
 var $ = require('jquery');
@@ -19,7 +19,7 @@ var FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
 function FeatureMap(element, vif) {
 
-  _.extend(this, new SvgVisualization(element, vif));
+  _.extend(this, new Visualization(element, vif));
 
   var self = this;
 
@@ -78,7 +78,7 @@ function FeatureMap(element, vif) {
 
   // Render template here so that we can modify the map container's styles
   // below.
-  _renderTemplate();
+  _renderTemplate(this.element);
 
   // CORE-4832: Disable pan and zoom on feature map
   if (!_panAndZoom) {
@@ -119,7 +119,7 @@ function FeatureMap(element, vif) {
         _map = L.map(_mapElement[0], _mapOptions);
 
         // Attach events on first render only
-        _attachEvents();
+        _attachEvents(this.element);
 
         centerAndZoomDefined = (
           _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lat')) &&
@@ -171,7 +171,7 @@ function FeatureMap(element, vif) {
 
     if (_map) {
 
-      _detachEvents();
+      _detachEvents(this.element);
 
       // Remove the map after detaching events since `_detachEvents()` expects
       // the `_map` instance to exist.
@@ -179,16 +179,14 @@ function FeatureMap(element, vif) {
     }
 
     // Finally, clear out the container.
-    self.
-      $element.
-        empty();
+    this.element.empty();
   };
 
   /**
    * Private methods
    */
 
-  function _renderTemplate() {
+  function _renderTemplate(targetElement) {
 
     var mapElement = $(
       '<div>',
@@ -273,10 +271,7 @@ function FeatureMap(element, vif) {
     _mapPanZoomDisabledWarning = mapPanZoomDisabledWarning;
     _mapLocateUserButton = mapLocateUserButton;
 
-    self.
-      $element.
-        find('.visualization-container').
-          append(mapContainer);
+    targetElement.append(mapContainer);
   }
 
   function _attachEvents() {

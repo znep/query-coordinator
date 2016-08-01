@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
+import utils from 'socrata-utils';
 
 import reducer from './reducers';
 import vifs from './vifs';
@@ -15,6 +16,8 @@ import { setLocale } from '../I18n';
 
 import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { setDataSource } from './actions';
+
+import { migrateVif } from '../helpers/VifHelpers';
 
 function propagateUserDefinedVifValuesToAllVifs(vif) {
   var vifType = _.get(vif, 'series[0].type', null);
@@ -31,8 +34,6 @@ function propagateUserDefinedVifValuesToAllVifs(vif) {
     clonedVifs[vifType] = _.merge({}, clonedVifs[vifType], vif);
   }
 
-  _.set(clonedVifs.featureMap, 'configuration.tileserverHosts', _.get(vif, 'configuration.tileserverHosts', []));
-
   return clonedVifs;
 }
 
@@ -40,7 +41,11 @@ module.exports = function(element, configuration) {
   var self = this;
   var logger = createLogger();
 
-  var vif = _.get(configuration, 'vif', {});
+  utils.assertHasProperty(configuration, 'vif.format.version');
+  utils.assert(_.get(configuration, 'vif.format.type') === 'visualization_interchange_format');
+
+  var vif = _.get(configuration, 'vif');
+  vif = vif ? migrateVif(vif) : {};
   var vifType = _.get(vif, 'series[0].type', null);
 
   var initialState = {

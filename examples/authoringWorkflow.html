@@ -100,6 +100,10 @@
         configuration: {
           tileserverHosts: productionTileServerHosts
         },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -115,6 +119,10 @@
           axisLabels: axisLabels,
           tileserverHosts: stagingTileServerHosts
         },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -128,6 +136,10 @@
       var featureMapVif = {
         configuration: {
           tileserverHosts: productionTileServerHosts
+        },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
         series: [
           {
@@ -143,6 +155,10 @@
         configuration: {
           tileserverHosts: stagingTileServerHosts
         },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -156,6 +172,10 @@
       var iowaMathAndReadingProficiency = {
         configuration: {
           axisLabels: axisLabels
+        },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
         series: [
           {
@@ -191,6 +211,10 @@
           axisLabels: axisLabels,
           tileserverHosts: stagingTileServerHosts
         },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -205,6 +229,10 @@
         configuration: {
           tileserverHosts: ['https://localhost']
         },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -216,6 +244,10 @@
       };
 
       var whiteHouseStaff = {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         series: [
           {
             dataSource: {
@@ -231,7 +263,7 @@
         // vif: choroplethVif,
         // vif: ufoSightingsVif,
         // vif: featureMapVif,
-        // vif: iowaMathAndReadingProficiency,
+        vif: iowaMathAndReadingProficiency,
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
         // vif: whiteHouseStaff,

@@ -229,10 +229,6 @@ function migrateVif1ToVif2(vifToMigrate) {
   // 6. Copy over the origin object
   migratedVif.origin = _.cloneDeep(vifToMigrate.origin);
 
-  // 7. Copy over the title and description if they exist
-  migratedVif.title = (vifToMigrate.title) ? vifToMigrate.title : null;
-  migratedVif.description = (vifToMigrate.description) ? vifToMigrate.description : null;
-
   return migratedVif;
 }
 

@@ -110,8 +110,13 @@ var Dataset = ServerModel.extend({
         this._commentByID = {};
 
         // Set up Polaroid image capturing
-        if (window._phantom && _.isFunction(window.callPhantom)) {
-            this._setupPolaroidImageCapturing();
+        if (window._phantom) {
+            console.log('Running in phantomjs');
+          if (_.isFunction(window.callPhantom)) {
+              this._setupPolaroidImageCapturing();
+          } else {
+              console.log('window.callPhantom not present, skipping image capture');
+          }
         }
 
         // Set up Snapshotting service, currently defunct
@@ -3696,6 +3701,7 @@ var Dataset = ServerModel.extend({
         this.bind('request_finish', function()
         {
             var ds = this;
+            console.log('request_finish event received, waiting for rendering to complete.');
             // if there was already a return call, e.g. aggregates
             if (!$.isBlank(ds._polaroidTimer)) {
                 clearTimeout(ds._polaroidTimer);
@@ -3703,6 +3709,7 @@ var Dataset = ServerModel.extend({
 
             ds._polaroidTimer = setTimeout(function() {
                 _.defer(function() {
+                    console.log('Render complete.');
                     window.callPhantom('snapshotReady');
                 });
             }, timeout || 5000);

@@ -41,9 +41,12 @@ module SocrataSiteChrome
       return true if request_current_user['roleName'] == 'administrator'
     end
 
+    def copyright_source
+      localized('footer.copyright_notice_source', get_site_chrome.locales)
+    end
+
     def copyright
-      copy_with_year = "\u00A9 #{Time.now.year}"
-      footer_title.present? ? "#{copy_with_year} #{footer_title}" : copy_with_year
+      "&copy; #{Time.now.year}".html_safe + " #{copyright_source}"
     end
 
     def show_copyright?

@@ -862,7 +862,7 @@ it:
       row_count: Numero totale di righe %{count}
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
-      start_page: 
+      start_page:
       totals: Totali
       view_cell_comments: Visualizza i commenti per questa cella
       view_first_row: Visualizza prima riga
@@ -1307,12 +1307,14 @@ it:
       rows: Righe
       title: Cosa è contenuto in questa sequenza di dati?
     dataset_preview:
+      all_rows: Tutte le righe visibili
       grid_view_link: Esplora i dati
       latitude: Latitudine
       longitude: Longitudine
       many_rows: Mostra {unitOther} {firstRowOrdinal}-{lastRowOrdinal} di {datasetRowCount}
       next: Successivo
       no_column_description: Nessuna descrizione fornita.
+      no_row_count: Conteggio righe non disponibile
       no_rows: Nessuna {unitOther}
       only_rows: Mostra {unit} {firstRowOrdinal} di {datasetRowCount}
       previous: Precedente
@@ -1414,7 +1416,12 @@ it:
     publish_notice: Questa sequenza di dati non è <strong>pubblicata</strong>. Pubblicando questa pagina verrà pubblicata anche la <a href="{url}" target="_blank">visualizzazione tabellare</a> di questa sequenza di dati.
     published: Pubblicato
     published_by: Dati forniti da
+    related_views:
+      load_more_error: Problemi nel caricamento dell'ulteriore contenuto.
+      title: Contenuto collegato utilizzando questi dati
+      view: Visualizza
     remove: Rimuovi
+    render_error: Problemi nel rendering della pagina.
     save: Salva
     saved: Salvato
     saving: Salvataggio in corso
@@ -1568,7 +1575,7 @@ it:
       title: Impostazioni della Pagina
   date:
     abbr_month_names:
-    - 
+    -
     - Gen
     - Feb
     - Mar
@@ -1582,7 +1589,7 @@ it:
     - Nov
     - Dic
     month_names:
-    - 
+    -
     - Gennaio
     - Febbraio
     - Marzo
@@ -1620,6 +1627,16 @@ it:
     to_whence_you_came: da dove sei venuto.
   govstat:
     admin:
+      bulk_edit:
+        button_title: Modifica oggetti moltipli...
+        cancel: Annulla
+        failure_message: "<strong>Errore.</strong> Problemi nell'eseguire l'azione. Ritenta o annulla."
+        items_selected: Oggetti selezionati.
+        revert_changes: Annulla modifiche
+        success_message: Perfetto! {0} gli obiettivi sono stati aggiornati.
+        title: Modifica oggetti multipli
+        update: Aggiorna
+        visibility: Visibilità
       goal_values:
         status_private: Privato
         status_public: Pubblico
@@ -1635,6 +1652,55 @@ it:
         title: Titolo
         updated_at: Agggiornato
         view_dashboard: Visualizza Cruscotto
+        visibility: Visibilità
+      quick_edit:
+        action_type: Azione
+        action_types:
+          increase: Aumenta
+          maintain: Mantieni
+          measure: Misura
+          reduce: Riduci
+        cancel: Annulla
+        category: Categoria
+        dashboard: Dashboard
+        dataset_owner: Proprietario del set di dati
+        dataset_updated: Set di dati aggiornato
+        date_range: Variazione dei dati
+        default_alert_message: "<span><b>Oh, no!</b> Qualcosa è andato storto. La nostra squadra ne è stata informata. Nel frattempo, riprova o aggiorna la pagina."
+        goal_name: Titolo dell'obiettivo
+        goal_owner: Proprietario dell'obiettivo
+        goal_updated: Obiettivo aggiornato
+        manage_on_goal_page: Gestisci sulla pagina dell'obiettivo
+        measure_baseline: Punto di partenza
+        measure_delta: Indice di variazione
+        measure_maintain_types:
+          above: Sopra
+          below: Sotto
+          within: Intorno
+        measure_target: Valore dell'obiettivo
+        measure_target_type: Tipo
+        measure_target_type_types:
+          absolute: A
+          relative: Da
+        override: Forza
+        override_types:
+          bad: Richiede miglioramenti
+          good: Sull'obiettivo
+          no_judgement: Misurazione
+          none: Nessuno
+          within_tolerance: In prossimità dell'obiettivo
+        prevailing_measure: Misura prevalente
+        prevailing_measure_name: Oggetto
+        quick_edit_measure: Modifica rapida della misura
+        range: Estensione
+        range_types:
+          above: Sopra
+          around: Intorno
+          below: Sotto
+        save: Salva
+        status: Status
+        success_message: Perfetto! {0} aggiornato.
+        unit: Unità
         visibility: Visibilità
     chrome:
       header:
@@ -1885,6 +1951,7 @@ it:
         add_connector: Aggiungi connettore
         add_new: Aggiungi nuovo
         all_assets: Connetti tutte le risorse
+        arcgis_layer: Strato ArcGIS
         arcgis_server_address: Indirizzo del server ArcGIS
         assets_connected:
           one: 1 risorsa connessa
@@ -1897,6 +1964,7 @@ it:
         connected_assets: Risorse connesse
         current_status: Stato attuale
         data: Dati
+        dataset: Set di dati
         discovered_assets: Risorse scoperte
         edit: Modifica
         edit_connector: 'Modifica connettore: %{url}'
@@ -1927,6 +1995,7 @@ it:
         search: Cerca il dominio
         selective_connection: Connessione selettiva
         service_unavailable: I servizi di connessione sono attualmente non disponibili.
+        show_title: Affiliazione ad ArcGIS Server
         some_assets: Collega soltanto queste risorse
         source: Fonte di connessione
         success: Andata a buon fine
@@ -2482,15 +2551,15 @@ it:
                 placeholder: URL
                 title: Logo del piè di pagina
               footer_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: "È possibile selezionare l'altezza e la larghezza del logo a piè di pagina."
+                error: 'Si prega di inserire un valore da 1 a 999 che corrisponda all''altezza desiderata del logo in pixel. Es.: 100px'
+                placeholder: 80px
+                title: Altezza logo a piè di pagina
               footer_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: "È possibile selezionare l'altezza e larghezza del logo a piè di pagina."
+                error: 'Si prega di inserire un valore da 1 a 999 che corrisponda alla larghezza desiderata del logo in pixel. Es: 100px'
+                placeholder: 80px
+                title: Larghezza logo a piè di pagina
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Colore del testo e dei link presenti nel piè di pagina
@@ -2510,11 +2579,11 @@ it:
                 placeholder: UA-12345678-1
                 title: Token di Google Analytics
               show_signin_signout:
-                description: 
-                show_profile: 
-                show_signin_signout: 
-                show_signup: 
-                title: 
+                description: Visualizza queste opzioni se il sito richiede la creazione di un profilo utente o un login.
+                show_profile: Visualizza un link al profilo utente dopo il login
+                show_signin_signout: Visualizza login e logout
+                show_signup: Indica la possibilità di creare un profilo utente effettuando il login
+                title: Login / Logout
               template:
                 description: Regola l'aspetto dell'intestazione/piè di pagina modificando il modello. I modelli supportati sono "Predefinito" e "Rally".
                 placeholder: Rally
@@ -2535,11 +2604,11 @@ it:
                 placeholder: "#123456"
                 title: Colore di sfondo della barra
               bar_secondary_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Colore primario e secondario di sfondo della barra del titolo. Il colore secondario è utilizzato solo nel modello Rally.
+                placeholder: "#123456"
+                title: Colore di sfondo della barra (Secondario)
               bar_text_link_color:
-                description: 
+                description: Colore in primo piano del testo e link sopra la barra del titolo.
                 placeholder: "#ffffff"
                 title: Colore del testo e del link della barra
               header_bar_logo:
@@ -2551,15 +2620,15 @@ it:
                 placeholder: Evergreen Open Data
                 title: Nome dell'intestazione da mostrare
               header_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: "È possibile selezionare l'altezza e la larghezza del logo della barra del titolo."
+                error: 'Si prega di inserire un valore da 1 a 999 che corrisponda all''altezza desiderata del logo in pixel. Es.: 100px'
+                placeholder: 80px
+                title: Altezza logo titolo
               header_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Hai l'opzione di scegliere altezza e larghezza del logo sulla barra del titolo.
+                error: 'Si prega di inserire un valore da 1 a 999 che corrisponda alla larghezza desiderata del logo in pixel. Es.: 100px'
+                placeholder: 80px
+                title: Larghezza logo titolo
               link_title_label: Etichetta del link
               link_title_placeholder: Testo del link
               menu_links:
@@ -2569,7 +2638,7 @@ it:
               url_placeholder: http://data.evergreen.gov
             title: Barra d'intestazione
           homepage:
-            fields: 
+            fields:
             title: Pagina iniziale
           social:
             fields:
@@ -2593,6 +2662,10 @@ it:
                 description: Mostra il link al profilo LinkedIn e il link nell'intestazione e nel piè di pagina, ove presenti.
                 placeholder: http://www.linkedin.com/
                 title: Link al profilo LinkedIn
+              pinterest_profile_link:
+                description:
+                placeholder:
+                title:
               tumblr_profile_link:
                 description: Mostra il link al profilo Tumblr e il link nell'intestazione e nel piè di pagina, ove presenti.
                 placeholder: http://www.tumblr.com/
@@ -2736,6 +2809,24 @@ it:
         add_new_column: Aggiungi una Nuova Colonna
         clear_all: Cancella Tutto
         data_type: Tipo di Dati
+        errors:
+          multiple_columns:
+            blank_names:
+              many_html: "<strong>{instances}</strong> delle colonne non hanno nome. Si prega di nominarle."
+              one_html: "<strong>Una</strong> delle colonne non ha nome. Si prega di nominarla."
+            columns_named_tags:
+              many_html: <strong>{instances}</strong> delle colonne sono denominate "tags". Le colonne non possono essere denominate "tags".
+              one_html: <strong>Una</strong> delle colonne è denominata "tags". Le colonne non possono essere denominate "tags".
+            duplicate_names: "<strong>{instances}</strong> delle colonne sono denominate <strong>{name} </strong>. Le colonne di un set di dati non possono avere lo stesso nome."
+            source_columns_dropped:
+              many_html: Le colonne {sourceColumns} si trovano nel file di dati sorgente, ma attualmente non sono impostate per l'importazione nel set di dati.
+              one_html: La colonna {sourceColumns} si trova nel file di dati sorgente, ma attualmente non è impostata per l'importazione nel set di dati.
+          single_column:
+            empty_composite_col: La colonna <strong>{resultColumnName}</strong> è una colonna composita, che verrà creata partendo da diverse colonne sorgente, ma attualmente non è impostata per ricevere alcun dato. Si prega di aggiungere colonne fonte o testo.
+            non_text_composite_col: La colonna <strong>{resultColumnName}</strong> è una colonna composita, che verrà creata partendo da diverse colonne sorgente, ma attualmente è impostata per l'importazione come <strong>{chosenType}</strong>. Si prega di verificare che la combinazione delle colonne selezionate dia un {chosenType} valido.
+            type_too_generic: La colonna <strong>{resultColumnName}</strong> è impostata per l'importazione come <strong>{chosenType}</strong>, ma, secondo la nostra analisi, è probabile che la colonna sia <strong>{suggestedType}</strong>. È possibile importare la colonna come {chosenType}, ma, così facendo, si perderanno alcune caratteristiche. Si raccomanda caldamente di importare la colonna come <strong>{suggestedType}</strong>.
+            wrong_type: La colonna <strong>{resultColumnName}</strong> è una <strong>{chosenType}</strong>, ma, secondo la nostra analisi, la colonna sorgente che si sta tentando di importare è del tipo <strong>{suggestedType}</strong>. Se si sceglie di importare tale colonna, approssimativamente il <strong>{invalidPercent}%</strong> dei dati è a rischio di essere importato in modo errato.
+            wrong_type_unknown_count: La colonna <strong>{resultColumnName}</strong> è impostata per l'importazione come <strong>{chosenType}</strong>, ma, secondo la nostra analisi, <strong>{suggestedType}</strong> potrebbe essere un'opzione migliore. Se i dati della colonna non sono formattati correttamente come {chosenType}, tali dati potrebbero essere importati in modo errato.
         errors_warnings: Errori ed Avvisi
         fewer_rows: Numero inferiore di Righe
         headers: Intestazioni
@@ -2743,11 +2834,12 @@ it:
         headline: Specifica quante &ldquo;<span class="fileName"></span>&rdquo; dovebbero essere importate.
         headline_interpolate: Specifica in che modo "{0}" dovrebbe essere importato.
         help_message: Per aiuto, controlla una <a href="%{common_errors}" rel="external">lista di avvisi comuni ed errori</a>.
+        help_message_js: Se hai bisogno di aiuto, controlla la <a href="{common_errors}" rel="external">lista di avvertenze ed errori comuni</a>.
         more_rows: Più Colonne
         name: Nome
         pending_columns: Cortesemente attendi mentre carichiamo le tue colonne...
         reset_to_preset: Torna alla selezione predefinita
-        restore_suggested_settings: 
+        restore_suggested_settings: Ripristinare impostazioni consigliate
         set: Seleziona
         source_column: Fonte della Colonna
         subheadline: Colonne da Importare
@@ -2760,7 +2852,7 @@ it:
       import_shapefile:
         abbreviatedSubheadline: La sintetizzazione di questa sequenza di dati potrebbe impiegare del tempo. Clicca su "avanti" per importarla.
         abbreviatedSummary: Gli strati della mappa in &ldquo;<span class="fileName"></span>&rdquo; verranno creati dopo l'importazione.
-        abbreviatedSummary_js: 
+        abbreviatedSummary_js: Gli strati di mappa in "{fileName}" saranno creati in seguito all'importazione.
         crs: Sistema di Riferimento delle Coordinate
         headline: Specifica come &ldquo;<span class="fileName"></span>&rdquo; deve essere importato.
         headline_interpolate: Specifica in che modo "{0}" dovrebbe essere importato.
@@ -3751,7 +3843,7 @@ it:
       import_from_latlong: Importa dalle colonne della <strong>latitudine</strong> e dell <strong>longitudine</strong>
       import_from_multiple: Importa da <strong>colonne multiple</strong>
       import_from_single: Importa da <strong>colonna singola</strong>
-      insert_static_text: 
+      insert_static_text: "(Inserire testo statico...)"
       latitude: Latitudine
       location_source_col: Posizione Colonne Sorgente
       longitude: Longitudine
@@ -3781,8 +3873,8 @@ it:
       combine_multiple_cols: "(Combina Colonne Multiple...)"
       downloading: Sto scaricando il tuo file...
       errors:
-        http_error: 
-        network_error: 
+        http_error: 'Impossibile salvare metadati a causa di errore: {0}'
+        network_error: Impossibile salvare metadati a causa di un errore di rete.
       filetype_error_blist: Cortesemente scegli un file CSV, TSV, XLS, o XLSX.
       filetype_error_shapefile: Cortesemente scegli un file KML, KMZ, o ZIP.
       headline_import: Cortesemente scegli un file da importare
@@ -4072,12 +4164,28 @@ it:
         explanation_html: Quando premerai su <strong>Salva</strong>, la tua nuova <strong>Sequenza di Dati in Bozza</strong> sarà visibile nel tuo catalogo personale. Nessun altro potrà vederla finché non completerai la creazione guidata di una nuova sequenza di dati.
         prompt: Dai un nome alla tua nuova sequenza di dati.
         title: Crea una nuova sequenza di dati
+      menu:
+        about:
+        api:
+        api_subtext:
+        discuss:
+        discuss_subtext:
+        download:
+        download_subtext:
+        embed:
+        embed_subtext:
+        more_views:
+        more_views_subtext:
+        odata:
+        odata_subtext:
+        print:
+        print_subtext:
     wizard:
       cancel: Cancella
       finish: Termina
       next: Successivo
       previous: Precedente
-      save: 
+      save: Salva
   support:
     array:
       last_word_connector: ", e "

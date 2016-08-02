@@ -1311,12 +1311,14 @@ es:
       rows: Filas
       title: "¿Qué hay en este conjunto de datos?"
     dataset_preview:
+      all_rows: Mostrando todas las hileras
       grid_view_link: Explorar los datos
       latitude: Latitud
       longitude: Longitud
       many_rows: Mostrando {unitOther} {firstRowOrdinal}-{lastRowOrdinal} de {datasetRowCount}
       next: Siguiente
       no_column_description: No hay descripción
+      no_row_count: Cuenta de hilera no disponible
       no_rows: No {unitOther}
       only_rows: Mostrando {unit} {firstRowOrdinal} de {datasetRowCount}
       previous: Anterior
@@ -1418,7 +1420,12 @@ es:
     publish_notice: Este conjunto de datos está <strong>inédito</strong>. Publicar esta página también publicará la <a href="{url}" target="_blank">vista tabular</a> de este conjunto de datos.
     published: Publicado
     published_by: Datos proporcionados por
+    related_views:
+      load_more_error: Ha surgido un problema al cargar contenido adicional.
+      title: Contenido relacionado haciendo uso de estos datos
+      view: Visualizar
     remove: Eliminar
+    render_error: Ha surgido un problema al procesar esta página.
     save: Guardar
     saved: Guardado
     saving: Guardando
@@ -1572,7 +1579,7 @@ es:
       title: Ajustes de página
   date:
     abbr_month_names:
-    - 
+    -
     - Ene
     - Feb
     - Mar
@@ -1586,7 +1593,7 @@ es:
     - Nov
     - Dic
     month_names:
-    - 
+    -
     - Enero
     - Febrero
     - Marzo
@@ -1624,6 +1631,16 @@ es:
     to_whence_you_came: a donde estaba.
   govstat:
     admin:
+      bulk_edit:
+        button_title: Editar articulos múltiples...
+        cancel: Cancelar
+        failure_message: "<strong>Error.</strong> Ha surgido un problema al llevar a cabo esta acción. Vuelva a intentar o cancelar."
+        items_selected: Artículos seleccionados
+        revert_changes: Revertir los cambios
+        success_message: "¡Mucha suerte! Se han actualizado {0} objetivos."
+        title: Editar artículos múltiples
+        update: Actualizar
+        visibility: Visibilidad
       goal_values:
         status_private: Privado
         status_public: Público
@@ -1639,6 +1656,55 @@ es:
         title: Título
         updated_at: Actualizado
         view_dashboard: Ver panel de control
+        visibility: Visibilidad
+      quick_edit:
+        action_type: Acción
+        action_types:
+          increase: Aumentar
+          maintain: Mantener
+          measure: Medir
+          reduce: Reducir
+        cancel: Cancelar
+        category: Categoría
+        dashboard: Tablero de mandos
+        dataset_owner: Propietario de conjunto de datos
+        dataset_updated: Conjunto de datos actualizado
+        date_range: Rango de fecha
+        default_alert_message: "<span><b>¡Oh no!</b> Ha surgido un problema y nuestro equipo ha sido notificado de ello. Mientras tanto, intente de nuevo realizar su acción o actualice esta página.</span>"
+        goal_name: Título del objetivo
+        goal_owner: Propietario del objetivo
+        goal_updated: Objetivo actualizado
+        manage_on_goal_page: Gestionar en la página de objetivos
+        measure_baseline: Referencia
+        measure_delta: Valor de rango
+        measure_maintain_types:
+          above: Arriba
+          below: Abajo
+          within: Alrededor
+        measure_target: Valor de objetivo
+        measure_target_type: Tipo
+        measure_target_type_types:
+          absolute: A
+          relative: De
+        override: Invalidar
+        override_types:
+          bad: Necesita mejoras
+          good: Bien encaminado
+          no_judgement: Midiendo
+          none: Ninguno
+          within_tolerance: Objetivo aproximado
+        prevailing_measure: Medición predominante
+        prevailing_measure_name: Asunto
+        quick_edit_measure: Edición rápida de la medición
+        range: Rango
+        range_types:
+          above: Arriba
+          around: Alrededor
+          below: Debajo
+        save: Guardar
+        status: Estado
+        success_message: "¡Mucha suerte! Se han actualizado {0}."
+        unit: Unidad
         visibility: Visibilidad
     chrome:
       header:
@@ -1889,6 +1955,7 @@ es:
         add_connector: Añadir conector
         add_new: Añadir nuevo
         all_assets: Conectar todos los activos
+        arcgis_layer: Capa ArcGIS
         arcgis_server_address: Dirección del servidor ArcGIS
         assets_connected:
           one: 1 activo conectado
@@ -1901,6 +1968,7 @@ es:
         connected_assets: Activos conectados
         current_status: Estado actual
         data: Datos
+        dataset: Conjunto de datos
         discovered_assets: Activos descubiertos
         edit: Editar
         edit_connector: 'Editar conector: %{url}'
@@ -1931,6 +1999,7 @@ es:
         search: Buscar el dominio
         selective_connection: Conexión selectiva
         service_unavailable: Los servicios de conectores no están disponibles actualmente.
+        show_title: Servidor de Federación ArcGIS
         some_assets: Conectar solamente estos activos
         source: Fuente de conectores
         success: Correcto
@@ -2486,15 +2555,15 @@ es:
                 placeholder: URL
                 title: Logotipo del pie de página
               footer_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Puede determinar de forma opcional la altura y ancho de su logo a pie de página.
+                error: 'Por favor, introduzca un valor (1-999) que represente la altura deseada para su logotipo en pixels. Ej: 100px'
+                placeholder: 80px
+                title: Altura del logotipo a pie de página
               footer_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Puede determinar de forma opcional una altura y ancho para su logotipo a pie de página.
+                error: 'Por favor, introduzca un valor (1-999) que represente el ancho deseado para su logotipo en pixels. Ej: 100px'
+                placeholder: 80px
+                title: Ancho del logotipo a pie de página
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Color del texto y el enlace del texto del pie de página
@@ -2514,11 +2583,11 @@ es:
                 placeholder: UA-12345678-1
                 title: Identificador de Google Analytics
               show_signin_signout:
-                description: 
-                show_profile: 
-                show_signin_signout: 
-                show_signup: 
-                title: 
+                description: Muestre estas opciones si tu sitio requiere de un perfil de usuario / inicio de sesión.
+                show_profile: Muestre un enlace al perfil una vez inciada la sesión
+                show_signin_signout: Muestre inicio de sesión/ cierre de sesión
+                show_signup: Muestre la habilidad para crear una cuenta a través de Sign Up
+                title: Inicio de sesión /cierre de sesión
               template:
                 description: Ajusta la apariencia del encabezado o pie de página cambiando la plantilla. Las plantillas compatibles son «default» y «rally».
                 placeholder: Rally
@@ -2539,11 +2608,11 @@ es:
                 placeholder: "#123456"
                 title: Color de fondo de la barra
               bar_secondary_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Colores primarios y secundarios de fondo en la barra de encabezado. El color secundario solo se utiliza en la plantilla Rally.
+                placeholder: "#123456"
+                title: Color (secundario) de fondo para la barra
               bar_text_link_color:
-                description: 
+                description: Color principal del texto y enlaces aposentados sobre la barra de cabecera.
                 placeholder: "#ffffff"
                 title: Color del texto y el enlace de la barra
               header_bar_logo:
@@ -2555,15 +2624,15 @@ es:
                 placeholder: Datos Abiertos Evergreen
                 title: Nombre en pantalla del encabezado
               header_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Puede determinar de forma opcional una altura y ancho para el logotipo de su barra de encabezado.
+                error: Por favor, introduzca un valor (1-999) que represente la altura deseada para su logotipo en pixels. Ej. 100px
+                placeholder: 80px
+                title: Altura del logotipo de la cabecera
               header_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Puede determinar de forma opcional una altura y ancho para su logo de la cabecera.
+                error: 'Por favor, introduzca un valor (1-999) que represente el ancho deseado para su logo en pixels. Ej: 100px'
+                placeholder: 80px
+                title: Ancho del logotipo de la cabecera
               link_title_label: Etiqueta del enlace
               link_title_placeholder: Texto del enlace
               menu_links:
@@ -2573,7 +2642,7 @@ es:
               url_placeholder: http://data.evergreen.gov
             title: Barra del encabezado
           homepage:
-            fields: 
+            fields:
             title: Página de inicio
           social:
             fields:
@@ -2597,6 +2666,10 @@ es:
                 description: Muestra el enlace del perfil de LinkedIn en el encabezado y el pie de página cuando está presente.
                 placeholder: http://www.linkedin.com/
                 title: Enlace de perfil de LinkedIn
+              pinterest_profile_link:
+                description:
+                placeholder:
+                title:
               tumblr_profile_link:
                 description: Muestra el enlace del perfil de Tumblr en el encabezado y el pie de página cuando está presente.
                 placeholder: http://www.tumblr.com/
@@ -2740,6 +2813,24 @@ es:
         add_new_column: Añadir nueva columna
         clear_all: Borrar todo
         data_type: Tipo de datos
+        errors:
+          multiple_columns:
+            blank_names:
+              many_html: "<strong>{instances}</strong> de sus columnas no tienen nombre. Por favor, proporcióneles nombres."
+              one_html: "<strong>Una</strong> de sus columnas no tiene nombre. Por favor, proporciónele un nombre."
+            columns_named_tags:
+              many_html: <strong>{instances}</strong> de sus columnas han sido nombradas "tags". No se pueden nombrar columnas como "tags".
+              one_html: <strong>Una</strong> de sus columnas ha sido nombrada "tags". No se pueden nombrar columnas como "tags".
+            duplicate_names: "<strong>{instances}</strong> de sus columnas han sido nombradas <strong>“{name}”</strong>. Columnas en un conjunto de datos no pueden compartir el mismo nombre."
+            source_columns_dropped:
+              many_html: Las columnas {sourceColumns} en su archivo de fuente de datos, pero en estos momentos no se ha determinado su importación a su conjunto de datos.
+              one_html: La columna {sourceColumns} se encuentra en su archivo de fuente de datos, pero en estos momentos no se ha determinado su importación a su conjunto de datos.
+          single_column:
+            empty_composite_col: La columna <strong>{resultColumnName}</strong> es una columna compuesta que se creará con múltiples columnas origen, pero en estos momentos no ha determinado que sea ocupado por nada. Por favor, añada algunas columnas o texto.
+            non_text_composite_col: La columna <strong>{resultColumnName}</strong> es una columna compuesta que que se creará con múltiples columnas origen, pero en estos momentos se ha determinado que importe como <strong>{chosenType}</strong>. Por favor, asegúrese de que la combinación de las columnas que ha especificado producirá un {chosenType} válido.
+            type_too_generic: La columna <strong>{resultColumnName}</strong> ha sido determinada para importar como un <strong>{chosenType}</strong>, pero nuestro análisis indica que la columna parece ser una columna <strong>{suggestedType}</strong>. Puede importarla como un {chosenType}, pero si lo hace, perderá algunas funciones. Le recomendamos encarecidamente que lo importe con un <strong>{suggestedType}</strong>.
+            wrong_type: La columna <strong>{resultColumnName}</strong> es una <strong>{chosenType}</strong>, pero nuestro análisis indica que la columna origen que está intentando importar en su interior es del tipo <strong>{suggestedType}</strong>. En el caso de que escoja importar esta columna, aproximadamente un <strong>{invalidPercent}%</strong> de sus datos presumiblemente se importará de forma errónea.
+            wrong_type_unknown_count: La columna <strong>{resultColumnName}</strong> ha sido determinada para importar como un <strong>{chosenType}</strong> pero nuestro análisis muestra que <strong>{suggestedType}</strong> sería más adecuado. A menos que los datos de la columna hayan sido formateados correctamente como un {chosenType} puede ser que datos se importen de forma incorrecta.
         errors_warnings: Errores y advertencias
         fewer_rows: Menos filas
         headers: Encabezamientos
@@ -2747,11 +2838,12 @@ es:
         headline: Especifique cómo se debería importar &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifica cómo debería importarse "{0}".
         help_message: Para ayuda, eche un vistazo a una <a href="%{common_errors}" rel="external">lista de errores y advertencias comunes</a>.
+        help_message_js: Para más ayuda, eche un vistazo a una<a href="{common_errors}" rel="external">lista de avisos y errores comunes</a>.
         more_rows: Más filas
         name: Nombre
         pending_columns: Por favor, espere mientras cargamos sus columnas...
         reset_to_preset: Reiniciar a la preconfiguración
-        restore_suggested_settings: 
+        restore_suggested_settings: Restablecer parámetros sugeridos
         set: Configurar
         source_column: Columna fuente
         subheadline: Columnas para importar
@@ -2764,7 +2856,7 @@ es:
       import_shapefile:
         abbreviatedSubheadline: Resumir este conjunto de datos podría llevar mucho tiempo. Haz clic en siguiente para importarlo.
         abbreviatedSummary: Las capas de  mapas en &ldquo;<span class="fileName"></span>&rdquo; se crearán al importar.
-        abbreviatedSummary_js: 
+        abbreviatedSummary_js: Se creará un mapa de capas en "{fileName}" una vez se realice la importación.
         crs: Coordinar el sistema de referencia
         headline: Especifique cómo se debería importar &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifica cómo debería importarse "{0}".
@@ -3755,7 +3847,7 @@ es:
       import_from_latlong: Importar desde las columnas de <strong>latitud</strong> y <strong>longitud</strong>
       import_from_multiple: Importar de <strong>columnas múltiples</strong>
       import_from_single: Importar de <strong>una sola columna</strong>
-      insert_static_text: 
+      insert_static_text: "(Inserte textos de estadística...)"
       latitude: Latitud
       location_source_col: Columnas fuente de localización
       longitude: Longitud
@@ -3785,8 +3877,8 @@ es:
       combine_multiple_cols: "(Combinar múltiples columnas...)"
       downloading: Descargando su archivo..
       errors:
-        http_error: 
-        network_error: 
+        http_error: 'No hemos podido guardar sus datos meta debido a un error: {0}'
+        network_error: No hemos podido guardar sus datos meta debido a un error de red.
       filetype_error_blist: Por favor, elija un archivo CSV, TSV, XLS o XLSX.
       filetype_error_shapefile: Por favor, elija un archivo KML, KMZ o ZIP.
       headline_import: Por favor, elija un archivo para importar
@@ -4076,12 +4168,28 @@ es:
         explanation_html: Cuando pulses <strong>Guardar</strong>, nuevo <strong>Conjunto de Datos Borrador</strong> será visible en tu catálogo personal. Nadie más podrá verlo hasta que completes el nuevo Dataset Wizard (Asistente de Conjunto de Datos).
         prompt: Por favor, ponle un nombre a tu nuevo conjunto de datos.
         title: Crear un nuevo conjunto de datos
+      menu:
+        about:
+        api:
+        api_subtext:
+        discuss:
+        discuss_subtext:
+        download:
+        download_subtext:
+        embed:
+        embed_subtext:
+        more_views:
+        more_views_subtext:
+        odata:
+        odata_subtext:
+        print:
+        print_subtext:
     wizard:
       cancel: Cancelar
       finish: Finalizar
       next: Siguiente
       previous: Anterior
-      save: 
+      save: Guardar
   support:
     array:
       last_word_connector: ", y"

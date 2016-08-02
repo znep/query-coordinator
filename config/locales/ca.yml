@@ -1309,12 +1309,14 @@ ca:
       rows: Fileres
       title: Què hi ha dins d'aquest conjunt de dades?
     dataset_preview:
+      all_rows: Mostrar totes les files
       grid_view_link: Explorar dades
       latitude: Latitud
       longitude: Longitud
       many_rows: Mostrant {unitOther} {firstRowOrdinal} - {lastRowOrdinal} de {datasetRowCount}
       next: Següent
       no_column_description: No disposa de descripció.
+      no_row_count: El recompte de files no es troba disponible
       no_rows: Sense {unitOther}
       only_rows: Mostrant {unit} {firstRowOrdinal} de {datasetRowCount}
       previous: Anterior
@@ -1416,7 +1418,12 @@ ca:
     publish_notice: Aquest conjunt de dades <strong>no està publicat</strong>. Amb la publicació d'aquesta pàgina també es publicarà la <a href="{url}" target="_blank">vista tabular</a> d'aquest conjunt de dades.
     published: Publicat
     published_by: Dades facilitades per
+    related_views:
+      load_more_error: S'ha produït un problema en carregar el contingut adicional.
+      title: Contingut adicional fent ús d'aquestes dades
+      view: Veure
     remove: Eliminar
+    render_error: S'ha produït un problema de representació d'aquesta pàgina.
     save: Desar
     saved: Desat
     saving: Desant
@@ -1570,7 +1577,7 @@ ca:
       title: Configuració de Pàgina
   date:
     abbr_month_names:
-    - 
+    -
     - Gen
     - Feb
     - Mar
@@ -1584,7 +1591,7 @@ ca:
     - Nov
     - Des
     month_names:
-    - 
+    -
     - Gener
     - Febrer
     - Març
@@ -1622,6 +1629,16 @@ ca:
     to_whence_you_came: per a d'on ve vostè.
   govstat:
     admin:
+      bulk_edit:
+        button_title: Editar diversos elements...
+        cancel: Cancel·lar
+        failure_message: "<strong>Error.</strong> S'ha produït un problema en realitzar aquesta acció. Torna-ho a provar o cancel·la."
+        items_selected: Elements seleccionats
+        revert_changes: Revertir els canvis
+        success_message: "Èxit! {0} les fites han estat actualitzades."
+        title: Editar diversos elements
+        update: Actualitzar
+        visibility: Visibilitat
       goal_values:
         status_private: Privat
         status_public: Públic
@@ -1637,6 +1654,55 @@ ca:
         title: Títol
         updated_at: Actualitzat
         view_dashboard: Veure tauler
+        visibility: Visibilitat
+      quick_edit:
+        action_type: Acció
+        action_types:
+          increase: Incrementar
+          maintain: Mantenir
+          measure: Mesurar
+          reduce: Reduir
+        cancel: Cancel·lar
+        category: Categoria
+        dashboard: Plafó
+        dataset_owner: Conjunt de dades del propietari
+        dataset_updated: Conjunt de dades acutalitzat
+        date_range: Rang de dades
+        default_alert_message: "<span><b>Oh no!</b> Alguna cosa ha fallat i s'ha comunicat al nostre equip. Mentrestant, torna-ho a provar o carrega aquesta pàgina de nou.</span>"
+        goal_name: Títol meta
+        goal_owner: Propietari meta
+        goal_updated: Fita actualitzada
+        manage_on_goal_page: Adminstrar a la pàgina meta
+        measure_baseline: Línea base
+        measure_delta: Interval de valors
+        measure_maintain_types:
+          above: Sobre
+          below: Sota
+          within: Al voltant
+        measure_target: Valor destí
+        measure_target_type: Tipus
+        measure_target_type_types:
+          absolute: Cap a
+          relative: Des de
+        override: Anul·lar
+        override_types:
+          bad: Calen millores
+          good: En el blanc
+          no_judgement: Mesurant
+          none: Cap
+          within_tolerance: Aprop de l'objectiu
+        prevailing_measure: Mesura que preval
+        prevailing_measure_name: Tema
+        quick_edit_measure: Editar mesura ràpida
+        range: Rang
+        range_types:
+          above: Sobre
+          around: Al voltant
+          below: Sota
+        save: Guardar
+        status: Estat
+        success_message: "Èxit! {0} actualitzat."
+        unit: Unitat
         visibility: Visibilitat
     chrome:
       header:
@@ -1887,6 +1953,7 @@ ca:
         add_connector: Afegir connector
         add_new: Afegir nou
         all_assets: Connectar tots els recursos
+        arcgis_layer: Capa ArcGIS
         arcgis_server_address: Accés de servidor ArcGIS
         assets_connected:
           one: 1 recurs connectat
@@ -1899,6 +1966,7 @@ ca:
         connected_assets: Recursos connectat
         current_status: Estat actual
         data: Dades
+        dataset: Conjunt de dades
         discovered_assets: Recursos descoberts
         edit: Editar
         edit_connector: 'Editar connector: %{url}'
@@ -1929,6 +1997,7 @@ ca:
         search: Buscar el domini
         selective_connection: Connexió selectiva
         service_unavailable: Els serveis de connector no estan disponibles en aquests moments.
+        show_title: Federació del servidor ArcGIS
         some_assets: Connectar només aquests recursos
         source: Font del connector
         success: "Èxit"
@@ -2484,15 +2553,15 @@ ca:
                 placeholder: URL
                 title: Logo de peu de pàgina
               footer_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Opcionalment, podeu establir una alçada i amplada pel vostre logotip a peu de pàgina.
+                error: 'Si us plau, introduïu un valor (1-999) per a representar a l''alçada del vostre logotip en píxels. Ex: 100px'
+                placeholder: 80px
+                title: Alçada del logotip a peu de pàgina
               footer_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Opcionalment, podeu establir una alçada i amplada pel vostre logotip a peu de pàgina.
+                error: 'Si us plau, introduïu un valor (1-999) per a representar l''amplada del vostre logotip en píxels. Ex: 100px'
+                placeholder: 80px
+                title: Amplada del logotip a peu de pàgina
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Text del peu de pàgina i color d'enllaç
@@ -2512,11 +2581,11 @@ ca:
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
               show_signin_signout:
-                description: 
-                show_profile: 
-                show_signin_signout: 
-                show_signup: 
-                title: 
+                description: Mostrar aquestes opcions si la teva web requereix un perfil d'usuari / Inicia la sessió.
+                show_profile: Mostrar un enllaç al perfil després d'iniciar la sessió
+                show_signin_signout: Mostrar Inciar sessció / Tancar sessió
+                show_signup: Mostrar la capacitat de crear un compte a través Subscriu-te
+                title: Inciar sessció / Tancar sessió
               template:
                 description: Ajusteu l'aspecte de la capçadelar i el peu canviant-ne la plantilla. Les plantilles compatibles són "default" i "rally".
                 placeholder: Ralli
@@ -2537,11 +2606,11 @@ ca:
                 placeholder: "#123456"
                 title: Color de fons de la barra
               bar_secondary_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Colors de fons primari i secundari de la barra de capçalera. El color secundari només s'utilitza en la plantilla Rally
+                placeholder: "#123456"
+                title: Barra de colors de fons (Secundària)
               bar_text_link_color:
-                description: 
+                description: Color de primer pla del text i enllaços que se situen sobre la barra de capçalera.
                 placeholder: "#ffffff"
                 title: Color del text i l'enllaç de la barra
               header_bar_logo:
@@ -2553,15 +2622,15 @@ ca:
                 placeholder: Dades obertes d'Evergreen
                 title: Nom d'encapçalament
               header_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Opcionalment, podeu establir una alçada i amplada pel vostre logotip a peu de pàgina.
+                error: 'Si us plau, introduïu un valor (1-999) per a representar l''alçada del vostre logotip en píxels. Ex: 100px'
+                placeholder: 80px
+                title: Alçada del logotip de capçalera
               header_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: Opcionalment podeu establir una alçada i amplada per al logotip de la vostra barra de capçalera.
+                error: 'Si us plau, introduïu un valor (1-999) per representar l''amplada del vostre logotip en píxels. Ex: 100px'
+                placeholder: 80px
+                title: Amplada del logotip de capçalera
               link_title_label: Etiqueta de l'enllaç
               link_title_placeholder: Text de l'enllaç
               menu_links:
@@ -2571,7 +2640,7 @@ ca:
               url_placeholder: http://data.evergreen.gov
             title: Barra d'encapçalament
           homepage:
-            fields: 
+            fields:
             title: Pàgina principal
           social:
             fields:
@@ -2595,6 +2664,10 @@ ca:
                 description: Mostra l'enllaç de perfil de LinkedIn en l'encapçalament i en el peu de pàgina, quan està present.
                 placeholder: http://www.linkedin.com/
                 title: Enllaç de perfil de LinkedIn
+              pinterest_profile_link:
+                description: Afegiu l'URL aquí per mostrar un enllaç al perfil del vostre Pinterest , tant a la capçalera com al peu.
+                placeholder: http://www.pinterest.com/
+                title: Enllaç al perfil de Pinterest
               tumblr_profile_link:
                 description: Mostra l'enllaç de perfil de Tumblr en l'encapçalament i en el peu de pàgina, quan està present.
                 placeholder: http://www.tumblr.com/
@@ -2738,6 +2811,24 @@ ca:
         add_new_column: Afegir una Nova Columna
         clear_all: Neteja-ho Tot
         data_type: Tipus de Dades
+        errors:
+          multiple_columns:
+            blank_names:
+              many_html: Els <strong>{exemples}</strong> de les vostres columnes no tenen noms. Si us plau, doneu-los noms.
+              one_html: "<strong>Una</strong> de les vostres columnes no té nom. Si us plau, doneu-li un nom."
+            columns_named_tags:
+              many_html: Les <strong>{instances}</strong> de les vostres columnes s'anomenen "tags". Les columnes no es poden anomenar "tags".
+              one_html: <strong>Una</strong> de les vostres columnes s'anomena "tags". Les columnes no es poden anomenar "tags".
+            duplicate_names: Els <strong>{instances}</strong> de les vostres columnes tenen nom <strong>“{name}”</strong>. Les columnes d'un conjunt de dades no poden compartir el mateix nom.
+            source_columns_dropped:
+              many_html: Les columnes {sourceColumns} es troben a l'arxiu de dades d'origen, però en l'actualitat no estan configurades per importar-se en el conjunt de dades.
+              one_html: La columna {sourceColumns} es troba a l'arxiu de dades d'origen, però en l'actualitat no està configurat per importar-se en el conjunt de dades.
+          single_column:
+            empty_composite_col: La columna <strong>{resultColumnName}</strong> és una columna composta que es crea a partir de múltuples columnes d'origen, però que actuament no té la configuració per poder-se ocupar. Si us plau, afegiu columnes d'origen o de text.
+            non_text_composite_col: La columna <strong>{resultColumnName}</strong> és una columna composta que es crearà a partir de múltiples columnes origen, però actuament està configurada per importar-se com a <strong>{chosenType}</strong>. Si us plau, assegureu-vos que la combinació de columnes que heu especificat implicarà un {chosenType} vàlid.
+            type_too_generic: La columna <strong>{resultColumnName}</strong> es troba configurada per importar-se com a <strong>{chosenType}</strong>,però l'analisi indica que probablement la columna és <strong>{suggestedType}</strong>. La podeu importar com a {chosenType}, però si ho feu en perdreu algunes característiques. Us recomanem que la importeu com a <strong>{suggestedType}</strong>.
+            wrong_type: La columna <strong>{resultColumnName}</strong> és una <strong>{chosenType}</strong>, però l'anàlisi indica que aquesta columna origen que proveu d'importar és del tipus  <strong>{suggestedType}</strong>. Si escolliu importar aquesta columna, aproximadament <strong>{invalidPercent}%</strong> de les vostres dades és probable que s'importi de forma incorrecta.
+            wrong_type_unknown_count: La columna <strong>{resultColumnName}</strong> està configurada per importar com a <strong>{chosenType}</strong> però l'anàlisi mostra que <strong>{suggestedType}</strong> podria tenir un ajust millor. Llevat que les dades de la columna s'hagin formatejat correctament com a {chosenType} les dades es podrien importar incorrectament.
         errors_warnings: Errors i Advertències
         fewer_rows: Menys Files
         headers: Capçaleres
@@ -2745,11 +2836,12 @@ ca:
         headline: Especificar com s'importarà &ldquo;<span class="fileName"></span>&rdquo;.
         headline_interpolate: Especifiqueu com "{0}" s'ha d'importar.
         help_message: Si necessita ajuda, comprovi la <a href="%{common_errors}" rel="external">llista d'errors i advertències comunes</a>.
+        help_message_js: Per obtenir ajuda, mireu la llista <a href="{common_errors}" rel="external">d'errors i advertències comuns</a>.
         more_rows: Més Files
         name: Nom
         pending_columns: Si us plau, esperi mentre carreguem les seves columnes...
         reset_to_preset: Reinicia a predeterminat
-        restore_suggested_settings: 
+        restore_suggested_settings: Restaurar ajustos suggerits
         set: Conjunt
         source_column: Columna Font
         subheadline: Columnes a importar
@@ -2762,7 +2854,7 @@ ca:
       import_shapefile:
         abbreviatedSubheadline: El resum d'aquest conjunt de dades pot trigar molt. Feu clic en "Següent" per a importar-lo.
         abbreviatedSummary: Les capes del mapa a  &ldquo;<span class="fileName"></span>&rdquo; es crearan sobre la importació.
-        abbreviatedSummary_js: 
+        abbreviatedSummary_js: Les capes del mapa a "{fileName}" es crearan sobre la importació.
         crs: Sistema de Referència de Coordinades
         headline: Especifiqui com s'importarà &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifiqueu com "{0}" s'ha d'importar.
@@ -3335,7 +3427,7 @@ ca:
           title: Eliminar
           warning:
             api: Eliminar aquesta API farà que fallin totes les aplicacions que l'empren.
-            published: Eliminar aquest conjunt de dades també eliminarà totes les vistes associades.
+            published: Eliminar aquesta conjunt de dades també eliminarà totes les vistes associades.
             view: Eliminar aquesta vista només afectarà a aquelles vistes que estiguin basades en aquesta.
             working_copy: Pot eliminar aquesta còpia de treball i fer-ne una de nova per a revertir qualsevol canvi que hagi fet.
         digital_signing:
@@ -3753,7 +3845,7 @@ ca:
       import_from_latlong: Importar de columnes de <strong>latitud</strong> i <strong>longitud</strong>
       import_from_multiple: Importar des de <strong>múltiples columnes</strong>
       import_from_single: Importar des d'una <strong>columna única</strong>
-      insert_static_text: 
+      insert_static_text: "(Inserir text estàtic ...)"
       latitude: Latitud
       location_source_col: Columnes de Font de Localització
       longitude: Longitud
@@ -3783,8 +3875,8 @@ ca:
       combine_multiple_cols: "(Combinar Columnes Múltiples...)"
       downloading: Descarregant el seu fitxer...
       errors:
-        http_error: 
-        network_error: 
+        http_error: 'No es poden desar les metadades a causa d''un error: {0}'
+        network_error: No s'han pogut desar les metadades causa d'un error a la xarxa.
       filetype_error_blist: Si us plau, seleccioni un fitxer CSV, TSV, XLS, o XLSX.
       filetype_error_shapefile: Si us plau, seleccioni un fitxer KML, KMZ, o ZIP.
       headline_import: Si us plau, seleccioni un fitxer a importar
@@ -4074,12 +4166,28 @@ ca:
         explanation_html: Quan premeu <strong>Desar</strong>, el vostre <strong>esborrany de conjunt de dades</strong> nou serà visible en el vostre catàleg personal. Ningú més podrà veure'l fins que completeu l'assistent de conjunt de dades nou.
         prompt: Si us plau, poseu un nom al vostre conjunt de dades nou.
         title: Crear un nou conjunt de dades
+      menu:
+        about: Sobre la plataforma oberta de dades Socrata
+        api: API
+        api_subtext: Accediu a aquest conjunt de dades a través de SODA
+        discuss: Analitzar
+        discuss_subtext: Analitzar aquest conjunt de dades
+        download: Descarregar
+        download_subtext: Descarregar en diferents formats
+        embed: Incorporar
+        embed_subtext: Incorporar aquest repodructor al vostre lloc
+        more_views: Més vistes
+        more_views_subtext: Filtres, cartes i mapes
+        odata: OData
+        odata_subtext: Accés a aquest conjunt de dades via OData
+        print: Imprimir
+        print_subtext: Imprimir aquest conjunt de dades
     wizard:
       cancel: Cancel·lar
       finish: Finalitzar
       next: Següent
       previous: Previ
-      save: 
+      save: Guardar
   support:
     array:
       last_word_connector: ", i "

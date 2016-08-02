@@ -1330,12 +1330,14 @@ nl:
       rows: Rijen
       title: Wat zit er in deze dataset?
     dataset_preview:
+      all_rows: Alle rijen worden getoond
       grid_view_link: Gegevens onderzoeken
       latitude: Breedtegraad
       longitude: Lengtegraad
       many_rows: "{unitOther} {firstRowOrdinal}-{lastRowOrdinal} uit {datasetRowCount} worden weergegeven"
       next: Volgende
       no_column_description: Er is geen beschrijving voorzien.
+      no_row_count: Rijaantal niet beschikbaar
       no_rows: Geen {unitOther}
       only_rows: "{unit} {firstRowOrdinal} van {datasetRowCount} wordt weergegeven"
       previous: Vorige
@@ -1437,7 +1439,12 @@ nl:
     publish_notice: Deze dataset is <strong>Ongepubliceerd</strong>. Door deze pagina te publiceren, wordt ook de <a href="{url}" target="_blank">tabelweergave</a> gepubliceerd.
     published: Gepubliceerd
     published_by: Gegevens voorzien door
+    related_views:
+      load_more_error: Er ging iets mis bij het laden van bijkomende inhoud.
+      title: Gerelateerde inhoud die gebruik maakt van deze gegevens
+      view: Bekijken
     remove: Verwijderen
+    render_error: Er ging iets mis bij het opbouwen van deze pagina.
     save: Opslaan
     saved: Opgeslagen
     saving: Aan het opslaan
@@ -1591,7 +1598,7 @@ nl:
       title: Paginainstellingen
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Maa
@@ -1605,7 +1612,7 @@ nl:
     - Nov
     - Dec
     month_names:
-    - 
+    -
     - Januari
     - Februari
     - Maart
@@ -1645,6 +1652,16 @@ nl:
     to_whence_you_came: naar waar u vandaan kwam.
   govstat:
     admin:
+      bulk_edit:
+        button_title: Meerdere items bewerken...
+        cancel: Annuleren
+        failure_message: "<strong>Foutmelding.</strong> Er ging iets mis bij het uitvoeren van deze actie. Probeer opnieuw of annuleer."
+        items_selected: Geselecteerde items
+        revert_changes: Veranderingen ongedaan maken
+        success_message: Gelukt! Er werden {0} doelen bijgewerkt.
+        title: Meerdere items bewerken
+        update: Bijwerken
+        visibility: Zichtbaarheid
       goal_values:
         status_private: Persoonlijk
         status_public: Openbaar
@@ -1660,6 +1677,55 @@ nl:
         title: Titel
         updated_at: Bijgewerkt
         view_dashboard: Dashboard bekijken
+        visibility: Zichtbaarheid
+      quick_edit:
+        action_type: Actie
+        action_types:
+          increase: Vermeerderen
+          maintain: Behouden
+          measure: Meten
+          reduce: Verminderen
+        cancel: Annuleren
+        category: Categorie
+        dashboard: Dashboard
+        dataset_owner: Eigenaar dataset
+        dataset_updated: Dataset bijgewerkt
+        date_range: Datumbereik
+        default_alert_message: "<span><b>Oh nee!</b> Er ging iets mis en ons team werd op de hoogte gebracht. Probeer ondertussen nog een keer of hernieuw deze pagina. </span>"
+        goal_name: Titel doelstelling
+        goal_owner: Eigenaar doelstelling
+        goal_updated: Doelstelling bijgewerkt
+        manage_on_goal_page: Pagina met doelstellingen beheren
+        measure_baseline: Basislijn
+        measure_delta: Waardebereik
+        measure_maintain_types:
+          above: Boven
+          below: Beneden
+          within: Rondom
+        measure_target: Doelwaarde
+        measure_target_type: Soort
+        measure_target_type_types:
+          absolute: Naar
+          relative: Van
+        override: Overschrijven
+        override_types:
+          bad: Heeft verbeteringen nodig
+          good: Op de goeie weg
+          no_judgement: Aan het meten
+          none: Geen
+          within_tolerance: In de buurt van het doel
+        prevailing_measure: Overheersende maatregel
+        prevailing_measure_name: Onderwerp
+        quick_edit_measure: Maatregel snel bewerken
+        range: Bereik
+        range_types:
+          above: Boven
+          around: Rondom
+          below: Beneden
+        save: Opslaan
+        status: Status
+        success_message: Gelukt! {0} bijgewerkt.
+        unit: Eenheid
         visibility: Zichtbaarheid
     chrome:
       header:
@@ -1912,6 +1978,7 @@ nl:
         add_connector: Connector toevoegen
         add_new: Nieuwe toevoegen
         all_assets: Alle activa verbinden
+        arcgis_layer: ArcGIS-laag
         arcgis_server_address: ArcGIS serveradres
         assets_connected:
           one: 1 activa verbonden
@@ -1924,6 +1991,7 @@ nl:
         connected_assets: Verbonden activa
         current_status: Huidige status
         data: Gegevens
+        dataset: Dataset
         discovered_assets: Ontdekte activa
         edit: Bewerken
         edit_connector: 'Connector bewerken: %{url}'
@@ -1954,6 +2022,7 @@ nl:
         search: Domein opzoeken
         selective_connection: Selectieve verbinding
         service_unavailable: Connectordiensten zijn momenteel niet beschikbaar.
+        show_title: Serverfederatie ArcGIS
         some_assets: Enkel deze activa verbinden
         source: Connectorbron
         success: Gelukt
@@ -2509,15 +2578,15 @@ nl:
                 placeholder: URL
                 title: Logo voettekst
               footer_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: U kan optioneel een hoogte en breedte instellen voor uw logo in de voettekst.
+                error: 'Voer a.u.b. een waarde in (1-999) die de hoogte van uw logo in pixels bepaald. Bv: 100px'
+                placeholder: 80px
+                title: Hoogte van logo in voettekst
               footer_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: U kan optioneel een hoogte en breedte instellen voor uw logo in de voettekst.
+                error: 'Voer a.u.b. een waarde in (1-999) die de breedte van uw logo in pixels bepaald. Bv: 100px'
+                placeholder: 80px
+                title: Breedte van logo in voettekst
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Voettekst & kleur van link
@@ -2537,11 +2606,11 @@ nl:
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
               show_signin_signout:
-                description: 
-                show_profile: 
-                show_signin_signout: 
-                show_signup: 
-                title: 
+                description: Toon deze opties indien uw website een gebruikersprofiel / aanmelding vereist.
+                show_profile: Toon link naar profiel na aanmelding
+                show_signin_signout: Toon aanmelden / afmelden
+                show_signup: Toon mogelijkheid tot aanmaking account via registratie.
+                title: Aanmelden / afmelden
               template:
                 description: Pas het uiterlijk van de hoofding/onderregel aan door het sjabloon te veranderen. Ondersteunde sjablonen zijn "standaard" en "rally".
                 placeholder: Rally
@@ -2562,11 +2631,11 @@ nl:
                 placeholder: "#123456"
                 title: Achtergrondkleur balk
               bar_secondary_background_color:
-                description: 
-                placeholder: 
-                title: 
+                description: Primaire en secundaire achtergrondkleuren van de menubalk. De secundaire kleur wordt enkel in het Rally-sjabloon gebruikt.
+                placeholder: "#123456"
+                title: Achtergrondkleur balk (secundair)
               bar_text_link_color:
-                description: 
+                description: Voorgrondkleur van de tekst en links in de menubalk.
                 placeholder: "#ffffff"
                 title: Tekst in balk & kleur van link
               header_bar_logo:
@@ -2578,15 +2647,15 @@ nl:
                 placeholder: Evergreen Open Data
                 title: Weergegeven naam in hoofding
               header_logo_height:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: U kan optioneel een hoogte en breedte instellen voor uw logo in de menubalk.
+                error: 'Voer a.u.b. een waarde in (1-999) die de hoogte van uw logo in pixels bepaald. Bv: 100px'
+                placeholder: 80px
+                title: Hoogte van logo in de menubalk
               header_logo_width:
-                description: 
-                error: 
-                placeholder: 
-                title: 
+                description: 'U kan '
+                error: 'Voer a.u.b. een waarde in (1-999) die de breedte van uw logo in pixels bepaald. Bv: 100px'
+                placeholder: 80px
+                title: Breedte van logo in menubalk
               link_title_label: Linklabel
               link_title_placeholder: Linktekst
               menu_links:
@@ -2596,7 +2665,7 @@ nl:
               url_placeholder: http://data.evergreen.gov
             title: Balk van hoofding
           homepage:
-            fields: 
+            fields:
             title: Startpagina
           social:
             fields:
@@ -2620,6 +2689,10 @@ nl:
                 description: Weergeeft link naar LinkedIn-profiel in hoofding en voettekst indien aanwezig.
                 placeholder: http://www.linkedin.com/
                 title: Link naar LinkedIn-profiel
+              pinterest_profile_link:
+                description:
+                placeholder:
+                title:
               tumblr_profile_link:
                 description: Weergeeft link naar Tumblr-profiel in hoofding en voettekst indien aanwezig.
                 placeholder: http://www.tumblr.com/
@@ -2763,6 +2836,24 @@ nl:
         add_new_column: Voeg nieuwe kolom toe
         clear_all: Alles wissen
         data_type: Datatype
+        errors:
+          multiple_columns:
+            blank_names:
+              many_html: "<strong>{instances}</strong> van uw kolommen hebben geen namen. Geef ze a.u.b. namen."
+              one_html: "<strong>Eén</strong> van uw kolommen heeft geen naam. Geef hem a.u.b. een naam."
+            columns_named_tags:
+              many_html: <strong>{instances}</strong> van uw kolommen heten "tags". Kolommen mogen niet "tags" heten.
+              one_html: <strong>Eén</strong> van uw kolommen heet "tags". Kolommen mogen niet "tags" heten.
+            duplicate_names: <strong>{instances}</strong> van uw kolommen heten <strong>"{name}"</strong>. Kolommen in een dataset mogen niet dezelfde naam hebben.
+            source_columns_dropped:
+              many_html: Kolommen {sourceColumns} bevinden zich in uw gegevensbestand (bron), maar zijn momenteel niet afgesteld om naar uw dataset geïmporteerd te worden.
+              one_html: Kolom {sourceColumns} bevindt zich in uw gegevensbestand (bron), maar is momenteel niet afgesteld om naar uw dataset geïmporteerd te worden.
+          single_column:
+            empty_composite_col: Kolom <strong>{resultColumnName}</strong> is een samengestelde kolom die zal gemaakt worden uit meerdere bronkolommen, maar momenteel hebt u hem niet ingesteld om informatie te bevatten. Voeg a.u.b. enkele bronkolommen of tekst toe.
+            non_text_composite_col: Kolom <strong>{resultColumnName}</strong> is een samengestelde kolom die zal gemaakt worden uit meerdere bronkolommen, maar hij is momenteel afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden. Wees er a.u.b. zeker van dat het combineren van de kolommen die u gespecificeerd hebt, een geldig {chosenType) zal opleveren.
+            type_too_generic: Kolom <strong>{resultColumnName}</strong> is afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden, maar onze analyse toont aan dat de kolom waarschijnlijk een <strong>{suggestedType}</strong> kolom is. U kan hem importeren als {chosenType}, maar enkele functies zullen verloren raken als u dit doet. Wij raden u ten zeerste aan dat u hem als <strong>{suggestedType}</strong> importeerd.
+            wrong_type: Kolom <strong>{resultColumnName}</strong> is een <strong>{chosenType}</strong>, maar onze analyse toont aan dat de bronkolom waarnaar u probeert te importeren van het type <strong>{suggestedType}</strong> is. Ongeveer <strong>{invalidPercent}%</strong> van uw gegevens zal foutief geïmporteerd worden als u kiest om deze kolom te importeren.
+            wrong_type_unknown_count: Kolom <strong>{resultColumnName}</strong> is afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden, maar onze analyse toont aan dat <strong>{suggestedType}</strong> mogelijk beter geschikt is. Het is mogelijk dat {chosenType) gegevens foutief zullen geïmporteerd worden.
         errors_warnings: Fouten en waarschuwingen
         fewer_rows: Minder rijen
         headers: Kopteksten
@@ -2770,11 +2861,12 @@ nl:
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
         headline_interpolate: Specificeer hoe "{0}" geïmporteerd moet worden.
         help_message: Voor hulp kunt u een <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten bekijken</a>.
+        help_message_js: Raadpleeg een <a href="{common_errors}" rel="external">lijst met veel voorkomende waarschuwingen en fouten</a> indien u hulp nodig hebt.
         more_rows: Meer rijen
         name: Naam
         pending_columns: We laden uw kolommen, een moment geduld a.u.b.
         reset_to_preset: Terugzetten naar standaardinstellingen
-        restore_suggested_settings: 
+        restore_suggested_settings: Aanbevolen instellingen herinvoeren
         set: Instellen
         source_column: Bronkolom
         subheadline: Kolommen om te importeren
@@ -2787,7 +2879,7 @@ nl:
       import_shapefile:
         abbreviatedSubheadline: Het samenvatten van deze dataset kan veel tijd in beslag nemen. Klik op volgende om te importeren.
         abbreviatedSummary: Maplagen in &ldquo;<span class="fileName"></span>&rdquo; zullen voorafgaand aan het importeren aangemaakt worden.
-        abbreviatedSummary_js: 
+        abbreviatedSummary_js: Map-lagen in "{fileName}" zullen voor het importeren aangemaakt worden.
         crs: Coördinaat referentiesysteem
         headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
         headline_interpolate: Specificeer hoe "{0}" geïmporteerd moet worden.
@@ -3788,7 +3880,7 @@ nl:
       import_from_latlong: Importeren uit kolommen met <strong>breedtegraad</strong> en <strong>lengtegraad</strong>
       import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
       import_from_single: Uit <strong>één kolom</strong> importeren
-      insert_static_text: 
+      insert_static_text: "(Statische tekst invoegen...)"
       latitude: Breedtegraad
       location_source_col: Locatie bron kolommen
       longitude: Lengtegraad
@@ -3818,8 +3910,8 @@ nl:
       combine_multiple_cols: "(Combineer meerdere kolommen...)"
       downloading: Uw bestand wordt gedownload...
       errors:
-        http_error: 
-        network_error: 
+        http_error: 'We konden uw metagegevens niet opslaan wegens een fout: {0}'
+        network_error: We konden uw metagegevens niet opslaan wegens een fout in het netwerk.
       filetype_error_blist: Kies een CSV-, TSV-, XLS- of XLSX-bestand.
       filetype_error_shapefile: Kies een KML-, KMZ of ZIP-bestand.
       headline_import: Kies een bestand om te importeren
@@ -4111,12 +4203,28 @@ nl:
         explanation_html: Wanneer u op <strong>Opslaan</strong> hebt gedrukt, zal uw nieuwe <strong>Datasetontwerp</strong> zichtbaar worden in uw persoonlijke catalogus. Niemand anders zal hem te zien kunnen krijgen zolang u de nieuwe dataset-wizard niet voltooid.
         prompt: Geef uw nieuwe dataset een naam.
         title: Een nieuwe dataset aanmaken
+      menu:
+        about:
+        api:
+        api_subtext:
+        discuss:
+        discuss_subtext:
+        download:
+        download_subtext:
+        embed:
+        embed_subtext:
+        more_views:
+        more_views_subtext:
+        odata:
+        odata_subtext:
+        print:
+        print_subtext:
     wizard:
       cancel: Annuleren
       finish: Voltooien
       next: Volgende
       previous: Vorige
-      save: 
+      save: Opslaan
   support:
     array:
       last_word_connector: ", en"

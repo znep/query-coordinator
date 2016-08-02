@@ -22,6 +22,7 @@ export default {
     insert: 'Insert'
   },
   panes: {
+    nothing_here: 'There\'s nothing to configure in this pane yet!',
     data: {
       title: 'Data',
       uhoh: 'Uh oh!',

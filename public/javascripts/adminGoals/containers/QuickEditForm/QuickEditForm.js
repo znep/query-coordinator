@@ -149,10 +149,12 @@ class GoalQuickEdit extends React.Component {
     }
 
     $(window).on('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
+    $('body').css('overflow', 'hidden');
   }
 
   componentWillUnmount() {
     $(window).off('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
+    $('body').css('overflow', 'initial');
   }
 
   onVisibilityChange(selected) {

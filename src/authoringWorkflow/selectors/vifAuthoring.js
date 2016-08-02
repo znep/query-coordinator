@@ -26,8 +26,13 @@ export const getDimension = createSelector(
 // In other words, this is going to randomly choose a VIF and grab its
 // dimension.
 export const getAnyDimension = createSelector(
+  getCurrentVif,
   getVifs,
-  vifs => _.get(vifs, 'columnChart.series[0].dataSource.dimension', null)
+  (vif, vifs) => {
+    return _.isEmpty(vif) ?
+      _.get(vifs, 'columnChart.series[0].dataSource.dimension', null) :
+      _.get(vif, 'series[0].dataSource.dimension', null);
+  }
 );
 
 export const getMeasure = createSelector(
@@ -36,8 +41,13 @@ export const getMeasure = createSelector(
 );
 
 export const getAnyMeasure = createSelector(
+  getCurrentVif,
   getVifs,
-  vifs => _.get(vifs, 'columnChart.series[0].dataSource.measure', null)
+  (vif, vifs) => {
+    return _.isEmpty(vif) ?
+      _.get(vifs, 'columnChart.series[0].dataSource.measure', null) :
+      _.get(vif, 'series[0].dataSource.measure', null);
+  }
 );
 
 export const getTitle = createSelector(

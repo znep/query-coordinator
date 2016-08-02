@@ -10,32 +10,14 @@ import utils from 'socrata-utils';
 
 import reducer from './reducers';
 import vifs from './vifs';
-import { defaultState as defaultMetadata } from './reducers/metadata';
-import AuthoringWorkflow from './components/AuthoringWorkflow';
 import { setLocale } from '../I18n';
-
-import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { setDataSource } from './actions';
-
+import { load } from './vifs/loader';
+import { defaultState as defaultMetadata } from './reducers/metadata';
+import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { migrateVif } from '../helpers/VifHelpers';
 
-function propagateUserDefinedVifValuesToAllVifs(vif) {
-  var vifType = _.get(vif, 'series[0].type', null);
-  var clonedVifs = vifs();
-
-  _.each(clonedVifs, function(clonedVif) {
-    _.set(clonedVif, 'title', _.get(vif, 'title', null));
-    _.set(clonedVif, 'description', _.get(vif, 'description', null));
-    _.set(clonedVif, 'series[0].dataSource.datasetUid', _.get(vif, 'series[0].dataSource.datasetUid', null));
-    _.set(clonedVif, 'series[0].dataSource.domain', _.get(vif, 'series[0].dataSource.domain', null));
-  });
-
-  if (vifType) {
-    clonedVifs[vifType] = _.merge({}, clonedVifs[vifType], vif);
-  }
-
-  return clonedVifs;
-}
+import AuthoringWorkflow from './components/AuthoringWorkflow';
 
 module.exports = function(element, configuration) {
   var self = this;
@@ -47,11 +29,10 @@ module.exports = function(element, configuration) {
   var vif = _.get(configuration, 'vif');
   vif = vif ? migrateVif(vif) : {};
   var vifType = _.get(vif, 'series[0].type', null);
-
   var initialState = {
     metadata: defaultMetadata,
     vifAuthoring: {
-      vifs: propagateUserDefinedVifValuesToAllVifs(vif),
+      vifs: vifs(),
       authoring: {
         selectedVisualizationType: vifType,
         showCenteringAndZoomingSaveMessage: false
@@ -59,18 +40,11 @@ module.exports = function(element, configuration) {
     }
   };
 
-  var domain = vifType ?
-    getDomain(initialState.vifAuthoring) :
-    _.get(initialState, 'vifAuthoring.vifs.columnChart.series[0].dataSource.domain');
-  var datasetUid = vifType ?
-    getDatasetUid(initialState.vifAuthoring) :
-    _.get(initialState, 'vifAuthoring.vifs.columnChart.series[0].dataSource.datasetUid');
-
   self.element = element;
   self.configuration = configuration;
   self.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
-  self.store.dispatch(setDataSource({datasetUid, domain}));
 
+  load(self.store.dispatch, vif);
   setLocale(_.get(self.configuration, 'locale', 'en'));
 
   self.render = function() {

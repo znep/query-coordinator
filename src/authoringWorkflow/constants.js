@@ -62,7 +62,7 @@ export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
-    preferredDimensionTypes: ['text', 'number', 'money']
+    preferredDimensionTypes: ['money', 'number', 'text']
   },
   {
     type: 'histogram',

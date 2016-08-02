@@ -3,18 +3,15 @@ import moment from 'moment';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
-export function setDataSource(dataSource) {
+export function setDataSource(domain, datasetUid) {
   return dispatch => {
-    if (!/\w{4}\-\w{4}/.test(dataSource.datasetUid)) {
+    if (!/\w{4}\-\w{4}/.test(datasetUid)) {
       return;
     }
 
-    var datasetMetadataProvider = new MetadataProvider({
-      domain: dataSource.domain,
-      datasetUid: dataSource.datasetUid
-    });
+    var datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
-    dispatch(requestMetadata(dataSource.domain, dataSource.datasetUid));
+    dispatch(requestMetadata(domain, datasetUid));
 
     return Promise.all([
       datasetMetadataProvider.getDatasetMetadata(),

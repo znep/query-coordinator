@@ -94,17 +94,33 @@ export var ColorsAndStylePane = React.createClass({
     var pointColor = getPrimaryColor(vifAuthoring);
     var pointOpacity = getPointOpacity(vifAuthoring);
 
+    var pointColorAttributes = {
+      handleColorChange: onChangePrimaryColor,
+      value: pointColor,
+      palette: COLORS
+    };
+
+    var pointOpacityAttributes = {
+      id: 'point-opacity',
+      type: 'range',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      defaultValue: pointOpacity / 100,
+      onChange: onChangePointOpacity
+    };
+
     return (
       <div>
         <div className="authoring-field-group">
           <h5>{translate('panes.colors_and_style.subheaders.points')}</h5>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
-            <Styleguide.components.ColorPicker handleColorChange={onChangePrimaryColor} value={pointColor} palette={COLORS} />
+            <Styleguide.components.ColorPicker {...pointColorAttributes} />
           </div>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
-            <input id="point-opacity" type="range" min="0" max="1" step="0.1" defaultValue={pointOpacity} onChange={onChangePointOpacity} />
+            <input {...pointOpacityAttributes} />
           </div>
           {this.renderMapLayerControls()}
         </div>
@@ -160,7 +176,7 @@ export var ColorsAndStylePane = React.createClass({
       min: '0',
       max: '1',
       step: '0.1',
-      defaultValue: defaultBaseLayerOpacity,
+      defaultValue: defaultBaseLayerOpacity / 100,
       onChange: onChangeBaseLayerOpacity
     };
 

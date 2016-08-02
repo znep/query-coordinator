@@ -97,6 +97,10 @@ module ApplicationHelper
     end
   end
 
+  def on_view_page?(view = @view)
+    view.try(:data).try(:[], 'id').present?
+  end
+
   def using_govstat_header?
     module_enabled?(:govStat) && !suppress_govstat?
   end

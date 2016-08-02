@@ -561,6 +561,20 @@ class ApplicationHelperTest < ActionView::TestCase
     assert application_helper.enable_site_chrome?
   end
 
+  def test_on_view_page_is_false_if_view_is_nil
+    refute application_helper.on_view_page?(nil)
+  end
+
+  def test_on_view_page_is_false_if_view_does_not_have_id
+    view = View.new('id' => nil)
+    refute application_helper.on_view_page?(view)
+  end
+
+  def test_on_view_page_is_true_if_view_exists_and_has_id
+    view = View.new('id' => 'blah-blah')
+    assert application_helper.on_view_page?(view)
+  end
+
   def test_using_govstat_header_is_true_when_govstat_module_enabled_and_not_suppressing_govstat
     application_helper.stubs(:module_enabled? => true)
     application_helper.stubs(:suppress_govstat? => false)

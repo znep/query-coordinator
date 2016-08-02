@@ -132,7 +132,7 @@ http://www.socrata.com
           </div>
         <%- else -%>
           <%- if enable_site_chrome? -%>
-            <%= render 'site_chrome/header' %>
+            <%= render 'site_chrome/header', size: on_view_page? ? 'small' : nil %>
           <%- else -%>
             <div id="siteHeader" class="clearfix" role="banner">
               <%= render_domain_template(@page_custom_header || 'header_full') %>
@@ -160,7 +160,7 @@ http://www.socrata.com
 
   <%- if !@suppress_chrome -%>
     <%- if enable_site_chrome? -%>
-      <%= render 'site_chrome/footer' %>
+      <%= render 'site_chrome/footer', size: on_view_page? ? 'small' : nil %>
     <%- else -%>
       <div id="siteFooter" role="contentinfo">
         <a name="footerLinks" tabindex="-1"></a>

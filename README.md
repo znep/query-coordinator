@@ -10,6 +10,13 @@ With [artifactory](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR
 npm install --save socrata-styleguide
 ```
 
+All of the styleguide assets are located in `dist` and should be loaded on your page through normal means. For example:
+```
+<link href="node_modules/socrata-styleguide/dist/css/styleguide.min.css" rel="stylesheet">
+<script type="text/javascript" src="node_modules/socrata-styleguide/dist/js/styleguide.min.js"></script>
+```
+Alternatively, the raw SCSS is available for inclusion in your own styles. They can be found in `src/scss`.
+
 ## Setup
 This library uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.
 

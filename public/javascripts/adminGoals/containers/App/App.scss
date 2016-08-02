@@ -14,7 +14,9 @@
   display: inline;
   margin-left: 10px;
 
-  .sc-check-indicator-revert { display: none; }
+  .sc-check-indicator-revert {
+    display: none;
+  }
 
   .btn {
     border-color: #00BF9B;
@@ -25,8 +27,12 @@
   }
 
   &:hover {
-    .sc-check-indicator-check { display: none; }
-    .sc-check-indicator-revert { display: inline; }
+    .sc-check-indicator-check {
+      display: none;
+    }
+    .sc-check-indicator-revert {
+      display: inline;
+    }
 
     .btn {
       border-color: #E48424;
@@ -57,23 +63,30 @@
   .modal-content {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 0;
 
     .Select-menu-outer {
       left: 0;
     }
 
-    .visibility-select {
-      width: 100px;
+    .form-select-small {
+      width: 150px;
+      display: inline-flex;
+    }
+
+    .form-select-medium {
+      width: 250px;
+      display: inline-flex;
+    }
+
+    .form-select-wide {
+      width: 300px;
       display: inline-flex;
     }
 
     .goal-quick-edit-form {
       float: left;
       width: 600px;
-
-      .form-line {
-        margin-bottom: 15px;
-      }
 
       label {
         display: inline-block;
@@ -82,42 +95,12 @@
         padding-right: 20px;
       }
 
-      .form-select-small {
-        width: 150px;
-        display: inline-flex;
-      }
-
-      .form-select-wide {
-        width: 300px;
-        display: inline-flex;
-      }
-
-      .datepicker-wrapper {
-        position: relative;
-        display: inline-block;
-        margin-right: 20px;
-        width: 140px;
-
-        .text-input {
-          margin-bottom: 0;
-        }
-
-        .icon-date {
-          position: absolute;
-          top: 50%;
-          margin-top: -12px;
-          left: 10px;
-        }
-
-        .datepicker-input {
-          padding-left: 30px;
-          width: 140px;
-          background: transparent;
-        }
-      }
-
       .text-input {
         width: 300px;
+      }
+
+      .datepicker-input.text-input {
+        width: 140px;
       }
     }
 
@@ -134,8 +117,7 @@
 
   .modal-footer {
     position: relative;
-    margin: -1rem;
-    margin-top: 30px;
+    margin: 0 -1rem -1rem -1rem;
     width: auto;
 
     .link-container {
@@ -146,6 +128,11 @@
 }
 
 .modal-full {
+  .modal-content {
+    width: 1100px;
+    height: calc(100vh - 120px);
+  }
+
   .modal-footer {
     position: fixed;
     width: 100%;
@@ -199,4 +186,37 @@
   button {
     float: right;
   }
+}
+
+.modal-content.bulk-edit-modal-content {
+  min-height: 400px;
+}
+
+.datepicker-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px;
+  width: 140px;
+
+  .text-input {
+    margin-bottom: 0;
+  }
+
+  .icon-date {
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    left: 10px;
+  }
+
+  .datepicker-input {
+    width: 140px;
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 6px 6px 6px 30px;
+  }
+}
+
+.form-line {
+  margin-bottom: 15px;
 }

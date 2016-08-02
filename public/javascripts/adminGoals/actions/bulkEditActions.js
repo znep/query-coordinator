@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import api from '../api/api';
 
 import { updateCachedGoals } from './goalTableActions';
@@ -8,7 +9,8 @@ import {
   UPDATE_MULTIPLE_ITEMS_FORM_DATA,
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
-  UPDATE_MULTIPLE_ITEMS_FAILED
+  UPDATE_MULTIPLE_ITEMS_FAILED,
+  UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED
 } from '../actionTypes';
 
 /**
@@ -64,6 +66,26 @@ export function openEditMultipleItemsModal() {
   };
 }
 
+function showNotAllItemsConfiguredWarning() {
+  return {
+    type: UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED
+  };
+}
+
+/**
+ * Goal update api expects prevailing_measure data normalized.
+ * @param {Object} updatedData
+ */
+function normalizeUpdatedData(updatedData) {
+  let normalized = _.merge(updatedData, updatedData.prevailing_measure || {});
+  delete normalized.prevailing_measure;
+
+  normalized.override = normalized.progress_override;
+  delete normalized.progress_override;
+
+  return normalized;
+}
+
 /**
  * Makes an API request to update given list of goals
  * data.
@@ -72,12 +94,21 @@ export function openEditMultipleItemsModal() {
  * @param {Object} updatedData Updated fields
  */
 export function updateMultipleGoals(goals, updatedData) {
+  const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
+
+  // Cannot update prevailing measure data for the items
+  // which are not configured properly.
+  if (!allConfigured) {
+    return showNotAllItemsConfiguredWarning();
+  }
+
   const goalIds = goals.map(goal => goal.get('id'));
+  const normalizedData = normalizeUpdatedData(updatedData);
 
   return (dispatch) => {
     dispatch(updateMultipleItemsStarted(goalIds));
 
-    const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), updatedData));
+    const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
     return Promise.all(updateRequests).
       then(updatedGoals => {
         dispatch(updateCachedGoals(updatedGoals));

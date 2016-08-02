@@ -6,11 +6,12 @@ import _ from 'lodash';
  * @param {Object} right
  * @returns {Boolean}
  */
-export default (left, right) => {
+export default function isDifferent(left, right) {
   const leftKeys = Object.keys(left);
   const rightKeys = Object.keys(right);
 
   return _.some(leftKeys, key => {
-    return rightKeys.indexOf(key) >= 0 && right[key] != left[key];
+    const isObject = _.isObject(right[key]);
+    return rightKeys.indexOf(key) >= 0 && (isObject ? isDifferent(left[key], right[key]) : right[key] != left[key]);
   });
-};
+}

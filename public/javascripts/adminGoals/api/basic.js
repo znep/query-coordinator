@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { fetchOptions } from '../constants';
 
 function checkXhrStatus(response) {
@@ -10,14 +11,13 @@ function checkXhrStatus(response) {
   throw error;
 }
 
-function request(method, version, path, otherOptions) {
-  const url = `/stat/api/v1/${path}`;
+function request(apiVersion, method, path, otherOptions) {
+  const url = `/stat/api/${apiVersion}/${path}`;
   const options = _.merge(_.clone(fetchOptions), {
     method,
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'If-Match': version
+      'Content-Type': 'application/json'
     }
   }, otherOptions);
 
@@ -26,18 +26,18 @@ function request(method, version, path, otherOptions) {
     then(response => response.json());
 }
 
-export function get(version, path, options) {
-  return request('GET', version, path, options);
+export function get(apiVersion, path, options) {
+  return request(apiVersion, 'GET', path, options);
 }
 
-export function put(version, path, options) {
-  return request('PUT', version, path, options);
+export function put(apiVersion, path, options) {
+  return request(apiVersion, 'PUT', path, options);
 }
 
-export function post(version, path, options) {
-  return request('POST', version, path, options);
+export function post(apiVersion, path, options) {
+  return request(apiVersion, 'POST', path, options);
 }
 
-export function destroy(version, path, options) {
-  return request('DELETE', version, path, options);
+export function destroy(apiVersion, path, options) {
+  return request(apiVersion, 'DELETE', path, options);
 }

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';
@@ -11,17 +12,15 @@ import {
   UPDATE_MULTIPLE_ITEMS_STARTED,
   UPDATE_MULTIPLE_ITEMS_SUCCESS,
   UPDATE_MULTIPLE_ITEMS_FAILED,
+  UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED,
   CACHED_GOALS_UPDATED
 } from 'actionTypes'
 
-const GOALS = [
-  { id: 'a', is_public: false },
-  { id: 'b', is_public: true }
-];
+const START_TIME = moment.utc().toISOString();
 
-const SERVER_RESPONDS = [
-  { url: '/stat/api/v1/goals/a', respond: { is_public: true } },
-  { url: '/stat/api/v1/goals/b', respond: { is_public: true } }
+const GOALS = [
+  { id: 'a', is_public: false, start: moment.utc().add(1, 'day').toISOString(), prevailing_measure: {} },
+  { id: 'b', is_public: true,  start: moment.utc().toISOString(), prevailing_measure: {} }
 ];
 
 const mockStore = configureStore([thunk]);
@@ -40,22 +39,22 @@ const initialState = Immutable.fromJS({
 
 
 describe('actions/bulkEditActions', () => {
-  let server;
   let store;
+  let server;
 
   beforeEach(() => {
     store = mockStore(initialState);
-
     server = sinon.fakeServer.create();
     server.autoRespond = true;
   });
 
-  afterEach(() => server.restore());
+  afterEach(() => {
+    server.restore()
+  });
 
-  it('updateMultipleGoals should update given goals', done => {
-    SERVER_RESPONDS.forEach(({ url, respond }) => {
-      server.respondWith(url, JSON.stringify(respond));
-    });
+  it('updateMultipleGoals should update given goals', (done) => {
+    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
+    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
     store.dispatch(updateMultipleGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
       const [ started, updateGoals, succeeded ] = store.getActions();
@@ -70,14 +69,17 @@ describe('actions/bulkEditActions', () => {
       expect(updateGoals.goals[0].is_public).to.eq(true);
       expect(updateGoals.goals[1].is_public).to.eq(true);
 
+      expect(updateGoals.goals[0].prevailing_measure.start).to.eq(START_TIME);
+      expect(updateGoals.goals[1].prevailing_measure.start).to.eq(START_TIME);
+
       expect(succeeded.goalIds.length).to.eq(2);
       done();
     }).catch(done);
   });
 
-  it('should dispatch failure action when something went wrong', done => {
-    SERVER_RESPONDS.forEach(({ url, respond }) => {
-      server.respondWith(url, 'notajsonstring');
+  it('should dispatch failure action when something went wrong', (done) => {
+    server.respondWith(xhr => {
+      xhr.respond();
     });
 
     store.dispatch(updateMultipleGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
@@ -86,5 +88,14 @@ describe('actions/bulkEditActions', () => {
       expect(failed.type).to.eq(UPDATE_MULTIPLE_ITEMS_FAILED);
       done();
     }).catch(done);
+  });
+
+  it('should dispatch a warning message if not all the items have prevailing_measure data', () => {
+    const goals = GOALS.concat([{ id: 'not_configured' }]);
+
+    store.dispatch(updateMultipleGoals(goals.map(goal => Immutable.fromJS(goal))), {});
+    const [notConfigured] = store.getActions();
+
+    expect(notConfigured.type).to.eq(UPDATE_MULTIPLE_ITEMS_NOT_CONFIGURED);
   });
 });

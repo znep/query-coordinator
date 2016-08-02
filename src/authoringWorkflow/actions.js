@@ -61,6 +61,22 @@ export function setPhidippidesMetadata(phidippidesMetadata) {
   };
 }
 
+export var SET_DATASET_UID = 'SET_DATASET_UID';
+export function setDatasetUid(datasetUid) {
+  return {
+    type: SET_DATASET_UID,
+    datasetUid
+  };
+}
+
+export var SET_DOMAIN = 'SET_DOMAIN';
+export function setDomain(domain) {
+  return {
+    type: SET_DOMAIN,
+    domain
+  };
+}
+
 export var SET_DIMENSION = 'SET_DIMENSION';
 export function setDimension(dimension) {
   return {
@@ -284,6 +300,29 @@ export function setColorScale(negativeColor, zeroColor, positiveColor) {
     type: SET_COLOR_SCALE,
     negativeColor,
     zeroColor,
+    positiveColor
+  };
+}
+
+export var SET_NEGATIVE_COLOR = 'SET_NEGATIVE_COLOR';
+export function setNegativeColor(negativeColor) {
+  return {
+    type: SET_NEGATIVE_COLOR,
+    negativeColor
+  };
+}
+
+export var SET_ZERO_COLOR = 'SET_ZERO_COLOR';
+export function setZeroColor(zeroColor) {
+  return {
+    type: SET_ZERO_COLOR,
+    zeroColor
+  };
+}
+export var SET_POSITIVE_COLOR = 'SET_POSITIVE_COLOR';
+export function setPositiveColor(positiveColor) {
+  return {
+    type: SET_POSITIVE_COLOR,
     positiveColor
   };
 }

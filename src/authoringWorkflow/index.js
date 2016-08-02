@@ -20,7 +20,6 @@ import { migrateVif } from '../helpers/VifHelpers';
 import AuthoringWorkflow from './components/AuthoringWorkflow';
 
 module.exports = function(element, configuration) {
-  var self = this;
   var logger = createLogger();
 
   utils.assertHasProperty(configuration, 'vif.format.version');
@@ -28,6 +27,7 @@ module.exports = function(element, configuration) {
 
   var vif = _.get(configuration, 'vif');
   vif = vif ? migrateVif(vif) : {};
+
   var vifType = _.get(vif, 'series[0].type', null);
   var initialState = {
     metadata: defaultMetadata,
@@ -40,25 +40,25 @@ module.exports = function(element, configuration) {
     }
   };
 
-  self.element = element;
-  self.configuration = configuration;
-  self.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
+  this.element = element;
+  this.configuration = configuration;
+  this.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
 
-  load(self.store.dispatch, vif);
-  setLocale(_.get(self.configuration, 'locale', 'en'));
+  load(this.store.dispatch, vif);
+  setLocale(_.get(this.configuration, 'locale', 'en'));
 
-  self.render = function() {
+  this.render = () => {
     ReactDOM.render(
-      <Provider store={self.store}>
-        <AuthoringWorkflow {...self.configuration} />
+      <Provider store={this.store}>
+        <AuthoringWorkflow {...this.configuration} />
       </Provider>,
-      self.element
+      this.element
     );
   };
 
-  self.destroy = function() {
-    return ReactDOM.unmountComponentAtNode(self.element);
+  this.destroy = () => {
+    return ReactDOM.unmountComponentAtNode(this.element);
   };
 
-  self.render();
+  this.render();
 };

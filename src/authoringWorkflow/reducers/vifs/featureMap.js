@@ -3,7 +3,12 @@ import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import { forEachSeries, setValueOrDefaultValue } from '../../helpers';
+import {
+  forEachSeries,
+  setValueOrDefaultValue,
+  setUnits
+} from '../../helpers';
+
 import {
   RECEIVE_METADATA,
   SET_TITLE,
@@ -16,7 +21,9 @@ import {
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
   SET_ROW_INSPECTOR_TITLE_COLUMN_NAME,
-  SET_CENTER_AND_ZOOM
+  SET_CENTER_AND_ZOOM,
+  SET_DOMAIN,
+  SET_DATASET_UID
 } from '../../actions';
 
 export default function featureMap(state, action) {
@@ -29,17 +36,19 @@ export default function featureMap(state, action) {
   switch (action.type) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
-        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
-        let unitOne = _.get(series, 'unit.one', null);
-        let unitOther = _.get(series, 'unit.other', null);
+        setUnits(series, action);
+      });
+      break;
 
-        if (unitOne === null) {
-          setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
-        }
+    case SET_DOMAIN:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+      });
+      break;
 
-        if (unitOther === null) {
-          setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
-        }
+    case SET_DATASET_UID:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 

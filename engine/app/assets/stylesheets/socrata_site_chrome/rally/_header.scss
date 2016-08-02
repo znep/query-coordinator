@@ -4,8 +4,14 @@ $divider_height: 14px;
 header#site-chrome-header[template="rally"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
 
-  > .banner {
-    > .rally-top {
+  .banner {
+    .header-content {
+      max-width: $max_width;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .rally-top {
       background-color: $header_bg_color_secondary;
       min-height: 32px;
       height: $header_logo_height;
@@ -13,7 +19,7 @@ header#site-chrome-header[template="rally"] {
       padding: 16px;
       box-sizing: content-box;
 
-      > a.logo {
+      a.logo {
         float: left;
         text-decoration: none;
 
@@ -44,7 +50,7 @@ header#site-chrome-header[template="rally"] {
       }
     }
 
-    > .rally-bottom {
+    .rally-bottom {
       color: $header_fg_color;
       background-color: $header_bg_color;
       height: $banner_height;
@@ -52,7 +58,7 @@ header#site-chrome-header[template="rally"] {
       padding: 0 16px;
       clear: both;
 
-      > nav {
+      nav {
         font-size: 15px;
         font-weight: 300;
         height: 100%;
@@ -92,9 +98,6 @@ header#site-chrome-header[template="rally"] {
           .navbar-right {
             height: 100%;
             float: right;
-            position: absolute;
-            top: 0;
-            right: 0;
 
             .site-chrome-social-links {
               height: 100%;

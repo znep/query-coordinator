@@ -1,41 +1,42 @@
 <header id="site-chrome-header" class="<%= size %>" template="rally">
   <div class="banner">
-
     <div class="rally-top">
-      <%= header_logo %>
-
-      <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+      <div class="header-content">
+        <%= header_logo %>
+        <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+      </div>
     </div>
 
     <div class="rally-bottom">
-      <nav class="desktop">
-        <div class="navbar-left">
-          <div class="site-chrome-nav-links">
-            <%= render 'site_chrome/nav_links' %>
-          </div>
-        </div>
-
-        <div class="navbar-right">
-          <div class="site-chrome-social-links">
-            <%= render 'site_chrome/social_links', show_label: false %>
+      <div class="header-content">
+        <nav class="desktop">
+          <div class="navbar-left">
+            <div class="site-chrome-nav-links">
+              <%= render 'site_chrome/nav_links' %>
+            </div>
           </div>
 
-          <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
-            <%= content_tag(:span, nil, :class => 'divider') %>
-          <% end %>
+          <div class="navbar-right">
+            <div class="site-chrome-social-links">
+              <%= render 'site_chrome/social_links', show_label: false %>
+            </div>
 
-          <%= render 'site_chrome/user_actions' %>
-        </div>
-      </nav>
+            <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
+              <%= content_tag(:span, nil, :class => 'divider') %>
+            <% end %>
 
-      <nav class="mobile">
-        <a class="site-chrome-btn menu-toggle" href="#" onclick="mobileMenuToggle()">
-          <span class="icon-hamburger"></span>
-          Menu
-        </a>
-      </nav>
+            <%= render 'site_chrome/user_actions' %>
+          </div>
+        </nav>
+
+        <nav class="mobile">
+          <a class="site-chrome-btn menu-toggle" href="#" onclick="mobileMenuToggle()">
+            <span class="icon-hamburger"></span>
+            Menu
+          </a>
+        </nav>
+      </div>
     </div>
   </div>
-
   <%= render 'site_chrome/mobile_menu' %>
 </header>

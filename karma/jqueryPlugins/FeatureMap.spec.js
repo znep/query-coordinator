@@ -119,7 +119,7 @@ describe('FeatureMap jQuery component', function() {
         revertDataProviders = SocrataFeatureMap.__set__({
           SoqlDataProvider: function() {
             this.query = function() {
-              return new Promise(function(resolve, reject) { return resolve(QUERY_RESPONSE); });
+              return Promise.resolve(QUERY_RESPONSE);
             };
 
             this.buildBaseQuery = function() {};
@@ -127,30 +127,24 @@ describe('FeatureMap jQuery component', function() {
 
           GeospaceDataProvider: function() {
             this.getFeatureExtent = function(columnName) {
-              return new Promise(function(resolve, reject) {
-                return resolve({
-                  southwest: [-90, -180],
-                  northeast: [90, 180]
-                });
+              return Promise.resolve({
+                southwest: [-90, -180],
+                northeast: [90, 180]
               });
             };
           },
 
           TileserverDataProvider: function() {
-            this.buildTileGetter = function(whereClause, useOriginHost) {
+            this.buildTileGetter = function(whereClause) {
               return function tileGetter(zoom, x, y) {
-                return new Promise(function(resolve, reject) {
-                  return resolve(new VBArray([]).toArray());
-                });
+                return Promise.resolve(new VBArray([]).toArray());
               }
             }
           },
 
           MetadataProvider: function() {
             this.getDatasetMetadata = function() {
-              return new Promise(function(resolve, reject) {
-                resolve(TEST_DATASET_METADATA);
-              });
+              return Promise.resolve(TEST_DATASET_METADATA);
             };
           }
         });

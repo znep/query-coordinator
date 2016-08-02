@@ -12,8 +12,7 @@ export default {
     datasetMetadata: false,
     rowInspectorTitleColumnName: null,
     locateUser: false,
-    panAndZoom: true,
-    useOriginHost: false
+    panAndZoom: true
   },
   description: '',
   series: [

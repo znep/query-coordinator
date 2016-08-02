@@ -8,8 +8,15 @@ function validatePasses(testCaseFnName, vif, datasetMetadataPerSeries) {
       validator = SoqlVifValidator.soqlVifValidator(vif, datasetMetadataPerSeries);
     });
 
+    it('should return the original validator for chaining purposes', function() {
+      assert.equal(
+        validator[testCaseFnName](),
+        validator,
+        `${testCaseFnName} did not return validator for chaining`
+      );
+    });
+
     it('.validate() should return a passing result', function() {
-      validator[testCaseFnName]();
       assert.propertyVal(validator.validate(), 'ok', true);
     });
 
@@ -28,6 +35,14 @@ function validateFails(testCaseFnName, vif, datasetMetadataPerSeries) {
     var validator;
     beforeEach(function() {
       validator = SoqlVifValidator.soqlVifValidator(vif, datasetMetadataPerSeries);
+    });
+
+    it('should return the original validator for chaining purposes', function() {
+      assert.equal(
+        validator[testCaseFnName](),
+        validator,
+        `${testCaseFnName} did not return validator for chaining`
+      );
     });
 
     it('.validate() should return a failing result', function() {
@@ -87,6 +102,7 @@ describe('SoqlVifValidator', function() {
 
       validateFails('requireAtLeastOneSeries', vif, []);
       validateFails('requireExactlyOneSeries', vif, []);
+      validatePasses('requireAllSeriesFromSameDomain', vif, []);
       validatePasses('requireNoMeasureAggregation', vif, []);
       validatePasses('requireMeasureAggregation', vif, []);
       validatePasses('requireCalendarDateDimension', vif, []);
@@ -143,6 +159,7 @@ describe('SoqlVifValidator', function() {
 
       validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
       validateFails('requireExactlyOneSeries', vif, datasetMetadatas);
+      validatePasses('requireAllSeriesFromSameDomain', vif, datasetMetadatas);
       validateFails('requireNoMeasureAggregation', vif, datasetMetadatas);
       validatePasses('requireMeasureAggregation', vif, datasetMetadatas);
       validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
@@ -172,6 +189,7 @@ describe('SoqlVifValidator', function() {
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
       validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
       validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
       validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
@@ -230,6 +248,7 @@ describe('SoqlVifValidator', function() {
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
       validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
       validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
       validateFails('requireCalendarDateDimension', vif, [ datasetMetadata ]);
@@ -259,6 +278,7 @@ describe('SoqlVifValidator', function() {
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
       validatePasses('requireExactlyOneSeries', vif, [ datasetMetadata ]);
+      validatePasses('requireAllSeriesFromSameDomain', vif, [ datasetMetadata ]);
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
       validatePasses('requireMeasureAggregation', vif, [ datasetMetadata ]);
       validatePasses('requireCalendarDateDimension', vif, [ datasetMetadata ]);
@@ -396,6 +416,52 @@ describe('SoqlVifValidator', function() {
 
       validatePasses('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
       validateFails('requireMeasureAggregation', vif, [ datasetMetadata ]);
+    });
+
+    describe('VIF with series on different domains', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example2.com',
+              dimension: { columnName: 'point', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = {
+        columns: [
+          { fieldName: 'number', dataTypeName: 'number' },
+          { fieldName: 'point', dataTypeName: 'point' }
+        ]
+      };
+
+      // all series use same dataset.
+      const datasetMetadatas = [ datasetMetadata, datasetMetadata ];
+
+      validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
+      validateFails('requireExactlyOneSeries', vif, datasetMetadatas);
+      validateFails('requireAllSeriesFromSameDomain', vif, datasetMetadatas);
+      validateFails('requireNoMeasureAggregation', vif, datasetMetadatas);
+      validatePasses('requireMeasureAggregation', vif, datasetMetadatas);
+      validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
+      validateFails('requirePointDimension', vif, datasetMetadatas);
+      validateFails('requireNumericDimension', vif, datasetMetadatas);
     });
   });
 });

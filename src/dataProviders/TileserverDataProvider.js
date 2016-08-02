@@ -5,6 +5,52 @@ var _ = require('lodash');
 var MAX_FEATURES_PER_TILE = 256 * 256;
 var DEFAULT_FEATURES_PER_TILE = 50000;
 
+// These should be discovered, but see comment in
+// fetchTileserverHostsForDomain. This is only
+// used to enable testing on example pages.
+const FALLBACK_TILESERVER_HOSTS = [
+  'https://tileserver1.api.us.socrata.com',
+  'https://tileserver2.api.us.socrata.com',
+  'https://tileserver3.api.us.socrata.com',
+  'https://tileserver4.api.us.socrata.com'
+];
+
+/* Given a domain, fetch the tileserver hosts appropriate to that domain.
+ * NOTE: Currently a stub, as we lack the API to get this information (EN-8643).
+ * Tileserver doesn't currently support cross-domain requests (EN-8638), but the
+ * sharded (tileserver?.api.us.socrata.com) endpoints do support cross-domain
+ * requests. However, we can't know for sure if it's safe to use the sharded
+ * endpoints (the correct set needs to be picked on a per-domain basis, EN-8643).
+ * Given this, we need to use our only remaining option, and that is to use the domain
+ * the page is hosted on as the tileserver host. This will theoretically fail for a couple
+ * reasons:
+ *
+ * 1. Map being embedded is in a different environment than the page being viewed (i.e, a
+ *    map from us-west-2 being embedded in eu-west-1).
+ * 2. Map is being embedded on a non-socrata page.
+ *
+ * Neither of these scenarios are possible today in storyteller or datalens.
+ *
+ * However, this will block a common and useful testing tool: the pages found in
+ * examples/. We special-case these to use the sharded US tileserver hosts, which
+ * are the only hosts that will work in this case. That will get testing unblocked
+ * until one of the two tickets listed below are addressed in tileserver itself.
+ *
+ * See:
+ *     https://socrata.atlassian.net/browse/EN-8638 and
+ *     https://socrata.atlassian.net/browse/EN-8643
+ */
+const fetchTileserverHostsForDomain = _.memoize((domain) => {
+  utils.assertIsOneOfTypes(domain, 'string');
+  const currentWindowLocationAsTileserver = `${window.location.protocol}//${window.location.host}`;
+  if (window.location.protocol === 'file:') {
+    console.warn('Attempting to load tiles from disk will fail (window.location.protocol is file:). Falling back to us-west-2 tileserver hosts; these may fail.');
+    return Promise.resolve(FALLBACK_TILESERVER_HOSTS);
+  } else {
+    return Promise.resolve([currentWindowLocationAsTileserver]);
+  }
+});
+
 /**
  * @param {Object} config
  *   @property {String[]} tileserverHosts - An array of tileserver hostnames
@@ -24,17 +70,14 @@ function TileserverDataProvider(config) {
   utils.assertHasProperty(config, 'datasetUid');
   utils.assertHasProperty(config, 'columnName');
   utils.assertHasProperty(config, 'featuresPerTile');
-  utils.assertHasProperty(config, 'tileserverHosts');
 
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
   utils.assertIsOneOfTypes(config.columnName, 'string');
   utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
-  utils.assertIsOneOfTypes(config.tileserverHosts, 'object');
 
   var _self = this;
 
-  var _originHost = '{0}//{1}'.format(window.location.protocol, window.location.host);
   var _instanceRequestIdComponent = _randomNChars(16);
 
   /**
@@ -42,27 +85,20 @@ function TileserverDataProvider(config) {
    */
 
   /**
-   * Curries datasetUid, columnName and whereClause into a function that can
-   * be called to perform an ajax call for a vector tile
+   * Returns a function that can be called to perform an ajax call for a vector tile
    *
-   * @param {String} columnName
-   * @param {String} datasetUid
-   * @param {String} [whereClause]
-   * @param {Boolean} [useOriginHost] - Whether or not all tiles should be
-   *   requested from the origin host (as opposed to selecting one of the
-   *   hosts in the `tileserverHosts` configuration property.
-   *
+   * @param {String} whereClause
    * @return {Function}
    */
-  this.buildTileGetter = function(whereClause, useOriginHost) {
+  this.buildTileGetter = function(whereClause) {
 
     var domain = this.getConfigurationProperty('domain');
     var datasetUid = this.getConfigurationProperty('datasetUid');
     var columnName = this.getConfigurationProperty('columnName');
     var featuresPerTile = parseInt(this.getConfigurationProperty('featuresPerTile'), 10);
 
+    utils.assertIsOneOfTypes(domain, 'string');
     utils.assertIsOneOfTypes(whereClause, 'string', 'undefined');
-    utils.assertIsOneOfTypes(useOriginHost, 'boolean', 'undefined');
 
     if (
       _.isNaN(featuresPerTile) ||
@@ -89,30 +125,26 @@ function TileserverDataProvider(config) {
       utils.assertIsOneOfTypes(x, 'number');
       utils.assertIsOneOfTypes(y, 'number');
 
-      var url = '{0}/tiles/{1}/{2}/{3}/{4}/{5}.pbf?'.format(
-        _getHost(x, y, useOriginHost),
-        datasetUid,
-        columnName,
-        zoom,
-        x,
-        y
-      );
+      return fetchTileserverHostsForDomain(domain).then((tileserverHosts) => {
+        const host = _getHost(x, y, tileserverHosts);
+        var url = `${host}/tiles/${datasetUid}/${columnName}/${zoom}/${x}/${y}.pbf?`;
 
-      url += '$limit={0}'.format(featuresPerTile);
+        url += `$limit=${featuresPerTile}`;
 
-      if (!_.isEmpty(whereClause)) {
-        url += '&$where={0}'.format(whereClause);
-      }
-
-      return _getArrayBuffer(
-        url,
-        {
-          headers: {
-            'X-Socrata-Host': domain,
-            'X-Socrata-RequestId': _instanceRequestIdComponent + _randomNChars(16)
-          }
+        if (!_.isEmpty(whereClause)) {
+          url += `&$where=${whereClause}`;
         }
-      );
+
+        return _getArrayBuffer(
+          url,
+          {
+            headers: {
+              'X-Socrata-Host': domain,
+              'X-Socrata-RequestId': _instanceRequestIdComponent + _randomNChars(16)
+            }
+          }
+        );
+      });
     }
 
     return tileGetter;
@@ -134,33 +166,18 @@ function TileserverDataProvider(config) {
   }
 
   /**
-   * Given the x and y values for a tile and whether to use the the origin host,
-   * if there is an array of tileservers available, return one for a public
-   * tileserver hosts, otherwise return the originating host
+   * Returns a tileserver host given the x and y values for a tile
+   * and a list of tileserver hosts.
    *
    * @param {Number} x
    * @param {Number} y
-   * @param {Boolean} useOriginHost
+   * @param {Array[String]} tileserverHosts
    *
    * @return {String}
    */
-  function _getHost(x, y, useOriginHost) {
-
-    var tileserverHosts = _self.getConfigurationProperty('tileserverHosts');
-    var index;
-    var host;
-
-    if (useOriginHost || _.isEmpty(tileserverHosts)) {
-
-      host = _originHost;
-
-    } else {
-
-      index = (Math.abs(x) + Math.abs(y)) % tileserverHosts.length;
-      host = tileserverHosts[index];
-    }
-
-    return host;
+  function _getHost(x, y, tileserverHosts) {
+    const index = (Math.abs(x) + Math.abs(y)) % tileserverHosts.length;
+    return tileserverHosts[index];
   }
 
   /**

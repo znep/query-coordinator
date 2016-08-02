@@ -197,6 +197,7 @@ export default {
           need_aggregation: 'This visualization requires an aggregation to be selected. Try selecting an aggregation or choosing "Count of Rows" from the measure selection.',
           need_no_aggregation: 'This visualization must not have an aggregation on its measure. Try selecting "none" as the aggregation.',
           need_at_least_one_series: 'This visualization requires at least one series.',
+          need_all_series_from_same_domain: 'This visualization requires all series to be from the same domain.',
           need_single_series: 'This visualization requires a single series.'
         }
       }

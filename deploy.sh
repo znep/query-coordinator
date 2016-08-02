@@ -3,7 +3,7 @@
 if [[ -z $(git status -s) ]]; then
   npm i
   bundle exec middleman build
-  git checkout  .
+  git checkout .
   git checkout gh-pages
   git pull --rebase origin gh-pages
 

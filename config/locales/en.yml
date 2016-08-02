@@ -3431,6 +3431,7 @@ en:
             published: Please make a working copy or view of this dataset to change column properties
             snapshot: You cannot edit column properties for a view snapshot
             unsaved: You cannot edit column properties for an unsaved view
+            notallowed: You aren't allowed to edit column properties
         conditional_formatting:
           change_icon: change
           conditions:

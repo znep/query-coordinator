@@ -1037,22 +1037,41 @@ describe('AssetSelectorStore', function() {
 
         describe('socrata.visualization.columnChart', function() {
           describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is true', function() {
-            beforeEach(function() {
-              AssetSelectorStoreAPI.__Rewire__('Environment', {
-                ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
+            describe('with a v1 vif', function() {
+              beforeEach(function() {
+                AssetSelectorStoreAPI.__Rewire__('Environment', {
+                  ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
+                });
+
+                bootstrap();
+                editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 1}}});
               });
 
-              bootstrap();
-              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 2}}});
+              verifyStepIs('AUTHOR_VISUALIZATION');
+              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
             });
 
-            verifyStepIs('AUTHOR_VISUALIZATION');
-            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+            describe('with a v2 vif', function() {
+              beforeEach(function() {
+                AssetSelectorStoreAPI.__Rewire__('Environment', {
+                  ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
+                });
+
+                bootstrap();
+                editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 2}}});
+              });
+
+              verifyStepIs('AUTHOR_VISUALIZATION');
+              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+            });
           });
 
           describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is false', function() {
             beforeEach(function() {
-              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart');
+              AssetSelectorStoreAPI.__Rewire__('Environment', {
+                ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: false
+              });
+              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 1}}});
             });
 
             verifyStepIs('CONFIGURE_VISUALIZATION');

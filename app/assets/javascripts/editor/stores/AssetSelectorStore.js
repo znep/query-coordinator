@@ -697,7 +697,6 @@ export default function AssetSelectorStore() {
    */
   function _stepForUpdate(component) {
     var type = component.type;
-    var value = component.value;
 
     switch (type) {
       case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
@@ -715,11 +714,11 @@ export default function AssetSelectorStore() {
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
-      if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && _.get(value, 'vif.format.version') === 2) {
+      if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
         return WIZARD_STEP.AUTHOR_VISUALIZATION;
+      } else {
+        return WIZARD_STEP.CONFIGURE_VISUALIZATION;
       }
-
-      return WIZARD_STEP.CONFIGURE_VISUALIZATION;
     }
 
     // Something went wrong and we don't know where to pick up from (new embed type?),

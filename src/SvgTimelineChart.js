@@ -27,10 +27,12 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */
 $.fn.socrataSvgTimelineChart = function(vif) {
+  vif = _.cloneDeep(VifHelpers.migrateVif(vif));
+
   var $element = $(this);
   var visualization = new SvgTimelineChart(
     $element,
-    VifHelpers.migrateVif(vif)
+    vif
   );
   var rerenderOnResizeTimeout;
 
@@ -105,6 +107,8 @@ $.fn.socrataSvgTimelineChart = function(vif) {
 
   function updateData(newVif) {
     $.fn.socrataSvgTimelineChart.validateVif(newVif).then(() => {
+
+      newVif = _.cloneDeep(newVif);
 
       $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 

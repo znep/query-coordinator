@@ -3,18 +3,15 @@ import moment from 'moment';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 
-export function setDataSource(dataSource) {
+export function setDataSource(domain, datasetUid) {
   return dispatch => {
-    if (!/\w{4}\-\w{4}/.test(dataSource.datasetUid)) {
+    if (!/\w{4}\-\w{4}/.test(datasetUid)) {
       return;
     }
 
-    var datasetMetadataProvider = new MetadataProvider({
-      domain: dataSource.domain,
-      datasetUid: dataSource.datasetUid
-    });
+    var datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
-    dispatch(requestMetadata(dataSource.domain, dataSource.datasetUid));
+    dispatch(requestMetadata(domain, datasetUid));
 
     return Promise.all([
       datasetMetadataProvider.getDatasetMetadata(),
@@ -61,6 +58,22 @@ export function setPhidippidesMetadata(phidippidesMetadata) {
   return {
     type: SET_PHIDIPPIDES_METADATA,
     phidippidesMetadata
+  };
+}
+
+export var SET_DATASET_UID = 'SET_DATASET_UID';
+export function setDatasetUid(datasetUid) {
+  return {
+    type: SET_DATASET_UID,
+    datasetUid
+  };
+}
+
+export var SET_DOMAIN = 'SET_DOMAIN';
+export function setDomain(domain) {
+  return {
+    type: SET_DOMAIN,
+    domain
   };
 }
 
@@ -287,6 +300,29 @@ export function setColorScale(negativeColor, zeroColor, positiveColor) {
     type: SET_COLOR_SCALE,
     negativeColor,
     zeroColor,
+    positiveColor
+  };
+}
+
+export var SET_NEGATIVE_COLOR = 'SET_NEGATIVE_COLOR';
+export function setNegativeColor(negativeColor) {
+  return {
+    type: SET_NEGATIVE_COLOR,
+    negativeColor
+  };
+}
+
+export var SET_ZERO_COLOR = 'SET_ZERO_COLOR';
+export function setZeroColor(zeroColor) {
+  return {
+    type: SET_ZERO_COLOR,
+    zeroColor
+  };
+}
+export var SET_POSITIVE_COLOR = 'SET_POSITIVE_COLOR';
+export function setPositiveColor(positiveColor) {
+  return {
+    type: SET_POSITIVE_COLOR,
     positiveColor
   };
 }

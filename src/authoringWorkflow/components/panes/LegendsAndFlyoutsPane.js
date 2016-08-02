@@ -5,7 +5,7 @@ import styleguide from 'socrata-styleguide';
 
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
-import { getDisplayableColumns } from '../../selectors/metadata';
+import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
   getRowInspectorTitleColumnName,
   getUnitOne,
@@ -90,7 +90,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
 
   renderFeatureMapControls() {
     var { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
-    var defaultFlyoutTitleColumn = getRowInspectorTitleColumnName(vifAuthoring);
+    var rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
     var columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
@@ -98,9 +98,10 @@ export var LegendsAndFlyoutsPane = React.createClass({
         title: column.name,
         value: column.fieldName,
         type: column.renderTypeName,
-        render: this.renderFlyoutTitleColumnOption
+        render: this.renderRowInspectorTitleColumnOption
       })),
-      onSelection: onSelectRowInspectorTitle
+      onSelection: onSelectRowInspectorTitle,
+      value: rowInspectorTitleColumnName
     };
 
     return (
@@ -119,7 +120,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
     );
   },
 
-  renderFlyoutTitleColumnOption(option) {
+  renderRowInspectorTitleColumnOption(option) {
     var columnType = _.find(COLUMN_TYPES, {type: option.type});
     var icon = columnType ? columnType.icon : '';
 
@@ -135,28 +136,32 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   render() {
-    var vifAuthoring = this.props.vifAuthoring;
+    var { metadata, vifAuthoring } = this.props;
     var configuration;
 
-    if (isRegionMap(vifAuthoring)) {
-      configuration = this.renderRegionMapControls();
-    } else if (isColumnChart(vifAuthoring)) {
-      configuration = this.renderColumnChartControls();
-    } else if (isHistogram(vifAuthoring)) {
-      configuration = this.renderHistogramControls();
-    } else if (isFeatureMap(vifAuthoring)) {
-      configuration = this.renderFeatureMapControls();
-    } else if (isTimelineChart(vifAuthoring)) {
-      configuration = this.renderTimelineChartControls();
-    } else {
-      configuration = this.renderEmptyPane();
-    }
+    if (hasData(metadata)) {
+      if (isRegionMap(vifAuthoring)) {
+        configuration = this.renderRegionMapControls();
+      } else if (isColumnChart(vifAuthoring)) {
+        configuration = this.renderColumnChartControls();
+      } else if (isHistogram(vifAuthoring)) {
+        configuration = this.renderHistogramControls();
+      } else if (isFeatureMap(vifAuthoring)) {
+        configuration = this.renderFeatureMapControls();
+      } else if (isTimelineChart(vifAuthoring)) {
+        configuration = this.renderTimelineChartControls();
+      } else {
+        configuration = this.renderEmptyPane();
+      }
 
-    return (
-      <form>
-        {configuration}
-      </form>
-    );
+      return (
+        <form>
+          {configuration}
+        </form>
+      );
+    } else {
+      return null;
+    }
   }
 });
 

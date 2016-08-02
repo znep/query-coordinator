@@ -12,17 +12,18 @@ import {
 } from '../actions';
 
 import {
-  isRegionMap,
+  getDatasetUid,
   getDimension,
-  getShapefileUid,
   getDomain,
-  getDatasetUid
+  getShapefileUid,
+  isRegionMap
 } from '../selectors/vifAuthoring';
 
 import {
-  getValidRegions,
   getValidComputedColumns,
-  getValidCuratedRegions
+  getValidCuratedRegions,
+  getValidRegions,
+  hasData
 } from '../selectors/metadata';
 
 export var RegionSelector = React.createClass({
@@ -152,9 +153,12 @@ export var RegionSelector = React.createClass({
   },
 
   render() {
-    var { vifAuthoring } = this.props;
+    var { metadata, vifAuthoring } = this.props;
+    var canRender = hasData(metadata) &&
+      isRegionMap(vifAuthoring) &&
+      _.isString(getDimension(vifAuthoring).columnName);
 
-    return isRegionMap(vifAuthoring) && getDimension(vifAuthoring).columnName ?
+    return canRender ?
       this.renderSelector() :
       null;
   }

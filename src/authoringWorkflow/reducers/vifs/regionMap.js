@@ -3,7 +3,7 @@ import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import { forEachSeries, setValueOrDefaultValue } from '../../helpers';
+import { forEachSeries, setValueOrDefaultValue, setUnits } from '../../helpers';
 import {
   RECEIVE_METADATA,
   SET_DIMENSION,
@@ -18,7 +18,12 @@ import {
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
   SET_CENTER_AND_ZOOM,
-  SET_SHAPEFILE
+  SET_SHAPEFILE,
+  SET_DOMAIN,
+  SET_DATASET_UID,
+  SET_NEGATIVE_COLOR,
+  SET_ZERO_COLOR,
+  SET_POSITIVE_COLOR
 } from '../../actions';
 
 export default function regionMap(state, action) {
@@ -31,17 +36,19 @@ export default function regionMap(state, action) {
   switch (action.type) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
-        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
-        let unitOne = _.get(series, 'unit.one', null);
-        let unitOther = _.get(series, 'unit.other', null);
+        setUnits(series, action);
+      });
+      break;
 
-        if (unitOne === null) {
-          setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
-        }
+    case SET_DOMAIN:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+      });
+      break;
 
-        if (unitOther === null) {
-          setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
-        }
+    case SET_DATASET_UID:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
@@ -63,7 +70,15 @@ export default function regionMap(state, action) {
 
     case SET_MEASURE:
       forEachSeries(state, series => {
+        var aggregationFunction = series.dataSource.measure.aggregationFunction;
+
         setValueOrDefaultValue(series, 'dataSource.measure.columnName', action.measure, null);
+
+        if (_.isNull(action.measure)) {
+          series.dataSource.measure.aggregationFunction = 'count';
+        } else if (aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
+        }
       });
       break;
 
@@ -95,6 +110,18 @@ export default function regionMap(state, action) {
       _.set(state, 'configuration.legend.type', 'continuous');
       _.set(state, 'configuration.legend.negativeColor', action.negativeColor);
       _.set(state, 'configuration.legend.zeroColor', action.zeroColor);
+      _.set(state, 'configuration.legend.positiveColor', action.positiveColor);
+      break;
+
+    case SET_NEGATIVE_COLOR:
+      _.set(state, 'configuration.legend.negativeColor', action.negativeColor);
+      break;
+
+    case SET_ZERO_COLOR:
+      _.set(state, 'configuration.legend.zeroColor', action.zeroColor);
+      break;
+
+    case SET_POSITIVE_COLOR:
       _.set(state, 'configuration.legend.positiveColor', action.positiveColor);
       break;
 

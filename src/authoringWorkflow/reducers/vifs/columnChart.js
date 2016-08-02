@@ -3,7 +3,14 @@ import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import { forEachSeries, setValueOrDeleteProperty, setValueOrDefaultValue, isNonEmptyString } from '../../helpers';
+import {
+  forEachSeries,
+  setValueOrDeleteProperty,
+  setValueOrDefaultValue,
+  setUnits,
+  isNonEmptyString
+} from '../../helpers';
+
 import {
   RECEIVE_METADATA,
   SET_DIMENSION,
@@ -19,7 +26,9 @@ import {
   SET_LABEL_RIGHT,
   SET_X_AXIS_SCALING_MODE,
   SET_UNIT_ONE,
-  SET_UNIT_OTHER
+  SET_UNIT_OTHER,
+  SET_DOMAIN,
+  SET_DATASET_UID
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -32,17 +41,19 @@ export default function columnChart(state, action) {
   switch (action.type) {
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
-        let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
-        let unitOne = _.get(series, 'unit.one', null);
-        let unitOther = _.get(series, 'unit.other', null);
+        setUnits(series, action);
+      });
+      break;
 
-        if (unitOne === null) {
-          setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
-        }
+    case SET_DOMAIN:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+      });
+      break;
 
-        if (unitOther === null) {
-          setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
-        }
+    case SET_DATASET_UID:
+      forEachSeries(state, series => {
+        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
@@ -62,12 +73,14 @@ export default function columnChart(state, action) {
 
     case SET_MEASURE:
       forEachSeries(state, series => {
+        var aggregationFunction = series.dataSource.measure.aggregationFunction;
+
         series.dataSource.measure.columnName = action.measure;
 
         if (_.isNull(action.measure)) {
           series.dataSource.measure.aggregationFunction = 'count';
-        } else {
-          series.dataSource.measure.aggregationFunction = null;
+        } else if (aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
         }
       });
       break;

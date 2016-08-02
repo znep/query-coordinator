@@ -11,10 +11,12 @@ npm install --save socrata-styleguide
 ```
 
 All of the styleguide assets are located in `dist` and should be loaded on your page through normal means. For example:
-```
+
+```html
 <link href="node_modules/socrata-styleguide/dist/css/styleguide.min.css" rel="stylesheet">
 <script type="text/javascript" src="node_modules/socrata-styleguide/dist/js/styleguide.min.js"></script>
 ```
+
 Alternatively, the raw SCSS is available for inclusion in your own styles. They can be found in `src/scss`.
 
 ## Setup

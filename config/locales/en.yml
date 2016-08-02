@@ -2596,12 +2596,12 @@ en:
                 title: Footer Logo
               footer_logo_height:
                 description: You can optionally set a height and width for your footer logo.
-                error: 'Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
                 description: You can optionally set a height and width for your footer logo.
-                error: 'Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
               footer_text_link_color:
@@ -2622,6 +2622,10 @@ en:
                 error: 'Token should match the format: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
+              max_width:
+                description: Enter the maximum width (in pixels) of your header and footer content. If left empty, they will stretch to the dimensions of the user's browser window.
+                placeholder: 1200px
+                title: Max Width
               show_signin_signout:
                 description: Show these options if your site requires a user Profile / Sign In.
                 show_profile: Show a link to Profile after Signed In
@@ -2665,12 +2669,12 @@ en:
                 title: Header Display Name
               header_logo_height:
                 description: You can optionally set a height and width for your header bar logo.
-                error: 'Please enter a value (1-999) to represent your desired logo height in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
                 description: You can optionally set a height and width for your header bar logo.
-                error: 'Please enter a value (1-999) to represent your desired logo width in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
               link_title_label: Link Label

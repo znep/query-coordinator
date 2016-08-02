@@ -1,12 +1,13 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
-  dimensions: /^\d{1,3}px$/
+  dimensions: /^\d{1,4}px$/
 };
 
 var validationRules = {
   general: {
-    'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics }
+    'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
+    'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions }
   },
   header: {
     'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },

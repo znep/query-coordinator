@@ -13,132 +13,144 @@ header#site-chrome-header[template="default"] {
     min-height: $banner_height;
     position: relative;
 
-    > a.logo {
-      float: left;
-      text-decoration: none;
-      color: $header_fg_color;
+    .header-content {
+      max-width: $max_width;
+      position: relative;
+      margin: 0 auto;
 
-      > img {
-        height: $header_logo_height;
-        width: $header_logo_width;
-        vertical-align: middle;
-        margin-right: 0.5rem;
+      > a.logo {
+        float: left;
+        text-decoration: none;
+        color: $header_fg_color;
+
+        > img {
+          height: $header_logo_height;
+          width: $header_logo_width;
+          vertical-align: middle;
+          margin-right: 0.5rem;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: 24px;
+          line-height: $header_logo_height;
+          vertical-align: middle;
+        }
       }
 
-      > span.site-name {
+      > nav {
+        font-size: 15px;
         font-weight: 300;
-        font-size: 24px;
-        line-height: $header_logo_height;
-        vertical-align: middle;
-      }
-    }
+        float: right;
+        position: absolute;
+        top: 0;
+        right: 16px;
 
-    > nav {
-      font-size: 15px;
-      font-weight: 300;
-      float: right;
-      position: absolute;
-      top: 0;
-      right: 16px;
+        &.desktop {
+          max-height: $banner_height;
 
-      &.desktop {
-        a.site-chrome-nav-link {
-          padding: 0 $text_padding;
-          color: $header_fg_color;
-          text-decoration: none;
-          &:hover, &:focus, &:active {
-            text-decoration: underline;
-          }
-
-          &.site-chrome-social-link {
-            padding: 0 5px;
-            &:hover, &:focus, &:active {
-              text-decoration: none;
-            }
-          }
-        }
-
-        .site-chrome-nav-links, .site-chrome-social-links, .collapsible-search {
-          float: left;
-        }
-
-        .collapsible-search {
-          position: relative;
-
-          .collapsible-search-toggle {
-            cursor: pointer;
-            font-size: 18px;
-          }
-
-          .searchbox {
-            opacity: 0;
-            z-index: -1;
-
-            -webkit-transition: opacity 0.1s;
-            transition: opacity 0.1s;
-
-            input {
-              -webkit-transition: width 0.4s;
-              transition: width 0.4s;
-              width: 50px;
-            }
-            &.expanded {
-              opacity: 1;
-              z-index: 10;
-              input {
-                width: 250px;
-              }
-            }
-
-            position: absolute;
-            top: ($banner_height - $searchbox-height) / 2;
-            right: 0;
-
-            form {
-              display: flex;
-
-              button.search-button {
-                height: $searchbox_height;
-                display: none; // appears with toggleSearchButton()
-              }
-            }
-          }
-        }
-
-        a.sign-in-toggle {
-          font-size: 12px;
-          margin-left: $text_padding;
-        }
-        a.profile-link, a.admin-link, a.logout-link {
-          padding: 0 $text_padding;
-          line-height: 3rem;
-          text-decoration: none;
-          &.in-header {
+          a.site-chrome-nav-link {
+            padding: 0 $text_padding;
+            display: inline-block;
             color: $header_fg_color;
+            text-decoration: none;
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+
+            &.site-chrome-social-link {
+              padding: 0 5px;
+              display: inline-block;
+              max-height: $banner_height;
+              &:hover, &:focus, &:active {
+                text-decoration: none;
+              }
+            }
           }
-          &:hover, &:focus, &:active {
-            text-decoration: underline;
+
+          .site-chrome-nav-links, .site-chrome-social-links, .collapsible-search {
+            float: left;
+            max-height: $banner_height;
+          }
+
+          .collapsible-search {
+            position: relative;
+
+            .collapsible-search-toggle {
+              cursor: pointer;
+              font-size: 18px;
+            }
+
+            .searchbox {
+              opacity: 0;
+              z-index: -1;
+
+              -webkit-transition: opacity 0.1s;
+              transition: opacity 0.1s;
+
+              input {
+                -webkit-transition: width 0.4s;
+                transition: width 0.4s;
+                width: 50px;
+              }
+              &.expanded {
+                opacity: 1;
+                z-index: 10;
+                input {
+                  width: 250px;
+                }
+              }
+
+              position: absolute;
+              top: ($banner_height - $searchbox-height) / 2;
+              right: 0;
+
+              form {
+                display: flex;
+
+                button.search-button {
+                  height: $searchbox_height;
+                  display: none; // appears with toggleSearchButton()
+                }
+              }
+            }
+          }
+
+          a.sign-in-toggle {
+            font-size: 12px;
+            margin-left: $text_padding;
+          }
+          a.profile-link, a.admin-link, a.logout-link {
+            padding: 0 $text_padding;
+            line-height: 3rem;
+            text-decoration: none;
+            &.in-header {
+              color: $header_fg_color;
+            }
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+
+          span.divider {
+            margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
           }
         }
 
-        span.divider {
-          margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
+        &.mobile {
+          .menu-toggle {
+            font-size: 12px;
+          }
         }
-      }
 
-      &.mobile {
-        .menu-toggle {
-          font-size: 12px;
+        @include desktop {
+          &.desktop { display: block; }
+          &.mobile { display: none; }
         }
-      }
-
-      @include desktop {
-        &.desktop { display: block; }
-        &.mobile { display: none; }
-      }
-      @include mobile-med {
-        &.desktop { display: none; }
-        &.mobile { display: block; }
+        @include mobile-med {
+          &.desktop { display: none; }
+          &.mobile { display: block; }
+        }
       }
     }
   }

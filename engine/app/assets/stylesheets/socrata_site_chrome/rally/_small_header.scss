@@ -1,7 +1,7 @@
 $small_banner_height: 38px;
 
 header#site-chrome-header[template="rally"].small {
-  > .banner {
+  .banner {
     > .rally-top {
       line-height: $header_logo_height;
       padding: 8px;
@@ -26,6 +26,7 @@ header#site-chrome-header[template="rally"].small {
           .site-chrome-nav-links {
             a.site-chrome-nav-link {
               font-size: 14px;
+              vertical-align: top;
             }
           }
         }
@@ -34,7 +35,7 @@ header#site-chrome-header[template="rally"].small {
             .site-chrome-social-link {
               span.monosocial {
                 font-style: 36px;
-                vertical-align: middle;
+                vertical-align: top;
               }
             }
           }

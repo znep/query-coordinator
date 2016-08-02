@@ -168,3 +168,8 @@ function confirmReload() {
     });
   }
 }
+
+function toggleDisabledCopyrightText(checkbox) {
+  var $textbox = $('#copyright-notice-text');
+  $textbox.prop('disabled', !checkbox.checked);
+}

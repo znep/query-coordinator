@@ -281,7 +281,7 @@ GEM
     shoulda-context (1.2.1)
     slop (3.6.0)
     snappy (0.0.15)
-    socrata_site_chrome (0.0.38)
+    socrata_site_chrome (0.0.39)
       airbrake (>= 4.3.0)
       hashie (>= 2.1.2)
       httparty
@@ -393,7 +393,7 @@ DEPENDENCIES
   semver2
   shoulda-context
   snappy
-  socrata_site_chrome (~> 0.0.38)
+  socrata_site_chrome (~> 0.0.39)
   statsd-ruby!
   test-unit
   therubyracer

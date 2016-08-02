@@ -181,6 +181,10 @@ $faint-border-color: #ebebeb;
           &.error {
             border-color: $red-text;
           }
+
+          &[disabled] {
+            color: #bbb;
+          }
         }
       }
 
@@ -195,6 +199,15 @@ $faint-border-color: #ebebeb;
           line-height: 1.2rem;
           margin: 22px 0;
           color: $dark-grey;
+        }
+      }
+
+      &.no-label {
+        padding-top: 1rem;
+        aside {
+          p {
+            margin: 0;
+          }
         }
       }
 

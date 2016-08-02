@@ -32,21 +32,30 @@
     }) %>
 
   <%= render('list_of_links',
-    :link_count => 15,
-    :links => footer['links'],
-    :content_key => :footer,
-    :translations => translations) %>
+    link_count: 15,
+    links: footer['links'],
+    content_key: :footer,
+    translations: translations) %>
 
-  <section class="settings-group">
-    <div class="settings-form full">
-      <% fields = [:footer, :copyright_notice] %>
-      <% translation = translations[:copyright_notice] %>
-      <h3><%= translation[:title] %></h3>
-      <p><%= translation[:description] %></p>
-      <%= label_tag form_field(fields) do %>
-        <%= check_box(form_field(fields[0..-2]), fields.last, { checked: fetch_boolean(fields) }, "true", "false") %>
-        <%= translation[:label] %>
-      <% end %>
+  <% copyright_notice_fields = [:footer, :copyright_notice] %>
+
+  <%= render('checkbox',
+    fields: copyright_notice_fields,
+    translation: translations[:copyright_notice],
+    additional_options: {
+      onchange: 'toggleDisabledCopyrightText(this);'
+    }) %>
+
+  <% copyright_notice_source_fields = [:locales, current_locale(suppress_locale = false), :footer,
+    :copyright_notice_source] %>
+
+  <section class="settings-group no-label">
+    <div class="settings-form">
+      <%= text_field_tag(form_field(copyright_notice_source_fields),
+        fetch_content(copyright_notice_source_fields),
+        id: 'copyright-notice-text', placeholder: translations[:copyright_notice_source][:placeholder],
+        disabled: !fetch_boolean(copyright_notice_fields)) %>
     </div>
+    <aside><p><%= translations[:copyright_notice_source][:description] %></p></aside>
   </section>
 <% end %>

@@ -1,0 +1,12 @@
+<section class="settings-group">
+  <div class="settings-form full">
+    <h3><%= translation[:title] %></h3>
+    <p><%= translation[:description] %></p>
+    <%= label_tag form_field(fields) do %>
+      <%= check_box(form_field(fields[0...-1]), fields.last,
+        { checked: fetch_boolean(fields) }.merge(local_assigns[:additional_options].to_h),
+        'true', 'false') %>
+      <%= translation[:label] %>
+    <% end %>
+  </div>
+</section>

@@ -2579,13 +2579,16 @@ en:
                 description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
                 label: Show Copyright Notice
                 title: Copyright Notice
+              copyright_notice_source:
+                description: The name of your organization, city, county or state that appears with the copyright and current year.
+                placeholder: Copyright Source
               footer_background_color:
                 description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
                 placeholder: "#123456"
                 title: Footer Background Color
               footer_display_name:
                 description: This is the name displayed in the Footer area. Usually set to your organization's name.
-                placeholder: Evergreen Open Data
+                placeholder: Footer Display Name
                 title: Footer Display Name
               footer_logo:
                 description: URL reference to the Footer logo. Recommended minimum size is 300px x 200px.
@@ -2610,7 +2613,7 @@ en:
                 description: You may display up to 15 links in the Footer. These will automatically be placed in columns.
                 title: Footer Menu Links
               url_label: URL
-              url_placeholder: http://data.evergreen.gov
+              url_placeholder: URL
             title: Footer
           general:
             fields:
@@ -2627,7 +2630,7 @@ en:
                 title: Sign In / Sign Out
               template:
                 description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
-                placeholder: Rally
+                placeholder: Evergreen
                 title: Template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
@@ -2635,7 +2638,7 @@ en:
                 title: Browser Window or Tab Icon (favicon)
               window_title_display:
                 description: This is the name displayed in the browser window or tab title.
-                placeholder: Evergreen Open Data
+                placeholder: Window Title Display
                 title: Browser Window or Tab Title Display
             title: General Settings
           header:
@@ -2658,7 +2661,7 @@ en:
                 title: Header Bar Logo
               header_display_name:
                 description: Name displayed in the Header Bar. Usually set to your organization's name.
-                placeholder: Evergreen Open Data
+                placeholder: Header Display Name
                 title: Header Display Name
               header_logo_height:
                 description: You can optionally set a height and width for your header bar logo.
@@ -2676,7 +2679,7 @@ en:
                 description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
                 title: Menu Links
               url_label: URL
-              url_placeholder: http://data.evergreen.gov
+              url_placeholder: URL
             title: Header Bar
           homepage:
             fields:

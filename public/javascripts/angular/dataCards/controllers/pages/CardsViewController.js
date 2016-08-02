@@ -558,8 +558,8 @@ module.exports = function CardsViewController(
   * Image preview capturing *
   **************************/
   if ($window._phantom) {
-    console.log('Running in phantomjs');
-    if(_.isFunction($window.callPhantom)) {
+    $log.info('Running in phantomjs');
+    if (_.isFunction($window.callPhantom)) {
       // Sequence of render:complete events.
       var renderComplete$ = $rootScope.$eventToObservable('render:complete');
 
@@ -587,12 +587,12 @@ module.exports = function CardsViewController(
           delay(500).
           first(_.identity).
           subscribe(function() {
-            console.log('Render complete.');
+            $log.info('Render complete.');
             $window.callPhantom('snapshotReady');
           });
       });
     } else {
-      console.log('window.callPhantom not present, skipping image capture');
+      $log.info('window.callPhantom not present, skipping image capture');
     }
   }
 

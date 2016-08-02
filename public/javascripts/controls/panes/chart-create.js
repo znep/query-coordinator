@@ -174,8 +174,8 @@
 
         isAvailable: function() {
             return (this._view.valid || isEdit(this)) &&
-                (_.include(this._view.metadata.availableDisplayTypes, 'chart') ||
-                    !this._view.isAltView());
+                (_.include(this._view.metadata.availableDisplayTypes, 'chart') &&
+                    this._view.shouldShowViewCreationOptions());
         },
 
         getDisabledSubtitle: function() {

@@ -25,16 +25,16 @@
             var dateCols = cpObj._view.columnsForType(['date', 'calendar_date'], isEdit(cpObj));
 
             return dateCols.length > 0 && (cpObj._view.valid || isEdit(cpObj)) &&
-                (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') ||
-                    !cpObj._view.isAltView());
+                (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') &&
+                    cpObj._view.shouldShowViewCreationOptions());
         },
 
         getDisabledSubtitle: function() {
             return (!this._view.valid && !isEdit(this)) ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') :
                 ((!_.include(this._view.metadata.availableDisplayTypes, 'calendar') &&
-                        this._view.isAltView()) ?
-                    $.t('screens.ds.grid_sidebar.calendar.validation.viz_limit') :
-                    $.t('screens.ds.grid_sidebar.calendar.validation.invalid_columns'));
+                    !this._view.shouldShowViewCreationOptions()) ?
+                        $.t('screens.ds.grid_sidebar.calendar.validation.viz_limit') :
+                        $.t('screens.ds.grid_sidebar.calendar.validation.invalid_columns'));
         },
 
         _getSections: function() {

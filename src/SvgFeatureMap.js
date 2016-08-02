@@ -16,12 +16,6 @@ const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSo
 const COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
 const DOMAIN_PATH = 'series[0].dataSource.domain';
 const DATASET_UID_PATH = 'series[0].dataSource.datasetUid';
-const DEFAULT_TILESERVER_HOSTS = [
-  'https://tileserver1.api.us.socrata.com',
-  'https://tileserver2.api.us.socrata.com',
-  'https://tileserver3.api.us.socrata.com',
-  'https://tileserver4.api.us.socrata.com'
-];
 const DEFAULT_FEATURES_PER_TILE = 256 * 256;
 // known in data lens as "simple blue"
 const DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
@@ -110,8 +104,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
     var newVif = event.originalEvent.detail;
     var rerender = () => {
       var vectorTileGetter = buildVectorTileGetter(
-        SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0),
-        newVif.configuration.useOriginHost
+        SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0)
       );
 
       visualization.clearError();
@@ -367,8 +360,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
       domain,
       datasetUid,
       columnName,
-      featuresPerTile: DEFAULT_FEATURES_PER_TILE,
-      tileserverHosts: newVif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
+      featuresPerTile: DEFAULT_FEATURES_PER_TILE
     });
 
     // SoQL returns row results for display in the row inspector
@@ -397,8 +389,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
         {
           extent,
           vectorTileGetter: buildVectorTileGetter(
-            SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0),
-            newVif.configuration.useOriginHost
+            SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0)
           )
         }
       );
@@ -441,11 +432,10 @@ $.fn.socrataSvgFeatureMap = function(vif) {
     });
   }
 
-  function buildVectorTileGetter(whereClause, useOriginHost) {
+  function buildVectorTileGetter(whereClause) {
 
     return tileserverDataProvider.buildTileGetter(
-      whereClause,
-      useOriginHost || false
+      whereClause
     );
   }
 
@@ -585,6 +575,9 @@ $.fn.socrataSvgFeatureMap.validateVif = (vif) =>
     validator.
       requireAtLeastOneSeries().
       requirePointDimension().
+      // TODO For now. If this needs to change, make sure we build a distinct TileserverDataProvider
+      // per domain (so it can use the correct tileserver hosts).
+      requireAllSeriesFromSameDomain().
       toPromise()
   );
 

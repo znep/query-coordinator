@@ -6,14 +6,12 @@ describe('TileserverDataProvider', function() {
   var VALID_DATASET_UID = 'test-test';
   var VALID_COLUMN_NAME = 'point';
   var VALID_FEATURES_PER_TILE = 256 * 256;
-  var VALID_TILESERVER_HOSTS = ['api1.example.com', 'api2.example.com'];
 
   var VALID_CONFIG = {
     domain: VALID_DOMAIN,
     datasetUid: VALID_DATASET_UID,
     columnName: VALID_COLUMN_NAME,
-    featuresPerTile: VALID_FEATURES_PER_TILE,
-    tileserverHosts: VALID_TILESERVER_HOSTS
+    featuresPerTile: VALID_FEATURES_PER_TILE
   };
 
   var VALID_WHERE_CLAUSE = '%60source%60%3D%27Voice+In%27';
@@ -21,7 +19,7 @@ describe('TileserverDataProvider', function() {
   var VALID_X = 1;
   var VALID_Y = 1;
 
-  var TILESERVER_HOST_PATTERN = 'api[12]\\.example\\.com';
+  var TILESERVER_HOST_PATTERN = 'tileserver[123]\\.api\\.us\\.socrata\\.com';
   var ORIGIN_HOST_PATTERN = window.location.host;
   var TILE_PATTERN = 'tiles\\/{0}\\/{1}\\/{2}\\/{3}\\/{4}\\.pbf'.format(
     VALID_DATASET_UID.split('-').join('\\-'),
@@ -46,8 +44,7 @@ describe('TileserverDataProvider', function() {
             domain: undefined,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
-            featuresPerTile: VALID_FEATURES_PER_TILE,
-            tileserverHosts: VALID_TILESERVER_HOSTS
+            featuresPerTile: VALID_FEATURES_PER_TILE
           });
         });
 
@@ -57,8 +54,7 @@ describe('TileserverDataProvider', function() {
             domain: VALID_DOMAIN,
             datasetUid: undefined,
             columnName: VALID_COLUMN_NAME,
-            featuresPerTile: VALID_FEATURES_PER_TILE,
-            tileserverHosts: VALID_TILESERVER_HOSTS
+            featuresPerTile: VALID_FEATURES_PER_TILE
           });
         });
 
@@ -68,8 +64,7 @@ describe('TileserverDataProvider', function() {
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: undefined,
-            featuresPerTile: VALID_FEATURES_PER_TILE,
-            tileserverHosts: VALID_TILESERVER_HOSTS
+            featuresPerTile: VALID_FEATURES_PER_TILE
           });
         });
 
@@ -79,100 +74,121 @@ describe('TileserverDataProvider', function() {
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
-            featuresPerTile: undefined,
-            tileserverHosts: VALID_TILESERVER_HOSTS
-          });
-        });
-
-        assert.throw(function() {
-
-          var tileserverDataProvider = new TileserverDataProvider({
-            domain: VALID_DOMAIN,
-            datasetUid: VALID_DATASET_UID,
-            columnName: VALID_COLUMN_NAME,
-            featuresPerTile: VALID_FEATURES_PER_TILE,
-            tileserverHosts: undefined
+            featuresPerTile: undefined
           });
         });
       });
     });
   });
 
+  var fakeXhr;
+  var onXhrSend = _.noop;
+  beforeEach(function() {
+    fakeXhr = sinon.useFakeXMLHttpRequest();
+    fakeXhr.onCreate = (xhr) => {
+      xhr.onSend = () => {
+        try {
+          onXhrSend(xhr);
+        } catch(e) {
+          // Log the error, otherwise sinon eats it.
+          console.error(e.message);
+          console.error(e.stack);
+          throw e;
+        }
+      }
+    };
+  });
+
+  afterEach(function() {
+    fakeXhr.restore();
+  });
+
   describe('buildTileGetter', function() {
 
-    var server;
-    var requests = [];
-    var request;
     var tileserverDataProvider;
 
     beforeEach(function() {
-
-      server = sinon.fakeServer.create();
       tileserverDataProvider = new TileserverDataProvider(
         VALID_CONFIG
       );
     });
 
-    afterEach(function() {
-      server.restore();
-    });
-
     describe('when called with no arguments', function() {
 
-      it('should return a function that gets a URL', function() {
+      it('should return a function that gets a URL', function(done) {
 
         var tileGetter = tileserverDataProvider.buildTileGetter();
 
         assert.isFunction(tileGetter);
 
+        onXhrSend = (request) => {
+          assert.equal(request.method, 'GET');
+
+          assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
+          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
+
+          assert.match(request.url, new RegExp(TILE_PATTERN));
+          assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
+          done();
+        };
+
         tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-
-        request = server.requests[0];
-
-        assert.equal(request.method, 'GET');
-
-        assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
-
-        assert.match(request.url, new RegExp(TILE_PATTERN));
-        assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
       });
     });
 
     describe('when called with an empty where clause', function() {
 
-      it('should return a function that gets a URL', function() {
+      it('should return a function that gets a URL', function(done) {
 
         var tileGetter = tileserverDataProvider.buildTileGetter('', false);
 
         assert.isFunction(tileGetter);
 
+        onXhrSend = (request) => {
+          assert.equal(request.method, 'GET');
+
+          assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
+          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
+
+          assert.match(request.url, new RegExp(TILE_PATTERN));
+          assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
+          done();
+        };
+
         tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-
-        request = server.requests[0];
-
-        assert.equal(request.method, 'GET');
-
-        assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
-
-        assert.match(request.url, new RegExp(TILE_PATTERN));
-        assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
       });
     });
 
     describe('when called with a present where clause', function() {
 
-      it('should return a function that gets a URL including the specified where clause', function() {
+      it('should return a function that gets a URL including the specified where clause', function(done) {
 
         var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, false);
 
         assert.isFunction(tileGetter);
 
+        onXhrSend = (request) => {
+          assert.equal(request.method, 'GET');
+
+          assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
+          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
+
+          assert.match(request.url, new RegExp(TILE_PATTERN));
+          assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
+          done();
+        };
+
         tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      });
+    });
 
-        request = server.requests[0];
+    it('should return a function that gets a URL on a tileserver host', function(done) {
 
+      var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE);
+
+      assert.isFunction(tileGetter);
+
+      onXhrSend = (request) => {
         assert.equal(request.method, 'GET');
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
@@ -180,73 +196,10 @@ describe('TileserverDataProvider', function() {
 
         assert.match(request.url, new RegExp(TILE_PATTERN));
         assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
-      });
-    });
+        done();
+      };
 
-    describe('when called with useOriginHost undefined', function() {
-
-      it('should return a function that gets a URL on a tileserver host', function() {
-
-        var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE);
-
-        assert.isFunction(tileGetter);
-
-        tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-
-        request = server.requests[0];
-
-        assert.equal(request.method, 'GET');
-
-        assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
-
-        assert.match(request.url, new RegExp(TILE_PATTERN));
-        assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
-      });
-    });
-
-    describe('when called with useOriginHost set to false', function() {
-
-      it('should return a function that gets a URL on a tileserver host', function() {
-
-        var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, false);
-
-        assert.isFunction(tileGetter);
-
-        tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-
-        request = server.requests[0];
-
-        assert.equal(request.method, 'GET');
-
-        assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
-
-        assert.match(request.url, new RegExp(TILE_PATTERN));
-        assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
-      });
-    });
-
-    describe('when called with useOriginHost set to true', function() {
-
-      it('should return a function that gets a URL on the origin host', function() {
-
-        var tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, true);
-
-        assert.isFunction(tileGetter);
-
-        tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-
-        request = server.requests[0];
-
-        assert.equal(request.method, 'GET');
-
-        assert.notMatch(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.match(request.url, new RegExp(ORIGIN_HOST_PATTERN));
-
-        assert.match(request.url, new RegExp(TILE_PATTERN));
-        assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
-      });
+      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
     });
   });
 });

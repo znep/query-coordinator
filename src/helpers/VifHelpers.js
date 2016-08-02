@@ -207,6 +207,7 @@ function migrateVif1ToVif2(vifToMigrate) {
   _.unset(migratedVif, 'configuration.hover');
   _.unset(migratedVif, 'configuration.isMobile');
   _.unset(migratedVif, 'configuration.pointColor');
+  _.unset(migratedVif, 'configuration.tileserverHosts');
 
   // 4. Copy over the createdAt timestamp
   migratedVif.createdAt = vifToMigrate.createdAt;
@@ -217,7 +218,7 @@ function migrateVif1ToVif2(vifToMigrate) {
       vifToMigrate,
       'format',
       {
-        type: 'visualization_intercahnge_format',
+        type: 'visualization_interchange_format',
         version: 1
       }
     )

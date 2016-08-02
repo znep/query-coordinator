@@ -76,19 +76,6 @@
       vif = null;
       $chart.empty();
 
-      var productionTileServerHosts = [
-        'https://tileserver1.api.us.socrata.com',
-        'https://tileserver2.api.us.socrata.com',
-        'https://tileserver3.api.us.socrata.com',
-        'https://tileserver4.api.us.socrata.com'
-      ];
-
-      var stagingTileServerHosts = [
-        'https://tileserver1.api.us.test-socrata.com',
-        'https://tileserver2.api.us.test-socrata.com',
-        'https://tileserver3.api.us.test-socrata.com',
-      ];
-
       var axisLabels = {
         top: 'Top Axis Label',
         right: 'Right Axis Label',
@@ -97,8 +84,9 @@
       };
 
       var choroplethVif = {
-        configuration: {
-          tileserverHosts: productionTileServerHosts
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
         format: {
           type: 'visualization_interchange_format',
@@ -116,8 +104,11 @@
 
       var ufoSightingsVif = {
         configuration: {
-          axisLabels: axisLabels,
-          tileserverHosts: stagingTileServerHosts
+          axisLabels: axisLabels
+        },
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
         format: {
           type: 'visualization_interchange_format',
@@ -134,8 +125,9 @@
       };
 
       var featureMapVif = {
-        configuration: {
-          tileserverHosts: productionTileServerHosts
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
         format: {
           type: 'visualization_interchange_format',
@@ -146,15 +138,13 @@
             dataSource: {
               domain: 'dataspace.demo.socrata.com',
               datasetUid: 'r6t9-rak2'
-            }
+            },
+            type: "featureMap"
           }
         ]
       };
 
       var licenseeTax = {
-        configuration: {
-          tileserverHosts: stagingTileServerHosts
-        },
         format: {
           type: 'visualization_interchange_format',
           version: 2
@@ -170,6 +160,10 @@
       };
 
       var iowaMathAndReadingProficiency = {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         configuration: {
           axisLabels: axisLabels
         },
@@ -207,9 +201,12 @@
       };
 
       var citizenSatisfaction = {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
         configuration: {
-          axisLabels: axisLabels,
-          tileserverHosts: stagingTileServerHosts
+          axisLabels: axisLabels
         },
         format: {
           type: 'visualization_interchange_format',
@@ -225,10 +222,42 @@
         ]
       };
 
-      var localhost = {
-        configuration: {
-          tileserverHosts: ['https://localhost']
+      var v1FeatureMapVif = {
+        'aggregation': {
+          'columnName': null,
+          'function': 'count'
         },
+        'columnName': 'point',
+        'configuration': {
+          'datasetMetadata': false,
+          'hover': true,
+          'panAndZoom': true,
+          'locateUser': true,
+          'baseLayerUrl': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+          'baseLayerOpacity': 0.8
+        },
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': 'r6t9-rak2',
+        'description': 'useless description should be deleted in migration',
+        'domain': 'dataspace.demo.socrata.com',
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': 'useless title should be deleted in migration',
+        'type': 'featureMap',
+        'unit': {
+          'one': 'record',
+          'other': 'records'
+        }
+      };
+
+      var localhost = {
         format: {
           type: 'visualization_interchange_format',
           version: 2
@@ -259,14 +288,15 @@
       };
 
       authoringWorkflow = new AuthoringWorkflow(container, {
-        vif: localhost,
+        // vif: localhost,
         // vif: choroplethVif,
         // vif: ufoSightingsVif,
         // vif: featureMapVif,
-        vif: iowaMathAndReadingProficiency,
+        // vif: iowaMathAndReadingProficiency,
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
         // vif: whiteHouseStaff,
+        vif: v1FeatureMapVif,
         onComplete: onComplete,
         onCancel: onCancel
       });

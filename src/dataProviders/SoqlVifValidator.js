@@ -46,6 +46,8 @@ export function getSoqlVifValidator(vif) {
 //   Requires at least one series.
 // .requireExactlyOneSeries()
 //   Requires exactly one series.
+// .requireAllSeriesFromSameDomain()
+//   Requires all series to be sourced from the same domain.
 // .requireNoMeasureAggregation()
 //   Requires that all measure columns are NOT aggregated in some way (count(*) counts
 //   as an aggregation and therefore does not satisfy the condition).
@@ -101,6 +103,14 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requireExactlyOneSeries() {
       if (allSeries.length !== 1) {
         addError(I18n.translate('visualizations.common.validation.errors.need_single_series'));
+      }
+      return validator;
+    },
+    requireAllSeriesFromSameDomain() {
+      const allDomains = allSeries.map((series) => _.get(series, 'dataSource.domain'));
+      const uniqDomains = _.uniq(allDomains);
+      if (uniqDomains.length > 1) {
+        addError(I18n.translate('visualizations.common.validation.errors.need_all_series_from_same_domain'));
       }
       return validator;
     },

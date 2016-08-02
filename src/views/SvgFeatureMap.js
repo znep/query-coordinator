@@ -940,13 +940,6 @@ function SvgFeatureMap(element, vif) {
       _.get(lastRenderedVif, datasetUidPath)
     );
 
-    var newUseOriginHost = _.get(newVif, 'configuration.useOriginHost');
-    var tileserverHostsPath = 'configuration.tileserverHosts';
-    var tileserverHostsChanged = !newUseOriginHost && !_.isEqual(
-      _.get(newVif, tileserverHostsPath),
-      _.get(lastRenderedVif, tileserverHostsPath)
-    );
-
     var newWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0);
     var lastRenderedWhereClause = (lastRenderedVif) ?
       SoqlHelpers.whereClauseNotFilteringOwnColumn(lastRenderedVif, 0) :
@@ -965,7 +958,7 @@ function SvgFeatureMap(element, vif) {
       _.get(lastRenderedVif, pointOpacityPath)
     );
 
-    if (datasetUidChanged || tileserverHostsChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged) {
+    if (datasetUidChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged) {
       var layer;
       var layerId = _.uniqueId();
       var featureLayerOptions = {

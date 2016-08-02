@@ -10,12 +10,6 @@ var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var DataTypeFormatter = require('./views/DataTypeFormatter');
 
-var DEFAULT_TILESERVER_HOSTS = [
-  'https://tileserver1.api.us.socrata.com',
-  'https://tileserver2.api.us.socrata.com',
-  'https://tileserver3.api.us.socrata.com',
-  'https://tileserver4.api.us.socrata.com'
-];
 var DEFAULT_FEATURES_PER_TILE = 256 * 256;
 // known in data lens as "simple blue"
 var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png';
@@ -93,8 +87,7 @@ $.fn.socrataFeatureMap = function(vif) {
     domain: domain,
     datasetUid: datasetUid,
     columnName: columnName,
-    featuresPerTile: DEFAULT_FEATURES_PER_TILE,
-    tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
+    featuresPerTile: DEFAULT_FEATURES_PER_TILE
   };
   var tileserverDataProvider = new TileserverDataProvider(
     tileserverDataProviderConfig
@@ -215,7 +208,7 @@ $.fn.socrataFeatureMap = function(vif) {
   function _handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0), newVif.configuration.useOriginHost);
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0));
 
     renderIfReady();
   }
@@ -478,7 +471,7 @@ $.fn.socrataFeatureMap = function(vif) {
 
     attachEvents();
 
-    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0), vif.configuration.useOriginHost);
+    updateRenderOptionsVectorTileGetter(SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0));
 
     renderIfReady();
   }
@@ -491,13 +484,10 @@ $.fn.socrataFeatureMap = function(vif) {
     visualizationRenderOptions.bounds = L.latLngBounds(southWest, northEast);
   }
 
-  function updateRenderOptionsVectorTileGetter(whereClause, useOriginHost) {
-
-    useOriginHost = useOriginHost || false;
+  function updateRenderOptionsVectorTileGetter(whereClause) {
 
     visualizationRenderOptions.vectorTileGetter = tileserverDataProvider.buildTileGetter(
-      whereClause,
-      useOriginHost
+      whereClause
     );
   }
 

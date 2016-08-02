@@ -106,7 +106,7 @@
     "react-image-crop": "1.0.0-rc3",
     "socrata-styleguide": "5.1.4",
     "socrata-utils": "2.0.0",
-    "socrata-visualizations": "15.2.4",
+    "socrata-visualizations": "15.2.5",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

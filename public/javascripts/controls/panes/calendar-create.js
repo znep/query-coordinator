@@ -25,7 +25,7 @@
             var dateCols = cpObj._view.columnsForType(['date', 'calendar_date'], isEdit(cpObj));
 
             return dateCols.length > 0 && (cpObj._view.valid || isEdit(cpObj)) &&
-                (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') &&
+                (_.include(cpObj._view.metadata.availableDisplayTypes, 'calendar') ||
                     cpObj._view.shouldShowViewCreationOptions());
         },
 

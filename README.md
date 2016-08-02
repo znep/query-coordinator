@@ -5,7 +5,10 @@
 - Collaboration and sharing of UI components and patterns.
 
 ## Usage
-Switch to the appropriate [release](https://github.com/socrata/styleguide/releases) branch, and use the files in `dist`, a folder in this project's root directory.
+With [artifactory](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8) set up on your system, run:
+```
+npm install --save socrata-styleguide
+```
 
 ## Setup
 This library uses the Middleman static site generator to to provide an asset pipeline, build tools, and a quick way to run a local environment.

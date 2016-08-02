@@ -2,11 +2,14 @@
   <form class="searchSection">
     <span class="icon"></span>
     <input type="text" name="browseSearch" title="<%= t('controls.browse.search') %>"
-      class="textPrompt searchBox" value="<%= opts[:q] %>" />
+      class="textPrompt searchBox" value="<%= opts[:q] %>" autofocus onfocus="this.value = this.value;"/>
     <%- if opts[:q].present? -%>
-    <%- cp = opts[:user_params].reject{ |k| k == :q } -%>
-    <a href="<%= opts[:base_url] + '?' + cp.to_param %>"
-      class="clearSearch close"><span class="icon"></span></a>
+      <a href="<%= "#{opts[:base_url]}?#{opts[:user_params].except(:q).to_param}" %>" class="clearSearch close">
+        <span class="icon"></span>
+      </a>
     <%- end -%>
+    <div class="searchStatusWrapper">
+      <span class="icon"></span>
+    </div>
   </form>
 <%- end -%>

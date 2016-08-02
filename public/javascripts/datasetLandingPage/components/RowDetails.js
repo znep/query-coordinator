@@ -1,8 +1,9 @@
 import utils from 'socrata-utils';
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-var RowDetails = function(props) {
-  var { view, showAsLayer } = props;
+export var RowDetails = function(props) {
+  var { view } = props;
 
   var rowCountInfo;
   var columnCountInfo;
@@ -53,7 +54,7 @@ var RowDetails = function(props) {
   return (
     <section className="landing-page-section dataset-contents">
       <h2 className="landing-page-section-header">
-        {showAsLayer ? view.name : I18n.dataset_contents.title}
+        {I18n.dataset_contents.title}
       </h2>
 
       <div className="section-content">
@@ -70,8 +71,11 @@ var RowDetails = function(props) {
 };
 
 RowDetails.propTypes = {
-  view: PropTypes.object.isRequired,
-  showAsLayer: PropTypes.bool
+  view: PropTypes.object.isRequired
 };
 
-export default RowDetails;
+function mapStateToProps(state) {
+  return _.pick(state, 'view');
+}
+
+export default connect(mapStateToProps)(RowDetails);

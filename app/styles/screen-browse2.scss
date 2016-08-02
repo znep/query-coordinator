@@ -861,7 +861,7 @@ html {
                   position: relative;
                   display: block;
                   padding: 1rem 2.5rem 1rem 2.5rem;
-                  font-size: 14px;
+                  font-size: 12px;
                   color: $dark-text-color;
                   border-left: 5px solid #d6d6d6;
                   text-decoration: none;
@@ -909,8 +909,8 @@ html {
           margin: 0;
           padding: 0.7em 0;
           font-family: 'Open Sans', sans-serif;
-          color: #888;
-          background-color: $facet-hover-color;
+          color: #5e5e5e;
+          background-color: '#f1f1f1';
           border: none;
           border-left: 5px solid #d6d6d6;
           cursor: pointer;
@@ -1153,10 +1153,10 @@ html {
             border-bottom: 1px solid $panel-internal-border-color;
 
             .browse2-result-type {
-              position: relative;
+              position: absolute;
               display: block;
-              float: right;
-              margin: 0.4rem 0 0 1rem;
+              right: 1rem;
+              top: 1rem;
               font-size: 15px;
               text-align: right;
               color: $grey-text-color;
@@ -1179,6 +1179,7 @@ html {
               position: relative;
               float: left;
               display: block;
+              width: 78%;
 
               .browse2-result-name {
                 @include desktop {

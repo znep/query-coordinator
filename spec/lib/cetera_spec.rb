@@ -137,6 +137,39 @@ describe Cetera do
         expect(actual.display).to eq(expected)
       end
     end
+
+    describe 'get_preview_image_url' do
+      it 'returns the url for stories' do
+        expect(sample_result_row).to receive(:story?).and_return(true)
+        expect(Storyteller).to receive(:get_tile_image).and_return('neat-picture')
+
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to eq('neat-picture')
+      end
+
+      it 'returns the url when previewImageId is present on the view' do
+        view_data = { 'previewImageId' => 'awesome-image-id' }
+        expected_url = "/api/views/#{sample_result_row.id}/files/awesome-image-id"
+        expect(View).to receive(:find).and_return(View.new(view_data))
+
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to eq(expected_url)
+      end
+
+      it 'returns nil if the previewImageId is not present' do
+        expect(View).to receive(:find).and_return(View.new)
+
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
+      end
+
+      it 'returns nil if the Core query throws ResourceNotFound' do
+        expect(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new(nil))
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
+      end
+
+      it 'returns nil if the Core query throws CoreServerError' do
+        expect(View).to receive(:find).and_raise(CoreServer::CoreServerError.new(nil, nil, nil))
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
+      end
+    end
   end
 
   it 'should test_cetera_sort_order_translator' do
@@ -295,6 +328,24 @@ describe Cetera do
         and_return(cetera_results)
 
       options = { offset: 20, limit: 30, cookie_string: cookies, request_id: request_id }
+      Cetera.get_derived_from_views('data-lens', options)
+    end
+
+    it 'invokes Cetera with boost parameters' do
+      expect(Cetera).to receive(:search_views).
+        with(
+          {
+            search_context: 'unicorns',
+            domains: ['unicorns'],
+            derived_from: 'data-lens',
+            boostCalendars: 100.0
+          },
+          cookies,
+          request_id
+        ).
+        and_return(cetera_results)
+
+      options = { boostCalendars: 100.0, cookie_string: cookies, request_id: request_id }
       Cetera.get_derived_from_views('data-lens', options)
     end
 

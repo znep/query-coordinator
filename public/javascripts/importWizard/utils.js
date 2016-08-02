@@ -16,13 +16,19 @@ export function removeAt(array, index) {
   return cloned;
 }
 
-// added in lodash 4
-export function fromPairs(pairs) {
-  const obj = {};
-  pairs.forEach(([key, value]) => {
-    obj[key] = value;
-  });
-  return obj;
+export function wordifyList(list: Array<string>) {
+  if (list.length === 1) {
+    return list[0];
+  } else {
+    const lastTwo = _.takeRight(list, 2);
+    const allButLastTwo = _.dropRight(list, 2);
+    const firstSection =
+      allButLastTwo.length === 0
+      ? ''
+      : `${allButLastTwo.join(', ')}, `;
+    const lastSection = `${lastTwo[0]} ${I18n.core.and} ${lastTwo[1]}`;
+    return `${firstSection}${lastSection}`;
+  }
 }
 
 // copied from https://github.com/socrata/frontend/blob/3c45a5755160a5a178e6926f994dd61951751a55/public/javascripts/screens/import-pane.js#L1937-L1937

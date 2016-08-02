@@ -109,10 +109,11 @@ export function updateMultipleGoals(goals, updatedData) {
     dispatch(updateMultipleItemsStarted(goalIds));
 
     const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
-    return Promise.all(updateRequests).then(updatedGoals => {
-      dispatch(updateCachedGoals(updatedGoals));
-      dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
-      return updatedGoals;
-    }).catch(err => dispatch(updateMultipleItemsFailed(err))); // eslint-disable-line dot-notation
+    return Promise.all(updateRequests).
+      then(updatedGoals => {
+        dispatch(updateCachedGoals(updatedGoals));
+        dispatch(updateMultipleItemsSucceeded(updatedGoals.map(goal => goal.id)));
+        return updatedGoals;
+      }).catch(err => dispatch(updateMultipleItemsFailed(err))); // eslint-disable-line dot-notation
   };
 }

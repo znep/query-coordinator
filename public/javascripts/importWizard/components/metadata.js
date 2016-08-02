@@ -1,13 +1,15 @@
 /* global blistLicenses */
 
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
+
 import * as Server from '../server';
-import * as Utils from '../utils';
 import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
+
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
@@ -48,7 +50,7 @@ type LicenseType = {
 }
 
 export function defaultCustomData() {
-  return Utils.fromPairs(customMetadataSchema.map(({fields, name}) => {
+  return _.fromPairs(customMetadataSchema.map(({fields, name}) => {
     return [
       name,
       fields.map(field => ({

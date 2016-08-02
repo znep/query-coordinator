@@ -20,6 +20,7 @@ class ClassicVisualizationController < ApplicationController
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};
 blist.configuration.useSoda2 = #{CurrentDomain.module_enabled?(:use_soda2)};
+blist.configuration.googleMapsApiKey = '#{GOOGLE_MAPS_SITE_KEY}';
 blist.assets = {libraries: #{debug ? ASSET_MAP.debug_javascripts : ASSET_MAP.javascripts}, stylesheets: #{stylesheet_assets.to_json}};
 $(function()
 {

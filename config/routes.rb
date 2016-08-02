@@ -289,12 +289,12 @@ Rails.application.routes.draw do
     end
 
     scope :controller => 'dataset_landing_page', :path => '/dataset_landing_page', :constraints => { :id => Frontend::UID_REGEXP } do
-      get '/:id/popular_views', :action => 'popular_views'
+      get '/:id/related_views', :action => 'related_views'
       get '/:id/featured_content', :action => 'get_featured_content'
       post '/:id/featured_content', :action => 'post_featured_content'
       delete '/:id/featured_content/:position', :action => 'delete_featured_content'
       get '/formatted_view/:id', :action => 'get_formatted_view_by_id'
-      get '/:id/related_views', :action => 'get_related_views'
+      get '/:id/derived_views', :action => 'get_derived_views'
     end
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do

@@ -19,22 +19,25 @@ describe('ImportColumns component', () => {
     it(`creates the initial transform if missing ${UF.FILE_UPLOAD_COMPLETE}`, () => {
       const summary = ED.imports2ScanResponse.summary;
 
-      const initialColumns = summary.columns.map(column => ({
+      const initialTranslation = summary.columns.map((column, idx) => ({
         columnSource: { type: 'SingleColumn', sourceColumn: column },
         name: column.name,
         chosenType: column.suggestion,
-        transforms: []
+        transforms: [],
+        id: idx
       }));
 
-      const result = IC.update(undefined, {
-        type: UF.FILE_UPLOAD_COMPLETE,
-        summary: summary
-      });
+      const action = UF.fileUploadComplete('fileId-1234-5678', summary);
+      const result = IC.update(undefined, action);
 
-      expect(result.columns).to.deep.equal(initialColumns);
-      expect(result.defaultColumns).to.deep.equal(initialColumns);
-      expect(result.numHeaders).to.deep.equal(summary.headers);
-      expect(result.sample).to.deep.equal(summary.sample);
+      const expected = {
+        columns: initialTranslation,
+        defaultColumns: initialTranslation,
+        numHeaders: summary.headers,
+        sample: summary.sample
+      };
+
+      expect(result).to.deep.equal(expected);
     });
 
     it(`handles ${IC.CHANGE_HEADER_COUNT}`, () => {

@@ -18,8 +18,13 @@ module DatasetsHelper
 
   def flatten_category_tree
     View.category_tree.values.sort_by { |o| o[:text] }.
-      map { |o| [o].concat((o[:children] || []).map { |cc|
-        { text: ' -- ' + cc[:text], value: cc[:value] } }) }.flatten.map { |o| [o[:text], o[:value]] }
+      map do |o|
+        children = (o[:children] || []).map do |cc|
+          text = if cc[:value] then cc[:text] else I18n.t('core.no_category') end
+          { text: ' -- ' + text, value: cc[:value] }
+        end
+        [o].concat(children)
+      end.flatten.map { |o| [o[:text], o[:value]] }
   end
 
   def category_select_options(selected_category = nil)
@@ -471,11 +476,7 @@ module DatasetsHelper
 
   def hide_append_replace_for_nbe_geo?
     return false unless view.new_backend?
-
-    [
-      !view.is_geo? && FeatureFlags.derive(view, request).ingress_strategy == 'obe',
-      view.is_geo? && !FeatureFlags.derive(view, request).geo_imports_to_nbe_enabled
-    ].any?
+    !view.is_geo? && FeatureFlags.derive(view, request).ingress_strategy == 'obe'
   end
 
   def hide_export_section?(section)

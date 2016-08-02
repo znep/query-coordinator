@@ -11,7 +11,7 @@ const getSameValue = (items, ...properties) => {
 
 export default createSelector(
   [selectedGoalsSelector],
-  (goals) => Immutable.fromJS({
+  goals => Immutable.fromJS({
     is_public: getSameValue(goals, 'is_public'),
     prevailing_measure: {
       start: getSameValue(goals, 'prevailing_measure', 'start'),
@@ -20,5 +20,3 @@ export default createSelector(
     }
   })
 );
-
-

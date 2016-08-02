@@ -76,9 +76,4 @@ class WidgetsController < ApplicationController
     end
   end
 
-  # +before_filter+
-  def allow_frame_embedding
-    headers['X-Frame-Options'] = 'ALLOWALL'
-  end
-
 end

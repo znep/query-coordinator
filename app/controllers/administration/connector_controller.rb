@@ -5,7 +5,7 @@ class Administration::ConnectorController < AdministrationController
   # Connector / DataConnector (formerly known as external federation)
   #
 
-  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_auth_level(UserRights::CREATE_DATASETS)}
+  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)}
   before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector, :show_connector] {|c| c.check_feature_flag('enable_catalog_connector')}
 
   def connectors

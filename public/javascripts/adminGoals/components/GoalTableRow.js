@@ -2,21 +2,49 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { selectRow, deselectRow } from '../actions/goalTableActions';
-import { openGoalQuickEdit } from '../actions/goalQuickEditActions';
+import Immutable from 'immutable';
+import { selectRow, deselectRow, rowSelectionStart, rowSelectionEnd } from '../actions/goalTableActions';
+import { openGoalQuickEdit } from '../actions/quickEditActions';
 import Flyout from './Flyout';
+import SocrataCheckbox from './SocrataCheckbox/SocrataCheckbox';
 
 class GoalTableRow extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      multipleSelection: false,
+      selectedRows: new Immutable.Map
+    };
   }
 
-  onClick() {
-    if (this.props.selectedRows.includes(this.props.goal.get('id'))) {
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      multipleRowSelection: nextProps.multipleRowSelection,
+      selectedRows: nextProps.selectedRows
+    });
+  }
+
+  onClickOrContextMenu(event) {
+    const { multipleRowSelection, selectedRows } = this.state;
+
+    event.preventDefault();
+
+    if (event.shiftKey) {
+      if (multipleRowSelection) {
+        this.props.rowSelectionEnd(this.props.goal.get('id'));
+      } else {
+        this.props.rowSelectionStart(this.props.goal.get('id'));
+      }
+    }
+
+    if (selectedRows.includes(this.props.goal.get('id'))) {
       this.props.rowDeselected(this.props.goal.get('id'));
     } else {
       this.props.rowSelected(this.props.goal.get('id'));
     }
+
+    return false;
   }
 
   render() {
@@ -25,8 +53,11 @@ class GoalTableRow extends React.Component {
     let dashboardUrl = `/stat/goals/${this.props.goal.get('base_dashboard')}`;
     let rowClass = classNames({ selected });
 
-    return <tr ref='tr' onClick={ this.onClick.bind(this) } className={ rowClass }>
-      <td><input type="checkbox" checked={ selected }/></td>
+    return <tr ref='tr'
+               onClick={ this.onClickOrContextMenu.bind(this) }
+               className={ rowClass }
+               onContextMenu={ this.onClickOrContextMenu.bind(this) }>
+      <td><SocrataCheckbox checked={ selected } /></td>
       <td><span className="icon-goal"/></td>
       <td scope="title">{ this.props.goal.get('name') }
         <span className="goalPageLink" >
@@ -56,12 +87,15 @@ class GoalTableRow extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  selectedRows: state.getIn(['goalTableData', 'selectedRows'])
+  selectedRows: state.getIn(['goalTableData', 'selectedRows']),
+  multipleRowSelection: state.getIn(['goalTableData', 'multipleRowSelection'])
 });
 
 const mapDispatchToProps = dispatch => ({
   rowSelected: goalId => dispatch(selectRow(goalId)),
   rowDeselected: goalId => dispatch(deselectRow(goalId)),
+  rowSelectionStart: goalId => dispatch(rowSelectionStart(goalId)),
+  rowSelectionEnd: goalId => dispatch(rowSelectionEnd(goalId)),
   openQuickEdit: event => dispatch(openGoalQuickEdit(event.target.getAttribute('data-goalId')))
 });
 

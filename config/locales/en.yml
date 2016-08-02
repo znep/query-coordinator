@@ -1270,7 +1270,6 @@ en:
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
-      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     back: Back
     bootstrap_button: Create a Visualization
@@ -1363,10 +1362,6 @@ en:
         message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
         view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
       visualization: Visualization
-    featured_views:
-      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
-      title: Popular Content Using this Data
-      view: View
     feedback:
       panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
       panel_title: Do you want to include an annotated screenshot of the current page?
@@ -1398,17 +1393,15 @@ en:
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More
-    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
-      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
-    popular_views:
+    related_views:
       load_more_error: There was a problem loading additional content.
-      title: Popular Content Using this Data
+      title: Related Content Using this Data
       view: View
     private_notice: You are looking at a private dataset.
     publish: Publish
@@ -1803,6 +1796,7 @@ en:
         quick_edit_measure: Quick Edit Measure
         manage_on_goal_page: Manage on Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
+        success_message: Success! {0} updated.
         goal_name: Goal Title
         status: Status
         visibility: Visibility
@@ -2709,6 +2703,10 @@ en:
                 description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
                 placeholder: http://www.linkedin.com/
                 title: LinkedIn Profile Link
+              pinterest_profile_link:
+                description: Add the URL here to display a link to your organization's Pinterest profile in both the Header and Footer.
+                placeholder: http://www.pinterest.com/
+                title: Pinterest Profile Link
               tumblr_profile_link:
                 description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
                 placeholder: http://www.tumblr.com/
@@ -2859,6 +2857,7 @@ en:
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
         headline_interpolate: Specify how "{0}" should be imported.
         help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+        help_message_js: For help, check out a <a href="{common_errors}" rel="external">list of common warnings and errors</a>.
         more_rows: More Rows
         name: Name
         pending_columns: Please wait while we load your columns...
@@ -2872,6 +2871,24 @@ en:
         suggested_flat: Suggested columns (no composites)
         suggested_plus_discrete: Suggested columns (composites and discrete)
         why_choose_now: Why is it important to choose column types now?
+        errors:
+          multiple_columns:
+            blank_names:
+              one_html: <strong>One</strong> of your columns does not have a name. Please give it a name.
+              many_html: <strong>{instances}</strong> of your columns do not have names. Please give them names.
+            duplicate_names: <strong>{instances}</strong> of your columns are named <strong>“{name}”</strong>. Columns in a dataset cannot share the same name.
+            columns_named_tags:
+              one_html: <strong>One</strong> of your columns is named "tags". Columns may not be named "tags".
+              many_html: <strong>{instances}</strong> of your columns are named "tags". Columns may not be named "tags".
+            source_columns_dropped:
+              one_html: Column {sourceColumns} is in your source data file, but is not currently set to be imported into your dataset.
+              many_html: Columns {sourceColumns} are in your source data file, but are not currently set to be imported into your dataset.
+          single_column:
+            wrong_type: Column <strong>{resultColumnName}</strong> is a <strong>{chosenType}</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>{suggestedType}</strong>. Should you choose to import that column, roughly <strong>{invalidPercent}%</strong> of your data will likely import incorrectly.
+            wrong_type_unknown_count: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong> but our analysis shows that <strong>{suggestedType}</strong> might be a better fit. Unless the column’s data is formatted correctly as {chosenType} data may import incorrectly.
+            type_too_generic: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong>, but our analysis indicates that the column is likely a <strong>{suggestedType}</strong> column. You can import it as {chosenType}, but you will lose some features if you do so. We strongly recommend that you import it as <strong>{suggestedType}</strong>.
+            empty_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but you currently don't have it set to be populated by anything. Please add some source columns or text.
+            non_text_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but it is currently set to import as <strong>{chosenType}</strong>. Please be certain that combining the columns you have specified will yield a valid {chosenType}.
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:
         abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
@@ -4191,6 +4208,22 @@ en:
         explanation_html: When you press <strong>Save</strong>, your new <strong>Draft Dataset</strong> will be visible in your personal catalog. Nobody else will be able to see it until you complete the New Dataset Wizard.
         prompt: Please give your new dataset a name.
         title: Create a New Dataset
+      menu:
+        about: About the Socrata Open Data Platform
+        api: API
+        api_subtext: Access this Dataset via SODA
+        discuss: Discuss
+        discuss_subtext: Discuss this Dataset
+        download: Download
+        download_subtext: Download in various formats
+        embed: Embed
+        embed_subtext: Embed this player on your site
+        more_views: More Views
+        more_views_subtext: Filters, charts, and maps
+        odata: OData
+        odata_subtext: Access this Dataset via OData
+        print: Print
+        print_subtext: Print this dataset
     wizard:
       cancel: Cancel
       finish: Finish

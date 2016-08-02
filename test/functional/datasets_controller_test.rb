@@ -255,7 +255,7 @@ class DatasetsControllerTest < ActionController::TestCase
     context 'if the view is a dataset' do
       context 'display the DLSP' do
         setup do
-          DatasetLandingPage.any_instance.stubs(:get_popular_views => [])
+          DatasetLandingPage.any_instance.stubs(:get_derived_views => [])
           @controller.stubs(get_view: @test_view)
           @test_view.stubs(:dataset? => true)
           @test_view.stubs(find_dataset_landing_page_related_content: [])

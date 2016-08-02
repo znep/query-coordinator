@@ -6,11 +6,15 @@ class DataLensController < ActionController::Base
   include CommonMetadataTransitionMethods
   include UserAuthMethods
   include UnminifiedAssetsHelper
+  include FrameEmbedding
+
+  skip_before_filter :disable_frame_embedding, :only => :data_lens
 
   before_filter :hook_auth_controller
   before_filter :set_locale
   before_filter :redirect_to_mobile, :only => :data_lens
   before_filter :preload_metadata, :only => [:data_lens, :show_mobile]
+  before_filter :allow_frame_embedding, :only => :data_lens
 
   helper_method :current_user
   helper_method :current_user_session_or_basic_auth

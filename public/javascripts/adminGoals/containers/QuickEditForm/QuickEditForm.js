@@ -2,29 +2,43 @@ import 'whatwg-fetch';
 import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
-import Immutable from 'immutable';
-import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
-import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/goalQuickEditActions';
+import { closeGoalQuickEdit, saveGoalQuickEdit } from '../../actions/quickEditActions';
 import Select from 'react-select';
 import moment from 'moment';
-import SocrataAlert from './SocrataAlert';
-import { fetchOptions } from '../constants';
+import SocrataAlert from '../../components/SocrataAlert';
+import SocrataButton from '../../components/SocrataButton';
+import * as SocrataModal from '../../components/SocrataModal';
+import { fetchOptions } from '../../constants';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-const mobileBreakpoint = 420;
 
 class GoalQuickEdit extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = _.merge({
-      hidden: true,
-      goal: this.props.goal || new Immutable.Map({}),
+    const { goal, translations } = this.props;
+
+    this.state = {
+      goal: goal,
       noChangesMade: true,
-      alert: {}
-    }, this.prepState(props));
+      visibility: goal.get('is_public') ? 'public' : 'private',
+      name: goal.get('name'),
+      actionType: goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
+      prevailingMeasureName: goal.getIn(['prevailing_measure', 'name']),
+      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'use_progress_override']) ?
+        goal.getIn(['prevailing_measure', 'progress_override']) : 'none',
+      unit: goal.getIn(['prevailing_measure', 'unit']),
+      percentUnit: goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
+        '%' : goal.getIn(['prevailing_measure', 'unit']),
+      start: moment(goal.getIn(['prevailing_measure', 'start'])),
+      end: moment(goal.getIn(['prevailing_measure', 'end'])),
+      measureTarget: goal.getIn(['prevailing_measure', 'target']),
+      measureTargetType: goal.getIn(['prevailing_measure', 'target_type']),
+      measureBaseline: goal.getIn(['prevailing_measure', 'baseline']),
+      measureTargetDelta: goal.getIn(['prevailing_measure', 'target_delta']),
+      measureMaintainType: goal.getIn(['prevailing_measure', 'edit', 'maintain_type']) || 'within'
+    };
 
     this.onWindowKeyUp = (event) => {
       var key = event.which || event.keyCode;
@@ -37,128 +51,108 @@ class GoalQuickEdit extends React.Component {
 
     this.actionTypeOptions = [
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'action_types', 'increase']),
+        label: translations.getIn(['admin', 'quick_edit', 'action_types', 'increase']),
         value: 'increase'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'action_types', 'reduce']),
+        label: translations.getIn(['admin', 'quick_edit', 'action_types', 'reduce']),
         value: 'reduce'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'action_types', 'maintain']),
+        label: translations.getIn(['admin', 'quick_edit', 'action_types', 'maintain']),
         value: 'maintain'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'action_types', 'measure']),
+        label: translations.getIn(['admin', 'quick_edit', 'action_types', 'measure']),
         value: 'none'
       }
     ];
 
     this.overrideOptions = [
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'none']),
+        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'none']),
         value: 'none'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'bad']),
+        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'bad']),
         value: 'bad'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'within_tolerance']),
+        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'within_tolerance']),
         value: 'within_tolerance'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'good']),
+        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'good']),
         value: 'good'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'override_types', 'no_judgement']),
+        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'no_judgement']),
         value: 'no_judgement'
       }
     ];
 
     this.visibilityOptions = [
       {
-        label: this.props.translations.getIn(['admin', 'goal_values', 'status_public']),
+        label: translations.getIn(['admin', 'goal_values', 'status_public']),
         value: 'public'
       },
       {
-        label: this.props.translations.getIn(['admin', 'goal_values', 'status_private']),
+        label: translations.getIn(['admin', 'goal_values', 'status_private']),
         value: 'private'
       }
     ];
 
     this.measureTargetTypeOptions = [
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'measure_target_type_types', 'absolute']),
+        label: translations.getIn(['admin', 'quick_edit', 'measure_target_type_types', 'absolute']),
         value: 'absolute'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'measure_target_type_types', 'relative']),
+        label: translations.getIn(['admin', 'quick_edit', 'measure_target_type_types', 'relative']),
         value: 'relative'
       }
     ];
 
     this.measureMaintainTypeOptions = [
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'within']),
+        label: translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'within']),
         value: 'within'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'above']),
+        label: translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'above']),
         value: '>'
       },
       {
-        label: this.props.translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'below']),
+        label: translations.getIn(['admin', 'quick_edit', 'measure_maintain_types', 'below']),
         value: '<'
       }
     ];
   }
 
-  componentWillReceiveProps(nextProps) {
-    let newState = this.prepState(nextProps);
+  componentDidMount() {
+    const goal = this.props.goal;
 
-    this.setState(newState);
-
-    if (!nextProps.goal.isEmpty()) {
-      fetch(`/api/views/${nextProps.goal.get('datasetId')}.json`, _.clone(fetchOptions)).
-        then(response => response.json()).
-        then(metadata => {
-          this.setState({
-            datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
-            datasetOwner: _.get(metadata, 'owner')
-          });
+    if (goal.get('datasetId')) {
+      fetch(`/api/views/${goal.get('datasetId')}.json`, _.clone(fetchOptions)).
+      then(response => response.json()).
+      then(metadata => {
+        this.setState({
+          datasetUpdatedAt: _.get(metadata, 'rowsUpdatedAt'),
+          datasetOwner: _.get(metadata, 'owner')
         });
-
-      $(window).on('keyup.socrata', this.onWindowKeyUp);
+      });
     } else {
-      $(window).off('keyup.socrata', this.onWindowKeyUp);
+      this.setState({
+        datasetUpdatedAt: false,
+        datasetOwner: false
+      });
     }
+
+    $(window).on('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
   }
 
-  prepState(props) {
-    return {
-      hidden: props.goal.isEmpty(),
-      goal: props.goal,
-      visibility: props.goal.get('is_public') ? 'public' : 'private',
-      name: props.goal.get('name'),
-      alert: props.alert ? props.alert.toJS() : {},
-      noChangesMade: true,
-      actionType: props.goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
-      prevailingMeasureName: props.goal.getIn(['prevailing_measure', 'name']),
-      prevailingMeasureProgressOverride: props.goal.getIn(['prevailing_measure', 'use_progress_override']) ?
-        props.goal.getIn(['prevailing_measure', 'progress_override']) : 'none',
-      unit: props.goal.getIn(['prevailing_measure', 'unit']),
-      percentUnit: props.goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
-        '%' : props.goal.getIn(['prevailing_measure', 'unit']),
-      start: moment(props.goal.getIn(['prevailing_measure', 'start'])),
-      end: moment(props.goal.getIn(['prevailing_measure', 'end'])),
-      measureTarget: props.goal.getIn(['prevailing_measure', 'target']),
-      measureTargetType: props.goal.getIn(['prevailing_measure', 'target_type']),
-      measureBaseline: props.goal.getIn(['prevailing_measure', 'baseline']),
-      measureTargetDelta: props.goal.getIn(['prevailing_measure', 'target_delta']),
-      measureMaintainType: props.goal.getIn(['prevailing_measure', 'edit', 'maintain_type']) || 'within'
-    };
+  componentWillUnmount() {
+    $(window).off('keyup.quick_edit_form.socrata', this.onWindowKeyUp);
   }
 
   onVisibilityChange(selected) {
@@ -486,46 +480,26 @@ class GoalQuickEdit extends React.Component {
   }
 
   render() {
-    let goal = this.state.goal.toJS();
+    const goal = this.state.goal.toJS();
+    const translations = this.props.translations;
+    const goalPageUrl = `/stat/goals/${_.get(goal, 'base_dashboard')}/${_.get(goal, 'category.id')}/${_.get(goal, 'id')}/edit`;
+    const goalTitle = `${ translations.getIn(['admin', 'quick_edit', 'quick_edit_measure']) } - ${ _.get(goal, 'name') }`;
+    const failureAlert = this.props.showFailureMessage ?
+      <SocrataAlert type="error" message={ translations.getIn(['admin', 'quick_edit', 'default_alert_message']) }/> : null;
 
-    let containerClass = classNames('modal', 'modal-full', 'modal-overlay', {'modal-hidden': this.state.hidden});
-    let windowWidth = document.body.offsetWidth;
+    return (
+      <SocrataModal.Modal fullScreen>
+        <form onSubmit={ this.save.bind(this) }>
+          <SocrataModal.Header title={ goalTitle } onClose={ this.props.closeQuickEdit }/>
+          <SocrataModal.Content>
+            { failureAlert }
 
-    let containerStyle = {
-      left: 0
-    };
-
-    if (windowWidth >= mobileBreakpoint) {
-      containerStyle.margin = '';
-      document.body.style.overflow = '';
-    } else {
-      containerStyle.margin = 0;
-      document.body.style.overflow = 'hidden';
-    }
-
-    let goalPageUrl = `/stat/goals/${this.state.goal.get('base_dashboard')}/${this.state.goal.getIn(['category', 'id'])}/${this.state.goal.get('id')}/edit`;
-
-    return <div ref="container" className={ containerClass } style={ containerStyle } >
-      <div className="modal-container">
-        <header className="modal-header">
-          <h1 className="modal-header-title">
-            { this.props.translations.getIn(['admin', 'quick_edit', 'quick_edit_measure']) }&nbsp;-&nbsp;
-            { _.get(goal, 'name') }
-          </h1>
-          <button className="btn btn-transparent modal-header-dismiss" onClick={ this.props.closeQuickEdit }>
-            <span className="icon-close-2"/>
-          </button>
-        </header>
-
-        <section className="modal-content">
-          { this.state.alert.label ? <SocrataAlert { ...this.state.alert }/> : null }
-          <div className="goal-quick-edit-form">
-            <form onSubmit={ this.save.bind(this) }>
-              <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_name']) }</h5>
+            <div className="goal-quick-edit-form">
+              <h5>{ translations.getIn(['admin', 'quick_edit', 'goal_name']) }</h5>
 
               <div className="form-line">
                 <label className="inline-label">
-                  { this.props.translations.getIn(['admin', 'quick_edit', 'goal_name']) }
+                  { translations.getIn(['admin', 'quick_edit', 'goal_name']) }
                 </label>
                 <input
                   className="text-input"
@@ -535,14 +509,14 @@ class GoalQuickEdit extends React.Component {
 
               <div className="form-line">
                 <label className="inline-label">
-                  { this.props.translations.getIn(['admin', 'quick_edit', 'status']) }
+                  { translations.getIn(['admin', 'quick_edit', 'status']) }
                 </label>
-                { this.props.translations.getIn(['measure', 'progress', _.get(goal, 'prevailingMeasureProgress')]) }
+                { translations.getIn(['measure', 'progress', _.get(goal, 'prevailingMeasureProgress')]) }
               </div>
 
               <div className="form-line">
                 <label className="inline-label">
-                  { this.props.translations.getIn(['admin', 'quick_edit', 'visibility']) }
+                  { translations.getIn(['admin', 'quick_edit', 'visibility']) }
                 </label>
                 <Select
                   className="form-select-small"
@@ -553,12 +527,12 @@ class GoalQuickEdit extends React.Component {
                   clearable={ false } />
               </div>
 
-              <h5>{ this.props.translations.getIn(['admin', 'quick_edit', 'prevailing_measure']) }</h5>
+              <h5>{ translations.getIn(['admin', 'quick_edit', 'prevailing_measure']) }</h5>
 
               <div className="prevailing-measure-container">
                 <div className="form-line measure-action">
                   <label className="inline-label">
-                    { this.props.translations.getIn(['admin', 'quick_edit', 'action_type']) }
+                    { translations.getIn(['admin', 'quick_edit', 'action_type']) }
                   </label>
                   <Select
                     className="form-select-small"
@@ -584,61 +558,56 @@ class GoalQuickEdit extends React.Component {
 
                 { this.renderOverridePart() }
               </div>
-            </form>
-          </div>
-          <div className="goal-quick-edit-details">
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_updated']) }</h6>
-            <div>{ moment(_.get(goal, 'updated_at')).format('ll') }</div>
+            </div>
+            <div className="goal-quick-edit-details">
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'goal_updated']) }</h6>
+              <div>{ moment(_.get(goal, 'updated_at')).format('ll') }</div>
 
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'goal_owner']) }</h6>
-            <div>{ _.get(goal, 'created_by.displayName') }</div>
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'goal_owner']) }</h6>
+              <div>{ _.get(goal, 'created_by.displayName') }</div>
 
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'dashboard']) }</h6>
-            <div>
-              <a href={ `/stat/goals/${goal.base_dashboard}` } target="_blank" className="externalLink">
-                { _.get(goal, 'dashboardName') }
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'dashboard']) }</h6>
+              <div>
+                <a href={ `/stat/goals/${goal.base_dashboard}` } target="_blank" className="externalLink">
+                  { _.get(goal, 'dashboardName') }
+                  <span className="icon-external" />
+                </a>
+              </div>
+
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'category']) }</h6>
+              <div>{ _.get(goal, 'category.name') }</div>
+
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'dataset_updated']) }</h6>
+              <div>{ this.state.datasetUpdatedAt ? moment.unix(this.state.datasetUpdatedAt).format('ll') : '—' }</div>
+
+              <h6>{ translations.getIn(['admin', 'quick_edit', 'dataset_owner']) }</h6>
+              <div>{ _.get(this.state, 'datasetOwner.displayName') ? _.get(this.state, 'datasetOwner.displayName') : '—' }</div>
+            </div>
+          </SocrataModal.Content>
+          <SocrataModal.Footer>
+            <div className="link-container">
+              <a href={ goalPageUrl } target="_blank" className="externalLink">
+                { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
                 <span className="icon-external" />
               </a>
             </div>
-
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'category']) }</h6>
-            <div>{ _.get(goal, 'category.name') }</div>
-
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'dataset_updated']) }</h6>
-            <div>{ moment.unix(this.state.datasetUpdatedAt).format('ll') }</div>
-
-            <h6>{ this.props.translations.getIn(['admin', 'quick_edit', 'dataset_owner']) }</h6>
-            <div>{ _.get(this.state, 'datasetOwner.displayName') }</div>
-          </div>
-        </section>
-
-        <footer className="modal-footer">
-          <div className="link-container">
-            <a href={ goalPageUrl } target="_blank" className="externalLink">
-              { this.props.translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
-              <span className="icon-external" />
-            </a>
-          </div>
-          <div className="modal-footer-actions">
-            <button className="btn btn-default" onClick={ this.props.closeQuickEdit }>
-              { this.props.translations.getIn(['admin', 'quick_edit', 'cancel']) }
-            </button>
-            <button className="btn btn-primary" onClick={ this.save.bind(this) } disabled={ this.state.noChangesMade }>
-              { this.props.translations.getIn(['admin', 'quick_edit', 'save']) }
-            </button>
-          </div>
-        </footer>
-      </div>
-    </div>;
+            <SocrataButton onClick={ this.props.closeQuickEdit }>
+              { translations.getIn(['admin', 'quick_edit', 'cancel']) }
+            </SocrataButton>
+            <SocrataButton type="submit" primary onClick={ this.save.bind(this) } disabled={ this.state.noChangesMade }>
+              { translations.getIn(['admin', 'quick_edit', 'save']) }
+            </SocrataButton>
+          </SocrataModal.Footer>
+        </form>
+      </SocrataModal.Modal>
+    );
   }
 }
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  goal: _.isNull(state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])) ?
-    new Immutable.Map({}) :
-    state.getIn(['goalTableData', 'cachedGoals', state.getIn(['goalTableData', 'goalQuickEditOpenGoalId'])]),
-  alert: state.getIn(['goalTableData', 'goalTableAlert'])
+  goal: state.getIn(['goalTableData', 'cachedGoals', state.getIn(['quickEditForm', 'goalId'])]),
+  showFailureMessage: state.getIn(['quickEditForm', 'showFailureMessage'])
 });
 
 const mapDispatchToProps = dispatch => ({

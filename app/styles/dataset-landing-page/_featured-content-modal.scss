@@ -64,6 +64,7 @@
 
         .edit-button, .remove-button {
           width: 110px;
+          max-width: 110px;
           opacity: 0;
 
           &:focus {
@@ -105,7 +106,7 @@
           }
 
           .edit-button, .remove-button {
-            visibility: visible;
+            opacity: 1;
           }
         }
       }
@@ -246,10 +247,14 @@
   }
 
   .modal-footer {
-    .btn-sm .spinner-default {
-      border-width: 2px;
-      width: 12px;
-      height: 12px;
+    .btn-sm.btn-busy {
+      padding: 8px 15px 7px;
+
+      .spinner-default {
+        border-width: 2px;
+        width: 12px;
+        height: 12px;
+      }
     }
   }
 }

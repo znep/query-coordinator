@@ -1648,10 +1648,6 @@ var Dataset = ServerModel.extend({
             return '/api/geospatial/{0}?method=export&format={1}'.format(this.id, type);
         }
 
-        if (this.newBackend && blist.feature_flags.enable_export_service) {
-            return '/api/export/v1/{0}.{1}'.format(this.id, ext);
-        }
-
         var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
         return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}'.format(this.id, ext, bom);
     },

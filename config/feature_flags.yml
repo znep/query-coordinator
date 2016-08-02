@@ -117,13 +117,9 @@ enable_data_lens_provenance:
 enable_data_lens_save_as:
   description: Enables the "Save As" button in the data lens Customize bar.
   defaultValue: true
-enable_export_service:
-  description: Use the new Export Service on this domain.
-  defaultValue: false
-  category: obe deprecation
 enable_catalog_connector:
   description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
-  defaultValue: false
+  defaultValue: true
 enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
@@ -169,9 +165,6 @@ feature_map_default_extent:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
-geo_imports_to_nbe_enabled:
-  description: Show Append/Replace pane on nbe geo datasets. This setting will be ignored if `ingress_strategy` is set to `obe`.
-  defaultValue: true
 govstat_missing_locale_crash:
   description: Crash (500) when a translation is missing.
   defaultValue: false
@@ -284,7 +277,7 @@ use_auth0:
   defaultValue: false
 use_auth0_login_flow:
   description: When a site has multiple connection configurations ('auth0_connections' is set in the auth0 internal config), use auth0 sign-in when 'Sign In with Socrata ID' is clicked. 'use_auth0' flag must be true!!!
-  defaultValue: false 
+  defaultValue: false
 use_data_lens_choropleth_custom_boundary:
   description: If this is true and you have filled out choropleth_custom_boundary in the data_lens_config configuration, then choropleths will be limited to the boundary entered in choropleth_custom_boundary.
   defaultValue: false

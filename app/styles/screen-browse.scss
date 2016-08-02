@@ -70,6 +70,16 @@ $data_lens_icon_color: #80acca;
       right: 2em;
       top: 0;
     }
+    .searchStatusWrapper {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      display: none;
+      & .icon {
+        @include throbber-icon;
+        background-image: none;
+      }
+    }
   }
   .browseFacets {
     background-color: #ffffff;

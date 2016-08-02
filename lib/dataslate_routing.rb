@@ -1,53 +1,41 @@
 class DataslateRouting
-  class << self
-    alias :for :new
+  def self.for(path, options = {})
+    (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
+      page_for(path, options)
   end
 
-  def initialize(cname)
-    @cname = cname
-    @pages = {}
+  def self.debug
+    (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
+      routes
+  end
 
-    # This being run only once presumes that the Pages Dataset is extremely unlikely to
-    # change for a given instance of this object. If this assumption is false, then this
-    # design is a problem.
+  attr_reader :routes, :custom_headers
+  def initialize(options = {})
+    @custom_headers = options.fetch(:custom_headers, {})
+    @routes = {}
+
     scrape_pages_dataset_for_paths!
+    scrape_pages_service_for_paths!
   end
 
   def page_for(path, options = {})
-    unique_path = lookup_path(path, options[:ext])
-    page = @pages[unique_path]
+    @custom_headers = options.fetch(:custom_headers, custom_headers)
+    lookup = map_resolved_path_to_lookup_data(lookup_path(path))
+    Rails.logger.debug("Mapped `#{path}` as #{lookup.inspect}")
+    return if lookup.nil?
 
-    custom_headers = options.fetch(:custom_headers, {})
-    @pages[unique_path] =
-      if page.nil?
-        # Case: Not cached in this process.
-        Rails.logger.debug("Not cached: #{unique_path}")
-        page = Page.find_by_unique_path(unique_path, custom_headers)
-        Rails.logger.debug("Not in Pages Service; checking Pages Dataset: #{unique_path}")
-        page ||= fetch_from_pages_dataset(unique_path) if @ds_paths.key?(unique_path)
-        page
-      elsif @ds_paths.key?(unique_path)
-        # Case: Driven by Pages Dataset; never cache because dumb.
-        Rails.logger.debug("Pages Dataset: #{unique_path}")
-        page = fetch_from_pages_dataset(unique_path)
-      elsif Time.at(page.updated_at) < Page.last_updated_at(page.uid, custom_headers)
-        # Case: Driven by Pages Service; updated, so invalidate cache.
-        Rails.logger.debug("Pages Service (out-of-date): #{unique_path}")
-        page = Page.find_by_uid(page.uid, custom_headers)
-      else
-        # Case: Driven by Pages Service; not updated, use cache.
-        Rails.logger.debug("Pages Service (cached): #{unique_path}")
-        page
-      end
-  end
-
-  def delete(path)
-    @pages.delete(lookup_path(path))
-  end
-  alias :invalidate :delete
-
-  def clear!
-    @pages = {}
+    page = case lookup[:from]
+      when :service then Page.find_by_unique_path(lookup[:path], custom_headers)
+      when :dataset then fetch_from_pages_dataset(lookup[:path])
+    end
+    if page.present?
+      { page: page,
+        from: lookup[:from],
+        # TODO: Later, when addressing DataSlate's globals-everywhere paradigm.
+        #vars: Hash[page.path.split('/').select { |part| part.starts_with?(':') }.zip(lookup[:vars])]
+        vars: lookup[:vars]
+      }
+    end
   end
 
   private
@@ -62,20 +50,39 @@ class DataslateRouting
     uniqify(path)
   end
 
+  def map_resolved_path_to_lookup_data(path)
+    # On the server-side, it does not appear that we actually *use* the vars at all.
+    # But I'm determining them now for (1) debugging and (2) thoroughness.
+    vars = []
+    path.split('/').inject(routes) do |lookup_cursor, part|
+      break unless lookup_cursor.has_key?(part) || lookup_cursor.has_key?(':')
+      lookup_cursor[part] || (vars << part && lookup_cursor[':'])
+    end.try(:merge, vars: vars)
+  end
+
+  def scrape_pages_service_for_paths!
+    Page.routing_table(custom_headers).each_with_object(routes) do |entry, memo|
+      unique_path = uniqify(entry['path'])
+      memo.bury(*unique_path.split('/'), { from: :service, path: unique_path })
+    end
+  end
+
   def scrape_pages_dataset_for_paths!
-    @ds_paths = {}
     begin
       url = '/id/pages.json?$select=path'
-      JSON.parse(CoreServer::Base.connection.get_request(url)).each do |row|
-        path = row['path']
-        @ds_paths[lookup_path(path)] = path
+      ds_paths = JSON.parse(CoreServer::Base.connection.get_request(url)).
+        collect { |row| row['path'] }
+      ds_paths.each_with_object(routes) do |path, memo|
+        unique_path = uniqify(path)
+        memo.bury(*unique_path.split('/'), { from: :dataset, path: unique_path })
       end
     rescue CoreServer::ResourceNotFound
+      # Pages Dataset does not exist for this domain. Hooray!
     end
   end
 
   def fetch_from_pages_dataset(unique_path)
-    url = "/id/pages.json?$where=path=%27#{@ds_paths[unique_path]}%27"
+    url = "/id/pages.json?$where=path=%27#{unique_path}%27"
     Page.parse(CoreServer::Base.connection.get_request(url)).first
   end
 end

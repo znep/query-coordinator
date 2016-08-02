@@ -9,6 +9,7 @@ class AppConfig < Hashie::Dash
 
   # Services and service coordination
   property :coreservice_uri
+  property :feature_flag_signaller_uri
   property :odysseus_uri
   property :odysseus_app_name
   property :consul_host

@@ -128,8 +128,21 @@ class Domain < Model
   end
 
   def feature_flags
-    conf = default_configuration('feature_flags')
-    FeatureFlags.merge({}, conf.try(:properties) || {})
+    if FeatureFlags.using_signaller?
+      (RequestStore[:feature_flags] ||= {})[cname] ||=
+        begin
+          uri = FeatureFlags.endpoint(with_path: "/domain/#{cname}.json")
+          JSON.parse(HTTParty.get(uri).body).each_with_object({}) do |(key, info), memo|
+            memo[key] = info['value']
+          end
+        rescue
+          Rails.logger.error('Feature Flag Signaller is unreachable!')
+          {}
+        end
+    else
+      conf = default_configuration('feature_flags')
+      FeatureFlags.merge({}, conf.try(:properties) || {})
+    end
   end
 
   # For definition, see "ID Field Type" section here:

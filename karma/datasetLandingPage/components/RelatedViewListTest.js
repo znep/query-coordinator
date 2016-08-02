@@ -1,8 +1,8 @@
-import { PopularViewList } from 'components/PopularViewList';
+import { RelatedViewList } from 'components/RelatedViewList';
 import mockServerConfig from 'data/mockServerConfig';
 import mockViewWidget from 'data/mockViewWidget';
 
-describe('components/PopularViewList', function() {
+describe('components/RelatedViewList', function() {
   function resetServerConfig() {
     window.serverConfig = _.cloneDeep(mockServerConfig);
   }
@@ -30,7 +30,7 @@ describe('components/PopularViewList', function() {
   afterEach(resetServerConfig);
 
   it('renders an element with the expected structure', function() {
-    var element = renderComponent(PopularViewList, defaultProps);
+    var element = renderComponent(RelatedViewList, defaultProps);
     expect(element).to.exist;
     expect(element.webkitMatchesSelector('section')).to.be.ok;
     expect(element.querySelector('.dataset-landing-page-header')).to.exist;
@@ -38,7 +38,7 @@ describe('components/PopularViewList', function() {
 
   it('does not render if the user is not logged in and the list is empty', function() {
     window.serverConfig.currentUser = null;
-    var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
       viewList: []
     }));
 
@@ -47,7 +47,7 @@ describe('components/PopularViewList', function() {
 
   it('does not render if the user is not an admin or publisher and the list is empty', function() {
     window.serverConfig.currentUser = { roleName: 'wizard' };
-    var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
       viewList: []
     }));
 
@@ -55,9 +55,9 @@ describe('components/PopularViewList', function() {
   });
 
   describe('contents', function() {
-    it('renders an alert if the viewList of popular views is empty and the user is privileged', function() {
+    it('renders an alert if the viewList of related views is empty and the user is privileged', function() {
       window.serverConfig.currentUser = { roleName: 'publisher' };
-      var element = renderComponentWithStore(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponentWithStore(RelatedViewList, _.assign(defaultProps, {
         viewList: []
       }));
 
@@ -65,8 +65,8 @@ describe('components/PopularViewList', function() {
       expect(element.querySelector('.alert.default .btn')).to.exist;
     });
 
-    it('renders a result-card for each popular view', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    it('renders a result-card for each related view', function() {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         viewList: _.take(defaultProps.viewList, 2)
       }));
 
@@ -75,16 +75,16 @@ describe('components/PopularViewList', function() {
   });
 
   describe('load more button', function() {
-    it('renders a button to load more popular views if hasMore is true', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    it('renders a button to load more related views if hasMore is true', function() {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: true
       }));
 
       expect(element.querySelector('.load-more-button')).to.exist;
     });
 
-    it('does not render a button to load more popular views on a mobile device', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    it('does not render a button to load more related views on a mobile device', function() {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: true,
         isDesktop: false
       }));
@@ -93,7 +93,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('renders an error alert if hasError is true', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasError: true
       }));
 
@@ -103,7 +103,7 @@ describe('components/PopularViewList', function() {
     it('dispatches an action to dismiss the error when the close icon is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasError: true,
         dismissError: spy
       }));
@@ -113,18 +113,18 @@ describe('components/PopularViewList', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('does not render a button to load more popular views if hasMore is false', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+    it('does not render a button to load more related views if hasMore is false', function() {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false
       }));
 
       expect(element.querySelector('.load-more-button')).to.not.exist;
     });
 
-    it('dispatches an action to load more popular views if the button is clicked', function() {
+    it('dispatches an action to load more related views if the button is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: true,
         loadMore: spy
       }));
@@ -134,10 +134,10 @@ describe('components/PopularViewList', function() {
       expect(spy.callCount).to.equal(1);
     });
 
-    it('does not dispatch an action to load more popular views if a request is in progress', function() {
+    it('does not dispatch an action to load more related views if a request is in progress', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: true,
         isLoading: true,
         loadMore: spy
@@ -151,7 +151,7 @@ describe('components/PopularViewList', function() {
 
   describe('collapse button', function() {
     it('does not render the button if there are still views to load', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: true
       }));
 
@@ -159,7 +159,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render the button if there are at most 3 views', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
         viewList: _.fill(Array(3), mockViewWidget)
       }));
@@ -168,7 +168,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('renders the button if all views are loaded and there are at least 4 views', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
         viewList: _.fill(Array(4), mockViewWidget)
       }));
@@ -177,7 +177,7 @@ describe('components/PopularViewList', function() {
     });
 
     it('does not render the button on a mobile device', function() {
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
         viewList: _.fill(Array(4), mockViewWidget),
         isDesktop: false
@@ -189,7 +189,7 @@ describe('components/PopularViewList', function() {
     it('dispatches an action to toggle isCollapsed when the button is clicked', function() {
       var spy = sinon.spy();
 
-      var element = renderComponent(PopularViewList, _.assign(defaultProps, {
+      var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
         viewList: _.fill(Array(4), mockViewWidget),
         toggleList: spy

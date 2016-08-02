@@ -16,17 +16,20 @@
         var shares = [];
         // Grab user object for each grant
         _.each(grants, function(grant) {
+            // user id, and potentially email as well
             if (!$.isBlank(grant.userId)) {
                 $.socrataServer.makeRequest({
                     url: '/users/' + grant.userId + '.json', cache: false, type: 'GET', data: {}, batch: true,
                     success: function(response) {
                         shares.push($.extend({},response, {shareType: grant.type,
-                             shareInherited: grant.inherited, userId: grant.userId}));
+                             shareInherited: grant.inherited, userId: grant.userId, userEmail: grant.userEmail}));
                     }
                 });
+            // just an email, so not a "real" user yet (just in the permissions table)
             } else if (!$.isBlank(grant.userEmail)) {
                 shares.push({userEmail: grant.userEmail, displayName: grant.userEmail,
                     shareType: grant.type, shareInherited: grant.inherited});
+            // a group, so we need to grab the group info from core
             } else if (!$.isBlank(grant.groupUid)) {
                 $.socrataServer.makeRequest({
                     url: '/api/groups/' + grant.groupUid + '.json', cache: false, type: 'GET', data: {}, batch: true,

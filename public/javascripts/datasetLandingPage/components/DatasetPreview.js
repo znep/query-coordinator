@@ -70,8 +70,7 @@ export var DatasetPreview = React.createClass({
 
     return view.isTabular &&
       !_.isEmpty(view.columns) &&
-      view.rowCount > 0 &&
-      serverConfig.featureFlags.defaultToDatasetLandingPage;
+      view.rowCount > 0;
   },
 
   initializeTable: function() {

@@ -8,7 +8,7 @@ import {
   closeGoalQuickEdit,
   testEdit,
   saveGoalQuickEdit
-} from 'actions/goalQuickEditActions';
+} from 'actions/quickEditActions';
 
 import {
   OPEN_GOAL_QUICK_EDIT,
@@ -16,7 +16,7 @@ import {
   REMOVE_GOAL_FROM_CACHE
 } from 'actionTypes';
 
-describe('actions/goalQuickEditActions', () => {
+describe('actions/quickEditActions', () => {
   let server;
   const mockStore = configureStore([thunk]);
 

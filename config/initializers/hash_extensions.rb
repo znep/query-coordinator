@@ -103,4 +103,10 @@ class Hash
     end
   end
 
+  # deep set
+  def bury(*to_bury, value)
+    to_bury[0...-1].
+      reduce(self) { |memo, layer| memo[layer] ||= self.class.new }.
+      store(to_bury.last, value)
+  end
 end

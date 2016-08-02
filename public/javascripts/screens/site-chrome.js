@@ -49,14 +49,25 @@ var validationMessages = function(tab) {
 };
 
 $(document).ready(function() {
+  var curTab = getActiveTabId();
   // Show appropriate tab given the url hash. Ex: /site_chrome#tab=general
-  showTab(getActiveTabId());
+  showTab(curTab);
 
   // Change active tab and tab-content on click
   $('ul.tabs li').click(function() {
-    var clickedTabId = $(this).data('tab-id');
-    showTab(clickedTabId);
+    curTab = $(this).data('tab-id');
+    showTab(curTab);
   });
+
+  // EN-8454: On back button click that changes only the url fragment,
+  // render the correct tab.
+  window.onpopstate = function(event) {
+    var curTabOnPopState = getActiveTabId();
+    if (curTab !== curTabOnPopState) {
+      curTab = curTabOnPopState;
+      showTab(curTab);
+    }
+  };
 
   // Submit the form from the active tab when save button is clicked
   $('button.primary#site_chrome_save').click(function() {

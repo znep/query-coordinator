@@ -5,9 +5,10 @@ import PublishNotice from './components/PublishNotice';
 import InfoPane from './components/InfoPane';
 import FeaturedContent from './components/FeaturedContent';
 import MetadataTable from './components/MetadataTable';
-import DatasetContents from './components/DatasetContents';
+import RowDetails from './components/RowDetails';
+import SchemaPreview from './components/SchemaPreview';
 import DatasetPreview from './components/DatasetPreview';
-import PopularViewList from './components/PopularViewList';
+import RelatedViewList from './components/RelatedViewList';
 import { VelocityComponent } from 'velocity-react';
 
 export default function App() {
@@ -21,11 +22,12 @@ export default function App() {
         <main className="container landing-page-container">
           <FeaturedContent />
           <MetadataTable />
-          <DatasetContents />
+          <RowDetails />
+          <SchemaPreview />
           <DatasetPreview />
 
           <Responsive>
-            <PopularViewList />
+            <RelatedViewList />
           </Responsive>
         </main>
       </div>

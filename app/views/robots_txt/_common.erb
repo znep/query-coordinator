@@ -37,5 +37,6 @@ Disallow: /browse/embed
 Disallow: /login
 Disallow: /reset_password/
 Disallow: /views/INLINE/rows.json?*method=clustered2*
+Disallow: /tiles/
 
 <%= 'Disallow: /analytics/add' if FeatureFlags.derive(nil, request).robots_txt_disallow_analytics_add %>

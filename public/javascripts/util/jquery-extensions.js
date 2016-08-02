@@ -1,6 +1,14 @@
 (function($, _, window) {
   'use strict';
 
+  $.fn.disable = function() {
+    this.attr('disabled', true);
+  };
+
+  $.fn.enable = function() {
+    this.attr('disabled', false);
+  };
+
   // Contains extensions to both jQuery as well as Javascript built-in types.
   $.fn.dimensions = function() {
     // For reference, this results in a 15% increase in profiled idle time than what is in use:

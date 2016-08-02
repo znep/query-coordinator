@@ -117,8 +117,8 @@ class CustomContentController < ApplicationController
     @debug = params['debug'] == 'true'
     @edit_mode = params['_edit_mode'] == 'true'
 
-    routing = DataslateRouting.for(CurrentDomain.cname)
-    @page = routing.page_for(params[:path], { ext: params[:ext].try(:downcase) })
+    @page = DataslateRouting.for(params[:path], { ext: params[:ext].try(:downcase) })
+    @page = @page.try(:[], :page)
 
     full_path = "/#{params[:path]}"
     full_path << ".#{params[:ext].downcase}" if params[:ext].present?
@@ -187,12 +187,12 @@ class CustomContentController < ApplicationController
   end
 
   def page
+    # Entirely for debugging for now.
     if params[:raw]
-      routing = DataslateRouting.for(CurrentDomain.cname)
-      page = routing.page_for(params[:path], { ext: params[:ext].try(:downcase) })
-      cache_state = Page.last_updated_at(page.uid) if page.present?
+      data = DataslateRouting.for(params[:path], { ext: params[:ext].try(:downcase) })
+      cache_state = Page.last_updated_at(data[:page].uid) if data.present?
 
-      render :json => { pid: Process.pid, page: page, cache_state: cache_state }.to_json
+      render :json => data.merge( pid: Process.pid, cache_state: cache_state ).to_json
       return
     end
 

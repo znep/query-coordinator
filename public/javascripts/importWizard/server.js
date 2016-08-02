@@ -226,7 +226,7 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
     const pairs = fieldSet.
       filter(field => (isPrivate === field.privateField)).
       map(({field, value}) => ([field, value]));
-    return Utils.fromPairs(pairs);
+    return _.fromPairs(pairs);
   });
 }
 

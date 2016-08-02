@@ -13,8 +13,7 @@ export var SchemaPreview = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired,
     onExpandColumn: PropTypes.func.isRequired,
-    onExpandSchemaTable: PropTypes.func.isRequired,
-    showAsLayer: PropTypes.bool
+    onExpandSchemaTable: PropTypes.func.isRequired
   },
 
   toggleTable: function() {
@@ -148,29 +147,14 @@ export var SchemaPreview = React.createClass({
   },
 
   render: function() {
-    var { view, showAsLayer } = this.props;
+    var { view } = this.props;
     var toggleColumn = this.toggleColumn;
 
-    var title;
     var toggles;
     var tableRows;
 
     if (_.isEmpty(view.columns) || view.rowCount === 0) {
       return null;
-    }
-
-    if (showAsLayer) {
-      title = (
-        <h3 className="landing-page-section-header">
-          {I18n.schema_preview.geospatial_layer_title}
-        </h3>
-      );
-    } else {
-      title = (
-        <h2 className="landing-page-section-header">
-          {I18n.schema_preview.title}
-        </h2>
-      );
     }
 
     if (_.isArray(view.columns) && view.columns.length > SCHEMA_TABLE_COLUMN_COUNT) {
@@ -280,7 +264,9 @@ export var SchemaPreview = React.createClass({
 
     return (
       <section className="landing-page-section schema-preview">
-        {title}
+        <h2 className="landing-page-section-header">
+          {I18n.schema_preview.title}
+        </h2>
 
         <div className="section-content collapsed">
           <div className="table-wrapper">
@@ -314,6 +300,10 @@ export var SchemaPreview = React.createClass({
   }
 });
 
+function mapStateToProps(state) {
+  return _.pick(state, 'view');
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     onExpandColumn: function(event) {
@@ -343,4 +333,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(SchemaPreview);
+export default connect(mapStateToProps, mapDispatchToProps)(SchemaPreview);

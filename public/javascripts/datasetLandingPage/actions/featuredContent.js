@@ -289,7 +289,7 @@ export function requestDerivedViews() {
     var state = getState();
 
     var viewId = state.view.id;
-    var fetchUrl = `/dataset_landing_page/${viewId}/related_views?sort_by=date`;
+    var fetchUrl = `/dataset_landing_page/${viewId}/derived_views?sort_by=date`;
     var fetchOptions = {
       credentials: 'same-origin'
     };

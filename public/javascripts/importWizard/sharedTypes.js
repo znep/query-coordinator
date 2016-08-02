@@ -1,11 +1,26 @@
-type TypeName = string
+// list from https://github.com/socrata/frontend/blob/c32eab311be4d6d936e0583b9d5daf65517b784e/app/models/column.rb#L29-L32
+export type TypeName
+  = 'url' // website_url
+  | 'html' // formatted_text
+  | 'email'
+  | 'number'
+  | 'calendar_date' // date_time
+  | 'date' // date_time
+  | 'checkbox'
+  | 'stars' // star
 
-type SourceColumn = { // eslint-disable-line no-unused-vars
+export type SourceColumn = {
   name: string,
   index: number,
   suggestion: TypeName,
-  numProcessed: number,
-  typeCounts: { [key: TypeName]: number }
+  processed: number,
+  types: { // how many cells in this col parsed correctly for each type
+    number: number,
+    text: number,
+    calendar_date: number,
+    money: number,
+    percent: number
+  }
 }
 
 export type FileId = string

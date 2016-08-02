@@ -11,18 +11,6 @@ export var ApiFlannel = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  getInitialState: function() {
-    var formats = _.chain(this.props.view).
-      concat(this.props.view.geospatialChildLayers).
-      keyBy('id').
-      mapValues(_.constant('json')).
-      value();
-
-    return {
-      currentFormats: formats
-    };
-  },
-
   componentDidMount: function() {
     if (isCopyingSupported) {
       var el = ReactDOM.findDOMNode(this);
@@ -38,122 +26,63 @@ export var ApiFlannel = React.createClass({
     event.preventDefault();
   },
 
-  onClickFormatOption: function(viewId) {
-    return function(event) {
-      var formats = this.state.currentFormats;
-      formats[viewId] = event.target.dataset.value;
+  renderEndpoint: function() {
+    var { view, onClickCopy } = this.props;
 
-      this.setState({
-        currentFormats: formats
-      });
-    }.bind(this);
+    var copyButton = isCopyingSupported ?
+      <span className="input-group-btn">
+        <button
+          type="button"
+          className="btn btn-primary btn-sm copy"
+          data-confirmation={I18n.copy_success}
+          onClick={onClickCopy}>
+          {I18n.copy}
+        </button>
+      </span> :
+      null;
+
+    return (
+      <div className="endpoint api-endpoint">
+        <section className="flannel-content">
+          <a
+            className="btn btn-default btn-sm documentation-link"
+            href={view.apiFoundryUrl}
+            target="_blank">
+            <span className="icon-copy-document"></span>
+            {I18n.api_flannel.foundry_button}
+          </a>
+          <a
+            className="btn btn-default btn-sm documentation-link"
+            href="https://dev.socrata.com"
+            target="_blank">
+            <span className="icon-settings"></span>
+            {I18n.api_flannel.developer_portal_button}
+          </a>
+        </section>
+
+        <section className="flannel-content">
+          <h6 id="api-endpoint" className="endpoint-title">
+            {I18n.api_flannel.endpoint_title}
+          </h6>
+          <form>
+            <span className="input-group">
+              <input
+                aria-labelledby="api-endpoint"
+                className="endpoint-input text-input text-input-sm"
+                type="text"
+                value={view.resourceUrl}
+                readOnly
+                onFocus={this.onFocusInput}
+                onMouseUp={this.onMouseUpInput} />
+              {copyButton}
+            </span>
+          </form>
+        </section>
+      </div>
+    );
   },
 
   render: function() {
-    var self = this;
-    var { view, onClickCopy } = this.props;
-    var { currentFormats } = this.state;
-
-    var multiGeoLayerNotice = view.geospatialChildLayers.length > 1 ?
-      <span>{I18n.api_flannel.multiple_geo_layers}</span> : null;
-
-    function renderEndpoint(subview, showAsLayer, i) {
-      var endpointFormatSelector = null;
-
-      var formatToggleHandler = self.onClickFormatOption(subview.id);
-
-      if (subview.isGeospatial) {
-        endpointFormatSelector = (
-          <span className="input-group-btn">
-            <div
-              className="btn btn-default btn-simple btn-sm dropdown endpoint-format-selector"
-              data-dropdown
-              data-selectable
-              data-orientation="bottom">
-              <span>JSON</span><span className="icon-arrow-down"></span>
-              <ul className="dropdown-options">
-                <li>
-                  <a className="option" data-value="json" onMouseUp={formatToggleHandler}>
-                    JSON
-                  </a>
-                </li>
-                <li>
-                  <a className="option" data-value="geojson" onMouseUp={formatToggleHandler}>
-                    GeoJSON
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </span>
-        );
-      }
-
-      var currentFormat = currentFormats[subview.id];
-      var currentUrl = subview.resourceUrl.replace(/\w*json$/, currentFormat);
-
-      var copyButton = isCopyingSupported ?
-        <span className="input-group-btn">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm copy"
-            data-confirmation={I18n.copy_success}
-            onClick={onClickCopy}>
-            {I18n.copy}
-          </button>
-        </span> :
-        null;
-
-      return (
-        <div className="endpoint api-endpoint" key={i}>
-          <section className="flannel-content">
-            {showAsLayer ? <h6 className="layer-name">{subview.name}</h6> : null}
-            <a
-              className="btn btn-default btn-sm documentation-link"
-              href={subview.apiFoundryUrl}
-              target="_blank">
-              <span className="icon-copy-document"></span>
-              {I18n.api_flannel.foundry_button}
-            </a>
-            <a
-              className="btn btn-default btn-sm documentation-link"
-              href="https://dev.socrata.com"
-              target="_blank">
-              <span className="icon-settings"></span>
-              {I18n.api_flannel.developer_portal_button}
-            </a>
-          </section>
-          <section className="flannel-content">
-            <h6 id={`api-endpoint-${i}`} className="endpoint-title">
-              {I18n.api_flannel.endpoint_title}
-            </h6>
-            <form>
-              <span className="input-group">
-                <input
-                  aria-labelledby={`api-endpoint-${i}`}
-                  className="endpoint-input text-input text-input-sm"
-                  type="text"
-                  value={currentUrl}
-                  readOnly
-                  onFocus={self.onFocusInput}
-                  onMouseUp={self.onMouseUpInput} />
-                {endpointFormatSelector}
-                {copyButton}
-              </span>
-            </form>
-          </section>
-        </div>
-      );
-    }
-
-    var endpoints;
-    if (view.geospatialChildLayers.length > 1) {
-      endpoints = view.geospatialChildLayers.map(_.partial(renderEndpoint, _, true, _));
-    } else if (view.geospatialChildLayers.length === 1) {
-      endpoints = renderEndpoint(view.geospatialChildLayers[0], false, 0);
-    } else {
-      endpoints = renderEndpoint(view, false, 0);
-    }
-
     return (
       <div
         role="dialog"
@@ -169,12 +98,12 @@ export var ApiFlannel = React.createClass({
             <span className="icon-close-2"></span>
           </button>
         </header>
+
         <section className="flannel-content api-description">
           <p className="small">{I18n.api_flannel.description}</p>
-          {multiGeoLayerNotice}
         </section>
 
-        {endpoints}
+        {this.renderEndpoint()}
       </div>
     );
   }

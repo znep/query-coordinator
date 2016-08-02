@@ -1,56 +1,68 @@
 import React, { PropTypes } from 'react';
-import * as SharedTypes from '../sharedTypes';
+import format from 'stringformat';
+
+import * as ST from '../sharedTypes';
 import * as UploadFile from './uploadFile';
 import * as DownloadFile from './downloadFile';
 import * as ColumnDetail from './importColumns/columnDetail';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
+import * as Validation from './importColumns/validation';
 import NavigationControl from './navigationControl';
 
 /*
-   - Blueprint: schema (names & types)
-   - Translation: mapping of file columns to dataset columns
-   - Transform: encompasses them both
- */
+- Blueprint: schema (names & types)
+- Translation: mapping of file columns to dataset columns
+- Transform: encompasses them both
+*/
 
 type ColumnTransform
-  = { type: 'title' }
-  | { type: 'upper' }
+  = { type: 'upper' }
   | { type: 'lower' }
   | { type: 'toStateCode' }
   | { type: 'findReplace', findText: string, replaceText: string, regex: boolean, caseSensitive: boolean }
 
-type ResultColumn = {
+
+export type ResultColumn = {
+  id: number,
   columnSource: ColumnSource,
   name: String,
-  chosenType: SharedTypes.TypeName,
+  chosenType: ST.TypeName,
   transforms: Array<ColumnTransform>
 }
 
 export type ColumnSource
-  = { type: 'SingleColumn', sourceColumn: SharedTypes.SourceColumn }
-  | { type: 'CompositeColumn', components: Array<string | SharedTypes.SourceColumn> }
+  = { type: 'SingleColumn', sourceColumn: ST.SourceColumn }
+  | { type: 'CompositeColumn', components: Array<string | ST.SourceColumn> }
   // TODO: location column
 
+
+// TODO: rename to 'Model' or something. Ugh.
 type Transform = {
-  columns: Array<ResultColumn>,
+  columns: Translation,
   numHeaders: number,
   sample: Array<Array<string>>
 }
 
 
-export function initialTransform(summary: UploadFile.Summary): Transform {
+type Translation = Array<ResultColumn>
+
+
+export function initialTranslation(summary: UploadFile.Summary): Translation {
   // TODO: set aside location columns
-  return summary.columns.map((column) => (
+  return summary.columns.map((column, idx) => (
     {
       columnSource: { type: 'SingleColumn', sourceColumn: column },
       name: column.name,
       chosenType: column.suggestion,
-      transforms: []
+      transforms: [],
+      id: idx
     }
   ));
 }
+
+// actions
 
 export const CHANGE_HEADER_COUNT = 'CHANGE_HEADER_COUNT';
 function changeHeaderCount(change) {
@@ -83,7 +95,7 @@ export function update(transform: Transform = null, action): Transform {
     case DownloadFile.FILE_DOWNLOAD_COMPLETE:
     case UploadFile.FILE_UPLOAD_COMPLETE:
       if (!_.isUndefined(action.summary.columns)) {
-        const columns = initialTransform(action.summary);
+        const columns = initialTranslation(action.summary);
         return {
           columns: columns,
           defaultColumns: columns,
@@ -122,15 +134,23 @@ export function update(transform: Transform = null, action): Transform {
 const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
+const commonErrorsSupportLink = 'http://support.socrata.com/entries/23786838-Import-Warning-and-Errors';
+
 
 export function view({ transform, fileName, sourceColumns, dispatch, goToPage, goToPrevious }) {
+  const problems = Validation.validate(transform.columns, sourceColumns);
+  const nextAction =
+    Validation.emptyOrAllWarnings(problems)
+      ? (() => goToPage('Metadata'))
+      : null;
   return (
     <div>
       <div className="importColumnsPane columnsPane">
         <div className="importErrorHelpText">
-          <p>{/* raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) */}</p>
+          <p dangerouslySetInnerHTML={{__html: format(I18n.screens.dataset_new.import_help, commonErrorsSupportLink)}}>
+          </p>
         </div>
-        <p className="headline">{I18nPrefixed.headline_interpolate.format(fileName)}</p>
+        <p className="headline">{format(I18nPrefixed.headline_interpolate, fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
         <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />
         <ViewToolbar dispatch={dispatch} />
@@ -138,16 +158,12 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
         <hr />
 
         <ViewPreview sample={transform.sample} numHeaderRows={transform.numHeaders} dispatch={dispatch} />
+        <Validation.ViewProblems problems={problems} />
 
-        <div className="warningsSection">
-          <h2>{I18nPrefixed.errors_warnings}</h2>
-          <p className="warningsHelpMessage">{/* t("#{prefix}.help_message", :common_errors => common_errors_support_link ) */}</p>
-          <ul className="columnWarningsList"></ul>
-        </div>
         <hr />
       </div>
       <NavigationControl
-        onNext={() => goToPage('Metadata')}
+        onNext={nextAction}
         onPrev={goToPrevious}
         cancelLink="/profile" />
     </div>
@@ -156,8 +172,8 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
 
 view.propTypes = {
   transform: PropTypes.object.isRequired,
-  fileName: PropTypes.string.isRequired,
   sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fileName: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   goToPage: PropTypes.func.isRequired,
   goToPrevious: PropTypes.func.isRequired
@@ -202,7 +218,7 @@ function ViewColumns({columns, dispatch, sourceColumns}) {
             }
             return (
               <ColumnDetail.view
-                key={idx}
+                key={resultColumn.id}
                 resultColumn={resultColumn}
                 sourceOptions={sourceOptions}
                 dispatchUpdate={dispatchUpdateColumn}
@@ -252,6 +268,8 @@ function ViewToolbar({dispatch}) {
     </div>
   );
 }
+
+ViewToolbar.propTypes = {};
 
 
 function ViewPreview({sample, numHeaderRows, dispatch}) {

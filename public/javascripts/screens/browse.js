@@ -558,41 +558,50 @@ $(function() {
   }
 
   // Handle sidebar facets
-  var $searchSect = $browse.find('.searchSection');
-  if ($searchSect.length > 0) {
-    var $search = $searchSect.find('.searchBox');
-    var hookSearch = function(e) {
-      e.preventDefault();
-      _.defer(function() {
-        var newOpts = $.extend({}, opts, {q: encodeURIComponent($search.val())});
-        if ($.isBlank(newOpts.q)) {
-          delete newOpts.q;
-        } else {
-          delete newOpts.sortPeriod;
-          newOpts.sortBy = 'relevance';
-        }
+  var $searchSection = $browse.find('.searchSection');
+  var $searchBox = $searchSection.find('.searchBox');
+  var $clearSearch = $searchSection.find('.clearSearch');
 
-        var resolveEvent = function() {
-          doBrowse(newOpts);
-        };
+  var hookSearch = function(e) {
+    var searchTerm = $searchBox.val();
+    var clearSearchClicked = _.include(e.target.parentElement.classList, 'clearSearch');
 
-        if (!blist.mixpanelLoaded) {
-          resolveEvent();
-        } else {
-          // TODO: Don't talk to Mixpanel if it's not enabled
-          var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
-          mixpanelNS.delegateCatalogSearchEvents(
-            'Used Search Field',
-            {
-              'Catalog Version': 'browse1'
-            },
-            resolveEvent
-          );
-        }
-      });
-    };
+    $searchBox.disable();
+    $searchSection.find('> .icon').toggle();
+    $searchSection.find('.searchStatusWrapper').toggle();
+    e.preventDefault();
 
-    $searchSect.submit(hookSearch).children('.icon').click(hookSearch);
+    _.defer(function() {
+      var newOpts = $.extend({}, opts, { q: encodeURIComponent(searchTerm) });
+      var resolveEvent = function() {
+        doBrowse(newOpts);
+      };
+
+      if ($.isBlank(newOpts.q) || clearSearchClicked) {
+        delete newOpts.q;
+      } else {
+        delete newOpts.sortPeriod;
+        newOpts.sortBy = 'relevance';
+      }
+
+      if (!blist.mixpanelLoaded) {
+        resolveEvent();
+      } else {
+        var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
+        mixpanelNS.delegateCatalogSearchEvents(
+          clearSearchClicked ? 'Cleared Search Field' : 'Used Search Field',
+          { 'Catalog Version': 'browse1' },
+          resolveEvent
+        );
+      }
+    });
+  };
+
+  if ($searchSection.length > 0) {
+    $searchSection.submit(hookSearch).children('.icon').click(hookSearch);
+  }
+  if ($clearSearch.length > 0) {
+    $clearSearch.submit(hookSearch).children('.icon').click(hookSearch);
   }
 
   $browse.find('.facetSection .moreLink').click(function(e) {

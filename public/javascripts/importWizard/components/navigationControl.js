@@ -3,9 +3,9 @@ import React, { PropTypes } from 'react';
 function nextButton(finishLink, onNext) {
   if (_.isUndefined(finishLink)) {
     const nextButtonStatus =
-      _.isUndefined(onNext)
-        ? ' disabled'
-        : '';
+      onNext
+        ? ''
+        : ' disabled';
 
     return (
       <a

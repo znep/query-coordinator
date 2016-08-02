@@ -120,26 +120,16 @@ export var MetadataTable = React.createClass({
 
   render: function() {
     var { view, onClickEditMetadata, onClickStats } = this.props;
-    var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var attachments;
     var attribution;
     var attributionLink;
     var category;
-    var contactFormButton;
     var customMetadataFieldsets;
     var license;
     var tags;
     var statsSection;
     var editMetadata;
-
-    contactFormButton = defaultToDatasetLandingPage ?
-      <button
-        className="btn btn-sm btn-primary btn-block contact-dataset-owner"
-        data-modal="contact-form">
-        {I18n.contact_dataset_owner}
-      </button> :
-      null;
 
     if (view.attribution) {
       attribution = (
@@ -397,7 +387,11 @@ export var MetadataTable = React.createClass({
                 </div>
               </div>
 
-              {contactFormButton}
+              <button
+                className="btn btn-sm btn-primary btn-block contact-dataset-owner"
+                data-modal="contact-form">
+                {I18n.contact_dataset_owner}
+              </button>
             </div>
           </dl>
 

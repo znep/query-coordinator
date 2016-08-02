@@ -167,8 +167,9 @@ module Cetera
 
   # Anything not explicitly supported here will be dropped
   def self.valid_cetera_keys
-    Set.new(%i(boostDomains categories derived_from domains for_user limit offset only order q
-               search_context tags))
+    Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
+               boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
+               derived_from domains for_user limit offset only order q search_context tags))
   end
 
   # A row of Cetera results
@@ -275,6 +276,25 @@ module Cetera
 
     def domain_icon_href
       "/api/domains/#{domainCName}/icons/smallIcon"
+    end
+
+    # TODO: Remove looking up the view in Core once previewImageId is returned by Cetera.
+    # Note that this duplicates view.get_preview_image_url.
+    def get_preview_image_url(cookie_string, request_id)
+      if story?
+        Storyteller.get_tile_image(id, cookie_string, request_id)
+      else
+        begin
+          view = View.find(id)
+          if view && view.previewImageId
+            "/api/views/#{id}/files/#{view.previewImageId}"
+          end
+        rescue CoreServer::ResourceNotFound
+          nil
+        rescue CoreServer::CoreServerError
+          nil
+        end
+      end
     end
   end
 

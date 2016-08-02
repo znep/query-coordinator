@@ -3,104 +3,64 @@ require_relative '../../lib/dataslate_routing'
 
 describe DataslateRouting do
   before(:each) do
-    # We're not testing this method.
-    allow_any_instance_of(DataslateRouting).to receive(:scrape_pages_dataset_for_paths!).
-      and_return(nil)
+    allow(Page).to receive(:routing_table).and_return(service_response)
+    allow_any_instance_of(CoreServer::Connection).to receive(:get_request).
+      and_return(dataset_response)
   end
+  def pathify(path)
+    { 'path' => path }
+  end
+
+  let(:service_response) { %w( /svc1 /svc/:slug /svc/:slug/end ).map(&method(:pathify)) }
+  let(:dataset_response) { %w( /ds1 /ds/:slug /ds/:slug/end ).map(&method(:pathify)).to_json }
+  let(:page_result) { { page: Page.new, from: page_source, vars: page_vars } }
+  let(:page_vars) { [ ] }
 
   describe '.for' do
-    it 'gives a Routing object when given a string' do
-      expect(DataslateRouting.for('cname')).to be_a(DataslateRouting)
-    end
+    context 'if looking up from the Pages Service' do
+      before(:each) do
+        allow(Page).to receive(:find_by_unique_path).and_return(Page.new)
+      end
+      let(:page_source) { :service }
 
-    it 'gives a Routing object when given a domain' do
-      domain = Domain.new({ 'cname' => 'some.cname'})
-      expect(DataslateRouting.for(domain)).to be_a(DataslateRouting)
-    end
-  end
-
-  describe '#page_for' do
-    subject { DataslateRouting.for('some.cname') }
-
-    before(:each) do
-      allow(Page).to receive(:find_by_unique_path).and_return(unique_path_response)
-      allow_any_instance_of(DataslateRouting).to receive(:fetch_from_pages_dataset).
-        and_return(pages_dataset_response)
-      allow(Page).to receive(:find_by_uid).and_return(uid_response)
-
-      subject.instance_variable_set :@pages, pages
-      subject.instance_variable_set :@ds_paths, ds_paths
-    end
-
-    let(:pages) { {} }
-    let(:ds_paths) { {} }
-
-    let(:unique_path_response) { Page.new }
-    let(:pages_dataset_response) { Page.new }
-    let(:uid_response) { Page.new }
-
-    context 'when @pages is empty' do
-      context 'but @ds_paths is also empty' do
-        it 'should attempt to speak to the Pages Service' do
-          expect(Page).to receive(:find_by_unique_path).once
-          expect(subject).to receive(:fetch_from_pages_dataset).never
-          subject.page_for('/some_path')
-        end
+      it 'should return a page' do
+        expect(DataslateRouting.for('/svc1')).to eq(page_result)
       end
 
-      context 'and @ds_paths is not empty and Pages Service responds with 404' do
-        let(:ds_paths) { { '/some_path' => '/some_path' } }
-        let(:unique_path_response) { nil }
+      it 'should return nil if page does not exist' do
+        expect(DataslateRouting.for('/missing')).to eq(nil)
+      end
 
-        it 'should attempt to fetch from the Pages Dataset after attempting the Pages Service' do
-          expect(Page).to receive(:find_by_unique_path).once
-          expect(subject).to receive(:fetch_from_pages_dataset).once
-          subject.page_for('/some_path')
+      context 'when it has vars' do
+        let(:page_vars) { [ 'foo' ] }
+        it 'should return a page with vars' do
+          expect(DataslateRouting.for('/svc/foo')).to eq(page_result)
+          expect(DataslateRouting.for('/svc/foo/end')).to eq(page_result)
         end
       end
     end
 
-    context 'when @pages is not empty and @ds_paths is not empty' do
-      let(:pages) { { '/some_path' => Page.new } }
-      let(:ds_paths) { { '/some_path' => '/some_path' } }
-
-      it 'should attempt to fetch from the Pages Dataset' do
-        expect(Page).to receive(:find_by_unique_path).never
-        expect(subject).to receive(:fetch_from_pages_dataset).once
-        subject.page_for('/some_path')
+    context 'if looking up from the Pages Dataset' do
+      before(:each) do
+        allow_any_instance_of(DataslateRouting).to receive(:fetch_from_pages_dataset).
+          and_return(Page.new)
       end
-    end
+      let(:page_source) { :dataset }
 
-    context 'when Pages Service-served page is cached' do
-      let(:pages) { { '/some_path' => current_page } }
-      let(:current_page) { Page.new }
-
-      it 'should test for cache status' do
-        allow(Page).to receive(:last_updated_at).and_return(Time.now)
-        expect(Page).to receive(:last_updated_at).once
-
-        allow(current_page).to receive(:updated_at).and_return(Time.now.to_i)
-        expect(current_page).to receive(:updated_at).once
-
-        subject.page_for('/some_path')
+      it 'should return a page' do
+        expect(DataslateRouting.for('/ds1')).to eq(page_result)
       end
 
-      it 'should attempt to fetch by UID if cache is stale' do
-        allow(Page).to receive(:last_updated_at).and_return(Time.now)
-        allow(current_page).to receive(:updated_at).and_return(Time.now.to_i - 1000)
-
-        expect(Page).to receive(:find_by_uid).once
-
-        subject.page_for('/some_path')
+      it 'should return nil if page does not exist' do
+        expect(DataslateRouting.for('/missing')).to eq(nil)
       end
 
-      it 'should not attempt to fetch by UID if cache is not stale' do
-        allow(Page).to receive(:last_updated_at).and_return(Time.now)
-        allow(current_page).to receive(:updated_at).and_return(Time.now.to_i + 1000)
-
-        expect(Page).to receive(:find_by_uid).never
-
-        subject.page_for('/some_path')
+      context 'when it has vars' do
+        let(:page_vars) { [ 'foo' ] }
+        it 'should return a page with vars' do
+          expect(DataslateRouting.for('/ds/foo')).to eq(page_result)
+          expect(DataslateRouting.for('/ds/foo/end')).to eq(page_result)
+        end
       end
     end
   end

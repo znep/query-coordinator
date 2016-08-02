@@ -22,7 +22,10 @@ if (serverConfig.environment !== 'development') {
 }
 
 const enhancer = compose(
-  applyMiddleware(createLogger(), thunk)
+  applyMiddleware(
+    createLogger({ duration: true, timestamp: false }),
+    thunk
+  )
 );
 
 function identityReducer(model, action) { // eslint-disable-line no-unused-vars

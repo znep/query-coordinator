@@ -1570,14 +1570,14 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
     $columnDropDown = $.tag({
         tagName: 'select',
         'class': 'columnSelect',
-        contents: optionsForSelect([{ value: '', label: '(No Source Column)',
+        contents: optionsForSelect([{ value: '', label: t('no_source_column'),
                                       'class': 'special' }].concat(columnSelectOptions))
     });
     $compositeColumnSourceDropDown = $.tag({
         tagName: 'select',
         'class': 'compositeColumnSourceSelect',
         contents: optionsForSelect(columnSelectOptions.concat([{
-            value: '[static]', label: '(Insert static text...)', 'class': 'special' }]))
+            value: '[static]', label: $.t('screens.import_common.insert_static_text'), 'class': 'special' }]))
     });
 
     // add dropdowns to main template

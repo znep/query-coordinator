@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import _ from 'lodash';
+import moment from 'moment';
 import { fetchOptions } from '../constants';
 import {
   TABLE_SHOW_PAGE,
@@ -11,6 +12,9 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
+  TABLE_ROW_SELECTION_START,
+  TABLE_ROW_SELECTION_END,
+  TABLE_ROW_SELECTION_CANCEL,
   ROWS_PER_PAGE_CHANGED,
   SET_TOTAL_GOAL_COUNT,
   SET_CURRENT_PAGE,
@@ -73,7 +77,8 @@ export function tableLoadPage() {
         map(category => _.map(category.goals, (goal) =>
           _.assign(goal, {
             category: _.omit(category, 'goals'),
-            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name
+            dashboardName: _.find(goalResponses, { id: goal.base_dashboard }).name,
+            updatedAtTimestamp: moment(goal.updated_at).unix()
           }))).
         reject(_.isEmpty).
         flatten().
@@ -93,7 +98,7 @@ export function tableLoadPage() {
           sortedArray = _.orderBy(goals, 'created_by.displayName', sortDirection);
           break;
         case 'updated_at':
-          sortedArray = _.orderBy(goals, 'updated_at', sortDirection);
+          sortedArray = _.orderBy(goals, 'updatedAtTimestamp', sortDirection);
           break;
         case 'visibility':
           sortedArray = _.orderBy(goals, 'is_public', sortDirection);
@@ -183,6 +188,7 @@ export function tableLoadPage() {
 
       dispatch(cacheGoals(goalsCache));
       dispatch(tableShowPage(goalsWithExtras));
+      dispatch(toggleAllRows(false));
     }
 
     function getDashboardDetail(dashboard) {
@@ -253,9 +259,30 @@ export function deselectRow(goalId) {
   };
 }
 
-export function toggleAllRows() {
+export function toggleAllRows(checked) {
   return {
-    type: TABLE_ROW_ALL_SELECTION_TOGGLE
+    type: TABLE_ROW_ALL_SELECTION_TOGGLE,
+    checked
+  };
+}
+
+export function rowSelectionStart(goalId) {
+  return {
+    type: TABLE_ROW_SELECTION_START,
+    goalId
+  };
+}
+
+export function rowSelectionEnd(goalId) {
+  return {
+    type: TABLE_ROW_SELECTION_END,
+    goalId
+  };
+}
+
+export function rowSelectionCancel() {
+  return {
+    type: TABLE_ROW_SELECTION_CANCEL
   };
 }
 

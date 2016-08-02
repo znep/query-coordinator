@@ -1,14 +1,20 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import GoalTable from './../GoalTable/GoalTable';
-import GoalQuickEdit from '../../components/GoalQuickEdit';
+import QuickEditForm from '../QuickEditForm/QuickEditForm';
 import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsForm';
 import SocrataBulkActions from '../SocrataBulkActions';
 import SocrataAlert from '../../components/SocrataAlert';
 import { dismissNotification } from '../../actions/notificationActions';
 import './App.scss';
 
-function App({ notification, onDismissNotification, showEditMultipleItemsForm }) {
+function App(props) {
+  let {
+    notification,
+    onDismissNotification,
+    showEditMultipleItemsForm,
+    goalQuickEditOpenGoalId } = props;
+
   let alert = null;
   if (notification.get('visible')) {
     alert = <SocrataAlert type={ notification.get('type') }
@@ -21,12 +27,17 @@ function App({ notification, onDismissNotification, showEditMultipleItemsForm })
     editMultipleItemsForm = <EditMultipleItemsForm />;
   }
 
+  let quickEditForm = null;
+  if (goalQuickEditOpenGoalId) {
+    quickEditForm = <QuickEditForm />;
+  }
+
   return (
     <div>
       { alert }
       <SocrataBulkActions />
       <GoalTable />
-      <GoalQuickEdit />
+      { quickEditForm }
       { editMultipleItemsForm }
     </div>
   );
@@ -34,7 +45,8 @@ function App({ notification, onDismissNotification, showEditMultipleItemsForm })
 
 const mapStateToProps = state => ({
   showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible']),
-  notification: state.get('notification')
+  notification: state.get('notification'),
+  goalQuickEditOpenGoalId: state.getIn(['quickEditForm', 'goalId'])
 });
 
 const mapDispatchToProps = dispatch => ({

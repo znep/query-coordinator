@@ -1,30 +1,30 @@
 import { getDefaultStore } from 'testStore';
 import mockViewWidget from 'data/mockViewWidget';
-import reducer from 'reducers/popularViews';
+import reducer from 'reducers/relatedViews';
 import {
-  requestPopularViews,
-  receivePopularViews,
-  handlePopularViewsError,
-  dismissPopularViewsError,
-  togglePopularViews
-} from 'actions/popularViews';
+  requestRelatedViews,
+  receiveRelatedViews,
+  handleRelatedViewsError,
+  dismissRelatedViewsError,
+  toggleRelatedViews
+} from 'actions/relatedViews';
 
-describe('reducers/popularViews', function() {
+describe('reducers/relatedViews', function() {
   var state;
 
   beforeEach(function() {
     state = reducer();
   });
 
-  describe('REQUEST_POPULAR_VIEWS', function() {
+  describe('REQUEST_RELATED_VIEWS', function() {
     it('sets isLoading to true', function() {
       state.isLoading = false;
-      state = reducer(state, requestPopularViews());
+      state = reducer(state, requestRelatedViews());
       expect(state.isLoading).to.equal(true);
     });
   });
 
-  describe('RECEIVE_POPULAR_VIEWS', function() {
+  describe('RECEIVE_RELATED_VIEWS', function() {
     beforeEach(function() {
       state.isLoading = true;
       state.viewList = _.fill(Array(3), mockViewWidget);
@@ -32,69 +32,69 @@ describe('reducers/popularViews', function() {
 
     it('appends up to 3 elements to the viewList', function() {
       var payload = _.fill(Array(4), mockViewWidget);
-      state = reducer(state, receivePopularViews(payload));
+      state = reducer(state, receiveRelatedViews(payload));
       expect(state.viewList).to.have.length(6);
     });
 
     it('sets hasMore to true if there are more than 3 elements in the payload', function() {
       var payload = _.fill(Array(4), mockViewWidget);
-      state = reducer(state, receivePopularViews(payload));
+      state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasMore).to.equal(true);
     });
 
     it('sets hasMore to false if there are less than 3 elements in the payload', function() {
       var payload = _.fill(Array(2), mockViewWidget);
-      state = reducer(state, receivePopularViews(payload));
+      state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasMore).to.equal(false);
     });
 
     it('sets hasError to false', function() {
       state.hasError = true;
       var payload = _.fill(Array(2), mockViewWidget);
-      state = reducer(state, receivePopularViews(payload));
+      state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasError).to.equal(false);
     });
 
     it('sets isLoading to false', function() {
-      state = reducer(state, receivePopularViews([]));
+      state = reducer(state, receiveRelatedViews([]));
       expect(state.isLoading).to.equal(false);
     });
   });
 
-  describe('HANDLE_POPULAR_VIEWS_ERROR', function() {
+  describe('HANDLE_RELATED_VIEWS_ERROR', function() {
     beforeEach(function() {
       state.isLoading = true;
       state.hasError = false;
     });
 
     it('sets isLoading to false', function() {
-      state = reducer(state, handlePopularViewsError());
+      state = reducer(state, handleRelatedViewsError());
       expect(state.isLoading).to.equal(false);
     });
 
     it('sets hasError to true', function() {
-      state = reducer(state, handlePopularViewsError());
+      state = reducer(state, handleRelatedViewsError());
       expect(state.hasError).to.equal(true);
     });
   });
 
-  describe('DISMISS_POPULAR_VIEWS_ERROR', function() {
+  describe('DISMISS_RELATED_VIEWS_ERROR', function() {
     beforeEach(function() {
       state.hasError = true;
     });
 
     it('sets hasError to false', function() {
-      state = reducer(state, dismissPopularViewsError());
+      state = reducer(state, dismissRelatedViewsError());
       expect(state.hasError).to.equal(false);
     });
   });
 
-  describe('TOGGLE_POPULAR_VIEWS', function() {
+  describe('TOGGLE_RELATED_VIEWS', function() {
     it('toggles isCollapsed', function() {
       state.isCollapsed = false;
-      state = reducer(state, togglePopularViews());
+      state = reducer(state, toggleRelatedViews());
       expect(state.isCollapsed).to.equal(true);
-      state = reducer(state, togglePopularViews());
+      state = reducer(state, toggleRelatedViews());
       expect(state.isCollapsed).to.equal(false);
     });
   });

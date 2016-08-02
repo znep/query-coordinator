@@ -5,42 +5,12 @@ class DatasetLandingPage
   # Our different search services accept different sort_by values.
   # Cly: name, date, most_accessed
   # Cetera: relevance, most_accessed, alpha/name, newest/date, oldest, last_modified
-  def get_related_views(uid, cookie_string, request_id, sort_by = 'most_accessed', locale = nil)
+  def get_derived_views(uid, cookie_string, request_id, limit = nil, offset = nil, sort_by = 'most_accessed', locale = nil)
     view = View.find(uid)
 
     return [] if view.nil?
 
-    if view.is_public?
-      related_views = Cetera.get_derived_from_views(
-        uid_to_search_cetera(view),
-        {
-          :cookie_string => cookie_string,
-          :request_id => request_id,
-          :locale => locale,
-          :sortBy => sort_by
-        }
-      )
-    else
-      related_views = view.find_dataset_landing_page_related_content(sort_by) || []
-    end
-
-    # We are using threads here because stories need a separate request for its preview image
-    formatted_related_views = []
-    related_views_threads = related_views.map do |view|
-      Thread.new do
-        formatted_related_views << format_view_widget(view, cookie_string, request_id)
-      end
-    end
-
-    related_views_threads.each { |thread| thread.join }
-    formatted_related_views
-  end
-
-  def get_popular_views(uid, cookie_string, request_id, limit = nil, offset = nil, locale = nil)
-    view = View.find(uid)
-
-    return [] if view.nil?
-
+    # TODO use the asset_selector endpoint instead of calling two different services
     if view.is_public?
       options = {
         :cookie_string => cookie_string,
@@ -48,26 +18,28 @@ class DatasetLandingPage
         :limit => limit,
         :offset => offset,
         :locale => locale,
-        :sortBy => 'most_accessed'
+        :sortBy => sort_by,
+        :boostStories => 1.3,
+        :boostDatalenses => 1.15
       }.compact
 
-      popular_views = Cetera.get_derived_from_views(uid_to_search_cetera(view), options)
+      derived_views = Cetera.get_derived_from_views(uid_to_search_cetera(view), options)
     else
-      popular_views = view.try(:find_dataset_landing_page_related_content) || []
-      limit = limit || popular_views.length
-      popular_views = popular_views.slice(offset.to_i, limit.to_i) || []
+      derived_views = view.find_dataset_landing_page_related_content(sort_by) || []
+      limit = limit || derived_views.length
+      derived_views = derived_views.slice(offset.to_i, limit.to_i) || []
     end
 
     # We are using threads here because stories need a separate request for its preview image
-    formatted_popular_views = []
-    popular_views_threads = popular_views.map do |view|
+    formatted_derived_views = []
+    derived_views_threads = derived_views.map do |view|
       Thread.new do
-        formatted_popular_views << format_view_widget(view, cookie_string, request_id)
+        formatted_derived_views << format_view_widget(view, cookie_string, request_id)
       end
     end
 
-    popular_views_threads.each { |thread| thread.join }
-    formatted_popular_views
+    derived_views_threads.each { |thread| thread.join }
+    formatted_derived_views
   end
 
   def get_featured_content(uid, cookie_string, request_id)

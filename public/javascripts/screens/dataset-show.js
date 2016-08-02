@@ -770,8 +770,8 @@ $(function() {
     // register opening
     blist.dataset.registerOpening(document.referrer);
 
-    // set up the main menu
-    if (!_.include(['blist', 'blob', 'href'], blist.dataset.type) &&
+    // avoid showing "Based on" for default views
+    if (!_.include(['blist', 'blob', 'href', 'metadata_table'], blist.dataset.type) &&
       !blist.dataset.isGeoDataset()) {
       blist.dataset.getParentView(function(parDS) {
         if (!$.isBlank(parDS)) {

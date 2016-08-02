@@ -317,7 +317,7 @@ const mapStateToProps = state => ({
   showNotConfiguredMessage: state.getIn(['editMultipleItemsForm', 'showNotConfiguredMessage'])
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   updateFormData: (newData) => dispatch(updateMultipleItemsFormData(newData)),
   dismissModal: () => dispatch(closeEditMultipleItemsModal()),
   updateGoals: (goals, data) => dispatch(updateMultipleGoals(goals, data))

@@ -96,25 +96,6 @@ body {
         }
       }
 
-      .dropdown.download {
-
-        .geo-layer-heading {
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          display: block;
-          text-align: left;
-          padding: 8px 15px;
-          padding-top: 16px;
-          font-weight: 600;
-          cursor: default;
-        }
-
-        .geo-layer-export a {
-          padding-left: 25px;
-        }
-      }
-
       .grid {
         color: $grid-link-color;
 
@@ -152,7 +133,7 @@ body {
   @media(max-width: $small) {
     .entry-header.dataset-landing-page-header {
       .entry-actions {
-        flex: 1 0;
+        flex: 1 0 auto;
 
         .btn-group {
           width: 100%;
@@ -271,7 +252,7 @@ main.container.landing-page-container {
       }
     }
 
-    &.popular-views {
+    &.related-views {
       .result-card:not(.loading-card) {
         opacity: 0;
       }

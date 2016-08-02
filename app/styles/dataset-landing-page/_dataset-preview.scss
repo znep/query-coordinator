@@ -12,11 +12,16 @@
     background: $white;
     border: 1px $light-grey-4 solid;
     border-bottom-width: 2px;
-    height: 668px;
+    height: 653px;
+    position: relative;
 
     .table-spinner {
       display: flex;
-      height: 100%;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
 
       .spinner-default {
         margin: auto;

@@ -32,7 +32,6 @@ export var InfoPane = React.createClass({
 
   render: function() {
     var { view, onClickGrid, onDownloadData } = this.props;
-    var { defaultToDatasetLandingPage } = window.serverConfig.featureFlags;
 
     var privateIcon;
     var viewDataButton;
@@ -78,21 +77,21 @@ export var InfoPane = React.createClass({
       </button>
     );
 
-    var contactFormButton = defaultToDatasetLandingPage ?
+    var contactFormButton = (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="contact-form">
           {I18n.action_buttons.contact_owner}
         </a>
-      </li> :
-      null;
+      </li>
+    );
 
-    var commentLink = defaultToDatasetLandingPage ?
+    var commentLink = (
       <li>
         <a className="option" href={`${view.gridUrl}?pane=feed`}>
           {I18n.action_buttons.comment}
         </a>
-      </li> :
-      null;
+      </li>
+    );
 
     moreActions = (
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">

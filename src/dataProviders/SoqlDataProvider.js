@@ -67,32 +67,15 @@ function SoqlDataProvider(config) {
       );
   };
 
-  this.getRowCount = function(whereClauseComponents, allowObeDataset) {
-    var alias;
-    var url;
+  this.getRowCount = function(whereClauseComponents) {
+    var alias = '__count_alias__'; // lowercase in order to deal with OBE norms
     var whereClause = (whereClauseComponents) ?
       '&$where={0}'.format(whereClauseComponents) :
       '';
-
-    // TODO: Remove the allowObeDataset path once we no longer need to support OBE datasets
-    //
-    // OBE queries are routed through Core, which sanitizes everything to lower case.
-    // NBE queries go directly to Soda Fountain, which doesn't convert to lower case.
-    // The end result is that queries for OBE datasets don't respect the
-    // capitalization of aliases whereas queries for NBE datasets do.
-    if (allowObeDataset) {
-      alias = '__count_alias__';
-      url = urlForQuery(
-        '$select=count(*) as {0}{1}'.
-          format(alias, whereClause)
-      );
-    } else {
-      alias = '__COUNT_ALIAS__';
-      url = urlForQuery(
-        '$select=count(*) as {0}{1}&$$$read_from_nbe=true&$$$version=2.1'.
-          format(alias, whereClause)
-      );
-    }
+    var url = urlForQuery(
+      '$select=count(*) as {0}{1}'.
+        format(alias, whereClause)
+    );
 
     return makeSoqlGetRequest(url).
       then(
@@ -163,10 +146,11 @@ function SoqlDataProvider(config) {
    *                           }
    * @param {Number} offset - Skip this many rows.
    * @param {Number} limit - Fetch this many rows, starting from offset.
+   * @param {String} whereClauseComponents - Conditions which rows should match.
    *
    * @return {Promise}
    */
-  this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents, allowObeDataset) {
+  this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents) {
     var queryString;
     var url;
 
@@ -182,33 +166,16 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    // TODO: Remove the allowObeDataset path once we no longer need to support OBE datasets
-    //
-    // Note: The 3 $ signs are eventually collapsed down to two $ signs, because
-    // of strange corner-casey behavior of String.format.
-    if (allowObeDataset) {
-      queryString =
-        '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.
-        format(
-          columnNames.map(escapeColumnName).join(','),
-          order[0].columnName,
-          (order[0].ascending ? 'ASC' : 'DESC'),
-          limit,
-          offset,
-          whereClauseComponents ? '&$where=' + whereClauseComponents : ''
-        );
-    } else {
-      queryString =
-        '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}&$$$read_from_nbe=true&$$$version=2.1'.
-        format(
-          columnNames.map(escapeColumnName).join(','),
-          order[0].columnName,
-          (order[0].ascending ? 'ASC' : 'DESC'),
-          limit,
-          offset,
-          whereClauseComponents ? '&$where=' + whereClauseComponents : ''
-        );
-    }
+    queryString =
+      '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.
+      format(
+        columnNames.map(escapeColumnName).join(','),
+        order[0].columnName,
+        (order[0].ascending ? 'ASC' : 'DESC'),
+        limit,
+        offset,
+        whereClauseComponents ? '&$where=' + whereClauseComponents : ''
+      );
     url = urlForQuery(queryString);
 
     return makeSoqlGetRequest(url).

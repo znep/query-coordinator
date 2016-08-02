@@ -19,22 +19,17 @@ function MetadataProvider(config) {
    */
 
   /**
-   * Gets dataset metadata from /api/views/4x4.json?read_from_nbe=true.
+   * Gets dataset metadata from /api/views/4x4.json.
    *
    * NOTE:
    * Columns are structured in an Array.
    * (See: https://localhost/api/docs/types#View)
    */
-  this.getDatasetMetadata = function(allowObeDataset) {
+  this.getDatasetMetadata = function() {
     var url = 'https://{0}/api/views/{1}.json'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
     );
-
-    // TODO: Remove this check once we no longer need to support OBE datasets
-    if (!allowObeDataset) {
-      url += '?read_from_nbe=true';
-    }
 
     return Promise.resolve($.get(url));
   };

@@ -133,7 +133,7 @@ describe('SoqlDataProvider', function() {
 
   var EXPECTED_ROW_COUNT = 100;
 
-  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__COUNT_ALIAS__: EXPECTED_ROW_COUNT}]);
+  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__count_alias__: EXPECTED_ROW_COUNT}]);
 
   var server;
 
@@ -623,18 +623,8 @@ describe('SoqlDataProvider', function() {
         var resultantQueryParts = pair.resultantQueryParts;
         var url;
 
-        it('should query the NBE by default', function() {
+        it('should query', function() {
           soqlDataProvider.getTableData.apply(soqlDataProvider, args);
-
-          url = $ajaxStub.getCalls()[0].args[0].url;
-
-          assert.lengthOf($ajaxStub.getCalls(), 1);
-          assert.include(url, '$$read_from_nbe=true');
-          assert.include(url, '$$version=2.1');
-        });
-
-        it('should not default to the NBE if allowObeDataset is true', function() {
-          soqlDataProvider.getTableData.apply(soqlDataProvider, args.concat(['', true]));
 
           url = $ajaxStub.getCalls()[0].args[0].url;
 
@@ -840,30 +830,13 @@ describe('SoqlDataProvider', function() {
       server.restore();
     });
 
-    it('should query the NBE by default', function() {
+    it('should query', function() {
       soqlDataProvider.getRowCount(); // Discard response, we don't care.
-      assert.lengthOf(server.requests, 1);
-      assert.include(
-        server.requests[0].url,
-        '$$read_from_nbe=true'
-      );
-      assert.include(
-        server.requests[0].url,
-        '$$version=2.1'
-      );
-    });
+      var url = server.requests[0].url;
 
-    it('should not default to the NBE when allowObeDataset is true', function() {
-      soqlDataProvider.getRowCount('', true); // Discard response, we don't care.
       assert.lengthOf(server.requests, 1);
-      assert.notInclude(
-        server.requests[0].url,
-        '$$read_from_nbe=true'
-      );
-      assert.notInclude(
-        server.requests[0].url,
-        '$$version=2.1'
-      );
+      assert.notInclude(url, '$$read_from_nbe=true');
+      assert.notInclude(url, '$$version=2.1');
     });
 
     describe('on request error', function() {

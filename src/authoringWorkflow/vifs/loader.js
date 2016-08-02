@@ -30,7 +30,7 @@ const paths = {
 };
 
 const hasVifPath = (vif) => (path) => _.has(vif, path);
-const getVifPath = (vif) => (path) => _.get(vif, path);
+const getVifPath = (vif) => (path) => _.get(vif, path, null);
 
 export var load = (dispatch, vif) => {
   const has = hasVifPath(vif);

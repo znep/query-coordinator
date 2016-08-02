@@ -73,12 +73,14 @@ export default function columnChart(state, action) {
 
     case SET_MEASURE:
       forEachSeries(state, series => {
+        var aggregationFunction = series.dataSource.measure.aggregationFunction;
+
         series.dataSource.measure.columnName = action.measure;
 
         if (_.isNull(action.measure)) {
           series.dataSource.measure.aggregationFunction = 'count';
-        } else {
-          series.dataSource.measure.aggregationFunction = series.dataSource.measure.aggregationFunction || null;
+        } else if (aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
         }
       });
       break;

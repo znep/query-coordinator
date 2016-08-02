@@ -70,12 +70,14 @@ export default function regionMap(state, action) {
 
     case SET_MEASURE:
       forEachSeries(state, series => {
+        var aggregationFunction = series.dataSource.measure.aggregationFunction;
+
         setValueOrDefaultValue(series, 'dataSource.measure.columnName', action.measure, null);
 
         if (_.isNull(action.measure)) {
           series.dataSource.measure.aggregationFunction = 'count';
-        } else {
-          series.dataSource.measure.aggregationFunction = series.dataSource.measure.aggregationFunction || null;
+        } else if (aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
         }
       });
       break;

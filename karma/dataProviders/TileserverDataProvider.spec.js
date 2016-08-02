@@ -19,8 +19,7 @@ describe('TileserverDataProvider', function() {
   var VALID_X = 1;
   var VALID_Y = 1;
 
-  var TILESERVER_HOST_PATTERN = 'tileserver[123]\\.api\\.us\\.socrata\\.com';
-  var ORIGIN_HOST_PATTERN = window.location.host;
+  var TILESERVER_HOST_PATTERN = window.location.host; // TODO: See extensive comments in fetchTileserverHostsForDomain.
   var TILE_PATTERN = 'tiles\\/{0}\\/{1}\\/{2}\\/{3}\\/{4}\\.pbf'.format(
     VALID_DATASET_UID.split('-').join('\\-'),
     VALID_COLUMN_NAME,
@@ -125,7 +124,6 @@ describe('TileserverDataProvider', function() {
           assert.equal(request.method, 'GET');
 
           assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
 
           assert.match(request.url, new RegExp(TILE_PATTERN));
           assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
@@ -148,7 +146,6 @@ describe('TileserverDataProvider', function() {
           assert.equal(request.method, 'GET');
 
           assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
 
           assert.match(request.url, new RegExp(TILE_PATTERN));
           assert.notMatch(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
@@ -171,7 +168,6 @@ describe('TileserverDataProvider', function() {
           assert.equal(request.method, 'GET');
 
           assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-          assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
 
           assert.match(request.url, new RegExp(TILE_PATTERN));
           assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));
@@ -192,7 +188,6 @@ describe('TileserverDataProvider', function() {
         assert.equal(request.method, 'GET');
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
-        assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
 
         assert.match(request.url, new RegExp(TILE_PATTERN));
         assert.match(request.url, new RegExp(WHERE_CLAUSE_PATTERN));

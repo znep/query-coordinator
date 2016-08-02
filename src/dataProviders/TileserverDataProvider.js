@@ -5,38 +5,49 @@ var _ = require('lodash');
 var MAX_FEATURES_PER_TILE = 256 * 256;
 var DEFAULT_FEATURES_PER_TILE = 50000;
 
-const TILESERVER_HOSTS = {
-  'us-west-1': [
-    'https://tileserver1.api.us.socrata.com',
-    'https://tileserver2.api.us.socrata.com',
-    'https://tileserver3.api.us.socrata.com',
-    'https://tileserver4.api.us.socrata.com'
-  ]
-};
+// These should be discovered, but see comment in
+// fetchTileserverHostsForDomain. This is only
+// used to enable testing on example pages.
+const FALLBACK_TILESERVER_HOSTS = [
+  'https://tileserver1.api.us.socrata.com',
+  'https://tileserver2.api.us.socrata.com',
+  'https://tileserver3.api.us.socrata.com',
+  'https://tileserver4.api.us.socrata.com'
+];
 
 /* Given a domain, fetch the tileserver hosts appropriate to that domain.
- * NOTE: Currently a stub, as we lack the API to get this information.
- * This stub won't work for EU domains.
+ * NOTE: Currently a stub, as we lack the API to get this information (EN-8643).
+ * Tileserver doesn't currently support cross-domain requests (EN-8638), but the
+ * sharded (tileserver?.api.us.socrata.com) endpoints do support cross-domain
+ * requests. However, we can't know for sure if it's safe to use the sharded
+ * endpoints (the correct set needs to be picked on a per-domain basis, EN-8643).
+ * Given this, we need to use our only remaining option, and that is to use the domain
+ * the page is hosted on as the tileserver host. This will theoretically fail for a couple
+ * reasons:
+ *
+ * 1. Map being embedded is in a different environment than the page being viewed (i.e, a
+ *    map from us-west-2 being embedded in eu-west-1).
+ * 2. Map is being embedded on a non-socrata page.
+ *
+ * Neither of these scenarios are possible today in storyteller or datalens.
+ *
+ * However, this will block a common and useful testing tool: the pages found in
+ * examples/. We special-case these to use the sharded US tileserver hosts, which
+ * are the only hosts that will work in this case. That will get testing unblocked
+ * until one of the two tickets listed below are addressed in tileserver itself.
+ *
  * See:
  *     https://socrata.atlassian.net/browse/EN-8638 and
  *     https://socrata.atlassian.net/browse/EN-8643
  */
 const fetchTileserverHostsForDomain = _.memoize((domain) => {
-  // Yes, this is brittle. It's probably good enough for today. Note we have no customers
-  // in EU using storyteller right now. Obviously we need to make this work in EU, but it
-  // isn't practical until at least EN-8638 is resolved.
   utils.assertIsOneOfTypes(domain, 'string');
   const currentWindowLocationAsTileserver = `${window.location.protocol}//${window.location.host}`;
-  const isStaging = _.endsWith(domain, 'test-socrata.com');
-  const isRC = _.endsWith(domain, 'rc-socrata.com');
-  const hasTLD = _.includes(domain, '.');
-  if (isStaging || isRC || !hasTLD) {
-    if (window.location.protocol === 'file:') {
-      console.warn('Attempting to load tiles from disk will fail (window.location.protocol is file:). Serve this page with HTTP instead.');
-    }
-    return Promise.resolve([currentWindowLocationAsTileserver]);
+  if (window.location.protocol === 'file:') {
+    console.warn('Attempting to load tiles from disk will fail (window.location.protocol is file:). Falling back to us-west-2 tileserver hosts; these may fail.');
+    return Promise.resolve(FALLBACK_TILESERVER_HOSTS);
   } else {
-    return Promise.resolve(TILESERVER_HOSTS['us-west-1']);
+    return Promise.resolve([currentWindowLocationAsTileserver]);
   }
 });
 

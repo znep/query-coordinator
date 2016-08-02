@@ -121,7 +121,7 @@
 
         isAvailable: function() {
             return (this._view.valid || isEdit(this)) &&
-                (_.include(this._view.metadata.availableDisplayTypes, 'map') &&
+                (_.include(this._view.metadata.availableDisplayTypes, 'map') ||
                     this._view.shouldShowViewCreationOptions());
         },
 

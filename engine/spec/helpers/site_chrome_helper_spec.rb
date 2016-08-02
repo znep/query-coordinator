@@ -95,24 +95,24 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe '#copyright' do
     it 'returns only the copyright and year if there is no site name' do
-      allow(helper).to receive(:footer_title).and_return(nil)
+      allow(helper).to receive(:copyright_source).and_return(nil)
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
-      expect(helper.copyright).to eq("\u00A9 1984")
+      expect(helper.copyright).to eq("&copy; 1984 ")
     end
 
     it 'returns only the copyright and year if site name is empty' do
-      allow(helper).to receive(:footer_title).and_return("")
+      allow(helper).to receive(:copyright_source).and_return("")
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
-      expect(helper.copyright).to eq("\u00A9 1984")
+      expect(helper.copyright).to eq("&copy; 1984 ")
     end
 
     it 'returns the copyright and year and site name' do
-      allow(helper).to receive(:footer_title).and_return(%Q(Seattle's silly data!))
+      allow(helper).to receive(:copyright_source).and_return(%Q(Seattle Open Data))
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
-      expect(helper.copyright).to eq(%Q(\u00A9 1984 Seattle's silly data!))
+      expect(helper.copyright).to eq(%Q(&copy; 1984 Seattle Open Data))
     end
   end
 

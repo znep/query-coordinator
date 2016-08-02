@@ -33,3 +33,19 @@
     target="_blank">Powered by Socrata</a>
   <%- end -%>
 </form>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      var alreadySubmitting = false;
+      $('form.socrataForm').submit(function(evt) {
+        if (alreadySubmitting) {
+          evt.preventDefault();
+          return;
+        }
+        alreadySubmitting = true;
+        $(this).find('.submit.button').addClass('disabled');
+      });
+    });
+  </script>
+<% end %>

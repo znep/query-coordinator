@@ -11,6 +11,7 @@ const paths = {
   domain: 'series[0].dataSource.domain',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
+  mapCenterAndZoom: 'configuration.mapCenterAndZoom',
   measureAggregationFunction: 'series[0].dataSource.measure.aggregationFunction',
   measureColumnName: 'series[0].dataSource.measure.columnName',
   negativeColor: 'configuration.legend.negativeColor',
@@ -32,7 +33,16 @@ const paths = {
 const hasVifPath = (vif) => (path) => _.has(vif, path);
 const getVifPath = (vif) => (path) => _.get(vif, path, null);
 
-export var load = (dispatch, vif) => {
+/**
+ * load() communicates to the redux store the individual
+ * pieces of any VIF it encounters and attempts to create
+ * actions. These actions are then processed by each VIF reducer and
+ * applied to its configuration (if relevant).
+ *
+ * Loading also includes kicking off the dataSource HTTP requests
+ * that grab dataset metadata.
+ */
+export const load = (dispatch, vif) => {
   const has = hasVifPath(vif);
   const get = getVifPath(vif);
 
@@ -64,6 +74,10 @@ export var load = (dispatch, vif) => {
     dispatch(actions.setLabelLeft(get(paths.labelLeft)));
   }
 
+  if (has(paths.mapCenterAndZoom)) {
+    dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
+  }
+
   if (has(paths.measureAggregationFunction)) {
     dispatch(actions.setMeasureAggregation(get(paths.measureAggregationFunction)));
   }
@@ -72,7 +86,7 @@ export var load = (dispatch, vif) => {
     dispatch(actions.setMeasure(get(paths.measureColumnName)));
   }
 
-  if(has(get(paths.negativeColor))) {
+  if(has(paths.negativeColor)) {
     dispatch(actions.setNegativeColor(get(paths.negativeColor)));
   }
 
@@ -80,7 +94,7 @@ export var load = (dispatch, vif) => {
     dispatch(actions.setPointOpacity(get(paths.pointOpacity)));
   }
 
-  if (has(get(paths.positiveColor))) {
+  if (has(paths.positiveColor)) {
     dispatch(actions.setPositiveColor(get(paths.positiveColor)));
   }
 
@@ -112,7 +126,7 @@ export var load = (dispatch, vif) => {
     dispatch(actions.setVisualizationType(get(paths.visualizationType)));
   }
 
-  if(has(get(paths.zeroColor))) {
+  if(has(paths.zeroColor)) {
     dispatch(actions.setZeroColor(get(paths.zeroColor)));
   }
 

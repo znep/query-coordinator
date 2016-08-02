@@ -43,7 +43,7 @@
     var $chart = $('#chart');
     var onComplete = function(result) {
       vif = result.vif;
-      output.innerHTML = JSON.stringify(result.vif, null, 4);
+      output.innerHTML = JSON.stringify(result.vif, null, 2);
       $chart.empty();
 
       switch (result.vif.series[0].type) {
@@ -103,9 +103,7 @@
       };
 
       var ufoSightingsVif = {
-        configuration: {
-          axisLabels: axisLabels
-        },
+        configuration: {},
         format: {
           type: 'visualization_interchange_format',
           version: 2
@@ -205,9 +203,7 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        configuration: {
-          axisLabels: axisLabels
-        },
+        configuration: {},
         format: {
           type: 'visualization_interchange_format',
           version: 2

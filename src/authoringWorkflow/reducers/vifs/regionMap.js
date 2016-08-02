@@ -122,7 +122,7 @@ export default function regionMap(state, action) {
       break;
 
     case SET_POSITIVE_COLOR:
-      _.set(state, 'configuration.legend.positiveColor', active.positiveColor);
+      _.set(state, 'configuration.legend.positiveColor', action.positiveColor);
       break;
 
     case SET_UNIT_ONE:

@@ -1,52 +1,61 @@
 (function($) {
 
-    var typeOrder = ['column', 'stackedcolumn', 'bar', 'stackedbar', 'pie', 'donut', 'line' , 'area', 'timeline', 'bubble', 'treemap'];
+    var typeOrder = ['column', 'stackedcolumn', 'bar', 'stackedbar', 'pie', 'donut', 'line', 'area', 'timeline', 'bubble', 'treemap'];
 
     $.Control.extend('pane_chart_create', {
-        _init: function()
-        {
+        _init: function() {
             var cpObj = this;
             cpObj._super.apply(cpObj, arguments);
-            cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+            cpObj._view.bind('clear_temporary', function() {
+                cpObj.reset();
+            }, cpObj);
 
-            cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e)
-            {
+            cpObj.$dom().delegate('.showConditionalFormatting', 'click', function(e) {
                 e.preventDefault();
-                if ($.subKeyDefined(blist, 'datasetPage.sidebar'))
-                { blist.datasetPage.sidebar.show('filter.conditionalFormatting'); }
+                if ($.subKeyDefined(blist, 'datasetPage.sidebar')) {
+                    blist.datasetPage.sidebar.show('filter.conditionalFormatting');
+                }
             });
 
-            cpObj.$dom().delegate('.clearConditionalFormatting', 'click', function(e)
-            {
+            cpObj.$dom().delegate('.clearConditionalFormatting', 'click', function(e) {
                 e.preventDefault();
                 var metadata = $.extend(true, {}, cpObj._view.metadata);
                 delete metadata.conditionalFormatting;
-                cpObj._view.update({ metadata: metadata });
+                cpObj._view.update({
+                    metadata: metadata
+                });
             });
         },
 
-        render: function()
-        {
+        render: function() {
             var cpObj = this;
-            cpObj._super(null, null, function(completeRerender)
-            {
-                if (completeRerender)
-                {
+            cpObj._super(null, null, function(completeRerender) {
+                if (completeRerender) {
                     //setup DOM
-                    cpObj.$dom().find('.chartTypeSelection .radioLine').each(function(index, node){
-                        $(node).addClass(typeOrder[index])
+                    cpObj.$dom().find('.chartTypeSelection .radioLine').each(function(index, node) {
+                        $(node).addClass(typeOrder[index]);
                     });
 
                     //Push custom icons into sidebar dom
                     cpObj.$dom().find('.chartTypeSelection .formHeader')
-                        .append($.tag({ tagName: 'div', 'class': ['currentSelection'],
-                            contents: [{ tagName: 'span', 'class': ['selectionName']},
-                                       { tagName: 'span', 'class': ['selectionIcon']}]
+                        .append($.tag({
+                            tagName: 'div',
+                            'class': ['currentSelection'],
+                            contents: [{
+                                tagName: 'span',
+                                'class': ['selectionName']
+                            }, {
+                                tagName: 'span',
+                                'class': ['selectionIcon']
+                            }]
                         }));
 
                     //Insert icon elements where needed
                     cpObj.$dom().find('.line.hasIcon')
-                        .after($.tag({ tagName: 'div', 'class': ['lineIcon'] }));
+                        .after($.tag({
+                            tagName: 'div',
+                            'class': ['lineIcon']
+                        }));
 
                     //Repeater add buttons change icon of section
                     cpObj.$dom().find('.hasIcon.repeater .addValue')
@@ -57,9 +66,9 @@
                             function() {
                                 $(this).parent().siblings().filter('.lineIcon').removeClass('hover');
                             }
-                    );
+                        );
 
-                    if(!cpObj._view.metadata.conditionalFormatting){
+                    if (!cpObj._view.metadata.conditionalFormatting) {
                         cpObj.$dom().find('.conditionalFormattingWarning').hide();
                     };
                     //hide *Required text, people get it
@@ -70,30 +79,32 @@
                     //setup eventing
 
                     //Add flyout to unavailable chart types telling which columns are required
-                    cpObj.$dom().find('.unavailable').each(function()
-                    {
+                    cpObj.$dom().find('.unavailable').each(function() {
                         var $t = $(this);
                         var tip = $.htmlUnescape($t.find('label input').attr('title'));
-                        $t.socrataTip({content: tip});
+                        $t.socrataTip({
+                            content: tip
+                        });
                     });
 
                     //takes in classname <'radioLine' ('unavailable')? type>
-                    var setHeader = function(type){
+                    var setHeader = function(type) {
                         var current = type.split(' ')[1];
-                        if(current!='unavailable'){
+                        if (current != 'unavailable') {
                             cpObj.$dom().find('.formSection.chartTypeSelection, .paneContent')
-                            .removeClass(function(i, oldClasses) {
-                                var matches = oldClasses.match(/\S*-selected/);
-                                return ($.isBlank(matches) ? '' : matches.join(' '));
-                            })
-                            .addClass(type+'-selected')
-                            //Set the text to current icon type
-                            .find('.currentSelection .selectionName')
-                            .text(Dataset.chart.types[current].text);
+                                .removeClass(function(i, oldClasses) {
+                                    var matches = oldClasses.match(/\S*-selected/);
+                                    return ($.isBlank(matches) ? '' : matches.join(' '));
+                                })
+                                .addClass(type + '-selected')
+                                //Set the text to current icon type
+                                .find('.currentSelection .selectionName')
+                                .text(Dataset.chart.types[current].text);
                         };
-                    }
-                    if (blist.dataset.displayFormat.chartType){
-                        setHeader('radioLine '+blist.dataset.displayFormat.chartType);
+                    };
+
+                    if (blist.dataset.displayFormat.chartType) {
+                        setHeader('radioLine ' + blist.dataset.displayFormat.chartType);
                     }
 
                     //Bind section classing to chart-type selection
@@ -103,26 +114,30 @@
 
                     //Clicking minus button repeater triggers rerender
                     cpObj.$dom().find('.repeater')
-                            .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget));
-                    });
+                        .delegate('.removeLink', 'click', function(e) {
+                            cpObj._changeHandler($(e.currentTarget));
+                        });
 
                     //Section hiding animations
-                    cpObj.$dom().find('.formSection.selectable .sectionSelect').click( function(e) {
+                    cpObj.$dom().find('.formSection.selectable .sectionSelect').click(function(e) {
                         var $sect = $(e.currentTarget).closest('.formSection');
 
                         //shown/hidden by base-pane eventing so needs to be shown and then reset to for animation to run
-                        if ($sect.hasClass('collapsed'))
-                        { $sect.find('.sectionContent').show().slideUp({duration: 100, easing: 'linear'}); }
-                        else
-                        { $sect.find('.sectionContent').hide().slideDown({duration: 100, easing: 'linear'}); }
+                        if ($sect.hasClass('collapsed')) {
+                            $sect.find('.sectionContent').show().slideUp({
+                                duration: 100,
+                                easing: 'linear'
+                            });
+                        } else {
+                            $sect.find('.sectionContent').hide().slideDown({
+                                duration: 100,
+                                easing: 'linear'
+                            });
+                        }
                     });
 
                 }
             });
-        },
-
-        getTitle: function() {
-            return 'New visualize';
         },
 
         //Append area can be before, after ...
@@ -130,10 +145,10 @@
             var cpObj = this;
 
             var options = {
-                    view: cpObj._view,
-                    isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),
-                    useOnlyIf: true
-            }
+                view: cpObj._view,
+                isEdit: isEdit(cpObj) && !cpObj._view.isGrouped(),
+                useOnlyIf: true
+            };
 
             var result = blist.configs.chart.configChartSelector(options);
 
@@ -149,45 +164,41 @@
             return result;
         },
 
-        getTitle: function()
-        { return $.t('screens.ds.grid_sidebar.chart.title'); },
-
-        _getCurrentData: function()
-        { return this._super() || this._view; },
-
-        isAvailable: function()
-        {
-            return (this._view.valid || isEdit(this)) &&
-                (_.include(this._view.metadata.availableDisplayTypes, 'chart') ||
-                    !this._view.isAltView());
+        getTitle: function() {
+            return $.t('screens.ds.grid_sidebar.chart.title');
         },
 
-        getDisabledSubtitle: function()
-        {
+        _getCurrentData: function() {
+            return this._super() || this._view;
+        },
+
+        isAvailable: function() {
+            return (this._view.valid || isEdit(this)) &&
+                (_.include(this._view.metadata.availableDisplayTypes, 'chart') &&
+                    this._view.shouldShowViewCreationOptions());
+        },
+
+        getDisabledSubtitle: function() {
             return !this._view.valid && !isEdit(this) ?
                 $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.chart.validation.viz_limit');
         },
 
-        validateForm: function()
-        {
+        validateForm: function() {
             var valid = this._super();
             this._updateErrorVisibility();
             return valid;
         },
 
-        _updateErrorVisibility: function(valCols)
-        {
+        _updateErrorVisibility: function(valCols) {
             //If creating from a dataset don't spit warning messages immediately.
             valCols = valCols || this._view.displayFormat.valueColumns;
             var hideInlineErrors = _.isEmpty(valCols) || _.some(valCols, _.isEmpty);
             this.$dom().toggleClass('inlineErrorsHidden', hideInlineErrors || false);
         },
 
-        _changeHandler: function($input)
-        {
+        _changeHandler: function($input) {
             var cpObj = this;
-            _.defer( function()
-            {
+            _.defer(function() {
                 var initSidebarScroll = cpObj.$dom().closest('.panes').scrollTop();
                 var originalChartType = $.subKeyDefined(cpObj._view, 'displayFormat.chartType') ? cpObj._view.displayFormat.chartType : undefined;
                 var isBrandNewChart = _.isEmpty(originalChartType);
@@ -195,16 +206,13 @@
 
                 ///VALIDATE///
 
-                if ($input.data("origname") == "displayFormat.chartType")
-                {
+                if ($input.data("origname") == "displayFormat.chartType") {
                     var newChartType = newValues.displayFormat.chartType;
                     var isSameChart = !isBrandNewChart && originalChartType == newChartType;
-                    if (cpObj.validateForm() || !isSameChart)
-                    {
+                    if (cpObj.validateForm() || !isSameChart) {
                         // Need to run the config through chart translation in case
                         // things need to change/update
-                        if (_.isFunction(Dataset.chart.types[newChartType].translateFormat))
-                        {
+                        if (_.isFunction(Dataset.chart.types[newChartType].translateFormat)) {
                             newValues.displayFormat =
                                 Dataset.chart.types[newChartType].translateFormat(cpObj._view,
                                     newValues.displayFormat);
@@ -213,7 +221,9 @@
                         // For a new chart type selection, push the change through even if we don't validate.
                         // The reset will take care of sanitization itself.
                         cpObj._view.update(
-                            $.extend(true, {}, newValues, {metadata: cpObj._view.metadata})
+                            $.extend(true, {}, newValues, {
+                                metadata: cpObj._view.metadata
+                            })
                         );
                         cpObj._updateErrorVisibility();
                     }
@@ -221,18 +231,18 @@
                     newValues = cpObj._getFormValues();
                 }
 
-                if (!cpObj.validateForm())
-                {
+                if (!cpObj.validateForm()) {
                     cpObj._updateErrorVisibility(newValues.displayFormat.valueColumns);
                     cpObj.$dom().closest('.panes').scrollTop(initSidebarScroll);
                     return;
                 }
 
                 //Clean-up sparse inputs in value column repeater so colors sync and merge correctly.
-                cpObj.$dom().find("[class*='ValueSelection'] .line").each( function (i, el) {
+                cpObj.$dom().find("[class*='ValueSelection'] .line").each(function(i, el) {
                     var $line = $(el);
-                    if ($.isBlank($line.find('.columnSelectControl').val()))
-                    { $line.remove(); }
+                    if ($.isBlank($line.find('.columnSelectControl').val())) {
+                        $line.remove();
+                    }
                 });
 
                 //TODO: clean this up a bit, custom content with linkedFields + onlyIfs behave strangely
@@ -240,19 +250,31 @@
                 var $dsgColors = cpObj.$dom().find('.colorArray');
                 var $colColors = cpObj.$dom().find('.colors');
                 //If manually hidden through onlyIf
-                if ($dsgColors.css('display') == "none" && $colColors)
-                { $colColors.show(); }
-                else
-                { $colColors.hide(); }
+                if ($dsgColors.css('display') == "none" && $colColors) {
+                    $colColors.show();
+                } else {
+                    $colColors.hide();
+                }
 
-                var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
-                    newValues, {metadata: cpObj._view.metadata});
+                var view = $.extend(true, {
+                        metadata: {
+                            renderTypeConfig: {
+                                visible: {
+                                    chart: true
+                                }
+                            }
+                        }
+                    },
+                    newValues, {
+                        metadata: cpObj._view.metadata
+                    });
 
-                var addColumn = function(colId)
-                {
+                var addColumn = function(colId) {
                     var col = cpObj._view.columnForIdentifier(colId);
-                    if (_.any(col.renderType.aggregates, function(a) { return a.value == 'sum'; }))
-                    col.format.aggregate = 'sum';
+                    if (_.any(col.renderType.aggregates, function(a) {
+                            return a.value == 'sum';
+                        }))
+                        col.format.aggregate = 'sum';
                 };
 
                 _.each(view.displayFormat.fixedColumns || [], addColumn);
@@ -260,18 +282,16 @@
                 // Conditionally apply a default pie/donut sort.
                 var pieStyleCharts = ['pie', 'donut'];
 
-                var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType)
+                var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType);
                 var isSameChartType = !isBrandNewChart && originalChartType == view.displayFormat.chartType;
-                if ( (isBrandNewChart || isSameChartType) && isPieStyleChart &&
-                        !$.subKeyDefined(cpObj, '_view.metadata.jsonQuery.order'))
-                {
+                if ((isBrandNewChart || isSameChartType) && isPieStyleChart &&
+                    !$.subKeyDefined(cpObj, '_view.metadata.jsonQuery.order')) {
                     view.metadata = $.extend(true, view.metadata, cpObj._view.metadata);
                     view.metadata.jsonQuery.order = cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns);
                 }
 
                 if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
-                    (view.displayFormat.stacking == true))
-                {
+                    (view.displayFormat.stacking == true)) {
                     view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
                 }
                 cpObj._view.update(view);
@@ -282,13 +302,11 @@
                 //TEST WITH FILTERS
 
                 var didCallback = false;
-                if (isEdit(cpObj))
-                {
+                if (isEdit(cpObj)) {
                     // We need to show all columns when editing a view so that
                     // any filters/facets work properly
                     var colIds = _.pluck(cpObj._view.realColumns, 'id');
-                    if (colIds.length > 0)
-                    {
+                    if (colIds.length > 0) {
                         cpObj._view.setVisibleColumns(colIds, null, true);
                         didCallback = true;
                     }
@@ -301,22 +319,20 @@
         },
 
         // NOTE: Keep this in sync with the one in d3.impl.pie.js!
-        _getPieDefaultOrderBy: function(valueColumns)
-        {
+        _getPieDefaultOrderBy: function(valueColumns) {
             var cpObj = this;
-            return _.map(valueColumns, function(col)
-                {
-                    return {
-                        ascending: false,
-                        columnFieldName: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).fieldName
-                    };
-                });
+            return _.map(valueColumns, function(col) {
+                return {
+                    ascending: false,
+                    columnFieldName: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).fieldName
+                };
+            });
         }
 
     }, {
         name: 'chart_create'
     },
-        'controlPane');
+    'controlPane');
 
     var isEdit = function(cpObj) {
         return _.include(cpObj._view.metadata.availableDisplayTypes, 'chart');

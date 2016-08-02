@@ -220,9 +220,14 @@
       return this.metadata.renderTypeConfig.visible.table;
     },
 
-    isAltView: function() {
-      return !_.isEqual(['table', 'fatrow', 'page'],
-        this.metadata.availableDisplayTypes);
+    // Checks to determine whether or not options such as calendar-create, map-create, or chart-config should be
+    // visible. These options are only available if the availableDisplayTypes are a subset of
+    // ['table', 'fatrow', 'page', 'assetinventory']
+    shouldShowViewCreationOptions: function() {
+      return _.difference(
+        this.metadata.availableDisplayTypes,
+        ['table', 'fatrow', 'page', 'assetinventory']
+      ).length == 0;
     },
 
     isGrouped: function() {

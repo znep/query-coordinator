@@ -21,3 +21,8 @@ export function getById(goalId) {
   const path = `${goalsPrefix}/${goalId}`;
   return api.get('v1', path, {});
 }
+
+export function fetchCsvData() {
+  const path = `${goalsPrefix}/list.csv`;
+  return api.get('v1', path, {});
+}

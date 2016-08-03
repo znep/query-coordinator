@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import api from '../api/api';
+import * as api from '../api';
 
 import { updateCachedGoals } from './goalTableActions';
 

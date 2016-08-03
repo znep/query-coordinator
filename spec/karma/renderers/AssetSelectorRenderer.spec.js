@@ -613,10 +613,10 @@ describe('AssetSelectorRenderer', function() {
         });
       });
 
-      it('renders visualziation options', function() {
+      it('renders visualization options', function() {
         assert.lengthOf(container.find('.visualization-options'), 1);
         assert.lengthOf(container.find('[data-visualization-option="INSERT_VISUALIZATION"]'), 1);
-        assert.lengthOf(container.find('[data-visualization-option="CREATE_VISUALIZATION"]'), 1);
+        assert.lengthOf(container.find('[data-visualization-option="CREATE_VISUALIZATION"]'), 0);
         assert.lengthOf(container.find('[data-visualization-option="AUTHOR_VISUALIZATION"]'), 1);
       });
 

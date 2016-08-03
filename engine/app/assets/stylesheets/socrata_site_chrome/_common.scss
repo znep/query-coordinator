@@ -117,6 +117,7 @@ header#site-chrome-header, footer#site-chrome-footer {
         z-index: 3;
         vertical-align: top;
         height: $searchbox_height - 18; // 16px padding + 2px border
+        box-sizing: content-box;
       }
 
       button.search-button {

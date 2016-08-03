@@ -1756,7 +1756,7 @@ en:
     admin:
       listing:
         title: Title
-        owner: Owner
+        owner: Last updated by
         updated_at: Updated
         visibility: Visibility
         goal_status: Goal Status
@@ -1803,7 +1803,7 @@ en:
         prevailing_measure: Prevailing Measure
         goal_updated: Goal Updated
         dashboard: Dashboard
-        goal_owner: Goal Owner
+        goal_owner: Last updated by
         category: Category
         dataset_updated: Dataset Updated
         dataset_owner: Dataset Owner

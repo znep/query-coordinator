@@ -108,11 +108,11 @@ function _updateVisualization($element, componentData) {
     vif.configuration.tileserverHosts = [
       'https://' + _.get(vif, 'series[0].dataSource.domain', vif.domain)
     ];
-    vif.configuration.baseLayerUrl = Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER;
-    vif.configuration.baseLayerOpacity = 0.8;
-    vif.configuration.hover = true;
-    vif.configuration.locateUser = true;
-    vif.configuration.panAndZoom = true;
+    vif.configuration.baseLayerUrl = _.get(vif, 'configuration.baseLayerUrl', Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER);
+    vif.configuration.baseLayerOpacity = _.get(vif, 'configuration.baseLayerOpacity', 0.8);
+    vif.configuration.hover = _.get(vif, 'configuration.hover', true);
+    vif.configuration.locateUser = _.get(vif, 'configuration.locateUser', true);
+    vif.configuration.panAndZoom = _.get(vif, 'conifugration.panAndZoom', true);
 
     // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //

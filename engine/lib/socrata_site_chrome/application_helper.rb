@@ -53,6 +53,10 @@ module SocrataSiteChrome
       get_site_chrome.footer[:copyright_notice] == 'true'
     end
 
+    def show_powered_by?
+      true # TODO - add field for this in admin panel
+    end
+
     def social_link_icon(type)
       {
         'facebook' => 'facebook',

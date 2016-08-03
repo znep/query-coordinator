@@ -1,14 +1,13 @@
 <footer id="site-chrome-footer" class="<%= local_assigns[:size] %>">
-  <div class="footer-content">
+  <div class="footer-content <%= footer_title.present? ? '' : 'centered' %>">
     <div class="logo">
-      <%= logo(get_site_chrome.footer) %>
-      <span class="site-name"><%= footer_title %></span>
-
-      <div class="site-chrome-social-links">
-        <%= render 'site_chrome/social_links', show_label: true %>
-      </div>
+      <a href="/">
+        <%= logo(get_site_chrome.footer) %>
+        <% if footer_title.present? %>
+          <span class="site-name"><%= footer_title %></span>
+        <% end %>
+      </a>
     </div>
-
     <div class="links">
       <ul class="links-col">
         <% valid_links(get_site_chrome.footer[:links]).each do |link| %>
@@ -18,11 +17,24 @@
         <% end %>
       </ul>
     </div>
-  </div>
+    <div class="addendum">
+      <%- if show_powered_by? -%>
+        <span class="powered-by-socrata">
+          <span class="powered-by">Powered By</span> <!-- TODO: localization -->
+          <img class="logo" alt="Socrata" src="/socrata_site_chrome/images/socrata-logo-pb.png" />
+        </span>
+      <%- end -%>
 
-  <%- if show_copyright? -%>
-    <div class="copyright">
-      <%= copyright %>
+      <div class="site-chrome-social-links">
+        <%= render 'site_chrome/social_links' %>
+      </div>
+
+      <%- if show_copyright? -%>
+        <div class="site-chrome-copyright">
+          <%= copyright %>
+        </div>
+      <%- end -%>
+
     </div>
-  <%- end -%>
+  </div>
 </footer>

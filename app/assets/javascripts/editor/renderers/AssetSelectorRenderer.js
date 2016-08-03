@@ -609,19 +609,22 @@ export default function AssetSelectorRenderer(options) {
             '<li>',
             {'data-visualization-option': 'INSERT_TABLE'}
           ).
-            append(insertTableHeader, insertTableDescription),
-          $(
-            '<li>',
-            {'data-visualization-option': 'CREATE_VISUALIZATION'}
-          ).append(createVisualizationHeader, createVisualizationDescription)
+            append(insertTableHeader, insertTableDescription)
         ]);
 
     if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
       visualizationOptions.append(
-          $(
-            '<li>',
-            {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
-          ).append(authorVisualizationHeader, authorVisualizationDescription)
+        $(
+          '<li>',
+          {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
+        ).append(authorVisualizationHeader, authorVisualizationDescription)
+      );
+    } else {
+      visualizationOptions.append(
+        $(
+          '<li>',
+          {'data-visualization-option': 'CREATE_VISUALIZATION'}
+        ).append(createVisualizationHeader, createVisualizationDescription)
       );
     }
 

@@ -490,21 +490,21 @@ $.fn.socrataSvgRegionMap = function(vif) {
 
     $.fn.socrataSvgRegionMap.validateVif(vifToRender).then(() => {
 
-      if (
-        _.isString(
-          _.get(
-            vifToRender,
-            'configuration.shapefile.geometryLabel'
-          )
-        )
-      ) {
+      var geometryLabel = _.get(vifToRender, 'configuration.shapefile.geometryLabel');
+      var primaryKey = _.get(vifToRender, 'configuration.shapefile.primaryKey');
+
+      var hasGeometryLabel = _.isString(geometryLabel);
+      var hasPrimaryKey = _.isString(primaryKey);
+
+      if (hasGeometryLabel && hasPrimaryKey) {
 
         // This fake shapefile dataset metadata response is used so that we can
         // conform to the promise chain all the way down to visualization render,
         // rather than conditionally requiring one or two requests to complete
         // before proceeding.
         shapefileMetadataRequest = Promise.resolve({
-          geometryLabel: vif.configuration.shapefile.geometryLabel
+          geometryLabel: vif.configuration.shapefile.geometryLabel,
+          featurePk: vif.configuration.shapefile.primaryKey
         });
       } else {
 

@@ -566,7 +566,7 @@ $(function() {
     var searchTerm = $searchBox.val();
     var clearSearchClicked = _.include(e.target.parentElement.classList, 'clearSearch');
 
-    $searchBox.disable();
+    $searchBox.attr('disabled', true);
     $searchSection.find('> .icon').toggle();
     $searchSection.find('.searchStatusWrapper').toggle();
     e.preventDefault();

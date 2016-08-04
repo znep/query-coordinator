@@ -128,7 +128,7 @@ export const getValidRegions = createSelector(
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
 
 const isNotSystemColumn = column => {
-  return !column.name.startsWith(':');
+  return !_.startsWith(column.name, ':');
 };
 
 const isComputedColumn = column => {

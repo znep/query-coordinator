@@ -23,15 +23,9 @@ module SiteChromeHelper
   end
 
   # Forms will default to "1" and "0" but manual configurations could vary
-  def fetch_boolean(array_of_path_elements, site_chrome = @site_chrome)
+  def fetch_boolean(array_of_path_elements, default_to_true = false, site_chrome = @site_chrome)
     content = fetch_content(array_of_path_elements, site_chrome)
-    ['1', 'true', 1, true].include?(content) # default to false
-  end
-
-  # Forms will default to "1" and "0" but manual configurations could vary
-  def fetch_boolean_with_true_default(array_of_path_elements, site_chrome = @site_chrome)
-    content = fetch_content(array_of_path_elements, site_chrome)
-    if content.nil? then true else ['1', 'true', 1, true].include?(content) end
+    ['1', 'true', 1, true].include?(content) || (content.nil? && default_to_true)
   end
 
   # This tells the form how to format an input field for the call to update
@@ -55,7 +49,7 @@ module SiteChromeHelper
       label_tag form_field(fields), :class => ('indented' if options[:indent]) do
         html = check_box(form_field(fields[0..-2]),
                          fields.last,
-                         { checked: fetch_boolean_with_true_default(fields) },
+                         { checked: fetch_boolean(fields, true) },
                          "true", "false")
         html << translation[fields.last]
       end

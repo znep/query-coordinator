@@ -115,23 +115,23 @@ describe SiteChromeHelper do
         expect(fetch_boolean([])).to eq(true)
       end
     end
-  end
 
-  describe '#fetch_boolean_with_true_default' do
-    it 'returns true if the content is nil' do
-      allow(self).to receive(:fetch_content).and_return(nil)
-      expect(fetch_boolean([])).to eq(false)
-    end
+    describe 'with true default value' do
+      it 'returns true if the content is nil' do
+        allow(self).to receive(:fetch_content).and_return(nil)
+        expect(fetch_boolean([], true)).to eq(true)
+      end
 
-    it 'returns false if the whitelist is not met' do
-      allow(self).to receive(:fetch_content).and_return('whatever')
-      expect(fetch_boolean([])).to eq(false)
-    end
+      it 'returns false if the whitelist is not met' do
+        allow(self).to receive(:fetch_content).and_return('whatever')
+        expect(fetch_boolean([], true)).to eq(false)
+      end
 
-    ['1', 'true', 1, true].each do |test|
-      it "returns true if content is `#{test}`" do
-        allow(self).to receive(:fetch_content).and_return(test)
-        expect(fetch_boolean([])).to eq(true)
+      ['1', 'true', 1, true].each do |test|
+        it "returns true if content is `#{test}`" do
+          allow(self).to receive(:fetch_content).and_return(test)
+          expect(fetch_boolean([], true)).to eq(true)
+        end
       end
     end
   end

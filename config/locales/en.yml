@@ -2612,6 +2612,10 @@ en:
               menu_links:
                 description: You may display up to 15 links in the Footer. These will automatically be placed in columns.
                 title: Footer Menu Links
+              powered_by:
+                description: Displays "Powered by Socrata" branding in the Footer.
+                label: Show branding in the Footer
+                title: Powered by Socrata
               url_label: URL
               url_placeholder: URL
             title: Footer

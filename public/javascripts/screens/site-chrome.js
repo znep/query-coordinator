@@ -82,7 +82,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#content_general_show_signin_signout').on('click change', function() {
+  var onLoadOrClickingSigninSignoutCheckbox = function() {
     var value = $(this).attr('checked');
     var $knockonEffects = $('#content_general_show_signup, #content_general_show_profile');
     if (value) {
@@ -92,7 +92,9 @@ $(document).ready(function() {
       $knockonEffects.removeAttr('checked').
                       attr('disabled', 'disabled');
     }
-  });
+  };
+  onLoadOrClickingSigninSignoutCheckbox();
+  $('#content_general_show_signin_signout').on('click change', onLoadOrClickingSigninSignoutCheckbox);
 });
 
 // Figure out which tab is active (current) and get its id

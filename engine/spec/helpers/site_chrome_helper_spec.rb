@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe SocrataSiteChrome::ApplicationHelper do
   let(:site_chrome_config) do { content: JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).
-    with_indifferent_access['properties'].first['value']['versions']['0.2']['published']['content'] }
+    with_indifferent_access['properties'].first.dig('value', 'versions',
+      SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content') }
   end
 
   describe'#logo' do

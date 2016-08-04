@@ -6,7 +6,7 @@ describe SocrataSiteChrome::ThemesHelper do
     JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access
   end
   let(:site_chrome_content) do
-    site_chrome_config['properties'].first['value']['versions']['0.2']['published']
+    site_chrome_config['properties'].first.dig('value', 'versions', SiteChrome::LATEST_VERSION, 'published')
   end
 
   describe '#cache_key_for_site_chrome' do

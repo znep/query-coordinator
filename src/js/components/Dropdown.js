@@ -136,7 +136,7 @@ export const Dropdown = React.createClass({
   onKeyDownPlaceholder(event) {
     let { UP, DOWN, ENTER } = KEYS;
 
-    if ([UP, DOWN, ENTER].includes(event.keyCode)) {
+    if ([UP, DOWN, ENTER].indexOf(event.keyCode) > -1) {
       event.preventDefault();
     }
   },

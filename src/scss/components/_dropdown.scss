@@ -60,7 +60,6 @@
 }
 
 .dropdown-caret {
-  display: inline-flex;
   position: absolute;
   width: 22px;
   font-size: 18px;
@@ -77,7 +76,8 @@
 
   &::after {
     @extend .icon-arrow-down::before;
-    margin: auto;
+    margin-top: 12px;
+    margin-left: 2px;
   }
 }
 

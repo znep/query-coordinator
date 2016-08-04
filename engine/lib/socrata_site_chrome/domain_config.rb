@@ -72,13 +72,14 @@ module SocrataSiteChrome
     end
 
     def get_domain_config
-      begin
-        response = HTTParty.get(domain_config_uri, :verify => false) # todo remove :verify false
-        body = response.code == 200 ? response.body : nil
-        ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
-      rescue HTTParty::ResponseError => e
-        raise "Failed to get domain configuration for #{domain}: #{e}"
-      end
+      RequestStore[:domain_config] ||=
+        begin
+          response = HTTParty.get(domain_config_uri, :verify => false) # todo remove :verify false
+          body = response.code == 200 ? response.body : nil
+          ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
+        rescue HTTParty::ResponseError => e
+          raise "Failed to get domain configuration for #{domain}: #{e}"
+        end
     end
 
     def domain_config_uri

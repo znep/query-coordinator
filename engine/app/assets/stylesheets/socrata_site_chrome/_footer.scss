@@ -65,6 +65,7 @@ footer#site-chrome-footer {
         display: inline-block;
         font-weight: 300;
         vertical-align: middle;
+        font-size: 14px;
 
         .powered-by {
           margin-right: 3px;
@@ -93,11 +94,6 @@ footer#site-chrome-footer {
           font-size: 16px;
           font-weight: 300;
           margin-right: $social_link_margin;
-
-          // span.monosocial {
-          //   position: relative;
-          //   top: 3px;
-          // }
 
           &:hover, &:focus, &:active {
             span.monosocial {

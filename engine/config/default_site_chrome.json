@@ -267,6 +267,8 @@
             "published": {
               "content": {
                 "footer": {
+                  "copyright_notice": "true",
+                  "powered_by": "true",
                   "links": [
                     {
                       "key": "home",
@@ -295,7 +297,9 @@
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
-                    "fg_color": "#eeeeee"
+                    "fg_color": "#eeeeee",
+                    "logo_height": "",
+                    "logo_width": ""
                   }
                 },
                 "general": {
@@ -343,7 +347,10 @@
                   },
                   "styles": {
                     "bg_color": "#22b479",
-                    "fg_color": "#eeeeee"
+                    "bg_color_secondary": "",
+                    "fg_color": "#eeeeee",
+                    "logo_height": "",
+                    "logo_width": ""
                   }
                 },
                 "locales": {

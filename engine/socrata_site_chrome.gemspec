@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'airbrake', '>= 4.3.0'
+  s.add_dependency 'chroma'
   s.add_dependency 'hashie', '>= 2.1.2'
   s.add_dependency 'httparty'
   s.add_dependency 'rails', '~> 4.2', '>= 4.2.6'

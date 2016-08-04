@@ -1,6 +1,6 @@
 $title-height: 44px;
 $description-height: 26px;
-$header-margin: 6px;
+$title-description-padding: 6px;
 $info-height: 24px;
 $visualization-border-color: #e4e4e4;
 $visualization-container-border-color: #f6f6f6;
@@ -113,12 +113,12 @@ $axis-padding: 42px;
 
     .title-container {
       display: block;
-      padding-bottom: $header-margin;
+      padding-bottom: $title-description-padding;
       border-bottom: 1px solid $visualization-border-color;
     }
 
     .visualization-container {
-      height: calc(100% - #{$title-height} - #{$header-margin});
+      height: calc(100% - #{$title-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -131,13 +131,13 @@ $axis-padding: 42px;
 
     .description-container {
       display: block;
-      padding-top: $header-margin;
-      padding-bottom: $header-margin;
+      padding-top: $title-description-padding;
+      padding-bottom: $title-description-padding;
       border-bottom: 1px solid $visualization-border-color;
     }
 
     .visualization-container {
-      height: calc(100% - #{$description-height} - #{$header-margin});
+      height: calc(100% - #{$description-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -154,7 +154,7 @@ $axis-padding: 42px;
     }
 
     .visualization-container {
-      height: calc(100% - #{$title-height} - #{$description-height} - #{$header-margin});
+      height: calc(100% - #{$title-height} - #{$description-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -173,7 +173,7 @@ $axis-padding: 42px;
   &.title.info {
 
     .visualization-container {
-      height: calc(100% - #{$title-height} - #{$header-margin} - #{$info-height});
+      height: calc(100% - #{$title-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -181,7 +181,7 @@ $axis-padding: 42px;
   &.description.info {
 
     .visualization-container {
-      height: calc(100% - #{$description-height} - #{$header-margin} - #{$info-height});
+      height: calc(100% - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -189,7 +189,7 @@ $axis-padding: 42px;
   &.title.description.info {
 
     .visualization-container {
-      height: calc(100% - #{$title-height} - #{$description-height} - #{$header-margin} - #{$info-height});
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }

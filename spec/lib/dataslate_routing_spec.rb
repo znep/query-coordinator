@@ -11,7 +11,7 @@ describe DataslateRouting do
     { 'path' => path }
   end
 
-  let(:service_response) { %w( /svc1 /svc/:slug /svc/:slug/end ).map(&method(:pathify)) }
+  let(:service_response) { %w( / /svc1 /svc/:slug /svc/:slug/end ).map(&method(:pathify)) }
   let(:dataset_response) { %w( /ds1 /ds/:slug /ds/:slug/end ).map(&method(:pathify)).to_json }
   let(:page_result) { { page: Page.new, from: page_source, vars: page_vars } }
   let(:page_vars) { [ ] }
@@ -61,6 +61,17 @@ describe DataslateRouting do
           expect(DataslateRouting.for('/ds/foo')).to eq(page_result)
           expect(DataslateRouting.for('/ds/foo/end')).to eq(page_result)
         end
+      end
+    end
+
+    context 'on homepages' do
+      before(:each) do
+        allow(Page).to receive(:find_by_unique_path).and_return(Page.new)
+      end
+      let(:page_source) { :service }
+
+      it 'should return a real page' do
+        expect(DataslateRouting.for('/')).to eq(page_result)
       end
     end
   end

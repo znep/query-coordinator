@@ -1400,27 +1400,27 @@
           var candidatePrimaryKey = row.data[primaryKeyColumnID];
 
           ds.primaryKeyExists(candidatePrimaryKey).
-            done(function(primaryKeyRow) {
-              var hasPrimaryKeyRow = typeof primaryKeyRow === 'object';
-              var isDifferentRow = row.id !== (hasPrimaryKeyRow && primaryKeyRow.id);
+          done(function(primaryKeyRow) {
+            var hasPrimaryKeyRow = typeof primaryKeyRow === 'object';
+            var isDifferentRow = row.id !== (hasPrimaryKeyRow && primaryKeyRow.id);
 
-              if (hasPrimaryKeyRow && isDifferentRow) {
-                console.error('Attempted to change primary key to one that already exists.');
-                row.error[ds.rowIdentifierColumn.lookup] = true;
-                row.invalid[ds.rowIdentifierColumn.lookup] = true;
+            if (hasPrimaryKeyRow && isDifferentRow) {
+              console.error('Attempted to change primary key to one that already exists.');
+              row.error[ds.rowIdentifierColumn.lookup] = true;
+              row.invalid[ds.rowIdentifierColumn.lookup] = true;
 
-                // Update the UX.
-                ds.trigger('row_change', [
-                  [row]
-                ]);
-                ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
-              } else {
-                doRequest();
-              }
-            }).
-            fail(function() {
-              ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.cannot_edit_at_this_time')]);
-            });
+              // Update the UX.
+              ds.trigger('row_change', [
+                [row]
+              ]);
+              ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
+            } else {
+              doRequest();
+            }
+          }).
+          fail(function() {
+            ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.cannot_edit_at_this_time')]);
+          });
         } else {
           doRequest();
         }
@@ -2469,6 +2469,23 @@
       ds.makeRequest({
         url: '/api/views/{0}/backups'.format(ds.id),
         type: 'POST',
+        success: function() {
+          successCallback();
+        }
+      });
+    },
+
+    deleteBackup: function(backupURI, successCallback) {
+      var ds = this;
+      if (!ds.newBackend) {
+        return;
+      }
+      if (!_.isFunction(successCallback)) {
+        successCallback = function() {};
+      }
+      ds.makeRequest({
+        url: backupURI,
+        type: 'DELETE',
         success: function() {
           successCallback();
         }
@@ -4631,7 +4648,7 @@
     } else if (type == 'calendar') {
       // Do nothing; but avoid the else cases
     } else if (!$.isBlank(ds.query) && !$.isBlank(ds.query.groupBys) &&
-        // We have to inspect the message because if it is invalid, the groupBy is gone
+      // We have to inspect the message because if it is invalid, the groupBy is gone
       ds.query.groupBys.length > 0 || (ds.message || '').indexOf('roll up') >= 0) {
       type = 'grouped';
     } else if (_.include(['table', 'fatrow', 'page'], type) &&

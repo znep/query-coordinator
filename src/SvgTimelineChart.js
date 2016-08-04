@@ -334,7 +334,20 @@ $.fn.socrataSvgTimelineChart = function(vif) {
 
       case 'DAY':
         incrementedDate = new Date(
-          new Date(startDate).getTime() +
+          // Note that we need to append 'Z' to the date string here in order
+          // for Firefox and IE to not apply a timezone offset based on the
+          // user's timezone. In other words, if you instantiate a date object
+          // from a floating timestamp in ISO-8601 format (e.g.
+          // "2015-07-08T00:00:00.000"), Firefox and IE will return a UTC date
+          // that has been shifted by your current timezone (in GMT-0700 it
+          // gets changed to "2015-07-08T07:00:00.000Z"), whereas Chrome will
+          // just display the original date in your current timezone while not
+          // changing the date in terms of UTC.
+          //
+          // This adjustment does not happen if you pass a date string that is
+          // explicitly in UTC, hence the 'Z' getting appended to startDate
+          // below.
+          new Date(startDate + 'Z').getTime() +
           (24 * 60 * 60 * 1000)
         ).
           toISOString().

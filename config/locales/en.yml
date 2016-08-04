@@ -2044,7 +2044,7 @@ en:
         dataset: Dataset
       datasets:
         asset_inventory:
-          tooltip: This option is not available due to an error. If the problem persists after 24 hours, please contact support.
+          tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact support.
         description: List the assets on this domain and configure the layout of the dataset page
         layout_config: Layout Configuration
         left: Left

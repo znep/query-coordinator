@@ -169,7 +169,7 @@ module Cetera
   def self.valid_cetera_keys
     Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
-               derived_from domains for_user limit offset only order q search_context tags))
+               derived_from domains for_user limit locale offset only order q search_context tags))
   end
 
   # A row of Cetera results

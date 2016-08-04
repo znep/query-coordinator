@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe SocrataSiteChrome::ApplicationHelper do
-  let(:site_chrome_config) do { content: JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).
+  let(:site_chrome_config) do { content: JSON.parse(
+    File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
     with_indifferent_access['properties'].first.dig('value', 'versions',
       SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content') }
   end
@@ -114,6 +115,30 @@ describe SocrataSiteChrome::ApplicationHelper do
       test_time = Time.parse('Jan 1 1984')
       allow(Time).to receive(:now).and_return(test_time)
       expect(helper.copyright).to eq(%Q(&copy; 1984 Seattle Open Data))
+    end
+  end
+
+  describe '#show_powered_by?' do
+    let(:site_chrome) do
+      SocrataSiteChrome::SiteChrome.new(site_chrome_config)
+    end
+
+    it 'defaults to true if powered_by does not exist' do
+      site_chrome.footer.delete(:powered_by)
+      RequestStore.store[:site_chrome] = site_chrome
+      expect(helper.show_powered_by?).to eq(true)
+    end
+
+    it 'can be set to true' do
+      site_chrome.footer[:powered_by] = 'true'
+      RequestStore.store[:site_chrome] = site_chrome
+      expect(helper.show_powered_by?).to eq(true)
+    end
+
+    it 'can be set to false' do
+      site_chrome.footer[:powered_by] = 'false'
+      RequestStore.store[:site_chrome] = site_chrome
+      expect(helper.show_powered_by?).to eq(false)
     end
   end
 

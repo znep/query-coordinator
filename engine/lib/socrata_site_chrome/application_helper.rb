@@ -1,3 +1,4 @@
+require 'chroma'
 require 'request_store'
 
 module SocrataSiteChrome
@@ -50,7 +51,26 @@ module SocrataSiteChrome
     end
 
     def show_copyright?
-      get_site_chrome.footer[:copyright_notice] == 'true'
+      get_site_chrome.footer[:copyright_notice].to_s.downcase == 'true'
+    end
+
+    def show_powered_by?
+      get_site_chrome.footer.fetch(:powered_by, 'true').downcase == 'true'
+    end
+
+    def powered_by_logo_src
+      # Chroma brightness returns a number between 0 and 255 representing how bright the color is.
+      # 180 seemed to be a good cutoff point to use the darker logo. If the background brightness is
+      # greater than the cutoff, use the light bg socrata logo. Otherwise use the dark bg logo.
+      Chroma.paint(footer_bg_color).try(:brightness) > 180 ?
+        '/socrata_site_chrome/images/socrata-logo-pb.png' :
+        '/socrata_site_chrome/images/socrata-logo-2c-dark.png'
+    end
+
+    def footer_bg_color
+      color = get_site_chrome.footer.dig(:styles, :bg_color)
+      color.present? ?
+        color : SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
     end
 
     def social_link_icon(type)
@@ -113,11 +133,11 @@ module SocrataSiteChrome
     end
 
     def show_profile?
-      get_site_chrome.general.fetch(:show_profile, 'true') == 'true'
+      get_site_chrome.general.fetch(:show_profile, 'true').downcase == 'true'
     end
 
     def show_signin_signout?
-      get_site_chrome.general.fetch(:show_signin_signout, 'true') == 'true'
+      get_site_chrome.general.fetch(:show_signin_signout, 'true').downcase == 'true'
     end
 
     def localized(locale_key, locales)

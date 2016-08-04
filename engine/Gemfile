@@ -10,10 +10,12 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
+gem 'airbrake', '4.3.0'
+gem 'chroma'
 gem 'hashie'
 gem 'httparty'
 gem 'request_store'
-gem 'airbrake', '4.3.0'
+gem 'sass'
 
 group :development, :test do
   gem 'byebug'

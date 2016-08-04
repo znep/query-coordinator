@@ -1,6 +1,7 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+npm-debug.log
 .byebug_history
 .sass-cache
 .DS_Store

@@ -1,14 +1,13 @@
 <footer id="site-chrome-footer" class="<%= local_assigns[:size] %>">
-  <div class="footer-content">
+  <div class="footer-content <%= footer_title.present? ? '' : 'title-present' %>">
     <div class="logo">
-      <%= logo(get_site_chrome.footer) %>
-      <span class="site-name"><%= footer_title %></span>
-
-      <div class="site-chrome-social-links">
-        <%= render 'site_chrome/social_links', show_label: true %>
-      </div>
+      <a href="/">
+        <%= logo(get_site_chrome.footer) %>
+        <% if footer_title.present? %>
+          <span class="site-name"><%= footer_title %></span>
+        <% end %>
+      </a>
     </div>
-
     <div class="links">
       <ul class="links-col">
         <% valid_links(get_site_chrome.footer[:links]).each do |link| %>
@@ -18,11 +17,28 @@
         <% end %>
       </ul>
     </div>
-  </div>
+    <div class="addendum">
+      <%- if show_powered_by? -%>
+        <span class="powered-by-socrata">
+          <span class="powered-by">Powered By</span> <!-- TODO: localization -->
+          <a href="//socrata.com" target="_blank">
+            <img class="logo" alt="Socrata" src="<%= powered_by_logo_src %>" />
+          </a>
+        </span>
+      <%- end -%>
 
-  <%- if show_copyright? -%>
-    <div class="copyright">
-      <%= copyright %>
+      <%- if valid_social_links(get_site_chrome.general[:social_shares]).present? -%>
+        <div class="site-chrome-social-links">
+          <%= render 'site_chrome/social_links' %>
+        </div>
+      <%- end -%>
+
+      <%- if show_copyright? -%>
+        <div class="site-chrome-copyright">
+          <%= copyright %>
+        </div>
+      <%- end -%>
+
     </div>
-  <%- end -%>
+  </div>
 </footer>

@@ -1,4 +1,5 @@
 $content_padding: 20px;
+$addendum_content_margin: 80px;
 
 footer#site-chrome-footer {
   display: block;
@@ -13,24 +14,81 @@ footer#site-chrome-footer {
     overflow: hidden;
 
     > div.logo {
-      > img {
-        height: $footer_logo_height;
-        width: $footer_logo_width;
-        margin-right: 8px;
-        vertical-align: middle;
+      > a {
+        text-decoration: none;
+        > img {
+          height: $footer_logo_height;
+          width: $footer_logo_width;
+          vertical-align: middle;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: 22px;
+          color: $footer_fg_color;
+          line-height: $footer_logo_height;
+          margin-left: $text_padding;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    > div.links {
+      margin: 20px 0 10px;
+
+      ul.links-col {
+        margin: 0;
+        padding-left: 0;
+
+        li {
+          list-style-type: none;
+          display: inline-block;
+          margin-right: $text_padding * 3;
+
+          a.footer-link {
+            color: $footer_fg_color;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 14px;
+            line-height: 24px;
+
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+        }
+
+        @include mobile-sm {
+          text-align: left;
+        }
+      }
+    }
+
+    > div.addendum {
+      .powered-by-socrata {
+        margin-right: $addendum_content_margin;
+        display: inline-block;
+        font-weight: 300;
+        vertical-align: bottom;
+        font-size: 14px;
+
+        .powered-by {
+          margin-right: 3px;
+        }
+        img.logo {
+          display: inline-block;
+          height: 18px;
+          vertical-align: middle;
+          margin-top: -5px;
+        }
       }
 
-      > span.site-name {
-        font-weight: 300;
-        font-size: 32px;
-        line-height: 60px;
-        vertical-align: middle;
-      }
+      $social_link_margin: 14px;
 
       .site-chrome-social-links {
-        clear: both;
-        overflow: hidden;
-        margin: 0;
+        margin-right: $addendum_content_margin - $social_link_margin;
+        display: inline-block;
+        vertical-align: middle;
 
         a.site-chrome-social-link {
           display: block;
@@ -40,109 +98,46 @@ footer#site-chrome-footer {
           text-decoration: none;
           font-size: 16px;
           font-weight: 300;
-          margin-right: 28px;
+          margin-right: $social_link_margin;
 
           span.monosocial {
             position: relative;
-            top: 3px;
+            top: 7px;
           }
 
           &:hover, &:focus, &:active {
             span.monosocial {
               text-decoration: none;
             }
-            span.social-link-label {
-              text-decoration: underline;
-            }
           }
         }
       }
-    }
 
-    > div.links {
-      margin-top: 11px;
+      .site-chrome-copyright {
+        display: inline-block;
+        font-size: 12px;
+        line-height: 20px;
+        color: $footer_fg_color;
+        opacity: 0.7;
+        margin: 0 auto;
+        vertical-align: bottom;
+      }
 
-      ul.links-col {
-        padding-left: 0;
-        -webkit-column-count: 3;
-        -moz-column-count: 3;
-        column-count: 3;
+      @include mobile-sm {
+        .powered-by-socrata, .site-chrome-social-links, .site-chrome-copyright {
+          display: block;
+          float: left;
+          clear: both;
+          margin: 6px 0;
+        }
 
-        li {
-          list-style-type: none;
-          display: inline-block;
-          width: 160px;
-          margin: 1px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          line-height: 25px;
-
-          a.footer-link {
-            color: $footer_fg_color;
-            text-decoration: none;
-            font-weight: 300;
-            font-size: 15px;
-
-            &:hover, &:focus, &:active {
-              text-decoration: underline;
-            }
-          }
+        &.title-present {
+          text-align: left;
         }
       }
     }
-
-    @include desktop {
-      > div.logo {
-        width: 50%;
-        float: left;
-      }
-      > div.links {
-        width: 50%;
-        float: right;
-      }
+    &.title-present {
+      text-align: center;
     }
-    @include mobile-med {
-      > div.links {
-        clear: both;
-      }
-    }
-    @include mobile-sm {
-      div.logo {
-        > span.site-name {
-          font-size: 28px;
-        }
-      }
-      .site-chrome-social-link {
-        display: block;
-      }
-      > div.links {
-        ul.links-col {
-          margin: 0;
-          -webkit-column-count: auto;
-          -moz-column-count: auto;
-          column-count: auto;
-
-          li {
-            display: block;
-            width: auto;
-            text-align: center;
-            &:nth-child(5n + 1) {
-              margin-top: 16px;
-            }
-          }
-        }
-      }
-    }
-
-  }
-
-  .copyright {
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    color: $footer_fg_color;
-    opacity: 0.7;
-    margin: 0 auto;
-    padding-bottom: $content_padding;
   }
 }

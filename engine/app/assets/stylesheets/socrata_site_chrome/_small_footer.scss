@@ -9,94 +9,43 @@ footer#site-chrome-footer.small {
     padding: $content_padding;
 
     > div.logo {
-      max-width: 50%;
-      width: auto;
-      margin-right: 56px;
-
       img {
-        max-height: 60px;
-        vertical-align: middle;
+        max-height: 40px;
       }
-
-      > span.site-name {
-        font-size: 20px;
-        line-height: 40px;
-        vertical-align: middle;
-      }
-
-      > .site-chrome-social-links {
-        margin: 0;
-        clear: none;
-        float: right;
-        margin-left: 32px;
-
-        .site-chrome-social-link {
-          margin-right: 16px;
-
-          span.monosocial {
-            font-size: $link_line_height;
-          }
-        }
+      span.site-name {
+        line-height: normal;
       }
     }
 
     > div.links {
-      width: auto;
-      margin-top: 0;
+      margin: 5px 0 0;
 
       ul.links-col {
-        -webkit-column-count: initial;
-        -moz-column-count: initial;
-        column-count: initial;
-        margin: 0;
+        > li {
+          margin-right: 16px;
 
-        li {
-          width: auto;
-          line-height: $link_line_height;
-          margin-right: 32px;
-
-          a.footer-link {
+          > a {
             font-size: 13px;
+            line-height: 18px;
           }
         }
       }
     }
 
-    @include mobile-med {
-      > div.logo {
-        max-width: 100%;
-        text-align: left;
-        margin: 0;
-        overflow: hidden;
+    div.addendum {
+      .powered-by-socrata {
+        font-size: 12px;
 
-        img, span.site-name, div.site-chrome-social-links {
-          float: left;
+        img.logo {
+          height: 16px;
         }
       }
-      > div.links {
-        text-align: center;
-        clear: both;
-        margin-top: 0.5rem;
-      }
-    }
 
-    @include mobile-sm {
-      > div.links {
-        margin-top: 0.5rem;
-        .links-col {
-          li {
-            line-height: 19px;
-            margin-right: 16px;
-            margin-top: 0;
-            display: inline-block;
-          }
+      .site-chrome-social-links {
+        span.monosocial {
+          font-size: 30px;
         }
       }
     }
-  }
-
-  .copyright {
-    margin: 0 auto;
-    padding-bottom: $content_padding;
   }
 }

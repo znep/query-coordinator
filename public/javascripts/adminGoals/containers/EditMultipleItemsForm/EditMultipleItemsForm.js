@@ -85,9 +85,9 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateGoals() {
-    const { updateGoals, goals, goal } = this.props;
+    const { goals, goal } = this.props;
 
-    updateGoals(goals, goal.toJS());
+    this.props.updateGoals(goals, goal.toJS());
   }
 
   isDataChanged() {

@@ -690,7 +690,13 @@ $.fn.socrataSvgRegionMap = function(vif) {
 
         properties[primaryKey] = name;
         properties[humanReadableNameProperty] = humanReadableName;
-        properties[valueProperty] = (_.isNumber(value)) ? value : null;
+        // EN-8796 - Region map flyout reads 'NaN rows'
+        //
+        // The line below previously returned null if _.isNumber(value) was
+        // false. This didn't account for NaN, however (_.isNumber(NaN) is
+        // true), so check instead if _.isFinite when deciding whether to
+        // pass on the value as received or null (which signifies 'no value').
+        properties[valueProperty] = (_.isFinite(value)) ? value : null;
         properties[selectedProperty] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific

@@ -1356,7 +1356,7 @@ var RowSet = ServerModel.extend({
 
         // Always be sorting by something to provide a stable row order.
         // Don't try this when there's a group-by because :id is no longer guaranteed.
-        if ($.isBlank(params['$order']) && $.isBlank(params['$group'])) {
+        if (_.isEmpty(rs._jsonQuery.order) && _.isEmpty(rs._jsonQuery.group)) {
           params['$order'] = ':id';
         }
 

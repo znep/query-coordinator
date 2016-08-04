@@ -1,6 +1,6 @@
 .bundle/
 log/*.log
-.npm-debug.log
+npm-debug.log
 pkg/
 public/socrata_site_chrome/stylesheets/styleguide
 spec/dummy/db/*.sqlite3

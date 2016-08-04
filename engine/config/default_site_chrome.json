@@ -39,7 +39,7 @@
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
-                    "fg_color": "#eeeeee"
+                    "fg_color": "#eee"
                   }
                 },
                 "general": {
@@ -59,7 +59,7 @@
                   ],
                   "styles": {
                     "bg_color": "#2c97de",
-                    "fg_color": "#eeeeee",
+                    "fg_color": "#eee",
                     "font_family": "Open Sans"
                   }
                 },
@@ -88,7 +88,7 @@
                   },
                   "styles": {
                     "bg_color": "#22b479",
-                    "fg_color": "#eeeeee"
+                    "fg_color": "#eee"
                   }
                 },
                 "locales": {
@@ -165,7 +165,7 @@
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
-                    "fg_color": "#eeeeee"
+                    "fg_color": "#eee"
                   }
                 },
                 "general": {
@@ -188,7 +188,7 @@
                   ],
                   "styles": {
                     "bg_color": "#2c97de",
-                    "fg_color": "#eeeeee",
+                    "fg_color": "#eee",
                     "font_family": "Open Sans"
                   }
                 },
@@ -217,7 +217,7 @@
                   },
                   "styles": {
                     "bg_color": "#22b479",
-                    "fg_color": "#eeeeee"
+                    "fg_color": "#eee"
                   }
                 },
                 "locales": {
@@ -297,7 +297,7 @@
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
-                    "fg_color": "#eeeeee",
+                    "fg_color": "#eee",
                     "logo_height": "",
                     "logo_width": ""
                   }
@@ -318,7 +318,7 @@
                   },
                   "styles": {
                     "bg_color": "#2c97de",
-                    "fg_color": "#eeeeee",
+                    "fg_color": "#eee",
                     "font_family": "Open Sans"
                   }
                 },
@@ -348,7 +348,7 @@
                   "styles": {
                     "bg_color": "#22b479",
                     "bg_color_secondary": "",
-                    "fg_color": "#eeeeee",
+                    "fg_color": "#eee",
                     "logo_height": "",
                     "logo_width": ""
                   }

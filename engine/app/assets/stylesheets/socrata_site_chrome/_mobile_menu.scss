@@ -1,3 +1,8 @@
+$mobile_menu_bg_color: #f8f8f8;
+$mobile_menu_fg_color: #949195;
+$mobile_menu_shadow_color: #a9a7aa;
+$mobile_menu_border_color: #f4f4f4;
+
 header#site-chrome-header, footer#site-chrome-footer {
   .mobile-menu {
     position: fixed;
@@ -6,10 +11,10 @@ header#site-chrome-header, footer#site-chrome-footer {
     bottom: 0;
     overflow: auto;
     z-index: 10;
-    background-color: #f8f8f8;
-    color: #949195;
+    background-color: $mobile_menu_bg_color;
+    color: $mobile_menu_fg_color;
     width: 90%;
-    box-shadow: 0 8px 30px #a9a7aa;
+    box-shadow: 0 8px 30px $mobile_menu_shadow_color;
     transition: right 0.4s ease-in-out;
 
     &.active {
@@ -41,13 +46,13 @@ header#site-chrome-header, footer#site-chrome-footer {
           display: block;
           font-size: 15px;
           line-height: 48px;
-          border-top: 1px solid #f4f4f4;
+          border-top: 1px solid $mobile_menu_border_color;
           padding: 0 $text_padding;
           overflow: hidden;
           text-decoration: none;
 
           &:last-of-type {
-            border-bottom: 1px solid #f4f4f4;
+            border-bottom: 1px solid $mobile_menu_border_color;
           }
 
           &:hover, &:focus, &:active {
@@ -82,13 +87,6 @@ header#site-chrome-header, footer#site-chrome-footer {
         height: initial;
         margin-bottom: -1px;
 
-        @include mobile-med {
-          display: block;
-        }
-        @include mobile-sm {
-          display: block;
-        }
-
         form {
           line-height: normal;
           position: relative;
@@ -97,7 +95,7 @@ header#site-chrome-header, footer#site-chrome-footer {
             padding: 15px 40px 15px 11px;
             font-style: 16px;
             box-shadow: none;
-            border-color: #f4f4f4;
+            border-color: $mobile_menu_border_color;
             box-sizing: content-box;
           }
           button {

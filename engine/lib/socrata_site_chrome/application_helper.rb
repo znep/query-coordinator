@@ -51,11 +51,11 @@ module SocrataSiteChrome
     end
 
     def show_copyright?
-      get_site_chrome.footer[:copyright_notice] == 'true'
+      get_site_chrome.footer[:copyright_notice].to_s.downcase == 'true'
     end
 
     def show_powered_by?
-      get_site_chrome.footer.fetch(:powered_by, 'true') == 'true'
+      get_site_chrome.footer.fetch(:powered_by, 'true').downcase == 'true'
     end
 
     def powered_by_logo_src
@@ -133,11 +133,11 @@ module SocrataSiteChrome
     end
 
     def show_profile?
-      get_site_chrome.general.fetch(:show_profile, 'true') == 'true'
+      get_site_chrome.general.fetch(:show_profile, 'true').downcase == 'true'
     end
 
     def show_signin_signout?
-      get_site_chrome.general.fetch(:show_signin_signout, 'true') == 'true'
+      get_site_chrome.general.fetch(:show_signin_signout, 'true').downcase == 'true'
     end
 
     def localized(locale_key, locales)

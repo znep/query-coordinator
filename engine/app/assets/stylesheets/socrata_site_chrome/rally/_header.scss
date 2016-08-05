@@ -77,16 +77,19 @@ header#site-chrome-header[template="rally"] {
           }
 
           .navbar-left {
-            height: 100%;
-            float: left;
+            position: absolute;
+            top: 0;
+            left: 0;
 
             .site-chrome-nav-links {
               height: 100%;
               overflow: hidden;
 
               a.site-chrome-nav-link {
+                display: inline-block;
                 padding: 0 $text_padding;
                 transition: background-color 0.05s;
+
                 &:hover, &:focus, &:active {
                   text-decoration: none;
                   background-color: rgba(255, 255, 255, 0.3);
@@ -96,11 +99,13 @@ header#site-chrome-header[template="rally"] {
           }
 
           .navbar-right {
-            height: 100%;
-            float: right;
+            position: absolute;
+            top: 0;
+            right: 0;
+            max-height: $banner_height;
+            background-color: $header_bg_color;
 
             .site-chrome-social-links {
-              height: 100%;
               float: left;
 
               .site-chrome-social-link {

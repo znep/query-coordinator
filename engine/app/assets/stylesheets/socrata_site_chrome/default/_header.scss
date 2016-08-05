@@ -9,7 +9,6 @@ header#site-chrome-header[template="default"] {
     background-color: $header_bg_color;
     line-height: $banner_height;
     font-size: 18px;
-    padding: 0 1rem;
     min-height: $banner_height;
     position: relative;
 
@@ -20,8 +19,12 @@ header#site-chrome-header[template="default"] {
 
       > a.logo {
         float: left;
+        padding: 0 16px;
         text-decoration: none;
         color: $header_fg_color;
+        background-color: $header_bg_color;
+        position: relative;
+        z-index: 2;
 
         > img {
           height: $header_logo_height;
@@ -41,13 +44,24 @@ header#site-chrome-header[template="default"] {
       > nav {
         font-size: 15px;
         font-weight: 300;
-        float: right;
         position: absolute;
         top: 0;
         right: 16px;
 
         &.desktop {
           max-height: $banner_height;
+          text-align: right;
+          white-space: nowrap;
+
+          .evergreen-link-cluster {
+            background-color: $header_bg_color;
+            float: right;
+            position: relative;
+          }
+
+          .user-actions {
+            float: right;
+          }
 
           a.site-chrome-nav-link {
             padding: 0 $text_padding;
@@ -69,8 +83,14 @@ header#site-chrome-header[template="default"] {
           }
 
           .site-chrome-nav-links, .site-chrome-social-links, .collapsible-search {
-            float: left;
+            float: right;
             max-height: $banner_height;
+          }
+
+          .site-chrome-nav-links {
+            float: none;
+            display: inline-block;
+            text-align: right;
           }
 
           .collapsible-search {
@@ -133,6 +153,7 @@ header#site-chrome-header[template="default"] {
           }
 
           span.divider {
+            float: right;
             margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
           }
         }

@@ -24,11 +24,12 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @param vif
  */
-$.fn.socrataSvgRegionMap = function(vif) {
+$.fn.socrataSvgRegionMap = function(originalVif) {
+  originalVif = VifHelpers.migrateVif(originalVif);
   var $element = $(this);
   var visualization = new SvgRegionMap(
     $element,
-    VifHelpers.migrateVif(vif)
+    originalVif
   );
   var lastRenderedVif;
   var rerenderOnResizeTimeout;
@@ -400,7 +401,7 @@ $.fn.socrataSvgRegionMap = function(vif) {
     );
     var shapefileMetadataProviderConfig = {
       domain: domain,
-      datasetUid: vif.configuration.shapefile.uid
+      datasetUid: vifToRender.configuration.shapefile.uid
     };
     var shapefileMetadataProvider = new MetadataProvider(
       shapefileMetadataProviderConfig
@@ -503,8 +504,8 @@ $.fn.socrataSvgRegionMap = function(vif) {
         // rather than conditionally requiring one or two requests to complete
         // before proceeding.
         shapefileMetadataRequest = Promise.resolve({
-          geometryLabel: vif.configuration.shapefile.geometryLabel,
-          featurePk: vif.configuration.shapefile.primaryKey
+          geometryLabel: vifToRender.configuration.shapefile.geometryLabel,
+          featurePk: vifToRender.configuration.shapefile.primaryKey
         });
       } else {
 
@@ -720,9 +721,7 @@ $.fn.socrataSvgRegionMap = function(vif) {
    */
 
   attachEvents();
-  updateData(
-    VifHelpers.migrateVif(vif)
-  );
+  updateData(originalVif);
 
   return this;
 };

@@ -16,11 +16,12 @@ const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} 
 const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
-$.fn.socrataSvgColumnChart = function(vif) {
+$.fn.socrataSvgColumnChart = function(originalVif) {
+  originalVif = VifHelpers.migrateVif(originalVif);
   var $element = $(this);
   var visualization = new SvgColumnChart(
     $element,
-    VifHelpers.migrateVif(vif)
+    originalVif
   );
   var rerenderOnResizeTimeout;
 
@@ -259,9 +260,7 @@ $.fn.socrataSvgColumnChart = function(vif) {
    */
 
   attachEvents();
-  updateData(
-    VifHelpers.migrateVif(vif)
-  );
+  updateData(originalVif);
 
   return this;
 };

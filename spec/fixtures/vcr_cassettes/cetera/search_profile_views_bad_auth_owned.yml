@@ -1,0 +1,39 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/personal_catalog/v1?domains=localhost&for_user=w5u5-s6wy&limit=10&offset=0&order=createdAt&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - 37=c__lenapxim_pm ;8712b4e15649098a27e39f24587d8c35564c17fe--wYEA7Ywb09lbyVHdlJnDikEVUBwOGQXaulWCikkRAsjB98WYuNXQphlTxg3VmFnZRJjarNlb1MXUDZWeqFWShpVOlR1NUF1YOVza3gWMikkRAsjBuV2avR3XmJ3cj9FEikEMGBwOGIXZzVXCikkRAsjB1EWZ5UmMyQDMyY2M2YjYjJGZlZ2NxETMhJWMzEmYkJTJikkRFZgOGQWaf52bpN3clN3DikkC7hAB=di_noisses_atarcos_
+        ;D3%QjZ3ATMiVzYyMDO4Q2N2EWYwMTO4cDO2E2Y5Q2NlFTZyIzM3IzYlRDIlVGZ5MWOykDM3ADZgAjM0QDOxAzN0EDI5dnNz1SN1Vzd=di_noisses_eroc_
+        ;D3%D3%ADnbF2%8vn4MrnF2%0NWAG84tkkXzm45gZ67sxyw8v93bVVYqeaPdsE7CsmlCzzDld5ylp3z79UQ8nzFF2%3fvHyEyuk=nekot-frsc-atarcos
+        ;4907261641.536765467.1.1AG=ag_ ;eurt=ni_deggol
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Date:
+      - Thu, 04 Aug 2016 22:23:57 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: '{ "results" : [], "resultSetSize" : 0 }'
+    http_version: 
+  recorded_at: Thu, 04 Aug 2016 22:23:57 GMT
+recorded_with: VCR 3.0.3

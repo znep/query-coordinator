@@ -1,5 +1,4 @@
 module.exports = function FlyoutFactory(element) {
-  var padding = 10;
   var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'));
 
   hoverables.forEach(function(hoverable) {
@@ -9,7 +8,6 @@ module.exports = function FlyoutFactory(element) {
     };
 
     var reposition = function() {
-      var node = hoverable;
       var left = 0;
       var top = 0;
       var arrowHeight = 16;

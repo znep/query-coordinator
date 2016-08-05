@@ -23,7 +23,7 @@
   height: 40px;
   background-color: #efefef;
   border: solid 1px #d8d8d8;
-  transition: border-color .15s ease-in;
+  transition: border-color 0.15s ease-in;
 
   &:hover {
     border-color: $primary;

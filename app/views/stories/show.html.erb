@@ -2,7 +2,7 @@
 
   <%= render(partial: 'stories/partials/header') %>
 
-  <div class="user-story large theme-<%= @story.theme %>">
+  <div class="user-story large theme-<%= @story.theme %>" role="main">
     <% @story.blocks.each do |block| -%>
       <% layout_columns = block.layout.split('-') -%>
 

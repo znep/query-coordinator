@@ -1,3 +1,5 @@
+import TestUtils from 'react-addons-test-utils';
+
 import {
   selectFile,
   fileUploadStart,
@@ -93,11 +95,13 @@ describe("uploadFile's reducer", () => {
   });
 
   describe('view', () => {
+
     it('renders an upload box with help text initially', () => {
       const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UploadData'}));
       expect(element.querySelector('input.uploadFileName.valid').value)
         .to.equal(I18n.screens.dataset_new.upload_file.no_file_selected);
     });
+
     it('renders an upload box with filename once selected', () => {
       const element = renderComponent(
         view({
@@ -117,6 +121,7 @@ describe("uploadFile's reducer", () => {
       expect(element.querySelector('.uploadThrobber').children[1].innerText)
         .to.equal('6% uploaded');
     });
+
     it('renders an error message on error', () => {
       const element = renderComponent(
         view({
@@ -134,5 +139,21 @@ describe("uploadFile's reducer", () => {
       expect(element.querySelector('.flash-alert.error').innerText)
         .to.equal('There was a problem importing that file. Please make sure it is valid.');
     });
+
+    it('dispatches the function for loading a file when the input of the fileUpload changes', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const fileInput = element.querySelector('input[type="file"]');
+      TestUtils.Simulate.change(fileInput, {target: {files: ['afile'] }});
+      expect(spy.callCount).to.equal(1);
+    })
+
+    it('does not dispatch the function for loading a file when the input of the fileUpload changes to no file', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const fileInput = element.querySelector('input[type="file"]');
+      TestUtils.Simulate.change(fileInput, {target: {files: [] }});
+      expect(spy.callCount).to.equal(0);
+    })
   });
 });

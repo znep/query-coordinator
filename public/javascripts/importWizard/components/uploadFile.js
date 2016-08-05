@@ -203,7 +203,9 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
 
   function onSelectFile(event) {
     // TODO: can users deselect a file? may need an action for that
-    onFileUploadAction(selectFile(event.target.files[0], operation));
+    if ( event.target.files.length > 0 ) {
+      onFileUploadAction(selectFile(event.target.files[0], operation));
+    }
   }
 
   const fileNameDisplay =

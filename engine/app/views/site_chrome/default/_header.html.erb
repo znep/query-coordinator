@@ -4,30 +4,35 @@
       <%= header_logo %>
 
       <nav class="desktop">
+
+        <div class="evergreen-link-cluster">
+
+          <%= render 'site_chrome/user_actions' %>
+
+          <%= content_tag(:span, nil, :class => 'divider') %>
+
+          <div class="collapsible-search">
+            <span class="icon-search collapsible-search-toggle"
+              title="Search" onclick="toggleCollapsibleSearch(this)">
+            </span>
+            <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+          </div>
+
+          <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
+            <%= content_tag(:span, nil, :class => 'divider') %>
+          <% end %>
+
+          <div class="site-chrome-social-links">
+            <%= render 'site_chrome/social_links' %>
+          </div>
+
+          <%= content_tag(:span, nil, :class => 'divider') %>
+
+        </div>
+
         <div class="site-chrome-nav-links">
           <%= render 'site_chrome/nav_links' %>
         </div>
-
-        <%= content_tag(:span, nil, :class => 'divider') %>
-
-        <div class="site-chrome-social-links">
-          <%= render 'site_chrome/social_links' %>
-        </div>
-
-        <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
-          <%= content_tag(:span, nil, :class => 'divider') %>
-        <% end %>
-
-        <div class="collapsible-search">
-          <span class="icon-search collapsible-search-toggle"
-            title="Search" onclick="toggleCollapsibleSearch(this)">
-          </span>
-          <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
-        </div>
-
-        <%= content_tag(:span, nil, :class => 'divider') %>
-
-        <%= render 'site_chrome/user_actions' %>
       </nav>
 
       <nav class="mobile">

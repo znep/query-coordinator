@@ -1667,6 +1667,7 @@ en:
       sdp_templates: Data Player Templates
       title: Manage Site Configuration
       users: Users
+      goal_management_preview: Goal Management Preview
     measure:
       end_progress:
         bad: Did not meet target

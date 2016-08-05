@@ -99,6 +99,9 @@ display_catalog_lens_delete_button:
 embetter_analytics_page:
   description: Incremental improvements to site analytics page
   defaultValue: false
+embetter_analytics_browser_views_only:
+  description: Just the embettered browser page views rather than "views"
+  defaultValue: false
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
   defaultValue: false

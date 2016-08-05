@@ -12,7 +12,7 @@ $(function() {
     } else {
       datasetsMetricName = 'datasets';
     }
-    if (blist.feature_flags.embetter_analytics_page) {
+    if (blist.feature_flags.embetter_analytics_browser_views_only) {
       datasetsListHeader = 'Browser Page Views';
       pageViewsName = 'Browser Page Views';
     } else {
@@ -252,7 +252,7 @@ $(function() {
             verbPhrase: 'pages viewed',
             verbPhraseSingular: 'page viewed'
           },
-          enabled: !blist.feature_flags.embetter_analytics_page
+          enabled: !blist.feature_flags.embetter_analytics_page || false
         },
         {
           id: 'summaryDash',

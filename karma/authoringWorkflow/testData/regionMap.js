@@ -14,11 +14,6 @@ export default () => ({
       "positiveColor": "#2c2c2c"
     },
     "shapefile": {
-      "columns": {
-        "name": "__SOCRATA_HUMAN_READABLE_NAME__",
-        "value": "__SOCRATA_FEATURE_VALUE__",
-        "selected": "__SOCRATA_FEATURE_SELECTED__"
-      },
       "geometryLabel": "s_hood",
       "primaryKey": "objectid",
       "uid": "w797-miex"

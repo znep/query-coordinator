@@ -8,6 +8,17 @@ const L = require('leaflet');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 
+// These constants live here and not in the instance with the other constants
+// because we need to add them to the function that gets exported. This is
+// necessary because the code that merges the query results with the shapefile
+// in the jQuery plugin needs to communicate these values with the below
+// implementation in a way that is not specific to any individual instance
+// thereof.
+SvgRegionMap.SHAPEFILE_REGION_HUMAN_READABLE_NAME =
+  '__SHAPEFILE_REGION_HUMAN_READABLE_NAME__';
+SvgRegionMap.SHAPEFILE_REGION_VALUE = '__SHAPEFILE_REGION_VALUE__';
+SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED = '__SHAPEFILE_REGION_IS_SELECTED__';
+
 function SvgRegionMap(element, vif) {
 
   _.extend(this, new SvgVisualization(element, vif));
@@ -364,23 +375,11 @@ function SvgRegionMap(element, vif) {
 
   function showFlyout(event) {
     var feature = event.target.feature;
-    var labelPropertyName = _.get(
-      self.getVif(),
-      'configuration.shapefile.columns.name'
-    );
-    var selectedPropertyName = _.get(
-      self.getVif(),
-      'configuration.shapefile.columns.selected'
-    );
-    var valuePropertyName = _.get(
-      self.getVif(),
-      'configuration.shapefile.columns.value'
-    );
     var payload = {
       element: event.target,
       clientX: event.originalEvent.clientX,
       clientY: event.originalEvent.clientY,
-      title: feature.properties[labelPropertyName],
+      title: feature.properties[SvgRegionMap.SHAPEFILE_REGION_HUMAN_READABLE_NAME],
       valueLabel: _.get(
         self.getVif(),
         'series[0].label',
@@ -391,9 +390,9 @@ function SvgRegionMap(element, vif) {
       selectedNotice: I18n.translate(
         'visualizations.region_map.flyout_selected_notice'
       ),
-      selected: feature.properties[selectedPropertyName]
+      selected: feature.properties[SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED]
     };
-    var value = feature.properties[valuePropertyName];
+    var value = feature.properties[SvgRegionMap.SHAPEFILE_REGION_VALUE];
     var valueUnit;
     var aggregationField = _.get(
       self.getVif(),
@@ -715,12 +714,7 @@ function SvgRegionMap(element, vif) {
     /* eslint-disable no-unused-vars */
     function getFillColor(feature, selected) {
     /* eslint-enable no-unused-vars */
-      const valuePropertyName = _.get(
-        self.getVif(),
-        'configuration.shapefile.columns.value'
-      );
-
-      var value = _.get(feature, `properties.${valuePropertyName}`);
+      var value = _.get(feature, `properties.${SvgRegionMap.SHAPEFILE_REGION_VALUE}`);
 
       if (_.isFinite(value)) {
         if (colorScale) {
@@ -734,11 +728,7 @@ function SvgRegionMap(element, vif) {
     }
 
     function getStrokeColor(feature, selected) {
-      const valuePropertyName = _.get(
-        self.getVif(),
-        'configuration.shapefile.columns.value'
-      );
-      var value = _.get(feature, `properties.${valuePropertyName}`);
+      var value = _.get(feature, `properties.${SvgRegionMap.SHAPEFILE_REGION_VALUE}`);
 
       if (!_.has(feature, 'geometry.type')) {
 
@@ -788,13 +778,9 @@ function SvgRegionMap(element, vif) {
     }
 
     return function(feature) {
-      const selectedPropertyName = _.get(
-        self.getVif(),
-        'configuration.shapefile.columns.selected'
-      );
       const selected = _.get(
         feature,
-        `properties.${selectedPropertyName}`,
+        `properties.${SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED}`,
         false
       );
       const opacity = colorScale ? 0.8 : 1;
@@ -848,14 +834,10 @@ function SvgRegionMap(element, vif) {
   }
 
   function layerIsSelected(layer) {
-    const selectedPropertyName = _.get(
-      self.getVif(),
-      'configuration.shapefile.columns.selected'
-    );
 
     return _.get(
       layer,
-      `feature.properties.${selectedPropertyName}`
+      `feature.properties.${SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED}`
     );
   }
 
@@ -1159,13 +1141,9 @@ function SvgRegionMap(element, vif) {
       var values = _.reduce(
         dataToRender.features,
         function(data, feature) {
-          const valuePropertyName = _.get(
-            vifToRender,
-            'configuration.shapefile.columns.value'
-          );
           var value = _.get(
             feature,
-            `properties.${valuePropertyName}`
+            `properties.${SvgRegionMap.SHAPEFILE_REGION_VALUE}`
           );
 
           if (!_.isUndefined(value)) {
@@ -1814,10 +1792,6 @@ function SvgRegionMap(element, vif) {
      * @return {d3.scale} a scale mapping from value to color.
      */
     this.update = function(vifToRender, dataToRender, dimensions) {
-      const valuePropertyName = _.get(
-        vifToRender,
-        'configuration.shapefile.columns.value'
-      );
 
       if (!(dataToRender.features && dataToRender.features.length)) {
         return undefined;
@@ -1825,7 +1799,7 @@ function SvgRegionMap(element, vif) {
 
       var values = _.map(
         _.map(dataToRender.features, 'properties'),
-        valuePropertyName
+        SvgRegionMap.SHAPEFILE_REGION_VALUE
       );
       var min = _.min(values);
       var max = _.max(values);

@@ -174,7 +174,7 @@ describe('AuthoringWorkflow reducer', function() {
 
     describe('REQUEST_METADATA', function() {
       var state, action, newState;
-      var domain = 'https://somewhere.com';
+      var domain = 'https://example.com';
       var datasetUid = 'asdf-qwer';
 
       beforeEach(function() {

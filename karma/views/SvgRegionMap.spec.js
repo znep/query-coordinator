@@ -49,11 +49,6 @@ describe('SvgRegionMap', function() {
           "type": "discrete",
         },
         "shapefile": {
-          "columns": {
-            "name": "__SOCRATA_HUMAN_READABLE_NAME__",
-            "value": "__SOCRATA_FEATURE_VALUE__",
-            "selected": "__SOCRATA_FEATURE_SELECTED__"
-          },
           "geometryLabel": null,
           "primaryKey": "primaryKey",
           "uid": "snuk-a5kv"
@@ -106,7 +101,7 @@ describe('SvgRegionMap', function() {
 
   function dataFeatureValues(geojsonAggregateData) {
     return _.map(geojsonAggregateData.features, function(feature) {
-      return Number(feature.properties[featureMergedValueName]);
+      return Number(feature.properties[SvgRegionMap.SHAPEFILE_REGION_VALUE]);
     });
   }
 
@@ -283,9 +278,15 @@ describe('SvgRegionMap', function() {
         var properties = {};
 
         properties[primaryKey] = name;
-        properties[vifToRender.configuration.shapefile.columns.name] = humanReadableName;
-        properties[vifToRender.configuration.shapefile.columns.value] = (_.isNumber(value)) ? value : null;
-        properties[vifToRender.configuration.shapefile.columns.selected] = _.includes(ownFilterOperands, name);
+        properties[SvgRegionMap.SHAPEFILE_REGION_HUMAN_READABLE_NAME] = humanReadableName;
+        // EN-8796 - Region map flyout reads 'NaN rows'
+        //
+        // The line below previously returned null if _.isNumber(value) was
+        // false. This didn't account for NaN, however (_.isNumber(NaN) is
+        // true), so check instead if _.isFinite when deciding whether to
+        // pass on the value as received or null (which signifies 'no value').
+        properties[SvgRegionMap.SHAPEFILE_REGION_VALUE] = (_.isFinite(value)) ? value : null;
+        properties[SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.

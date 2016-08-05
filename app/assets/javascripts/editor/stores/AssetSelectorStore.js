@@ -243,6 +243,54 @@ export default function AssetSelectorStore() {
     return _state.componentProperties;
   };
 
+  // Returns the dataset chosen by the user from the
+  // dataset picker, if any.
+  //
+  // Returns:
+  // {
+  //   id: <4x4>,
+  //   domain: <dataset domain>
+  // }
+  this.getDatasetUserSelectedFromList = function() {
+    const value = this.getComponentValue();
+    const id = _.get(value, 'dataset.datasetUid');
+    const domain = _.get(value, 'dataset.domain');
+    if (domain && id) {
+      return { domain, id };
+    } else {
+      return null;
+    }
+  };
+
+  // Returns the dataset information from the VIF being edited,
+  // if any.
+  //
+  // Returns:
+  // {
+  //   id: <4x4>,
+  //   domain: <dataset domain>
+  // }
+  this.getDatasetInVif = function() {
+    const value = this.getComponentValue();
+    const isVersionOneVif = _.get(value, 'vif.format.version') === 1;
+
+    const domain = isVersionOneVif ?
+      _.get(value, 'vif.domain') :
+      _.get(value, 'vif.series[0].dataSource.domain');
+    const id = isVersionOneVif ?
+      _.get(value, 'vif.datasetUid') :
+      _.get(value, 'vif.series[0].dataSource.datasetUid');
+
+    if (domain && id) {
+      return { domain, id };
+    } else {
+      return null;
+    }
+  };
+
+  // Gets the dataset metadata (view blob from core)
+  // of the dataset related to the asset being
+  // edited.
   this.getDataset = function() {
     return _state.dataset;
   };
@@ -707,9 +755,6 @@ export default function AssetSelectorStore() {
 
   function _editExisting(payload) {
     var component;
-    var domain;
-    var datasetUid;
-    var value;
 
     StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
@@ -728,11 +773,8 @@ export default function AssetSelectorStore() {
       isEditingExisting: true
     };
 
-    domain = _.get(component, 'value.dataset.domain');
-    datasetUid = _.get(component, 'value.dataset.datasetUid');
-
     if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {
-      value = getImageComponent(component.value);
+      let value = getImageComponent(component.value);
       _state.previewImageUrl = value.url;
 
       if (!_.isEmpty(value.crop)) {
@@ -740,9 +782,10 @@ export default function AssetSelectorStore() {
       }
     }
 
-    if (datasetUid) {
+    const dataset = self.getDatasetUserSelectedFromList() || self.getDatasetInVif();
+    if (dataset) {
       // Fetch additional data needed for UI.
-      _getView(domain, datasetUid).
+      _getView(dataset.domain, dataset.id).
         then(_setComponentPropertiesFromViewData).
         then(self._emitChange);
     } else {

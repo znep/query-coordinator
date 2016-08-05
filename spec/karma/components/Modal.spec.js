@@ -15,9 +15,9 @@ describe('Modal jQuery plugin', function() {
     assert.equal(node.modal(), node);
   });
 
-  it('should add the .modal class', function() {
+  it('should add the .storyteller-modal class', function() {
     node.modal();
-    assert.isTrue(node.hasClass('modal'));
+    assert.isTrue(node.hasClass('storyteller-modal'));
   });
 
   it('should start off hidden', function() {

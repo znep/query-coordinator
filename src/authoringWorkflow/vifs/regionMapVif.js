@@ -17,11 +17,6 @@ export default {
       positiveColor: '#003747'
     },
     shapefile: {
-      columns: {
-        name: '__SOCRATA_HUMAN_READABLE_NAME__',
-        value: '__SOCRATA_FEATURE_VALUE__',
-        selected: '__SOCRATA_FEATURE_SELECTED__'
-      },
       geometryLabel: null,
       primaryKey: '_feature_id',
       uid: null

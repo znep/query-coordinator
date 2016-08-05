@@ -148,7 +148,7 @@ function migrateVif1ToVif2(vifToMigrate) {
       filters: _.cloneDeep(vifToMigrate.filters),
       type: 'socrata.soql'
     },
-    label: 'Filtered',
+    label: 'Value',
     unit: {
       one: unit.one,
       other: unit.other
@@ -201,13 +201,15 @@ function migrateVif1ToVif2(vifToMigrate) {
     migratedVif.configuration,
     vifToMigrate.configuration
   );
-  // 3b. Explicitly remove deprecated configuration values.
+
+  // 3c. Explicitly remove deprecated configuration values.
   _.unset(migratedVif, 'configuration.localization');
   _.unset(migratedVif, 'configuration.interactive');
   _.unset(migratedVif, 'configuration.hover');
   _.unset(migratedVif, 'configuration.isMobile');
   _.unset(migratedVif, 'configuration.pointColor');
   _.unset(migratedVif, 'configuration.tileserverHosts');
+  _.unset(migratedVif, 'configuration.shapefile.columns');
 
   // 4. Copy over the createdAt timestamp
   migratedVif.createdAt = vifToMigrate.createdAt;

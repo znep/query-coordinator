@@ -19,7 +19,8 @@
       #region-map-2,
       #region-map-3,
       #region-map-4,
-      #region-map-5 {
+      #region-map-5,
+      #region-map-6 {
         display: block;
         position: relative;
         width: 640px;
@@ -34,6 +35,11 @@
     <div id="region-map-3"></div>
     <div id="region-map-4"></div>
     <div id="region-map-5"></div>
+    <p>
+      <em>EN-8901</em><br />
+      This Region Map tests for Vif 1 -> Vif 2 migration errors (specifically, the shapefile columns defined are "name", "filtered", "unfiltered" and "selected" and should be mapped to "name", "value" and "selected" in order for the scale and region shading to work correctly). The symptom of this problem is regions with correct-looking flyouts showing non-null values but a missing legend and (uniform grey) shading indicating that all regions have no value.
+    </p>
+    <div id="region-map-6"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -140,6 +146,50 @@
         'function': 'sum'
       };
 
+      var regionMap6Vif = {
+        "type": "choroplethMap",
+        "unit": {
+          "one": "record",
+          "other": "records"
+        },
+        "title": "Location",
+        "domain": "vertex-stories.test-socrata.com",
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 1
+        },
+        "origin":{
+          "url": "https://vertex-stories.test-socrata.com/view/ymtg-53em",
+          "type": "data_lens_add_visualization_component"
+        },
+        "filters": [],
+        "createdAt": "2016-02-05T04:18:10.866Z",
+        "columnName": "location",
+        "datasetUid": "ymtg-53em",
+        "aggregation": {
+          "field": null,
+          "function": "count"
+        },
+        "description": "",
+        "configuration": {
+          "shapefile": {
+            "uid": "w797-miex",
+            "columns": {
+              "name": "NAME",
+              "filtered": "FILTERED",
+              "selected": "SELECTED",
+              "unfiltered": "UNFILTERED"
+            },
+            "primaryKey": "objectid",
+            "geometryLabel": null
+          },
+          "savedExtent": {},
+          "localization": {},
+          "defaultExtent": {},
+          "computedColumnName": ":@computed_region_w797_miex"
+        }
+      };
+
       /**
        * Instantiate the plugins
        */
@@ -175,6 +225,12 @@
       $regionMapElement5.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $regionMapElement5.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $regionMapElement5.socrataSvgRegionMap(regionMap5Vif);
+
+      var $regionMapElement6 = $('#region-map-6');
+      $regionMapElement6.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement6.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement6.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement6.socrataSvgRegionMap(regionMap6Vif);
 
       /**
        * Handle plugin events

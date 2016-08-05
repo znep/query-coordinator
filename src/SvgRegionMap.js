@@ -675,30 +675,18 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
           `properties.${geometryLabel}`,
           ''
         );
-        var humanReadableNameProperty = _.get(
-          vifToRender,
-          'configuration.shapefile.columns.name'
-        );
-        var valueProperty = _.get(
-          vifToRender,
-          'configuration.shapefile.columns.value'
-        );
-        var selectedProperty = _.get(
-          vifToRender,
-          'configuration.shapefile.columns.selected'
-        );
         var properties = {};
 
         properties[primaryKey] = name;
-        properties[humanReadableNameProperty] = humanReadableName;
+        properties[SvgRegionMap.SHAPEFILE_REGION_HUMAN_READABLE_NAME] = humanReadableName;
         // EN-8796 - Region map flyout reads 'NaN rows'
         //
         // The line below previously returned null if _.isNumber(value) was
         // false. This didn't account for NaN, however (_.isNumber(NaN) is
         // true), so check instead if _.isFinite when deciding whether to
         // pass on the value as received or null (which signifies 'no value').
-        properties[valueProperty] = (_.isFinite(value)) ? value : null;
-        properties[selectedProperty] = _.includes(ownFilterOperands, name);
+        properties[SvgRegionMap.SHAPEFILE_REGION_VALUE] = (_.isFinite(value)) ? value : null;
+        properties[SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED] = _.includes(ownFilterOperands, name);
 
         // Create a new object to get rid of superfluous shapefile-specific
         // fields coming out of the backend.

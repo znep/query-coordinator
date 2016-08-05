@@ -44,11 +44,6 @@ describe('SvgRegionMap jQuery component', function() {
         flyout_selected_notice: 'This column is selected',
       },
       shapefile: {
-        columns: {
-          name: '__SOCRATA_HUMAN_READABLE_NAME__',
-          value: '__SOCRATA_FEATURE_VALUE__',
-          selected: '__SOCRATA_FEATURE_SELECTED__'
-        },
         geometryLabel: 'ward',
         primaryKey: '_feature_id',
         uid: 'snuk-a5kv'

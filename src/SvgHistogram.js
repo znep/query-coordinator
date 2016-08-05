@@ -171,11 +171,12 @@ function transformBucketedData(bucketingOptions, response) {
   };
 };
 
-$.fn.socrataSvgHistogram = function(vif) {
+$.fn.socrataSvgHistogram = function(originalVif) {
+  originalVif = VifHelpers.migrateVif(originalVif);
   var $element = $(this);
   var visualization = new SvgHistogram(
     $element,
-    VifHelpers.migrateVif(vif)
+    originalVif
   );
   var rerenderOnResizeTimeout;
 
@@ -294,9 +295,7 @@ $.fn.socrataSvgHistogram = function(vif) {
    */
 
   attachEvents();
-  updateData(
-    VifHelpers.migrateVif(vif)
-  );
+  updateData(originalVif);
 
   return this;
 };

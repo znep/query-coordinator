@@ -28,16 +28,16 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */
-$.fn.socrataSvgFeatureMap = function(vif) {
+$.fn.socrataSvgFeatureMap = function(originalVif) {
   utils.assert(
-    _.isPlainObject(vif),
+    _.isPlainObject(originalVif),
     'You must pass in a valid VIF to use socrataSvgFeatureMap'
   );
 
-  vif = VifHelpers.migrateVif(vif);
+  originalVif = VifHelpers.migrateVif(originalVif);
 
   utils.assertHasProperties(
-    vif,
+    originalVif,
     'series[0].dataSource.dimension.columnName',
     'series[0].dataSource.datasetUid',
     'series[0].dataSource.domain',
@@ -45,11 +45,11 @@ $.fn.socrataSvgFeatureMap = function(vif) {
     'series[0].unit.other'
   );
 
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.dimension.columnName, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.domain, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].dataSource.datasetUid, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.one, 'string');
-  utils.assertIsOneOfTypes(vif.series[0].unit.other, 'string');
+  utils.assertIsOneOfTypes(originalVif.series[0].dataSource.dimension.columnName, 'string');
+  utils.assertIsOneOfTypes(originalVif.series[0].dataSource.domain, 'string');
+  utils.assertIsOneOfTypes(originalVif.series[0].dataSource.datasetUid, 'string');
+  utils.assertIsOneOfTypes(originalVif.series[0].unit.one, 'string');
+  utils.assertIsOneOfTypes(originalVif.series[0].unit.other, 'string');
 
   var $element = $(this);
   var datasetMetadata;
@@ -63,7 +63,7 @@ $.fn.socrataSvgFeatureMap = function(vif) {
   var rerenderOnResizeTimeout;
   var lastRenderedVif;
 
-  initializeVisualization(vif);
+  initializeVisualization(originalVif);
 
   /**
    * Events

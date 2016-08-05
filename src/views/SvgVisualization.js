@@ -8,9 +8,10 @@ const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
-const DEFAULT_PRIMARY_COLOR = '#00a1af';
-const DEFAULT_SECONDARY_COLOR = '#00a1af';
-const DEFAULT_HIGHLIGHT_COLOR = '#ccecef';
+
+const DEFAULT_PRIMARY_COLOR = '#71abd9';
+const DEFAULT_SECONDARY_COLOR = '#71abd9';
+const DEFAULT_HIGHLIGHT_COLOR = '#cccccc';
 const DEFAULT_UNIT_ONE = '';
 const DEFAULT_UNIT_OTHER = '';
 

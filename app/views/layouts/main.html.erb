@@ -79,7 +79,6 @@ http://www.socrata.com
     <%= site_chrome_stylesheet_tag %>
     <%= site_chrome_javascript_tag %>
   <%- end -%>
-
 </head>
 
 <body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''} locale_#{I18n.locale} #{@body_class}" %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">

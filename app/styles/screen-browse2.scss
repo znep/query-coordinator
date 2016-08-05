@@ -6,6 +6,8 @@ $result-description-preview-height: 48px;
 $result-inner-padding: 1em;
 $official-badge-color: #00828e;
 $link-color: #2279a6;
+$facet-section-title-indicator-color: #288dc1;
+$facet-section-title-indicator-selected-color: #8e98a1;
 $link-hover-color: #2379b2;
 $filter-color: #00828e;
 $facet-hover-color: #f8f8f8;
@@ -340,9 +342,6 @@ html {
       @include desktop {
         margin-left: 23em;
       }
-      @include wide-desktop {
-        margin-left: 30em;
-      }
     }
   }
 
@@ -412,9 +411,6 @@ html {
       @include desktop {
         margin-left: 23em;
       }
-      @include wide-desktop {
-        margin-left: 30em;
-      }
 
       position: relative;
       display: block;
@@ -426,14 +422,13 @@ html {
 
         position: relative;
         display: block;
-        width: calc(100% - 220px);
         float: left;
 
         .browse2-results-title {
           font-size: 15px;
           color: $dark-text-color;
           float: left;
-          margin-bottom: 1rem;
+          padding-top: 10px;
         }
 
         .browse2-results-clear-controls {
@@ -442,7 +437,7 @@ html {
 
           .browse2-results-clear-control, .browse2-results-clear-all-button {
             position: relative;
-            top: -1px;
+            top: 2px;
             padding: 0.3rem 0.5rem;
             margin: 0 0 1rem 0.5rem;
             float: left;
@@ -480,7 +475,7 @@ html {
 
       .browse2-results-sort-controls-container {
         @include desktop {
-          width: 210px;
+          width: 270px;
           float: right;
         }
         @include mobile {
@@ -498,12 +493,11 @@ html {
           display: block;
           float: left;
           width: 100%;
-          min-width: 20em;
           text-align: right;
 
           .browse2-results-sort-control-group {
             position: relative;
-            display: inline-block;
+            top: -1px;
 
             .browse2-results-sort-control-type-label,
             .browse2-results-sort-control-period-label {
@@ -513,9 +507,9 @@ html {
               }
 
               font-size: 14px;
-              display: inline-block;
-              margin: 0 1em 0 0;
               color: #666;
+              position: relative;
+              top: 1px;
             }
 
             .browse2-results-sort-control-period-label {
@@ -672,7 +666,7 @@ html {
             border: 1px solid $panel-internal-border-color;
             border-bottom-width: 0;
             border-right-width: 0;
-            border-left: 5px solid $filter-color;
+            border-left: 5px solid $facet-section-title-indicator-selected-color;
             &:last-child {
               border-bottom-width: 1px;
             }
@@ -785,6 +779,9 @@ html {
           height: auto;
           border-top: 1px solid $panel-internal-border-color;
           overflow: hidden;
+          padding-left: 0;
+          margin-top: 0;
+          margin-bottom: 0;
 
           li {
             position: relative;
@@ -799,7 +796,7 @@ html {
 
             .browse2-facet-section-option {
               display: block;
-              padding: 1rem 2.5rem 1rem 1.5rem;
+              padding: 0.5rem 2.5rem 0.5rem 1.5rem;
               font-size: 12px;
               color: #2f2f2f;
               border-left: 5px solid #d6d6d6;
@@ -820,7 +817,7 @@ html {
               }
 
               &.active {
-                border-left: 5px solid $filter-color;
+                border-left: 5px solid $facet-section-title-indicator-selected-color;
                 text-decoration: none;
 
                 .browse2-facet-option-clear-icon {
@@ -902,6 +899,16 @@ html {
             display: none;
             text-decoration: none;
             pointer-events: none;
+
+            &:before {
+              font-size: 11px;
+              position: absolute;
+              right: 1.89em;
+              top: 15%;
+              line-height: 2.2;
+              color: #8e98a1;
+              content: "\EA13";
+            }
           }
         }
 
@@ -942,7 +949,7 @@ html {
             }
           }
           > .browse2-facet-section-title {
-            border-left: 5px solid $link-color;
+            border-left: 5px solid $facet-section-title-indicator-color;
           }
         }
 
@@ -1089,9 +1096,6 @@ html {
       margin-left: 23em;
       display: block !important;
     }
-    @include wide-desktop {
-      margin-left: 30em;
-    }
     position: relative;
     display: block;
     background-color: transparent;
@@ -1138,6 +1142,7 @@ html {
             display: block;
             float: left;
             box-sizing: border-box;
+            font-size: 80%;
           }
 
           &.federated {
@@ -1317,6 +1322,10 @@ html {
                 line-height: 24px;
                 text-overflow: ellipsis;
                 overflow: hidden;
+
+                p {
+                  margin-top: 0;
+                }
 
                 * {
                   margin-bottom: 12px;
@@ -1550,7 +1559,6 @@ html {
 
             .browse2-result-timestamp {
               .browse2-result-timestamp-label {
-                margin-bottom: 0.33em;
                 font-size: 1.1em;
                 font-weight: 700;
                 color: $grey-text-color;
@@ -1566,7 +1574,6 @@ html {
             .browse2-result-view-count {
 
               .browse2-result-view-count-label {
-                margin-bottom: 0.33em;
                 font-size: 1.1em;
                 font-weight: 700;
                 color: $grey-text-color;
@@ -1827,3 +1834,4 @@ html {
     top: calc(50% - #{$loading-spinner-size / 2});
   }
 }
+

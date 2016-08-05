@@ -12,8 +12,8 @@
 
           <%- if show_official_badge -%>
             <div class="browse2-result-provenance browse2-result-header-section">
-              <span class='icon-check'></span>
-              <span class='provenance-title'><%= t('angular.dataCards.lens_type.official') %></span>
+              <span class="tag-official">
+              <span class="icon-official"></span> <%= t('angular.dataCards.lens_type.official') %></span>
             </div>
           <%- end -%>
 
@@ -22,9 +22,7 @@
             params_for_url = user_params.merge(category: category)
             category_url = "#{base_url}?#{params_for_url.to_param}"
           -%>
-            <a class="browse2-result-category browse2-result-header-section"
-              href="<%= category_url %>"
-              itemprop="keywords"><%= category %></a>
+            <a class="tag-category" href="<%= category_url %>" itemprop="keywords"><%= category %></a>
           <%- end -%>
 
           <%- if result_is_federated -%>
@@ -138,22 +136,18 @@
           <%= timelabel %>
         </div>
         <div class="browse2-result-timestamp-value">
-          <%= l(Time.parse(timestamp), :format => "%B %d, %Y") %>
+          <%= l(Time.parse(timestamp), :format => :catalog) %>
         </div>
       </div>
 
-      <%- if result_view_count.present? -%>
-
-        <div class="browse2-result-view-count">
-          <div class="browse2-result-view-count-label">
-            <%= t('controls.browse.browse2.view_count.label') %>
-          </div>
-          <div class="browse2-result-view-count-value">
-            <%= result_view_count %>
-          </div>
+      <div class="browse2-result-view-count">
+        <div class="browse2-result-view-count-label">
+          <%= t('controls.browse.browse2.view_count.label') %>
         </div>
-
-      <%- end -%>
+        <div class="browse2-result-view-count-value">
+          <%= result_view_count || 'No views yet' %>
+        </div>
+      </div>
     </div>
   </div>
 

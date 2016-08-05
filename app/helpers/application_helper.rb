@@ -237,7 +237,7 @@ module ApplicationHelper
     end
   end
 
-# styles
+# STYLES
   def should_render_individual_styles?
     Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
   end
@@ -292,6 +292,10 @@ module ApplicationHelper
         end
     end
     javascript_include_tag src
+  end
+
+  def socrata_styleguide
+    stylesheet_link_tag('/stylesheets/socrata-styleguide/css/styleguide.css', media: 'all')
   end
 
 # TOP OF PAGE

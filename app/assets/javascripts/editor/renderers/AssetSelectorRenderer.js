@@ -2185,12 +2185,24 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderAuthorVisualizationTemplate() {
     var element = document.getElementById('authoring-workflow');
+
     var value = assetSelectorStore.getComponentValue();
+    var valueDomain = _.get(value, 'dataset.domain');
+    var valueDatasetUid = _.get(value, 'dataset.datasetUid');
+    var isVersionOneVif = _.get(value, 'vif.format.version') === 1;
+
+    var vifDomain = isVersionOneVif ?
+      _.get(value, 'vif.domain', valueDomain) :
+      _.get(value, 'vif.series[0].dataSource.domain', valueDomain);
+    var vifDatasetUid = isVersionOneVif ?
+      _.get(value, 'vif.datasetUid', valueDatasetUid) :
+      _.get(value, 'vif.series[0].dataSource.datasetUid', valueDatasetUid);
+
     var vif = {
       series: [{
         dataSource: {
-          domain: value.dataset.domain,
-          datasetUid: value.dataset.datasetUid
+          domain: vifDomain,
+          datasetUid: vifDatasetUid
         }
       }],
       format: {
@@ -2198,14 +2210,14 @@ export default function AssetSelectorRenderer(options) {
         version: 2
       }
     };
-    var vifDatasetUid = _.get(
+    var rawDatasetUid = _.get(
       value,
       'vif.series[0].dataSource.datasetUid', // v2 vif
       _.get(value, 'vif.datasetUid') // v1 vif
     );
     var selectedDatasetUid = _.get(value, 'dataset.datasetUid');
 
-    if (vifDatasetUid === selectedDatasetUid) {
+    if (rawDatasetUid === selectedDatasetUid) {
       vif = value.vif;
     }
 

@@ -4,22 +4,21 @@ module.exports = function FlyoutFactory(element) {
 
   hoverables.forEach(function(hoverable) {
     var flyout = element.querySelector('#' + hoverable.getAttribute('data-flyout'));
-
-    hoverable.addEventListener('mouseover', function() {
+    var show = function() {
       flyout.classList.remove('flyout-hidden');
+    };
+
+    var reposition = function() {
       var node = hoverable;
       var left = 0;
       var top = 0;
+      var arrowHeight = 16;
       var flyoutWidth = flyout.offsetWidth;
       var windowWidth = document.body.offsetWidth;
+      var hoverableDimensions = hoverable.getBoundingClientRect();
 
-      do {
-        left += node.offsetLeft;
-        top += node.offsetTop;
-      } while ((node = node.offsetParent) !== null);
-
-      left = left + hoverable.offsetWidth / 2;
-      top = top + hoverable.offsetHeight + padding;
+      left = hoverableDimensions.left + (hoverable.offsetWidth / 2);
+      top = hoverableDimensions.top + hoverable.offsetHeight + arrowHeight;
 
       if (left + flyoutWidth > windowWidth) {
         flyout.classList.remove('flyout-right');
@@ -32,8 +31,15 @@ module.exports = function FlyoutFactory(element) {
 
       flyout.style.left = left + 'px';
       flyout.style.top = top + 'px';
-    });
+    };
 
+    window.addEventListener('scroll', reposition);
+    window.addEventListener('wheel', reposition);
+
+    hoverable.addEventListener('mouseover', function() {
+      reposition();
+      show();
+    });
     hoverable.addEventListener('mouseout', function() {
       flyout.classList.add('flyout-hidden');
     });

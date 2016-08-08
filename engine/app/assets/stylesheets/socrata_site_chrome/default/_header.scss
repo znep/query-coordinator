@@ -54,6 +54,7 @@ header#site-chrome-header[template="default"] {
           white-space: nowrap;
 
           .evergreen-link-cluster {
+            max-height: $banner_height;
             background-color: $header_bg_color;
             float: right;
             position: relative;

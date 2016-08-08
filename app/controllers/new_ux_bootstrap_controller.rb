@@ -489,7 +489,7 @@ class NewUxBootstrapController < ActionController::Base
 
     request[:app] = 'dataCards'
 
-    render 'data_lens/data_lens'
+    render 'data_lens/data_cards'
   end
 
   def dataset_size

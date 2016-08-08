@@ -125,4 +125,17 @@ module DataLensHelper
     FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens
   end
 
+  def render_data_lens_translations
+    translations = LocaleCache.render_translations([LocalePart.data_lens])['data_lens']
+
+    javascript_tag("var I18n = #{json_escape(translations.to_json)};")
+  end
+
+  def render_data_lens_server_config
+    server_config = {
+      :environment => Rails.env
+    }
+
+    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
+  end
 end

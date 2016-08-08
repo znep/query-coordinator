@@ -6,27 +6,35 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/mobile'),
+  context: path.resolve(common.root, 'public/javascripts/angular/src'),
   entry: './main',
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/mobile/.eslintrc.json'),
+  eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015']
-        }
+        loaders: [
+          'ng-annotate',
+          'babel'
+        ]
+      },
+      {
+        test: /\.html$/,
+        exclude: /(node_modules|bower_components)/,
+        loaders: [
+          'ngtemplate?relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
+          'html?minimize=false'
+        ]
+      },
+      {
+        test: /modernizr\.js$/,
+        loader: 'imports?this=>window'
       },
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
-        test: /\.svg/,
-        loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
       },
       {
         test: /\.png$/,
@@ -36,6 +44,8 @@ module.exports = _.defaultsDeep({
   },
   resolve: {
     alias: {
+      'angular_templates': path.resolve(common.root, 'public/angular_templates'),
+      plugins: path.resolve(common.root, 'public/javascripts/plugins'),
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
       'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
       '_': 'lodash'

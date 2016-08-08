@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="<%= I18n.locale.to_s %>">
+  <head>
+    <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+
+    <%= rendered_stylesheet_tag 'data-lens' %>
+    <link rel="stylesheet" href="/stylesheets/socrata-styleguide/css/styleguide.min.css"/>
+    <link rel="canonical" href="<%= view_path(@view) %>" />
+
+    <%= get_favicon_tag %>
+  </head>
+
+  <body>
+    <%= yield %>
+
+    <%= render_data_lens_translations %>
+    <%= render_data_lens_server_config %>
+
+    <%= include_webpack_bundle 'data-lens/main.js' %>
+
+    <%= render_mixpanel_config %>
+    <%= render_ga_tracking %>
+  </body>
+</html>

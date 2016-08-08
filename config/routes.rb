@@ -56,8 +56,6 @@ Rails.application.routes.draw do
     scope :path => '/internal', :controller => 'internal' do
       get '/', :action => 'index'
       get '/analytics', :action => 'analytics'
-      get '/feature_flags(/:flag_set)',
-        :action => 'feature_flags_across_domains', :as => 'feature_flags_across_domains'
       get '/tiers', :action => 'index_tiers'
       get '/tiers/:name', :action => 'show_tier'
       get '/modules', :action => 'index_modules'

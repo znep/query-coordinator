@@ -13,14 +13,6 @@ class InternalController < ApplicationController
     { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
   ]
 
-  FLAG_SETS = {
-    'data lens' => ['data_lens_transition_state'] # just an example
-  }.merge(FeatureFlags.categories)
-
-  DOMAIN_SETS = {
-    'yeah i dunno' => [ 'localhost' ] # just an example
-  }
-
   def index
   end
 
@@ -457,36 +449,6 @@ class InternalController < ApplicationController
         )
       end
       format.data { render :json => { :success => true } }
-    end
-  end
-
-  def feature_flags_across_domains
-    domains = (params[:domains].try(:split, ',') || []).
-      collect { |domain| DOMAIN_SETS[domain] || domain }.flatten.
-      collect { |domain| Domain.find(domain) rescue nil }.compact
-
-    domains << CurrentDomain.domain if domains.empty?
-
-    category = params[:flag_set].try(:gsub, '+', ' ')
-    @category = category if FeatureFlags.categories.keys.include?(category)
-
-    @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
-    @flags.select! { |flag| FeatureFlags.has?(flag) }
-
-    @sets = FLAG_SETS
-
-    # Defaulting this to 'data lens' is artbitrary. We include it because
-    # the UI looks funky without it, but ideally we should have a default category
-    # already set in feature_flags.yml that we could use instead.
-    # TODO: Add a 'default' or 'uncategorized' category to feature_flags.yml to use here
-    if @flags.empty?
-      @category = 'data lens'
-      @flags = @sets[@category]
-    end
-
-    @domains = domains.inject({}) do |memo, domain|
-      memo[domain] = domain.feature_flags.select { |k, _| @flags.include?(k) }
-      memo
     end
   end
 

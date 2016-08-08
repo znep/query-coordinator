@@ -1277,16 +1277,35 @@ export default function AssetSelectorStore() {
       crop: _state.componentProperties.crop
     };
 
-    if (type === 'author') {
-      _state.componentProperties = _.merge(
-        _state.componentProperties,
-        { image: image }
-      );
-    } else {
-      _state.componentProperties = _.merge(
-        _state.componentProperties,
-        image
-      );
+    switch (type) {
+      // Three different merge strategies for three different component types.
+      // The author component expects image data to be _nested_ inside its data.
+      // The hero component expects image data to live _alongside_ its data.
+      // The image component expects image data to _be_ its data.
+      //
+      // We should try to eliminate this branching in favor of a single code path,
+      // but that probably will necessitate a migration (for affected blocks) and
+      // some way to reset component properties in order not to regress EN-8295.
+      case 'author':
+        _state.componentProperties = _.merge(
+          _state.componentProperties,
+          { image: image }
+        );
+        break;
+
+      case 'hero':
+        _state.componentProperties = _.merge(
+          _state.componentProperties,
+          image
+        );
+        break;
+
+      case 'image':
+        _state.componentProperties = image;
+        break;
+
+      default:
+        throw new Error(`Invalid component type ${type} for image processing!`);
     }
 
     self._emitChange();

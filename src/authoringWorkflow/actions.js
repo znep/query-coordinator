@@ -166,6 +166,9 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
             then(handleCompletion).
             catch(handleError);
           break;
+        case 'completed':
+          handleCompletion();
+          break;
         default:
           handleError();
           break;

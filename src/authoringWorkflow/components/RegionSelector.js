@@ -82,7 +82,7 @@ export var RegionSelector = React.createClass({
       ` ${regionCodingLastChecked}` :
       ` ${translate('panes.data.fields.region.never')}`;
 
-      //if (showRegionCodingProcessingMessage) {
+    if (showRegionCodingProcessingMessage) {
       return (
         <div className="region-processing-info alert warning">
           <p>{translate('panes.data.fields.region.selected_region_processing')}</p>
@@ -91,7 +91,7 @@ export var RegionSelector = React.createClass({
           <p className="region-processing-info-last-checked"><span className="spinner-default"/> {lastCheckedMessage}</p>
         </div>
       );
-      //}
+    }
   },
 
   renderRegionProcessingError() {

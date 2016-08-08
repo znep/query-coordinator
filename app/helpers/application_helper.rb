@@ -114,6 +114,14 @@ module ApplicationHelper
     end
   end
 
+  def get_site_title
+    if enable_site_chrome? && site_chrome_window_title
+      site_chrome_window_title
+    else
+      CurrentDomain.strings.site_title
+    end
+  end
+
 # meta
   def meta_tags(meta)
     meta.reject!{|k,v| v.blank?}

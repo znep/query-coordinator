@@ -1,22 +1,27 @@
 <!doctype html>
 <html lang="<%= I18n.locale.to_s %>">
   <head>
-    <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+    <title><%= @view.name %> | <%= get_site_title %></title>
 
     <%= rendered_stylesheet_tag 'data-lens' %>
     <link rel="stylesheet" href="/stylesheets/socrata-styleguide/css/styleguide.min.css"/>
     <link rel="canonical" href="<%= view_path(@view) %>" />
 
     <%= get_favicon_tag %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
   </head>
 
   <body>
+    <%= render 'site_chrome/header' %>
     <%= yield %>
+    <%= render 'site_chrome/footer', :size => 'small' %>
 
     <%= render_data_lens_translations %>
     <%= render_data_lens_server_config %>
 
     <%= include_webpack_bundle 'data-lens/main.js' %>
+    <%= site_chrome_javascript_tag %>
 
     <%= render_mixpanel_config %>
     <%= render_ga_tracking %>

@@ -29,6 +29,12 @@ _.defer(function() {
     return;
   }
 
+  // Show the footer
+  var footer = document.querySelector('#site-chrome-footer');
+  if (footer) {
+    footer.style.visibility = 'visible';
+  }
+
   // Initialize the styleguide javascript components
   styleguide.attachTo(document);
 });

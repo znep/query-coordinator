@@ -16,7 +16,7 @@ class Admin::ThemesController < ApplicationController
   def create
     @theme = Theme.new(theme_params)
     if @theme.save
-      flash.now[:success] = "Successfully created theme, #{@theme.title}"
+      flash[:success] = "Successfully created theme, #{@theme.title}"
       redirect_to action: 'index'
     else
       flash.now[:error] = @theme.errors.full_messages.to_sentence
@@ -27,12 +27,12 @@ class Admin::ThemesController < ApplicationController
   def update
     @theme = Theme.find(params[:id])
     if @theme.update_attributes(theme_params)
-      flash.now[:success] = 'Successfully updated theme config'
+      flash[:success] = 'Successfully updated theme config'
+      redirect_to action: 'edit'
     else
       flash.now[:error] = @theme.errors.full_messages.to_sentence
+      render 'edit'
     end
-
-    render 'edit'
   end
 
   def destroy

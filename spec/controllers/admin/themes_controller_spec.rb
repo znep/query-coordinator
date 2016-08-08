@@ -240,9 +240,9 @@ RSpec.describe Admin::ThemesController, type: :controller do
         allow(CoreServer).to receive(:create_or_update_configuration).and_return({})
       end
 
-      it 'renders edit template' do
+      it 'redirects to edit' do
         put :update, id: theme.id, theme: theme_attrs
-        expect(response).to render_template('edit')
+        expect(response).to redirect_to(action: 'edit')
       end
 
       it 'merges request host into params' do

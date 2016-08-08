@@ -66,7 +66,10 @@ export function view(props) {
     currentDomainMemberCurrentUser
     ? [
       <li key="external">
-        <div className="external" title={I18nPrefixed.external_explain}>
+        <div
+          className="external"
+          title={I18nPrefixed.external_explain}
+          onClick={onChooseOperation('LinkToExternal')}>
           <span className="icon"></span>
           <p>{I18nPrefixed.external}</p>
         </div>

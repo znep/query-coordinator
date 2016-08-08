@@ -52,6 +52,7 @@ describe("testing for API responses", () => {
       mapLayer: 'link',
       contactEmail: 'email@email.com',
       privacySettings: 'private',
+      displayType: 'draft',
       customMetadata: {
         'jack':
           [

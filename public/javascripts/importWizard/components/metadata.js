@@ -29,6 +29,12 @@ type MetadataApiCall
   | { type: 'Error', error: any }
   | { type: 'Success', contents: MetadataContents }
 
+type DisplayType
+  = 'table'
+  | 'draft'
+  | 'href'
+
+
 type MetadataContents = {
   name: String,
   description: String,
@@ -38,7 +44,9 @@ type MetadataContents = {
   mapLayer: String,
   customMetadata: Object,
   contactEmail: String,
-  privacySettings: String
+  privacySettings: String,
+  displayType: DisplayType,
+  href: String
 }
 
 type LicenseType = {
@@ -72,7 +80,9 @@ export function emptyContents(name: string): MetadataContents {
     mapLayer: '',
     customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',
-    privacySettings: 'private'
+    privacySettings: 'private',
+    displayType: 'draft',
+    href: ''
   };
 }
 
@@ -245,6 +255,23 @@ export function metadataSaveError(err) {
   };
 }
 
+const MD_UPDATE_HREF = 'MD_UPDATE_HREF';
+export function updateHref(href) {
+  return {
+    type: MD_UPDATE_HREF,
+    href: href
+  };
+}
+
+
+const MD_OPERATION_DISPLAY_TYPE = 'MD_OPERATION_DISPLAY_TYPE';
+export function setDisplayType(operationName) {
+  return {
+    type: MD_OPERATION_DISPLAY_TYPE,
+    operation: operationName
+  };
+}
+
 export const update =
   combineReducers({
     nextClicked: updateForNextClicked,
@@ -318,10 +345,27 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         ...contents,
         contactEmail: action.newContactEmail
       };
+    case MD_OPERATION_DISPLAY_TYPE:
+      return {
+        ...contents,
+        displayType: displayTypeFor(action.operation)
+      };
+    case MD_UPDATE_HREF:
+      return {
+        ...contents,
+        href: action.href
+      };
     default:
       return contents;
   }
 }
+
+function displayTypeFor(operation) {
+  return {
+    'LinkToExternal': 'href'
+  }[operation] || 'draft';
+}
+
 
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
@@ -400,13 +444,21 @@ type MetadataValidationErrors = {
 export function validate(metadata): MetadataValidationErrors {
   return {
     name: metadata.contents.name.length !== 0,
-    mapLayer: metadata.contents.mapLayer.length !== 0
+    mapLayer: metadata.contents.mapLayer.length !== 0,
+    href: isHrefValid(metadata)
   };
 }
 
 export function isStandardMetadataValid(contents) {
   const valid = validate(contents);
   return valid.name && valid.mapLayer;
+}
+
+function isHrefValid({contents: contents}) {
+  if (contents.displayType === 'href') {
+    return (!!contents.href) && (contents.href.length > 0);
+  }
+  return true;
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
@@ -439,6 +491,7 @@ export function isMetadataValid(metadata: DatasetMetadata) {
   return isStandardMetadataValid(metadata) &&
          isCustomMetadataValid(metadata) &&
          isEmailValid(metadata) &&
+         isHrefValid(metadata) &&
          isAttributionValid(metadata);
 }
 
@@ -529,10 +582,32 @@ export function attributionRequiredTag(metadata) {
   return '';
 }
 
+
 function licenseFind(licenseName) {
   return _.find(blistLicenses, (l) => {
     return l.name === licenseName;
   });
+}
+
+function renderHref(metadata, validationErrors, onMetadataAction) {
+  var {contents: {displayType}} = metadata;
+  const I18nPrefixed = I18n.screens.edit_metadata;
+  if (displayType === 'href') {
+    return (<div>
+      <div className="line clearfix">
+        <label className="required">{I18nPrefixed.dataset_url}</label>
+        <input
+          type="text"
+          className="textPrompt url required"
+          onBlur={(evt) => onMetadataAction(updateHref(evt.target.value))}
+          title={I18nPrefixed.dataset_url_prompt} />
+        {(!validationErrors.href && metadata.nextClicked)
+          ? <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.invalid_url}</label>
+          : null}
+      </div>
+    </div>);
+  }
+  return;
 }
 
 function renderLicenses(metadata, onMetadataAction) {
@@ -612,7 +687,11 @@ function renderFlashMessageApiError(apiCall) {
       case 'Bad Gateway':
         return <FlashMessage flashType="error" message={I18n.screens.import_pane.errors.http_error.format(apiCall.error.message)} />;
       default:
-        return <FlashMessage flashType="error" message={I18n.screens.import_pane.unknown_error} />;
+        if (apiCall.error.message) {
+          return <FlashMessage flashType="error" message={apiCall.error.message} />;
+        } else {
+          return <FlashMessage flashType="error" message={I18n.screens.import_pane.unknown_error} />;
+        }
     }
   }
 }
@@ -628,22 +707,14 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
+
   return (
     <div className="metadataPane">
       {renderFlashMessageApiError(metadata.apiCall)}
       {renderFlashMessageImportError(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
-        <div className="externalDatasetMetadata">
-          <div className="line clearfix">
-            <label className="required">{I18nPrefixed.dataset_url}</label>
-            <input
-              type="text"
-              name="external_sources[0]"
-              className="textPrompt url required"
-              title={I18nPrefixed.dataset_url_prompt} />
-          </div>
-        </div>
+        {renderHref(metadata, validationErrors, onMetadataAction)}
 
         <div className="generalMetadata">
           <div className="line clearfix">

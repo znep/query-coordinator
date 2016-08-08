@@ -247,6 +247,31 @@ describe('validators', () => {
       });
     });
 
+    it('returns false when displayType is href and href is blank', () => {
+      let md = _.cloneDeep(metadata);
+      md.contents.name = 'name';
+      md.contents.mapLayer = 'google.com';
+      md.contents.customMetadata['second'][1].value = 'venus';
+      md.license.attribution = 'attribution';
+      md.contents.displayType = 'href';
+      const valid = isMetadataValid(md);
+      expect(valid).to.equal(false);
+    });
+
+    it('returns true when displayType is href and href is not blank', () => {
+      let md = _.cloneDeep(metadata);
+
+      md.contents.name = 'name';
+      md.contents.mapLayer = 'google.com';
+      md.contents.customMetadata['second'][1].value = 'venus';
+      md.license.attribution = 'attribution';
+      md.contents.displayType = 'href';
+      md.contents.href = 'http://foo.com';
+      const valid = isMetadataValid(md);
+      expect(valid).to.equal(true);
+    });
+
+
     it('returns true for valid values', () => {
       metadata.contents.name = 'panda',
       metadata.contents.mapLayer = 'wombat'
@@ -343,6 +368,32 @@ describe('view testing', () => {
 
   beforeEach(() => {
     state = emptyForName('');
+  });
+
+  it('shows the href component when displayType is href', () => {
+    state.contents.displayType = 'href'
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
+    expect(element.querySelector('.textPrompt.url')).to.exist;
+  });
+
+  it('does not show the href component when displayType is not href', () => {
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
+    expect(element.querySelector('.textPrompt.url')).to.not.exist;
+  });
+
+  it('sets the href property when the href input is blurred', () => {
+    state.contents.displayType = 'href';
+    let emitted = {};
+    const element = renderComponent(view( {metadata: state, onMetadataAction: (action) => {
+      emitted = action;
+    }}));
+
+    let input = element.querySelector('input.url');
+    input.value = 'foobar.com'
+    TestUtils.Simulate.blur(input)
+
+    expect(emitted.type).to.equal('MD_UPDATE_HREF');
+    expect(emitted.href).to.equal('foobar.com');
   });
 
  it('returns that there is no required text if next has not been clicked', () => {

@@ -116,6 +116,8 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
           break;
         case 'ConnectToEsri': // TODO what is this actually supposed to go to?
         case 'LinkToExternal':
+          nextPage = 'Metadata';
+          break;
         case 'CreateFromScratch':
           nextPage = 'Metadata';
           break;
@@ -175,7 +177,6 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
 
 // view
 
-
 export function view({ state, dispatch }) {
 
   return (
@@ -187,6 +188,7 @@ export function view({ state, dispatch }) {
           const onChooseOperation = (operationName) => (
             () => {
               dispatch(chooseOperation(operationName));
+              dispatch(Metadata.setDisplayType(operationName));
             }
           );
 

@@ -1,4 +1,4 @@
-<% cache(cache_key_for_site_chrome(get_site_chrome)) do %>
+<% cache(cache_key_for_site_chrome(get_site_chrome, request)) do %>
   @import url("/socrata_site_chrome/stylesheets/open_sans/open_sans.css");
   @import url("/socrata_site_chrome/stylesheets/mono_social_icons_font/monosocialiconsfont.css");
   <% unless exclude_styleguide? %>
@@ -10,13 +10,14 @@
     @import url("/socrata_site_chrome/stylesheets/styleguide/fonts/socrata-icons-font-family.css");
     @import url("/socrata_site_chrome/stylesheets/styleguide/fonts/socrata-icons.css");
   <% end %>
-  <% if params.key?(:debug_sass) %>
-///////////////////////
-//   Unparsed SASS   //
-///////////////////////
 
-<%== render('theme', :custom_themes => get_site_chrome.styles) %>
+  <% if params.key?(:debug_sass) %>
+  ///////////////////////
+  //   Unparsed SASS   //
+  ///////////////////////
+
+    <%== render('theme', :custom_themes => get_site_chrome.styles) %>
   <% else %>
-<%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles), sass_engine_options).render %>
+    <%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles), sass_engine_options).render %>
   <% end %>
 <% end %>

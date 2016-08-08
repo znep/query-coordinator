@@ -2,13 +2,14 @@ source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
 
 ruby '2.3.0'
 
-gem 'socrata_site_chrome', :path => 'engine'
+gem 'dalli'
 gem 'hashie'
 gem 'httparty'
 gem 'jquery-rails'
 gem 'rails', '4.2.6'
 gem 'request_store'
 gem 'sass-rails', '~> 5.0'
+gem 'socrata_site_chrome', :path => 'engine'
 
 group :test do
   gem 'sqlite3'

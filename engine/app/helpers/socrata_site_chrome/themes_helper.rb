@@ -15,9 +15,12 @@ module SocrataSiteChrome
       }
     end
 
-    def cache_key_for_site_chrome(site_chrome)
-      return unless site_chrome.try(:updated_at).present?
-      "#{Thread.current[:current_domain]}/config/custom-#{site_chrome.updated_at}"
+    def cache_key_for_site_chrome(site_chrome, request)
+      version = site_chrome.try(:updated_at) || SocrataSiteChrome::VERSION
+      if request.try(:params).try(:keys).try(:length).to_i > 0
+        version = "#{version}-#{request.params.keys.first}"
+      end
+      "#{Thread.current[:current_domain]}/config/custom-#{version}"
     end
 
     # theme_section is one of 'general', 'header', or 'footer'
@@ -36,7 +39,8 @@ module SocrataSiteChrome
     end
 
     def exclude_styleguide?
-      SocrataSiteChrome::Engine.config.respond_to?(:styleguide) && SocrataSiteChrome::Engine.config.styleguide == false
+      SocrataSiteChrome::Engine.config.respond_to?(:styleguide) &&
+        SocrataSiteChrome::Engine.config.styleguide == false
     end
 
   end

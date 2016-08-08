@@ -10,15 +10,35 @@ describe SocrataSiteChrome::ThemesHelper do
   end
 
   describe '#cache_key_for_site_chrome' do
-    it 'returns nil if site_chrome is nil' do
-      expect(helper.cache_key_for_site_chrome(nil)).to eq(nil)
+
+    context 'with the request parameters' do
+      let(:mock_request) { OpenStruct.new(:params => {'1462907761' => ''}) }
+
+      it 'returns SocrataSiteChrome::VERSION if site_chrome is nil' do
+        expect(helper.cache_key_for_site_chrome(nil, mock_request)).to eq("/config/custom-#{SocrataSiteChrome::VERSION}-1462907761")
+      end
+
+      it 'returns a cache key with the site_chrome updated_at timestamp' do
+        allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(site_chrome_config)
+        domain_site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
+        expect(helper.cache_key_for_site_chrome(domain_site_chrome_config, mock_request)).to eq('/config/custom-1462907760-1462907761')
+      end
     end
 
-    it 'returns a cache key with the site_chrome updated_at timestamp' do
-      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(site_chrome_config)
-      domain_site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
-      expect(helper.cache_key_for_site_chrome(domain_site_chrome_config)).to eq('/config/custom-1462907760')
+    context 'without request parameters' do
+      let(:mock_request) { OpenStruct.new }
+
+      it 'returns SocrataSiteChrome::VERSION if site_chrome is nil' do
+        expect(helper.cache_key_for_site_chrome(nil, mock_request)).to eq("/config/custom-#{SocrataSiteChrome::VERSION}")
+      end
+
+      it 'returns a cache key with the site_chrome updated_at timestamp' do
+        allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config).and_return(site_chrome_config)
+        domain_site_chrome_config = SocrataSiteChrome::SiteChrome.new(SocrataSiteChrome::DomainConfig.new('data.seattle.gov').site_chrome_config)
+        expect(helper.cache_key_for_site_chrome(domain_site_chrome_config, mock_request)).to eq('/config/custom-1462907760')
+      end
     end
+
   end
 
   describe '#theme_variable_key' do

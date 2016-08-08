@@ -70,13 +70,13 @@ ca:
           search_card: Visualitza aquesta columna com a cerca de targetes
           timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
       api_explorer:
-        additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
-        api_button: Institut Americà de Petroli
-        api_button_title: Accediu a aquesta taula de dades a traves de l'Institut Americà de Petroli
+        additional_resources: 'Recursos addicionals per aquest l''API:'
+        api_button: API
+        api_button_title: 'Accediu a aquesta taula de dades a traves de l''API'
         code_libraries: Codi de biblioteques
-        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''Institut Americà de Petroli '
+        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''API'
         documentation: Documentació
-        documentation_title: Vegeu la documentació de l'Institut Americà de Petroli
+        documentation_title: 'Vegeu la documentació de l''API'
         formats: 'Aquesta dada es troba disponible en diferents formats:'
         geojson: GeoJSON
         json: JSON
@@ -3048,7 +3048,7 @@ ca:
           validation:
             view_column: No pot afegir una columna a la vista
         api:
-          api_docs: Documents de l'Institut Americà de Petroli
+          api_docs: 'Documents de l''API'
           column_ids_title: IDs de les Columnes
           developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'

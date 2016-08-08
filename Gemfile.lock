@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (0.0.41)
+    socrata_site_chrome (0.0.42)
       airbrake (>= 4.3.0)
       chroma
       hashie (>= 2.1.2)

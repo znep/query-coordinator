@@ -219,7 +219,7 @@ module Cetera
         type: @resource['type'],
         categories: [@classification['domain_category']],
         tags: @classification['domain_tags'],
-        viewCount: @resource['view_count'] && @resource['view_count']['page_views_total'].to_i,
+        viewCount: @resource['page_views'] && @resource['page_views']['page_views_total'].to_i,
         domainCName: @metadata['domain'],
         updatedAt: @resource['updatedAt'],
         createdAt: @resource['createdAt']

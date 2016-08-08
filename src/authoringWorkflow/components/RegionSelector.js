@@ -82,15 +82,16 @@ export var RegionSelector = React.createClass({
       ` ${regionCodingLastChecked}` :
       ` ${translate('panes.data.fields.region.never')}`;
 
-    if (showRegionCodingProcessingMessage) {
+      //if (showRegionCodingProcessingMessage) {
       return (
         <div className="region-processing-info alert warning">
-          <p>The selected region is currently being processed and geocoded.</p>
-          <p>You can apply this region to your visualization, but it will not be viewable until processing is completed.</p>
+          <p>{translate('panes.data.fields.region.selected_region_processing')}</p>
+          <p>{translate('panes.data.fields.region.region_coding_duration')}</p>
+          <p>{translate('panes.data.fields.region.stay_or_return_later')}</p>
           <p className="region-processing-info-last-checked"><span className="spinner-default"/> {lastCheckedMessage}</p>
         </div>
       );
-    }
+      //}
   },
 
   renderRegionProcessingError() {

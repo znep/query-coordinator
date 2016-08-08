@@ -2592,7 +2592,7 @@ en:
                 placeholder: Footer Display Name
                 title: Footer Display Name
               footer_logo:
-                description: URL reference to the Footer logo. Recommended minimum size is 300px x 200px.
+                description: URL reference to the Footer logo. Recommended minimum size is 80px x 80px.
                 placeholder: URL
                 title: Footer Logo
               footer_logo_height:

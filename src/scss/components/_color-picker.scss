@@ -30,9 +30,10 @@
   }
 
   .caret {
+    display: inline-flex;
+    align-items: center;
     width: 26px;
     height: 100%;
-    display: inline-flex;
 
     .icon-arrow-down {
       margin: auto;

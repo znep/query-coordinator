@@ -19,9 +19,13 @@
   <body class="<%= page_classes %>">
     <%= yield %>
 
+    <script src="https://fb.me/react-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
     <script type="text/javascript" src="/javascripts/vendor/prism.js"></script>
+
     <script type="text/javascript" src="/js/styleguide.js"></script>
     <script type="text/javascript" src="/javascripts/all.js"></script>
+
     <% if content_for?(:page_js) %>
       <%= yield_content :page_js %>
     <% end %>

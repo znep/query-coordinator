@@ -1,0 +1,95 @@
+---
+title: Homepage
+layout: prototype
+---
+
+<% content_for :page_css do %>
+  <link rel="stylesheet" href="/prototypes/tables.css">
+<% end %>
+
+
+<% content_for :page_js do %>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+
+$.expr[':'].truncated = function(obj) {
+  var $this = $(obj);
+  var $c = $this
+             .clone()
+             .css({display: 'inline', width: 'auto', visibility: 'hidden'})
+             .appendTo('body');
+
+  var c_width = $c.width();
+  $c.remove();
+
+  if ( c_width > $this.width() )
+    return true;
+  else
+    return false;
+};
+
+$(function() {
+    $('td:truncated').addClass('has-more-text');
+});
+
+
+</script>
+
+
+<% end %>
+
+
+
+<div class="container">
+
+
+     <table class="table table-condensed">
+       <thead>
+         <tr>
+           <th scope="col">Dataset title</th>
+           <th scope="col">Description</th>
+           <th scope="col">Posted</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td scope="row">Chicago Pet Escapes</td>
+           <td>Describes documented pet escapes around the city</td>
+           <td>January 1, 2015</td>
+         </tr>
+         <tr>
+           <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+           <td class="tooltip" data-toggle="" data-flannel="generic-flannel">Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+           <td>February 12, 2015</td>
+         </tr>
+         <tr>
+           <td scope="row">SF Mission Burrito Menus and Locations</td>
+           <td>Find the best burritos in the city when you really need one.</td>
+           <td>July 1, 2015</td>
+         </tr>
+         <tr>
+           <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+           <td>Checkout where the fire engines go in real time.</td>
+           <td>Today</td>
+         </tr>
+       </tbody>
+     </table>
+
+
+</div><!-- /.container -->
+
+<div id="generic-flannel" class="flannel flannel-hidden">
+  <header class="flannel-header">
+    <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <section class="flannel-content">
+    <p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.</p>
+  </section>
+  <footer class="flannel-actions">
+      <button class="btn btn-primary btn-xs" data-flannel-dismiss><span class="icon-copy-document"></span> Copy</button>
+  </footer>
+</div>

@@ -1,0 +1,35 @@
+@import "breakpoint";
+@import "modular-scale";
+
+// Style Components
+@import "bourbon";
+@import "neat";
+
+@import "socrata-icons";
+
+@import "variables/colors";
+@import "variables/typography";
+
+// Media Queries
+$lgmobile: 468px 767px;
+$tablet: 769px;
+$desktop: 992px;
+
+
+table {
+  tbody td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.has-more-text {
+      &:hover {
+        background-color: #f5f5f5;
+        color: #5e5e5e;
+        cursor: pointer;
+      }
+    }
+
+  }
+}

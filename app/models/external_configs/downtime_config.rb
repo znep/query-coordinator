@@ -25,7 +25,8 @@ class DowntimeConfig < ExternalConfig
       if yaml
         @downtimes = [yaml[Rails.env]].flatten.compact.collect do |time|
           Downtime.new(time['message_start'], time['message_end'],
-                       time['downtime_start'], time['downtime_end'])
+                       time['downtime_start'], time['downtime_end'],
+                       time['custom_message'])
         end
         Rails.logger.info("Downtimes loaded! #{@downtimes.inspect}")
       else
@@ -39,7 +40,7 @@ class DowntimeConfig < ExternalConfig
   end
 
   def cache_period
-    600.seconds
+    10.minutes
   end
 
   private

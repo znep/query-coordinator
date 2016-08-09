@@ -23,10 +23,12 @@ class GoalTableBody extends React.Component {
   }
 
   onClick(event) {
-    event.preventDefault();
+    if (event.button === 0) {
+      event.preventDefault();
 
-    if (this.state.multipleRowSelection && !event.shiftKey) {
-      this.props.rowSelectionCancel();
+      if (this.state.multipleRowSelection && !event.shiftKey) {
+        this.props.rowSelectionCancel();
+      }
     }
   }
 

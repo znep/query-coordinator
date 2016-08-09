@@ -25,26 +25,28 @@ class GoalTableRow extends React.Component {
     });
   }
 
-  onClickOrContextMenu(event) {
-    const { multipleRowSelection, selectedRows } = this.state;
+  onClick(event) {
+    if (event.button === 0) {
+      const { multipleRowSelection, selectedRows } = this.state;
 
-    event.preventDefault();
+      event.preventDefault();
 
-    if (event.shiftKey) {
-      if (multipleRowSelection) {
-        this.props.rowSelectionEnd(this.props.goal.get('id'));
-      } else {
-        this.props.rowSelectionStart(this.props.goal.get('id'));
+      if (event.shiftKey) {
+        if (multipleRowSelection) {
+          this.props.rowSelectionEnd(this.props.goal.get('id'));
+        } else {
+          this.props.rowSelectionStart(this.props.goal.get('id'));
+        }
       }
-    }
 
-    if (selectedRows.includes(this.props.goal.get('id'))) {
-      this.props.rowDeselected(this.props.goal.get('id'));
-    } else {
-      this.props.rowSelected(this.props.goal.get('id'));
-    }
+      if (selectedRows.includes(this.props.goal.get('id'))) {
+        this.props.rowDeselected(this.props.goal.get('id'));
+      } else {
+        this.props.rowSelected(this.props.goal.get('id'));
+      }
 
-    return false;
+      return false;
+    }
   }
 
   onDoubleClick() {
@@ -61,7 +63,7 @@ class GoalTableRow extends React.Component {
     let dashboardUrl = `/stat/goals/${this.props.goal.get('base_dashboard')}`;
     let rowClass = classNames({ selected });
 
-    return <tr ref='tr' onClick={ this.onClickOrContextMenu.bind(this) } className={ rowClass } onContextMenu={ this.onClickOrContextMenu.bind(this) } onDoubleClick={ this.onDoubleClick.bind(this) }>
+    return <tr ref='tr' onClick={ this.onClick.bind(this) } className={ rowClass } onDoubleClick={ this.onDoubleClick.bind(this) }>
       <td><SocrataCheckbox checked={ selected } /></td>
       <td><span className="icon-goal"/></td>
       <td className="title-cell">

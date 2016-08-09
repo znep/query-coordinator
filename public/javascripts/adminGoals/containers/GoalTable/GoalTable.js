@@ -12,15 +12,9 @@ export default function GoalTable() {
       <table className="table table-borderless table-condensed op-admin-table">
         <GoalTableHead />
         <GoalTableBody />
-        <tfoot>
-          <tr>
-            <td>
-              <PageSelector />
-              <RowsPerPageSelector />
-            </td>
-          </tr>
-        </tfoot>
       </table>
+      <PageSelector />
+      <RowsPerPageSelector />
     </div>
   );
 }

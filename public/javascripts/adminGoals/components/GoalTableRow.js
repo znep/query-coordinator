@@ -68,27 +68,27 @@ class GoalTableRow extends React.Component {
       <td><span className="icon-goal"/></td>
       <td className="title-cell">
         <span className="title">{ this.props.goal.get('name') }</span>
-        <span className="goal-page-link" >
-          <SocrataFlyout text={ this.props.translations.getIn(['admin', 'listing', 'manage_on_goal_page']) }>
+        <div>
+          <span className="edit-link-container">
+            <a onClick={ this.props.openQuickEdit } style={ { cursor : 'pointer' } }
+               data-goalId={ this.props.goal.get('id') } className="goal-edit-link">{ this.props.translations.getIn([ 'admin', 'listing', 'quick_edit' ]) }</a>
+          </span>
+          <span className="goal-page-link" >
             <a target="_blank" href={ goalPageUrl } className="external-link" onClick={ this.onLinkClick }>
               { this.props.translations.getIn(['admin', 'listing', 'goal_page']) } <span className="icon-external" />
             </a>
-          </SocrataFlyout>
-        </span>
+          </span>
+        </div>
       </td>
-      <td>{ this.props.goal.getIn(['created_by', 'displayName']) }</td>
-      <td>{ moment(this.props.goal.get('updated_at')).format('ll') }</td>
-      <td>{ this.props.translations.getIn(['admin', 'goal_values', this.props.goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
-      <td>{ this.props.translations.getIn(['measure', 'progress', this.props.goal.get('prevailingMeasureProgress')]) }</td>
+      <td className="single-line">{ this.props.goal.getIn(['created_by', 'displayName']) }</td>
+      <td className="single-line">{ moment(this.props.goal.get('updated_at')).format('ll') }</td>
+      <td className="single-line">{ this.props.translations.getIn(['admin', 'goal_values', this.props.goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
+      <td className="single-line">{ this.props.translations.getIn(['measure', 'progress', this.props.goal.get('prevailingMeasureProgress')]) }</td>
       <td className="dashboard-link">
-        <SocrataFlyout text={ this.props.translations.getIn(['admin', 'listing', 'view_dashboard']) }>
+        <SocrataFlyout text={ this.props.translations.getIn(['admin', 'listing', 'view_dashboard']) } left="true">
           <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.onLinkClick }>
             { this.props.dashboard.get('name') } <span className="icon-external" /></a>
         </SocrataFlyout>
-        <span className="edit-link-container">
-          <a onClick={ this.props.openQuickEdit } style={ { cursor : 'pointer' } }
-             data-goalId={ this.props.goal.get('id') } className="goal-edit-link">Edit</a>
-        </span>
       </td>
     </tr>;
   }

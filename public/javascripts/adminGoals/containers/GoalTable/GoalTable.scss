@@ -1,60 +1,18 @@
-$table_width: 1300px;
 $min_table_body_height: 400px;
 $max_table_body_height: 700px;
-
-$column_select_width: 30px;
-$column_icon_width: 36px;
-$column_title_width: 400px;
-$column_owner_width: 125px;
-$column_updated_at_width: 125px;
-$column_visibility_width: 100px;
-$column_goal_status_width: 175px;
-$column_dashboard_width: 220px;
-$column_edit_link_width: 50px;
 
 $row_highlight_color: #F5F5F5;
 
 table.op-admin-table {
-  width: $table_width;
-  min-width: $table_width;
-  table-layout: fixed;
+  background-color: #f8f8f8;
   border-collapse: collapse;
 
-  tbody td:nth-child(1), thead th:nth-child(1) {
-    min-width: $column_select_width;
-  }
-  tbody td:nth-child(2), thead th:nth-child(2) {
-    min-width: $column_icon_width;
-  }
-  tbody td:nth-child(3), thead th:nth-child(3) {
-    min-width: $column_title_width;
-  }
-  tbody td:nth-child(4), thead th:nth-child(4) {
-    width: $column_owner_width;
-  }
-  tbody td:nth-child(5), thead th:nth-child(5) {
-    min-width: $column_updated_at_width;
-  }
-  tbody td:nth-child(6), thead th:nth-child(6) {
-    min-width: $column_visibility_width;
-  }
-  tbody td:nth-child(7), thead th:nth-child(7) {
-    min-width: $column_goal_status_width;
-  }
-  tbody td:nth-child(8), thead th:nth-child(8) {
-    min-width: $column_dashboard_width;
-  }
-  tbody td:nth-child(9), thead th:nth-child(9) {
-    min-width: $column_edit_link_width;
-    border: none;
-  }
-
   thead {
-    background-color: white;
+    background-color: #f8f8f8;
     overflow: auto;
+    white-space: nowrap;
 
     tr {
-      display: block;
       position: relative;
       border-bottom: none;
 
@@ -75,13 +33,11 @@ table.op-admin-table {
   }
 
   tbody {
-    display: block;
+    background-color: white;
     overflow: auto;
     width: 100%;
     min-height: $min_table_body_height;
     max-height: $max_table_body_height;
-
-    font-size: 13px;
 
     tr {
       user-select: none; /* CSS3 (little to no support) */
@@ -90,15 +46,17 @@ table.op-admin-table {
       -webkit-user-select: none; /* Webkit (Safari, Chrome) */
       line-height: 16px;
 
+      .single-line {
+        white-space: nowrap;
+      }
+
       td.title-cell {
-        max-width: $column_title_width;
+        & > div {
+          margin-top: 8px;
+          font-size: 11px;
+        }
 
         span.title {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: inline-block;
-          white-space: nowrap;
-          width: 100%;
           height: 17px;
           vertical-align: middle;
         }
@@ -123,24 +81,19 @@ table.op-admin-table {
       &:hover {
         background-color: $row_highlight_color;
 
-        td.title-cell span.title {
-          width: inherit;
-          max-width: calc(100% - 120px);
-        }
-
         .goal-page-link, .goal-edit-link {
-          display: initial;
+          visibility: visible;
         }
       }
 
       .goal-page-link, .goal-edit-link {
-        display: none;
+        visibility: hidden;
       }
 
       .edit-link-container {
-        margin-left: 10px;
         min-width: 75px;
         text-align: left;
+        vertical-align: middle;
       }
 
       .external-link {
@@ -148,26 +101,17 @@ table.op-admin-table {
 
         .icon-external {
           margin-left: 5px;
-          display: none;
+          visibility: hidden;
         }
 
         &:hover {
           text-decoration: underline;
 
           .icon-external {
-            display: initial;
+            visibility: visible;
           }
         }
       }
-    }
-  }
-
-  tfoot {
-    width: 100%;
-
-    td {
-      border: none;
-      padding-right: 50px;
     }
   }
 }

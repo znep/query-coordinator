@@ -146,7 +146,7 @@ class DatasetsController < ApplicationController
         Notice to Socrata Administrators: You can now configure the header and footer for your site,
         including the links, colors, logos, and more. As well, tabular datasets now have a new front-page
         experience called Dataset Landing Page which surfaces key content in intuitive ways. To preview
-        these features and activate them on your site, please visit <a href="/admin/site_chrome">.
+        these features and activate them on your site, please visit your <a href="/admin/site_chrome">Site Appearance</a> panel.
       }.html_safe
     end
 

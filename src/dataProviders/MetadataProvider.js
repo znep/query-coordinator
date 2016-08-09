@@ -111,7 +111,6 @@ function MetadataProvider(config) {
       /* eslint-enable dot-notation */
     }
 
-
     var curatedRegionsUrl = 'https://{0}/api/curated_regions?method=getByViewUid&viewUid={1}'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
@@ -202,8 +201,6 @@ function MetadataProvider(config) {
      * very low (but non-zero) probability that a user-provided column will be
      * marked as an exploded subcolumn.
      */
-
-
     if (parentColumnName !== matchedColumn.name && hasExplodedSuffix) {
       _.each(columns, function(column) {
         fieldNameByName[column.name] = fieldNameByName[column.name] || [];
@@ -258,7 +255,12 @@ function MetadataProvider(config) {
           success: resolve,
           error: handleError,
           headers: {
-            'Accept': 'application/json; charset=utf-8'
+            // TODO/EN-9041: The Curated Regions API currently returns an error
+            // if you ask for 'application/json; charset=utf-8' as we do in
+            // other places in the code. We are temporarily updating this to
+            // ask for 'application/json' temporarily, and should restore the
+            // charset clause once the bug in the Curated Regions API is fixed.
+            'Accept': 'application/json'
           }
         });
       }

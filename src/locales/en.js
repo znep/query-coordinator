@@ -170,10 +170,13 @@ export default {
     center_and_zoom: 'Your current zoom level and centering will be preserved on insertion.',
     saving_center_and_zoom: 'Saving zoom level and centering...'
   },
+  table_view: {
+    title: 'Table Preview'
+  },
   visualizations: {
     common: {
       view_source_data: 'View Source Data',
-      panning_notice: 'Not all values shown: click and drag to pan the chart',
+      panning_notice: 'Click and drag to pan the chart',
       currency_symbol: '$',
       decimal_separator: '.',
       error_generic: 'An error occurred when rendering this chart.',

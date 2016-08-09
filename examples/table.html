@@ -145,30 +145,30 @@
 
     var $table7Element = $('#table-7');
     var table7VIF = _.cloneDeep(table1VIF);
-    table7VIF.configuration.tableColumnWidths = [
-      {"columnName":"id","width":66},
-      {"columnName":"case_number","width":76},
-      {"columnName":"date","width":86},
-      {"columnName":"block","width":96},
-      {"columnName":"iucr","width":106},
-      {"columnName":"primary_type","width":116},
-      {"columnName":"description","width":126},
-      {"columnName":"location_description","width":136},
-      {"columnName":"arrest","width":146},
-      {"columnName":"domestic","width":156},
-      {"columnName":"beat","width":166},
-      {"columnName":"district","width":176},
-      {"columnName":"ward","width":186},
-      {"columnName":"community_area","width":196},
-      {"columnName":"fbi_code","width":206},
-      {"columnName":"x_coordinate","width":216},
-      {"columnName":"y_coordinate","width":226},
-      {"columnName":"year","width":236},
-      {"columnName":"updated_on","width":246},
-      {"columnName":"latitude","width":256},
-      {"columnName":"longitude","width":266},
-      {"columnName":"location","width":276}
-    ];
+    table7VIF.configuration.tableColumnWidths = {
+      "id":66,
+      "case_number":76,
+      "date":86,
+      "block":96,
+      "iucr":106,
+      "primary_type":116,
+      "description":126,
+      "location_description":136,
+      "arrest":146,
+      "domestic":156,
+      "beat":166,
+      "district":176,
+      "ward":186,
+      "community_area":196,
+      "fbi_code":206,
+      "x_coordinate":216,
+      "y_coordinate":226,
+      "year":236,
+      "updated_on":246,
+      "latitude":256,
+      "longitude":266,
+      "location":276
+    };
     $table7Element.socrataTable(table7VIF);
 
     var $table8Element = $('#table-8');

@@ -219,8 +219,8 @@ describe('AuthoringWorkflow reducer', function() {
         });
 
         action = actions.receiveMetadata([
-          { id: 'data-sets' },
-          { id: 'phid-miss' },
+          { id: 'data-sets', columns: [] },
+          { id: 'phid-miss', columns: {} },
           { id: 'regi-ons0' }
         ]);
 
@@ -232,8 +232,8 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       it('sets the data key', function() {
-        expect(newState.metadata.data).to.deep.equal({ id: 'data-sets' });
-        expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss' });
+        expect(newState.metadata.data).to.deep.equal({ id: 'data-sets', columns: [] });
+        expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss', columns: {} });
         expect(newState.metadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
       });
     });

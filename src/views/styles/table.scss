@@ -1,7 +1,10 @@
 $header-background-color: #f6f6f6;
 $row-background-color: transparent;
+$highlighted-row-color: #2f2f2f;
+$highlighted-row-background-color: #f6f6f6;
 
 .visualization-container.loaded {
+
   .socrata-table,
   .socrata-pager {
     opacity: 1;
@@ -14,31 +17,52 @@ $row-background-color: transparent;
  * the table will break (specifically, .howManyRowsCanFitInHeight()).
  */
 .socrata-table {
-  $row-height: 55px;
-  $cell-height: 54px;
-  $sort-icon-height: 52px;
+  $header-row-height: 40px;
+  $header-cell-height: 39px;
+
+  $data-row-height: 25px;
+  $data-cell-height: 24px;
 
   width: 100%;
   overflow-x: scroll;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
   transition: opacity 0.25s;
   opacity: 0;
 
   table {
     width: 100%;
     margin: 0;
-    font-size: 15px;
+    font-size: 13px;
     border-collapse: collapse;
 
-    tr {
-      height: $row-height;
+    thead {
 
-      &.null-row td {
-        border-color: transparent;
+      tr {
+        height: $header-row-height;
       }
     }
 
-    th, td {
+    tbody {
+
+      tr {
+        height: $data-row-height;
+
+        &:hover {
+
+          td {
+            color: $highlighted-row-color;
+            background-color: $highlighted-row-background-color;
+          }
+        }
+
+        &.null-row td {
+          border-color: transparent;
+        }
+      }
+    }
+
+    th,
+    td {
       box-sizing: border-box;
       height: 15px;
       border: 1px solid #c0c0c0;
@@ -47,23 +71,10 @@ $row-background-color: transparent;
       line-height: 1.5;
     }
 
-    td {
-      padding: 10px;
-
-      &[data-cell-render-type="checkbox"] {
-        text-align: center;
-      }
-
-      div {
-        max-width: 300px;
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
     th {
       position: relative;
+      height: $header-cell-height;
+      line-height: $header-cell-height;
       color: #6a6a6a;
       background-color: $header-background-color;
       cursor: pointer;
@@ -76,8 +87,8 @@ $row-background-color: transparent;
          */
         margin: 0 -2px -2px -2px;
         padding: 0 10px;
-        height: $cell-height;
-        line-height: $cell-height;
+        height: $header-cell-height;
+        line-height: $header-cell-height;
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -87,8 +98,8 @@ $row-background-color: transparent;
 
         span[class^="icon-"] {
           position: absolute;
-          height: $sort-icon-height;
-          right: 10px;
+          height: $header-cell-height - 2;
+          right: 5px;
           top: 1px;
           background: #f6f6f6;
           box-shadow: -10px 0 7px #f6f6f6;
@@ -150,13 +161,30 @@ $row-background-color: transparent;
       }
     }
 
+
     td {
+      height: $data-cell-height;
+      padding: 10px;
+      line-height: $data-cell-height;
       background-color: $row-background-color;
+
+      &[data-cell-render-type="checkbox"] {
+        text-align: center;
+      }
+
+      div {
+        max-width: 300px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 
   &.frozen-columns {
+
     table {
+
       table-layout: fixed;
     }
   }
@@ -165,7 +193,7 @@ $row-background-color: transparent;
 .socrata-pager {
   display: flex;
   background: #f8f8f8;
-  padding: 5px;
+  padding: 4px;
   border: solid 1px #e4e4e4;
   transition: opacity 0.25s;
   opacity: 0;
@@ -178,6 +206,7 @@ $row-background-color: transparent;
   }
 
   &.socrata-pager-single-page {
+
     .pager-buttons {
       display: none;
     }
@@ -189,6 +218,7 @@ $row-background-color: transparent;
   }
 
   .pager-buttons {
+
     button {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -240,7 +270,8 @@ $row-background-color: transparent;
 
   .socrata-table {
 
-    th, td {
+    th,
+    td {
       border-top: none;
     }
 

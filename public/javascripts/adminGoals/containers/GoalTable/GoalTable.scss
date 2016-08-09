@@ -1,7 +1,27 @@
+$min_table_body_height: 400px;
+$max_table_body_height: 700px;
+
+$row_highlight_color: #F5F5F5;
+
 table.op-admin-table {
-  table-layout:fixed;
+  background-color: #f8f8f8;
+  border-collapse: collapse;
 
   thead {
+    background-color: #f8f8f8;
+    overflow: auto;
+    white-space: nowrap;
+
+    tr {
+      position: relative;
+      border-bottom: none;
+
+      th {
+        font-weight: 400;
+        border-bottom: none;
+      }
+    }
+
     span {
       cursor: pointer;
     }
@@ -13,110 +33,85 @@ table.op-admin-table {
   }
 
   tbody {
+    background-color: white;
+    overflow: auto;
+    width: 100%;
+    min-height: $min_table_body_height;
+    max-height: $max_table_body_height;
+
     tr {
       user-select: none; /* CSS3 (little to no support) */
       -ms-user-select: none; /* IE 10+ */
       -moz-user-select: none; /* Gecko (Firefox) */
       -webkit-user-select: none; /* Webkit (Safari, Chrome) */
+      line-height: 16px;
 
-      td[scope=title] {
-        width: 400px;
+      .single-line {
+        white-space: nowrap;
       }
 
-      .externalLink {
-
-        .icon-external {
-          margin-left: 5px;
-          display: none;
+      td.title-cell {
+        & > div {
+          margin-top: 8px;
+          font-size: 11px;
         }
 
-        &:hover {
-          .icon-external {
-            display: initial;
-          }
+        span.title {
+          height: 17px;
+          vertical-align: middle;
         }
+
+        span.goal-page-link {
+          padding-left: 4px;
+          margin-left: 4px;
+          min-width: 120px;
+          vertical-align: middle;
+          border-left: 1px solid #999999;
+        }
+      }
+
+      td[scope=edit-link] {
+        border: none;
       }
 
       &.selected {
-        .goalPageLink, .goalEditLink {
-          display: initial;
-        }
+        background-color: $row_highlight_color;
       }
 
       &:hover {
-        background: #cae5fd;
+        background-color: $row_highlight_color;
 
-        .goalPageLink, .goalEditLink {
-          display: initial;
+        .goal-page-link, .goal-edit-link {
+          visibility: visible;
         }
       }
 
-      .goalPageLink {
-        float: right;
-        min-width: 110px;
+      .goal-page-link, .goal-edit-link {
+        visibility: hidden;
+      }
+
+      .edit-link-container {
+        min-width: 75px;
         text-align: left;
-        border-left: 1px solid #999999;
-        padding-left: 5px;
-        display: none;
+        vertical-align: middle;
       }
 
-      .dashboardLink {
-        min-width: 220px;
+      .external-link {
+        text-decoration: none;
+
+        .icon-external {
+          margin-left: 5px;
+          visibility: hidden;
+        }
+
+        &:hover {
+          text-decoration: underline;
+
+          .icon-external {
+            visibility: visible;
+          }
+        }
       }
-
-      .editLinkContainer {
-        min-width: 100px;
-      }
-
-      .goalEditLink {
-        display: none;
-      }
-    }
-  }
-}
-
-.rowsPerPageContainer {
-  float: right;
-  margin-right: 50px;
-  height: 36px;
-
-  .Select {
-    vertical-align: middle;
-    display: inline-block;
-    min-width: 60px;
-
-    .Select-value-label {
-      color: #5e5e5e;
-    }
-
-    &.has-value.Select--single > .Select-control > .Select-value .Select-value-label{
-      color: #5e5e5e;
-    }
-
-    .Select-control {
-      border: none;
-    }
-  }
-}
-
-.pageSelectorContainer {
-  float: right;
-  margin-right: 20%;
-  height: 36px;
-  padding-top: 5px;
-
-  .labels {
-    margin-right: 10px;
-  }
-
-  .pageChangeIcon {
-    margin-left: 30px;
-    color: #5e5e5e;
-    cursor: pointer;
-
-    &.disabled {
-      color: #999999;
-      cursor: not-allowed;
     }
   }
 }

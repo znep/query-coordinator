@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Select from 'react-select';
-import Flyout from '../../components/Flyout';
 import SocrataDatePicker from '../../components/SocrataDatePicker';
+import SocrataFlyout from '../../components/SocrataFlyout/SocrataFlyout';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
@@ -153,9 +153,9 @@ class EditMultipleItemsForm extends React.Component {
     }
 
     return (
-      <Flyout text={ tooltipText } tooltip>
+      <SocrataFlyout text={ tooltipText } tooltip>
         <SocrataChangeIndicator onRevert={ onRevert }/>
-      </Flyout>
+      </SocrataFlyout>
     );
   }
 

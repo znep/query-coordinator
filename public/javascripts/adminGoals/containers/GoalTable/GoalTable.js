@@ -1,22 +1,20 @@
 import React from 'react';
 import GoalTableHead from '../../components/GoalTableHead';
 import GoalTableBody from '../../components/GoalTableBody';
-import RowsPerPageSelector from '../../components/RowsPerPageSelector';
-import PageSelector from '../../components/PageSelector';
-
+import RowsPerPageSelector from '../../components/RowsPerPageSelector/RowsPerPageSelector';
+import PageSelector from '../../components/PageSelector/PageSelector';
 import './GoalTable.scss';
 
 export default function GoalTable() {
   return (
     <div>
-      <table className="table table-borderless op-admin-table">
+      <h1>Manage Measures and Goals</h1>
+      <table className="table table-borderless table-condensed op-admin-table">
         <GoalTableHead />
         <GoalTableBody />
       </table>
-      <div>
-        <PageSelector />
-        <RowsPerPageSelector />
-      </div>
+      <PageSelector />
+      <RowsPerPageSelector />
     </div>
   );
 }

@@ -42,7 +42,6 @@ class GoalTableHead extends React.Component {
         <th><SocrataCheckbox checked={ this.state.selectAllChecked } onClick={ this.props.toggleAllRows } /></th>
         <th>&nbsp;</th>
         { titles }
-        <th>&nbsp;</th>
       </tr>
     </thead>;
   }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setRowsPerPage } from '../actions/goalTableActions';
+import { setRowsPerPage } from '../../actions/goalTableActions';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import './RowsPerPageSelector.scss';
 
 class RowsPerPageSelector extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class RowsPerPageSelector extends React.Component {
   render() {
     let options = _.map([25, 50, 100, 250], value => ({ label: value, value }));
 
-    return <div className="rowsPerPageContainer">
+    return <div className="rows-per-page-container">
       { this.props.translations.getIn(['admin', 'listing', 'rows_per_page']) }:
       <Select
         options={ options }

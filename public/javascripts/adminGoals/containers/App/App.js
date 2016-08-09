@@ -33,7 +33,7 @@ function App(props) {
   }
 
   return (
-    <div>
+    <div className="app-container">
       { alert }
       <SocrataBulkActions />
       <GoalTable />

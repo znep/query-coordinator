@@ -1,9 +1,6 @@
-import Flyout from 'components/Flyout';
-import moment from 'moment';
+import Flyout from 'components/SocrataFlyout/SocrataFlyout';
 
-import translations from 'mockTranslations';
-
-describe('components/Flyout', function() {
+describe('components/SocrataFlyout', function() {
   beforeEach(function() {
     var props = {text: 'something'};
     this.hoverable = <span className="custom-text">custom-hoverable-text</span>;

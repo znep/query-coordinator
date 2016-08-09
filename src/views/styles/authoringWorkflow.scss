@@ -2,6 +2,53 @@
   .modal-header {
     z-index: 60;
   }
+
+  .modal-footer-actions {
+    display: flex;
+  }
+
+  .authoring-modal-content {
+    margin-bottom: 44px;
+  }
+
+  .authoring-modal-footer {
+    padding: 5px;
+  }
+}
+
+.authoring-back-button {
+  margin: auto;
+  margin-left: 0;
+
+  background: transparent;
+  border: solid 1px transparent;
+  color: #2279a6;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s, color 0.15s;
+
+  &:hover {
+    background: transparent;
+    border: solid 1px #d4d4d4;
+    border-radius: 2px;
+  }
+
+  &:active {
+    background: #ddd;
+    outline: 0;
+  }
+
+  &:disabled {
+    color: #777;
+    cursor: not-allowed;
+    border: solid 1px transparent;
+  }
+
+  [class*="icon"] {
+    font-size: 12px;
+    vertical-align: top;
+    margin-right: 8px;
+  }
 }
 
 .authoring-controls {

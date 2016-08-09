@@ -71,6 +71,10 @@
       authoringWorkflow.destroy();
     };
 
+    var onBack = function() {
+      console.log('Back to somewhere!');
+    };
+
     $('#launch').click(function() {
       output.innerHTML = '';
       vif = null;
@@ -292,9 +296,11 @@
         // vif: licenseeTax,
         // vif: citizenSatisfaction,
         // vif: whiteHouseStaff,
-        //vif: v1FeatureMapVif,
+        vif: v1FeatureMapVif,
+        backButtonText: 'Back to Dataset Selection',
         onComplete: onComplete,
-        onCancel: onCancel
+        onCancel: onCancel,
+        onBack: onBack
       });
     });
 

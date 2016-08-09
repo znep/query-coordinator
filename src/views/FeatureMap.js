@@ -106,9 +106,9 @@ function FeatureMap(element, vif) {
   this.render = function(renderOptions) {
 
     if (_mapElement.width() > 0 && _mapElement.height() > 0) {
-      var boundsChanged;
-      var baseLayerChanged;
-      var vectorTileGetterChanged;
+      var boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
+      var baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
+      var vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
       // Emit render start event
       _emitRenderStart();
@@ -126,9 +126,6 @@ function FeatureMap(element, vif) {
           _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.center.lng')) &&
           _.isNumber(_.get(vif, 'configuration.mapCenterAndZoom.zoom'))
         );
-        boundsChanged = renderOptions.bounds !== _.get(_lastRenderOptions, 'bounds');
-        baseLayerChanged = renderOptions.baseLayer !== _.get(_lastRenderOptions, 'baseLayer');
-        vectorTileGetterChanged = renderOptions.vectorTileGetter !== _.get(_lastRenderOptions, 'vectorTileGetter');
 
         _lastRenderOptions = _.cloneDeep(renderOptions);
         _lastRenderOptions.bounds = new L.LatLngBounds(
@@ -716,7 +713,6 @@ function FeatureMap(element, vif) {
   }
 
   function _handleVectorTileRenderComplete() {
-
     _removeOldFeatureLayers();
 
     if (_hover) {

@@ -27,7 +27,41 @@ describe('VisualizationTypeSelector', function() {
       });
 
       it('renders visualization type selection', function() {
-        expect(component.querySelector('#visualization-type-selection')).to.exist;
+        expect(component.id).to.equal('visualization-type-selection');
+      });
+
+      describe('with a visualization selected', function() {
+        it('selects the visualization', function() {
+          expect(component.querySelector('.btn.active')).to.exist;
+        })
+      });
+
+      describe('with a dimension selected', function() {
+        beforeEach(function() {
+          component = renderComponent(VisualizationTypeSelector, defaultProps({
+            vifAuthoring: {
+              vifs: {
+                columnChart: {
+                  series: [{
+                    dataSource: {
+                      dimension: {
+                        columnName: 'test'
+                      }
+                    }
+                  }]
+                }
+              }
+            }
+          }));
+        });
+
+        it('renders recommended visualizations', function() {
+          expect(component.querySelector('.btn.recommended')).to.exist;
+        });
+
+        it('renders recommended flyouts', function() {
+          expect(component.querySelector('.flyout.recommended')).to.exist;
+        });
       });
     });
   });
@@ -41,7 +75,7 @@ describe('VisualizationTypeSelector', function() {
 
     var emitsDropdownEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
-        var option = component.querySelector(`${selector} .dropdown-option`);
+        var option = component.querySelector(`${selector} .btn`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });

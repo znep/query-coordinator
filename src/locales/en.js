@@ -48,12 +48,13 @@ export default {
           no_value: 'No Measure Aggregation'
         },
         visualization_type: {
-          title: 'Visualization Type',
           placeholder: 'Select a visualization type...',
           groups: {
             recommended_visualizations: 'Recommended Visualizations',
             all_visualizations: 'All Visualizations'
-          }
+          },
+          recommended: 'Recommended',
+          recommended_based_on: 'Recommended based on your dimension selection.'
         },
         region: {
           title: 'Region',

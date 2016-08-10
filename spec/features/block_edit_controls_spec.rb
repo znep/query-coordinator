@@ -52,6 +52,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       # move block up
       @last_block.hover
+      expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]')).to_not have_selector('.btn-disabled')
       javascript_click(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]'))
       after_move_position = @last_block.native.location.y
 
@@ -59,8 +60,8 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     end
 
     it 'disables "move up" for the first block' do
-      @first_block.hover
-      expect(@first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]')[:disabled]).to eq('true')
+      # for some reason, the have_selector match doesn't work here...
+      expect(@first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]', visible: false)[:class]).to match(/\bbtn-disabled\b/)
     end
 
     it 'moves down when "move down" button is clicked' do
@@ -68,6 +69,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       # move block down
       @first_block.hover
+      expect(@first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]')).to_not have_selector('.btn-disabled')
       @first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]').click
       after_move_position = @first_block.native.location.y
 
@@ -75,8 +77,8 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     end
 
     it 'disables "move down" for the last block' do
-      @last_block.hover
-      expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]')[:disabled]).to eq("true")
+      # for some reason, the have_selector match doesn't work here...
+      expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]', visible: false)[:class]).to match(/\bbtn-disabled\b/)
     end
   end
 

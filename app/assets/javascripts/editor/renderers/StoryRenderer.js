@@ -105,7 +105,7 @@ export default function StoryRenderer(options) {
 
     $container.on(
       'click',
-      '[data-block-move-action]',
+      '[data-block-move-action]:not(.btn-disabled)',
       function(event) {
 
         var payload = {
@@ -575,8 +575,8 @@ export default function StoryRenderer(options) {
     var togglePresentationVisibilityButton = $blockElement.find('.block-edit-controls-toggle-presentation-btn');
     var togglePresentationVisibilityFlyout = $blockElement.find('.block-edit-controls-presentation-flyout');
 
-    moveUpButton.prop('disabled', blockIndex === 0);
-    moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    moveUpButton.toggleClass('btn-disabled', blockIndex === 0);
+    moveDownButton.toggleClass('btn-disabled', blockIndex === (blockCount - 1));
     togglePresentationVisibilityButton.toggleClass('active', !storyStore.isBlockPresentable(blockId));
     togglePresentationVisibilityFlyout.find('.flyout-content p').text(
         isPresentable ?

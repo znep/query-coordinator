@@ -4,54 +4,57 @@ const utils = require('socrata-utils');
 const Table = require('./views/Table');
 const Pager = require('./views/Pager');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
+const VifHelpers = require('./helpers/VifHelpers');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 
 const ROW_HEIGHT_PX = 39;
 const MAX_COLUMN_COUNT = 64;
 
-$.fn.socrataTable = function(vif) {
+$.fn.socrataTable = function(originalVif) {
   'use strict';
 
+  originalVif = _.cloneDeep(VifHelpers.migrateVif(originalVif));
+
   utils.assertHasProperties(
-    vif,
-    'configuration',
-    'datasetUid',
-    'domain',
-    'unit.one',
-    'unit.other',
-    'configuration.order'
+    originalVif,
+    'configuration.order',
+    'series[0].dataSource.datasetUid',
+    'series[0].dataSource.domain',
+    'series[0].unit.one',
+    'series[0].unit.other'
   );
 
   utils.assert(
-    Array.isArray(vif.configuration.order),
+    Array.isArray(_.get(originalVif, 'configuration.order')),
     'jQuery.fn.socrataTable: VIF configuration must include an "order" key ' +
     'whose value is an Array.'
   );
 
   utils.assertEqual(
-    vif.configuration.order.length,
+    _.get(originalVif, 'configuration.order').length,
     1
   );
 
   utils.assertHasProperties(
-    vif.configuration.order[0],
+    _.get(originalVif, 'configuration.order[0]'),
     'ascending',
     'columnName'
   );
 
   var $element = $(this);
-  var vifToRender = vif;
-  var soqlDataProvider = new SoqlDataProvider(
-    _.pick(vif, 'datasetUid', 'domain')
-  );
-  var visualization = new Table($element, vif);
+  var vifToRender = originalVif;
+  var soqlDataProvider = new SoqlDataProvider({
+    datasetUid: _.get(vifToRender, 'series[0].dataSource.datasetUid'),
+    domain: _.get(vifToRender, 'series[0].dataSource.domain')
+  });
+  var visualization = new Table($element, vifToRender);
   var pager = null;
 
   // Holds all state regarding the table's visual presentation.
-  // Do _NOT_ update this directly, use _setState() or _updateState().
+  // Do _NOT_ update this directly, use setState() or updateState().
   // This is to ensure all state changes are reflected in the UI.
-  var _renderState = {
+  var renderState = {
     // Is the table busy?
     busy: false,
 
@@ -77,13 +80,11 @@ $.fn.socrataTable = function(vif) {
     //   }
     // }
     fetchedData: null,
-
     datasetRowCount: null
   };
 
   var getMemoizedDatasetMetadata = _.memoize(
     function(metadataProviderConfig) {
-
       return new MetadataProvider(metadataProviderConfig).getDatasetMetadata();
     },
     function(metadataProviderConfig) {
@@ -100,6 +101,7 @@ $.fn.socrataTable = function(vif) {
       return soqlDataProvider.getRowCount(whereClauseComponents);
     },
     function(soqlDataProvider, whereClauseComponents, rowsUpdatedAt) {
+
       return '{0}_{1}_{2}_{3}'.format(
         soqlDataProvider.getConfigurationProperty('domain'),
         soqlDataProvider.getConfigurationProperty('datasetUid'),
@@ -109,150 +111,159 @@ $.fn.socrataTable = function(vif) {
     }
   );
 
-  _attachEvents();
+  attachEvents();
 
   $element.addClass('socrata-paginated-table');
 
-  _render();
+  render();
 
-  _setDataQuery(
+  setDataQuery(
     0, // Offset
-    _computePageSize(),
-    _.get(vif, 'configuration.order'),
-    SoqlHelpers.whereClauseFilteringOwnColumn(vif)
-  ).then(function() {
-    visualization.freezeColumnWidthsAndRender();
-  })
-  ['catch'](function() {
-    _updateState({error: true});
-  });
-
-  /**
-   * Configuration
-   */
-
-  function _getRenderOptions() {
-    return _.get(vif, 'configuration.order');
-  }
+    computePageSize(),
+    _.get(vifToRender, 'configuration.order'),
+    SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender, 0)
+  ).
+    then(function() {
+      visualization.freezeColumnWidthsAndRender();
+    })['catch'](function() {
+      updateState({error: true});
+    });
 
   /**
    * Event Handling
    */
-  function _attachEvents() {
+  function attachEvents() {
+
     $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
       visualization.destroy();
-      _detachEvents();
+      detachEvents();
     });
 
-    $element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', _handleColumnClicked);
-    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleColumnFlyout);
-    $element.on('SOCRATA_VISUALIZATION_CELL_FLYOUT', _handleCellFlyout);
-    $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
-    $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
-    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
+    $element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', handleColumnClicked);
+    $element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', handleColumnFlyout);
+    $element.on('SOCRATA_VISUALIZATION_CELL_FLYOUT', handleCellFlyout);
+    $element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', handlePrevious);
+    $element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', handleNext);
+    $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', handleInvalidateSize);
+    $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
-  function _detachEvents() {
-    $element.off('SOCRATA_VISUALIZATION_COLUMN_CLICKED', _handleColumnClicked);
-    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleColumnFlyout);
-    $element.off('SOCRATA_VISUALIZATION_CELL_FLYOUT', _handleCellFlyout);
-    $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', _handlePrevious);
-    $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', _handleNext);
-    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', _handleSizeChange);
-    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', _handleRenderVif);
+  function detachEvents() {
+
+    $element.off('SOCRATA_VISUALIZATION_COLUMN_CLICKED', handleColumnClicked);
+    $element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', handleColumnFlyout);
+    $element.off('SOCRATA_VISUALIZATION_CELL_FLYOUT', handleCellFlyout);
+    $element.off('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', handlePrevious);
+    $element.off('SOCRATA_VISUALIZATION_PAGINATION_NEXT', handleNext);
+    $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', handleInvalidateSize);
+    $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
-  function _render() {
+  function render() {
+    var pagerOptions;
 
-    if (_renderState.error) {
+    if (renderState.error) {
       return visualization.renderError();
     }
 
-    if (_renderState.fetchedData) {
-      visualization.render(
-        _renderState.fetchedData,
-        _renderState.fetchedData.order
-      );
+    if (renderState.fetchedData) {
+
+      visualization.render(vifToRender, renderState.fetchedData);
     }
 
-    if (_renderState.fetchedData && _renderState.datasetRowCount) {
-      renderPager({
-        unit: vif.unit,
-        startIndex: _renderState.fetchedData.startIndex,
+    if (renderState.fetchedData && renderState.datasetRowCount) {
+
+      pagerOptions = {
+        unit: _.get(vifToRender, 'series[0].unit'),
+        startIndex: renderState.fetchedData.startIndex,
         endIndex: Math.min(
           (
-            _renderState.fetchedData.startIndex +
-            _renderState.fetchedData.rows.length
+            renderState.fetchedData.startIndex +
+            renderState.fetchedData.rows.length
           ),
-          _renderState.datasetRowCount
+          renderState.datasetRowCount
         ),
-        datasetRowCount: _renderState.datasetRowCount,
-        disabled: _renderState.busy || !_.isFinite(_renderState.datasetRowCount)
-      });
+        datasetRowCount: renderState.datasetRowCount,
+        disabled: renderState.busy || !_.isFinite(renderState.datasetRowCount)
+      };
     } else {
 
       // No fetched data. Render placeholders so that we can determine pager
       // heights.
-      renderPager({
-        unit: vif.unit,
+      pagerOptions = {
+        unit: _.get(vifToRender, 'series[0].unit'),
         startIndex: 0,
         endIndex: 0,
         datasetRowCount: 0,
         disabled: true
-      });
+      };
     }
+
+    renderPager(pagerOptions);
   }
 
   function renderPager(options) {
 
     if (pager === null) {
-      pager = new Pager($element.find('.visualization-container'), vif);
+      pager = new Pager($element.find('.visualization-container'));
     }
 
     pager.render(options);
   }
 
-  function _handleColumnClicked(event) {
+  function handleColumnClicked(event) {
     var alreadySorted;
     var newOrder;
     var columnName = event.originalEvent.detail;
 
     utils.assertIsOneOfTypes(event.originalEvent.detail, 'string');
 
-    if (_renderState.busy) { return; }
+    if (renderState.busy) { return; }
 
     utils.assert(
       _.includes(
-        _.map(_renderState.fetchedData.columns, 'fieldName'),
+        _.map(renderState.fetchedData.columns, 'fieldName'),
         columnName
       ),
       'Column name not found to sort by: {0}'.format(columnName)
     );
 
-    alreadySorted = _renderState.fetchedData.order[0].columnName === columnName;
+    alreadySorted = _.isEqual(
+      _.get(
+        vifToRender,
+        'configuration.order[0].columnName'
+      ),
+      columnName
+    );
 
     if (alreadySorted) {
 
       // Toggle sort direction;
-      newOrder = _.cloneDeep(_renderState.fetchedData.order);
+      newOrder = _.cloneDeep(renderState.fetchedData.order);
       newOrder[0].ascending = !newOrder[0].ascending;
     } else {
+
       newOrder = [{
         columnName: columnName,
         ascending: true
       }]
     }
 
-    _setDataQuery(
+    _.set(
+      vifToRender,
+      'configuration.order',
+      newOrder
+    );
+
+    setDataQuery(
       0,
-      _renderState.fetchedData.pageSize,
-      newOrder,
-      _renderState.fetchedData.whereClauseComponents
+      renderState.fetchedData.pageSize,
+      _.get(vifToRender, 'configuration.order'),
+      renderState.fetchedData.whereClauseComponents
     );
   }
 
-  function _handleColumnFlyout(event) {
+  function handleColumnFlyout(event) {
     var payload = event.originalEvent.detail;
 
     $element[0].dispatchEvent(
@@ -266,7 +277,7 @@ $.fn.socrataTable = function(vif) {
     );
   }
 
-  function _handleCellFlyout(event) {
+  function handleCellFlyout(event) {
     var payload = event.originalEvent.detail;
 
     $element[0].dispatchEvent(
@@ -280,53 +291,53 @@ $.fn.socrataTable = function(vif) {
     );
   }
 
-  function _handleNext() {
+  function handleNext() {
 
-    _setDataQuery(
-      _renderState.fetchedData.startIndex + _renderState.fetchedData.pageSize,
-      _renderState.fetchedData.pageSize,
-      _renderState.fetchedData.order,
-      _renderState.fetchedData.whereClauseComponents
+    setDataQuery(
+      renderState.fetchedData.startIndex + renderState.fetchedData.pageSize,
+      renderState.fetchedData.pageSize,
+      _.get(vifToRender, 'configuration.order'),
+      renderState.fetchedData.whereClauseComponents
     );
   }
-  function _handlePrevious() {
+  function handlePrevious() {
 
-    _setDataQuery(
+    setDataQuery(
       Math.max(
         0,
-        _renderState.fetchedData.startIndex - _renderState.fetchedData.pageSize
+        renderState.fetchedData.startIndex - renderState.fetchedData.pageSize
       ),
-      _renderState.fetchedData.pageSize,
-      _renderState.fetchedData.order,
-      _renderState.fetchedData.whereClauseComponents
+      renderState.fetchedData.pageSize,
+      _.get(vifToRender, 'configuration.order'),
+      renderState.fetchedData.whereClauseComponents
     );
   }
 
-  function _handleSizeChange() {
-    var pageSize = _computePageSize();
-    var oldPageSize = _.get(_renderState, 'fetchedData.pageSize');
+  function handleInvalidateSize() {
+    var pageSize = computePageSize();
+    var oldPageSize = _.get(renderState, 'fetchedData.pageSize');
 
     // Canceling inflight requests is hard.
     // If we're currently fetching data, ignore the size change.
     // The size will be rechecked once the current request
     // is complete.
     if (
-      !_renderState.error &&
-      !_renderState.busy &&
+      !renderState.error &&
+      !renderState.busy &&
       oldPageSize !== pageSize &&
-      _renderState.fetchedData
+      renderState.fetchedData
     ) {
 
-      _setDataQuery(
-        _renderState.fetchedData.startIndex,
+      setDataQuery(
+        renderState.fetchedData.startIndex,
         pageSize,
-        _renderState.fetchedData.order,
-        _renderState.fetchedData.whereClauseComponents
+        _.get(vifToRender, 'configuration.order'),
+        renderState.fetchedData.whereClauseComponents
       );
     }
   }
 
-  function _handleRenderVif(event) {
+  function handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
 
     if (newVif.type !== 'table') {
@@ -341,19 +352,20 @@ $.fn.socrataTable = function(vif) {
     vifToRender = newVif;
 
     soqlDataProvider = new SoqlDataProvider(
-      _.pick(newVif, 'datasetUid', 'domain')
+      _.pick(vifToRender, 'datasetUid', 'domain')
     );
 
-    _setDataQuery(
+    setDataQuery(
       0,
-      _computePageSize(),
-      _.get(newVif, 'configuration.order'),
-      SoqlHelpers.whereClauseFilteringOwnColumn(newVif)
+      computePageSize(),
+      _.get(vifToRender, 'configuration.order'),
+      SoqlHelpers.whereClauseFilteringOwnColumn(vifToRender, 0)
     );
   }
 
-  function _computePageSize() {
-    if (_renderState.error) {
+  function computePageSize() {
+
+    if (renderState.error) {
       return 0;
     }
 
@@ -368,7 +380,7 @@ $.fn.socrataTable = function(vif) {
    * Data Requests
    */
 
-  function _handleSetDataQueryError(error) {
+  function handleSetDataQueryError(error) {
 
     console.error(
       `Error while fulfilling table data request: ${JSON.stringify(error)}`
@@ -376,107 +388,108 @@ $.fn.socrataTable = function(vif) {
 
     // There was an issue populating this table with data. Retry?
 
-    _updateState({ busy: false, error: true });
+    updateState({ busy: false, error: true });
 
     return Promise.reject();
   }
 
-  function _setDataQuery(startIndex, pageSize, order, whereClauseComponents) {
+  function setDataQuery(startIndex, pageSize, order, whereClauseComponents) {
     if (order.length !== 1) {
       return Promise.reject('order parameter must be an array with exactly one element.');
     }
 
-    if (_renderState.busy) {
+    if (renderState.busy) {
       throw new Error(
-        'Cannot call _makeDataRequest while a request already in progress.'
+        'Cannot call setDataQuery while a request already in progress.'
       );
     }
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    _updateState({ busy: true });
+    updateState({ busy: true });
 
-    return getMemoizedDatasetMetadata(
-      _.pick(vifToRender, 'datasetUid', 'domain')
-    ).
-      then(
-        function(datasetMetadata) {
-          var displayableColumns = new MetadataProvider(
-            _.pick(vifToRender, 'datasetUid', 'domain')
-          ).
-            getDisplayableColumns(datasetMetadata);
-          var displayableColumnsFieldNames = _.map(
-            displayableColumns,
-            'fieldName'
-          ).
-            slice(0, MAX_COLUMN_COUNT);
-
-          var soqlRowCountPromise = getMemoizedRowCount(
-            soqlDataProvider,
-            whereClauseComponents,
-            datasetMetadata.rowsUpdatedAt
+    return getMemoizedDatasetMetadata({
+      datasetUid: _.get(vifToRender, 'series[0].dataSource.datasetUid'),
+      domain: _.get(vifToRender, 'series[0].dataSource.domain')
+    }).
+      then(function(datasetMetadata) {
+        var displayableColumns = new MetadataProvider({
+          datasetUid: _.get(vifToRender, 'series[0].dataSource.datasetUid'),
+          domain: _.get(vifToRender, 'series[0].dataSource.domain')
+        }).getDisplayableColumns(datasetMetadata);
+        var displayableColumnsFieldNames = _.map(
+          displayableColumns,
+          'fieldName'
+        ).slice(0, MAX_COLUMN_COUNT);
+        var soqlRowCountPromise = getMemoizedRowCount(
+          soqlDataProvider,
+          whereClauseComponents,
+          datasetMetadata.rowsUpdatedAt
+        );
+        var soqlDataPromise = soqlDataProvider.
+          getTableData(
+            displayableColumnsFieldNames,
+            order,
+            startIndex,
+            pageSize,
+            whereClauseComponents
           );
-          var soqlDataPromise = soqlDataProvider.
-            getTableData(
-              displayableColumnsFieldNames,
-              order,
-              startIndex,
-              pageSize,
-              whereClauseComponents
-            );
 
-          soqlRowCountPromise.then(function(rowCount) {
-            _updateState({
+        soqlRowCountPromise.
+          then(function(rowCount) {
+            updateState({
               datasetRowCount: rowCount
             });
           })
-          ['catch'](_handleSetDataQueryError);
+          ['catch'](handleSetDataQueryError);
 
-          return soqlDataPromise.then(
-            function(soqlData) {
-              $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+        return soqlDataPromise.
+          then(function(soqlData) {
+            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
-              // Rows can either be undefined OR of the exact length of the
-              // displayableColumns OR MAX_COLUMN_COUNT, if the
-              // displayableColumns has more than MAX_COLUMN_COUNT items.
-              utils.assert(_.every(soqlData.rows, function(row) {
+            // Rows can either be undefined OR of the exact length of the
+            // displayableColumns OR MAX_COLUMN_COUNT, if the
+            // displayableColumns has more than MAX_COLUMN_COUNT items.
+            utils.assert(_.every(soqlData.rows, function(row) {
 
-                return (
-                  !row ||
-                  row.length === displayableColumns.length ||
-                  row.length === MAX_COLUMN_COUNT
-                );
-              }));
+              return (
+                !row ||
+                row.length === displayableColumns.length ||
+                row.length === MAX_COLUMN_COUNT
+              );
+            }));
 
-              // Pad/trim row count to fit display.
-              soqlData.rows.length = pageSize;
-              _updateState({
-                fetchedData: {
-                  rows: soqlData.rows,
-                  columns: displayableColumns,
-                  startIndex: startIndex,
-                  pageSize: pageSize,
-                  order: order,
-                  whereClauseComponents: whereClauseComponents
-                },
-                busy: false,
-                error: false
-              });
-            }
-          )
-          ['catch'](_handleSetDataQueryError);
-        }
-      )
-      ['catch'](_handleSetDataQueryError);
+            // Pad/trim row count to fit display.
+            soqlData.rows.length = pageSize;
+
+            updateState({
+              fetchedData: {
+                rows: soqlData.rows,
+                columns: displayableColumns,
+                startIndex: startIndex,
+                pageSize: pageSize,
+                order: order,
+                whereClauseComponents: whereClauseComponents
+              },
+              busy: false,
+              error: false
+            });
+          })['catch'](handleSetDataQueryError);
+      })['catch'](handleSetDataQueryError);
   }
 
-  function _getVif() {
-    var newVif = _.cloneDeep(vif);
+  function getVif() {
+    var newVif = _.cloneDeep(vifToRender);
+
     _.set(
       newVif,
       'configuration.order',
       _.cloneDeep(
-        _.get(_renderState, 'fetchedData.order', vif.configuration.order)
+        _.get(
+          renderState,
+          'fetchedData.order',
+          _.get(vifToRender, 'configuration.order')
+        )
       )
     );
 
@@ -484,42 +497,55 @@ $.fn.socrataTable = function(vif) {
   }
 
   // Updates only specified UI state.
-  function _updateState(newPartialState) {
-    _setState(_.extend(
-      {},
-      _renderState,
-      newPartialState
-    ));
+  function updateState(newPartialState) {
+
+    setState(
+      _.extend(
+        {},
+        renderState,
+        newPartialState
+      )
+    );
   }
 
   // Replaces entire UI state.
-  function _setState(newState) {
+  function setState(newState) {
     var becameIdle;
     var changedOrder;
 
-    if (!_.isEqual(_renderState, newState)) {
-      becameIdle = !newState.busy && _renderState.busy;
-      changedOrder = !_.isEqual(
-        _.get(_renderState, 'fetchedData.order'),
-        _.get(newState, 'fetchedData.order')
+    if (!_.isEqual(renderState, newState)) {
+      becameIdle = !newState.busy && renderState.busy;
+
+      changedOrder = (
+        // We don't want to emit the ...VIF_UPDATED event on first render.
+        // The way that the state here works is that it is initialized with
+        // order set to null, so we need to check that there actually is an
+        // order (which gets folded into the fetchedData object from the vif
+        // once the data request comes back) before checking if it has changed
+        // since the last time the state was updated.
+        _.get(renderState, 'fetchedData') !== null &&
+        !_.isEqual(
+          _.get(renderState, 'fetchedData.order'),
+          _.get(newState, 'fetchedData.order')
+        )
       );
 
-      _renderState = newState;
+      renderState = newState;
 
       if (becameIdle) {
-        _handleSizeChange();
+        handleInvalidateSize();
       }
 
       if (changedOrder) {
         $element[0].dispatchEvent(
           new window.CustomEvent(
             'SOCRATA_VISUALIZATION_VIF_UPDATED',
-            { detail: _getVif(), bubbles: true }
+            { detail: getVif(), bubbles: true }
           )
         );
       }
 
-      _render();
+      render();
     }
   }
 };

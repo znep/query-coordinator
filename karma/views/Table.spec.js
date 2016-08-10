@@ -2,7 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var Table = require('../../src/views/Table');
 
-describe('Table', function() {
+describe('views/Table', function() {
 
   function createTable(overrideVIF) {
     var element = $( '<div>', {'id': 'table'});
@@ -11,6 +11,10 @@ describe('Table', function() {
 
     var tableVIF = {
       configuration: {
+        order: [{
+          columnName: 'test',
+          ascending: true
+        }]
       },
       type: 'table'
     };
@@ -21,7 +25,7 @@ describe('Table', function() {
 
     var table = new Table(element, tableVIF);
 
-    var renderOptions = {
+    var data = {
       rows: [],
       columns: []
     };
@@ -29,7 +33,8 @@ describe('Table', function() {
     return {
       element: element,
       table: table,
-      renderOptions: renderOptions
+      vif: tableVIF,
+      data: data
     };
   }
 
@@ -41,24 +46,6 @@ describe('Table', function() {
     }
 
     $('#table').remove();
-  }
-
-  function rows(columns, override, numberOfRows) {
-    if (override) {
-      return override;
-    }
-
-    var rows = [];
-    numberOfRows = isFinite(numberOfRows) ? numberOfRows : 2;
-
-    columns.forEach(function(column) {
-      for (var index = 0; index < numberOfRows; index++) {
-        rows[index] = rows[index] || {};
-        rows[index][column] = column + ':' + index;
-      }
-    });
-
-    return rows;
   }
 
   function columns(override, numberOfColumns) {
@@ -80,12 +67,22 @@ describe('Table', function() {
     return columns;
   }
 
-  function renderOptions(columns, override) {
+  function rows(columns, override, numberOfRows) {
     if (override) {
       return override;
     }
 
-    return [{ascending: true, column: columns[0] || null}];
+    var rows = [];
+    numberOfRows = isFinite(numberOfRows) ? numberOfRows : 2;
+
+    columns.forEach(function(column) {
+      for (var index = 0; index < numberOfRows; index++) {
+        rows[index] = rows[index] || {};
+        rows[index][column] = column + ':' + index;
+      }
+    });
+
+    return rows;
   }
 
   function render(table, argv) {
@@ -94,10 +91,13 @@ describe('Table', function() {
     var generatedColumns = columns(argv.columns);
     var generatedRows = rows(generatedColumns, argv.rows);
 
-    table.table.render({
-      columns: generatedColumns,
-      rows: generatedRows
-    }, renderOptions(generatedColumns, argv.renderOptions));
+    table.table.render(
+      table.vif,
+      {
+        columns: generatedColumns,
+        rows: generatedRows
+      }
+    );
   }
 
   /**
@@ -156,7 +156,13 @@ describe('Table', function() {
 
   describe('layout', function() {
     beforeEach(function() {
-      table = createTable();
+      table = createTable(
+        {
+          configuration:{
+            order: [{ascending: true, columnName: 'hello'}]
+          }
+        }
+      );
       render(table);
     });
 
@@ -170,12 +176,15 @@ describe('Table', function() {
 
     describe('table headers', function() {
       it('renders the correct table headers', function() {
-        render(table, {columns:
-          [
-            { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
-            { fieldName: 'world', name: 'world', renderTypeName: 'text' }
-          ]
-        });
+        render(
+          table,
+          {
+            columns: [
+              { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
+              { fieldName: 'world', name: 'world', renderTypeName: 'text' }
+            ]
+          }
+        );
 
         assert.lengthOf(table.element.find('th'), 2);
         assert.match(table.element.find('th:first-child').find('.column-header-content-column-name').text(), /hello/);
@@ -183,10 +192,14 @@ describe('Table', function() {
       });
 
       it('chooses the specified sort column', function() {
-        render(table, {
-          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
-          renderOptions: [{ascending: true, columnName: 'hello'}]
-        });
+        render(
+          table,
+          {
+            columns: [
+              { fieldName: 'hello', name: 'hello', renderTypeName: 'text' }
+            ]
+          }
+        );
 
         assert.match(table.element.find('th div[data-sort]').find('.column-header-content-column-name').text(), /hello/);
       });
@@ -194,10 +207,17 @@ describe('Table', function() {
 
     describe('table data rows', function() {
       it('renders the correct number of table data rows', function() {
-        render(table, {
-          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
-          rows: [['something']]
-        });
+        render(
+          table,
+          {
+            columns: [
+              { fieldName: 'hello', name: 'hello', renderTypeName: 'text' }
+            ],
+            rows: [
+              ['something']
+            ]
+          }
+        );
 
         assert.lengthOf(table.element.find('td'), 1);
         assert.equal(table.element.find('td').text(), 'something');
@@ -220,10 +240,17 @@ describe('Table', function() {
         render(table);
         cellWidth = table.element.find('.socrata-table').width();
 
-        render(table, {
-          columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ],
-          rows: [['something']]
-        });
+        render(
+          table,
+          {
+            columns: [
+              { fieldName: 'hello', name: 'hello', renderTypeName: 'text' }
+            ],
+            rows: [
+              ['something']
+            ]
+          }
+        );
         cellWidthAfter = table.element.find('.socrata-table').width();
 
         assert.equal(cellWidth, cellWidthAfter);
@@ -285,7 +312,16 @@ describe('Table', function() {
         var rows = _.fill(Array(amountOfRows), ['']);
 
         table.element.height(height);
-        render(table, {columns: [ { fieldName: 'hello', name: 'hello', renderTypeName: 'text' } ], rows: rows});
+
+        render(
+          table,
+          {
+            columns: [
+              { fieldName: 'hello', name: 'hello', renderTypeName: 'text' }
+            ],
+            rows: rows
+          }
+        );
 
         var totalHeight = _.sum(
           table.element.find('.socrata-table tr').map(function() {

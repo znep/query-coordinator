@@ -10,49 +10,6 @@ describe('Pager', function() {
   var previousButton;
   var nextButton;
   var pagerLabel;
-  var vif;
-
-  beforeEach(function() {
-    vif = {
-      'aggregation': {
-        'columnName': null,
-        'function': 'count'
-      },
-      'columnName': COLUMN_NAME,
-      'configuration': {
-        'localization': {
-          'previous': 'translation for previous button',
-          'next': 'translation for next button',
-          'no_rows': 'translation for no rows',
-          'only_row': 'translation for only one row',
-          'many_rows': 'translation for many rows',
-          'all_rows': 'translation for all rows'
-        },
-        'order': [{
-          ascending: true,
-          columnName: COLUMN_NAME
-        }]
-      },
-      'createdAt': '2014-01-01T00:00:00',
-      'datasetUid': DATASET_UID,
-      'domain': DOMAIN,
-      'filters': [],
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
-      },
-      'origin': {
-        'type': 'test_data',
-        'url': 'localhost'
-      },
-      'title': COLUMN_NAME,
-      'type': 'table',
-      'unit': {
-        'one': 'case',
-        'other': 'cases'
-      }
-    };
-  });
 
   afterEach(function() {
     pager.destroy();
@@ -181,8 +138,8 @@ describe('Pager', function() {
   function renderPagerWithOptions(options) {
     beforeEach(function() {
       element = $('<div>');
-      pager = new Pager(element, vif);
-      pager.render(options);
+      pager = new Pager(element);
+      pager.render(_.merge(options, {unit: {one: 'case', other: 'cases'}}));
       previousButton = element.find('.pager-button-previous');
       nextButton = element.find('.pager-button-next');
       pagerLabel = element.find('.pager-label');

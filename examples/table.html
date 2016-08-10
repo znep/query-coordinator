@@ -38,6 +38,8 @@
     <div id="table-6"></div>
     <p>Tests rendering a table with specified column widths</p>
     <div id="table-7"></div>
+    <p>Tests rendering a table directly from a version 2 vif</p>
+    <div id="table-8"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -168,6 +170,49 @@
       {"columnName":"location","width":276}
     ];
     $table7Element.socrataTable(table7VIF);
+
+    var $table8Element = $('#table-8');
+    var table8VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: COLUMN_NAME
+        }]
+      },
+      description: 'Table description',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: COLUMN_NAME,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+    $table8Element.socrataTable(table8VIF);
 
     var $tables = $('[id^=table-]');
 

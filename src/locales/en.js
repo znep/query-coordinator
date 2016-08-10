@@ -64,6 +64,9 @@ export default {
             requires_processing: 'Requires Processing'
           },
           region_processing: 'Some regions require processing prior to rendering.',
+          selected_region_processing: 'The selected region is currently being processed and geocoded.',
+          region_coding_duration: 'Region coding duration depends on the size of your dataset and how many other requests are currently in process.',
+          stay_or_return_later: 'You can keep this window open or return and pick the region later after processing is complete.',
           last_checked: 'Last checked:',
           never: 'Never'
         }

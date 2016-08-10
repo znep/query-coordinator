@@ -81,7 +81,7 @@ class GoalTableRow extends React.Component {
         </div>
       </td>
       <td className="single-line">{ this.props.goal.getIn(['created_by', 'displayName']) }</td>
-      <td className="single-line">{ moment(this.props.goal.get('updated_at')).format('ll') }</td>
+      <td className="single-line">{ moment(this.props.goal.get('updated_at') || this.props.goal.get('created_at')).format('ll') }</td>
       <td className="single-line">{ this.props.translations.getIn(['admin', 'goal_values', this.props.goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
       <td className="single-line">{ this.props.translations.getIn(['measure', 'progress', this.props.goal.get('prevailingMeasureProgress')]) }</td>
       <td className="dashboard-link">

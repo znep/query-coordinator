@@ -82,6 +82,25 @@ $(document).ready(function() {
     }
   });
 
+  // Submit the form from the active tab when save button is clicked
+  $('button#site_chrome_preview').click(function() {
+    var $formToSubmit = getActiveFormId();
+    if ($formToSubmit.length) {
+      if ($formToSubmit.valid()) {
+        $formToSubmit.attr('target', '_blank');
+        var $stage = $formToSubmit.find('input#publication_stage');
+        if (!$stage.exists()) {
+          $stage = $('<input type="hidden" id="stage" name="stage" />');
+          $formToSubmit.append($stage);
+        }
+        $stage.val('draft');
+        $formToSubmit.submit();
+      }
+    } else {
+      alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
+    }
+  });
+
   var onLoadOrClickingSigninSignoutCheckbox = function() {
     var value = $(this).attr('checked');
     var $knockonEffects = $('#content_general_show_signup, #content_general_show_profile');

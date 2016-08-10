@@ -1,7 +1,7 @@
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
   def social_share_link(type, site_chrome = @site_chrome)
-    social_shares = site_chrome.content.to_h.dig('general', 'social_shares')
+    social_shares = site_chrome.send(content_at_stage).to_h.dig('general', 'social_shares')
 
     if social_shares
       if site_chrome_version_is_greater_than_or_equal?('0.3', site_chrome)
@@ -15,9 +15,17 @@ module SiteChromeHelper
     end
   end
 
+  def in_preview_mode?
+    !!cookies[:socrata_site_chrome_preview]
+  end
+
+  def content_at_stage
+    in_preview_mode? ? :draft_content : :published_content
+  end
+
   # TODO: replace with `dig` after the Ruby upgrade
   def fetch_content(array_of_path_elements, site_chrome = @site_chrome)
-    array_of_path_elements.inject(site_chrome.content) do |acc, element|
+    array_of_path_elements.inject(site_chrome.send(content_at_stage)) do |acc, element|
       acc[element.to_s] if acc.is_a?(Hash) # do not throw on strings or arrays
     end
   end

@@ -49,6 +49,12 @@
         <%= t("screens.admin.site_chrome.cancel") %>
       </button>
     <% end %>
+    <%= link_to('#') do %>
+      <button id="site_chrome_preview">
+        <%= t('screens.admin.site_chrome.preview_changes') %>
+        <span class="icon-preview"></span>
+      </button>
+    <% end %>
     <button class="primary" id="site_chrome_save">
       <%= t("screens.admin.site_chrome.save") %>
     </button>

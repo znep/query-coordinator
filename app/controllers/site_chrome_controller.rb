@@ -20,9 +20,14 @@ class SiteChromeController < ApplicationController
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
 
-    if @site_chrome.update_published_content(params[:content])
+    if @site_chrome.update_content(params[:stage] || :published, params[:content])
       flash[:notice] = 'Site theme updated'
-      redirect_to edit_site_chrome_path
+      if params[:stage] == 'draft'
+        cookies[:socrata_site_chrome_preview] = true
+        redirect_to browse_path
+      else
+        redirect_to edit_site_chrome_path
+      end
     elsif @site_chrome.errors.any?
       flash[:error] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
       render 'edit', status: :unprocessable_entity

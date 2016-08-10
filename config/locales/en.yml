@@ -2571,7 +2571,7 @@ en:
       site_chrome:
         cancel: Cancel
         description: Configure the appearance of your Socrata site.
-        preview_changes: Preview Changes
+        preview_changes: Preview
         save: Save
         save_changes: Save Changes
         site_appearance: Site Appearance

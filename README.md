@@ -14,6 +14,11 @@ All of the styleguide assets are located in `dist` and should be loaded on your 
 
 ```html
 <link href="node_modules/socrata-styleguide/dist/css/styleguide.min.css" rel="stylesheet">
+
+<!-- JavaScript vendor dependencies -->
+<script type="text/javascript" src="https://npmcdn.com/react@15.1.0/dist/react.js"></script>
+<script type="text/javascript" src="https://npmcdn.com/react-dom@15.1.0/dist/react-dom.js"></script>
+<!--  JavaScript components -->
 <script type="text/javascript" src="node_modules/socrata-styleguide/dist/js/styleguide.min.js"></script>
 ```
 

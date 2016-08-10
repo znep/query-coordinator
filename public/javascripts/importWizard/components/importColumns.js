@@ -72,6 +72,13 @@ function changeHeaderCount(change) {
   };
 }
 
+export const ADD_COLUMN = 'ADD_COLUMN';
+function addColumn() {
+  return {
+    type: ADD_COLUMN
+  };
+}
+
 export const UPDATE_COLUMN = 'UPDATE_COLUMN';
 function updateColumn(index, action) {
   return {
@@ -86,6 +93,13 @@ function removeColumn(index) {
   return {
     type: REMOVE_COLUMN,
     index: index
+  };
+}
+
+export const CLEAR_ALL_COLUMNS = 'CLEAR_ALL_COLUMNS';
+function clearAllColumns() {
+  return {
+    type: CLEAR_ALL_COLUMNS
   };
 }
 
@@ -110,6 +124,19 @@ export function update(transform: Transform = null, action): Transform {
         ...transform,
         numHeaders: transform.numHeaders + action.change
       };
+    case ADD_COLUMN:
+      return {
+        ...transform,
+        columns: transform.columns.concat([
+          {
+            id: transform.columns.length,
+            columnSource: {type: 'CompositeColumn', components: []},
+            name: format(I18n.screens.import_pane.new_column, {num: transform.columns.length}),
+            chosenType: 'text',
+            transforms: []
+          }
+        ])
+      };
     case UPDATE_COLUMN:
       return {
         ...transform,
@@ -119,6 +146,11 @@ export function update(transform: Transform = null, action): Transform {
       return {
         ...transform,
         columns: _.filter(transform.columns, (unused, idx) => idx !== action.index)
+      };
+    case CLEAR_ALL_COLUMNS:
+      return {
+        ...transform,
+        columns: []
       };
     case RESTORE_SUGGESTED_SETTINGS:
       return {
@@ -259,8 +291,16 @@ function ViewToolbar({dispatch}) {
         </a>
       </div>
       <div className="actions">
-        <a className="clearColumnsButton button" href="#clear">{I18nPrefixed.clear_all}</a>
-        <a className="addColumnButton add button" href="#add">
+        <a
+          className="clearColumnsButton button"
+          href="#clear"
+          onClick={() => dispatch(clearAllColumns())}>
+          {I18nPrefixed.clear_all}
+        </a>
+        <a
+          className="addColumnButton add button"
+          href="#add"
+          onClick={() => dispatch(addColumn())}>
           <span className="icon"></span>
           {I18nPrefixed.add_new_column}
         </a>

@@ -195,4 +195,70 @@ describe('ImportColumns component', () => {
     // Satisfied.
     expect(result.columns).to.deep.equal(defaultColumns);
   });
+
+  it(`handles ${IC.ADD_COLUMN}`, () => {
+    const defaultColumns = [
+      {married: false, name: 'Alexander Hamilton'},
+      {married: false, name: 'Elizabeth Schulyer'},
+      {married: false, name: 'Angelica Schulyer'}
+    ];
+
+    const columns = [
+      {married: true, name: 'Alexander Hamilton'},
+      {married: true, name: 'Elizabeth Schulyer'},
+      {married: false, name: 'Angelica Schulyer'}
+    ];
+
+    const original = {
+      freeAdvice: 'talk less; smile more.',
+      columns: columns,
+      defaultColumns: defaultColumns,
+      numHeaders: 1776,
+      sample: 'new york city'
+    };
+
+    const result  = IC.update(original, {
+      type: IC.ADD_COLUMN
+    });
+
+    expect(result.columns.length).to.deep.equal(4);
+    expect(_.last(result.columns)).to.deep.equal({
+      id: 3,
+      columnSource: {
+        type: 'CompositeColumn',
+        components: []
+      },
+      name: 'New Column 3',
+      chosenType: 'text',
+      transforms: []
+    });
+  });
+
+  it(`handles ${IC.CLEAR_ALL_COLUMNS}`, () => {
+    const defaultColumns = [
+      {married: false, name: 'Alexander Hamilton'},
+      {married: false, name: 'Elizabeth Schulyer'},
+      {married: false, name: 'Angelica Schulyer'}
+    ];
+
+    const columns = [
+      {married: true, name: 'Alexander Hamilton'},
+      {married: true, name: 'Elizabeth Schulyer'},
+      {married: false, name: 'Angelica Schulyer'}
+    ];
+
+    const original = {
+      freeAdvice: 'talk less; smile more.',
+      columns: columns,
+      defaultColumns: defaultColumns,
+      numHeaders: 1776,
+      sample: 'new york city'
+    };
+
+    const result  = IC.update(original, {
+      type: IC.CLEAR_ALL_COLUMNS
+    });
+
+    expect(result.columns).to.deep.equal([]);
+  });
 });

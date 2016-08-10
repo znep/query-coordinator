@@ -3938,6 +3938,7 @@ en:
       headline_upload: Please choose a file to upload
       layer: Layer
       many_headers: "%{num} of your rows are headers."
+      new_column: "New Column {num}"
       no_file_selected: No file selected yet.
       no_headers: None of your rows are headers.
       no_source_column: "(No Source Column)"

@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 import {
   openGoalQuickEdit,
-  closeGoalQuickEdit,
+  dismissModal,
   testEdit,
   saveGoalQuickEdit
 } from 'actions/quickEditActions';
@@ -36,7 +36,7 @@ describe('actions/quickEditActions', () => {
   });
 
   it('closeGoalQuickEdit should send goalId to reducer', () => {
-    var returnValue = closeGoalQuickEdit();
+    var returnValue = dismissModal();
     expect(returnValue).to.deep.eq({ type: CLOSE_GOAL_QUICK_EDIT });
   });
 

@@ -62,25 +62,30 @@ export const VISUALIZATION_TYPES = [
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
+    icon: 'icon-bar-chart',
     preferredDimensionTypes: ['money', 'number', 'text']
   },
   {
     type: 'histogram',
+    icon: 'icon-distribution',
     title: translate('visualizations.histogram.title'),
     preferredDimensionTypes: ['number']
   },
   {
     type: 'regionMap',
+    icon: 'icon-region',
     title: translate('visualizations.region_map.title'),
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'featureMap',
+    icon: 'icon-map',
     title: translate('visualizations.feature_map.title'),
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'timelineChart',
+    icon: 'icon-line-chart',
     title: translate('visualizations.timeline_chart.title'),
     preferredDimensionTypes: ['calendar_date']
   }

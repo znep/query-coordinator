@@ -3,7 +3,7 @@ var $ = require('jquery');
 var rewire = require('rewire');
 var Table = rewire('../../src/Table');
 
-describe('views/Table', function() {
+describe('Table', function() {
 
   'use strict';
 
@@ -155,7 +155,7 @@ describe('views/Table', function() {
       assert.lengthOf(calls, 1);
 
       var columnNamesQueriedFor = _.map(
-        calls[0].args[0].columns,
+        calls[0].args[1].columns,
         'fieldName'
       );
 
@@ -275,8 +275,8 @@ describe('views/Table', function() {
         _.set(expectedVIF, 'configuration.order[0].columnName', 'district');
 
         assert.deepEqual(
-          newVIF,
-          expectedVIF
+          _.get(newVIF, 'configuration.order'),
+          _.get(expectedVIF, 'configuration.order')
         );
       });
 

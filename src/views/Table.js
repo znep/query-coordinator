@@ -5,13 +5,15 @@ const SvgVisualization = require('./SvgVisualization.js');
 const DataTypeFormatter = require('./DataTypeFormatter.js');
 const I18n = require('../I18n');
 
-module.exports = function Table(element, vif) {
-  _.extend(this, new SvgVisualization(element, vif));
+module.exports = function Table(element, originalVif) {
+  _.extend(this, new SvgVisualization(element, originalVif));
 
   var SORT_ICON_WIDTH = 32;
   var MINIMUM_COLUMN_WIDTH = 48;
 
   var self = this;
+  var vifToRender = originalVif;
+  var dataToRender;
   // Because we need to hook into the renderError function call but want to be
   // able to call the 'super' once we do so, we cache the original version of
   // this.renderError for use in our overridden version later.
@@ -19,16 +21,11 @@ module.exports = function Table(element, vif) {
   // Note that we lose the 'this' context when we do this so we need to re-bind
   // it.
   var superRenderError = this.renderError.bind(this);
-  var _lastRenderData;
-  var _lastRenderOptions;
-  var _scrollbarHeightPx;
-
-  var _datasetUid = _.get(vif, 'datasetUid');
-  var _domain = _.get(vif, 'domain');
+  var scrollbarHeightPx;
 
   // If defined, this is an object that maps column name to pixel widths.
-  // See freezeColumnWidths().
-  var _columnWidths;
+  // See freezeColumnWidthsAndRender().
+  var columnWidths;
   var columnWidthsFromVif = {};
 
   // Handle column width resizing
@@ -36,24 +33,28 @@ module.exports = function Table(element, vif) {
   var activeResizeXStart = 0;
   var activeResizeXEnd = 0;
 
-  _attachEvents();
+  attachEvents();
 
   /**
    * Public Methods
    */
 
-  this.render = function(data, options) {
-    utils.assertHasProperties(data, 'rows', 'columns');
+  this.render = function(newVif, newData) {
 
-    if (_.isEqual(_lastRenderData, data) && _.isEqual(_lastRenderOptions, options)) {
+    if (_.isEqual(vifToRender, newVif) && _.isEqual(dataToRender, newData)) {
       return;
     }
 
-    _lastRenderData = data;
-    _lastRenderOptions = options;
+    if (newVif) {
+      vifToRender = newVif;
+    }
+
+    if (newData) {
+      dataToRender = newData;
+    }
 
     columnWidthsFromVif = {};
-    _.get(vif, 'configuration.tableColumnWidths', []).
+    _.get(vifToRender, 'configuration.tableColumnWidths', []).
       forEach(
         function(columnWidthFromVif) {
 
@@ -66,7 +67,7 @@ module.exports = function Table(element, vif) {
         }
       );
 
-    _render(data, options);
+    render(newVif, newData);
   };
 
   this.renderError = function() {
@@ -93,7 +94,7 @@ module.exports = function Table(element, vif) {
     var heightLeftAfterHeaderPx;
     var maxRowCount;
     var numberOfRows;
-    var alreadyHasData = _lastRenderData && _lastRenderOptions && _lastRenderData.rows.length > 0;
+    var alreadyHasData = dataToRender && dataToRender.rows.length > 0;
 
     if (!_.isFinite(overallHeightPx)) {
       return 0;
@@ -105,20 +106,15 @@ module.exports = function Table(element, vif) {
       // Render sample data into the table. Used for UI element measurement.
       //
       // We assign the values below in the same way that they are assigned in
-      // the public this.render() function, but we call the private _render()
+      // the public this.render() function, but we call the private render()
       // function directly so that we can pass extra arguments to it without
       // having to make the public interface understand these extra arguments.
-      _lastRenderData = {
+      dataToRender = {
         columns: [ { fieldName: 'placeholder', renderTypeName: 'text' } ],
         rows: [ [ 'placeholder' ] ]
       };
-      _lastRenderOptions = [ {} ];
 
-      _render(
-        _lastRenderData,
-        _lastRenderOptions,
-        true
-      );
+      render(vifToRender, dataToRender, true);
     }
 
     utils.assertInstanceOf(element.find('thead')[0], HTMLElement);
@@ -129,7 +125,7 @@ module.exports = function Table(element, vif) {
     rowHeightPx = element.find('tbody tr').outerHeight();
 
     // Compute
-    heightLeftAfterHeaderPx = overallHeightPx - headerHeightPx - _scrollbarHeightPx;
+    heightLeftAfterHeaderPx = overallHeightPx - headerHeightPx - scrollbarHeightPx;
     numberOfRows = heightLeftAfterHeaderPx / rowHeightPx;
 
     if (_.isFinite(numberOfRows)) {
@@ -147,7 +143,7 @@ module.exports = function Table(element, vif) {
   };
 
   this.destroy = function() {
-    _detachEvents();
+    detachEvents();
     this.$element.find('.socrata-table').remove();
   };
 
@@ -170,36 +166,36 @@ module.exports = function Table(element, vif) {
                 this.getBoundingClientRect().width;
             }
           );
-    var columns = _.map(_lastRenderData.columns, 'fieldName');
+    var columns = _.map(dataToRender.columns, 'fieldName');
 
-    _columnWidths = _.zipObject(
+    columnWidths = _.zipObject(
       columns,
       headerWidths
     );
 
-    _render(_lastRenderData, _lastRenderOptions);
+    render(vifToRender, dataToRender);
   };
 
   /**
    * Private Methods
    */
 
-  function _templateTableCell(column, cell) {
+  function templateTableCell(column, cell) {
     return [
       '<td data-cell-render-type="{renderTypeName}">',
         '<div>',
           DataTypeFormatter.renderCell(
             cell,
             column,
-            _domain,
-            _datasetUid
+            _.get(vifToRender, 'series[0].dataSource.domain'),
+            _.get(vifToRender, 'series[0].dataSource.datasetUid')
           ),
         '</div>',
       '</td>'
     ].join('').format(column);
   }
 
-  function _templateTableSortedHeader(options) {
+  function templateTableSortedHeader(options) {
     var resizeTarget = (options.isLastColumn) ?
       '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
       '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
@@ -216,7 +212,7 @@ module.exports = function Table(element, vif) {
       format(options);
   }
 
-  function _templateTableUnsortableHeader(options) {
+  function templateTableUnsortableHeader(options) {
     var resizeTarget = (options.isLastColumn) ?
       '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
       '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
@@ -233,7 +229,7 @@ module.exports = function Table(element, vif) {
       format(options);
   }
 
-  function _templateTableHeader(options) {
+  function templateTableHeader(options) {
     var resizeTarget = (options.isLastColumn) ?
       '<div class="column-resize-target column-resize-target-last{isResizingThisColumn}" data-column-name="{columnName}"></div>' :
       '<div class="column-resize-target{isResizingThisColumn}" data-column-name="{columnName}"></div>';
@@ -250,8 +246,8 @@ module.exports = function Table(element, vif) {
       format(options);
   }
 
-  function _templateTable(data, options) {
-    var activeSort = options[0];
+  function templateTable(vif, data) {
+    var activeSort = _.get(vif, 'configuration.order[0]');
 
     return _.flatten([
       '<div class="socrata-table">',
@@ -270,12 +266,12 @@ module.exports = function Table(element, vif) {
                   isResizingThisColumn: (column.fieldName === activeResizeColumnName) ? ' resizing' : ''
                 };
 
-                if (_isGeometryType(column)) {
-                  template = _templateTableUnsortableHeader(templateOptions);
+                if (isGeometryType(column)) {
+                  template = templateTableUnsortableHeader(templateOptions);
                 } else if (activeSort.columnName === column.fieldName) {
-                  template = _templateTableSortedHeader(templateOptions);
+                  template = templateTableSortedHeader(templateOptions);
                 } else {
-                  template = _templateTableHeader(templateOptions);
+                  template = templateTableHeader(templateOptions);
                 }
 
                 return template;
@@ -289,7 +285,7 @@ module.exports = function Table(element, vif) {
               }
 
               return '<tr>' + data.columns.map(function(column, columnIndex) {
-                return _templateTableCell(column, row[columnIndex]);
+                return templateTableCell(column, row[columnIndex]);
               }).join('\n') + '</tr>';
             }),
           '</tbody>',
@@ -298,13 +294,13 @@ module.exports = function Table(element, vif) {
     ]).join('\n');
   }
 
-  function _render(data, options, skipLoadedEvent) {
+  function render(vif, data, skipLoadedEvent) {
     var $existingTable = self.$element.find('.socrata-table');
-    var $template = $(_templateTable(data, options));
+    var $template = $(templateTable(vif, data));
     var scrollLeft = _.get($existingTable, '[0].scrollLeft') || 0;
     var $newTable;
 
-    _applyFrozenColumns($template);
+    applyFrozenColumns($template);
 
     if ($existingTable.length) {
 
@@ -315,7 +311,6 @@ module.exports = function Table(element, vif) {
       self.
         $element.
           find('.visualization-container').
-            empty().
             append($template);
     }
 
@@ -327,7 +322,7 @@ module.exports = function Table(element, vif) {
     }
 
     // Cache the scrollbar height for later use.
-    _scrollbarHeightPx = _scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
+    scrollbarHeightPx = scrollbarHeightPx || $newTable[0].offsetHeight - $newTable[0].clientHeight;
 
     // Because we render placeholder data for measurement
     if (!skipLoadedEvent) {
@@ -339,35 +334,35 @@ module.exports = function Table(element, vif) {
     }
   }
 
-  function _attachEvents() {
-    $(window).on('mousemove', _handleMousemove);
-    $(window).on('mouseup', _handleMouseup);
+  function attachEvents() {
+    $(window).on('mousemove', handleMousemove);
+    $(window).on('mouseup', handleMouseup);
 
-    self.$element.on('mousedown', '.socrata-table thead th .column-resize-target', _handleResizeTargetMousedown);
-    self.$element.on('click', '.socrata-table thead th .column-header-content', _handleColumnHeaderClick);
+    self.$element.on('mousedown', '.socrata-table thead th .column-resize-target', handleResizeTargetMousedown);
+    self.$element.on('click', '.socrata-table thead th .column-header-content', handleColumnHeaderClick);
 
-    self.$element.on('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
-    self.$element.on('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+    self.$element.on('mouseenter mousemove', '.socrata-table thead th', showDescriptionFlyout);
+    self.$element.on('mouseleave', '.socrata-table thead th', hideDescriptionFlyout);
 
-    self.$element.on('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
-    self.$element.on('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+    self.$element.on('mouseenter mousemove', '.socrata-table tbody td', showCellFlyout);
+    self.$element.on('mouseleave', '.socrata-table tbody td', hideCellFlyout);
   }
 
-  function _detachEvents() {
-    $(window).off('mousemove', _handleMousemove);
-    $(window).off('mouseup', _handleMouseup);
+  function detachEvents() {
+    $(window).off('mousemove', handleMousemove);
+    $(window).off('mouseup', handleMouseup);
 
-    self.$element.off('mousedown', '.socrata-table thead th .column-resize-target', _handleResizeTargetMousedown);
-    self.$element.off('click', '.socrata-table thead th .column-header-content', _handleColumnHeaderClick);
+    self.$element.off('mousedown', '.socrata-table thead th .column-resize-target', handleResizeTargetMousedown);
+    self.$element.off('click', '.socrata-table thead th .column-header-content', handleColumnHeaderClick);
 
-    self.$element.off('mouseenter mousemove', '.socrata-table thead th', _showDescriptionFlyout);
-    self.$element.off('mouseleave', '.socrata-table thead th', _hideDescriptionFlyout);
+    self.$element.off('mouseenter mousemove', '.socrata-table thead th', showDescriptionFlyout);
+    self.$element.off('mouseleave', '.socrata-table thead th', hideDescriptionFlyout);
 
-    self.$element.off('mouseenter mousemove', '.socrata-table tbody td', _showCellFlyout);
-    self.$element.off('mouseleave', '.socrata-table tbody td', _hideCellFlyout);
+    self.$element.off('mouseenter mousemove', '.socrata-table tbody td', showCellFlyout);
+    self.$element.off('mouseleave', '.socrata-table tbody td', hideCellFlyout);
   }
 
-  function _showDescriptionFlyout(event) {
+  function showDescriptionFlyout(event) {
     var $target = $(event.currentTarget).find('.column-header-content');
     var title = $target.find('.column-header-content-column-name').text();
     var noColumnDescription = '<em>{noColumnDescription}</em>';
@@ -402,14 +397,14 @@ module.exports = function Table(element, vif) {
     }
   }
 
-  function _hideDescriptionFlyout() {
+  function hideDescriptionFlyout() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
       null
     );
   }
 
-  function _showCellFlyout(event) {
+  function showCellFlyout(event) {
     var $target = $(event.currentTarget).find('div');
     var data = $target.text();
     // Sometimes $target doesn't seem to have any elements associated with it.
@@ -432,14 +427,14 @@ module.exports = function Table(element, vif) {
     }
   }
 
-  function _hideCellFlyout() {
+  function hideCellFlyout() {
     self.emitEvent(
       'SOCRATA_VISUALIZATION_CELL_FLYOUT',
       null
     );
   }
 
-  function _isGeometryType(column) {
+  function isGeometryType(column) {
     return _.includes([
       'point',
       'multipoint',
@@ -451,7 +446,7 @@ module.exports = function Table(element, vif) {
     ], column.renderTypeName);
   }
 
-  function _handleResizeTargetMousedown(event) {
+  function handleResizeTargetMousedown(event) {
     var columnName = this.getAttribute('data-column-name');
 
     event.originalEvent.stopPropagation();
@@ -464,24 +459,24 @@ module.exports = function Table(element, vif) {
     activeResizeXStart = event.originalEvent.clientX;
   }
 
-  function _handleMousemove(event) {
+  function handleMousemove(event) {
 
     // If we are currently resizing a column activeResizeColumnName will be
     // non-null; it is reset to null once the resize operation is complete.
     if (activeResizeColumnName !== null) {
 
       activeResizeXEnd = event.originalEvent.clientX;
-      _columnWidths[activeResizeColumnName] += (activeResizeXEnd - activeResizeXStart);
+      columnWidths[activeResizeColumnName] += (activeResizeXEnd - activeResizeXStart);
       activeResizeXStart = activeResizeXEnd;
 
       delete columnWidthsFromVif[activeResizeColumnName];
 
-      _render(_lastRenderData, _lastRenderOptions);
+      render(vifToRender, dataToRender);
     }
   }
 
-  function _handleMouseup() {
-    var columnWidths = [];
+  function handleMouseup() {
+    var newColumnWidths = [];
 
     // If we are currently resizing a column activeResizeColumnName will be
     // non-null; it is reset to null once the resize operation is complete.
@@ -502,22 +497,22 @@ module.exports = function Table(element, vif) {
                 var columnName = $th.find('.column-header-content').attr('data-column-name');
                 var columnWidth = parseInt($th.width(), 10);
 
-                columnWidths.push({
+                newColumnWidths.push({
                   columnName: columnName,
                   width: columnWidth
                 });
               }
             );
 
-      self.emitEvent('SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED', columnWidths);
+      self.emitEvent('SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED', newColumnWidths);
     }
   }
 
-  function _handleColumnHeaderClick() {
+  function handleColumnHeaderClick() {
     var columnName = this.getAttribute('data-column-name');
     var columnRenderType = this.getAttribute('data-column-render-type');
 
-    if (columnName && !_isGeometryType({renderTypeName: columnRenderType})) {
+    if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
       self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
     }
   }
@@ -540,16 +535,16 @@ module.exports = function Table(element, vif) {
   // rendered, this function will prefer those over the calculated widths;
   // resizing the column will invalidate the cached width for that column that
   // may have been read out of the vif and instead uses the new value (which
-  // is tracked internally to the instance in _columnWidths).
-  function _applyFrozenColumns($template) {
-    $template.toggleClass('frozen-columns', !!_columnWidths);
+  // is tracked internally to the instance in columnWidths).
+  function applyFrozenColumns($template) {
+    $template.toggleClass('frozen-columns', !!columnWidths);
 
     $template.find('thead th').each(
       function() {
         var $th = $(this);
         var columnName = $th.find('.column-header-content').attr('data-column-name');
         var width = Math.max(
-          _.get(_columnWidths, columnName, 150) + SORT_ICON_WIDTH,
+          _.get(columnWidths, columnName, 150) + SORT_ICON_WIDTH,
           MINIMUM_COLUMN_WIDTH
         );
 

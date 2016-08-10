@@ -3,7 +3,7 @@ const $ = require('jquery');
 const utils = require('socrata-utils');
 const I18n = require('../I18n');
 
-module.exports = function Pager(element, vif) {
+module.exports = function Pager(element) {
   var self = this;
   var lastRenderOptions;
 
@@ -51,8 +51,8 @@ module.exports = function Pager(element, vif) {
     }
 
     message = message.format({
-      unitOne: vif.unit.one,
-      unitOther: vif.unit.other,
+      unitOne: options.unit.one,
+      unitOther: options.unit.other,
       firstRowOrdinal: options.datasetRowCount ? utils.commaify(options.startIndex + 1) : undefined,
       lastRowOrdinal: options.datasetRowCount ? utils.commaify(endIndex) : undefined,
       datasetRowCount: utils.commaify(options.datasetRowCount)

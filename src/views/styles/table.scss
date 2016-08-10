@@ -2,8 +2,8 @@ $header-background-color: #f6f6f6;
 $row-background-color: transparent;
 
 .visualization-container.loaded {
-  .socrata-table {
-   transition: opacity 0.25s;
+  .socrata-table,
+  .socrata-pager {
     opacity: 1;
   }
 }
@@ -21,6 +21,7 @@ $row-background-color: transparent;
   width: 100%;
   overflow-x: scroll;
   font-family: "Open Sans", sans-serif;
+  transition: opacity 0.25s;
   opacity: 0;
 
   table {
@@ -166,6 +167,8 @@ $row-background-color: transparent;
   background: #f8f8f8;
   padding: 5px;
   border: solid 1px #e4e4e4;
+  transition: opacity 0.25s;
+  opacity: 0;
   flex-wrap: wrap;
   justify-content: space-between;
 

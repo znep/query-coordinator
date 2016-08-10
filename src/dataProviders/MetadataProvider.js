@@ -31,7 +31,7 @@ function MetadataProvider(config) {
       this.getConfigurationProperty('datasetUid')
     );
 
-    return Promise.resolve($.get(url));
+    return makeMetadataRequest(url);
   };
 
   this.getCuratedRegions = function() {
@@ -40,7 +40,7 @@ function MetadataProvider(config) {
       this.getConfigurationProperty('datasetUid')
     );
 
-    return Promise.resolve($.get(url));
+    return makeMetadataRequest(url);
   };
 
   this.getPhidippidesMetadata = function() {
@@ -49,7 +49,7 @@ function MetadataProvider(config) {
       this.getConfigurationProperty('datasetUid')
     );
 
-    return Promise.resolve($.get(url));
+    return makeMetadataRequest(url);
   };
 
   this.getShapefileMetadata = function() {
@@ -227,6 +227,35 @@ function MetadataProvider(config) {
         self.isSubcolumn(column.fieldName, datasetMetadata);
     });
   };
+
+  function makeMetadataRequest(url) {
+
+    return new Promise(
+      function(resolve, reject) {
+
+        function handleError(jqXHR) {
+
+          reject(
+            {
+              status: parseInt(jqXHR.status, 10),
+              message: jqXHR.statusText,
+              metadataError: jqXHR.responseJSON || jqXHR.responseText || '<No response>'
+            }
+          );
+        }
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          success: resolve,
+          error: handleError,
+          headers: {
+            'Accept': 'application/json; charset=utf-8'
+          }
+        });
+      }
+    );
+  }
 }
 
 module.exports = MetadataProvider;

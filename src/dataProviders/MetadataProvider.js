@@ -52,6 +52,14 @@ function MetadataProvider(config) {
     return makeMetadataRequest(url);
   };
 
+  this.getDatasetMigrationMetadata = function() {
+    var domain = this.getConfigurationProperty('domain');
+    var datasetUid = this.getConfigurationProperty('datasetUid');
+    var url = `https://${domain}/api/migrations/${datasetUid}.json`;
+
+    return makeMetadataRequest(url);
+  };
+
   this.getShapefileMetadata = function() {
     function makeRequest(url) {
       return new Promise(function(resolve, reject) {

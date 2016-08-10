@@ -6,6 +6,7 @@ export default {
     version: 2
   },
   configuration: {
+    viewSourceDataLink: true,
     xAxisScalingMode: 'pan'
   },
   description: '',

@@ -17,7 +17,8 @@ export default () => ({
       "geometryLabel": "s_hood",
       "primaryKey": "objectid",
       "uid": "w797-miex"
-    }
+    },
+    "viewSourceDataLink": true
   },
   "description": "I know where I want to go",
   "series": [

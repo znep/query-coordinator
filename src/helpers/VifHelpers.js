@@ -211,6 +211,9 @@ function migrateVif1ToVif2(vifToMigrate) {
   _.unset(migratedVif, 'configuration.tileserverHosts');
   _.unset(migratedVif, 'configuration.shapefile.columns');
 
+  // Forcibly hide the viewSourceDataLink
+  _.set(migratedVif, 'configuration.viewSourceDataLink', false);
+
   // 4. Copy over the createdAt timestamp
   migratedVif.createdAt = vifToMigrate.createdAt;
 

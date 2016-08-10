@@ -20,7 +20,8 @@ export default {
       geometryLabel: null,
       primaryKey: '_feature_id',
       uid: null
-    }
+    },
+    viewSourceDataLink: true
   },
   description: '',
   series: [

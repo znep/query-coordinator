@@ -9,7 +9,8 @@ export default () => ({
     "axisLabels": {
       "bottom": "And Listen",
       "left": "Understand"
-    }
+    },
+    "viewSourceDataLink": true
   },
   "series": [
     {

@@ -74,8 +74,21 @@ $axis-padding: 42px;
     border-top: 1px solid $visualization-border-color;
     box-sizing: border-box;
 
+    .view-source-data,
     .panning-notice {
       display: none;
+      margin: auto;
+    }
+
+    .view-source-data {
+      margin-left: 6px;
+
+      .icon-external {
+        margin-left: 6px;
+      }
+    }
+
+    .panning-notice {
       margin-right: 6px;
       color: #ccc;
       font-size: 14px;
@@ -166,6 +179,14 @@ $axis-padding: 42px;
     }
 
     .info {
+      display: flex;
+    }
+
+    &.panning-notice .panning-notice {
+      display: block;
+    }
+
+    &.view-source-data .view-source-data {
       display: block;
     }
   }
@@ -191,13 +212,6 @@ $axis-padding: 42px;
     .visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
-    }
-  }
-
-  &.panning-notice {
-
-    .panning-notice {
-      display: block;
     }
   }
 

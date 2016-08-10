@@ -8,7 +8,8 @@ export default () => ({
     "axisLabels": {
       "bottom": "Trucking",
       "left": "Keep"
-    }
+    },
+    "viewSourceDataLink": true
   },
   "description": "Description",
   "series": [

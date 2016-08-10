@@ -89,6 +89,15 @@ describe('MetadataProvider', function() {
     "message" : "Cannot find view with id 56p4-vdcc.jso"
   });
 
+  var SAMPLE_MIGRATION_METADATA = {
+    "migrationPhase": "prep",
+    "migrationPhaseUpdated": 1462987365,
+    "nbeId": "h6bt-4qvq",
+    "nbePublicationGroup": 95,
+    "obeId": "yrcj-6b25",
+    "syncedAt": 1462987365
+  };
+
   var server;
   var metadataProviderOptions = {
     domain: VALID_DOMAIN,
@@ -310,6 +319,37 @@ describe('MetadataProvider', function() {
         ).catch(done);
 
         server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
+      });
+    });
+  });
+
+  describe('getDatasetMigrationMetadata', function() {
+    describe('on request error', function() {
+      it('fails the promise', function(done) {
+        metadataProvider.
+          getDatasetMigrationMetadata().
+          then(done).
+          catch(function(error) {
+            assert.isObject(error);
+            done();
+          });
+
+          server.respond([ERROR_STATUS, {'Content-Type': 'application/json'}, '{}']);
+      });
+    });
+
+    describe('on request success', function() {
+      it('should return an Object of metadata', function(done) {
+        metadataProvider.
+          getDatasetMigrationMetadata().
+          then(function(data) {
+            assert.isObject(data);
+            assert.property(data, 'nbeId');
+            done();
+          }).
+          catch(done);
+
+          server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_MIGRATION_METADATA)]);
       });
     });
   });

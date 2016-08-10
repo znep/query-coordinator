@@ -7,12 +7,13 @@ export default {
     version: 2
   },
   configuration: {
-    baseLayerUrl: BASE_LAYERS[0].value,
     baseLayerOpacity: 0.8,
+    baseLayerUrl: BASE_LAYERS[0].value,
     datasetMetadata: false,
-    rowInspectorTitleColumnName: null,
     locateUser: false,
-    panAndZoom: true
+    panAndZoom: true,
+    rowInspectorTitleColumnName: null,
+    viewSourceDataLink: true
   },
   description: '',
   series: [

@@ -7,7 +7,8 @@ export default {
   },
   description: '',
   configuration: {
-    bucketType: 'linear'
+    bucketType: 'linear',
+    viewSourceDataLink: true
   },
   series: [
     {

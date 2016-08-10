@@ -217,7 +217,7 @@
 
       function handleVifUpdated(event) {
         var payload = event.originalEvent.detail;
-        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+        var renderVifEvent = $.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
 
         renderVifEvent.originalEvent = {
           detail: payload

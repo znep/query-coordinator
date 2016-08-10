@@ -152,3 +152,270 @@ header#site-chrome-header, footer#site-chrome-footer {
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;
 }
+
+.previewModeAlert {
+  text-align: center;
+
+  a.disablePreviewMode {
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.styleguide-alert {
+  // ***************************************************************************
+  // Below are parts of the Socrata Styleguide that have been
+  // blatantly copied and pasted for the new import wizard experience.
+  // Sometime in the future, we should actually import the styleguide itself.
+  // ***************************************************************************
+
+  /// Slightly lighten a color
+  /// @access public
+  /// @param {Color} $color - color to tint
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+  }
+
+  /// Slightly darken a color
+  /// @access public
+  /// @param {Color} $color - color to shade
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function shade($color, $percentage) {
+    @return mix(black, $color, $percentage);
+  }
+
+  /* Base Palette Colors */
+  $primary: #288dc1;
+  $primary-text: shade($primary, 14%);
+  $alternate-1: #e28432;
+  $alternate-1-text: shade($alternate-1, 30%);
+  $alternate-2: #00a1af;
+  $alternate-2-text: shade($alternate-2, 14%);
+  $alternate-3: #00be9b;
+  $alternate-3-text: shade($alternate-3, 20%);
+  $alternate-4: tint(#425363, 40%);
+  $alternate-4-text: shade($alternate-4, 40%);
+  $success: lighten(#218649, 10%);
+  $success-text: shade($success, 14%);
+  $error: #ce6565;
+  $error-text: shade($error, 14%);
+  $warning: shade(#fabe00, 8%);
+  $warning-text: shade($warning, 40%);
+
+  /* Colors light version */
+  $primary-light: tint($primary, 90%);
+  $alternate-1-light: tint($alternate-1, 90%);
+  $alternate-2-light: tint($alternate-2, 90%);
+  $alternate-3-light: tint($alternate-3, 90%);
+  $alternate-4-light: tint($alternate-4, 90%);
+  $success-light: tint($success, 90%);
+  $error-light: tint($error, 90%);
+  $warning-light: tint($warning, 93%);
+
+  /* Colors dark version */
+  $primary-dark: shade($primary, 30%);
+  $alternate-1-dark: shade($alternate-1, 30%);
+  $alternate-2-dark: shade($alternate-2, 30%);
+  $alternate-3-dark: shade($alternate-3, 30%);
+  $alternate-4-dark: shade($alternate-4, 30%);
+  $success-dark: shade($success, 30%);
+  $error-dark: shade($error, 30%);
+  $warning-dark: shade($warning, 30%);
+
+  /* Greys */
+  $white: #fff;
+  $grey: #767676;
+  $black: #2c2c2c;
+
+  /* Shades of Grey */
+  $light-grey-0: tint($grey, 10%);
+  $light-grey-1: tint($grey, 20%);
+  $light-grey-2: tint($grey, 40%);
+  $light-grey-3: tint($grey, 60%);
+  $light-grey-4: tint($grey, 80%);
+  $light-grey-5: tint($grey, 90%);
+  $light-grey-6: tint($grey, 93.3%);
+  $light-grey-7: tint($grey, 95%);
+  $light-grey-8: tint($grey, 97%);
+
+  $dark-grey-0: shade($grey, 10%);
+  $dark-grey-1: shade($grey, 20%);
+  $dark-grey-2: shade($grey, 40%);
+  $dark-grey-3: shade($grey, 60%);
+
+  /* Color Vars */
+  $default-text-color: $dark-grey-1;
+  $quiet-text-color: $grey;
+  $light-text-color: $white;
+  $light-grey-bg: $light-grey-5;
+
+  /* Button Colors */
+  $btn-active-box-shadow-color: $black;
+
+  $btn-default-color: $grey;
+  $btn-default-background-color: $white;
+  $btn-default-border-color: $light-grey-3;
+  $btn-default-hover-color: $dark-grey-0;
+  $btn-default-hover-background-color: $light-grey-5;
+  $btn-default-active-border-color: shade($white, 20%);
+
+  $btn-simple-color: $dark-grey-1;
+  $btn-simple-background-color: $light-grey-5;
+  $btn-simple-hover-color: $dark-grey-1;
+  $btn-simple-hover-background-color: $light-grey-4;
+
+  $btn-default-dark-color: $white;
+  $btn-default-dark-background-color: $grey;
+  $btn-default-dark-border-color: $grey;
+  $btn-default-dark-hover-background-color: shade($grey, 20%);
+
+  $btn-default-busy-border-color: $white;
+  $btn-default-busy-border-right-color: $light-grey-2;
+  $btn-default-inverse-color: $white;
+  $btn-default-inverse-background-color: transparent;
+  $btn-default-inverse-border-color: $white;
+  $btn-default-inverse-hover-color: $grey;
+  $btn-default-inverse-hover-background-color: white;
+  $btn-default-inverse-hover-border-color: transparent;
+
+  $btn-primary-color: $white;
+  $btn-primary-background-color: $primary-text;
+  $btn-primary-border-color: $primary;
+  $btn-primary-hover-background-color: shade($primary, 27%);
+  $btn-primary-active-border-color: shade($primary, 10%);
+  $btn-primary-inverse-color: $primary-text;
+  $btn-primary-inverse-background-color: $white;
+  $btn-primary-inverse-hover-color: $white;
+  $btn-primary-inverse-hover-background-color: $primary-text;
+  $btn-primary-busy-border-right-color: tint($primary, 20%);
+
+  $btn-alternate-1-color: $white;
+  $btn-alternate-1-background-color: shade($alternate-1, 23%);
+  $btn-alternate-1-border-color: $alternate-1;
+  $btn-alternate-1-hover-background-color: shade($alternate-1, 31%);
+  $btn-alternate-1-hover-color: $white;
+  $btn-alternate-1-active-border-color: shade($alternate-1, 10%);
+  $btn-alternate-1-inverse-color: $alternate-1-text;
+  $btn-alternate-1-inverse-background-color: $alternate-1-light;
+  $btn-alternate-1-inverse-hover-color: $white;
+  $btn-alternate-1-inverse-hover-background-color: $alternate-1;
+  $btn-alternate-1-busy-border-right-color: tint($alternate-1, 20%);
+
+  $btn-alternate-2-color: $white;
+  $btn-alternate-2-background-color: $alternate-2-text;
+  $btn-alternate-2-border-color: $alternate-2;
+  $btn-alternate-2-hover-background-color: shade($alternate-2, 29%);
+  $btn-alternate-2-hover-color: $white;
+  $btn-alternate-2-active-border-color: shade($alternate-2, 10%);
+  $btn-alternate-2-inverse-color: $alternate-2-text;
+  $btn-alternate-2-inverse-background-color: $white;
+  $btn-alternate-2-inverse-hover-color: $white;
+  $btn-alternate-2-inverse-hover-background-color: $alternate-2-text;
+  $btn-alternate-2-busy-border-right-color: tint($alternate-2, 20%);
+
+  $btn-alternate-3-color: $white;
+  $btn-alternate-3-background-color: $alternate-3;
+  $btn-alternate-3-border-color: $alternate-3;
+  $btn-alternate-3-hover-background-color: shade($alternate-3, 20%);
+  $btn-alternate-3-active-border-color: shade($alternate-3, 10%);
+  $btn-alternate-3-inverse-color: $alternate-3;
+  $btn-alternate-3-inverse-background-color: $white;
+  $btn-alternate-3-inverse-hover-color: $white;
+  $btn-alternate-3-inverse-hover-background-color: $alternate-3;
+  $btn-alternate-3-busy-border-right-color: tint($alternate-3, 20%);
+
+  $btn-alternate-4-color: $white;
+  $btn-alternate-4-background-color: $alternate-4;
+  $btn-alternate-4-border-color: $alternate-4;
+  $btn-alternate-4-hover-background-color: shade($alternate-4, 20%);
+  $btn-alternate-4-active-border-color: shade($alternate-4, 10%);
+  $btn-alternate-4-inverse-color: $alternate-4;
+  $btn-alternate-4-inverse-background-color: $white;
+  $btn-alternate-4-inverse-hover-color: $white;
+  $btn-alternate-4-inverse-hover-background-color: $alternate-4;
+  $btn-alternate-4-busy-border-color: $white;
+  $btn-alternate-4-busy-border-right-color: tint($alternate-4, 20%);
+
+  $btn-warning-color: $white;
+  $btn-warning-background-color: $warning;
+  $btn-warning-border-color: $warning;
+  $btn-warning-hover-background-color: shade($warning, 20%);
+  $btn-warning-active-border-color: shade($warning, 10%);
+  $btn-warning-inverse-color: $warning;
+  $btn-warning-inverse-background-color: $white;
+  $btn-warning-inverse-hover-color: $white;
+  $btn-warning-inverse-hover-background-color: $warning;
+
+  $btn-success-color: $white;
+  $btn-success-background-color: $success;
+  $btn-success-border-color: $success;
+  $btn-success-hover-background-color: shade($success, 20%);
+  $btn-success-active-border-color: shade($success, 10%);
+  $btn-success-inverse-color: $success-text;
+  $btn-success-inverse-background-color: $white;
+  $btn-success-inverse-hover-color: $white;
+  $btn-success-inverse-hover-background-color: $success;
+
+  $btn-error-color: $white;
+  $btn-error-background-color: $error;
+  $btn-error-border-color: $error;
+  $btn-error-hover-background-color: shade($error, 20%);
+  $btn-error-active-border-color: shade($error, 10%);
+  $btn-error-inverse-color: $error;
+  $btn-error-inverse-background-color: $white;
+  $btn-error-inverse-hover-color: $white;
+  $btn-error-inverse-hover-background-color: $error;
+
+  $btn-transparent-busy-border-color: $dark-grey-1;
+  $btn-transparent-busy-border-right-color: $light-grey-2;
+
+  $btn-disabled-color: $grey;
+  $btn-disabled-border-color: $light-grey-1;
+  $btn-disabled-background-color: $light-grey-3;
+  $btn-disabled-dark-color: $light-grey-1;
+  $btn-disabled-dark-border-color: $grey;
+  $btn-disabled-dark-background-color: $dark-grey-1;
+
+  $tag-color: $dark-grey-2;
+  $tag-background-color: $light-grey-5;
+
+  /* Header */
+  $header-bg-color: #4a4747;
+  $header-text-color: $white;
+  $header-accent-color: #ddd;
+  $header-link-hover-color: #7ac3ff;
+  $header-link-hover-bg-color: #2295e1;
+  $header-box-shadow-color: rgba(0, 0, 0, 0.2);
+  $header-story-title-color: $light-grey-4;
+  $header-story-title-hover-color: $white;
+  $header-btn-disabled-color: #777;
+  $header-publication-status-color: #e0e0e0;
+
+  /* Settings Panel */
+  $settings-panel-btn-color: $grey;
+
+  /* Backgrounds */
+  $light-gray-bg: $light-grey-3;
+  $almost-white-bg: $light-grey-5;
+  $panel-border-color: $light-grey-4;
+  $panel-internal-border-color: $light-grey-5;
+
+  background-color: $light-grey-6;
+  border: 1px solid $light-grey-3;
+  font-size: 1.5em;
+  padding: .75em;
+  border-radius: 1px;
+  color: $default-text-color;
+
+  &.info {
+    background-color: $primary-light;
+    border-color: $primary;
+    color: $primary-dark;
+  }
+}

@@ -11,10 +11,10 @@ module SocrataSiteChrome
     end
 
     # Convert domain_config to data structure needed for Site Chrome
-    def site_chrome_config
+    def site_chrome_config(stage = :published)
       raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
-      site_chrome_config = current_published_site_chrome
+      site_chrome_config = current_site_chrome(stage)
       site_chrome_content = config[:properties].to_a.first || {}
 
       {
@@ -38,8 +38,8 @@ module SocrataSiteChrome
 
     # Config contains various versions, each having a "published" and "draft" set of
     # site chrome config vars. This finds and returns the newest published content.
-    def current_published_site_chrome
-      published_site_chrome_config = {}
+    def current_site_chrome(stage = :published)
+      site_chrome_config_for_stage = {}
 
       if config.dig(:properties).present?
         site_chrome_config = config[:properties].detect do |config|
@@ -50,7 +50,7 @@ module SocrataSiteChrome
           # If current_version does not exist, use latest existing version
           current_version = site_chrome_config.dig(:value, :current_version) ||
             latest_existing_version(site_chrome_config)
-          published_site_chrome_config = site_chrome_config.dig(:value, :versions, current_version, :published)
+          site_chrome_config_for_stage = site_chrome_config.dig(:value, :versions, current_version, stage)
         else
           message = "Invalid site_chrome configuration in domain: #{domain}"
           ::Airbrake.notify(
@@ -61,7 +61,7 @@ module SocrataSiteChrome
         end
       end
 
-      published_site_chrome_config
+      site_chrome_config_for_stage
     end
 
     # Latest version of Site Chrome that exists in the current configuration.

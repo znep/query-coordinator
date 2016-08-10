@@ -41,7 +41,7 @@ describe SocrataSiteChrome::ApplicationHelper do
   describe '#header_logo' do
     it 'returns only the site title if the header image is not present' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      RequestStore.store[:site_chrome] = site_chrome
+      RequestStore.store[:site_chrome] = { published: site_chrome }
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
@@ -49,7 +49,7 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     it 'returns both the site title and the header image' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      RequestStore.store[:site_chrome] = site_chrome
+      RequestStore.store[:site_chrome] = { published: site_chrome }
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
@@ -125,19 +125,19 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     it 'defaults to true if powered_by does not exist' do
       site_chrome.footer.delete(:powered_by)
-      RequestStore.store[:site_chrome] = site_chrome
+      RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to true' do
       site_chrome.footer[:powered_by] = 'true'
-      RequestStore.store[:site_chrome] = site_chrome
+      RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to false' do
       site_chrome.footer[:powered_by] = 'false'
-      RequestStore.store[:site_chrome] = site_chrome
+      RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(false)
     end
   end

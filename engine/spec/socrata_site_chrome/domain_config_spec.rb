@@ -66,11 +66,11 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
-  describe '#current_published_site_chrome' do
+  describe '#current_site_chrome' do
     it 'returns an empty hash if site_chrome_config does not have properties' do
       allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { {} }
       domain_config = SocrataSiteChrome::DomainConfig.new(domain)
-      result = domain_config.send(:current_published_site_chrome)
+      result = domain_config.send(:current_site_chrome)
       expect(result).to eq({})
     end
 
@@ -93,7 +93,7 @@ describe SocrataSiteChrome::DomainConfig do
         }
       site_chrome_config_with_various_versions['properties'].first['value']['current_version'] = nil
       allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:get_domain_config) { site_chrome_config_with_various_versions }
-      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_published_site_chrome)
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_site_chrome)
       expect(result).to eq({ 'value' => 'b' })
     end
 
@@ -105,7 +105,7 @@ describe SocrataSiteChrome::DomainConfig do
         expect(hash[:error_class]).to eq('InvalidSiteChromeConfiguration')
         expect(hash[:error_message]).to match(/invalid site_chrome config/i)
       end
-      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_published_site_chrome)
+      result = SocrataSiteChrome::DomainConfig.new(domain).send(:current_site_chrome)
       expect(result).to eq({})
     end
   end

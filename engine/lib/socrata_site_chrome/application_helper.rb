@@ -158,11 +158,11 @@ module SocrataSiteChrome
     end
 
     def get_site_chrome
-      RequestStore.store[:site_chrome] ||= SocrataSiteChrome::SiteChrome.new(
+      (RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
         if Rails.env.test?
           site_chrome_test_config
         else
-          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config
+          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage)
         end
       )
     end
@@ -186,6 +186,14 @@ module SocrataSiteChrome
 
     def current_version_is_greater_than_or_equal?(version)
       Gem::Version.new(get_site_chrome.current_version) >= Gem::Version.new(version)
+    end
+
+    def in_preview_mode?
+      !!cookies[:socrata_site_chrome_preview]
+    end
+
+    def pub_stage
+      in_preview_mode? ? :draft : :published
     end
   end
 end

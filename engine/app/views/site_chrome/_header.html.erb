@@ -1,1 +1,3 @@
 <%= render "site_chrome/#{current_template}/header", size: local_assigns[:size] %>
+
+<%= render 'site_chrome/preview_mode_warning' if in_preview_mode? %>

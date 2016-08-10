@@ -99,6 +99,7 @@ export default function componentHero(componentData, theme, options) {
 
     var augmentedComponentData = _.cloneDeep($this.data('component-rendered-data'));
     _.set(augmentedComponentData, 'value.layout.height', computeHeight());
+    $this.data('component-rendered-data', augmentedComponentData);
     $this.withLayoutHeightFromComponentData(augmentedComponentData, getOptions(augmentedComponentData).defaultHeight);
   }
 

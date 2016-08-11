@@ -29,6 +29,8 @@ import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 export var AuthoringWorkflow = React.createClass({
   propTypes: {
     vif: React.PropTypes.object,
+    onComplete: React.PropTypes.func,
+    onBack: React.PropTypes.func,
     onCancel: React.PropTypes.func,
     tabs: React.PropTypes.array
   },
@@ -41,6 +43,9 @@ export var AuthoringWorkflow = React.createClass({
 
   getDefaultProps() {
     return {
+      onComplete: _.noop,
+      onBack: _.noop,
+      onCancel: _.noop,
       tabs: [
         {
           id: 'authoring-data',
@@ -129,6 +134,17 @@ export var AuthoringWorkflow = React.createClass({
     );
   },
 
+  renderBackButton() {
+    var { backButtonText, onBack } = this.props;
+
+      return _.isString(backButtonText) ? (
+        <button className="authoring-back-button" onClick={onBack}>
+          <span className="icon-arrow-left" />
+          {backButtonText}
+        </button>
+      ) : null;
+  },
+
   render() {
     var { metadata, vifAuthoring } = this.props;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
@@ -146,7 +162,7 @@ export var AuthoringWorkflow = React.createClass({
             </button>
           </header>
 
-          <section className="modal-content">
+          <section className="authoring-modal-content modal-content">
             <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
 
             <div className="authoring-controls">
@@ -160,10 +176,13 @@ export var AuthoringWorkflow = React.createClass({
             {basedOn}
           </section>
 
-          <footer className="modal-footer">
+          <footer className="modal-footer authoring-modal-footer">
             <div className="modal-footer-actions">
-              <button className="btn btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
-              <button className="btn btn-primary done" onClick={this.onComplete} disabled={isNotInsertable}>{translate('modal.insert')}</button>
+              {this.renderBackButton()}
+              <div className="authoring-actions">
+                <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
+                <button className="btn btn-sm btn-primary done" onClick={this.onComplete} disabled={isNotInsertable}>{translate('modal.insert')}</button>
+              </div>
             </div>
           </footer>
         </div>

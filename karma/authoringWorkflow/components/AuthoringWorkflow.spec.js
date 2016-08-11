@@ -7,12 +7,14 @@ import renderComponent from '../renderComponent';
 import { AuthoringWorkflow } from 'src/authoringWorkflow/components/AuthoringWorkflow';
 import vifs from 'src/authoringWorkflow/vifs';
 
-function render(type) {
+function render(type, backButtonText) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onChangeXAxisScalingMode: sinon.spy(),
     onComplete: sinon.spy(),
-    onCancel: sinon.spy()
+    onCancel: sinon.spy(),
+    onBack: sinon.spy(),
+    backButtonText: backButtonText
   });
 
   return {
@@ -70,6 +72,19 @@ describe('AuthoringWorkflow', function() {
     it('renders the modal close button', function() {
       expect(component).to.contain('.modal-header-dismiss');
     });
+
+    describe('when configured with backButtonText', function() {
+      beforeEach(function() {
+        var renderedParts = render('columnChart', 'Back Button Text');
+
+        component = renderedParts.component;
+        props = renderedParts.props;
+      });
+
+      it('renders the back button', function() {
+        expect(component).to.contain('.authoring-back-button');
+      });
+    });
   });
 
   describe('events', function() {
@@ -100,6 +115,20 @@ describe('AuthoringWorkflow', function() {
       sinon.assert.notCalled(props.onCancel);
       TestUtils.Simulate.click(component.querySelector('button.cancel'));
       sinon.assert.calledOnce(props.onCancel);
+    });
+
+    describe('when configured with backButtonText', function() {
+      beforeEach(function() {
+        var renderedParts = render('columnChart', 'Back Button Text');
+        component = renderedParts.component;
+        props = renderedParts.props;
+      });
+
+      it('calls the onBack callback when the back button is clicked', function() {
+        sinon.assert.notCalled(props.onBack);
+        TestUtils.Simulate.click(component.querySelector('.authoring-back-button'));
+        sinon.assert.calledOnce(props.onBack);
+      });
     });
   });
 

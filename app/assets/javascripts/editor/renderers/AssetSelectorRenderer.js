@@ -2187,42 +2187,41 @@ export default function AssetSelectorRenderer(options) {
     var element = document.getElementById('authoring-workflow');
 
     var value = assetSelectorStore.getComponentValue();
-    var valueDomain = _.get(value, 'dataset.domain');
-    var valueDatasetUid = _.get(value, 'dataset.datasetUid');
-    var isVersionOneVif = _.get(value, 'vif.format.version') === 1;
+    var userChosenDataset = assetSelectorStore.getDatasetUserSelectedFromList();
+    var vifDataset = assetSelectorStore.getDatasetInVif();
+    var vifToEdit;
 
-    var vifDomain = isVersionOneVif ?
-      _.get(value, 'vif.domain', valueDomain) :
-      _.get(value, 'vif.series[0].dataSource.domain', valueDomain);
-    var vifDatasetUid = isVersionOneVif ?
-      _.get(value, 'vif.datasetUid', valueDatasetUid) :
-      _.get(value, 'vif.series[0].dataSource.datasetUid', valueDatasetUid);
-
-    var vif = {
-      series: [{
-        dataSource: {
-          domain: vifDomain,
-          datasetUid: vifDatasetUid
+    // The dataset in `value.dataset.datasetUid` represents the dataset
+    // the user chose from the dataset list.
+    // If it differs from the vif's dataset, that means the user went back
+    // from the AX and chose a different dataset. In that case, we should
+    // generate a blank vif for them to start building a visualization.
+    if (
+      // There is even a VIF, AND
+      vifDataset &&
+      // EITHER there isn't a saved dataset choice
+      // OR the dataset choice is different from the VIF.
+      (!userChosenDataset || userChosenDataset.id === vifDataset.id)
+    ) {
+      vifToEdit = value.vif;
+    } else {
+      // User chose a new dataset. Make a blank starter vif.
+      vifToEdit = {
+        series: [{
+          dataSource: {
+            domain: userChosenDataset.domain,
+            datasetUid: userChosenDataset.id
+          }
+        }],
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         }
-      }],
-      format: {
-        type: 'visualization_interchange_format',
-        version: 2
-      }
-    };
-    var rawDatasetUid = _.get(
-      value,
-      'vif.series[0].dataSource.datasetUid', // v2 vif
-      _.get(value, 'vif.datasetUid') // v1 vif
-    );
-    var selectedDatasetUid = _.get(value, 'dataset.datasetUid');
-
-    if (rawDatasetUid === selectedDatasetUid) {
-      vif = value.vif;
+      };
     }
 
     var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
-      vif: vif,
+      vif: vifToEdit,
       onComplete: function(state) {
         var datasetUid = _.get(state.vif, 'series[0].dataSource.datasetUid');
 

@@ -1,4 +1,4 @@
-<div class="loginForm">
+<div class="loginForm <% unless FeatureFlags.derive(@view, request).auth0_social %>hideSocial<% end %>">
 
   <%- unless defined? @flashes_displayed -%>
     <%= display_standard_flashes %>

@@ -904,10 +904,12 @@ html {
               font-size: 11px;
               position: absolute;
               right: 1.89em;
-              top: 15%;
-              line-height: 2.2;
+              top: 75%;
               color: #8e98a1;
-              content: "\EA13";
+              -webkit-transform: translateY(-50%);
+              -moz-transform: translateY(-50%);
+              -ms-transform: translateY(-50%);
+              transform: translateY(-50%);
             }
           }
         }
@@ -1837,6 +1839,8 @@ html {
 
 body ul {
   margin: 0;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 nav.nav-banner li a {

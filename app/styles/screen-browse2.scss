@@ -76,7 +76,7 @@ html {
   .browse2-create-asset {
     @include desktop {
       float: left;
-      width: 21em;
+      width: 210px;
     }
     @include mobile {
       width: 100%;
@@ -340,7 +340,7 @@ html {
       width: auto;
       margin-top: 4em;
       @include desktop {
-        margin-left: 23em;
+        margin-left: 230px;
       }
     }
   }
@@ -409,7 +409,7 @@ html {
   .browse2-facet-and-results-header {
     .browse2-results-header {
       @include desktop {
-        margin-left: 23em;
+        margin-left: 230px;
       }
 
       position: relative;
@@ -701,7 +701,7 @@ html {
     @include desktop {
       position: relative;
       float: left;
-      width: 21em;
+      width: 210px;
 
       .browse2-facets-mobile-active-filters,
       .browse2-facets-pane-mobile-back-button,
@@ -796,7 +796,7 @@ html {
 
             .browse2-facet-section-option {
               display: block;
-              padding: 0.5rem 2.5rem 0.5rem 1.5rem;
+              padding: 1rem 2.5rem 1rem 1.5rem;
               font-size: 12px;
               color: #2f2f2f;
               border-left: 5px solid #d6d6d6;
@@ -1093,7 +1093,7 @@ html {
 
   .browse2-results-pane {
     @include desktop {
-      margin-left: 23em;
+      margin-left: 230px;
       display: block !important;
     }
     position: relative;
@@ -1142,7 +1142,7 @@ html {
             display: block;
             float: left;
             box-sizing: border-box;
-            font-size: 80%;
+            font-size: 11px;
           }
 
           &.federated {
@@ -1835,3 +1835,10 @@ html {
   }
 }
 
+body ul {
+  margin: 0;
+}
+
+nav.nav-banner li a {
+  line-height: 16px;
+}

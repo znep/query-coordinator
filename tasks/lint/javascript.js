@@ -25,5 +25,6 @@ var configuration = {
 module.exports = () => {
   return gulp.src(sources).
     pipe(eslint(configuration)).
-    pipe(eslint.format());
+    pipe(eslint.format()).
+    pipe(eslint.failAfterError());
 };

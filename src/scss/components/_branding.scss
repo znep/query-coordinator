@@ -1,5 +1,6 @@
 .powered-by-socrata {
   font-weight: 300;
+
   img {
     display: inline-block;
     height: 18px;
@@ -9,6 +10,7 @@
 
   &.mini {
     font-size: ms(-1);
+
     img {
       height: 15px;
     }

@@ -58,6 +58,7 @@ ol {
 
 a {
   color: $primary-text;
+
   &:hover {
     text-decoration: none;
   }
@@ -66,6 +67,7 @@ a {
 a.unstyled-link {
   color: $primary-text;
   text-decoration: none;
+
   &:hover {
     text-decoration: underline;
   }
@@ -149,13 +151,13 @@ h6,
 @mixin triangle-down() {
   @include triangle;
 
-  border-width: 6px 6px 0 6px;
+  border-width: 6px 6px 0;
   margin-top: -2px;
 }
 
 @mixin triangle-up() {
   @include triangle;
 
-  border-width: 0 6px 6px 6px;
+  border-width: 0 6px 6px;
   margin-top: -3px;
 }

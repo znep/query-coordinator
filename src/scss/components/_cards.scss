@@ -27,6 +27,7 @@ $tablet: 749px;
 
   .entry-header {
     @include row();
+
     padding: ms(-2);
     border-bottom: 1px solid $light-grey-5;
 
@@ -51,6 +52,7 @@ $tablet: 749px;
 
     .entry-view-type {
       @include span-columns(3);
+
       font-size: ms(-1);
       text-align: right;
       color: $grey;
@@ -59,6 +61,7 @@ $tablet: 749px;
 
       @include media($tablet) {
         @include span-columns(4);
+
         font-size: ms(0);
       }
     }
@@ -70,6 +73,7 @@ $tablet: 749px;
     .entry-main {
       @include media($tablet) {
         @include span-columns(8, block-collapse);
+
         border-right: 1px solid $light-grey-4;
       }
 
@@ -125,6 +129,7 @@ $tablet: 749px;
 
           @include media($tablet) {
             @include span-columns(3);
+
             text-align: right;
           }
         }
@@ -132,11 +137,13 @@ $tablet: 749px;
 
       &.second {
         @include row();
+
         padding: ms(-4) ms(-2);
         border-bottom: 1px solid $light-grey-5;
 
         @include media($tablet) {
           @include span-columns(4);
+
           border-bottom: none;
 
           .meta-title {
@@ -151,6 +158,7 @@ $tablet: 749px;
 
         .updated {
           @include span-columns(6);
+
           margin-bottom: 0;
 
           @include media($tablet) {
@@ -160,10 +168,12 @@ $tablet: 749px;
 
         .views {
           @include span-columns(6);
+
           text-align: right;
 
           @include media($tablet) {
             @include span-columns(12);
+
             text-align: left;
 
             .meta-title,
@@ -209,9 +219,12 @@ $tablet: 749px;
 
     .entry-header {
       padding: ms(-8) ms(-5) 0;
+
       .entry-title {
         @include span-columns(11);
+
         min-height: 48px;
+
         .entry-name {
           font-size: ms(0);
         }
@@ -219,12 +232,14 @@ $tablet: 749px;
 
       .entry-view-type {
         @include span-columns(1);
+
         padding-top: 0;
       }
     }
 
     .entry-meta {
       @include row();
+
       padding: ms(-9) ms(-5);
 
       .first {
@@ -233,7 +248,9 @@ $tablet: 749px;
 
       .second {
         @include span-columns(6);
+
         text-align: right;
+
         .tag-category {
           font-size: ms(-2);
           margin-right: 0;
@@ -283,9 +300,12 @@ $tablet: 749px;
 
   &.header {
     @include row();
+
     border-top: 1px solid $light-grey-3;
+
     .header-content {
       @include span-columns(12);
+
       padding: ms(-3) 0 0;
     }
   }
@@ -295,6 +315,7 @@ $tablet: 749px;
 
     .footer-action {
       @include span-columns(12);
+
       padding: 0 0 ms(1);
       font-size: ms(-1);
     }

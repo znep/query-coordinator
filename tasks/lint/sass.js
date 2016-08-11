@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var stylelint = require('gulp-stylelint');
 
 var configuration = {
-  failAfterError: false,
+  failAfterError: true,
   reporters: [
     {formatter: 'string', console: true}
   ]

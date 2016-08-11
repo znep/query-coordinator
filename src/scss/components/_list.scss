@@ -9,6 +9,7 @@ ol {
 ol {
   > li ol {
     list-style-type: lower-alpha;
+
     > li ol {
       list-style-type: lower-roman;
     }
@@ -18,6 +19,7 @@ ol {
 .list-unstyled {
   list-style: none;
   padding-left: 0;
+
   & > ul {
     padding-left: inherit;
   }
@@ -27,6 +29,7 @@ ol {
   list-style: none;
   padding-left: 0;
   margin-left: -(ms(-2));
+
   & li {
     display: inline-block;
     padding-left: ms(-2);

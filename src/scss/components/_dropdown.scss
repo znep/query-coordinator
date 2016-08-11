@@ -28,15 +28,12 @@
   cursor: default;
   user-select: none;
   transition: border-color 0.15s ease-in-out;
-
   padding: 10px;
   padding-right: 40px;
   color: $light-grey-1;
-  z-index: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
   z-index: 50;
 
   &:focus {
@@ -76,6 +73,7 @@
 
   &::after {
     @extend .icon-arrow-down::before;
+
     margin-top: 12px;
     margin-left: 2px;
   }

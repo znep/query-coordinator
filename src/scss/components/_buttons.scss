@@ -102,7 +102,6 @@
     &.btn-dark {
       background-color: $btn-default-dark-hover-background-color;
     }
-
   }
 
   &:active,
@@ -148,8 +147,10 @@
 
 .btn-simple {
   @extend .btn-default;
+
   color: $btn-simple-color;
   background-color: $btn-simple-background-color;
+
   &:hover,
   &:focus {
     background-color: $btn-simple-hover-background-color;

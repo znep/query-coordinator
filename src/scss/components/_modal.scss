@@ -21,7 +21,7 @@ body.modal-open {
 }
 
 .modal-container {
-  margin: 125px auto 50px auto;
+  margin: 125px auto 50px;
   max-width: 500px;
   background-color: #fff;
   border-radius: 1px;
@@ -52,7 +52,7 @@ body.modal-open {
     }
   }
 
-  @media(max-width: $small) {
+  @media (max-width: $small) {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -90,6 +90,7 @@ body.modal-open {
   &:hover {
     color: $dark-grey-1;
   }
+
   .modal-full & {
     font-size: ms(3);
     top: ms(-4);

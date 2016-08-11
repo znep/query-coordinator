@@ -46,6 +46,15 @@ Anyone and everyone is welcome to submit a pull request with code and documentat
 
 Once your bug fix or component is ready, open a PR, and we'll get to it as soon as possible.
 
+## Local testing
+In order to test your changes prior to opening a PR, you can build the `dist` files manually by running:
+
+```
+npm run gulp
+```
+
+Then you can copy the file(s) from `dist` into your project for local testing.
+
 ### Cutting a new release
 According to the rules of [semver](http://semver.org/), take these steps:
 

@@ -23,7 +23,7 @@ class DatasetLandingPage
         :boostDatalenses => 1.15
       }.compact
 
-      derived_views = Cetera.get_derived_from_views(uid_to_search_cetera(view), options)
+      derived_views = Cetera::Utils.get_derived_from_views(uid_to_search_cetera(view), options)
     else
       derived_views = view.find_dataset_landing_page_related_content(sort_by) || []
       limit = limit || derived_views.length
@@ -102,7 +102,7 @@ class DatasetLandingPage
   end
 
   # Formats either a View object instantiated from View json (from api/views) or
-  # a Cetera::CeteraResultRow object instantiated from Cetera json results into a
+  # a Cetera::Results::ResultRow object instantiated from Cetera json results into a
   # payload that the View Widget component can use.
   #
   # View json example: {

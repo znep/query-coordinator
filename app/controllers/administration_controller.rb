@@ -368,7 +368,7 @@ class AdministrationController < ApplicationController
       @search = params[:username]
 
       # NOTE: Remote calls may fail.
-      @user_search_results = Cetera.search_users(
+      @user_search_results = Cetera::Utils.search_users(
         params[:username],
         forwardable_session_cookies,
         request_id

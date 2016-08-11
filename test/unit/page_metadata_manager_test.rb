@@ -43,7 +43,7 @@ class PageMetadataManagerTest < Minitest::Test
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      permissions moderationStatus shares rights provenance ownerId
+      permissions moderationStatus shares rights provenance ownerDisplayName ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -60,7 +60,7 @@ class PageMetadataManagerTest < Minitest::Test
     result = manager.show('mjcb-9cxc')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField version
-      permissions moderationStatus shares rights provenance ownerId
+      permissions moderationStatus shares rights provenance ownerDisplayName ownerId
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end

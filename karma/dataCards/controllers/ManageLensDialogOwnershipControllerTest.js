@@ -71,10 +71,6 @@ describe('ManageLensDialogOwnershipController', function() {
       })
     ));
 
-    sinon.stub(UserSearchService, 'find').withArgs('fake-user').returns(
-      Promise.resolve([ USERS[0] ])
-    );
-
     sinon.stub(UserSearchService, 'results$').withArgs('Te').returns(
       Promise.resolve([ USERS[1], USERS[2] ])
     );
@@ -83,7 +79,8 @@ describe('ManageLensDialogOwnershipController', function() {
 
   function createController() {
     var pageOverrides = {
-      ownerId: 'fake-user'
+      ownerId: 'fake-user',
+      ownerDisplayName: 'Orange Dino'
     };
     $dialogScope = $rootScope.$new();
     $dialogScope.page = Mockumentary.createPage(pageOverrides);
@@ -116,12 +113,12 @@ describe('ManageLensDialogOwnershipController', function() {
     })
   });
 
-  it('enables the control and prepopulates the input with the current user', function(done) {
+  it('enables the control and prepopulates the input with the current owner', function(done) {
     createController();
     $scope.$apply();
     _.defer(function() {
       expect($scope.hasPermission).to.be.true;
-      expect($scope.ownerInput).to.equal('Faker McGee');
+      expect($scope.ownerInput).to.equal('Orange Dino');
       done();
     });
   });

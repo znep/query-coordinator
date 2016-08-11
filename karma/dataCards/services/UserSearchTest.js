@@ -3,7 +3,7 @@ describe('UserSearchService', function() {
 
   var $httpBackend;
   var UserSearch;
-  var USER_SEARCH_URL_MATCHER = new RegExp('/api/search/users\\.json\\??');
+  var USER_SEARCH_URL_MATCHER = new RegExp('/cetera/users\\??');
 
   var USERS = [
     generateUser('user-0000', 'Who'),
@@ -16,19 +16,17 @@ describe('UserSearchService', function() {
 
   function generateMockResponse(users) {
     return {
-      count: users.length,
-      results: users,
-      searchType: 'users'
+      resultSetSize: users.length,
+      results: users
     };
   }
 
   function generateUser(id, name) {
     // A subset of properties.
     return {
-      displayName: name,
       email: name,
       id: id,
-      screenName: name
+      screen_name: name
     };
   }
 
@@ -56,7 +54,9 @@ describe('UserSearchService', function() {
   describe('when a search string is provided', function() {
     describe('and any matches are found', function() {
       it('returns an array of results', function(done) {
-        var matchedUsers = [USERS[1], USERS[3], USERS[4]];
+        var matchedUsers = [USERS[1], USERS[3], USERS[4]].map(function(user) {
+          return _.merge(user, { displayName: user.screen_name });
+        });
         $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
         $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
         expect(UserSearch.find('Match')).to.eventually.eql(matchedUsers).and.notify(done);

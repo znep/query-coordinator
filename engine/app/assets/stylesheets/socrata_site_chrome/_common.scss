@@ -107,6 +107,12 @@ header#site-chrome-header, footer#site-chrome-footer {
         z-index: 4;
       }
 
+      label {
+        .searchbox-label {
+          display: none;
+        }
+      }
+
       input {
         width: 220px;
         border: solid 1px $searchbox_border_color;

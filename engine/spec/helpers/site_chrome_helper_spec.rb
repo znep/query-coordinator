@@ -36,6 +36,17 @@ describe SocrataSiteChrome::ApplicationHelper do
       result = helper.logo(source)
       expect(result).to eq('<img alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
+
+    it 'falls back to "Header Logo" if there is no source logo alt or header_title' do
+      allow(helper).to receive(:header_title).and_return(nil)
+      source = {
+        'logo' => {
+          'src' => 'http://myimage.png'
+        }
+      }
+      result = helper.logo(source)
+      expect(result).to eq('<img alt="Header Logo" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+    end
   end
 
   describe '#header_logo' do
@@ -51,7 +62,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       RequestStore.store[:site_chrome] = { published: site_chrome }
       result = helper.header_logo
-      expect(result).to eq('<a class="logo" href="/"><img onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
+      expect(result).to eq('<a class="logo" href="/"><img alt="Header Logo" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
   end
 

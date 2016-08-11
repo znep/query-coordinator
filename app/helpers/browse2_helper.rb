@@ -3,6 +3,16 @@ module Browse2Helper
   DEFAULT_FACET_CUTOFF = 5
   MAX_FACET_CUTOFF = 100
 
+  def use_browse2?
+    catalog_config = CurrentDomain.configuration('catalog')
+    if catalog_config
+      catalog_config = catalog_config.properties.merge!(catalog_config.strings)
+    else
+      catalog_config = Hashie::Mash.new
+    end
+    catalog_config[:view_type] == 'browse2' || defined?(params) && params[:view_type] == 'browse2'
+  end
+
   def facet_option_is_active?(opts, facet_param, facet_option)
     opts[facet_param] == facet_option[:value]
   end

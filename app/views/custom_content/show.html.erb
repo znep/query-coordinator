@@ -11,6 +11,7 @@
       <%- end -%>
     <%- end -%>
     <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css?<%= asset_revision_key %>"/>
+    <%= socrata_styleguide if use_browse2? %>
   <% end %>
 
   <%= raw render_widget(@page_config.contents) %>

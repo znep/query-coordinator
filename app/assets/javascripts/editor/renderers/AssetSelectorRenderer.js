@@ -46,13 +46,12 @@ export default function AssetSelectorRenderer(options) {
   function _attachEvents() {
 
     _container.on('modal-dismissed', function() {
+      var confirmed = true;
       if (assetSelectorStore.isUploadingFile() || assetSelectorStore.isCropping()) {
-        if (confirm(I18n.t('editor.asset_selector.image_preview.confirm_cancel'))) {
-          dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_CLOSE
-          });
-        }
-      } else {
+        confirmed = confirm(I18n.t('editor.asset_selector.image_preview.confirm_cancel'));
+      }
+
+      if (confirmed) {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CLOSE
         });
@@ -332,13 +331,16 @@ export default function AssetSelectorRenderer(options) {
   function saveAndClose() {
     // TODO this sequence of steps should likely be its own single action,
     // which both AssetSelectorStore and StoryStore handle.
-    dispatcher.dispatch({
-      action: Actions.BLOCK_UPDATE_COMPONENT,
-      blockId: assetSelectorStore.getBlockId(),
-      componentIndex: assetSelectorStore.getComponentIndex(),
-      type: assetSelectorStore.getComponentType(),
-      value: assetSelectorStore.getComponentValue()
-    });
+
+    if (assetSelectorStore.isDirty()) {
+      dispatcher.dispatch({
+        action: Actions.BLOCK_UPDATE_COMPONENT,
+        blockId: assetSelectorStore.getBlockId(),
+        componentIndex: assetSelectorStore.getComponentIndex(),
+        type: assetSelectorStore.getComponentType(),
+        value: assetSelectorStore.getComponentValue()
+      });
+    }
 
     dispatcher.dispatch({
       action: Actions.ASSET_SELECTOR_CLOSE
@@ -803,10 +805,9 @@ export default function AssetSelectorRenderer(options) {
     });
 
     backButton.one('click', function() {
-      if (backButton.attr('data-action')) {
-        dispatcher.dispatch({
-          action: backButton.attr('data-action')
-        });
+      var action = backButton.attr('data-action');
+      if (action) {
+        dispatcher.dispatch({ action });
       }
     });
 

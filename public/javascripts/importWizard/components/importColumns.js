@@ -5,6 +5,7 @@ import * as ST from '../sharedTypes';
 import * as UploadFile from './uploadFile';
 import * as DownloadFile from './downloadFile';
 import * as ColumnDetail from './importColumns/columnDetail';
+import * as LC from './importColumns/locationColumn';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
@@ -35,7 +36,7 @@ export type ResultColumn = {
 export type ColumnSource
   = { type: 'SingleColumn', sourceColumn: ST.SourceColumn }
   | { type: 'CompositeColumn', components: Array<string | ST.SourceColumn> }
-  // TODO: location column
+  | { type: 'LocationColumn', components: LC.LocationSource }
 
 
 // TODO: rename to 'Model' or something. Ugh.
@@ -49,9 +50,8 @@ type Transform = {
 type Translation = Array<ResultColumn>
 
 
-export function initialTranslation(summary: UploadFile.Summary): Translation {
-  // TODO: set aside location columns
-  return summary.columns.map((column, idx) => (
+export function initialTranslation(summary: UploadFile.Summary): Transform {
+  const columns = summary.columns.map((column, idx) => (
     {
       columnSource: { type: 'SingleColumn', sourceColumn: column },
       name: column.name,
@@ -60,6 +60,37 @@ export function initialTranslation(summary: UploadFile.Summary): Translation {
       id: idx
     }
   ));
+
+  const defaultColumnOrText = {
+    select: '',
+    text: '',
+    isColumn: true
+  };
+
+  const locations = summary.locations.map((column, idx) => (
+    {
+      columnSource: {
+        type: 'LocationColumn',
+        components: {
+          type: 'MultipleCols',
+          isMultiple: true,
+          singleSource: '',
+          street: '',
+          city: defaultColumnOrText,
+          state: defaultColumnOrText,
+          zip: defaultColumnOrText,
+          lat: { sourceColumn: summary.columns[column.latitude] },
+          lon: { sourceColumn: summary.columns[column.longitude] }
+        }
+      },
+      name: 'Location ' + (idx + 1),
+      chosenType: column.suggestion,
+      transforms: []
+    }
+  ));
+
+  columns.push.apply(columns, locations);
+  return columns;
 }
 
 // actions

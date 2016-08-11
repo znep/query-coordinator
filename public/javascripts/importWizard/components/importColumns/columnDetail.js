@@ -5,6 +5,7 @@ import * as SharedTypes from '../../sharedTypes';
 import * as Utils from '../../utils';
 import * as ImportColumns from '../importColumns'; // TODO: something other than this cyclical import
 import importableTypes from 'importableTypes';
+import * as LocationColumn from './locationColumn';
 
 type CompositeComponent = SharedTypes.SourceColumn | string;
 
@@ -85,6 +86,14 @@ export function updateColumnSourceComposite(action) {
   };
 }
 
+export const UPDATE_COLUMN_SOURCE_LOCATION = 'UPDATE_COLUMN_SOURCE_LOCATION';
+export function updateColumnSourceLocation(action) {
+  return {
+    type: UPDATE_COLUMN_SOURCE_LOCATION,
+    action
+  };
+}
+
 export const ADD_COMPONENT = 'ADD_COMPONENT';
 export function addComponent(firstSourceColumn: SharedTypes.SourceColumn) {
   return {
@@ -109,8 +118,6 @@ export function removeComponent(index: number) {
     index
   };
 }
-
-// == TODO: location column actions
 
 const DEFAULT_TRANSFORM = { type: 'title' };
 
@@ -146,7 +153,14 @@ export function update(resultColumn: ImportColumns.ResultColumn, action): Import
             }
           };
 
-        // TODO: location columns
+        case 'LocationColumn':
+          return {
+            ...resultColumn,
+            columnSource: {
+              ...resultColumn.columnSource,
+              components: LocationColumn.update(resultColumn.columnSource.components, action.action)
+            }
+          };
 
         default:
           console.error(`unexpected column source type: ${resultColumn.columnSource.type}`);
@@ -213,8 +227,10 @@ const I18nPrefixed = I18n.screens.dataset_new.column_template;
 const I18nTransform = I18n.screens.import_common;
 
 export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemove }) {
+  const isLocationColumn = resultColumn.columnSource.type === 'LocationColumn';
+
   const isTransformEditorVisible = !_.isUndefined(resultColumn.showColumnTransforms)
-    && resultColumn.showColumnTransforms === true;
+    && resultColumn.showColumnTransforms && !isLocationColumn;
 
   function columnSourceAction(option: string): SharedTypes.SourceColumn {
     const parsedIdx = _.parseInt(option);
@@ -247,30 +263,39 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
             }
           </select>
         </div>
-        <div className="columnSourceCell">
-          <select
-            className="columnTypeSelect"
-            value={nameAndValueForColumnSource(resultColumn.columnSource).value}
-            onChange={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
-            {
-              sourceOptions.map((sourceOption, idx) => {
-                const {name, value} = nameAndValueForColumnSource(sourceOption);
-                return <option value={value} key={idx}>{name}</option>;
-              })
-            }
-          </select>
-        </div>
+        {!isLocationColumn
+          ?
+          <div className="columnSourceCell">
+            <select
+              className="columnTypeSelect"
+              value={nameAndValueForColumnSource(resultColumn.columnSource).value}
+              onChange={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
+              {
+                sourceOptions.map((sourceOption, idx) => {
+                  const {name, value} = nameAndValueForColumnSource(sourceOption);
+                  return <option value={value} key={idx}>{name}</option>;
+                })
+              }
+            </select>
+          </div>
+          : null
+        }
         <div className="columnActionCell clearfix">
           <a
             href="#remove"
             className="remove icon"
             title={I18nPrefixed.remove}
             onClick={(event) => dispatchRemove(event)} >{I18nPrefixed.remove}</a>
-          <a
-            href="#options"
-            className="options icon"
-            title={I18nPrefixed.options}
-            onClick={() => dispatchUpdate(updateShowTransforms(!isTransformEditorVisible))} >{I18nPrefixed.options}</a>
+          {!isLocationColumn
+            ?
+            <a
+              href="#options"
+              className="options icon"
+              title={I18nPrefixed.options}
+              onClick={() => dispatchUpdate(updateShowTransforms(!isTransformEditorVisible))} >{I18nPrefixed.options}</a>
+            : null
+          }
+
         </div>
       </div>
       <div className="detailsLine">
@@ -284,7 +309,14 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
                   sourceOptions={sourceOptions} />
               );
             }
-            // TODO: location column
+            case 'LocationColumn': {
+              return (
+                <LocationColumn.view
+                  dispatch={(action) => dispatchUpdate(updateColumnSourceComposite(action))}
+                  locationColumn={resultColumn.columnSource.components}
+                  sourceColumns={sourceOptions} />
+              );
+            }
             default:
               return null;
           }
@@ -295,11 +327,15 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
               <h3>{I18nTransform.options}</h3>
               <h4>{I18nTransform.transforms}</h4>
               <ViewTransforms transforms={resultColumn.transforms} dispatchUpdate={dispatchUpdate} />
-              <a
-                className="button add newColumnTransformButton"
-                onClick={() => dispatchUpdate(addTransform())}>
-                <span className="icon"></span>{I18nTransform.new_transform}
-              </a>
+              {!isLocationColumn
+                ?
+                <a
+                  className="button add newColumnTransformButton"
+                  onClick={() => dispatchUpdate(addTransform())}>
+                  <span className="icon"></span>{I18nTransform.new_transform}
+                </a>
+                : null
+              }
             </div>
             : null
         ))()}
@@ -352,7 +388,8 @@ function ViewCompositeColumnComponents({ components, sourceOptions, dispatch }) 
                 return <option value={value}>{name}</option>;
               })}
             </select>
-            {_.isString(component) ?
+            {_.isString(component)
+              ?
               <input
                 type="text"
                 className="staticSourceText"

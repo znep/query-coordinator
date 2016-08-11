@@ -4,6 +4,7 @@ import * as UF from 'components/uploadFile';
 import * as CD from 'components/importColumns/columnDetail';
 
 describe('ImportColumns component', () => {
+
   describe('reducer', () => {
     it(`Does nothing ${UF.FILE_UPLOAD_COMPLETE} with empty summary`, () => {
       const expected = 'original transform value!';
@@ -19,25 +20,17 @@ describe('ImportColumns component', () => {
     it(`creates the initial transform if missing ${UF.FILE_UPLOAD_COMPLETE}`, () => {
       const summary = ED.imports2ScanResponse.summary;
 
-      const initialTranslation = summary.columns.map((column, idx) => ({
-        columnSource: { type: 'SingleColumn', sourceColumn: column },
-        name: column.name,
-        chosenType: column.suggestion,
-        transforms: [],
-        id: idx
-      }));
+      const initialTranslation = IC.initialTranslation(summary);
 
-      const action = UF.fileUploadComplete('fileId-1234-5678', summary);
-      const result = IC.update(undefined, action);
+      const result = IC.update(undefined, {
+        type: UF.FILE_UPLOAD_COMPLETE,
+        summary: summary
+      });
 
-      const expected = {
-        columns: initialTranslation,
-        defaultColumns: initialTranslation,
-        numHeaders: summary.headers,
-        sample: summary.sample
-      };
-
-      expect(result).to.deep.equal(expected);
+      expect(result.columns).to.deep.equal(initialTranslation);
+      expect(result.defaultColumns).to.deep.equal(initialTranslation);
+      expect(result.numHeaders).to.deep.equal(summary.headers);
+      expect(result.sample).to.deep.equal(summary.sample);
     });
 
     it(`handles ${IC.CHANGE_HEADER_COUNT}`, () => {

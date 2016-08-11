@@ -6,7 +6,7 @@ import * as ST from '../../sharedTypes';
 import * as CD from './columnDetail';
 import * as IC from '../importColumns';
 import * as Utils from '../../utils';
-
+import * as LC from './locationColumn';
 
 // these type strings are lowercased because they're used as I18n keys
 type ValidationProblem
@@ -15,21 +15,23 @@ type ValidationProblem
   | { type: 'source_columns_dropped', sourceColumns: Array<string> }
   | { type: 'single_column_error', resultColumnName: string, error: SingleColumnError }
 
-
 type SingleColumnError
   = { type: 'wrong_type', suggestedType: ST.TypeName, chosenType: ST.TypeName, invalidPercent: number }
   | { type: 'wrong_type_unknown_count', suggestedType: ST.TypeName, chosenType: ST.TypeName }
   | { type: 'type_too_generic', suggestedType: ST.TypeName, chosenType: ST.TypeName }
   | { type: 'empty_composite_col' }
   | { type: 'non_text_composite_col', chosenType: ST.TypeName }
-  // TODO: plain col but should be location col
-  // TODO: wrong type for location columns
-  // TODO: not lat & lon
+  // plain col but should be location col
+  | { type: 'wrong_type_location_plain_col', suggestedType: ST.TypeName, chosenType: ST.TypeName }
+  // wrong type for location columns
+  | {type: 'wrong_type_location', fieldName: string, chosenColumn: string, suggestedType: ST.TypeName, chosenType: ST.TypeName }
+  // not lat & lon
+  | {type: 'missing_lat_long', coordinateType: string, missingCoordinateType: string }
 
 
 export function validate(translation: IC.Translation, sourceColumns: Array<ST.SourceColumn>): Array<ValidationProblem> {
   const singleColumnErrors = _.flatten(translation.map((column) => (
-    validateResultColumn(column).map(error => ({
+    validateResultColumn(column, sourceColumns).map(error => ({
       type: 'single_column_error',
       resultColumnName: column.name,
       error: error
@@ -67,6 +69,10 @@ function getUsedSourceCols(source: IC.ColumnSource): Array<ST.SourceColumn> {
 
     case 'CompositeColumn':
       return source.components.filter(component => _.isObject(component));
+
+    case 'LocationColumn':
+      return [];
+    // TODO: actually get all used columns.
   }
 }
 
@@ -90,7 +96,7 @@ function checkColumnNames(translation: IC.Translation): Array<ValidationProblem>
 
 export function isError(problem: ValidationProblem): boolean {
   return _.includes(['duplicate_names', 'blank_names'], problem.type) ||
-    (problem.type === 'single_column_error' && _.includes(['empty_composite_col'], problem.error.type));
+    (problem.type === 'single_column_error' && _.includes(['empty_composite_col', 'missing_lat_long'], problem.error.type));
 }
 
 
@@ -99,7 +105,7 @@ export function emptyOrAllWarnings(problems: Array<ValidationProblem>): boolean 
 }
 
 
-function validateResultColumn(column: IC.ResultColumn): Array<ValidationProblem> {
+function validateResultColumn(column: IC.ResultColumn, sourceColumns): Array<ValidationProblem> {
   switch (column.columnSource.type) {
     case 'SingleColumn':
       return validateSingleColumnSingleSource(column, column.columnSource.sourceColumn);
@@ -107,16 +113,17 @@ function validateResultColumn(column: IC.ResultColumn): Array<ValidationProblem>
     case 'CompositeColumn':
       return validateSingleColumnCompositeSource(column, column.columnSource.components);
 
+    case 'LocationColumn':
+      return validateSingleColumnLocationColumn(column, sourceColumns);
+
     default:
       console.error(`unexpected column type: ${column.columnSource.type}`);
   }
 }
 
-
 function validateSingleColumnSingleSource(column: IC.ResultColumn, source: ST.SourceColumn): Array<ValidationProblem> {
   return _.compact([checkType(column.chosenType, source)]);
 }
-
 
 function validateSingleColumnCompositeSource(column: IC.ResultColumn, components: Array<CD.CompositeComponent>): Array<ValidationProblem> {
   const emptyError = components.length === 0
@@ -126,6 +133,66 @@ function validateSingleColumnCompositeSource(column: IC.ResultColumn, components
     ? { type: 'non_text_composite_col', chosenType: column.chosenType }
     : null;
   return _.compact([emptyError, notTextWarning]);
+}
+
+const locationTypes = {
+  street: ['text'],
+  city: ['text'],
+  state: ['text'],
+  zip: ['number', 'text'],
+  latitude: ['number'],
+  longitude: ['number']
+};
+
+export function validateSingleColumnLocationColumn(column: LC.LocationSource, sourceColumns): Array<ValidationProblem> {
+  const locationColumnComponents = column.columnSource.components;
+
+  const latlon = coordinateError(locationColumnComponents);
+  const street = fieldValidationWarning('street', locationColumnComponents.street, locationTypes.street, sourceColumns);
+  const city = fieldOrTextValidationWarning('city', locationColumnComponents.city, locationTypes.city, sourceColumns);
+  const state = fieldOrTextValidationWarning('state', locationColumnComponents.state, locationTypes.state, sourceColumns);
+  const zip = fieldOrTextValidationWarning('zip', locationColumnComponents.zip, locationTypes.zip, sourceColumns);
+  const lat = fieldValidationWarning('lat', locationColumnComponents.lat, locationTypes.latitude, sourceColumns);
+  const lon = fieldValidationWarning('lon', locationColumnComponents.lon, locationTypes.longitude, sourceColumns);
+
+  return _.compact([latlon, street, city, state, zip, lat, lon]);
+}
+
+export function coordinateError(locationColumnComponents) {
+  const lat = locationColumnComponents.lat;
+  const lon = locationColumnComponents.lon;
+
+  if (_.has(lat, 'sourceColumn') && !_.has(lon, 'sourceColumn')) {
+    return { type: 'missing_lat_long', coordinateType: 'latitude', missingCoordinateType: 'longitude' };
+  } else if (!_.has(lat, 'sourceColumn') && _.has(lon, 'sourceColumn')) {
+    return { type: 'missing_lat_long', coordinateType: 'longitude', missingCoordinateType: 'latitude' };
+  } else {
+    return null;
+  }
+}
+
+export function fieldValidationWarning(fieldName, field, fieldType, sourceColumns) {
+  if (_.has(field, 'sourceColumn')) {
+    const index = field.sourceColumn.index;
+    const sourceColumn = sourceColumns[index];
+    const suggested = sourceColumn.suggestion;
+    if (!(fieldType.indexOf(suggested) >= 0)) {
+      return {type: 'wrong_type_location', fieldName: fieldName, chosenColumn: sourceColumn.name, suggestedType: _.join(fieldType, ' or '), chosenType: suggested};
+    }
+  }
+  return null;
+}
+
+export function fieldOrTextValidationWarning(fieldName, field, fieldType, sourceColumns) {
+  if (_.has(field.column, 'sourceColumn') && field.isColumn) {
+    const index = field.column.sourceColumn.index;
+    const sourceColumn = sourceColumns[index];
+    const suggested = sourceColumn.suggestion;
+    if (!(fieldType.indexOf(suggested) >= 0)) {
+      return {type: 'wrong_type_location', fieldName: fieldName, chosenColumn: sourceColumn.name, suggestedType: _.join(fieldType, ' or '), chosenType: suggested};
+    }
+  }
+  return null;
 }
 
 
@@ -200,13 +267,40 @@ export function problemText(problem: ValidationProblem) {
       );
     }
     case 'single_column_error':
-      return format(
-        I18nImportValidation.single_column[problem.error.type],
-        {
-          resultColumnName: _.escape(problem.resultColumnName),
-          ...capitalizeTypeNames(problem.error)
-        }
-      );
+      switch (problem.error.type) {
+        case 'wrong_type_location':
+          return format(
+            I18nImportValidation.single_column[problem.error.type],
+            {
+              resultColumnName: _.escape(problem.resultColumnName),
+              field: _.escape(problem.error.fieldName),
+              chosenColumn: _.escape(problem.error.chosenColumn),
+              chosenType: _.escape(problem.error.chosenType),
+              suggestedType: _.escape(problem.error.suggestedType)
+            }
+          );
+        case 'missing_lat_long':
+          return format(
+            I18nImportValidation.single_column[problem.error.type],
+            {
+              resultColumnName: _.escape(problem.resultColumnName),
+              coordinateType: _.escape(problem.error.coordinateType),
+              missingCoordinateType: _.escape(problem.error.missingCoordinateType)
+            }
+          );
+        default:
+          return format(
+            I18nImportValidation.single_column[problem.error.type],
+            {
+              resultColumnName: _.escape(problem.resultColumnName),
+              ...capitalizeTypeNames(problem.error)
+            }
+          );
+      }
+
+    default:
+      return null;
+
   }
 }
 

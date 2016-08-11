@@ -1,5 +1,5 @@
 .flannel {
-  position: absolute;
+  position: fixed;
   background: white;
   width: 300px;
   box-shadow: 0 0 8px -2px #666;
@@ -7,6 +7,7 @@
   border-radius: 1px;
   border-top-left-radius: 0;
   padding: 1rem;
+  z-index: $flannel-z-index;
 
   &.flannel-hidden {
     display: none;

@@ -38,6 +38,7 @@ module.exports = function FlannelFactory() {
   }
 
   function positionFlannel(flannel, hoverable) {
+    var arrowHeight = 16;
     var node = hoverable;
     var left = 0;
     var top = 0;
@@ -52,13 +53,10 @@ module.exports = function FlannelFactory() {
       return;
     }
 
-    do {
-      left += node.offsetLeft;
-      top += node.offsetTop;
-    } while ((node = node.offsetParent) !== null);
+    var hoverableDimensions = hoverable.getBoundingClientRect();
 
-    left = left + hoverable.offsetWidth / 2;
-    top = top + hoverable.offsetHeight + padding;
+    left = hoverableDimensions.left + (hoverable.offsetWidth / 2);
+    top = hoverableDimensions.top + hoverable.offsetHeight + arrowHeight;
 
     if (left + flannelWidth > bodyWidth && windowWidth > mobileBreakpoint) {
       flannel.classList.remove('flannel-right');
@@ -88,6 +86,7 @@ module.exports = function FlannelFactory() {
     hoverable.addEventListener('click', function(event) {
       var windowWidth = window.innerWidth;
       event.preventDefault();
+      event.stopPropagation();
 
       if (windowWidth > mobileBreakpoint) {
         flannel.classList.toggle('flannel-hidden');
@@ -115,6 +114,10 @@ module.exports = function FlannelFactory() {
       elementToFocus.focus();
       elementToFocus.style.outline = 'none';
     });
+
+    var boundPositionFlannel = positionFlannel.bind(null, flannel, hoverable);
+    window.addEventListener('scroll', boundPositionFlannel);
+    window.addEventListener('wheel', boundPositionFlannel);
 
     document.body.addEventListener('click', function(event) {
       var node = event.target;

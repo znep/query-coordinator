@@ -18,7 +18,8 @@
     "watch": "gulp watch",
     "gulp": "gulp dist",
     "lint": "gulp lint",
-    "prepublish": "npm run gulp"
+    "prepublish": "npm run gulp",
+    "version-bump-check": "node ./tools/version-bump-check.js"
   },
   "repository": {
     "type": "git",
@@ -80,6 +81,7 @@
     "normalize.css": "4.1.1",
     "prismjs": "1.4.1",
     "rimraf": "2.5.0",
+    "shelljs": "0.7.3",
     "stylelint-config-standard": "12.0.0",
     "tether": "1.2.0",
     "tether-shepherd": "1.2.0",

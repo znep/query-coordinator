@@ -49,7 +49,7 @@ function toggleCollapsibleSearch(self) {
 
 // Button appears only if text has been entered.
 function toggleSearchButton(self) {
-  var $searchButton = $(self).siblings('.search-button');
+  var $searchButton = $(self).closest('form').find('.search-button');
   if (self.value !== '') {
     $searchButton.fadeIn(50);
   } else {

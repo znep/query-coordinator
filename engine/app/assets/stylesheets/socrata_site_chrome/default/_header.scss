@@ -69,6 +69,8 @@ header#site-chrome-header[template="default"] {
             display: inline-block;
             color: $header_fg_color;
             text-decoration: none;
+            line-height: 20px;
+
             &:hover, &:focus, &:active {
               text-decoration: underline;
             }

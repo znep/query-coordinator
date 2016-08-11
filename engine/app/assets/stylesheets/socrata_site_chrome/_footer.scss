@@ -45,6 +45,10 @@ footer#site-chrome-footer {
           display: inline-block;
           margin-right: $text_padding * 3;
 
+          &:last-of-type {
+            margin-right: 0;
+          }
+
           a.footer-link {
             color: $footer_fg_color;
             text-decoration: none;

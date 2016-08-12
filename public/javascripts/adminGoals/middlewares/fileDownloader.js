@@ -46,6 +46,12 @@ export default store => next => action => {
               return;
             }
 
+            if (response.status < 200 || response.status >= 300) {
+              return response.json().then(reason => {
+                throw reason.message;
+              });
+            }
+
             return response.blob().
               then(triggerDownload(fileUrl, fileName)).
               then(() => store.dispatch({ type: successActionType, fileUrl })).

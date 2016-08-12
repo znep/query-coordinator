@@ -62,7 +62,7 @@ export const Dropdown = React.createClass({
   },
 
   onWheel() {
-    if (this.options) {
+    if (this.options && this.options.childNodes.length) {
       let { displayTrueWidthOptions } = this.props;
       let containerDimensions = this.container.getBoundingClientRect();
       let browserWindowHeight = window.document.documentElement.clientHeight - 10;

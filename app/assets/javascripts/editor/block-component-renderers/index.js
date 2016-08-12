@@ -2,6 +2,7 @@ import './componentAssetSelector';
 import './componentAuthor';
 import './componentEmbeddedHtml';
 import './componentGoalTile';
+import './componentGoalEmbed';
 import './componentHTML';
 import './componentHero';
 import './componentHorizontalRule';

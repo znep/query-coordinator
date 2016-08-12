@@ -143,6 +143,15 @@
         <% end -%>
       </li>
 
+      <% if Rails.application.config.enable_goal_embed_experimental %>
+      <li id="settings-panel-goal-embed-test-button" class="menu-list-item">
+        <button class="menu-list-item-header">
+          <span class="icon-pulse"></span>
+          <span>Convert To Goal</span>
+        </button>
+      </li>
+      <% end %>
+
     </ul>
   </div>
   <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>

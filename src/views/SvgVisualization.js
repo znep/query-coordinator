@@ -3,6 +3,7 @@ const VifHelpers = require('../helpers/VifHelpers');
 const $ = require('jquery');
 const _ = require('lodash');
 const I18n = require('../I18n');
+const MetadataProvider = require('../dataProviders/MetadataProvider');
 
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
@@ -45,11 +46,16 @@ function SvgVisualization($element, vif) {
     this.renderDescription();
     this.renderAxisLabels();
     this.hidePanningNotice();
+
+    if (shouldRenderViewSourceDataLink()) {
+      self.showViewSourceDataLink();
+    } else {
+      self.hideViewSourceDataLink();
+    }
   };
 
   this.renderTitle = function() {
-    var $container = this.$element.find('.visualization');
-    var $title = $container.find('.title');
+    var $title = this.$container.find('.title');
     var titleText = this.getVif().title;
 
     if (titleText) {
@@ -57,19 +63,18 @@ function SvgVisualization($element, vif) {
       $title.
         attr('data-full-text', titleText).
         text(titleText);
-      $container.addClass('title');
+      this.$container.addClass('title');
     } else {
 
       $title.
         removeAttr('data-full-text').
         text('');
-      $container.removeClass('title');
+      this.$container.removeClass('title');
     }
   };
 
   this.renderDescription = function() {
-    var $container = this.$element.find('.visualization');
-    var $description = $container.find('.description');
+    var $description = this.$container.find('.description');
     var descriptionText = this.getVif().description;
 
     if (descriptionText) {
@@ -77,24 +82,23 @@ function SvgVisualization($element, vif) {
       $description.
         attr('data-full-text', descriptionText).
         text(descriptionText);
-      $container.addClass('description');
+      this.$container.addClass('description');
     } else {
 
       $description.
         removeAttr('data-full-text').
         text('');
-      $container.removeClass('description');
+      this.$container.removeClass('description');
     }
   };
 
   this.renderAxisLabels = function() {
-    var $container = this.$element.find('.visualization');
-    var $topAxisLabel = $container.find('.top-axis-label');
-    var $rightAxisLabel = $container.find('.right-axis-label');
-    var $bottomAxisLabel = $container.find('.bottom-axis-label');
-    var $leftAxisLabel = $container.find('.left-axis-label');
+    var $topAxisLabel = this.$container.find('.top-axis-label');
+    var $rightAxisLabel = this.$container.find('.right-axis-label');
+    var $bottomAxisLabel = this.$container.find('.bottom-axis-label');
+    var $leftAxisLabel = this.$container.find('.left-axis-label');
     var axisLabels = currentVif.configuration.axisLabels;
-    var maxWidth = $container.
+    var maxWidth = this.$container.
       find('.visualization-container').
       outerHeight(true) *
       0.9;
@@ -105,14 +109,14 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.top).
         text(axisLabels.top).
         css('max-width', maxWidth);
-      $container.addClass('top-axis-label');
+      this.$container.addClass('top-axis-label');
     } else {
 
       $topAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      $container.removeClass('top-axis-label');
+      this.$container.removeClass('top-axis-label');
     }
 
     if (axisLabels.right) {
@@ -121,14 +125,14 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.right).
         text(axisLabels.right).
         css('max-width', maxWidth);
-      $container.addClass('right-axis-label');
+      this.$container.addClass('right-axis-label');
     } else {
 
       $rightAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      $container.removeClass('right-axis-label');
+      this.$container.removeClass('right-axis-label');
     }
 
     if (axisLabels.bottom) {
@@ -137,14 +141,14 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.bottom).
         text(axisLabels.bottom).
         css('max-width', maxWidth);
-      $container.addClass('bottom-axis-label');
+      this.$container.addClass('bottom-axis-label');
     } else {
 
       $bottomAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      $container.removeClass('bottom-axis-label');
+      this.$container.removeClass('bottom-axis-label');
     }
 
     if (axisLabels.left) {
@@ -153,20 +157,19 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.left).
         text(axisLabels.left).
         css('max-width', maxWidth);
-      $container.addClass('left-axis-label');
+      this.$container.addClass('left-axis-label');
     } else {
 
       $leftAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      $container.removeClass('left-axis-label');
+      this.$container.removeClass('left-axis-label');
     }
   };
 
   this.renderError = function(messages) {
-    const $container = this.$element.find('.visualization');
-    const $message = $container.find('.error-message');
+    const $message = this.$container.find('.error-message');
 
     if (!messages || _.isString(messages) || messages.length === 1) {
       $message.text(messages || 'Error');
@@ -180,26 +183,58 @@ function SvgVisualization($element, vif) {
           messages.map((text) => $('<li>').text(text))
         ));
     }
-    $container.addClass('visualization-error');
+    this.$container.addClass('visualization-error');
   };
 
   this.clearError = function() {
-    var $container = this.$element.find('.visualization');
+    this.$container.find('.error-message').text('');
+    this.$container.removeClass('visualization-error');
+  };
 
-    $container.find('.error-message').text('');
-    $container.removeClass('visualization-error');
+  this.showViewSourceDataLink = function() {
+    var loadedVif = this.getVif();
+    var domain = _.get(loadedVif, 'series[0].dataSource.domain');
+    var datasetUid = _.get(loadedVif, 'series[0].dataSource.datasetUid');
+
+    var metadataProvider = new MetadataProvider({domain, datasetUid});
+    var renderLink = (linkableDatasetUid) => {
+      this.$container.
+        addClass('info view-source-data').
+        find('.view-source-data a').
+        attr('href', `https://${domain}/d/${linkableDatasetUid}`);
+    };
+
+    metadataProvider.getDatasetMigrationMetadata().
+      then((migrationMetadata) => {
+        renderLink(_.get(migrationMetadata, 'nbe_id', datasetUid));
+      }).
+      catch(() => {
+        renderLink(datasetUid);
+      });
+  };
+
+  this.hideViewSourceDataLink = function() {
+    this.$container.removeClass('view-source-data');
+    this.hideInfo();
   };
 
   this.showPanningNotice = function() {
-    var $container = this.$element.find('.visualization');
-
-    $container.addClass('info panning-notice');
+    this.$container.addClass('info panning-notice');
   };
 
   this.hidePanningNotice = function() {
-    var $container = this.$element.find('.visualization');
+    this.$container.removeClass('panning-notice');
+    this.hideInfo();
+  };
 
-    $container.removeClass('info panning-notice');
+  this.hideInfo = function() {
+    var infoClasses = ['panning-notice', 'view-source-data'];
+
+    if (_.some(infoClasses, this.$container.hasClass)) {
+      return;
+    }
+
+    this.$container.removeClass('info');
   };
 
   this.isMobile = function() {
@@ -371,8 +406,14 @@ function SvgVisualization($element, vif) {
                 ]),
               $('<div>', {'class': 'info'}).
                 append([
+                  $('<div>', {'class': 'view-source-data'}).append(
+                    $('<a>', {'href': '', 'target': '_blank'}).append([
+                      I18n.translate('visualizations.common.view_source_data'),
+                      $('<span>', {'class': 'icon-external'})
+                    ])
+                  ),
                   $('<div>', {'class': 'panning-notice'}).text(
-                    'Not all values shown: click and drag to pan the chart'
+                    I18n.translate('visualizations.common.panning_notice')
                   )
                 ]),
               $('<div>', {'class': 'error-container error light'}).
@@ -510,6 +551,10 @@ function SvgVisualization($element, vif) {
     }
   }
 
+  function shouldRenderViewSourceDataLink() {
+    return _.get(self.getVif(), 'configuration.viewSourceDataLink', true);
+  }
+
   /**
    * Execution starts here.
    */
@@ -519,6 +564,7 @@ function SvgVisualization($element, vif) {
   renderTemplate();
   attachEvents();
 
+  this.$container = this.$element.find('.visualization');
   this.updateVif(vif);
 }
 

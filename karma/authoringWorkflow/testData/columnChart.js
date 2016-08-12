@@ -5,6 +5,7 @@ export default () => ({
   },
   "configuration": {
     "xAxisScalingMode": "pan",
+    "viewSourceDataLink": true,
     "axisLabels": {
       "bottom": "All The Time",
       "left": "Love You"

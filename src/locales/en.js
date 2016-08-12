@@ -172,6 +172,8 @@ export default {
   },
   visualizations: {
     common: {
+      view_source_data: 'View Source Data',
+      panning_notice: 'Not all values shown: click and drag to pan the chart',
       currency_symbol: '$',
       decimal_separator: '.',
       error_generic: 'An error occurred when rendering this chart.',

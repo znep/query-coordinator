@@ -429,12 +429,11 @@ module BrowseActions
             # localize catalog links if locale is present
             browse_options[:search_options][:locale] = locale unless locale.nil?
 
-            Cetera.public_send(
-              @cetera_search_method || :search_views,
+            Cetera.search_views(
               browse_options[:search_options],
               forwardable_session_cookies(request.cookies),
               request_id(request) # See app/helpers/application_helper.rb#request_id
-              )
+            )
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end
@@ -768,8 +767,7 @@ module BrowseActions
       :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
       :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
       :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
-      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields,
-      :shared_to
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
     ]
   )
 end

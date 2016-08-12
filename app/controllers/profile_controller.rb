@@ -58,18 +58,11 @@ class ProfileController < ApplicationController
         browse_options[:limit] = 10
         browse_options[:page] = params[:page] || 1
 
-        # pass this to browse_actions so it knows we're fetching shared assets
-        @cetera_search_method = :search_shared_to_user
-
-        unless using_cetera?
-          view_results = View.find_shared_to_user(
-            @user.id,
-            offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
-            limit: browse_options[:limit]
-          )
-          browse_options[:view_results] = view_results['results']
-          browse_options[:view_count] = view_results['count']
-        end
+        view_results = View.find_shared_to_user(@user.id,
+                            {offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+                              limit: browse_options[:limit]})
+        browse_options[:view_results] = view_results['results']
+        browse_options[:view_count] = view_results['count']
       else
         if @is_user_current
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]
@@ -118,9 +111,6 @@ class ProfileController < ApplicationController
           :extra_options => tag_cloud,
           :tag_cloud => true
         }
-
-        # pass this to browse_actions so it knows we're fetching shared assets
-        @cetera_search_method = :search_owned_by_user
       end
 
       @news = retrieve_news

@@ -38,19 +38,24 @@ Rails.application.routes.draw do
       get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'
     end
 
-    # New frontend pages
+    # Open Performance pages
     get '/stat/version(.:format)' => 'odysseus#version'
-    scope :controller => 'odysseus', :action => 'index' do
-      get '/stat', :as => 'govstat_root'
-      get '/stat/goals', :as => 'govstat_goals'
-      get '/stat/my/goals', :as => 'govstat_my_goals'
-      get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
-      get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
-      get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
-      get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
-      get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
-      get '/stat/data', :as => 'govstat_data'
+    scope :controller => 'odysseus'do
+      scope :action => 'chromeless' do
+        get '/stat/goals/:dashboard_id/:category_id/:goal_id/embed'
+      end
+      scope :action => 'index' do
+        get '/stat', :as => 'govstat_root'
+        get '/stat/goals', :as => 'govstat_goals'
+        get '/stat/my/goals', :as => 'govstat_my_goals'
+        get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
+        get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
+        get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
+        get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
+        get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
+        match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
+        get '/stat/data', :as => 'govstat_data'
+      end
     end
 
     scope :path => '/internal', :controller => 'internal' do

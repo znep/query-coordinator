@@ -4,7 +4,6 @@ module.exports = function FlannelFactory() {
   var mobileBreakpoint = 420;
   var animationDuration = 300;
   var animationEasing = [.645, .045, .355, 1];
-  var padding = 10;
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flannel]'));
   var lastFocusedItem = null;
 
@@ -39,7 +38,6 @@ module.exports = function FlannelFactory() {
 
   function positionFlannel(flannel, hoverable) {
     var arrowHeight = 16;
-    var node = hoverable;
     var left = 0;
     var top = 0;
     var flannelWidth = flannel.getBoundingClientRect().width;

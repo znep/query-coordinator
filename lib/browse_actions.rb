@@ -26,6 +26,7 @@ module BrowseActions
 
   def base_view_types_facet
     {
+      type: :type,
       title: t('controls.browse.facets.view_types_title'),
       singular_description: t('controls.browse.facets.view_types_singular_title'),
       param: :limitTo,
@@ -79,6 +80,7 @@ module BrowseActions
     end
 
     {
+      :type => :category,
       :title => t('controls.browse.facets.categories_title'),
       :singular_description => t('controls.browse.facets.categories_singular_title'),
       :param => :category,
@@ -118,6 +120,7 @@ module BrowseActions
     end
 
     {
+      :type => :topic,
       :title => t('controls.browse.facets.topics_title'),
       :singular_description => t('controls.browse.facets.topics_singular_title'),
       :param => :tags,
@@ -156,6 +159,7 @@ module BrowseActions
     fed_cloud = all_feds[fed_chop..-1] if all_feds.length > fed_chop
 
     {
+      type: :domain,
       title: t('controls.browse.facets.federated_domains_title'),
       singular_description: t('controls.browse.facets.federated_domains_singular_title'),
       param: :federation_filter,
@@ -166,6 +170,7 @@ module BrowseActions
 
   def moderation_facet
     {
+      :type => :moderation,
       :title => t('controls.browse.facets.moderation_status_title'),
       :singular_description => t('controls.browse.facets.moderation_status_singular_title'),
       :param => :moderation,
@@ -378,7 +383,7 @@ module BrowseActions
     end
 
     if browse_options[:filtered_types].is_a? Array
-      type_facet = browse_options[:facets].find { |facet| facet[:singular_description] == 'type' }
+      type_facet = browse_options[:facets].find { |facet| facet[:type] == :type }
       type_facet.try(:[], :options).try(:select!) do |facet|
         browse_options[:filtered_types].include? facet[:value]
       end
@@ -566,7 +571,7 @@ module BrowseActions
             end
           end
           facet_parts << t('controls.browse.title.result.facet',
-                           :facet_type => f[:singular_description],
+                           :facet_type => f[:type],
                            :facet_value => facet_item[:text]) unless facet_item.nil?
         elsif !f[:custom_description].blank?
           facet_parts << f[:custom_description].call(options)

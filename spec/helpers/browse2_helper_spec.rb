@@ -231,19 +231,19 @@ describe Browse2Helper do
 
   describe '#browse2_facet_cutoff' do
     it 'defaults to 5' do
-      facet = { :singular_description => 'category' }
+      facet = { :type => :category, :singular_description => 'categorias' }
       allow(CurrentDomain).to receive(:property).and_return({})
       expect(helper.browse2_facet_cutoff(facet)).to eq(5)
     end
 
     it 'returns the property set in domain configuration if available' do
-      facet = { :singular_description => 'category' }
-      allow(CurrentDomain).to receive(:property).and_return({ 'category' => 13 })
+      facet = { :type => :category, :singular_description => 'categorias' }
+      allow(CurrentDomain).to receive(:property).and_return({ :category => 13 })
       expect(helper.browse2_facet_cutoff(facet)).to eq(13)
     end
 
     it 'returns 100 for the view type facet' do
-      facet = { :singular_description => 'type' }
+      facet = { :type => :type, :singular_description => 'tipo' }
       allow(CurrentDomain).to receive(:property).and_return({})
       expect(helper.browse2_facet_cutoff(facet)).to eq(100) # Browse2Helper::MAX_FACET_CUTOFF
     end
@@ -251,25 +251,26 @@ describe Browse2Helper do
     # See EN-3383
     it 'identifies custom facets and respects custom cutoff' do
       facet = {
-        'singular_description' => 'superhero',
-        'title' => 'Superhero',
-        'param' => :'Dataset-Information_Superhero',
-        'options' => [
-          { 'summary' => false, 'text' => 'Superman', 'value' => 'Superman' },
-          { 'summary' => false, 'text' => 'Batman', 'value' => 'Batman' },
-          { 'summary' => false, 'text' => 'Flash', 'value' => 'Flash' }
+        :type => :custom,
+        :singular_description => 'superhero',
+        :title => 'Superhero',
+        :param => 'Dataset-Information_Superhero',
+        :options => [
+          { :summary => false, :text => 'Superman', :value => 'Superman' },
+          { :summary => false, :text => 'Batman', :value => 'Batman' },
+          { :summary => false, :text => 'Flash', :value => 'Flash' }
         ],
-        'extra_options' => [
-          { 'summary' => false, 'text' => 'Spiderman', 'value' => 'Spiderman' },
-          { 'summary' => false, 'text' => 'Hulk', 'value' => 'Hulk' }
+        :extra_options => [
+          { :summary => false, :text => 'Spiderman', :value => 'Spiderman' },
+          { :summary => false, :text => 'Hulk', :value => 'Hulk' }
         ]
       }
 
       0.upto(6) do |cutoff|
         facet_cutoffs_catalog = {
-          'topic' => cutoff,
-          'category' => cutoff,
-          'custom' => cutoff
+          :topic => cutoff,
+          :category => cutoff,
+          :custom => cutoff
         }
 
         allow(CurrentDomain).

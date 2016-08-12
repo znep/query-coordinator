@@ -14,5 +14,5 @@ done
 
 git commit packages -m "v$PACKAGE_VERSION"
 git tag $PACKAGE_VERSION
-git push --tags origin
+git push --tags origin master
 git checkout -

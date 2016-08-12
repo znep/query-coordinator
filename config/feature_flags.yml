@@ -79,6 +79,10 @@ enable_dataset_landing_page:
 enable_dataset_landing_page_tour:
   description: Display the tour when visitors first access a dataset landing page.
   defaultValue: true
+enable_flexible_data_lens:
+  description: Enables Flexible Data Lens
+  defaultValue: false
+  category: data lens
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

@@ -1,0 +1,17 @@
+@import "dataset-landing-page/styleguide-colors";
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $light-grey-6;
+}
+
+#app {
+  // TODO: remove this once we have content
+  min-height: 90vh;
+}
+
+footer#site-chrome-footer {
+  margin-top: 20px;
+  visibility: hidden;
+}

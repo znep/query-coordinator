@@ -13,7 +13,7 @@
     "webpackPublicPath": "javascripts/build",
     "webpackDestination": "public/javascripts/build",
     "webpackDevServerPort": "3030",
-    "dataLensWebpackExternals": {
+    "dataCardsWebpackExternals": {
       "angular": "angular",
       "rx": "Rx",
       "jquery": "$",

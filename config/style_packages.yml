@@ -24,6 +24,9 @@ angular-app-dataCards:
 - dataCards/export-menu
 - dataCards/_leaflet
 
+data-lens:
+- data-lens/data-lens
+
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 

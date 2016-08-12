@@ -13,7 +13,7 @@ class DataLensController < ActionController::Base
   before_filter :hook_auth_controller
   before_filter :set_locale
   before_filter :redirect_to_mobile, :only => :data_lens
-  before_filter :preload_metadata, :only => [:data_lens, :show_mobile]
+  before_filter :preload_metadata, :only => :show_mobile
   before_filter :allow_frame_embedding, :only => :data_lens
 
   helper_method :current_user
@@ -245,8 +245,34 @@ class DataLensController < ActionController::Base
     end
   end
 
+  # This is the main entry point for Data Lens
+  # render_data_cards is for the Angular version of Data Lens
+  # render_data_lens refers to the React version of Data Lens
   def data_lens
+    if FeatureFlags.derive(nil, request).enable_flexible_data_lens == true
+      return render_data_lens
+    end
+
+    render_data_cards
+  end
+
+  # Angular version of Data Lens
+  def render_data_cards
+    preload_metadata
     raise 'The "app" parameter is required.' unless request[:app]
+
+    render 'data_cards' unless performed?
+  end
+
+  # React version of Data Lens
+  def render_data_lens
+    # First fetch the current user's profile
+    current_user
+
+    # Then fetch the view we're going to render
+    @view = View.find(params[:id])
+
+    render 'data_lens', :layout => 'data_lens'
   end
 
   def view_vif

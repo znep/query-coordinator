@@ -1255,6 +1255,8 @@ en:
     visibility:
       private: private
       public: public
+  data_lens:
+    render_error: There was a problem rendering this page.
   dataset_landing_page:
     action_buttons:
       api: API

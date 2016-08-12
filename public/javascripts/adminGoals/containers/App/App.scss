@@ -1,5 +1,11 @@
-.app-container {
-  padding-top: 50px;
+.clearfix:before,
+.clearfix:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.clearfix:after {
+  clear: both;
 }
 
 .alert {
@@ -12,6 +18,23 @@
 
 .modal .alert {
   margin: 5px 0 10px;
+}
+
+.external-link {
+  text-decoration: none;
+
+  .icon-external {
+    margin-left: 5px;
+    display: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    .icon-external {
+      display: initial;
+    }
+  }
 }
 
 .sc-check-indicator {
@@ -47,23 +70,6 @@
 }
 
 .modal-container {
-  .externalLink {
-    text-decoration: none;
-
-    .icon-external {
-      margin-left: 5px;
-      display: none;
-    }
-
-    &:hover {
-      text-decoration: underline;
-
-      .icon-external {
-        display: initial;
-      }
-    }
-  }
-
   .modal-content {
     margin-left: auto;
     margin-right: auto;

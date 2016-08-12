@@ -1844,6 +1844,11 @@ en:
           above: Above
       modal:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
+      preview_bar:
+        back_to_configuration: Back to Configuration
+        performance_goal_management_preview: Performance Goal Management Preview
+        learn_more: Learn More
+        feedback: Feedback
   plugins:
     daterangepicker:
       clear: Clear

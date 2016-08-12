@@ -5,6 +5,7 @@ import QuickEditForm from '../QuickEditForm/QuickEditForm';
 import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsForm';
 import SocrataBulkActions from '../SocrataBulkActions';
 import SocrataAlert from '../../components/SocrataAlert';
+import PreviewBar from '../../components/PreviewBar/PreviewBar';
 import { dismissNotification } from '../../actions/notificationActions';
 import './App.scss';
 
@@ -34,6 +35,7 @@ function App(props) {
 
   return (
     <div className="app-container">
+      <PreviewBar />
       { alert }
       <SocrataBulkActions />
       <GoalTable />

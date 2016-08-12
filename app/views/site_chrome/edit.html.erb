@@ -14,14 +14,8 @@
       <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
     </div>
 
-    <div class="header-controls" style="display: none"> <!-- TODO - once these buttons have functionality, display them -->
-      <%= link_to('#') do %>
-        <button><%= t('screens.admin.site_chrome.preview_changes') %><span class="icon-preview"></span></button>
-      <% end %>
-      <%= link_to('#') do %>
-        <button><%= t('screens.admin.site_chrome.save_changes') %></button>
-      <% end %>
-    </div>
+    <%= page_controls %>
+
   </div>
 
   <ul class="tabs">
@@ -42,23 +36,6 @@
       ) %>
     </div>
   <% end %>
-
-  <div class="page-controls">
-    <%= link_to('#', onclick: 'return confirmReload();') do %>
-      <button id="site_chrome_cancel">
-        <%= t("screens.admin.site_chrome.cancel") %>
-      </button>
-    <% end %>
-    <%= link_to('#') do %>
-      <button id="site_chrome_preview">
-        <%= t('screens.admin.site_chrome.preview_changes') %>
-        <span class="icon-preview"></span>
-      </button>
-    <% end %>
-    <button class="primary" id="site_chrome_save">
-      <%= t("screens.admin.site_chrome.save") %>
-    </button>
-  </div>
 
 </div>
 

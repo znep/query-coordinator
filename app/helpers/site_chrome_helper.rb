@@ -42,9 +42,51 @@ module SiteChromeHelper
     "content[#{fields.join('][')}]"
   end
 
-  # Return links array trimmed to link_count, and create empty placeholders as needed
-  def links_with_placeholders(links, link_count)
-    Array[*links.to_a[0...link_count] + Array.new(link_count)][0...link_count]
+  # Returns a "link-row" div that contains 3 input fields and an "X" icon to remove the row.
+  # Example output:
+  # <div class="link-row ">
+  #   <input type="hidden" name="content[header]links[][key]" value="link_0" class="hidden-label-input">
+  #   <input type="text" name="content[locales][en][header]links[link_0]" value="Home" class="localized-label-input">
+  #   <input type="text" name="content[header]links[][url]" value="/">
+  #   <span class="icon-close-2 remove-link-row" title="Remove Link" onclick="removeLinkRow(this);"></span>
+  # </div>
+  def link_row_div(content_key, link, placeholder_text, default = false)
+    link ||= { 'key' => 'link_PLACEHOLDER_INDEX', 'url' => '' }
+    key_path = "content[#{content_key}]links[][key]"
+    url_path = "content[#{content_key}]links[][url]"
+    # TODO - actually support other locales and remove "en" hardcoding.
+    translated_label_path = "content[locales][en][#{content_key}]links[#{link['key']}]"
+    translated_label = default ? nil : fetch_content([:locales, :en, content_key, :links, link['key']])
+
+    content_tag(:div, :class => "link-row#{' default' if default}") do
+      hidden_field_tag(key_path, link['key'] || '', :class => 'hidden-label-input') <<
+      text_field_tag(
+        translated_label_path,
+        translated_label || '',
+        :class => 'localized-label-input',
+        :placeholder => placeholder_text[:link_title]
+      ) <<
+      text_field_tag(url_path, link['url'] || '', :placeholder => placeholder_text[:url]) <<
+      content_tag(
+        :span,
+        nil,
+        :class => 'icon-close-2 remove-link-row',
+        :title => t('screens.admin.site_chrome.remove_link_row'),
+        :onclick => 'removeLinkRow(this);'
+      )
+    end
+  end
+
+  # If less than 3 present_links, add empty link rows until there are 3 total rows
+  def empty_link_row_divs(content_key, placeholder_text, present_link_count)
+    (link_row_div(content_key, nil, placeholder_text) * [0, 3 - present_link_count].max).html_safe
+  end
+
+  # Return array of links with a url present
+  def present_links(links)
+    links.to_a.select do |link|
+      link.dig('url').present?
+    end
   end
 
   def site_chrome_version_is_greater_than_or_equal?(version, site_chrome = @site_chrome)
@@ -58,9 +100,28 @@ module SiteChromeHelper
         html = check_box(form_field(fields[0..-2]),
                          fields.last,
                          { checked: fetch_boolean(fields, true) },
-                         "true", "false")
+                         'true', 'false')
         html << translation[fields.last]
       end
+    end
+  end
+
+  def page_controls
+    content_tag :div, class: 'page-controls' do
+      safe_join([
+        link_to('#', onclick: 'return confirmReload();') do
+          content_tag(:button, t('screens.admin.site_chrome.cancel'), id: 'site_chrome_cancel')
+        end,
+        link_to('#') do
+          content_tag :button, id: 'site_chrome_preview' do
+            [
+              t('screens.admin.site_chrome.preview_changes'),
+              content_tag(:span, nil, class: 'icon-preview')
+            ].join(' ').html_safe
+          end
+        end,
+        content_tag(:button, t('screens.admin.site_chrome.update'), class: 'primary', id: 'site_chrome_save')
+      ])
     end
   end
 end

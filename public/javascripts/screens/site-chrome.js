@@ -1,4 +1,5 @@
 var inputTypeValidations = {
+  template: /^(rally|evergreen|default)$/i,
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
   dimensions: /^\d{1,4}px$/
@@ -6,6 +7,7 @@ var inputTypeValidations = {
 
 var validationRules = {
   general: {
+    'content[general][template]': { pattern: inputTypeValidations.template },
     'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
     'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions }
   },
@@ -29,6 +31,8 @@ var validationRules = {
 var validationMessages = function(tab) {
   return {
     general: {
+      'content[general][template]':
+        $.t('screens.admin.site_chrome.tabs.general.fields.template.error'),
       'content[general][google_analytics_token]':
         $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error')
     },
@@ -71,10 +75,11 @@ $(document).ready(function() {
   };
 
   // Submit the form from the active tab when save button is clicked
-  $('button.primary#site_chrome_save').click(function() {
+  $('button#site_chrome_save').click(function() {
     var $formToSubmit = getActiveFormId();
     if ($formToSubmit.length) {
       if ($formToSubmit.valid()) {
+        reorderListOfLinks($formToSubmit);
         $formToSubmit.submit();
       }
     } else {
@@ -83,7 +88,8 @@ $(document).ready(function() {
   });
 
   // Submit the form from the active tab when save button is clicked
-  $('button#site_chrome_preview').click(function() {
+  $('button#site_chrome_preview').click(function(e) {
+    e.preventDefault();
     var $formToSubmit = getActiveFormId();
     if ($formToSubmit.length) {
       if ($formToSubmit.valid()) {
@@ -102,11 +108,10 @@ $(document).ready(function() {
   });
 
   var onLoadOrClickingSigninSignoutCheckbox = function() {
-    var value = $(this).attr('checked');
+    var value = $('#content_general_show_signin_signout').attr('checked');
     var $knockonEffects = $('#content_general_show_signup, #content_general_show_profile');
     if (value) {
-      $knockonEffects.attr('checked', value).
-                      removeAttr('disabled');
+      $knockonEffects.removeAttr('disabled');
     } else {
       $knockonEffects.removeAttr('checked').
                       attr('disabled', 'disabled');
@@ -164,12 +169,58 @@ function inputValidation(tabId) {
   });
 }
 
+function addNewLinkRow(button) {
+  var linkRowLimit = 15;
+  var $linkRows = $(button).siblings('.link-row');
+  if ($linkRows.not('.default').length < linkRowLimit) {
+    var $defaultLinkRow = $linkRows.filter('.default');
+    var $newLinkRow = $defaultLinkRow.clone();
+
+    $newLinkRow.removeClass('default');
+    $linkRows.not('.default').last().after($newLinkRow);
+
+    // If we're at the linkRowLimit after adding the newLinkRow, disable the button.
+    if ($(button).siblings('.link-row').not('.default').length >= linkRowLimit) {
+      $('.add-new-link-row').prop('disabled', true);
+    }
+  }
+}
+
+function removeLinkRow(button) {
+  $(button).closest('.link-row').remove();
+  $('.add-new-link-row').prop('disabled', false);
+}
+
+// On save, reorder the indices of the present links to reflect what the user has changed.
+function reorderListOfLinks($form) {
+  var $listsOfLinks = $form.find('.list-of-links');
+  // Currently there is at most one list of links per form, but iterating in case that changes.
+  $listsOfLinks.each(function(i, listOfLinks) {
+    var contentKey = $(listOfLinks).data('contentKey');
+    var linkRows = $(listOfLinks).find('.link-row');
+    if (linkRows.length) {
+      var $presentLinkRows = linkRows.filter(function() {
+        return $(this).find('input[name="content[{0}]links[][url]"]'.format(contentKey)).value();
+      });
+
+      $presentLinkRows.each(function(index, link) {
+        var linkId = 'link_{0}'.format(index);
+        $(link).find('.hidden-label-input').val(linkId);
+
+        // TODO - actually support other locales and remove English hardcoding.
+        var localeId = 'content[locales][en][{0}]links[{1}]'.format(contentKey, linkId);
+        $(link).find('.localized-label-input').attr('name', localeId);
+      });
+    }
+  });
+}
+
 // Toggle "save" button if form is valid/invalid
-function toggleSaveButton(form) {
-  if (form.valid()) {
-    $('#site_chrome_save').removeClass('error');
+function toggleSaveButton($form) {
+  if ($form.valid()) {
+    $('#site_chrome_save, #site_chrome_preview').removeClass('error');
   } else {
-    $('#site_chrome_save').addClass('error');
+    $('#site_chrome_save, #site_chrome_preview').addClass('error');
   }
 }
 

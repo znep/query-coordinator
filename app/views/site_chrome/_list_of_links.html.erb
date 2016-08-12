@@ -1,33 +1,35 @@
-<section class="settings-group list-of-links">
+<section class="settings-group list-of-links" data-content-key="<%= content_key %>">
   <%
     title = translations[:menu_links][:title]
     description = translations[:menu_links][:description]
     label_title = translations[:link_title_label]
-    label_placeholder = translations[:link_title_placeholder]
     url_title = translations[:url_label]
-    url_placeholder = translations[:url_placeholder]
+    placeholder_text = {
+      link_title: translations[:link_title_placeholder],
+      url: translations[:url_placeholder]
+    }
   %>
 
   <h3><%= title %></h3>
   <p><%= description %></p>
 
-  <div class="link-row">
+  <div class="link-row-header">
     <%= label_tag(nil, label_title) %>
     <%= label_tag(nil, url_title) %>
   </div>
 
-  <% links_with_placeholders(links, link_count).each_with_index do |link, i| %>
-    <% link ||= { 'key' => "link_#{format('%02d', i)}", 'url' => '' } %>
-    <div class="link-row">
-      <% key_path = "content[#{content_key}]links[][key]" %>
-      <% translated_label_path = "content[locales][en][#{content_key}]links[#{link['key']}]" %>
-      <% translated_label = fetch_content([:locales, :en, content_key, :links, link['key']]) %>
-      <% url_path = "content[#{content_key}]links[][url]" %>
-
-      <%= hidden_field_tag(key_path, link['key'] || '') %>
-      <%= text_field_tag(translated_label_path, translated_label || '', placeholder: label_placeholder) %>
-      <%= text_field_tag(url_path, link['url'] || '', placeholder: url_placeholder,
-        id: "#{url_path}_#{format('%02d', i)}") %>
-    </div>
+  <% present_links(links).each do |link| %>
+    <%= link_row_div(content_key, link, placeholder_text) %>
   <% end %>
+
+  <!-- If less than 3 present_links, show empty link rows -->
+  <%= empty_link_row_divs(content_key, placeholder_text, present_links(links).length) %>
+
+  <!-- Create a hidden default row that we can clone with JS for the "add a new row" functionality -->
+  <%= link_row_div(content_key, nil, placeholder_text, true) %>
+
+  <button class="add-new-link-row" type="button" onclick="addNewLinkRow(this);">
+    <span class="icon-add"></span>
+    <%= t('screens.admin.site_chrome.add_new_link_row', section: content_key.capitalize) %>
+  </button>
 </section>

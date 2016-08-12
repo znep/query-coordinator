@@ -2569,12 +2569,13 @@ en:
         'true': true
         up: Up
       site_chrome:
+        add_new_link_row: Add Another %{section} Link
         cancel: Cancel
         description: Configure the appearance of your Socrata site.
         preview_changes: Preview
-        save: Save
-        save_changes: Save Changes
+        remove_link_row: Remove Link
         site_appearance: Site Appearance
+        update: Update
         tabs:
           footer:
             fields:
@@ -2594,16 +2595,16 @@ en:
                 placeholder: Footer Display Name
                 title: Footer Display Name
               footer_logo:
-                description: URL reference to the Footer logo. Recommended minimum size is 80px x 80px.
-                placeholder: URL
+                description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
+                placeholder: https://yoursite.gov/logos/footer_logo.png
                 title: Footer Logo
               footer_logo_height:
-                description: You can optionally set a height and width for your footer logo.
+                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
-                description: You can optionally set a height and width for your footer logo.
+                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
@@ -2613,11 +2614,11 @@ en:
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:
-                description: You may display up to 15 links in the Footer. These will automatically be placed in columns.
-                title: Footer Menu Links
+                description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
+                title: Footer Links
               powered_by:
-                description: Displays "Powered by Socrata" branding in the Footer.
-                label: Show branding in the Footer
+                description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
+                label: Show Socrata branding in the Footer
                 title: Powered by Socrata
               url_label: URL
               url_placeholder: URL
@@ -2630,7 +2631,7 @@ en:
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
               max_width:
-                description: Enter the maximum width (in pixels) of your header and footer content. If left empty, they will stretch to the dimensions of the user's browser window.
+                description: Enter the maximum width (in pixels) of your Header and Footer content. If left empty, it will stretch to the dimensions of the visitor's browser window.
                 placeholder: 1200px
                 title: Max Width
               show_signin_signout:
@@ -2641,11 +2642,12 @@ en:
                 title: Sign In / Sign Out
               template:
                 description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
+                error: Only "Evergreen" and "Rally" header templates are currently available. Please refer to the Support article at right for more information.
                 placeholder: Evergreen
                 title: Template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
-                placeholder: URL
+                placeholder: https://yoursite.gov/logos/favicon.png
                 title: Browser Window or Tab Icon (favicon)
               window_title_display:
                 description: This is the name displayed in the browser window or tab title.
@@ -2655,32 +2657,32 @@ en:
           header:
             fields:
               bar_background_color:
-                description: Primary and secondary background colors of the header bar. The secondary color is only used in the Rally template.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
               bar_secondary_background_color:
-                description: Primary and secondary background colors of the header bar. The secondary color is only used in the Rally template.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)
               bar_text_link_color:
-                description: Foreground color of the text and links that sit atop the header bar.
+                description: Foreground color of the text and links that sit atop the Header Bar.
                 placeholder: "#ffffff"
                 title: Bar Text & Link Color
               header_bar_logo:
-                description: URL reference to the header bar logo.
-                placeholder: URL
+                description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
+                placeholder: https://yoursite.gov/logos/header_logo.png
                 title: Header Bar Logo
               header_display_name:
                 description: Name displayed in the Header Bar. Usually set to your organization's name.
                 placeholder: Header Display Name
                 title: Header Display Name
               header_logo_height:
-                description: You can optionally set a height and width for your header bar logo.
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
-                description: You can optionally set a height and width for your header bar logo.
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
@@ -2688,7 +2690,7 @@ en:
               link_title_placeholder: Link Text
               menu_links:
                 description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
-                title: Menu Links
+                title: Header Links
               url_label: URL
               url_placeholder: URL
             title: Header Bar
@@ -2742,6 +2744,26 @@ en:
                 placeholder: http://www.youtube.com/
                 title: YouTube Profile Link
             title: Social Sharing
+          whats_new:
+            title: What's New
+            fields:
+              a_bundle_of_goodness:
+                title: 'A Bundle of Goodness: Two New Features Available Now'
+                description_html: '<p>The wait is over: Dataset Landing Page and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>'
+              dataset_landing_page:
+                title: Dataset Landing Page
+                description_html: '<p>Get excited! With this upgrade, Dataset Landing Page becomes the principal front-page experience for uploaded datasets - it highlights the most commonly accessed aspects of each dataset in an intuitive way and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular view of data is still accessible from the top navigation of this view for users who are comfortable there.</p>'
+              a_new_configurable_header_footer:
+                title: A New Configurable Header/Footer
+                description_html: >
+                  <p>As part of this release, we've also introduced a new unified, mobile-responsive, admin-configurable header/footer for your site. This new header/footer empowers you to configure your site's logos, colors, copyright, navigational links, social icons, and more on your own - self-service-style. It gives you control of your site's appearance to easily and update these essential components without your having to contact Socrata Support.</p>
+                  <p>By the way - using your current site design and Customer Success Managers as our guides, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then adjust it however you'd like - it's all yours.</p>
+              active_both_today:
+                title: Activate Both Today!
+                description_html: >
+                  <p>Dataset Landing Page and your new Configurable Header/Footer are both available now. Review the tabs above to configure and preview your site's appearance - and when you're ready, activate them together!</p>
+                  <p><b>Note:</b> If you haven't configured the header/footer for your site within 30 days, Socrata will configure it for you and activate it along with the Dataset Landing Page automatically. We'll use your existing site styling and your Customer Success Manager for style guidance.</p>
+                  <p>For tips on configuring your header/footer and activating Dataset Landing Page, please attend the <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Making the Most of the Latest Features" Webinar</a> or visit our Support site: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
       users:
         actions: Actions
         all: All

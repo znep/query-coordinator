@@ -6,6 +6,10 @@
     translation: translations[:template]) %>
 
   <%= render('site_chrome/tab_content/form_field',
+    fields: [:general, :styles, :max_width],
+    translation: translations[:max_width]) %>
+
+  <%= render('site_chrome/tab_content/form_field',
     fields: [:general, :window_title_display],
     translation: translations[:window_title_display]) %>
 
@@ -16,10 +20,6 @@
   <%= render('site_chrome/tab_content/form_field',
     fields: [:general, :google_analytics_token],
     translation: translations[:google_analytics_token]) %>
-
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :styles, :max_width],
-    translation: translations[:max_width]) %>
 
   <section class="settings-group">
     <div class="settings-form full">

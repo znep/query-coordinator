@@ -48,7 +48,6 @@ default: &default
   # service hosts/ports/names et simil
   cetera_host: 'http://localhost:5704'
   coreservice_uri: http://localhost:8080
-  kafka_rest_uri: 'http://localhost:8082'
   polaroid_hostname: polaroid.app.marathon.aws-us-west-2-prod.socrata.net
   polaroid_port: 13379
   secondary_group_identifier: 'spandex'

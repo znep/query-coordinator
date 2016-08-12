@@ -441,17 +441,21 @@ type MetadataValidationErrors = {
   mapLayer: bool
 }
 
-export function validate(metadata): MetadataValidationErrors {
+export function validate(metadata, operation): MetadataValidationErrors {
   return {
     name: metadata.contents.name.length !== 0,
-    mapLayer: metadata.contents.mapLayer.length !== 0,
+    mapLayer: isMapLayerValid(metadata, operation),
     href: isHrefValid(metadata)
   };
 }
 
-export function isStandardMetadataValid(contents) {
-  const valid = validate(contents);
-  return valid.name && valid.mapLayer;
+export function isStandardMetadataValid(contents, operation) {
+  const valid = validate(contents, operation);
+  return valid.name && valid.mapLayer && valid.href;
+}
+
+function isMapLayerValid(metadata, operation) {
+  return metadata.contents.mapLayer.length !== 0 || !showMapLayer(operation);
 }
 
 function isHrefValid({contents: contents}) {
@@ -487,8 +491,8 @@ export function isAttributionValid(metadata) {
   return !(attributionRequiredTag(metadata) === 'required' && metadata.license.attribution.length === 0);
 }
 
-export function isMetadataValid(metadata: DatasetMetadata) {
-  return isStandardMetadataValid(metadata) &&
+export function isMetadataValid(metadata: DatasetMetadata, operation) {
+  return isStandardMetadataValid(metadata, operation) &&
          isCustomMetadataValid(metadata) &&
          isEmailValid(metadata) &&
          isHrefValid(metadata) &&
@@ -703,7 +707,11 @@ function renderFlashMessageImportError(importError) {
   return <FlashMessage flashType="error" message={importError} />;
 }
 
-export function view({ metadata, onMetadataAction, importError, goToPrevious }) {
+export function showMapLayer(operation) {
+  return operation === 'ConnectToEsri';
+}
+
+export function view({ metadata, onMetadataAction, operation, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata);
 
@@ -775,22 +783,25 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
           </div>
         </div>
 
-        <div className="mapLayerMetadata">
-          <div className="line clearfix">
-            <label htmlFor="view_mapLayer" className="required">
-              {I18n.screens.dataset_new.metadata.esri_map_layer_url}
-            </label>
-            <input
-              type="text"
-              name="view[esri_src]"
-              className="textPrompt required"
-              value={metadata.contents.mapLayer}
-              onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
-            {(!validationErrors.mapLayer && metadata.nextClicked)
-              ? <label htmlFor="view_esri" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
-              : null}
+        {showMapLayer(operation) ?
+          <div className="mapLayerMetadata">
+            <div className="line clearfix">
+              <label htmlFor="view_mapLayer" className="required">
+                {I18n.screens.dataset_new.metadata.esri_map_layer_url}
+              </label>
+              <input
+                type="text"
+                name="view[esri_src]"
+                className="textPrompt required"
+                value={metadata.contents.mapLayer}
+                onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
+              {(!validationErrors.mapLayer && metadata.nextClicked)
+                ? <label htmlFor="view_esri" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
+                : null}
+            </div>
           </div>
-        </div>
+          : null
+        }
 
         {renderLicenses(metadata, onMetadataAction)}
 
@@ -853,14 +864,14 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
 
         onSave={() => {
           onMetadataAction(updateNextClicked());
-          if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata))) {
+          if ((isMetadataUnsaved(metadata) && isMetadataValid(metadata, operation))) {
             onMetadataAction(Server.saveMetadataToViewsApi());
           }
         }}
 
         onNext={(() => {
           onMetadataAction(updateNextClicked());
-          if (isMetadataValid(metadata)) {
+          if (isMetadataValid(metadata, operation)) {
             onMetadataAction(Server.saveMetadataThenProceed());
           }
         })}
@@ -874,6 +885,7 @@ export function view({ metadata, onMetadataAction, importError, goToPrevious }) 
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
   onMetadataAction: PropTypes.func.isRequired,
+  operation: PropTypes.string.isRequired,
   importError: PropTypes.string,
   goToPrevious: PropTypes.func.isRequired
 };

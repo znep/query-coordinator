@@ -28,7 +28,8 @@ import {
   isMetadataUnsaved,
   isAttributionValid,
   view,
-  isProviderRequired
+  isProviderRequired,
+  showMapLayer
 } from 'components/metadata';
 
 import { initialNewDatasetModel } from 'wizard';
@@ -238,10 +239,12 @@ describe('validators', () => {
   describe('validation testing', () => {
     describe('validate', () => {
       it('returns false for empty required keys in metadata', () => {
-        const standardValid = isStandardMetadataValid(metadata);
+        const operation = 'ConnectToEsri';
+
+        const standardValid = isStandardMetadataValid(metadata, operation);
         expect(standardValid).to.equal(false);
 
-        const result = validate(metadata);
+        const result = validate(metadata, operation);
         expect(result.name).to.equal(false);
         expect(result.mapLayer).to.equal(false);
       });
@@ -273,13 +276,15 @@ describe('validators', () => {
 
 
     it('returns true for valid values', () => {
+      const operation = 'ConnectToEsri';
+
       metadata.contents.name = 'panda',
       metadata.contents.mapLayer = 'wombat'
 
-      const standardValid = isStandardMetadataValid(metadata);
+      const standardValid = isStandardMetadataValid(metadata, operation);
       expect(standardValid).to.equal(true);
 
-      const result = validate(metadata);
+      const result = validate(metadata, operation);
       expect(result.name).to.equal(true);
       expect(result.mapLayer).to.equal(true);
     });
@@ -308,18 +313,36 @@ describe('validators', () => {
 
   describe('isMetadataValid', () => {
     it('returns false if not all required metadata are filled', () => {
+      const navigation = {
+        path: ['ConnectToEsri', 'Metadata']
+      };
+
       const standardValid = isMetadataValid(metadata);
       expect(standardValid).to.equal(false);
     });
 
     it('returns true if all required metadata are nonempty', () => {
+      const operation = 'ConnectToEsri';
+
       metadata.contents.name = 'name';
       metadata.contents.mapLayer = 'google.com';
       metadata.contents.customMetadata['second'][1].value = 'venus';
       metadata.license.attribution = 'attribution';
 
-      const valid = isMetadataValid(metadata);
+      const valid = isMetadataValid(metadata, operation);
       expect(valid).to.equal(true);
+    });
+
+    it('showMapLayer return true', () => {
+      const operation = 'ConnectToEsri';
+      const valid = showMapLayer(operation);
+      expect(valid).to.equal(true);
+    });
+
+    it('showMapLayer return false', () => {
+      const operation = 'metadata';
+      const invalid = showMapLayer(operation);
+      expect(invalid).to.equal(false);
     });
   });
 

@@ -896,8 +896,8 @@ module ApplicationHelper
 
     req = request if defined?(request)
 
-    # TODO: the admin page needs clytemnestra; only until cetera honors private datasets and other things
-    return false if req.try(:path) =~ /^\/(admin)/
+    # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things
+    return false if req.try(:path) =~ /^\/(profile|admin)/
 
     # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)

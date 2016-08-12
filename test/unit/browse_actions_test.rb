@@ -177,6 +177,11 @@ class BrowseActionsTest2 < Minitest::Test
     refute @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = false when path /admin/views'
   end
 
+  def test_do_not_use_cetera_on_profile
+    BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/profile') )
+    refute @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = false when path /profile'
+  end
+
   def test_use_cetera_on_browse
     BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/browse') )
     assert @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = true when path /browse'

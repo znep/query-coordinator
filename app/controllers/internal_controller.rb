@@ -452,6 +452,23 @@ class InternalController < ApplicationController
     end
   end
 
+  def feature_flag_report
+    if FeatureFlags.has?(params[:for])
+      uri = FeatureFlags.endpoint(with_path: "/flag_report/#{params[:for]}")
+      report = JSON.parse(HTTParty.get(uri).body)[params[:for]]
+      @description = FeatureFlags.description_for(params[:for])
+      @default = report['default']
+      @environment = FeatureFlags.process_value(report['environment'])
+      @domains = report['domains'] || []
+    end
+  end
+
+  def set_environment_feature_flag
+    update_feature_flags(params, nil)
+
+    redirect_to feature_flag_report_path(for: params[:feature_flags].keys.first)
+  end
+
   def feature_flags
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
@@ -583,7 +600,7 @@ class InternalController < ApplicationController
   end
 
   def update_feature_flags(updates, domain_cname)
-    domain = Domain.find(domain_cname)
+    domain = (Domain.find(domain_cname) unless domain_cname.nil?)
 
     if FeatureFlags.using_signaller?
       updates['feature_flags'].try(:each) do |flag, value|

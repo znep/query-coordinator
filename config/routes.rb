@@ -62,6 +62,8 @@ Rails.application.routes.draw do
       get :config_info
       get :domains_summary
       get :organization_list
+      get :feature_flag_report
+      post :set_environment_feature_flag
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'

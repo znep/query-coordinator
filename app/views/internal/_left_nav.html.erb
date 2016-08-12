@@ -11,6 +11,9 @@
     <li><a href='/internal/orgs'>Organizations</a></li>
     <li><a href='/internal/analytics'>Analytics</a></li>
     <li><a href='/internal/config_info'>Configuration Info</a></li>
+    <%- if FeatureFlags.using_signaller? %>
+      <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
+    <%- end %>
   </ul>
 </div>
 <% content_for :js_footer do %>

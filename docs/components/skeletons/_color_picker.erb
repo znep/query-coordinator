@@ -1,0 +1,16 @@
+<div id="color-picker-container"></div>
+
+<script type="text/javascript">
+  function handleColorChange(color) {
+    console.log('Color changed to ' + color + '!');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = { handleColorChange: handleColorChange };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ColorPicker, props),
+      document.getElementById('color-picker-container')
+    );
+  });
+</script>

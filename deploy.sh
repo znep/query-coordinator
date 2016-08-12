@@ -7,12 +7,13 @@ if [[ -z $(git status -s) ]]; then
   git checkout gh-pages
   git pull --rebase origin gh-pages
 
-  ls | grep -v "build" | xargs -o rm -rf
+  ls | grep -v "build" | grep -v "node_modules" | xargs -o rm -rf
   mv build/* .
   rm -rf build/
 
   if [[ -n $(git status -s) ]]; then
     git add -A
+    git reset node_modules
     git commit -am "Automated Deployment $(date -u)"
     git push origin gh-pages
     git checkout -

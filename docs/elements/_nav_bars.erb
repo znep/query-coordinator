@@ -1,0 +1,34 @@
+<h3 class="styleguide-subheader">App Bar</h3>
+<h4 class="h6 styleguide-subheader">Narrow Viewport</h4>
+<div class="mobile-example">
+  <%= partial "elements/skeletons/app_bar", locals: {
+    preview_link: "#",
+    publication_status: "Published",
+    save_status: "",
+    title: "Blue Dinosaurs in the Ocean"
+  }  %>
+</div>
+
+<h4 class="h6 styleguide-subheader">Wide Viewport</h4>
+<%= partial "code_sample", locals: {
+  component: "elements/skeletons/app_bar",
+  partial_locals: {
+    preview_link: "#",
+    publication_status: "Published",
+    save_status: "",
+    title: "Purple Penguins on the Moon"
+  }
+}  %>
+
+<h3 class="styleguide-subheader">Responsive Bar</h3>
+<%= partial "code_sample", locals: {
+  component: "elements/skeletons/customer_bar",
+  partial_locals: {
+    customer: "City of Evergreen",
+    logo: "images/evergreen.png"
+  }
+}  %>
+
+<h3 class="styleguide-subheader">Navigation Tabs</h3>
+<%= partial "code_sample", locals: {
+  component: "elements/skeletons/nav_tabs" }  %>

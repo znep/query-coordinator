@@ -12,3 +12,5 @@
 /docs/stylesheets/docs.css.map
 /dist
 npm-debug.log
+packages/socrata-components/*
+!packages/socrata-components/package.json

@@ -9,6 +9,7 @@ title: Socrata Styleguide
 
   <div class="content">
     <h1 class="page-header">Elements</h1>
+
     <section class="styleguide-section" id="typography">
       <div class="meta">
         <h2 class="styleguide-header">Typography</h2>
@@ -20,7 +21,7 @@ title: Socrata Styleguide
         </p>
       </div>
       <div class="example">
-        <%= partial "examples/typography" %>
+        <%= partial "elements/typography" %>
       </div>
     </section>
 
@@ -32,10 +33,9 @@ title: Socrata Styleguide
         </p>
       </div>
       <div class="example">
-        <%= partial "examples/colors" %>
+        <%= partial "elements/colors" %>
       </div>
     </section>
-
 
     <section class="styleguide-section" id="branding">
       <div class="meta">
@@ -45,7 +45,49 @@ title: Socrata Styleguide
         </p>
       </div>
       <div class="example">
-        <%= partial "examples/branding" %>
+        <%= partial "elements/branding" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="icons">
+      <div class="meta">
+        <h2 class="styleguide-header">Icons</h2>
+        <p class="small">Pictoral representations of things we cannot explain, or simply icons.</p>
+      </div>
+      <div class="example">
+        <%= partial "elements/icons" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="buttons">
+      <div class="meta">
+        <h2 class="styleguide-header">Buttons</h2>
+        <p class="small">
+          Buttons should be an obvious affordance for the click interaction.
+        </p>
+        <p class="small">
+          Both <code class="language-markup">&lt;button&gt;</code> and
+          <code class="language-markup">&lt;a&gt;</code> elements can be styled
+          as buttons.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/button_options" %>
+        <%= partial "elements/button_groups" %>
+        <%= partial "elements/button_icons" %>
+        <%= partial "elements/button_toggle" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="spinners">
+      <div class="meta">
+        <h2 class="styleguide-header">Spinners</h2>
+        <p class="small">
+          Spinners.  They spin.  Provide loading context to your impatient user.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/spinners" %>
       </div>
     </section>
 
@@ -57,7 +99,7 @@ title: Socrata Styleguide
         </p>
       </div>
       <div class="example">
-        <%= partial "examples/dividers" %>
+        <%= partial "elements/dividers" %>
       </div>
     </section>
 
@@ -67,28 +109,20 @@ title: Socrata Styleguide
         <p class="small">A list is a list, a list, a list, of course.</p>
       </div>
       <div class="example">
-        <%= partial "examples/lists" %>
+        <%= partial "elements/lists" %>
       </div>
     </section>
 
-    <section class="styleguide-section" id="tables">
+    <section class="styleguide-section">
       <div class="meta">
-        <h2 class="styleguide-header">Tables</h2>
-        <p class="small">Four legs and holds cups, plates, etc.</p>
+        <h2 class="styleguide-header" id="input-groups">Input Groups</h2>
+        <p class="small">
+          Input groups allow for better presentation than native input controls
+          and can co-locate related controls for compact complexity.
+        </p>
       </div>
       <div class="example">
-        <%= partial "examples/tables" %>
-      </div>
-    </section>
-
-
-    <section class="styleguide-section" id="icons">
-      <div class="meta">
-        <h2 class="styleguide-header">Icons</h2>
-        <p class="small">Pictoral representations of things we cannot explain, or simply icons.</p>
-      </div>
-      <div class="example">
-        <%= partial "examples/icons" %>
+        <%= partial "elements/input_groups" %>
       </div>
     </section>
 
@@ -98,7 +132,93 @@ title: Socrata Styleguide
         <p class="small">dropdowns and text fields and stuff</p>
       </div>
       <div class="example">
-        <%= partial "examples/forms" %>
+        <%= partial "elements/forms" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="tables">
+      <div class="meta">
+        <h2 class="styleguide-header">Tables</h2>
+        <p class="small">Four legs and holds cups, plates, etc.</p>
+      </div>
+      <div class="example">
+        <%= partial "elements/tables" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="alerts">
+      <div class="meta">
+        <h2 class="styleguide-header">Alerts</h2>
+        <p class="small">
+          Alerts draw the user's attention to a specific condition, either prior
+          to or in response to a user action.
+        </p>
+        <p class="small">
+          The type of alert embodies the sentiment of the condition; the content
+          reinforces good/expected behaviors or provides actionable information
+          for bad/unexpected behaviors.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/alerts" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="tags">
+      <div class="meta">
+        <h2 class="styleguide-header">Tags</h2>
+        <p class="small">
+          Tags act as call-outs for short amounts of text which reinforce some
+          notion of importance or meaningfulness.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/tags" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section">
+      <div class="meta">
+        <h2 class="styleguide-header" id="navigation">Navigation</h2>
+        <p class="small">
+          Navigation bars provide a consistent page header that connects the
+          current page to the broader platform. The header may also contain
+          interactive controls pertinent to the current page.
+        </p>
+        <p class="small">
+          Navigation tabs provide a compact presentation for medium to large
+          blocks of related content within a page.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/nav_bars" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="cards">
+      <div class="meta">
+        <h2 class="styleguide-header">Cards</h2>
+        <p class="small">
+          Cards provide a layout for consolidating several pieces of related
+          information, in a way that isn't confusing or overwhelming when
+          many cards need to be shown.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/cards" %>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="pagination">
+      <div class="meta">
+        <h2 class="styleguide-header">Pagination</h2>
+        <p class="small">
+          Pagination divides repetitive ordered content into more readily
+          consumable sections.
+        </p>
+      </div>
+      <div class="example">
+        <%= partial "elements/pagination" %>
       </div>
     </section>
   </div>

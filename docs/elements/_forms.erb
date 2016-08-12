@@ -1,0 +1,56 @@
+<h3 class="styleguide-subheader">Form Fields </h3>
+
+<form>
+
+  <h4 class="h6 styleguide-subheader">Text Field</h4>
+  <%= partial "code_sample", locals: {
+    component: "elements/skeletons/forms/textfield",
+    partial_locals: {
+      placeholder_text: "Example Text",
+      label_text: "An input field:",
+      label_position: "inline-label"
+    }
+  } %>
+  <%= partial "code_sample", locals: {
+    component: "elements/skeletons/forms/textfield",
+    partial_locals: {
+      placeholder_text: "Example Text",
+      label_text: "Another input field:",
+      label_position: "block-label"
+    }
+  } %>
+
+  <h4 class="h6 styleguide-subheader">Text Area</h4>
+  <%= partial "code_sample", locals: {
+    component: "elements/skeletons/forms/textarea",
+    partial_locals: {
+      placeholder_text: "Example Paragraph",
+      label_text: "A longer input field:",
+      label_position: "block-label"
+    }
+  } %>
+
+  <h4 class="h6 styleguide-subheader">Checkboxes</h4>
+  <%= partial "code_sample", locals: {
+  component: "elements/skeletons/forms/checkbox",
+    partial_locals: {
+      label: "Checked Checkbox", id: "1", checked: "checked=\"checked\"" 
+    } 
+  } %>
+  <%= partial "code_sample", locals: {
+  component: "elements/skeletons/forms/checkbox",
+    partial_locals: {
+      label: "Unchecked Checkbox", id: "2", checked: "" 
+    } 
+  } %>
+
+  <h4 class="h6 styleguide-subheader">Radiobuttons</h4>
+  <%= partial "code_sample", locals: {
+  component: "elements/skeletons/forms/radiobutton",
+    partial_locals: {
+      labels: [{:id => "Radiobutton 1", :checked => true}, {:id => "Radiobutton 2"}]
+    }
+  } %>
+
+
+</form>

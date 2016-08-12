@@ -1,60 +1,33 @@
 var async = require('async');
 var gulp = require('gulp');
+var _ = require('lodash');
 var UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 
 var webpack = require('gulp-webpack');
+var webpackConfig = require('../webpack.config');
 
 function configuration(filename, minify) {
-  return {
-    context: __dirname,
-    devtool: 'source-map',
-    entry: '../src/js/index.js',
-    externals: {
-      'react': {
-        root: 'React',
-        commonjs2: 'react',
-        commonjs: 'react',
-        amd: 'react'
-      }
-    },
+  return _.merge({}, webpackConfig, {
     output: {
-      path: `${__dirname}/dist/js`,
-      filename,
-      libraryTarget: 'umd',
-      library: 'styleguide'
-    },
-    resolve: {
-      modulesDirectories: ['node_modules']
-    },
-    module: {
-      loaders: [
-        {
-          loader: 'babel',
-          test: /\.js$/g,
-          exclude: /node_modules/g,
-          query: {
-            presets: ['es2015', 'react']
-          }
-        }
-      ]
+      filename
     },
     plugins: minify ? [new UglifyJsPlugin({compress: {warnings: false}})] : []
-  };
+  });
 }
 
 function stream(filename, minify) {
-  return gulp.src('src/js/**/*.js').
+  return gulp.src('src/js/index.js').
     pipe(webpack(configuration(filename, minify)));
 }
 
 function compileJS(callback) {
-  stream('styleguide.js', false).
+  stream('socrata-components.js', false).
     pipe(gulp.dest('dist/js')).
     on('finish', callback);
 }
 
 function compileMinifiedJS(callback) {
-  stream('styleguide.min.js', true).
+  stream('socrata-components.min.js', true).
     pipe(gulp.dest('dist/js')).
     on('finish', callback);
 }

@@ -1,0 +1,7 @@
+import <%= name %> from 'components/<%= name %>';
+
+describe('<%= name %>', function() {
+  it('works', function() {
+    //
+  });
+});

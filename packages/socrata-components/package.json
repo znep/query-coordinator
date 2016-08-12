@@ -1,0 +1,33 @@
+{
+  "name": "socrata-components",
+  "version": "5.1.8",
+  "description": "Socrata's Shared Component Library",
+  "main": "dist/js/socrata-components",
+  "publishConfig": {
+    "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/socrata/styleguide.git"
+  },
+  "keywords": [
+    "Socrata",
+    "Styleguide",
+    "react",
+    "components"
+  ],
+  "author": "Socrata, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/socrata/styleguide/issues"
+  },
+  "homepage": "https://socrata.github.io/styleguide",
+  "dependencies": {
+    "classnames": "2.2.5",
+    "lodash": "4.11.1",
+    "react": "15.1.0",
+    "react-dom": "15.1.0",
+    "tether": "1.2.0",
+    "tether-shepherd": "1.2.0"
+  }
+}

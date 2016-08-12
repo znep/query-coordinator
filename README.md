@@ -7,7 +7,7 @@
 ## Usage
 With [artifactory](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8) set up on your system, run:
 ```
-npm install --save socrata-styleguide
+npm install --save socrata-components
 ```
 
 All of the styleguide assets are located in `dist` and should be loaded on your page through normal means. For example:
@@ -68,7 +68,7 @@ According to the rules of [semver](http://semver.org/), take these steps:
 ### Deploying to socrata.github.io/styleguide
 When a PR is successfully merged, an admin must run – from `master` — the deploy script at the base of the project.
 
-`git checkout master && ./deploy.sh`
+`git checkout master && npm run deploy`
 
 ## Resources Used
 1. [Middleman](https://middlemanapp.com/)

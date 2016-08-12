@@ -1,3 +1,15 @@
+import DropdownFactory from './Dropdown';
+import FlannelFactory from './Flannel';
+import FlyoutFactory from './Flyout';
+import MenuFactory from './Menu';
+import ModalFactory from './Modal';
+import TabsFactory from './Tabs';
+import ToggleFactory from './Toggle';
+import TourFactory from './Tour';
+
+import ColorPicker from './components/ColorPicker';
+import Dropdown from './components/Dropdown';
+
 module.exports = {
   attachTo: function(element) {
     Object.keys(this.factories).forEach(function(factory) {
@@ -6,18 +18,16 @@ module.exports = {
   },
 
   factories: {
-    DropdownFactory: require('./Dropdown'),
-    FlannelFactory: require('./Flannel'),
-    FlyoutFactory: require('./Flyout'),
-    MenuFactory: require('./Menu'),
-    ModalFactory: require('./Modal'),
-    TabsFactory: require('./Tabs'),
-    ToggleFactory: require('./Toggle'),
-    TourFactory: require('./Tour')
+    DropdownFactory,
+    FlannelFactory,
+    FlyoutFactory,
+    MenuFactory,
+    ModalFactory,
+    TabsFactory,
+    ToggleFactory,
+    TourFactory
   },
 
-  components: {
-    ColorPicker: require('./ColorPicker').ColorPicker,
-    Dropdown: require('./components/Dropdown').Dropdown
-  }
+  ColorPicker,
+  Dropdown
 };

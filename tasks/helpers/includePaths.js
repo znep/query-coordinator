@@ -3,6 +3,7 @@ module.exports = () => {
     'dist/fonts',
     'docs/stylesheets',
     'src/scss',
+    'src/js',
     'node_modules/bourbon/app/assets/stylesheets',
     'node_modules/bourbon-neat/app/assets/stylesheets',
     'node_modules/breakpoint-sass/stylesheets',

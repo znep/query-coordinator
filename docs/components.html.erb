@@ -9,122 +9,25 @@ title: Socrata Styleguide
 
   <div class="content">
     <h1 class="page-header">Components</h1>
-    <section class="styleguide-section" id="buttons">
+
+    <p class="alert info">These components require <a href="https://facebook.github.io/react">React</a> and ReactDOM to render.</p>
+
+    <section class="styleguide-section" id="dropdowns">
       <div class="meta">
-        <h2 class="styleguide-header">Buttons</h2>
-        <p class="small">
-          Buttons should be an obvious affordance for the click interaction.
-        </p>
-        <p class="small">
-          Both <code class="language-markup">&lt;button&gt;</code> and
-          <code class="language-markup">&lt;a&gt;</code> elements can be styled
-          as buttons.
-        </p>
+        <h2 class="styleguide-header">Dropdowns</h2>
       </div>
       <div class="example">
-        <%= partial "examples/button_options" %>
-        <%= partial "examples/button_groups" %>
-        <%= partial "examples/button_icons" %>
-        <%= partial "examples/button_toggle" %>
+        <%= partial "components/dropdown" %>
+        <%= partial "components/dropdown_custom_options" %>
       </div>
     </section>
 
-    <section class="styleguide-section" id="tags">
+    <section class="styleguide-section" id="color-picker">
       <div class="meta">
-        <h2 class="styleguide-header">Tags</h2>
-        <p class="small">
-          Tags act as call-outs for short amounts of text which reinforce some
-          notion of importance or meaningfulness.
-        </p>
+        <h2 class="styleguide-header">Color Picker</h2>
       </div>
       <div class="example">
-        <%= partial "examples/tags" %>
-      </div>
-    </section>
-
-    <section class="styleguide-section" id="alerts">
-      <div class="meta">
-        <h2 class="styleguide-header">Alerts</h2>
-        <p class="small">
-          Alerts draw the user's attention to a specific condition, either prior
-          to or in response to a user action.
-        </p>
-        <p class="small">
-          The type of alert embodies the sentiment of the condition; the content
-          reinforces good/expected behaviors or provides actionable information
-          for bad/unexpected behaviors.
-        </p>
-      </div>
-      <div class="example">
-        <%= partial "examples/alerts" %>
-      </div>
-    </section>
-
-    <section class="styleguide-section">
-      <div class="meta">
-        <h2 class="styleguide-header" id="input-groups">Input Groups</h2>
-        <p class="small">
-          Input groups allow for better presentation than native input controls
-          and can co-locate related controls for compact complexity.
-        </p>
-      </div>
-      <div class="example">
-        <%= partial "examples/input_groups" %>
-      </div>
-    </section>
-
-
-    <section class="styleguide-section">
-      <div class="meta">
-        <h2 class="styleguide-header" id="navigation">Navigation</h2>
-        <p class="small">
-          Navigation bars provide a consistent page header that connects the
-          current page to the broader platform. The header may also contain
-          interactive controls pertinent to the current page.
-        </p>
-        <p class="small">
-          Navigation tabs provide a compact presentation for medium to large
-          blocks of related content within a page.
-        </p>
-      </div>
-      <div class="example">
-        <%= partial "examples/nav_bars" %>
-      </div>
-    </section>
-
-    <section class="styleguide-section" id="pagination">
-      <div class="meta">
-        <h2 class="styleguide-header">Pagination</h2>
-        <p class="small">
-          Pagination divides repetitive ordered content into more readily
-          consumable sections.
-        </p>
-      </div>
-      <div class="example">
-        <%= partial "examples/pagination" %>
-      </div>
-    </section>
-
-    <section class="styleguide-section" id="cards">
-      <div class="meta">
-        <h2 class="styleguide-header">Cards</h2>
-        <p class="small">
-          Cards provide a layout for consolidating several pieces of related
-          information, in a way that isn't confusing or overwhelming when
-          many cards need to be shown.
-        </p>
-      </div>
-      <div class="example">
-        <%= partial "examples/cards" %>
-      </div>
-    </section>
-
-    <section class="styleguide-section" id="miscellaneous">
-      <div class="meta">
-        <h2 class="styleguide-header">Misc. Components</h2>
-      </div>
-      <div class="example">
-        <%= partial "examples/spinners" %>
+        <%= partial "components/color_picker" %>
       </div>
     </section>
   </div>

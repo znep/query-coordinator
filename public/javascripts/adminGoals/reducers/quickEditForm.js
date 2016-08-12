@@ -34,7 +34,7 @@ const updateFormData = (state, action) => {
  * @return {Immutable.Map}
  */
 const openGoalQuickEdit = (state, action) =>
-  state.merge({ goalId: action.goalId, initialFormData: {}, formData: {} });
+  state.merge({ goalId: action.goalId, initialFormData: {}, formData: {}, showFailureMessage: false });
 
 /**
  * Close quick edit modal by setting goal to null.

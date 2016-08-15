@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import * as helpers from '../helpers';
 import classNames from 'classnames/bind';
-import helpers from '../helpers/helpers';
 
 export default class SocrataButton extends React.Component {
   constructor(props) {

@@ -1,56 +1,33 @@
-import React  from 'react';
-import { connect } from 'react-redux';
-import GoalTable from './../GoalTable/GoalTable';
-import QuickEditForm from '../QuickEditForm/QuickEditForm';
-import EditMultipleItemsForm from '../EditMultipleItemsForm/EditMultipleItemsForm';
-import SocrataBulkActions from '../SocrataBulkActions';
+import * as React  from 'react';
+import * as ReactRedux from 'react-redux';
+import * as Goals from '../../sections/goals';
+import * as Actions from '../../actions';
+
 import SocrataAlert from '../../components/SocrataAlert';
-import { dismissNotification } from '../../actions/notificationActions';
 import './App.scss';
 
 function App(props) {
-  let {
-    notification,
-    onDismissNotification,
-    showEditMultipleItemsForm,
-    goalQuickEditOpenGoalId } = props;
-
-  let alert = null;
-  if (notification.get('visible')) {
-    alert = <SocrataAlert type={ notification.get('type') }
-                          message={ notification.get('message') }
-                          onDismiss={ onDismissNotification } />;
-  }
-
-  let editMultipleItemsForm = null;
-  if (showEditMultipleItemsForm) {
-    editMultipleItemsForm = <EditMultipleItemsForm />;
-  }
-
-  let quickEditForm = null;
-  if (goalQuickEditOpenGoalId) {
-    quickEditForm = <QuickEditForm />;
-  }
+  const { notification, onDismissNotification } = props;
 
   return (
     <div>
-      { alert }
-      <SocrataBulkActions />
-      <GoalTable />
-      { quickEditForm }
-      { editMultipleItemsForm }
+      { notification.get('visible') &&
+      <SocrataAlert type={ notification.get('type') }
+                    message={ notification.get('message') }
+                    onDismiss={ onDismissNotification }/>
+      }
+      <Goals.Page />
     </div>
   );
 }
 
 const mapStateToProps = state => ({
   showEditMultipleItemsForm: state.getIn(['editMultipleItemsForm', 'visible']),
-  notification: state.get('notification'),
-  goalQuickEditOpenGoalId: state.getIn(['quickEditForm', 'goalId'])
+  notification: state.get('notification')
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDismissNotification: () => dispatch(dismissNotification())
+  onDismissNotification: () => dispatch(Actions.notifications.dismissNotification())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(App);

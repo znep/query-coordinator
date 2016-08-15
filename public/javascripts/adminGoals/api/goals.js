@@ -17,6 +17,10 @@ export function update(goalId, goalVersion, data) {
   });
 }
 
+export function getAll() {
+  return api.get('v1', `${goalsPrefix}.json`, {});
+}
+
 export function getById(goalId) {
   const path = `${goalsPrefix}/${goalId}`;
   return api.get('v1', path, {});

@@ -1,8 +1,8 @@
 import React from 'react';
-import GoalTableHead from '../../components/GoalTableHead';
-import GoalTableBody from '../../components/GoalTableBody';
-import RowsPerPageSelector from '../../components/RowsPerPageSelector';
-import PageSelector from '../../components/PageSelector';
+import GoalTableHead from '../GoalTableHead';
+import GoalTableBody from '../GoalTableBody';
+import RowsPerPageSelector from '../RowsPerPageSelector';
+import PageSelector from '../PageSelector';
 
 import './GoalTable.scss';
 

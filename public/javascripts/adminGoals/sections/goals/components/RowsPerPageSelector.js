@@ -1,6 +1,9 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { setRowsPerPage } from '../actions/goalTableActions';
+import * as React from 'react';
+import * as Redux from 'redux';
+import * as ReactRedux from 'react-redux';
+import * as Actions from '../actions';
+import * as State from '../state';
+
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
@@ -8,15 +11,11 @@ class RowsPerPageSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { selectedValue: this.props.rowsPerPage };
+    this.handleValueChanged = this.handleValueChanged.bind(this);
   }
 
-  valueChanged(selected) {
-    this.setState({
-      selectedValue: selected.value
-    });
-
-    this.props.valueChanged(selected.value);
+  handleValueChanged(selected) {
+    this.props.actions.setGoalsPerPage(selected.value);
   }
 
   render() {
@@ -26,10 +25,10 @@ class RowsPerPageSelector extends React.Component {
       { this.props.translations.getIn(['admin', 'listing', 'rows_per_page']) }:
       <Select
         options={ options }
-        value={ this.state.selectedValue }
+        value={ this.props.goalsPerPage }
         clearable={ false }
         searchable={ false }
-        onChange={ this.valueChanged.bind(this) }
+        onChange={ this.handleValueChanged }
       />
     </div>;
   }
@@ -37,13 +36,11 @@ class RowsPerPageSelector extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  rowsPerPage: state.getIn(['goalTableData', 'rowsPerPage'])
+  goalsPerPage: State.getPagination(state).get('goalsPerPage')
 });
 
 const mapDispatchToProps = dispatch => ({
-  valueChanged: (value) => {
-    dispatch(setRowsPerPage(parseInt(value)));
-  }
+  actions: Redux.bindActionCreators(Actions.UI, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RowsPerPageSelector);
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(RowsPerPageSelector);

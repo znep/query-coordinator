@@ -1,25 +1,21 @@
+import * as React from 'react';
+import * as Redux from 'redux';
+import * as ReactRedux from 'react-redux';
 import _ from 'lodash';
-import React from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 
+import * as Selectors from '../../selectors';
+import * as State from '../../state';
+import * as Actions from '../../actions';
+import * as helpers from '../../../../helpers';
+
 import Select from 'react-select';
-import Flyout from '../../components/Flyout';
-import SocrataDatePicker from '../../components/SocrataDatePicker';
-import SocrataAlert from '../../components/SocrataAlert';
-import SocrataButton from '../../components/SocrataButton';
-import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
-import * as SocrataModal from '../../components/SocrataModal';
-import helpers from '../../helpers/helpers';
-
-import {
-  updateMultipleItemsFormData,
-  closeEditMultipleItemsModal,
-  updateMultipleGoals
-} from '../../actions/bulkEditActions';
-
-import selectedGoalsSelector from '../../selectors/selectedGoals';
-import commonGoalDataSelector from '../../selectors/commonGoalData';
+import Flyout from '../../../../components/Flyout';
+import SocrataDatePicker from '../../../../components/SocrataDatePicker';
+import SocrataAlert from '../../../../components/SocrataAlert';
+import SocrataButton from '../../../../components/SocrataButton';
+import SocrataChangeIndicator from '../../../../components/SocrataChangeIndicator';
+import * as SocrataModal from '../../../../components/SocrataModal';
 
 import './EditMultipleItemsForm.scss';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -43,7 +39,7 @@ class EditMultipleItemsForm extends React.Component {
   updateFormData(pathArr, value) {
     const { goal } = this.props;
     const path = _.isArray(pathArr) ? pathArr : [pathArr];
-    this.props.updateFormData(goal.setIn(path, value));
+    this.props.actions.setFormData(goal.setIn(path, value));
   }
 
   updateVisibility({ value }) {
@@ -51,25 +47,26 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateDateRangeTo(value) {
-    this.updateFormData(['prevailing_measure', 'end'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'end'], value.toISOString().replace('Z', ''));
   }
 
   updateDateRangeFrom(value) {
-    this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z', ''));
   }
 
   updateOverride({ value }) {
-    this.updateFormData(['prevailing_measure', 'progress_override'], value);
+    this.updateFormData(['prevailing_measure', 'metadata', 'progress_override'], value);
   }
 
   revertFields(...fields) {
-    const { commonData, goal, updateFormData } = this.props;
+    const { commonData, goal, actions } = this.props;
 
     const oldData = fields.reduce((data, field) => {
       const path = _.isArray(field) ? field : [field];
       return data.setIn(path, commonData.getIn(path));
     }, goal);
-    updateFormData(oldData);
+
+    actions.setFormData(oldData);
   }
 
   revertVisibility() {
@@ -77,7 +74,7 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   revertOverride() {
-    this.revertFields(['prevailing_measure', 'progress_override']);
+    this.revertFields(['prevailing_measure', 'metadata', 'progress_override']);
   }
 
   revertDateRange() {
@@ -85,9 +82,9 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateGoals() {
-    const { updateGoals, goals, goal } = this.props;
+    const { actions, goals, goal } = this.props;
 
-    updateGoals(goals, goal.toJS());
+    actions.updateMultipleGoals(goals, goal.toJS());
   }
 
   isDataChanged() {
@@ -102,7 +99,7 @@ class EditMultipleItemsForm extends React.Component {
   isFieldsChanged(...fields) {
     const { commonData, goal } = this.props;
 
-    return _.some(fields, (field) => {
+    return _.some(fields, field => {
       const path = _.isArray(field) ? field : [field];
       return goal.hasIn(path) && commonData.getIn(path) != goal.getIn(path);
     });
@@ -113,7 +110,7 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   isOverrideChanged() {
-    return this.isFieldsChanged(['prevailing_measure', 'progress_override']);
+    return this.isFieldsChanged(['prevailing_measure', 'metadata', 'progress_override']);
   }
 
   isDateRangeChanged() {
@@ -133,14 +130,14 @@ class EditMultipleItemsForm extends React.Component {
 
   getOverrideOptions() {
     const { translations } = this.props;
-    const translationBase = 'admin.bulk_edit.override_types';
+    const translationBase = 'measure.progress';
 
     return [
       { value: 'bad', label: helpers.translator(translations, `${translationBase}.bad`) },
       { value: '', label: helpers.translator(translations, `${translationBase}.none`) },
       { value: 'good', label: helpers.translator(translations, `${translationBase}.good`) },
       { value: 'no_judgement', label: helpers.translator(translations, `${translationBase}.no_judgement`) },
-      { value: 'within_tolerance', label: helpers.translator(translations, `${translationBase}.within_tolerance`)}
+      { value: 'within_tolerance', label: helpers.translator(translations, `${translationBase}.within_tolerance`) }
     ];
   }
 
@@ -187,7 +184,7 @@ class EditMultipleItemsForm extends React.Component {
 
   renderOverride() {
     const { translations, commonData, goal } = this.props;
-    const valuePath = ['prevailing_measure', 'progress_override'];
+    const valuePath = ['prevailing_measure', 'metadata', 'progress_override'];
 
     const label = helpers.translator(translations, 'admin.bulk_edit.override_label');
     const overrideValue = goal.getIn(valuePath, commonData.getIn(valuePath));
@@ -240,9 +237,9 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   renderFooter() {
-    const { form, translations, dismissModal } = this.props;
+    const { form, translations, actions } = this.props;
 
-    const isUpdateInProgress = form.get('updateInProgress');
+    const isUpdateInProgress = form.get('saveInProgress');
     const isUpdateDisabled = !this.isDataChanged();
 
     const updateLabel = helpers.translator(translations, 'admin.bulk_edit.update');
@@ -251,7 +248,7 @@ class EditMultipleItemsForm extends React.Component {
     return (
       <SocrataModal.Footer>
         <SocrataButton small
-                       onClick={ dismissModal }>
+                       onClick={ actions.closeModal }>
           { cancelLabel }
         </SocrataButton>
         <SocrataButton small primary
@@ -273,15 +270,12 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   renderFailureAlert() {
-    const { showFailureMessage, showNotConfiguredMessage, translations } = this.props;
-    if (!showFailureMessage && !showNotConfiguredMessage) {
+    const message = this.props.message;
+    if (!message.get('visible')) {
       return;
     }
 
-    const translationKey = showFailureMessage ? 'admin.bulk_edit.failure_message' : 'admin.bulk_edit.not_configured_message';
-    const message = helpers.translator(translations, translationKey);
-
-    return <SocrataAlert type="error" message={ message }/>;
+    return <SocrataAlert type={message.get('type')} message={ message.get('content') }/>;
   }
 
   render() {
@@ -290,12 +284,11 @@ class EditMultipleItemsForm extends React.Component {
 
     return (
       <SocrataModal.Modal>
-        <SocrataModal.Header title={ modalTitle } onClose={ this.props.dismissModal }/>
+        <SocrataModal.Header title={ modalTitle } onClose={ this.props.actions.closeModal }/>
 
         <SocrataModal.Content className="bulk-edit-modal-content">
           { this.renderFailureAlert() }
           { this.renderSelectedRowsIndicator() }
-
           { this.renderVisibility() }
           { this.renderDateRange() }
           { this.renderOverride() }
@@ -307,20 +300,21 @@ class EditMultipleItemsForm extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  translations: state.get('translations'),
-  form: state.get('editMultipleItemsForm'),
-  goal: state.getIn(['editMultipleItemsForm', 'goal']),
-  commonData: commonGoalDataSelector(state),
-  goals: selectedGoalsSelector(state),
-  showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage']),
-  showNotConfiguredMessage: state.getIn(['editMultipleItemsForm', 'showNotConfiguredMessage'])
-});
+const mapStateToProps = state => {
+  const bulkEdit = State.getBulkEdit(state);
+
+  return {
+    translations: state.get('translations'),
+    form: bulkEdit,
+    goal: bulkEdit.get('goal'),
+    commonData: Selectors.getCommonData(state),
+    goals: Selectors.getSelectedGoals(state),
+    message: bulkEdit.get('message')
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
-  updateFormData: (newData) => dispatch(updateMultipleItemsFormData(newData)),
-  dismissModal: () => dispatch(closeEditMultipleItemsModal()),
-  updateGoals: (goals, data) => dispatch(updateMultipleGoals(goals, data))
+  actions: Redux.bindActionCreators(Actions.BulkEdit, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMultipleItemsForm);
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(EditMultipleItemsForm);

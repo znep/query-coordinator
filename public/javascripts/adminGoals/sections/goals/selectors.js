@@ -87,5 +87,5 @@ const getQuickEditGoalId = state => State.getQuickEdit(state).get('goalId');
 
 export const getQuickEditGoal = Reselect.createSelector(
   State.getData, getQuickEditGoalId,
-  (goals, goalId) => goals.find(goal => goal.id === goalId)
+  (goals, goalId) => goals.find(goal => goal.get('id') === goalId)
 );

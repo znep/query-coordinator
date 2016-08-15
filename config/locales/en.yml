@@ -2865,6 +2865,33 @@ en:
         point:
           missing_latlong: set to import a <strong>%{coordinateType} but not a <strong>%{missingCoordinateType} column. Please specify the full lat/long pair.
           suboptimal_column: set to import its <strong>%{field}</strong> from the source column <strong>%{originalColumnName}</strong>, but our analysis shows that the source column is a %{suggestion} column, while %{field} expects a column of type %{type}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
+        # geo-import errors
+        zkerror: 'There was an upstream error: {reason}'
+        create_dataset_error: Failed to create a dataset
+        create_working_copy_error: Failed to create a working copy
+        create_column_error: Failed to create a dataset
+        publication_error: Failed to publish that dataset
+        get_column_error: Failed to get the columns of that dataset
+        delete_column_error: Failed to delete a column of that dataset
+        update_metadata_error: Failed to update the metadata on the partent dataset
+        upsert_error: Failed to upsert the dataset
+        vertex_too_complex_error: >-
+          There were {counted} vertices in row {rowNum}, the max is
+          {maxVerticesPerRow}
+        shapefile_header_error: 'Failed to read the header in the shapefile: {reason}'
+        shapefile_row_error: 'Failed to read a row in the shapefile: {reason}'
+        archive_error: 'Failed to open the zip archive: {reason}'
+        xmlparse_error: 'Failed to parse XML node due to {reason} near {path}'
+        jsonparse_error: >-
+          Failed to parse JSON at line {line} column {column} token {token} because
+          {reason}
+        invalid_arity_error: 'One of the points in the following row did not have 2 coordinates {geom}'
+        corrupt_shapefile_error: 'Failed to read the shapefile: {reason}'
+        incomplete_shapefile_error: >-
+          Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj
+          file for every layer. Expected it to contain the following files, which were
+          actually missing: {missing}.
+        decode_filetype_error: 'No decoder found for {kind}'
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!

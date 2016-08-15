@@ -140,6 +140,24 @@ describe("uploadFile's reducer", () => {
         .to.equal('There was a problem importing that file. Please make sure it is valid.');
     });
 
+    it('renders an error message on localizable error', () => {
+      const element = renderComponent(
+        view({
+          onFileUploadAction: _.noop,
+          fileUpload: {
+            fileName: 'my_file.txt',
+            progress: {
+              type: 'Failed',
+              error: '{"error":{"reason":"incomplete_shapefile_error","english":"Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp.","params":{"missing":"SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp"}}}'
+            }
+          },
+          operation: 'UploadData'
+        })
+      );
+      expect(element.querySelector('.flash-alert.error').innerText)
+        .to.equal('Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp.');
+    });
+
     it('dispatches the function for loading a file when the input of the fileUpload changes', () => {
       const spy = sinon.spy();
       const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));

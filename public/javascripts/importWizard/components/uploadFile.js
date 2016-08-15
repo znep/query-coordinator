@@ -7,6 +7,7 @@ import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
 import {addColumnIndicesToSummary} from '../importUtils';
+import format from 'stringformat';
 
 type FileName = string
 
@@ -195,7 +196,20 @@ function renderErrorMessage(fileUpload) {
       _.isUndefined(fileUpload.progress.error)) {
     return;
   }
-  return <FlashMessage flashType="error" message={fileUpload.progress.error} />;
+
+  var display = fileUpload.progress.error;
+  try {
+    // core wraps errors from upstream services...so...double parse!
+    const {error: translatable} = JSON.parse(display);
+    if (translatable) {
+      const template = I18n.screens.dataset_new.errors[translatable.reason];
+      display = format(template, translatable.params);
+    }
+  } catch (e) {
+    // we have a million services that don't return errors like this
+  }
+
+  return <FlashMessage flashType="error" message={display} />;
 }
 
 export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }) {

@@ -11,12 +11,12 @@ var $ = require('jquery');
 var _ = require('lodash');
 var L = require('leaflet');
 
-var SvgVisualization = require('./SvgVisualization');
+var Visualization = require('./Visualization');
 var ChoroplethMapUtils = require('./ChoroplethMapUtils');
 
 function ChoroplethMap(element, vif) {
 
-  _.extend(this, new SvgVisualization(element, vif));
+  _.extend(this, new Visualization(element, vif));
 
   var self = this;
   // Data mapping to geojson
@@ -103,7 +103,7 @@ function ChoroplethMap(element, vif) {
   var centerAndZoomDefined;
 
   // Render layout
-  renderTemplate(self.$element);
+  renderTemplate(self.element);
 
   // Hide the map until we are ready to show it (otherwise there's a flash of
   // it zoomed out all the way).
@@ -149,7 +149,7 @@ function ChoroplethMap(element, vif) {
     }
   }
 
-  var legend = new LegendType(self.$element.find('.choropleth-legend'), self.$element);
+  var legend = new LegendType(self.element.find('.choropleth-legend'), self.element);
 
   /**
    * Public methods
@@ -223,7 +223,7 @@ function ChoroplethMap(element, vif) {
       map.remove();
     }
 
-    self.$element.empty();
+    self.element.empty();
   };
 
 
@@ -267,7 +267,7 @@ function ChoroplethMap(element, vif) {
     );
 
     choroplethContainer = self.
-      $element.
+      element.
         find('.choropleth-container');
 
     if (_.isEmpty(choroplethContainer)) {
@@ -284,10 +284,7 @@ function ChoroplethMap(element, vif) {
       choroplethLegend
     ]);
 
-    self.
-      $element.
-        find('.visualization-container').
-          append(choroplethContainer);
+    self.element.append(choroplethContainer);
   }
 
   function initializeMap(el) {

@@ -1,6 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/choropleth.html');
 const ChoroplethMap = require('socrata-visualizations').views.ChoroplethMap;
-const VifHelpers = require('socrata-visualizations').helpers.VifHelpers;
 
 // A WORD ON TERMINOLOGY:
 //
@@ -69,7 +68,7 @@ module.exports = function choropleth(
       // plugins, we won't need to do this anymore.
       //
       // Note that configuration.shapefile.primaryKey gets set before rendering
-      var vif = VifHelpers.migrateVif({
+      var vif = {
         configuration: {
           defaultExtent: $scope.defaultExtent,
           interactive: true,
@@ -101,7 +100,7 @@ module.exports = function choropleth(
           one: PluralizeService.pluralize($scope.rowDisplayUnit, 1),
           other: PluralizeService.pluralize($scope.rowDisplayUnit, 2)
         }
-      });
+      };
 
       attachEvents();
 

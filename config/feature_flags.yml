@@ -17,6 +17,9 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
+auth0_social:
+  description: Show auth0 social sign-on buttons
+  defaultValue: false
 bubble:
   description: D3 Bubble Charts
   defaultValue: old

@@ -67,7 +67,7 @@ export function initialTranslation(summary: UploadFile.Summary): Transform {
     isColumn: true
   };
 
-  const locations = summary.locations.map((column, idx) => (
+  const locations = (summary.locations || []).map((column, idx) => (
     {
       columnSource: {
         type: 'LocationColumn',

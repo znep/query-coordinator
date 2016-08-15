@@ -1,35 +1,27 @@
-<%= form_tag update_site_chrome_path(anchor: {tab: :general}), id: 'tab_form_general', method: :put, remote: true do %>
+<%= form_tag(update_site_chrome_path(anchor: {tab: :general}), id: 'tab_form_general', method: :put, remote: true) do %>
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :template],
-    translation: translations[:template].tap do |t|
-      t[:description] = t[:description_html].html_safe
-    end
-  ) %>
+  <%= render 'site_chrome/tab_content/general/enable_site_chrome' %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :styles, :max_width],
-    translation: translations[:max_width]) %>
+  <%= site_chrome_form_field(:general, :template, translations[:template].tap do |t|
+    t[:description] = t[:description_html].html_safe
+  end) %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :window_title_display],
-    translation: translations[:window_title_display]) %>
-
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :window_icon],
-    translation: translations[:window_icon]) %>
-
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:general, :google_analytics_token],
-    translation: translations[:google_analytics_token]) %>
+  <%= site_chrome_form_field(:general, :window_title_display, translations[:window_title_display]) %>
+  <%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
+  <%= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>
+  <%= site_chrome_form_field(:general, [:styles, :max_width], translations[:max_width]) %>
+  <%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
+  <%= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>
 
   <section class="settings-group">
     <div class="settings-form full">
       <%- fields = [:general] %>
       <%- translation = translations[:show_signin_signout] %>
+      <aside>
+        <p><%= translation[:description] %></p>
+      </aside>
       <h3><%= translation[:title] %></h3>
-      <p><%= translation[:description] %></p>
       <%= signin_signout_checkbox(:show_signin_signout, translation) %>
       <%= signin_signout_checkbox(:show_signup, translation, indent: true) %>
       <%= signin_signout_checkbox(:show_profile, translation, indent: true) %>

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   layout 'main'
 
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
-  rescue_from ActionView::MissingTemplate, :with => :render_406
+  rescue_from ActionView::MissingTemplate, :with => :render_406 unless Rails.env.development?
 
   # Prevent CSRF attacks by raising an exception.
   protect_from_forgery with: :exception

@@ -1,4 +1,5 @@
-module FeatureFlags
+class FeatureFlags
+
   def self.value_for(feature_flag, options = {})
     view = options[:view]
     request = options[:request]
@@ -10,15 +11,15 @@ module FeatureFlags
   end
 
   module Getters
+
     def self.zealous_dataslate_cache_expiry(value)
       case value
-        when TrueClass
-          5.seconds
-        when FalseClass
-          nil
-        else
-          value.to_f.seconds
+        when TrueClass then 5.seconds
+        when FalseClass then nil
+        else value.to_f.seconds
       end
     end
+
   end
+
 end

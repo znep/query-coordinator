@@ -3,41 +3,67 @@
   <%= rendered_stylesheet_tag 'administration-index-screen' %>
   <%= rendered_stylesheet_tag 'administration-site-chrome' %>
   <title>Editing Site Chrome | <%= CurrentDomain.strings.site_title %></title>
+  <%= socrata_styleguide %>
 <% end %>
 
 <%= display_standard_flashes %>
 
 <div class="site-chrome">
-
   <div class="admin-header">
     <div class="header-title">
       <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
     </div>
 
-    <%= page_controls %>
+    <div class="page-controls">
+
+      <%= link_to('#', :onclick => 'return confirmReload();') do %>
+        <button id="site_chrome_cancel">
+          <%= t('screens.admin.site_chrome.cancel') %>
+        </button>
+      <% end %>
+      <%= link_to('#') do %>
+        <button id="site_chrome_preview">
+          <%= t('screens.admin.site_chrome.preview') %>
+          <span class="icon-preview"></span>
+        </button>
+      <% end %>
+
+      <% if @site_chrome.activated? %>
+        <%= link_to('#') do %>
+          <%= button_tag(t('screens.admin.site_chrome.update'), :id => 'site_chrome_save', :class => 'primary') %>
+        <% end %>
+      <% else %>
+        <%= link_to('#') do %>
+          <%= button_tag(t('screens.admin.site_chrome.activate'), activate_button_options) %>
+        <% end %>
+      <% end %>
+
+      <%= render 'activation_flannel' unless @site_chrome.reverted? %>
+
+    </div>
+
+    <ul class="tabs">
+      <% tab_sections.each_with_index do |section, i| %>
+        <li class="tab-link" data-tab-id="<%= section %>">
+          <%= link_to("#tab=#{section}") do %>
+            <%= t("screens.admin.site_chrome.tabs.#{section}.title") %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <% tab_sections.each_with_index do |section, i| %>
+      <div class="tab-content" data-tab-id="<%= section %>">
+        <%= render "site_chrome/tab_content/#{section}",
+          :translations => t("screens.admin.site_chrome.tabs.#{section}.fields") %>
+      </div>
+    <% end %>
 
   </div>
-
-  <ul class="tabs">
-    <% tab_sections.each_with_index do |section, i| %>
-      <li class="tab-link" data-tab-id="<%= section %>">
-        <%= link_to("#tab=#{section}") do %>
-          <%= t("screens.admin.site_chrome.tabs.#{section}.title") %>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-
-  <% tab_sections.each_with_index do |section, i| %>
-    <div class="tab-content" data-tab-id="<%= section %>">
-      <%= render(
-        "site_chrome/tab_content/#{section}",
-        :translations => t("screens.admin.site_chrome.tabs.#{section}.fields")
-      ) %>
-    </div>
-  <% end %>
-
 </div>
 
-<%= render_translations LocalePart.screens.admin.site_chrome %>
-<%= include_javascripts 'admin-site-chrome' %>
+<% content_for :js_footer do %>
+  <%= render_translations LocalePart.screens.admin.site_chrome %>
+  <%= include_javascripts 'admin-site-chrome' %>
+  <%= include_webpack_bundle 'site-appearance/main.js' %>
+<% end %>

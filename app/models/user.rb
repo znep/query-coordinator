@@ -180,6 +180,12 @@ class User < Model
     flag?('admin')
   end
 
+  # An "administrator" in this context, means a customer who is a domain administrator that can change
+  # features or attributes on the customer domain itself, such as Site Appearance, and so on.
+  def is_administrator_or_superadmin?
+    role_name == 'administrator' || is_superadmin?
+  end
+
   def has_right?(right)
     rights && rights.include?(right)
   end

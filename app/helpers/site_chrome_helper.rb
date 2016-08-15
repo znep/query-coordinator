@@ -1,5 +1,6 @@
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
+
   def social_share_link(type, site_chrome = @site_chrome)
     social_shares = site_chrome.send(content_at_stage).to_h.dig('general', 'social_shares')
 
@@ -188,10 +189,13 @@ module SiteChromeHelper
     fields = [:general, field]
     content_tag :div do
       label_tag form_field(fields), :class => ('indented' if options[:indent]) do
-        html = check_box(form_field(fields[0..-2]),
-                         fields.last,
-                         { checked: fetch_boolean(fields, true) },
-                         'true', 'false')
+        html = check_box(
+          form_field(fields[0..-2]),
+          fields.last,
+          { checked: fetch_boolean(fields, true) },
+          'true',
+          'false'
+        )
         html << translation[fields.last]
       end
     end
@@ -209,7 +213,7 @@ module SiteChromeHelper
         link_to('#') do
           content_tag(:button, :id => 'site_chrome_preview') do
             [
-              t('screens.admin.site_chrome.preview_changes'),
+              t('screens.admin.site_chrome.preview'),
               content_tag(:span, nil, :class => 'icon-preview')
             ].join(' ').html_safe
           end
@@ -223,4 +227,36 @@ module SiteChromeHelper
       ])
     end
   end
+
+  def site_chrome_form_field(section, fields, translations)
+    render(
+      'site_chrome/tab_content/form_field',
+      :fields => Array[*fields].unshift(section),
+      :translation => translations
+    )
+  end
+
+  # Should return true if the site chrome has never been activated, or if enabled for entire site
+  def site_chrome_on_entire_site_or_default_state(site_chrome = @site_chrome)
+    !site_chrome.activated? || site_chrome.on_entire_site?(request)
+  end
+
+  def site_chrome_radio_button(name, value, title, selected: false, disabled: false)
+    content_tag('div', :class => 'radiobutton horizontal') do
+      radio_button_tag(name, value, selected, :disabled => disabled) <<
+      label_tag([name, sanitize_to_id(value)].join('_'), :class => disabled ? 'disabled' : nil) do
+        content_tag('span') << title
+      end
+    end
+  end
+
+  def activate_button_options
+    {
+      :id => 'site_chrome_activate',
+      :class => 'primary'
+    }.merge(
+      @site_chrome.reverted? ? {} : { :'data-flannel' => 'site_chrome_activation_flannel' }
+    )
+  end
+
 end

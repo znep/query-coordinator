@@ -1,0 +1,27 @@
+<section class="settings-group section-separator">
+  <div class="settings-form full">
+    <h6>Select where these changes will appear when Site Appearance is updated:</h6>
+    <%= site_chrome_radio_button(
+      'site_appearance',
+      'entire_site',
+      'Entire site',
+      selected: site_chrome_on_entire_site_or_default_state
+    ) %>
+    <%= site_chrome_radio_button(
+      'site_appearance',
+      'all_pages_except_home',
+      'All pages except Home page',
+      selected: @site_chrome.on_all_pages_except_home_page?(request)
+    ) %>
+    <%= site_chrome_radio_button(
+      'site_appearance',
+      'revert_site_chrome',
+      'Revert all pages to non-configurable Header/Footer and <br/>turn off Dataset Landing Page'.html_safe,
+      disabled: !@site_chrome.activated?,
+      selected: @site_chrome.reverted?
+    ) %>
+  </div>
+  <aside class="full">
+    <p>Dataset Landing Page is also included in this update.</p>
+  </aside>
+</section>

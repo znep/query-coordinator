@@ -2590,17 +2590,23 @@ en:
         'true': true
         up: Up
       site_chrome:
+        activate: Activate
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
         cancel: Cancel
+        congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
         link_menu_label_html: <b>Menu</b> - <i>You can drag links to reorder them</i>
         move_link_row: Drag to reorder
-        preview_changes: Preview
+        ok: OK
+        preview: Preview
         remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
+        see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
+        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
+        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
         tabs:
           footer:
             fields:
@@ -2791,6 +2797,7 @@ en:
                   <p>Dataset Landing Page and your new Configurable Header/Footer are both available now. Review the tabs above to configure and preview your site's appearance - and when you're ready, activate them together!</p>
                   <p><b>Note:</b> If you haven't configured the header/footer for your site within 30 days, Socrata will configure it for you and activate it along with the Dataset Landing Page automatically. We'll use your existing site styling and your Customer Success Manager for style guidance.</p>
                   <p>For tips on configuring your header/footer and activating Dataset Landing Page, please attend the <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Making the Most of the Latest Features" Webinar</a> or visit our Support site: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
+      update: Update
       users:
         actions: Actions
         all: All

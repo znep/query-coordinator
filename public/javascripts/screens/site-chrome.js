@@ -147,9 +147,13 @@ function getActiveFormId() {
 
 function showTab(tabId) {
   $('ul.tabs li, .tab-content').removeClass('current');
-  $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.
-    format(tabId)).addClass('current');
+  $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.format(tabId)).addClass('current');
   inputValidation(tabId);
+  updatePageControlsForActiveTab(tabId);
+}
+
+function updatePageControlsForActiveTab(tabId) {
+  $('.page-controls a[href*=#]').attr('href', `#tab=${tabId}`);
 }
 
 // Displays a notification to the user if they type invalid input.

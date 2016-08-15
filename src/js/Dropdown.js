@@ -1,16 +1,9 @@
-module.exports = function DropdownFactory(element) {
-  this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
-  this.dropdowns.forEach(function(dropdown) {
-    new Dropdown(dropdown);
-  });
-}
-
 var Dropdown = function(element) {
   this.dd = element;
   this.orientation = this.dd.getAttribute('data-orientation') || 'bottom';
   this.selectable = this.dd.hasAttribute('data-selectable');
 
-  this.dd.classList.add('dropdown-orientation-' + this.orientation);
+  this.dd.classList.add(`dropdown-orientation-${this.orientation}`);
 
   this.placeholder = this.dd.querySelector('span');
   this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
@@ -39,11 +32,12 @@ Dropdown.prototype = {
         opt.addEventListener('click', function(event) {
           event.preventDefault();
 
-          var node = opt;
+          var node = opt.previousElementSibling;
           var index = 0;
 
-          while ((node = node.previousElementSibling) !== null) {
+          while (node !== null) {
             index++;
+            node = node.previousElementSibling;
           }
 
           obj.dd.dataset.value = opt.textContent;
@@ -82,13 +76,22 @@ Dropdown.prototype = {
 
       do {
         left += node.offsetLeft;
-      } while ((node = node.offsetParent) !== null);
+        node = node.offsetParent;
+      } while (node !== null);
 
       // Update dropdown options position if needed
       if (optionsElementWidth + left >= windowWidth || optionsElement.style.left) {
         var dropdownWidth = obj.dd.getBoundingClientRect().width;
-        optionsElement.style.left = -(optionsElementWidth - dropdownWidth) + 'px';
+        var leftOffset = -(optionsElementWidth - dropdownWidth);
+        optionsElement.style.left = `${leftOffset}px`;
       }
     }
   }
-}
+};
+
+module.exports = function DropdownFactory(element) {
+  this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
+  this.dropdowns.forEach(function(dropdown) {
+    new Dropdown(dropdown); // eslint-disable-line no-new
+  });
+};

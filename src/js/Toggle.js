@@ -5,7 +5,7 @@ var ToggleFactory = module.exports = function(element) {
   toggles.forEach(function(toggle) {
     toggle.addEventListener('click', this.toggle.bind(this));
   }, this);
-}
+};
 
 ToggleFactory.prototype = {
   toggle: function(event) {
@@ -13,8 +13,10 @@ ToggleFactory.prototype = {
 
     do {
       if (target.hasAttribute('data-toggle')) {
-        return target.classList.toggle('active')
+        return target.classList.toggle('active');
       }
-    } while((target = target.parentNode) !== this.element)
+
+      target = target.parentNode;
+    } while (target !== this.element);
   }
-}
+};

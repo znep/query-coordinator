@@ -11,7 +11,7 @@ function configuration(filename, minify) {
     output: {
       filename
     },
-    plugins: minify ? [new UglifyJsPlugin({compress: {warnings: false}})] : []
+    plugins: minify ? [new UglifyJsPlugin({ compress: { warnings: false } })] : []
   });
 }
 

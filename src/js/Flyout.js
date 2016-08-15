@@ -2,7 +2,7 @@ module.exports = function FlyoutFactory(element) {
   var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'));
 
   hoverables.forEach(function(hoverable) {
-    var flyout = element.querySelector('#' + hoverable.getAttribute('data-flyout'));
+    var flyout = element.querySelector(`#${hoverable.getAttribute('data-flyout')}`);
     var show = function() {
       flyout.classList.remove('flyout-hidden');
     };
@@ -27,8 +27,8 @@ module.exports = function FlyoutFactory(element) {
         flyout.classList.add('flyout-right');
       }
 
-      flyout.style.left = left + 'px';
-      flyout.style.top = top + 'px';
+      flyout.style.left = `${left}px`;
+      flyout.style.top = `${top}px`;
     };
 
     window.addEventListener('scroll', reposition);
@@ -38,9 +38,9 @@ module.exports = function FlyoutFactory(element) {
       reposition();
       show();
     });
+
     hoverable.addEventListener('mouseout', function() {
       flyout.classList.add('flyout-hidden');
     });
   });
-
-}
+};

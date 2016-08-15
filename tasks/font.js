@@ -11,9 +11,9 @@ function compileIconStyles(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
       var className = 'icon';
-      var selector = glyphs.map((glyph) => {
-        return `.${className}-${glyph.name}::before`;
-      }).join(',\n');
+      var selector = glyphs.map((glyph) => (
+        `.${className}-${glyph.name}::before`
+      )).join(',\n');
 
       var locals = {
         className,
@@ -54,7 +54,7 @@ function compileStream(stream) {
 
 module.exports = (done) => {
   var settings = {
-    fontName: 'socrata-icons.' + buildTimestamp,
+    fontName: `socrata-icons.${buildTimestamp}`,
     formats: ['eot', 'svg', 'ttf', 'woff', 'woff2'],
     timestamp: buildTimestamp,
     descent: 128 // Magic! Fuck if I know. It works.

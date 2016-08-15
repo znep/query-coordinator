@@ -3,7 +3,7 @@ var velocity = require('velocity-animate');
 module.exports = function FlannelFactory() {
   var mobileBreakpoint = 420;
   var animationDuration = 300;
-  var animationEasing = [.645, .045, .355, 1];
+  var animationEasing = [0.645, 0.045, 0.355, 1];
   var hoverables = Array.prototype.slice.apply(document.querySelectorAll('[data-flannel]'));
   var lastFocusedItem = null;
 
@@ -65,15 +65,17 @@ module.exports = function FlannelFactory() {
       flannel.classList.add('flannel-right');
     }
 
-    flannel.style.left = left + 'px';
-    flannel.style.top = top + 'px';
+    flannel.style.left = `${left}px`;
+    flannel.style.top = `${top}px`;
     document.body.classList.remove('modal-open');
   }
 
   hoverables.forEach(function(hoverable) {
     var flannelId = hoverable.getAttribute('data-flannel');
-    var flannel = document.querySelector('#' + flannelId);
-    var dismissals = Array.prototype.slice.apply(flannel.querySelectorAll('[data-flannel-dismiss]'));
+    var flannel = document.querySelector(`#${flannelId}`);
+    var dismissals = Array.prototype.slice.apply(
+      flannel.querySelectorAll('[data-flannel-dismiss]')
+    );
 
     dismissals.forEach(function(dismissal) {
       dismissal.addEventListener('click', function() {
@@ -91,7 +93,7 @@ module.exports = function FlannelFactory() {
         positionFlannel(flannel, hoverable);
       } else {
         flannel.classList.remove('flannel-hidden');
-        flannel.style.left = windowWidth + 'px';
+        flannel.style.left = `${windowWidth}px`;
         flannel.style.top = 0;
         document.body.classList.add('modal-open');
 
@@ -149,4 +151,4 @@ module.exports = function FlannelFactory() {
       }
     });
   });
-}
+};

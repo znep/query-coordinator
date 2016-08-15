@@ -2,7 +2,7 @@ var velocity = require('velocity-animate');
 
 var mobileBreakpoint = 420;
 var animationDuration = 300;
-var animationEasing = [.645, .045, .355, 1];
+var animationEasing = [0.645, 0.045, 0.355, 1];
 
 var ModalFactory = module.exports = function(element) {
   this.root = element;
@@ -10,15 +10,15 @@ var ModalFactory = module.exports = function(element) {
   this.openers = Array.prototype.slice.apply(element.querySelectorAll('[data-modal]'));
   this.lastFocusedItem = null;
   this.attachEvents();
-}
+};
 
 ModalFactory.prototype = {
   attachEvents: function() {
-    this.dismissals.forEach(function (dismissal) {
+    this.dismissals.forEach(function(dismissal) {
       dismissal.addEventListener('click', this.dismiss.bind(this));
     }, this);
 
-    this.openers.forEach(function (opener) {
+    this.openers.forEach(function(opener) {
       opener.addEventListener('click', this.open.bind(this));
     }, this);
 
@@ -27,7 +27,10 @@ ModalFactory.prototype = {
 
       // ESC
       if (key === 27) {
-        var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
+        var modals = Array.prototype.slice.call(
+          document.querySelectorAll('.modal:not(.modal-hidden)')
+        );
+
         modals.forEach(function(modal) {
           modal.classList.add('modal-hidden');
           document.body.classList.remove('modal-open');
@@ -37,7 +40,10 @@ ModalFactory.prototype = {
     }.bind(this));
 
     window.addEventListener('resize', function() {
-      var modals = Array.prototype.slice.call(document.querySelectorAll('.modal:not(.modal-hidden)'));
+      var modals = Array.prototype.slice.call(
+        document.querySelectorAll('.modal:not(.modal-hidden)')
+      );
+
       modals.forEach(function(modal) {
         this.reposition(modal.querySelector('.modal-container'));
       }.bind(this));
@@ -46,7 +52,7 @@ ModalFactory.prototype = {
 
   open: function(event) {
     var modal = event.target.getAttribute('data-modal');
-    modal = this.root.querySelector('#' + modal);
+    modal = this.root.querySelector(`#${modal}`);
     modal.classList.remove('modal-hidden');
 
     document.body.classList.add('modal-open');
@@ -55,7 +61,7 @@ ModalFactory.prototype = {
     var modalContainer = modal.querySelector('.modal-container');
 
     if (windowWidth <= mobileBreakpoint) {
-      modalContainer.style.left = windowWidth + 'px';
+      modalContainer.style.left = `${windowWidth}px`;
 
       velocity(modalContainer, {
         left: 0
@@ -89,11 +95,13 @@ ModalFactory.prototype = {
       if (target.hasAttribute('data-modal-dismiss') &&
           !target.classList.contains('modal')) {
         closeable = true;
-      } else if (target.classList.contains('modal')){
+      } else if (target.classList.contains('modal')) {
         modal = target;
         break;
       }
-    } while((target = target.parentNode) !== self.root);
+
+      target = target.parentNode;
+    } while (target !== self.root);
 
     if (!modal) {
       return;

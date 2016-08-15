@@ -16,18 +16,18 @@ function docsStream() {
   return gulp.src('docs/stylesheets/docs.scss').
     pipe(sourcemaps.init()).
       pipe(plumber()).
-      pipe(sass({includePaths}).on('error', sass.logError)).
+      pipe(sass({ includePaths }).on('error', sass.logError)).
       pipe(prepend(banner())).
-      pipe(autoprefixer({browsers}));
+      pipe(autoprefixer({ browsers }));
 }
 
 function stream() {
   return gulp.src('src/scss/**/*.scss').
     pipe(sourcemaps.init()).
       pipe(plumber()).
-      pipe(sass({includePaths}).on('error', sass.logError)).
+      pipe(sass({ includePaths }).on('error', sass.logError)).
       pipe(prepend(banner())).
-      pipe(autoprefixer({browsers}));
+      pipe(autoprefixer({ browsers }));
 }
 
 function compileCSS(callback) {
@@ -39,7 +39,7 @@ function compileCSS(callback) {
 
 function compileNanoCSS(callback) {
   stream().
-    pipe(nano({discardComments: {removeAllButFirst: true}})).
+    pipe(nano({ discardComments: { removeAllButFirst: true } })).
     pipe(rename('styleguide.min.css')).
   pipe(sourcemaps.write('.')).
   pipe(gulp.dest('dist/css')).

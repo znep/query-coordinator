@@ -8,7 +8,7 @@ var sources = [
 ];
 
 var configuration = {
-  extends: 'eslint:recommended',
+  'extends': `${__dirname}/../../node_modules/eslint-base/.eslintrc-airbnb.json`,
   env: {
     browser: true,
     node: true
@@ -22,9 +22,7 @@ var configuration = {
   }
 };
 
-module.exports = () => {
-  return gulp.src(sources).
-    pipe(eslint(configuration)).
-    pipe(eslint.format()).
-    pipe(eslint.failAfterError());
-};
+module.exports = () => gulp.src(sources).
+  pipe(eslint(configuration)).
+  pipe(eslint.format()).
+  pipe(eslint.failAfterError());

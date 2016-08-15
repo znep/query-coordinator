@@ -10,8 +10,8 @@ module.exports = function TabsFactory(element) {
         event.preventDefault();
         var tabId = event.currentTarget.dataset.tabId;
 
-        tabLinks.forEach(function(link) {
-          link.classList.remove('current');
+        tabLinks.forEach(function(tabLink) {
+          tabLink.classList.remove('current');
         });
 
         tabContents.forEach(function(content) {
@@ -19,8 +19,8 @@ module.exports = function TabsFactory(element) {
         });
 
         link.classList.add('current');
-        section.querySelector('#' + tabId).classList.add('current');
+        section.querySelector(`#${tabId}`).classList.add('current');
       });
     });
   });
-}
+};

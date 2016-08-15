@@ -1,6 +1,4 @@
-module.exports = () => {
-  return [
-    'last 2 versions',
-    'ie >= 10'
-  ];
-};
+module.exports = () => [
+  'last 2 versions',
+  'ie >= 10'
+];

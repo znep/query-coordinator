@@ -4,7 +4,7 @@ module.exports = function MenuFactory(element) {
 
   toggles.forEach(function(toggle) {
     toggle.addEventListener('click', function() {
-      var menu = element.querySelector('#' + toggle.getAttribute('data-menu-toggle'));
+      var menu = element.querySelector(`#${toggle.getAttribute('data-menu-toggle')}`);
       menu.classList.toggle('active');
     });
   });
@@ -15,8 +15,8 @@ module.exports = function MenuFactory(element) {
     dismissals.forEach(function(dismissal) {
       dismissal.addEventListener('click', function() {
         menu.classList.remove('active');
-        document.querySelector('[data-menu-toggle="' + menu.id + '"]').classList.remove('active');
+        document.querySelector(`[data-menu-toggle="${menu.id}"]`).classList.remove('active');
       });
     });
   });
-}
+};

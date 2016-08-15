@@ -13,9 +13,9 @@ module.exports = (done) => {
   gulp.src('docs/stylesheets/prototypes/**/*.scss').
     pipe(sourcemaps.init()).
       pipe(plumber()).
-      pipe(sass({includePaths}).on('error', sass.logError)).
+      pipe(sass({ includePaths }).on('error', sass.logError)).
       pipe(prepend(banner())).
-      pipe(autoprefixer({browsers})).
+      pipe(autoprefixer({ browsers })).
     pipe(sourcemaps.write('.')).
     pipe(gulp.dest('dist/prototypes')).
     on('finish', done);

@@ -13,22 +13,22 @@ export default React.createClass({
     bucketRevealDirection: React.PropTypes.string
   },
 
-  getInitialState()  {
-    return {
-      selectedColor: this.props.value,
-      showingBuckets: false
-    };
-  },
-
   getDefaultProps() {
     return {
       type: 'single',
       value: '#204490',
       palette: [
-        '#204490','#9A2600','#B26B00','#006A01','#6B176C','#006A8B','#9B2D52','#457800',
-        '#2F62CF','#DE3700','#FF9A00','#009802','#9A229B','#0098C8','#DF4176','#64AC00',
-        '#6D91DD','#E7734D','#FFB84D','#4DB74E','#B864B9','#4DB7D8','#E87A9F','#92C54D'
+        '#204490', '#9A2600', '#B26B00', '#006A01', '#6B176C', '#006A8B', '#9B2D52', '#457800',
+        '#2F62CF', '#DE3700', '#FF9A00', '#009802', '#9A229B', '#0098C8', '#DF4176', '#64AC00',
+        '#6D91DD', '#E7734D', '#FFB84D', '#4DB74E', '#B864B9', '#4DB7D8', '#E87A9F', '#92C54D'
       ]
+    };
+  },
+
+  getInitialState() {
+    return {
+      selectedColor: this.props.value,
+      showingBuckets: false
     };
   },
 
@@ -54,7 +54,8 @@ export default React.createClass({
   onChangeInputColor(e) {
     this.setState({ selectedColor: e.target.value });
 
-    var isValidColor  = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(e.target.value);
+    var isValidColor = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(e.target.value);
+
     if (isValidColor && this.props.handleColorChange) {
       this.props.handleColorChange(e.target.value);
     }
@@ -74,8 +75,8 @@ export default React.createClass({
       'reveal-from-top': this.props.bucketRevealDirection === 'top'
     });
 
-    var colorBuckets = this.props.palette.map((color, key)=> {
-      var isSelectedColor = color == this.state.selectedColor;
+    var colorBuckets = this.props.palette.map((color, key) => {
+      var isSelectedColor = color === this.state.selectedColor;
       var style = { backgroundColor: color };
       var attributes = {
         key,
@@ -95,16 +96,16 @@ export default React.createClass({
 
     return (
       <div className="color-picker">
-        <div className={ colorOverlayClassName } onClick={ this.onClose } />
-        <div className="color-frame" onClick={ this.onClickColorFrame }>
-          <div className="selected-color-frame" style={ colorFrameStyle } />
+        <div className={colorOverlayClassName} onClick={this.onClose} />
+        <div className="color-frame" onClick={this.onClickColorFrame}>
+          <div className="selected-color-frame" style={colorFrameStyle} />
           <div className="caret">
             <span className="icon-arrow-down" />
           </div>
         </div>
-        <div className={ bucketContainerClassName }>
-          <div className={ bucketsClassName }>
-            { colorBuckets }
+        <div className={bucketContainerClassName}>
+          <div className={bucketsClassName}>
+            {colorBuckets}
           </div>
           <input {...hexInputAttributes} />
         </div>

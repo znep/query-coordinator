@@ -44,7 +44,9 @@ var TourFactory = module.exports = function(element) {
     // Open all tours without openers immediately
     if (this.openers.length < this.tourElements.length) {
       var that = this;
-      var openerNames = that.openers.map(function(opener) { return opener.getAttribute('data-tour-opener'); });
+      var openerNames = that.openers.map(function(opener) {
+        return opener.getAttribute('data-tour-opener');
+      });
 
       that.tourElements.forEach(function(tourElement) {
         var tourName = tourElement.getAttribute('data-tour-name');
@@ -54,7 +56,7 @@ var TourFactory = module.exports = function(element) {
       });
     }
   }
-}
+};
 
 TourFactory.prototype = {
   initialize: function() {
@@ -103,8 +105,8 @@ TourFactory.prototype = {
 
     var steps = Array.prototype.slice.apply(tourElement.querySelectorAll('[data-tour-step]'));
     var sortedSteps = steps.sort(function(a, b) {
-      var stepA = parseInt(a.getAttribute('data-step-number'));
-      var stepB = parseInt(b.getAttribute('data-step-number'));
+      var stepA = parseInt(a.getAttribute('data-step-number'), 10);
+      var stepB = parseInt(b.getAttribute('data-step-number'), 10);
 
       if (stepA > stepB) {
         return 1;
@@ -144,7 +146,7 @@ TourFactory.prototype = {
 
         stepConfig.tetherOptions = {
           offset: positionOffset
-        }
+        };
       }
 
       if (sortedSteps.length - 1 === index) {
@@ -174,8 +176,9 @@ TourFactory.prototype = {
   attachEvents: function() {
     var that = this;
 
-    that.openers.forEach(function (opener) {
-      opener.addEventListener('click', that.openTour.bind(that, opener.getAttribute('data-tour-opener')));
+    that.openers.forEach(function(opener) {
+      var clickHandler = that.openTour.bind(that, opener.getAttribute('data-tour-opener'));
+      opener.addEventListener('click', clickHandler);
     }, that);
 
     document.addEventListener('keyup', function(event) {
@@ -209,8 +212,9 @@ TourFactory.prototype = {
       currentStep: tourObject.tour.getCurrentStep().id.replace('step-', ''),
       tourName: tourObject.name
     };
+    var event = new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_COMPLETE', { 'detail': payload });
 
-    document.dispatchEvent(new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_COMPLETE', { 'detail': payload }));
+    document.dispatchEvent(event);
     tourObject.tour.complete();
   },
   clickNext: function(tourName) {
@@ -229,8 +233,9 @@ TourFactory.prototype = {
       currentStep: tourObject.tour.getCurrentStep().id.replace('step-', ''),
       tourName: tourObject.name
     };
+    var event = new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_CLOSED', { 'detail': payload });
 
-    document.dispatchEvent(new CustomEvent('SOCRATA_STYLEGUIDE_TOUR_CLOSED', { 'detail': payload }));
+    document.dispatchEvent(event);
     tourObject.tour.cancel();
   }
 };

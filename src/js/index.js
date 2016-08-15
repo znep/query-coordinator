@@ -13,7 +13,7 @@ import Dropdown from './components/Dropdown';
 module.exports = {
   attachTo: function(element) {
     Object.keys(this.factories).forEach(function(factory) {
-      new this.factories[factory](element);
+      new this.factories[factory](element); // eslint-disable-line no-new
     }, this);
   },
 

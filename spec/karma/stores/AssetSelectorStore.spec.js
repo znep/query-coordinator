@@ -179,6 +179,35 @@ describe('AssetSelectorStore', function() {
         });
       });
 
+      describe('.isDirty()', function() {
+        function editComponent(type) {
+          blockComponentAtIndex = {type: type, value: {}};
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_EDIT_EXISTING_ASSET_EMBED,
+            blockId: 1,
+            componentIndex: 0
+          });
+        }
+
+        beforeEach(function() {
+          editComponent('youtube.video');
+        });
+
+        it('should return false when nothing has changed', function() {
+          assert.isFalse(assetSelectorStore.isDirty());
+        });
+
+        it('should return true when something has changed', function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+            url: 'foo'
+          });
+
+          assert.isTrue(assetSelectorStore.isDirty());
+        });
+      });
+
       describe('.isUploadingFile()', function() {
         it('should return false', function() {
           assert.isFalse(assetSelectorStore.isUploadingFile());

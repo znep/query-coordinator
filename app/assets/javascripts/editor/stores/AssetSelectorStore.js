@@ -299,6 +299,24 @@ export default function AssetSelectorStore() {
     return _.get(_state.componentProperties, 'reason', null);
   };
 
+  this.isDirty = function() {
+    const {
+      componentType,
+      componentProperties,
+      originalComponentType,
+      originalComponentProperties
+    } = _state;
+
+    // layout sub-property is attached to component.value but not managed
+    // by asset selector
+    const originalProperties = _.omit(originalComponentProperties, 'layout');
+
+    const isTypeEqual = _.isEqual(componentType, originalComponentType);
+    const isPropsEqual = _.isEqual(componentProperties, originalProperties);
+
+    return !isTypeEqual || !isPropsEqual;
+  };
+
   this.getFileId = function() {
     return _.get(_state, 'fileId', null);
   };
@@ -769,6 +787,7 @@ export default function AssetSelectorStore() {
       componentIndex: payload.componentIndex,
       componentType: component.type,
       componentProperties: component.value,
+      originalComponentType: _.clone(component.type),
       originalComponentProperties: _.cloneDeep(component.value),
       isEditingExisting: true
     };

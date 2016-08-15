@@ -80,6 +80,8 @@ $(document).ready(function() {
     if ($formToSubmit.length) {
       if ($formToSubmit.valid()) {
         reorderListOfLinks($formToSubmit);
+        $formToSubmit.removeAttr('target');
+        $formToSubmit.find('input#stage').remove();
         $formToSubmit.submit();
       }
     } else {
@@ -94,7 +96,7 @@ $(document).ready(function() {
     if ($formToSubmit.length) {
       if ($formToSubmit.valid()) {
         $formToSubmit.attr('target', '_blank');
-        var $stage = $formToSubmit.find('input#publication_stage');
+        var $stage = $formToSubmit.find('input#stage');
         if (!$stage.exists()) {
           $stage = $('<input type="hidden" id="stage" name="stage" />');
           $formToSubmit.append($stage);

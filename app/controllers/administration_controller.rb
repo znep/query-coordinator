@@ -1206,6 +1206,7 @@ class AdministrationController < ApplicationController
     end
   end
 
+  before_filter :only => [:goals] {|c| c.check_auth_level(UserRights::EDIT_GOALS)}
   def goals
 
     render :layout => 'plain'

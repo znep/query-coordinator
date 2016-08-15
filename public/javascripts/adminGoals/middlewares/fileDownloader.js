@@ -43,6 +43,7 @@ export default store => next => action => {
         fetch(fileUrl, fetchOptions).
           then(response => {
             if (canceledDownloads[fileUrl]) {
+              clear();
               return;
             }
 

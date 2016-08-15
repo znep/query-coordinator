@@ -23,6 +23,6 @@ export function getById(goalId) {
 }
 
 export function fetchCsvData() {
-  const path = `${goalsPrefix}/list.csv`;
+  const path = `${goalsPrefix}.csv`;
   return api.get('v1', path, {});
 }

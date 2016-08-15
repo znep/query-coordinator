@@ -228,9 +228,11 @@
       }
     });
 
-    $tables.on('SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED', function(event) {
-      console.log(JSON.stringify(event.originalEvent.detail));
+    $tables.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+      console.log('VIF UPDATED', event.originalEvent.detail);
     });
+
+
 
     /**
      * Destroy the plugin.

@@ -195,11 +195,11 @@ function SvgVisualization($element, vif) {
     var loadedVif = this.getVif();
     var domain = _.get(loadedVif, 'series[0].dataSource.domain');
     var datasetUid = _.get(loadedVif, 'series[0].dataSource.datasetUid');
-
     var metadataProvider = new MetadataProvider({domain, datasetUid});
     var renderLink = (linkableDatasetUid) => {
-      this.$container.
-        addClass('info view-source-data').
+      this.
+        $container.
+        addClass('view-source-data').
         find('.view-source-data a').
         attr('href', `https://${domain}/d/${linkableDatasetUid}`);
     };
@@ -211,6 +211,14 @@ function SvgVisualization($element, vif) {
       catch(() => {
         renderLink(datasetUid);
       });
+
+    // Add the info class immediately so that visualizations can accurately
+    // measure how much space they have to fill, but only add the
+    // view-source-data class to show the link once the optional metadata
+    // request has returned, if it is made.
+    this.
+      $container.
+      addClass('info');
   };
 
   this.hideViewSourceDataLink = function() {

@@ -220,7 +220,7 @@ describe('views/Table', function() {
         );
 
         assert.lengthOf(table.element.find('td'), 1);
-        assert.equal(table.element.find('td').text(), 'something');
+        assert.equal(table.element.find('td').text().trim(), 'something');
       });
     });
 
@@ -478,7 +478,7 @@ describe('views/Table', function() {
 
           assert.property(payload, 'element');
           assert.property(payload, 'content');
-          assert.equal(payload.content, data.rows[0][0]);
+          assert.equal(payload.content.trim(), data.rows[0][0]);
 
           done();
         });

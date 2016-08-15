@@ -11,16 +11,6 @@ describe('Table', function() {
   var tableVIF = {
     columnName: '',
     configuration: {
-      localization: {
-        previous: 'translation for previous button',
-        next: 'translation for next button',
-        no_rows: 'translation for no rows',
-        only_row: 'translation for only one row',
-        many_rows: 'translation for many rows',
-        all_rows: 'translation for all rows',
-        latitude: 'translation for latitude',
-        longitude: 'translation for longitude'
-      },
       order: [
         {
           ascending: true,
@@ -152,7 +142,7 @@ describe('Table', function() {
       // We're testing that Table delegates to MetadataProvider.getDisplayableColumns.
       var calls = tableRenderSpy.getCalls();
 
-      assert.lengthOf(calls, 1);
+      assert.lengthOf(calls, 2);
 
       var columnNamesQueriedFor = _.map(
         calls[0].args[1].columns,

@@ -6,8 +6,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { dismissModal, saveGoalQuickEdit, updateFormData } from '../../actions/quickEditActions';
 import { openFeedbackFlannel } from '../../actions/feedbackFlannelActions';
-import moment from 'moment';
 import { modalQuitEventHandler } from '../../components/ModalQuitEventHandler';
+import { datetimeFormat } from '../../constants';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import * as SocrataModal from '../../components/SocrataModal';
@@ -31,9 +31,9 @@ class GoalQuickEdit extends React.Component {
       percentUnit: props.goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
         '%' : props.goal.getIn(['prevailing_measure', 'unit']),
       startDate: props.goal.getIn(['prevailing_measure', 'start']) ?
-        moment(props.goal.getIn(['prevailing_measure', 'start'])) : null,
+        props.goal.getIn(['prevailing_measure', 'start']) : null,
       endDate: props.goal.getIn(['prevailing_measure', 'end']) ?
-        moment(props.goal.getIn(['prevailing_measure', 'end'])) : null,
+        props.goal.getIn(['prevailing_measure', 'end']) : null,
       measureTarget: props.goal.getIn(['prevailing_measure', 'target']),
       measureTargetType: props.goal.getIn(['prevailing_measure', 'target_type']),
       measureBaseline: props.goal.getIn(['prevailing_measure', 'baseline']),
@@ -79,7 +79,7 @@ class GoalQuickEdit extends React.Component {
    */
   onSelectChange(name, selected) {
     let data = {};
-    data[name] = selected instanceof moment ? selected : selected.value;
+    data[name] = _.isFunction(selected.format) ? selected.format(datetimeFormat) : selected.value;
 
     const newData = this.props.formData.merge(data);
     this.props.updateFormData(newData);

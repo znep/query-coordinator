@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -142,6 +143,8 @@ class EditPrevailingMeasure extends React.Component {
 
   renderDateRangePart() {
     const { translations, formData, isGoalNotConfigured } = this.props;
+    const startDate = moment(formData.get('startDate'));
+    const endDate = moment(formData.get('endDate'));
 
     return (
       <div className="form-line measure-date-range">
@@ -153,14 +156,14 @@ class EditPrevailingMeasure extends React.Component {
           <DatePicker
             className="text-input datepicker-input"
             onChange={ _.wrap('startDate', this.props.onSelectChange) }
-            selected={ formData.get('startDate') } disabled={ isGoalNotConfigured } />
+            selected={ startDate } disabled={ isGoalNotConfigured } />
         </div>
         <div className="datepicker-wrapper">
           <span className="icon-date"/>
           <DatePicker
             className="text-input datepicker-input"
             onChange={ _.wrap('endDate', this.props.onSelectChange) }
-            selected={ formData.get('endDate') } disabled={ isGoalNotConfigured } />
+            selected={ endDate } disabled={ isGoalNotConfigured } />
         </div>
       </div>
     );

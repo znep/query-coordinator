@@ -356,7 +356,7 @@
 
               result_created_at = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
 
-              result_view_count = result.viewCount.to_i > 0 ? number_with_delimiter(result.viewCount) : nil
+              result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             end
 
             result_odn_query_param = { :q => [ result.name, result_categories.join(' '), result_topics ].reject(&:empty?).join(' ') }.to_param

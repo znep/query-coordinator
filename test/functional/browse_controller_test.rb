@@ -474,7 +474,7 @@ class BrowseControllerTest < ActionController::TestCase
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
-      get(:embed)
+      get(:embed, {})
       assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Most Relevant/, @response.body) # sort order
@@ -484,7 +484,7 @@ class BrowseControllerTest < ActionController::TestCase
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
         with(query: default_core_cly_params).
         to_return(status: 200, body: clytemnestra_payload, headers: {})
-      get(:show)
+      get(:show, {})
       assert_response(:success)
       assert_match(/This is my new view blah blah blah/, @response.body)
       assert_match(/Most Accessed/, @response.body) # sort order
@@ -505,30 +505,6 @@ class BrowseControllerTest < ActionController::TestCase
       assert_match(/Created/, @response.body) # created_at timestamp shows with 'Recently Added'
     end
 
-    should 'not use the styleguide unless browse2 is enabled' do
-      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params, headers: cetera_headers).
-        to_return(status: 200, body: cetera_payload, headers: {})
-
-      get(:show)
-      assert_response(:success)
-      refute_match(%r{stylesheets/socrata-styleguide/css/styleguide.css}, @response.body)
-    end
-
-    should 'use the styleguide if browse2 is enabled' do
-      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
-        with(query: default_cetera_params, headers: cetera_headers).
-        to_return(status: 200, body: cetera_payload, headers: {})
-
-      get(:show, view_type: 'browse2')
-      assert_response(:success)
-      assert_match(%r{stylesheets/socrata-styleguide/css/styleguide.css}, @response.body)
-    end
-
     should 'send default params to Cetera with browse' do
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
@@ -537,7 +513,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
-      get(:show)
+      get(:show, {})
       assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Updated/, @response.body) # sort order
@@ -555,7 +531,7 @@ class BrowseControllerTest < ActionController::TestCase
 
       @controller.stubs(:get_facet_cutoff => stubbed_custom_cutoff)
 
-      get(:show)
+      get(:show, {})
       assert_response(:success)
 
       def visible_selector(index)
@@ -683,7 +659,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_timeout
 
-      get(:show)
+      get(:show, {})
       assert_response(:success)
 
       assert_select(core_cly_selector, search_failure_message)
@@ -697,7 +673,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_return(status: 500)
 
-      get(:show)
+      get(:show, {})
       assert_response(:success)
 
       assert_select(core_cly_selector, search_failure_message)
@@ -711,7 +687,7 @@ class BrowseControllerTest < ActionController::TestCase
         with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_return(status: 200, body: 'core has been deprecated')
 
-      get(:show)
+      get(:show, {})
       assert_response(:success)
 
       assert_select(core_cly_selector, search_failure_message)

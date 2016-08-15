@@ -1,6 +1,5 @@
 <% content_for :head do %>
   <title>Search &amp; Browse | <%= CurrentDomain.strings.site_title %></title>
-  <%= socrata_styleguide if use_browse2? %>
 <% end %>
 
 <%= render_browse(@processed_browse) %>

@@ -64,7 +64,7 @@ body.story-save-error .user-story-container {
         line-height: $block-edit-controls-width;
         padding: 0;
 
-        &:hover {
+        &:not(.btn-disabled):hover {
           background-color: $block-edit-controls-hover-color;
         }
       }

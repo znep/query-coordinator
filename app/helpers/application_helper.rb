@@ -252,7 +252,9 @@ module ApplicationHelper
 
   def rendered_stylesheet_tag(stylesheet, media='all')
     if should_render_individual_styles?
-      STYLE_PACKAGES[stylesheet].map do |stylesheet|
+      style_package = STYLE_PACKAGES[stylesheet]
+      raise "Missing style package: #{stylesheet}" unless style_package
+      style_package.map do |stylesheet|
         %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
       end.join("\n").html_safe
     else

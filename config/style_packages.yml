@@ -244,6 +244,8 @@ odysseus-base:
 - colorpicker
 govstat-base:
 - screen-govstat-base
+govstat-chromeless:
+- govstat-chromeless
 govstat-layout:
 - screen-govstat-base
 - govstat-layout

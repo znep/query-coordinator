@@ -41,7 +41,11 @@ module.exports = function Table(element, originalVif) {
       return;
     }
 
-    if (newVif) {
+    // Note that we check if vifToRender and newVif are actually different
+    // instead of just overwriting vifToRender so that we don't lose the
+    // previously-calculated column widths.
+    if (!_.isEqual(vifToRender, newVif)) {
+
       vifToRender = newVif;
       columnWidths = {};
     }

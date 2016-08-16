@@ -26,11 +26,14 @@ export const getDisplayableColumns = createSelector(
   getDomain,
   getDatasetUid,
   getDatasetMetadata,
-  (domain, datasetUid, datasetMetadata) =>
-    datasetMetadata ?
-      new MetadataProvider({domain, datasetUid}).getDisplayableColumns(datasetMetadata)
-      :
-      [] // No data yet.
+  (domain, datasetUid, datasetMetadata) => {
+
+    if (datasetMetadata) {
+      return new MetadataProvider({domain, datasetUid}).getDisplayableColumns(datasetMetadata);
+    } else {
+      return [] // No data yet.
+    }
+  }
 );
 
 export const getDatasetLink = createSelector(

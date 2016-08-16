@@ -7,11 +7,6 @@ import { translate } from '../../I18n';
 import { setXAxisScalingMode } from '../actions';
 
 import {
-  getDatasetLink,
-  getDatasetName
-} from '../selectors/metadata';
-
-import {
   getCurrentVif,
   getXAxisScalingMode,
   isInsertableVisualization
@@ -20,11 +15,16 @@ import {
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
 import Visualization from './Visualization';
+import TableView from './TableView';
 import DataPane from './panes/DataPane';
 import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
+
+
+import FlyoutRenderer from '../../views/FlyoutRenderer';
+import RowInspector from '../../views/RowInspector';
 
 export var AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -37,7 +37,8 @@ export var AuthoringWorkflow = React.createClass({
 
   getInitialState() {
     return {
-      currentTabSelection: 'authoring-data'
+      currentTabSelection: 'authoring-data',
+      flyoutRenderer: null
     };
   },
 
@@ -77,8 +78,31 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   componentDidMount() {
+    this.setState({
+      flyoutRenderer: new FlyoutRenderer()
+    });
+
+    RowInspector.setup();
+
     // Prevents the form from submitting and refreshing the page.
-    $(this.modal).on('submit', _.constant(false));
+    $(this.modal).
+      on('submit', _.constant(false)).
+      on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
+  },
+
+  componentWillUnmount() {
+    $(this.modal).off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
+  },
+
+  onFlyout(event) {
+    var payload = event.originalEvent.detail;
+
+    // Render/hide a flyout
+    if (payload !== null) {
+      this.state.flyoutRenderer.render(payload);
+    } else {
+      this.state.flyoutRenderer.clear();
+    }
   },
 
   onComplete() {
@@ -123,17 +147,6 @@ export var AuthoringWorkflow = React.createClass({
     );
   },
 
-  renderBasedOn() {
-    var { metadata } = this.props;
-
-    return (
-      <p className="authoring-based-on">
-        {translate('modal.based_on')}
-        <a href={getDatasetLink(metadata)} target="_blank">{getDatasetName(metadata)}</a>
-      </p>
-    );
-  },
-
   renderBackButton() {
     var { backButtonText, onBack } = this.props;
 
@@ -149,7 +162,6 @@ export var AuthoringWorkflow = React.createClass({
     var { metadata, vifAuthoring } = this.props;
     var isNotInsertable = !isInsertableVisualization(vifAuthoring);
     var scalingMode = null; // This feature is hidden for now.
-    var basedOn = metadata.data ? this.renderBasedOn() : null;
 
     return (
       <div className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
@@ -173,7 +185,7 @@ export var AuthoringWorkflow = React.createClass({
               </div>
             </div>
 
-            {basedOn}
+            <TableView />
           </section>
 
           <footer className="modal-footer authoring-modal-footer">

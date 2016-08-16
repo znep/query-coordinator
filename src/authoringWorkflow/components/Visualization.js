@@ -5,9 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import RowInspector from '../../views/RowInspector';
-import FlyoutRenderer from '../../views/FlyoutRenderer';
-
 import '../../views/SvgHistogram';
 import '../../views/SvgColumnChart';
 import '../../views/SvgTimelineChart';
@@ -41,17 +38,11 @@ export var Visualization = React.createClass({
 
   getInitialState() {
     return {
-      flyoutRenderer: null,
       hasRenderedVisualization: false
     };
   },
 
   componentDidMount() {
-    this.setState({
-      flyoutRenderer: new FlyoutRenderer()
-    });
-
-    RowInspector.setup();
     this.renderVisualization();
   },
 
@@ -67,16 +58,7 @@ export var Visualization = React.createClass({
     return vifChanged || vifAuthoring.authoring.showCenteringAndZoomingSaveMessage !== showCenteringAndZoomingSaveMessage;
   },
 
-  onFlyout(event) {
-    var payload = event.originalEvent.detail;
 
-    // Render/hide a flyout
-    if (payload !== null) {
-      this.state.flyoutRenderer.render(payload);
-    } else {
-      this.state.flyoutRenderer.clear();
-    }
-  },
 
   onCenterAndZoomChanged(event) {
     var centerAndZoom = _.get(event, 'originalEvent.detail');
@@ -102,7 +84,6 @@ export var Visualization = React.createClass({
   destroyVisualizationPreview() {
     $(this.visualizationPreview()).
       trigger('SOCRATA_VISUALIZATION_DESTROY').
-      off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
   },
 
@@ -118,8 +99,6 @@ export var Visualization = React.createClass({
 
       $visualizationPreview.
         socrataSvgColumnChart(vif);
-      $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
   },
 
@@ -135,8 +114,6 @@ export var Visualization = React.createClass({
 
       $visualizationPreview.
         socrataSvgHistogram(vif);
-      $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
   },
 
@@ -153,7 +130,6 @@ export var Visualization = React.createClass({
       $visualizationPreview.
         socrataSvgRegionMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -171,7 +147,6 @@ export var Visualization = React.createClass({
       $visualizationPreview.
         socrataSvgFeatureMap(vif);
       $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout).
         on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     }
   },
@@ -188,8 +163,6 @@ export var Visualization = React.createClass({
 
       $visualizationPreview.
         socrataSvgTimelineChart(vif);
-      $visualizationPreview.
-        on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
     }
   },
 
@@ -253,9 +226,6 @@ export var Visualization = React.createClass({
 
     return (
       <div className="visualization-preview-container">
-        <div className="visualization-toggler">
-          <small>{translate('preview.tabs.visualization')}</small>
-        </div>
         <div className={previewClasses} ref={(ref) => this.preview = ref}/>
         <div className="visualization-preview-map-info-container">
           {this.renderMapSaving()}

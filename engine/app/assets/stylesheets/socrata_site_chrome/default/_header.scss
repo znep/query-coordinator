@@ -64,6 +64,14 @@ header#site-chrome-header[template="default"] {
             float: right;
           }
 
+          .site-chrome-nav-menu {
+            div.dropdown {
+              ul.dropdown-options {
+                top: $banner_height - 1px;
+              }
+            }
+          }
+
           a.site-chrome-nav-link {
             padding: 0 $text_padding;
             display: inline-block;
@@ -79,6 +87,7 @@ header#site-chrome-header[template="default"] {
               padding: 0 5px;
               display: inline-block;
               max-height: $banner_height;
+              vertical-align: middle;
               &:hover, &:focus, &:active {
                 text-decoration: none;
               }

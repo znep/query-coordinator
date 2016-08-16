@@ -124,6 +124,7 @@ header#site-chrome-header, footer#site-chrome-footer {
         vertical-align: top;
         height: $searchbox_height - 18; // 16px padding + 2px border
         box-sizing: content-box;
+        font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
       }
 
       button.search-button {
@@ -144,6 +145,56 @@ header#site-chrome-header, footer#site-chrome-footer {
         z-index: 3;
         &:hover, &:focus, &:active {
           background: #e4e4e4;
+        }
+      }
+    }
+  }
+
+  .site-chrome-nav-menu {
+    height: 100%;
+    display: inline-block;
+    padding: 0;
+    color: $header_fg_color;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover, &:focus, &:active {
+      text-decoration: underline;
+    }
+
+    span.icon-arrow-down {
+      margin-left: 3px;
+      font-size: 10px;
+    }
+
+    div.dropdown {
+      display: inline-block;
+      padding: 0 $text_padding;
+      transition: background-color 0.05s;
+
+      &:hover, &:focus, &:active {
+        text-decoration: none;
+        background-color: $white_highlight_color;
+      }
+
+      ul.dropdown-options {
+        > li {
+          background-color: $header_bg_color;
+          color: $header_fg_color;
+          transition: background-color 0.05s;
+
+          a {
+            padding: 0 $text_padding;
+            color: $header_fg_color;
+          }
+
+          &:hover, &:focus, &:active {
+            text-decoration: none;
+
+            a {
+              background-color: $white_highlight_color;
+            }
+          }
         }
       }
     }

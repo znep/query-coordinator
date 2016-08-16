@@ -203,11 +203,17 @@ function FlyoutRenderer() {
   }
 
   function _showFlyout() {
-    _flyout.addClass('visible');
+
+    if (_flyout) {
+      _flyout.addClass('visible');
+    }
   }
 
   function _hideFlyout() {
-    _flyout.removeClass('visible');
+
+    if (_flyout) {
+      _flyout.removeClass('visible');
+    }
   }
 }
 

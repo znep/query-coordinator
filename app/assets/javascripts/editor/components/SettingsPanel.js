@@ -133,6 +133,45 @@ export default function SettingsPanel(toggleButton) {
     });
   }
 
+  function makeIntoGoalStory() {
+    let goalUrl = prompt('Input a full goal URL on this domain (ie: https://example.com/stat/goals/kxt7-x84m/y5qr-7esw/6hac-mnvb)');
+    if (goalUrl) {
+      if (goalUrl.indexOf('https://') !== 0) {
+        goalUrl = 'https://' + goalUrl;
+      }
+      const parser = document.createElement('a');
+      parser.href = goalUrl;
+      const goalPathIds = _.filter(
+        parser.pathname.split('/'),
+        (component) => component === 'default' || component.match(/^\w\w\w\w-\w\w\w\w$/)
+      );
+      if (goalPathIds.length !== 3) {
+        alert('Unsupported goal URL');
+        return;
+      }
+      const [ dashboard, category, uid ] = goalPathIds;
+      dispatcher.dispatch({
+        action: Actions.STORY_INSERT_BLOCK,
+        storyUid: Environment.STORY_UID,
+        blockContent: {
+          layout: '12',
+          presentable: true,
+          components: [{
+            type: 'goal.embed',
+            value: {
+              originalUrl: goalUrl,
+              domain: parser.hostname,
+              dashboard,
+              category,
+              uid
+            }
+          }]
+        },
+        insertAt: 0
+      });
+    }
+  }
+
   function dispatchActions(event) {
     var action = event.target.getAttribute('data-action') ?
       event.target.getAttribute('data-action') :
@@ -250,6 +289,7 @@ export default function SettingsPanel(toggleButton) {
         return false;
       }
     }).
+    on('click', '#settings-panel-goal-embed-test-button', makeIntoGoalStory). // Experimental UI, only for staging.
     on('click', '.settings-save-btn', saveMetadata).
     on('click', '[data-action]', dispatchActions);
 

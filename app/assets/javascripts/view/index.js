@@ -2,6 +2,7 @@ import $ from 'jQuery';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import '../editor/componentBase';
+import '../editor/block-component-renderers/componentGoalEmbed';
 import '../editor/block-component-renderers/componentGoalTile';
 import '../editor/block-component-renderers/componentHero';
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
@@ -95,6 +96,11 @@ $(document).on('ready', function() {
         case 'story.widget':
           $element.
             componentStoryTile(componentData);
+          break;
+
+        case 'goal.embed':
+          $element.
+            componentGoalEmbed(componentData);
           break;
 
         case 'goal.tile':

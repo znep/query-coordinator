@@ -93,6 +93,8 @@ en:
         insert_btn: 'Insert'
       hero:
         set_cover_image: 'Set Cover Image'
+      goal_embed:
+        edit_btn: 'Edit in Open Performance'
     settings_panel:
       panel_title: 'Menu'
       back_to_profile: 'Back to Profile'

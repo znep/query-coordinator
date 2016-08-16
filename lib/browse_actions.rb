@@ -434,11 +434,26 @@ module BrowseActions
             # localize catalog links if locale is present
             browse_options[:search_options][:locale] = locale unless locale.nil?
 
-            Cetera.search_views(
-              browse_options[:search_options],
-              forwardable_session_cookies(request.cookies),
-              request_id(request) # See app/helpers/application_helper.rb#request_id
-            )
+            # @profile_search_method is set in the profile controller
+            if @profile_search_method
+              if using_cetera_profile_search?
+                Cetera.public_send(
+                  @profile_search_method,
+                  browse_options[:search_options],
+                  forwardable_session_cookies(request.cookies),
+                  request_id(request) # See app/helpers/application_helper.rb#request_id
+                )
+              else
+                Clytemnestra.search_views(browse_options[:search_options])
+              end
+            else
+              Cetera.public_send(
+                :search_views,
+                browse_options[:search_options],
+                forwardable_session_cookies(request.cookies),
+                request_id(request) # See app/helpers/application_helper.rb#request_id
+              )
+            end
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end
@@ -511,8 +526,12 @@ module BrowseActions
       browse_options[:hide_catalog_rss] = true
     end
 
-    # Set browse partial paths based on using_cetera
-    if using_cetera?
+    # Set browse partial paths
+    if using_cetera? && using_cetera_profile_search?
+      browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
+      browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
+    # Applies if the user not on the profile page. @profile_search_method is set in profile controller
+    elsif using_cetera? && @profile_search_method.nil?
       browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
       browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
     else
@@ -772,7 +791,8 @@ module BrowseActions
       :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
       :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
       :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
-      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields,
+      :shared_to
     ]
   )
 end

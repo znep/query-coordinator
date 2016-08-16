@@ -286,7 +286,7 @@ describe Cetera do
 
     it 'should not return results when authentication fails' do
       VCR.use_cassette('cetera/user_search_bad_auth') do
-        search_result = Cetera.search_users(search_query, cookie_string.reverse, request_id)
+        search_result = Cetera.search_users(search_query, nil, request_id)
         expect(search_result.results).to be_empty
       end
     end
@@ -409,6 +409,79 @@ describe Cetera do
       end
     end
   end
+
+  describe 'search_profile_views' do
+    context 'when logged in' do
+      # NOTE: If you re-record the cassette, you'll need to replace this with whatever is getting
+      # passed to Cetera & Core. Check the Cetera debug logs or puts forwardable_session_cookies.
+      let(:cookies) { 'logged_in=true; _ga=GA1.1.764567635.1461627094; socrata-csrf-token=kuyEyHvf3%2FFzn8QU97z3ply5dlDzzClmsC7EsdPaeqYVVb39v8wyxs76Zg54mzXkkt48GAWN0%2FnrM4nv8%2FbnDA%3D%3D; _core_session_id=dzV1NS1zNnd5IDE0NzAxODQ0MjAgZDA3MDkyOWM5ZGVlIDRlYzI3MzIyZTFlN2Q5Y2E2ODc4OTMwYWE2N2Q4ODMyYzViMTA3ZjQ%3D; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTJkYmEzMWJhMTExN2ZlZGJjYjY2M2YyMDQyMmU5ZWE1BjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWg3azVOY1FUN1RlOVphSWFqeWZDUXM1blNrajJRZnFmV3gxTlhpQXNuYW89BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYw--ef71c46553c8d78542f93e72a89094651e4b2178; mp_mixpanel__c=73' }
+      let(:user_4x4) { 'w5u5-s6wy' }
+      let(:domain) { 'localhost' }
+      let(:basic_opts) { { :limit=>10, :page=>1, :for_user=>user_4x4, :nofederate=>true, :sortBy=>"newest", :publication_stage=>["published", "unpublished"], :id=>user_4x4, :domains=>[domain], :domain_boosts=>{}, :categories=>nil, :search_context=>domain } }
+
+      before(:each) do
+        CurrentDomain.set_domain(Domain.new('cname' => domain))
+      end
+
+      it 'returns correct results when searching for assets owned by user' do
+        VCR.use_cassette('cetera/search_profile_views_owned') do
+          search_result = Cetera.search_owned_by_user(basic_opts, cookies)
+          expect(search_result).to be_a(Cetera::SearchResult)
+
+          results = search_result.results
+          expect(results.size).to eq(1) # Currently 1 results for localhost Ricky
+          expect(results[0]).to be_a(Cetera::CeteraResultRow)
+          expect(results[0].id).to eq('em7z-qeb7') # Current result for localhost Ricky
+        end
+      end
+
+      it 'returns correct results when searching for assets shared to user' do
+        VCR.use_cassette('cetera/search_profile_views_shared') do
+          search_result = Cetera.search_shared_to_user(basic_opts.merge(:shared_to => user_4x4), cookies)
+          expect(search_result).to be_a(Cetera::SearchResult)
+
+          results = search_result.results
+          expect(results.size).to eq(2) # Currently 2 results shared to localhost Ricky
+          expect(results[0]).to be_a(Cetera::CeteraResultRow)
+          expect(results[0].id).to eq('ij2u-iwtx')
+          expect(results[1]).to be_a(Cetera::CeteraResultRow)
+          expect(results[1].id).to eq('vkji-3zrf')
+        end
+      end
+
+      it 'searching owned should not return results when authentication fails' do
+        VCR.use_cassette('cetera/search_profile_views_bad_auth_owned') do
+          owned_search_result = Cetera.search_owned_by_user(basic_opts, nil)
+          expect(owned_search_result.results).to be_empty
+        end
+      end
+
+      it 'searching shared should not return results when authentication fails' do
+        VCR.use_cassette('cetera/search_profile_views_bad_auth_shared') do
+          owned_search_result = Cetera.search_shared_to_user(basic_opts.merge(:shared_to => user_4x4), nil)
+          expect(owned_search_result.results).to be_empty
+        end
+      end
+    end
+
+    context 'when not logged in' do
+      it 'returns empty result set when Cetera returns a bad response, searching owned' do
+        VCR.use_cassette('cetera/search_profile_views_owned_failed') do
+          owned_search_result = Cetera.search_owned_by_user({}, nil, nil)
+          expect(owned_search_result.results).to be_empty
+        end
+      end
+
+      it 'returns empty result set when Cetera returns a bad response, searching shared' do
+        VCR.use_cassette('cetera/search_profile_views_shared_failed') do
+          owned_search_result = Cetera.search_shared_to_user({}, nil, nil)
+          expect(owned_search_result.results).to be_empty
+        end
+      end
+    end
+  end
+
+  # add searches for shared_to for these last 2 examples as well
 
   private
 

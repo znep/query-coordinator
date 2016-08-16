@@ -900,13 +900,17 @@ module ApplicationHelper
 
     req = request if defined?(request)
 
-    # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things
-    return false if req.try(:path) =~ /^\/(profile|admin)/
+    # TODO: the admin page needs clytemnestra; only until cetera honors private datasets and other things
+    return false if req.try(:path) =~ /^\/(admin)/
 
     # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
+  end
+
+  def using_cetera_profile_search?
+    FeatureFlags.derive(nil, request, nil)[:cetera_profile_search]
   end
 
   def sprite_icon(opts)

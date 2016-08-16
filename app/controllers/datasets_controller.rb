@@ -22,7 +22,7 @@ class DatasetsController < ApplicationController
     end
     @view = nil # the templates expect a @view var (for reentrancy)
     if FeatureFlags.derive(nil, request).ingress_reenter
-      render 'new'
+      redirect_to '/profile#create_draft'
     else
       render 'new-old'
     end

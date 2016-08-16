@@ -458,7 +458,7 @@ end
     <%= form_tag '/datasets', :method => 'post', :class => 'newDatasetForm commonForm' do %>
       <p class="prompt"><%= t('screens.widget.create_new_dataset.prompt') %></p>
       <div class="line clearfix">
-        <input type="text" id="newDatasetName" name="new_dataset_name" class="required" size="67"/>
+        <input type="text" id="newDatasetName" name="new_dataset_name" class="required"/>
       </div>
       <p class="explanation"><%= html_safe(t('screens.widget.create_new_dataset.explanation_html')) %></p>
       <ul class="submitActions clearfix">

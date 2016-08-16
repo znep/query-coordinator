@@ -2,6 +2,10 @@
 
 blist.namespace.fetch('blist.profile');
 
+function newDatasetModal() {
+    return $('.newDatasetModal');
+}
+
 (function($) {
 
     // var $feedContainer = $('.newsFeed .feed');
@@ -113,15 +117,14 @@ blist.namespace.fetch('blist.profile');
     });
     $contactForm.validate();
 
-    var $newDatasetModal = $('.newDatasetModal');
     $('.button.createLink').click(function(event) {
         if (blist.feature_flags.ingress_reenter) {
             event.preventDefault();
-            $newDatasetModal.jqmShow();
+            newDatasetModal().jqmShow();
         }
     });
-    $newDatasetModal.find('.submitButton').click(function() {
-        $newDatasetModal.find('form').submit();
+    newDatasetModal().find('.submitButton').click(function() {
+        newDatasetModal().find('form').submit();
     });
 
 })(jQuery);
@@ -132,5 +135,9 @@ $(window).load(function() {
         var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
 
         mixpanelNS.delegateLinks('.whats-new--post-list--post', 'a', 'Clicked Socrata News Link');
+    }
+
+    if (blist.feature_flags.ingress_reenter && (window.location.hash === '#create_draft')) {
+        newDatasetModal().jqmShow();
     }
 });

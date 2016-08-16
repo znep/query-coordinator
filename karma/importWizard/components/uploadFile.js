@@ -25,12 +25,26 @@ describe("uploadFile's reducer", () => {
     it('reacts to file upload', () => {
       const result = update(state, fileUploadStart({
         name: 'test_name.csv'
-      }));
+      }, 'i am an uploader ama'));
       expect(result).to.deep.equal({
         fileName: 'test_name.csv',
         progress: {
           type: 'InProgress',
-          percent: 0
+          percent: 0,
+          uploader: 'i am an uploader ama'
+        }
+      });
+    });
+  });
+
+  describe('FILE_UPLOAD_CANCEL', () => {
+    it('reacts to file upload progress event', () => {
+      const result = update(state, {type: 'FILE_UPLOAD_CANCEL'});
+
+      expect(result).to.deep.equal({
+        fileName: null,
+        progress: {
+          type: 'Cancelled',
         }
       });
     });
@@ -38,11 +52,12 @@ describe("uploadFile's reducer", () => {
 
   describe('FILE_UPLOAD_PROGRESS', () => {
     it('reacts to file upload progress event', () => {
-      const result = update(state, fileUploadProgress(15));
+      const result = update(state, fileUploadProgress(15, 'i am an uploader ama'));
       expect(result).to.deep.equal({
         progress: {
           type: 'InProgress',
-          percent: 15
+          percent: 15,
+          uploader: 'i am an uploader ama'
         }
       });
     });
@@ -57,10 +72,11 @@ describe("uploadFile's reducer", () => {
 
   describe('FILE_UPLOAD_ANALYZING', () => {
     it('reacts to file analyzing event', () => {
-      const stateAfter = update(stateBefore, fileUploadAnalyzing());
+      const stateAfter = update(stateBefore, fileUploadAnalyzing('i am an uploader ama'));
       expect(stateAfter).to.deep.equal({
         progress: {
-          type: 'Analyzing'
+          type: 'Analyzing',
+          uploader: 'i am an uploader ama'
         }
       });
     });

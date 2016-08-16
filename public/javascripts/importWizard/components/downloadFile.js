@@ -15,6 +15,7 @@ type FileDownload
   | { type: 'NotStarted', url: FileUrl }
   | { type: 'Started', url: FileUrl, fileName: string }
   | { type: 'InProgress', message: string }
+  | { type: 'Cancelled' }
   | { type: 'Failed', error: string }
   | { type: 'Complete', url: FileUrl, fileId: string, summary: SharedTypes.Summary };
 
@@ -24,6 +25,13 @@ export function renderErrorMessage(fileDownload) {
   return <FlashMessage flashType="error" message={fileDownload.error} />;
 }
 
+
+const FILE_DOWNLOAD_CANCEL = 'FILE_DOWNLOAD_CANCEL';
+function fileDownloadCancel() {
+  return {
+    type: FILE_DOWNLOAD_CANCEL
+  };
+}
 
 export const FILE_DOWNLOAD_START = 'FILE_DOWNLOAD_START';
 function fileDownloadStart() {
@@ -60,7 +68,7 @@ function fileDownloadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.S
 
 const POLL_INTERVAL = 1000;
 function pollURL(resp) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const poll = () => {
       socrataFetch(`/api/imports2.json?method=scanUrl&ticket=${resp.ticket}`, {
         method: 'GET',
@@ -71,6 +79,10 @@ function pollURL(resp) {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).then((result) => {
+        if (isCancelled(getState())) {
+          return;
+        }
+
         switch (result.status) {
           case 202:
             setTimeout(poll, POLL_INTERVAL);
@@ -96,7 +108,7 @@ function pollURL(resp) {
 }
 
 function scanURL(url, onFileDownloadAction) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(fileDownloadStart());
     socrataFetch('/api/imports2.json?method=scanUrl', {
       method: 'POST',
@@ -110,6 +122,10 @@ function scanURL(url, onFileDownloadAction) {
         url
       })
     }).then((result) => {
+      if (isCancelled(getState())) {
+        return;
+      }
+
       switch (result.status) {
         case 202:
           return result.json().then((resp) => {
@@ -127,6 +143,10 @@ function scanURL(url, onFileDownloadAction) {
       }
     });
   };
+}
+
+function isCancelled(state) {
+  return state.download.type === 'Cancelled';
 }
 
 
@@ -174,6 +194,13 @@ export function update(download: FileDownload = {}, action): FileDownload {
           ? I18n.screens.import_pane.problem_importing
           : action.error
       };
+    case FILE_DOWNLOAD_CANCEL:
+      return {
+        ...download,
+        url: null,
+        fileName: null,
+        type: 'Cancelled'
+      };
     default:
       return download;
   }
@@ -204,6 +231,11 @@ export function view({ onFileDownloadAction, fileDownload, goToPrevious }) {
 
   function onImportClicked() {
     onFileDownloadAction(scanURL(fileDownload.url, onFileDownloadAction));
+  }
+
+  function onPreviousClicked() {
+    onFileDownloadAction(fileDownloadCancel());
+    goToPrevious();
   }
 
   return (
@@ -239,7 +271,7 @@ export function view({ onFileDownloadAction, fileDownload, goToPrevious }) {
         </div>
       </div>
       <NavigationControl
-        onPrev={goToPrevious}
+        onPrev={onPreviousClicked}
         cancelLink="/profile" />
     </div>
   );

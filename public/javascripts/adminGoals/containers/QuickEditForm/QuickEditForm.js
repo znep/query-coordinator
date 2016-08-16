@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import { dismissModal, saveGoalQuickEdit, updateFormData } from '../../actions/quickEditActions';
+import { openFeedbackFlannel } from '../../actions/feedbackFlannelActions';
 import moment from 'moment';
 import { modalQuitEventHandler } from '../../components/ModalQuitEventHandler';
 import SocrataAlert from '../../components/SocrataAlert';
@@ -134,7 +135,11 @@ class GoalQuickEdit extends React.Component {
       <SocrataModal.Modal fullScreen>
         {/* Form element covers content and footer. We need buttons at the footer to work with form. */}
         <form onSubmit={ this.save }>
-          <SocrataModal.Header title={ goalTitle } onClose={ this.props.handleNavigateAway }/>
+          <SocrataModal.Header title={ goalTitle } onClose={ this.props.handleNavigateAway } className="modal-header-with-link">
+            <a className="feedback" onClick={ this.props.openFeedbackFlannel }>
+              { translations.getIn(['admin', 'quick_edit', 'feedback']) }
+            </a>
+          </SocrataModal.Header>
           <SocrataModal.Content>
             { failureAlert }
 
@@ -183,7 +188,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   dismissModal: () => dispatch(dismissModal()),
   saveGoalQuickEdit: (goalId, version, values) => dispatch(saveGoalQuickEdit(goalId, version, values)),
-  updateFormData: newData => dispatch(updateFormData(newData))
+  updateFormData: newData => dispatch(updateFormData(newData)),
+  openFeedbackFlannel: event => dispatch(openFeedbackFlannel(event.target))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(modalQuitEventHandler(GoalQuickEdit));

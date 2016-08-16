@@ -12,6 +12,7 @@ export function Header(props) {
       <h1 className="h5 modal-header-title">
         { props.title }
       </h1>
+      { props.children }
       <button type="button" className="btn btn-transparent modal-header-dismiss" onClick={ props.onClose }>
         <span className="icon-close-2" />
       </button>

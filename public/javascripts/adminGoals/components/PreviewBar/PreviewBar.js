@@ -1,5 +1,6 @@
 import React  from 'react';
 import { connect } from 'react-redux';
+import { openFeedbackFlannel } from '../../actions/feedbackFlannelActions';
 import './PreviewBar.scss';
 
 class PreviewBar extends React.Component {
@@ -17,7 +18,9 @@ class PreviewBar extends React.Component {
             { translations.getIn(['admin', 'preview_bar', 'learn_more']) } <span className="icon-external" />
           </a>
         </div>
-        <div className="feedback-link">{ translations.getIn(['admin', 'preview_bar', 'feedback']) }</div>
+        <div className="feedback-link">
+          <a onClick={ this.props.openFeedbackFlannel }>{ translations.getIn(['admin', 'preview_bar', 'feedback']) }</a>
+        </div>
       </div>
     );
   }
@@ -27,4 +30,8 @@ const mapStateToProps = state => ({
   translations: state.get('translations')
 });
 
-export default connect(mapStateToProps, null)(PreviewBar);
+const mapDispatchToProps = dispatch => ({
+  openFeedbackFlannel: event => dispatch(openFeedbackFlannel(event.target))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PreviewBar);

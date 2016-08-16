@@ -1847,6 +1847,7 @@ en:
           within: Around
           below: Below
           above: Above
+        feedback: Feedback
       modal:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
       preview_bar:
@@ -1854,6 +1855,11 @@ en:
         performance_goal_management_preview: Performance Goal Management Preview
         learn_more: Learn More
         feedback: Feedback
+      feedback_flannel:
+        yes_include_screenshot: Yes, include a screenshot
+        no_thanks: No thanks
+        message: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com" target="_blank">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy"  target="_blank">privacy policy</a>.
+        title: Do you want to include an annotated screenshot of the current page?
   plugins:
     daterangepicker:
       clear: Clear

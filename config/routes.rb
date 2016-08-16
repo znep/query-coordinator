@@ -222,7 +222,6 @@ Rails.application.routes.draw do
     get '/analytics' => 'analytics#index'
     post '/analytics/add/:domain_entity/:metric' => 'analytics#add'
     post '/analytics/add' => 'analytics#add_all'
-    post '/analytics/pageview' => 'analytics#pageview'
 
     scope :controller => 'profile', :path => '/profile',
           :constraints => {:id => Frontend::UID_REGEXP, :profile_name => /(\w|-)+/} do

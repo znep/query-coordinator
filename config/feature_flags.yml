@@ -165,10 +165,6 @@ stories_show_facet_in_catalog:
 enable_new_account_verification_email:
   description: When enabled, causes new accounts to receive an email with verification link that must be validated before account can be used.
   defaultValue: false
-eventing_metrics:
-  description: Use experimental event-based instead of key-value metrics. If 'both', emit both.
-  defaultValue: false
-  expectedValues: both
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''

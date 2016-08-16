@@ -10,7 +10,7 @@ import { setMeasure, setMeasureAggregation } from '../actions';
 import { getAnyMeasure, isFeatureMap } from '../selectors/vifAuthoring';
 import { hasData, getValidMeasures } from '../selectors/metadata';
 
-export var MeasureSelector = React.createClass({
+export const MeasureSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
@@ -24,23 +24,29 @@ export var MeasureSelector = React.createClass({
     };
   },
 
+  componentDidUpdate() {
+    if (this.selector) {
+      Styleguide.attachTo(this.selector);
+    }
+  },
+
   renderMeasureAggregationDropdown() {
-    var {
+    const {
       aggregationTypes,
       onSelectMeasureAggregation,
       vifAuthoring
     } = this.props;
 
-    var measure = getAnyMeasure(vifAuthoring);
-    var isNotCountingRows = !_.isNull(measure.columnName);
+    const measure = getAnyMeasure(vifAuthoring);
+    const isNotCountingRows = !_.isNull(measure.columnName);
 
     if (isNotCountingRows) {
-      var options = [
+      const options = [
         {title: translate('aggregations.none'), value: null},
         ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
       ];
 
-      var measureAggregationAttributes = {
+      const measureAggregationAttributes = {
         options,
         onSelection: onSelectMeasureAggregation,
         value: measure.aggregationFunction,
@@ -52,9 +58,24 @@ export var MeasureSelector = React.createClass({
     }
   },
 
+  renderMeasureEmptyFlyout() {
+    const flyoutAttributes = {
+      id: 'measure-empty-flyout',
+      className: 'measure-empty-flyout flyout flyout-hidden'
+    };
+
+    return (
+      <div {...flyoutAttributes}>
+        <section className="flyout-content">
+          <p>{translate('panes.data.fields.measure.empty_measure')}</p>
+        </section>
+      </div>
+    );
+  },
+
   renderMeasureOption(option) {
-    var columnType = _.find(COLUMN_TYPES, {type: option.type});
-    var icon = columnType ? columnType.icon : '';
+    const columnType = _.find(COLUMN_TYPES, {type: option.type});
+    const icon = columnType ? columnType.icon : '';
 
     return (
       <div className="dataset-column-dropdown-option">
@@ -64,22 +85,23 @@ export var MeasureSelector = React.createClass({
   },
 
   renderMeasureSelector() {
-    var {
+    const {
       metadata,
       vif,
       onSelectMeasure,
       vifAuthoring
     } = this.props;
-    var measure = getAnyMeasure(vifAuthoring);
-    var isCountingRows = _.isNull(measure.columnName);
-    var measures = getValidMeasures(metadata);
-    var visualizationType = _.get(vif, 'series[0].type');
 
-    var classes = classNames('measure-dropdown-container', {
+    const measure = getAnyMeasure(vifAuthoring);
+    const isCountingRows = _.isNull(measure.columnName);
+    const measures = getValidMeasures(metadata);
+    const visualizationType = _.get(vif, 'series[0].type');
+
+    const classes = classNames('measure-dropdown-container', {
       'measure-dropdown-container-count-rows': isCountingRows
     });
 
-    var options = [
+    const options = [
       {title: translate('panes.data.fields.measure.no_value'), value: null},
       ...measures.map(measure => ({
         title: measure.name,
@@ -89,30 +111,34 @@ export var MeasureSelector = React.createClass({
       }))
     ];
 
-    var measureAttributes = {
+    const hasOnlyDefaultValue = options.length <= 1;
+    const measureAttributes = {
       options,
       onSelection: onSelectMeasure,
       value: measure.columnName,
       id: 'measure-selection',
-      disabled: isFeatureMap(vifAuthoring) || options.length === 1
+      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue
     };
 
+    const measureFlyout = hasOnlyDefaultValue ? this.renderMeasureEmptyFlyout() : null;
+
     return (
-      <div>
+      <div ref={(ref) => this.selector = ref}>
         <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
-        <div className={classes}>
+        <div className={classes} data-flyout="measure-empty-flyout">
           <Styleguide.components.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationDropdown()}
         </div>
         <p className="authoring-field-description">
           <small>{translate('panes.data.fields.measure.description')}</small>
         </p>
+        {measureFlyout}
       </div>
     );
   },
 
   render() {
-    var { metadata } = this.props;
+    const { metadata } = this.props;
 
     return hasData(metadata) ?
       this.renderMeasureSelector() :
@@ -121,7 +147,7 @@ export var MeasureSelector = React.createClass({
 });
 
 function mapStateToProps(state) {
-  var { vifAuthoring, metadata } = state;
+  const { vifAuthoring, metadata } = state;
   return { vifAuthoring, metadata };
 }
 

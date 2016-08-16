@@ -30,37 +30,63 @@ class DatasetLandingPage
       derived_views = derived_views.slice(offset.to_i, limit.to_i) || []
     end
 
-    # We are using threads here because stories need a separate request for its preview image
-    formatted_derived_views = []
-    derived_views_threads = derived_views.map do |view|
+    # We are using threads here because stories need to issue a separate request for its
+    # preview image and (until Cetera returns the previewImageId) we also need to issue
+    # a request to Core for the previewImageId of non-stories views. To speed things up,
+    # we're making these requests with threads and then formatting the view widget. If
+    # Cetera is ever able to return the preview image url for either a story or a view,
+    # then we can remove these threads.
+    preview_image_urls = {}
+    preview_image_url_request_threads = derived_views.map do |view|
       Thread.new do
-        formatted_derived_views << format_view_widget(view, cookie_string, request_id)
+        preview_image_urls[view.id] = view.get_preview_image_url(cookie_string, request_id)
       end
     end
+    preview_image_url_request_threads.each(&:join)
 
-    derived_views_threads.each { |thread| thread.join }
-    formatted_derived_views
+    derived_views.map { |view| format_view_widget(view, preview_image_urls[view.id]) }
   end
 
   def get_featured_content(uid, cookie_string, request_id)
     view = View.find(uid)
+    featured_content = view.featured_content
 
-    # We are using threads here because stories need a separate request for its preview image
-    formatted_featured_views = []
-    featured_views_threads = view.featured_content.map do |view|
+    # We are using threads here because stories need to issue a separate request for its
+    # preview image and (until Cetera returns the previewImageId) we also need to issue
+    # a request to Core for the previewImageId of non-stories views. To speed things up,
+    # we're making these requests with threads and then formatting the view widget. If
+    # Cetera is ever able to return the preview image url for either a story or a view,
+    # then we can remove these threads.
+    preview_image_urls = {}
+    preview_image_url_request_threads = featured_content.map do |featured_item|
       Thread.new do
-        formatted_featured_views << format_featured_item(view, cookie_string, request_id)
+        if featured_item['contentType'] == 'internal'
+          featured_view = View.set_up_model(featured_item['featuredView'])
+          image_url = featured_view.get_preview_image_url(cookie_string, request_id)
+
+          preview_image_urls[featured_view.id] = image_url
+        end
       end
     end
+    preview_image_url_request_threads.each(&:join)
 
-    featured_views_threads.each { |thread| thread.join }
-    formatted_featured_views
+    featured_content.map do |featured_item|
+      image_url = nil
+
+      if featured_item['contentType'] == 'internal'
+        image_url = preview_image_urls[featured_item['featuredView']['id']]
+      end
+
+      format_featured_item(featured_item, image_url)
+    end
   end
 
   def add_featured_content(uid, featured_item, cookie_string, request_id)
     path = "/views/#{uid}/featured_content.json"
-    response = JSON.parse(CoreServer::Base.connection.create_request(path, featured_item))
-    format_featured_item(response, cookie_string, request_id)
+    view = JSON.parse(CoreServer::Base.connection.create_request(path, featured_item))
+    image_url = view.get_preview_image_url(cookie_string, request_id)
+
+    format_featured_item(view, image_url)
   end
 
   def delete_featured_content(uid, item_position)
@@ -70,7 +96,9 @@ class DatasetLandingPage
   end
 
   def get_formatted_view_widget_by_id(uid, cookie_string, request_id)
-    format_view_widget(View.find(uid), cookie_string, request_id)
+    view = View.find(uid)
+    image_url = view.get_preview_image_url(cookie_string, request_id)
+    format_view_widget(view, image_url)
   end
 
   # Formats either a View object instantiated from View json (from api/views) or
@@ -89,7 +117,7 @@ class DatasetLandingPage
   #   },
   #   "link": "https://data.cityofnewyork.us/d/axxb-u7uv"
   # }
-  def format_view_widget(view, cookie_string, request_id)
+  def format_view_widget(view, image_url = nil)
     formatted_view = {
       :name => view.name,
       :id => view.id,
@@ -100,7 +128,7 @@ class DatasetLandingPage
       :updatedAt => view.try(:time_last_updated_at) || view.updatedAt,
       :viewCount => view.viewCount,
       :isPrivate => !view.is_public?,
-      :imageUrl => view.get_preview_image_url(cookie_string, request_id)
+      :imageUrl => image_url
     }
 
     if view.story?
@@ -110,11 +138,12 @@ class DatasetLandingPage
     formatted_view
   end
 
-  def format_featured_item(featured_item, cookie_string, request_id)
+  def format_featured_item(featured_item, image_url = nil)
     if featured_item['contentType'] == 'internal'
       view = View.set_up_model(featured_item['featuredView'])
+
       return featured_item.merge(
-        :featuredView => format_view_widget(view, cookie_string, request_id)
+        :featuredView => format_view_widget(view, image_url)
       )
     end
 

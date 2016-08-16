@@ -128,7 +128,9 @@ describe DatasetLandingPage do
       end
 
       it 'formats the response' do
-        expect(Cetera).to receive(:get_derived_from_views).and_return([{}])
+        cetera_result_double = instance_double(Cetera::CeteraResultRow, :id => 'elep-hant')
+        expect(cetera_result_double).to receive(:get_preview_image_url).and_return('image')
+        expect(Cetera).to receive(:get_derived_from_views).and_return([cetera_result_double])
         expect(dataset_landing_page).to receive(:format_view_widget).
           and_return(formatted_view)
         results = dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id')

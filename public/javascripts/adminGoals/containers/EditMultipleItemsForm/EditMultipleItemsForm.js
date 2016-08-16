@@ -145,7 +145,7 @@ class EditMultipleItemsForm extends React.Component {
     }
 
     return (
-      <SocrataFlyout text={ tooltipText } tooltip>
+      <SocrataFlyout text={ tooltipText }>
         <SocrataChangeIndicator onRevert={ onRevert }/>
       </SocrataFlyout>
     );

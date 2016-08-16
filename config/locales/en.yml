@@ -1799,6 +1799,9 @@ en:
         quick_edit_measure: Quick Edit Measure
         manage_on_goal_page: Manage on Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
+        not_configured_goal_message:
+          text: This goal is not configured. To make changes to this section,
+          link: go to the goal page
         success_message: Success! {0} updated.
         goal_name: Goal Title
         status: Status

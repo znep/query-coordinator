@@ -2,6 +2,7 @@ import _ from 'lodash';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';
+import mockGoals from '../data/cachedGoals';
 
 import {
   openGoalQuickEdit,
@@ -45,15 +46,21 @@ describe('actions/quickEditActions', () => {
       xhr.respond(200, null, JSON.stringify({ version: 'YYYY-MM-DDTHH:MM:SS.SSS+00:00' }));
     });
 
-    const store = mockStore(Immutable.fromJS({}));
-
-    let goalId = 'xxxx-xxx';
-    let version = 'YYYY-MM-DDTHH:MM:SS.SSS+00:00';
-    let values = {
-      name: 'test'
+    const goalId = 'vefh-4ihb';
+    const state = {
+      goalTableData: {
+        cachedGoals: mockGoals
+      },
+      quickEditForm: {
+        goalId: goalId,
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
+      }
     };
+    const store = mockStore(Immutable.fromJS(state));
 
-    return store.dispatch(saveGoalQuickEdit(goalId, version, values)).then(() => {
+    return store.dispatch(saveGoalQuickEdit()).then(() => {
       var executedActions = store.getActions();
 
       var closeGoalQuickEditAction = _.find(executedActions, {type: CLOSE_GOAL_QUICK_EDIT});

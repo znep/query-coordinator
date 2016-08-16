@@ -1,9 +1,9 @@
 import React from 'react';
 
-export var <%= name %> = React.createClass({
+export var {{ name }} = React.createClass({
   render() {
     return <div></div>;
   }
 });
 
-export default <%= name %>;
+export default {{ name }};

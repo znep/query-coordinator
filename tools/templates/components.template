@@ -1,0 +1,8 @@
+<section class="styleguide-section" id="{{ id }}">
+  <div class="meta">
+    <h2 class="styleguide-header">{{ name }}</h2>
+  </div>
+  <div class="example">
+    <%= partial "components/{{ partial }}" %>
+  </div>
+</section>

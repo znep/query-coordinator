@@ -1,0 +1,1 @@
+<%= partial "code_sample", locals: { component: "components/skeletons/{{ kebabCase }}" } %>

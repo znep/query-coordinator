@@ -7,7 +7,8 @@ class OdysseusController < ApplicationController
 
   def chromeless
     @suppress_chrome = true
-    render_odysseus_path(request.path)
+    @suppress_govstat = true # remove background and other unnecessary styles
+    render_odysseus_path(request.path, additional_style: 'govstat-chromeless')
   end
 
   def version
@@ -18,12 +19,14 @@ class OdysseusController < ApplicationController
 
   private
 
-  def render_odysseus_path(path)
+  def render_odysseus_path(path, options = {})
     odysseus_request(path) do |res|
       odysseus_response = JSON.parse(res.body)
+      styles = odysseus_response['styles'] || []
+      styles.push(options[:additional_style]) if options[:additional_style]
 
       @title = odysseus_response['title'] || ''
-      @style_packages = odysseus_response['styles'] || []
+      @style_packages = styles
       @script_packages = odysseus_response['scripts'] || []
       @objects = odysseus_response['objects']
       @contents = odysseus_response['markup']

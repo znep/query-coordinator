@@ -22,14 +22,27 @@ table.op-admin-table {
       }
     }
 
-    span {
+    .th-text {
       cursor: pointer;
+
+      span.order-icon {
+        margin-left: 7px;
+        font-size: 12px;
+        display: none;
+
+        &.persist-visible {
+          display: initial;
+        }
+      }
+
+      &:hover {
+        .order-icon {
+          display: initial;
+        }
+      }
+
     }
 
-    .order-icon {
-      margin-left: 7px;
-      font-size: 12px;
-    }
   }
 
   tbody {

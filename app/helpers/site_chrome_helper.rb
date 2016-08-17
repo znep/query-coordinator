@@ -15,10 +15,6 @@ module SiteChromeHelper
     end
   end
 
-  def in_preview_mode?
-    !!cookies[:socrata_site_chrome_preview]
-  end
-
   def content_at_stage
     in_preview_mode? ? :draft_content : :published_content
   end

@@ -18,6 +18,19 @@ var validMetadata = {
   }
 };
 
+var nonNumericMetadata = {
+  data: {
+    columns: [
+      {name: 'Text', fieldName: 'text', renderTypeName: 'text'}
+    ]
+  },
+  phidippidesMetadata: {
+    columns: {
+      number: {name: 'Text', renderTypeName: 'text'}
+    }
+  }
+};
+
 var validVifAuthoring = {
   vifs: {
     columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
@@ -61,6 +74,23 @@ describe('MeasureSelector', function() {
 
         it('renders measure aggregation selection', function() {
           expect(component.querySelector('#measure-aggregation-selection')).to.exist;
+        });
+      });
+
+      describe('when there are no numeric columns', function() {
+        beforeEach(function() {
+          component = renderComponent(MeasureSelector, defaultProps({
+            metadata: nonNumericMetadata,
+            vifAuthoring: validVifAuthoring
+          }));
+        });
+
+        it('renders a disabled selector', function() {
+          expect(component.querySelector('#measure-selection.dropdown-disabled')).to.exist;
+        });
+
+        it('renders a flyout', function() {
+          expect(component.querySelector('.measure-empty-flyout')).to.exist;
         });
       });
     });

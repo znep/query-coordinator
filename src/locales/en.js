@@ -41,7 +41,8 @@ export default {
         measure: {
           title: 'Measure',
           description: 'A measure is a numeric field or the count of rows associated with the selected dimension.',
-          no_value: '(Count of Rows)'
+          no_value: '(Count of Rows)',
+          empty_measure: 'Your dataset must contain a column with numeric values in order to use the measure aggregation function.'
         },
         measure_aggregation: {
           title: 'Measure Aggregation',

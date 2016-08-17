@@ -4,6 +4,7 @@ import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
+import { storyStore } from '../stores/StoryStore';
 
 /**
  * A component that renders the StyleAndPresentationPanel.
@@ -28,60 +29,61 @@ $.fn.styleAndPresentationPanel = StyleAndPresentationPanel;
 
 export default function StyleAndPresentationPanel(toggleButton) {
 
-  var styleAndPresentationPanel = $(this).sidebar({
+  const styleAndPresentationPanel = $(this).sidebar({
     side: 'right'
   });
-  var $userStoryContainer = $('.user-story-container');
-  var $stylePanelBtn = $('.style-panel-btn');
+  const $userStoryContainer = $('.user-story-container');
+  const $stylePanelBtn = $('.style-panel-btn');
+  const $addContentPanel = $('#add-content-panel');
+  const $themeList = styleAndPresentationPanel.find('.theme-list');
+
+  // React to store changes.
+
+  storyStore.addChangeListener(updateSelectedTheme);
+  updateSelectedTheme();
 
   // Set up some input events.
 
-  toggleButton.on('click', function() {
+  toggleButton.on('click', () => {
     styleAndPresentationPanel.trigger('sidebar:toggle');
-    $('#add-content-panel').trigger('sidebar:close');
+    $addContentPanel.trigger('sidebar:close');
   });
 
-  styleAndPresentationPanel.find('.content-panel-close-btn').on('click', function() {
+  styleAndPresentationPanel.find('.content-panel-close-btn').on('click', () => {
     styleAndPresentationPanel.trigger('sidebar:close');
   });
 
-  $(document).on('keydown', function(e) {
-    if (e.ctrlKey && e.keyCode === 50) { // '2'
+  $(document).on('keydown', (event) => {
+    if (event.ctrlKey && event.keyCode === 50) { // '2'
       toggleButton.click();
     }
-    if (e.keyCode === 27) { // esc
+    if (event.keyCode === 27) { // esc
       styleAndPresentationPanel.trigger('sidebar:close');
     }
   });
 
   $userStoryContainer.on('click rich-text-editor::content-click', handleClickOutsideStylePanel);
 
-  function handleClickOutsideStylePanel(event) {
-    if (!$stylePanelBtn.is(event.target) && styleAndPresentationPanel.hasClass('active')) {
-      styleAndPresentationPanel.trigger('sidebar:close');
-    }
-  }
-
   styleAndPresentationPanel.
-    on('sidebar:open', function() {
+    on('sidebar:open', () => {
       toggleButton.addClass('active');
       styleAndPresentationPanel.addClass('active');
       styleAndPresentationPanel.find('button[data-panel-toggle="style-and-presentation-panel"]').eq(0).focus();
     }).
-    on('sidebar:close', function() {
+
+    on('sidebar:close', () => {
       toggleButton.
         removeClass('active').
         blur();
       styleAndPresentationPanel.removeClass('active');
     }).
+
     on('mousewheel', '.scrollable', StorytellerUtils.preventScrolling).
-    on('mousedown', '.theme', function(event) {
-      var theme = event.currentTarget.getAttribute('data-theme');
+
+    on('mousedown', '.theme', (event) => {
+      const theme = event.currentTarget.getAttribute('data-theme');
 
       if (theme) {
-        styleAndPresentationPanel.find('.theme').removeClass('active');
-        $(event.currentTarget).addClass('active');
-
         dispatcher.dispatch({
           action: Actions.STORY_UPDATE_THEME,
           storyUid: Environment.STORY_UID,
@@ -91,4 +93,19 @@ export default function StyleAndPresentationPanel(toggleButton) {
     });
 
   return this;
+
+  function handleClickOutsideStylePanel(event) {
+    if (!$stylePanelBtn.is(event.target) && styleAndPresentationPanel.hasClass('active')) {
+      styleAndPresentationPanel.trigger('sidebar:close');
+    }
+  }
+
+  function updateSelectedTheme() {
+    const currentTheme = storyStore.getStoryTheme(Environment.STORY_UID);
+    const currentThemeItem = $themeList.find(`.theme[data-theme="${currentTheme}"]`);
+    if (!currentThemeItem.hasClass('active')) {
+      $themeList.find('.theme.active').removeClass('active');
+      currentThemeItem.addClass('active');
+    }
+  }
 }

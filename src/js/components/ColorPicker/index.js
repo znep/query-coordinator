@@ -3,6 +3,7 @@ import React from 'react';
 
 export default React.createClass({
   propTypes: {
+    id: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
       React.PropTypes.array,
@@ -62,21 +63,25 @@ export default React.createClass({
   },
 
   render() {
+    var { palette, bucketRevealDirection, id } = this.props;
+    var { showingBuckets, selectedColor } = this.state;
+
     var colorFrameStyle = {
-      backgroundColor: this.state.selectedColor
+      backgroundColor: selectedColor
     };
 
     var colorOverlayClassName = classNames('color-picker-overlay', {
-      'hidden': !this.state.showingBuckets
-    });
-    var bucketsClassName = `color-buckets color-${this.props.palette.length}`;
-    var bucketContainerClassName = classNames('color-buckets-container', {
-      'hidden': !this.state.showingBuckets,
-      'reveal-from-top': this.props.bucketRevealDirection === 'top'
+      'hidden': !showingBuckets
     });
 
-    var colorBuckets = this.props.palette.map((color, key) => {
-      var isSelectedColor = color === this.state.selectedColor;
+    var bucketsClassName = `color-buckets color-${palette.length}`;
+    var bucketContainerClassName = classNames('color-buckets-container', {
+      'hidden': !showingBuckets,
+      'reveal-from-top': bucketRevealDirection === 'top'
+    });
+
+    var colorBuckets = palette.map((color, key) => {
+      var isSelectedColor = color === selectedColor;
       var style = { backgroundColor: color };
       var attributes = {
         key,
@@ -90,12 +95,12 @@ export default React.createClass({
 
     var hexInputAttributes = {
       type: 'text',
-      value: this.state.selectedColor,
+      value: selectedColor,
       onChange: this.onChangeInputColor
     };
 
     return (
-      <div className="color-picker">
+      <div className="color-picker" id={id}>
         <div className={colorOverlayClassName} onClick={this.onClose} />
         <div className="color-frame" onClick={this.onClickColorFrame}>
           <div className="selected-color-frame" style={colorFrameStyle} />

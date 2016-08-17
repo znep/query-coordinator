@@ -30,7 +30,10 @@ const sortBy = (state, { fieldName, fieldType, direction }) => state.mergeIn(['s
   direction
 });
 
-const showPage = (state, { pageNumber }) => state.setIn(['pagination', 'currentPage'], pageNumber);
+const showPage = (state, { pageNumber }) => {
+  return state.setIn(['pagination', 'currentPage'], pageNumber).set('selectedGoalIds', Immutable.List([]));
+};
+
 const setGoalsPerPage = (state, { goalsPerPage }) => state.setIn(['pagination', 'goalsPerPage'], goalsPerPage);
 
 const selectUntil = (state, { untilGoalId, paginatedGoalIds }) => {

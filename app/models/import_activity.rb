@@ -22,7 +22,7 @@ class ImportActivity
     end]
 
     restorable_views = views.keep_if do |uid, value|
-      value.data['flags'].include?('restorePossibleForType')
+      value.data.fetch('flags',[]).include?('restorePossibleForType')
     end
 
     user_ids = activities.pluck(:user_id)

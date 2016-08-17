@@ -2,47 +2,25 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import Immutable from 'immutable';
-import { selectRow, deselectRow, rowSelectionStart, rowSelectionEnd } from '../actions/goalTableActions';
+import { selectRow, deselectRow, multipleRowSelection } from '../actions/goalTableActions';
 import { openGoalQuickEdit } from '../actions/quickEditActions';
 import SocrataFlyout from './SocrataFlyout/SocrataFlyout';
 import SocrataCheckbox from './SocrataCheckbox/SocrataCheckbox';
 
 class GoalTableRow extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      multipleSelection: false,
-      selectedRows: new Immutable.Map
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      multipleRowSelection: nextProps.multipleRowSelection,
-      selectedRows: nextProps.selectedRows
-    });
-  }
-
   onClick(event) {
     if (event.button === 0) {
-      const { multipleRowSelection, selectedRows } = this.state;
+      const { selectedRows, lastSelectedRow } = this.props;
+      const goalId = this.props.goal.get('id');
 
       event.preventDefault();
 
-      if (event.shiftKey) {
-        if (multipleRowSelection) {
-          this.props.rowSelectionEnd(this.props.goal.get('id'));
-        } else {
-          this.props.rowSelectionStart(this.props.goal.get('id'));
-        }
-      }
-
-      if (selectedRows.includes(this.props.goal.get('id'))) {
-        this.props.rowDeselected(this.props.goal.get('id'));
+      if (event.shiftKey && lastSelectedRow) {
+        this.props.multipleRowSelection(goalId);
+      } else if (selectedRows.includes(goalId)) {
+        this.props.rowDeselected(goalId);
       } else {
-        this.props.rowSelected(this.props.goal.get('id'));
+        this.props.rowSelected(goalId);
       }
 
       return false;
@@ -97,14 +75,13 @@ class GoalTableRow extends React.Component {
 const mapStateToProps = state => ({
   translations: state.get('translations'),
   selectedRows: state.getIn(['goalTableData', 'selectedRows']),
-  multipleRowSelection: state.getIn(['goalTableData', 'multipleRowSelection'])
+  lastSelectedRow: state.getIn(['goalTableData', 'lastSelectedRow'])
 });
 
 const mapDispatchToProps = dispatch => ({
   rowSelected: goalId => dispatch(selectRow(goalId)),
   rowDeselected: goalId => dispatch(deselectRow(goalId)),
-  rowSelectionStart: goalId => dispatch(rowSelectionStart(goalId)),
-  rowSelectionEnd: goalId => dispatch(rowSelectionEnd(goalId)),
+  multipleRowSelection: goalId => dispatch(multipleRowSelection(goalId)),
   openQuickEdit: event => dispatch(openGoalQuickEdit(event.target.getAttribute('data-goalId'))),
   openQuickEditWithId: goalId => dispatch(openGoalQuickEdit(goalId))
 });

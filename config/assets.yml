@@ -408,7 +408,6 @@ javascripts:
     - public/javascripts/controls/blob-dataset.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/screens/dataset-about.js
-  dataset-new:
   # TODO(vilterp): remove this once `ingress_reenter` feature flag is turned on
   dataset-new-old:
     - public/javascripts/util/serialize.js

@@ -103,6 +103,26 @@ export default function StoryRenderer(options) {
 
     $(window).on('resize', _throttledRender);
 
+    // Hover intent.
+    //
+    // Don't show the edit controls immediately when the cursor enters a block.
+    // Allows the cursor path to clip the corner of a block en route to the edit
+    // controls, which happens on short blocks as you move towards the buttons
+    // for presentation mode toggle or block deletion.
+    //
+    // Edit control visibility was previous implemented with CSS hover, but the
+    // reaction was too immediate in the "clipping" case. See EN-1026.
+    $container.on('mouseenter', '.block-edit', _.debounce(_applyHoverIntent, 150));
+
+    // Unhover intent.
+    //
+    // Don't hide the edit controls immediately when the cursor travels outside
+    // all editable blocks; instead, wait slightly longer than the delay for
+    // showing edit controls, so that we reduce the chance of visual flicker.
+    //
+    // This doesn't trigger when transitioning from one block to another.
+    $container.on('mouseleave', '.block-edit', _applyUnhoverIntent);
+
     $container.on(
       'click',
       '[data-block-move-action]:not(.btn-disabled)',
@@ -544,7 +564,7 @@ export default function StoryRenderer(options) {
     var blockEditControls = $(
       '<div>',
       {
-        'class': 'block-edit-controls'
+        'class': 'block-edit-controls hidden'
       }
     ).append([
       $moveUpButton,
@@ -565,6 +585,43 @@ export default function StoryRenderer(options) {
 
 
     return blockEditControls;
+  }
+
+  function _applyHoverIntent(event) {
+    const targetControls = $(event.currentTarget).children('.block-edit-controls');
+    const activeControls = $('.block-edit-controls.active');
+
+    // Abort when cursor remains on the same editable block.
+    if (targetControls.is(activeControls)) {
+      return;
+    }
+
+    activeControls.addClass('hidden').removeClass('active');
+    targetControls.addClass('active').removeClass('hidden');
+  }
+
+  function _applyUnhoverIntent(event) {
+    const toElement = $(event.toElement);
+
+    // Abort when cursor is on editable block.
+    if (toElement.closest('.block-edit').length) {
+      return;
+    }
+
+    // This timeout value is finicky.
+    //
+    // If the value is less than the delay for showing controls,
+    //   the edit controls will be stuck showing if the user clips the edge
+    //   of another block on the way to exiting the editable zone.
+    //
+    // If the value is only very slightly more than that delay,
+    //   it's a race condition risk.
+    //
+    // If the value is too much more than that delay,
+    //   the unhover effect seems laggy.
+    setTimeout(() => {
+      $('.block-edit-controls').addClass('hidden').removeClass('active');
+    }, 200);
   }
 
   function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {

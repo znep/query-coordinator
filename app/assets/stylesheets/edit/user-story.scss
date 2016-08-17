@@ -45,11 +45,15 @@ body.story-save-error .user-story-container {
       width: $block-edit-controls-width;
       height: $block-edit-controls-height;
       top: -1px;
-      left: -$block-edit-controls-width;
+      left: -($block-edit-controls-width + 0.1rem);
       opacity: 0;
       background-color: $block-edit-controls-bg-color;
       text-align: center;
       z-index: $component-edit-controls-z-index;
+
+      &.active {
+        opacity: 1;
+      }
 
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,
@@ -151,10 +155,6 @@ body.story-save-error .user-story-container {
     &:hover,
     &.active {
       z-index: $active-block-edit-z-index;
-
-      .block-edit-controls {
-        opacity: 1;
-      }
     }
 
     .block {

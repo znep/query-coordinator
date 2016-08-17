@@ -3,7 +3,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeGoalQuickEdit, saveGoalQuickEdit } from '../actions/quickEdit';
+import { closeModal, save } from '../actions/quickEdit';
 import Select from 'react-select';
 import moment from 'moment';
 import SocrataAlert from '../../../components/SocrataAlert';
@@ -24,10 +24,10 @@ class GoalQuickEdit extends React.Component {
       noChangesMade: true,
       visibility: goal.get('is_public') ? 'public' : 'private',
       name: goal.get('name'),
-      actionType: goal.getIn(['prevailing_measure', 'edit', 'action_type']) || 'increase',
-      prevailingMeasureName: goal.getIn(['prevailing_measure', 'name']),
-      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'use_progress_override']) ?
-        goal.getIn(['prevailing_measure', 'progress_override']) : 'none',
+      actionType: goal.getIn(['prevailing_measure', 'metadata', 'edit', 'action_type']) || 'increase',
+      prevailingMeasureName: goal.getIn(['prevailing_measure', 'metadata', 'name']),
+      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'metadata', 'use_progress_override']) ?
+        goal.getIn(['prevailing_measure', 'metadata', 'progress_override']) : 'none',
       unit: goal.getIn(['prevailing_measure', 'unit']),
       percentUnit: goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
         '%' : goal.getIn(['prevailing_measure', 'unit']),
@@ -37,7 +37,7 @@ class GoalQuickEdit extends React.Component {
       measureTargetType: goal.getIn(['prevailing_measure', 'target_type']),
       measureBaseline: goal.getIn(['prevailing_measure', 'baseline']),
       measureTargetDelta: goal.getIn(['prevailing_measure', 'target_delta']),
-      measureMaintainType: goal.getIn(['prevailing_measure', 'edit', 'maintain_type']) || 'within'
+      measureMaintainType: goal.getIn(['prevailing_measure', 'metadata', 'edit', 'maintain_type']) || 'within'
     };
 
     this.onWindowKeyUp = (event) => {
@@ -604,8 +604,8 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  closeQuickEdit: () => dispatch(closeGoalQuickEdit()),
-  saveGoalQuickEdit: (goalId, version, values) => dispatch(saveGoalQuickEdit(goalId, version, values))
+  closeQuickEdit: () => dispatch(closeModal()),
+  saveGoalQuickEdit: (goalId, version, values) => dispatch(save(goalId, version, values))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalQuickEdit);

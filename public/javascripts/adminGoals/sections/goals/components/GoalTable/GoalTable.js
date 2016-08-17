@@ -6,17 +6,23 @@ import PageSelector from '../PageSelector';
 
 import './GoalTable.scss';
 
-export default function GoalTable() {
-  return (
-    <div>
-      <table className="table table-borderless op-admin-table">
-        <GoalTableHead />
-        <GoalTableBody />
-      </table>
+export default class GoalTable extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    return (
       <div>
-        <PageSelector />
-        <RowsPerPageSelector />
+        <table className="table table-borderless op-admin-table">
+          <GoalTableHead />
+          <GoalTableBody />
+        </table>
+        <div>
+          <PageSelector />
+          <RowsPerPageSelector />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

@@ -5,7 +5,7 @@ import * as ReactRedux from 'react-redux';
 import GoalTableRow from './GoalTableRow';
 
 function GoalTableBody(props) {
-  const goals = props.goals.map(goal => <GoalTableRow key={ goal.get('id') } goal={ goal }/>);
+  const goals = props.goals.map((goal, i) => <GoalTableRow key={ i } goal={ goal }/>);
   return <tbody>{goals}</tbody>;
 }
 

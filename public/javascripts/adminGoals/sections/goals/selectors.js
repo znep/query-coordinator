@@ -1,6 +1,8 @@
 import * as Reselect from 'reselect';
 import * as State from './state';
 import * as Immutable from 'immutable';
+import * as Helpers from '../../helpers';
+import moment from 'moment';
 
 export const getGoalForQuickEdit = state => {
   const goals = state.getIn(['goals', 'data']);
@@ -9,17 +11,35 @@ export const getGoalForQuickEdit = state => {
   return goals.get(goalId);
 };
 
+const fieldGetterByColumnName = {
+  title: goal => goal.get('name', ''),
+  owner: goal => goal.get('owner_name', ''),
+  updated_at: goal => moment(goal.get('updated_at')),
+  visibility: goal => goal.get('is_public', false),
+  goal_status: goal => goal.getIn(['prevailing_measure', 'metadata', 'progress_override'], ''),
+  dashboard: goal => goal.get('base_dashboard', '')
+};
+
 export const getSortedGoals = Reselect.createSelector(
-  State.getData, State.getSorting,
+  [State.getData, State.getSorting],
   (goals, sortingMap) => {
     if (sortingMap.get('fieldName') === 'default')
       return goals;
 
-    const sorting = sortingMap.toJS();
+    const direction = sortingMap.get('direction');
+    const fieldName = sortingMap.get('fieldName');
+    const fieldType = sortingMap.get('fieldType');
 
-    const sortedGoals = goals.toSeq().sortBy(goal => goal.get(sorting.fieldName));
+    let comparator = Helpers.comparators[fieldType];
+    if (!comparator) {
+      return goals;
+    }
 
-    return sorting.direction === 'asc' ? sortedGoals : sortedGoals.reverse();
+    if (direction === 'desc') {
+      comparator = Helpers.comparators.negate(comparator);
+    }
+
+    return goals.toSeq().sortBy(fieldGetterByColumnName[fieldName], comparator);
   }
 );
 
@@ -33,12 +53,12 @@ export const getNumberOfPages = Reselect.createSelector(
   (goals, pagination) => Math.max(1, Math.floor(goals.count() / pagination.get('goalsPerPage')))
 );
 
-export const getPaginatedGoals = Reselect.createSelector(
-  getSortedGoals, State.getPagination, getNumberOfPages,
-  (goals, pagination) => {
-    const goalsPerPage = pagination.get('goalsPerPage');
-    const currentPage = pagination.get('currentPage');
+const getGoalsPerPage = state => State.getPagination(state).get('goalsPerPage');
+const getCurrentPage = state => State.getPagination(state).get('currentPage');
 
+export const getPaginatedGoals = Reselect.createSelector(
+  getSortedGoals, getGoalsPerPage, getCurrentPage,
+  (goals, goalsPerPage, currentPage) => {
     const begin = goalsPerPage * currentPage;
     const end = begin + goalsPerPage;
 

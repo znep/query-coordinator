@@ -3,7 +3,6 @@ import * as ReduxImmutable from 'redux-immutablejs';
 import * as Actions from '../actions/ui';
 
 const initialState = Immutable.fromJS({
-  data: {},
   pagination: {
     currentPage: 0,
     goalsPerPage: 25
@@ -34,10 +33,28 @@ const sortBy = (state, { fieldName, fieldType, direction }) => state.mergeIn(['s
 const showPage = (state, { pageNumber }) => state.setIn(['pagination', 'currentPage'], pageNumber);
 const setGoalsPerPage = (state, { goalsPerPage }) => state.setIn(['pagination', 'goalsPerPage'], goalsPerPage);
 
+const selectUntil = (state, { untilGoalId, paginatedGoalIds }) => {
+  const lastSelectedId = state.get('selectedGoalIds').last();
+  if (!lastSelectedId) {
+    return state.update('selectedGoalIds', ids => ids.push(untilGoalId));
+  }
+
+  const lastSelectedIndex = paginatedGoalIds.findIndex(goalId => goalId === lastSelectedId);
+  const untilGoalIndex = paginatedGoalIds.findIndex(goalId => goalId === untilGoalId);
+
+  if (untilGoalIndex === -1) {
+    return state;
+  }
+
+  const range = paginatedGoalIds.slice(Math.min(lastSelectedIndex, untilGoalIndex), Math.max(lastSelectedIndex, untilGoalIndex) + 1);
+  return state.update('selectedGoalIds', selectedIds => selectedIds.concat(range.filter(goalId => !selectedIds.includes(goalId))));
+};
+
 export default ReduxImmutable.createReducer(initialState, {
   [Actions.types.setSelection]: setSelection,
   [Actions.types.toggleSelectionById]: toggleSelectionById,
   [Actions.types.sortBy]: sortBy,
   [Actions.types.showPage]: showPage,
-  [Actions.types.setGoalsPerPage]: setGoalsPerPage
+  [Actions.types.setGoalsPerPage]: setGoalsPerPage,
+  [Actions.types.selectUntil]: selectUntil
 });

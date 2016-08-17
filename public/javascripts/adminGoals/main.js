@@ -6,17 +6,16 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import reducers from './reducers';
 import App from './containers/App/App';
-import reduxPerf from 'redux-perf-middleware';
 
 import notifyUser from './middlewares/notifyUser';
 
 let middleware = [thunk, notifyUser];
 if (window.serverConfig.environment === 'development') {
-  // middleware.push(createLogger());
+  middleware.push(createLogger());
 }
 
 let store = createStore(reducers, compose(
-  applyMiddleware(...middleware, reduxPerf),
+  applyMiddleware(...middleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 

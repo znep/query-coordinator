@@ -3,6 +3,7 @@ import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
 import * as Actions from '../Actions';
 import * as State from '../state';
+import * as Selectors from '../selectors';
 
 import classNames from 'classnames/bind';
 import moment from 'moment';
@@ -18,10 +19,10 @@ class GoalTableRow extends React.Component {
   }
 
   handleClick(event) {
-    const { goal, uiActions } = this.props;
+    const { goal, uiActions, paginatedRowIds } = this.props;
 
     if (event.shiftKey) {
-      uiActions.selectUntil(goal.get('id'));
+      uiActions.selectUntil(paginatedRowIds, goal.get('id'));
     } else {
       uiActions.toggleSelectionById(goal.get('id'));
     }
@@ -75,6 +76,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     translations: state.get('translations'),
+    paginatedRowIds: Selectors.getPaginatedGoalIds(state),
     selectedRowIds,
     isGoalSelected
   };

@@ -13,6 +13,15 @@ class GoalTableHead extends React.Component {
 
     this.handleColumnClick = this.handleColumnClick.bind(this);
     this.handleToggleAllSelection = this.handleToggleAllSelection.bind(this);
+
+    this.columnDataTypes = {
+      title: 'string',
+      owner: 'string',
+      updated_at: 'date',
+      visibility: 'bool',
+      goal_status: 'string',
+      dashboard: 'string'
+    };
   }
 
   handleColumnClick(event) {
@@ -20,7 +29,7 @@ class GoalTableHead extends React.Component {
     const fieldName = element.getAttribute('data-column');
     const direction = element.getAttribute('data-direction');
 
-    this.props.actions.sortBy(fieldName, direction, 'string');
+    this.props.actions.sortBy(fieldName, direction, this.columnDataTypes[fieldName]);
   }
 
   handleToggleAllSelection() {
@@ -34,8 +43,7 @@ class GoalTableHead extends React.Component {
   }
 
   render() {
-    let titlesList = ['title', 'owner', 'updated_at', 'visibility', 'goal_status', 'dashboard'];
-    let titles = _.map(titlesList, (label, index) => {
+    let titles = _.map(Object.keys(this.columnDataTypes), (label, index) => {
       let direction = this.props.currentColumn == label && this.props.currentDirection == 'asc' ? 'desc' : 'asc';
       let thClass = classNames('order-icon', {
         'icon-arrow-up': this.props.currentColumn == label && direction == 'asc',

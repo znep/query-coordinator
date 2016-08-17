@@ -31,8 +31,10 @@ function normalizeUpdatedData(updatedData) {
   let normalized = _.merge(updatedData, updatedData.prevailing_measure || {});
   delete normalized.prevailing_measure;
 
-  normalized.override = normalized.metadata.progress_override;
-  delete normalized.metadata;
+  if (normalized.metadata) {
+    normalized.override = normalized.metadata.progress_override;
+    delete normalized.metadata;
+  }
 
   return normalized;
 }

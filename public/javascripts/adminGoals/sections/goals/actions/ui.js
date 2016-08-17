@@ -3,7 +3,8 @@ export const types = {
   toggleSelectionById: 'goals.ui.toggleSelectionById',
   sortBy: 'goals.ui.sortBy',
   showPage: 'goals.ui.showPage',
-  setGoalsPerPage: 'goals.ui.setGoalsPerPage'
+  setGoalsPerPage: 'goals.ui.setGoalsPerPage',
+  selectUntil: 'goals.ui.selectUntil'
 };
 
 export const setSelection = goalIds => ({
@@ -31,4 +32,10 @@ export const showPage = pageNumber => ({
 export const setGoalsPerPage = goalsPerPage => ({
   type: types.setGoalsPerPage,
   goalsPerPage
+});
+
+export const selectUntil = (paginatedGoalIds, untilGoalId) => ({
+  type: types.selectUntil,
+  paginatedGoalIds,
+  untilGoalId
 });

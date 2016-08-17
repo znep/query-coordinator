@@ -14,7 +14,7 @@ export const getGoalForQuickEdit = state => {
 const fieldGetterByColumnName = {
   title: goal => goal.get('name', ''),
   owner: goal => goal.get('owner_name', ''),
-  updated_at: goal => moment(goal.get('updated_at')),
+  updated_at: goal => moment(goal.get('updated_at') || goal.get('created_at')),
   visibility: goal => goal.get('is_public', false),
   goal_status: goal => goal.getIn(['prevailing_measure', 'metadata', 'progress_override'], ''),
   dashboard: goal => goal.get('base_dashboard', '')

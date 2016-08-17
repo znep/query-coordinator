@@ -52,7 +52,7 @@ class GoalTableRow extends React.Component {
         </span>
         </td>
         <td>{ goal.getIn(['owner_name']) }</td>
-        <td>{ moment(goal.get('updated_at')).format('ll') }</td>
+        <td>{ moment(goal.get('updated_at') || goal.get('created_at')).format('ll') }</td>
         <td>{ translations.getIn(['admin', 'goal_values', goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
         <td>{ translations.getIn(['measure', 'progress', goal.getIn(['prevailing_measure', 'metadata', 'progress_override'])]) }</td>
         <td className="dashboardLink">

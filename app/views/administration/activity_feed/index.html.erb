@@ -1,8 +1,8 @@
-<%- jobs_prefix = 'screens.admin.jobs' %>
+<%- activity_feed_prefix = 'screens.admin.jobs' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
-  <%= rendered_stylesheet_tag 'administration-jobs' %>
-  <title><%= t("#{jobs_prefix}.index_page.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'administration-activity-feed' %>
+  <title><%= t("#{activity_feed_prefix}.index_page.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -11,7 +11,7 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
-    <%= include_javascripts 'admin-jobs' %>
+    <%= include_javascripts 'admin-activity-feed' %>
   <%- end -%>
 <% end %>
 
@@ -22,12 +22,12 @@
 
 <%= render :partial => 'left_nav' %>
 
-<%= include_webpack_bundle 'admin/admin-jobs.js' %>
+<%= include_webpack_bundle 'admin/admin-activity-feed.js' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">
   <div class="adminHeader floating jobs">
     <span class="icon"></span>
-    <h1><%= t("#{jobs_prefix}.index_page.page_title") %></h1>
+    <h1><%= t("#{activity_feed_prefix}.index_page.page_title") %></h1>
   </div>
 </div>
 
@@ -35,27 +35,27 @@
   <%= display_standard_flashes %>
 
   <div class="jobs-filter">
-    <span class="jobs-filter--header"><%= t("#{jobs_prefix}.filters.filter_by") %>:</span>
-    <form class="jobs-filter--form" action="/admin/jobs">
-      <label for="activity_type"><%= t("#{jobs_prefix}.filters.type") %>:</label>
+    <span class="jobs-filter--header"><%= t("#{activity_feed_prefix}.filters.filter_by") %>:</span>
+    <form class="jobs-filter--form" action="/admin/activity_feed">
+      <label for="activity_type"><%= t("#{activity_feed_prefix}.filters.type") %>:</label>
 
-      <%= select_tag(:activity_type, options_for_select([[t("#{jobs_prefix}.filters.all"), 'All']]) + grouped_options_for_select(
+      <%= select_tag(:activity_type, options_for_select([[t("#{activity_feed_prefix}.filters.all"), 'All']]) + grouped_options_for_select(
         [
-          [t("#{jobs_prefix}.filters.import_activity"),
+          [t("#{activity_feed_prefix}.filters.import_activity"),
             [
-              [t("#{jobs_prefix}.filters.import"), 'Import'],
-              [t("#{jobs_prefix}.filters.append"), 'Append'],
-              [t("#{jobs_prefix}.filters.replace"), 'Replace'],
-              [t("#{jobs_prefix}.filters.upsert"), 'Upsert'],
-              [t("#{jobs_prefix}.filters.delete"), 'Delete'],
-              [t("#{jobs_prefix}.filters.restore"), 'Restore', {disabled: !FeatureFlags.derive(@view, request).restore_dataset_filter}]
+              [t("#{activity_feed_prefix}.filters.import"), 'Import'],
+              [t("#{activity_feed_prefix}.filters.append"), 'Append'],
+              [t("#{activity_feed_prefix}.filters.replace"), 'Replace'],
+              [t("#{activity_feed_prefix}.filters.upsert"), 'Upsert'],
+              [t("#{activity_feed_prefix}.filters.delete"), 'Delete'],
+              [t("#{activity_feed_prefix}.filters.restore"), 'Restore', {disabled: !FeatureFlags.derive(@view, request).restore_dataset_filter}]
             ]
           ]
           # TODO once these events are added, uncomment this!
-          #[t("#{jobs_prefix}.filters.data_workflow"),
+          #[t("#{activity_feed_prefix}.filters.data_workflow"),
           #  [
-          #    [t("#{jobs_prefix}.filters.working_copy"), 'WorkingCopy'],
-          #    [t("#{jobs_prefix}.filters.publish"), 'Publish']
+          #    [t("#{activity_feed_prefix}.filters.working_copy"), 'WorkingCopy'],
+          #    [t("#{activity_feed_prefix}.filters.publish"), 'Publish']
           #  ]
           #]
         ],
@@ -65,36 +65,36 @@
       <label for="time-control-input">Date:</label>
       <input name="date_range" type="text" id="time-control-input" class="currentTimeSlice" readonly="readonly" value='<%= if params[:date_range].present? then CGI.unescapeHTML params[:date_range] end %>' />
 
-      <button class="button" type="submit"><%= t("#{jobs_prefix}.filters.apply_filters") %></button>
+      <button class="button" type="submit"><%= t("#{activity_feed_prefix}.filters.apply_filters") %></button>
     </form>
   </div>
 
   <table class="gridList">
     <thead>
       <tr>
-        <th><%= t("#{jobs_prefix}.index_page.action") %></th>
-        <th><%= t("#{jobs_prefix}.index_page.dataset") %></th>
-        <th><%= t("#{jobs_prefix}.index_page.initiated_by") %></th>
-        <th><%= t("#{jobs_prefix}.index_page.started") %></th>
-        <th><%= t("#{jobs_prefix}.index_page.status") %></th>
+        <th><%= t("#{activity_feed_prefix}.index_page.action") %></th>
+        <th><%= t("#{activity_feed_prefix}.index_page.dataset") %></th>
+        <th><%= t("#{activity_feed_prefix}.index_page.initiated_by") %></th>
+        <th><%= t("#{activity_feed_prefix}.index_page.started") %></th>
+        <th><%= t("#{activity_feed_prefix}.index_page.status") %></th>
       </tr>
     </thead>
     <tbody>
       <%- @activities.each do |activity| %>
         <tr class="job-row">
-          <td><%= t("#{jobs_prefix}.actions.#{activity.activity_type}") %></td>
+          <td><%= t("#{activity_feed_prefix}.actions.#{activity.activity_type}") %></td>
           <td>
             <% if activity.dataset.nil? %>
-              <span class="import-status-deleted">(<%= t("#{jobs_prefix}.index_page.deleted_dataset") %>)</span>
+              <span class="import-status-deleted">(<%= t("#{activity_feed_prefix}.index_page.deleted_dataset") %>)</span>
             <% elsif activity.dataset.deleted %>
-              <%= activity.dataset.name %> <span class="import-status-deleted"><%= "(#{t("#{jobs_prefix}.index_page.deleted")})" %></span>
+              <%= activity.dataset.name %> <span class="import-status-deleted"><%= "(#{t("#{activity_feed_prefix}.index_page.deleted")})" %></span>
             <% else %>
               <%= link_to activity.dataset.name, view_path(activity.dataset) %>
             <% end %>
             <% if activity.had_working_copy? %>
               <% working_copy = activity.working_copy %>
               <p class="working-copy-annotation">
-                <%= t("#{jobs_prefix}.index_page.to_working_copy") %>
+                <%= t("#{activity_feed_prefix}.index_page.to_working_copy") %>
               <% if working_copy && working_copy.is_unpublished? %>
                 <%= link_to(activity.working_copy_id, view_path(working_copy)) %>
               <% else %>
@@ -105,7 +105,7 @@
           </td>
           <td nowrap>
             <% if activity.initiated_by.nil? %>
-              <span class="import-status-deleted"><%= "(#{t("#{jobs_prefix}.index_page.deleted_user")})" %></span>
+              <span class="import-status-deleted"><%= "(#{t("#{activity_feed_prefix}.index_page.deleted_user")})" %></span>
             <% elsif activity.initiated_by.is_admin? %>
               Socrata
               <% if current_user.is_admin? %>
@@ -126,19 +126,19 @@
           <td class="import-status-label" nowrap>
             <span class="import-status-icon import-status-icon-<%= activity.status.dasherize %> icon-<%= icon_for_status(activity.status) %>"></span>
             <% if activity.status == 'success_with_data_errors' %>
-              <%= link_to t("#{jobs_prefix}.statuses.success"),
-                          :action => 'show_job', :id => activity.id %>
-              <div class="with-problems"><%= t("#{jobs_prefix}.index_page.with_problems") %></div>
+              <%= link_to t("#{activity_feed_prefix}.statuses.success"),
+                          :action => 'show', :id => activity.id %>
+              <div class="with-problems"><%= t("#{activity_feed_prefix}.index_page.with_problems") %></div>
             <% elsif activity.status == 'failure' %>
-              <%= link_to t("#{jobs_prefix}.statuses.#{activity.status}"),
-                          :action => 'show_job', :id => activity.id %>
+              <%= link_to t("#{activity_feed_prefix}.statuses.#{activity.status}"),
+                          :action => 'show', :id => activity.id %>
             <% else %>
-              <%= t("#{jobs_prefix}.statuses.#{activity.status}") %>
+              <%= t("#{activity_feed_prefix}.statuses.#{activity.status}") %>
             <% end %>
 
             <%# If activity is a delete and within the last X days, show button to restore dataset %>
             <% if display_restore_button(activity) %>
-              <button class="button restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>"><%= t("#{jobs_prefix}.index_page.restore_deleted_dataset") %></button>
+              <button class="button restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>"><%= t("#{activity_feed_prefix}.index_page.restore_deleted_dataset") %></button>
             <% end %>
           </td>
         </tr>
@@ -147,7 +147,7 @@
   </table>
   <% if @activities.blank? %>
     <p class="end-message">
-      <%= t("#{jobs_prefix}.index_page.no_jobs") %>
+      <%= t("#{activity_feed_prefix}.index_page.no_jobs") %>
     </p>
   <% end %>
 </div>
@@ -155,7 +155,7 @@
 <div class="pager">
   <% @pager_elements.each do |element| %>
     <% if element.page? %>
-      <%= link_to(element.index, "/admin/jobs?page=#{element.index}&#{element.get_params}",
+      <%= link_to(element.index, "/admin/activity_feed?page=#{element.index}&#{element.get_params}",
                   :class => 'pager-element page ' + (element.selected ? 'pager-page-selected' : '')) %>
     <% else %>
       <span class="pager-element ellipsis">…</span>

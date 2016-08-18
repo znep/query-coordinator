@@ -148,6 +148,10 @@ body.downtime-notice #rich-text-editor-toolbar-wrapper {
       -moz-appearance: none;
       appearance: none;
       -webkit-border-radius: 0px;
+
+      &::-ms-expand {
+        display: none; // IE doesn't really support appearance: none
+      }
     }
 
     .rich-text-editor-toolbar-select-hint {

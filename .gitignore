@@ -3,13 +3,13 @@
 /.sass-cache
 /.cache
 .DS_Store
-/docs/fonts
+/pages/fonts
 /node_modules
 .fontcustom-manifest.json
 /src/js/vendor
-/docs/javascripts/vendor
-/docs/stylesheets/docs.css
-/docs/stylesheets/docs.css.map
+/pages/javascripts/vendor
+/pages/stylesheets/pages.css
+/pages/stylesheets/pages.css.map
 /dist
 npm-debug.log
 packages/socrata-components/*

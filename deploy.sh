@@ -4,18 +4,17 @@ if [[ -z $(git status -s) ]]; then
   npm i
   bundle exec middleman build
   git checkout .
-  git checkout gh-pages
-  git pull --rebase origin gh-pages
+  git checkout master
+  git pull --rebase origin master
 
-  ls | grep -v "build" | grep -v "node_modules" | xargs -o rm -rf
-  mv build/* .
+  rm -rf docs/*
+  mv build/* docs/
   rm -rf build/
 
   if [[ -n $(git status -s) ]]; then
     git add -A
-    git reset node_modules
     git commit -am "Automated Deployment $(date -u)"
-    git push origin gh-pages
+    git push origin master
     git checkout -
   else
     echo >&2 "There are no changes to deploy."

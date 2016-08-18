@@ -5,7 +5,7 @@
   "main": "styleguide.js",
   "private": true,
   "directories": {
-    "doc": "docs"
+    "doc": "readme"
   },
   "scripts": {
     "deploy": "./deploy.sh",

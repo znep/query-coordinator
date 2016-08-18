@@ -133,7 +133,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
+    <%- if current_user.try(:is_superadmin?) && feature_flag?('stories_enabled', request) -%>
       <li class="contentmgmt">
         <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
         <span class="description">

@@ -51,8 +51,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       should 'return 403 if role is not set, and not admin - for V1 Data Lenses' do
-        stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
-        @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
+        stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: nil)
+        @controller.stubs(is_owner?: false, is_superadmin?: false, current_user: stub_user)
 
         get :bootstrap, id: 'four-four', app: 'dataCards'
         assert_response(403)
@@ -60,8 +60,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       should 'return 403 if role is not set, and not admin - even for V2 Data Lenses' do
         stub_feature_flags_with(:create_v2_data_lens, true)
-        stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
-        @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
+        stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: nil)
+        @controller.stubs(is_owner?: false, is_superadmin?: false, current_user: stub_user)
 
         get :bootstrap, id: 'four-four', app: 'dataCards'
         assert_response(403)
@@ -69,7 +69,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
 
       should 'return 403 if role is viewer, and not admin - ONLY for V1 Data Lenses' do
-        stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'viewer')
+        stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: 'viewer')
         @controller.stubs(current_user: stub_user)
 
         get :bootstrap, id: 'four-four', app: 'dataCards'
@@ -85,7 +85,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       should 'not return 403 if no role, but superadmin' do
-        stub_user = stub(roleName: '', is_admin?: true, is_owner?: false)
+        stub_user = stub(roleName: '', is_superadmin?: true, is_owner?: false)
         @controller.stubs(current_user: stub_user)
 
         get :bootstrap, id: 'four-four', app: 'dataCards'
@@ -109,7 +109,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       should 'not return 403 if using ephemeral bootstrap' do
-        stub_user = stub(roleName: 'viewer', is_admin?: false, is_owner?: false)
+        stub_user = stub(roleName: 'viewer', is_superadmin?: false, is_owner?: false)
         @controller.stubs(current_user: stub_user)
 
         stub_feature_flags_with(:use_ephemeral_bootstrap, true)

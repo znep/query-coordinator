@@ -19,7 +19,8 @@ this.User = ServerModel.extend({
         return (this.rights || []).length > 0;
     },
 
-    isAdmin: function()
+    // Recently renamed from isAdmin to avoid confusion. Renamed in the Ruby code as well.
+    isSuperadmin: function()
     { return _.include(this.flags, 'admin'); },
 
     nameAndOrEmail: function()

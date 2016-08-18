@@ -81,7 +81,7 @@ module ApplicationHelper
   def enable_site_chrome_admin_panel?
     # We will want to create a separate feature flag for this once we open the feature up to admins.
     # Currently we always show it, but only to superadmins.
-    !!current_user.try(:is_admin?)
+    !!current_user.try(:is_superadmin?)
   end
 
   # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.

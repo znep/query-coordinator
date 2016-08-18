@@ -502,14 +502,14 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_enable_site_chrome_admin_panel_is_false_if_user_is_not_a_superadmin
     user = stub
-    user.stubs(:is_admin? => false)
+    user.stubs(:is_superadmin? => false)
     application_helper.stubs(:current_user => user)
     refute application_helper.enable_site_chrome_admin_panel?
   end
 
   def test_enable_site_chrome_admin_panel_is_true_if_user_is_a_superadmin
     user = stub
-    user.stubs(:is_admin? => true)
+    user.stubs(:is_superadmin? => true)
     application_helper.stubs(:current_user => user)
     assert application_helper.enable_site_chrome_admin_panel?
   end

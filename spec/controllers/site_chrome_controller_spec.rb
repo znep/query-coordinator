@@ -133,14 +133,16 @@ describe SiteChromeController do
 
   def stub_normal_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(false)
+    allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(false)
+    allow(user_double).to receive(:is_superadmin?).and_return(false)
     allow_any_instance_of(SiteChromeController).to receive(:current_user).and_return(user_double)
   end
 
   # a la spec/controllers/administration_controller/spec.rb
   def stub_superadmin_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(true)
+    allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(true)
+    allow(user_double).to receive(:is_superadmin?).and_return(true)
     allow_any_instance_of(SiteChromeController).to receive(:current_user).and_return(user_double)
   end
 

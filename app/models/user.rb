@@ -171,15 +171,12 @@ class User < Model
     CoreServer::Base.connection.multipart_post_file("/users/#{id}/profile_images", file)
   end
 
-  def public_blists
-    View.find_for_user(id).reject { |v| !v.is_public? || v.owner.id != id }
-  end
-
   def is_owner?(view)
     view.owner.id == id
   end
 
-  def is_admin?
+  # Recently renamed from is_admin? to avoid confusion. Renamed in the Javascript code as well.
+  def is_superadmin?
     flag?('admin')
   end
 

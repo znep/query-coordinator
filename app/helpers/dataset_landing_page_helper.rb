@@ -38,7 +38,7 @@ module DatasetLandingPageHelper
       :userId => current_user.try(:id) || 'N/A',
       :ownerId => @view.try(:owner).try(:id) || 'N/A',
       :userOwnsDataset => @view.owned_by?(current_user),
-      :socrataEmployee => current_user.try(:is_admin?) || false,
+      :socrataEmployee => current_user.try(:is_superadmin?) || false,
       :userRoleName => current_user.try(:roleName) || 'N/A',
       :viewId => @view.try(:id) || 'N/A',
       :email => current_user.try(:email).to_s

@@ -1,0 +1,556 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+    <title>Socrata Styleguide</title>
+
+    <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
+    <link rel="stylesheet" href="css/styleguide-554c1e36.css">
+    <link rel="stylesheet" href="stylesheets/pages-46b9501f.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body class="components">
+    <div class="responsive-navbar responsive-navbar-fixed">
+       <span class="site-controls">
+         <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="icon-hamburger"> <span class="menu-link-text">Menu</span></a>
+
+        <a class="home" href="index.html">
+          <span>Product Styleguide</span>
+        </a>
+      </span>
+      <div class="responsive-navbar-nav">
+        <a href="https://github.com/socrata/styleguide" class="btn-sm btn btn-default btn-inverse">View on Github</a>
+      </div>
+    </div>
+
+    <div class="container">
+  <div id="pagemap" class="menu menu-offscreen menu-anchor-left">
+       <header class="menu-header">
+    <h1 class="h6 menu-header-title">Styleguide Menu</h1>
+    <button class="btn btn-block btn-sm btn-transparent menu-header-dismiss" data-menu-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <ul class="menu-navigation">
+    <li class="menu-section-title"><a href="index.html">Guide Home</a></li>
+
+    <li class="menu-section-title"><a href="elements.html">Elements</a>
+      <ul>
+        <li><a href="elements.html#typography">Typography</a></li>
+        <li><a href="elements.html#colors">Colors</a></li>
+        <li><a href="elements.html#branding">Branding</a></li>
+        <li><a href="elements.html#icons">Icons</a></li>
+        <li><a href="elements.html#buttons">Buttons</a></li>
+        <li><a href="elements.html#spinners">Spinners</a></li>
+        <li><a href="elements.html#dividers">Dividers</a></li>
+        <li><a href="elements.html#lists">Lists</a></li>
+        <li><a href="elements.html#input-groups">Input Groups</a></li>
+        <li><a href="elements.html#forms">Forms</a></li>
+        <li><a href="elements.html#tables">Tables</a></li>
+        <li><a href="elements.html#alerts">Alerts</a></li>
+        <li><a href="elements.html#tags">Tags</a></li>
+        <li><a href="elements.html#navigation">Navigation</a></li>
+        <li><a href="elements.html#cards">Cards</a></li>
+        <li><a href="elements.html#pagination">Pagination</a></li>
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="components.html">Components</a>
+      <ul class="menu-navigation">
+        <li><a href="components.html#dropdowns">Dropdowns</a></li>
+        <li><a href="components.html#color-picker">Color Picker</a></li>
+        <li><a href="components.html#view-card">View Card</a></li>
+        <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript</a>
+      <ul class="menu-navigation">
+        <li><a href="legacy.html#modals">Modals</a></li>
+        <li><a href="legacy.html#flannels">Flannels</a></li>
+        <li><a href="legacy.html#flyouts">Flyouts</a></li>
+        <li><a href="legacy.html#menu">Menu</a></li>
+        <li><a href="legacy.html#tabs">Tabs</a></li>
+        <li><a href="legacy.html#buttontoggle">Button Toggle</a></li>
+        <li><a href="legacy.html#dropdowns">Dropdowns</a></li>
+        <li><a href="legacy.html#tour">Tour</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  </div>
+
+  <div class="content">
+    <h1 class="page-header">Components</h1>
+
+    <p class="alert info">These components require <a href="https://facebook.github.io/react">React</a> and ReactDOM to render.</p>
+
+    <section class="styleguide-section" id="dropdowns">
+      <div class="meta">
+        <h2 class="styleguide-header">Dropdowns</h2>
+      </div>
+      <div class="example">
+        
+<div id="dropdown-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      onSelection: function(option) {
+        console.log('option selected:', option.title, option.value);
+      },
+      options: [
+        {title: 'Floating Frog\'s Feet', value: 'potion-one', group: 'Potions'},
+        {title: 'Skittering Spider Silk', value: 'potion-two', group: 'Potions'},
+        {title: 'Blue Barbed Berries', value: 'potion-three', group: 'Potions'},
+        {title: 'Traditionally Truffled Tapioca', value: 'potion-four', group: 'Edibles'},
+        {title: 'Pandemonious Pear Paste', value: 'potion-five', group: 'Edibles'},
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, props),
+      document.getElementById('dropdown-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;dropdown-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var props = {
+      onSelection: function(option) {
+        console.log(&#x27;option selected:&#x27;, option.title, option.value);
+      },
+      options: [
+        {title: &#x27;Floating Frog\&#x27;s Feet&#x27;, value: &#x27;potion-one&#x27;, group: &#x27;Potions&#x27;},
+        {title: &#x27;Skittering Spider Silk&#x27;, value: &#x27;potion-two&#x27;, group: &#x27;Potions&#x27;},
+        {title: &#x27;Blue Barbed Berries&#x27;, value: &#x27;potion-three&#x27;, group: &#x27;Potions&#x27;},
+        {title: &#x27;Traditionally Truffled Tapioca&#x27;, value: &#x27;potion-four&#x27;, group: &#x27;Edibles&#x27;},
+        {title: &#x27;Pandemonious Pear Paste&#x27;, value: &#x27;potion-five&#x27;, group: &#x27;Edibles&#x27;},
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, props),
+      document.getElementById(&#x27;dropdown-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+        
+<div id="custom-dropdown-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var withIcon = function(icon) {
+      return function(option) {
+        return React.createElement('div', {className: 'special-dropdown-option'}, [
+          React.createElement('span', {className: icon, key: icon}),
+          option.title
+        ]);
+      }
+    };
+
+    var customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: function(option) {
+        console.log('option selected:', option.title, option.value);
+      },
+      placeholder: function() {
+        return React.createElement('button', {className: 'btn btn-primary'}, ['Hello, World!']);
+      },
+      options: [
+        {title: 'Emotional technicality', value: 'emotecho', render: withIcon('icon-facebook')},
+        {title: 'Pontificate harder', value: 'ponfer', render: withIcon('icon-twitter')},
+        {title: 'No one misses these', value: 'noone', render: withIcon('icon-dataset')}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, customRenderProps),
+      document.getElementById('custom-dropdown-container')
+    );
+
+    // Alternative stateless React-y way:
+
+    /*
+    var DropdownWithIcon = (props) => {
+      return (
+        <div className="special-dropdown-option">
+          <span className={props.icon} key={props.icon}></div>
+          {props.title}
+        </div>
+      );
+    };
+
+    var customRenderProps = {
+      placeholder: 'HAR HAR HAR',
+      options: [
+        {title: 'Just One, kid', value: 'kiddo', render: DropdownWithIcon, icon: 'icon-facebook'}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, customRenderProps),
+      document.getElementById('custom-dropdown-container')
+    );
+    */
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;custom-dropdown-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var withIcon = function(icon) {
+      return function(option) {
+        return React.createElement(&#x27;div&#x27;, {className: &#x27;special-dropdown-option&#x27;}, [
+          React.createElement(&#x27;span&#x27;, {className: icon, key: icon}),
+          option.title
+        ]);
+      }
+    };
+
+    var customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: function(option) {
+        console.log(&#x27;option selected:&#x27;, option.title, option.value);
+      },
+      placeholder: function() {
+        return React.createElement(&#x27;button&#x27;, {className: &#x27;btn btn-primary&#x27;}, [&#x27;Hello, World!&#x27;]);
+      },
+      options: [
+        {title: &#x27;Emotional technicality&#x27;, value: &#x27;emotecho&#x27;, render: withIcon(&#x27;icon-facebook&#x27;)},
+        {title: &#x27;Pontificate harder&#x27;, value: &#x27;ponfer&#x27;, render: withIcon(&#x27;icon-twitter&#x27;)},
+        {title: &#x27;No one misses these&#x27;, value: &#x27;noone&#x27;, render: withIcon(&#x27;icon-dataset&#x27;)}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, customRenderProps),
+      document.getElementById(&#x27;custom-dropdown-container&#x27;)
+    );
+
+    &#x2F;&#x2F; Alternative stateless React-y way:
+
+    &#x2F;*
+    var DropdownWithIcon = (props) =&gt; {
+      return (
+        &lt;div className=&quot;special-dropdown-option&quot;&gt;
+          &lt;span className={props.icon} key={props.icon}&gt;&lt;&#x2F;div&gt;
+          {props.title}
+        &lt;&#x2F;div&gt;
+      );
+    };
+
+    var customRenderProps = {
+      placeholder: &#x27;HAR HAR HAR&#x27;,
+      options: [
+        {title: &#x27;Just One, kid&#x27;, value: &#x27;kiddo&#x27;, render: DropdownWithIcon, icon: &#x27;icon-facebook&#x27;}
+      ]
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Dropdown, customRenderProps),
+      document.getElementById(&#x27;custom-dropdown-container&#x27;)
+    );
+    *&#x2F;
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="color-picker">
+      <div class="meta">
+        <h2 class="styleguide-header">Color Picker</h2>
+      </div>
+      <div class="example">
+        
+<div id="color-picker-container"></div>
+
+<script type="text/javascript">
+  function handleColorChange(color) {
+    console.log('Color changed to ' + color + '!');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = { handleColorChange: handleColorChange };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ColorPicker, props),
+      document.getElementById('color-picker-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;color-picker-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  function handleColorChange(color) {
+    console.log(&#x27;Color changed to &#x27; + color + &#x27;!&#x27;);
+  }
+
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var props = { handleColorChange: handleColorChange };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ColorPicker, props),
+      document.getElementById(&#x27;color-picker-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="view-card">
+      <div class="meta">
+        <h2 class="styleguide-header">View Card</h2>
+      </div>
+      <div class="example">
+        <p>View Cards are general-purpose tiles representing an asset.  They might be shown in a catalog, in
+an asset selector, or anywhere else where a list of views needs to be rendered.  The component
+features a title, a section for arbitrary metadata, a preview image of the asset, and a description.
+The title and the description are automatically ellipsified.  The title and image are clickable
+links.</p>
+
+<div class="alert info">
+  Not sure which icon to use?  For a mapping of view display types to icon classes, see the helper
+  in <code>src/js/common/displayTypeMetadata.js</code>.
+</div>
+
+<br />
+
+
+<div id="view-card-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      name: 'Chicago Crimes',
+      description: 'This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.',
+      url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
+      imageUrl: 'images/dataLensThumbnail-213726d3.png',
+      icon: 'icon-cards',
+      metadataLeft: 'Updated Jan 1, 1970',
+      metadataRight: '1,234 views',
+      isPrivate: true,
+      linkProps: { target: '_blank' },
+      onClick: function(event) {
+        console.log(event);
+      }
+    };
+
+    ReactDOM.render(
+      React.createElement(
+        styleguide.ViewCard,
+        props
+      ),
+      document.getElementById('view-card-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;view-card-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var props = {
+      name: &#x27;Chicago Crimes&#x27;,
+      description: &#x27;This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.&#x27;,
+      url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
+      imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
+      icon: &#x27;icon-cards&#x27;,
+      metadataLeft: &#x27;Updated Jan 1, 1970&#x27;,
+      metadataRight: &#x27;1,234 views&#x27;,
+      isPrivate: true,
+      linkProps: { target: &#x27;_blank&#x27; },
+      onClick: function(event) {
+        console.log(event);
+      }
+    };
+
+    ReactDOM.render(
+      React.createElement(
+        styleguide.ViewCard,
+        props
+      ),
+      document.getElementById(&#x27;view-card-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+<p>Sometimes it is helpful to render a spinner or a button on top of the card to display more
+information or allow an action to be taken.  Simply pass the desired element as a child of the
+ViewCard and it will be rendered as an overlay:</p>
+
+
+<div id="view-card-container-overlays"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      name: 'Chicago Crimes',
+      description: 'This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.',
+      url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
+      imageUrl: 'images/dataLensThumbnail-213726d3.png',
+      icon: 'icon-cards',
+      metadataLeft: 'Updated Jan 1, 1970',
+      metadataRight: '1,234 views',
+      isPrivate: true,
+      linkProps: { target: '_blank' },
+      onClick: function(event) {
+        console.log(event);
+      }
+    };
+
+    ReactDOM.render(
+      React.createElement(
+        styleguide.ViewCard,
+        props,
+        React.DOM.div({ className: 'btn btn-success' }, 'Click Me!')
+      ),
+      document.getElementById('view-card-container-overlays')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;view-card-container-overlays&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var props = {
+      name: &#x27;Chicago Crimes&#x27;,
+      description: &#x27;This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.&#x27;,
+      url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
+      imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
+      icon: &#x27;icon-cards&#x27;,
+      metadataLeft: &#x27;Updated Jan 1, 1970&#x27;,
+      metadataRight: &#x27;1,234 views&#x27;,
+      isPrivate: true,
+      linkProps: { target: &#x27;_blank&#x27; },
+      onClick: function(event) {
+        console.log(event);
+      }
+    };
+
+    ReactDOM.render(
+      React.createElement(
+        styleguide.ViewCard,
+        props,
+        React.DOM.div({ className: &#x27;btn btn-success&#x27; }, &#x27;Click Me!&#x27;)
+      ),
+      document.getElementById(&#x27;view-card-container-overlays&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+<p>For external assets, a component ExternalViewCard is provided, which applies attributes to the
+anchor tags informing search engines that the link is an external link, makes the link open in a new
+tab, sets the icon to one appropriate for external links, and sets the metadataLeft prop to
+"External Content".</p>
+
+
+<div id="view-card-container-external"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      name: 'Carrots',
+      description: 'I bet you don\'t carrot all about what I write here for the description.',
+      url: 'https://en.wikipedia.org/wiki/Carrot',
+      imageUrl: 'images/carrot-06170409.jpg'
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ExternalViewCard, props),
+      document.getElementById('view-card-container-external')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;view-card-container-external&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
+    var props = {
+      name: &#x27;Carrots&#x27;,
+      description: &#x27;I bet you don\&#x27;t carrot all about what I write here for the description.&#x27;,
+      url: &#x27;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Carrot&#x27;,
+      imageUrl: &#x27;&#x2F;images&#x2F;carrot.jpg&#x27;
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ExternalViewCard, props),
+      document.getElementById(&#x27;view-card-container-external&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
+  </div>
+</div>
+
+
+    <script src="https://fb.me/react-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/tether-f3d4b089.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
+
+    <script type="text/javascript" src="js/socrata-components-c0dafbf0.js"></script>
+    <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
+  </body>
+</html>

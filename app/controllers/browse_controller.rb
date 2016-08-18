@@ -63,6 +63,8 @@ class BrowseController < ApplicationController
       hide_view_types: true,
       suppress_dataset_creation: true
     })
+
+    render :layout => 'embedded_browse'
   end
 
   def select_georegion
@@ -75,6 +77,8 @@ class BrowseController < ApplicationController
       :suppress_dataset_creation => true,
       :admin => true
     )
+
+    render :layout => 'embedded_browse'
   end
 
   def domain_info

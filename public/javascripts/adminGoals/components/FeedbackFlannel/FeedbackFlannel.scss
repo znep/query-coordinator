@@ -1,0 +1,25 @@
+.feedback-flannel {
+  z-index: 3001;
+  width: 500px;
+
+  .header h1 {
+    margin-right: 20px;
+    line-height: 25px;
+  }
+
+  .content a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .footer {
+    float: left;
+  }
+}
+
+#us_report_button, .zEWidget-launcher {
+  display: none !important;
+}

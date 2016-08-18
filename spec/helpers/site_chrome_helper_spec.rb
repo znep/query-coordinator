@@ -109,15 +109,113 @@ describe SiteChromeHelper do
   end
 
   describe '#link_row_div' do
-    it 'returns three input tags' do
+    before(:each) do
       allow(self).to receive(:fetch_content).and_return('some content')
-      result = Nokogiri::HTML.parse(link_row_div('footer', nil, {}, false))
+    end
+
+    it 'returns three input tags' do
+      options = {
+        :content_key => 'footer',
+        :placeholder => {},
+        :default => false,
+        :child_link => false
+      }
+      result = Nokogiri::HTML.parse(link_row_div(nil, options))
       expect(result.search('input').length).to eq(3)
     end
 
     it 'returns a default link row' do
-      result = Nokogiri::HTML.parse(link_row_div('header', nil, {}, true))
+      options = {
+        :content_key => 'footer',
+        :placeholder => {},
+        :default => true,
+        :child_link => false
+      }
+      result = Nokogiri::HTML.parse(link_row_div(nil, options))
       expect(result.search('.link-row.default').length).to eq(1)
+    end
+
+    it 'returns a child link row' do
+      options = {
+        :content_key => 'footer',
+        :placeholder => {},
+        :default => false,
+        :child_link => true
+      }
+      result = Nokogiri::HTML.parse(link_row_div(nil, options))
+      expect(result.search('.link-row.child').length).to eq(1)
+    end
+
+    it 'returns a default child link row' do
+      options = {
+        :content_key => 'header',
+        :placeholder => {},
+        :default => true,
+        :child_link => true
+      }
+      result = Nokogiri::HTML.parse(link_row_div(nil, options))
+      expect(result.search('.link-row.default.child').length).to eq(1)
+    end
+
+    it 'returns an icon for dragging the fields, and an icon for removing the fields' do
+      link = {
+        'key' => 'google', 'url' => 'http://google.com'
+      }
+      options = {
+        :content_key => 'header',
+        :placeholder => {},
+        :default => false,
+        :child_link => true
+      }
+      result = Nokogiri::HTML.parse(link_row_div(link, options))
+      expect(result.search('.move-link-row').length).to eq(1)
+      expect(result.search('.remove-link-row').length).to eq(1)
+    end
+  end
+
+  describe '#link_menu_div' do
+    before(:each) do
+      allow(self).to receive(:fetch_content).and_return('some content')
+    end
+
+    it 'returns two input tags' do
+      options = {
+        :content_key => 'header',
+        :placeholder => {}
+      }
+      result = Nokogiri::HTML.parse(link_menu_div(nil, options))
+      expect(result.search('input').length).to eq(2)
+    end
+
+    it 'returns an icon for removing the fields' do
+      link = {
+        'key' => 'google', 'url' => 'http://google.com'
+      }
+      options = {
+        :content_key => 'header',
+        :placeholder => {},
+        :default => true
+      }
+      result = Nokogiri::HTML.parse(link_menu_div(link, options))
+      expect(result.search('.remove-link-menu').length).to eq(1)
+    end
+  end
+
+  describe '#child_link_row_divs' do
+    it 'returns child link divs for all present child links' do
+      links = [
+        { 'key' => 'a', 'url' => '#a' },
+        { 'key' => 'b', 'url' => '#b' },
+        { 'key' => 'c', 'url' => '#c' },
+        { 'key' => 'd', 'url' => '#d' },
+      ]
+      allow(self).to receive(:fetch_content).and_return('some content')
+      options = {
+        :content_key => 'footer',
+        :placeholder => {}
+      }
+      result = Nokogiri::HTML.parse(child_link_row_divs(links, options))
+      expect(result.search('input[name="content[footer]links[]links[][url]"]').length).to eq(4)
     end
   end
 
@@ -127,22 +225,42 @@ describe SiteChromeHelper do
     end
 
     it 'returns 3 empty link rows if there are no present links' do
-      result = Nokogiri::HTML.parse(empty_link_row_divs('header', {}, 0))
+      options = {
+        :content_key => 'header',
+        :placeholder => {},
+        :count => 0
+      }
+      result = Nokogiri::HTML.parse(empty_link_row_divs(options))
       expect(result.search('.link-row').length).to eq(3)
     end
 
     it 'returns 2 empty link rows if there is 1 present link' do
-      result = Nokogiri::HTML.parse(empty_link_row_divs('footer', {}, 1))
+      options = {
+        :content_key => 'footer',
+        :placeholder => {},
+        :count => 1
+      }
+      result = Nokogiri::HTML.parse(empty_link_row_divs(options))
       expect(result.search('.link-row').length).to eq(2)
     end
 
     it 'returns 0 empty link rows if there are 3 present links' do
-      result = Nokogiri::HTML.parse(empty_link_row_divs('header', {}, 3))
+      options = {
+        :content_key => 'header',
+        :placeholder => {},
+        :count => 3
+      }
+      result = Nokogiri::HTML.parse(empty_link_row_divs(options))
       expect(result.search('.link-row').length).to eq(0)
     end
 
     it 'does not throw an exception if there are > 3 present links' do
-      result = Nokogiri::HTML.parse(empty_link_row_divs('footer', {}, 9))
+      options = {
+        :content_key => 'footer',
+        :placeholder => {},
+        :count => 9
+      }
+      result = Nokogiri::HTML.parse(empty_link_row_divs(options))
       expect(result.search('.link-row').length).to eq(0)
     end
   end

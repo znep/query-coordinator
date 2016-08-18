@@ -3,7 +3,10 @@
 
   <%= render('site_chrome/tab_content/form_field',
     fields: [:general, :template],
-    translation: translations[:template]) %>
+    translation: translations[:template].tap do |t|
+      t[:description] = t[:description_html].html_safe
+    end
+  ) %>
 
   <%= render('site_chrome/tab_content/form_field',
     fields: [:general, :styles, :max_width],

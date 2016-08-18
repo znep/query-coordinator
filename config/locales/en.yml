@@ -2590,10 +2590,14 @@ en:
         'true': true
         up: Up
       site_chrome:
-        add_new_link_row: Add Another %{section} Link
+        add_new_link_menu: Add Menu
+        add_new_link_row: Add %{section} Link
         cancel: Cancel
         description: Configure the appearance of your Socrata site.
+        link_menu_label_html: <b>Menu</b> - <i>You can drag links to reorder them</i>
+        move_link_row: Drag to reorder
         preview_changes: Preview
+        remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
         site_appearance: Site Appearance
         update: Update
@@ -2637,6 +2641,7 @@ en:
               menu_links:
                 description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
                 title: Footer Links
+              menu_title_placeholder: Menu Text
               powered_by:
                 description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
                 label: Show Socrata branding in the Footer
@@ -2662,7 +2667,7 @@ en:
                 show_signup: Show ability to create an account via Sign Up
                 title: Sign In / Sign Out
               template:
-                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
+                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" (default) and "Rally"</a>.
                 error: Only "Evergreen" and "Rally" header templates are currently available. Please refer to the Support article at right for more information.
                 placeholder: Evergreen
                 title: Template
@@ -2712,6 +2717,7 @@ en:
               menu_links:
                 description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
                 title: Header Links
+              menu_title_placeholder: Menu Text
               url_label: URL
               url_placeholder: URL
             title: Header Bar

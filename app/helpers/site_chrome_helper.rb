@@ -38,31 +38,54 @@ module SiteChromeHelper
     "content[#{fields.join('][')}]"
   end
 
+  def link_row_div_classnames(default, child_link)
+    [
+      'link-row',
+      default ? 'default' : '',
+      child_link ? 'child' : ''
+    ].join(' ')
+  end
+
   # Returns a "link-row" div that contains 3 input fields and an "X" icon to remove the row.
   # Example output:
   # <div class="link-row ">
   #   <input type="hidden" name="content[header]links[][key]" value="link_0" class="hidden-label-input">
   #   <input type="text" name="content[locales][en][header]links[link_0]" value="Home" class="localized-label-input">
+  #   <span class="icon-move move-link-row" title="Drag to reorder"></span>
   #   <input type="text" name="content[header]links[][url]" value="/">
   #   <span class="icon-close-2 remove-link-row" title="Remove Link" onclick="removeLinkRow(this);"></span>
   # </div>
-  def link_row_div(content_key, link, placeholder_text, default = false)
+  def link_row_div(link, options)
     link ||= { 'key' => 'link_PLACEHOLDER_INDEX', 'url' => '' }
-    key_path = "content[#{content_key}]links[][key]"
-    url_path = "content[#{content_key}]links[][url]"
-    # TODO - actually support other locales and remove "en" hardcoding.
-    translated_label_path = "content[locales][en][#{content_key}]links[#{link['key']}]"
-    translated_label = default ? nil : fetch_content([:locales, :en, content_key, :links, link['key']])
+    path_suffix = 'links[]' if options[:child_link]
+    key_path = "content[#{options[:content_key]}]links[]#{path_suffix}[key]"
+    url_path = "content[#{options[:content_key]}]links[]#{path_suffix}[url]"
 
-    content_tag(:div, :class => "link-row#{' default' if default}") do
+    # TODO - actually support other locales and remove "en" hardcoding.
+    translated_label_path = "content[locales][en][#{options[:content_key]}]links[#{link['key']}]"
+    translated_label = options[:default] ? nil : fetch_content(
+      [:locales, :en, options[:content_key], :links, link['key']]
+    )
+
+    content_tag(:div, :class => link_row_div_classnames(options[:default], options[:child_link])) do
       hidden_field_tag(key_path, link['key'] || '', :class => 'hidden-label-input') <<
       text_field_tag(
         translated_label_path,
         translated_label || '',
         :class => 'localized-label-input',
-        :placeholder => placeholder_text[:link_title]
+        :placeholder => options.dig(:placeholder, :link_title)
       ) <<
-      text_field_tag(url_path, link['url'] || '', :placeholder => placeholder_text[:url]) <<
+      content_tag(
+        :span,
+        nil,
+        :class => 'icon-move move-link-row',
+        :title => t('screens.admin.site_chrome.move_link_row')
+      ) <<
+      text_field_tag(
+        url_path, link['url'] || '',
+        :class => 'url-input',
+        :placeholder => options.dig(:placeholder, :url)
+      ) <<
       content_tag(
         :span,
         nil,
@@ -74,15 +97,87 @@ module SiteChromeHelper
   end
 
   # If less than 3 present_links, add empty link rows until there are 3 total rows
-  def empty_link_row_divs(content_key, placeholder_text, present_link_count)
-    (link_row_div(content_key, nil, placeholder_text) * [0, 3 - present_link_count].max).html_safe
+  def empty_link_row_divs(options)
+    link_options = {
+      :content_key => options[:content_key],
+      :placeholder => options[:placeholder]
+    }
+    (link_row_div(nil, link_options) * [0, 3 - options[:count]].max).html_safe
   end
 
-  # Return array of links with a url present
+  # Returns a "link-menu" div that may contain link-row divs.
+  def link_menu_div(menu_links, options)
+    menu_links ||= { 'key' => 'menu_PLACEHOLDER_INDEX', 'links' => [] }
+    key_path = "content[#{options[:content_key]}]links[][key]"
+    # TODO - actually support other locales and remove "en" hardcoding.
+    translated_label_path = "content[locales][en][#{options[:content_key]}]links[#{menu_links['key']}]"
+    translated_label = options[:default] ? nil : fetch_content(
+      [:locales, :en, options[:content_key], :links, menu_links['key']]
+    )
+
+    content_tag(:div, :class => "link-menu#{' default' if options[:default]}") do
+      label_tag(nil, t('screens.admin.site_chrome.link_menu_label_html'), :class => 'link-menu-header') <<
+      hidden_field_tag(key_path, menu_links['key'] || '', :class => 'hidden-label-input') <<
+      text_field_tag(
+        translated_label_path,
+        translated_label || '',
+        :class => 'localized-label-input',
+        :placeholder => options.dig(:placeholder, :menu_title)
+      ) <<
+      content_tag(
+        :span,
+        nil,
+        :class => 'icon-close-2 remove-link-menu',
+        :title => t('screens.admin.site_chrome.remove_link_menu'),
+        :onclick => 'removeLinkMenu(this);'
+      ) <<
+      child_link_row_divs(menu_links['links'], {
+        :content_key => options[:content_key],
+        :placeholder => options[:placeholder]
+      }) <<
+      content_tag(
+        :button,
+        :class => 'add-new-link-row',
+        :type => 'button',
+        :onclick => 'addNewLinkRow(this);'
+      ) do
+        content_tag(:span, ' ', :class => 'icon-add') <<
+        t('screens.admin.site_chrome.add_new_link_row', section: options[:content_key].capitalize)
+      end
+    end
+  end
+
+  # Returns html for multiple link-row divs
+  def child_link_row_divs(links, options)
+    content_tag(:div, :class => 'child-links') do
+      link_options = {
+        :content_key => options[:content_key],
+        :placeholder => options[:placeholder],
+        :default => false,
+        :child_link => true
+      }
+      present_links(links).to_a.each do |link|
+        concat(link_row_div(link, link_options))
+      end
+    end
+  end
+
+  # Returns array of links with a url present
   def present_links(links)
     links.to_a.select do |link|
       link.dig('url').present?
     end
+  end
+
+  # Returns array of links with a url present or child links present.
+  def present_links_and_menus(links)
+    links.to_a.select do |link|
+      link.dig('url').present? || link.dig('links').present?
+    end
+  end
+
+  def has_child_links?(link)
+    link.dig('links').present?
   end
 
   def site_chrome_version_is_greater_than_or_equal?(version, site_chrome = @site_chrome)
@@ -103,20 +198,28 @@ module SiteChromeHelper
   end
 
   def page_controls
-    content_tag :div, class: 'page-controls' do
+    content_tag(:div, :class => 'page-controls') do
       safe_join([
-        link_to('#', onclick: 'return confirmReload();') do
-          content_tag(:button, t('screens.admin.site_chrome.cancel'), id: 'site_chrome_cancel')
+        link_to('#', :onclick => 'return confirmReload();') do
+          content_tag(
+            :button,
+            t('screens.admin.site_chrome.cancel'),
+            :id => 'site_chrome_cancel')
         end,
         link_to('#') do
-          content_tag :button, id: 'site_chrome_preview' do
+          content_tag(:button, :id => 'site_chrome_preview') do
             [
               t('screens.admin.site_chrome.preview_changes'),
-              content_tag(:span, nil, class: 'icon-preview')
+              content_tag(:span, nil, :class => 'icon-preview')
             ].join(' ').html_safe
           end
         end,
-        content_tag(:button, t('screens.admin.site_chrome.update'), class: 'primary', id: 'site_chrome_save')
+        content_tag(
+          :button,
+          t('screens.admin.site_chrome.update'),
+          :class => 'primary',
+          :id => 'site_chrome_save'
+        )
       ])
     end
   end

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
-import Styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES } from '../constants';
@@ -54,7 +54,7 @@ export const MeasureSelector = React.createClass({
         disabled: isFeatureMap(vifAuthoring)
       };
 
-      return <Styleguide.components.Dropdown {...measureAggregationAttributes} />;
+      return <Styleguide.Dropdown {...measureAggregationAttributes} />;
     }
   },
 
@@ -126,7 +126,7 @@ export const MeasureSelector = React.createClass({
       <div ref={(ref) => this.selector = ref}>
         <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
         <div className={classes} data-flyout="measure-empty-flyout">
-          <Styleguide.components.Dropdown {...measureAttributes} />
+          <Styleguide.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationDropdown()}
         </div>
         <p className="authoring-field-description">

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import Styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { setDimension } from '../actions';
@@ -60,7 +60,7 @@ export var DimensionSelector = React.createClass({
     return (
       <div className="dimension-dropdown-container">
         <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}</label>
-        <Styleguide.components.Dropdown {...dimensionAttributes} />
+        <Styleguide.Dropdown {...dimensionAttributes} />
         <p className="authoring-field-description">
           <small>{translate('panes.data.fields.dimension.description')}</small>
         </p>

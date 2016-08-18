@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import Styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
@@ -56,7 +56,7 @@ export var ColorsAndStylePane = React.createClass({
     return (
       <div>
         <label className="block-label" htmlFor="primary-color">{labelText}</label>
-        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={this.props.onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
       </div>
     );
   },
@@ -67,7 +67,7 @@ export var ColorsAndStylePane = React.createClass({
     return (
       <div>
         <label className="block-label" htmlFor="secondary-color">{labelText}</label>
-        <Styleguide.components.ColorPicker handleColorChange={this.props.onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={this.props.onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
       </div>
     );
   },
@@ -116,7 +116,7 @@ export var ColorsAndStylePane = React.createClass({
           <h5>{translate('panes.colors_and_style.subheaders.points')}</h5>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
-            <Styleguide.components.ColorPicker {...pointColorAttributes} />
+            <Styleguide.ColorPicker {...pointColorAttributes} />
           </div>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
@@ -151,7 +151,7 @@ export var ColorsAndStylePane = React.createClass({
       <div>
         <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
-          <Styleguide.components.Dropdown {...colorScaleAttributes} />
+          <Styleguide.Dropdown {...colorScaleAttributes} />
         </div>
         {this.renderMapLayerControls()}
       </div>
@@ -186,7 +186,7 @@ export var ColorsAndStylePane = React.createClass({
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">
-            <Styleguide.components.Dropdown {...baseLayerAttributes} />
+            <Styleguide.Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">

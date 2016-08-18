@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
@@ -112,7 +112,7 @@ export var LegendsAndFlyoutsPane = React.createClass({
           <div className="authoring-field">
             <label className="block-label" htmlFor="flyout-title-column">Column</label>
             <div className="flyout-title-dropdown-container">
-              <styleguide.components.Dropdown {...columnAttributes} />
+              <Styleguide.Dropdown {...columnAttributes} />
             </div>
           </div>
         </div>

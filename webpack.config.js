@@ -22,7 +22,7 @@ module.exports = [
       'lodash': true,
       'moment': true,
       'leaflet': true,
-      'socrata-styleguide': true,
+      'socrata-components': true,
       'react': true,
       'react-dom': true
     },

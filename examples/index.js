@@ -7,5 +7,5 @@ window['react-dom'] = require('react-dom');
 window['d3'] = require('d3');
 window['leaflet'] = require('leaflet');
 window['moment'] = require('moment');
-window['socrata-styleguide'] = require('socrata-styleguide');
+window['socrata-components'] = require('socrata-components');
 window['socrata-utils'] = require('socrata-utils');

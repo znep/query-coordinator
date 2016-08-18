@@ -41,7 +41,7 @@ header#site-chrome-header, footer#site-chrome-footer {
 
     .menu-content {
       .site-chrome-nav-links {
-        a.site-chrome-nav-link {
+        a.site-chrome-nav-link, .site-chrome-nav-child-link {
           color: $dark_text_color;
           background-color: #fff;
           display: block;
@@ -52,12 +52,27 @@ header#site-chrome-header, footer#site-chrome-footer {
           overflow: hidden;
           text-decoration: none;
 
-          &:last-of-type {
-            border-bottom: 1px solid $mobile_menu_border_color;
-          }
-
           &:hover, &:focus, &:active {
             background-color: #fafafa;
+          }
+        }
+
+        .site-chrome-nav-menu {
+          color: $grey_text_color;
+          display: block;
+          padding: 0;
+          &:hover {
+            text-decoration: none;
+            span, a {
+              text-decoration: none;
+            }
+          }
+          .nav-menu-title {
+            display: block;
+            padding: $text_padding;
+            cursor: default;
+            font-size: 10px;
+            text-transform: uppercase;
           }
         }
       }

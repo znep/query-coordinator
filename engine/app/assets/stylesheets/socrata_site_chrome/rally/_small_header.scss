@@ -28,6 +28,14 @@ header#site-chrome-header[template="rally"].small {
               font-size: 14px;
               vertical-align: top;
             }
+
+            .site-chrome-nav-menu {
+              div.dropdown {
+                ul.dropdown-options {
+                  top: $small_banner_height - 1px;
+                }
+              }
+            }
           }
         }
         .navbar-right {

@@ -42,6 +42,7 @@ header#site-chrome-header[template="rally"] {
         form {
           line-height: initial;
           display: inline-flex;
+          vertical-align: middle;
 
           .search-button {
             display: none; // appears with toggleSearchButton()
@@ -83,7 +84,14 @@ header#site-chrome-header[template="rally"] {
 
             .site-chrome-nav-links {
               height: 100%;
-              overflow: hidden;
+
+              .site-chrome-nav-menu {
+                div.dropdown {
+                  ul.dropdown-options {
+                    top: $banner_height - 1px;
+                  }
+                }
+              }
 
               a.site-chrome-nav-link {
                 display: inline-block;
@@ -92,7 +100,7 @@ header#site-chrome-header[template="rally"] {
 
                 &:hover, &:focus, &:active {
                   text-decoration: none;
-                  background-color: rgba(255, 255, 255, 0.3);
+                  background-color: $white_highlight_color;
                 }
               }
             }

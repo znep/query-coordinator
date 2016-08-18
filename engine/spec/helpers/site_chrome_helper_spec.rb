@@ -205,23 +205,114 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
-  describe '#valid_links' do
-    it 'returns only links with a key and url present' do
-      test_links = [
-        { 'key': 'a', 'url': 'http://google.com' },
-        { 'key': 'b', 'url': 'http://bing.com' },
-        { 'key': '', 'url': 'http://facebook.com' },
-        { 'key': 'd', 'url': '' },
-        { 'key': '', 'url': '' }
-      ]
+  describe '#navbar_links_div' do
+    it 'returns a div with the classname "site-chrome-nav-links"' do
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
+      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      expect(result.search('div.site-chrome-nav-links').length).to eq(1)
+    end
 
-      valid_links = [
-        { 'key': 'a', 'url': 'http://google.com' },
-        { 'key': 'b', 'url': 'http://bing.com' }
-      ]
+    it 'creates a site-chrome-nav-menu for nested links' do
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
+      site_chrome.content['header']['links'].push(
+        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
+      )
+      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      expect(result.search('div.site-chrome-nav-menu').length).to eq(1)
+      expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(1)
+      expect(result.search('a.site-chrome-nav-child-link').length).to eq(1)
+      expect(result.search('a.site-chrome-nav-child-link').attr('href').value).to eq('http://opendata.gov')
+    end
 
-      result = helper.valid_links(test_links)
-      expect(result).to match_array(valid_links)
+    it 'creates top level links' do
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
+      site_chrome.content['header']['links'] = [
+        { :key => 'link_0', :url => 'http://a.gov' },
+        { :key => 'link_1', :url => 'http://b.gov' },
+        { :key => 'link_2', :url => 'http://c.gov' }
+      ]
+      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      expect(result.search('.site-chrome-nav-link').length).to eq(3)
+    end
+
+    it 'returns nav-menu-title instead of nested dropdown links if use_dropdown is false' do
+      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
+      site_chrome.content['header']['links'].push(
+        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
+      )
+      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      result = Nokogiri::HTML.parse(helper.navbar_links_div(use_dropdown: false))
+      expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(0)
+      expect(result.search('.site-chrome-nav-menu').length).to eq(1)
+      expect(result.search('.nav-menu-title').length).to eq(1)
+    end
+  end
+
+  describe '#navbar_child_links_array' do
+    it 'returns an array of link tags for the valid link items' do
+      links = [
+        { :key => 'link_0', :url => '/a' },
+        { :key => '', :url => '/z' }, # invalid, should be excluded from result
+        { :key => 'link_1', :url => '/b' },
+        { :key => 'link_2', :url => '/c' }
+      ]
+      result = Nokogiri::HTML.parse(helper.navbar_child_links_array(links).join(''))
+      nav_links = result.search('a.site-chrome-nav-child-link')
+      expect(nav_links.length).to eq(3)
+      expect(nav_links.first.get_attribute('href')).to eq('/a')
+      expect(nav_links.last.get_attribute('href')).to eq('/c')
+    end
+  end
+
+  describe '#valid_navbar_menu_item?' do
+    let(:valid_menu_item) do
+      {
+        :key => 'menu_0',
+        :links => [{
+          :key => 'menu_0_link_0',
+          :url => 'http://oooopppennndaaattaaa'
+        }]
+      }
+    end
+
+    it 'is false for items without a key present' do
+      test_item = valid_menu_item.tap { |item| item[:key] = '' }
+      expect(helper.valid_navbar_menu_item?(test_item)).to eq(false)
+    end
+
+    it 'is false for items without links present' do
+      test_item = valid_menu_item.tap { |item| item[:links] = nil }
+      expect(helper.valid_navbar_menu_item?(test_item)).to eq(false)
+    end
+
+    it 'is false for items without a valid link present inside links' do
+      test_item = valid_menu_item
+      test_item[:links][0][:url] = ''
+      expect(helper.valid_navbar_menu_item?(test_item)).to eq(false)
+    end
+
+    it 'is true for items with a key, links, and a valid link' do
+      expect(helper.valid_navbar_menu_item?(valid_menu_item)).to eq(true)
+    end
+  end
+
+  describe '#valid_link_item?' do
+    it 'is false for links without a key present' do
+      link = { 'key': '', 'url': 'http://facebook.com' }
+      expect(helper.valid_link_item?(link)).to eq(false)
+    end
+
+    it 'is false for links without a url present' do
+      link = { 'key': 'test', 'url': '' }
+      expect(helper.valid_link_item?(link)).to eq(false)
+    end
+
+    it 'is true for links with both a key and url present' do
+      link = { 'key': 'link_0', 'url': 'http://google.com' }
+      expect(helper.valid_link_item?(link)).to eq(true)
     end
   end
 

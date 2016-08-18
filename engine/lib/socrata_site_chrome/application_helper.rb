@@ -111,10 +111,54 @@ module SocrataSiteChrome
       end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
     end
 
-    def valid_links(links)
-      links.to_a.select do |link|
-        link && link[:url].present? && link[:key].present?
+    def navbar_links_div(use_dropdown: true)
+      content_tag(:div, :class => 'site-chrome-nav-links') do
+        get_site_chrome.header[:links].to_a.each do |link|
+          concat(
+            if valid_navbar_menu_item?(link)
+              if use_dropdown
+                content_tag(:div, :class => 'site-chrome-nav-menu') do
+                  dropdown(
+                    content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales)) <<
+                      content_tag(:span, nil, :class => 'icon-arrow-down'),
+                    navbar_child_links_array(link[:links])
+                  )
+                end
+              else
+                # Instead of a dropdown, print out the name of the menu item followed by all its links
+                content_tag(:div, :class => 'site-chrome-nav-menu') do
+                  content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales),
+                    :class => 'nav-menu-title') <<
+                  navbar_child_links_array(link[:links]).join('').html_safe
+                end
+              end
+            elsif valid_link_item?(link)
+              # Top level link
+              link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
+                link[:url], :class => 'site-chrome-nav-link noselect')
+            end
+          )
+        end
       end
+    end
+
+    def navbar_child_links_array(child_links)
+      child_links.to_a.map do |link|
+        if valid_link_item?(link)
+          link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
+            link[:url], :class => 'site-chrome-nav-child-link noselect')
+        end
+      end
+    end
+
+    # Valid if link has :key and :links, and :links contains at least one valid_link_item
+    def valid_navbar_menu_item?(link)
+      !!(link.try(:dig, :key).present? && link.dig(:links) && link[:links].any?(&method(:valid_link_item?)))
+    end
+
+    # Valid if link has :key and :url
+    def valid_link_item?(link)
+      !!(link.try(:dig, :key).present? && link[:url].present?)
     end
 
     def dropdown(prompt, dropdown_options = [], orientation = 'bottom')

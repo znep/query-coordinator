@@ -23,6 +23,6 @@ activate :external_pipeline,
 after_configuration do
   FileUtils.mkdir_p('./pages/javascripts/vendor')
   FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './pages/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.js'), './pages/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/node_modules/tether/dist/js/tether.js'), './pages/javascripts/vendor')
   FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.js'), './pages/javascripts/vendor')
 end

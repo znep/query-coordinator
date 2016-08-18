@@ -1274,6 +1274,13 @@ en:
       foundry_button: API Docs
       title: Access this Dataset via SODA API
     back: Back
+    blob_download:
+      edit_prompt_button: Edit Source
+      edit_prompt_message: Edit the source file for this dataset.
+      title: Download this Resource
+      download: Download
+    blob_preview:
+      title: Preview
     bootstrap_button: Create a Visualization
     bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
@@ -1334,6 +1341,7 @@ en:
       manage_prompt:
         button: Manage Featured Content
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
+        message_blob: Choose to promote up to 3 external resources that are relevant to this file or document. If left blank this section will be invisible.
       title: Featured Content Using this Data
     featured_content_modal:
       external: External Resource
@@ -1348,6 +1356,7 @@ en:
         url: Link to Resource
       header: Manage Featured Content
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
+      introduction_blobby: What would you like people to see when they first view this asset? Promote up to 3 external resources that are relevant to this file or document.
       preview: Preview of featured content
       remove_error: Oh no!  Something went wrong, please try again.
       remove_prompt: Are you sure you want to remove this piece of featured content?
@@ -1371,6 +1380,7 @@ en:
       screenshot_yes: Yes, include a screenshot
       title: Feedback
     less: Show Less
+    manage_dataset: Manage Dataset
     manage_prompt: Click here to manage permissions
     metadata:
       attachments: Attachments
@@ -1462,7 +1472,7 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      title: Share this Dataset
+      title: Share
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:

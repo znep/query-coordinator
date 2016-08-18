@@ -17,6 +17,7 @@ export default {
   ],
   isPrivate: true,
   isTabular: true,
+  isBlobby: false,
   gridUrl: 'gridUrl',
   downloadOverride: null,
   exportFormats: [ 'csv', 'json' ],

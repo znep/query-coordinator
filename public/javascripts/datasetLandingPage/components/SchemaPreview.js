@@ -187,10 +187,10 @@ export var SchemaPreview = React.createClass({
       if (column.dataTypeName) {
         typeCell = (
           <div>
+            <span aria-hidden className={getIconClassForDataType(column.dataTypeName)}></span>
             <span className="type-name" data-name={column.dataTypeName}>
               {I18n.data_types[column.dataTypeName]}
             </span>
-            <span aria-hidden className={getIconClassForDataType(column.dataTypeName)}></span>
           </div>
         );
       }

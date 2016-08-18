@@ -30,54 +30,10 @@ export var InfoPane = React.createClass({
     });
   },
 
-  render: function() {
-    var { view, onClickGrid, onDownloadData } = this.props;
+  renderMoreActions: function() {
+    var { view } = this.props;
 
-    var privateIcon;
-    var viewDataButton;
-    var categoryBadge;
-    var downloadDropdown;
-    var apiButton;
-    var shareButton;
-    var moreActions;
-    var attributionInfo;
-
-    privateIcon = view.isPrivate ?
-      <span
-        className="icon-private"
-        aria-label={I18n.private_notice}
-        title={I18n.private_notice} /> : null;
-
-    categoryBadge = view.category ?
-      <span className="tag-category">{_.upperFirst(view.category)}</span> : null;
-
-    viewDataButton = (
-      <a
-        href={view.gridUrl}
-        id="tour-anchor"
-        className="btn btn-simple btn-sm unstyled-link grid"
-        onClick={onClickGrid}
-        target="_blank">
-        {I18n.action_buttons.data}
-        <span className="icon-external" />
-      </a>
-    );
-
-    downloadDropdown = <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
-
-    apiButton = (
-      <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
-        {I18n.action_buttons.api}
-      </button>
-    );
-
-    shareButton = (
-      <button className="btn btn-simple btn-sm share" data-modal="share-modal">
-        {I18n.action_buttons.share}
-      </button>
-    );
-
-    var contactFormButton = (
+    var contactFormLink = (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="contact-form">
           {I18n.action_buttons.contact_owner}
@@ -93,19 +49,80 @@ export var InfoPane = React.createClass({
       </li>
     );
 
-    moreActions = (
+    var odataLink = view.isBlobby ? null : (
+      <li>
+        <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
+          {I18n.action_buttons.odata}
+        </a>
+      </li>
+    );
+
+    return (
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
-          {contactFormButton}
+          {contactFormLink}
           {commentLink}
-          <li>
-            <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
-              {I18n.action_buttons.odata}
-            </a>
-          </li>
+          {odataLink}
         </ul>
       </div>
+    );
+  },
+
+  render: function() {
+    var { view, onClickGrid, onDownloadData } = this.props;
+
+    var privateIcon;
+    var viewDataButton;
+    var categoryBadge;
+    var manageButton;
+    var downloadDropdown;
+    var apiButton;
+    var shareButton;
+    var attributionInfo;
+
+    privateIcon = view.isPrivate ?
+      <span
+        className="icon-private"
+        aria-label={I18n.private_notice}
+        title={I18n.private_notice} /> : null;
+
+    categoryBadge = view.category ?
+      <span className="tag-category">{_.upperFirst(view.category)}</span> : null;
+
+    viewDataButton = view.isBlobby ? null : (
+      <a
+        href={view.gridUrl}
+        id="tour-anchor"
+        className="btn btn-simple btn-sm unstyled-link grid"
+        onClick={onClickGrid}
+        target="_blank">
+        {I18n.action_buttons.data}
+        <span className="icon-external" />
+      </a>
+    );
+
+    manageButton = view.isBlobby ?
+      <a
+        href={`${view.gridUrl}?pane=manage`}
+        className="btn btn-simple btn-sm unstyled-link manage"
+        target="_blank">
+        {I18n.manage_dataset}
+      </a> :
+      null;
+
+    downloadDropdown = <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
+
+    apiButton = view.isBlobby ? null : (
+      <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
+        {I18n.action_buttons.api}
+      </button>
+    );
+
+    shareButton = (
+      <button className="btn btn-simple btn-sm share" data-modal="share-modal">
+        {I18n.action_buttons.share}
+      </button>
     );
 
     if (view.attribution) {
@@ -139,10 +156,11 @@ export var InfoPane = React.createClass({
             <div className="entry-actions">
               <div className="btn-group">
                 {viewDataButton}
+                {manageButton}
                 {downloadDropdown}
                 {apiButton}
                 {shareButton}
-                {moreActions}
+                {this.renderMoreActions()}
               </div>
             </div>
           </div>

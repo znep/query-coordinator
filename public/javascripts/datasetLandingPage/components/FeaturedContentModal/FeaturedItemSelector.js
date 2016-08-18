@@ -19,6 +19,7 @@ export var FeaturedItemSelector = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired,
     hasRemoveError: PropTypes.bool,
+    isBlobby: PropTypes.bool,
     isRemoving: PropTypes.bool,
     onClickAdd: PropTypes.func,
     onClickClose: PropTypes.func,
@@ -50,9 +51,14 @@ export var FeaturedItemSelector = React.createClass({
 
   // When we click the add button that shows more add buttons.
   onClickPreAdd: function(position) {
+    var { isBlobby } = this.props;
     var { showPlaceholderDetails } = this.state;
 
     showPlaceholderDetails[position] = true;
+
+    if (isBlobby) {
+      return this.props.onClickAdd('externalResource', position);
+    }
 
     this.setState({ showPlaceholderDetails });
   },
@@ -163,7 +169,11 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderContent: function() {
-    var { contentList, isRemoving, removePosition } = this.props;
+    var { contentList, isRemoving, removePosition, isBlobby } = this.props;
+
+    var introduction = isBlobby ?
+      I18n.featured_content_modal.introduction_blobby :
+      I18n.featured_content_modal.introduction;
 
     var items = _.map(contentList, (featuredItem, i) => {
       var actionButtons = this.renderActionButtons(i);
@@ -196,7 +206,7 @@ export var FeaturedItemSelector = React.createClass({
         <div className="container">
           <h2 tabIndex="0">{I18n.featured_content_modal.title}</h2>
 
-          <p>{I18n.featured_content_modal.introduction}</p>
+          <p>{introduction}</p>
 
           <div className="featured-content">
             {items}
@@ -236,7 +246,10 @@ export var FeaturedItemSelector = React.createClass({
 });
 
 function mapStateToProps(state) {
-  return state.featuredContent;
+  return {
+    ...state.featuredContent,
+    isBlobby: state.view.isBlobby
+  };
 }
 
 function mapDispatchToProps(dispatch) {

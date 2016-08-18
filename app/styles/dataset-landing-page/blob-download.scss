@@ -1,0 +1,37 @@
+.blob-download {
+  .edit-prompt {
+    display: flex;
+    margin-bottom: 22px;
+    justify-content: space-between;
+
+    .edit-prompt-message {
+      flex: 0 1 auto;
+      align-self: center;
+    }
+
+    .edit-prompt-button {
+      flex: 0 0 auto;
+      margin-left: 10px;
+      align-self: flex-start;
+    }
+  }
+
+  .section-content {
+    padding: 15px;
+    flex-wrap: wrap;
+
+    .file-info {
+      flex: 1 0 100%;
+      font-weight: 600;
+      margin-bottom: 11px;
+    }
+
+    .btn.download {
+      font-weight: light;
+
+      .icon-download {
+        margin-right: 8px;
+      }
+    }
+  }
+}

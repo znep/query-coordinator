@@ -1,3 +1,4 @@
+import $ from 'jQuery';
 import _ from 'lodash';
 
 import Actions from './Actions';
@@ -230,24 +231,34 @@ export default function RichTextEditorFormatController(editor, formats) {
 
     if (_squire.hasFormat('a')) {
       if (selection.startContainer.nodeType === 1) {
-        anchor = selection.startContainer.childNodes[selection.startOffset];
-        anchor = anchor.nodeName === 'A' ?
-          anchor :
-          selection.startContainer.childNodes[selection.endOffset];
+        // Need to look up the DOM tree in the edge case where formatting has
+        // been applied inside a link, since that creates child span, i, or b
+        // elements inside the anchor.
+        // Note that when Squire creates a link from already-formatted text, it
+        // actually generates multiple distinct links for each formatted element
+        // (which means that if you edit the URL for the italicized word in the
+        // middle of your link, you're not actually editing the whole link...).
+        anchor = $(selection.startContainer.childNodes[selection.startOffset]).
+          closest('a[href]')[0];
+        if (!anchor) {
+          anchor = selection.startContainer.childNodes[selection.endOffset];
+        }
       } else if (selection.startContainer.nodeType === 3) {
-        anchor = selection.startContainer.parentNode;
-        anchor = anchor.nodeName === 'A' ?
-          anchor :
-          selection.startContainer.previousSibling;
+        // See above.
+        anchor = $(selection.startContainer).closest('a[href]')[0];
+        if (!anchor) {
+          anchor = selection.startContainer.previousSibling;
+        }
       }
 
       if (!anchor || anchor.nodeName !== 'A') {
+        // Are you serious? Did you see how many fallback cases we had?
         return exceptionNotifier.notify(new Error('An anchor tag could not be selected.'));
       }
 
       if (inside) {
-        range.setStart(anchor.childNodes[0], 0);
-        range.setEnd(anchor.childNodes[0], anchor.childNodes[0].length);
+        range.setStartBefore(_.first(anchor.childNodes));
+        range.setEndAfter(_.last(anchor.childNodes));
       } else {
         range.selectNode(anchor);
       }
@@ -525,14 +536,25 @@ export default function RichTextEditorFormatController(editor, formats) {
 
     var selection = _squire.getSelection();
 
+    // See also the above notes in _selectAnchorTag on the intersection of
+    // formatting and links w.r.t. node structure.
     if (_squire.hasFormat('a')) {
-      // Here, we try to get to the anchor tag through two paths.
-      // The first path is an Element that is higher in the node hierarchy.
-      // The second path is a TextNode that is a child of the anchor tag.
       if (selection.startContainer.nodeType === 1) {
-        element = selection.startContainer.querySelector('[href]');
+        // First, try to find an anchor as a descendant of startContainer.
+        // If that doesn't work, try to find an anchor as an ancestor.
+        element = selection.startContainer.querySelector('[href]') ||
+          $(selection.startContainer).closest('a[href]')[0];
       } else if (selection.startContainer.nodeType === 3) {
-        element = selection.startContainer.parentElement;
+        // Similarly, try to find an anchor as an ancestor.
+        element = selection.startContainer.nodeName === 'A' ?
+          selection.startContainer :
+          $(selection.startContainer).closest('a[href]')[0];
+      }
+      // If we didn't find any anchor node, freak out.
+      if (!element || element.nodeName !== 'A') {
+        exceptionNotifier.notify(new Error(
+          'Unable to find anchor node in _link!'
+        ));
       }
 
       range = document.createRange();

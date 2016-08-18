@@ -79,7 +79,7 @@ module SiteChromeHelper
       content_tag(
         :span,
         nil,
-        :class => 'icon-move move-link-row',
+        :class => 'icon-move-vertical move-link-row',
         :title => t('screens.admin.site_chrome.move_link_row')
       ) <<
       text_field_tag(

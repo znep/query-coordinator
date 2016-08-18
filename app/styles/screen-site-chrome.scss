@@ -291,7 +291,7 @@ $faint-border-color: #ebebeb;
 
           label {
             margin: 0.5rem;
-            width: calc(50% - 2rem);
+            width: calc(50% - 1.2rem);
             float: left;
             box-sizing: border-box;
             line-height: 1.5rem;
@@ -328,7 +328,7 @@ $faint-border-color: #ebebeb;
           input {
             margin: 0.5rem;
             padding: 0.5rem;
-            width: calc(50% - 2rem);
+            width: calc(50% - 2.5rem);
             float: left;
             font-size: 15px;
             box-sizing: border-box;
@@ -340,7 +340,7 @@ $faint-border-color: #ebebeb;
           .move-link-row {
             float: left;
             cursor: pointer;
-            font-size: 10pt;
+            font-size: 22px;
             line-height: 50px;
             position: relative;
             left: -5px;
@@ -348,7 +348,7 @@ $faint-border-color: #ebebeb;
 
           .remove-link-row {
             cursor: pointer;
-            font-size: 10pt;
+            font-size: 14px;
             line-height: 50px;
           }
         }

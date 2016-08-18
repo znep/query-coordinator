@@ -153,7 +153,7 @@ function showTab(tabId) {
 }
 
 function updatePageControlsForActiveTab(tabId) {
-  $('.page-controls a[href*=#]').attr('href', `#tab=${tabId}`);
+  $('.page-controls a[href*=#]').attr('href', '#tab=' + tabId);
 }
 
 // Displays a notification to the user if they type invalid input.

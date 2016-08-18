@@ -7,6 +7,7 @@ if [[ -z $(git status -s) ]]; then
   git checkout master
   git pull --rebase origin master
 
+  mkdir -p docs
   rm -rf docs/*
   mv build/* docs/
   rm -rf build/

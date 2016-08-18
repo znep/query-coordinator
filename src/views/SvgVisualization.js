@@ -15,17 +15,19 @@ const DEFAULT_SECONDARY_COLOR = '#71abd9';
 const DEFAULT_HIGHLIGHT_COLOR = '#cccccc';
 const DEFAULT_UNIT_ONE = '';
 const DEFAULT_UNIT_OTHER = '';
+const INFO_CLASSES_PATTERN = /(panning\-notice|view\-source\-data)/i;
 
 function SvgVisualization($element, vif) {
-  var self = this;
-  var currentVif;
+  const self = this;
   // See: http://stackoverflow.com/a/4819886
-  var mobile = (
+  const mobile = (
     'ontouchstart' in window || // works on most browsers
     navigator.maxTouchPoints // works on IE10/11 and Surface
   );
 
-  utils.assertInstanceOf($element, $);
+  let currentVif;
+
+  // NOTE: Initialization occurs at the bottom of the file!
 
   /**
    * Public methods
@@ -36,18 +38,23 @@ function SvgVisualization($element, vif) {
   };
 
   this.updateVif = function(vifToRender) {
+    const shouldRenderViewSourceDataLink = _.get(
+      self.getVif(),
+      'configuration.viewSourceDataLink',
+      true
+    );
 
     currentVif = _.merge(
       VifHelpers.getDefaultVif(),
       VifHelpers.migrateVif(vifToRender)
     );
 
-    this.renderTitle();
-    this.renderDescription();
-    this.renderAxisLabels();
-    this.hidePanningNotice();
+    self.renderTitle();
+    self.renderDescription();
+    self.renderAxisLabels();
+    self.hidePanningNotice();
 
-    if (shouldRenderViewSourceDataLink()) {
+    if (shouldRenderViewSourceDataLink) {
       self.showViewSourceDataLink();
     } else {
       self.hideViewSourceDataLink();
@@ -55,53 +62,54 @@ function SvgVisualization($element, vif) {
   };
 
   this.renderTitle = function() {
-    var $title = this.$container.find('.title');
-    var titleText = this.getVif().title;
+    const $title = self.$container.find('.title');
+    const titleText = _.get(self.getVif(), 'title', null);
 
     if (titleText) {
 
       $title.
         attr('data-full-text', titleText).
         text(titleText);
-      this.$container.addClass('title');
+      self.$container.addClass('title');
     } else {
 
       $title.
         removeAttr('data-full-text').
         text('');
-      this.$container.removeClass('title');
+      self.$container.removeClass('title');
     }
   };
 
   this.renderDescription = function() {
-    var $description = this.$container.find('.description');
-    var descriptionText = this.getVif().description;
+    const $description = self.$container.find('.description');
+    const descriptionText = _.get(self.getVif(), 'description', null);
 
     if (descriptionText) {
 
       $description.
         attr('data-full-text', descriptionText).
         text(descriptionText);
-      this.$container.addClass('description');
+      self.$container.addClass('description');
     } else {
 
       $description.
         removeAttr('data-full-text').
         text('');
-      this.$container.removeClass('description');
+      self.$container.removeClass('description');
     }
   };
 
   this.renderAxisLabels = function() {
-    var $topAxisLabel = this.$container.find('.top-axis-label');
-    var $rightAxisLabel = this.$container.find('.right-axis-label');
-    var $bottomAxisLabel = this.$container.find('.bottom-axis-label');
-    var $leftAxisLabel = this.$container.find('.left-axis-label');
-    var axisLabels = currentVif.configuration.axisLabels;
-    var maxWidth = this.$container.
+    const $topAxisLabel = self.$container.find('.top-axis-label');
+    const $rightAxisLabel = self.$container.find('.right-axis-label');
+    const $bottomAxisLabel = self.$container.find('.bottom-axis-label');
+    const $leftAxisLabel = self.$container.find('.left-axis-label');
+    const axisLabels = _.get(self.getVif(), 'configuration.axisLabels', {});
+    const outerHeight = self.
+      $container.
       find('.visualization-container').
-      outerHeight(true) *
-      0.9;
+      outerHeight(true);
+    const maxWidth = outerHeight * 0.9;
 
     if (axisLabels.top) {
 
@@ -109,14 +117,16 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.top).
         text(axisLabels.top).
         css('max-width', maxWidth);
-      this.$container.addClass('top-axis-label');
+
+      self.$container.addClass('top-axis-label');
     } else {
 
       $topAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      this.$container.removeClass('top-axis-label');
+
+      self.$container.removeClass('top-axis-label');
     }
 
     if (axisLabels.right) {
@@ -125,14 +135,16 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.right).
         text(axisLabels.right).
         css('max-width', maxWidth);
-      this.$container.addClass('right-axis-label');
+
+      self.$container.addClass('right-axis-label');
     } else {
 
       $rightAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      this.$container.removeClass('right-axis-label');
+
+      self.$container.removeClass('right-axis-label');
     }
 
     if (axisLabels.bottom) {
@@ -141,14 +153,16 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.bottom).
         text(axisLabels.bottom).
         css('max-width', maxWidth);
-      this.$container.addClass('bottom-axis-label');
+
+      self.$container.addClass('bottom-axis-label');
     } else {
 
       $bottomAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      this.$container.removeClass('bottom-axis-label');
+
+      self.$container.removeClass('bottom-axis-label');
     }
 
     if (axisLabels.left) {
@@ -157,23 +171,26 @@ function SvgVisualization($element, vif) {
         attr('data-full-text', axisLabels.left).
         text(axisLabels.left).
         css('max-width', maxWidth);
-      this.$container.addClass('left-axis-label');
+
+      self.$container.addClass('left-axis-label');
     } else {
 
       $leftAxisLabel.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
-      this.$container.removeClass('left-axis-label');
+
+      self.$container.removeClass('left-axis-label');
     }
   };
 
   this.renderError = function(messages) {
-    const $message = this.$container.find('.error-message');
+    const $message = self.$container.find('.error-message');
 
     if (!messages || _.isString(messages) || messages.length === 1) {
       $message.text(messages || 'Error');
     } else {
+
       $message.
         empty().
         append($('<h1>').text(
@@ -183,21 +200,23 @@ function SvgVisualization($element, vif) {
           messages.map((text) => $('<li>').text(text))
         ));
     }
-    this.$container.addClass('visualization-error');
+
+    self.$container.addClass('visualization-error');
   };
 
   this.clearError = function() {
-    this.$container.find('.error-message').text('');
-    this.$container.removeClass('visualization-error');
+
+    self.$container.find('.error-message').text('');
+    self.$container.removeClass('visualization-error');
   };
 
   this.showViewSourceDataLink = function() {
-    var loadedVif = this.getVif();
-    var domain = _.get(loadedVif, 'series[0].dataSource.domain');
-    var datasetUid = _.get(loadedVif, 'series[0].dataSource.datasetUid');
-    var metadataProvider = new MetadataProvider({domain, datasetUid});
-    var renderLink = (linkableDatasetUid) => {
-      this.
+    const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
+    const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
+    const metadataProvider = new MetadataProvider({domain, datasetUid});
+    const renderLink = (linkableDatasetUid) => {
+
+      self.
         $container.
         addClass('view-source-data').
         find('.view-source-data a').
@@ -216,71 +235,78 @@ function SvgVisualization($element, vif) {
     // measure how much space they have to fill, but only add the
     // view-source-data class to show the link once the optional metadata
     // request has returned, if it is made.
-    this.
-      $container.
-      addClass('info');
+    self.showInfo();
   };
 
   this.hideViewSourceDataLink = function() {
-    this.$container.removeClass('view-source-data');
-    this.hideInfo();
+
+    self.$container.removeClass('view-source-data');
+    self.hideInfo();
   };
 
   this.showPanningNotice = function() {
-    this.$container.addClass('info panning-notice');
+
+    self.$container.addClass('panning-notice');
+    self.showInfo();
   };
 
   this.hidePanningNotice = function() {
-    this.$container.removeClass('panning-notice');
-    this.hideInfo();
+
+    self.$container.removeClass('panning-notice');
+    self.hideInfo();
+  };
+
+  this.showInfo = function() {
+    // See comment at the top of the implementation of this.hideInfo.
+    const containerClasses = self.$container.attr('class');
+    const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
+
+    if (hasInfoClass) {
+      self.$container.addClass('info');
+    }
   };
 
   this.hideInfo = function() {
-    var infoClasses = ['panning-notice', 'view-source-data'];
+    // This function used to remove the 'info' class from the container based
+    // on the following check:
+    //
+    //   _.some(<array of class names>, self.$container.hasClass)
+    //
+    // ...but the semantics of _.some were so confusing to me that I spent
+    // fifteen minutes trying to get the right behavior for both the show/hide
+    // case (we should SHOW the info bar if the above returns false).
+    //
+    // In order to potentially spare someone else that confusion, I rewrote it
+    // as below.
+    const containerClasses = self.$container.attr('class');
+    const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
 
-    if (_.some(infoClasses, this.$container.hasClass)) {
-      return;
+    if (!hasInfoClass) {
+      self.$container.removeClass('info');
     }
-
-    this.$container.removeClass('info');
   };
 
   this.isMobile = function() {
     return mobile;
   };
 
-  // NOTE: This is on the path to deprecation.
-  // We should use I18n.js in most places.
-  this.getLocalization = function(key) {
-    var localizedString = '';
-
-    if (_.has(currentVif.configuration.localization, key)) {
-      localizedString = currentVif.configuration.localization[key];
-    } else {
-      logWarning('No localized string found for key `{0}`.'.format(key));
-    }
-
-    return localizedString;
-  };
-
   this.getSeriesIndexByLabel = function(label) {
-    var seriesLabels = currentVif.
-      series.
-        map(
-          function(series) {
+    const seriesLabels = _.get(self.getVif(), 'series', []).
+      map(
+        function(series) {
 
-            return series.label;
-          }
-        );
-    var seriesIndex = seriesLabels.indexOf(label);
+          return series.label;
+        }
+      );
+    const seriesIndex = seriesLabels.indexOf(label);
 
     return (seriesIndex !== -1) ? seriesIndex : null;
   };
 
   this.getTypeVariantBySeriesIndex = function(seriesIndex) {
-    var typeComponents = _.get(
-      currentVif,
-      'series[{0}].type'.format(seriesIndex),
+    const typeComponents = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].type`,
       ''
     ).split('.');
 
@@ -290,9 +316,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.getUnitOneBySeriesIndex = function(seriesIndex) {
-    var unitOne = _.get(
-      currentVif,
-      'series[{0}].unit.one'.format(seriesIndex)
+    const unitOne = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].unit.one`
     );
 
     return (_.isString(unitOne)) ?
@@ -301,9 +327,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.getUnitOtherBySeriesIndex = function(seriesIndex) {
-    var unitOther = _.get(
-      currentVif,
-      'series[{0}].unit.other'.format(seriesIndex)
+    const unitOther = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].unit.other`
     );
 
     return (_.isString(unitOther)) ?
@@ -312,9 +338,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.getPrimaryColorBySeriesIndex = function(seriesIndex) {
-    var primaryColor = _.get(
-      currentVif,
-      'series[{0}].color.primary'.format(seriesIndex)
+    const primaryColor = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].color.primary`
     );
 
     return (!_.isUndefined(primaryColor)) ?
@@ -323,9 +349,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.getSecondaryColorBySeriesIndex = function(seriesIndex) {
-    var secondaryColor = _.get(
-      currentVif,
-      'series[{0}].color.secondary'.format(seriesIndex)
+    const secondaryColor = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].color.secondary`
     );
 
     return (!_.isUndefined(secondaryColor)) ?
@@ -334,9 +360,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.getHighlightColorBySeriesIndex = function(seriesIndex) {
-    var highlightColor = _.get(
-      currentVif,
-      'series[{0}].color.highlight'.format(seriesIndex)
+    const highlightColor = _.get(
+      self.getVif(),
+      `series[${seriesIndex}].color.highlight`
     );
 
     return (!_.isUndefined(highlightColor)) ?
@@ -348,17 +374,16 @@ function SvgVisualization($element, vif) {
    * Valid options: 'fit', 'pan'
    */
   this.getXAxisScalingModeBySeriesIndex = function(seriesIndex) {
-    var chartType = _.get(
-      currentVif,
+    const chartType = _.get(
+      self.getVif(),
       `series[${seriesIndex}].type`,
       ''
     );
-    var defaultXAxisScalingModeForChartType = (chartType.match(/^timeline/)) ?
-      'fit' :
-      'pan';
+    const isTimeline = chartType.match(/^timeline/);
+    const defaultXAxisScalingModeForChartType = (isTimeline) ? 'fit' : 'pan';
 
     return _.get(
-      currentVif,
+      self.getVif(),
       'configuration.xAxisScalingMode',
       defaultXAxisScalingModeForChartType
     );
@@ -370,7 +395,7 @@ function SvgVisualization($element, vif) {
   this.getYAxisScalingMode = function() {
 
     return _.get(
-      currentVif,
+      self.getVif(),
       'configuration.yAxisScalingMode',
       'showZero'
     );
@@ -378,7 +403,7 @@ function SvgVisualization($element, vif) {
 
   this.emitEvent = function(name, payload) {
 
-    this.$element[0].dispatchEvent(
+    self.$element[0].dispatchEvent(
       new window.CustomEvent(
         name,
         { detail: payload, bubbles: true }
@@ -485,13 +510,12 @@ function SvgVisualization($element, vif) {
   }
 
   function showFlyout(event) {
-    var element = event.originalEvent.target;
-    var content = element.getAttribute('data-full-text');
-    var flyoutPayload;
+    const element = event.originalEvent.target;
+    const content = element.getAttribute('data-full-text');
 
     if (content) {
 
-      flyoutPayload = {
+      let flyoutPayload = {
         element: element,
         content:  $('<div>', {'class': 'socrata-flyout-title'}).text(content),
         rightSideHint: false,
@@ -525,18 +549,16 @@ function SvgVisualization($element, vif) {
   }
 
   function handleDownload() {
-    var svg = $element.find('svg')[0];
-    var svgData = new XMLSerializer().
-      serializeToString(svg);
-    var canvas = document.createElement('canvas');
-    var ctx;
-    var img;
+    const svg = $element.find('svg')[0];
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
 
     canvas.width = $element.width();
     canvas.height = $element.height();
-    ctx = canvas.getContext('2d');
 
-    img = document.createElement('img');
+    let ctx = canvas.getContext('2d');
+    let img = document.createElement('img');
+
     img.setAttribute(
       'src',
       'data:image/svg+xml;base64,' +
@@ -553,26 +575,19 @@ function SvgVisualization($element, vif) {
     };
   }
 
-  function logWarning(message) {
-    if (window.console && window.console.warn) {
-      window.console.warn(message);
-    }
-  }
-
-  function shouldRenderViewSourceDataLink() {
-    return _.get(self.getVif(), 'configuration.viewSourceDataLink', true);
-  }
-
   /**
-   * Execution starts here.
+   * Initialization
    */
+
+  utils.assertInstanceOf($element, $);
 
   this.$element = $element;
 
   renderTemplate();
   attachEvents();
 
-  this.$container = this.$element.find('.visualization');
+  this.$container = self.$element.find('.visualization');
+
   this.updateVif(vif);
 }
 

@@ -120,23 +120,27 @@ export default {
     axis_and_scale: {
       title: 'Axis & Scale',
       subheaders: {
-        labels: 'Labels'
+        axis_titles: 'Axis Titles',
+        x_axis_data_labels: 'Data labels'
       },
       fields: {
-        top: {
-          title: 'Top'
+        top_axis_title: {
+          title: 'Top Axis Title'
         },
-        bottom: {
-          title: 'Bottom'
+        bottom_axis_title: {
+          title: 'Bottom Axis Title'
         },
-        left: {
-          title: 'Left'
+        left_axis_title: {
+          title: 'Left Axis Title'
         },
-        right: {
-          title: 'Right'
+        right_axis_title: {
+          title: 'Right Axis Title'
         },
         x_axis_scaling_mode: {
-          title: 'Autofit Horizontally'
+          title: 'Auto-fit X-Axis'
+        },
+        x_axis_data_labels: {
+          title: 'Show X-Axis Data Labels'
         }
       }
     },

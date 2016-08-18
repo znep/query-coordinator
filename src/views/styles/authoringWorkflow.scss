@@ -96,6 +96,11 @@
       font-weight: 600;
     }
 
+    .inline-label {
+      display: inline-block;
+      margin: 5px 0;
+    }
+
     .text-input,
     textarea,
     input[type="range"] {

@@ -5,7 +5,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
-  setValueOrDefaultValue,
+  setStringValueOrDefaultValue,
   setUnits
 } from '../../helpers';
 
@@ -42,13 +42,13 @@ export default function featureMap(state, action) {
 
     case SET_DOMAIN:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
       });
       break;
 
     case SET_DATASET_UID:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
@@ -56,16 +56,16 @@ export default function featureMap(state, action) {
       _.unset(state, 'configuration.mapCenterAndZoom');
 
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
+        setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
       break;
 
     case SET_TITLE:
-      setValueOrDefaultValue(state, 'title', action.title, null);
+      setStringValueOrDefaultValue(state, 'title', action.title, null);
       break;
 
     case SET_DESCRIPTION:
-      setValueOrDefaultValue(state, 'description', action.description, null);
+      setStringValueOrDefaultValue(state, 'description', action.description, null);
       break;
 
     case SET_PRIMARY_COLOR:
@@ -88,13 +88,13 @@ export default function featureMap(state, action) {
 
     case SET_UNIT_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
+        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
 

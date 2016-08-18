@@ -7,6 +7,7 @@ export default {
   },
   configuration: {
     viewSourceDataLink: true,
+    xAxisDataLabels: true,
     xAxisScalingMode: 'pan'
   },
   description: '',

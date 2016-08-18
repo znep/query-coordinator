@@ -2,8 +2,8 @@ import _ from 'lodash';
 import utils from 'socrata-utils';
 import { translate } from '../../I18n';
 
-export const setValueOrDefaultValue = (object, path, value, defaultValue) => {
-  var hasPath = _.has(object, path);
+export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
+  const hasPath = _.has(object, path);
 
   if (isNonEmptyString(value)) {
     _.set(object, path, value);
@@ -12,8 +12,18 @@ export const setValueOrDefaultValue = (object, path, value, defaultValue) => {
   }
 }
 
+export const setBooleanValueOrDefaultValue = (object, path, value, defaultValue) => {
+  const hasPath = _.has(object, path);
+
+  if (_.isBoolean(value)) {
+    _.set(object, path, value);
+  } else if (hasPath && !_.isUndefined(defaultValue)) {
+    _.set(object, path, defaultValue);
+  }
+}
+
 export const setValueOrDeleteProperty = (object, path, value) => {
-  var hasPath = _.has(object, path);
+  const hasPath = _.has(object, path);
 
   if (isNonEmptyString(value)) {
     _.set(object, path, value);
@@ -31,15 +41,15 @@ export const isNonEmptyString = string => {
 };
 
 export const setUnits = (series, action) => {
-  let rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
-  let unitOne = _.get(series, 'unit.one', null);
-  let unitOther = _.get(series, 'unit.other', null);
+  const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
+  const unitOne = _.get(series, 'unit.one', null);
+  const unitOther = _.get(series, 'unit.other', null);
 
   if (unitOne === null) {
-    setValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
+    setStringValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
   }
 
   if (unitOther === null) {
-    setValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
+    setStringValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
   }
 };

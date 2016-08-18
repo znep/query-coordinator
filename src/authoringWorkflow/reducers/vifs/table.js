@@ -7,7 +7,7 @@ import vifs from '../../vifs';
 import { getDisplayableColumns } from '../../selectors/metadata';
 import {
   forEachSeries,
-  setValueOrDefaultValue,
+  setStringValueOrDefaultValue,
   setUnits,
 } from '../../helpers';
 import {
@@ -36,7 +36,7 @@ export default function table(state, action) {
 
       if (displayableColumns.length > 0) {
 
-        setValueOrDefaultValue(
+        setStringValueOrDefaultValue(
           state,
           'configuration.order[0].columnName',
           displayableColumns[0].fieldName
@@ -50,25 +50,25 @@ export default function table(state, action) {
 
     case SET_DOMAIN:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
       });
       break;
 
     case SET_DATASET_UID:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
     case SET_UNIT_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
+        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
   }

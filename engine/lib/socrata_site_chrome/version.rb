@@ -1,3 +1,3 @@
 module SocrataSiteChrome
-  VERSION = '0.0.46'
+  VERSION = '1.0.0'
 end

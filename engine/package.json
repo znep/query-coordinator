@@ -9,7 +9,7 @@
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "socrata-styleguide": "2.0.3"
+    "socrata-components": "6.2.0"
   },
   "devDependencies": {
     "eslint": "^3.0.1"

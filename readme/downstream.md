@@ -29,7 +29,9 @@ With `window` global usage:
 ```js
 const Component = React.createClass({
   render() {
-    return <styleguide.ColorPicker id="my-awesome-color-picker"/>;
+    return React.createElement(styleguide.ColorPicker, {
+      id: "my-awesome-color-picker"
+    });
   }
 });
 ```

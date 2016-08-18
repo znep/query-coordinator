@@ -7,8 +7,8 @@ var componentNameKebabCase = _.kebabCase(componentName);
 var componentNameSnakeCase = _.snakeCase(componentName);
 var componentPath = `${__dirname}/../src/js/components/${componentName}`;
 var relativePath = path.relative(`${__dirname}/..`, componentPath);
-var guideMenuPath = 'docs/_guide_menu.erb';
-var componentsPath = 'docs/components.html.erb';
+var guideMenuPath = 'pages/_guide_menu.erb';
+var componentsPath = 'pages/components.html.erb';
 
 var mustaches = /{{([\s\S]+?)}}/g;
 var templateToken = '<!-- TEMPLATE_TOKEN (Don\'t remove this. Like seriously.) -->';
@@ -40,8 +40,8 @@ function buildTestFile() {
 }
 
 function buildDocFiles() {
-  var componentBaseTemplate = _.template(cat(`${__dirname}/templates/component-docs.template`));
-  var componentSkeletonTemplate = _.template(cat(`${__dirname}/templates/component-skeleton-docs.template`));
+  var componentBaseTemplate = _.template(cat(`${__dirname}/templates/component-pages.template`));
+  var componentSkeletonTemplate = _.template(cat(`${__dirname}/templates/component-skeleton-pages.template`));
 
   var componentBase = componentBaseTemplate({
     kebabCase: componentNameKebabCase
@@ -52,8 +52,8 @@ function buildDocFiles() {
     kebabCase: componentNameKebabCase
   });
 
-  componentBase.to(`docs/components/_${componentNameSnakeCase}.erb`);
-  componentSkeleton.to(`docs/components/skeletons/_${componentNameSnakeCase}.erb`);
+  componentBase.to(`pages/components/_${componentNameSnakeCase}.erb`);
+  componentSkeleton.to(`pages/components/skeletons/_${componentNameSnakeCase}.erb`);
 }
 
 function addToGuideMenu() {

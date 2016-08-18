@@ -1,6 +1,6 @@
 module.exports = () => [
   'dist/fonts',
-  'docs/stylesheets',
+  'pages/stylesheets',
   'src/scss',
   'src/js',
   'node_modules/bourbon/app/assets/stylesheets',

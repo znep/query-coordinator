@@ -1,6 +1,6 @@
 require 'fileutils'
 
-set :source, 'docs'
+set :source, 'pages'
 
 set :css_dir, 'stylesheets'
 set :js_dir, 'javascripts'
@@ -21,8 +21,8 @@ activate :external_pipeline,
   source: 'dist'
 
 after_configuration do
-  FileUtils.mkdir_p('./docs/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './docs/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.js'), './docs/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.js'), './docs/javascripts/vendor')
+  FileUtils.mkdir_p('./pages/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './pages/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.js'), './pages/javascripts/vendor')
+  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.js'), './pages/javascripts/vendor')
 end

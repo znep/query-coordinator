@@ -12,8 +12,8 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 
-function docsStream() {
-  return gulp.src('docs/stylesheets/docs.scss').
+function pagesStream() {
+  return gulp.src('pages/stylesheets/pages.scss').
     pipe(sourcemaps.init()).
       pipe(plumber()).
       pipe(sass({ includePaths }).on('error', sass.logError)).
@@ -46,10 +46,10 @@ function compileNanoCSS(callback) {
   on('finish', callback);
 }
 
-function compileDocsCSS(callback) {
-  docsStream().
+function compilePagesCSS(callback) {
+  pagesStream().
     pipe(sourcemaps.write('.')).
-    pipe(gulp.dest('docs/stylesheets')).
+    pipe(gulp.dest('pages/stylesheets')).
     on('finish', callback);
 }
 
@@ -57,6 +57,6 @@ module.exports = (done) => {
   async.parallel([
     compileCSS,
     compileNanoCSS,
-    compileDocsCSS
+    compilePagesCSS
   ], done);
 };

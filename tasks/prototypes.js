@@ -10,7 +10,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 
 module.exports = (done) => {
-  gulp.src('docs/stylesheets/prototypes/**/*.scss').
+  gulp.src('pages/stylesheets/prototypes/**/*.scss').
     pipe(sourcemaps.init()).
       pipe(plumber()).
       pipe(sass({ includePaths }).on('error', sass.logError)).

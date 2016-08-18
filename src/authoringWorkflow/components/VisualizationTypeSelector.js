@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import Styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES } from '../constants';

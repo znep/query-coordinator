@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import Styleguide from 'socrata-styleguide';
+import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 
@@ -146,7 +146,7 @@ export var RegionSelector = React.createClass({
           <span className="icon-question" data-flyout="region-info-flyout"></span>
         </label>
         {this.renderRegionInfo()}
-        <Styleguide.components.Dropdown {...regionAttributes} />
+        <Styleguide.Dropdown {...regionAttributes} />
         {this.renderRegionProcessingMessage()}
         {this.renderRegionProcessingError()}
       </div>

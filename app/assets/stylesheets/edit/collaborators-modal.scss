@@ -106,13 +106,10 @@
       left: -0.075rem;
     }
 
-    li {
-      padding: 1rem 0;
-    }
-
     label {
-      margin: 0;
+      display: block;
       cursor: pointer;
+      padding: 1rem 0;
       transition: background-color .2s;
 
       &:hover {
@@ -130,6 +127,11 @@
         .radio-label-subtitle {
           color: $collaborators-select-disabled-radio-label-subtitle-color;
         }
+      }
+
+      // ensure cursor looks correct even for links inside disabled options
+      a {
+        cursor: pointer;
       }
     }
 

@@ -52,11 +52,14 @@
       <% end %>
     </ul>
 
-    <% tab_sections.each_with_index do |section, i| %>
-      <div class="tab-content" data-tab-id="<%= section %>">
-        <%= render "site_chrome/tab_content/#{section}",
-          :translations => t("screens.admin.site_chrome.tabs.#{section}.fields") %>
-      </div>
+    <%= form_tag update_site_chrome_path(anchor: {tab: :whats_new}), id: 'site_chrome_form', method: :put, remote: true do %>
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <% tab_sections.each_with_index do |section, i| %>
+        <div class="tab-content" data-tab-id="<%= section %>">
+          <%= render "site_chrome/tab_content/#{section}",
+            :translations => t("screens.admin.site_chrome.tabs.#{section}.fields") %>
+        </div>
+      <% end %>
     <% end %>
 
   </div>

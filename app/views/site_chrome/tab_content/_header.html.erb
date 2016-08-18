@@ -1,45 +1,41 @@
 <% header = @content['header'] %>
 
-<%= form_tag update_site_chrome_path(anchor: {tab: :header}), id: 'tab_form_header', method: :put, remote: true do %>
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<% #TODO: factor these out into a single lookup table %>
+<%= render('site_chrome/tab_content/form_field',
+  fields: [:header, :logo, :src],
+  translation: translations[:header_bar_logo]) %>
 
-  <% #TODO: factor these out into a single lookup table %>
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:header, :logo, :src],
-    translation: translations[:header_bar_logo]) %>
+<%= render('site_chrome/tab_content/form_field_pair',
+  left: {
+    fields: [:header, :styles, :logo_height],
+    translation: translations[:header_logo_height]
+  },
+  right: {
+    fields: [:header, :styles, :logo_width],
+    translation: translations[:header_logo_width]
+  }) %>
 
-  <%= render('site_chrome/tab_content/form_field_pair',
-    left: {
-      fields: [:header, :styles, :logo_height],
-      translation: translations[:header_logo_height]
-    },
-    right: {
-      fields: [:header, :styles, :logo_width],
-      translation: translations[:header_logo_width]
-    }) %>
+<%= render('site_chrome/tab_content/form_field',
+  fields: [:locales, current_locale(suppress_locale = false), :header, :site_name],
+  translation: translations[:header_display_name]) %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:locales, current_locale(suppress_locale = false), :header, :site_name],
-    translation: translations[:header_display_name]) %>
+<%= render('site_chrome/tab_content/form_field_pair',
+  left: {
+    fields: [:header, :styles, :bg_color],
+    translation: translations[:bar_background_color]
+  },
+  right: {
+    fields: [:header, :styles, :bg_color_secondary],
+    translation: translations[:bar_secondary_background_color]
+  }) %>
 
-  <%= render('site_chrome/tab_content/form_field_pair',
-    left: {
-      fields: [:header, :styles, :bg_color],
-      translation: translations[:bar_background_color]
-    },
-    right: {
-      fields: [:header, :styles, :bg_color_secondary],
-      translation: translations[:bar_secondary_background_color]
-    }) %>
+<%= render('site_chrome/tab_content/form_field',
+  fields: [:header, :styles, :fg_color],
+  translation: translations[:bar_text_link_color]) %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:header, :styles, :fg_color],
-    translation: translations[:bar_text_link_color]) %>
-
-  <%= render('list_of_links',
-    :link_count => 15,
-    :links => header['links'],
-    :content_key => :header,
-    :translations => translations,
-    :allow_child_links => true) %>
-<% end %>
+<%= render('list_of_links',
+  :link_count => 15,
+  :links => header['links'],
+  :content_key => :header,
+  :translations => translations,
+  :allow_child_links => true) %>

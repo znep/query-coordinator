@@ -1,20 +1,16 @@
-<%= form_tag update_site_chrome_path(anchor: {tab: :social}), id: 'tab_form_social', method: :put, remote: true do %>
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<% social_media_sections =
+  %w(facebook twitter youtube linked_in flickr instagram tumblr pinterest yammer google_plus vimeo) %>
 
-  <% social_media_sections =
-    %w(facebook twitter youtube linked_in flickr instagram tumblr pinterest yammer google_plus vimeo) %>
+<% social_media_sections.each do |social_media_section| %>
 
-  <% social_media_sections.each do |social_media_section| %>
+  <% form_field_url = "content[general][social_shares][#{social_media_section}][url]" %>
 
-    <% form_field_url = "content[general][social_shares][#{social_media_section}][url]" %>
-
-    <section class="settings-group">
-      <% translation = translations["#{social_media_section}_profile_link".to_sym] %>
-      <div class="settings-form">
-        <%= label_tag(form_field_url, translation[:title], id: "#{form_field_url}_label") %>
-        <%= text_field_tag(form_field_url, social_share_link(social_media_section), placeholder: translation[:placeholder]) %>
-      </div>
-      <aside><p><%= translation[:description] %></p></aside>
-    </section>
-  <% end %>
+  <section class="settings-group">
+    <% translation = translations["#{social_media_section}_profile_link".to_sym] %>
+    <div class="settings-form">
+      <%= label_tag(form_field_url, translation[:title], id: "#{form_field_url}_label") %>
+      <%= text_field_tag(form_field_url, social_share_link(social_media_section), placeholder: translation[:placeholder]) %>
+    </div>
+    <aside><p><%= translation[:description] %></p></aside>
+  </section>
 <% end %>

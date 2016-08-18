@@ -53,6 +53,8 @@ var validationMessages = function(tab) {
   }[tab];
 };
 
+var $siteChromeForm = $('form#site_chrome_form');
+
 $(document).ready(function() {
   var curTab = getActiveTabId();
   // Show appropriate tab given the url hash. Ex: /site_chrome#tab=general
@@ -76,13 +78,12 @@ $(document).ready(function() {
 
   // Submit the form from the active tab when save button is clicked
   $('button#site_chrome_save').click(function() {
-    var $formToSubmit = getActiveFormId();
-    if ($formToSubmit.length) {
-      if ($formToSubmit.valid()) {
-        preSubmitLinkCleansing($formToSubmit);
-        $formToSubmit.removeAttr('target');
-        $formToSubmit.find('input#stage').remove();
-        $formToSubmit.submit();
+    if ($siteChromeForm.length) {
+      if ($siteChromeForm.valid()) {
+        preSubmitLinkCleansing($siteChromeForm);
+        $siteChromeForm.removeAttr('target');
+        $siteChromeForm.find('input#stage').remove();
+        $siteChromeForm.submit();
       }
     } else {
       alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
@@ -92,17 +93,16 @@ $(document).ready(function() {
   // Submit the form from the active tab when save button is clicked
   $('button#site_chrome_preview').click(function(e) {
     e.preventDefault();
-    var $formToSubmit = getActiveFormId();
-    if ($formToSubmit.length) {
-      if ($formToSubmit.valid()) {
-        $formToSubmit.attr('target', '_blank');
-        var $stage = $formToSubmit.find('input#stage');
+    if ($siteChromeForm.length) {
+      if ($siteChromeForm.valid()) {
+        $siteChromeForm.attr('target', '_blank');
+        var $stage = $siteChromeForm.find('input#stage');
         if (!$stage.exists()) {
           $stage = $('<input type="hidden" id="stage" name="stage" />');
-          $formToSubmit.append($stage);
+          $siteChromeForm.append($stage);
         }
         $stage.val('draft');
-        $formToSubmit.submit();
+        $siteChromeForm.submit();
       }
     } else {
       alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
@@ -137,17 +137,14 @@ function getActiveTabId() {
   }
 }
 
-function getFormIdForTabId(tabId) {
-  return $('form#tab_form_{0}'.format(tabId));
-}
-
-function getActiveFormId() {
-  return getFormIdForTabId(getActiveTabId());
-}
-
 function showTab(tabId) {
   $('ul.tabs li, .tab-content').removeClass('current');
   $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.format(tabId)).addClass('current');
+  $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.
+    format(tabId)).addClass('current');
+
+  // Replace the anchor part so that we reload onto the same tab we submit from.
+  $siteChromeForm.attr('action', $siteChromeForm.attr('action').replace(/#tab=.*/, '#tab=' + tabId));
   inputValidation(tabId);
   updatePageControlsForActiveTab(tabId);
 }
@@ -159,8 +156,7 @@ function updatePageControlsForActiveTab(tabId) {
 // Displays a notification to the user if they type invalid input.
 // Uses jQuery Validate plugin: public/javascripts/plugins/jquery.validate.js
 function inputValidation(tabId) {
-  var $currentForm = getFormIdForTabId(tabId);
-  $currentForm.validate({
+  $siteChromeForm.validate({
     rules: validationRules[tabId],
     messages: validationMessages(tabId),
     onkeyup: false,
@@ -170,10 +166,10 @@ function inputValidation(tabId) {
     }
   });
 
-  toggleSaveButton($currentForm);
+  toggleSaveButton($siteChromeForm);
 
-  $currentForm.find('input').on('blur', function() {
-    toggleSaveButton($currentForm);
+  $siteChromeForm.find('input').on('blur', function() {
+    toggleSaveButton($siteChromeForm);
   });
 }
 
@@ -210,8 +206,7 @@ function currentLocale() {
 }
 
 function contentKey() {
-  // getActiveFormId defined in site-chrome.js
-  return $(getActiveFormId()).find('.list-of-links').data('contentKey'); // eslint-disable-line no-undef
+  return $siteChromeForm.find('.list-of-links').data('contentKey'); // eslint-disable-line no-undef
 }
 
 function toggleDisabledCopyrightText(checkbox) {

@@ -24,6 +24,9 @@ angular-app-dataCards:
 - dataCards/export-menu
 - dataCards/_leaflet
 
+data-lens:
+- data-lens/data-lens
+
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
@@ -105,8 +108,8 @@ administration-federation:
 - screen-administration-federation
 administration-home:
 - screen-administration-home
-administration-jobs:
-- screen-administration-jobs
+administration-activity-feed:
+- screen-administration-activity-feed
 - jquery-ui-1.8.4.custom
 - ui.daterangepicker
 administration-index-screen:
@@ -241,6 +244,8 @@ odysseus-base:
 - colorpicker
 govstat-base:
 - screen-govstat-base
+govstat-chromeless:
+- govstat-chromeless
 govstat-layout:
 - screen-govstat-base
 - govstat-layout

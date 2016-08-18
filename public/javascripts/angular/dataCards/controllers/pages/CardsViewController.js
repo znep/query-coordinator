@@ -557,37 +557,43 @@ module.exports = function CardsViewController(
   /**************************
   * Image preview capturing *
   **************************/
-  if ($window._phantom && _.isFunction($window.callPhantom)) {
-    // Sequence of render:complete events.
-    var renderComplete$ = $rootScope.$eventToObservable('render:complete');
+  if ($window._phantom) {
+    $log.info('Running in phantomjs');
+    if (_.isFunction($window.callPhantom)) {
+      // Sequence of render:complete events.
+      var renderComplete$ = $rootScope.$eventToObservable('render:complete');
 
-    // Sequence of true/false representing whether or not all images on
-    // the page are complete.
-    var imagesComplete$ = Rx.Observable.timer(100, 100).map(function() {
-      // NOTE! The complete property has bugs in Firefox. Fortunately,
-      // this should only be running in PhantomJS, which has no problems
-      // here.
-      return _.every($('img'), 'complete');
-    });
+      // Sequence of true/false representing whether or not all images on
+      // the page are complete.
+      var imagesComplete$ = Rx.Observable.timer(100, 100).map(function() {
+        // NOTE! The complete property has bugs in Firefox. Fortunately,
+        // this should only be running in PhantomJS, which has no problems
+        // here.
+        return _.every($('img'), 'complete');
+      });
 
-    // Sequence containing a count of all the cards to be rendered
-    var cardCount$ = cardModelsObservable.map(_.size);
+      // Sequence containing a count of all the cards to be rendered
+      var cardCount$ = cardModelsObservable.map(_.size);
 
-    cardCount$.subscribe(function(count) {
-      // Sequence like imagesComplete$, but only begins after the correct number of renderComplete$ have been emitted.
-      var imagesCompleteAfterRenderComplete$ = renderComplete$.
-        first(function(value, index) { return index === count; }).
-        ignoreElements().
-        concat(imagesComplete$);
+      cardCount$.subscribe(function(count) {
+        // Sequence like imagesComplete$, but only begins after the correct number of renderComplete$ have been emitted.
+        var imagesCompleteAfterRenderComplete$ = renderComplete$.
+          first(function(value, index) { return index === count; }).
+          ignoreElements().
+          concat(imagesComplete$);
 
-      // Tell Phantom we're ready, once we get a renderComplete$ AND all images are loaded.
-      imagesCompleteAfterRenderComplete$.
-        delay(500).
-        first(_.identity).
-        subscribe(function() {
-          $window.callPhantom('snapshotReady');
-        });
-    });
+        // Tell Phantom we're ready, once we get a renderComplete$ AND all images are loaded.
+        imagesCompleteAfterRenderComplete$.
+          delay(500).
+          first(_.identity).
+          subscribe(function() {
+            $log.info('Render complete.');
+            $window.callPhantom('snapshotReady');
+          });
+      });
+    } else {
+      $log.info('window.callPhantom not present, skipping image capture');
+    }
   }
 
   /******************************************

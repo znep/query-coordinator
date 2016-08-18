@@ -1,27 +1,21 @@
-(function($)
-{
-    $.fn.columnMenu = function(options)
-    {
+(function($) {
+    $.fn.columnMenu = function(options) {
         // Check if object was already created
-        var columnMenu = $(this[0]).data("columnMenu");
-        if (!columnMenu)
-        {
+        var columnMenu = $(this[0]).data('columnMenu');
+        if (!columnMenu) {
             columnMenu = new columnMenuObj(options, this[0]);
         }
         return columnMenu;
     };
 
-    var columnMenuObj = function(options, dom)
-    {
+    var columnMenuObj = function(options, dom) {
         this.settings = $.extend({}, columnMenuObj.defaults, options);
         this.currentDom = dom;
         this.init();
     };
 
-    $.extend(columnMenuObj,
-    {
-        defaults:
-        {
+    $.extend(columnMenuObj, {
+        defaults: {
             column: null,
             $menuTrigger: null,
             selectedColumns: null,
@@ -30,10 +24,10 @@
         },
 
         prototype: {
-            init: function () {
+            init: function() {
               var cmObj = this;
               var $domObj = cmObj.$dom();
-              $domObj.data("columnMenu", cmObj);
+              $domObj.data('columnMenu', cmObj);
 
               if ($.isBlank(cmObj.settings.$menuTrigger)) {
                 cmObj.settings.$menuTrigger = $domObj;
@@ -60,6 +54,7 @@
 
               var group = cmObj.settings.view.metadata.jsonQuery.group;
 
+              var canEditColumns = cmObj.settings.view.hasRight(blist.rights.view.UPDATE_COLUMN);
               var columnDeletionEnabled = cmObj.settings.columnDeleteEnabled;
               var columnCanBeDeleted = col.renderType.deleteable || (blist.dataset.newBackend && col.renderType.nbeModifiable);
               var viewIsNotGrouped = !cmObj.settings.view.isGrouped();
@@ -75,7 +70,7 @@
                 features.hide = true;
               }
 
-              if (cmObj.settings.columnPropertiesEnabled) {
+              if (cmObj.settings.columnPropertiesEnabled && canEditColumns) {
                 features.properties = true;
               }
 
@@ -233,26 +228,21 @@
               });
             },
 
-            $dom: function()
-            {
-                if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
+            $dom: function() {
+                if (!this._$dom) { this._$dom = $(this.currentDom); }
                 return this._$dom;
             },
 
-            sort: function(ascending)
-            {
+            sort: function(ascending) {
                 var cmObj = this;
                 var md = $.extend(true, {}, cmObj.settings.view.metadata);
                 var query = md.jsonQuery;
-                if ($.isBlank(ascending))
-                {
-                    query.order = _.reject(query.order || [], function(ob)
-                    { return ob.columnFieldName == cmObj.settings.column.fieldName; });
+                if ($.isBlank(ascending)) {
+                    query.order = _.reject(query.order || [], function(ob) {
+                      return ob.columnFieldName == cmObj.settings.column.fieldName;
+                    });
                     if (query.order.length == 0) { delete query.order; }
-                }
-                else
-                {
+                } else {
                     query.order = [{ columnFieldName: cmObj.settings.column.fieldName,
                         ascending: ascending }];
                 }
@@ -261,46 +251,44 @@
                         (query.order || []).length < 2);
             },
 
-            clearFilter: function()
-            {
+            clearFilter: function() {
                 var cmObj = this;
-                if (cmObj.settings.$tipItem.isSocrataTip())
-                { cmObj.settings.$tipItem.socrataTip().hide(); }
+                if (cmObj.settings.$tipItem.isSocrataTip()) {
+                  cmObj.settings.$tipItem.socrataTip().hide();
+                }
                 cmObj.settings.column.clearFilter();
             }
         }
     });
 
-    var canFilter = function(cmObj, col)
-    {
+    var canFilter = function(cmObj, col) {
         var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
         return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
             _.any(types, function(t) { return $.subKeyDefined(t, 'filterConditions.details.EQUALS'); });
     };
 
     /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
-    var hookUpHeaderMenu = function(cmObj)
-    {
+    var hookUpHeaderMenu = function(cmObj) {
         cmObj.$menu.dropdownMenu({triggerButton: cmObj.settings.$menuTrigger,
-            openCallback: function () { columnMenuOpenCallback(cmObj); },
-            linkCallback: function (e) { columnHeaderMenuHandler(cmObj, e); },
+            openCallback: function() { columnMenuOpenCallback(cmObj); },
+            linkCallback: function(e) { columnHeaderMenuHandler(cmObj, e); },
             forcePosition: true, pullToTop: true})
             .find('.autofilter ul.menu').scrollable();
     };
 
-    var columnMenuOpenCallback = function(cmObj)
-    {
-        if (cmObj.settings.$tipItem.isSocrataTip())
-        { cmObj.settings.$tipItem.socrataTip().hide(); }
+    var columnMenuOpenCallback = function(cmObj) {
+        if (cmObj.settings.$tipItem.isSocrataTip()) {
+          cmObj.settings.$tipItem.socrataTip().hide();
+        }
 
         var selCols = {};
-        if (_.isFunction(cmObj.settings.selectedColumns))
-        { selCols = cmObj.settings.selectedColumns(); }
+        if (_.isFunction(cmObj.settings.selectedColumns)) {
+          selCols = cmObj.settings.selectedColumns();
+        }
         var numSel = _.size(selCols);
 
         var col = cmObj.settings.column;
-        if (numSel < 1 || (numSel == 1 && !$.isBlank(selCols[col.id])))
-        {
+        if (numSel < 1 || (numSel == 1 && !$.isBlank(selCols[col.id]))) {
             cmObj.$menu.find('.singleItem').show();
             loadFilterMenu(cmObj);
 
@@ -308,17 +296,13 @@
             cmObj.$menu.find('.sortDesc').toggle($.isBlank(col.sortAscending) ||
                 col.sortAscending);
             cmObj.$menu.find('.sortClear').toggle(!$.isBlank(col.sortAscending));
-        }
-        else
-        {
+        } else {
             cmObj.$menu.find('.singleItem').hide();
         }
     };
 
-    var loadFilterMenu = function(cmObj)
-    {
-        if (!canFilter(cmObj, cmObj.settings.column))
-        { return; }
+    var loadFilterMenu = function(cmObj) {
+        if (!canFilter(cmObj, cmObj.settings.column)) { return; }
 
         // Remove the old filter menu if necessary
         cmObj.$menu.children('.autofilter').prev('.separator').andSelf().remove();
@@ -327,28 +311,29 @@
         // Find the correct spot to add it; either after sort descending, or
         // the top
         var $sortItem = cmObj.$menu.find('li.filterSeparator');
-        if ($sortItem.length > 0) { $sortItem.before($spinner); }
-        else { cmObj.$menu.prepend($spinner); }
+        if ($sortItem.length > 0) {
+          $sortItem.before($spinner);
+        } else {
+          cmObj.$menu.prepend($spinner);
+        }
 
-        _.defer(function()
-        {
-            cmObj.settings.column.getSummary(function (sum)
-                { addFilterMenu(cmObj, sum); });
+        _.defer(function() {
+            cmObj.settings.column.getSummary(function(sum) { addFilterMenu(cmObj, sum); });
         });
     };
 
     /* Add auto-filter sub-menu for a particular column that we get from the JS
      * grid */
-    var addFilterMenu = function(cmObj, summary)
-    {
+    var addFilterMenu = function(cmObj, summary) {
+        var col = cmObj.settings.column;
+
         // Remove spinner
         cmObj.$menu.children('.autofilter.loading').remove();
 
         // Remove the old filter menu if necessary
         cmObj.$menu.children('.autofilter').prev('.separator').andSelf().remove();
 
-        if ($.isBlank(cmObj.settings.column.currentFilter) && $.isBlank(summary))
-        { return; }
+        if ($.isBlank(cmObj.settings.column.currentFilter) && $.isBlank(summary)) { return; }
 
         var filterItem = {tagName: 'li', 'class': ['autofilter', 'submenu',
             'singleItem'], contents: [{tagName: 'a', 'class': 'submenuLink',
@@ -359,16 +344,13 @@
         filterItem.contents.push(menuItem);
 
         // If we already have a filter for this column, give them a clear link
-        if (!$.isBlank(cmObj.settings.column.currentFilter))
-        {
+        if (!$.isBlank(cmObj.settings.column.currentFilter)) {
             menuItem.contents.push({tagName: 'li', 'class': 'clearFilter',
                 contents: {tagName: 'a', href: '#clear-filter-column',
                     contents: {tagName: 'span', 'class': 'highlight',
                         contents: $.t('controls.grid.clear_column_filter')}}});
-            if ($.isBlank(summary))
-            {
-                summary = {curVal: { topFrequencies:
-                    [{value: col.currentFilter.value, count: 0}] } };
+            if ($.isBlank(summary)) {
+                summary = {curVal: { topFrequencies: [{value: col.currentFilter.value, count: 0}] } };
             }
         }
 
@@ -382,44 +364,39 @@
 
         // Sort type keys in a specific order for URL and phone
         var typeKeys = _.keys(summary);
-        if (cmObj.settings.column.renderTypeName == 'url')
-        { typeKeys.sort(); }
-        else if (cmObj.settings.column.renderTypeName == 'phone')
-        { typeKeys.sort().reverse(); }
+        if (cmObj.settings.column.renderTypeName == 'url') {
+          typeKeys.sort();
+        } else if (cmObj.settings.column.renderTypeName == 'phone') {
+          typeKeys.sort().reverse();
+        }
 
         var sumSections = [];
-        _.each(typeKeys, function(k)
-        {
+        _.each(typeKeys, function(k) {
             var cs = summary[k];
             var curType = cmObj.settings.column.renderType;
             var isSubCol = false;
-            if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType))
-            {
+            if ($.subKeyDefined(curType, 'subColumns.' + cs.subColumnType)) {
                 curType = curType.subColumns[cs.subColumnType];
                 isSubCol = true;
             }
             var items = [];
 
-            var searchMethod = function(a, b)
-            {
+            var searchMethod = function(a, b) {
                 var av = a.titleValue.toUpperCase();
                 var bv = b.titleValue.toUpperCase();
                 return av > bv ? 1 : av < bv ? -1 : 0;
             };
-            if (cs.subColumnType == "number" ||
-                    cs.subColumnType == "money" ||
-                    cs.subColumnType == "date" ||
-                    cs.subColumnType == "percent")
-            {
+            if (cs.subColumnType == 'number' ||
+                    cs.subColumnType == 'money' ||
+                    cs.subColumnType == 'date' ||
+                    cs.subColumnType == 'percent') {
                 searchMethod = function(a, b) { return a.value - b.value; };
             }
 
-            if (!$.isBlank(cs.topFrequencies))
-            {
+            if (!$.isBlank(cs.topFrequencies)) {
                 // First loop through and set up variations on the value
                 // to use in the menu
-                _.each(cs.topFrequencies, function (f)
-                    {
+                _.each(cs.topFrequencies, function(f) {
                         f.isMatching = !$.isBlank(cmObj.settings
                             .column.currentFilter) &&
                             cmObj.settings.column.currentFilter.value == f.value;
@@ -432,8 +409,7 @@
                 cs.topFrequencies.sort(searchMethod);
 
                 // Add an option for each filter item
-                _.each(cs.topFrequencies, function (f)
-                    {
+                _.each(cs.topFrequencies, function(f) {
                         if (f.renderedValue === '') { return true; }
                         // Add an extra | at the end of the URL in case there
                         // are spaces at the end of the value, which IE7
@@ -448,8 +424,7 @@
                                 'class': 'clipText', contents: f.renderedValue }});
                     });
             }
-            if (sumSections.length > 0)
-            {
+            if (sumSections.length > 0) {
                 sumSections.push({tagName: 'li',
                     'class': ['separator', 'scrollable']});
             }
@@ -473,27 +448,25 @@
         // Find the correct spot to add it; either after sort descending, or
         // the top
         var $sortItem = cmObj.$menu.find('li.filterSeparator');
-        if ($sortItem.length > 0)
-        {
+        if ($sortItem.length > 0) {
             $sortItem.before($.tag([{tagName: 'li',
                 'class': ['separator', 'singleItem']}, filterItem]));
+        } else {
+          cmObj.$menu.prepend($.tag(filterItem));
         }
-        else { cmObj.$menu.prepend($.tag(filterItem)); }
         hookUpHeaderMenu(cmObj);
     };
 
 
     /* Handle clicks in the column header menus */
-    var columnHeaderMenuHandler = function(cmObj, event)
-    {
+    var columnHeaderMenuHandler = function(cmObj, event) {
         event.preventDefault();
         // Href that we care about starts with # and parts are separated with _
         // IE sticks the full thing, so slice everything up to #
         var s = $.hashHref($(event.currentTarget).attr('href')).split('_');
 
         var action = s[0];
-        switch (action)
-        {
+        switch (action) {
             case 'column-sort-asc':
                 cmObj.sort(true);
                 break;
@@ -516,18 +489,15 @@
                 cmObj.clearFilter();
                 break;
             case 'hide-column':
-                if (!$.isBlank(cmObj.settings.column.parentColumn))
-                {
+                if (!$.isBlank(cmObj.settings.column.parentColumn)) {
                     cmObj.settings.column.hide();
-                }
-                else
-                {
+                } else {
                     var selHideCols = {};
-                    if (_.isFunction(cmObj.settings.selectedColumns))
-                    { selHideCols = cmObj.settings.selectedColumns(); }
+                    if (_.isFunction(cmObj.settings.selectedColumns)) {
+                      selHideCols = cmObj.settings.selectedColumns();
+                    }
                     selHideCols[cmObj.settings.column.id] = true;
-                    _.each(selHideCols, function(v, colId)
-                    {
+                    _.each(selHideCols, function(v, colId) {
                         // Don't save changes, let the user do that
                         cmObj.settings.view.columnForID(colId).hide();
                         cmObj.settings.view.trigger('columns_changed');
@@ -535,16 +505,13 @@
                 }
                 break;
             case 'delete-column':
-                if (!$.isBlank(cmObj.settings.column.parentColumn))
-                {
+                if (!$.isBlank(cmObj.settings.column.parentColumn)) {
                     deleteColumns(cmObj);
-                }
-
-                else
-                {
+                } else {
                     var selCols = {};
-                    if (_.isFunction(cmObj.settings.selectedColumns))
-                    { selCols = cmObj.settings.selectedColumns(); }
+                    if (_.isFunction(cmObj.settings.selectedColumns)) {
+                      selCols = cmObj.settings.selectedColumns();
+                    }
                     selCols[cmObj.settings.column.id] = true;
                     deleteColumns(cmObj, _.keys(selCols));
                 }
@@ -555,22 +522,18 @@
         }
     };
 
-    var deleteColumns = function(cmObj, columns)
-    {
+    var deleteColumns = function(cmObj, columns) {
         columns = $.makeArray(columns);
         var multiCols = columns.length > 1;
-        if (confirm(multiCols ? $.t('controls.grid.delete_warning_multi_column') : $.t('controls.grid.delete_warning_single_column')))
-        {
+        if (confirm(multiCols ? $.t('controls.grid.delete_warning_multi_column') : $.t('controls.grid.delete_warning_single_column'))) {
             if (_.isEmpty(columns) &&
-                !$.isBlank(cmObj.settings.column.parentColumn))
-            {
+                !$.isBlank(cmObj.settings.column.parentColumn)) {
                 cmObj.settings.column.parentColumn
                     .removeChildColumns(cmObj.settings.column.id);
-            }
-            else
-            {
-                if (_.isEmpty(columns))
-                { columns = [cmObj.settings.column.id]; }
+            } else {
+                if (_.isEmpty(columns)) {
+                  columns = [cmObj.settings.column.id];
+                }
                 cmObj.settings.view.removeColumns(columns);
             }
         }

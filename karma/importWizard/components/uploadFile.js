@@ -1,3 +1,5 @@
+import TestUtils from 'react-addons-test-utils';
+
 import {
   selectFile,
   fileUploadStart,
@@ -23,12 +25,26 @@ describe("uploadFile's reducer", () => {
     it('reacts to file upload', () => {
       const result = update(state, fileUploadStart({
         name: 'test_name.csv'
-      }));
+      }, 'i am an uploader ama'));
       expect(result).to.deep.equal({
         fileName: 'test_name.csv',
         progress: {
           type: 'InProgress',
-          percent: 0
+          percent: 0,
+          uploader: 'i am an uploader ama'
+        }
+      });
+    });
+  });
+
+  describe('FILE_UPLOAD_CANCEL', () => {
+    it('reacts to file upload progress event', () => {
+      const result = update(state, {type: 'FILE_UPLOAD_CANCEL'});
+
+      expect(result).to.deep.equal({
+        fileName: null,
+        progress: {
+          type: 'Cancelled',
         }
       });
     });
@@ -36,11 +52,12 @@ describe("uploadFile's reducer", () => {
 
   describe('FILE_UPLOAD_PROGRESS', () => {
     it('reacts to file upload progress event', () => {
-      const result = update(state, fileUploadProgress(15));
+      const result = update(state, fileUploadProgress(15, 'i am an uploader ama'));
       expect(result).to.deep.equal({
         progress: {
           type: 'InProgress',
-          percent: 15
+          percent: 15,
+          uploader: 'i am an uploader ama'
         }
       });
     });
@@ -55,10 +72,11 @@ describe("uploadFile's reducer", () => {
 
   describe('FILE_UPLOAD_ANALYZING', () => {
     it('reacts to file analyzing event', () => {
-      const stateAfter = update(stateBefore, fileUploadAnalyzing());
+      const stateAfter = update(stateBefore, fileUploadAnalyzing('i am an uploader ama'));
       expect(stateAfter).to.deep.equal({
         progress: {
-          type: 'Analyzing'
+          type: 'Analyzing',
+          uploader: 'i am an uploader ama'
         }
       });
     });
@@ -93,11 +111,13 @@ describe("uploadFile's reducer", () => {
   });
 
   describe('view', () => {
+
     it('renders an upload box with help text initially', () => {
       const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UploadData'}));
       expect(element.querySelector('input.uploadFileName.valid').value)
         .to.equal(I18n.screens.dataset_new.upload_file.no_file_selected);
     });
+
     it('renders an upload box with filename once selected', () => {
       const element = renderComponent(
         view({
@@ -117,6 +137,7 @@ describe("uploadFile's reducer", () => {
       expect(element.querySelector('.uploadThrobber').children[1].innerText)
         .to.equal('6% uploaded');
     });
+
     it('renders an error message on error', () => {
       const element = renderComponent(
         view({
@@ -134,5 +155,39 @@ describe("uploadFile's reducer", () => {
       expect(element.querySelector('.flash-alert.error').innerText)
         .to.equal('There was a problem importing that file. Please make sure it is valid.');
     });
+
+    it('renders an error message on localizable error', () => {
+      const element = renderComponent(
+        view({
+          onFileUploadAction: _.noop,
+          fileUpload: {
+            fileName: 'my_file.txt',
+            progress: {
+              type: 'Failed',
+              error: '{"error":{"reason":"incomplete_shapefile_error","english":"Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp.","params":{"missing":"SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp"}}}'
+            }
+          },
+          operation: 'UploadData'
+        })
+      );
+      expect(element.querySelector('.flash-alert.error').innerText)
+        .to.equal('Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp.');
+    });
+
+    it('dispatches the function for loading a file when the input of the fileUpload changes', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const fileInput = element.querySelector('input[type="file"]');
+      TestUtils.Simulate.change(fileInput, {target: {files: ['afile'] }});
+      expect(spy.callCount).to.equal(1);
+    })
+
+    it('does not dispatch the function for loading a file when the input of the fileUpload changes to no file', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const fileInput = element.querySelector('input[type="file"]');
+      TestUtils.Simulate.change(fileInput, {target: {files: [] }});
+      expect(spy.callCount).to.equal(0);
+    })
   });
 });

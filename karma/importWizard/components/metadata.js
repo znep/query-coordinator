@@ -28,7 +28,8 @@ import {
   isMetadataUnsaved,
   isAttributionValid,
   view,
-  isProviderRequired
+  isProviderRequired,
+  showMapLayer
 } from 'components/metadata';
 
 import { initialNewDatasetModel } from 'wizard';
@@ -238,23 +239,52 @@ describe('validators', () => {
   describe('validation testing', () => {
     describe('validate', () => {
       it('returns false for empty required keys in metadata', () => {
-        const standardValid = isStandardMetadataValid(metadata);
+        const operation = 'ConnectToEsri';
+
+        const standardValid = isStandardMetadataValid(metadata, operation);
         expect(standardValid).to.equal(false);
 
-        const result = validate(metadata);
+        const result = validate(metadata, operation);
         expect(result.name).to.equal(false);
         expect(result.mapLayer).to.equal(false);
       });
     });
 
+    it('returns false when displayType is href and href is blank', () => {
+      let md = _.cloneDeep(metadata);
+      md.contents.name = 'name';
+      md.contents.mapLayer = 'google.com';
+      md.contents.customMetadata['second'][1].value = 'venus';
+      md.license.attribution = 'attribution';
+      md.contents.displayType = 'href';
+      const valid = isMetadataValid(md);
+      expect(valid).to.equal(false);
+    });
+
+    it('returns true when displayType is href and href is not blank', () => {
+      let md = _.cloneDeep(metadata);
+
+      md.contents.name = 'name';
+      md.contents.mapLayer = 'google.com';
+      md.contents.customMetadata['second'][1].value = 'venus';
+      md.license.attribution = 'attribution';
+      md.contents.displayType = 'href';
+      md.contents.href = 'http://foo.com';
+      const valid = isMetadataValid(md);
+      expect(valid).to.equal(true);
+    });
+
+
     it('returns true for valid values', () => {
+      const operation = 'ConnectToEsri';
+
       metadata.contents.name = 'panda',
       metadata.contents.mapLayer = 'wombat'
 
-      const standardValid = isStandardMetadataValid(metadata);
+      const standardValid = isStandardMetadataValid(metadata, operation);
       expect(standardValid).to.equal(true);
 
-      const result = validate(metadata);
+      const result = validate(metadata, operation);
       expect(result.name).to.equal(true);
       expect(result.mapLayer).to.equal(true);
     });
@@ -283,18 +313,36 @@ describe('validators', () => {
 
   describe('isMetadataValid', () => {
     it('returns false if not all required metadata are filled', () => {
+      const navigation = {
+        path: ['ConnectToEsri', 'Metadata']
+      };
+
       const standardValid = isMetadataValid(metadata);
       expect(standardValid).to.equal(false);
     });
 
     it('returns true if all required metadata are nonempty', () => {
+      const operation = 'ConnectToEsri';
+
       metadata.contents.name = 'name';
       metadata.contents.mapLayer = 'google.com';
       metadata.contents.customMetadata['second'][1].value = 'venus';
       metadata.license.attribution = 'attribution';
 
-      const valid = isMetadataValid(metadata);
+      const valid = isMetadataValid(metadata, operation);
       expect(valid).to.equal(true);
+    });
+
+    it('showMapLayer return true', () => {
+      const operation = 'ConnectToEsri';
+      const valid = showMapLayer(operation);
+      expect(valid).to.equal(true);
+    });
+
+    it('showMapLayer return false', () => {
+      const operation = 'metadata';
+      const invalid = showMapLayer(operation);
+      expect(invalid).to.equal(false);
     });
   });
 
@@ -343,6 +391,32 @@ describe('view testing', () => {
 
   beforeEach(() => {
     state = emptyForName('');
+  });
+
+  it('shows the href component when displayType is href', () => {
+    state.contents.displayType = 'href'
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
+    expect(element.querySelector('.textPrompt.url')).to.exist;
+  });
+
+  it('does not show the href component when displayType is not href', () => {
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
+    expect(element.querySelector('.textPrompt.url')).to.not.exist;
+  });
+
+  it('sets the href property when the href input is blurred', () => {
+    state.contents.displayType = 'href';
+    let emitted = {};
+    const element = renderComponent(view( {metadata: state, onMetadataAction: (action) => {
+      emitted = action;
+    }}));
+
+    let input = element.querySelector('input.url');
+    input.value = 'foobar.com'
+    TestUtils.Simulate.blur(input)
+
+    expect(emitted.type).to.equal('MD_UPDATE_HREF');
+    expect(emitted.href).to.equal('foobar.com');
   });
 
  it('returns that there is no required text if next has not been clicked', () => {

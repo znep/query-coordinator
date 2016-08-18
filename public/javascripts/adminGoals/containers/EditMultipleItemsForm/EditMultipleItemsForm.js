@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Select from 'react-select';
-import Flyout from '../../components/Flyout';
+import { modalQuitEventHandler } from '../../components/ModalQuitEventHandler';
+import { datetimeFormat } from '../../constants';
 import SocrataDatePicker from '../../components/SocrataDatePicker';
+import SocrataFlyout from '../../components/SocrataFlyout/SocrataFlyout';
 import SocrataAlert from '../../components/SocrataAlert';
 import SocrataButton from '../../components/SocrataButton';
 import SocrataChangeIndicator from '../../components/SocrataChangeIndicator';
@@ -51,11 +53,11 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateDateRangeTo(value) {
-    this.updateFormData(['prevailing_measure', 'end'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'end'], value.format(datetimeFormat));
   }
 
   updateDateRangeFrom(value) {
-    this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'start'], value.format(datetimeFormat));
   }
 
   updateOverride({ value }) {
@@ -85,18 +87,9 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateGoals() {
-    const { updateGoals, goals, goal } = this.props;
+    const { goals, goal } = this.props;
 
-    updateGoals(goals, goal.toJS());
-  }
-
-  isDataChanged() {
-    const { commonData, goal } = this.props;
-
-    const oldData = commonData.toJS();
-    const newData = goal.toJS();
-
-    return helpers.isDifferent(oldData, newData);
+    this.props.updateGoals(goals, goal.toJS());
   }
 
   isFieldsChanged(...fields) {
@@ -153,9 +146,9 @@ class EditMultipleItemsForm extends React.Component {
     }
 
     return (
-      <Flyout text={ tooltipText } tooltip>
+      <SocrataFlyout text={ tooltipText }>
         <SocrataChangeIndicator onRevert={ onRevert }/>
-      </Flyout>
+      </SocrataFlyout>
     );
   }
 
@@ -226,13 +219,13 @@ class EditMultipleItemsForm extends React.Component {
         <label className="inline-label"> { label } </label>
         <div className="form-line">
           <SocrataDatePicker
-            placeholderText={ toPlaceholder }
-            selected={ toValue && moment.utc(toValue) }
-            onChange={ this.updateDateRangeTo }/>
-          <SocrataDatePicker
             placeholderText={ fromPlaceholder }
-            selected={ fromValue && moment.utc(fromValue) }
+            selected={ fromValue && moment(fromValue) }
             onChange={ this.updateDateRangeFrom }/>
+          <SocrataDatePicker
+            placeholderText={ toPlaceholder }
+            selected={ toValue && moment(toValue) }
+            onChange={ this.updateDateRangeTo }/>
           { this.renderRevertButton(this.isDateRangeChanged(), this.revertDateRange) }
         </div>
       </div>
@@ -243,7 +236,7 @@ class EditMultipleItemsForm extends React.Component {
     const { form, translations, dismissModal } = this.props;
 
     const isUpdateInProgress = form.get('updateInProgress');
-    const isUpdateDisabled = !this.isDataChanged();
+    const isUpdateDisabled = !this.props.unsavedChanges;
 
     const updateLabel = helpers.translator(translations, 'admin.bulk_edit.update');
     const cancelLabel = helpers.translator(translations, 'admin.bulk_edit.cancel');
@@ -290,7 +283,7 @@ class EditMultipleItemsForm extends React.Component {
 
     return (
       <SocrataModal.Modal>
-        <SocrataModal.Header title={ modalTitle } onClose={ this.props.dismissModal }/>
+        <SocrataModal.Header title={ modalTitle } onClose={ this.props.handleNavigateAway }/>
 
         <SocrataModal.Content className="bulk-edit-modal-content">
           { this.renderFailureAlert() }
@@ -314,7 +307,15 @@ const mapStateToProps = state => ({
   commonData: commonGoalDataSelector(state),
   goals: selectedGoalsSelector(state),
   showFailureMessage: state.getIn(['editMultipleItemsForm', 'showFailureMessage']),
-  showNotConfiguredMessage: state.getIn(['editMultipleItemsForm', 'showNotConfiguredMessage'])
+  showNotConfiguredMessage: state.getIn(['editMultipleItemsForm', 'showNotConfiguredMessage']),
+  unsavedChanges: (() => {
+    const commonData = commonGoalDataSelector(state);
+    const goal = state.getIn(['editMultipleItemsForm', 'goal']);
+    const oldData = commonData.toJS();
+    const newData = goal.toJS();
+
+    return helpers.isDifferent(oldData, newData);
+  })()
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -323,4 +324,4 @@ const mapDispatchToProps = dispatch => ({
   updateGoals: (goals, data) => dispatch(updateMultipleGoals(goals, data))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMultipleItemsForm);
+export default connect(mapStateToProps, mapDispatchToProps)(modalQuitEventHandler(EditMultipleItemsForm));

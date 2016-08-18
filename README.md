@@ -449,3 +449,7 @@ Variable Name | Type | Source | Description
 `zk_hosts` | URI | Configuration | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.
 `zookeeper_soda_fountain_path` | String | Configuration | `Zookeeper` path to the `SodaFountain` service.
 `zookeeper_phidippides_path` | String | Configuration | `Zookeeper` path to the `Phiddipides` service.
+
+## Further Reading
+
+- [JavaScript documentation](doc/javascript.md)

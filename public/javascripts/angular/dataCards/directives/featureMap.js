@@ -1,6 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/featureMap.html');
 const FeatureMap = require('socrata-visualizations').views.FeatureMap;
-const VifHelpers = require('socrata-visualizations').helpers.VifHelpers;
 const RowInspector = require('socrata-visualizations').views.RowInspector;
 
 module.exports = function featureMap(
@@ -47,7 +46,7 @@ module.exports = function featureMap(
 
       // We need to migrate the VIF in order to render properly. Once we're using the jQuery
       // plugins, we won't need to do this anymore.
-      featureMapConfig = VifHelpers.migrateVif({
+      featureMapConfig = {
         configuration: {
           baseLayerOpacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY,
           baseLayerUrl: Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL,
@@ -66,12 +65,8 @@ module.exports = function featureMap(
           maxTileDensity: Constants.FEATURE_MAP_MAX_TILE_DENSITY,
           maxRowInspectorDensity: Constants.FEATURE_MAP_FLANNEL_MAX_ROW_DENSITY,
           panAndZoom: !$scope.disablePanAndZoom
-        },
-        unit: {
-          one: $scope.rowDisplayUnit,
-          other: PluralizeService.pluralize($scope.rowDisplayUnit)
         }
-      });
+      };
 
       // The visualizationRenderOptions may change in response to user actions
       // and are passed as an argument to every render call.
@@ -79,6 +74,10 @@ module.exports = function featureMap(
         baseLayer: {
           url: featureMapConfig.configuration.baseLayerUrl,
           opacity: featureMapConfig.configuration.baseLayerOpacity
+        },
+        unit: {
+          one: $scope.rowDisplayUnit,
+          other: PluralizeService.pluralize($scope.rowDisplayUnit)
         }
       };
 

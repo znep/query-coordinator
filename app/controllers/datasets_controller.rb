@@ -22,7 +22,7 @@ class DatasetsController < ApplicationController
     end
     @view = nil # the templates expect a @view var (for reentrancy)
     if FeatureFlags.derive(nil, request).ingress_reenter
-      render 'new'
+      redirect_to '/profile#create_draft'
     else
       render 'new-old'
     end
@@ -143,10 +143,10 @@ class DatasetsController < ApplicationController
     # intentionally and we plan on removing it post-launch)
     if display_dataset_landing_page_notice?
       flash.now[:notice] = %{
-        Notice to Socrata Administrators: Soon there will be a new default destination for a given dataset.
-        <a href="#{seo_friendly_url(@view)}/about?enable_dataset_landing_page=true">
-        Preview the new experience</a> or <a href='https://support.socrata.com/hc/en-us/articles/221691947'>
-        visit the support portal</a> for additional details.
+        Notice to Socrata Administrators: You can now configure the header and footer for your site,
+        including the links, colors, logos, and more. As well, tabular datasets now have a new front-page
+        experience called Dataset Landing Page which surfaces key content in intuitive ways. To preview
+        these features and activate them on your site, please visit your <a href="/admin/site_chrome">Site Appearance</a> panel.
       }.html_safe
     end
 

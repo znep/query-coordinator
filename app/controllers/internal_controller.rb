@@ -13,14 +13,6 @@ class InternalController < ApplicationController
     { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
   ]
 
-  FLAG_SETS = {
-    'data lens' => ['data_lens_transition_state'] # just an example
-  }.merge(FeatureFlags.categories)
-
-  DOMAIN_SETS = {
-    'yeah i dunno' => [ 'localhost' ] # just an example
-  }
-
   def index
   end
 
@@ -460,34 +452,21 @@ class InternalController < ApplicationController
     end
   end
 
-  def feature_flags_across_domains
-    domains = (params[:domains].try(:split, ',') || []).
-      collect { |domain| DOMAIN_SETS[domain] || domain }.flatten.
-      collect { |domain| Domain.find(domain) rescue nil }.compact
-
-    domains << CurrentDomain.domain if domains.empty?
-
-    category = params[:flag_set].try(:gsub, '+', ' ')
-    @category = category if FeatureFlags.categories.keys.include?(category)
-
-    @flags = (params[:flags].try(:split, ',') || []) + Array(FLAG_SETS[category])
-    @flags.select! { |flag| FeatureFlags.has?(flag) }
-
-    @sets = FLAG_SETS
-
-    # Defaulting this to 'data lens' is artbitrary. We include it because
-    # the UI looks funky without it, but ideally we should have a default category
-    # already set in feature_flags.yml that we could use instead.
-    # TODO: Add a 'default' or 'uncategorized' category to feature_flags.yml to use here
-    if @flags.empty?
-      @category = 'data lens'
-      @flags = @sets[@category]
+  def feature_flag_report
+    if FeatureFlags.has?(params[:for])
+      uri = FeatureFlags.endpoint(with_path: "/flag_report/#{params[:for]}")
+      report = JSON.parse(HTTParty.get(uri).body)[params[:for]]
+      @description = FeatureFlags.description_for(params[:for])
+      @default = report['default']
+      @environment = FeatureFlags.process_value(report['environment'])
+      @domains = report['domains'] || []
     end
+  end
 
-    @domains = domains.inject({}) do |memo, domain|
-      memo[domain] = domain.feature_flags.select { |k, _| @flags.include?(k) }
-      memo
-    end
+  def set_environment_feature_flag
+    update_feature_flags(params, nil)
+
+    redirect_to feature_flag_report_path(for: params[:feature_flags].keys.first)
   end
 
   def feature_flags
@@ -621,7 +600,7 @@ class InternalController < ApplicationController
   end
 
   def update_feature_flags(updates, domain_cname)
-    domain = Domain.find(domain_cname)
+    domain = (Domain.find(domain_cname) unless domain_cname.nil?)
 
     if FeatureFlags.using_signaller?
       updates['feature_flags'].try(:each) do |flag, value|

@@ -1,8 +1,5 @@
 import GoalTableBody from 'components/GoalTableBody';
 import moment from 'moment';
-
-import { fromJS } from 'immutable';
-
 import goals from '../data/goalTableActions/propGoals';
 import dashboards from '../data/goalTableActions/propDashboards';
 
@@ -29,7 +26,7 @@ describe('components/GoalTableBody', function() {
   });
 
   it('should have 8 columns in a row', function() {
-    expect(this.output.querySelectorAll('tr:first-child td').length).to.eq(9);
+    expect(this.output.querySelectorAll('tr:first-child td').length).to.eq(8);
   });
 
   it('should have columns with correct data', function() {

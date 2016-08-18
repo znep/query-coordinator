@@ -1,3 +1,13 @@
+.clearfix:before,
+.clearfix:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.clearfix:after {
+  clear: both;
+}
+
 .alert {
   margin: 30px;
 
@@ -8,6 +18,23 @@
 
 .modal .alert {
   margin: 5px 0 10px;
+}
+
+.external-link {
+  text-decoration: none;
+
+  .icon-external {
+    margin-left: 5px;
+    display: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    .icon-external {
+      display: initial;
+    }
+  }
 }
 
 .sc-check-indicator {
@@ -43,76 +70,10 @@
 }
 
 .modal-container {
-  .externalLink {
-    text-decoration: none;
-
-    .icon-external {
-      margin-left: 5px;
-      display: none;
-    }
-
-    &:hover {
-      text-decoration: underline;
-
-      .icon-external {
-        display: initial;
-      }
-    }
-  }
-
   .modal-content {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 0;
-
-    .Select-menu-outer {
-      left: 0;
-    }
-
-    .form-select-small {
-      width: 150px;
-      display: inline-flex;
-    }
-
-    .form-select-medium {
-      width: 250px;
-      display: inline-flex;
-    }
-
-    .form-select-wide {
-      width: 300px;
-      display: inline-flex;
-    }
-
-    .goal-quick-edit-form {
-      float: left;
-      width: 600px;
-
-      label {
-        display: inline-block;
-        width: 175px;
-        text-align: right;
-        padding-right: 20px;
-      }
-
-      .text-input {
-        width: 300px;
-      }
-
-      .datepicker-input.text-input {
-        width: 140px;
-      }
-    }
-
-    .goal-quick-edit-details {
-      float: right;
-      width: 400px;
-      margin-left: 40px;
-
-      div {
-        margin-bottom: 20px;
-      }
-    }
   }
 
   .modal-footer {

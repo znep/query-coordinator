@@ -10,9 +10,7 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
-  TABLE_ROW_SELECTION_START,
-  TABLE_ROW_SELECTION_END,
-  TABLE_ROW_SELECTION_CANCEL,
+  TABLE_ROW_MULTIPLE_SELECTION,
   ROWS_PER_PAGE_CHANGED,
   SET_TOTAL_GOAL_COUNT,
   SET_CURRENT_PAGE,
@@ -43,15 +41,15 @@ const updateCachedGoals = (state, updatedGoals) => {
   return state.get('cachedGoals').mergeDeep(_.keyBy(updatedGoals, 'id'));
 };
 
-const rowSelect = (state, action) => state.updateIn(['selectedRows'], list => list.push(action.goalId));
+const rowSelect = (state, action) => state.
+  updateIn(['selectedRows'], list => list.push(action.goalId)). // add goal id to selected rows array
+  set('lastSelectedRow', action.goalId); // normal row selection starts multiple selection
 
 const rowDeselect = (state, action) => state.updateIn(['selectedRows'],
   list => list.delete(list.indexOf(action.goalId))); // eslint-disable-line dot-notation
 
-const rowSelectionStart = (state, action) => state.set('multipleRowSelection', action.goalId);
-
-const rowSelectionEnd = (state, action) => {
-  const selectionStartGoalId = state.get('multipleRowSelection');
+const multipleRowSelection = (state, action) => {
+  const selectionStartGoalId = state.get('lastSelectedRow');
   const selectionEndGoalId = action.goalId;
 
   if (selectionStartGoalId && selectionEndGoalId) {
@@ -64,14 +62,10 @@ const rowSelectionEnd = (state, action) => {
       const goalId = state.getIn(['goals', i, 'id']);
       state = rowSelect(state, { goalId });
     }
-
-    state = rowSelectionCancel(state);
   }
 
   return state;
 };
-
-const rowSelectionCancel = state => state.set('multipleRowSelection', false);
 
 const deselectAllRows = state => state.set('selectedRows', new Immutable.List);
 
@@ -93,9 +87,7 @@ export default createReducer(new Immutable.Map, {
   [TABLE_ROW_SELECTED]: rowSelect,
   [TABLE_ROW_DESELECTED]: rowDeselect,
   [TABLE_ROW_ALL_SELECTION_TOGGLE]: toggleSelectAll,
-  [TABLE_ROW_SELECTION_START]: rowSelectionStart,
-  [TABLE_ROW_SELECTION_END]: rowSelectionEnd,
-  [TABLE_ROW_SELECTION_CANCEL]: rowSelectionCancel,
+  [TABLE_ROW_MULTIPLE_SELECTION]: multipleRowSelection,
   [ROWS_PER_PAGE_CHANGED]: (state, action) => state.set('rowsPerPage', action.value),
   [SET_TOTAL_GOAL_COUNT]: (state, action) => state.set('totalGoalCount', action.count),
   [SET_CURRENT_PAGE]: (state, action) => state.set('currentPage', action.page),

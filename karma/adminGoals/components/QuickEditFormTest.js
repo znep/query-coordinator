@@ -26,7 +26,9 @@ describe('containers/QuickEditForm/QuickEditForm', function() {
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -85,7 +87,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -144,7 +148,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -211,7 +217,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - A
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -270,7 +278,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - R
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -337,7 +347,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -404,7 +416,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -463,7 +477,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -522,7 +538,9 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Measure', 
       },
       quickEditForm: {
         goalId: goalId,
-        showFailureMessage: false
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
       }
     };
 
@@ -553,4 +571,40 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Measure', 
     expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
+});
+
+describe('containers/QuickEditForm/QuickEditForm Not Configured Goal', function() {
+  let goalId = 'kd8s-mb3p';
+  let goal = mockGoals[goalId];
+
+  beforeEach(() => {
+    server = sinon.fakeServer.create();
+    server.autoRespond = true;
+    server.respondWith(xhr => {
+      xhr.respond(200, null, JSON.stringify(mockDatasets[goal.datasetId]));
+    });
+
+    let state = {
+      goalTableData: {
+        translations: translations,
+        cachedGoals: mockGoals
+      },
+      quickEditForm: {
+        goalId: goalId,
+        showFailureMessage: false,
+        initialFormData: {},
+        formData: {}
+      }
+    };
+
+    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+  });
+
+  afterEach(() => {
+    server.restore();
+  });
+
+  it('should have action selection', () => {
+    expect(this.output.querySelectorAll('.unconfigured-goal-warning-message')).to.have.length(1);
+  });
 });

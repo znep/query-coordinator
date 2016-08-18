@@ -98,6 +98,10 @@ module FeatureFlags
     ExternalConfig.for(:feature_flag)[flag]
   end
 
+  def self.description_for(flag)
+    config_for(flag)['description']
+  end
+
   def self.default_for(flag)
     process_value((ExternalConfig.for(:feature_flag)[flag] || {})['defaultValue'])
   end

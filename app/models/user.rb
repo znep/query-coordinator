@@ -51,10 +51,11 @@ class User < Model
   end
 
   def self.roles_list
-    Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).
-      inject([]) do |memo, config|
-        memo.concat(config.properties.keys)
-      end.uniq
+    (RequestStore[:roles_list] ||= {})[CurrentDomain.cname] ||=
+      Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).
+        inject([]) do |memo, config|
+          memo.concat(config.properties.keys)
+        end.uniq
   end
 
   def self.verify_email(token)

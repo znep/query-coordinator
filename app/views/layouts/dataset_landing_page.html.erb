@@ -4,7 +4,7 @@
     <meta name="description" content="<%= meta_description %>">
     <meta name="page_name" content="Dataset Landing Page">
 
-    <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+    <title><%= @view.name %> | <%= get_site_title %></title>
 
     <%= rendered_stylesheet_tag("dataset-landing-page") %>
     <link rel="stylesheet" href="/stylesheets/socrata-styleguide/css/styleguide.min.css"/>
@@ -36,7 +36,7 @@
 
     <%= render_dataset_landing_page_translations %>
 
-    <%= render_dataset_landing_page_mixpanel_config %>
+    <%= render_mixpanel_config %>
     <%= render_dataset_landing_page_session_data %>
     <%= render_dataset_landing_page_server_config %>
 

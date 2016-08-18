@@ -12,8 +12,15 @@
     background: $white;
     border: 1px $light-grey-4 solid;
     border-bottom-width: 2px;
-    height: 653px;
+    height: 670px;
     position: relative;
+
+    .socrata-pager {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
 
     .table-spinner {
       display: flex;

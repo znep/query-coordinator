@@ -51,6 +51,8 @@ class DataslateRouting
   end
 
   def map_resolved_path_to_lookup_data(path)
+    return @routes[nil].try(:merge, vars: []) if path == '/' # This is a homepage.
+
     # On the server-side, it does not appear that we actually *use* the vars at all.
     # But I'm determining them now for (1) debugging and (2) thoroughness.
     vars = []

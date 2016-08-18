@@ -6,6 +6,7 @@ import editMultipleItemsForm from './editMultipleItemsForm';
 import quickEditForm from './quickEditForm';
 import notification from './notification';
 import dataExport from './dataExport';
+import feedbackFlannel from './feedbackFlannel';
 
 export default combineReducers({
   notification,
@@ -13,5 +14,6 @@ export default combineReducers({
   translations: state => state || Immutable.fromJS(window.translations || {}),
   editMultipleItemsForm,
   quickEditForm,
-  dataExport
+  dataExport,
+  feedbackFlannel
 });

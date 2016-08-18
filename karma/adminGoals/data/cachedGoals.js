@@ -470,5 +470,34 @@ export default {
     "category": {"id": "imuv-ja3w", "name": "GREAT NEW CATEGORY", "version": "2016-07-18T12:13:09.182+03:00"},
     "is_public": true,
     "dashboardName": "Oh My Dashboard !"
+  },
+  "kd8s-mb3p": {
+    "base_dashboard": "24vs-rw4z",
+    "updatedAtTimestamp": 1470814597,
+    "created_at": "2016-07-28T19:39:41.716+03:00",
+    "name": "Star Trek Beyond",
+    "created_by": {
+      "publicViews": 0,
+      "flags": ["admin"],
+      "profileLastModified": 1440569029,
+      "login": "superuser",
+      "oid": 2,
+      "displayName": "cagri ekin",
+      "publicTables": 0,
+      "emailUnsubscribed": false,
+      "lastLogin": 1470812758,
+      "numberOfFollowers": 0,
+      "numberOfFriends": 0,
+      "screenName": "cagri ekin",
+      "rights": ["create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story"],
+      "id": "ytbe-ixad",
+      "createdAt": 1440569028,
+      "email": "cagri@socrata.com"
+    },
+    "version": "2016-07-28T19:39:41.716+03:00",
+    "id": "kd8s-mb3p",
+    "category": {"id": "6rks-jjpg", "name": "Star Wars", "version": "2016-07-28T19:43:21.455+03:00"},
+    "is_public": false,
+    "dashboardName": "My Dashboard"
   }
 };

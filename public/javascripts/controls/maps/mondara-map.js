@@ -47,9 +47,11 @@
         });
 
 
-        features.length && this.events.triggerEvent('featuresselected', {
-          features: features
-        });
+        if (features.length) {
+          this.events.triggerEvent('featuresselected', {
+            features: features
+          });
+        }
       }.bind(this), function(err) {
         //TODO: there are no mechanisms to handle errors apparently?
         if (window.console) {
@@ -78,47 +80,6 @@
       }
     }
   };
-
-  var OBEMapProvider = function(layerModel) {
-    this._layerModel = layerModel;
-    this._setBoundingBox();
-    // Support federation.
-    layerModel._owsUrl = (layerModel._view.domainUrl || '') + layerModel._config.owsUrl;
-  };
-
-  OBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
-    getLayer: function(layerName, layerOpts) {
-      layerOpts.url = this._layerModel._owsUrl;
-      layerOpts.maxExtent = this._layerModel._maxExtent || this._layerModel._map.maxExtent;
-      layerOpts.tileOrigin = new OpenLayers.LonLat(
-        this._layerModel._map.maxExtent.left,
-        this._layerModel._map.maxExtent.bottom
-      );
-      return new OpenLayers.Layer.WMS(layerName, this._layerModel._owsUrl, layerOpts.params, layerOpts);
-    },
-
-    _getFeatureProtocol: function() {
-      return new blist.openLayers.AuthenticatingFeatureProtocol({
-        featureNS: 'http://' + this._layerModel._config.namespace,
-        featureType: this._layerModel._config.layers.split(','),
-        maxFeatures: 10,
-        outputFormat: 'json',
-        readFormat: new OpenLayers.Format.GeoJSON(),
-        srsName: this._layerModel._map.projection,
-        url: this._layerModel._owsUrl,
-        version: '1.1.0'
-      });
-    },
-
-    featureGetter: function() {
-      return new OpenLayers.Control.GetFeature({
-        protocol: this._getFeatureProtocol(),
-        filterType: OpenLayers.Filter.Spatial.INTERSECTS,
-        single: false
-      });
-    }
-  });
-
 
   var NBEMapProvider = function(layerModel) {
     this._layerModel = layerModel;
@@ -205,11 +166,7 @@
         layerObj._config = parentMetadata;
       }
 
-      if (layerObj._config.isNbe) {
-        this._provider = new NBEMapProvider(this);
-      } else {
-        this._provider = new OBEMapProvider(this);
-      }
+      this._provider = new NBEMapProvider(this);
 
       _.each(layerObj._config.layers.split(','), function(layerName) {
         var opacity = _.isNumber(layerObj._displayFormat.opacity)

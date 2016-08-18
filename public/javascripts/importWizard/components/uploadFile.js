@@ -7,18 +7,20 @@ import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
 import {addColumnIndicesToSummary} from '../importUtils';
+import format from 'stringformat';
 
 type FileName = string
 
 type UploadProgress
-	= { type: 'InProgress', percent: number }
-	| { type: 'Failed', error: string }
-	| { type: 'Analyzing' }
-	| { type: 'Complete', fileId: string, summary: SharedTypes.Summary }
+  = { type: 'InProgress', percent: number, uploader: Upload }
+  | { type: 'Failed', error: string }
+  | { type: 'Cancelled' }
+  | { type: 'Analyzing', uploader: Upload }
+  | { type: 'Complete', fileId: string, summary: SharedTypes.Summary }
 
 type FileUpload
-	= { type: 'NothingSelected' }
-	| { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
+  = { type: 'NothingSelected' }
+  | { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
 
 function scanUrlForOperation(operation: SharedTypes.OperationName) {
   const urlAttrs = { pathname: '/imports2.txt' };
@@ -52,9 +54,9 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
     upload.to(scanUrlForOperation(operation));
     upload.on('progress', (evt) => {
       if (evt.percent === 100) {
-        dispatch(fileUploadAnalyzing());
+        dispatch(fileUploadAnalyzing(upload));
       } else {
-        dispatch(fileUploadProgress(evt.percent));
+        dispatch(fileUploadProgress(evt.percent, upload));
       }
     });
     upload.on('end', (xhr) => {
@@ -87,30 +89,49 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       });
       dispatch(fileUploadError());
     });
-    dispatch(fileUploadStart(file));
+    dispatch(fileUploadStart(file, upload));
+  };
+}
+
+function cancelUpload({progress}) {
+  return (dispatch) => {
+    if (progress && progress.uploader) {
+      progress.uploader.abort();
+    }
+    dispatch(fileUploadCancel());
+  };
+}
+
+const FILE_UPLOAD_CANCEL = 'FILE_UPLOAD_CANCEL';
+function fileUploadCancel() {
+  return {
+    type: FILE_UPLOAD_CANCEL
   };
 }
 
 const FILE_UPLOAD_START = 'FILE_UPLOAD_START';
-export function fileUploadStart(file: File) {
+export function fileUploadStart(file: File, uploader) {
   return {
     type: FILE_UPLOAD_START,
-    file: file
+    file: file,
+    uploader
   };
 }
 
 const FILE_UPLOAD_PROGRESS = 'FILE_UPLOAD_PROGRESS';
-export function fileUploadProgress(percent: number) {
+export function fileUploadProgress(percent: number, uploader) {
   return {
     type: FILE_UPLOAD_PROGRESS,
-    percent: percent
+    percent: percent,
+    uploader
   };
 }
 
 const FILE_UPLOAD_ANALYZING = 'FILE_UPLOAD_ANALYZING';
-export function fileUploadAnalyzing() {
+export function fileUploadAnalyzing(uploader) {
   return {
-    type: FILE_UPLOAD_ANALYZING
+    type: FILE_UPLOAD_ANALYZING,
+    uploader
   };
 }
 
@@ -131,13 +152,12 @@ export function fileUploadError(error: string) {
   };
 }
 
-
 export function update(upload: FileUpload = {}, action): FileUpload {
   switch (action.type) {
     case FILE_UPLOAD_START:
       return {
         fileName: action.file.name,
-        progress: initialUploadProgress()
+        progress: initialUploadProgress(action.uploader)
       };
 
     case FILE_UPLOAD_PROGRESS:
@@ -145,7 +165,8 @@ export function update(upload: FileUpload = {}, action): FileUpload {
         ...upload,
         progress: {
           type: 'InProgress',
-          percent: action.percent
+          percent: action.percent,
+          uploader: action.uploader
         }
       };
 
@@ -153,7 +174,8 @@ export function update(upload: FileUpload = {}, action): FileUpload {
       return {
         ...upload,
         progress: {
-          type: 'Analyzing'
+          type: 'Analyzing',
+          uploader: action.uploader
         }
       };
 
@@ -178,6 +200,15 @@ export function update(upload: FileUpload = {}, action): FileUpload {
         }
       };
 
+    case FILE_UPLOAD_CANCEL:
+      return {
+        ...upload,
+        fileName: null,
+        progress: {
+          type: 'Cancelled'
+        }
+      };
+
     default:
       return upload;
   }
@@ -185,8 +216,8 @@ export function update(upload: FileUpload = {}, action): FileUpload {
 
 // == Upload Progress
 
-export function initialUploadProgress() {
-  return { type: 'InProgress', percent: 0 };
+export function initialUploadProgress(uploader) {
+  return { type: 'InProgress', percent: 0, uploader };
 }
 
 function renderErrorMessage(fileUpload) {
@@ -195,7 +226,20 @@ function renderErrorMessage(fileUpload) {
       _.isUndefined(fileUpload.progress.error)) {
     return;
   }
-  return <FlashMessage flashType="error" message={fileUpload.progress.error} />;
+
+  var display = fileUpload.progress.error;
+  try {
+    // core wraps errors from upstream services...so...double parse!
+    const {error: translatable} = JSON.parse(display);
+    if (translatable) {
+      const template = I18n.screens.dataset_new.errors[translatable.reason];
+      display = format(template, translatable.params);
+    }
+  } catch (e) {
+    // we have a million services that don't return errors like this
+  }
+
+  return <FlashMessage flashType="error" message={display} />;
 }
 
 export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }) {
@@ -203,7 +247,14 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
 
   function onSelectFile(event) {
     // TODO: can users deselect a file? may need an action for that
-    onFileUploadAction(selectFile(event.target.files[0], operation));
+    if ( event.target.files.length > 0 ) {
+      onFileUploadAction(selectFile(event.target.files[0], operation));
+    }
+  }
+
+  function onClickPrevious() {
+    onFileUploadAction(cancelUpload(fileUpload));
+    goToPrevious();
   }
 
   const fileNameDisplay =
@@ -263,7 +314,7 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
         </div>
       </div>
       <NavigationControl
-        onPrev={goToPrevious}
+        onPrev={onClickPrevious}
         cancelLink="/profile" />
     </div>
   );
@@ -298,6 +349,9 @@ export function renderFileUploadStatus(progress: UploadProgress) {
       return withThrobber(I18n.screens.import_pane.analyzing);
 
     case 'Complete':
+      return null;
+
+    case 'Cancelled':
       return null;
 
     default:

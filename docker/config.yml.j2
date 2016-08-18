@@ -40,10 +40,6 @@ default: &default
   esri_crawler_port: {{ ESRI_CRAWLER_PORT }}
   {%- endif %}
 
-  {% if KAFKA_REST_URI is defined -%}
-  kafka_rest_uri: {{ KAFKA_REST_URI }}
-  {%- endif %}
-
   {% if METRICS_DIR is defined -%}
   metrics_dir: {{ METRICS_DIR }}
   {% else %}

@@ -54,7 +54,7 @@ function confirmDatasetRestore(source) {
   prettyConfirm($.t('screens.admin.jobs.index_page.restore_deleted_dataset_confirm', { dataset: datasetName }),
     () =>
     $.ajax({
-      url: `/views/${datasetId}.json?method=undelete`,
+      url: `/views/${datasetId}.json?method=restore`,
       type: 'PATCH'
     }).
     done(() => location.reload()).

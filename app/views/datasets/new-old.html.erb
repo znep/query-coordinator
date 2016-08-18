@@ -1,3 +1,8 @@
+<% if FeatureFlags.derive(@view, request).ingress_reenter %>
+  <%= raise 'This template does not apply to the reentrant wizard' %>
+<% end %>
+
+
 <%- page = 'screens.dataset_new' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-new' %>
@@ -395,11 +400,7 @@
     blist.namespace.fetch('blist.licenses');
     blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
   </script>
-  <% if FeatureFlags.derive(@view, request).ingress_reenter %>
-    <%= include_javascripts 'dataset-new' %>
-  <% else %>
-    <%= include_javascripts 'dataset-new-old' %>
-  <% end %>
+  <%= include_javascripts 'dataset-new-old' %>
 <% end %>
 <%= render_translations LocalePart.screens.import_pane %>
 <%= render_translations LocalePart.screens.wizard %>

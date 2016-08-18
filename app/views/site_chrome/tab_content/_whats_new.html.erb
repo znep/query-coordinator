@@ -1,0 +1,10 @@
+<% paragraphs = %i(a_bundle_of_goodness dataset_landing_page a_new_configurable_header_footer active_both_today) %>
+
+<div class="whats-new-content">
+  <img src="/images/admin/site_appearance/hero_HF_dslp.png" class="whats-new-hero-image"
+    alt="<%= translations[paragraphs.first][:title] %>" />
+  <% paragraphs.each do |paragraph| %>
+    <h2 class="whats-new-title"><%= translations[paragraph][:title] %></h2>
+    <div class="whats-new-description"><%== translations[paragraph][:description_html] %></div>
+  <% end %>
+</div>

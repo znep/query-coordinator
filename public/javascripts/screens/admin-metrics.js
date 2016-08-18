@@ -6,7 +6,7 @@
   var t = function(str, props) { return $.t('screens.stats.' + str, props); };
 
   var pageViewsSection;
-  if (blist.feature_flags['embetter_analytics_page']) {
+  if (blist.feature_flags['embetter_analytics_browser_views_only']) {
     pageViewsSection = {
       text: 'Browser Page Views',
       title: 'Browser Page Views',

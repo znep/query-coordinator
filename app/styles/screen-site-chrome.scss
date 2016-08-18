@@ -66,15 +66,11 @@ $faint-border-color: #ebebeb;
       }
     }
 
-    .header-controls {
+    .page-controls {
       float: right;
-      display: block;
-      text-align: right;
-      button {
-        [class*="icon-"] {
-          position: relative;
-          padding-left: 11px;
-        }
+
+      > a, > button {
+        margin-right: 9px;
       }
     }
   }
@@ -178,8 +174,16 @@ $faint-border-color: #ebebeb;
           padding: 8px;
           margin-bottom: 12px;
 
+          &::-webkit-input-placeholder { font-style: italic; }
+          &::-moz-placeholder { font-style: italic; } /* firefox 19+ */
+          &:-ms-input-placeholder { font-style: italic; } /* ie */
+
           &.error {
             border-color: $red-text;
+          }
+
+          &[disabled] {
+            color: #bbb;
           }
         }
       }
@@ -198,52 +202,110 @@ $faint-border-color: #ebebeb;
         }
       }
 
+      &.no-label {
+        padding-top: 1rem;
+        aside {
+          p {
+            margin: 0;
+          }
+        }
+      }
+
       &.list-of-links {
 
-        div.link-row {
+        div.link-row-header {
           overflow: hidden;
-          &:first-of-type {
-            border-bottom: 1px solid $faint-border-color;
-            margin-bottom: 0.25rem;
-          }
-          label, input {
+          border-bottom: 1px solid $faint-border-color;
+          margin-bottom: 0.25rem;
+
+          label {
             margin: 0.5rem;
-            width: calc(50% - 1rem);
+            width: calc(50% - 2rem);
             float: left;
             box-sizing: border-box;
-          }
-          label {
             line-height: 1.5rem;
             font-size: 16px;
             color: $grey;
-
-            &.error {
-              color: $red-text;
-              font-size: 14px;
-              float: right;
-            }
           }
+        }
+
+        // Hide remove-link-row for the first div.link-row
+        div.link-row-header + div.link-row {
+          .remove-link-row {
+            display: none;
+          }
+        }
+
+        div.link-row {
+          overflow: hidden;
+
+          &.default {
+            display: none;
+          }
+
           input {
+            margin: 0.5rem;
             padding: 0.5rem;
+            width: calc(50% - 2rem);
+            float: left;
             font-size: 15px;
+            box-sizing: border-box;
             border: solid 1px #c2c2c2;
             border-radius: 1px;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
           }
+
+          .remove-link-row {
+            cursor: pointer;
+            font-size: 10pt;
+            line-height: 50px;
+          }
+        }
+
+        button.add-new-link-row {
+          margin: 0.5rem;
+          font-size: 14px;
+
+          // Copied from styleguide. Remove when styleguiding
+          &:disabled {
+            color: #767676;
+            border-color: #919191;
+            background-color: #c8c8c8;
+            cursor: not-allowed;
+          }
+
+          span.icon-add {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+
+    .whats-new-content {
+      .whats-new-hero-image {
+        display: block;
+        margin: 0 auto;
+      }
+
+      .whats-new-title {
+        font-size: 16pt;
+        color: #288dc1;
+        margin: 12px 0 4px;
+      }
+
+      .whats-new-description {
+        font-size: 12pt;
+        line-height: 1.4rem;
+        margin-bottom: 28px;
+
+        > p {
+          margin-bottom: 14px;
+        }
+
+        &:last-of-type {
+          margin-bottom: 0;
         }
       }
     }
   }
-
-  .page-controls {
-    border-top: 1px solid $faint-border-color;
-    padding: 20px 0;
-    margin-bottom: 20px;
-    text-align: left;
-
-    button:first-of-type {
-      margin-right: 9px;
-    }
-  }
-
 }

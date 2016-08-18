@@ -75,12 +75,12 @@ module Browse2Helper
   def browse2_facet_cutoff(facet)
     domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
 
-    facet_name = facet[:singular_description]
+    facet_type = facet[:type]
 
-    if facet_name == 'type'
+    if facet_type == :type
       MAX_FACET_CUTOFF
-    elsif domain_cutoffs.keys.include?(facet_name)
-      domain_cutoffs[facet_name]
+    elsif domain_cutoffs.keys.include?(facet_type)
+      domain_cutoffs[facet_type]
     else
       # It's a custom facet
       configured_cutoff = domain_cutoffs.fetch('custom', DEFAULT_FACET_CUTOFF)

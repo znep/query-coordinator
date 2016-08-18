@@ -5,6 +5,7 @@ import * as ST from '../sharedTypes';
 import * as UploadFile from './uploadFile';
 import * as DownloadFile from './downloadFile';
 import * as ColumnDetail from './importColumns/columnDetail';
+import * as LC from './importColumns/locationColumn';
 import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
@@ -35,7 +36,7 @@ export type ResultColumn = {
 export type ColumnSource
   = { type: 'SingleColumn', sourceColumn: ST.SourceColumn }
   | { type: 'CompositeColumn', components: Array<string | ST.SourceColumn> }
-  // TODO: location column
+  | { type: 'LocationColumn', components: LC.LocationSource }
 
 
 // TODO: rename to 'Model' or something. Ugh.
@@ -49,9 +50,8 @@ type Transform = {
 type Translation = Array<ResultColumn>
 
 
-export function initialTranslation(summary: UploadFile.Summary): Translation {
-  // TODO: set aside location columns
-  return summary.columns.map((column, idx) => (
+export function initialTranslation(summary: UploadFile.Summary): Transform {
+  const columns = summary.columns.map((column, idx) => (
     {
       columnSource: { type: 'SingleColumn', sourceColumn: column },
       name: column.name,
@@ -60,6 +60,37 @@ export function initialTranslation(summary: UploadFile.Summary): Translation {
       id: idx
     }
   ));
+
+  const defaultColumnOrText = {
+    select: '',
+    text: '',
+    isColumn: true
+  };
+
+  const locations = (summary.locations || []).map((column, idx) => (
+    {
+      columnSource: {
+        type: 'LocationColumn',
+        components: {
+          type: 'MultipleCols',
+          isMultiple: true,
+          singleSource: '',
+          street: '',
+          city: defaultColumnOrText,
+          state: defaultColumnOrText,
+          zip: defaultColumnOrText,
+          lat: { sourceColumn: summary.columns[column.latitude] },
+          lon: { sourceColumn: summary.columns[column.longitude] }
+        }
+      },
+      name: 'Location ' + (idx + 1),
+      chosenType: column.suggestion,
+      transforms: []
+    }
+  ));
+
+  columns.push.apply(columns, locations);
+  return columns;
 }
 
 // actions
@@ -69,6 +100,13 @@ function changeHeaderCount(change) {
   return {
     type: CHANGE_HEADER_COUNT,
     change
+  };
+}
+
+export const ADD_COLUMN = 'ADD_COLUMN';
+function addColumn() {
+  return {
+    type: ADD_COLUMN
   };
 }
 
@@ -86,6 +124,13 @@ function removeColumn(index) {
   return {
     type: REMOVE_COLUMN,
     index: index
+  };
+}
+
+export const CLEAR_ALL_COLUMNS = 'CLEAR_ALL_COLUMNS';
+function clearAllColumns() {
+  return {
+    type: CLEAR_ALL_COLUMNS
   };
 }
 
@@ -110,6 +155,19 @@ export function update(transform: Transform = null, action): Transform {
         ...transform,
         numHeaders: transform.numHeaders + action.change
       };
+    case ADD_COLUMN:
+      return {
+        ...transform,
+        columns: transform.columns.concat([
+          {
+            id: transform.columns.length,
+            columnSource: {type: 'CompositeColumn', components: []},
+            name: format(I18n.screens.import_pane.new_column, {num: transform.columns.length}),
+            chosenType: 'text',
+            transforms: []
+          }
+        ])
+      };
     case UPDATE_COLUMN:
       return {
         ...transform,
@@ -119,6 +177,11 @@ export function update(transform: Transform = null, action): Transform {
       return {
         ...transform,
         columns: _.filter(transform.columns, (unused, idx) => idx !== action.index)
+      };
+    case CLEAR_ALL_COLUMNS:
+      return {
+        ...transform,
+        columns: []
       };
     case RESTORE_SUGGESTED_SETTINGS:
       return {
@@ -259,8 +322,16 @@ function ViewToolbar({dispatch}) {
         </a>
       </div>
       <div className="actions">
-        <a className="clearColumnsButton button" href="#clear">{I18nPrefixed.clear_all}</a>
-        <a className="addColumnButton add button" href="#add">
+        <a
+          className="clearColumnsButton button"
+          href="#clear"
+          onClick={() => dispatch(clearAllColumns())}>
+          {I18nPrefixed.clear_all}
+        </a>
+        <a
+          className="addColumnButton add button"
+          href="#add"
+          onClick={() => dispatch(addColumn())}>
           <span className="icon"></span>
           {I18nPrefixed.add_new_column}
         </a>

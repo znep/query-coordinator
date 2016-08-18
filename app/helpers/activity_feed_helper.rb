@@ -1,4 +1,4 @@
-module JobsHelper
+module ActivityFeedHelper
 
   def date_and_relative_day(time)
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"
@@ -34,7 +34,7 @@ module JobsHelper
     end
   end
 
-  def jobs_prefix
+  def activity_feed_prefix
     'screens.admin.jobs'
   end
 
@@ -54,7 +54,7 @@ module JobsHelper
   end
 
   def event_message_prefix(event)
-    "#{jobs_prefix}.show_page.event_messages.#{event.status}.#{event.type}"
+    "#{activity_feed_prefix}.show_page.event_messages.#{event.status}.#{event.type}"
   end
 
   def event_title(event)
@@ -62,7 +62,7 @@ module JobsHelper
       I18n.translate! "#{event_message_prefix(event)}.title"
     rescue I18n::MissingTranslationData => e
       Airbrake.notify e, :error_message => "unknown import error code while getting title: #{event.type}"
-      I18n.translate "#{jobs_prefix}.show_page.fallback_event_title", error_code: event.type
+      I18n.translate "#{activity_feed_prefix}.show_page.fallback_event_title", error_code: event.type
     end
   end
 
@@ -73,11 +73,9 @@ module JobsHelper
       FeatureFlags.derive(nil, request).restore_dataset_button &&
       event.first_deleted_in_list &&
       event.dataset.deleted && event.activity_type == 'delete' &&
-      event.dataset.publicationStage == 'published' &&
-      event.dataset.flags.any? { |flag| flag.data == 'default' } &&
-      event.dataset.displayType == 'table' &&
-      event.dataset.viewType == 'tabular' &&
-      (Date.today - event.created_at.to_date).to_i <= APP_CONFIG.restore_dataset_days
+      event.dataset.flags.any? do |flag|
+        flag.data == 'restorable'
+      end
     end
   end
 

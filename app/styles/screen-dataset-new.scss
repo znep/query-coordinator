@@ -718,6 +718,11 @@
     font-weight: normal;
   }
 
+  div.uniform.selector select {
+    opacity: 1;
+    border: none;
+  }
+
   // ***************************************************************************
   // Below are parts of the Socrata Styleguide that have been
   // blatantly copied and pasted for the new import wizard experience.

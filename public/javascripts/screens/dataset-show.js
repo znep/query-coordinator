@@ -301,7 +301,7 @@ $(function() {
   });
 
   // Conditionally hide sidebar option links based on whether a sidebar pane is present.
-  // Note: This logic fails for the embed pane. The reason why is left as an exercise for the developer.
+  // Note: Embed button visibility is also affected by the `enable_embed_widget_for_nbe` feature flag.
   $('#sidebarOptions').find('a[data-paneName]').each(function() {
     var $anchor = $(this);
     var dataPaneName = $anchor.attr('data-paneName');

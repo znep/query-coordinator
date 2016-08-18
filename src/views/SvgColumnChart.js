@@ -15,15 +15,16 @@ const MARGINS = {
   LEFT: 50
 };
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const DIMENSION_LABEL_ANGLE = 45;
-const DIMENSION_LABEL_FONT_SIZE = 14;
-const DIMENSION_LABEL_FONT_COLOR = '#5e5e5e';
-const DIMENSION_LABEL_MAX_CHARACTERS = 14;
-const MEASURE_LABEL_FONT_SIZE = 14;
-const MEASURE_LABEL_FONT_COLOR = '#5e5e5e';
-const DEFAULT_DESKTOP_COLUMN_WIDTH = 20;
+const DIMENSION_LABELS_FIXED_HEIGHT = 88;
+const DIMENSION_LABELS_ROTATION_ANGLE = 82.5;
+const DIMENSION_LABELS_FONT_SIZE = 14;
+const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
+const DIMENSION_LABELS_MAX_CHARACTERS = 8;
+const MEASURE_LABELS_FONT_SIZE = 14;
+const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
+const DEFAULT_DESKTOP_COLUMN_WIDTH = 14;
 const DEFAULT_MOBILE_COLUMN_WIDTH = 50;
-const MAX_COLUMN_COUNT_WITHOUT_PAN = 30;
+const MAX_COLUMN_COUNT_WITHOUT_PAN = 50;
 const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
@@ -162,59 +163,6 @@ function SvgColumnChart($element, vif) {
           )
       )
     );
-    var longestTruncatedDimensionLabel = d3.
-      max(
-        dimensionValues.
-          map(
-            function(dimensionValue) {
-
-              return conditionallyTruncateLabel(dimensionValue).length;
-            }
-          )
-      );
-    // After trying and failing to reliably derive the optimal height of the
-    // dimension label area trigonometrically, I broke down and just took a
-    // bunch of measurements in the browser and then did a regression analysis
-    // to derive a function that maps the number of characters in the longest
-    // label to an approximation of what the browser's layout height will
-    // actually be.
-    //
-    // See: "https://www.wolframalpha.com/input/?i=linear+fit+%7B22.66,+29.81,\
-    // +36.96,+44.11,+51.25,+58.4,+65.55,+72.7,+79.85,+87,+94.14,+101.29,+108.\
-    // 44,+118.34,+122.74,+129.9%7D"
-    //
-    // I obtained these numbers by overriding the dimension labels when
-    // rendering with strings of n characters, where 1 <= n <= 16. One of these
-    // strings was the character 'w' repeated n times, which I used to force a
-    // wide character (as opposed to 'i' or something). I then queried the DOM
-    // after layout was complete to get the offset height of the entire x-axis
-    // group using jQuery; the table I came up with looked like this:
-    //
-    // CHARS     HEIGHT
-    // 1         22.66
-    // 2         29.81
-    // 3         36.96
-    // 4         44.11
-    // 5         51.25
-    // 6         58.4
-    // 7         65.55
-    // 8         72.7
-    // 9         79.85
-    // 10        87
-    // 11        94.14
-    // 12        101.29
-    // 13        108.44
-    // 14        118.34
-    // 15        122.74
-    // 16        129.9
-    //
-    // Naturally, these measurements will be invalidated if/when the font or
-    // angle of rotation for the dimension labels changes.
-    var dimensionLabelsHeight = Math.ceil(
-      7.19312 *
-      longestTruncatedDimensionLabel +
-      14.3048
-    );
     var measureIndices = dataToRender.
       map(
         function(series) {
@@ -245,6 +193,11 @@ function SvgColumnChart($element, vif) {
     var xAxisPanningEnabled;
     var xAxisBound = false;
     var yAxisBound = false;
+    var xAxisDataLabels = _.get(
+      self.getVif(),
+      'configuration.xAxisDataLabels',
+      true
+    );
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -257,10 +210,21 @@ function SvgColumnChart($element, vif) {
 
       if (!xAxisBound) {
 
+        let xAxisFormatter;
+
+        if (xAxisDataLabels) {
+          xAxisFormatter = d3XAxis;
+        } else {
+
+          xAxisFormatter = d3XAxis.
+            tickFormat('').
+            tickSize(0);
+        }
+
         xAxisAndSeriesSvg.
           append('g').
             attr('class', 'x axis').
-              call(d3XAxis);
+              call(xAxisFormatter);
 
         xAxisAndSeriesSvg.
           append('g').
@@ -283,6 +247,11 @@ function SvgColumnChart($element, vif) {
     }
 
     function renderXAxis() {
+      const dimensionLabelTranslation =
+        `translate(${columnWidth},${columnWidth * .75})`;
+      const dimensionLabelRotation =
+        `rotate(${DIMENSION_LABELS_ROTATION_ANGLE})`;
+
       var xAxisSvg;
       var xBaselineSvg;
       var baselineValue;
@@ -314,17 +283,13 @@ function SvgColumnChart($element, vif) {
 
       xAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
-        attr('font-size', DIMENSION_LABEL_FONT_SIZE + 'px').
-        attr('fill', DIMENSION_LABEL_FONT_COLOR).
+        attr('font-size', DIMENSION_LABELS_FONT_SIZE + 'px').
+        attr('fill', DIMENSION_LABELS_FONT_COLOR).
         attr('stroke', 'none').
         attr('style', 'text-anchor: start').
         attr(
           'transform',
-          'translate({0}, 0), rotate({1})'.
-            format(
-              (columnWidth / 2),
-              DIMENSION_LABEL_ANGLE
-            )
+          `${dimensionLabelTranslation}, ${dimensionLabelRotation}`
         ).
         attr(
           'data-row-index',
@@ -399,8 +364,8 @@ function SvgColumnChart($element, vif) {
 
       yAxisSvg.selectAll('text').
         attr('font-family', FONT_STACK).
-        attr('font-size', MEASURE_LABEL_FONT_SIZE + 'px').
-        attr('fill', MEASURE_LABEL_FONT_COLOR).
+        attr('font-size', MEASURE_LABELS_FONT_SIZE + 'px').
+        attr('fill', MEASURE_LABELS_FONT_COLOR).
         attr('stroke', 'none');
 
       yGridSvg.
@@ -683,10 +648,10 @@ function SvgColumnChart($element, vif) {
         ]);
     });
 
+    // Compute width based on the x-axis scaling mode.
     if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
       width = viewportWidth;
-      height = viewportHeight - dimensionLabelsHeight;
 
       // We limit the total column count to 30 when not allowing panning so
       // that the the labels do not overlap each other.
@@ -740,7 +705,16 @@ function SvgColumnChart($element, vif) {
           groupedDataToRender.length
         )
       );
-      height = viewportHeight - dimensionLabelsHeight;
+    }
+
+    // Compute height based on the presence or absence of x-axis data labels.
+    if (xAxisDataLabels) {
+      height = viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT;
+    } else {
+      // In this case we want to mirror the top margin on the bottom so
+      // that the chart is visually centered (column charts have no bottom
+      // margin by default).
+      height = viewportHeight - MARGINS.TOP;
     }
 
     /**
@@ -994,7 +968,15 @@ function SvgColumnChart($element, vif) {
           MARGINS.TOP -
           MARGINS.BOTTOM
         );
-        height = viewportHeight - dimensionLabelsHeight;
+
+        if (xAxisDataLabels) {
+          // Note that we need to recompute height here since
+          // $chartElement.height() may have changed when we showed the panning
+          // notice.
+          height = viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT;
+        } else {
+          height = viewportHeight - MARGINS.TOP;
+        }
 
         d3YScale = generateYScale(minYValue, maxYValue, height);
         d3YAxis = generateYAxis(d3YScale);
@@ -1133,9 +1115,9 @@ function SvgColumnChart($element, vif) {
   function conditionallyTruncateLabel(label) {
     label = label || I18n.translate('visualizations.common.no_value');
 
-    return (label.length >= DIMENSION_LABEL_MAX_CHARACTERS) ?
+    return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(
-        label.substring(0, DIMENSION_LABEL_MAX_CHARACTERS - 1).trim()
+        label.substring(0, DIMENSION_LABELS_MAX_CHARACTERS - 1).trim()
       ) :
       label;
   }

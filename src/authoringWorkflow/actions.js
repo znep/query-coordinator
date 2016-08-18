@@ -354,14 +354,6 @@ export function setLabelTop(labelTop) {
   };
 }
 
-export var SET_LABEL_BOTTOM = 'SET_LABEL_BOTTOM';
-export function setLabelBottom(labelBottom) {
-  return {
-    type: SET_LABEL_BOTTOM,
-    labelBottom
-  };
-}
-
 export var SET_LABEL_LEFT = 'SET_LABEL_LEFT';
 export function setLabelLeft(labelLeft) {
   return {
@@ -370,11 +362,27 @@ export function setLabelLeft(labelLeft) {
   };
 }
 
+export var SET_LABEL_BOTTOM = 'SET_LABEL_BOTTOM';
+export function setLabelBottom(labelBottom) {
+  return {
+    type: SET_LABEL_BOTTOM,
+    labelBottom
+  };
+}
+
 export var SET_LABEL_RIGHT = 'SET_LABEL_RIGHT';
 export function setLabelRight(labelRight) {
   return {
     type: SET_LABEL_RIGHT,
     labelRight
+  };
+}
+
+export var SET_X_AXIS_DATA_LABELS = 'SET_X_AXIS_DATA_LABELS';
+export function setXAxisDataLabels(xAxisDataLabels) {
+  return {
+    type: SET_X_AXIS_DATA_LABELS,
+    xAxisDataLabels
   };
 }
 

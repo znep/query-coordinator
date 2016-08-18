@@ -16,6 +16,8 @@ describe('views/Table', function() {
           ascending: true
         }]
       },
+      datasetUid: 'test-test',
+      domain: 'example.com',
       type: 'table'
     };
 

@@ -4,6 +4,7 @@ export default () => ({
     "version": 2
   },
   "configuration": {
+    "xAxisDataLabels": true,
     "xAxisScalingMode": "pan",
     "viewSourceDataLink": true,
     "axisLabels": {

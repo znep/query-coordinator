@@ -5,8 +5,9 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
+  setStringValueOrDefaultValue,
+  setBooleanValueOrDefaultValue,
   setValueOrDeleteProperty,
-  setValueOrDefaultValue,
   setUnits,
   isNonEmptyString
 } from '../../helpers';
@@ -24,6 +25,7 @@ import {
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
+  SET_X_AXIS_DATA_LABELS,
   SET_X_AXIS_SCALING_MODE,
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
@@ -47,28 +49,28 @@ export default function columnChart(state, action) {
 
     case SET_DOMAIN:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
       });
       break;
 
     case SET_DATASET_UID:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
     case SET_DIMENSION:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
+        setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
       break;
 
     case SET_TITLE:
-      setValueOrDefaultValue(state, 'title', action.title, null);
+      setStringValueOrDefaultValue(state, 'title', action.title, null);
       break;
 
     case SET_DESCRIPTION:
-      setValueOrDefaultValue(state, 'description', action.description, null);
+      setStringValueOrDefaultValue(state, 'description', action.description, null);
       break;
 
     case SET_MEASURE:
@@ -119,19 +121,23 @@ export default function columnChart(state, action) {
       setValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
       break;
 
+    case SET_X_AXIS_DATA_LABELS:
+      setBooleanValueOrDefaultValue(state, 'configuration.xAxisDataLabels', action.xAxisDataLabels, true);
+      break;
+
     case SET_X_AXIS_SCALING_MODE:
       setValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
 
     case SET_UNIT_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
+        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
   }

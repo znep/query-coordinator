@@ -10,7 +10,8 @@ function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onChangeLabelBottom: sinon.spy(),
-    onChangeLabelLeft: sinon.spy()
+    onChangeLabelLeft: sinon.spy(),
+    onChangeXAxisDataLabels: sinon.spy()
   });
 
   return {
@@ -40,7 +41,9 @@ describe('AxisAndScalePane', function() {
   }
 
   function rendersLabelsAndEmitsEvents() {
+
     describe('rendering', function() {
+
       it('renders a bottom label input', function() {
         expect(component.querySelector('#label-bottom')).to.exist;
       });
@@ -51,12 +54,34 @@ describe('AxisAndScalePane', function() {
     });
 
     describe('events', function() {
+
       describe('when changing the bottom label', function() {
         emitsEvent('#label-bottom', 'onChangeLabelBottom');
       });
 
       describe('when changing the left label', function() {
         emitsEvent('#label-left', 'onChangeLabelLeft');
+      });
+    });
+  }
+
+  function rendersXAxisDataLabelsAndEmitsEvents() {
+
+    describe('rendering', function() {
+
+      it('renders a show x-axis data labels checkbox', function() {
+        expect(component.querySelector('#x-axis-data-labels')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+
+      describe('when changing the x-axis data labels checkbox', function() {
+
+        emitsEvent(
+          '#x-axis-data-labels',
+          'onChangeXAxisDataLabels'
+        );
       });
     });
   }
@@ -79,6 +104,7 @@ describe('AxisAndScalePane', function() {
   describe('columnChart', function() {
     beforeEach(setUpVisualization('columnChart'));
     rendersLabelsAndEmitsEvents();
+    rendersXAxisDataLabelsAndEmitsEvents();
   });
 
   describe('histogram', function() {

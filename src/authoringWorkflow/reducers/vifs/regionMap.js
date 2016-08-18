@@ -3,7 +3,7 @@ import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import { forEachSeries, setValueOrDefaultValue, setUnits } from '../../helpers';
+import { forEachSeries, setStringValueOrDefaultValue, setUnits } from '../../helpers';
 import {
   RECEIVE_METADATA,
   SET_DIMENSION,
@@ -42,13 +42,13 @@ export default function regionMap(state, action) {
 
     case SET_DOMAIN:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
+        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
       });
       break;
 
     case SET_DATASET_UID:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
       });
       break;
 
@@ -56,23 +56,23 @@ export default function regionMap(state, action) {
       _.unset(state, 'configuration.mapCenterAndZoom');
 
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
+        setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
       break;
 
     case SET_TITLE:
-      setValueOrDefaultValue(state, 'title', action.title, null);
+      setStringValueOrDefaultValue(state, 'title', action.title, null);
       break;
 
     case SET_DESCRIPTION:
-      setValueOrDefaultValue(state, 'description', action.description, null);
+      setStringValueOrDefaultValue(state, 'description', action.description, null);
       break;
 
     case SET_MEASURE:
       forEachSeries(state, series => {
         var aggregationFunction = series.dataSource.measure.aggregationFunction;
 
-        setValueOrDefaultValue(series, 'dataSource.measure.columnName', action.measure, null);
+        setStringValueOrDefaultValue(series, 'dataSource.measure.columnName', action.measure, null);
 
         if (_.isNull(action.measure)) {
           series.dataSource.measure.aggregationFunction = 'count';
@@ -84,7 +84,7 @@ export default function regionMap(state, action) {
 
     case SET_MEASURE_AGGREGATION:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'dataSource.measure.aggregationFunction', action.measureAggregation, null);
+        setStringValueOrDefaultValue(series, 'dataSource.measure.aggregationFunction', action.measureAggregation, null);
       });
       break;
 
@@ -127,13 +127,13 @@ export default function regionMap(state, action) {
 
     case SET_UNIT_ONE:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
+        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
       });
       break;
 
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
-        setValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
       });
       break;
 

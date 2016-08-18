@@ -131,6 +131,11 @@ export const getAxisLabels = createSelector(
   vif => _.get(vif, 'configuration.axisLabels')
 );
 
+export const getXAxisDataLabels = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.xAxisDataLabels', false)
+);
+
 export const getXAxisScalingMode = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'configuration.xAxisScalingMode')

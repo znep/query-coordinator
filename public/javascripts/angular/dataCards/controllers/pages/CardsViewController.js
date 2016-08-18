@@ -578,13 +578,13 @@ module.exports = function CardsViewController(
       cardCount$.subscribe(function(count) {
         // Sequence like imagesComplete$, but only begins after the correct number of renderComplete$ have been emitted.
         var imagesCompleteAfterRenderComplete$ = renderComplete$.
-          first(function(value, index) { return index === count; }).
+          take(count).
           ignoreElements().
           concat(imagesComplete$);
 
         // Tell Phantom we're ready, once we get a renderComplete$ AND all images are loaded.
         imagesCompleteAfterRenderComplete$.
-          delay(500).
+          delay(10000).
           first(_.identity).
           subscribe(function() {
             $log.info('Render complete.');

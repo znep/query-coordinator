@@ -278,6 +278,16 @@ module.exports = function searchCard(CardDataService, ServerConfig, SoqlHelpers,
       $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanel$);
 
       handleSampleData($scope, model, dataset$);
+
+      // This is used primarily by Polaroid to determine when to take a picture.
+      // While you can't export a search card with Polaroid, we expect this event
+      // to be emitted by all of our cards in order for Polaroid to know when to
+      // take a picture of the entire Data Lens for Image Preview Manager. See
+      // CardsViewController for more information about how that works.
+      $scope.$emit('render:complete', {
+        source: `search_${$scope.$id}`,
+        timestamp: _.now()
+      });
     }
   };
 };

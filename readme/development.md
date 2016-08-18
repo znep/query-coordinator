@@ -45,16 +45,29 @@ npm run lint
 - JavaScript linting uses [eslint-base](https://github.com/socrata/eslint-base) with Airbnb's linting rules.
 - SASS linting uses [stylelint](https://github.com/stylelint/stylelint) with their [standard configuration library](https://github.com/stylelint/stylelint-config-standard).
 
+There is a Jenkins job responsible for PR testing (see styleguide-pull-request-linter).
+
 #### Testing JavaScript
 JavaScript tests are in `test/js` and the suite runs through Karma and Mocha. When the component generation script is used to start a new component an empty test file will be available in `test/js/components/NewComponent`. You can run the tests with:
 ```
 npm test
 ```
 
+There is a Jenkins job responsible for PR testing (see styleguide-pull-request-tester).
+
 #### Releasing Styleguide
-The process is fully automated. :tada:
+The process is fully automated (see styleguide-publisher). :tada:
+
+If you need to run a manual release:
+```
+npm run release
+```
 
 #### Deploying to https://socrata.github.io/styleguide
+The process is fully automated through Jenkins (see styleguide-publisher). :tada:
+
+If you need to run a manual deploy:
+
 A deployment of the static website to our Github pages domain can be carried out with:
 ```
 npm run deploy

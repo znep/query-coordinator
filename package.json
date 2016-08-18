@@ -9,6 +9,7 @@
   },
   "scripts": {
     "deploy": "./deploy.sh",
+    "release": "./tools/publish.sh",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "gulp watch",
     "gulp": "gulp dist",

@@ -24,31 +24,33 @@ export var AxisAndScalePane = React.createClass({
     const leftAxisLabel = _.get(axisLabels, 'left', null);
     const bottomAxisLabel = _.get(axisLabels, 'bottom', null);
 
+    const labelLeftInputAttributes = {
+      className: 'text-input',
+      id: 'label-left',
+      type: 'text',
+      onChange: this.props.onChangeLabelLeft,
+      defaultValue: leftAxisLabel
+    };
+
+    const labelBottomInputAttributes = {
+      className: 'text-input',
+      id: 'label-bottom',
+      type: 'text',
+      onChange: this.props.onChangeLabelBottom,
+      defaultValue: bottomAxisLabel
+    };
+
     return (
       <div>
         <h5>{translate('panes.axis_and_scale.subheaders.axis_titles')}</h5>
-        <label
-          className="block-label"
-          htmlFor="label-left">
+        <label className="block-label" htmlFor="label-left">
           {translate('panes.axis_and_scale.fields.left_axis_title.title')}
         </label>
-        <input
-          className="text-input"
-          id="label-left"
-          type="text"
-          onChange={this.props.onChangeLabelLeft}
-          defaultValue={leftAxisLabel} />
-        <label
-          className="block-label"
-          htmlFor="label-bottom">
+        <input {...labelLeftInputAttributes}/>
+        <label className="block-label" htmlFor="label-bottom">
           {translate('panes.axis_and_scale.fields.bottom_axis_title.title')}
         </label>
-        <input
-          className="text-input"
-          id="label-bottom"
-          type="text"
-          onChange={this.props.onChangeLabelBottom}
-          defaultValue={bottomAxisLabel} />
+        <input {...labelBottomInputAttributes} />
       </div>
     );
   },

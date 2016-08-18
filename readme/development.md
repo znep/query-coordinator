@@ -28,6 +28,7 @@
 ## Everyday musings of a Styleguide developer
 #### Making a PR
 - Make sure your branch has a bumped version according to [semver](http://semver.org).
+  - Open our `package.json` and bump the version in there or run `npm version MAJOR.MINOR.PATCH` replacing "MAJOR", "MINOR", and "PATCH" with the proper numbers.
 - Run your linter with `npm run lint`.
 - Open up a pull request on Github at `https://github.com/socrata/styleguide/compare`.
 - Roll someone (`snu cr styleguide <your-PR-url>`) in `#socrata-styleguide` on Socrata's Slack!

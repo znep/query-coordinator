@@ -1,4 +1,6 @@
-;$(function()
+/* eslint-disable */
+
+$(function()
 {
     blist.namespace.fetch('blist.dialog');
     var $form;

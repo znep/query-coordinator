@@ -21,4 +21,9 @@ module AdministrationHelper
       super
     end
   end
+
+  def show_site_chrome_admin_panel?
+    !!current_user.try(:is_administrator_or_superadmin?)
+  end
+
 end

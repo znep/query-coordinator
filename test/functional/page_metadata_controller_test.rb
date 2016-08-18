@@ -129,7 +129,7 @@ class PageMetadataControllerTest < ActionController::TestCase
   end
 
   test 'create succeeds when a logged-in user (regardless of domain role) creates a derived lens and the save-as flag is enabled' do
-    user_stub = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
+    user_stub = stub(is_owner?: false, is_superadmin?: false, roleName: 'editor')
     @controller.stubs(save_as_enabled?: true, current_user: user_stub)
     view_stub = stub(can_read?: true, data_lens?: true)
     View.stubs(find: view_stub)
@@ -146,7 +146,7 @@ class PageMetadataControllerTest < ActionController::TestCase
   end
 
   test 'create fails when a logged-in user tries to create a derived lens without the save-as flag enabled' do
-    user_stub = stub(is_owner?: false, is_admin?: false)
+    user_stub = stub(is_owner?: false, is_superadmin?: false)
     @controller.stubs(can_create_metadata?: false, save_as_enabled?: false, current_user: user_stub)
 
     json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
@@ -157,7 +157,7 @@ class PageMetadataControllerTest < ActionController::TestCase
   end
 
   test 'create fails when a user without a domain role tries to create a (non-derived) data lens from a dataset' do
-    user_stub = stub(is_owner?: false, is_admin?: false)
+    user_stub = stub(is_owner?: false, is_superadmin?: false)
     @controller.stubs(can_create_metadata?: false, save_as_enabled?: true, current_user: user_stub)
 
     json = { datasetId: 'four-four' }.to_json
@@ -168,7 +168,7 @@ class PageMetadataControllerTest < ActionController::TestCase
   end
 
   test 'create fails when a logged-in user tries to create a derived lens from a private data lens owned by another user' do
-    user_stub = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
+    user_stub = stub(is_owner?: false, is_superadmin?: false, roleName: 'publisher')
     view_stub = stub(can_read?: false)
     @controller.stubs(save_as_enabled?: true, current_user: user_stub)
     View.stubs(find: view_stub)

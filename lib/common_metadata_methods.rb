@@ -34,7 +34,7 @@ module CommonMetadataMethods
 
     role_allows_data_lens_creation?(current_user.roleName) ||
     current_user.is_owner?(dataset) ||
-    current_user.is_admin?
+    current_user.is_superadmin?
   end
 
   def page_metadata_manager

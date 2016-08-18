@@ -104,13 +104,13 @@ class DatasetMetadataControllerTest < ActionController::TestCase
   end
 
   test 'can_create_metadata? returns true when logged in and user is dataset owner (publisher)' do
-    stub_user = stub(is_owner?: true, is_admin?: false, roleName: 'publisher')
+    stub_user = stub(is_owner?: true, is_superadmin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:can_create_metadata?))
   end
 
   test 'can_create_metadata? returns true when logged in and user is superadmin' do
-    stub_user = stub(is_owner?: false, is_admin?: true, roleName: 'administrator')
+    stub_user = stub(is_owner?: false, is_superadmin?: true, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:can_create_metadata?))
   end
@@ -121,19 +121,19 @@ class DatasetMetadataControllerTest < ActionController::TestCase
   end
 
   test 'can_create_metadata? returns false when logged in but not dataset owner and not admin or publisher' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
+    stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: 'editor')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     refute(@controller.send(:can_create_metadata?))
   end
 
   test 'can_create_metadata? returns true when logged in as publisher but not dataset owner and not admin' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
+    stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:can_create_metadata?))
   end
 
   test 'can_create_metadata? returns true when logged in as (non-super) admininstrator but not dataset owner' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'administrator')
+    stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:can_create_metadata?))
   end

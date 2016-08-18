@@ -63,7 +63,7 @@ module.exports = function UserSessionService($http, $q, rx) {
       catchException(Rx.Observable.returnValue(null));
   }
 
-  function isAdmin(user) {
+  function isSuperadmin(user) {
     var flags = _.get(user, 'flags', []);
     var roleName = _.get(user, 'roleName');
     return _.includes(flags, 'admin') || roleName === 'administrator';
@@ -72,7 +72,7 @@ module.exports = function UserSessionService($http, $q, rx) {
   return {
     getCurrentUser: getCurrentUser,
     getCurrentUser$: _.once(getCurrentUser$),
-    isAdmin: isAdmin,
+    isSuperadmin: isSuperadmin,
     Errors: Errors
   };
 };

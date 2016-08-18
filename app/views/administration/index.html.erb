@@ -82,7 +82,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if enable_site_chrome_admin_panel? %>
+    <%- if show_site_chrome_admin_panel? %>
       <li class="homemgmt">
         <%= admin_nav_link_to t("#{prefix}.site_chrome"), :controller => '/site_chrome', :action => 'edit' %>
         <span class="description">
@@ -125,7 +125,7 @@
         </span>
       </li>
     <%- end %>
-    <%- if current_user && current_user.is_admin? -%>
+    <%- if current_user.try(:is_superadmin?) -%>
       <li class="internal">
         <%= admin_nav_link_to t("#{prefix}.internal"), :controller => 'internal', :action => 'index' %>
         <span class="description">
@@ -133,7 +133,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if current_user.try(:is_admin?) && feature_flag?('stories_enabled', request) -%>
+    <%- if current_user.try(:is_superadmin?) && feature_flag?('stories_enabled', request) -%>
       <li class="contentmgmt">
         <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
         <span class="description">

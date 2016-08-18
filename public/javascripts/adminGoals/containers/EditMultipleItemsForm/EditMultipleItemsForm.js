@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import Select from 'react-select';
 import { modalQuitEventHandler } from '../../components/ModalQuitEventHandler';
+import { datetimeFormat } from '../../constants';
 import SocrataDatePicker from '../../components/SocrataDatePicker';
 import SocrataFlyout from '../../components/SocrataFlyout/SocrataFlyout';
 import SocrataAlert from '../../components/SocrataAlert';
@@ -52,11 +53,11 @@ class EditMultipleItemsForm extends React.Component {
   }
 
   updateDateRangeTo(value) {
-    this.updateFormData(['prevailing_measure', 'end'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'end'], value.format(datetimeFormat));
   }
 
   updateDateRangeFrom(value) {
-    this.updateFormData(['prevailing_measure', 'start'], value.toISOString().replace('Z',''));
+    this.updateFormData(['prevailing_measure', 'start'], value.format(datetimeFormat));
   }
 
   updateOverride({ value }) {
@@ -218,13 +219,13 @@ class EditMultipleItemsForm extends React.Component {
         <label className="inline-label"> { label } </label>
         <div className="form-line">
           <SocrataDatePicker
-            placeholderText={ toPlaceholder }
-            selected={ toValue && moment.utc(toValue) }
-            onChange={ this.updateDateRangeTo }/>
-          <SocrataDatePicker
             placeholderText={ fromPlaceholder }
-            selected={ fromValue && moment.utc(fromValue) }
+            selected={ fromValue && moment(fromValue) }
             onChange={ this.updateDateRangeFrom }/>
+          <SocrataDatePicker
+            placeholderText={ toPlaceholder }
+            selected={ toValue && moment(toValue) }
+            onChange={ this.updateDateRangeTo }/>
           { this.renderRevertButton(this.isDateRangeChanged(), this.revertDateRange) }
         </div>
       </div>

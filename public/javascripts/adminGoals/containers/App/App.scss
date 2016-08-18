@@ -142,9 +142,10 @@
 }
 
 .bulk-actions {
+  margin: 16px;
   overflow: auto;
 
-  button {
+  .btn-group {
     float: right;
   }
 }
@@ -180,4 +181,13 @@
 
 .form-line {
   margin-bottom: 15px;
+}
+
+a.btn {
+  line-height: 18.75px;
+}
+
+.btn-simple .spinner-default {
+  width: 14px;
+  height: 14px;
 }

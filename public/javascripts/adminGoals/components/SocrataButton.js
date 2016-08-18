@@ -5,6 +5,10 @@ import helpers from '../helpers/helpers';
 export default class SocrataButton extends React.Component {
   constructor(props) {
     super(props);
+
+    this.propBlacklist = [
+      'primary', 'alternate', 'alternate2', 'simple', 'inverse', 'small', 'extraSmall', 'inProgress', 'type', 'href'
+    ];
   }
 
   render() {
@@ -36,14 +40,29 @@ export default class SocrataButton extends React.Component {
 
     const spinner = isInProgress ? <span className="spinner-default spinner-btn-primary"/> : null;
 
-    return (
-      <button
-        type={ type }
-        className={ classNames(classes) }
-        disabled={ props.disabled }
-        onClick={ isInProgress ? null : this.props.onClick }>
-        { isInProgress ? spinner : this.props.children }
-      </button>
-    );
+    const omittedProps = _.omit(this.props, this.propBlacklist);
+
+    if (this.props.href) {
+      return (
+        <a
+          { ...omittedProps }
+          className={ classNames(classes, props.className) }
+          disabled={ props.disabled || isInProgress }
+          href={ props.href }>
+          { isInProgress ? spinner : this.props.children }
+        </a>
+      );
+    } else {
+      return (
+        <button
+          { ...omittedProps }
+          type={ type }
+          className={ classNames(classes, props.className) }
+          disabled={ props.disabled }
+          onClick={ isInProgress ? null : this.props.onClick }>
+          { isInProgress ? spinner : this.props.children }
+        </button>
+      );
+    }
   }
 }

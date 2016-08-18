@@ -11,14 +11,15 @@ import {
   tableLoadPage
 } from './actions/goalTableActions';
 import notifyUser from './middlewares/notifyUser';
+import fileDownloader from './middlewares/fileDownloader';
 
-let middleware = [thunk, notifyUser];
+let middleware = [thunk, notifyUser, fileDownloader];
 if (window.serverConfig.environment === 'development') {
   middleware.push(createLogger());
 }
 
 const initialState = Immutable.fromJS({
-	translations: window.translations,
+  translations: window.translations,
   notification: {
     visible: false,
     type: 'success',
@@ -47,7 +48,7 @@ const initialState = Immutable.fromJS({
   }
 });
 
-let store = createStore(reducers, initialState,  compose(
+let store = createStore(reducers, initialState, compose(
   applyMiddleware(...middleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ));

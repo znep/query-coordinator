@@ -1756,6 +1756,11 @@ en:
         bad: Did not meet target
       subheadline: This goal is measured by tracking {0} in {1}.
     admin:
+      export:
+        Csv:
+          button_label: Export
+          info_title: Generating Download
+          info_description: Generating a CSV. The download will automatically start when ready
       listing:
         title: Title
         owner: Last updated by

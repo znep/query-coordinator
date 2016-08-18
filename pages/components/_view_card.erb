@@ -1,0 +1,45 @@
+<p>View Cards are general-purpose tiles representing an asset.  They might be shown in a catalog, in
+an asset selector, or anywhere else where a list of views needs to be rendered.  The component
+features a title, a section for arbitrary metadata, a preview image of the asset, and a description.
+The title and the description are automatically ellipsified.  The title and image are clickable
+links.</p>
+
+<div class="alert info">
+  Not sure which icon to use?  For a mapping of view display types to icon classes, see the helper
+  in <code>src/js/common/displayTypeMetadata.js</code>.
+</div>
+
+<br />
+
+<%= partial "code_sample", locals: {
+  component: "components/skeletons/view_card",
+  partial_locals: {
+    container_id: 'view-card-container',
+    overlay: false
+  }
+}
+%>
+
+<p>Sometimes it is helpful to render a spinner or a button on top of the card to display more
+information or allow an action to be taken.  Simply pass the desired element as a child of the
+ViewCard and it will be rendered as an overlay:</p>
+
+<%= partial "code_sample", locals: {
+  component: "components/skeletons/view_card",
+  partial_locals: {
+    container_id: 'view-card-container-overlays',
+    overlay: true
+  }
+} %>
+
+<p>For external assets, a component ExternalViewCard is provided, which applies attributes to the
+anchor tags informing search engines that the link is an external link, makes the link open in a new
+tab, sets the icon to one appropriate for external links, and sets the metadataLeft prop to
+"External Content".</p>
+
+<%= partial "code_sample", locals: {
+  component: "components/skeletons/view_card_external",
+  partial_locals: {
+    container_id: 'view-card-container-external'
+  }
+} %>

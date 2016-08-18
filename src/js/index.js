@@ -9,6 +9,8 @@ import TourFactory from './Tour';
 
 import ColorPicker from './components/ColorPicker';
 import Dropdown from './components/Dropdown';
+import ViewCard from './components/ViewCard';
+import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 
 module.exports = {
   attachTo: function(element) {
@@ -29,5 +31,7 @@ module.exports = {
   },
 
   ColorPicker,
-  Dropdown
+  Dropdown,
+  ViewCard,
+  ExternalViewCard
 };

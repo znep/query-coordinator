@@ -1,6 +1,6 @@
 module.exports = {
   context: __dirname,
-  devtool: 'source-map',
+  devtool: 'eval', // eval is faster than source-map
   entry: `${__dirname}/src/js/index.js`,
   externals: {
     'react': {
@@ -14,7 +14,8 @@ module.exports = {
       commonjs2: 'tether-shepherd',
       commonjs: 'tether-shepherd',
       amd: 'tether-shepherd'
-    }
+    },
+    jquery: true
   },
   output: {
     path: `${__dirname}/dist/js`,
@@ -28,7 +29,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        loader: 'babel',
+        loader: 'babel?cacheDirectory',
         test: /\.js$/,
         exclude: /node_modules/
       }

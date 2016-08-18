@@ -1,0 +1,143 @@
+@import "variables/colors";
+
+$data-lens-blue: #288dc1;
+$map-green: #218649;
+$external-blue: #1c6387;;
+
+.view-card.result-card.media {
+  width: 300px;
+  height: 314px;
+  flex-basis: auto;
+  overflow: hidden;
+  float: none;
+
+  position: relative;
+
+  .entry-header {
+    .icon-private {
+      color: $warning;
+      font-size: 18px;
+    }
+
+    .entry-title {
+      margin-right: 2%;
+      max-height: 48px;
+
+      h3 {
+        margin: 0;
+
+        .icon-private {
+          margin-right: 4px;
+        }
+
+        a div {
+          display: inline !important;
+        }
+      }
+    }
+  }
+
+  .img-wrapper:hover {
+    cursor: pointer;
+  }
+
+  .img-wrapper {
+    background-color: $light-grey-5;
+    display: flex;
+    height: 117px;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      min-height: unset;
+      max-height: unset;
+      width: 100%;
+      position: absolute;
+      top: -9999px;
+      bottom: -9999px;
+      margin: auto;
+    }
+
+    .x-large-icon {
+      font-size: 72px;
+      color: $dark-grey-1;
+      line-height: 1;
+      margin: auto;
+    }
+
+    .icon-story {
+      &.x-large-icon {
+        color: $alternate-2;
+      }
+    }
+
+    .icon-date {
+      &.x-large-icon {
+        color: $alternate-3;
+      }
+    }
+
+    .icon-list-2 {
+      &.x-large-icon {
+        color: $alternate-4;
+      }
+    }
+
+    .icon-map {
+      &.x-large-icon {
+        color: $map-green;
+      }
+    }
+
+    .icon-cards {
+      &.x-large-icon {
+        color: $data-lens-blue;
+      }
+    }
+
+    .icon-bar-chart {
+      &.x-large-icon {
+        color: $alternate-1;
+      }
+    }
+
+    .icon-external-square {
+      &.x-large-icon {
+        color: $external-blue;
+      }
+    }
+  }
+
+  @media(max-width: $medium) {
+    .img-wrapper {
+      display: flex;
+      max-height: 150px;
+    }
+  }
+}
+
+.view-card-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+
+  .btn {
+    margin-right: auto;
+    margin-left: auto;
+    width: 100px;
+    max-width: 100px;
+
+    &:first-child {
+      margin-top: auto;
+    }
+
+    &:last-child {
+      margin-bottom: auto;
+      margin-right: auto;
+    }
+  }
+}

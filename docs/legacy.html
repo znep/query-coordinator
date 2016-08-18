@@ -1,0 +1,623 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+    <title>Socrata Styleguide</title>
+
+    <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
+    <link rel="stylesheet" href="css/styleguide-5bbee37f.css">
+    <link rel="stylesheet" href="stylesheets/pages-87192468.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body class="legacy">
+    <div class="responsive-navbar responsive-navbar-fixed">
+       <span class="site-controls">
+         <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="icon-hamburger"> <span class="menu-link-text">Menu</span></a>
+
+        <a class="home" href="index.html">
+          <span>Product Styleguide</span>
+        </a>
+      </span>
+      <div class="responsive-navbar-nav">
+        <a href="https://github.com/socrata/styleguide" class="btn-sm btn btn-default btn-inverse">View on Github</a>
+      </div>
+    </div>
+
+    <div class="container">
+  <div id="pagemap" class="menu menu-offscreen menu-anchor-left">
+       <header class="menu-header">
+    <h1 class="h6 menu-header-title">Styleguide Menu</h1>
+    <button class="btn btn-block btn-sm btn-transparent menu-header-dismiss" data-menu-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <ul class="menu-navigation">
+    <li class="menu-section-title"><a href="index.html">Guide Home</a></li>
+
+    <li class="menu-section-title"><a href="elements.html">Elements</a>
+      <ul>
+        <li><a href="elements.html#typography">Typography</a></li>
+        <li><a href="elements.html#colors">Colors</a></li>
+        <li><a href="elements.html#branding">Branding</a></li>
+        <li><a href="elements.html#icons">Icons</a></li>
+        <li><a href="elements.html#buttons">Buttons</a></li>
+        <li><a href="elements.html#spinners">Spinners</a></li>
+        <li><a href="elements.html#dividers">Dividers</a></li>
+        <li><a href="elements.html#lists">Lists</a></li>
+        <li><a href="elements.html#input-groups">Input Groups</a></li>
+        <li><a href="elements.html#forms">Forms</a></li>
+        <li><a href="elements.html#tables">Tables</a></li>
+        <li><a href="elements.html#alerts">Alerts</a></li>
+        <li><a href="elements.html#tags">Tags</a></li>
+        <li><a href="elements.html#navigation">Navigation</a></li>
+        <li><a href="elements.html#cards">Cards</a></li>
+        <li><a href="elements.html#pagination">Pagination</a></li>
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="components.html">Components</a>
+      <ul class="menu-navigation">
+        <li><a href="components.html#dropdowns">Dropdowns</a></li>
+        <li><a href="components.html#color-picker">Color Picker</a></li>
+        <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript</a>
+      <ul class="menu-navigation">
+        <li><a href="legacy.html#modals">Modals</a></li>
+        <li><a href="legacy.html#flannels">Flannels</a></li>
+        <li><a href="legacy.html#flyouts">Flyouts</a></li>
+        <li><a href="legacy.html#menu">Menu</a></li>
+        <li><a href="legacy.html#tabs">Tabs</a></li>
+        <li><a href="legacy.html#buttontoggle">Button Toggle</a></li>
+        <li><a href="legacy.html#dropdowns">Dropdowns</a></li>
+        <li><a href="legacy.html#tour">Tour</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  </div>
+
+  <div class="content">
+    <h1 class="page-header">JavaScript Components</h1>
+
+    <section class="styleguide-section modal-section" id="modals">
+      <div class="meta">
+        <h2 class="styleguide-header">Modal</h2>
+        <p class="small">Modals can be opened and dismissed using data-* attributes, data-modal="modal-id", and data-modal-dismiss</p>
+      </div>
+      <div class="example">
+        <div class="button-wrapper">
+  <button class="btn btn-default btn-block" data-modal="generic-modal">Open Modal</button>
+</div>
+
+
+<div id="generic-modal" class="modal modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="h5 modal-header-title">Hello, World!</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+      <p>Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+    </section>
+
+    <footer class="modal-actions">
+      <button class="btn btn-default btn-sm" data-modal-dismiss>Cancel</button>
+      <button class="btn btn-primary btn-sm" data-modal-dismiss>OK</button>
+    </footer>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;generic-modal&quot; class=&quot;modal modal-overlay modal-hidden&quot; data-modal-dismiss&gt;
+  &lt;div class=&quot;modal-container&quot;&gt;
+    &lt;header class=&quot;modal-header&quot;&gt;
+      &lt;h1 class=&quot;h5 modal-header-title&quot;&gt;Hello, World!&lt;&#x2F;h1&gt;
+      &lt;button class=&quot;btn btn-transparent modal-header-dismiss&quot; data-modal-dismiss&gt;
+        &lt;span class=&quot;icon-close-2&quot;&gt;&lt;&#x2F;span&gt;
+      &lt;&#x2F;button&gt;
+    &lt;&#x2F;header&gt;
+
+    &lt;section class=&quot;modal-content&quot;&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+      &lt;p&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+    &lt;&#x2F;section&gt;
+
+    &lt;footer class=&quot;modal-actions&quot;&gt;
+      &lt;button class=&quot;btn btn-default btn-sm&quot; data-modal-dismiss&gt;Cancel&lt;&#x2F;button&gt;
+      &lt;button class=&quot;btn btn-primary btn-sm&quot; data-modal-dismiss&gt;OK&lt;&#x2F;button&gt;
+    &lt;&#x2F;footer&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<div class="button-wrapper">
+  <button class="btn btn-default btn-block" data-modal="fullscreen-modal">Open Full Screen Modal</button>
+</div>
+
+
+<div id="fullscreen-modal" class="modal modal-full modal-overlay modal-hidden" data-modal-dismiss>
+  <div class="modal-container">
+    <header class="modal-header">
+      <h1 class="modal-header-title">Hello, World!</h1>
+      <button class="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
+        <span class="icon-close-2"></span>
+      </button>
+    </header>
+
+    <section class="modal-content">
+      <h1>I am full screen.</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed erat lobortis, volutpat erat nec, molestie nisi. Nullam porta, ipsum sit amet accumsan ornare, odio nisi pellentesque risus, ac pharetra sapien nunc a libero. Quisque vel ornare metus, dapibus sagittis lectus. Nam sollicitudin elit ut nisl ullamcorper sodales a et ex. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut tortor nunc, aliquet a blandit eu, mollis id dui. Curabitur pellentesque enim sed metus bibendum ultrices. Donec eget enim et diam hendrerit blandit. Morbi fermentum, nunc ut auctor efficitur, est tellus cursus lacus, vel pellentesque est erat sed lacus. Phasellus bibendum molestie luctus. Quisque interdum mauris id enim efficitur pretium. Praesent dolor ipsum, lobortis vitae efficitur ac, volutpat id magna. Integer ut tincidunt quam, ut pharetra massa. Etiam finibus aliquet nisi eget aliquam.</p>
+      <p>Integer convallis, augue vitae lobortis maximus, erat risus pellentesque nisl, sed ullamcorper tortor velit at tortor. In vulputate arcu sit amet erat pharetra efficitur. Sed vel turpis mollis, gravida massa ut, efficitur turpis. Donec vel cursus neque, sed ultrices neque. Etiam auctor blandit rutrum. Phasellus aliquet mauris ex, ac condimentum orci gravida eu. Pellentesque non lectus feugiat, sodales leo sed, auctor erat. Nam molestie risus quam, eu maximus sem vulputate in. In et aliquam risus. Morbi egestas blandit libero, sit amet volutpat mi sodales id. In pretium porta venenatis.</p>
+      <p>Phasellus lobortis varius urna sed fringilla. Curabitur pellentesque fermentum laoreet. Phasellus mattis mollis justo, eu lacinia ipsum pretium sit amet. Curabitur nisl metus, interdum et urna condimentum, suscipit sagittis velit. Nulla vitae fringilla ligula, vel mattis risus. Proin maximus purus at elit hendrerit lobortis eget id sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Pellentesque vitae suscipit neque. Nullam efficitur diam ut ullamcorper mollis. Suspendisse tincidunt iaculis augue, non volutpat mauris efficitur ut. Aenean risus ipsum, porta nec sagittis at, vestibulum ut elit. Aenean gravida magna nunc. Sed at ante dolor.</p>
+      <p>Etiam pulvinar risus in augue volutpat dapibus. In eleifend leo in est convallis ultricies. Praesent in faucibus tellus. Aenean felis magna, viverra quis feugiat a, vestibulum id neque. Praesent et suscipit risus. Integer in vehicula neque, ac posuere enim. Praesent hendrerit et nulla ut finibus. Nullam tincidunt, sapien ac vulputate vestibulum, tortor tellus condimentum ligula, a aliquet arcu leo quis enim. Curabitur eget tincidunt risus. Curabitur pharetra justo arcu, sit amet tempus est vulputate ut. Nullam libero nisi, placerat vel aliquam sit amet, egestas non metus. Donec rhoncus rutrum risus, ac facilisis turpis pretium eu. Praesent bibendum, orci nec pharetra semper, libero lacus fermentum turpis, ut dictum odio magna ac orci. Integer eleifend justo at nisl lobortis scelerisque. Sed laoreet odio sapien, ac blandit felis porttitor sed.</p>
+      <p>Mauris congue mauris id augue eleifend fringilla. Nunc consectetur, nibh eu consectetur varius, est lacus aliquam orci, maximus fringilla orci sem ut turpis. Donec elit nunc, viverra ut justo eu, vehicula pharetra lorem. Etiam rutrum magna a nulla imperdiet ornare. Proin nec est nec est ultricies faucibus in ac ligula. In rutrum urna quis neque eleifend, quis iaculis ligula pellentesque. Maecenas convallis massa a ipsum vestibulum ultricies. Etiam vestibulum ipsum id condimentum scelerisque.</p>
+    </section>
+
+    <footer class="modal-footer">
+      <div class="modal-footer-actions">
+        <button class="btn btn-default" data-modal-dismiss>Cancel</button>
+        <button class="btn btn-primary" data-modal-dismiss>OK</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;fullscreen-modal&quot; class=&quot;modal modal-full modal-overlay modal-hidden&quot; data-modal-dismiss&gt;
+  &lt;div class=&quot;modal-container&quot;&gt;
+    &lt;header class=&quot;modal-header&quot;&gt;
+      &lt;h1 class=&quot;modal-header-title&quot;&gt;Hello, World!&lt;&#x2F;h1&gt;
+      &lt;button class=&quot;btn btn-transparent modal-header-dismiss&quot; data-modal-dismiss&gt;
+        &lt;span class=&quot;icon-close-2&quot;&gt;&lt;&#x2F;span&gt;
+      &lt;&#x2F;button&gt;
+    &lt;&#x2F;header&gt;
+
+    &lt;section class=&quot;modal-content&quot;&gt;
+      &lt;h1&gt;I am full screen.&lt;&#x2F;h1&gt;
+      &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed erat lobortis, volutpat erat nec, molestie nisi. Nullam porta, ipsum sit amet accumsan ornare, odio nisi pellentesque risus, ac pharetra sapien nunc a libero. Quisque vel ornare metus, dapibus sagittis lectus. Nam sollicitudin elit ut nisl ullamcorper sodales a et ex. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut tortor nunc, aliquet a blandit eu, mollis id dui. Curabitur pellentesque enim sed metus bibendum ultrices. Donec eget enim et diam hendrerit blandit. Morbi fermentum, nunc ut auctor efficitur, est tellus cursus lacus, vel pellentesque est erat sed lacus. Phasellus bibendum molestie luctus. Quisque interdum mauris id enim efficitur pretium. Praesent dolor ipsum, lobortis vitae efficitur ac, volutpat id magna. Integer ut tincidunt quam, ut pharetra massa. Etiam finibus aliquet nisi eget aliquam.&lt;&#x2F;p&gt;
+      &lt;p&gt;Integer convallis, augue vitae lobortis maximus, erat risus pellentesque nisl, sed ullamcorper tortor velit at tortor. In vulputate arcu sit amet erat pharetra efficitur. Sed vel turpis mollis, gravida massa ut, efficitur turpis. Donec vel cursus neque, sed ultrices neque. Etiam auctor blandit rutrum. Phasellus aliquet mauris ex, ac condimentum orci gravida eu. Pellentesque non lectus feugiat, sodales leo sed, auctor erat. Nam molestie risus quam, eu maximus sem vulputate in. In et aliquam risus. Morbi egestas blandit libero, sit amet volutpat mi sodales id. In pretium porta venenatis.&lt;&#x2F;p&gt;
+      &lt;p&gt;Phasellus lobortis varius urna sed fringilla. Curabitur pellentesque fermentum laoreet. Phasellus mattis mollis justo, eu lacinia ipsum pretium sit amet. Curabitur nisl metus, interdum et urna condimentum, suscipit sagittis velit. Nulla vitae fringilla ligula, vel mattis risus. Proin maximus purus at elit hendrerit lobortis eget id sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Pellentesque vitae suscipit neque. Nullam efficitur diam ut ullamcorper mollis. Suspendisse tincidunt iaculis augue, non volutpat mauris efficitur ut. Aenean risus ipsum, porta nec sagittis at, vestibulum ut elit. Aenean gravida magna nunc. Sed at ante dolor.&lt;&#x2F;p&gt;
+      &lt;p&gt;Etiam pulvinar risus in augue volutpat dapibus. In eleifend leo in est convallis ultricies. Praesent in faucibus tellus. Aenean felis magna, viverra quis feugiat a, vestibulum id neque. Praesent et suscipit risus. Integer in vehicula neque, ac posuere enim. Praesent hendrerit et nulla ut finibus. Nullam tincidunt, sapien ac vulputate vestibulum, tortor tellus condimentum ligula, a aliquet arcu leo quis enim. Curabitur eget tincidunt risus. Curabitur pharetra justo arcu, sit amet tempus est vulputate ut. Nullam libero nisi, placerat vel aliquam sit amet, egestas non metus. Donec rhoncus rutrum risus, ac facilisis turpis pretium eu. Praesent bibendum, orci nec pharetra semper, libero lacus fermentum turpis, ut dictum odio magna ac orci. Integer eleifend justo at nisl lobortis scelerisque. Sed laoreet odio sapien, ac blandit felis porttitor sed.&lt;&#x2F;p&gt;
+      &lt;p&gt;Mauris congue mauris id augue eleifend fringilla. Nunc consectetur, nibh eu consectetur varius, est lacus aliquam orci, maximus fringilla orci sem ut turpis. Donec elit nunc, viverra ut justo eu, vehicula pharetra lorem. Etiam rutrum magna a nulla imperdiet ornare. Proin nec est nec est ultricies faucibus in ac ligula. In rutrum urna quis neque eleifend, quis iaculis ligula pellentesque. Maecenas convallis massa a ipsum vestibulum ultricies. Etiam vestibulum ipsum id condimentum scelerisque.&lt;&#x2F;p&gt;
+    &lt;&#x2F;section&gt;
+
+    &lt;footer class=&quot;modal-footer&quot;&gt;
+      &lt;div class=&quot;modal-footer-actions&quot;&gt;
+        &lt;button class=&quot;btn btn-default&quot; data-modal-dismiss&gt;Cancel&lt;&#x2F;button&gt;
+        &lt;button class=&quot;btn btn-primary&quot; data-modal-dismiss&gt;OK&lt;&#x2F;button&gt;
+      &lt;&#x2F;div&gt;
+    &lt;&#x2F;footer&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section flannel-section" id="flannels">
+      <div class="meta">
+        <h2 class="styleguide-header">Flannel</h2>
+        <p class="small"></p>
+      </div>
+      <div class="example">
+        <button class="btn btn-default" data-flannel="generic-flannel" data-toggle><span>Open Flannel</span></button>
+
+<div id="generic-flannel" class="flannel flannel-hidden">
+  <header class="flannel-header">
+    <h1 class="flannel-header-title h5">Flannel Header</h1>
+    <button class="btn btn-transparent flannel-header-dismiss" data-flannel-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <section class="flannel-content">
+    <p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.</p>
+  </section>
+  <footer class="flannel-actions">
+      <button class="btn btn-default btn-xs" data-flannel-dismiss>Cancel</button>
+      <button class="btn btn-primary btn-xs" data-flannel-dismiss>OK</button>
+  </footer>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;generic-flannel&quot; class=&quot;flannel flannel-hidden&quot;&gt;
+  &lt;header class=&quot;flannel-header&quot;&gt;
+    &lt;h1 class=&quot;flannel-header-title h5&quot;&gt;Flannel Header&lt;&#x2F;h1&gt;
+    &lt;button class=&quot;btn btn-transparent flannel-header-dismiss&quot; data-flannel-dismiss&gt;
+      &lt;span class=&quot;icon-close-2&quot;&gt;&lt;&#x2F;span&gt;
+    &lt;&#x2F;button&gt;
+  &lt;&#x2F;header&gt;
+  &lt;section class=&quot;flannel-content&quot;&gt;
+    &lt;p&gt;Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.&lt;&#x2F;p&gt;
+  &lt;&#x2F;section&gt;
+  &lt;footer class=&quot;flannel-actions&quot;&gt;
+      &lt;button class=&quot;btn btn-default btn-xs&quot; data-flannel-dismiss&gt;Cancel&lt;&#x2F;button&gt;
+      &lt;button class=&quot;btn btn-primary btn-xs&quot; data-flannel-dismiss&gt;OK&lt;&#x2F;button&gt;
+  &lt;&#x2F;footer&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section flyout-section" id="flyouts">
+      <div class="meta">
+        <h2 class="styleguide-header">Flyout</h2>
+        <p class="small"></p>
+      </div>
+      <div class="example">
+        <button class="btn btn-default" data-flyout="generic-flyout">Hover for a Flyout</button>
+<div id="generic-flyout" class="flyout flyout-hidden">
+  <section class="flyout-content">
+    <p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.</p>
+  </section>
+  <footer class="flyout-footer"></footer>
+</div>
+
+
+<div id="generic-flyout" class="flyout flyout-hidden">
+  <section class="flyout-content">
+    <p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.</p>
+  </section>
+  <footer class="flyout-footer"></footer>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;generic-flyout&quot; class=&quot;flyout flyout-hidden&quot;&gt;
+  &lt;section class=&quot;flyout-content&quot;&gt;
+    &lt;p&gt;Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken.&lt;&#x2F;p&gt;
+  &lt;&#x2F;section&gt;
+  &lt;footer class=&quot;flyout-footer&quot;&gt;&lt;&#x2F;footer&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section menu-section" id="menu">
+      <div class="meta">
+        <h2 class="styleguide-header">Menu</h2>
+        <p class="small"></p>
+      </div>
+      <div class="example">
+        <h3 class="h6 styleguide-subheader">Menu Anchored to the left side</h3>
+<button class="btn btn-default" data-menu-toggle="menu-1" data-toggle>Open Left Menu</button>
+<div id="menu-1" class="menu menu-offscreen menu-anchor-left">
+  <div class="menu-header">
+    <h1 class="menu-header-title">Hello, I'm Menu One.</h1>
+    <button class="btn btn-transparent menu-header-dismiss">
+      <span class="icon-close-2" data-menu-dismiss></span>
+    </button>
+  </div>
+</div>
+
+
+<div id="menu-1" class="menu menu-offscreen menu-anchor-left">
+  <div class="menu-header">
+    <h1 class="menu-header-title">Hello, I'm Menu One.</h1>
+    <button class="btn btn-transparent menu-header-dismiss">
+      <span class="icon-close-2" data-menu-dismiss></span>
+    </button>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;menu-1&quot; class=&quot;menu menu-offscreen menu-anchor-left&quot;&gt;
+  &lt;div class=&quot;menu-header&quot;&gt;
+    &lt;h1 class=&quot;menu-header-title&quot;&gt;Hello, I&#x27;m Menu One.&lt;&#x2F;h1&gt;
+    &lt;button class=&quot;btn btn-transparent menu-header-dismiss&quot;&gt;
+      &lt;span class=&quot;icon-close-2&quot; data-menu-dismiss&gt;&lt;&#x2F;span&gt;
+    &lt;&#x2F;button&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h3 class="h6 styleguide-subheader">Menu Anchored to the right side</h3>
+<button class="btn btn-default" data-menu-toggle="menu-2" data-toggle>Open Right Menu</button>
+<div id="menu-2" class="menu menu-offscreen menu-anchor-right">
+  <div class="menu-header">
+    <h1 class="menu-header-title">Hello, I'm Menu Two.</h1>
+    <button class="btn btn-transparent menu-header-dismiss">
+      <span class="icon-close-2" data-menu-dismiss></span>
+    </button>
+  </div>
+</div>
+
+
+<div id="menu-2" class="menu menu-offscreen menu-anchor-right">
+  <div class="menu-header">
+    <h1 class="menu-header-title">Hello, I'm Menu Two.</h1>
+    <button class="btn btn-transparent menu-header-dismiss">
+      <span class="icon-close-2" data-menu-dismiss></span>
+    </button>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;menu-2&quot; class=&quot;menu menu-offscreen menu-anchor-right&quot;&gt;
+  &lt;div class=&quot;menu-header&quot;&gt;
+    &lt;h1 class=&quot;menu-header-title&quot;&gt;Hello, I&#x27;m Menu Two.&lt;&#x2F;h1&gt;
+    &lt;button class=&quot;btn btn-transparent menu-header-dismiss&quot;&gt;
+      &lt;span class=&quot;icon-close-2&quot; data-menu-dismiss&gt;&lt;&#x2F;span&gt;
+    &lt;&#x2F;button&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section tabs-section" id="tabs">
+      <div class="meta">
+        <h2 class="styleguide-header">Tabs</h2>
+      </div>
+      <div class="example">
+        <h3 class="h6 styleguide-subheader">Tabs</h3>
+
+<div data-tabs>
+  <ul class="nav-tabs">
+    <li class="tab-link current" data-tab-id="map"><a>Map Preview</a></li>
+    <li class="tab-link" data-tab-id="data"><a>Table Preview</a></li>
+  </ul>
+
+  <div id="map" class="tab-content current" data-tab-content>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed erat lobortis, volutpat erat nec, molestie nisi. Nullam porta, ipsum sit amet accumsan ornare, odio nisi pellentesque risus, ac pharetra sapien nunc a libero. Quisque vel ornare metus, dapibus sagittis lectus. Nam sollicitudin elit ut nisl ullamcorper sodales a et ex. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut tortor nunc, aliquet a blandit eu, mollis id dui. Curabitur pellentesque enim sed metus bibendum ultrices. Donec eget enim et diam hendrerit blandit. Morbi fermentum, nunc ut auctor efficitur, est tellus cursus lacus, vel pellentesque est erat sed lacus. Phasellus bibendum molestie luctus. Quisque interdum mauris id enim efficitur pretium. Praesent dolor ipsum, lobortis vitae efficitur ac, volutpat id magna. Integer ut tincidunt quam, ut pharetra massa. Etiam finibus aliquet nisi eget aliquam.</p>
+  </div>
+
+  <div id="data" class="tab-content" data-tab-content>
+    <p>Etiam pulvinar risus in augue volutpat dapibus. In eleifend leo in est convallis ultricies. Praesent in faucibus tellus. Aenean felis magna, viverra quis feugiat a, vestibulum id neque. Praesent et suscipit risus. Integer in vehicula neque, ac posuere enim. Praesent hendrerit et nulla ut finibus. Nullam tincidunt, sapien ac vulputate vestibulum, tortor tellus condimentum ligula, a aliquet arcu leo quis enim. Curabitur eget tincidunt risus. Curabitur pharetra justo arcu, sit amet tempus est vulputate ut. Nullam libero nisi, placerat vel aliquam sit amet, egestas non metus. Donec rhoncus rutrum risus, ac facilisis turpis pretium eu. Praesent bibendum, orci nec pharetra semper, libero lacus fermentum turpis, ut dictum odio magna ac orci. Integer eleifend justo at nisl lobortis scelerisque. Sed laoreet odio sapien, ac blandit felis porttitor sed.</p>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div data-tabs&gt;
+  &lt;ul class=&quot;nav-tabs&quot;&gt;
+    &lt;li class=&quot;tab-link current&quot; data-tab-id=&quot;map&quot;&gt;&lt;a&gt;Map Preview&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+    &lt;li class=&quot;tab-link&quot; data-tab-id=&quot;data&quot;&gt;&lt;a&gt;Table Preview&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+  &lt;&#x2F;ul&gt;
+
+  &lt;div id=&quot;map&quot; class=&quot;tab-content current&quot; data-tab-content&gt;
+    &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed erat lobortis, volutpat erat nec, molestie nisi. Nullam porta, ipsum sit amet accumsan ornare, odio nisi pellentesque risus, ac pharetra sapien nunc a libero. Quisque vel ornare metus, dapibus sagittis lectus. Nam sollicitudin elit ut nisl ullamcorper sodales a et ex. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut tortor nunc, aliquet a blandit eu, mollis id dui. Curabitur pellentesque enim sed metus bibendum ultrices. Donec eget enim et diam hendrerit blandit. Morbi fermentum, nunc ut auctor efficitur, est tellus cursus lacus, vel pellentesque est erat sed lacus. Phasellus bibendum molestie luctus. Quisque interdum mauris id enim efficitur pretium. Praesent dolor ipsum, lobortis vitae efficitur ac, volutpat id magna. Integer ut tincidunt quam, ut pharetra massa. Etiam finibus aliquet nisi eget aliquam.&lt;&#x2F;p&gt;
+  &lt;&#x2F;div&gt;
+
+  &lt;div id=&quot;data&quot; class=&quot;tab-content&quot; data-tab-content&gt;
+    &lt;p&gt;Etiam pulvinar risus in augue volutpat dapibus. In eleifend leo in est convallis ultricies. Praesent in faucibus tellus. Aenean felis magna, viverra quis feugiat a, vestibulum id neque. Praesent et suscipit risus. Integer in vehicula neque, ac posuere enim. Praesent hendrerit et nulla ut finibus. Nullam tincidunt, sapien ac vulputate vestibulum, tortor tellus condimentum ligula, a aliquet arcu leo quis enim. Curabitur eget tincidunt risus. Curabitur pharetra justo arcu, sit amet tempus est vulputate ut. Nullam libero nisi, placerat vel aliquam sit amet, egestas non metus. Donec rhoncus rutrum risus, ac facilisis turpis pretium eu. Praesent bibendum, orci nec pharetra semper, libero lacus fermentum turpis, ut dictum odio magna ac orci. Integer eleifend justo at nisl lobortis scelerisque. Sed laoreet odio sapien, ac blandit felis porttitor sed.&lt;&#x2F;p&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="buttontoggle">
+      <div class="meta">
+        <h2 class="styleguide-header">Button Toggle</h2>
+      </div>
+      <div class="example">
+        <h3 class="h6 styleguide-subheader">Button Toggles</h3>
+
+<button class="btn btn-default btn-toggle" data-toggle>Toggle me!</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default btn-toggle&quot; data-toggle&gt;Toggle me!&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="dropdowns">
+      <div class="meta">
+        <h2 class="styleguide-header">Dropdowns</h2>
+      </div>
+      <div class="example">
+        <h3 class="styleguide-subheader">Select Menus</h3>
+<h4 class="h6">Dropdown</h4>
+
+<p class="alert warning">Due to IE11-specific issues with absolute positioning, the trigger element for a dropdown must be a <code class="language-markup">&lt;div&gt;</code> instead of a <code class="language-markup">&lt;button&gt;</code>.</p>
+
+
+<div>
+  <div class="dropdown btn btn-default" data-dropdown data-orientation="bottom" data-selectable>
+    <span>Gender</span><span class="icon-arrow-down"></span>
+    <ul class="dropdown-options">
+        <li><a href="#">An option!</a></li>
+        <li><a href="#">Another option!!</a></li>
+        <li><a href="#">A really, really, really long option!!!</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div&gt;
+  &lt;div class=&quot;dropdown btn btn-default&quot; data-dropdown data-orientation=&quot;bottom&quot; data-selectable&gt;
+    &lt;span&gt;Gender&lt;&#x2F;span&gt;&lt;span class=&quot;icon-arrow-down&quot;&gt;&lt;&#x2F;span&gt;
+    &lt;ul class=&quot;dropdown-options&quot;&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;An option!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Another option!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;A really, really, really long option!!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+    &lt;&#x2F;ul&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Dropup</h4>
+
+
+<div>
+  <div class="dropdown btn btn-default" data-orientation="top" data-dropdown>
+    <span>Gender</span><span class="icon-arrow-up"></span>
+    <ul class="dropdown-options">
+        <li><a href="#">An option!</a></li>
+        <li><a href="#">Another option!!</a></li>
+        <li><a href="#">A really, really, really long option!!!</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div&gt;
+  &lt;div class=&quot;dropdown btn btn-default&quot; data-orientation=&quot;top&quot; data-dropdown&gt;
+    &lt;span&gt;Gender&lt;&#x2F;span&gt;&lt;span class=&quot;icon-arrow-up&quot;&gt;&lt;&#x2F;span&gt;
+    &lt;ul class=&quot;dropdown-options&quot;&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;An option!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Another option!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;A really, really, really long option!!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+    &lt;&#x2F;ul&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="tour">
+      <div class="meta">
+        <h2 class="styleguide-header">Tour</h2>
+      </div>
+      <div class="example">
+        <div>
+  <button class="btn btn-default" id="tour-anchor-1" data-tour-opener="example1">Start Example Tour 1</button>
+  <button class="btn btn-default" id="tour-anchor-2" data-tour-opener="example2">Start Example Tour 2</button>
+</div>
+
+<p>Note: this example uses <a href="http://github.hubspot.com/shepherd/" target="_blank">Shepherd</a></p>
+
+
+<div data-tour data-tour-name="example1" data-tour-next="Next" data-tour-skip="Skip" data-tour-done="Done">
+  <div data-tour-step data-step-number="1" data-title="Wombats in Top Hats" data-attach-to-element="#tour-anchor-1" data-attach-to-position="left">
+    Star light, star bright
+  </div>
+  <div data-tour-step data-step-number="2" data-title="Skydiving Gerbils" data-attach-to-element="#tour-anchor-1" data-attach-to-position="top">
+    The first star I see tonight
+  </div>
+  <div data-tour-step data-step-number="3" data-title="Frolicking Cuttlefish" data-attach-to-element="#tour-anchor-1" data-attach-to-position="right">
+    <p>I wish I may, I wish I might,</p>
+  </div>
+  <div data-tour-step data-step-number="4" data-title="Puffin Astronauts" data-attach-to-element="#tour-anchor-1" data-attach-to-position="bottom">
+    <p>Have the wish I wish tonight</p>
+  </div>
+</div>
+<div data-tour data-tour-name="example2" data-tour-next="Next" data-tour-skip="Skip" data-tour-done="Done">
+  <div data-tour-step data-step-number="1">
+    Noisy Penguins...
+  </div>
+  <div data-tour-step data-step-number="2">
+    ... and Windsurfing Giraffes!
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div data-tour data-tour-name=&quot;example1&quot; data-tour-next=&quot;Next&quot; data-tour-skip=&quot;Skip&quot; data-tour-done=&quot;Done&quot;&gt;
+  &lt;div data-tour-step data-step-number=&quot;1&quot; data-title=&quot;Wombats in Top Hats&quot; data-attach-to-element=&quot;#tour-anchor-1&quot; data-attach-to-position=&quot;left&quot;&gt;
+    Star light, star bright
+  &lt;&#x2F;div&gt;
+  &lt;div data-tour-step data-step-number=&quot;2&quot; data-title=&quot;Skydiving Gerbils&quot; data-attach-to-element=&quot;#tour-anchor-1&quot; data-attach-to-position=&quot;top&quot;&gt;
+    The first star I see tonight
+  &lt;&#x2F;div&gt;
+  &lt;div data-tour-step data-step-number=&quot;3&quot; data-title=&quot;Frolicking Cuttlefish&quot; data-attach-to-element=&quot;#tour-anchor-1&quot; data-attach-to-position=&quot;right&quot;&gt;
+    &lt;p&gt;I wish I may, I wish I might,&lt;&#x2F;p&gt;
+  &lt;&#x2F;div&gt;
+  &lt;div data-tour-step data-step-number=&quot;4&quot; data-title=&quot;Puffin Astronauts&quot; data-attach-to-element=&quot;#tour-anchor-1&quot; data-attach-to-position=&quot;bottom&quot;&gt;
+    &lt;p&gt;Have the wish I wish tonight&lt;&#x2F;p&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+&lt;div data-tour data-tour-name=&quot;example2&quot; data-tour-next=&quot;Next&quot; data-tour-skip=&quot;Skip&quot; data-tour-done=&quot;Done&quot;&gt;
+  &lt;div data-tour-step data-step-number=&quot;1&quot;&gt;
+    Noisy Penguins...
+  &lt;&#x2F;div&gt;
+  &lt;div data-tour-step data-step-number=&quot;2&quot;&gt;
+    ... and Windsurfing Giraffes!
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+  </div>
+</div>
+
+
+    <script src="https://fb.me/react-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/tether-f3d4b089.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
+
+    <script type="text/javascript" src="js/socrata-components-0dcf4e28.js"></script>
+    <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
+  </body>
+</html>

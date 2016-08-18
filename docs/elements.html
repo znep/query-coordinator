@@ -1,0 +1,3431 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+    <title>Socrata Styleguide</title>
+
+    <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
+    <link rel="stylesheet" href="css/styleguide-5bbee37f.css">
+    <link rel="stylesheet" href="stylesheets/pages-87192468.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body class="elements">
+    <div class="responsive-navbar responsive-navbar-fixed">
+       <span class="site-controls">
+         <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="icon-hamburger"> <span class="menu-link-text">Menu</span></a>
+
+        <a class="home" href="index.html">
+          <span>Product Styleguide</span>
+        </a>
+      </span>
+      <div class="responsive-navbar-nav">
+        <a href="https://github.com/socrata/styleguide" class="btn-sm btn btn-default btn-inverse">View on Github</a>
+      </div>
+    </div>
+
+    <div class="container">
+  <div id="pagemap" class="menu menu-offscreen menu-anchor-left">
+       <header class="menu-header">
+    <h1 class="h6 menu-header-title">Styleguide Menu</h1>
+    <button class="btn btn-block btn-sm btn-transparent menu-header-dismiss" data-menu-dismiss>
+      <span class="icon-close-2"></span>
+    </button>
+  </header>
+  <ul class="menu-navigation">
+    <li class="menu-section-title"><a href="index.html">Guide Home</a></li>
+
+    <li class="menu-section-title"><a href="elements.html">Elements</a>
+      <ul>
+        <li><a href="elements.html#typography">Typography</a></li>
+        <li><a href="elements.html#colors">Colors</a></li>
+        <li><a href="elements.html#branding">Branding</a></li>
+        <li><a href="elements.html#icons">Icons</a></li>
+        <li><a href="elements.html#buttons">Buttons</a></li>
+        <li><a href="elements.html#spinners">Spinners</a></li>
+        <li><a href="elements.html#dividers">Dividers</a></li>
+        <li><a href="elements.html#lists">Lists</a></li>
+        <li><a href="elements.html#input-groups">Input Groups</a></li>
+        <li><a href="elements.html#forms">Forms</a></li>
+        <li><a href="elements.html#tables">Tables</a></li>
+        <li><a href="elements.html#alerts">Alerts</a></li>
+        <li><a href="elements.html#tags">Tags</a></li>
+        <li><a href="elements.html#navigation">Navigation</a></li>
+        <li><a href="elements.html#cards">Cards</a></li>
+        <li><a href="elements.html#pagination">Pagination</a></li>
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="components.html">Components</a>
+      <ul class="menu-navigation">
+        <li><a href="components.html#dropdowns">Dropdowns</a></li>
+        <li><a href="components.html#color-picker">Color Picker</a></li>
+        <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
+      </ul>
+    </li>
+
+    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript</a>
+      <ul class="menu-navigation">
+        <li><a href="legacy.html#modals">Modals</a></li>
+        <li><a href="legacy.html#flannels">Flannels</a></li>
+        <li><a href="legacy.html#flyouts">Flyouts</a></li>
+        <li><a href="legacy.html#menu">Menu</a></li>
+        <li><a href="legacy.html#tabs">Tabs</a></li>
+        <li><a href="legacy.html#buttontoggle">Button Toggle</a></li>
+        <li><a href="legacy.html#dropdowns">Dropdowns</a></li>
+        <li><a href="legacy.html#tour">Tour</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  </div>
+
+  <div class="content">
+    <h1 class="page-header">Elements</h1>
+
+    <section class="styleguide-section" id="typography">
+      <div class="meta">
+        <h2 class="styleguide-header">Typography</h2>
+        <p class="small">
+          Type is set in <a href="http://www.fontex.org/download/open-sans.ttf">Open Sans</a> 15px/1.618 using a modular type scale. The scale is composed using three scale ratios to provide more incremental typesetting steps.
+        </p>
+        <p class="small">
+          The full scale can be viewed at <a href="http://www.modularscale.com/?15&amp;px&amp;1.618,1.25,1.33">http://www.modularscale.com/?15&px&1.618,1.25,1.33</a>
+        </p>
+      </div>
+      <div class="example">
+        
+<h4 class="h6">Specimens</h4>
+<p>
+<span class="specimen light">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Light</span>
+
+<span class="specimen light italic">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Light Italic</span>
+</p>
+
+<p>
+<span class="specimen">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans</span>
+
+<span class="specimen italic">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Italic</span>
+</p>
+
+<p>
+<span class="specimen semibold">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Semibold</span>
+
+<span class="specimen semibold italic">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Semibold Italic</span>
+</p>
+
+<p>
+<span class="specimen bold">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Bold</span>
+
+<span class="specimen bold italic">Open Sans: AaBbCc 1234</span>
+<span class="specimen-meta">Open Sans Bold Italic</span>
+</p>
+
+<h4 class="h6">Heading Styles</h4>
+
+<h1>h1. Heading</h1>
+<h2>h2. Heading</h2>
+<h3>h3. Heading</h3>
+<h4>h4. Heading</h4>
+<h5>h5. Heading</h5>
+<h6>h6. Heading</h6>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;h1&gt;h1. Heading&lt;&#x2F;h1&gt;
+&lt;h2&gt;h2. Heading&lt;&#x2F;h2&gt;
+&lt;h3&gt;h3. Heading&lt;&#x2F;h3&gt;
+&lt;h4&gt;h4. Heading&lt;&#x2F;h4&gt;
+&lt;h5&gt;h5. Heading&lt;&#x2F;h5&gt;
+&lt;h6&gt;h6. Heading&lt;&#x2F;h6&gt;
+
+</code>
+</pre>
+
+
+<p class="usage">Each heading style is also provided as a class, so that you can visually style headings as you like, while maintaining a good document hierarchy. For example, you can set an <code>h6</code> with a class of <code>.h2</code>.</p>
+
+<h4 class="h6">Intro Copy</h4>
+
+<p class="intro">Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.</p>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;p class=&quot;intro&quot;&gt;Bacon ipsum dolor amet filet mignon tenderloin capicola flank, tri-tip leberkas ball tip andouille chuck. Jowl shankle flank, pork strip steak pig turducken porchetta jerky pork loin hamburger rump. Capicola bacon short ribs tongue pastrami leberkas, prosciutto biltong beef pig cow. Chicken frankfurter jowl, ham hock fatback picanha flank chuck spare ribs ham drumstick.&lt;&#x2F;p&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Paragraphs</h4>
+
+<p>Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.</p>
+
+<p>Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken. Pork loin ball tip kielbasa prosciutto, jowl meatloaf turkey ham doner filet mignon short ribs porchetta fatback tongue. Meatball rump pork prosciutto ham filet mignon porchetta shankle. Swine corned beef kielbasa shoulder capicola sirloin pork chop sausage brisket. Frankfurter landjaeger capicola tenderloin. Hamburger pork belly leberkas, salami doner ball tip turducken swine tri-tip.</p>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;p&gt;Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.&lt;&#x2F;p&gt;
+
+&lt;p&gt;Cow alcatra beef ribs short loin, sausage landjaeger jerky sirloin rump turducken. Pork loin ball tip kielbasa prosciutto, jowl meatloaf turkey ham doner filet mignon short ribs porchetta fatback tongue. Meatball rump pork prosciutto ham filet mignon porchetta shankle. Swine corned beef kielbasa shoulder capicola sirloin pork chop sausage brisket. Frankfurter landjaeger capicola tenderloin. Hamburger pork belly leberkas, salami doner ball tip turducken swine tri-tip.&lt;&#x2F;p&gt;
+
+</code>
+</pre>
+
+
+<p class="small">Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.</p>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;p class=&quot;small&quot;&gt;Tail tongue swine alcatra meatloaf meatball. Pork swine fatback cupim andouille shoulder sirloin turkey. Turducken cow prosciutto strip steak leberkas pastrami kevin salami biltong shankle ham alcatra doner. Picanha pork loin shankle pork belly corned beef meatloaf venison tongue. Ribeye pork cupim cow boudin bresaola pork loin. Spare ribs short ribs pork chop ham hock leberkas sirloin, bacon sausage beef corned beef jerky alcatra landjaeger ground round.&lt;&#x2F;p&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Links</h4>
+
+<a href="#">A Regular Link</a>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;a href=&quot;#&quot;&gt;A Regular Link&lt;&#x2F;a&gt;
+</code>
+</pre>
+
+
+<a class="unstyled-link" href="#">An Unstyled Link</a>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;a class=&quot;unstyled-link&quot; href=&quot;#&quot;&gt;An Unstyled Link&lt;&#x2F;a&gt;
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="colors">
+      <div class="meta">
+        <h2 class="styleguide-header">Colors</h2>
+        <p class="small">
+          colors colors colors
+        </p>
+      </div>
+      <div class="example">
+        <div class="inline-container">
+  <div class="color-group">
+    <h6> Primary </h6>
+<p class="color-label">Base: #288DC1</p>
+<p class="color-label">Light: #EAF4F9</p>
+<p class="color-label">Text: #2279a6</p>
+<p class="color-label">Dark: #176289</p>
+<div class="swatch-container">
+  <div class="primary box"></div>
+  <div class="subcontainer">
+      <div class="primary small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="primary small-box dark"></div>
+  </div>
+</div>
+  </div>
+</div>
+<div class="inline-container">
+    <div class="color-group">
+    <h6> Alternate. 1 </h6>
+<p class="color-label">Base: #E48424</p>
+<p class="color-label">Light: #FCF3EB</p>
+<p class="color-label">Text: #9e5c23</p>
+<p class="color-label">Dark: #9e5c23</p>
+<div class="swatch-container">
+  <div class="alternate-1 box"></div>
+  <div class="subcontainer">
+      <div class="alternate-1 small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="alternate-1 small-box dark"></div>
+  </div>
+</div>
+  </div>
+  <div class="color-group">
+    <h6> Alternate 2 </h6>
+<p class="color-label">Base: #00A1AF</p>
+<p class="color-label">Light: #E6F6F7</p>
+<p class="color-label">Text: #008a97</p>
+<p class="color-label">Dark: #00717C</p>
+<div class="swatch-container">
+  <div class="alternate-2 box"></div>
+  <div class="subcontainer">
+      <div class="alternate-2 small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="alternate-2 small-box dark"></div>
+  </div>
+</div>
+  </div>
+  <div class="color-group">
+    <h6> Alternate 3 </h6>
+<p class="color-label">Base: #00BF9B</p>
+<p class="color-label">Light: #E5F9F5</p>
+<p class="color-label">Text: #00987c</p>
+<p class="color-label">Dark: #00856d</p>
+<div class="swatch-container">
+  <div class="alternate-3 box"></div>
+  <div class="subcontainer">
+      <div class="alternate-3 small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="alternate-3 small-box dark"></div>
+  </div>
+</div>
+  </div>
+    <div class="color-group">
+    <h6> Alternate 4 </h6>
+<p class="color-label">Base: #8e98a1</p>
+<p class="color-label">Light: #F4F5F6</p>
+<p class="color-label">Text: #555b61</p>
+<p class="color-label">Dark: #636A71</p>
+<div class="swatch-container">
+  <div class="alternate-4 box"></div>
+  <div class="subcontainer">
+      <div class="alternate-4 small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="alternate-4 small-box dark"></div>
+  </div>
+</div>
+  </div>
+</div>
+<div class="inline-container">
+  <div class="color-group">
+    <h6> Warning </h6>
+<p class="color-label">Base: #E7B000</p>
+<p class="color-label">Light: #FDF9EC</p>
+<p class="color-label">Text: #8B6A00</p>
+<p class="color-label">Dark: #A27C00</p>
+<div class="swatch-container">
+  <div class="warning box"></div>
+  <div class="subcontainer">
+      <div class="warning small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="warning small-box dark"></div>
+  </div>
+</div>
+  </div>
+  <div class="color-group">
+    <h6> Error </h6>
+<p class="color-label">Base: #D06463</p>
+<p class="color-label">Light: #FAF0F0</p>
+<p class="color-label">Text: #B35655</p>
+<p class="color-label">Dark: #914646</p>
+<div class="swatch-container">
+  <div class="error box"></div>
+  <div class="subcontainer">
+      <div class="error small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="error small-box dark"></div>
+  </div>
+</div>
+  </div>
+  <div class="color-group">
+    <h6> Success </h6>
+<p class="color-label">Base: #20B05C</p>
+<p class="color-label">Light: #EAF7EF</p>
+<p class="color-label">Text: #1C974F</p>
+<p class="color-label">Dark: #177B41</p>
+<div class="swatch-container">
+  <div class="success box"></div>
+  <div class="subcontainer">
+      <div class="success small-box light">
+      	<span class="icon-text text">TT</span>
+      </div>
+      <div class="success small-box dark"></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="inline-container">
+  <h6> Black/White</h6>
+  <p class="color-label">Grey: #999</p>
+  <p class="color-label">White: #FFF</p>
+  <p class="color-label">Black: #2C2C2C</p>
+  <div class="swatch-container">
+    <div class="grey box"></div>
+    <div class="subcontainer">
+      <div class="white small-box"></div>
+      <div class="black small-box"></div>
+    </div>
+  </div>
+</div>
+
+<div class="inline-container">
+  <h6> Greys (not grays)</h6>
+  <div class="color-group">
+    <p class="color-label">Light Grey 7</p>
+    <p class="color-label">#fafafa</p>
+    <div class="swatch-container">
+      <div class="box grey light-7"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 6</p>
+    <p class="color-label">#f8f8f8</p>
+    <div class="swatch-container">
+      <div class="box grey light-6"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 5</p>
+    <p class="color-label">#F5F5F5</p>
+    <div class="swatch-container">
+      <div class="box grey light-5"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 4</p>
+    <p class="color-label">#ebebeb</p>
+    <div class="swatch-container">
+      <div class="box grey light-4"></div>
+    </div>
+  </div>
+</div>
+
+<div class="inline-container">
+  <div class="color-group">
+    <p class="color-label">Light Grey 3</p>
+    <p class="color-label">#d6d6d6</p>
+    <div class="swatch-container">
+      <div class="box grey light-3"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 2</p>
+    <p class="color-label">#c2c2c2</p>
+    <div class="swatch-container">
+      <div class="box grey light-2"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Light Grey 1</p>
+    <p class="color-label">#adadad</p>
+    <div class="swatch-container">
+      <div class="box grey light-1"></div>
+    </div>
+  </div>
+  <div class="color-group">
+    <p class="color-label">Just Grey</p>
+    <p class="color-label">#999</p>
+    <div class="swatch-container">
+      <div class="box grey"></div>
+    </div>
+  </div>
+</div>
+
+<div class="inline-container">
+  <div class="color-group">
+    <p class="color-label">Dark Grey 1</p>
+    <p class="color-label">#7a7a7a</p>
+    <div class="swatch-container">
+      <div class="box grey dark-1"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Dark Grey 2</p>
+    <p class="color-label">#5c5c5c</p>
+    <div class="swatch-container">
+      <div class="box grey dark-2"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Dark Grey 3</p>
+    <p class="color-label">#3d3d3d</p>
+    <div class="swatch-container">
+      <div class="box grey dark-3"></div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <p class="color-label">Black</p>
+    <p class="color-label">#2C2C2C</p>
+    <div class="swatch-container">
+      <div class="box black"></div>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="branding">
+      <div class="meta">
+        <h2 class="styleguide-header">Branding</h2>
+        <p class="small">
+          Socrata branding elements.
+        </p>
+      </div>
+      <div class="example">
+        <h4 class="h6">Socrata Logo (Full Color)</h4>
+
+<div class="inline-container">
+  <div class="half">
+    <p class="logo-sample">
+      
+<img alt="Socrata" src="images/socrata-logo-3ed1a84f.png" />
+
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;img alt=&quot;Socrata&quot; src=&quot;&#x2F;images&#x2F;socrata-logo-3ed1a84f.png&quot; &#x2F;&gt;
+
+
+</code>
+</pre>
+
+    </p>
+      <table class="table logo-download table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Format</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">PNG</td>
+        <td><a href="images/socrata-logo-3ed1a84f.png">socrata-logo.png</a></td>
+      </tr>
+       <tr>
+        <td scope="row">SVG</td>
+        <td><a href="images/socrata-logo-57c6eb8a.svg">socrata-logo.svg</a></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<h4 class="h6">Socrata Logo (Dark, 2 Color)</h4>
+
+<div class="inline-container">
+
+  <div class="half">
+    <p class="dark-context logo-sample">
+      <img src="images/socrata-logo-2c-dark-e48226f0.png" />
+    </p>
+  <table class="table logo-download table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Format</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">PNG</td>
+        <td><a href="images/socrata-logo-2c-dark-e48226f0.png">socrata-logo-2c-dark.png</a></td>
+      </tr>
+       <tr>
+        <td scope="row">SVG</td>
+        <td><a href="images/socrata-logo-2c-dark-25db1d31.svg">socrata-logo-2c-dark.svg</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  </div>
+</div>
+
+<h4 class="h6">Socrata Logo Alternate (1 color)</h4>
+
+<div class="logo-sample">
+  <p>
+    <div class="inline-container">
+      <div class="third primary-context">
+
+        <img src="images/socrata-logo-1c-dark-57afb34e.png" />
+
+      </div>
+
+      <div class="third medium-context">
+
+        <img src="images/socrata-logo-1c-dark-57afb34e.png" />
+
+      </div>
+
+      <div class="third dark-context">
+
+        <img src="images/socrata-logo-1c-dark-57afb34e.png" />
+
+      </div>
+    </div>
+  </p>
+
+  <div class="inline-container">
+    <div class="half">
+
+   <table class="table logo-download table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Format</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">PNG</td>
+        <td><a href="images/socrata-logo-2c-dark-e48226f0.png">socrata-logo-2c-dark.png</a></td>
+      </tr>
+       <tr>
+        <td scope="row">SVG</td>
+        <td><a href="images/socrata-logo-2c-dark-25db1d31.svg">socrata-logo-2c-dark.svg</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+</div>
+
+
+<h4 class="h6">Powered By Socrata</h4>
+
+<div class="powered-by-sample">
+
+
+
+	<span class="powered-by-socrata">
+		<span class="powered-by">Powered By</span> 
+		<img class="logo" alt="Socrata" src="images/socrata-logo-pb-5064ae9d.png" />
+	</span>
+
+
+	<span class="powered-by-socrata mini">
+		<span class="powered-by">Powered By</span>
+		<img class="logo" alt="Socrata" src="images/socrata-logo-pb-mini-dc60f44f.png" />
+	</span> 
+
+
+
+<pre class="usage">
+<code class="language-markup">
+
+	&lt;span class=&quot;powered-by-socrata&quot;&gt;
+		&lt;span class=&quot;powered-by&quot;&gt;Powered By&lt;&#x2F;span&gt; 
+		&lt;img class=&quot;logo&quot; alt=&quot;Socrata&quot; src=&quot;&#x2F;images&#x2F;socrata-logo-pb-5064ae9d.png&quot; &#x2F;&gt;
+	&lt;&#x2F;span&gt;
+
+
+	&lt;span class=&quot;powered-by-socrata mini&quot;&gt;
+		&lt;span class=&quot;powered-by&quot;&gt;Powered By&lt;&#x2F;span&gt;
+		&lt;img class=&quot;logo&quot; alt=&quot;Socrata&quot; src=&quot;&#x2F;images&#x2F;socrata-logo-pb-mini-dc60f44f.png&quot; &#x2F;&gt;
+	&lt;&#x2F;span&gt; 
+
+
+</code>
+</pre>
+
+
+  <div class="inline-container">
+    <div class="half">
+
+   <table class="table logo-download table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Format</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">PNG</td>
+        <td><a href="images/socrata-logo-pb-5064ae9d.png">socrata-logo-pb.png</a></td>
+      </tr>
+       <tr>
+        <td scope="row">SVG</td>
+        <td><a href="images/socrata-logo-pb-a1af6feb.svg">socrata-logo-pb.svg</a></td>
+      </tr>      <tr>
+        <td scope="row">PNG</td>
+        <td><a href="images/socrata-logo-pb-mini-dc60f44f.png">socrata-logo-pb-mini.png</a></td>
+      </tr>
+       <tr>
+        <td scope="row">SVG</td>
+        <td><a href="images/socrata-logo-pb-mini-cc480f99.svg">socrata-logo-pb-mini.svg</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+</div>
+
+
+<h4 class="h6">Favicon</h4>
+
+<p class="logo-sample">
+
+    <img src="images/favicon/favicon-32x32-c7258bd5.png" />
+
+
+  <div class="inline-container">
+    <div class="half">
+
+   <table class="table logo-download table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Format</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Zip Archive</td>
+        <td><a href="images/favicon/socrata-favicon.zip">socrata-favicon.zip</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+</p>
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="icons">
+      <div class="meta">
+        <h2 class="styleguide-header">Icons</h2>
+        <p class="small">Pictoral representations of things we cannot explain, or simply icons.</p>
+      </div>
+      <div class="example">
+        <h2 class="h6"><span class="icon-eye"></span> Con Font</h2>
+
+<ul class="blockgrid">
+
+  
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-add" class="icon-add"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-add" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-add-collaborator" class="icon-add-collaborator"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-add-collaborator" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-down" class="icon-arrow-down"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-down" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-left" class="icon-arrow-left"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-left" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-next" class="icon-arrow-next"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-next" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-prev" class="icon-arrow-prev"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-prev" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-right" class="icon-arrow-right"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-right" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-arrow-up" class="icon-arrow-up"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-arrow-up" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-bar-chart" class="icon-bar-chart"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-bar-chart" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-bold2" class="icon-bold2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-bold2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-cards" class="icon-cards"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-cards" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-chart" class="icon-chart"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-chart" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-check" class="icon-check"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-check" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-check-2" class="icon-check-2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-check-2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-checkmark3" class="icon-checkmark3"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-checkmark3" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-chevron-down" class="icon-chevron-down"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-chevron-down" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-chevron-up" class="icon-chevron-up"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-chevron-up" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-clear-formatting" class="icon-clear-formatting"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-clear-formatting" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-close" class="icon-close"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-close" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-close-2" class="icon-close-2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-close-2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-close-circle" class="icon-close-circle"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-close-circle" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-collapse" class="icon-collapse"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-collapse" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-copy-document" class="icon-copy-document"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-copy-document" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-cross2" class="icon-cross2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-cross2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-data" class="icon-data"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-data" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-dataset" class="icon-dataset"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-dataset" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-date" class="icon-date"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-date" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-distribution" class="icon-distribution"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-distribution" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-droplet" class="icon-droplet"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-droplet" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-edit" class="icon-edit"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-edit" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-email" class="icon-email"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-email" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-expand" class="icon-expand"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-expand" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-external" class="icon-external"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-external" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-external-square" class="icon-external-square"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-external-square" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-eye" class="icon-eye"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-eye" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-eye-blocked" class="icon-eye-blocked"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-eye-blocked" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-facebook" class="icon-facebook"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-facebook" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-failed" class="icon-failed"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-failed" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-filter" class="icon-filter"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-filter" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-geo" class="icon-geo"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-geo" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-hamburger" class="icon-hamburger"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-hamburger" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-info" class="icon-info"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-info" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-info-inverse" class="icon-info-inverse"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-info-inverse" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-italic2" class="icon-italic2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-italic2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-line-chart" class="icon-line-chart"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-line-chart" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-link" class="icon-link"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-link" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-link2" class="icon-link2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-link2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-linked" class="icon-linked"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-linked" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-list-numbered" class="icon-list-numbered"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-list-numbered" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-list2" class="icon-list2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-list2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-map" class="icon-map"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-map" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-move" class="icon-move"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-move" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-number" class="icon-number"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-number" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-official" class="icon-official"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-official" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-paragraph-center3" class="icon-paragraph-center3"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-paragraph-center3" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-paragraph-left3" class="icon-paragraph-left3"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-paragraph-left3" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-paragraph-right3" class="icon-paragraph-right3"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-paragraph-right3" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-pause" class="icon-pause"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-pause" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-play" class="icon-play"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-play" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-plus2" class="icon-plus2"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-plus2" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-plus3" class="icon-plus3"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-plus3" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-presentation" class="icon-presentation"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-presentation" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-preview" class="icon-preview"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-preview" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-private" class="icon-private"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-private" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-processing" class="icon-processing"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-processing" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-pulse" class="icon-pulse"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-pulse" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-puzzle" class="icon-puzzle"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-puzzle" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-question" class="icon-question"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-question" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-question-inverse" class="icon-question-inverse"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-question-inverse" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-quotes-left" class="icon-quotes-left"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-quotes-left" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-redo" class="icon-redo"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-redo" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-region" class="icon-region"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-region" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-search" class="icon-search"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-search" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-settings" class="icon-settings"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-settings" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-share" class="icon-share"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-share" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-stories-icon" class="icon-stories-icon"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-stories-icon" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-stories-menu" class="icon-stories-menu"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-stories-menu" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-story" class="icon-story"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-story" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-table" class="icon-table"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-table" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-tag" class="icon-tag"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-tag" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-text" class="icon-text"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-text" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-twitter" class="icon-twitter"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-twitter" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-undo" class="icon-undo"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-undo" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-user" class="icon-user"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-user" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-waiting" class="icon-waiting"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-waiting" />
+      </div>
+    </li>
+    
+    <li class="icon-sample">
+      <div class="preview-glyphs">
+        <i id="icon-warning" class="icon-warning"></i>
+      </div>
+      <div class="usage">
+        <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".icon-warning" />
+      </div>
+    </li>
+    
+
+
+  </ul>
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="buttons">
+      <div class="meta">
+        <h2 class="styleguide-header">Buttons</h2>
+        <p class="small">
+          Buttons should be an obvious affordance for the click interaction.
+        </p>
+        <p class="small">
+          Both <code class="language-markup">&lt;button&gt;</code> and
+          <code class="language-markup">&lt;a&gt;</code> elements can be styled
+          as buttons.
+        </p>
+      </div>
+      <div class="example">
+        <h3 class="h6 styleguide-subheader">Default Buttons</h3>
+<p>
+  <button class="btn btn-default btn-lg">Large Button</button>
+
+</p>
+<p>
+  <button class="btn btn-default">Default Button</button>
+
+</p>
+<p>
+  <button class="btn btn-default btn-sm">Small Button</button>
+
+</p>
+<p>
+  <button class="btn btn-default btn-xs">Extra-Small Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default btn-lg&quot;&gt;Large Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-default&quot;&gt;Default Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-default btn-sm&quot;&gt;Small Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-default btn-xs&quot;&gt;Extra-Small Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<h3 class="h6 styleguide-subheader">Default Buttons as Links</h3>
+<p>
+  <a href="#" class="btn btn-default btn-lg">Large Button Link</a>
+
+</p>
+<p>
+  <a href="#" class="btn btn-default">Default Button Link</a>
+
+</p>
+<p>
+  <a href="#" class="btn btn-default btn-sm">Small Button Link</a>
+
+</p>
+<p>
+  <a href="#" class="btn btn-default btn-xs">Extra-Small Button Link</a>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;a href=&quot;#&quot; class=&quot;btn btn-default btn-lg&quot;&gt;Large Button Link&lt;&#x2F;a&gt;
+
+&lt;a href=&quot;#&quot; class=&quot;btn btn-default&quot;&gt;Default Button Link&lt;&#x2F;a&gt;
+
+&lt;a href=&quot;#&quot; class=&quot;btn btn-default btn-sm&quot;&gt;Small Button Link&lt;&#x2F;a&gt;
+
+&lt;a href=&quot;#&quot; class=&quot;btn btn-default btn-xs&quot;&gt;Extra-Small Button Link&lt;&#x2F;a&gt;
+
+</code>
+</pre>
+
+<h3 class="h6 styleguide-subheader">Button Variations</h3>
+<p>
+  <button class="btn btn-primary">Primary Button</button>
+
+  <button class="btn btn-primary btn-inverse">Primary Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-primary&quot;&gt;Primary Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-primary btn-inverse&quot;&gt;Primary Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<p>
+  <button class="btn btn-alternate-1">Alternate Button</button>
+
+  <button class="btn btn-alternate-1 btn-inverse">Alternate Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-alternate-1&quot;&gt;Alternate Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-alternate-1 btn-inverse&quot;&gt;Alternate Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<p>
+  <button class="btn btn-alternate-2">Alternate Button</button>
+
+  <button class="btn btn-alternate-2 btn-inverse">Alternate Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-alternate-2&quot;&gt;Secondary Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-alternate-2 btn-inverse&quot;&gt;Secondary Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre> 
+
+<p>
+<button class="btn btn-simple">Simple Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-simple&quot;&gt;I am just a simple button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<p>
+
+<button class="btn btn-default" disabled>Disabled Button</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default&quot; disabled&gt;Disabled Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+</p>
+
+<p>
+
+<button class="btn btn-primary btn-lg btn-block">Large Block Button</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-primary btn-lg btn-block&quot;&gt;Large Block Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+</p>
+
+<p>
+  <button class="btn btn-warning">Warning Button</button>
+
+  <button class="btn btn-warning btn-inverse">Warning Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-warning&quot;&gt;Warning Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-warning btn-inverse&quot;&gt;Warning Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<p>
+  <button class="btn btn-success">Success Button</button>
+
+  <button class="btn btn-success btn-inverse">Success Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-success&quot;&gt;Success Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-success btn-inverse&quot;&gt;Success Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<p>
+  <button class="btn btn-error">Error Button</button>
+
+  <button class="btn btn-error btn-inverse">Error Inverse Button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-error&quot;&gt;Error Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-error btn-inverse&quot;&gt;Error Inverse Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<h3 class="h6 styleguide-subheader">Dark Variations</h3>
+<div class="dark-context">
+  <p>
+    <button class="btn btn-dark btn-default">Default Button</button>
+
+  </p>
+  <p>
+    <button class="btn btn-dark btn-default" disabled>Disabled Button</button>
+
+  </p>
+  <p>
+    <button class="btn btn-primary btn-dark">Primary Button</button>
+
+  </p>
+  <p>
+    <button class="btn btn-alternate btn-dark">Secondary Button</button>
+
+  </p>
+</div>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-dark btn-default&quot;&gt;Default Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-dark btn-default&quot; disabled&gt;Disabled Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-primary btn-dark&quot;&gt;Primary Button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-alternate btn-dark&quot;&gt;Secondary Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+        <h4 class="h6 styleguide-subheader">Button Groups</h4>
+
+<div class="btn-group">
+  <button class="btn btn-default">Button One</button>
+  <button class="btn btn-default">Button Two</button>
+  <button class="btn btn-default">Button Three</button>
+</div>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;btn-group&quot;&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;Button One&lt;&#x2F;button&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;Button Two&lt;&#x2F;button&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;Button Three&lt;&#x2F;button&gt;
+&lt;&#x2F;div&gt;
+</code>
+</pre>
+
+
+
+<div class="btn-group-vertical" role="group">
+  <button class="btn btn-default">Button One</button>
+  <button class="btn btn-default">My Other Long Button</button>
+  <button class="btn btn-default">Go</button>
+</div>
+
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;btn-group-vertical&quot; role=&quot;group&quot;&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;Button One&lt;&#x2F;button&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;My Other Long Button&lt;&#x2F;button&gt;
+  &lt;button class=&quot;btn btn-default&quot;&gt;Go&lt;&#x2F;button&gt;
+&lt;&#x2F;div&gt;
+
+
+</code>
+</pre>
+
+
+        <h3 class="h6 styleguide-subheader">Buttons with Icons</h3>
+
+<button class="btn btn-default">
+  <span class="icon-eye"></span>
+</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default&quot;&gt;
+  &lt;span class=&quot;icon-eye&quot;&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+
+<button class="btn btn-default">
+  <span class="icon-linked"></span>
+  Hello, World!
+</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default&quot;&gt;
+  &lt;span class=&quot;icon-linked&quot;&gt;&lt;&#x2F;span&gt;
+  Hello, World!
+&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+
+        <h3 class="h6 styleguide-subheader">Button Toggles</h3>
+
+<button class="btn btn-default btn-toggle" data-toggle>Toggle me!</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default btn-toggle&quot; data-toggle&gt;Toggle me!&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="spinners">
+      <div class="meta">
+        <h2 class="styleguide-header">Spinners</h2>
+        <p class="small">
+          Spinners.  They spin.  Provide loading context to your impatient user.
+        </p>
+      </div>
+      <div class="example">
+        <h3 class="styleguide-subheader">Basic Spinning Loader</h3>
+<p class="usage">Used in the context of loading screens where the spinner is placed in-line with a heading, centered in a staging area, or within a button.</p>
+
+<h4 class="h6 styleguide-subheader">Default</h4>
+
+<span class="spinner-default"></span>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;span class=&quot;spinner-default&quot;&gt;&lt;&#x2F;span&gt;
+
+</code>
+</pre>
+
+
+
+<h4 class="h6 styleguide-subheader">On a Dark Background</h4>
+<div class="dark-context">
+  <span class="spinner-default spinner-dark"></span>
+</div>
+<pre class="usage">
+  <code class="language-markup">
+    &lt;span class=&quot;spinner-default spinner-dark&quot;&gt;&lt;&#x2F;span&gt;
+  </code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Large variation</h4>
+
+<span class="spinner-default spinner-large"></span>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;span class=&quot;spinner-default spinner-large&quot;&gt;&lt;&#x2F;span&gt;
+</code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">In a Button</h4>
+
+<button href="#" class="btn btn-primary btn-block btn-busy">
+  <span class="spinner-default spinner-btn-primary"></span>
+</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button href=&quot;#&quot; class=&quot;btn btn-primary btn-block btn-busy&quot;&gt;
+  &lt;span class=&quot;spinner-default spinner-btn-primary&quot;&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="dividers">
+      <div class="meta">
+        <h2 class="styleguide-header">Dividers</h2>
+        <p class="small">
+          Dividers for your content.
+        </p>
+      </div>
+      <div class="example">
+        <h4 class="h6">Rule</h4>
+
+
+
+<hr />
+
+<pre class="usage">
+<code class="language-markup">
+&lt;hr &#x2F;&gt;
+</code>
+</pre>
+
+
+
+<h4 class="h6">Vertical Divider</h4>
+
+
+<div class="container">
+
+  <div class="third"><p class="quiet">Here's some sample content</p></div>
+
+  <div class="one">
+
+    <div class="vertical-rule">
+  <div class="divider"><div class="or">OR</div></div>
+</div>
+
+  </div>
+
+  <div class="third"><p class="quiet">Here's some other sample content</p></div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;vertical-rule&quot;&gt;
+  &lt;div class=&quot;divider&quot;&gt;&lt;div class=&quot;or&quot;&gt;OR&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="lists">
+      <div class="meta">
+        <h2 class="styleguide-header">Lists</h2>
+        <p class="small">A list is a list, a list, a list, of course.</p>
+      </div>
+      <div class="example">
+        <h4 class="h6">Unordered List</h4>
+
+
+<ul>
+  <li>This is</li>
+  <li>an absolutely fantastic</li>
+  <li>list!</li>
+  <li>This is a nested list!
+    <ul>
+      <li>I'm nested!</li>
+      <li>I'm also nested.</li>
+    </ul>
+  </li>
+  <li>We're still going.</li>
+</ul>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;ul&gt;
+  &lt;li&gt;This is&lt;&#x2F;li&gt;
+  &lt;li&gt;an absolutely fantastic&lt;&#x2F;li&gt;
+  &lt;li&gt;list!&lt;&#x2F;li&gt;
+  &lt;li&gt;This is a nested list!
+    &lt;ul&gt;
+      &lt;li&gt;I&#x27;m nested!&lt;&#x2F;li&gt;
+      &lt;li&gt;I&#x27;m also nested.&lt;&#x2F;li&gt;
+    &lt;&#x2F;ul&gt;
+  &lt;&#x2F;li&gt;
+  &lt;li&gt;We&#x27;re still going.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Ordered List</h4>
+
+
+<ol>
+  <li>This is one more</li>
+  <li>simply, absolutely fantastic</li>
+  <li>This is a nested ordered list!
+    <ol>
+      <li>I'm nested!</li>
+      <li>I'm also nested.</li>
+      <li>More nests!
+        <ol>
+          <li>I'm über nested.</li>
+          <li>What that ^ &lt;li&gt; said.</li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>We're still going.</li>
+</ol>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;ol&gt;
+  &lt;li&gt;This is one more&lt;&#x2F;li&gt;
+  &lt;li&gt;simply, absolutely fantastic&lt;&#x2F;li&gt;
+  &lt;li&gt;This is a nested ordered list!
+    &lt;ol&gt;
+      &lt;li&gt;I&#x27;m nested!&lt;&#x2F;li&gt;
+      &lt;li&gt;I&#x27;m also nested.&lt;&#x2F;li&gt;
+      &lt;li&gt;More nests!
+        &lt;ol&gt;
+          &lt;li&gt;I&#x27;m über nested.&lt;&#x2F;li&gt;
+          &lt;li&gt;What that ^ &amp;lt;li&amp;gt; said.&lt;&#x2F;li&gt;
+        &lt;&#x2F;ol&gt;
+      &lt;&#x2F;li&gt;
+    &lt;&#x2F;ol&gt;
+  &lt;&#x2F;li&gt;
+  &lt;li&gt;We&#x27;re still going.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Unstyled List</h4>
+
+
+<ul class="list-unstyled">
+  <li>This is not a list</li>
+  <li>But it's still absolutely fantastic</li>
+  <li>This is a nested list within an unstyled list
+    <ul>
+      <li>I'm nested!</li>
+      <li>I'm also nested.</li>
+    </ul>
+  </li>
+  <li>We're still going.</li>
+</ul>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;ul class=&quot;list-unstyled&quot;&gt;
+  &lt;li&gt;This is not a list&lt;&#x2F;li&gt;
+  &lt;li&gt;But it&#x27;s still absolutely fantastic&lt;&#x2F;li&gt;
+  &lt;li&gt;This is a nested list within an unstyled list
+    &lt;ul&gt;
+      &lt;li&gt;I&#x27;m nested!&lt;&#x2F;li&gt;
+      &lt;li&gt;I&#x27;m also nested.&lt;&#x2F;li&gt;
+    &lt;&#x2F;ul&gt;
+  &lt;&#x2F;li&gt;
+  &lt;li&gt;We&#x27;re still going.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Inline List</h4>
+
+
+<ul class="list-inline">
+  <li>First Item</li>
+  <li>Another Item</li>
+  <li>Still Going</li>
+  <li>More</li>
+</ul>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;ul class=&quot;list-inline&quot;&gt;
+  &lt;li&gt;First Item&lt;&#x2F;li&gt;
+  &lt;li&gt;Another Item&lt;&#x2F;li&gt;
+  &lt;li&gt;Still Going&lt;&#x2F;li&gt;
+  &lt;li&gt;More&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section">
+      <div class="meta">
+        <h2 class="styleguide-header" id="input-groups">Input Groups</h2>
+        <p class="small">
+          Input groups allow for better presentation than native input controls
+          and can co-locate related controls for compact complexity.
+        </p>
+      </div>
+      <div class="example">
+        <h4 class="h6 styleguide-subheader">Input Groups</h4>
+
+<form>
+<span class="input-group">
+  <input class="text-input" type="text" placeholder="Search"/>
+
+  <span class="input-group-btn">
+    <button class="btn btn-default"><span class="icon-search"></span></button>
+  </span>
+
+</span>
+</form>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;form&gt;
+&lt;span class=&quot;input-group&quot;&gt;
+  &lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Search&quot;&#x2F;&gt;
+
+  &lt;span class=&quot;input-group-btn&quot;&gt;
+    &lt;button class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;icon-search&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;button&gt;
+  &lt;&#x2F;span&gt;
+
+&lt;&#x2F;span&gt;
+&lt;&#x2F;form&gt;
+</code>
+</pre>
+
+
+
+<form>
+<span class="input-group">
+  <input class="text-input" type="text" placeholder="Search"/>
+
+  <span class="input-group-btn">
+    <div class="dropdown btn btn-default" data-orientation="bottom" data-selectable data-dropdown>
+      <span>Gender</span><span class="icon-arrow-down"></span>
+      <ul class="dropdown-options">
+          <li><a href="#">An option!</a></li>
+          <li><a href="#">Another option!!</a></li>
+          <li><a href="#">A really, really, really long option!!!</a></li>
+      </ul>
+    </div>
+  </span>
+  <span class="input-group-btn">
+    <button class="btn btn-default"><span class="icon-search"></span></button>
+  </span>
+
+</span>
+</form>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;form&gt;
+&lt;span class=&quot;input-group&quot;&gt;
+  &lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Search&quot;&#x2F;&gt;
+
+  &lt;span class=&quot;input-group-btn&quot;&gt;
+    &lt;div class=&quot;dropdown btn btn-default&quot; data-orientation=&quot;bottom&quot; data-selectable data-dropdown&gt;
+      &lt;span&gt;Gender&lt;&#x2F;span&gt;&lt;span class=&quot;icon-arrow-down&quot;&gt;&lt;&#x2F;span&gt;
+      &lt;ul class=&quot;dropdown-options&quot;&gt;
+          &lt;li&gt;&lt;a href=&quot;#&quot;&gt;An option!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+          &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Another option!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+          &lt;li&gt;&lt;a href=&quot;#&quot;&gt;A really, really, really long option!!!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+      &lt;&#x2F;ul&gt;
+    &lt;&#x2F;div&gt;
+  &lt;&#x2F;span&gt;
+  &lt;span class=&quot;input-group-btn&quot;&gt;
+    &lt;button class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;icon-search&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;button&gt;
+  &lt;&#x2F;span&gt;
+
+&lt;&#x2F;span&gt;
+&lt;&#x2F;form&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="forms">
+      <div class="meta">
+        <h2 class="styleguide-header">Form Controls</h2>
+        <p class="small">dropdowns and text fields and stuff</p>
+      </div>
+      <div class="example">
+        <h3 class="styleguide-subheader">Form Fields </h3>
+
+<form>
+
+  <h4 class="h6 styleguide-subheader">Text Field</h4>
+  
+<label class="inline-label">An input field:</label>
+<input class="text-input" type="text" placeholder="Example Text"/>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;label class=&quot;inline-label&quot;&gt;An input field:&lt;&#x2F;label&gt;
+&lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot;&#x2F;&gt;
+
+</code>
+</pre>
+
+  
+<label class="block-label">Another input field:</label>
+<input class="text-input" type="text" placeholder="Example Text"/>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;label class=&quot;block-label&quot;&gt;Another input field:&lt;&#x2F;label&gt;
+&lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot;&#x2F;&gt;
+
+</code>
+</pre>
+
+
+  <h4 class="h6 styleguide-subheader">Text Area</h4>
+  
+<label class="block-label">A longer input field:</label>
+<textarea class="text-input text-area" type="text" placeholder="Example Paragraph"></textarea>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;label class=&quot;block-label&quot;&gt;A longer input field:&lt;&#x2F;label&gt;
+&lt;textarea class=&quot;text-input text-area&quot; type=&quot;text&quot; placeholder=&quot;Example Paragraph&quot;&gt;&lt;&#x2F;textarea&gt;
+</code>
+</pre>
+
+
+  <h4 class="h6 styleguide-subheader">Checkboxes</h4>
+  
+<div class="checkbox">
+    <input id="1" type="checkbox" checked="checked"/>
+    <label for="1">
+      <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
+      Checked Checkbox
+    </label>
+</div>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;checkbox&quot;&gt;
+    &lt;input id=&quot;1&quot; type=&quot;checkbox&quot; checked=&quot;checked&quot;&#x2F;&gt;
+    &lt;label for=&quot;1&quot;&gt;
+      &lt;span class=&quot;fake-checkbox&quot;&gt;&lt;span class=&quot;icon-checkmark3&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+      Checked Checkbox
+    &lt;&#x2F;label&gt;
+&lt;&#x2F;div&gt;
+</code>
+</pre>
+
+  
+<div class="checkbox">
+    <input id="2" type="checkbox" />
+    <label for="2">
+      <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
+      Unchecked Checkbox
+    </label>
+</div>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;checkbox&quot;&gt;
+    &lt;input id=&quot;2&quot; type=&quot;checkbox&quot; &#x2F;&gt;
+    &lt;label for=&quot;2&quot;&gt;
+      &lt;span class=&quot;fake-checkbox&quot;&gt;&lt;span class=&quot;icon-checkmark3&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+      Unchecked Checkbox
+    &lt;&#x2F;label&gt;
+&lt;&#x2F;div&gt;
+</code>
+</pre>
+
+
+  <h4 class="h6 styleguide-subheader">Radiobuttons</h4>
+  
+<div class="radiobutton">
+  <div>
+    <input type="radio" id="Radiobutton 1" name="radio" checked>
+    <label for="Radiobutton 1"><span></span>Radiobutton 1</label>
+  </div>
+  <div>
+    <input type="radio" id="Radiobutton 2" name="radio">
+    <label for="Radiobutton 2"><span></span>Radiobutton 2</label>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;radiobutton&quot;&gt;
+  &lt;div&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;Radiobutton 1&quot; name=&quot;radio&quot; checked&gt;
+    &lt;label for=&quot;Radiobutton 1&quot;&gt;&lt;span&gt;&lt;&#x2F;span&gt;Radiobutton 1&lt;&#x2F;label&gt;
+  &lt;&#x2F;div&gt;
+  &lt;div&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;Radiobutton 2&quot; name=&quot;radio&quot;&gt;
+    &lt;label for=&quot;Radiobutton 2&quot;&gt;&lt;span&gt;&lt;&#x2F;span&gt;Radiobutton 2&lt;&#x2F;label&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+
+</form>
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="tables">
+      <div class="meta">
+        <h2 class="styleguide-header">Tables</h2>
+        <p class="small">Four legs and holds cups, plates, etc.</p>
+      </div>
+      <div class="example">
+        <h4 class="h6">Bordered Table</h4>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Dataset title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Posted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Chicago Pet Escapes</td>
+        <td>Describes documented pet escapes around the city</td>
+        <td>January 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+        <td>Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+        <td>February 12, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">SF Mission Burrito Menus and Locations</td>
+        <td>Find the best burritos in the city when you really need one.</td>
+        <td>July 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+        <td>Checkout where the fire engines go in real time.</td>
+        <td>Today</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<pre class="usage">
+<code class="language-markup">
+  &lt;table class=&quot;table&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope=&quot;col&quot;&gt;Dataset title&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Description&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Chicago Pet Escapes&lt;&#x2F;td&gt;
+        &lt;td&gt;Describes documented pet escapes around the city&lt;&#x2F;td&gt;
+        &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Seattle Coffee Houses with Hand Press Espresso&lt;&#x2F;td&gt;
+        &lt;td&gt;Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.&lt;&#x2F;td&gt;
+        &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;SF Mission Burrito Menus and Locations&lt;&#x2F;td&gt;
+        &lt;td&gt;Find the best burritos in the city when you really need one.&lt;&#x2F;td&gt;
+        &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Hollywood Fire Dept. Realtime Feed&lt;&#x2F;td&gt;
+        &lt;td&gt;Checkout where the fire engines go in real time.&lt;&#x2F;td&gt;
+        &lt;td&gt;Today&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;tbody&gt;
+  &lt;&#x2F;table&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Borderless Table</h4>
+
+  <table class="table table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Dataset title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Posted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Chicago Pet Escapes</td>
+        <td>Describes documented pet escapes around the city</td>
+        <td>January 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+        <td>Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+        <td>February 12, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">SF Mission Burrito Menus and Locations</td>
+        <td>Find the best burritos in the city when you really need one.</td>
+        <td>July 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+        <td>Checkout where the fire engines go in real time.</td>
+        <td>Today</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<pre class="usage">
+<code class="language-markup">
+  &lt;table class=&quot;table table-borderless&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope=&quot;col&quot;&gt;Dataset title&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Description&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Chicago Pet Escapes&lt;&#x2F;td&gt;
+        &lt;td&gt;Describes documented pet escapes around the city&lt;&#x2F;td&gt;
+        &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Seattle Coffee Houses with Hand Press Espresso&lt;&#x2F;td&gt;
+        &lt;td&gt;Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.&lt;&#x2F;td&gt;
+        &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;SF Mission Burrito Menus and Locations&lt;&#x2F;td&gt;
+        &lt;td&gt;Find the best burritos in the city when you really need one.&lt;&#x2F;td&gt;
+        &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Hollywood Fire Dept. Realtime Feed&lt;&#x2F;td&gt;
+        &lt;td&gt;Checkout where the fire engines go in real time.&lt;&#x2F;td&gt;
+        &lt;td&gt;Today&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;tbody&gt;
+  &lt;&#x2F;table&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Striped Table</h4>
+
+<table class="table table-striped table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Dataset ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Posted</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td scope="row">Chicago Pet Escapes</td>
+      <td>Describes documented pet escapes around the city</td>
+      <td>January 1, 2015</td>
+    </tr>
+    <tr>
+      <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+      <td>Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+      <td>February 12, 2015</td>
+    </tr>
+    <tr>
+      <td scope="row">SF Mission Burrito Menus and Locations</td>
+      <td>Find the best burritos in the city when you really need one.</td>
+      <td>July 1, 2015</td>
+    </tr>
+    <tr>
+      <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+      <td>Checkout where the fire engines go in real time.</td>
+      <td>Today</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;table class=&quot;table table-striped table-borderless&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope=&quot;col&quot;&gt;Dataset ID&lt;&#x2F;th&gt;
+      &lt;th scope=&quot;col&quot;&gt;Name&lt;&#x2F;th&gt;
+      &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+    &lt;&#x2F;tr&gt;
+  &lt;&#x2F;thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td scope=&quot;row&quot;&gt;Chicago Pet Escapes&lt;&#x2F;td&gt;
+      &lt;td&gt;Describes documented pet escapes around the city&lt;&#x2F;td&gt;
+      &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+    &lt;&#x2F;tr&gt;
+    &lt;tr&gt;
+      &lt;td scope=&quot;row&quot;&gt;Seattle Coffee Houses with Hand Press Espresso&lt;&#x2F;td&gt;
+      &lt;td&gt;Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.&lt;&#x2F;td&gt;
+      &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+    &lt;&#x2F;tr&gt;
+    &lt;tr&gt;
+      &lt;td scope=&quot;row&quot;&gt;SF Mission Burrito Menus and Locations&lt;&#x2F;td&gt;
+      &lt;td&gt;Find the best burritos in the city when you really need one.&lt;&#x2F;td&gt;
+      &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+    &lt;&#x2F;tr&gt;
+    &lt;tr&gt;
+      &lt;td scope=&quot;row&quot;&gt;Hollywood Fire Dept. Realtime Feed&lt;&#x2F;td&gt;
+      &lt;td&gt;Checkout where the fire engines go in real time.&lt;&#x2F;td&gt;
+      &lt;td&gt;Today&lt;&#x2F;td&gt;
+    &lt;&#x2F;tr&gt;
+  &lt;&#x2F;tbody&gt;
+&lt;&#x2F;table&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Responsive Table</h4>
+
+ <div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Dataset title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Posted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Chicago Pet Escapes</td>
+        <td>Describes documented pet escapes around the city</td>
+        <td>January 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+        <td>Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+        <td>February 12, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">SF Mission Burrito Menus and Locations</td>
+        <td>Find the best burritos in the city when you really need one.</td>
+        <td>July 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+        <td>Checkout where the fire engines go in real time.</td>
+        <td>Today</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+ &lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope=&quot;col&quot;&gt;Dataset title&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Description&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Chicago Pet Escapes&lt;&#x2F;td&gt;
+        &lt;td&gt;Describes documented pet escapes around the city&lt;&#x2F;td&gt;
+        &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Seattle Coffee Houses with Hand Press Espresso&lt;&#x2F;td&gt;
+        &lt;td&gt;Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.&lt;&#x2F;td&gt;
+        &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;SF Mission Burrito Menus and Locations&lt;&#x2F;td&gt;
+        &lt;td&gt;Find the best burritos in the city when you really need one.&lt;&#x2F;td&gt;
+        &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Hollywood Fire Dept. Realtime Feed&lt;&#x2F;td&gt;
+        &lt;td&gt;Checkout where the fire engines go in real time.&lt;&#x2F;td&gt;
+        &lt;td&gt;Today&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;tbody&gt;
+  &lt;&#x2F;table&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Condensed Table</h4>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th scope="col">Dataset title</th>
+      <th scope="col">Description</th>
+      <th scope="col">Posted</th>
+    </tr>
+  </thead>
+  <tbody>
+
+          <tr>
+        <td scope="row">34</td>
+        <td>Cookies</td>
+        <td>January 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">345</td>
+        <td>Cake</td>
+        <td>February 12, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">876X</td>
+        <td>Cream Puffs</td>
+        <td>July 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">6677</td>
+        <td>Pie</td>
+        <td>Today</td>
+      </tr>
+
+  </tbody>
+</table>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;table class=&quot;table table-condensed&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope=&quot;col&quot;&gt;Dataset title&lt;&#x2F;th&gt;
+      &lt;th scope=&quot;col&quot;&gt;Description&lt;&#x2F;th&gt;
+      &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+    &lt;&#x2F;tr&gt;
+  &lt;&#x2F;thead&gt;
+  &lt;tbody&gt;
+
+          &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;34&lt;&#x2F;td&gt;
+        &lt;td&gt;Cookies&lt;&#x2F;td&gt;
+        &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;345&lt;&#x2F;td&gt;
+        &lt;td&gt;Cake&lt;&#x2F;td&gt;
+        &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;876X&lt;&#x2F;td&gt;
+        &lt;td&gt;Cream Puffs&lt;&#x2F;td&gt;
+        &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;6677&lt;&#x2F;td&gt;
+        &lt;td&gt;Pie&lt;&#x2F;td&gt;
+        &lt;td&gt;Today&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+
+  &lt;&#x2F;tbody&gt;
+&lt;&#x2F;table&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6">Discrete, Condensed, Borderless Table</h4>
+
+  <table class="table table-discrete table-condensed table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Dataset title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Posted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Chicago Pet Escapes</td>
+        <td>Describes documented pet escapes around the city</td>
+        <td>January 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Seattle Coffee Houses with Hand Press Espresso</td>
+        <td>Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.</td>
+        <td>February 12, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">SF Mission Burrito Menus and Locations</td>
+        <td>Find the best burritos in the city when you really need one.</td>
+        <td>July 1, 2015</td>
+      </tr>
+      <tr>
+        <td scope="row">Hollywood Fire Dept. Realtime Feed</td>
+        <td>Checkout where the fire engines go in real time.</td>
+        <td>Today</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<pre class="usage">
+<code class="language-markup">
+  &lt;table class=&quot;table table-discrete table-condensed table-borderless&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope=&quot;col&quot;&gt;Dataset title&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Description&lt;&#x2F;th&gt;
+        &lt;th scope=&quot;col&quot;&gt;Posted&lt;&#x2F;th&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Chicago Pet Escapes&lt;&#x2F;td&gt;
+        &lt;td&gt;Describes documented pet escapes around the city&lt;&#x2F;td&gt;
+        &lt;td&gt;January 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Seattle Coffee Houses with Hand Press Espresso&lt;&#x2F;td&gt;
+        &lt;td&gt;Dataset includes all coffee houses that serve hand pressed espresso by by hipsters with beards and leather aprons.&lt;&#x2F;td&gt;
+        &lt;td&gt;February 12, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;SF Mission Burrito Menus and Locations&lt;&#x2F;td&gt;
+        &lt;td&gt;Find the best burritos in the city when you really need one.&lt;&#x2F;td&gt;
+        &lt;td&gt;July 1, 2015&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+      &lt;tr&gt;
+        &lt;td scope=&quot;row&quot;&gt;Hollywood Fire Dept. Realtime Feed&lt;&#x2F;td&gt;
+        &lt;td&gt;Checkout where the fire engines go in real time.&lt;&#x2F;td&gt;
+        &lt;td&gt;Today&lt;&#x2F;td&gt;
+      &lt;&#x2F;tr&gt;
+    &lt;&#x2F;tbody&gt;
+  &lt;&#x2F;table&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="alerts">
+      <div class="meta">
+        <h2 class="styleguide-header">Alerts</h2>
+        <p class="small">
+          Alerts draw the user's attention to a specific condition, either prior
+          to or in response to a user action.
+        </p>
+        <p class="small">
+          The type of alert embodies the sentiment of the condition; the content
+          reinforces good/expected behaviors or provides actionable information
+          for bad/unexpected behaviors.
+        </p>
+      </div>
+      <div class="example">
+        <h4 class="h6 styleguide-subheader">Default</h4>
+<div class="alert ">
+  <b>Hi.</b> I'm a nice little message for you.
+</div>
+
+
+<h4 class="h6 styleguide-subheader">Info</h4>
+<div class="alert info">
+  <b>Info.</b> Here's some great info for you!
+</div>
+
+
+<h4 class="h6 styleguide-subheader">Success</h4>
+<div class="alert success">
+  <b>Yay!</b> Here's the great thing you just did!
+</div>
+
+
+<h4 class="h6 styleguide-subheader">Warning</h4>
+<div class="alert warning">
+  <b>Caution!</b> Watch yourself, amigo!
+</div>
+
+
+<h4 class="h6 styleguide-subheader">Error</h4>
+
+<div class="alert error">
+  <b>Oh no!</b> Here's some bad news for you!
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;alert error&quot;&gt;
+  &lt;b&gt;Oh no!&lt;&#x2F;b&gt; Here&#x27;s some bad news for you!
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Full Width Top</h4>
+
+<div class="alert alert-full-width-top">
+  <b>Hi!</b> I can fill up the top of my entire parent container without looking odd!
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;alert alert-full-width-top&quot;&gt;
+  &lt;b&gt;Hi!&lt;&#x2F;b&gt; I can fill up the top of my entire parent container without looking odd!
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Full Width Bottom</h4>
+
+<div class="alert alert-full-width-bottom">
+  <b>Hi!</b> I can fill up the bottom of my entire parent container without looking odd!
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;alert alert-full-width-bottom&quot;&gt;
+  &lt;b&gt;Hi!&lt;&#x2F;b&gt; I can fill up the bottom of my entire parent container without looking odd!
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="tags">
+      <div class="meta">
+        <h2 class="styleguide-header">Tags</h2>
+        <p class="small">
+          Tags act as call-outs for short amounts of text which reinforce some
+          notion of importance or meaningfulness.
+        </p>
+      </div>
+      <div class="example">
+        
+<h3 class="h6 styleguide-subheader">Category Tags</h3>
+<span class="tag-category">
+  Dinosaurs
+</span>
+
+<span class="tag-category">
+  From
+</span>
+
+
+<span class="tag-category">
+  Space
+</span>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;span class=&quot;tag-category&quot;&gt;
+  Space
+&lt;&#x2F;span&gt;
+
+</code>
+</pre>
+
+
+<h3 class="h6 styleguide-subheader">Primary Tags</h3>
+
+<span class="tag-official">
+  <span class="icon-official"></span>
+  Official View
+</span>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;span class=&quot;tag-official&quot;&gt;
+  &lt;span class=&quot;icon-official&quot;&gt;&lt;&#x2F;span&gt;
+  Official View
+&lt;&#x2F;span&gt;
+
+</code>
+</pre>
+
+
+
+<span class="tag-federated">
+    <span class="icon-linked"></span> 
+    <a href="#">Data Provided by <span class="domain">data.opendata.org</span></a>
+</span>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;span class=&quot;tag-federated&quot;&gt;
+    &lt;span class=&quot;icon-linked&quot;&gt;&lt;&#x2F;span&gt; 
+    &lt;a href=&quot;#&quot;&gt;Data Provided by &lt;span class=&quot;domain&quot;&gt;data.opendata.org&lt;&#x2F;span&gt;&lt;&#x2F;a&gt;
+&lt;&#x2F;span&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section">
+      <div class="meta">
+        <h2 class="styleguide-header" id="navigation">Navigation</h2>
+        <p class="small">
+          Navigation bars provide a consistent page header that connects the
+          current page to the broader platform. The header may also contain
+          interactive controls pertinent to the current page.
+        </p>
+        <p class="small">
+          Navigation tabs provide a compact presentation for medium to large
+          blocks of related content within a page.
+        </p>
+      </div>
+      <div class="example">
+        <h3 class="styleguide-subheader">App Bar</h3>
+<h4 class="h6 styleguide-subheader">Narrow Viewport</h4>
+<div class="mobile-example">
+  <nav class="app-navbar">
+  <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
+  <button class="story-title" role="button" data-panel-toggle="settings-panel">Blue Dinosaurs in the Ocean</button>
+  <div class="menu-divider"></div>
+  <div id="story-publication-status" class="status-indicator">Published</div>
+  <div id="story-saving-indicator" class="status-indicator"></div>
+  <div class="header-right">
+    <ul class="app-bar-menu">
+      <li>
+        <button class="btn-transparent undo-btn" disabled="disabled" title="undo">
+          <span class="icon-undo"></span>
+        </button>
+      </li>
+      <li>
+        <button class="btn-transparent redo-btn" disabled="disabled" title="redo">
+          <span class="icon-redo"></span>
+        </button>
+      </li>
+      <li class="menu-divider"></li>
+      <li>
+        <button class="btn-transparent preview-btn">Preview <span class="icon-preview"></span></button>
+      </li>
+      <li>
+        <button class="btn-transparent panel-btn content-panel-btn"><span class="icon-plus3"></span> Add Content</button>
+      </li>
+      <li>
+        <button class="btn-transparent panel-btn style-panel-btn">Style &amp; Presentation</button>
+      </li>
+  </div>
+</nav>
+
+</div>
+
+<h4 class="h6 styleguide-subheader">Wide Viewport</h4>
+
+<nav class="app-navbar">
+  <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
+  <button class="story-title" role="button" data-panel-toggle="settings-panel">Purple Penguins on the Moon</button>
+  <div class="menu-divider"></div>
+  <div id="story-publication-status" class="status-indicator">Published</div>
+  <div id="story-saving-indicator" class="status-indicator"></div>
+  <div class="header-right">
+    <ul class="app-bar-menu">
+      <li>
+        <button class="btn-transparent undo-btn" disabled="disabled" title="undo">
+          <span class="icon-undo"></span>
+        </button>
+      </li>
+      <li>
+        <button class="btn-transparent redo-btn" disabled="disabled" title="redo">
+          <span class="icon-redo"></span>
+        </button>
+      </li>
+      <li class="menu-divider"></li>
+      <li>
+        <button class="btn-transparent preview-btn">Preview <span class="icon-preview"></span></button>
+      </li>
+      <li>
+        <button class="btn-transparent panel-btn content-panel-btn"><span class="icon-plus3"></span> Add Content</button>
+      </li>
+      <li>
+        <button class="btn-transparent panel-btn style-panel-btn">Style &amp; Presentation</button>
+      </li>
+  </div>
+</nav>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;nav class=&quot;app-navbar&quot;&gt;
+  &lt;button data-panel-toggle=&quot;settings-panel&quot; class=&quot;icon-stories-menu settings-panel-btn&quot;&gt;&lt;&#x2F;button&gt;
+  &lt;button class=&quot;story-title&quot; role=&quot;button&quot; data-panel-toggle=&quot;settings-panel&quot;&gt;Purple Penguins on the Moon&lt;&#x2F;button&gt;
+  &lt;div class=&quot;menu-divider&quot;&gt;&lt;&#x2F;div&gt;
+  &lt;div id=&quot;story-publication-status&quot; class=&quot;status-indicator&quot;&gt;Published&lt;&#x2F;div&gt;
+  &lt;div id=&quot;story-saving-indicator&quot; class=&quot;status-indicator&quot;&gt;&lt;&#x2F;div&gt;
+  &lt;div class=&quot;header-right&quot;&gt;
+    &lt;ul class=&quot;app-bar-menu&quot;&gt;
+      &lt;li&gt;
+        &lt;button class=&quot;btn-transparent undo-btn&quot; disabled=&quot;disabled&quot; title=&quot;undo&quot;&gt;
+          &lt;span class=&quot;icon-undo&quot;&gt;&lt;&#x2F;span&gt;
+        &lt;&#x2F;button&gt;
+      &lt;&#x2F;li&gt;
+      &lt;li&gt;
+        &lt;button class=&quot;btn-transparent redo-btn&quot; disabled=&quot;disabled&quot; title=&quot;redo&quot;&gt;
+          &lt;span class=&quot;icon-redo&quot;&gt;&lt;&#x2F;span&gt;
+        &lt;&#x2F;button&gt;
+      &lt;&#x2F;li&gt;
+      &lt;li class=&quot;menu-divider&quot;&gt;&lt;&#x2F;li&gt;
+      &lt;li&gt;
+        &lt;button class=&quot;btn-transparent preview-btn&quot;&gt;Preview &lt;span class=&quot;icon-preview&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;button&gt;
+      &lt;&#x2F;li&gt;
+      &lt;li&gt;
+        &lt;button class=&quot;btn-transparent panel-btn content-panel-btn&quot;&gt;&lt;span class=&quot;icon-plus3&quot;&gt;&lt;&#x2F;span&gt; Add Content&lt;&#x2F;button&gt;
+      &lt;&#x2F;li&gt;
+      &lt;li&gt;
+        &lt;button class=&quot;btn-transparent panel-btn style-panel-btn&quot;&gt;Style &amp;amp; Presentation&lt;&#x2F;button&gt;
+      &lt;&#x2F;li&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;nav&gt;
+
+</code>
+</pre>
+
+
+<h3 class="styleguide-subheader">Responsive Bar</h3>
+
+<div class="responsive-navbar">
+  <img src="images/evergreen-bc368498.png" />
+  <span>City of Evergreen</span>
+  <div class="responsive-navbar-nav">
+    <button class="btn btn-default btn-inverse">Menu</button>
+  </div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;responsive-navbar&quot;&gt;
+  &lt;img src=&quot;images&#x2F;evergreen.png&quot; &#x2F;&gt;
+  &lt;span&gt;City of Evergreen&lt;&#x2F;span&gt;
+  &lt;div class=&quot;responsive-navbar-nav&quot;&gt;
+    &lt;button class=&quot;btn btn-default btn-inverse&quot;&gt;Menu&lt;&#x2F;button&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+<h3 class="styleguide-subheader">Navigation Tabs</h3>
+
+<ul class="nav-tabs">
+	<li class="tab-link current"><a href="#">Tab 1</a></li>
+	<li class="tab-link"><a href="#">Tab 2</a></li>
+	<li class="tab-link"><a href="#">Tab 3</a></li>
+	<li class="tab-link"><a href="#">Tab 4</a></li>
+	<li class="tab-link"><a href="#">Tab 5</a></li>
+</ul>
+
+<pre class="usage">
+<code class="language-markup">
+&lt;ul class=&quot;nav-tabs&quot;&gt;
+	&lt;li class=&quot;tab-link current&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab 1&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+	&lt;li class=&quot;tab-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab 2&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+	&lt;li class=&quot;tab-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab 3&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+	&lt;li class=&quot;tab-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab 4&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+	&lt;li class=&quot;tab-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;Tab 5&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="cards">
+      <div class="meta">
+        <h2 class="styleguide-header">Cards</h2>
+        <p class="small">
+          Cards provide a layout for consolidating several pieces of related
+          information, in a way that isn't confusing or overwhelming when
+          many cards need to be shown.
+        </p>
+      </div>
+      <div class="example">
+        <h4 class="h6 styleguide-subheader">Catalog Result Card</h4>
+
+    <div class="result-card">
+
+      <div class="entry-header">
+        <div class="entry-title">
+          <h2 class="entry-name"><a href="#result1">Pacific Northwest Pet Escapes</a></h2>
+            <span class="tag-category">Animal Control</span>
+          </div>
+          <div class="entry-view-type"><span class="icon-dataset"></span> Dataset </div>
+        </div>
+
+        <div class="entry-content">
+          <div class="entry-main">
+            <div class="entry-description">
+              Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#more"> More </a></span>
+            </div>
+
+            <div class="entry-meta first">
+              <div class="entry-meta topics">
+                <span class="meta-title">Topics</span> <span class="topic-list"> No Tags Provided</span>
+              </div>
+
+              <div class="entry-meta api">
+                <span class="api-link"><a href="#">API Docs</a></span>
+              </div>
+
+            </div>
+
+          </div><!-- ./entry-main -->
+
+          <div class="entry-meta second">
+            <div class="entry-meta updated">
+              <span class="meta-title">Updated</span>
+              <span class="date">December 1, 2015</span>
+            </div>
+            <div class="entry-meta views">
+              <span class="meta-title">Views</span>
+              <span class="view-count">12,343</span>
+            </div>
+          </div>
+
+
+        </div><!-- /.entry-content -->
+      </div> <!-- /.result-card -->
+
+
+    <div class="result-card federated">
+
+      <div class="entry-header">
+        <div class="entry-title">
+          <h2 class="entry-name">
+            <a href="#result2">Realistic Titles (Latest Version) 2016 <span class="icon-external-square"></span></a>
+          </h2>
+          <span class="tag-federated">
+            <a href="#"><span class="icon-linked"></span> Data Provided by <span class="domain">data.wastate.gov</span></a>
+          </span>
+            <span class="tag-category">Animal Control</span>
+          </div>
+          <div class="entry-view-type"><span class="icon-cards"></span> Data Lens</div>
+        </div>
+
+        <div class="entry-content">
+          <div class="entry-main">
+            <div class="entry-description">
+              Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+            </div>
+
+            <div class="entry-meta first">
+              <div class="entry-meta topics">
+                <span class="meta-title">Topics</span> <span class="topic-list"><a href="#t1">one</a>, <a href="#t2">two</a>, <a href="#t3">taggytagtag</a>, <a href="#t4">one</a>, <a href="#t5">two</a>, <a href="#t6">taggytagtag</a>, and 12 more</span>
+              </div>
+
+              <div class="entry-meta api">
+                <span class="api-link"><a href="#">API Docs</a></span>
+              </div>
+
+            </div>
+
+          </div><!-- ./entry-main -->
+
+          <div class="entry-meta second">
+            <div class="entry-meta updated">
+              <span class="meta-title">Updated</span>
+              <span class="date">December 1, 2015</span>
+            </div>
+            <div class="entry-meta views">
+              <span class="meta-title">Views</span>
+              <span class="view-count">12,343</span>
+            </div>
+          </div>
+
+
+        </div><!-- /.entry-content -->
+      </div> <!-- /.result-card -->
+
+
+
+<pre class="usage">
+<code class="language-markup">
+    &lt;div class=&quot;result-card&quot;&gt;
+
+      &lt;div class=&quot;entry-header&quot;&gt;
+        &lt;div class=&quot;entry-title&quot;&gt;
+          &lt;h2 class=&quot;entry-name&quot;&gt;&lt;a href=&quot;#result1&quot;&gt;Pacific Northwest Pet Escapes&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+            &lt;span class=&quot;tag-category&quot;&gt;Animal Control&lt;&#x2F;span&gt;
+          &lt;&#x2F;div&gt;
+          &lt;div class=&quot;entry-view-type&quot;&gt;&lt;span class=&quot;icon-dataset&quot;&gt;&lt;&#x2F;span&gt; Dataset &lt;&#x2F;div&gt;
+        &lt;&#x2F;div&gt;
+
+        &lt;div class=&quot;entry-content&quot;&gt;
+          &lt;div class=&quot;entry-main&quot;&gt;
+            &lt;div class=&quot;entry-description&quot;&gt;
+              Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... &lt;span class=&quot;more-link&quot;&gt;&lt;a class=&quot;more-link&quot; href=&quot;#more&quot;&gt; More &lt;&#x2F;a&gt;&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+
+            &lt;div class=&quot;entry-meta first&quot;&gt;
+              &lt;div class=&quot;entry-meta topics&quot;&gt;
+                &lt;span class=&quot;meta-title&quot;&gt;Topics&lt;&#x2F;span&gt; &lt;span class=&quot;topic-list&quot;&gt; No Tags Provided&lt;&#x2F;span&gt;
+              &lt;&#x2F;div&gt;
+
+              &lt;div class=&quot;entry-meta api&quot;&gt;
+                &lt;span class=&quot;api-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;API Docs&lt;&#x2F;a&gt;&lt;&#x2F;span&gt;
+              &lt;&#x2F;div&gt;
+
+            &lt;&#x2F;div&gt;
+
+          &lt;&#x2F;div&gt;&lt;!-- .&#x2F;entry-main --&gt;
+
+          &lt;div class=&quot;entry-meta second&quot;&gt;
+            &lt;div class=&quot;entry-meta updated&quot;&gt;
+              &lt;span class=&quot;meta-title&quot;&gt;Updated&lt;&#x2F;span&gt;
+              &lt;span class=&quot;date&quot;&gt;December 1, 2015&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+            &lt;div class=&quot;entry-meta views&quot;&gt;
+              &lt;span class=&quot;meta-title&quot;&gt;Views&lt;&#x2F;span&gt;
+              &lt;span class=&quot;view-count&quot;&gt;12,343&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+          &lt;&#x2F;div&gt;
+
+
+        &lt;&#x2F;div&gt;&lt;!-- &#x2F;.entry-content --&gt;
+      &lt;&#x2F;div&gt; &lt;!-- &#x2F;.result-card --&gt;
+
+
+    &lt;div class=&quot;result-card federated&quot;&gt;
+
+      &lt;div class=&quot;entry-header&quot;&gt;
+        &lt;div class=&quot;entry-title&quot;&gt;
+          &lt;h2 class=&quot;entry-name&quot;&gt;
+            &lt;a href=&quot;#result2&quot;&gt;Realistic Titles (Latest Version) 2016 &lt;span class=&quot;icon-external-square&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;a&gt;
+          &lt;&#x2F;h2&gt;
+          &lt;span class=&quot;tag-federated&quot;&gt;
+            &lt;a href=&quot;#&quot;&gt;&lt;span class=&quot;icon-linked&quot;&gt;&lt;&#x2F;span&gt; Data Provided by &lt;span class=&quot;domain&quot;&gt;data.wastate.gov&lt;&#x2F;span&gt;&lt;&#x2F;a&gt;
+          &lt;&#x2F;span&gt;
+            &lt;span class=&quot;tag-category&quot;&gt;Animal Control&lt;&#x2F;span&gt;
+          &lt;&#x2F;div&gt;
+          &lt;div class=&quot;entry-view-type&quot;&gt;&lt;span class=&quot;icon-cards&quot;&gt;&lt;&#x2F;span&gt; Data Lens&lt;&#x2F;div&gt;
+        &lt;&#x2F;div&gt;
+
+        &lt;div class=&quot;entry-content&quot;&gt;
+          &lt;div class=&quot;entry-main&quot;&gt;
+            &lt;div class=&quot;entry-description&quot;&gt;
+              Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... &lt;span class=&quot;more-link&quot;&gt;&lt;a class=&quot;more-link&quot; href=&quot;#&quot;&gt; More &lt;&#x2F;a&gt;&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+
+            &lt;div class=&quot;entry-meta first&quot;&gt;
+              &lt;div class=&quot;entry-meta topics&quot;&gt;
+                &lt;span class=&quot;meta-title&quot;&gt;Topics&lt;&#x2F;span&gt; &lt;span class=&quot;topic-list&quot;&gt;&lt;a href=&quot;#t1&quot;&gt;one&lt;&#x2F;a&gt;, &lt;a href=&quot;#t2&quot;&gt;two&lt;&#x2F;a&gt;, &lt;a href=&quot;#t3&quot;&gt;taggytagtag&lt;&#x2F;a&gt;, &lt;a href=&quot;#t4&quot;&gt;one&lt;&#x2F;a&gt;, &lt;a href=&quot;#t5&quot;&gt;two&lt;&#x2F;a&gt;, &lt;a href=&quot;#t6&quot;&gt;taggytagtag&lt;&#x2F;a&gt;, and 12 more&lt;&#x2F;span&gt;
+              &lt;&#x2F;div&gt;
+
+              &lt;div class=&quot;entry-meta api&quot;&gt;
+                &lt;span class=&quot;api-link&quot;&gt;&lt;a href=&quot;#&quot;&gt;API Docs&lt;&#x2F;a&gt;&lt;&#x2F;span&gt;
+              &lt;&#x2F;div&gt;
+
+            &lt;&#x2F;div&gt;
+
+          &lt;&#x2F;div&gt;&lt;!-- .&#x2F;entry-main --&gt;
+
+          &lt;div class=&quot;entry-meta second&quot;&gt;
+            &lt;div class=&quot;entry-meta updated&quot;&gt;
+              &lt;span class=&quot;meta-title&quot;&gt;Updated&lt;&#x2F;span&gt;
+              &lt;span class=&quot;date&quot;&gt;December 1, 2015&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+            &lt;div class=&quot;entry-meta views&quot;&gt;
+              &lt;span class=&quot;meta-title&quot;&gt;Views&lt;&#x2F;span&gt;
+              &lt;span class=&quot;view-count&quot;&gt;12,343&lt;&#x2F;span&gt;
+            &lt;&#x2F;div&gt;
+          &lt;&#x2F;div&gt;
+
+
+        &lt;&#x2F;div&gt;&lt;!-- &#x2F;.entry-content --&gt;
+      &lt;&#x2F;div&gt; &lt;!-- &#x2F;.result-card --&gt;
+
+
+</code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Rich Media/Viz Card</h4>
+               <div class="result-card media">
+
+        <div class="entry-header">
+          <div class="entry-title">
+            <h2 class="entry-name"><a href="#">Affordable Rental Housing Developments Map</a></h2>
+          </div>
+          <div class="entry-view-type"><span class="icon-map"></span></div>
+
+        </div>
+
+        <div class="entry-meta">
+          <div class="first">
+            <span class="date">Mar. 12, 2016</span>
+          </div>
+          <div class="second">
+            <span class="tag-category">Animal Control</span>
+          </div>
+        </div>
+
+        <div class="entry-content">
+
+          <div class="entry-main">
+
+            <img src="http://www.placehold.it/800x250" alt=" " />
+
+            <div class="entry-description">
+              Seattle has a lot of pets, so that means there are a lot of escapes. These friendly escape artists cost their owners... <span class="more-link"><a class="more-link" href="#"> More </a></span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div><!-- /.result-card -->
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="pagination">
+      <div class="meta">
+        <h2 class="styleguide-header">Pagination</h2>
+        <p class="small">
+          Pagination divides repetitive ordered content into more readily
+          consumable sections.
+        </p>
+      </div>
+      <div class="example">
+        <h3 class="styleguide-subheader">Pager</h3>
+
+<div class="results-pagination-controls">
+  <div class="pagination">
+      <a href="#" class="pageLink active" title="Page 1"><span class="accessible">Current Page</span>1</a>
+      <a href="#" class="pageLink" title="Page 2"><span class="accessible">page</span>2</a>
+      <a href="#" class="pageLink" title="Page 3"><span class="accessible">page</span>3</a>
+      <a href="#" class="pageLink" title="Page 4"><span class="accessible">page</span>4</a>
+      <a href="#" class="pageLink" title="Page 5"><span class="accessible">page</span>5</a>
+      <a href="#" class="pageLink" title="Page 6"><span class="accessible">page</span>6</a>
+      <a href="#" class="pageLink" title="Page 7"><span class="accessible">page</span>7</a>
+      <a href="#" class="pageLink" title="Page 8"><span class="accessible">page</span>8</a>
+      <a href="#" class="pageLink" title="Page 9"><span class="accessible">page</span>9</a>
+    <span class="ellipses">...</span>
+    <a href="#" class="next nextLink pagination-button" title="Next Page"><span class="icon">Next</span><span class="accessible">page</span></a>
+    <a href="#" class="end lastLink pagination-button" title="Last Page"><span class="icon">Last</span><span class="accessible">page</span></a></div>
+</div>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div class=&quot;results-pagination-controls&quot;&gt;
+  &lt;div class=&quot;pagination&quot;&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink active&quot; title=&quot;Page 1&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;Current Page&lt;&#x2F;span&gt;1&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 2&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;2&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 3&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;3&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 4&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;4&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 5&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;5&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 6&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;6&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 7&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;7&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 8&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;8&lt;&#x2F;a&gt;
+      &lt;a href=&quot;#&quot; class=&quot;pageLink&quot; title=&quot;Page 9&quot;&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;9&lt;&#x2F;a&gt;
+    &lt;span class=&quot;ellipses&quot;&gt;...&lt;&#x2F;span&gt;
+    &lt;a href=&quot;#&quot; class=&quot;next nextLink pagination-button&quot; title=&quot;Next Page&quot;&gt;&lt;span class=&quot;icon&quot;&gt;Next&lt;&#x2F;span&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;&lt;&#x2F;a&gt;
+    &lt;a href=&quot;#&quot; class=&quot;end lastLink pagination-button&quot; title=&quot;Last Page&quot;&gt;&lt;span class=&quot;icon&quot;&gt;Last&lt;&#x2F;span&gt;&lt;span class=&quot;accessible&quot;&gt;page&lt;&#x2F;span&gt;&lt;&#x2F;a&gt;&lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+  </div>
+</div>
+
+
+    <script src="https://fb.me/react-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/tether-f3d4b089.js"></script>
+    <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
+
+    <script type="text/javascript" src="js/socrata-components-0dcf4e28.js"></script>
+    <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
+  </body>
+</html>

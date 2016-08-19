@@ -19,7 +19,7 @@ module SocrataSiteChrome
 
       {
         id: config[:id],
-        content: site_chrome_config.try(:fetch, :content),
+        content: site_chrome_config.try(:fetch, :content, nil),
         updated_at: site_chrome_config.try(:fetch, :updatedAt, nil) || config[:updatedAt],
         current_version: site_chrome_content.dig(:value, :current_version) ||
           latest_existing_version(site_chrome_content) || SiteChrome::LATEST_VERSION

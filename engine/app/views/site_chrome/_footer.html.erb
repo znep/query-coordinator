@@ -10,7 +10,7 @@
     </div>
     <div class="links">
       <ul class="links-col">
-        <% get_site_chrome.footer[:links].each do |link| %>
+        <% get_site_chrome.footer[:links].to_a.each do |link| %>
           <% if valid_link_item?(link) %>
             <li>
               <%= link_to(localized("footer.links.#{link[:key]}", get_site_chrome.locales), link[:url], :class => 'footer-link') %>

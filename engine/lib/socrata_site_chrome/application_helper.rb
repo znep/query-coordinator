@@ -32,7 +32,9 @@ module SocrataSiteChrome
     end
 
     def username
-      request_current_user.try(:displayName).presence || 'Profile'
+      request_current_user.try(:displayName).presence ||
+        request_current_user.to_h['displayName'].presence ||
+        'Profile'
     end
 
     def current_user_is_admin?

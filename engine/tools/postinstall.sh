@@ -1,18 +1,9 @@
 #!/bin/bash
-if [ $(npm show socrata-components version) ]; then
-  mkdir -p public/socrata_site_chrome/stylesheets/styleguide
-  pushd public/socrata_site_chrome/stylesheets/styleguide
-  ln -s ../../../../node_modules/socrata-components/dist/* .
-  popd
-elif [ $(npm show socrata-styleguide version) ]; then
-  mkdir -p public/socrata_site_chrome/stylesheets/styleguide
-  pushd public/socrata_site_chrome/stylesheets/styleguide
-  ln -s ../../../../node_modules/socrata-styleguide/dist/* .
-  popd
-else
-  echo 'npm cannot find socrata-components or socrata-styleguide.'
-  exit 1;
-fi
+
+# mkdir -p public/stylesheets/styleguide/css
+mkdir -p public/socrata_site_chrome/stylesheets/styleguide/fonts
+# cp node_modules/socrata-components/dist/css/* public/stylesheets/styleguide/css
+cp node_modules/socrata-components/dist/fonts/* public/socrata_site_chrome/stylesheets/styleguide/fonts
 
 sass public/socrata_site_chrome/stylesheets/styleguide/fonts/socrata-icons.scss public/socrata_site_chrome/stylesheets/styleguide/fonts/socrata-icons.css
 

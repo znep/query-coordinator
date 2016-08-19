@@ -72,6 +72,6 @@ _.defer(function() {
     );
 
     // Initialize the styleguide javascript components
-    styleguide.attachTo(document);
+    styleguide.attachTo(document.querySelector('.dataset-landing-page'));
   });
 });

@@ -38,10 +38,5 @@ module SocrataSiteChrome
       key == 'font_family' ? %Q{"#{CGI.escapeHTML(value.to_s)}"} : value
     end
 
-    def exclude_styleguide?
-      SocrataSiteChrome::Engine.config.respond_to?(:styleguide) &&
-        SocrataSiteChrome::Engine.config.styleguide == false
-    end
-
   end
 end

@@ -170,13 +170,8 @@ The values specified in the configuration file are used in the following files t
 
 ### Styleguide icons
 
-By default, `styleguide` icons are included in the rendered CSS through the engine.
-However, if you know your hosting app is already using the styleguide and you want
-to prevent the engine from rendering it, add the following to `application.rb`:
-
-```ruby
-config.styleguide = false
-```
+Site Chrome has a requirement that the hosting app provide the Socrata Styleguide icons font.
+https://github.com/socrata/styleguide
 
 #### Sample `siteChromeConfigVars` configuration:
 

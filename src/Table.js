@@ -125,18 +125,24 @@ $.fn.socrataTable = function(originalVif) {
     // a little tricky if this happens in setDataQuery's call stack.
     const pageSize = computePageSize();
 
-    setDataQuery(
-      renderState.vif,
-      0, // Offset
-      pageSize,
-      _.get(renderState.vif, 'configuration.order'),
-      SoqlHelpers.whereClauseFilteringOwnColumn(renderState.vif, 0)
-    ).
-      then(function() {
-        visualization.render(renderState.vif, renderState.fetchedData);
-      })['catch'](function() {
-        updateState({error: true});
-      });
+    // If the container is big enough to render rows, initiate a data request.
+    // If it is not, then we will wait for the ...INVALIDATE_SIZE event, in
+    // response to which we will initiate a data request.
+    if (pageSize > 0) {
+
+      setDataQuery(
+        renderState.vif,
+        0, // Offset
+        pageSize,
+        _.get(renderState.vif, 'configuration.order'),
+        SoqlHelpers.whereClauseFilteringOwnColumn(renderState.vif, 0)
+      ).
+        then(function() {
+          visualization.render(renderState.vif, renderState.fetchedData);
+        })['catch'](function() {
+          updateState({error: true});
+        });
+    }
   }
 
   /**
@@ -376,25 +382,23 @@ $.fn.socrataTable = function(originalVif) {
 
   function handleInvalidateSize() {
     const pageSize = computePageSize();
-    const oldPageSize = _.get(renderState, 'fetchedData.pageSize');
+    const oldPageSize = _.get(renderState, 'fetchedData.pageSize', 0);
 
-    // Canceling inflight requests is hard.
-    // If we're currently fetching data, ignore the size change.
-    // The size will be rechecked once the current request
-    // is complete.
+    // Canceling inflight requests is hard. If we're currently fetching data,
+    // ignore the size change. The size will be rechecked once the current
+    // request is complete.
     if (
       !renderState.error &&
       !renderState.busy &&
-      oldPageSize !== pageSize &&
-      renderState.fetchedData
+      oldPageSize !== pageSize
     ) {
 
       setDataQuery(
         renderState.vif,
-        renderState.fetchedData.startIndex,
+        _.get(renderState, 'fetchedData.startIndex', 0),
         pageSize,
         _.get(renderState.vif, 'configuration.order'),
-        renderState.fetchedData.whereClauseComponents
+        SoqlHelpers.whereClauseFilteringOwnColumn(renderState.vif, 0)
       );
     }
   }
@@ -410,8 +414,7 @@ $.fn.socrataTable = function(originalVif) {
 
     if (
       !renderState.error &&
-      !renderState.busy &&
-      renderState.fetchedData
+      !renderState.busy
     ) {
 
       setDataQuery(

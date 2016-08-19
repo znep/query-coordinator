@@ -1,4 +1,4 @@
-# Socrata Styleguide
+# Socrata's Styleguide
 ## Goals :sparkles:
 - Provide a place to construct an experiment with styles destined for the Socrata Platform.
 - Make it possible to quickly prototype a design using styles and design patterns.

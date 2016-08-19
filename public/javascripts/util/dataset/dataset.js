@@ -2902,6 +2902,10 @@
         !_.include(newDS.flags || [], 'default')) {
         newDS.flags = newDS.flags || [];
         newDS.flags.push('default');
+
+        if(_.include(ds.flags || [], 'restorable')) {
+          newDS.flags.push('restorable');
+        }
       }
 
       var oldQuery = ds._getQueryGrouping();
@@ -4718,10 +4722,16 @@
     return dsCopy;
   }
 
+  Dataset.getNumberOfDaysRestorable = function() {
+    return parseInt($.ajax({
+      url: '/views.json?method=numberOfDaysRestorable',
+      async: false
+    }).responseText);
+  }
+
   if (blist.inBrowser) {
     this.Dataset = Dataset;
   } else {
     module.exports = Dataset;
   }
-
 })();

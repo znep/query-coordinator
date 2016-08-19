@@ -1,3 +1,10 @@
+import * as downloads from './downloads/actions';
+export { downloads };
+
+import * as feedback from '../../components/feedback';
+
+export const showFeedbackFlannel = hoverable => feedback.Flannel.actions.open(hoverable);
+
 export const types = {
   startLoading: 'shared.startLoading',
   stopLoading: 'shared.stopLoading',

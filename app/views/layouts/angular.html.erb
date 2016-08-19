@@ -52,7 +52,7 @@
     <%= render_airbrake_shim %>
     <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>
-    <%= include_webpack_bundle 'data-lens/main.js' %>
+    <%= include_webpack_bundle 'data-cards/main.js' %>
 
     <%= site_chrome_javascript_tag if site_chrome_enabled? %>
     <%= render 'site_chrome/header' if site_chrome_enabled? %>

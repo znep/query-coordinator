@@ -10,6 +10,8 @@ const initialState = Immutable.fromJS({
   visible: false,
   goalId: null,
   saveInProgress: false,
+  formData: {},
+  initialFormData: null,
   message: {
     visible: false,
     content: '',
@@ -28,9 +30,18 @@ const showModalMessage = (state, { message, messageType }) => state.mergeIn(['me
 
 const hideModalMessage = (state) => state.set('message', initialState.get('message'));
 
-export default ReduxImmutable.createReducer(new Immutable.Map, {
+const updateFormData = (state, { data }) => {
+  if (state.get('initialFormData')) {
+    return state.mergeIn(['formData'], data);
+  } else {
+    return state.set('initialFormData', data).set('formData', data);
+  }
+};
+
+export default ReduxImmutable.createReducer(initialState, {
   [Actions.types.openModal]: openModal,
   [Actions.types.closeModal]: closeModal,
+  [Actions.types.updateFormData]: updateFormData,
   [SharedActions.types.showModalMessage]: SharedActions.createModalHandler(section, modal, showModalMessage),
   [SharedActions.types.hideModalMessage]: SharedActions.createModalHandler(section, modal, hideModalMessage)
 });

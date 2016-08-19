@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 (function($)
 {
     window.requestAnimationFrame = window.webkitRequestAnimationFrame ||
@@ -68,7 +70,7 @@
             OpenLayers.ImgPath = '/images/openlayers/';
 
             mapObj.map = new blist.openLayers.Map(mapObj.$dom()[0], mapOptions);
-
+            mapObj.map.addControl(new OpenLayers.Control.ScaleLine());
             mapObj.map.escapeToClosePopup = function()
             {
                 this.escapeClause = function(evt)

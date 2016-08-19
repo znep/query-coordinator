@@ -70,34 +70,6 @@ describe SiteChromeHelper do
     end
   end
 
-  describe '#links_with_placeholders' do
-    it 'returns all placeholder values if passed nil links' do
-      result = links_with_placeholders(nil, 15)
-      expect(result).to match_array([nil] * 15)
-    end
-
-    it 'returns all placeholder values if passed an empty array' do
-      result = links_with_placeholders([], 15)
-      expect(result).to match_array([nil] * 15)
-    end
-
-    it 'returns no placeholder values if the links length matches the link_count' do
-      result = links_with_placeholders(['stuff'] * 10, 10)
-      expect(result).to match_array(['stuff'] * 10)
-    end
-
-    it 'fills in placeholders for link_count - links.length' do
-      result = links_with_placeholders(['stuff'] * 4, 8)
-      expected_array = ['stuff'] * 4 + [nil] * 4
-      expect(result).to match_array(expected_array)
-    end
-
-    it 'trims the links to the link_count' do
-      result = links_with_placeholders(['stuff'] * 20, 5)
-      expect(result).to match_array(['stuff'] * 5)
-    end
-  end
-
   describe '#fetch_boolean' do
     it 'returns false if the content is nil' do
       allow(self).to receive(:fetch_content).and_return(nil)
@@ -115,24 +87,98 @@ describe SiteChromeHelper do
         expect(fetch_boolean([])).to eq(true)
       end
     end
+
+    describe 'with true default value' do
+      it 'returns true if the content is nil' do
+        allow(self).to receive(:fetch_content).and_return(nil)
+        expect(fetch_boolean([], true)).to eq(true)
+      end
+
+      it 'returns false if the whitelist is not met' do
+        allow(self).to receive(:fetch_content).and_return('whatever')
+        expect(fetch_boolean([], true)).to eq(false)
+      end
+
+      ['1', 'true', 1, true].each do |test|
+        it "returns true if content is `#{test}`" do
+          allow(self).to receive(:fetch_content).and_return(test)
+          expect(fetch_boolean([], true)).to eq(true)
+        end
+      end
+    end
   end
 
-  describe '#fetch_boolean_with_true_default' do
-    it 'returns true if the content is nil' do
-      allow(self).to receive(:fetch_content).and_return(nil)
-      expect(fetch_boolean([])).to eq(false)
+  describe '#link_row_div' do
+    it 'returns three input tags' do
+      allow(self).to receive(:fetch_content).and_return('some content')
+      result = Nokogiri::HTML.parse(link_row_div('footer', nil, {}, false))
+      expect(result.search('input').length).to eq(3)
     end
 
-    it 'returns false if the whitelist is not met' do
-      allow(self).to receive(:fetch_content).and_return('whatever')
-      expect(fetch_boolean([])).to eq(false)
+    it 'returns a default link row' do
+      result = Nokogiri::HTML.parse(link_row_div('header', nil, {}, true))
+      expect(result.search('.link-row.default').length).to eq(1)
+    end
+  end
+
+  describe '#empty_link_row_divs' do
+    before(:each) do
+      allow(self).to receive(:fetch_content).and_return('some content')
     end
 
-    ['1', 'true', 1, true].each do |test|
-      it "returns true if content is `#{test}`" do
-        allow(self).to receive(:fetch_content).and_return(test)
-        expect(fetch_boolean([])).to eq(true)
-      end
+    it 'returns 3 empty link rows if there are no present links' do
+      result = Nokogiri::HTML.parse(empty_link_row_divs('header', {}, 0))
+      expect(result.search('.link-row').length).to eq(3)
+    end
+
+    it 'returns 2 empty link rows if there is 1 present link' do
+      result = Nokogiri::HTML.parse(empty_link_row_divs('footer', {}, 1))
+      expect(result.search('.link-row').length).to eq(2)
+    end
+
+    it 'returns 0 empty link rows if there are 3 present links' do
+      result = Nokogiri::HTML.parse(empty_link_row_divs('header', {}, 3))
+      expect(result.search('.link-row').length).to eq(0)
+    end
+
+    it 'does not throw an exception if there are > 3 present links' do
+      result = Nokogiri::HTML.parse(empty_link_row_divs('footer', {}, 9))
+      expect(result.search('.link-row').length).to eq(0)
+    end
+  end
+
+  describe '#present_links' do
+    it 'returns an empty array if no links have a "url" present' do
+      links = [
+        { 'url' => '', 'key' => 'link_0'},
+        { 'url' => nil, 'key' => 'link_1'},
+        { 'key' => 'link_2'}
+      ]
+      result = present_links(links)
+      expect(result).to match_array([])
+    end
+
+    it 'returns an array of only links that have a "url" present' do
+      links = [
+        { 'url' => 'http://facebook.com', 'key' => 'link_0'},
+        { 'url' => '', 'key' => 'link_1'},
+        { 'url' => '/browse', 'key' => 'link_2'}
+      ]
+      result = present_links(links)
+      expect(result).to match_array(
+        [{ 'url' => 'http://facebook.com', 'key' => 'link_0'}, { 'url' => '/browse', 'key' => 'link_2'}]
+      )
+    end
+  end
+
+  describe '#page_controls' do
+    it 'returns a page controls div with a save, preview, and cancel button' do
+      result = Nokogiri::HTML.parse(page_controls)
+      expect(result.search('.page-controls').length).to eq(1)
+      expect(result.search('button').length).to eq(3)
+      expect(result.search('#site_chrome_save').length).to eq(1)
+      expect(result.search('#site_chrome_cancel').length).to eq(1)
+      expect(result.search('#site_chrome_preview').length).to eq(1)
     end
   end
 end

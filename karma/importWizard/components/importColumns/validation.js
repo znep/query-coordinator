@@ -3,7 +3,7 @@ import _ from 'lodash';
 import TestUtils from 'react-addons-test-utils';
 
 import * as V from 'components/importColumns/validation';
-
+import * as LocationColumn from 'components/importColumns/locationColumn';
 
 const sourceColumns: Array<SourceColumn> = [
   {
@@ -398,6 +398,260 @@ describe('validate', () => {
       });
 
     });
+
+  });
+
+  describe('location columns', () => {
+    let locationColumn;
+    const sourceColumns = [
+      {
+        "name": "ID",
+        "processed": 4999,
+        "suggestion": "number",
+        "types": {
+          "number": 4999,
+          "text": 4999,
+          "calendar_date": 4999,
+          "money": 4999,
+          "percent": 4999
+        },
+        "index": 0
+      },
+      {
+        "name": "Case Number",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 1
+      },
+      {
+        "name": "Date",
+        "processed": 4999,
+        "suggestion": "calendar_date",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 4999,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 2
+      },
+      {
+        "name": "Block",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 3
+      },
+      {
+        "name": "IUCR",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 3333,
+          "text": 4999,
+          "calendar_date": 3333,
+          "money": 3333,
+          "percent": 3333
+        },
+        "index": 4
+      },
+      {
+        "name": "Primary Type",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 5
+      },
+      {
+        "name": "Description",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 6
+      },
+      {
+        "name": "Location Description",
+        "processed": 4999,
+        "suggestion": "text",
+        "types": {
+          "number": 0,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 0,
+          "percent": 0
+        },
+        "index": 7
+      },
+      {
+        "name": "Latitude",
+        "processed": 4999,
+        "suggestion": "number",
+        "types": {
+          "number": 4999,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 4999,
+          "percent": 4999
+        },
+        "index": 8
+      },
+      {
+        "name": "Longitude",
+        "processed": 4999,
+        "suggestion": "number",
+        "types": {
+          "number": 4999,
+          "text": 4999,
+          "calendar_date": 0,
+          "money": 4999,
+          "percent": 4999
+        },
+        "index": 9
+      }
+    ];
+
+    beforeEach(() => {
+      let components = LocationColumn.defaultLocationColumn();
+      locationColumn = { columnSource: { components: components } };
+    });
+
+    it(`check for no initial errors`, () => {
+      const initialErrors = V.validateSingleColumnLocationColumn(locationColumn, sourceColumns);
+      expect(initialErrors.length).to.equal(0);
+    });
+
+    it(`coordinateError missing lon`, () => {
+      let components = locationColumn.columnSource.components;
+      components.lat = { sourceColumn: sourceColumns[8] };
+
+      const coordinateError = V.coordinateError(components);
+      expect(coordinateError).to.deep.equal({ type: 'missing_lat_long', coordinateType: 'latitude', missingCoordinateType: 'longitude' });
+    });
+
+    it(`coordinateError missing lat`, () => {
+      let components = locationColumn.columnSource.components;
+      components.lon = { sourceColumn: sourceColumns[9] };
+
+      const coordinateError = V.coordinateError(components);
+      expect(coordinateError).to.deep.equal({ type: 'missing_lat_long', coordinateType: 'longitude', missingCoordinateType: 'latitude' });
+    });
+
+    it(`fieldValidationWarning street`, () => {
+      // Description
+      const valid = { sourceColumn: sourceColumns[6] };
+      const noError = V.fieldValidationWarning('street', valid, ['text'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const invalid = { sourceColumn: sourceColumns[2] };
+      const error = V.fieldValidationWarning('street', invalid, ['text'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
+    it(`fieldOrTextValidationWarning city`, () => {
+      // Description
+      const valid = {
+        column: { sourceColumn: sourceColumns[6] },
+        isColumn: true
+      };
+      const noError = V.fieldOrTextValidationWarning('city', valid, ['text'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const invalid = {
+        column: { sourceColumn: sourceColumns[2] },
+        isColumn: true
+      };
+      const error = V.fieldOrTextValidationWarning('city', invalid, ['text'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
+    it(`fieldOrTextValidationWarning state`, () => {
+      // Description
+      const valid = {
+        column: { sourceColumn: sourceColumns[6] },
+        isColumn: true
+      };
+      const noError = V.fieldOrTextValidationWarning('state', valid, ['text'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const invalid = {
+        column: { sourceColumn: sourceColumns[2] },
+        isColumn: true
+      };
+      const error = V.fieldOrTextValidationWarning('state', invalid, ['text'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
+    it(`fieldOrTextValidationWarning zip`, () => {
+      // Description
+      const valid = {
+        column: { sourceColumn: sourceColumns[6] },
+        isColumn: true
+      };
+      const noError = V.fieldOrTextValidationWarning('zip', valid, ['text', 'number'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const invalid = {
+        column: { sourceColumn: sourceColumns[2] },
+        isColumn: true
+      };
+      const error = V.fieldOrTextValidationWarning('zip', invalid, ['text', 'number'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
+    it(`fieldValidationWarning lat`, () => {
+      // latitude
+      const latValid = { sourceColumn: sourceColumns[8] };
+      const noError = V.fieldValidationWarning('latitude', latValid, ['number'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const latInvalid = { sourceColumn: sourceColumns[2] };
+      const error = V.fieldValidationWarning('latitude', latInvalid, ['number'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
+    it(`fieldValidationWarning lon`, () => {
+      // latitude
+      const lonValid = { sourceColumn: sourceColumns[9] };
+      const noError = V.fieldValidationWarning('longitude', lonValid, ['number'], sourceColumns);
+      expect(noError).to.equal(null);
+
+      // Date
+      const lonInvalid = { sourceColumn: sourceColumns[2] };
+      const error = V.fieldValidationWarning('longitude', lonInvalid, ['number'], sourceColumns);
+      expect(error.type).to.equal('wrong_type_location');
+    });
+
 
   });
 

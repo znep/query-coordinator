@@ -7,6 +7,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def setup
     init_current_domain
+    application_helper.stubs(:cookies => {})
   end
 
   def test_custom_ga_tracking_code
@@ -647,6 +648,7 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def teardown
+    application_helper.unstub(:cookies)
     application_helper.unstub(:controller_name)
     application_helper.unstub(:request)
     CurrentDomain.unstub(:configuration)

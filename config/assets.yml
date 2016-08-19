@@ -23,7 +23,6 @@ javascripts:
     - public/javascripts/plugins/pure.js
     - public/javascripts/plugins/jquery-ui-1.8.23.custom.js
     - public/javascripts/plugins/lodash.js
-    - public/javascripts/util/jquery-extensions.js
     - public/javascripts/plugins/moment.min.js
     - public/javascripts/util/namespace.js
     - public/javascripts/util/compat.js
@@ -350,7 +349,7 @@ javascripts:
     - public/javascripts/screens/admin-federation-screen.js
   admin-collapse-nav:
     - public/javascripts/screens/admin-collapse-nav.js
-  admin-jobs:
+  admin-activity-feed:
     - public/javascripts/plugins/daterangepicker.jquery.js
   browse-control:
     - public/javascripts/plugins/jquery.tagcloud.js
@@ -409,18 +408,6 @@ javascripts:
     - public/javascripts/controls/blob-dataset.js
     - public/javascripts/controls/full-screen.js
     - public/javascripts/screens/dataset-about.js
-  dataset-new:
-    - public/javascripts/util/serialize.js
-    - public/javascripts/util/datasync.js
-    - public/javascripts/plugins/ajaxupload.js
-    - public/javascripts/plugins/fileuploader.js
-    - public/javascripts/plugins/blist.fileuploader.js
-    - public/javascripts/plugins/jquery.awesomereorder.js
-    - public/javascripts/controls/attachments-editor.js
-    - public/javascripts/controls/wizard.js
-    - public/javascripts/screens/import-pane.js
-    - public/javascripts/screens/dataset-new.js
-    - public/javascripts/screens/edit-license.js
   # TODO(vilterp): remove this once `ingress_reenter` feature flag is turned on
   dataset-new-old:
     - public/javascripts/util/serialize.js

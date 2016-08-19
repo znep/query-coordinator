@@ -3,8 +3,9 @@ import {
   fileDownloadComplete,
   update,
   view
-} from 'components/downloadFile';
-
+}
+from 'components/downloadFile';
+import TestUtils from 'react-addons-test-utils';
 import * as ExampleData from './exampleData';
 
 describe("downloadFile's reducer", () => {
@@ -30,7 +31,7 @@ describe("downloadFile's reducer", () => {
         onFileDownloadAction: _.noop,
         fileDownload: {
           type: 'InProgress',
-          message : '42 bytes uploaded'
+          message: '42 bytes uploaded'
         },
         goToPrevious: _.noop
       }));
@@ -50,6 +51,25 @@ describe("downloadFile's reducer", () => {
       }));
       expect(element.querySelector('.uploadThrobber .text').innerHTML)
         .to.equal(I18n.screens.dataset_new.crossload.downloading);
+    });
+
+    it('cancels the download when clicked', () => {
+      var events = [];
+      var previous = false;
+      const element = renderComponent(view({
+        onFileDownloadAction: (ev) => events.push(ev),
+        fileDownload: {
+          type: 'Started'
+        },
+        goToPrevious: () => previous = true
+      }));
+
+      TestUtils.Simulate.click(element.querySelector('.prevButton'));
+
+      expect(events).to.eql([{
+        'type': 'FILE_DOWNLOAD_CANCEL'
+      }]);
+      expect(previous).to.eql(true);
     });
   });
 });

@@ -17,10 +17,16 @@ allow_data_lens_owner_change:
   description: Controls whether ownership of data lenses can be transferred away from the creator.
   defaultValue: true
   category: data lens
+auth0_social:
+  description: Show auth0 social sign-on buttons
+  defaultValue: false
 bubble:
   description: D3 Bubble Charts
   defaultValue: old
   expectedValues: nextgen old
+cetera_profile_search:
+  description: Use the shiny new Cetera backend search service to power the profile page. 
+  defaultValue: false
 cetera_search:
   description: Use the shiny new Cetera backend search service. NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
   defaultValue: false
@@ -79,6 +85,10 @@ enable_dataset_landing_page:
 enable_dataset_landing_page_tour:
   description: Display the tour when visitors first access a dataset landing page.
   defaultValue: true
+enable_flexible_data_lens:
+  description: Enables Flexible Data Lens
+  defaultValue: false
+  category: data lens
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
@@ -98,6 +108,9 @@ display_catalog_lens_delete_button:
   defaultValue: true
 embetter_analytics_page:
   description: Incremental improvements to site analytics page
+  defaultValue: false
+embetter_analytics_browser_views_only:
+  description: Just the embettered browser page views rather than "views"
   defaultValue: false
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
@@ -155,10 +168,6 @@ stories_show_facet_in_catalog:
 enable_new_account_verification_email:
   description: When enabled, causes new accounts to receive an email with verification link that must be validated before account can be used.
   defaultValue: false
-eventing_metrics:
-  description: Use experimental event-based instead of key-value metrics. If 'both', emit both.
-  defaultValue: false
-  expectedValues: both
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''

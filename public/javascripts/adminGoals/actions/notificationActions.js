@@ -1,7 +1,7 @@
-import {
-  SHOW_GLOBAL_NOTIFICATION,
-  DISMISS_GLOBAL_NOTIFICATION
-} from '../actionTypes';
+export const types = {
+  show: 'notification.showGlobal',
+  hide: 'notification.hideGlobal'
+};
 
 /**
  * WARNING!
@@ -27,24 +27,20 @@ import {
  * See: middlewares/notifyUser.js
  *
  * Action creator for showing global notification
- * @param {String} type Alert type (default | info | success | warning | error)
+ * @param {String} notificationType Alert type (default | info | success | warning | error)
  * @param {String} message Alert message
  * @returns {Object}
  */
-export function showNotification(notificationType, message) {
-  return {
-    type: SHOW_GLOBAL_NOTIFICATION,
-    notificationType,
-    message
-  };
-}
+export const showNotification = (notificationType, message) => ({
+  type: types.show,
+  notificationType,
+  message
+});
 
 /**
  * Action creator for dismissing global notification
  * @returns {Object}
  */
-export function dismissNotification() {
-  return {
-    type: DISMISS_GLOBAL_NOTIFICATION
-  };
-}
+export const dismissNotification = () => ({
+  type: types.hide
+});

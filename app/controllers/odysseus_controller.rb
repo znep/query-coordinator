@@ -2,16 +2,13 @@ class OdysseusController < ApplicationController
   skip_before_filter :require_user
 
   def index
-    odysseus_request(request.path) do |res|
-      contents = JSON.parse(res.body)
+    render_odysseus_path(request.path)
+  end
 
-      @title = contents['title'] || ''
-      @style_packages = contents['styles'] || []
-      @script_packages = contents['scripts'] || []
-      @objects = contents['objects']
-      @contents = contents['markup']
-      @client_version = contents['client_version']
-    end
+  def chromeless
+    @suppress_chrome = true
+    @suppress_govstat = true # remove background and other unnecessary styles
+    render_odysseus_path(request.path, additional_style: 'govstat-chromeless')
   end
 
   def version
@@ -21,6 +18,23 @@ class OdysseusController < ApplicationController
   end
 
   private
+
+  def render_odysseus_path(path, options = {})
+    odysseus_request(path) do |res|
+      odysseus_response = JSON.parse(res.body)
+      styles = odysseus_response['styles'] || []
+      styles.push(options[:additional_style]) if options[:additional_style]
+
+      @title = odysseus_response['title'] || ''
+      @style_packages = styles
+      @script_packages = odysseus_response['scripts'] || []
+      @objects = odysseus_response['objects']
+      @contents = odysseus_response['markup']
+      @client_version = odysseus_response['client_version']
+
+      render 'index'
+    end
+  end
 
   def odysseus_request(path)
     odysseus_addr = ::ZookeeperDiscovery.get(:odysseus)

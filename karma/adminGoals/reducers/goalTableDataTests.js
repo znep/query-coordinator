@@ -4,9 +4,7 @@ import {
   TABLE_ROW_SELECTED,
   TABLE_ROW_DESELECTED,
   TABLE_ROW_ALL_SELECTION_TOGGLE,
-  TABLE_ROW_SELECTION_START,
-  TABLE_ROW_SELECTION_END,
-  TABLE_ROW_SELECTION_CANCEL
+  TABLE_ROW_MULTIPLE_SELECTION
 } from 'actionTypes';
 import goalTableData from 'reducers/goalTableData';
 
@@ -27,7 +25,8 @@ describe('goalTableData reducers', () => {
 
     const expectedReturn = {
       goalTableData: {
-        selectedRows: ['xxxx-xxxx']
+        selectedRows: ['xxxx-xxxx'],
+        lastSelectedRow: 'xxxx-xxxx'
       }
     };
 
@@ -113,26 +112,7 @@ describe('goalTableData reducers', () => {
     expect(reducerReturn.toJS()).to.deep.eq(expectedReturn);
   });
 
-  it(`should handle ${TABLE_ROW_SELECTION_START}`, () => {
-    const defaultState = Immutable.Map({
-      goalTableData: {}
-    });
-
-    const reducerReturn = testReducer(defaultState, {
-      type: TABLE_ROW_SELECTION_START,
-      goalId: 'xxxx-xxxx'
-    });
-
-    const expectedReturn = {
-      goalTableData: {
-        multipleRowSelection: 'xxxx-xxxx'
-      }
-    };
-
-    expect(reducerReturn.toJS()).to.deep.eq(expectedReturn);
-  });
-
-  it(`should handle ${TABLE_ROW_SELECTION_END}`, () => {
+  it(`should handle ${TABLE_ROW_MULTIPLE_SELECTION}`, () => {
     const goals = [
       { id: 'aaaa-aaaa' },
       { id: 'bbbb-bbbb' },
@@ -153,7 +133,7 @@ describe('goalTableData reducers', () => {
 
     const defaultState = Immutable.Map({
       goalTableData: {
-        multipleRowSelection: 'bbbb-bbbb',
+        lastSelectedRow: 'bbbb-bbbb',
         selectedRows: [],
         goals,
         cachedGoals
@@ -161,34 +141,16 @@ describe('goalTableData reducers', () => {
     });
 
     const reducerReturn = testReducer(defaultState, {
-      type: TABLE_ROW_SELECTION_END,
+      type: TABLE_ROW_MULTIPLE_SELECTION,
       goalId: 'ffff-ffff'
     });
 
     const expectedReturn = {
       goalTableData: {
-        multipleRowSelection: false,
+        lastSelectedRow: 'ffff-ffff',
         goals,
         cachedGoals,
         selectedRows: ['bbbb-bbbb', 'cccc-cccc', 'dddd-dddd', 'ffff-ffff']
-      }
-    };
-
-    expect(reducerReturn.toJS()).to.deep.eq(expectedReturn);
-  });
-
-  it(`should handle ${TABLE_ROW_SELECTION_CANCEL}`, () => {
-    const defaultState = Immutable.Map({
-      goalTableData: {}
-    });
-
-    const reducerReturn = testReducer(defaultState, {
-      type: TABLE_ROW_SELECTION_CANCEL
-    });
-
-    const expectedReturn = {
-      goalTableData: {
-        multipleRowSelection: false
       }
     };
 

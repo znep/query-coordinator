@@ -135,7 +135,7 @@ class DatasetsHelperTest < Minitest::Test
     @view.stubs(:is_alt_view? => false, :is_tabular? => false, :new_backend? => false)
     assert @object.send(:hide_export_section?, :odata), ':odata section should be hidden'
     @view.stubs(:is_alt_view? => false, :is_tabular? => true, :new_backend? => true)
-    assert @object.send(:hide_export_section?, :odata), ':odata section should be hidden'
+    refute @object.send(:hide_export_section?, :odata), ':odata section should not be hidden'
   end
 
   def test_hide_export_section_for_subscribe

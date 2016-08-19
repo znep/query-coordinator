@@ -1,17 +1,26 @@
-import React from 'react';
-import GoalTableHead from '../GoalTableHead';
-import GoalTableBody from '../GoalTableBody';
-import RowsPerPageSelector from '../RowsPerPageSelector';
-import PageSelector from '../PageSelector';
+import * as React from 'react';
+import * as Redux from 'redux';
+import * as ReactRedux from 'react-redux';
+import * as State from '../../state';
+import * as Actions from '../../actions';
+import * as Components from '../../../../components';
+
+import GoalTableHead from './GoalTableHead';
+import GoalTableBody from './GoalTableBody';
+import PageSelector from './PageSelector';
 
 import './GoalTable.scss';
 
-export default class GoalTable extends React.Component {
-  shouldComponentUpdate() {
-    return false;
+class GoalTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.paginationOptions = [25, 50, 100, 250];
   }
 
   render() {
+    const { pagination, uiActions, translations } = this.props;
+    const perPageSelectorTitle = translations.getIn(['admin', 'listing', 'rows_per_page']);
+
     return (
       <div>
         <table className="table table-borderless op-admin-table">
@@ -20,9 +29,24 @@ export default class GoalTable extends React.Component {
         </table>
         <div>
           <PageSelector />
-          <RowsPerPageSelector />
+          <Components.RowsPerPageSelector
+            onChange={uiActions.setGoalsPerPage}
+            options={this.paginationOptions}
+            title={perPageSelectorTitle}
+            value={pagination.get('goalsPerPage')}/>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  translations: state.get('translations'),
+  pagination: State.getPagination(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+  uiActions: Redux.bindActionCreators(Actions.UI, dispatch)
+});
+
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(GoalTable);

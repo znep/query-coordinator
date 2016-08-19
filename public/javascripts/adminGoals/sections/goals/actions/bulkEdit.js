@@ -46,7 +46,7 @@ function normalizeUpdatedData(updatedData) {
  * @param {Immutable.List} goals List of goal objects
  * @param {Object} updatedData Updated fields
  */
-export const updateMultipleGoals = (goals, updatedData) => (dispatch, getState) => {
+export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
   const translations = getState().get('translations');
 
@@ -59,12 +59,12 @@ export const updateMultipleGoals = (goals, updatedData) => (dispatch, getState) 
     return Promise.resolve();
   }
 
-  const normalizedData = normalizeUpdatedData(updatedData);
+  const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
 
+  const normalizedData = normalizeUpdatedData(updatedData);
   dispatch(SharedActions.setModalInProgress('goals', 'bulkEdit', true));
 
   const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
-
   return Promise.all(updateRequests).then(updatedGoals => {
     const successMessage = Helpers.translator(translations, 'admin.bulk_edit.success_message', updatedGoals.length);
 
@@ -73,5 +73,5 @@ export const updateMultipleGoals = (goals, updatedData) => (dispatch, getState) 
     dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
 
     return updatedGoals;
-  }).catch(err => dispatch(SharedActions.showGlobalMessage('goals', err.message))); // eslint-disable-line dot-notation
+  }).catch(() => dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', failureMessage))); // eslint-disable-line dot-notation
 };

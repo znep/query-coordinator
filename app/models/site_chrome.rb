@@ -98,6 +98,8 @@ class SiteChrome
     config.dig('value', 'versions').keys.map { |version| Gem::Version.new(version) }.max.to_s
   end
 
+  publication_stages = %w(draft published)
+
   def published
     # TODO: these things:
     # * Factor out paths
@@ -114,6 +116,12 @@ class SiteChrome
   # But, s.content = { 'key' => 'value', 'thing' => 'other_thing' } will not work!
   def content
     published.try(:[], 'content')
+  end
+
+  publication_stages.each do |stage|
+    define_method "#{stage}_content" do
+      config.dig('value', 'versions', current_version, stage, 'content')
+    end
   end
 
   #######
@@ -222,15 +230,25 @@ class SiteChrome
   end
 
   # WARN: deep merge!
-  def update_published_content(new_content_hash)
-    all_versions_content = config.dig('value') || {
-      'versions' => {}
-    }
-    new_content = (content || {}).deep_merge(new_content_hash)
-    all_versions_content['current_version'] = current_version
-    (all_versions_content['versions'] ||= {})[current_version] =
-      { 'published' => { 'content' => new_content } }
-    create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
+  publication_stages.each do |stage|
+    define_method "update_#{stage}_content" do |new_content_hash|
+      all_versions_content = config.dig('value') || {
+        'versions' => {}
+      }
+      new_content = (send(:"#{stage}_content") || {}).deep_merge(new_content_hash)
+      all_versions_content['current_version'] = current_version
+      all_versions_content.bury('versions', current_version, stage, 'content', new_content)
+      create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
+    end
+  end
+
+  def update_content(publication_stage, new_content_hash)
+    meth = :"update_#{publication_stage}_content"
+    if respond_to?(meth)
+      send(meth, new_content_hash)
+    else
+      @errors << "Publication Stage #{publication_stage} unknown."
+    end
   end
 
   def reload_properties

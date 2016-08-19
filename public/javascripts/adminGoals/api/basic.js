@@ -23,7 +23,14 @@ function request(apiVersion, method, path, otherOptions) {
 
   return fetch(url, options).
     then(checkXhrStatus).
-    then(response => response.json());
+    then(response => response.json()).
+    then(json => {
+      if (json.error) {
+        throw json.error.toString();
+      }
+
+      return json;
+    });
 }
 
 export function get(apiVersion, path, options) {

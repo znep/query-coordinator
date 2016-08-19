@@ -39,6 +39,25 @@ module Cetera
     response.success? ? UserSearchResult.new(response) : UserSearchResult.new('results' => [])
   end
 
+  def self.search_owned_by_user(search_query, cookie_string, request_id = nil)
+    cleaned_query = cetera_soql_params(search_query)
+    # Cetera requires only shared_to param be passed, not for_user
+    query = cleaned_query.except(:shared_to)
+
+    response = get(personal_catalog_path, request_options(query, cookie_string, request_id))
+    response.success? ? CatalogSearchResult.new(response) : CatalogSearchResult.new('results' => [])
+  end
+
+  def self.search_shared_to_user(search_query, cookie_string, request_id = nil)
+    cleaned_query = cetera_soql_params(search_query)
+    # Cetera requires only shared_to param be passed, not for_user
+    cleaned_query[:shared_to] = cleaned_query[:for_user]
+    query = cleaned_query.except(:for_user)
+
+    response = get(personal_catalog_path, request_options(query, cookie_string, request_id))
+    response.success? ? CatalogSearchResult.new(response) : CatalogSearchResult.new('results' => [])
+  end
+
   # 90%+ of search queries go through here so try not to break anything
   # TODO: Do we want this to match the signature of search_users?
   def self.search_views(opts = {}, cookie_string = nil, request_id = nil)
@@ -81,6 +100,10 @@ module Cetera
       query: query.to_query,
       timeout: 5 # seconds, >10x Cetera's median round trip time
     }.compact
+  end
+
+  def self.personal_catalog_path
+    'personal_catalog/v1'
   end
 
   #############
@@ -169,7 +192,8 @@ module Cetera
   def self.valid_cetera_keys
     Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
-               derived_from domains for_user limit offset only order q search_context tags))
+               derived_from domains for_user limit locale offset only order q search_context tags
+               shared_to))
   end
 
   # A row of Cetera results

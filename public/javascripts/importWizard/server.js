@@ -29,13 +29,15 @@ type CurrentUser = { id: string }
 export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
 
+
 export function saveMetadataThenProceed() {
   return (dispatch) => {
     dispatch(goToPage('Working'));
-    dispatch(saveMetadataToViewsApi()).
-      then(() => {
-        dispatch(proceedFromMetadataPane());
-      });
+    const proceed = () => {
+      dispatch(proceedFromMetadataPane());
+    };
+    dispatch(saveMetadataToViewsApi()).then(proceed);
+
   };
 }
 
@@ -47,18 +49,22 @@ export function saveMetadataToViewsApi() {
       method: 'PUT',
       credentials: 'same-origin',
       body: JSON.stringify(modelToViewParam(metadata, navigation))
-    }).then(checkStatus)
-      .then((response) => {
-        console.log(response);
-        dispatch(Metadata.metadataSaveComplete(metadata.contents));
-        dispatch(Metadata.updateLastSaved(metadata));
-      }).then(() => {
-        dispatch(updatePrivacy(datasetId, metadata, metadata.contents.privacySettings));
-      }).catch((err) => {
-        dispatch(Metadata.metadataSaveError(err));
+    }).then((response) => {
+      return response.json().then((body) => {
+        if (response.status >= 200 && response.status < 300) {
+          dispatch(Metadata.metadataSaveComplete(metadata.contents));
+          dispatch(Metadata.updateLastSaved(metadata));
+          dispatch(updatePrivacy(datasetId, metadata, metadata.contents.privacySettings));
+        } else {
+          dispatch(Metadata.metadataSaveError(body));
+        }
       });
+    }).catch((err) => {
+      dispatch(Metadata.metadataSaveError(err));
+    });
   };
 }
+
 
 export function proceedFromMetadataPane() {
   return (dispatch, getState) => {
@@ -80,6 +86,9 @@ export function proceedFromMetadataPane() {
         case 'CreateFromScratch':
           dispatch(goToPage('Finish'));
           break;
+        case 'LinkToExternal':
+          dispatch(goToPage('Finish'));
+          break;
         default:
           console.error('Unkown operation!', navigation.operation);
       }
@@ -98,22 +107,11 @@ export function updatePrivacy(datasetId, metadata, currentPrivacy) {
         'X-CSRF-Token': authenticityToken,
         'X-App-Token': appToken
       }
-    }).then((result) => {
-      console.log(result);
+    }).then(() => {
       dispatch(Metadata.metadataSaveComplete(metadata.contents));
       dispatch(Metadata.updateLastSaved(metadata));
     });
   };
-}
-
-export function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    var error = new Error(response.statusText);
-    error.response = response;
-    throw error;
-  }
 }
 
 const defaultFetchOptions = {
@@ -131,53 +129,58 @@ export function socrataFetch(path, options): Promise {
   return fetch(path, mergedOptions);
 }
 
-export function modelToViewParam(metadata, navigation) {
+
+function hrefMetadata(href, meta) {
+  return _.extend({}, meta, {
+    accessPoints: {
+      com: href
+    },
+    rowLabel: 'Row',
+    availableDisplayTypes: ['href'],
+    renderTypeConfig: {
+      visible: {
+        href: true
+      }
+    }
+  });
+}
+
+function viewMetadata({href, displayType, rowLabel, mapLayer, customMetadata}) {
+  var meta = {
+    rowLabel: rowLabel,
+    attributionLink: mapLayer,
+    custom_fields: customMetadataModelToCoreView(customMetadata, false)
+  };
+  if (displayType === 'href') return hrefMetadata(href, meta);
+  return meta;
+}
+
+export function modelToViewParam(metadata) {
+  const model = {
+    name: metadata.contents.name,
+    attributionLink: metadata.license.sourceLink,
+    attribution: metadata.license.attribution,
+    description: metadata.contents.description,
+    category: metadata.contents.category,
+    tags: metadata.contents.tags,
+    metadata: viewMetadata(metadata.contents),
+    privateMetadata: {
+      contactEmail: metadata.contents.contactEmail,
+      custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
+    },
+    displayType: metadata.contents.displayType
+  };
+
   const license = metadata.license;
   if (license.licenseId !== '') {
     return {
-      name: metadata.contents.name,
-      attributionLink: license.sourceLink,
-      attribution: license.attribution,
-      description: metadata.contents.description,
-      category: metadata.contents.category,
-      tags: metadata.contents.tags,
-      metadata: {
-        rowLabel: metadata.contents.rowLabel,
-        attributionLink: metadata.contents.mapLayer,
-        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
-      },
-      privateMetadata: {
-        contactEmail: metadata.contents.contactEmail,
-        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
-      },
+      ...model,
       licenseId: license.licenseId,
-      license: licenseToView(license),
-      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
-                    ? 'table'
-                    : 'draft'
-    };
-  } else {
-    return {
-      name: metadata.contents.name,
-      attributionLink: metadata.license.sourceLink,
-      attribution: metadata.license.attribution,
-      description: metadata.contents.description,
-      category: metadata.contents.category,
-      tags: metadata.contents.tags,
-      metadata: {
-        rowLabel: metadata.contents.rowLabel,
-        attributionLink: metadata.contents.mapLayer,
-        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, false)
-      },
-      privateMetadata: {
-        contactEmail: metadata.contents.contactEmail,
-        custom_fields: customMetadataModelToCoreView(metadata.contents.customMetadata, true)
-      },
-      displayType: _.isEqual(navigation.path, ['SelectType', 'Metadata'])
-                    ? 'table'
-                    : 'draft'
+      license: licenseToView(license)
     };
   }
+
+  return model;
 }
 
 export function licenseToView(license) {
@@ -269,6 +272,7 @@ export function coreViewContents(view) {
     mapLayer: view.metadata.attributionLink,
     customMetadata: coreViewToCustomMetadataModel(view),
     contactEmail: view.privateMetadata.contactEmail,
+    displayType: view.displayType,
     privacySettings: _.has(view, 'grants')
                         ? 'public'
                         : 'private'
@@ -433,7 +437,6 @@ export function addNotificationInterest() {
   };
 }
 
-
 function importData(onError) {
   function getFileId({upload, download}) {
     if (upload && upload.progress) return upload.progress.fileId;
@@ -542,10 +545,7 @@ function importGeospatial(onError) {
           console.error('IMPORTING DATA FAILED', response);
           onError();
       }
-    }).catch((error) => {
-      console.log(error);
-      onError();
-    });
+    }).catch(() => onError());
   };
 }
 
@@ -618,7 +618,6 @@ export function transformToImports2Translation(importTransform: ImportColumns.Tr
           return `(${transformed}).replace(${replaceString}, "${transform.replaceText}")`;
         }
         default:
-          console.log('error: unknown transform type ', transform.type);
           break;
 
       }

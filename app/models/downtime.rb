@@ -4,11 +4,12 @@ class Downtime
     ExternalConfig.for(:downtime).map(&block)
   end
 
-  def initialize(m_start, m_finish, d_start, d_finish)
+  def initialize(m_start, m_finish, d_start, d_finish, custom_message)
     @message_start = m_start
     @message_finish = m_finish
     @downtime_start = d_start
     @downtime_finish = d_finish
+    @custom_message = custom_message
 
     if @message_start.is_a? String
       @message_start = DateTime.parse(@message_start)
@@ -32,7 +33,7 @@ class Downtime
         'core.maintenance_notice',
         start: (%Q{<span class="dateLocalize" data-rawdatetime="#{@downtime_start.to_i}"></span>}),
         finish: (%Q{<span class="dateLocalize" data-rawdatetime="#{@downtime_finish.to_i}"></span>})
-      )
+      ) + (@custom_message.present? ? "<br />#{@custom_message}" : '')
     }.to_json
   end
 end

@@ -52,7 +52,6 @@ class AppConfig < Hashie::Dash
   property :metrics_dir
   property :statsd_enabled
   property :statsd_server
-  property :kafka_rest_uri
 
   # Third-party analytics and errors
   property :opendata_ga_tracking_code

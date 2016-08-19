@@ -41,6 +41,6 @@ module.exports = _.defaultsDeep({
       '_': 'lodash'
     }
   },
-  externals: common.packageJson.config.dataLensWebpackExternals,
+  externals: common.packageJson.config.dataCardsWebpackExternals,
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

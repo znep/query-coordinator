@@ -1,14 +1,13 @@
 import * as Reselect from 'reselect';
-import * as State from './state';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../helpers';
+import * as SharedSelectors from '../shared/selectors';
+import * as State from './state';
+import * as Constants from './constants';
 import moment from 'moment';
 
-export const getGoalForQuickEdit = state => {
-  const goals = state.getIn(['goals', 'data']);
-  const goalId = state.getIn(['goals', 'quickEdit', 'goalId']);
-
-  return goals.get(goalId);
+export const getGoalById = (state, goalId) => {
+  return State.getData(state).find(goal => goal.get('id') === goalId);
 };
 
 const fieldGetterByColumnName = {
@@ -109,3 +108,5 @@ export const getQuickEditGoal = Reselect.createSelector(
   State.getData, getQuickEditGoalId,
   (goals, goalId) => goals.find(goal => goal.get('id') === goalId)
 );
+
+export const getCsvExport = state => SharedSelectors.Downloads.getFile(state, 'goals', Constants.goalsCsvFilename);

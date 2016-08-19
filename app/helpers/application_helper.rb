@@ -88,13 +88,17 @@ module ApplicationHelper
   # Note that the order of these checks is important. For example, if the user is on the homepage,
   # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    if on_homepage
+    in_preview_mode? || if on_homepage
       FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage
     elsif using_dataslate
       FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_dataslate
     else
       FeatureFlags.derive(nil, request).site_chrome_header_and_footer
     end
+  end
+
+  def in_preview_mode?
+    !!cookies[:socrata_site_chrome_preview]
   end
 
   def on_view_page?(view = @view)
@@ -111,6 +115,14 @@ module ApplicationHelper
       site_chrome_favicon_tag
     else
       favicon_link_tag(theme_image_url(CurrentDomain.theme.images.favicon))
+    end
+  end
+
+  def get_site_title
+    if enable_site_chrome? && site_chrome_window_title
+      site_chrome_window_title
+    else
+      CurrentDomain.strings.site_title
     end
   end
 
@@ -244,7 +256,9 @@ module ApplicationHelper
 
   def rendered_stylesheet_tag(stylesheet, media='all')
     if should_render_individual_styles?
-      STYLE_PACKAGES[stylesheet].map do |stylesheet|
+      style_package = STYLE_PACKAGES[stylesheet]
+      raise "Missing style package: #{stylesheet}" unless style_package
+      style_package.map do |stylesheet|
         %Q{<link type="text/css" rel="stylesheet" media="#{media}" href="/styles/individual/#{stylesheet}.css?#{asset_revision_key}"/>}
       end.join("\n").html_safe
     else
@@ -892,13 +906,17 @@ module ApplicationHelper
 
     req = request if defined?(request)
 
-    # TODO: the profile and admin pages need clytemnestra; only until cetera honors private datasets and other things
-    return false if req.try(:path) =~ /^\/(profile|admin)/
+    # TODO: the admin page needs clytemnestra; only until cetera honors private datasets and other things
+    return false if req.try(:path) =~ /^\/(admin)/
 
     # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
     FeatureFlags.derive(nil, req, nil)[:cetera_search]
+  end
+
+  def using_cetera_profile_search?
+    FeatureFlags.derive(nil, request, nil)[:cetera_profile_search]
   end
 
   def sprite_icon(opts)

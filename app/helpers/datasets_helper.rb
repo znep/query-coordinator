@@ -498,8 +498,7 @@ module DatasetsHelper
       when :odata
         [
           view.non_tabular?,
-          view.is_alt_view?,
-          view.new_backend?
+          view.is_alt_view?
         ].any?
       when :subscribe
         [

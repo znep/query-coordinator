@@ -38,32 +38,37 @@ Rails.application.routes.draw do
       get '/manage/:id/delete',         :action => 'manage', :admin_section => 'delete'
     end
 
-    # New frontend pages
+    # Open Performance pages
     get '/stat/version(.:format)' => 'odysseus#version'
-    scope :controller => 'odysseus', :action => 'index' do
-      get '/stat', :as => 'govstat_root'
-      get '/stat/goals', :as => 'govstat_goals'
-      get '/stat/my/goals', :as => 'govstat_my_goals'
-      get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
-      get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
-      get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
-      get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
-      get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
-      match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
-      get '/stat/data', :as => 'govstat_data'
+    scope :controller => 'odysseus'do
+      scope :action => 'chromeless' do
+        get '/stat/goals/:dashboard_id/:category_id/:goal_id/embed'
+      end
+      scope :action => 'index' do
+        get '/stat', :as => 'govstat_root'
+        get '/stat/goals', :as => 'govstat_goals'
+        get '/stat/my/goals', :as => 'govstat_my_goals'
+        get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
+        get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
+        get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
+        get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
+        get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
+        match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
+        get '/stat/data', :as => 'govstat_data'
+      end
     end
 
     scope :path => '/internal', :controller => 'internal' do
       get '/', :action => 'index'
       get '/analytics', :action => 'analytics'
-      get '/feature_flags(/:flag_set)',
-        :action => 'feature_flags_across_domains', :as => 'feature_flags_across_domains'
       get '/tiers', :action => 'index_tiers'
       get '/tiers/:name', :action => 'show_tier'
       get '/modules', :action => 'index_modules'
       get :config_info
       get :domains_summary
       get :organization_list
+      get :feature_flag_report
+      post :set_environment_feature_flag
 
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'
@@ -121,8 +126,17 @@ Rails.application.routes.draw do
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'
       get :metadata, :as => 'metadata_administration'
-      get :jobs
-      get 'jobs/:id', :action => 'show_job'
+
+      scope :controller => 'administration/activity_feed', :path => '/jobs' do
+        get '', to: redirect('/admin/activity_feed')
+        get '/:id', to: redirect('/admin/activity_feed/%{id}')
+      end
+
+      scope :controller => 'administration/activity_feed', :path => '/activity_feed' do
+        get '', :action => :index, :as => 'activity_feed_administration'
+        get '/:id', :action => 'show'
+      end
+
       get :views
       put :save_featured_views
       get :goals
@@ -222,7 +236,6 @@ Rails.application.routes.draw do
     get '/analytics' => 'analytics#index'
     post '/analytics/add/:domain_entity/:metric' => 'analytics#add'
     post '/analytics/add' => 'analytics#add_all'
-    post '/analytics/pageview' => 'analytics#pageview'
 
     scope :controller => 'profile', :path => '/profile',
           :constraints => {:id => Frontend::UID_REGEXP, :profile_name => /(\w|-)+/} do

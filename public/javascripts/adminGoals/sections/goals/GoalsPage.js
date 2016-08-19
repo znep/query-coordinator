@@ -26,7 +26,7 @@ class GoalsPage extends React.Component {
         <Components.SocrataBulkActions />
         <Components.GoalTable />
         { isQuickEditFormVisible && <Components.QuickEditForm /> }
-        { isBulkEditFormVisible && <Components.EditMultipleItemsForm /> }
+        { isBulkEditFormVisible && <Components.BulkEditForm /> }
       </div>
     );
   }

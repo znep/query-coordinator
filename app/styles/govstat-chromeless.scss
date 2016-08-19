@@ -1,0 +1,11 @@
+html, body {
+  background-color: transparent;
+}
+
+body.suppressChrome {
+  overflow: hidden;
+}
+
+.siteInnerWrapper {
+  padding: 0;
+}

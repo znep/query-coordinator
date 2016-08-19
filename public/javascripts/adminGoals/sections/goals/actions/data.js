@@ -31,7 +31,7 @@ export const load = () => dispatch => {
     dispatch(setAll(Immutable.fromJS(goals)));
     dispatch(SharedActions.stopLoading());
   }).catch(error => {
-    throw error;
-    // dispatch(SharedActions.showLoadingError(error.message));
+    // throw error;
+    dispatch(SharedActions.showLoadingError(error.message));
   });
 };

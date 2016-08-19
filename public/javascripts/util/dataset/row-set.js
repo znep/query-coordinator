@@ -1049,7 +1049,7 @@ var RowSet = ServerModel.extend({
                         return null;
                       }
 
-                      return s.aggregate + '(' + qbCF + ') as ' + s.aggregate + '_' + qbCF;
+                      return rs._soqlFnCall(s.aggregate, qbCF);
                     }
 
                     return null;
@@ -1072,16 +1072,19 @@ var RowSet = ServerModel.extend({
             // Just apply all orderBys, because they can safely be applied on top without harm
             args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
             {
-                if (!(selectingAllCols || _.include(selectCols, ob.columnFieldName))) {
-                  return null;
-                }
                 var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
                 if ($.isBlank(orderByColumn)) { return null; }
                 var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);
                 if ($.isBlank(qbC)) { return null; }
-                return qbC.fieldNameForRollup(
-                    Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery)
-                ) + (ob.ascending ? '' : ' desc');
+
+                var aggregateFn = Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery);
+                var aggregateFieldName = qbC.fieldNameForRollup(aggregateFn);
+                var aggregateFieldNameWithAlias = rs._soqlFnCall(aggregateFn, qbC.fieldName);
+
+                if (!(selectingAllCols || _.include(selectCols, ob.columnFieldName) || _.include(selectCols, aggregateFieldNameWithAlias))) {
+                  return null;
+                }
+                return aggregateFieldName + (ob.ascending ? '' : ' desc');
             })).join(',');
         }
         if (args.sortOrderForRequest === 'reversed') {
@@ -1103,6 +1106,10 @@ var RowSet = ServerModel.extend({
         return new RowSet(this._dataset, this._jsonQuery, this._query, this._parent);
     },
 
+    _soqlFnCall: function(fn, field)
+    {
+        return fn + '(' + field + ') as ' + fn + '_' + field;
+    },
 
     _loadRows: function(startOrIds, len, options, successCallback, errorCallback)
     {
@@ -1356,7 +1363,7 @@ var RowSet = ServerModel.extend({
 
         // Always be sorting by something to provide a stable row order.
         // Don't try this when there's a group-by because :id is no longer guaranteed.
-        if ($.isBlank(params['$order']) && $.isBlank(params['$group'])) {
+        if (_.isEmpty(rs._jsonQuery.order) && _.isEmpty(rs._jsonQuery.group)) {
           params['$order'] = ':id';
         }
 

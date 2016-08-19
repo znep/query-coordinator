@@ -1,11 +1,9 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 
-export default class SocrataDatePicker extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import 'react-datepicker/dist/react-datepicker.css';
 
+export default class SocrataDatePicker extends React.Component {
   render() {
     return (
       <div className="datepicker-wrapper">

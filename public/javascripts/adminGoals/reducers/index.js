@@ -1,10 +1,13 @@
-import Immutable from 'immutable';
-import { combineReducers } from 'redux-immutablejs';
-import * as Goals from '../sections/goals';
+import * as Immutable from 'immutable';
+import * as ReduxImmutable  from 'redux-immutablejs';
+import * as Sections from '../sections';
+import * as Feedback from '../components/feedback';
 import notification from './notification';
 
-export default combineReducers({
+export default ReduxImmutable.combineReducers({
+  translations: state => state || Immutable.fromJS(window.translations || {}),
   notification,
-  goals: Goals.rootReducer,
-  translations: state => state || Immutable.fromJS(window.translations || {})
+  goals: Sections.Goals.rootReducer,
+  shared: Sections.Shared.rootReducer,
+  feedback: Feedback.Flannel.rootReducer
 });

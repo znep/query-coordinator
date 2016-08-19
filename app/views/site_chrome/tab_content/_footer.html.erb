@@ -58,4 +58,9 @@
     </div>
     <aside><p><%= translations[:copyright_notice_source][:description] %></p></aside>
   </section>
+
+  <%= render('checkbox',
+    fields: [:footer, :powered_by],
+    translation: translations[:powered_by],
+    default_checked: true) %>
 <% end %>

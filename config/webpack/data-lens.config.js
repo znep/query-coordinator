@@ -1,56 +1,35 @@
 /* eslint-env node */
-var path = require('path');
 var _ = require('lodash');
+var path = require('path');
 
 var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/angular/src'),
+  context: path.resolve(common.root, 'public/javascripts/dataLens'),
   entry: './main',
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
+  eslint: common.getEslintConfig('public/javascripts/dataLens/.eslintrc.json'),
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        loaders: [
-          'ng-annotate',
-          'babel'
-        ]
-      },
-      {
-        test: /\.html$/,
-        exclude: /(node_modules|bower_components)/,
-        loaders: [
-          'ngtemplate?relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
-          'html?minimize=false'
-        ]
-      },
-      {
-        test: /modernizr\.js$/,
-        loader: 'imports?this=>window'
-      },
-      {
-        test: /\.scss|\.css$/,
-        loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
-        test: /\.png$/,
-        loader: 'url-loader?limit=100000'
+        test: /\.jsx?$/,
+        include: path.resolve(common.root, 'public/javascripts'),
+        loader: 'babel'
       }
     ]
   },
   resolve: {
     alias: {
-      'angular_templates': path.resolve(common.root, 'public/angular_templates'),
-      plugins: path.resolve(common.root, 'public/javascripts/plugins'),
-      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
-      '_': 'lodash'
-    }
+      '_': path.resolve(common.root, 'node_modules/lodash'),
+      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
+      'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
+      'react': path.resolve(common.root, 'node_modules/react'),
+      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
+    },
+    root: [
+      path.resolve(common.root, 'public/javascripts/dataLens')
+    ]
   },
-  externals: common.packageJson.config.dataLensWebpackExternals,
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

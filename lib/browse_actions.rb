@@ -26,6 +26,7 @@ module BrowseActions
 
   def base_view_types_facet
     {
+      type: :type,
       title: t('controls.browse.facets.view_types_title'),
       singular_description: t('controls.browse.facets.view_types_singular_title'),
       param: :limitTo,
@@ -79,6 +80,7 @@ module BrowseActions
     end
 
     {
+      :type => :category,
       :title => t('controls.browse.facets.categories_title'),
       :singular_description => t('controls.browse.facets.categories_singular_title'),
       :param => :category,
@@ -118,6 +120,7 @@ module BrowseActions
     end
 
     {
+      :type => :topic,
       :title => t('controls.browse.facets.topics_title'),
       :singular_description => t('controls.browse.facets.topics_singular_title'),
       :param => :tags,
@@ -156,6 +159,7 @@ module BrowseActions
     fed_cloud = all_feds[fed_chop..-1] if all_feds.length > fed_chop
 
     {
+      type: :domain,
       title: t('controls.browse.facets.federated_domains_title'),
       singular_description: t('controls.browse.facets.federated_domains_singular_title'),
       param: :federation_filter,
@@ -166,6 +170,7 @@ module BrowseActions
 
   def moderation_facet
     {
+      :type => :moderation,
       :title => t('controls.browse.facets.moderation_status_title'),
       :singular_description => t('controls.browse.facets.moderation_status_singular_title'),
       :param => :moderation,
@@ -378,7 +383,7 @@ module BrowseActions
     end
 
     if browse_options[:filtered_types].is_a? Array
-      type_facet = browse_options[:facets].find { |facet| facet[:singular_description] == 'type' }
+      type_facet = browse_options[:facets].find { |facet| facet[:type] == :type }
       type_facet.try(:[], :options).try(:select!) do |facet|
         browse_options[:filtered_types].include? facet[:value]
       end
@@ -429,11 +434,26 @@ module BrowseActions
             # localize catalog links if locale is present
             browse_options[:search_options][:locale] = locale unless locale.nil?
 
-            Cetera.search_views(
-              browse_options[:search_options],
-              forwardable_session_cookies(request.cookies),
-              request_id(request) # See app/helpers/application_helper.rb#request_id
-            )
+            # @profile_search_method is set in the profile controller
+            if @profile_search_method
+              if using_cetera_profile_search?
+                Cetera.public_send(
+                  @profile_search_method,
+                  browse_options[:search_options],
+                  forwardable_session_cookies(request.cookies),
+                  request_id(request) # See app/helpers/application_helper.rb#request_id
+                )
+              else
+                Clytemnestra.search_views(browse_options[:search_options])
+              end
+            else
+              Cetera.public_send(
+                :search_views,
+                browse_options[:search_options],
+                forwardable_session_cookies(request.cookies),
+                request_id(request) # See app/helpers/application_helper.rb#request_id
+              )
+            end
           else
             Clytemnestra.search_views(browse_options[:search_options])
           end
@@ -506,8 +526,12 @@ module BrowseActions
       browse_options[:hide_catalog_rss] = true
     end
 
-    # Set browse partial paths based on using_cetera
-    if using_cetera?
+    # Set browse partial paths
+    if using_cetera? && using_cetera_profile_search?
+      browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
+      browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
+    # Applies if the user not on the profile page. @profile_search_method is set in profile controller
+    elsif using_cetera? && @profile_search_method.nil?
       browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
       browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
     else
@@ -566,7 +590,7 @@ module BrowseActions
             end
           end
           facet_parts << t('controls.browse.title.result.facet',
-                           :facet_type => f[:singular_description],
+                           :facet_type => f[:type],
                            :facet_value => facet_item[:text]) unless facet_item.nil?
         elsif !f[:custom_description].blank?
           facet_parts << f[:custom_description].call(options)
@@ -767,7 +791,8 @@ module BrowseActions
       :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo,
       :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
       :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
-      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields
+      :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields,
+      :shared_to
     ]
   )
 end

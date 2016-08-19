@@ -18,7 +18,7 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
-  def render_dataset_landing_page_mixpanel_config
+  def render_mixpanel_config
     mixpanel_config = {
       :token => APP_CONFIG.mixpanel_token
     }

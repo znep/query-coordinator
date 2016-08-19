@@ -4,6 +4,8 @@ require 'securerandom'
 require 'httparty'
 
 module Auth0Helper
+  SOCIAL_DOMAINS = %w(twitter facebook google_oauth2 windowslive yahoo).freeze
+
   def gen_cookie(uid)
     salt = SecureRandom.hex(8)
 
@@ -69,6 +71,10 @@ module Auth0Helper
     socrata_user_id.start_with?('auth0|')
   end
 
+  def social_connection?(socrata_user_id)
+    SOCIAL_DOMAINS.any?(&socrata_user_id.method(:start_with?))
+  end
+
   # In the username and password flow, the UID is set as part of authentication
   # It's going to come in with the form "auth0|abcd-efgh|connection_name"
   # Use a regex to attempt to extract it
@@ -126,5 +132,25 @@ module Auth0Helper
     }
 
     "https://#{AUTH0_URI}/v2/logout?" << parameters.to_param
+  end
+
+  def use_auth0_component(view, request)
+    flags = FeatureFlags.derive(view, request)
+    flags.use_auth0 && flags.use_auth0_component
+  end
+
+  # these options are passed to the login screen
+  def generate_auth0_options
+    {
+      auth0ClientId: AUTH0_ID,
+      auth0Uri: AUTH0_URI,
+      baseDomainUri: request.base_url,
+      authenticityToken: form_authenticity_token,
+      rememberMe: feature?('remember_me'),
+      showSocial: feature?('openid_login'),
+      connections: @auth0_connections,
+      message: @auth0_message || t('screens.sign_in.auth0_intro'),
+      flashes: formatted_flashes
+    }.to_json.html_safe
   end
 end

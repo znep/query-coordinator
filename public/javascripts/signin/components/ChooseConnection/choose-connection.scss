@@ -1,0 +1,47 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+.button {
+  @extend .btn;
+  @extend .btn-default;
+
+  width: 75%;
+  min-height: 50px;
+  margin-top: 10px;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  display: flex;
+  padding: 0;
+}
+
+.button-text {
+  margin-left: 15px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.button-text-no-image {
+  @extend .button-text;
+
+  margin: auto;
+}
+
+.button-image-container {
+  padding: 0.5em;
+  border-right: 1px solid $light-grey-2;
+}
+
+.button-image {
+  width: 35px;
+  height: 35px;
+  vertical-align: middle;
+}
+
+.message {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 15px;
+  margin-bottom: 22px;
+}

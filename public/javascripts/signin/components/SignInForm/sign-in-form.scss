@@ -1,0 +1,103 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+.form {
+  @include form;
+
+  position: relative;
+}
+
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  position: absolute;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+}
+
+.reset-password {
+  @extend .unstyled-link;
+
+  float: right;
+  font-size: 85%;
+  margin-right: 2px;
+  margin-top: 11px;
+}
+
+.sign-in-button {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+
+  width: 100%;
+  margin-top: 1.5em;
+}
+
+.icon-container {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 9px;
+
+  & svg {
+    width: 20px;
+    height: 20px;
+
+    & path {
+      fill: $light-grey-1;
+    }
+  }
+}
+
+.input-with-icon {
+  @include default-font;
+  @extend .text-input;
+
+  padding-left: 34px !important;
+  width: 100%;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
+}
+
+.input-password {
+  @extend .input-with-icon;
+
+  /* since the two inputs are "touching" we give the bottom one no top border */
+  border-top: 0.5px !important;
+}
+
+.input-email {
+  @extend .input-with-icon;
+
+  border-bottom: 0.5px !important;
+}
+
+.sso-enabled-text {
+  text-align: left;
+  padding-top: 8px;
+  padding-bottom: 7px;
+  padding-left: 32px;
+}
+
+.remember-me {
+  @extend .checkbox;
+  float: left;
+  font-size: 85%;
+  margin-top: 8px;
+  color: #767676;
+}
+
+.psuedo-checkbox {
+  @extend .fake-checkbox;
+  margin-right: 4px !important;
+  margin-top: 2px;
+}
+
+.psuedo-checkbox-check {
+  @extend .icon-checkmark3;
+}

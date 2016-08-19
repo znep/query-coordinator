@@ -1,0 +1,84 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+$facebook-fill: #4863ae;
+$twitter-fill: #46c0fb;
+$google-fill: #4285f4;
+$microsoft-fill: #0078d5;
+$yahoo-fill: #a200c2;
+
+.container {
+  margin-bottom: 1.5em;
+}
+
+.button-container {
+  @extend center;
+
+  display: flex;
+  justify-content: space-around;
+  margin-left: 3em;
+  margin-right: 3em;
+  margin-top: 1em;
+  margin-bottom: 3em;
+}
+
+.social-title {
+  @extend .h5;
+
+  font-size: 17px;
+  font-weight: 400;
+  color: $grey;
+}
+
+.social-button {
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+
+  & svg {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+.social-button-facebook {
+  @extend .social-button;
+
+  & svg path {
+    fill: $facebook-fill;
+  }
+}
+
+.social-button-twitter {
+  @extend .social-button;
+
+  & svg path {
+    fill: $twitter-fill
+  }
+}
+
+.social-button-google {
+  @extend .social-button;
+
+  & svg path {
+    fill: $google-fill;
+  }
+}
+
+.social-button-microsoft {
+  @extend .social-button;
+
+  & svg path {
+    fill: $microsoft-fill;
+  }
+}
+
+.social-button-yahoo {
+  @extend .social-button;
+
+  & svg path {
+    fill: $yahoo-fill;
+  }
+}

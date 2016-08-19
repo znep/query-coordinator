@@ -29,19 +29,25 @@ class Auth0Controller < ApplicationController
         redirect_to '/profile'
       end
     else
-      #See if the user is federated
-      token = userinfo_hash[:extra][:raw_info];
-      unless valid_token?(token)
-        Rails.logger.info("Token is invalid. Verify that it contains email, name and user_id in the correct format")
+      # see if the user is federated
+      token = userinfo_hash[:extra][:raw_info]
+
+      # if user is logging in socially but social login isn't allowed, error
+      if social_connection?(socrata_user_id) && !feature?('openid_login')
+        Rails.logger.error("Tried to login with auth0 social connection on a non-social domain (user_id #{socrata_user_id})")
+        render_404
+      # if the token isn't valid, error
+      elsif !valid_token?(token)
+        Rails.logger.info('Token is invalid. Verify that it contains email, name and user_id in the correct format')
         render_404
       else
-        Rails.logger.info("Token contains required fields.  Attempting to authenticate through Core.")
+        Rails.logger.info('Token contains required fields.  Attempting to authenticate through Core.')
         auth0_authentication = authentication_provider_class.new(token.to_json)
         if auth0_authentication.authenticated?
-          user_session = UserSession.auth0(auth0_authentication)
+          UserSession.auth0(auth0_authentication)
           redirect_back_or_default(login_redirect_url)
         else
-          Rails.logger.error("Cannot authenticate federated user")
+          Rails.logger.error('Cannot authenticate federated user')
           render_500
         end
       end

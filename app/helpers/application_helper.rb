@@ -330,17 +330,23 @@ module ApplicationHelper
   #
   # Adapted from http://snippets.dzone.com/posts/show/2348
   FLASH_MESSAGE_TYPES = %i[error warning notice]
-  def display_standard_flashes
+
+  def formatted_flashes
     flash_obj = flash
     add_js_flash(flash_obj)
+
+    flash_obj.map do |level, message|
+      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
+      [level, format_flash_message(message)]
+    end
+  end
+
+  def display_standard_flashes
+    flash_obj = formatted_flashes
 
     return if flash_obj.blank?
 
     flash_html = flash_obj.map do |level, message|
-      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
-
-      message = format_flash_message(message)
-
       content_tag('div', message, :class => "flash #{level}")
     end.join
 
@@ -350,16 +356,11 @@ module ApplicationHelper
   # Returns flashes with the markup the Socrata Styleguide expects to style for
   # alerts. Used on dataset landing page and hopefully other places moving forward
   def display_styleguide_flashes
-    flash_obj = flash
-    add_js_flash(flash_obj)
+    flash_obj = formatted_flashes
 
     return if flash_obj.blank?
 
     flash_html = flash_obj.map do |level, message|
-      next unless FLASH_MESSAGE_TYPES.include?(level.to_sym)
-
-      message = format_flash_message(message)
-
       alert_class = (level === 'notice') ? 'info' : level
       inner_alert = content_tag('div', message, :class => "alert-container")
       content_tag('div', inner_alert, :class => "alert styleguide-alert #{alert_class}")

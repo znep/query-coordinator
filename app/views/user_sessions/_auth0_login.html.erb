@@ -1,0 +1,15 @@
+<%#
+  Inline style on this for now since I don't want to pull in a whole stylesheet for three rules
+  All the styles for the actual component get pulled in with the webpack bundle.
+%>
+<div id="signin" style="width: 40%; margin-left: auto; margin-right: auto;"></div>
+
+<%= render_translations LocalePart.screens.sign_in %>
+
+<% content_for :js_footer do %>
+  <%= include_webpack_bundle 'signin/main.js' %>
+
+  <script>
+    window.auth0Login('#signin', <%= generate_auth0_options %>);
+  </script>
+<%- end -%>

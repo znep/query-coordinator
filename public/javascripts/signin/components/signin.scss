@@ -1,0 +1,96 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.container {
+  @extend .center;
+  @include base;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  max-width: 500px;
+  min-width: 445px;
+  background: $white;
+  border: 1px solid $light-grey-3;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 3em;
+  padding-top: 3em;
+}
+
+.header {
+  @extend .center;
+  @extend .h2;
+
+  margin-bottom: 0.5em;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container {
+  margin: 0 4em;
+}
+
+.signup-container {
+  color: $grey;
+}
+
+.signup-link {
+  @extend .unstyled-link;
+}
+
+.back-to-options {
+  @extend .unstyled-link;
+
+  font-size: 85%;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  cursor: pointer;
+}
+
+.back-to-options-icon {
+  margin-right: 3px;
+
+  & svg {
+    width: 9px;
+    height: 9px;
+
+    & polygon {
+      fill: $primary-text;
+    }
+  }
+}
+
+.alert-base {
+  @extend .alert;
+  margin-bottom: 1.5em;
+}
+
+.alert-notice {
+  @extend .alert-base;
+  @extend .info;
+}
+
+.alert-warning {
+  @extend .alert-base;
+  @extend .warning;
+}
+
+.alert-error {
+  @extend .alert-base;
+  @extend .error;
+}

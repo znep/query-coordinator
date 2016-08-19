@@ -209,7 +209,10 @@ timeline:
   defaultValue: old
   expectedValues: nextgen old
 use_auth0:
-  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
+  description: Use Auth0 to authenticate users.
+  defaultValue: false
+use_auth0_component:
+  description: Use fancy new bespoke handmade auth0 login component
   defaultValue: false
 use_auth0_login_flow:
   description: When a site has multiple connection configurations ('auth0_connections' is set in the auth0 internal config), use auth0 sign-in when 'Sign In with Socrata ID' is clicked. 'use_auth0' flag must be true!!!

@@ -746,5 +746,11 @@ class BrowseControllerTest < ActionController::TestCase
       assert_select(selector, 'Updated')
       assert_select(selector, count: 0, text: 'Created')
     end
+
+    should 'should set the X-Frame-Options header to ALLOWALL' do
+      get :show, id: 'four-four', customization_id: 'default'
+      assert_response :success
+      assert_equal 'ALLOWALL', @response.headers['X-Frame-Options']
+    end
   end
 end

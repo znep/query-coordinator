@@ -36,10 +36,12 @@ module SocrataSiteChrome
     end
 
     def current_user_is_admin?
-      return false if request_current_user.nil?
-      return true if request_current_user.try(:is_admin?)
-      return true if request_current_user['flags'].try(:include?, 'admin')
-      return true if request_current_user['roleName'] == 'administrator'
+      return false unless request_current_user.present?
+      request_current_user.try(:is_administrator_or_superadmin?) ||
+        # Consuming apps may store current_user as a json representation of the current user,
+        # rather than a User object.
+        request_current_user['flags'].try(:include?, 'admin') ||
+        request_current_user['roleName'] == 'administrator'
     end
 
     def copyright_source

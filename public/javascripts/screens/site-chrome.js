@@ -6,51 +6,36 @@ var inputTypeValidations = {
 };
 
 var validationRules = {
-  general: {
-    'content[general][template]': { pattern: inputTypeValidations.template },
-    'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
-    'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions }
-  },
-  header: {
-    'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
-    'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
-    'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
-    'content[header][styles][bg_color_secondary]': { pattern: inputTypeValidations.color },
-    'content[header][styles][fg_color]': { pattern: inputTypeValidations.color }
-  },
-  footer: {
-    'content[footer][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
-    'content[footer][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
-    'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
-    'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color }
-  },
-  social: {}
+  'content[general][template]': { pattern: inputTypeValidations.template },
+  'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
+  'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
+  'content[header][styles][bg_color_secondary]': { pattern: inputTypeValidations.color },
+  'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
+  'content[footer][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+  'content[footer][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
+  'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
+  'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color }
 };
 
 // Note: This needs to be a function rather than an object because $.t is not defined on load.
-var validationMessages = function(tab) {
+var validationMessages = function() {
   return {
-    general: {
-      'content[general][template]':
-        $.t('screens.admin.site_chrome.tabs.general.fields.template.error'),
-      'content[general][google_analytics_token]':
-        $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error')
-    },
-    header: {
-      'content[header][styles][logo_height]':
-        $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
-      'content[header][styles][logo_width]':
-        $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error')
-    },
-    footer: {
-      'content[footer][styles][logo_height]':
-        $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
-      'content[footer][styles][logo_width]':
-        $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
-    },
-    social: {},
-    homepage: {}
-  }[tab];
+    'content[general][template]':
+      $.t('screens.admin.site_chrome.tabs.general.fields.template.error'),
+    'content[general][google_analytics_token]':
+      $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error'),
+    'content[header][styles][logo_height]':
+      $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
+    'content[header][styles][logo_width]':
+      $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error'),
+    'content[footer][styles][logo_height]':
+      $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
+    'content[footer][styles][logo_width]':
+      $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
+  };
 };
 
 var $siteChromeForm = $('form#site_chrome_form');
@@ -59,6 +44,8 @@ $(document).ready(function() {
   var curTab = getActiveTabId();
   // Show appropriate tab given the url hash. Ex: /site_chrome#tab=general
   showTab(curTab);
+
+  inputValidation();
 
   // Change active tab and tab-content on click
   $('ul.tabs li').click(function() {
@@ -145,7 +132,6 @@ function showTab(tabId) {
 
   // Replace the anchor part so that we reload onto the same tab we submit from.
   $siteChromeForm.attr('action', $siteChromeForm.attr('action').replace(/#tab=.*/, '#tab=' + tabId));
-  inputValidation(tabId);
   updatePageControlsForActiveTab(tabId);
 }
 
@@ -155,27 +141,28 @@ function updatePageControlsForActiveTab(tabId) {
 
 // Displays a notification to the user if they type invalid input.
 // Uses jQuery Validate plugin: public/javascripts/plugins/jquery.validate.js
-function inputValidation(tabId) {
+function inputValidation() {
   $siteChromeForm.validate({
-    rules: validationRules[tabId],
-    messages: validationMessages(tabId),
+    rules: validationRules,
+    messages: validationMessages(),
     onkeyup: false,
     focusInvalid: false,
+    // Validator ignores :hidden by default, which ignores all the hidden tabs.
+    // We wnat it to care about the hidden tabs, so using a dummy selector for it to operate on.
+    ignore: '.irrelevant',
     errorPlacement: function($error, $element) {
       $error.appendTo($element.parent());
     }
   });
 
-  toggleSaveButton($siteChromeForm);
+  toggleSaveButton();
 
-  $siteChromeForm.find('input').on('blur', function() {
-    toggleSaveButton($siteChromeForm);
-  });
+  $siteChromeForm.find('input').on('blur', toggleSaveButton);
 }
 
 // Toggle "save" button if form is valid/invalid
-function toggleSaveButton($form) {
-  if ($form.valid()) {
+function toggleSaveButton() {
+  if ($siteChromeForm.valid()) {
     $('#site_chrome_save, #site_chrome_preview').removeClass('error');
   } else {
     $('#site_chrome_save, #site_chrome_preview').addClass('error');

@@ -107,6 +107,8 @@ $.fn.socrataTable = function(originalVif) {
 
     visualization = new Table($element, originalVif);
 
+    attachApiEvents();
+
     // We need to instantiate and render the Pager on initialization so that we
     // can reliably determine how much space is available to fill with table
     // rows when we call computePageSize below.
@@ -139,42 +141,30 @@ $.fn.socrataTable = function(originalVif) {
 
   /**
    * Event Handling
+   *
+   * Because we want to disable things like flyouts and pagination button
+   * clicks while data requests are in-flight, we need to support two cases:
+   *
+   * 1. Attach api events (when the visualization first renders, so that it
+   *    will always respond to things like ...RENDER_VIF and
+   *    ...INVALIDATE_SIZE).
+   * 2. Attach interaction events (after data requests come back and we want
+   *     to re-enable the UI).
+   *
+   * We therefore expose two different attach/detach event functions for these
+   * two purposes.
    */
-
-  function attachEvents() {
+  function attachApiEvents() {
 
     $element.one(
       'SOCRATA_VISUALIZATION_DESTROY',
       function() {
         visualization.destroy();
-        detachEvents();
+        detachInteractionEvents();
+        detachApiEvents();
       }
     );
 
-    $element.on(
-      'SOCRATA_VISUALIZATION_COLUMN_CLICKED',
-      handleColumnClicked
-    );
-    $element.on(
-      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-      handleColumnFlyout
-    );
-    $element.on(
-      'SOCRATA_VISUALIZATION_CELL_FLYOUT',
-      handleCellFlyout
-    );
-    $element.on(
-      'SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS',
-      handlePrevious
-    );
-    $element.on(
-      'SOCRATA_VISUALIZATION_PAGINATION_NEXT',
-      handleNext
-    );
-    $element.on(
-      'SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED',
-      handleColumnsResized
-    );
     $element.on(
       'SOCRATA_VISUALIZATION_INVALIDATE_SIZE',
       handleInvalidateSize
@@ -185,7 +175,47 @@ $.fn.socrataTable = function(originalVif) {
     );
   }
 
-  function detachEvents() {
+  function attachInteractionEvents() {
+
+    $element.on(
+      'SOCRATA_VISUALIZATION_COLUMN_CLICKED',
+      handleColumnClicked
+    );
+    $element.on(
+      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+      handleColumnFlyout
+    );
+    $element.on(
+      'SOCRATA_VISUALIZATION_CELL_FLYOUT',
+      handleCellFlyout
+    );
+    $element.on(
+      'SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS',
+      handlePrevious
+    );
+    $element.on(
+      'SOCRATA_VISUALIZATION_PAGINATION_NEXT',
+      handleNext
+    );
+    $element.on(
+      'SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED',
+      handleColumnsResized
+    );
+  }
+
+  function detachApiEvents() {
+
+    $element.off(
+      'SOCRATA_VISUALIZATION_INVALIDATE_SIZE',
+      handleInvalidateSize
+    );
+    $element.off(
+      'SOCRATA_VISUALIZATION_RENDER_VIF',
+      handleRenderVif
+    );
+  }
+
+  function detachInteractionEvents() {
 
     $element.off(
       'SOCRATA_VISUALIZATION_COLUMN_CLICKED',
@@ -210,14 +240,6 @@ $.fn.socrataTable = function(originalVif) {
     $element.off(
       'SOCRATA_VISUALIZATION_TABLE_COLUMNS_RESIZED',
       handleColumnsResized
-    );
-    $element.off(
-      'SOCRATA_VISUALIZATION_INVALIDATE_SIZE',
-      handleInvalidateSize
-    );
-    $element.off(
-      'SOCRATA_VISUALIZATION_RENDER_VIF',
-      handleRenderVif
     );
   }
 
@@ -462,7 +484,6 @@ $.fn.socrataTable = function(originalVif) {
     }
 
     // There was an issue populating this table with data. Retry?
-
     updateState({ busy: false, error: true });
 
     return Promise.reject();
@@ -573,10 +594,11 @@ $.fn.socrataTable = function(originalVif) {
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
-    // Temporarily detach events so that intermediate states in the data request
-    // and render cycle do not trigger flyouts or other UI changes. Events are
-    // reattached when the visualization is no longer 'busy'.
-    detachEvents();
+    // Temporarily detach interaction events so that intermediate states in the
+    // data request and render cycle do not trigger flyouts or other UI
+    // changes. Interaction vents are reattached when the visualization is no
+    // longer 'busy'.
+    detachInteractionEvents();
 
     updateState({ busy: true });
 
@@ -637,9 +659,9 @@ $.fn.socrataTable = function(originalVif) {
       }
 
       if (becameIdle) {
-        // Re-attach events if the visualization has become idle again and is
-        // ready to respond to user input.
-        attachEvents();
+        // Re-attach interaction events if the visualization has become idle
+        // again and is ready to respond to user input.
+        attachInteractionEvents();
         render();
       }
     }

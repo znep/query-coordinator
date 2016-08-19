@@ -5,12 +5,28 @@ var consolidate = require('gulp-consolidate');
 var iconfont = require('gulp-iconfont');
 
 var fontName = 'socrata-icons';
+var className = 'icon';
 var buildTimestamp = Math.round(Date.now() / 1000);
+
+function compileIconErb(stream) {
+  return (callback) => {
+    stream.on('glyphs', (glyphs) => {
+      var locals = {
+        className,
+        glyphs
+      };
+
+      gulp.src('src/fonts/templates/_icons.erb').
+        pipe(consolidate('lodash', locals)).
+        pipe(gulp.dest('pages/elements')).
+        on('finish', callback);
+    });
+  };
+}
 
 function compileIconStyles(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
-      var className = 'icon';
       var selector = glyphs.map((glyph) => (
         `.${className}-${glyph.name}::before`
       )).join(',\n');
@@ -66,6 +82,7 @@ module.exports = (done) => {
   async.parallel([
     compileFontFamily(),
     compileIconStyles(stream),
+    compileIconErb(stream),
     compileStream(stream)
   ], done);
 };

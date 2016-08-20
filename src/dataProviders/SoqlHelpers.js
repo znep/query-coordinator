@@ -191,9 +191,8 @@ function whereClauseFromVif(vif, filterOwnColumn) {
           true :
           filterOwnColumn || (filter.columnName !== vif.columnName);
       }
-    ).map(
-      filterToWhereClauseComponent
     ).
+    map(filterToWhereClauseComponent).
     join(' AND ');
 }
 
@@ -223,15 +222,15 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
     'filters',
     'type'
   );
-  utils.assertHasProperty(
-    series.dataSource.dimension,
-    'columnName'
-  );
 
   if (series.type === 'table') {
     isTable = true;
   } else {
 
+    utils.assertHasProperty(
+      series.dataSource.dimension,
+      'columnName'
+    );
     utils.assertIsOneOfTypes(
       series.dataSource.dimension.columnName,
       'string'
@@ -252,9 +251,8 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
             (filter.columnName !== series.dataSource.dimension.columnName)
           );
       }
-    ).map(
-      filterToWhereClauseComponent
     ).
+    map(filterToWhereClauseComponent).
     join(' AND ');
 }
 

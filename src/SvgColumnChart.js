@@ -18,12 +18,12 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(originalVif) {
   originalVif = VifHelpers.migrateVif(originalVif);
-  var $element = $(this);
-  var visualization = new SvgColumnChart(
+  const $element = $(this);
+  const visualization = new SvgColumnChart(
     $element,
     originalVif
   );
-  var rerenderOnResizeTimeout;
+  let rerenderOnResizeTimeout;
 
   /**
    * Event handling
@@ -66,7 +66,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function handleRenderVif(event) {
-    var newVif = event.originalEvent.detail;
+    const newVif = event.originalEvent.detail;
 
     updateData(
       VifHelpers.migrateVif(newVif)
@@ -74,7 +74,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function handleError(error) {
-    var messages;
+    let messages;
 
     if (window.console && console.error) {
       console.error(error);
@@ -118,7 +118,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         all(dataRequests).
         then(
           function(dataResponses) {
-            var overMaxRowCount;
+            let overMaxRowCount;
 
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
             visualization.hideBusyIndicator();
@@ -146,30 +146,30 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {
-    var series = vifToRender.series[seriesIndex];
-    var soqlDataProvider = new SoqlDataProvider({
+    const series = vifToRender.series[seriesIndex];
+    const soqlDataProvider = new SoqlDataProvider({
       datasetUid: series.dataSource.datasetUid,
       domain: series.dataSource.domain
     });
-    var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
-    var measure = SoqlHelpers.measure(vifToRender, seriesIndex);
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
+    const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+    const measure = SoqlHelpers.measure(vifToRender, seriesIndex);
+    const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       vifToRender,
       seriesIndex
     );
-    var whereClause = (whereClauseComponents.length > 0) ?
+    const whereClause = (whereClauseComponents.length > 0) ?
         'WHERE {0}'.format(whereClauseComponents) :
         '';
-    var aggregationClause = SoqlHelpers.aggregationClause(
+    const aggregationClause = SoqlHelpers.aggregationClause(
       vifToRender,
       seriesIndex,
       'dimension'
     );
 
-    var orderClause = SoqlHelpers.orderByClauseFromSeries(vifToRender, seriesIndex);
+    const orderClause = SoqlHelpers.orderByClauseFromSeries(vifToRender, seriesIndex);
 
-    var ascending;
-    var queryString;
+    let ascending;
+    let queryString;
 
     if (
       series.dataSource.dimension.aggregationFunction === null &&
@@ -207,13 +207,13 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
       ).
       then(
         function(queryResponse) {
-          var dimensionIndex = queryResponse.
+          const dimensionIndex = queryResponse.
             columns.
             indexOf(SOQL_DATA_PROVIDER_DIMENSION_ALIAS);
-          var measureIndex = queryResponse.
+          const measureIndex = queryResponse.
             columns.
             indexOf(SOQL_DATA_PROVIDER_MEASURE_ALIAS);
-          var valueAsNumber;
+          let valueAsNumber;
 
           queryResponse.columns[dimensionIndex] = 'dimension';
           queryResponse.columns[measureIndex] = 'measure';

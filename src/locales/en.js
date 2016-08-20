@@ -149,10 +149,10 @@ export default {
           title: 'Show X-Axis Data Labels'
         },
         chart_sorting: {
-          large_to_small: 'Largest to smallest',
-          small_to_large: 'Smallest to largest',
-          ascending: 'Ascending',
-          descending: 'Descending'
+          large_to_small: 'Largest to smallest by value',
+          small_to_large: 'Smallest to largest by value',
+          ascending: 'Ascending by label',
+          descending: 'Descending by label'
         }
       }
     },

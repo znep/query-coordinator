@@ -47,14 +47,14 @@ function clampValue(value, min, max) {
 }
 
 function SvgColumnChart($element, vif) {
-  var self = this;
-  var $chartElement;
-  var dataToRender;
-  var d3DimensionXScale;
-  var d3GroupingXScale;
-  var d3YScale;
-  var lastRenderedSeriesWidth = 0;
-  var lastRenderedZoomTranslate = 0;
+  const self = this;
+  let $chartElement;
+  let dataToRender;
+  let d3DimensionXScale;
+  let d3GroupingXScale;
+  let d3YScale;
+  let lastRenderedSeriesWidth = 0;
+  let lastRenderedZoomTranslate = 0;
 
   _.extend(this, new SvgVisualization($element, vif));
 
@@ -123,34 +123,34 @@ function SvgColumnChart($element, vif) {
   }
 
   function renderData() {
-    var columnWidth = (self.isMobile()) ?
+    const columnWidth = (self.isMobile()) ?
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
-    var viewportWidth = (
+    const viewportWidth = (
       $chartElement.width() -
       MARGINS.LEFT -
       MARGINS.RIGHT
     );
-    var width;
-    var viewportHeight = (
+    let width;
+    let viewportHeight = (
       $chartElement.height() -
       MARGINS.TOP -
       MARGINS.BOTTOM
     );
-    var height;
-    var d3ClipPathId = 'column-chart-clip-path-' + _.uniqueId();
-    var dimensionIndices = dataToRender.
+    let height;
+    const d3ClipPathId = 'column-chart-clip-path-' + _.uniqueId();
+    const dimensionIndices = dataToRender.
       map(
         function(series) {
           return series.columns.indexOf('dimension');
         }
       );
-    var dimensionValues = _.union(
+    const dimensionValues = _.union(
       _.flatten(
         dataToRender.
           map(
             function(series) {
-              var dimensionIndex = series.columns.indexOf('dimension');
+              const dimensionIndex = series.columns.indexOf('dimension');
 
               return series.
                 rows.
@@ -163,13 +163,13 @@ function SvgColumnChart($element, vif) {
           )
       )
     );
-    var measureIndices = dataToRender.
+    const measureIndices = dataToRender.
       map(
         function(series) {
           return series.columns.indexOf('measure');
         }
       );
-    var measureLabels = self.
+    const measureLabels = self.
       getVif().
         series.
           map(
@@ -177,23 +177,23 @@ function SvgColumnChart($element, vif) {
               return series.label;
             }
           );
-    var groupedDataToRender;
-    var columnCount;
-    var minYValue;
-    var maxYValue;
-    var d3XAxis;
-    var d3YAxis;
-    var d3Zoom;
-    var chartSvg;
-    var viewportSvg;
-    var xAxisAndSeriesSvg;
-    var seriesSvg;
-    var dimensionGroupSvgs;
-    var xAxisPanDistance;
-    var xAxisPanningEnabled;
-    var xAxisBound = false;
-    var yAxisBound = false;
-    var xAxisDataLabels = _.get(
+    let groupedDataToRender;
+    let columnCount;
+    let minYValue;
+    let maxYValue;
+    let d3XAxis;
+    let d3YAxis;
+    let d3Zoom;
+    let chartSvg;
+    let viewportSvg;
+    let xAxisAndSeriesSvg;
+    let seriesSvg;
+    let dimensionGroupSvgs;
+    let xAxisPanDistance;
+    let xAxisPanningEnabled;
+    let xAxisBound = false;
+    let yAxisBound = false;
+    const xAxisDataLabels = _.get(
       self.getVif(),
       'configuration.xAxisDataLabels',
       true
@@ -201,7 +201,7 @@ function SvgColumnChart($element, vif) {
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
-     * to benefit from sharing variables within a single render cycle.
+     * to benefit from sharing constiables within a single render cycle.
      */
 
     // See comment in renderXAxis() for an explanation as to why this is
@@ -252,9 +252,9 @@ function SvgColumnChart($element, vif) {
       const dimensionLabelRotation =
         `rotate(${DIMENSION_LABELS_ROTATION_ANGLE})`;
 
-      var xAxisSvg;
-      var xBaselineSvg;
-      var baselineValue;
+      let xAxisSvg;
+      let xBaselineSvg;
+      let baselineValue;
 
       // Binding the axis to the svg elements is something that only needs to
       // happen once even if we want to update the rendered properties more
@@ -341,9 +341,9 @@ function SvgColumnChart($element, vif) {
     }
 
     function renderYAxis() {
-      var yAxisSvg = chartSvg.
+      const yAxisSvg = chartSvg.
         select('.y.axis');
-      var yGridSvg = chartSvg.
+      const yGridSvg = chartSvg.
         select('.y.grid');
 
       // Binding the axis to the svg elements is something that only needs to
@@ -393,8 +393,8 @@ function SvgColumnChart($element, vif) {
       // can rely on that data attribute instead of having to derive the series
       // index from the individual datum bound to the element.
       function getPrimaryColorOrNone() {
-        var seriesIndex = this.getAttribute('data-series-index');
-        var primaryColor = self.getPrimaryColorBySeriesIndex(
+        const seriesIndex = this.getAttribute('data-series-index');
+        const primaryColor = self.getPrimaryColorBySeriesIndex(
           seriesIndex
         );
 
@@ -432,7 +432,7 @@ function SvgColumnChart($element, vif) {
           attr(
             'y',
             function(d) {
-              var yAttr;
+              let yAttr;
 
               // If the value is zero or null we want it to be present at the
               // baseline for the rest of the bars (at the bottom of the chart
@@ -490,7 +490,7 @@ function SvgColumnChart($element, vif) {
           attr(
             'height',
             function(d) {
-              var baselineValue;
+              let baselineValue;
 
               if (d[1] === null || d[1] === 0) {
                 // We want the flyout for null or zero values to appear along
@@ -583,10 +583,10 @@ function SvgColumnChart($element, vif) {
     }
 
     function restoreLastRenderedZoom() {
-      var translateXRatio = (lastRenderedSeriesWidth !== 0) ?
+      const translateXRatio = (lastRenderedSeriesWidth !== 0) ?
         Math.abs(lastRenderedZoomTranslate / lastRenderedSeriesWidth) :
         0;
-      var currentWidth = xAxisAndSeriesSvg.
+      const currentWidth = xAxisAndSeriesSvg.
         node().
           getBBox().
             width;
@@ -625,7 +625,7 @@ function SvgColumnChart($element, vif) {
         return [dimensionValue].concat([
           dataToRender.
             map(function(series, seriesIndex) {
-              var matchingRows = series.
+              const matchingRows = series.
                 rows.
                 filter(
                   function(row) {
@@ -879,9 +879,9 @@ function SvgColumnChart($element, vif) {
               ).
               attr(
                 'data-series-index',
-                /* eslint-disable no-unused-vars */
+                /* eslint-disable no-unused-consts */
                 function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
+                /* eslint-enable no-unused-consts */
                   return seriesIndex;
                 }
               ).
@@ -910,9 +910,9 @@ function SvgColumnChart($element, vif) {
               ).
               attr(
                 'data-series-index',
-                /* eslint-disable no-unused-vars */
+                /* eslint-disable no-unused-consts */
                 function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
+                /* eslint-enable no-unused-consts */
                   return seriesIndex;
                 }
               ).
@@ -1001,14 +1001,14 @@ function SvgColumnChart($element, vif) {
         on(
           'mousemove',
           function() {
-            var seriesIndex = this.getAttribute('data-series-index');
-            var dimensionGroup = this.parentNode;
-            var siblingColumn = d3.
+            const seriesIndex = this.getAttribute('data-series-index');
+            const dimensionGroup = this.parentNode;
+            const siblingColumn = d3.
               select(dimensionGroup).
                 select(
                   '.column[data-series-index="{0}"]'.format(seriesIndex)
                 )[0][0];
-            var datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
 
             showColumnHighlight(siblingColumn);
             showColumnFlyout(siblingColumn, datum);
@@ -1028,8 +1028,8 @@ function SvgColumnChart($element, vif) {
         on(
           'mousemove',
           function() {
-            var seriesIndex = this.getAttribute('data-series-index');
-            var datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const seriesIndex = this.getAttribute('data-series-index');
+            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
 
             showColumnHighlight(this);
             showColumnFlyout(this, datum);
@@ -1049,10 +1049,10 @@ function SvgColumnChart($element, vif) {
         on(
           'mousemove',
           function(d) {
-            var groupCategory = (d[0] === null || typeof d[0] === 'undefined') ?
+            const groupCategory = (d[0] === null || typeof d[0] === 'undefined') ?
               NO_VALUE_SENTINEL :
               d[0];
-            var dimensionGroup = xAxisAndSeriesSvg.
+            const dimensionGroup = xAxisAndSeriesSvg.
               select(
                 '.dimension-group[data-group-category="{0}"]'.format(groupCategory)
               );
@@ -1250,15 +1250,15 @@ function SvgColumnChart($element, vif) {
       selectAll('.column').
         each(
           function() {
-            var selection = d3.
+            const selection = d3.
               select(this);
 
             selection.
               attr(
                 'fill',
                 function() {
-                  var seriesIndex = this.getAttribute('data-series-index');
-                  var highlightColor = self.getHighlightColorBySeriesIndex(
+                  const seriesIndex = this.getAttribute('data-series-index');
+                  const highlightColor = self.getHighlightColorBySeriesIndex(
                     seriesIndex
                   );
 
@@ -1273,15 +1273,15 @@ function SvgColumnChart($element, vif) {
 
   function showColumnHighlight(columnElement) {
 
-    var selection = d3.
+    const selection = d3.
       select(columnElement);
 
       selection.
         attr(
           'fill',
           function() {
-            var seriesIndex = this.getAttribute('data-series-index');
-            var highlightColor = self.getHighlightColorBySeriesIndex(
+            const seriesIndex = this.getAttribute('data-series-index');
+            const highlightColor = self.getHighlightColorBySeriesIndex(
               seriesIndex
             );
 
@@ -1298,7 +1298,7 @@ function SvgColumnChart($element, vif) {
       selectAll('.column').
         each(
           function() {
-            var selection = d3.
+            const selection = d3.
               select(this);
 
             selection.
@@ -1308,8 +1308,8 @@ function SvgColumnChart($element, vif) {
   }
 
   function showGroupFlyout(groupElement) {
-    var title = groupElement.attr('data-group-category');
-    var $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const title = groupElement.attr('data-group-category');
+    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).
           text(
@@ -1318,24 +1318,24 @@ function SvgColumnChart($element, vif) {
               title
           )
         );
-    var labelValuePairs = groupElement.data()[0][1];
-    var $labelValueRows;
-    var $table = $('<table>', {'class': 'socrata-flyout-table'}).
+    const labelValuePairs = groupElement.data()[0][1];
+    let $labelValueRows;
+    const $table = $('<table>', {'class': 'socrata-flyout-table'}).
       append($title);
-    var flyoutElement;
-    var payload = null;
+    let flyoutElement;
+    let payload = null;
 
     $labelValueRows = labelValuePairs.
       map(
         function(datum) {
-          var label = datum[0];
-          var value = datum[1];
-          var seriesIndex = self.getSeriesIndexByLabel(label);
-          var valueString;
-          var $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+          const label = datum[0];
+          const value = datum[1];
+          const seriesIndex = self.getSeriesIndexByLabel(label);
+          let valueString;
+          const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
             text(label).
             css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
-          var $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+          const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
 
           if (value === null) {
             valueString = I18n.translate('visualizations.common.no_value');
@@ -1388,28 +1388,28 @@ function SvgColumnChart($element, vif) {
   }
 
   function showColumnFlyout(columnElement, datum) {
-    var title = (
+    const title = (
       columnElement.getAttribute('data-column-category') ||
       I18n.translate('visualizations.common.no_value')
     );
-    var label = datum[0];
-    var value = datum[1];
-    var seriesIndex = self.getSeriesIndexByLabel(label);
-    var valueString;
-    var payload = null;
-    var $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+    const label = datum[0];
+    const value = datum[1];
+    const seriesIndex = self.getSeriesIndexByLabel(label);
+    let valueString;
+    let payload = null;
+    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).
           text(
             (title) ? title : ''
           )
         );
-    var $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
       text(label).
       css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
-    var $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-    var $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
-    var $table = $('<table>', {'class': 'socrata-flyout-table'});
+    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
+    const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
       valueString = I18n.translate('visualizations.common.no_value');

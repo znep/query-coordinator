@@ -75,7 +75,7 @@ describe('SoqlHelpers', function() {
         'operand': '22',
         'humanReadableOperand': 'Louisiana',
         'computedColumnName': (filterOwnColumn) ?
-          TEST_OWN_COMPUTED_COLUMN_NAME : 
+          TEST_OWN_COMPUTED_COLUMN_NAME :
           TEST_OTHER_COMPUTED_COLUMN_NAME
       }
     };
@@ -221,7 +221,7 @@ describe('SoqlHelpers', function() {
               match.pattern.format(match.column)
             )
           );
-        }  
+        }
       });
     });
 
@@ -766,5 +766,77 @@ describe('SoqlHelpers', function() {
 
       testFilterAndMatchSets(filterSets, matchSets, true);
     });
+  });
+
+  describe('orderByClauseFromSeries', () => {
+    function buildVifWithOrderBy(parameter, sort) {
+      return {
+        series: [
+          {
+            dataSource: {
+              orderBy: {
+                parameter,
+                sort
+              }
+            }
+          }
+        ]
+      };
+    }
+
+    function returnsOrderByClauseWith(parameter, sort) {
+      const sqlSort = _.upperCase(sort);
+      const sqlAlias = parameter === 'dimension' ?
+        SoqlHelpers.dimensionAlias() :
+        SoqlHelpers.measureAlias();
+
+
+      describe(`when orderBy is a ${parameter} and ${sort}`, () => {
+        it(`returns the ${parameter} alias and SQL ${sqlSort} as a string`, () => {
+          const vif = buildVifWithOrderBy(parameter, sort);
+          const orderBy = SoqlHelpers.orderByClauseFromSeries(vif, 0);
+          expect(orderBy).to.equal(`${sqlAlias} ${sqlSort}`);
+        });
+      });
+    }
+
+    describe('when parameter is set incorrectly', () => {
+      it('throws', () => {
+        const vif = buildVifWithOrderBy('yours is the first face that I saw', 'asc');
+
+        expect(() => {
+          SoqlHelpers.orderByClauseFromSeries(vif, 0);
+        }).to.throw;
+      });
+    });
+
+    describe('when sort is set incorrectly', () => {
+      const vif = buildVifWithOrderBy('measure', 'first day of my life');
+
+      it('throws', () => {
+        expect(() => {
+          SoqlHelpers.orderByClauseFromSeries(vif, 0);
+        }).to.throw;
+      });
+    });
+
+    describe('when orderBy isn\'t set', () => {
+      it('returns the measure alias and SQL DESC as a string', () => {
+        const vif = buildVifWithOrderBy();
+
+        _.set(vif, 'series[0].dataSource.measure.aggregationFunction', null);
+        _.set(vif, 'series[0].dataSource.dimension.aggregationFunction', null);
+        _.unset(vif, 'series[0].dataSource.orderBy');
+
+        const orderBy = SoqlHelpers.orderByClauseFromSeries(vif, 0);
+
+        expect(orderBy).to.equal(`${SoqlHelpers.measureAlias()} DESC`);
+      });
+    });
+
+    returnsOrderByClauseWith('measure', 'asc');
+    returnsOrderByClauseWith('measure', 'desc');
+    returnsOrderByClauseWith('dimension', 'asc');
+    returnsOrderByClauseWith('dimension', 'desc');
   });
 });

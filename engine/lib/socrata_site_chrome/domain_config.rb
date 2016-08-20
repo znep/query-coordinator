@@ -14,13 +14,13 @@ module SocrataSiteChrome
     def site_chrome_config(stage = :published)
       raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
-      site_chrome_config = current_site_chrome(stage)
-      site_chrome_content = config[:properties].to_a.first || {}
+      site_chrome_config = current_site_chrome(stage).to_h
+      site_chrome_content = config[:properties].to_a.first.to_h
 
       {
         id: config[:id],
-        content: site_chrome_config.try(:fetch, :content),
-        updated_at: site_chrome_config.try(:fetch, :updatedAt, nil) || config[:updatedAt],
+        content: site_chrome_config[:content],
+        updated_at: site_chrome_config[:updatedAt] || config[:updatedAt],
         current_version: site_chrome_content.dig(:value, :current_version) ||
           latest_existing_version(site_chrome_content) || SiteChrome::LATEST_VERSION
       }

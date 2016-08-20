@@ -12,6 +12,7 @@
  *
  *= require_tree ./fonts
  *= require_self
+ *= require socrata-components/dist/css/styleguide.min.css
  */
 
 html, body {

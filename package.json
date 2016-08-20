@@ -1,0 +1,11 @@
+{
+  "name": "site-chrome-demo-hosting-app",
+  "version": "0.0.0",
+  "description": "Demo hosting to for the Site Chrome gem.",
+  "scripts": {},
+  "author": "Socrata Engineering <engineering@socrata.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "socrata-components": "^6.5.2"
+  }
+}

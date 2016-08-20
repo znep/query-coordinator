@@ -66,21 +66,4 @@ describe SocrataSiteChrome::ThemesHelper do
 
   end
 
-  describe '#exclude_styleguide?', verify_stubs: false do
-    it 'returns true if SocrataSiteChrome::Engine.config.styleguide is false' do
-      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(false)
-      expect(helper.exclude_styleguide?).to eq(true)
-    end
-
-    it 'returns false if SocrataSiteChrome::Engine.config.styleguide is true' do
-      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(true)
-      expect(helper.exclude_styleguide?).to eq(false)
-    end
-
-    it 'returns false if SocrataSiteChrome::Engine.config.styleguide is not set' do
-      allow(SocrataSiteChrome::Engine.config).to receive(:styleguide).and_return(nil)
-      expect(helper.exclude_styleguide?).to eq(false)
-    end
-  end
-
 end

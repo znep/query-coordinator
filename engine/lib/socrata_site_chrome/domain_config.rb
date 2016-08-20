@@ -14,8 +14,8 @@ module SocrataSiteChrome
     def site_chrome_config(stage = :published)
       raise RuntimeError.new('Empty configuration in site_chrome.') unless config
 
-      site_chrome_config = current_site_chrome(stage).to_h
-      site_chrome_content = config[:properties].to_a.first.to_h
+      site_chrome_config = current_site_chrome(stage).to_h.with_indifferent_access
+      site_chrome_content = config[:properties].to_a.first.to_h.with_indifferent_access
 
       {
         id: config[:id],

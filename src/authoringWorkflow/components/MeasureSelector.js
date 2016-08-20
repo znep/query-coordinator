@@ -96,11 +96,6 @@ export const MeasureSelector = React.createClass({
     const isCountingRows = _.isNull(measure.columnName);
     const measures = getValidMeasures(metadata);
     const visualizationType = _.get(vif, 'series[0].type');
-
-    const classes = classNames('measure-dropdown-container', {
-      'measure-dropdown-container-count-rows': isCountingRows
-    });
-
     const options = [
       {title: translate('panes.data.fields.measure.no_value'), value: null},
       ...measures.map(measure => ({
@@ -112,6 +107,17 @@ export const MeasureSelector = React.createClass({
     ];
 
     const hasOnlyDefaultValue = options.length <= 1;
+
+    const measureContainerAttributes = {
+      className: classNames('measure-dropdown-container', {
+        'measure-dropdown-container-count-rows': isCountingRows
+      })
+    };
+
+    if (hasOnlyDefaultValue) {
+      measureContainerAttributes['data-flyout'] = 'measure-empty-flyout';
+    }
+
     const measureAttributes = {
       options,
       onSelection: onSelectMeasure,
@@ -125,7 +131,7 @@ export const MeasureSelector = React.createClass({
     return (
       <div ref={(ref) => this.selector = ref}>
         <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
-        <div className={classes} data-flyout="measure-empty-flyout">
+        <div {...measureContainerAttributes}>
           <Styleguide.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationDropdown()}
         </div>

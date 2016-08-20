@@ -67,7 +67,7 @@ $(document).ready(function() {
   $('button#site_chrome_save').click(function() {
     if ($siteChromeForm.length) {
       if ($siteChromeForm.valid()) {
-        preSubmitLinkCleansing($siteChromeForm);
+        preSubmitLinkCleansing();
         $siteChromeForm.removeAttr('target');
         $siteChromeForm.find('input#stage').remove();
         $siteChromeForm.submit();
@@ -109,7 +109,7 @@ $(document).ready(function() {
   onLoadOrClickingSigninSignoutCheckbox();
   $('#content_general_show_signin_signout').on('click change', onLoadOrClickingSigninSignoutCheckbox);
 
-  sortableListOfLinks($('.list-of-links'));
+  sortableListOfLinks();
 });
 
 // Figure out which tab is active (current) and get its id
@@ -148,11 +148,12 @@ function inputValidation() {
     onkeyup: false,
     focusInvalid: false,
     // Validator ignores :hidden by default, which ignores all the hidden tabs.
-    // We wnat it to care about the hidden tabs, so using a dummy selector for it to operate on.
+    // We want it to care about the hidden tabs, so using a dummy selector for it to operate on.
     ignore: '.irrelevant',
     errorPlacement: function($error, $element) {
       $error.appendTo($element.parent());
-    }
+    },
+    errorClass: 'site-chrome-input-error'
   });
 
   toggleSaveButton();
@@ -192,10 +193,6 @@ function currentLocale() {
   return 'en';
 }
 
-function contentKey() {
-  return $siteChromeForm.find('.list-of-links').data('contentKey'); // eslint-disable-line no-undef
-}
-
 function toggleDisabledCopyrightText(checkbox) {
   var $textbox = $('#copyright-notice-text');
   $textbox.prop('disabled', !checkbox.checked);
@@ -207,21 +204,21 @@ function toggleDisabledCopyrightText(checkbox) {
 
 // Mapping of different input types to their 'name' attributes. Note that the name attribute is what
 // determines where the data is saved into the JSON blob.
-var listOfLinksInputNames = function(id) {
+var listOfLinksInputNames = function(contentKey, id) {
   return {
     hiddenLabelInput: {
-      linkRow: 'content[{0}]links[][key]'.format(contentKey()),
-      linkMenu: 'content[{0}]links[][key]'.format(contentKey()),
-      childLinkRow: 'content[{0}]links[]links[][key]'.format(contentKey())
+      linkRow: 'content[{0}]links[][key]'.format(contentKey),
+      linkMenu: 'content[{0}]links[][key]'.format(contentKey),
+      childLinkRow: 'content[{0}]links[]links[][key]'.format(contentKey)
     },
     localizedLabelInput: {
-      linkRow: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey(), id),
-      linkMenu: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey(), id),
-      childLinkRow: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey(), id)
+      linkRow: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey, id),
+      linkMenu: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey, id),
+      childLinkRow: 'content[locales][{0}][{1}]links[{2}]'.format(currentLocale(), contentKey, id)
     },
     urlInput: {
-      linkRow: 'content[{0}]links[][url]'.format(contentKey()),
-      childLinkRow: 'content[{0}]links[]links[][url]'.format(contentKey())
+      linkRow: 'content[{0}]links[][url]'.format(contentKey),
+      childLinkRow: 'content[{0}]links[]links[][url]'.format(contentKey)
     }
   };
 };
@@ -284,65 +281,70 @@ function removeLinkMenu(button) {
 
 // Before submit, reorder the indices of the present links and menus to reflect the current
 // appearance. Also remove any empty links to prevent them from being saved to the config.
-function preSubmitLinkCleansing($form) {
-  var $listsOfLinks = $form.find('.list-of-links');
-  var $linkRows = $listsOfLinks.children('.links-and-menus').children('.link-row');
-  var $presentLinkRows = $linkRows.filter(function() {
-    return $(this).find('input[name="{0}"]'.format(listOfLinksInputNames().urlInput.linkRow)).value();
-  });
-
-  // Top level links: add the link index to their input names and values
-  $presentLinkRows.each(function(index, link) {
-    var linkId = 'link_{0}'.format(index);
-    $(link).find('.hidden-label-input').val(linkId);
-
-    var linkLocaleId = listOfLinksInputNames(linkId).localizedLabelInput.linkRow;
-    $(link).find('.localized-label-input').attr('name', linkLocaleId);
-  });
-
-  // Link Menus: add menu index to input names and values
-  $listsOfLinks.children('.links-and-menus').children('.link-menu').not('.default').
-    each(function(menuIndex, menu) {
-    var menuId = 'menu_{0}'.format(menuIndex);
-    $(menu).find('.hidden-label-input').val(menuId);
-
-    var menuLocaleId = listOfLinksInputNames(menuId).localizedLabelInput.linkMenu;
-    $(menu).find('.localized-label-input').attr('name', menuLocaleId);
-
-    // Child links: add the menu + childLink index to their input names and values
-    var $childLinks = $(menu).children('.child-links').children('.link-row');
-    var $presentChildLinks = $childLinks.filter(function() {
-      return $(this).find('input[name="{0}"]'.format(listOfLinksInputNames().urlInput.childLinkRow)).value();
+function preSubmitLinkCleansing() {
+  $siteChromeForm.find('.list-of-links').each(function(i, listOfLinks) {
+    var contentKey = $(listOfLinks).data('contentKey');
+    var $linkRows = $(listOfLinks).children('.links-and-menus').children('.link-row');
+    var $presentLinkRows = $linkRows.filter(function() {
+      return $(this).find('input[name="{0}"]'.format(listOfLinksInputNames(contentKey).urlInput.linkRow)).value();
     });
 
-    $presentChildLinks.each(function(childLinkIndex, childLink) {
-      var childLinkId = '{0}_link_{1}'.format(menuId, childLinkIndex);
-      $(childLink).find('.hidden-label-input').val(childLinkId);
+    // Top level links: add the link index to their input names and values
+    $presentLinkRows.each(function(index, link) {
+      var linkId = 'link_{0}'.format(index);
+      $(link).find('.hidden-label-input').val(linkId);
 
-      var childLinkLocaleId = '{0}'.format(listOfLinksInputNames(childLinkId).localizedLabelInput.childLinkRow);
-      $(childLink).find('.localized-label-input').attr('name', childLinkLocaleId);
+      var linkLocaleId = listOfLinksInputNames(contentKey, linkId).localizedLabelInput.linkRow;
+      $(link).find('.localized-label-input').attr('name', linkLocaleId);
     });
-  });
 
-  // Remove non-present link-rows and menus before saving
-  $linkRows.not($presentLinkRows).remove();
-  $listsOfLinks.children('.links-and-menus').children('.link-menu.default').remove();
+    // Link Menus: add menu index to input names and values
+    $(listOfLinks).children('.links-and-menus').children('.link-menu').not('.default').each(
+      function(menuIndex, menu) {
+        var menuId = 'menu_{0}'.format(menuIndex);
+        $(menu).find('.hidden-label-input').val(menuId);
+
+        var menuLocaleId = listOfLinksInputNames(contentKey, menuId).localizedLabelInput.linkMenu;
+        $(menu).find('.localized-label-input').attr('name', menuLocaleId);
+
+        // Child links: add the menu + childLink index to their input names and values
+        var $childLinks = $(menu).children('.child-links').children('.link-row');
+        var $presentChildLinks = $childLinks.filter(function() {
+          return $(this).find('input[name="{0}"]'.format(listOfLinksInputNames(contentKey).urlInput.childLinkRow)).value();
+        });
+
+        $presentChildLinks.each(function(childLinkIndex, childLink) {
+          var childLinkId = '{0}_link_{1}'.format(menuId, childLinkIndex);
+          $(childLink).find('.hidden-label-input').val(childLinkId);
+
+          var childLinkLocaleId = '{0}'.format(listOfLinksInputNames(contentKey, childLinkId).localizedLabelInput.childLinkRow);
+          $(childLink).find('.localized-label-input').attr('name', childLinkLocaleId);
+        });
+      }
+    );
+
+    // Remove non-present link-rows and menus
+    $linkRows.not($presentLinkRows).remove();
+    $(listOfLinks).children('.links-and-menus').children('.link-menu.default').remove();
+  });
 }
 
 // Change data structure (name attribute) of child links to match that of top-level links.
 function moveChildLinkToTopLevelLink($link) {
+  var tab = getActiveTabId();
   $link.removeClass('child');
-  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames().hiddenLabelInput.linkRow);
-  $link.find('.url-input').attr('name', listOfLinksInputNames().urlInput.linkRow);
-  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames().hiddenLabelInput.linkRow);
+  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames(tab).hiddenLabelInput.linkRow);
+  $link.find('.url-input').attr('name', listOfLinksInputNames(tab).urlInput.linkRow);
+  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames(tab).hiddenLabelInput.linkRow);
 }
 
 // Change data structure (name attribute) of links to match that of child links.
 function moveTopLevelLinkToChildLink($link) {
+  var tab = getActiveTabId();
   $link.addClass('child');
-  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames().hiddenLabelInput.childLinkRow);
-  $link.find('.url-input').attr('name', listOfLinksInputNames().urlInput.childLinkRow);
-  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames().hiddenLabelInput.childLinkRow);
+  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames(tab).hiddenLabelInput.childLinkRow);
+  $link.find('.url-input').attr('name', listOfLinksInputNames(tab).urlInput.childLinkRow);
+  $link.find('.hidden-label-input').attr('name', listOfLinksInputNames(tab).hiddenLabelInput.childLinkRow);
 }
 
 function linkIsChildLink($link) {
@@ -351,8 +353,8 @@ function linkIsChildLink($link) {
 
 // jQuery UI Sortable list of links
 // https://jqueryui.com/sortable/
-function sortableListOfLinks(listsOfLinks) {
-  $(listsOfLinks).each(function(i, listOfLinks) {
+function sortableListOfLinks() {
+  $('.list-of-links').each(function(i, listOfLinks) {
     $(listOfLinks).find('.links-and-menus').sortable({
       connectWith: '.link-row',
       items: '.link-row',

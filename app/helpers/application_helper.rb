@@ -412,7 +412,7 @@ module ApplicationHelper
   # See also public/javascripts/site_appearance/main.js
   # See also config/webpack/site-appearance.config.js
   def socrata_styleguide
-    stylesheet_link_tag('/stylesheets/node_modules/socrata-styleguide/dist/css/styleguide.css', media: 'all')
+    stylesheet_link_tag('/stylesheets/socrata-styleguide/css/styleguide.css', media: 'all')
   end
 
 # DATE HELPERS

@@ -221,7 +221,7 @@ $faint-border-color: #ebebeb;
           font-weight: 400;
           color: $grey;
 
-          &.error {
+          &.site-chrome-input-error {
             color: $red-text;
             font-size: 14px;
           }
@@ -247,7 +247,7 @@ $faint-border-color: #ebebeb;
           }
           /* ie */
 
-          &.error {
+          &.site-chrome-input-error {
             border-color: $red-text;
           }
 

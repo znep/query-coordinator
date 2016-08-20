@@ -130,14 +130,11 @@ class Domain < Model
   def feature_flags
     if FeatureFlags.using_signaller?
       (RequestStore[:feature_flags] ||= {})[cname] ||=
-        begin
+        FeatureFlags.connect_to_signaller do
           uri = FeatureFlags.endpoint(with_path: "/domain/#{cname}.json")
           JSON.parse(HTTParty.get(uri).body).each_with_object({}) do |(key, info), memo|
             memo[key] = info['value']
           end
-        rescue
-          Rails.logger.error('Feature Flag Signaller is unreachable!')
-          {}
         end
     else
       conf = default_configuration('feature_flags')

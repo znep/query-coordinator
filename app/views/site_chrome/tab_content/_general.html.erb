@@ -4,12 +4,11 @@
   t[:description] = t[:description_html].html_safe
 end) %>
 
+<%= site_chrome_form_field(:general, [:styles, :max_width], translations[:max_width]) %>
 <%= site_chrome_form_field(:general, :window_title_display, translations[:window_title_display]) %>
 <%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
-<%= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>
-<%= site_chrome_form_field(:general, [:styles, :max_width], translations[:max_width]) %>
-<%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
-<%= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>
+<!-- EN-9176: Hide Google Analytics field for now -->
+<!--<%#= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>-->
 
 <section class="settings-group">
   <div class="settings-form full">

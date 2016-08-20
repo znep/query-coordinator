@@ -81,28 +81,32 @@ class FeatureFlags
       uri
     end
 
-    def get_value(flag_name, options = {})
+    def connect_to_signaller
       return unless using_signaller?
 
+      begin
+        yield
+      rescue Errno::ECONNREFUSED
+        raise RuntimeError.new('Error connecting to Feature Flag Signaller. Is it running?')
+      end
+    end
+
+    def get_value(flag_name, options = {})
       uri = endpoint(for_flag: flag_name, for_domain: options[:domain] || CurrentDomain.cname)
-      JSON.parse(HTTParty.get(uri))[flag_name]
+      connect_to_signaller { JSON.parse(HTTParty.get(uri))[flag_name] }
     end
 
     def set_value(flag_name, flag_value, options = {})
-      return unless using_signaller?
-
       uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
       body = flag_value.is_a?(String) ? flag_value : flag_value.to_json
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      HTTParty.put(uri, body: body, headers: auth_header)
+      connect_to_signaller { HTTParty.put(uri, body: body, headers: auth_header) }
     end
 
     def reset_value(flag_name, options = {})
-      return unless using_signaller?
-
       uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      HTTParty.delete(uri, headers: auth_header)
+      connect_to_signaller { HTTParty.delete(uri, headers: auth_header) }
     end
 
     def list

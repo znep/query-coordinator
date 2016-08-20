@@ -23,12 +23,9 @@ class FeatureFlagConfig < ExternalConfig
     Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
 
     if FeatureFlags.using_signaller?
-      @feature_flags = begin
+      @feature_flags = FeatureFlags.connect_to_signaller do
         uri = FeatureFlags.endpoint(with_path: '/describe.json')
         JSON.parse(HTTParty.get(uri).body)
-      rescue
-        Rails.logger.error('Feature Flag Signaller is unreachable!')
-        {}
       end.with_indifferent_access
     else
       @feature_flags = (YAML.load_file(filename) || {}).with_indifferent_access

@@ -19,7 +19,6 @@ $highlighted-row-background-color: #f6f6f6;
 .socrata-table {
   $header-row-height: 40px;
   $header-cell-height: 39px;
-
   $data-row-height: 25px;
   $data-cell-height: 24px;
 
@@ -27,11 +26,13 @@ $highlighted-row-background-color: #f6f6f6;
   overflow-x: scroll;
   font-family: 'Open Sans', sans-serif;
   transition: opacity 0.25s;
+  box-sizing: content-box;
   opacity: 0;
 
   table {
     width: 100%;
     margin: 0;
+    padding: 0;
     font-size: 13px;
     border-collapse: collapse;
 
@@ -73,6 +74,7 @@ $highlighted-row-background-color: #f6f6f6;
 
     th {
       position: relative;
+      padding: 1px;
       height: $header-cell-height;
       line-height: $header-cell-height;
       color: #6a6a6a;

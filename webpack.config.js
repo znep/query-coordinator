@@ -44,6 +44,6 @@ module.exports = [
     resolve: {
       modulesDirectories: ['node_modules']
     },
-    devtool: 'eval'
+    devtool: 'source-map'
   }
 ];

@@ -32,7 +32,11 @@ export default () => ({
           "aggregationFunction": "sum"
         },
         "type": "socrata.soql",
-        "filters": []
+        "filters": [],
+        "orderBy": {
+          "parameter": "measure",
+          "sort": "desc"
+        }
       },
       "label": null,
       "type": "columnChart",

@@ -11,7 +11,8 @@ function render(type) {
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     onChangeLabelBottom: sinon.spy(),
     onChangeLabelLeft: sinon.spy(),
-    onChangeXAxisDataLabels: sinon.spy()
+    onChangeXAxisDataLabels: sinon.spy(),
+    onSelectChartSorting: sinon.spy()
   });
 
   return {
@@ -33,17 +34,15 @@ describe('AxisAndScalePane', function() {
     };
   }
 
-  function emitsEvent(id, eventName) {
+  function emitsEvent(id, eventName, eventType) {
     it(`should emit an ${eventName} event`, function() {
-      TestUtils.Simulate.change(component.querySelector(id));
+      TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
       sinon.assert.calledOnce(props[eventName]);
     });
   }
 
   function rendersLabelsAndEmitsEvents() {
-
     describe('rendering', function() {
-
       it('renders a bottom label input', function() {
         expect(component.querySelector('#label-bottom')).to.exist;
       });
@@ -54,7 +53,6 @@ describe('AxisAndScalePane', function() {
     });
 
     describe('events', function() {
-
       describe('when changing the bottom label', function() {
         emitsEvent('#label-bottom', 'onChangeLabelBottom');
       });
@@ -66,22 +64,29 @@ describe('AxisAndScalePane', function() {
   }
 
   function rendersXAxisDataLabelsAndEmitsEvents() {
-
     describe('rendering', function() {
-
       it('renders a show x-axis data labels checkbox', function() {
         expect(component.querySelector('#x-axis-data-labels')).to.exist;
       });
     });
 
     describe('events', function() {
-
       describe('when changing the x-axis data labels checkbox', function() {
+        emitsEvent('#x-axis-data-labels', 'onChangeXAxisDataLabels');
+      });
+    });
+  }
 
-        emitsEvent(
-          '#x-axis-data-labels',
-          'onChangeXAxisDataLabels'
-        );
+  function rendersChartSortingAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders a dropdown with chart sorting options', function() {
+        expect(component.querySelector('#chart-sorting-selection')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the chart sorting order', function() {
+        emitsEvent('#chart-sorting-selection .dropdown-option', 'onSelectChartSorting', 'click');
       });
     });
   }
@@ -105,6 +110,7 @@ describe('AxisAndScalePane', function() {
     beforeEach(setUpVisualization('columnChart'));
     rendersLabelsAndEmitsEvents();
     rendersXAxisDataLabelsAndEmitsEvents();
+    rendersChartSortingAndEmitsEvents();
   });
 
   describe('histogram', function() {

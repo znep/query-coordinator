@@ -146,6 +146,11 @@ export const getXAxisScalingMode = createSelector(
   vif => _.get(vif, 'configuration.xAxisScalingMode')
 );
 
+export const getOrderBy = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].dataSource.orderBy')
+);
+
 export const getVisualizationType = createSelector(
   getCurrentVif,
   vif =>  _.get(vif, 'series[0].type', null)

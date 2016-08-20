@@ -10,10 +10,10 @@ const I18n = require('./I18n');
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const MAX_COLUMN_COUNT = 1000;
-const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
-const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
-const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = SoqlHelpers.measureAlias();
+const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {5} NULL LAST LIMIT {6}';
+const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {6} NULL LAST LIMIT {7}';
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(originalVif) {
@@ -165,6 +165,9 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
       seriesIndex,
       'dimension'
     );
+
+    var orderClause = SoqlHelpers.orderByClauseFromSeries(vifToRender, seriesIndex);
+
     var ascending;
     var queryString;
 
@@ -173,30 +176,16 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
       series.dataSource.measure.aggregationFunction === null
     ) {
 
-      // Default to ascending order if this is an unaggregated query, since
-      // people are likely more interested in the categories rather than the
-      // values in this case.
-      ascending = Boolean(
-        _.get(series, 'dataSource.configuration.orderByAscending', true)
-      );
-
       queryString = UNAGGREGATED_BASE_QUERY.format(
         dimension,
         SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
         measure,
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
-        (ascending) ? 'ASC' : 'DESC',
+        orderClause,
         MAX_COLUMN_COUNT + 1
       );
     } else {
-
-      // Default to descending order if this is an aggregated query, since
-      // people are likely more interested in the values rather than the
-      // categories in this case.
-      ascending = Boolean(
-        _.get(series, 'dataSource.configuration.orderByAscending', false)
-      );
 
       queryString = AGGREGATED_BASE_QUERY.format(
         dimension,
@@ -205,7 +194,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
         aggregationClause,
-        (ascending) ? 'ASC' : 'DESC',
+        orderClause,
         MAX_COLUMN_COUNT + 1
       );
     }

@@ -143,3 +143,30 @@ export const COLORS = [
   '#3d7ec0', '#31a75a', '#894baa', '#636363', '#e25200', '#2a919a', '#387bbb', '#c3008c', '#ec3001',
   '#1e489f', '#067126', '#80007f', '#252525', '#a33200', '#0f6f59', '#2d2298', '#79007a', '#ba001e'
 ];
+
+export const CHART_SORTING = [
+  {
+    title: translate('panes.axis_and_scale.fields.chart_sorting.large_to_small'),
+    orderBy: { parameter: 'measure', sort: 'desc' },
+    icon: 'icon-sort-desc',
+    group: 'value'
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.chart_sorting.small_to_large'),
+    orderBy: { parameter: 'measure', sort: 'asc' },
+    icon: 'icon-sort-asc',
+    group: 'value'
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.chart_sorting.ascending'),
+    orderBy: { parameter: 'dimension', sort: 'asc' },
+    icon: 'icon-sort-az',
+    group: 'label'
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.chart_sorting.descending'),
+    orderBy: { parameter: 'dimension', sort: 'desc' },
+    icon: 'icon-sort-za',
+    group: 'label'
+  }
+];

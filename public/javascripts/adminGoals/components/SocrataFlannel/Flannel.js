@@ -4,6 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames/bind';
 
+import './Flannel.scss';
+
 const mobileBreakpoint = 420;
 const padding = 10;
 

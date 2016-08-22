@@ -2,15 +2,13 @@ import _ from 'lodash';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ReactRedux  from 'react-redux';
+import * as Components from '../../../components';
 import * as Actions from '../actions';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
 import * as Constants from '../constants';
 
-import SocrataFlannel from '../../../components/SocrataFlannel';
-import SocrataButton from '../../../components/SocrataButton';
-import SocrataDownloadButton from '../../../components/SocrataDownloadButton/SocrataDownloadButton';
 
 class SocrataBulkActions extends React.Component {
   constructor(props) {
@@ -45,22 +43,8 @@ class SocrataBulkActions extends React.Component {
     this.props.cancelDownloadCsv();
   }
 
-  componentDidUpdate() {
-    const infoBox = ReactDOM.findDOMNode(this.refs.infoBox);
-    const csv = ReactDOM.findDOMNode(this.refs.csv);
-
-    if (!infoBox) {
-      return;
-    }
-
-    const csvLeft = csv.offsetLeft;
-    const csvWidth = csv.offsetWidth;
-    const csvBottom = csv.offsetTop + csv.offsetHeight;
-
-    const infoBoxWidth = infoBox.offsetWidth;
-
-    infoBox.style.left = `${csvLeft + csvWidth - infoBoxWidth - 15}px`;
-    infoBox.style.top = `${csvBottom}px`;
+  componentDidMount() {
+    this.csvButton = this.refs.csv;
   }
 
   renderDownloadInfoBox() {
@@ -72,14 +56,25 @@ class SocrataBulkActions extends React.Component {
       const inProgress = this.props[`${infoBoxFor.toLowerCase()}Export`].inProgress;
       const infoTitle = Helpers.translator(translations, `admin.export.${infoBoxFor}.info_title`);
       const infoDescription = Helpers.translator(translations, `admin.export.${infoBoxFor}.info_description`);
+      const ok = Helpers.translator(translations, 'admin.export.info_box.ok');
+      const cancel = Helpers.translator(translations, 'admin.export.info_box.cancel');
 
-      return inProgress && (
-          <SocrataFlannel ref="infoBox"
-                          onDismiss={ this.handleInfoBoxDismiss }
-                          title={infoTitle}
-                          content={infoDescription}
-                          onCancel={ this[`handleCancel${infoBoxFor}`] }/>
-        );
+      return inProgress ? (
+        <Components.Socrata.Flannel.Wrapper ref="infoBox" hoverable={this.csvButton} closeFlannel={ this.handleInfoBoxDismiss }>
+          <Components.Socrata.Flannel.Header title={infoTitle} />
+          <Components.Socrata.Flannel.Content>
+            <p className="small" dangerouslySetInnerHTML={ { __html: infoDescription } }/>
+          </Components.Socrata.Flannel.Content>
+          <Components.Socrata.Flannel.Footer>
+            <Components.Socrata.Button primary medium onClick={ this.handleInfoBoxDismiss }>
+              {ok}
+            </Components.Socrata.Button>
+            <Components.Socrata.Button medium onClick={ this[`handleCancel${infoBoxFor}`] }>
+              {cancel}
+            </Components.Socrata.Button>
+          </Components.Socrata.Flannel.Footer>
+        </Components.Socrata.Flannel.Wrapper>
+      ) : null;
     }
   }
 
@@ -92,18 +87,18 @@ class SocrataBulkActions extends React.Component {
     return (
       <div className="bulk-actions">
         <div className="btn-group">
-          <SocrataButton simple disabled={ selectedRowsCount < 2 } onClick={ openBulkEditModal }>
+          <Components.Socrata.Button simple disabled={ selectedRowsCount < 2 } onClick={ openBulkEditModal }>
             { editTitle }
-          </SocrataButton>
+          </Components.Socrata.Button>
 
-          <SocrataDownloadButton ref="csv"
-                                 simple
-                                 fileName={Constants.goalsCsvFilename}
-                                 fileUrl={Constants.goalsCsvUrl}
-                                 inProgress={csvExport.inProgress}
-                                 onStartDownload={this.handleDownloadCsv}>
+          <Components.Socrata.DownloadButton ref="csv"
+                                             simple
+                                             fileName={Constants.goalsCsvFilename}
+                                             fileUrl={Constants.goalsCsvUrl}
+                                             inProgress={csvExport.inProgress}
+                                             onStartDownload={this.handleDownloadCsv}>
             { csvExportTitle }
-          </SocrataDownloadButton>
+          </Components.Socrata.DownloadButton>
         </div>
         { this.renderDownloadInfoBox() }
       </div>

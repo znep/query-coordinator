@@ -1,5 +1,5 @@
 import * as Modal from './SocrataModal';
-import * as Flannel from './SocrataFlannel';
+import Flannel from './SocrataFlannel';
 
 export { Modal };
 export { Flannel };

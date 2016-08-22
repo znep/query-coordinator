@@ -13,14 +13,15 @@ export default class SocrataButton extends React.Component {
 
   render() {
     const props = this.props;
-    const isPrimary = props.primary == true;
-    const isAlternate = props.alternate == true;
-    const isAlternate2 = props.alternate2 == true;
-    const isSimple = props.simple == true;
-    const isInverse = props.inverse == true;
-    const isSmall = props.small == true;
-    const isExtraSmall = props.extraSmall == true;
-    const isInProgress = props.inProgress == true;
+    const isPrimary = props.primary === true;
+    const isAlternate = props.alternate === true;
+    const isAlternate2 = props.alternate2 === true;
+    const isSimple = props.simple === true;
+    const isInverse = props.inverse === true;
+    const isSmall = props.small === true;
+    const isMedium = props.medium === true;
+    const isExtraSmall = props.extraSmall === true;
+    const isInProgress = props.inProgress === true;
     const type = props.type || 'button';
 
     const isDefault = helpers.noneOf([isPrimary, isAlternate, isAlternate2, isSimple, isInverse]);
@@ -35,6 +36,7 @@ export default class SocrataButton extends React.Component {
       'btn-inverse': isInverse,
       'btn-sm': isSmall,
       'btn-xs': isExtraSmall,
+      'btn-m': isMedium,
       'btn-busy': false // isInProgress
     };
 

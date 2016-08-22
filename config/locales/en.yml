@@ -1757,6 +1757,9 @@ en:
       subheadline: This goal is measured by tracking {0} in {1}.
     admin:
       export:
+        info_box:
+          ok: OK
+          cancel: Cancel
         Csv:
           button_label: Export
           info_title: Generating Download

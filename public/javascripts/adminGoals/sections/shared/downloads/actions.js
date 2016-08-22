@@ -12,8 +12,8 @@ export const start = (section, fileName, fileUrl) => ({
   'genericDownload.create': {
     fileName,
     fileUrl,
-    successActionType: types.success(section, fileName),
-    failureActionType: types.failed(section, fileName)
+    successActionType: types.success,
+    failureActionType: types.failed
   }
 });
 

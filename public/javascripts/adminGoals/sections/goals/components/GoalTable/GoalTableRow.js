@@ -66,7 +66,7 @@ class GoalTableRow extends React.Component {
             </span>
           </div>
         </td>
-        <td className="single-line">{ goal.getIn(['owner_name']) }</td>
+        <td className="single-line">{ goal.get('owner_name') }</td>
         <td className="single-line">{ moment(goal.get('updated_at') || goal.get('created_at')).format('ll') }</td>
         <td
           className="single-line">{ translations.getIn(['admin', 'goal_values', goal.get('is_public') ? 'status_public' : 'status_private']) }</td>

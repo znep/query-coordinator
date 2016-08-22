@@ -21,7 +21,7 @@ class GoalDetails extends React.Component {
         <div>{ moment(goal.get('updated_at')).format('ll') }</div>
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'goal_owner']) }</h6>
-        <div>{ goal.getIn(['created_by', 'displayName']) }</div>
+        <div>{ goal.get('owner_name') }</div>
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'dashboard']) }</h6>
         <div>

@@ -225,24 +225,24 @@ class BrowseControllerTest < ActionController::TestCase
   end
 
   test 'it should not send a limitTo for search when no facet is selected' do
-    Clytemnestra.
-      expects(:search_views).
-      with() { |actual| !actual[:limitTo].present? }.
-      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-    get :show
-    assert_response(:success)
-    Clytemnestra.unstub(:search_views)
-  end
+      Clytemnestra.
+        expects(:search_views).
+        with { |actual| !actual[:limitTo].present? }.
+        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+      get :show
+      assert_response(:success)
+      Clytemnestra.unstub(:search_views)
+    end
 
   test 'it should send an appropriate limitTo for search when new_view type facet is selected' do
-    Clytemnestra.
-      expects(:search_views).
-      with() { |actual| actual[:limitTo].eql? 'new_view' }.
-      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-    get :show, { 'limitTo' => 'new_view' }
-    assert_response(:success)
-    Clytemnestra.unstub(:search_views)
-  end
+      Clytemnestra.
+        expects(:search_views).
+        with { |actual| actual[:limitTo].eql? 'new_view' }.
+        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+      get :show, { 'limitTo' => 'new_view' }
+      assert_response(:success)
+      Clytemnestra.unstub(:search_views)
+    end
 
   context 'embedded browse page' do
     should 'render without errors' do
@@ -748,9 +748,14 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'should set the X-Frame-Options header to ALLOWALL' do
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+        with(query: query_params.merge(order: 'relevance')).
+        to_return(status: 200, body: cetera_payload)
+
       get :show, id: 'four-four', customization_id: 'default'
       assert_response :success
+
       assert_equal 'ALLOWALL', @response.headers['X-Frame-Options']
     end
   end
-end
+  end

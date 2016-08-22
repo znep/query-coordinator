@@ -10,24 +10,28 @@ export const getGoalById = (state, goalId) => {
   return State.getData(state).find(goal => goal.get('id') === goalId);
 };
 
+const getStatus = (translations, goal) => {
+  return translations.getIn(['measure', 'progress', goal.get('status')]);
+};
+
 const fieldGetterByColumnName = {
-  title: goal => goal.get('name', ''),
-  owner: goal => goal.get('owner_name', ''),
-  updated_at: goal => moment(goal.get('updated_at') || goal.get('created_at')),
-  visibility: goal => goal.get('is_public', false),
-  goal_status: goal => goal.getIn(['prevailing_measure', 'metadata', 'progress_override'], ''),
-  dashboard: goal => goal.get('base_dashboard', '')
+  title: (translations, goal) => goal.get('name', ''),
+  owner: (translations, goal) => goal.get('owner_name', ''),
+  updated_at: (translations, goal) => moment(goal.get('updated_at') || goal.get('created_at')),
+  visibility: (translations, goal) => goal.get('is_public', false),
+  goal_status: (translations, goal) => getStatus(translations, goal),
+  dashboard: (translations, goal) => goal.get('base_dashboard', '')
 };
 
 export const getSortedGoals = Reselect.createSelector(
-  [State.getData, State.getSorting],
-  (goals, sortingMap) => {
+  [State.getTranslations, State.getData, State.getSorting],
+  (translations, goals, sortingMap) => {
     if (sortingMap.get('fieldName') === 'default')
       return goals;
 
-    const direction = sortingMap.get('direction');
-    const fieldName = sortingMap.get('fieldName');
-    const fieldType = sortingMap.get('fieldType');
+    const direction = sortingMap.get(translations, 'direction');
+    const fieldName = sortingMap.get(translations, 'fieldName');
+    const fieldType = sortingMap.get(translations, 'fieldType');
 
     let comparator = Helpers.comparators[fieldType];
     if (!comparator) {

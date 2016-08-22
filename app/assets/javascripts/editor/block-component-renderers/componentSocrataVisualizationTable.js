@@ -51,7 +51,7 @@ function _renderTemplate($element, componentData, options) {
     addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
     // Pass on the destroy event to plugin.
     on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+    on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
       var payload = event.originalEvent.detail;
 
       if (payload !== null) {
@@ -62,12 +62,14 @@ function _renderTemplate($element, componentData, options) {
     });
 
   if (_.get(options, 'editMode')) {
+
     $element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
       var newVif = event.originalEvent.detail;
       var blockId = StorytellerUtils.findClosestAttribute(this, 'data-block-id');
       var componentIndex = parseInt(
         StorytellerUtils.findClosestAttribute(this, 'data-component-index'),
-        10);
+        10
+      );
       var newValue;
 
       StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
@@ -100,54 +102,28 @@ function _renderTemplate($element, componentData, options) {
 
 function _updateVisualization($element, componentData) {
   var $componentContent = $element.find('.component-content');
-  var renderedVif = $element.attr('data-rendered-vif') || '{}';
-  var link;
+  var renderedVif = JSON.parse($element.attr('data-rendered-vif') || '{}');
   var vif;
-
-  // Today, socrata visualizations can't be updated by providing a new VIF
-  // (to use a new vif, the old vis must be destroyed first). VIF.configuration
-  // changes when the user changes the sort on the table. We don't want to
-  // blow away the table when that happens. So, ignore changes to configuration
-  // for now (until socrata visualizations can accept changing VIFs).
-  var propertiesOmittedForVifComparison = [ 'configuration' ];
 
   StorytellerUtils.assertHasProperty(componentData, 'value.vif');
   vif = componentData.value.vif;
 
-  if (!StorytellerUtils.vifsAreEquivalent(
-    _.omit(JSON.parse(renderedVif), propertiesOmittedForVifComparison),
-    _.omit(vif, propertiesOmittedForVifComparison))
+  $element.attr('data-rendered-vif', JSON.stringify(vif));
+
+  if (
+    _.get(renderedVif, 'series[0].type') === 'table' &&
+    _.get(vif, 'series[0].type') === 'table'
   ) {
 
-    $element.attr('data-rendered-vif', JSON.stringify(vif));
-
-    link = StorytellerUtils.format(
-      '<a href="https://{0}/d/{1}" target="_blank">underlying dataset</a>',
-      vif.domain,
-      vif.datasetUid
-    );
-
-    vif.configuration = vif.configuration || {};
-    vif.configuration.localization = {
-      'previous': 'Previous',// TODO actually get from I18n
-      'next': 'Next',
-      'no_rows': 'No {unitOther}',
-      'only_row': 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
-      'many_rows': 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
-      'all_rows': 'Showing all rows',
-      'latitude': 'Latitude',
-      'longitude': 'Longitude',
-      'no_column_description': 'No description provided.',
-      'unable_to_render': StorytellerUtils.format(
-        'We\'re having trouble displaying this table. Check to make sure the {0} hasn\'t been deleted or unpublished.',
-        link
+    $componentContent[0].dispatchEvent(
+      new CustomEvent(
+        'SOCRATA_VISUALIZATION_RENDER_VIF',
+        {
+          detail: vif
+        }
       )
-    };
-
-    vif.unit = {
-      one: 'record',
-      other: 'records'
-    };
+    );
+  } else {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');

@@ -424,28 +424,28 @@ $faint-border-color: #ebebeb;
         &:first-of-type {
           margin-right: 9px;
         }
+      }
+    }
 
-        .whats-new-content {
-          .whats-new-hero-image {
-            display: block;
-            margin: 0 auto;
-          }
+    .whats-new-content {
+      .whats-new-hero-image {
+        display: block;
+        margin: 0 auto;
+      }
 
-          .whats-new-title {
+      .whats-new-title {
         font-size: 15pt;
-            color: #288dc1;
-            margin: 12px 0 4px;
-          }
+        color: #288dc1;
+        margin: 16px 0 8px;
+      }
 
-          .whats-new-description {
-        font-size: 10pt;
-        line-height: 1.5rem;
-            margin-bottom: 28px;
-          }
-        }
+      .whats-new-description {
         > p {
-          margin-bottom: 14px;
+          font-size: 10pt;
+          line-height: 1.2rem;
+          margin: 0 0 16px;
         }
+
         &:last-of-type {
           margin-bottom: 0;
         }

@@ -433,7 +433,7 @@ module.exports = function Table(element, originalVif) {
     // Update the current vif with the new column widths.
     _.set(
       vifToRender,
-      'configuration.tableColumnWidths[${column.fieldName}]',
+      'configuration.tableColumnWidths',
       columnWidths
     );
 

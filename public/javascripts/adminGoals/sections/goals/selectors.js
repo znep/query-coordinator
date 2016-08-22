@@ -39,7 +39,7 @@ export const getSortedGoals = Reselect.createSelector(
     }
 
     if (direction === 'desc') {
-      comparator = Helpers.comparators.negate(comparator);
+      comparator = Helpers.comparators.invert(comparator);
     }
 
     return goals.toSeq().sortBy(fieldGetterByColumnName[fieldName](translations), comparator);

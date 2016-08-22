@@ -12,8 +12,8 @@ export const date = (left, right) => {
   }
 };
 
-export const bool = left => {
-  return left ? 1 : -1;
+export const bool = (left, right) => {
+  return left === right ? 0 : (left ? 1 : -1);
 };
 
-export const negate = comparator => (left, right) => comparator(left, right) * -1;
+export const invert = comparator => (left, right) => comparator(left, right) * -1;

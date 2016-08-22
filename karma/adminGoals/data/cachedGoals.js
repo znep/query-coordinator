@@ -3,6 +3,10 @@ export default {
     "base_dashboard": "cfa5-i2ky",
     "created_at": "2016-06-17T11:02:29.806+03:00",
     "name": "Smmmoo Hot HOT very very very very very very very very very very very very very loooong name",
+    "owner_name": "cagri ekin",
+    "dashboard": {
+      "name": "default"
+    },
     "created_by": {
       "publicViews": 0,
       "flags": ["admin"],

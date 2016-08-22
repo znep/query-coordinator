@@ -57,7 +57,7 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   });
 
   it('should have correct goal owner value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(2).textContent).to.eq(goal.dashboardName);
+    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(2).textContent).to.eq(goal.dashboard.name);
   });
 
   it('should have correct category name', () => {

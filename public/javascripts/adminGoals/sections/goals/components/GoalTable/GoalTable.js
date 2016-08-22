@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import * as React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
@@ -15,6 +17,11 @@ class GoalTable extends React.Component {
   constructor(props) {
     super(props);
     this.paginationOptions = [25, 50, 100, 250];
+    _.bindAll(this, ['handleOnRowsPerPageChanged']);
+  }
+
+  handleOnRowsPerPageChanged(goalsPerPage) {
+    this.props.uiActions.setGoalsPerPage(goalsPerPage, this.props.goalsCount);
   }
 
   render() {
@@ -30,7 +37,7 @@ class GoalTable extends React.Component {
         <div>
           <PageSelector />
           <Components.RowsPerPageSelector
-            onChange={uiActions.setGoalsPerPage}
+            onChange={this.handleOnRowsPerPageChanged}
             options={this.paginationOptions}
             title={perPageSelectorTitle}
             value={pagination.get('goalsPerPage')}/>
@@ -42,6 +49,7 @@ class GoalTable extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
+  goalsCount: state.getIn(['goals', 'data']).count(),
   pagination: State.getPagination(state)
 });
 

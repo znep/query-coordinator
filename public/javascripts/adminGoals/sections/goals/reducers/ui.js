@@ -34,7 +34,17 @@ const showPage = (state, { pageNumber }) => {
   return state.setIn(['pagination', 'currentPage'], pageNumber).set('selectedGoalIds', Immutable.List([]));
 };
 
-const setGoalsPerPage = (state, { goalsPerPage }) => state.setIn(['pagination', 'goalsPerPage'], goalsPerPage);
+const setGoalsPerPage = (state, { goalsPerPage, goalsCount }) => {
+  const numberOfPages = Math.max(1, Math.ceil(goalsCount / goalsPerPage));
+
+  let newState = state.setIn(['pagination', 'goalsPerPage'], goalsPerPage);
+
+  if (state.getIn(['pagination', 'currentPage'], 0) >= numberOfPages) {
+    newState = newState.setIn(['pagination', 'currentPage'], numberOfPages - 1);
+  }
+
+  return newState;
+};
 
 const selectUntil = (state, { untilGoalId, paginatedGoalIds }) => {
   const lastSelectedId = state.get('selectedGoalIds').last();

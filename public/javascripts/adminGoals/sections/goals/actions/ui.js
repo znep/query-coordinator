@@ -28,9 +28,10 @@ export const showPage = pageNumber => ({
   pageNumber
 });
 
-export const setGoalsPerPage = goalsPerPage => ({
+export const setGoalsPerPage = (goalsPerPage, goalsCount) => ({
   type: types.setGoalsPerPage,
-  goalsPerPage
+  goalsPerPage,
+  goalsCount
 });
 
 export const selectUntil = (paginatedGoalIds, untilGoalId) => ({

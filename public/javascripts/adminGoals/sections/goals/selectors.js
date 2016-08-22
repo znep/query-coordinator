@@ -11,7 +11,7 @@ export const getGoalById = (state, goalId) => {
 };
 
 const getStatus = (translations, goal) => {
-  return translations.getIn(['measure', 'progress', goal.get('status')]);
+  return translations.getIn(['measure', 'progress', goal.get('status')], '');
 };
 
 const fieldGetterByColumnName = {

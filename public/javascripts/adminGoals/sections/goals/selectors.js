@@ -15,12 +15,12 @@ const getStatus = (translations, goal) => {
 };
 
 const fieldGetterByColumnName = {
-  title: (translations, goal) => goal.get('name', ''),
-  owner: (translations, goal) => goal.get('owner_name', ''),
-  updated_at: (translations, goal) => moment(goal.get('updated_at') || goal.get('created_at')),
-  visibility: (translations, goal) => goal.get('is_public', false),
-  goal_status: (translations, goal) => getStatus(translations, goal),
-  dashboard: (translations, goal) => goal.get('base_dashboard', '')
+  title: () => (goal) => goal.get('name', ''),
+  owner: () => (goal) => goal.get('owner_name', ''),
+  updated_at: () => (goal) => moment(goal.get('updated_at') || goal.get('created_at')),
+  visibility: () => (goal) => goal.get('is_public', false),
+  goal_status: (translations) => (goal) => getStatus(translations, goal),
+  dashboard: () => (goal) => goal.get('base_dashboard', '')
 };
 
 export const getSortedGoals = Reselect.createSelector(
@@ -29,9 +29,9 @@ export const getSortedGoals = Reselect.createSelector(
     if (sortingMap.get('fieldName') === 'default')
       return goals;
 
-    const direction = sortingMap.get(translations, 'direction');
-    const fieldName = sortingMap.get(translations, 'fieldName');
-    const fieldType = sortingMap.get(translations, 'fieldType');
+    const direction = sortingMap.get('direction');
+    const fieldName = sortingMap.get('fieldName');
+    const fieldType = sortingMap.get('fieldType');
 
     let comparator = Helpers.comparators[fieldType];
     if (!comparator) {
@@ -42,7 +42,7 @@ export const getSortedGoals = Reselect.createSelector(
       comparator = Helpers.comparators.negate(comparator);
     }
 
-    return goals.toSeq().sortBy(fieldGetterByColumnName[fieldName], comparator);
+    return goals.toSeq().sortBy(fieldGetterByColumnName[fieldName](translations), comparator);
   }
 );
 

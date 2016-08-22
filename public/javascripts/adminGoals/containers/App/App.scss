@@ -191,3 +191,12 @@ a.btn {
   width: 14px;
   height: 14px;
 }
+
+.table-top {
+  display: flex;
+  justify-content: space-between;
+
+  h1 {
+    margin: 16px;
+  }
+}

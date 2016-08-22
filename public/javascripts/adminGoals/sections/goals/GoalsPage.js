@@ -19,11 +19,16 @@ class GoalsPage extends React.Component {
   }
 
   render() {
-    const { isBulkEditFormVisible, isQuickEditFormVisible } = this.props;
+    const { translations, isBulkEditFormVisible, isQuickEditFormVisible } = this.props;
 
     return (
       <div>
-        <Components.SocrataBulkActions />
+        <div className="table-top">
+          <h1>
+            { translations.getIn(['admin', 'manage_performance_goals']) }
+          </h1>
+          <Components.SocrataBulkActions />
+        </div>
         <Components.GoalTable />
         { isQuickEditFormVisible && <Components.QuickEditForm /> }
         { isBulkEditFormVisible && <Components.BulkEditForm /> }
@@ -33,6 +38,7 @@ class GoalsPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  translations: state.get('translations'),
   isBulkEditFormVisible: State.getBulkEdit(state).get('visible'),
   isQuickEditFormVisible: State.getQuickEdit(state).get('visible')
 });

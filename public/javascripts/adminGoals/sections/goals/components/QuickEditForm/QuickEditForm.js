@@ -50,7 +50,8 @@ class GoalQuickEdit extends React.Component {
       name: goal.get('name'),
       actionType: goal.getIn(['prevailing_measure', 'metadata', 'edit', 'action_type']),
       prevailingMeasureName: goal.getIn(['prevailing_measure', 'metadata', 'name']),
-      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'metadata', 'progress_override']),
+      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'metadata', 'use_progress_override']) ?
+        goal.getIn(['prevailing_measure', 'metadata', 'progress_override']) : 'none',
       unit: goal.getIn(['prevailing_measure', 'unit']),
       percentUnit: goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
         '%' : goal.getIn(['prevailing_measure', 'unit']),

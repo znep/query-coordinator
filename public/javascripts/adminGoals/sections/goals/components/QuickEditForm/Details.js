@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import moment from 'moment';
 
 import * as React from 'react';
@@ -12,8 +11,8 @@ class GoalDetails extends React.Component {
   render() {
     const { goal, translations } = this.props;
 
-    const datasetUpdatedAt = goal.getIn(['coreView', 'updatedAt'], null);
-    const datasetOwner = goal.getIn(['coreView', 'owner', 'displayName'], null);
+    const datasetUpdatedAt = goal.getIn(['core_view', 'updatedAt'], null);
+    const datasetOwner = goal.getIn(['core_view', 'owner', 'displayName'], null);
 
     return (
       <div className="goal-quick-edit-details">
@@ -38,7 +37,7 @@ class GoalDetails extends React.Component {
         <div>{ datasetUpdatedAt ? moment.unix(datasetUpdatedAt).format('ll') : '—' }</div>
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'dataset_owner']) }</h6>
-        <div>{ _.get(datasetOwner, 'displayName', '—') }</div>
+        <div>{ datasetOwner || '—' }</div>
       </div>
     );
   }

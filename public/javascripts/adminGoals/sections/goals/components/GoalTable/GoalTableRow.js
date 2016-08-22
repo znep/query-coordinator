@@ -43,9 +43,11 @@ class GoalTableRow extends React.Component {
   render() {
     const { goal, selected, translations } = this.props;
 
-    let goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id'])}/${goal.get('id')}/edit`;
-    let dashboardUrl = `/stat/goals/${goal.get('base_dashboard')}`;
-    let rowClass = classNames({ selected });
+    const goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id'])}/${goal.get('id')}/edit`;
+    const dashboardUrl = `/stat/goals/${goal.get('base_dashboard')}`;
+    const rowClass = classNames({ selected });
+    const goalStatus = translations.getIn(['measure', 'progress', goal.get('status')]);
+    const goalVisibility = goal.get('is_public') ? 'status_public' : 'status_private';
 
     return (
       <tr ref='tr' onClick={ this.handleClick } className={ rowClass } onDoubleClick={ this.handleEditClick }>
@@ -68,10 +70,8 @@ class GoalTableRow extends React.Component {
         </td>
         <td className="single-line">{ goal.get('owner_name') }</td>
         <td className="single-line">{ moment(goal.get('updated_at') || goal.get('created_at')).format('ll') }</td>
-        <td
-          className="single-line">{ translations.getIn(['admin', 'goal_values', goal.get('is_public') ? 'status_public' : 'status_private']) }</td>
-        <td
-          className="single-line">{ translations.getIn(['measure', 'progress', goal.getIn(['prevailing_measure', 'metadata', 'progress_override'])]) }</td>
+        <td className="single-line">{ translations.getIn(['admin', 'goal_values', goalVisibility]) }</td>
+        <td className="single-line">{ goalStatus }</td>
         <td className="dashboard-link">
           <Components.Socrata.Flyout text={ translations.getIn(['admin', 'listing', 'view_dashboard']) } left="true">
             <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>

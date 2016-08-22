@@ -866,7 +866,7 @@ module ApplicationHelper
   end
 
   def current_user_can_create_story?
-    CurrentDomain.feature_flags[:stories_enabled] && current_user.has_right?(UserRights::CREATE_STORY)
+    FeatureFlags.derive.stories_enabled && current_user.has_right?(UserRights::CREATE_STORY)
   end
 
   # ONCALL-3032: Spam e-mail sent via the Socrata platform

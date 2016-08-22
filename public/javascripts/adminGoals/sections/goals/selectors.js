@@ -53,7 +53,7 @@ export const getSelectedGoals = Reselect.createSelector(
 
 export const getNumberOfPages = Reselect.createSelector(
   State.getData, State.getPagination,
-  (goals, pagination) => Math.max(1, Math.floor(goals.count() / pagination.get('goalsPerPage')))
+  (goals, pagination) => Math.max(1, Math.ceil(goals.count() / pagination.get('goalsPerPage')))
 );
 
 const getGoalsPerPage = state => State.getPagination(state).get('goalsPerPage');

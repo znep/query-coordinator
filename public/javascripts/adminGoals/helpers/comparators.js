@@ -12,7 +12,7 @@ export const date = (left, right) => {
   }
 };
 
-export const bool = (left, right) => {
+export const bool = left => {
   return left ? 1 : -1;
 };
 

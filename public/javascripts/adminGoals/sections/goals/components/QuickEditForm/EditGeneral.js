@@ -42,7 +42,7 @@ class EditGeneral extends React.Component {
           <label className="inline-label">
             { translations.getIn(['admin', 'quick_edit', 'status'])}
           </label>
-          { translations.getIn(['measure', 'progress', goal.get('prevailingMeasureProgress')]) || ' — '}
+          { translations.getIn(['measure', 'progress', goal.get('status')]) || ' — '}
         </div>
 
         <div className="form-line">

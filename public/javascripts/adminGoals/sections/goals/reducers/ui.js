@@ -9,7 +9,7 @@ const initialState = Immutable.fromJS({
   },
   selectedGoalIds: [],
   sorting: {
-    fieldName: 'default',
+    fieldName: 'title',
     fieldType: 'string',
     direction: 'asc'
   }

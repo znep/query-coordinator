@@ -121,7 +121,7 @@ module SocrataSiteChrome
           concat(
             if valid_navbar_menu_item?(link)
               if use_dropdown
-                content_tag(:div, :class => 'site-chrome-nav-menu') do
+                content_tag(:div, :class => 'site-chrome-nav-menu noselect') do
                   dropdown(
                     content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales)) <<
                       content_tag(:span, nil, :class => 'icon-arrow-down'),
@@ -130,7 +130,7 @@ module SocrataSiteChrome
                 end
               else
                 # Instead of a dropdown, print out the name of the menu item followed by all its links
-                content_tag(:div, :class => 'site-chrome-nav-menu') do
+                content_tag(:div, :class => 'site-chrome-nav-menu noselect') do
                   content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales),
                     :class => 'nav-menu-title') <<
                   navbar_child_links_array(link[:links]).join('').html_safe

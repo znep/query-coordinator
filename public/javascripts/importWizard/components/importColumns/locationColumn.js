@@ -5,7 +5,6 @@ import * as SharedTypes from '../../sharedTypes';
 
 export type LocationSource
   = {
-      type: 'MultipleCols',
       isMultiple: Boolean,
       street: String,
       singleSource: String,
@@ -14,10 +13,6 @@ export type LocationSource
       zip: ColumnOrText,
       lat: SharedTypes.SourceColumn,
       lon: SharedTypes.SourceColumn
-    }
-  | {
-      type: 'SingleCol',
-      sourceColumn: SharedTypes.SourceColumn
     }
 
 export const update =

@@ -72,7 +72,6 @@ export function initialTranslation(summary: UploadFile.Summary): Transform {
       columnSource: {
         type: 'LocationColumn',
         components: {
-          type: 'MultipleCols',
           isMultiple: true,
           singleSource: '',
           street: '',

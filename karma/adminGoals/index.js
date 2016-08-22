@@ -24,8 +24,6 @@ function requireAll(context) {
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));
-requireAll(require.context('./actions', true, /\.js$/));
 requireAll(require.context('./helpers', true, /\.js$/));
 requireAll(require.context('./middlewares', true, /\.js$/));
-requireAll(require.context('./selectors', true, /\.js$/));
-requireAll(require.context('./reducers', true, /\.js$/));
+requireAll(require.context('./sections', true, /\.js$/));

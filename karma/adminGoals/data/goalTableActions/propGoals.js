@@ -8,12 +8,19 @@ export default [{
     "version": "2016-06-13T13:34:51.823+03:00",
     "target_type": "maintain",
     "end": "2016-12-31T23:59:59.000",
+    "metadata": {
+      "progress_override": "good"
+    },
     "created_at": "2016-06-13T13:34:51.823+03:00",
     "unit": "ton",
     "target_delta_is_percent": false,
     "start": "2016-01-01T00:00:00.000"
   },
+  "dashboard": {
+    "name": "default"
+  },
   "base_dashboard": "cfa5-i2ky",
+  "owner_name": "cagri ekin",
   "updated_at": "2016-06-13T13:34:51.874+03:00",
   "created_at": "2016-06-13T13:32:17.083+03:00",
   "version": "2016-06-13T13:34:51.874+03:00",

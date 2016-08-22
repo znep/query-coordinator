@@ -44,8 +44,7 @@ class PageSelector extends React.Component {
 
     let startLabel = startOffset == 0 ? 1 : startOffset;
     return <div className="page-selector-container">
-      <span className="labels">{ startLabel }
-        - { `${endPosition} ${this.props.translations.getIn(['admin', 'listing', 'of'])} ${ totalGoalsCount }` }</span>
+      <span className="labels">{ `${startLabel} - ${endPosition} ${this.props.translations.getIn(['admin', 'listing', 'of'])} ${ totalGoalsCount }` }</span>
       <span { ...prevProps } />
       <span { ...nextProps } />
     </div>;

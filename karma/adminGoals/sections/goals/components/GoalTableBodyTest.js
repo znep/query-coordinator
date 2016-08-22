@@ -1,24 +1,34 @@
-import GoalTableBody from 'components/GoalTableBody';
+import GoalTableBody from 'sections/goals/components/GoalTable/GoalTableBody';
 import moment from 'moment';
-import goals from '../data/goalTableActions/propGoals';
-import dashboards from '../data/goalTableActions/propDashboards';
+import goals from '../../../data/goalTableActions/propGoals';
+import dashboards from '../../../data/goalTableActions/propDashboards';
 
 import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;
 
-describe('components/GoalTableBody', function() {
+describe('sections/goals/components/GoalTable/GoalTableBody', function() {
   beforeEach(function() {
     var state = {
       translations: translations,
-      goalTableData: {
-        goals: goals,
-        dashboards: dashboards,
-        selectedRows: []
-      }
+      goals: {
+        data: goals,
+        ui: {
+          selectedGoalIds: [],
+          pagination: {
+            goalsPerPage: 50,
+            currentPage: 0
+          },
+          sorting: {
+            fieldName: 'default',
+            fieldType: 'string',
+            direction: 'asc'
+          }
+        }
+      },
     };
 
-    this.output = renderComponentWithStore(GoalTableBody, state.goalTableData, getDefaultStore(state));
+    this.output = renderComponentWithStore(GoalTableBody, state.goals.data, getDefaultStore(state));
   });
 
   it('should have 4 rows', function() {
@@ -34,7 +44,7 @@ describe('components/GoalTableBody', function() {
       to.contain(goals[0].name);
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(4)')[0].textContent).
-      to.eq(goals[0].created_by.displayName);
+      to.eq(goals[0].owner_name);
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(5)')[0].textContent).
       to.eq(moment(goals[0].updated_at).format('ll'));
@@ -43,10 +53,10 @@ describe('components/GoalTableBody', function() {
       to.eq(_.get(translations, 'admin.goal_values.' + (goals[0].is_public ? 'status_public' : 'status_private')));
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(7)')[0].textContent).
-      to.eq(_.get(translations, `measure.progress.${goals[0].prevailingMeasureProgress}`));
+      to.eq(_.get(translations, `measure.progress.${goals[0].prevailing_measure.metadata.progress_override}`));
 
     expect(this.output.querySelectorAll('tr:first-child td:nth-child(8)')[0].textContent).
-      to.contain(dashboards[goals[0].base_dashboard].name);
+      to.contain(goals[0].dashboard.name);
   });
 
 });

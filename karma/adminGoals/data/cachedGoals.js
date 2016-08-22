@@ -38,7 +38,13 @@ export default {
       "updated_at": "2016-07-21T18:06:53.868+03:00",
       "version": "2016-07-21T18:06:53.868+03:00",
       "end": "2016-12-30T00:00:00.000",
-      "progress_override": "good"
+      "progress_override": "good",
+      "metadata": {
+        "edit": {
+          "action_type": "maintain",
+          "maintain_type": "within"
+        }
+      }
     },
     "datasetId": "6syt-4pv9",
     "updated_at": "2016-07-21T18:06:53.868+03:00",
@@ -339,6 +345,12 @@ export default {
       "comparison": {"comparison_function": "<"},
       "created_at": "2016-06-13T13:14:14.182+03:00",
       "edit": {"action_type": "maintain"},
+      "metadata": {
+        "edit": {
+          "action_type": "maintain",
+          "maintain_type": "within"
+        }
+      },
       "target_delta": 20,
       "name": "Something",
       "metric": {"id": "m933-w2uc"},
@@ -393,7 +405,13 @@ export default {
       "target": 1,
       "updated_at": "2016-07-18T11:33:06.693+03:00",
       "version": "2016-07-18T11:33:06.693+03:00",
-      "end": "2016-12-31T23:59:59.000"
+      "end": "2016-12-31T23:59:59.000",
+      "metadata": {
+        "edit": {
+          "action_type": "maintain",
+          "maintain_type": "within"
+        }
+      }
     },
     "datasetId": "6syt-4pv9",
     "updated_at": "2016-07-18T11:33:06.710+03:00",
@@ -444,8 +462,8 @@ export default {
         "edit": {
           "start": {"date": "start", "month": "year", "year": 1990},
           "end": {"date": "end", "month": "year", "year": 2016},
-          "action_type": "reduce",
-          "target_type": "relative"
+          "target_type": "relative",
+          "action_type": "reduce"
         },
         "baseline": {
           "squishy": {

@@ -1,16 +1,18 @@
 import Immutable from 'immutable';
 import moment from 'moment';
-import QuickEditForm from 'containers/QuickEditForm/QuickEditForm';
 import translations from 'mockTranslations';
-import mockGoals from '../data/cachedGoals';
-import mockDatasets from '../data/datasets';
+import mockGoalsByIds from '../../../data/cachedGoals';
+import mockDatasets from '../../../data/datasets';
+import QuickEditForm from 'sections/goals/components/QuickEditForm/QuickEditForm';
+
+const mockGoals = Immutable.fromJS(mockGoalsByIds).valueSeq().toList().toJS();
 
 var getDefaultStore = require('testStore').getDefaultStore;
 let server;
 
-describe('containers/QuickEditForm/QuickEditForm', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   let goalId = '7ndm-ubkq';
-  let goal = mockGoals[goalId];
+  let goal = mockGoalsByIds[goalId];
 
   beforeEach(() => {
     server = sinon.fakeServer.create();
@@ -19,20 +21,19 @@ describe('containers/QuickEditForm/QuickEditForm', function() {
       xhr.respond(200, null, JSON.stringify(mockDatasets[goal.datasetId]));
     });
 
-    let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
-      },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
+    let state = Immutable.fromJS({
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          formData: {}
+        }
       }
-    };
+    });
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(state));
   });
 
   afterEach(() => {
@@ -48,28 +49,24 @@ describe('containers/QuickEditForm/QuickEditForm', function() {
   });
 
   it('should have correct goal updated value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(0).textContent).
-      to.eq(moment(goal.updated_at).format('ll'));
+    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(0).textContent).to.eq(moment(goal.updated_at).format('ll'));
   });
 
   it('should have correct goal owner value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(1).textContent).
-      to.eq(goal.created_by.displayName);
+    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(1).textContent).to.eq(goal.created_by.displayName);
   });
 
   it('should have correct goal owner value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(2).textContent).
-      to.eq(goal.dashboardName);
+    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(2).textContent).to.eq(goal.dashboardName);
   });
 
   it('should have correct category name', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(3).textContent).
-    to.eq(goal.category.name);
+    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(3).textContent).to.eq(goal.category.name);
   });
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Absolute', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Absolute', function () {
   let goalId = 'g34u-2aa5';
   let goal = mockGoals[goalId];
 
@@ -81,15 +78,15 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
-      },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       }
     };
 
@@ -130,7 +127,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Relative', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Relative', function () {
   let goalId = 'vefh-4ihb';
   let goal = mockGoals[goalId];
 
@@ -142,19 +139,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -199,7 +196,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Increase -
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Absolute', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Absolute', function () {
   let goalId = 'ykke-a4sz';
   let goal = mockGoals[goalId];
 
@@ -211,19 +208,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - A
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -260,7 +257,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - A
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Relative', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Relative', function () {
   let goalId = 'sgv4-zzaj';
   let goal = mockGoals[goalId];
 
@@ -272,19 +269,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - R
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -329,7 +326,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - R
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Within', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Within', function () {
   let goalId = '59yh-53jg';
   let goal = mockGoals[goalId];
 
@@ -341,19 +338,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -398,7 +395,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Below', function() {
+describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Below', function () {
   let goalId = 'jf7f-i9h8';
   let goal = mockGoals[goalId];
 
@@ -410,19 +407,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -459,7 +456,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Above', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Above', function () {
   let goalId = '7ndm-ubkq';
   let goal = mockGoals[goalId];
 
@@ -471,19 +468,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -520,7 +517,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Measure', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Measure', function () {
   let goalId = '63mm-ymcx';
   let goal = mockGoals[goalId];
 
@@ -532,19 +529,19 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Measure', 
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -573,7 +570,7 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Measure', 
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Not Configured Goal', function() {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Not Configured Goal', function () {
   let goalId = 'kd8s-mb3p';
   let goal = mockGoals[goalId];
 
@@ -585,19 +582,19 @@ describe('containers/QuickEditForm/QuickEditForm Not Configured Goal', function(
     });
 
     let state = {
-      goalTableData: {
-        translations: translations,
-        cachedGoals: mockGoals
+      translations: translations,
+      goals: {
+        data: mockGoals,
+        quickEdit: {
+          goalId: goalId,
+          message: { visible: false },
+          initialFormData: {},
+          formData: {}
+        }
       },
-      quickEditForm: {
-        goalId: goalId,
-        showFailureMessage: false,
-        initialFormData: {},
-        formData: {}
-      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, { }, getDefaultStore(Immutable.fromJS(state)));
+    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {

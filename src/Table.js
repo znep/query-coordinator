@@ -405,25 +405,30 @@ $.fn.socrataTable = function(originalVif) {
 
   function handleRenderVif(event) {
     const newVif = _.cloneDeep(event.originalEvent.detail);
-    // Note that we do this here and not just call computePageSize() as an
-    // argument to setDataQuery below because computePageSize causes the DOM
-    // structure of the table to be updated as a side effect, and we need to
-    // ensure that happens before we render the actual table data. Things get
-    // a little tricky if this happens in setDataQuery's call stack.
-    const pageSize = computePageSize();
 
-    if (
-      !renderState.error &&
-      !renderState.busy
-    ) {
+    // If we are asked to re-render the same vif we don't need to do anything
+    // at all.
+    if (!_.isEqual(renderState.vif, newVif)) {
+      // Note that we do this here and not just call computePageSize() as an
+      // argument to setDataQuery below because computePageSize causes the DOM
+      // structure of the table to be updated as a side effect, and we need to
+      // ensure that happens before we render the actual table data. Things get
+      // a little tricky if this happens in setDataQuery's call stack.
+      const pageSize = computePageSize();
 
-      setDataQuery(
-        newVif,
-        0,
-        pageSize,
-        _.get(newVif, 'configuration.order'),
-        SoqlHelpers.whereClauseFilteringOwnColumn(newVif, 0)
-      );
+      if (
+        !renderState.error &&
+        !renderState.busy
+      ) {
+
+        setDataQuery(
+          newVif,
+          0,
+          pageSize,
+          _.get(newVif, 'configuration.order'),
+          SoqlHelpers.whereClauseFilteringOwnColumn(newVif, 0)
+        );
+      }
     }
   }
 

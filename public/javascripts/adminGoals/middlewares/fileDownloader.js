@@ -59,7 +59,8 @@ export default store => next => action => {
               then(triggerDownload(fileUrl, fileName)).
               then(() => store.dispatch({ type: successActionType, ...getExtraActionFields(action) })).
               then(clear);
-          }).catch(reason => {
+          }).
+          catch(reason => {// eslint-disable-line dot-notation
             store.dispatch({ type: failureActionType, reason, ...getExtraActionFields(action) });
             clear();
           });

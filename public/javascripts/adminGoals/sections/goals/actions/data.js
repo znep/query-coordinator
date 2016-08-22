@@ -27,10 +27,12 @@ export const updateAll = goals => ({
 export const load = () => dispatch => {
   dispatch(SharedActions.startLoading());
 
-  return api.goals.getAll().then(goals => {
-    dispatch(setAll(Immutable.fromJS(goals)));
-    dispatch(SharedActions.stopLoading());
-  }).catch(error => {
-    dispatch(SharedActions.showLoadingError(error.message));
-  });
+  return api.goals.getAll().
+    then(goals => {
+      dispatch(setAll(Immutable.fromJS(goals)));
+      dispatch(SharedActions.stopLoading());
+    }).
+    catch(error => {// eslint-disable-line dot-notation
+      dispatch(SharedActions.showLoadingError(error.message));
+    });
 };

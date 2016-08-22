@@ -144,8 +144,8 @@ class EditPrevailingMeasure extends React.Component {
 
   renderDateRangePart() {
     const { translations, formData, isGoalNotConfigured } = this.props;
-    const startDate = moment(formData.get('startDate'));
-    const endDate = moment(formData.get('endDate'));
+    const startDate = formData.get('startDate') ? moment(formData.get('startDate')) : null;
+    const endDate = formData.get('endDate') ? moment(formData.get('endDate')) : null;
 
     return (
       <div className="form-line measure-date-range">

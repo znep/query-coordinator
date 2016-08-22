@@ -17,7 +17,7 @@ describe('CollaboratorsRenderer', function() {
   var debounceStub;
 
   function respondWithNoUserFound() {
-    server.respond([
+    server.respondWith([
       200,
       {'Content-Type': 'application/json'},
       JSON.stringify({
@@ -27,7 +27,7 @@ describe('CollaboratorsRenderer', function() {
   }
 
   function respondWithUserRole(role) {
-    server.respond([
+    server.respondWith([
       200,
       { 'Content-Type': 'application/json' },
       JSON.stringify({
@@ -44,6 +44,7 @@ describe('CollaboratorsRenderer', function() {
     });
 
     server = sinon.fakeServer.create();
+    server.respondImmediately = true;
     dispatcher = new Dispatcher();
 
     var environment = {
@@ -234,13 +235,16 @@ describe('CollaboratorsRenderer', function() {
 
         respondWithNoUserFound();
 
-        _.defer(function() {
-          assert.isTrue(
-            $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
-          );
+        setTimeout(
+          function() {
+            assert.isTrue(
+              $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
+            );
 
-          done();
-        });
+            done();
+          },
+          300
+        );
       });
 
       describe('user has a stories/administrator role', function() {
@@ -251,13 +255,17 @@ describe('CollaboratorsRenderer', function() {
 
           respondWithUserRole('administrator');
 
-          _.defer(function() {
-            assert.isFalse(
-              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
-            );
+          setTimeout(
+            function() {
 
-            done();
-          });
+              assert.isFalse(
+                $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+              );
+
+              done();
+            },
+            300
+          );
         });
 
         it('should enable owner selection for a stories role', function(done) {
@@ -265,13 +273,16 @@ describe('CollaboratorsRenderer', function() {
 
           respondWithUserRole('publisher_stories');
 
-          _.defer(function() {
-            assert.isFalse(
-              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
-            );
+          setTimeout(
+            function() {
+              assert.isFalse(
+                $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+              );
 
-            done();
-          });
+              done();
+            },
+            300
+          );
         });
       });
 
@@ -283,13 +294,16 @@ describe('CollaboratorsRenderer', function() {
 
           respondWithUserRole('nope');
 
-          _.defer(function() {
-            assert.isTrue(
-              $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
-            );
+          setTimeout(
+            function() {
+              assert.isTrue(
+                $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
+              );
 
-            done();
-          });
+              done();
+            },
+            300
+          );
         });
       });
 
@@ -308,11 +322,14 @@ describe('CollaboratorsRenderer', function() {
 
             respondWithUserRole(role);
 
-            _.defer(function() {
-              addCollaborator();
-              $resultantTableRow = $collaborators.find('tbody tr[data-email="valid@valid.com"]');
-              done();
-            });
+            setTimeout(
+              function() {
+                addCollaborator();
+                $resultantTableRow = $collaborators.find('tbody tr[data-email="valid@valid.com"]');
+                done();
+              },
+              300
+            );
           });
 
           it('should add the collaborator to the table', function() {

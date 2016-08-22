@@ -18,9 +18,23 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
         height: 300
       },
       vif: {
-        type: 'table',
-        dataset: 'fake-fake',
-        configuration: {}
+        configuration: {
+          order: [
+            {
+              columnName: 'something',
+              ascending: false
+            }
+          ]
+        },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'fake-fake',
+              domain: 'example.com'
+            },
+            type: 'table'
+          }
+        ]
       }
     }
   };
@@ -78,21 +92,27 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
     });
 
     describe('when the VIF changes', function() {
+
       describe('in properties other than vif.configuration', function() {
-        it('should reinstantiate the table', function() {
+
+        it('should not reinstantiate the table', function() {
+
           var newData = _.cloneDeep(validComponentData);
-          _.set(newData, 'value.vif.dataset', 'diff-ernt');
+          _.set(newData, 'value.vif.series[0].dataSource.datasetUid', 'diff-ernt');
 
           assert.equal(socrataTableStub.callCount, 1);
+
           $component.componentSocrataVisualizationTable(newData, {}, { editMode: true });
-          assert.equal(socrataTableStub.callCount, 2);
+
+          assert.equal(socrataTableStub.callCount, 1);
         });
       });
 
       describe('but vif.configuration does not', function() {
+
         it('should not reinstantiate the table', function() {
           var newData = _.cloneDeep(validComponentData);
-          _.set(newData, 'configuration.order', [ { fieldName: 'something', ascending: true } ]);
+          _.set(newData, 'value.vif.series[0].configuration.order', [ { columnName: 'something', ascending: true } ]);
 
           assert.equal(socrataTableStub.callCount, 1);
           $component.componentSocrataVisualizationTable(newData, {}, { editMode: true });

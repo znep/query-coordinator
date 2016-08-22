@@ -20,15 +20,21 @@ $breakpoint_mobile_sm: 670px;
 
 $dark_text_color: #2c2c2c;
 $grey_text_color: #999;
+$white_highlight_color: rgba(255, 255, 255, 0.3);
+
+$header_dropdown_bg_color: #fff;
+$header_dropdown_option_color: mix(black, #767676, 20%);
+$header_dropdown_option_bg_color_hover: mix(white, #767676, 90%);
 
 $searchbox_border_color: #c8c8c8;
+
+$text_padding: 11px;
 
 // Default variables (can be over-written by site_chrome styles)
 $bg_color: #22B479;
 $fg_color: #fff;
 $font_family: 'Open Sans';
 $max_width: 100%;
-$white_highlight_color: rgba(255, 255, 255, 0.3);
 
 $header_bg_color: $bg_color;
 $header_bg_color_secondary: transparent;
@@ -36,13 +42,7 @@ $header_fg_color: $fg_color;
 $header_logo_height: 36px;
 $header_logo_width: auto;
 
-$header_dropdown_bg_color: #fff;
-$header_dropdown_option_color: mix(black, #767676, 20%);
-$header_dropdown_option_bg_color_hover: mix(white, #767676, 90%);
-
 $footer_bg_color: #3b3a3c;
 $footer_fg_color: $fg_color;
 $footer_logo_height: 80px;
 $footer_logo_width: auto;
-
-$text_padding: 11px;

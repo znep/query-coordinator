@@ -124,6 +124,7 @@ header#site-chrome-header[template="rally"] {
             }
             a.site-chrome-nav-link {
               padding: 0 5px;
+              max-height: $banner_height;
             }
             a.sign-in-toggle {
               font-size: 12px;

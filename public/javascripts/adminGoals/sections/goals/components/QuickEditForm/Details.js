@@ -25,8 +25,8 @@ class GoalDetails extends React.Component {
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'dashboard']) }</h6>
         <div>
-          <a href={ `/stat/goals/${goal.get('base_dashboard')}` } target="_blank" className="externalLink">
-            { goal.get('dashboardName') }
+          <a href={ `/stat/goals/${goal.get('base_dashboard')}` } target="_blank" className="external-link">
+            { goal.getIn(['dashboard', 'name']) }
             <span className="icon-external" />
           </a>
         </div>

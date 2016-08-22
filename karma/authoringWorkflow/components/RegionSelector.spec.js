@@ -49,6 +49,22 @@ describe('RegionSelector', function() {
         expect(component.querySelector('#region-selection')).to.exist;
       });
 
+      describe('with no regions', function() {
+        beforeEach(function() {
+          var props = defaultProps({
+            vifAuthoring: validVifAuthoring
+          });
+
+          _.set(props, 'metadata.curatedRegions', []);
+
+          component = renderComponent(RegionSelector, props);
+        });
+
+        it('renders in a disabled state', function() {
+          expect(component.querySelector('.dropdown-disabled')).to.exist;
+        });
+      });
+
       describe('with active region coding', function() {
         beforeEach(function() {
           var authoring = { showRegionCodingProcessingMessage: true };

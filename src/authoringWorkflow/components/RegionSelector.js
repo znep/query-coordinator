@@ -136,7 +136,8 @@ export var RegionSelector = React.createClass({
       placeholder: translate('panes.data.fields.region.placeholder'),
       options: [ ...computedColumns, ...curatedRegions ],
       value: defaultRegion,
-      onSelection: this.onSelectRegion
+      onSelection: this.onSelectRegion,
+      disabled: computedColumns.length === 0 && curatedRegions.length === 0
     };
 
     return (

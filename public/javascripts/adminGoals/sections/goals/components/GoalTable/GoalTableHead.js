@@ -15,7 +15,6 @@ class GoalTableHead extends React.Component {
     super(props);
 
     _.bindAll(this, [
-      'handleColumnClick',
       'handleToggleAllSelection',
       'renderColumn'
     ]);
@@ -30,14 +29,6 @@ class GoalTableHead extends React.Component {
     };
   }
 
-  handleColumnClick(event) {
-    const element = event.target;
-    const fieldName = element.getAttribute('data-column');
-    const direction = element.getAttribute('data-direction');
-
-    this.props.actions.sortBy(fieldName, direction, this.columnDataTypes[fieldName]);
-  }
-
   handleToggleAllSelection() {
     const { actions, paginatedGoalIds, isAllSelected } = this.props;
 
@@ -48,22 +39,23 @@ class GoalTableHead extends React.Component {
     }
   }
 
-  renderColumn(label, index) {
+  renderColumn(fieldName, index) {
     const { sortedColumn, sortedDirection } = this.props;
 
-    const direction = sortedColumn == label && sortedDirection == 'asc' ? 'desc' : 'asc';
+    const direction = sortedColumn == fieldName && sortedDirection == 'asc' ? 'desc' : 'asc';
     const sortIconClass = classNames('order-icon', {
-      'persist-visible': sortedColumn == label,
-      'icon-arrow-down': sortedColumn == label && direction == 'asc',
-      'icon-arrow-up': sortedColumn == label && direction == 'desc' || sortedColumn != label
+      'persist-visible': sortedColumn == fieldName,
+      'icon-arrow-down': sortedColumn == fieldName && direction == 'asc',
+      'icon-arrow-up': sortedColumn == fieldName && direction == 'desc' || sortedColumn != fieldName
     });
+    const fieldType = this.columnDataTypes[fieldName];
 
     return (
-      <th key={ index } className={ `table-heading-${label}` }>
-        <span className="th-text" data-column={ label } data-direction={ direction } onClick={ this.handleColumnClick }>
-        { this.props.translations.getIn(['admin', 'listing', label]) }
+      <th key={ index } className={ `table-heading-${fieldName}` }>
+        <span className="th-text" onClick={ _.wrap({ fieldName, direction, fieldType }, this.props.actions.sortBy) }>
+          { this.props.translations.getIn(['admin', 'listing', fieldName]) }
+          <span className={ sortIconClass } />
         </span>
-        <span className={ sortIconClass }/>
       </th>
     );
   }

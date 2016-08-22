@@ -17,12 +17,11 @@ export const toggleSelectionById = goalId => ({
   goalId
 });
 
-export const sortBy = (fieldName, direction, fieldType) => ({
-  type: types.sortBy,
-  fieldName,
-  fieldType,
-  direction
-});
+/**
+ * Sort data
+ * @param { fieldName, direction, fieldType} options
+ */
+export const sortBy = options => Object.assign({ type: types.sortBy }, options);
 
 export const showPage = pageNumber => ({
   type: types.showPage,

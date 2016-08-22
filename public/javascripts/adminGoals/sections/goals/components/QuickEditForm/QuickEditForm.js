@@ -164,7 +164,7 @@ class GoalQuickEdit extends React.Component {
           </Components.Socrata.Modal.Content>
           <Components.Socrata.Modal.Footer>
             <div className="link-container">
-              <a href={ goalPageUrl } target="_blank" className="externalLink">
+              <a href={ goalPageUrl } target="_blank" className="external-link">
                 { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
                 <span className="icon-external"/>
               </a>

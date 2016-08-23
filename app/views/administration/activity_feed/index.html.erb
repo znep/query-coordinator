@@ -11,7 +11,7 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
-    <%= include_webpack_bundle 'open-data/admin-activity-feed.js' %>
+    <%= include_webpack_bundle 'admin/admin-activity-feed.js' %>
   <%- end -%>
 <% end %>
 
@@ -21,8 +21,6 @@
 <% end %>
 
 <%= render :partial => 'left_nav' %>
-
-<%= include_webpack_bundle 'admin/admin-activity-feed.js' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">
   <div class="adminHeader floating jobs">
@@ -77,6 +75,7 @@
         <th><%= t("#{activity_feed_prefix}.index_page.initiated_by") %></th>
         <th><%= t("#{activity_feed_prefix}.index_page.started") %></th>
         <th><%= t("#{activity_feed_prefix}.index_page.status") %></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -136,10 +135,10 @@
               <%= t("#{activity_feed_prefix}.statuses.#{activity.status}") %>
             <% end %>
 
-            <%# If activity is a delete and within the last X days, show button to restore dataset %>
-            <% if display_restore_button(activity) %>
-              <button class="button restore-dataset" data-dataset-id="<%= activity.dataset.id %>" data-dataset-name="<%= activity.dataset.name %>"><%= t("#{activity_feed_prefix}.index_page.restore_deleted_dataset") %></button>
-            <% end %>
+            
+          </td>
+          <td>
+            <%= restore_button(activity) %>
           </td>
         </tr>
       <%- end %>

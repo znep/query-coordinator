@@ -21,15 +21,11 @@ class ImportActivity
       [uid, value]
     end]
 
-    restorable_views = views.keep_if do |uid, value|
-      value.data.fetch('flags',[]).include?('restorePossibleForType')
-    end
-
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)
 
     # find the first instance of each activity and flag it
-    restorable_views.each do |view|
+    views.each do |view|
       activities.each do |activity|
         next unless
           # view[0] is actually the dataset 4x4...
@@ -41,18 +37,15 @@ class ImportActivity
       end
     end
 
-    restorable_activities = activities.find_all do |activity|
-      restorable_views.keys.include?(activity.with_indifferent_access[:entity_id])
-    end
-
     {
       :activities =>
-          restorable_activities.map do |activity|
+          activities.map do |activity|
             activity_wia = activity.with_indifferent_access
             ImportActivity.new(activity_wia,
                                users[activity_wia[:user_id]],
-                               restorable_views[activity_wia[:entity_id]],
-                               restorable_views[activity_wia[:working_copy_id]])
+                               views[activity_wia[:entity_id]],
+                               views[activity_wia[:working_copy_id]],
+                              )
           end,
       :count => response['count']
     }

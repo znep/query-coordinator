@@ -71,11 +71,31 @@ module ActivityFeedHelper
       false
     else
       FeatureFlags.derive(nil, request).restore_dataset_button &&
-      event.first_deleted_in_list &&
-      event.dataset.deleted && event.activity_type == 'delete' &&
-      event.dataset.flags.any? do |flag|
-        flag.data == 'restorable'
-      end
+        event.first_deleted_in_list &&
+        event.dataset.deleted && event.activity_type == 'delete'
+    end
+  end
+
+  def restore_button_disabled(event)
+    # we still want to show the button for restorable events, but
+    # disable it and show a tooltip (tooltip is set in JS)
+    !event.dataset.restorable?
+  end
+
+  def restore_button(activity)
+    # If activity is a delete, show button to restore dataset.
+    # If the activity is for a non-restorable dataset (wrong type or too long deleted),
+    #  we still show the button but have it disabled with a tooltip.
+    if display_restore_button(activity)
+      button_tag(
+        t("#{activity_feed_prefix}.index_page.restore_deleted_dataset.button"),
+        class: 'button restore-dataset',
+        disabled: restore_button_disabled(activity),
+        data: {
+          dataset_id: activity.dataset.id,
+          dataset_name: activity.dataset.name
+        }
+      )
     end
   end
 

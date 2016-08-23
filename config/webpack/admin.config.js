@@ -9,7 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/src'),
   entry: {
     'admin-georegions-screen': './screens/admin-georegions-screen',
-    'admin-activity-feed': './screens/admin-activity-feed',
+    'admin-activity-feed': ['../plugins/daterangepicker.jquery.js', './screens/admin-activity-feed'],
     'admin-activity-feed-show': './screens/admin-activity-feed-show',
     'admin-edit-connector': './screens/admin-edit-connector'
   },

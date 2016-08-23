@@ -51,7 +51,7 @@ function confirmDatasetRestore(source) {
     return;
   }
 
-  prettyConfirm($.t('screens.admin.jobs.index_page.restore_deleted_dataset_confirm', { dataset: datasetName }),
+  prettyConfirm($.t('screens.admin.jobs.index_page.restore_deleted_dataset.confirm', { dataset: datasetName }),
     () =>
     $.ajax({
       url: `/views/${datasetId}.json?method=restore`,
@@ -113,4 +113,5 @@ $(() => {
   }
 
   $('.restore-dataset').click((event) => confirmDatasetRestore(event.srcElement));
+  $('.button.restore-dataset:disabled').parent().socrataTip({message: $.t('screens.admin.jobs.index_page.restore_deleted_dataset.disabled_restore_explanation')});
 });

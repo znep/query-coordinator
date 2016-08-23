@@ -349,8 +349,6 @@ javascripts:
     - public/javascripts/screens/admin-federation-screen.js
   admin-collapse-nav:
     - public/javascripts/screens/admin-collapse-nav.js
-  admin-activity-feed:
-    - public/javascripts/plugins/daterangepicker.jquery.js
   browse-control:
     - public/javascripts/plugins/jquery.tagcloud.js
     - public/javascripts/controls/dataset-controls.js

@@ -1,10 +1,6 @@
 $grey: #646565;
 $warning-icon-color: #debb1e;
 
-.import-status-label span {
-  vertical-align: text-top;
-}
-
 .import-status-icon-not-started:before {
   color: $grey;
 }
@@ -29,10 +25,17 @@ $warning-icon-color: #debb1e;
   float: right;
   margin: 0 !important;
   font-size: 0.7em !important;
-}
 
-.restore-dataset:hover {
-  cursor: pointer;
+  &:disabled {
+    color: #767676;
+    border-color: #919191;
+    background-color: #c8c8c8;
+
+    &:hover {
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
 }
 
 .import-status-icon-success-with-data-errors:before {

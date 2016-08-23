@@ -386,9 +386,6 @@ module.exports = _.defaultsDeep({
     'admin-collapse-nav': [
       './screens/admin-collapse-nav.js'
     ],
-    'admin-activity-feed': [
-      './plugins/daterangepicker.jquery.js'
-    ],
     'browse-control': [
       './plugins/jquery.tagcloud.js',
       './controls/dataset-controls.js',

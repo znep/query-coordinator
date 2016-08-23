@@ -188,7 +188,6 @@ export function view({ state, dispatch }) {
           const onChooseOperation = (operationName) => (
             () => {
               dispatch(chooseOperation(operationName));
-              dispatch(Metadata.setDisplayType(operationName));
             }
           );
 

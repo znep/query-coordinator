@@ -79,7 +79,6 @@ export function updateIsColumn(field, newIsColumn) {
 
 export function defaultLocationColumn() {
   return {
-    type: 'MultipleCols',
     isMultiple: true,
     singleSource: '',
     street: '',

@@ -55,7 +55,9 @@ export default {
             all_visualizations: 'All Visualizations'
           },
           recommended: 'Recommended',
-          recommended_based_on: 'Recommended based on your dimension selection.'
+          recommended_based_on: 'Recommended based on your dimension selection.',
+          no_boundaries: 'Region maps will not work because there are no boundaries configured for your domain!',
+          ask_site_admin: 'Ask your site administrator to configure the available set through the <a href="/admin/geo">Spatial Lens</a> section in the admin panel, or contact <a href="mailto:support@socrata.com">Socrata support</a>.'
         },
         region: {
           title: 'Region',

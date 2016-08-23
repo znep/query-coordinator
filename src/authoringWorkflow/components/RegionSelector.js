@@ -23,7 +23,8 @@ import {
   getValidComputedColumns,
   getValidCuratedRegions,
   getValidRegions,
-  hasData
+  hasData,
+  hasRegions
 } from '../selectors/metadata';
 
 export var RegionSelector = React.createClass({
@@ -137,7 +138,7 @@ export var RegionSelector = React.createClass({
       options: [ ...computedColumns, ...curatedRegions ],
       value: defaultRegion,
       onSelection: this.onSelectRegion,
-      disabled: computedColumns.length === 0 && curatedRegions.length === 0
+      disabled: !hasRegions(metadata)
     };
 
     return (

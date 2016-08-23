@@ -188,6 +188,7 @@ en:
         choose_create_visualization_heading: 'Create New Visualization'
         choose_create_visualization_description: 'Create a new chart or map based on a public dataset'
         choose_author_visualization_heading: 'Create New Visualization'
+        authoring_visualization_back_button: 'Back to Dataset Selection'
       image_upload:
         name: 'Image'
         description: 'Upload an image from your computer up to 10MB.'

@@ -14,6 +14,7 @@ import AssetSelectorStore, {__RewireAPI__ as AssetSelectorStoreAPI, WIZARD_STEP}
 import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker';
 import StoryStoreMocker from '../mocks/StoryStoreMocker';
+import I18nMocker from '../I18nMocker';
 
 describe('AssetSelectorRenderer', function() {
 
@@ -68,6 +69,7 @@ describe('AssetSelectorRenderer', function() {
     AssetSelectorRendererAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
     AssetSelectorRendererAPI.__Rewire__('Environment', environment);
+    AssetSelectorRendererAPI.__Rewire__('I18n', I18nMocker);
 
     dispatcher.dispatch({
       action: Actions.STORY_CREATE,
@@ -733,6 +735,22 @@ describe('AssetSelectorRenderer', function() {
 
         it('should render the AuthoringWorkflow', function() {
           assert.isAbove($('#authoring-workflow *').length, 0);
+        });
+
+        describe('when canceling', function() {
+          it('should close the modal and asset selection', function() {
+            $('#authoring-workflow .cancel').click();
+            assert.equal($('#authoring-workflow *').length, 0);
+          });
+        });
+
+        describe('when jumping back a step', function() {
+          it('should render dataset selection', function() {
+            $('#authoring-workflow .authoring-back-button').click();
+
+            assert.equal($('#authoring-workflow *').length, 0);
+            assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
+          });
         });
       });
     });

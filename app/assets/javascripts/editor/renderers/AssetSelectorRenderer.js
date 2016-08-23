@@ -2223,6 +2223,15 @@ export default function AssetSelectorRenderer(options) {
 
     var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
+      backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
+      onBack: () => {
+        authoringWorkflow.destroy();
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+          step: WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION
+        });
+      },
       onComplete: function(state) {
         var datasetUid = _.get(state.vif, 'series[0].dataSource.datasetUid');
 
@@ -2240,8 +2249,7 @@ export default function AssetSelectorRenderer(options) {
       },
       onCancel: function() {
         dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
-          step: WIZARD_STEP.SELECT_VISUALIZATION_OPTION
+          action: Actions.ASSET_SELECTOR_CLOSE
         });
 
         authoringWorkflow.destroy();

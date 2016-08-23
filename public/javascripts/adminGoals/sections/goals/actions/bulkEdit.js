@@ -27,7 +27,7 @@ export const setFormData = data => ({
  * Goal update api expects prevailing_measure data normalized.
  * @param {Object} updatedData
  */
-function normalizeUpdatedData(updatedData) {
+function formatGoalDataForWrite(updatedData) {
   let normalized = _.merge(updatedData, updatedData.prevailing_measure || {});
   delete normalized.prevailing_measure;
 
@@ -61,7 +61,7 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
 
   const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
 
-  const normalizedData = normalizeUpdatedData(updatedData);
+  const normalizedData = formatGoalDataForWrite(updatedData);
   dispatch(SharedActions.setModalInProgress('goals', 'bulkEdit', true));
 
   const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));

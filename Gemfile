@@ -7,6 +7,7 @@ gem 'addressable'
 gem 'airbrake', '4.3.0'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
+gem 'cetera-ruby', '0.1.0', :require => 'cetera'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'

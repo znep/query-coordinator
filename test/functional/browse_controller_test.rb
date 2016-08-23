@@ -585,7 +585,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'fail gracefully on Cetera timeout' do
       stub_feature_flags_with(:cetera_search, true)
 
-      cetera_params = Cetera.cetera_soql_params(
+      cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
         :search_context => 'example.com',
         :limit => 10,
@@ -607,7 +607,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'fail gracefully on Cetera 500' do
       stub_feature_flags_with(:cetera_search, true)
 
-      cetera_params = Cetera.cetera_soql_params(
+      cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
         :search_context => 'example.com',
         :limit => 10,
@@ -628,7 +628,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'fail gracefully on Cetera unexpected payload' do
       stub_feature_flags_with(:cetera_search, true)
 
-      cetera_params = Cetera.cetera_soql_params(
+      cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
         :search_context => 'example.com',
         :limit => 10,

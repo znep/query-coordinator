@@ -87,6 +87,7 @@ class PageMetadataManager
     page_metadata[:rights] = result[:rights]
     page_metadata[:provenance] = result[:provenance]
     page_metadata[:ownerId] = result[:owner][:id]
+    page_metadata[:ownerDisplayName] = result[:owner][:displayName]
 
     page_metadata
   end

@@ -226,6 +226,7 @@ class SiteChrome
 
   # WARN: deep merge!
   publication_stages.each do |stage|
+    # For grepping: update_published_content, update_draft_content
     define_method "update_#{stage}_content" do |new_content_hash|
       all_versions_content = config.dig('value') || { 'versions' => {} }
       new_content = (send(:"#{stage}_content") || {}).deep_merge(new_content_hash)

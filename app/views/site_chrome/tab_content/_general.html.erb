@@ -1,6 +1,6 @@
 <%= render 'site_chrome/tab_content/general/enable_site_chrome' %>
 
-<%= site_chrome_form_field(:general, :template, translations[:template].tap do |t|
+<%= site_chrome_dropdown_field(:general, :template, %w(Evergreen Rally), translations[:template].tap do |t|
   t[:description] = t[:description_html].html_safe
 end) %>
 

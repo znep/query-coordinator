@@ -1,12 +1,10 @@
 var inputTypeValidations = {
-  template: /^(rally|evergreen|default)$/i,
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
   dimensions: /^\d{1,4}px$/
 };
 
 var validationRules = {
-  'content[general][template]': { pattern: inputTypeValidations.template },
   'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
   'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions },
   'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
@@ -23,8 +21,6 @@ var validationRules = {
 // Note: This needs to be a function rather than an object because $.t is not defined on load.
 var validationMessages = function() {
   return {
-    'content[general][template]':
-      $.t('screens.admin.site_chrome.tabs.general.fields.template.error'),
     'content[general][google_analytics_token]':
       $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error'),
     'content[header][styles][logo_height]':
@@ -186,6 +182,12 @@ function confirmReload() {
       window.location.href = href;
     });
   }
+}
+
+// Updates the hidden dropdown input value whenever a styleguide dropdown selection is made.
+function updateHiddenInputValue(selectedElement) {
+  var selectedValue = $(selectedElement).attr('value');
+  $(selectedElement).closest('div.dropdown').siblings('.hidden-dropdown-input').value(selectedValue);
 }
 
 function currentLocale() {

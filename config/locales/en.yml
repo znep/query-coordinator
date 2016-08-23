@@ -2682,9 +2682,7 @@ en:
                 show_signup: Show ability to create an account via Sign Up
                 title: Sign In / Sign Out
               template:
-                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" (default) and "Rally"</a>.
-                error: Only "Evergreen" and "Rally" header templates are currently available. Please refer to the Support article at right for more information.
-                placeholder: Evergreen
+                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
                 title: Template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
@@ -2698,11 +2696,11 @@ en:
           header:
             fields:
               bar_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
               bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)
               bar_text_link_color:

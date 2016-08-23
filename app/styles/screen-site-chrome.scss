@@ -136,7 +136,6 @@ $faint-border-color: #ebebeb;
     section.settings-group {
       display: block;
       padding-top: 1rem;
-      overflow: hidden;
 
       h3 {
         color: $dark-grey;
@@ -176,7 +175,7 @@ $faint-border-color: #ebebeb;
       }
 
       div.settings-form {
-        float: left;
+        display: inline-block;
         width: 65%;
 
         &.half {
@@ -208,6 +207,7 @@ $faint-border-color: #ebebeb;
             }
           }
           aside {
+            float: right;
             p {
               margin-top: 0;
             }
@@ -256,20 +256,32 @@ $faint-border-color: #ebebeb;
             cursor: default;
           }
         }
+        div.dropdown {
+          width: calc(100% - 16px);
+
+          ul.dropdown-options {
+            width: 100%;
+          }
+
+          span.icon-arrow-down {
+            float: right;
+            line-height: 24px;
+          }
+        }
       }
 
       aside {
-        display: block;
-        float: right;
-        width: calc(35% - 1rem);
+        display: inline-block;
+        width: calc(35% - 1.5rem);
+        vertical-align: middle;
+
+        p {
+          margin: 0;
+        }
 
         &.full {
           float: none;
           padding: 0;
-
-          p {
-            margin: 0;
-          }
         }
       }
 

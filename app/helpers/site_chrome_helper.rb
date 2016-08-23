@@ -79,7 +79,7 @@ module SiteChromeHelper
       content_tag(
         :span,
         nil,
-        :class => 'icon-move-vertical move-link-row',
+        :class => 'icon-move icon-move-vertical move-link-row',
         :title => t('screens.admin.site_chrome.move_link_row')
       ) <<
       text_field_tag(
@@ -234,6 +234,24 @@ module SiteChromeHelper
       :fields => Array[*fields].unshift(section),
       :translation => translations
     )
+  end
+
+  def site_chrome_dropdown_field(section, fields, dropdown_options, translations)
+    render(
+      'site_chrome/tab_content/dropdown_field',
+      :fields => Array[*fields].unshift(section),
+      :options => dropdown_option_tags(dropdown_options),
+      :translation => translations
+    )
+  end
+
+  # Takes an array of dropdown_options and creates option tags that match the styleguide format.
+  def dropdown_option_tags(dropdown_options)
+    dropdown_options.to_a.reduce('') do |result, option|
+      result << content_tag(:li) do
+        link_to(option, '#', :value => option, :onclick => 'updateHiddenInputValue(this);')
+      end
+    end.html_safe
   end
 
   # Should return true if the site chrome has never been activated, or if enabled for entire site

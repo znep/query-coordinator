@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v6.5.2
+ * Socrata Styleguide v6.5.3
  * Copyright 2015-2016 undefined
  * Licensed under undefined
  */
@@ -412,15 +412,15 @@ html {
 
 @font-face {
   font-family: "socrata-icons";
-  src: url("../fonts/socrata-icons.1471958457-38c82b51.eot");
-  src: url("../fonts/socrata-icons.1471958457-38c82b51.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1471958457-aba281ad.woff2") format("woff2"), url("../fonts/socrata-icons.1471958457-c2b4bf52.woff") format("woff"), url("../fonts/socrata-icons.1471958457-19a3043d.ttf") format("truetype"), url("../fonts/socrata-icons.1471958457-d866089d.svg#socrata-icons") format("svg");
+  src: url("../fonts/socrata-icons.1471975740-57ad584d.eot");
+  src: url("../fonts/socrata-icons.1471975740-57ad584d.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1471975740-8874593d.woff2") format("woff2"), url("../fonts/socrata-icons.1471975740-67d498e4.woff") format("woff"), url("../fonts/socrata-icons.1471975740-f59998d4.ttf") format("truetype"), url("../fonts/socrata-icons.1471975740-4542db59.svg#socrata-icons") format("svg");
   font-weight: normal;
   font-style: normal; }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
     font-family: "socrata-icons";
-    src: url("../fonts/socrata-icons.1471958457-d866089d.svg#socrata-icons") format("svg"); } }
+    src: url("../fonts/socrata-icons.1471975740-4542db59.svg#socrata-icons") format("svg"); } }
 
 .icon-add-collaborator::before,
 .icon-add::before,
@@ -3161,7 +3161,7 @@ hr {
 /* Backgrounds */
 .view-card.result-card.media {
   width: 300px;
-  height: 314px;
+  height: 325px;
   -ms-flex-preferred-size: auto;
       flex-basis: auto;
   overflow: hidden;
@@ -3172,7 +3172,7 @@ hr {
     font-size: 18px; }
   .view-card.result-card.media .entry-header .entry-title {
     margin-right: 2%;
-    max-height: 48px; }
+    min-height: 53px; }
     .view-card.result-card.media .entry-header .entry-title h3 {
       margin: 0; }
       .view-card.result-card.media .entry-header .entry-title h3 .icon-private {
@@ -3242,4 +3242,4 @@ hr {
       margin-bottom: auto;
       margin-right: auto; }
 
-/*# sourceMappingURL=styleguide.css-aa14ce9d.map */
+/*# sourceMappingURL=styleguide.css-89bdddff.map */

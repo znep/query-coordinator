@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-2a9697ae.css">
-    <link rel="stylesheet" href="stylesheets/pages-1f356e04.css">
+    <link rel="stylesheet" href="css/styleguide-fc65a13e.css">
+    <link rel="stylesheet" href="stylesheets/pages-7327547f.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
   </head>
 
@@ -94,7 +94,7 @@
         <h2 class="styleguide-header">Dropdowns</h2>
       </div>
       <div class="example">
-
+        
 <div id="dropdown-container"></div>
 
 <script type="text/javascript">
@@ -150,7 +150,7 @@
 </pre>
 
 
-
+        
 <div id="custom-dropdown-container"></div>
 
 <script type="text/javascript">
@@ -286,7 +286,7 @@
         <h2 class="styleguide-header">Color Picker</h2>
       </div>
       <div class="example">
-
+        
 <div id="color-picker-container"></div>
 
 <script type="text/javascript">
@@ -360,7 +360,9 @@ links.</p>
   document.addEventListener('DOMContentLoaded', function() {
     var props = {
       name: 'Chicago Crimes',
-      description: 'This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.',
+      description: 'This dataset reflects reported incidents of crime that ' +
+        'occurred in the City of Chicago from 2001 to present, minus the most recent ' +
+        'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
       icon: 'icon-cards',
@@ -392,7 +394,9 @@ links.</p>
   document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
     var props = {
       name: &#x27;Chicago Crimes&#x27;,
-      description: &#x27;This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.&#x27;,
+      description: &#x27;This dataset reflects reported incidents of crime that &#x27; +
+        &#x27;occurred in the City of Chicago from 2001 to present, minus the most recent &#x27; +
+        &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
       icon: &#x27;icon-cards&#x27;,
@@ -430,7 +434,9 @@ ViewCard and it will be rendered as an overlay:</p>
   document.addEventListener('DOMContentLoaded', function() {
     var props = {
       name: 'Chicago Crimes',
-      description: 'This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.',
+      description: 'This dataset reflects reported incidents of crime that ' +
+        'occurred in the City of Chicago from 2001 to present, minus the most recent ' +
+        'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
       icon: 'icon-cards',
@@ -463,7 +469,9 @@ ViewCard and it will be rendered as an overlay:</p>
   document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
     var props = {
       name: &#x27;Chicago Crimes&#x27;,
-      description: &#x27;This dataset reflects reported incidents of crime that occurred in the City of Chicago from 2001 to present, minus the most recent seven days.&#x27;,
+      description: &#x27;This dataset reflects reported incidents of crime that &#x27; +
+        &#x27;occurred in the City of Chicago from 2001 to present, minus the most recent &#x27; +
+        &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
       icon: &#x27;icon-cards&#x27;,
@@ -550,11 +558,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
     <script src="https://fb.me/react-15.1.0.js"></script>
     <script src="https://fb.me/react-dom-15.1.0.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
     <script type="text/javascript" src="/javascripts/vendor/tether.js"></script>
     <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-2971d4ea.js"></script>
+    <script type="text/javascript" src="js/socrata-components-f113953d.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

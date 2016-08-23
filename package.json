@@ -128,6 +128,7 @@
     "redux": "3.5.2",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
+    "socrata-components": "6.6.0",
     "socrata-styleguide": "5.1.9",
     "socrata-utils": "3.0.0",
     "socrata-visualizations": "16.2.1",

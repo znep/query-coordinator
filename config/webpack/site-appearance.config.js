@@ -1,5 +1,5 @@
 // See also public/javascripts/site_appearance/main.js
-// See also public/stylesheets/node_modules/socrata-styleguide/dist/css/styleguide.css
+// See also public/stylesheets/socrata-components/styleguide.css
 
 /* eslint-env node */
 var _ = require('lodash');

@@ -212,7 +212,7 @@ class ApplicationHelperTest < ActionView::TestCase
     CurrentDomain.
       stubs(
         :feature_flags => {
-          :stories_enabled => booleans[:stories_enabled]
+          'stories_enabled' => booleans[:stories_enabled]
         }
       )
 

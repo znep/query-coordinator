@@ -105,15 +105,28 @@ function _updateVisualization($element, componentData) {
   var renderedVif = JSON.parse($element.attr('data-rendered-vif') || '{}');
   var vif;
 
+  function getVifType(vifToCheck) {
+    var version = _.get(vifToCheck, 'format.version', 1);
+    var type;
+
+    if (version === 2) {
+      type = _.get(vifToCheck, 'series[0].type');
+    } else {
+      type = _.get(vifToCheck, 'type');
+    }
+
+    return type;
+  }
+
   StorytellerUtils.assertHasProperty(componentData, 'value.vif');
   vif = componentData.value.vif;
 
   $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-  if (
-    _.get(renderedVif, 'series[0].type') === 'table' &&
-    _.get(vif, 'series[0].type') === 'table'
-  ) {
+  // If both the previously-rendered and the new vifs are for tables, we can
+  // just attempt to render the new vif and the table implementation should
+  // do the right thing.
+  if (getVifType(renderedVif) === 'table' && getVifType(vif) === 'table') {
 
     $componentContent[0].dispatchEvent(
       new CustomEvent(
@@ -123,6 +136,8 @@ function _updateVisualization($element, componentData) {
         }
       )
     );
+  // Otherwise, we should destroy whatever used to be in the component and
+  // create a new table in its place.
   } else {
 
     // Use triggerHandler since we don't want this to bubble

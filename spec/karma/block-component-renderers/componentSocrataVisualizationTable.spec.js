@@ -34,7 +34,11 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
             },
             type: 'table'
           }
-        ]
+        ],
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        }
       }
     }
   };

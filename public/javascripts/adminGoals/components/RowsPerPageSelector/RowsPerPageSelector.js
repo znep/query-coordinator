@@ -1,50 +1,40 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { setRowsPerPage } from '../../actions/goalTableActions';
+import _ from 'lodash';
+import * as React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import './RowsPerPageSelector.scss';
 
-class RowsPerPageSelector extends React.Component {
+export default class RowsPerPageSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { selectedValue: this.props.rowsPerPage };
+    _.bindAll(this, ['handleOnChange']);
   }
 
-  valueChanged(selected) {
-    this.setState({
-      selectedValue: selected.value
-    });
-
-    this.props.valueChanged(selected.value);
+  handleOnChange({ value }) {
+    this.props.onChange(value);
   }
 
   render() {
-    let options = _.map([25, 50, 100, 250], value => ({ label: value, value }));
+    const { title, value, options } = this.props;
+    const selectOptions = _.map(options, option => ({ label: option, value: option }));
 
     return <div className="rows-per-page-container">
-      { this.props.translations.getIn(['admin', 'listing', 'rows_per_page']) }:
+      { title }:
       <Select
-        options={ options }
-        value={ this.state.selectedValue }
+        options={ selectOptions }
+        value={ value }
         clearable={ false }
         searchable={ false }
-        onChange={ this.valueChanged.bind(this) }
+        onChange={ this.handleOnChange }
       />
     </div>;
   }
 }
 
-const mapStateToProps = state => ({
-  translations: state.get('translations'),
-  rowsPerPage: state.getIn(['goalTableData', 'rowsPerPage'])
-});
-
-const mapDispatchToProps = dispatch => ({
-  valueChanged: (value) => {
-    dispatch(setRowsPerPage(parseInt(value)));
-  }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RowsPerPageSelector);
+RowsPerPageSelector.propTypes = {
+  title: React.PropTypes.string.isRequired,
+  value: React.PropTypes.number.isRequired,
+  onChange: React.PropTypes.func.isRequired,
+  options: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+};

@@ -3,9 +3,7 @@ import configureStore from 'redux-mock-store';
 import notifyUser from 'middlewares/notifyUser';
 import translations from 'mockTranslations';
 
-import {
-  SHOW_GLOBAL_NOTIFICATION
-} from 'actionTypes';
+import * as Actions from 'actions/notificationActions';
 
 const mockStore = configureStore([notifyUser]);
 const initialState = Immutable.fromJS({
@@ -35,7 +33,7 @@ describe('middlewares/notifyUser', () => {
 
     const [ test, notificationAction ] = store.getActions();
 
-    expect(notificationAction.type).to.eq(SHOW_GLOBAL_NOTIFICATION);
+    expect(notificationAction.type).to.eq(Actions.types.show);
     expect(notificationAction.notificationType).to.eq('success');
     expect(notificationAction.message).to.eq('Items updated!');
   });

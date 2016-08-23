@@ -1626,22 +1626,6 @@ en:
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
   govstat:
-    admin:
-      goal_values:
-        status_private: Private
-        status_public: Public
-      listing:
-        dashboard: Dashboard
-        default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
-        goal_page: Goal Page
-        goal_status: Goal Status
-        of: of
-        owner: Owner
-        rows_per_page: Rows per page
-        title: Title
-        updated_at: Updated
-        view_dashboard: View Dashboard
-        visibility: Visibility
     chrome:
       header:
         links:
@@ -1766,6 +1750,9 @@ en:
       subheadline: This goal is measured by tracking {0} in {1}.
     admin:
       export:
+        info_box:
+          ok: OK
+          cancel: Cancel
         Csv:
           button_label: Export
           info_title: Generating Download
@@ -1874,6 +1861,7 @@ en:
         no_thanks: No thanks
         message: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com" target="_blank">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy"  target="_blank">privacy policy</a>.
         title: Do you want to include an annotated screenshot of the current page?
+      manage_performance_goals: Manage Performance Goals
   plugins:
     daterangepicker:
       clear: Clear

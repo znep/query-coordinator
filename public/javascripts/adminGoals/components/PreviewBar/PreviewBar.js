@@ -1,6 +1,7 @@
-import React  from 'react';
-import { connect } from 'react-redux';
-import { openFeedbackFlannel } from '../../actions/feedbackFlannelActions';
+import * as React  from 'react';
+import * as ReactRedux from 'react-redux';
+import * as Feedback from '../feedback';
+
 import './PreviewBar.scss';
 
 class PreviewBar extends React.Component {
@@ -31,7 +32,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  openFeedbackFlannel: event => dispatch(openFeedbackFlannel(event.target))
+  openFeedbackFlannel: event => dispatch(Feedback.Flannel.actions.open(event.target))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PreviewBar);
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(PreviewBar);

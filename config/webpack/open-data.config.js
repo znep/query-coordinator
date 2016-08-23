@@ -765,9 +765,6 @@ module.exports = _.defaultsDeep({
     'waypoints': [
       './plugins/waypoints-2.0.5.js'
     ],
-    'client-embed': [
-      './client-libraries/embed.js'
-    ],
     'content-editable': [
       './plugins/rangy-core.js',
       './plugins/rangy-textrange.js',

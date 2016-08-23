@@ -1,9 +1,6 @@
-import Immutable from 'immutable';
-import { createReducer } from 'redux-immutablejs';
-import {
-  SHOW_GLOBAL_NOTIFICATION,
-  DISMISS_GLOBAL_NOTIFICATION
-} from '../actionTypes';
+import * as Immutable from 'immutable';
+import * as ReduxImmutable from 'redux-immutablejs';
+import * as Actions from '../actions/notificationActions';
 
 const showNotification = (state, action) => state.merge({
   visible: true,
@@ -13,7 +10,7 @@ const showNotification = (state, action) => state.merge({
 
 const dismissNotification = state => state.set('visible', false);
 
-export default createReducer(Immutable.fromJS({ visible: false, type: 'success', message: '' }), {
-  [SHOW_GLOBAL_NOTIFICATION]: showNotification,
-  [DISMISS_GLOBAL_NOTIFICATION]: dismissNotification
+export default ReduxImmutable.createReducer(Immutable.fromJS({ visible: false, type: 'success', message: '' }), {
+  [Actions.types.show]: showNotification,
+  [Actions.types.hide]: dismissNotification
 });

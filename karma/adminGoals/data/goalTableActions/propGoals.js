@@ -8,12 +8,19 @@ export default [{
     "version": "2016-06-13T13:34:51.823+03:00",
     "target_type": "maintain",
     "end": "2016-12-31T23:59:59.000",
+    "metadata": {
+      "progress_override": "good"
+    },
     "created_at": "2016-06-13T13:34:51.823+03:00",
     "unit": "ton",
     "target_delta_is_percent": false,
     "start": "2016-01-01T00:00:00.000"
   },
+  "dashboard": {
+    "name": "default"
+  },
   "base_dashboard": "cfa5-i2ky",
+  "owner_name": "cagri ekin",
   "updated_at": "2016-06-13T13:34:51.874+03:00",
   "created_at": "2016-06-13T13:32:17.083+03:00",
   "version": "2016-06-13T13:34:51.874+03:00",
@@ -35,7 +42,7 @@ export default [{
     "rights": ["create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story"],
     "flags": ["admin"]
   },
-  "prevailingMeasureProgress": "good"
+  "status": "good"
 }, {
   "id": "g34u-2aa5",
   "name": "Mission Impossible",

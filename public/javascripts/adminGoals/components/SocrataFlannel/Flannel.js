@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames/bind';
+
+import './Flannel.scss';
 
 const mobileBreakpoint = 420;
 const padding = 10;
@@ -82,7 +85,8 @@ class SocrataFlannel extends React.Component {
   // Positions flannel according to hoverable element.
   positionFlannel() {
     const flannel = this.refs.flannel;
-    const hoverable = this.props.hoverable;
+
+    const hoverable = ReactDOM.findDOMNode(this.props.hoverable);
     let node = hoverable;
     let className;
 
@@ -139,7 +143,7 @@ class SocrataFlannel extends React.Component {
     const { id, style, className } = this.state;
 
     return (
-      <div id={ id } className={ classNames( className, this.props.className) } ref="flannel" style={  style }>
+      <div id={ id } className={ classNames(className, this.props.className) } ref="flannel" style={  style }>
         { this.props.children }
       </div>
     );

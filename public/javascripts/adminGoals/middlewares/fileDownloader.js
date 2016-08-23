@@ -13,20 +13,22 @@ import downloadBlob from '../helpers/downloadBlob';
 let canceledDownloads = {};
 let inProgressDownloads = {};
 const triggerDownload = (fileUrl, fileName) => blob => {
-  if (canceledDownloads[fileUrl]) {
+  if (canceledDownloads[fileName]) {
     return;
   }
 
   downloadBlob(fileName, blob);
 };
 
-const clearDownload = fileUrl => () => {
-  delete canceledDownloads[fileUrl];
-  delete inProgressDownloads[fileUrl];
+const clearDownload = fileName => () => {
+  delete canceledDownloads[fileName];
+  delete inProgressDownloads[fileName];
 };
 
 const checkIfCreate = action => _.has(action, ['genericDownload.create']);
 const checkIfCancel = action => _.has(action, ['genericDownload.cancel']);
+
+const getExtraActionFields = action => _.omit(action, 'genericDownload.create', 'genericDownload.cancel', 'type');
 
 export default store => next => action => {
   const result = next(action);
@@ -36,10 +38,10 @@ export default store => next => action => {
     const isInProgress = inProgressDownloads[fileUrl];
 
     if (!isInProgress) {
-      const clear = clearDownload(fileUrl);
+      const clear = clearDownload(fileName);
       clear();
 
-      inProgressDownloads[fileUrl] =
+      inProgressDownloads[fileName] =
         fetch(fileUrl, fetchOptions).
           then(response => {
             if (canceledDownloads[fileUrl]) {
@@ -55,10 +57,11 @@ export default store => next => action => {
 
             return response.blob().
               then(triggerDownload(fileUrl, fileName)).
-              then(() => store.dispatch({ type: successActionType, fileUrl })).
+              then(() => store.dispatch({ type: successActionType, ...getExtraActionFields(action) })).
               then(clear);
-          }).catch(reason => {
-            store.dispatch({ type: failureActionType, reason });
+          }).
+          catch(reason => {// eslint-disable-line dot-notation
+            store.dispatch({ type: failureActionType, reason, ...getExtraActionFields(action) });
             clear();
           });
     } else if (canceledDownloads[fileUrl]) {
@@ -67,8 +70,8 @@ export default store => next => action => {
   }
 
   if (checkIfCancel(action)) {
-    const { fileUrl } = action['genericDownload.cancel'];
-    canceledDownloads[fileUrl] = true;
+    const { fileName } = action['genericDownload.cancel'];
+    canceledDownloads[fileName] = true;
   }
 
   return result;

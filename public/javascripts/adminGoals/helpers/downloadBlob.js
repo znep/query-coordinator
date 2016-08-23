@@ -17,5 +17,5 @@ export default function downloadBlob(fileName, blob) {
   a.click();
 
   URL.revokeObjectURL(blobUrl);
-  a.parent.removeChild(a);
+  document.body.removeChild(a);
 }

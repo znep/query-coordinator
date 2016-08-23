@@ -2,7 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
 
-export var modalQuitEventHandler = ComposedComponent => class extends React.Component {
+export default ComposedComponent => class extends React.Component {
   constructor(props) {
     super(props);
 

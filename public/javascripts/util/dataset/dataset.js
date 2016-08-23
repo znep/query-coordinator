@@ -57,6 +57,11 @@
         blist.sharedDatasetCache[this.resourceName] = this;
       }
 
+      // EN-6784 - Race condition in useSODA2 + column .lookup
+      // We need to determine useSoda2 before we construct the columns for this dataset
+      // because column creation actually uses that flag.
+      this._determineUseSODA2();
+
       // This ID really shouldn't be changing; if it does, this URL
       // will be out-of-date...
       var selfUrl = '/views/' + this.id;
@@ -2690,10 +2695,8 @@
       }
     },
 
-    _adjustProperties: function() {
+    _determineUseSODA2: function() {
       var ds = this;
-      ds.originalViewId = ds.id;
-
       var useSoda2Flag = false;
       if (!_.isUndefined(blist.feature_flags.useSoda2)) {
         if (blist.feature_flags.useSoda2 === 'always') {
@@ -2719,6 +2722,13 @@
       if (sodaVersion === '2') {
         ds._useSODA2 = true;
       }
+    },
+
+    _adjustProperties: function() {
+      var ds = this;
+      ds.originalViewId = ds.id;
+
+      ds._determineUseSODA2();
 
       ds.type = getType(ds);
       ds._mixpanelViewType = getMixpanelViewType(ds);

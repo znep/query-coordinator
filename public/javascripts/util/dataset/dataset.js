@@ -2075,14 +2075,14 @@
         return;
       }
 
-      var updateSelf = function() {
+      var updateSelf = _.throttle(function() {
         // This might not actually be a real case, because if you can modify the current
         // view, query access ought to be based on the parent. But logically this is
         // a good thing to do.
         if (!$.isBlank(ds._queryBase) && ds._queryBase.id == ds.id) {
           ds._queryBase.reload(true);
         }
-      };
+      }, 1000);
       ds.bind('saved', updateSelf, ds);
       ds.bind('columns_changed', function(changeType) {
         if (changeType == 'added' || changeType == 'fullSet' || changeType == 'removed') {

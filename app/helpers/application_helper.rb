@@ -296,6 +296,10 @@ module ApplicationHelper
   end
 
   def include_webpack_bundle(resource)
+    if !FeatureFlags.derive(nil, request).prefer_webpack && resource =~ /open\-data/
+      return include_javascripts(File.basename(resource, File.extname(resource)))
+    end
+
     if Rails.configuration.webpack[:use_dev_server]
       src = "/javascripts/webpack/#{resource}"
     else

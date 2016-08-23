@@ -44,9 +44,9 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
-    <%= include_javascripts 'sanitize-html' %>
-    <%= include_javascripts 'shared-metrics' %>
-    <%= include_javascripts 'internal-metrics' %>
+    <%= include_webpack_bundle 'open-data/sanitize-html.js' %>
+    <%= include_webpack_bundle 'open-data/shared-metrics.js' %>
+    <%= include_webpack_bundle 'open-data/internal-metrics.js' %>
   <%- end -%>
 <% end %>
 <%- content_for :translations do -%>

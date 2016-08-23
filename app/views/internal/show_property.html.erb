@@ -34,7 +34,7 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= include_javascripts 'ace' %>
+  <%= include_webpack_bundle 'open-data/ace.js' %>
   <script type="text/javascript">
   var isJson = <%= is_json == true %>;
   var isCss  = <%= (@property_key =~ /.*css.*/) != nil %>;

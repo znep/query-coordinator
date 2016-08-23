@@ -17,5 +17,5 @@
   </ul>
 </div>
 <% content_for :js_footer do %>
-  <%= include_javascripts 'screen-internal' %>
+  <%= include_webpack_bundle 'open-data/screen-internal.js' %>
 <% end %>

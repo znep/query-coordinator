@@ -24,8 +24,16 @@ class GoalTable extends React.Component {
     this.props.uiActions.setGoalsPerPage(goalsPerPage, this.props.goalsCount);
   }
 
+  renderLoadingSpinner() {
+    return (
+      <div className="op-table-load-in-progress">
+        <span className="spinner-default spinner-large" />
+      </div>
+    );
+  }
+
   render() {
-    const { pagination, uiActions, translations } = this.props;
+    const { pagination, translations, loadInProgress } = this.props;
     const perPageSelectorTitle = translations.getIn(['admin', 'listing', 'rows_per_page']);
 
     return (
@@ -34,6 +42,7 @@ class GoalTable extends React.Component {
           <GoalTableHead />
           <GoalTableBody />
         </table>
+        { loadInProgress ? this.renderLoadingSpinner() : null }
         <div>
           <PageSelector />
           <Components.RowsPerPageSelector

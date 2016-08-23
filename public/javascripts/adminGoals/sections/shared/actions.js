@@ -1,33 +1,20 @@
 import * as downloads from './downloads/actions';
 export { downloads };
 
+import * as loading from './loading/actions';
+export { loading };
+
 import * as feedback from '../../components/feedback';
 
 export const showFeedbackFlannel = hoverable => feedback.Flannel.actions.open(hoverable);
 
 export const types = {
-  startLoading: 'shared.startLoading',
-  stopLoading: 'shared.stopLoading',
-  showLoadingError: 'shared.showLoadingError',
   showModalMessage: 'shared.showModalMessage',
   hideModalMessage: 'shared.hideModalMessage',
   showGlobalMessage: 'shared.showGlobalMessage',
   hideGlobalMessage: 'shared.hideGlobalMessage',
   setModalInProgress: 'shared.setModalInProgress'
 };
-
-export const startLoading = () => ({
-  type: types.startLoading
-});
-
-export const stopLoading = () => ({
-  type: types.stopLoading
-});
-
-export const showLoadingError = message => ({
-  type: types.showLoadingError,
-  message
-});
 
 export const showModalMessage = (section, modalName, message, messageType = 'error') => ({
   type: types.showModalMessage,

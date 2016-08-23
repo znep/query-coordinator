@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import MultilineEllipsis from 'react-dotdotdot';
+import $ from 'jquery';
+import 'dotdotdot';
 
 /**
  * ViewCard
@@ -96,7 +97,27 @@ export default React.createClass({
     url: PropTypes.string
   },
 
-  renderOverlay: function() {
+  componentDidMount() {
+    this.$name = $(this.name);
+    this.$description = $(this.description);
+    this.ellipsify();
+  },
+
+  componentWillUpdate() {
+    this.$name.trigger('destroy.dot');
+    this.$description.trigger('destroy.dot');
+  },
+
+  componentDidUpdate() {
+    this.ellipsify();
+  },
+
+  ellipsify() {
+    this.$name.dotdotdot({ height: 50 });
+    this.$description.dotdotdot({ height: 100 });
+  },
+
+  renderOverlay() {
     if (React.Children.count(this.props.children) > 0) {
       return (
         <div className="view-card-overlay">
@@ -106,7 +127,7 @@ export default React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var {
       description,
       icon,
@@ -133,10 +154,8 @@ export default React.createClass({
           <div className="entry-title">
             <h3 className="entry-name">
               {privateIcon}
-              <a {...linkProps} href={url} onClick={onClick}>
-                <MultilineEllipsis clamp={2} ellipsis="...">
-                  {name}
-                </MultilineEllipsis>
+              <a {...linkProps} href={url} onClick={onClick} ref={el => this.name = el}>
+                {name}
               </a>
             </h3>
           </div>
@@ -161,10 +180,8 @@ export default React.createClass({
                 {image}
               </div>
             </a>
-            <div className="entry-description">
-              <MultilineEllipsis clamp={3} ellipsis="...">
-                <div dangerouslySetInnerHTML={{ __html: description }} />
-              </MultilineEllipsis>
+            <div className="entry-description" ref={el => this.description = el}>
+              {description}
             </div>
           </div>
         </div>

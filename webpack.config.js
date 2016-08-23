@@ -15,7 +15,12 @@ module.exports = {
       commonjs: 'tether-shepherd',
       amd: 'tether-shepherd'
     },
-    jquery: true
+    jquery: {
+      root: 'jQuery',
+      commonjs2: 'jquery',
+      commonjs: 'jquery',
+      amd: 'jquery'
+    }
   },
   output: {
     path: `${__dirname}/dist/js`,
@@ -32,6 +37,11 @@ module.exports = {
         loader: 'babel?cacheDirectory',
         test: /\.js$/,
         exclude: /node_modules/
+      },
+      {
+        loader: 'imports-loader',
+        test: require.resolve('dotdotdot'),
+        query: { 'jQuery': 'jquery' }
       }
     ]
   },

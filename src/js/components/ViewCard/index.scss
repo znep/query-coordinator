@@ -6,7 +6,7 @@ $external-blue: #1c6387;;
 
 .view-card.result-card.media {
   width: 300px;
-  height: 314px;
+  height: 325px;
   flex-basis: auto;
   overflow: hidden;
   float: none;
@@ -21,7 +21,7 @@ $external-blue: #1c6387;;
 
     .entry-title {
       margin-right: 2%;
-      max-height: 48px;
+      min-height: 53px;
 
       h3 {
         margin: 0;

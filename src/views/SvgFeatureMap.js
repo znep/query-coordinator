@@ -110,6 +110,7 @@ function SvgFeatureMap(element, vif) {
     var vectorTileGetter = newData.vectorTileGetter;
 
     emitRenderStart();
+    self.showBusyIndicator();
 
     if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
       this.updateVif(newVif);
@@ -658,6 +659,7 @@ function SvgFeatureMap(element, vif) {
 
     // Emit render complete event
     emitRenderComplete();
+    self.hideBusyIndicator();
   }
 
   function showFeatureFlyout(event) {

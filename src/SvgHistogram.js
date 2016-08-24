@@ -245,7 +245,9 @@ $.fn.socrataSvgHistogram = function(originalVif) {
   }
 
   function updateData(newVif) {
+
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+    visualization.showBusyIndicator();
 
     $.fn.socrataSvgHistogram.validateVif(newVif).then(() => {
       const dataRequests = newVif.
@@ -271,7 +273,10 @@ $.fn.socrataSvgHistogram = function(originalVif) {
         all(dataRequests).
         then(
           function(dataResponses) {
+
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+            visualization.hideBusyIndicator();
+
             visualization.render(newVif, dataResponses);
           }
         )

@@ -58,6 +58,8 @@ function SvgRegionMap(element, vif) {
   // Every redraw of the map forces us to remove the layer entirely because
   // there is no way to mutate already-rendered geojson objects.
   var baseLayer;
+  var lastRenderedBaseLayerUrl;
+  var lastRenderedBaseLayerOpacity;
   var regionLayer;
   // Watch for first render so we know whether or not to update the
   // center/bounds. (We don't update the center or the bounds if the map has
@@ -69,7 +71,6 @@ function SvgRegionMap(element, vif) {
   var lastClick = 0;
   var lastClickTimeout = null;
   var legend;
-  var lastRenderedVif;
 
   renderTemplate();
 
@@ -105,7 +106,7 @@ function SvgRegionMap(element, vif) {
       // deprecate the latter and the former will be set by the new authoring
       // experience.
       if (centerAndZoomDefined) {
-        updateCenterAndZoom(newVif);
+        updateCenterAndZoom();
       } else if (newData) {
         updateMapBoundsFromGeoJSONData(newData);
       }
@@ -113,17 +114,13 @@ function SvgRegionMap(element, vif) {
 
     if (newVif) {
 
-      renderLegend(newVif);
-      updateBaseLayer(newVif);
-      lastRenderedVif = newVif;
       self.updateVif(newVif);
+      renderLegend();
+      updateBaseLayer();
     }
 
     if (newData) {
-      updateRegionLayer(
-        (newVif) ? newVif : self.getVif(),
-        newData
-      );
+      updateRegionLayer(newData);
     }
   };
 
@@ -170,38 +167,38 @@ function SvgRegionMap(element, vif) {
           ]);
   }
 
-  function renderLegend(vifToRender) {
+  function renderLegend() {
     const colors = {
       continuous: {
         negative: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.negativeColor',
           DEFAULT_LEGEND_CONTINUOUS_NEGATIVE_COLOR
         ),
         zero: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.zeroColor',
           DEFAULT_LEGEND_CONTINUOUS_ZERO_COLOR
         ),
         positive: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.positiveColor',
           DEFAULT_LEGEND_CONTINUOUS_POSITIVE_COLOR
         )
       },
       discrete: {
         negative: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.negativeColor',
           DEFAULT_LEGEND_DISCRETE_NEGATIVE_COLOR
         ),
         zero: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.zeroColor',
           DEFAULT_LEGEND_DISCRETE_ZERO_COLOR
         ),
         positive: _.get(
-          vifToRender,
+          self.getVif(),
           'configuration.legend.positiveColor',
           DEFAULT_LEGEND_DISCRETE_POSITIVE_COLOR
         )
@@ -216,7 +213,7 @@ function SvgRegionMap(element, vif) {
     // Default to continuous legends (this will be overridden if specified).
     var LegendType = LegendContinuous;
 
-    if (_.get(vifToRender, 'configuration.legend.type') === 'discrete') {
+    if (_.get(self.getVif(), 'configuration.legend.type') === 'discrete') {
       LegendType = LegendDiscrete;
     }
 
@@ -228,7 +225,7 @@ function SvgRegionMap(element, vif) {
 
     $legend = self.
       $element.
-        find('.region-map-legend');
+      find('.region-map-legend');
 
     if ($legend.length > 0) {
 
@@ -248,8 +245,8 @@ function SvgRegionMap(element, vif) {
 
     self.
       $element.
-        find('.visualization-container').
-          append($legend);
+      find('.visualization-container').
+      append($legend);
 
     attachLegendEvents();
 
@@ -485,13 +482,13 @@ function SvgRegionMap(element, vif) {
     );
   }
 
-  function updateCenterAndZoom(vifToRender) {
+  function updateCenterAndZoom() {
     const center = _.get(
-      vifToRender,
+      self.getVif(),
       'configuration.mapCenterAndZoom.center'
     );
     const zoom = _.get(
-      vifToRender,
+      self.getVif(),
       'configuration.mapCenterAndZoom.zoom'
     );
 
@@ -609,30 +606,25 @@ function SvgRegionMap(element, vif) {
     );
   }
 
-  function updateBaseLayer(vifToRender) {
+  function updateBaseLayer() {
     const baseLayerUrl = _.get(
-      vifToRender,
+      self.getVif(),
       'configuration.baseLayerUrl',
       DEFAULT_BASE_LAYER_URL
     );
-    const lastRenderedBaseLayerUrl = _.get(
-      lastRenderedVif,
-      'configuration.baseLayerUrl'
-    );
     const baseLayerOpacity = _.get(
-      vifToRender,
+      self.getVif(),
       'configuration.baseLayerOpacity',
       DEFAULT_BASE_LAYER_OPACITY
-    );
-    const lastRenderedBaseLayerOpacity = _.get(
-      lastRenderedVif,
-      'configuration.baseLayerOpacity'
     );
 
     if (
       (baseLayerUrl !== lastRenderedBaseLayerUrl) ||
       (baseLayerOpacity !== lastRenderedBaseLayerOpacity)
     ) {
+
+      lastRenderedBaseLayerUrl = baseLayerUrl;
+      lastRenderedBaseLayerOpacity = baseLayerOpacity;
 
       if (baseLayer) {
         map.removeLayer(baseLayer);
@@ -652,7 +644,7 @@ function SvgRegionMap(element, vif) {
     }
   }
 
-  function updateRegionLayer(vifToRender, dataToRender) {
+  function updateRegionLayer(dataToRender) {
     const dimensions = {
       width: self.$element.find('.visualization-container').width(),
       height: self.$element.find('.visualization-container').width()
@@ -676,7 +668,7 @@ function SvgRegionMap(element, vif) {
       }
     );
 
-    coloring = legend.update(vifToRender, dataToRender, dimensions);
+    coloring = legend.update(dataToRender, dimensions);
 
     featureOptions = {
       onEachFeature: function(feature, layer) {
@@ -1137,7 +1129,7 @@ function SvgRegionMap(element, vif) {
       }
     };
 
-    this.calculateClassBreaks = function(vifToRender, dataToRender) {
+    this.calculateClassBreaks = function(dataToRender) {
       var values = _.reduce(
         dataToRender.features,
         function(data, feature) {
@@ -1246,11 +1238,8 @@ function SvgRegionMap(element, vif) {
      * @return {chroma.scale} A chroma color scale that maps a datum value to a
      *   color.
      */
-    this.update = function(vifToRender, dataToRender) {
-      var classBreaks = self.calculateClassBreaks(
-        vifToRender,
-        dataToRender
-      );
+    this.update = function(dataToRender) {
+      var classBreaks = self.calculateClassBreaks(dataToRender);
 
       self.addClassBreakAtZeroIfMissing(classBreaks);
 
@@ -1791,7 +1780,7 @@ function SvgRegionMap(element, vif) {
      *
      * @return {d3.scale} a scale mapping from value to color.
      */
-    this.update = function(vifToRender, dataToRender, dimensions) {
+    this.update = function(dataToRender, dimensions) {
 
       if (!(dataToRender.features && dataToRender.features.length)) {
         return undefined;

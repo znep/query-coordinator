@@ -146,7 +146,7 @@ class Auth0ControllerTest < ActionController::TestCase
            :id => 'abcd-efgh',
            :data => {:id=>'abcd-efgh'},
            :is_owner? => false,
-           :is_admin? => false,
+           :is_superadmin? => false,
            :roleName => 'viewer')
     end
 

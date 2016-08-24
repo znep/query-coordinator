@@ -1215,7 +1215,6 @@ en:
       dateISO: Please enter a valid date (ISO).
       digits: Please enter only digits.
       email: Please enter a valid email address.
-      email_recipient: Please enter a valid email address or choose a group.
       equalTo: Please enter the same value again.
       max: Please enter a value less than or equal to {0}.
       maxlength: Please enter no more than {0} characters.
@@ -1274,6 +1273,13 @@ en:
       foundry_button: API Docs
       title: Access this Dataset via SODA API
     back: Back
+    blob_download:
+      edit_prompt_button: Edit Source
+      edit_prompt_message: Edit the source file for this dataset.
+      title: Download this Resource
+      download: Download
+    blob_preview:
+      title: Preview
     bootstrap_button: Create a Visualization
     bootstrap_disabled_notice: Your data is currently being processed. Refresh the page in a few minutes and you will be able to create a new visualization.
     bootstrap_message: This dataset doesn’t have any related visualizations.  Would you like to create one now?
@@ -1334,6 +1340,7 @@ en:
       manage_prompt:
         button: Manage Featured Content
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
+        message_blob: Choose to promote up to 3 external resources that are relevant to this file or document. If left blank this section will be invisible.
       title: Featured Content Using this Data
     featured_content_modal:
       external: External Resource
@@ -1348,6 +1355,7 @@ en:
         url: Link to Resource
       header: Manage Featured Content
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
+      introduction_blobby: What would you like people to see when they first view this asset? Promote up to 3 external resources that are relevant to this file or document.
       preview: Preview of featured content
       remove_error: Oh no!  Something went wrong, please try again.
       remove_prompt: Are you sure you want to remove this piece of featured content?
@@ -1371,6 +1379,7 @@ en:
       screenshot_yes: Yes, include a screenshot
       title: Feedback
     less: Show Less
+    manage_dataset: Manage Dataset
     manage_prompt: Click here to manage permissions
     metadata:
       attachments: Attachments
@@ -1462,7 +1471,7 @@ en:
       email: Share via Email
       email_body: 'Here is a dataset from %{provider} that I would like to share with you: %{url}'
       facebook: Share via Facebook
-      title: Share this Dataset
+      title: Share
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:
@@ -1652,7 +1661,7 @@ en:
       sdp_templates: Data Player Templates
       title: Manage Site Configuration
       users: Users
-      goal_management_preview: Goal Management Preview
+      goal_management_preview: Goal Management
     measure:
       end_progress:
         bad: Did not meet target
@@ -1740,6 +1749,7 @@ en:
         bad: Did not meet target
       subheadline: This goal is measured by tracking {0} in {1}.
     admin:
+      page_title: Goal Management
       export:
         info_box:
           ok: OK
@@ -1756,7 +1766,6 @@ en:
         goal_status: Goal Status
         dashboard: Dashboard
         manage_on_goal_page: Manage on Goal Page
-        view_dashboard: View Dashboard
         quick_edit: Quick Edit
         goal_page: Manage On Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
@@ -1844,7 +1853,7 @@ en:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
       preview_bar:
         back_to_configuration: Back to Configuration
-        performance_goal_management_preview: Performance Goal Management Preview
+        performance_goal_management_preview: Performance Goal Management
         learn_more: Learn More
         feedback: Feedback
       feedback_flannel:
@@ -2578,13 +2587,23 @@ en:
         'true': true
         up: Up
       site_chrome:
-        add_new_link_row: Add Another %{section} Link
+        activate: Activate
+        add_new_link_menu: Add Menu
+        add_new_link_row: Add %{section} Link
         cancel: Cancel
+        congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
-        preview_changes: Preview
+        link_menu_label_html: <b>Menu</b> - <i>You can drag links to reorder them</i>
+        move_link_row: Drag to reorder
+        ok: OK
+        preview: Preview
+        remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
+        see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
+        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
+        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
         tabs:
           footer:
             fields:
@@ -2625,6 +2644,7 @@ en:
               menu_links:
                 description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
                 title: Footer Links
+              menu_title_placeholder: Menu Text
               powered_by:
                 description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
                 label: Show Socrata branding in the Footer
@@ -2650,9 +2670,7 @@ en:
                 show_signup: Show ability to create an account via Sign Up
                 title: Sign In / Sign Out
               template:
-                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
-                error: Only "Evergreen" and "Rally" header templates are currently available. Please refer to the Support article at right for more information.
-                placeholder: Evergreen
+                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
                 title: Template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
@@ -2666,11 +2684,11 @@ en:
           header:
             fields:
               bar_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
               bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area.
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)
               bar_text_link_color:
@@ -2700,6 +2718,7 @@ en:
               menu_links:
                 description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
                 title: Header Links
+              menu_title_placeholder: Menu Text
               url_label: URL
               url_placeholder: URL
             title: Header Bar
@@ -2773,6 +2792,7 @@ en:
                   <p>Dataset Landing Page and your new Configurable Header/Footer are both available now. Review the tabs above to configure and preview your site's appearance - and when you're ready, activate them together!</p>
                   <p><b>Note:</b> If you haven't configured the header/footer for your site within 30 days, Socrata will configure it for you and activate it along with the Dataset Landing Page automatically. We'll use your existing site styling and your Customer Success Manager for style guidance.</p>
                   <p>For tips on configuring your header/footer and activating Dataset Landing Page, please attend the <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Making the Most of the Latest Features" Webinar</a> or visit our Support site: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
+      update: Update
       users:
         actions: Actions
         all: All

@@ -4,9 +4,10 @@
     description = translations[:menu_links][:description]
     label_title = translations[:link_title_label]
     url_title = translations[:url_label]
-    placeholder_text = {
-      link_title: translations[:link_title_placeholder],
-      url: translations[:url_placeholder]
+    placeholder = {
+      :link_title => translations[:link_title_placeholder],
+      :menu_title => translations[:menu_title_placeholder],
+      :url => translations[:url_placeholder]
     }
   %>
 
@@ -18,16 +19,42 @@
     <%= label_tag(nil, url_title) %>
   </div>
 
-  <% present_links(links).each do |link| %>
-    <%= link_row_div(content_key, link, placeholder_text) %>
+  <div class="links-and-menus">
+    <% present_links_and_menus(links).each do |link| %>
+      <% link_options = {
+        :content_key => content_key,
+        :placeholder => placeholder
+      } %>
+      <% if local_assigns[:allow_child_links] && has_child_links?(link) %>
+        <%= link_menu_div(link, link_options) %>
+      <% else %>
+        <%= link_row_div(link, link_options) %>
+      <% end %>
+    <% end %>
+
+    <!-- If less than 3 present_links, show empty link rows -->
+    <%= empty_link_row_divs(
+      :content_key => content_key,
+      :placeholder => placeholder,
+      :count => present_links_and_menus(links).length
+    ) %>
+
+    <!-- Create a hidden default row and menu that we can clone with JS for the "add" functionality -->
+    <% default_options = { content_key: content_key, placeholder: placeholder, default: true } %>
+    <% child_link_default_options = default_options.merge(child_link: true) %>
+    <%= link_row_div(nil, default_options) %>
+    <% if local_assigns[:allow_child_links] %>
+      <%= link_row_div(nil, child_link_default_options) %>
+      <%= link_menu_div(nil, default_options) %>
+    <% end %>
+  </div>
+
+  <% if local_assigns[:allow_child_links] %>
+    <button class="add-new-link-menu" type="button" onclick="addNewLinkMenu(this);">
+      <span class="icon-add"></span>
+      <%= t('screens.admin.site_chrome.add_new_link_menu') %>
+    </button>
   <% end %>
-
-  <!-- If less than 3 present_links, show empty link rows -->
-  <%= empty_link_row_divs(content_key, placeholder_text, present_links(links).length) %>
-
-  <!-- Create a hidden default row that we can clone with JS for the "add a new row" functionality -->
-  <%= link_row_div(content_key, nil, placeholder_text, true) %>
-
   <button class="add-new-link-row" type="button" onclick="addNewLinkRow(this);">
     <span class="icon-add"></span>
     <%= t('screens.admin.site_chrome.add_new_link_row', section: content_key.capitalize) %>

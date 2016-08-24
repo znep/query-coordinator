@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   layout 'main'
 
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
-  rescue_from ActionView::MissingTemplate, :with => :render_406
+  rescue_from ActionView::MissingTemplate, :with => :render_406 unless Rails.env.development?
 
   # Prevent CSRF attacks by raising an exception.
   protect_from_forgery with: :exception
@@ -117,13 +117,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def is_admin?
-    !!current_user.try(:is_admin?)
+  def is_superadmin?
+    !!current_user.try(:is_superadmin?)
   end
 
   def show_nbe_redirection_warning?
     feature_flags = FeatureFlags.derive(@view, request)
-    (is_admin? || feature_flags.disable_obe_redirection) &&
+    (is_superadmin? || feature_flags.disable_obe_redirection) &&
       !feature_flags.disable_nbe_redirection_warning_message
   end
 

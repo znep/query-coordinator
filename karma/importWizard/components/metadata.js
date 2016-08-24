@@ -395,7 +395,7 @@ describe('view testing', () => {
 
   it('shows the href component when displayType is href', () => {
     state.contents.displayType = 'href'
-    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop, operation: 'LinkToExternal' }));
     expect(element.querySelector('.textPrompt.url')).to.exist;
   });
 
@@ -409,11 +409,11 @@ describe('view testing', () => {
     let emitted = {};
     const element = renderComponent(view( {metadata: state, onMetadataAction: (action) => {
       emitted = action;
-    }}));
+    }, operation: 'LinkToExternal'}));
 
     let input = element.querySelector('input.url');
-    input.value = 'foobar.com'
-    TestUtils.Simulate.blur(input)
+    input.value = 'foobar.com';
+    TestUtils.Simulate.blur(input);
 
     expect(emitted.type).to.equal('MD_UPDATE_HREF');
     expect(emitted.href).to.equal('foobar.com');
@@ -448,7 +448,7 @@ describe('view testing', () => {
    expect(spy.callCount).to.equal(0);
 
    TestUtils.Simulate.click(element.querySelector('.button.nextButton'));
-   expect(spy.callCount).to.equal(1);
+   expect(spy.callCount).to.equal(2);
  });
 
  it('returns that inserting text into a standard field fires onMetadataAction for each action', () => {

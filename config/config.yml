@@ -46,24 +46,26 @@
 
 default: &default
   # service hosts/ports/names et simil
-  cetera_host: 'http://localhost:5704'
+  cetera_host: http://localhost:5704
   coreservice_uri: http://localhost:8080
+  feature_flag_signaller_uri: http://localhost:14567
+  kafka_rest_uri: http://localhost:8082
   polaroid_hostname: polaroid.app.marathon.aws-us-west-2-prod.socrata.net
   polaroid_port: 13379
-  secondary_group_identifier: 'spandex'
+  secondary_group_identifier: spandex
+  sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps
   statsd_enabled: false
-  zk_hosts: 'localhost:2181'
-  sitemap_s3_url: 'https://localhost.amazonaws.com/bucket_dne/sitemaps'
+  zk_hosts: localhost:2181
 
   # internal app tokens
   app_token: U29jcmF0YS0td2VraWNrYXNz0
-  data_cards_app_token: 'zvQamMSTi4GNuZWWDwjLdLPhW'
+  data_cards_app_token: zvQamMSTi4GNuZWWDwjLdLPhW
 
   # third-party app tokens
   opendata_ga_tracking_code: UA-52982454-21
   standard_ga_tracking_code: UA-51039907-4
   userzoom:
-    cuid: 'C95E515772DAE311BEDA0022196C4538'
+    cuid: C95E515772DAE311BEDA0022196C4538
 
   # auth alternatives
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
@@ -85,7 +87,7 @@ default: &default
   canary: false
   whats_new:
     article_count: 3
-    zendesk_link: 'https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest'
+    zendesk_link: https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest
     zendesk_section: 203977877
 
   # number of days that can pass until a deleted dataset can't be restored
@@ -95,20 +97,21 @@ default: &default
 development: &development
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: 'http://api.us.socrata.com/api'
+  cetera_host: http://api.us.socrata.com/api
   curated_region_job_queue_hostname: localhost
   curated_region_job_queue_port: 2030
   http_port: 9292
   import_status_service_hostname: localhost
   import_status_service_port: 8082
-  metrics_dir: tmp/metriclogs
   polaroid_hostname: localhost
   polaroid_port: 1337
+  sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps
   ssl_port: 443
-  sitemap_s3_url: 'https://localhost.amazonaws.com/bucket_dne/sitemaps'
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
+  recaptcha_public_key: 6Lc9KuoSAAAAAAYcF4Ug8hJh-ta4tz88l1lokcoV
+  recaptcha_private_key: 6Lc9KuoSAAAAAENydmvOO8b53QFNPXl7u30UV22m
   recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
   recaptcha_2_secret_token: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
   google_maps_site_key: AIzaSyBGFHOk32Yq_Rk9g14EIsAkVFkTARtsuC4
@@ -121,23 +124,31 @@ development: &development
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
 
+  # other behaviors
+  metrics_dir: tmp/metriclogs
+
 # Running unit tests; NOT test-socrata.com
 test:
   <<: *default
   # service hosts/ports/names et simil
-  metrics_dir: tmp/metriclogs
-  sitemap_s3_url: 'https://test.amazonaws.com/bucket_dne/sitemaps'
+  cetera_host: http://localhost:5704
+  coreservice_uri: http://localhost:8080
+  sitemap_s3_url: https://test.amazonaws.com/bucket_dne/sitemaps
+  feature_flag_signaller_uri:
 
   # auth alternatives
   auth0_uri: exists
   auth0_id: exists
   auth0_secret: exists
 
+  # other behaviors
+  metrics_dir: tmp/metriclogs
+
 # test-socrata.com
 staging:
   <<: *default
   # service hosts/ports/names et simil
-  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-staging/sitemaps'
+  sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-staging/sitemaps
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
@@ -145,7 +156,10 @@ staging:
 rc:
   <<: *default
   # service hosts/ports/names et simil
-  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-rc/sitemaps'
+  cetera_host: http://cetera.app.marathon.aws-us-west-2-rc.socrata.net
+  coreservice_uri: http://10.92.1.7:8081
+  sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-rc/sitemaps
+  zk_hosts: '10.92.2.4:2181,10.92.2.5:2181,10.92.2.6:2181'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
@@ -153,7 +167,7 @@ rc:
 fedramp-prod:
   <<: *default
   # service hosts/ports/names et simil
-  sitemap_s3_url: 'https://s3-us-west-1.amazonaws.com/sa-socrata-sitemaps-us-west-1-prod/sitemaps'
+  sitemap_s3_url: https://s3-us-west-1.amazonaws.com/sa-socrata-sitemaps-us-west-1-prod/sitemaps
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
@@ -161,7 +175,7 @@ fedramp-prod:
 eu-prod:
   <<: *default
   # service hosts/ports/names et simil
-  sitemap_s3_url: 'https://s3-eu-west-1.amazonaws.com/sa-socrata-sitemaps-eu-west-1-prod/sitemaps'
+  sitemap_s3_url: https://s3-eu-west-1.amazonaws.com/sa-socrata-sitemaps-eu-west-1-prod/sitemaps
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
@@ -169,8 +183,9 @@ eu-prod:
 production:
   <<: *default
   # service hosts/ports/names et simil
+  cetera_host: http://api.us.socrata.com/api
   coreservice_uri: http://lb-vip.sea1.socrata.com:8081
-  sitemap_s3_url: 'https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-prod/sitemaps'
+  sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-prod/sitemaps
 
   # third-party app tokens
   mixpanel_token: 1d804068e1d3694468823f3c7f74567d

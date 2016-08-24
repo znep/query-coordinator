@@ -33,6 +33,6 @@ export const load = () => dispatch => {
       dispatch(SharedActions.loading.stop());
     }).
     catch(error => {// eslint-disable-line dot-notation
-      dispatch(SharedActions.showLoadingError(error.message));
+      dispatch(SharedActions.showGlobalMessage('goals', error.message));
     });
 };

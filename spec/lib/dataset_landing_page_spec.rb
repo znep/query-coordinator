@@ -1,6 +1,4 @@
 require 'rails_helper'
-require_relative '../../lib/dataset_landing_page'
-require_relative '../../lib/cetera'
 
 describe DatasetLandingPage do
   let(:dataset_landing_page) do
@@ -62,7 +60,7 @@ describe DatasetLandingPage do
       end
 
       def expect_cetera_invoked_with_correct_uid(uid, uid_to_query)
-        expect(Cetera).to receive(:get_derived_from_views).
+        expect(Cetera::Utils).to receive(:get_derived_from_views).
           with(
             uid_to_query,
             {
@@ -102,14 +100,14 @@ describe DatasetLandingPage do
       end
 
       it 'uses Cetera.get_derived_from_views to retrieve the related views from Cetera' do
-        expect(Cetera).to receive(:get_derived_from_views).and_return([])
+        expect(Cetera::Utils).to receive(:get_derived_from_views).and_return([])
         results = dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id')
 
         expect(results).to eq([])
       end
 
       it 'passes options to Cetera' do
-        expect(Cetera).to receive(:get_derived_from_views).
+        expect(Cetera::Utils).to receive(:get_derived_from_views).
           with(
             'peng-uins',
             {
@@ -128,9 +126,9 @@ describe DatasetLandingPage do
       end
 
       it 'formats the response' do
-        cetera_result_double = instance_double(Cetera::CeteraResultRow, :id => 'elep-hant')
+        cetera_result_double = instance_double(Cetera::Results::ResultRow, :id => 'elep-hant')
         expect(cetera_result_double).to receive(:get_preview_image_url).and_return('image')
-        expect(Cetera).to receive(:get_derived_from_views).and_return([cetera_result_double])
+        expect(Cetera::Utils).to receive(:get_derived_from_views).and_return([cetera_result_double])
         expect(dataset_landing_page).to receive(:format_view_widget).
           and_return(formatted_view)
         results = dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id')

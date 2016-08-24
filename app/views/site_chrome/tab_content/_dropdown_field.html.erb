@@ -1,0 +1,18 @@
+<section class="settings-group">
+  <div class="settings-form">
+    <%= label_tag(form_field(fields), translation[:title]) %>
+
+    <div class="dropdown btn btn-default" data-orientation="bottom" data-selectable data-dropdown>
+      <span><%= fetch_content(fields).presence || translation[:title] %></span><span class="icon-arrow-down"></span>
+      <ul class="dropdown-options">
+        <%= options %>
+      </ul>
+    </div>
+
+    <!-- Hidden field tag to store the selected value of the styleguide dropdown.
+      This is what actually updates the value in the configuration. -->
+    <%= hidden_field_tag(form_field(fields), fetch_content(fields), :class => 'hidden-dropdown-input') %>
+
+  </div>
+  <aside><p><%= translation[:description] %></p></aside>
+</section>

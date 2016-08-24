@@ -26,22 +26,17 @@ class SiteChrome
   def self.attribute_names
     %w(id name default domainCName type updatedAt properties)
   end
-  attribute_names.each { |field| attr_accessor field }
+  attribute_names.each(&method(:attr_accessor))
 
   def clear_errors
     @errors = []
-  end
-
-  def self.host
-    cname = CurrentDomain.cname # CurrentDomain can be "" on local box
-    cname.present? ? cname : 'localhost'
   end
 
   def self.default_values
     {
       name: 'Site Chrome',
       default: true,
-      domainCName: SiteChrome.host,
+      domainCName: CurrentDomain.cname,
       type: SiteChrome.core_configuration_type,
       properties: [] # separate db records, must be created later
     }
@@ -151,7 +146,7 @@ class SiteChrome
   def self.default_request_headers
     {
       'Content-Type' => 'application/json', # this is necessary despite format :json above
-      'X-Socrata-Host' => SiteChrome.host
+      'X-Socrata-Host' => CurrentDomain.cname
     }
   end
 
@@ -231,10 +226,9 @@ class SiteChrome
 
   # WARN: deep merge!
   publication_stages.each do |stage|
+    # For grepping: update_published_content, update_draft_content
     define_method "update_#{stage}_content" do |new_content_hash|
-      all_versions_content = config.dig('value') || {
-        'versions' => {}
-      }
+      all_versions_content = config.dig('value') || { 'versions' => {} }
       new_content = (send(:"#{stage}_content") || {}).deep_merge(new_content_hash)
       all_versions_content['current_version'] = current_version
       all_versions_content.bury('versions', current_version, stage, 'content', new_content)
@@ -265,6 +259,53 @@ class SiteChrome
     path = "#{SiteChrome.core_configurations_path}/#{id}"
     res = SiteChrome.get(path, SiteChrome.default_request_headers)
     handle_configuration_response(res)
+  end
+
+  def set_activation_state(state)
+    if state['entire_site']
+      FeatureFlags.set_value(:site_chrome_header_and_footer, true, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, true, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, true, domain: CurrentDomain.cname)
+    end
+    if state['all_pages_except_home']
+      FeatureFlags.set_value(:site_chrome_header_and_footer, true, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, false, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, true, domain: CurrentDomain.cname)
+    end
+    if state['revert_site_chrome']
+      FeatureFlags.set_value(:site_chrome_header_and_footer, false, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, false, domain: CurrentDomain.cname)
+      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, false, domain: CurrentDomain.cname)
+    end
+  end
+
+  def activated?
+    [
+      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer'),
+      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer_for_homepage'),
+      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer_for_data_lens')
+    ].any?
+  end
+
+  def on_entire_site?(request = nil)
+    [
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer?,
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage?,
+      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens?
+    ].all?
+  end
+
+  def on_all_pages_except_home_page?(request = nil)
+    FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage? == false &&
+      [
+        FeatureFlags.derive(nil, request).site_chrome_header_and_footer?,
+        FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens?
+      ].all?
+  end
+
+  def reverted?
+    flag = FeatureFlags.get_value('site_chrome_header_and_footer')
+    flag && flag['source'] == 'domain' && flag['value'] == false
   end
 
   private

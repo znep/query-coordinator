@@ -1,3 +1,4 @@
+$disabled-text: #ddd;
 $grey: #7a7a7a;
 $dark-grey: #5e5e5e;
 $red-text: #d06463;
@@ -8,11 +9,21 @@ $faint-border-color: #ebebeb;
 .site-chrome {
   font-family: "Open Sans", "Helvetica", Arial, sans-serif;
   max-width: 68rem;
-  margin: 24px auto 0;
+  margin: 0 auto;
 
   h1, h2, h3, h4, h5 {
     letter-spacing: -0.5px;
     font-weight: 600;
+  }
+
+  .section-separator {
+    border-bottom: 1px solid #d6d6d6;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+
+    .settings-form.full {
+      border-top: none;
+    }
   }
 
   button {
@@ -51,6 +62,15 @@ $faint-border-color: #ebebeb;
         background-color: $red-btn-hover;
       }
     }
+    &.btn-primary {
+      color: #fff;
+      background-color: #2279a6;
+      border-color: #288dc1;
+    }
+    &.btn-transparent {
+      border-color: transparent;
+      background-color: transparent;
+    }
   }
 
   .admin-header {
@@ -58,18 +78,19 @@ $faint-border-color: #ebebeb;
     overflow: hidden;
 
     .header-title {
-      float: left;
-      display: block;
-
       h1 {
         font-size: 27px;
-      }
+        margin-bottom: 2rem;
+        }
     }
 
     .page-controls {
       float: right;
+      position: relative;
+      top: -1rem;
 
-      > a, > button {
+      > a,
+      > button {
         margin-right: 9px;
       }
     }
@@ -77,20 +98,26 @@ $faint-border-color: #ebebeb;
 
   ul.tabs {
     border-bottom: 1px solid #d6d6d6;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
+    padding-left: 0;
+    margin-top: 0;
+
     li {
       display: inline-block;
-      margin: 0 11px;
+      margin: 0 1rem 0 0;
+
       a {
         text-decoration: none;
         color: $grey;
         padding: 6px 9px;
         font-size: 15px;
+
         &:hover {
           border-bottom: 4px solid #d6d6d6;
           color: #3d3d3d;
         }
       }
+
       &.current a {
         border-bottom: 4px solid #288DC1;
         color: #3d3d3d;
@@ -100,7 +127,7 @@ $faint-border-color: #ebebeb;
 
   .tab-content {
     display: none;
-    padding: 1rem;
+    padding: 0 1rem;
 
     &.current {
       display: block;
@@ -108,8 +135,7 @@ $faint-border-color: #ebebeb;
 
     section.settings-group {
       display: block;
-      padding-top: 27px;
-      overflow: hidden;
+      padding-top: 1rem;
 
       h3 {
         color: $dark-grey;
@@ -117,15 +143,39 @@ $faint-border-color: #ebebeb;
         font-weight: 600;
       }
 
+      h6 {
+        margin-bottom: 1rem;
+      }
+
       p {
-        margin: 24px 0;
+        margin: 1.75rem 0 0 0;
         font-size: 12px;
         line-height: 1.2rem;
         color: $dark-grey;
       }
 
+      div.radiobutton.horizontal {
+        display: inline-block;
+        margin-right: 3rem;
+        margin-left: 2rem;
+
+        label {
+          display: inline-block;
+          vertical-align: top;
+          text-indent: -28px;
+        }
+      }
+
+      &.section-separator {
+        padding-top: 0;
+
+        .settings-form.full {
+          border-top: none;
+        }
+      }
+
       div.settings-form {
-        float: left;
+        display: inline-block;
         width: 65%;
 
         &.half {
@@ -150,6 +200,17 @@ $faint-border-color: #ebebeb;
             &.indented {
               margin-left: 1em;
             }
+            &.disabled,
+            &.disabled > span {
+              color: $disabled-text;
+              cursor: default;
+            }
+          }
+          aside {
+            float: right;
+            p {
+              margin-top: 0;
+            }
           }
         }
 
@@ -160,7 +221,7 @@ $faint-border-color: #ebebeb;
           font-weight: 400;
           color: $grey;
 
-          &.error {
+          &.site-chrome-input-error {
             color: $red-text;
             font-size: 14px;
           }
@@ -174,31 +235,53 @@ $faint-border-color: #ebebeb;
           padding: 8px;
           margin-bottom: 12px;
 
-          &::-webkit-input-placeholder { font-style: italic; }
-          &::-moz-placeholder { font-style: italic; } /* firefox 19+ */
-          &:-ms-input-placeholder { font-style: italic; } /* ie */
+          &::-webkit-input-placeholder {
+            font-style: italic;
+          }
+          &::-moz-placeholder {
+            font-style: italic;
+          }
+          /* firefox 19+ */
+          &:-ms-input-placeholder {
+            font-style: italic;
+          }
+          /* ie */
 
-          &.error {
+          &.site-chrome-input-error {
             border-color: $red-text;
           }
 
           &[disabled] {
             color: #bbb;
+            cursor: default;
+          }
+        }
+        div.dropdown {
+          width: calc(100% - 16px);
+
+          ul.dropdown-options {
+            width: 100%;
+          }
+
+          span.icon-arrow-down {
+            float: right;
+            line-height: 24px;
           }
         }
       }
 
       aside {
-        display: block;
-        float: right;
-        width: calc(35% - 1rem);
-        padding-left: 1rem;
+        display: inline-block;
+        width: calc(35% - 1.5rem);
+        vertical-align: middle;
 
         p {
-          font-size: 12px;
-          line-height: 1.2rem;
-          margin: 22px 0;
-          color: $dark-grey;
+          margin: 0;
+        }
+
+        &.full {
+          float: none;
+          padding: 0;
         }
       }
 
@@ -220,7 +303,7 @@ $faint-border-color: #ebebeb;
 
           label {
             margin: 0.5rem;
-            width: calc(50% - 2rem);
+            width: calc(50% - 1.2rem);
             float: left;
             box-sizing: border-box;
             line-height: 1.5rem;
@@ -229,13 +312,24 @@ $faint-border-color: #ebebeb;
           }
         }
 
+        .link-menu-header {
+          display: block;
+          box-sizing: border-box;
+          line-height: 1.5rem;
+          font-size: 14px;
+          color: $grey;
+        }
+
         // Hide remove-link-row for the first div.link-row
-        div.link-row-header + div.link-row {
+        .links-and-menus {
+          > div:first-of-type {
           .remove-link-row {
             display: none;
           }
         }
+        }
 
+        // Top level link rows
         div.link-row {
           overflow: hidden;
 
@@ -246,7 +340,7 @@ $faint-border-color: #ebebeb;
           input {
             margin: 0.5rem;
             padding: 0.5rem;
-            width: calc(50% - 2rem);
+            width: calc(50% - 2.5rem);
             float: left;
             font-size: 15px;
             box-sizing: border-box;
@@ -255,14 +349,61 @@ $faint-border-color: #ebebeb;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
           }
 
+          .move-link-row {
+            float: left;
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 50px;
+            position: relative;
+            left: -5px;
+          }
+
           .remove-link-row {
             cursor: pointer;
-            font-size: 10pt;
+            font-size: 14px;
             line-height: 50px;
           }
         }
 
+        // Link menus
+        div.link-menu {
+          margin: 0.5rem 0;
+          padding: 0.5rem;
+          border-top: 1px solid $faint-border-color;
+          overflow: hidden;
+
+          &.default {
+            display: none;
+          }
+
+          > input {
+            margin: 0.5rem;
+            padding: 0.5rem;
+            width: calc(100% - 2rem);
+            font-size: 15px;
+            box-sizing: border-box;
+            border: solid 1px #c2c2c2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+          }
+
+          .remove-link-menu {
+            cursor: pointer;
+            font-size: 10pt;
+            line-height: 50px;
+          }
+
+          // Child link rows
+          div.link-row {
+            margin-left: 2rem;
+            width: calc(100% - 1.5rem);
+          }
         button.add-new-link-row {
+            margin-left: 2.5rem;
+          }
+        }
+
+        button.add-new-link-row, button.add-new-link-menu {
           margin: 0.5rem;
           font-size: 14px;
 
@@ -281,6 +422,23 @@ $faint-border-color: #ebebeb;
       }
     }
 
+    .page-controls {
+      text-align: right;
+      margin-top: 2rem;
+      position: relative;
+
+      button {
+        [class*="icon-"] {
+          position: relative;
+          padding-left: 11px;
+        }
+
+        &:first-of-type {
+          margin-right: 9px;
+        }
+      }
+    }
+
     .whats-new-content {
       .whats-new-hero-image {
         display: block;
@@ -288,18 +446,16 @@ $faint-border-color: #ebebeb;
       }
 
       .whats-new-title {
-        font-size: 16pt;
+        font-size: 15pt;
         color: #288dc1;
-        margin: 12px 0 4px;
+        margin: 16px 0 8px;
       }
 
       .whats-new-description {
-        font-size: 12pt;
-        line-height: 1.4rem;
-        margin-bottom: 28px;
-
         > p {
-          margin-bottom: 14px;
+          font-size: 10pt;
+          line-height: 1.2rem;
+          margin: 0 0 16px;
         }
 
         &:last-of-type {
@@ -308,4 +464,23 @@ $faint-border-color: #ebebeb;
       }
     }
   }
+
+  #site_chrome_activation_flannel {
+    position: fixed;
+    z-index: 1;
+    text-align: left;
+
+    p {
+      font-size: 12px;
+    }
+
+    .flyout-footer {
+      text-align: right;
+      padding-right: 1rem;
+    }
+  }
+}
+
+#siteHeader .siteUserNav li a {
+  font-size: 1.0em;
 }

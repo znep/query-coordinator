@@ -87,6 +87,7 @@ export function proceedFromMetadataPane() {
           dispatch(goToPage('Finish'));
           break;
         case 'LinkToExternal':
+          dispatch(saveMetadataToViewsApi());
           dispatch(goToPage('Finish'));
           break;
         default:

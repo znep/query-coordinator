@@ -23,7 +23,7 @@ class DatasetLandingPage
         :boostDatalenses => 1.15
       }.compact
 
-      derived_views = Cetera.get_derived_from_views(uid_to_search_cetera(view), options)
+      derived_views = Cetera::Utils.get_derived_from_views(uid_to_search_cetera(view), options)
     else
       derived_views = view.find_dataset_landing_page_related_content(sort_by) || []
       limit = limit || derived_views.length
@@ -84,7 +84,12 @@ class DatasetLandingPage
   def add_featured_content(uid, featured_item, cookie_string, request_id)
     path = "/views/#{uid}/featured_content.json"
     view = JSON.parse(CoreServer::Base.connection.create_request(path, featured_item))
-    image_url = view.get_preview_image_url(cookie_string, request_id)
+    image_url = nil
+
+    if view['contentType'] == 'internal'
+      featured_view = View.set_up_model(view['featuredView'])
+      image_url = featured_view.get_preview_image_url(cookie_string, request_id)
+    end
 
     format_featured_item(view, image_url)
   end
@@ -102,7 +107,7 @@ class DatasetLandingPage
   end
 
   # Formats either a View object instantiated from View json (from api/views) or
-  # a Cetera::CeteraResultRow object instantiated from Cetera json results into a
+  # a Cetera::Results::ResultRow object instantiated from Cetera json results into a
   # payload that the View Widget component can use.
   #
   # View json example: {

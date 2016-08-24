@@ -53,9 +53,9 @@ module.exports = function visualizationTypeSelector(
     $scope.$bindObservable('nonComputedSectionTitle', regionCodingDetails$.pluck('nonComputedSectionTitle'));
     $scope.$bindObservable('showInfoMessage', regionCodingDetails$.pluck('showInfoMessage'));
 
-    var informationMessage$ = currentUser$.map(UserSessionService.isAdmin).map(
-      function(isAdmin) {
-        return isAdmin ?
+    var informationMessage$ = currentUser$.map(UserSessionService.isSuperadmin).map(
+      function(isSuperadmin) {
+        return isSuperadmin ?
           I18n.addCardDialog.choroplethAdminMessage :
           I18n.addCardDialog.choroplethMessage;
       }

@@ -329,6 +329,10 @@ class NewUxBootstrapController < ActionController::Base
     (field_name =~ Phidippides::SYSTEM_COLUMN_ID_REGEX) != nil
   end
 
+  def hidden_column?(column)
+    column[:hideInTable] #is true or false
+  end
+
   # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
   # sub-columns become their own columns. These generally don't have meaning in isolation, so don't
   # create a card for them.
@@ -390,6 +394,7 @@ class NewUxBootstrapController < ActionController::Base
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
+      hidden_column?(column) ||
       column_too_large_for_feature_card?(column) ||
       point_column_has_insufficient_cardinality?(column) ||
       (feature_map_disabled? && point_column?(column)) ||

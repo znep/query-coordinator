@@ -143,7 +143,7 @@
   <%- end -%>
   <%- end -%>
 
-  <% if current_user && current_user.is_admin? -%>
+  <% if current_user && current_user.is_superadmin? -%>
     <div class="formSection">
       <a class="expander expanded formHeader" href="#expand">
         <span class="icon"></span>
@@ -388,7 +388,7 @@
 <%- end -%>
 
   <% #For now datasync is gated to superadmins, hopefully will be added for publisher and above soon  %>
-  <%- if current_user && current_user.is_admin? && @view.dataset? -%>
+  <%- if current_user && current_user.is_superadmin? && @view.dataset? -%>
   <div class="formSection">
     <a class="expander expanded formHeader" href="#expand">
       <span class="icon"></span>

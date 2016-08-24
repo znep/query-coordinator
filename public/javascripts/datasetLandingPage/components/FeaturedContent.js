@@ -5,18 +5,23 @@ import { isUserAdminOrPublisher } from '../lib/user';
 
 export var FeaturedContent = React.createClass({
   propTypes: {
-    contentList: PropTypes.array.isRequired
+    contentList: PropTypes.array.isRequired,
+    isBlobby: PropTypes.bool
   },
 
   renderManagePrompt: function() {
+    var { isBlobby } = this.props;
+
     if (!isUserAdminOrPublisher()) {
       return null;
     }
 
+    var message = I18n.featured_content.manage_prompt[isBlobby ? 'message_blob' : 'message'];
+
     return (
       <div className="alert default manage-prompt">
         <span className="manage-prompt-message">
-          {I18n.featured_content.manage_prompt.message}
+          {message}
         </span>
 
         <button
@@ -30,6 +35,10 @@ export var FeaturedContent = React.createClass({
 
   renderFeaturedContent: function() {
     var { contentList } = this.props;
+
+    if (_.every(contentList, _.isNull)) {
+      return null;
+    }
 
     var widgets = _.map(_.compact(contentList), (featuredItem, i) =>
       <FeaturedItemWidget key={i} {...featuredItem} />
@@ -59,7 +68,10 @@ export var FeaturedContent = React.createClass({
 });
 
 function mapStateToProps(state) {
-  return _.pick(state.featuredContent, 'contentList');
+  return {
+    isBlobby: state.view.isBlobby,
+    contentList: state.featuredContent.contentList
+  };
 }
 
 export default connect(mapStateToProps)(FeaturedContent);

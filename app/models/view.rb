@@ -1368,7 +1368,7 @@ class View < Model
   end
 
   def has_landing_page?
-    dataset?
+    dataset? || is_blobby?
   end
 
   def visualization?

@@ -31,13 +31,13 @@ class PageSelector extends React.Component {
     let endPosition = maxIndex > totalGoalsCount ? totalGoalsCount : maxIndex;
 
     let prevAvailable = currentPage >= 1;
-    let prevProps = { className: classNames('page-change-icon', 'icon-arrow-left', { disabled: !prevAvailable }) };
+    let prevProps = { className: classNames('page-change-icon', 'page-previous', 'icon-arrow-left', { disabled: !prevAvailable }) };
     if (prevAvailable) {
       prevProps.onClick = this.handlePreviousPageClicked;
     }
 
     let nextAvailable = currentPage < numberOfPages - 1;
-    let nextProps = { className: classNames('page-change-icon', 'icon-arrow-right', { disabled: !nextAvailable }) };
+    let nextProps = { className: classNames('page-change-icon', 'page-previous', 'icon-arrow-right', { disabled: !nextAvailable }) };
     if (nextAvailable) {
       nextProps.onClick = this.handleNextPageClicked;
     }

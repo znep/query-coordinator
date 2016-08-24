@@ -63,6 +63,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       self.defineEphemeralObservableProperty('provenance', pageMetadata.provenance);
       self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
       self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);
+      self.defineEphemeralObservableProperty('ownerDisplayName', pageMetadata.ownerDisplayName);
 
       var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
 

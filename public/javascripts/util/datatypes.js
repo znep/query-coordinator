@@ -1799,6 +1799,7 @@ blist.namespace.fetch('blist.datatypes');
           createable: false,
           deleteable: false,
           nbeModifiable: true,
+          filterConditions: blist.filter.groups.blob,
           priority: 22
         },
 

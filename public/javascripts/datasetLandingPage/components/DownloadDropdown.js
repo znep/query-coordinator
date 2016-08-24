@@ -38,7 +38,18 @@ var DownloadDropdown = React.createClass({
 
     if (view.downloadOverride) {
       return (
-        <a href={view.downloadOverride} className="btn btn-simple btn-sm download">
+        <a href={view.downloadOverride} className="btn btn-simple btn-sm unstyled-link download">
+          {I18n.action_buttons.download}
+        </a>
+      );
+    }
+
+    if (view.isBlobby) {
+      return (
+        <a
+          href={`/api/file_data/${view.blobId}?filename=${view.blobFilename}`}
+          className="btn btn-simple btn-sm unstyled-link download"
+          target="_blank">
           {I18n.action_buttons.download}
         </a>
       );

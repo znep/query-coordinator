@@ -3,7 +3,7 @@ class BrowseController < ApplicationController
   include BrowseActions
 
   prepend_before_filter :check_chrome, :only => :show
-  before_filter :check_lockdown
+  before_filter :check_lockdown, :allow_frame_embedding
 
   skip_before_filter :require_user
   skip_before_filter :disable_frame_embedding, :only => :embed
@@ -63,6 +63,8 @@ class BrowseController < ApplicationController
       hide_view_types: true,
       suppress_dataset_creation: true
     })
+
+    render :layout => 'embedded_browse'
   end
 
   def select_georegion
@@ -75,6 +77,8 @@ class BrowseController < ApplicationController
       :suppress_dataset_creation => true,
       :admin => true
     )
+
+    render :layout => 'embedded_browse'
   end
 
   def domain_info
@@ -88,6 +92,11 @@ class BrowseController < ApplicationController
         }.to_json
       }
     end
+  end
+
+  # +before_filter+
+  def allow_frame_embedding
+    headers['X-Frame-Options'] = 'ALLOWALL'
   end
 
 end

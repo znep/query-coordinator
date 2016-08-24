@@ -1,66 +1,62 @@
 <% footer = @content['footer'] %>
 
-<%= form_tag update_site_chrome_path(anchor: {tab: :footer}), id: 'tab_form_footer', method: :put, remote: true do %>
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<%= render('site_chrome/tab_content/form_field',
+  :fields => [:footer, :logo, :src],
+  :translation => translations[:footer_logo]) %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:footer, :logo, :src],
-    translation: translations[:footer_logo]) %>
+<%= render('site_chrome/tab_content/form_field_pair',
+  :left => {
+    :fields => [:footer, :styles, :logo_height],
+    :translation => translations[:footer_logo_height]
+  },
+  :right => {
+    :fields => [:footer, :styles, :logo_width],
+    :translation => translations[:footer_logo_width]
+  }) %>
 
-  <%= render('site_chrome/tab_content/form_field_pair',
-    left: {
-      fields: [:footer, :styles, :logo_height],
-      translation: translations[:footer_logo_height]
-    },
-    right: {
-      fields: [:footer, :styles, :logo_width],
-      translation: translations[:footer_logo_width]
-    }) %>
+<%= render('site_chrome/tab_content/form_field',
+  :fields => [:locales, current_locale(suppress_locale = false), :footer, :site_name],
+  :translation => translations[:footer_display_name]) %>
 
-  <%= render('site_chrome/tab_content/form_field',
-    fields: [:locales, current_locale(suppress_locale = false), :footer, :site_name],
-    translation: translations[:footer_display_name]) %>
+<%= render('site_chrome/tab_content/form_field_pair',
+  :left => {
+    :fields => [:footer, :styles, :bg_color],
+    :translation => translations[:footer_background_color]
+  },
+  :right => {
+    :fields => [:footer, :styles, :fg_color],
+    :translation => translations[:footer_text_link_color]
+  }) %>
 
-  <%= render('site_chrome/tab_content/form_field_pair',
-    left: {
-      fields: [:footer, :styles, :bg_color],
-      translation: translations[:footer_background_color]
-    },
-    right: {
-      fields: [:footer, :styles, :fg_color],
-      translation: translations[:footer_text_link_color]
-    }) %>
+<%= render('list_of_links',
+  :link_count => 15,
+  :links => footer['links'],
+  :content_key => :footer,
+  :translations => translations) %>
 
-  <%= render('list_of_links',
-    link_count: 15,
-    links: footer['links'],
-    content_key: :footer,
-    translations: translations) %>
+<% copyright_notice_fields = [:footer, :copyright_notice] %>
 
-  <% copyright_notice_fields = [:footer, :copyright_notice] %>
+<%= render('checkbox',
+  :fields => copyright_notice_fields,
+  :translation => translations[:copyright_notice],
+  :additional_options => {
+    :onchange => 'toggleDisabledCopyrightText(this);'
+  }) %>
 
-  <%= render('checkbox',
-    fields: copyright_notice_fields,
-    translation: translations[:copyright_notice],
-    additional_options: {
-      onchange: 'toggleDisabledCopyrightText(this);'
-    }) %>
+<% copyright_notice_source_fields = [:locales, current_locale(suppress_locale = false), :footer,
+  :copyright_notice_source] %>
 
-  <% copyright_notice_source_fields = [:locales, current_locale(suppress_locale = false), :footer,
-    :copyright_notice_source] %>
+<section class="settings-group no-label">
+  <div class="settings-form">
+    <%= text_field_tag(form_field(copyright_notice_source_fields),
+      fetch_content(copyright_notice_source_fields),
+      id: 'copyright-notice-text', placeholder: translations[:copyright_notice_source][:placeholder],
+      disabled: !fetch_boolean(copyright_notice_fields)) %>
+  </div>
+  <aside><p><%= translations[:copyright_notice_source][:description] %></p></aside>
+</section>
 
-  <section class="settings-group no-label">
-    <div class="settings-form">
-      <%= text_field_tag(form_field(copyright_notice_source_fields),
-        fetch_content(copyright_notice_source_fields),
-        id: 'copyright-notice-text', placeholder: translations[:copyright_notice_source][:placeholder],
-        disabled: !fetch_boolean(copyright_notice_fields)) %>
-    </div>
-    <aside><p><%= translations[:copyright_notice_source][:description] %></p></aside>
-  </section>
-
-  <%= render('checkbox',
-    fields: [:footer, :powered_by],
-    translation: translations[:powered_by],
-    default_checked: true) %>
-<% end %>
+<%= render('checkbox',
+  :fields => [:footer, :powered_by],
+  :translation => translations[:powered_by],
+  :default_checked => true) %>

@@ -1,10 +1,11 @@
 # Admin interface to the custom-styled header/footer (aka site-chrome) settings
 class SiteChromeController < ApplicationController
+
   include ApplicationHelper # request_id
   include CommonSocrataMethods # forwardable_session_cookies
 
   # TODO: rename to before_action with Rails upgrade
-  before_filter :ensure_admin
+  before_filter :ensure_admin_or_superadmin
   before_filter :find_or_create_default_site_chrome
 
   def tab_sections
@@ -19,6 +20,9 @@ class SiteChromeController < ApplicationController
   def update
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
+    if params[:site_appearance]
+      @site_chrome.set_activation_state(params[:site_appearance])
+    end
 
     if @site_chrome.update_content(params[:stage] || :published, params[:content])
       flash[:notice] = 'Site theme updated'
@@ -32,16 +36,16 @@ class SiteChromeController < ApplicationController
       flash[:error] = "Update was unsuccessful because: #{@site_chrome.errors.inspect}"
       render 'edit', status: :unprocessable_entity
     else
-      flash[:error] = "Something went wrong, we're not sure what. Try re-saving."
+      flash[:error] = "Something went wrong, we're not sure what. Please try saving again."
       render 'edit', status: :internal_server_error
     end
   end
 
   private
 
-  def ensure_admin
+  def ensure_admin_or_superadmin
     if current_user.present?
-      render_forbidden unless is_admin?
+      render_forbidden unless current_user.is_administrator_or_superadmin?
     else
       redirect_to(login_url)
     end
@@ -57,4 +61,5 @@ class SiteChromeController < ApplicationController
       @content[key] ||= {}
     end
   end
+
 end

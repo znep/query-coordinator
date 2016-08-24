@@ -38,7 +38,7 @@ module DatasetLandingPageHelper
       :userId => current_user.try(:id) || 'N/A',
       :ownerId => @view.try(:owner).try(:id) || 'N/A',
       :userOwnsDataset => @view.owned_by?(current_user),
-      :socrataEmployee => current_user.try(:is_admin?) || false,
+      :socrataEmployee => current_user.try(:is_superadmin?) || false,
       :userRoleName => current_user.try(:roleName) || 'N/A',
       :viewId => @view.try(:id) || 'N/A',
       :email => current_user.try(:email).to_s
@@ -199,6 +199,11 @@ module DatasetLandingPageHelper
       :isPrivate => !@view.is_public?,
       :isUnpublished => @view.is_unpublished?,
       :isTabular => @view.is_tabular?,
+      :isBlobby => @view.is_blobby?,
+      :blobId => @view.blobId,
+      :blobFilename => @view.blobFilename,
+      :blobMimeType => @view.blobMimeType,
+      :blobType => @view.is_blobby? && @view.display.display_type,
       :gridUrl => data_grid_path(@view),
       :downloadOverride => @view.downloadOverride,
       :exportFormats => export_formats,
@@ -223,6 +228,7 @@ module DatasetLandingPageHelper
       :attributionLink => @view.attributionLink,
       :statsUrl => stats_url,
       :editMetadataUrl => edit_metadata_url,
+      :editUrl => edit_view_path(@view),
       :sortOrder => sort_order,
       :bootstrapUrl => bootstrap_url
     }

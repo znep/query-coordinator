@@ -16,7 +16,8 @@ bundle exec foreman start
 
 Running the Rails stack in development should be done with [foreman](https://github.com/ddollar/foreman).
 It will spawn a sidecar process running the [webpack dev server](#webpack),
-which allows for re-bundling and automatic reloading on code change.
+which allows for re-bundling and automatic reloading on code change. Examine the [`Procfile`](https://github.com/socrata/frontend/blob/master/Procfile)
+to see what processes will be started by foreman.
 
 ### Development Stack Setup
 
@@ -51,7 +52,55 @@ FRONTEND_WEBPACK_BUNDLES=admin,dataset-landing-page bundle exec foreman start
 
 ## Running the app _without_ the local stack
 
-See: https://github.com/socrata/docs/blob/master/connect_local_frontend_to_staging_services.md
+For detailed documentation see: [connect\_local\_frontend\_to\_staging\_services.md](https://github.com/socrata/docs/blob/master/connect_local_frontend_to_staging_services.md). _Out of date as of AWS migration on 8/19/2016._
+
+Most, but not all, services are discovered through the [`config/config.yml`](https://github.com/socrata/frontend/blob/master/config/config.yml) file. Below is a brief outline of the minimum required changes.
+
+### Core
+
+Under the `development` section of `config.yml`, set the `coreservice_uri` to the appropriate URI for the environment you're connecting to.
+For example, if you want to use the services in the RC environment, the URI would be `http://lb-vip.aws-us-west-2-staging.socrata.net:8081`.
+
+### Zookeeper
+
+Under the `development` section of `config.yml`, set the `zk_hosts` to the list of hosts providing Zookeeper services. In the RC environment
+this value is `'10.92.2.4:2181,10.92.2.5:2181,10.92.2.6:2181'`
+
+### Cetera
+
+Under the `development` section of `config.yml`, set the `cetera_host` to the appropriate URI for the environment you're connecting to.
+In the RC environment, this URI is `http://cetera.app.marathon.aws-us-west-2-rc.socrata.net`.
+
+##### Host Spoofing
+
+> Note: This approach is _only_ necessary if you wish to connect to Cetera in a different environment but you are _already running_ the
+> other required services locally and _not_ masquerading as a different domain (see Domain below). If you _are_ masquerading as a different
+> domain, then Cetera will perform catalog searches against that domain, and setting `CETERA_SPOOF_HOST` is redundant.
+
+In order for Cetera to function properly, you must also "spoof" the domain that Cetera will search when interacting with the catalog. You
+must set this domain using the `CETERA_SPOOF_HOST` environment variable before starting the frontend. The domain you spoof much be a valid
+domain in the environment you are connecting to. In the RC environment one might use `opendata-demo.rc-socrata.com` for example. One way
+to do this is shown below:
+
+    CETERA_SPOOF_HOST=opendata-demo.rc-socrata.com bundle exec rails s
+
+Or with foreman:
+
+    CETERA_SPOOF_HOST=opendata-demo.rc-socrata.com bundle exec foreman start
+
+### Domain
+
+In order to statisfy Core security checks, you must masquerade as a domain that exists in the environment you are connecting to. For example,
+in RC one might use `opendata-demo.rc-socrata.com`. In order to masquerade as this domain, one must set your host name to match. One of doing
+this is to add an alias to `/etc/hosts` for your loopback IP address entry. In this example, one would change the entry to match:
+
+    127.0.0.1	localhost opendata-demo.rc-socrata.com
+
+### Google Chrome
+
+Finally, in order to satisfy certain security requirements in Google Chrome, you must launch the application with extra arguments:
+
+    open -a Google\ Chrome --args --disable-web-security
 
 ## Dependencies
 

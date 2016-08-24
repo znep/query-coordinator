@@ -14,6 +14,30 @@ class Model
     self.check_time = Time.now.to_i
   end
 
+  def self.get(id, batch_id:nil, is_anon:false, timeout:60, **args)
+    path = "/#{service_name}.json?#{(args || {}).merge(:id => id).to_param}"
+
+    begin
+      result = CoreServer::Base.connection.get(:path => path, batch_id: batch_id, is_anon: is_anon, timeout: timeout, **args)
+    rescue => e
+      Rails.logger.debug("CoreServer::Base.connection.get_request ERROR: #{e.inspect}")
+      raise e
+    end
+
+    # This is to deal with Core returning the following HTML error response instead of JSON:
+    # <html><body><h1>503 Service Unavailable</h1> No server is available to handle this request. </body></html>
+    # Ref: https://socrata.airbrake.io/projects/6553/groups/1697160411655803097
+    begin
+      batch_id ? nil : result = parse(result)
+    rescue JSON::ParserError
+      if result.to_s =~ /service unavailable/i
+        result = nil
+      end
+    end
+
+    result
+  end
+
   # Override super.id and return the id of the model
   def id
     data['id']

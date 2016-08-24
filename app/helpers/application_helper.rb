@@ -11,6 +11,7 @@ module ApplicationHelper
   include SiteChromeHelper
 
 # RAILS OVERRIDE
+
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
   def translate(key, options = {})
     if I18n.locale == :nyan
@@ -22,6 +23,7 @@ module ApplicationHelper
   alias :t :translate
 
 # MODULES/FEATURES
+
   def module_available(name_or_set, &block)
     concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)
   end
@@ -78,10 +80,11 @@ module ApplicationHelper
   end
 
 # SITE CHROME (header and footer)
+
   def enable_site_chrome_admin_panel?
     # We will want to create a separate feature flag for this once we open the feature up to admins.
     # Currently we always show it, but only to superadmins.
-    !!current_user.try(:is_admin?)
+    !!current_user.try(:is_superadmin?)
   end
 
   # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.
@@ -110,6 +113,7 @@ module ApplicationHelper
   end
 
 # PAGE-HEADER
+
   def get_favicon_tag
     if enable_site_chrome?
       site_chrome_favicon_tag
@@ -249,7 +253,8 @@ module ApplicationHelper
     end
   end
 
-# styles
+# STYLES
+
   def should_render_individual_styles?
     Rails.env.development? && FeatureFlags.derive(@view, request).use_merged_styles != true
   end
@@ -290,22 +295,23 @@ module ApplicationHelper
     REVISION_NUMBER || Rails.env
   end
 
-  def include_webpack_bundle(entrypoint)
+  def include_webpack_bundle(resource)
+    if !FeatureFlags.derive(nil, request).prefer_webpack && resource =~ /open\-data/
+      return include_javascripts(File.basename(resource, File.extname(resource)))
+    end
+
     if Rails.configuration.webpack[:use_dev_server]
-      src = "/javascripts/webpack/#{entrypoint}"
+      src = "/javascripts/webpack/#{resource}"
     else
       # use compiled asset
-      src =
-        if Rails.configuration.webpack[:use_manifest]
-          manifest = Rails.configuration.webpack[:asset_manifest]
-          filename = manifest[entrypoint]
-
-          "build/#{filename}"
-        else
-          "build/#{entrypoint}"
-        end
+      src = if Rails.configuration.webpack[:use_manifest]
+        manifest = Rails.configuration.webpack[:asset_manifest]
+        "build/#{manifest[resource]}"
+      else
+        "build/#{entrypoint}"
+      end
     end
-    javascript_include_tag src
+    javascript_include_tag(src)
   end
 
 # TOP OF PAGE
@@ -404,6 +410,13 @@ module ApplicationHelper
     end
 
     return flash_obj
+  end
+
+  # Relies on the tools/postinstall.sh to symlink stylesheets into /public.
+  # See also public/javascripts/site_appearance/main.js
+  # See also config/webpack/site-appearance.config.js
+  def socrata_styleguide
+    stylesheet_link_tag('/stylesheets/socrata-components/css/styleguide.min.css', media: 'all')
   end
 
 # DATE HELPERS
@@ -841,14 +854,23 @@ module ApplicationHelper
   end
 
   def render_noscript(id)
-    return ('<noscript><div class="noscript-notification">' +
-              '<h4>You need to enable Javascript in your web browser to interact with the Data Lens experience.</h4>' +
-              "<p>You can alternatively explore the data using the <a href=\"#{get_alt_dataset_link(id)}\">accessible version</a> of this Data Lens page.</p>" +
-            '</div></noscript>').html_safe
+    noscript = <<-eos
+      <noscript>
+        <div class="noscript-notification">
+          <h4>You need to enable Javascript in your web browser to interact with the Data Lens experience.</h4>
+          <p>
+            You can alternatively explore the data using the
+            <a href="#{get_alt_dataset_link(id)}">accessible version</a>
+            of this Data Lens page.
+          </p>
+        </div>
+      </noscript>
+    eos
+    noscript.html_safe
   end
 
   def current_user_can_create_story?
-    CurrentDomain.feature_flags[:stories_enabled] && current_user.has_right?(UserRights::CREATE_STORY)
+    FeatureFlags.derive.stories_enabled && current_user.has_right?(UserRights::CREATE_STORY)
   end
 
   # ONCALL-3032: Spam e-mail sent via the Socrata platform

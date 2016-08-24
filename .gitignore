@@ -22,6 +22,7 @@ public/geodata
 public/javascripts/dist
 public/packages
 public/stylesheets/socrata-styleguide
+public/stylesheets/socrata-components
 public/stylesheets/socrata-visualizations
 REVISION
 socrata-node/DEPEND

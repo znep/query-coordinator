@@ -264,11 +264,11 @@ export function updateHref(href) {
 }
 
 
-const MD_OPERATION_DISPLAY_TYPE = 'MD_OPERATION_DISPLAY_TYPE';
-export function setDisplayType(operationName) {
+const MD_UPDATE_DISPLAY_TYPE = 'MD_UPDATE_DISPLAY_TYPE';
+export function updateDisplayType(operation) {
   return {
-    type: MD_OPERATION_DISPLAY_TYPE,
-    operation: operationName
+    type: MD_UPDATE_DISPLAY_TYPE,
+    operation: operation
   };
 }
 
@@ -345,7 +345,7 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         ...contents,
         contactEmail: action.newContactEmail
       };
-    case MD_OPERATION_DISPLAY_TYPE:
+    case MD_UPDATE_DISPLAY_TYPE:
       return {
         ...contents,
         displayType: displayTypeFor(action.operation)
@@ -361,11 +361,15 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 }
 
 function displayTypeFor(operation) {
-  return {
-    'LinkToExternal': 'href'
-  }[operation] || 'draft';
+  switch (operation) {
+    case 'LinkToExternal':
+      return 'href';
+    case 'CreateFromScratch':
+      return 'tabular';
+    default:
+      return 'draft';
+  }
 }
-
 
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
@@ -593,10 +597,9 @@ function licenseFind(licenseName) {
   });
 }
 
-function renderHref(metadata, validationErrors, onMetadataAction) {
-  var {contents: {displayType}} = metadata;
+function renderHref(metadata, operation, validationErrors, onMetadataAction) {
   const I18nPrefixed = I18n.screens.edit_metadata;
-  if (displayType === 'href') {
+  if (operation === 'LinkToExternal') {
     return (<div>
       <div className="line clearfix">
         <label className="required">{I18nPrefixed.dataset_url}</label>
@@ -722,7 +725,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
       {renderFlashMessageImportError(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
-        {renderHref(metadata, validationErrors, onMetadataAction)}
+        {renderHref(metadata, operation, validationErrors, onMetadataAction)}
 
         <div className="generalMetadata">
           <div className="line clearfix">
@@ -871,6 +874,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
 
         onNext={(() => {
           onMetadataAction(updateNextClicked());
+          onMetadataAction(updateDisplayType(operation));
           if (isMetadataValid(metadata, operation)) {
             onMetadataAction(Server.saveMetadataThenProceed());
           }

@@ -1,5 +1,7 @@
 module CoreServer
+
   class Connection
+
     cattr_accessor :cache
     cattr_accessor :env
     cattr_accessor :cookie_name
@@ -47,7 +49,11 @@ module CoreServer
       end
     end
 
-    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, batch_id = nil,
+    def get(path:, batch_id:nil, is_anon:false, timeout:60, **headers)
+      get_request(path, headers.stringify_keys!, batch_id, is_anon, timeout)
+    end
+
+    def create_request(path, payload = '{}', custom_headers = {}, cache_req = false, batch_id = nil,
                       is_anon = false, timeout = 60)
       # Check true/false for legacy
       if !batch_id.nil? && batch_id != true && batch_id != false
@@ -106,7 +112,8 @@ module CoreServer
       end
     end
 
-  protected
+    protected
+
     def log(request)
       # Useful if you want to find out why a request is being made
       # begin
@@ -131,7 +138,8 @@ module CoreServer
       raise e
     end
 
-  private
+    private
+
     def flush_batch_queue(batch_id)
       if !@batch_queue[batch_id].empty?
         batches = @batch_queue[batch_id]
@@ -270,5 +278,7 @@ module CoreServer
       count, @request_count = @request_count, {}
       count
     end
+
   end
+
 end

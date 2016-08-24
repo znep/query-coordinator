@@ -24,17 +24,37 @@ module.exports = function ManageLensDialogOwnershipController(
     return 'ManageLensDialogOwnershipController';
   };
 
+  // determine whether the current user is allowed to access this control
+  // and whether the necessary service for owner change is available
+  $scope.isUserSearchAvailable = true;
+  var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
+    return _.includes(user.rights, UserRights.CHOWN_DATASETS);
+  });
+  var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
+  var hasPermission$ = Rx.Observable.combineLatest(
+    isUserPermitted$,
+    isUserSearchAvailable$,
+    function(isUserPermitted, isUserSearchAvailable) {
+      return isUserPermitted && isUserSearchAvailable;
+    }
+  );
+  $scope.$bindObservable('hasPermission', hasPermission$);
+
   // Observe non-error changes to the input text.
   var suggestionInput$ = $scope.$observe('ownerInput').filter(function(input) {
     return input !== I18n.manageLensDialog.ownership.ownerUnavailable;
   });
 
   // Map input text changes to UserSearchService requests.
-  var suggestionsRequests$ = suggestionInput$.
+  var suggestionsRequests$ = hasPermission$.
+    filter(_.identity).
+    flatMapLatest(suggestionInput$).
     filter(_.isPresent).
     debounce(300, Rx.Scheduler.timeout).
     map(function(inputValue) {
-      return UserSearchService.results$(inputValue);
+      if ($scope.hasPermission) {
+        return UserSearchService.results$(inputValue);
+      }
     }).
     merge(
       // Clear out any suggestions if the user clears the input box.
@@ -202,28 +222,10 @@ module.exports = function ManageLensDialogOwnershipController(
     $scope.page.set('ownerId', nextOwnerId);
   };
 
-  // determine whether the current user is allowed to access this control
-  // and whether the necessary service for owner change is available
-  $scope.isUserSearchAvailable = true;
-  var isUserPermitted$ = UserSessionService.getCurrentUser$().map(function(user) {
-    return _.includes(user.rights, UserRights.CHOWN_DATASETS);
-  });
-  var isUserSearchAvailable$ = $scope.$observe('isUserSearchAvailable');
-  var hasPermission$ = Rx.Observable.combineLatest(
-    isUserPermitted$,
-    isUserSearchAvailable$,
-    function(isUserPermitted, isUserSearchAvailable) {
-      return isUserPermitted && isUserSearchAvailable;
-    }
-  );
-  $scope.$bindObservable('hasPermission', hasPermission$);
-
   // capture the original owner and initialize input field
   var currentOwnerId = $scope.page.getCurrentValue('ownerId');
   var nextOwnerId = currentOwnerId;
-  UserSearchService.find(currentOwnerId).then(function(results) {
-    $scope.ownerInput = _.filter(results, {id: currentOwnerId})[0].displayName;
-  })['catch'](disableInput);
+  $scope.ownerInput = $scope.page.getCurrentValue('ownerDisplayName');
 
   // initialize component structure
   $scope.components.ownership = {

@@ -23,24 +23,16 @@ module.exports = function UserSearchService($http, $q, rx) {
       limit: 25
     });
 
-    // To work around deficiencies in the backend service,
-    // we can escape characters that can be interpreted specially by Lucene.
-    // Some of the characters are correctly escaped already, but not all.
-    // The character group below should be adjusted as problem cases arise.
-    // (Or, if the backend service improves, we can remove characters!)
-    query = query.replace(/([?])/g, '\\$1');
-
     var config = httpConfig.call(this, {
       headers: {'Cache-Control': 'nocache'},
       airbrakeShouldIgnore404Errors: true
     });
 
-    var url = $.baseUrl('/api/search/users.json');
-    url.searchParams.set('q', query + '*');
+    var url = $.baseUrl('/cetera/users');
     url.searchParams.set('limit', options.limit);
+    url.searchParams.set('q', query + '*');
 
     return $http.get(url.href, config).then(function(fuzzySearchResponse) {
-
       // If we got a flawed success response,
       // something in the backend service is likely to have generated an error.
       if (_.isEmpty(fuzzySearchResponse.data) && !_.isArray(fuzzySearchResponse.data)) {
@@ -62,9 +54,20 @@ module.exports = function UserSearchService($http, $q, rx) {
         // and resolve the promise chain.
         var exactResults = exactSearchResponse.data.results || [];
 
-        return _.uniqBy([].concat(fuzzyResults, exactResults), 'id');
+        var combinedResults = _.uniqBy([].concat(fuzzyResults, exactResults), 'id');
+        return combinedResults.map(injectDisplayName);
       }, reject);
     }, reject);
+  }
+
+  // Note that this is mimicking the displayName that would have been returned by Cly.
+  // Cetera currently returns screen_name rather than displayName from its users endpoint.
+  function injectDisplayName(result) {
+    var screenName = _.get(result, 'screen_name', null);
+
+    return _.merge(result, {
+      displayName: _.isEmpty(screenName) ? '-' : screenName
+    });
   }
 
   function results$(query, options) {

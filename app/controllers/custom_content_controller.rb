@@ -118,6 +118,7 @@ class CustomContentController < ApplicationController
     @edit_mode = params['_edit_mode'] == 'true'
 
     @page = DataslateRouting.for(params[:path], { ext: params[:ext].try(:downcase) })
+    @vars = @page.try(:[], :vars)
     @page = @page.try(:[], :page)
 
     full_path = "/#{params[:path]}"

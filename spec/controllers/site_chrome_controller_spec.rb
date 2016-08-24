@@ -103,29 +103,25 @@ describe SiteChromeController do
 
   describe 'index' do
     it 'is unimplemented' do
-      expect { get :index }.
-        to raise_error(ActionController::UrlGenerationError)
+      expect { get :index }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'show' do
     it 'is unimplemented' do
-      expect { get :show, id: 123 }.
-        to raise_error(ActionController::UrlGenerationError)
+      expect { get :show, id: 123 }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'create' do
     it 'is unimplemented' do
-      expect { post :create, site_chrome: {} }.
-        to raise_error(ActionController::UrlGenerationError)
+      expect { post :create, site_chrome: {} }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 
   describe 'destroy' do
     it 'is unimplemented' do
-      expect { delete site_chrome: {id: 456} }.
-        to raise_error(ActionController::UrlGenerationError)
+      expect { delete site_chrome: {id: 456} }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 
@@ -133,14 +129,16 @@ describe SiteChromeController do
 
   def stub_normal_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(false)
+    allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(false)
+    allow(user_double).to receive(:is_superadmin?).and_return(false)
     allow_any_instance_of(SiteChromeController).to receive(:current_user).and_return(user_double)
   end
 
   # a la spec/controllers/administration_controller/spec.rb
   def stub_superadmin_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(true)
+    allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(true)
+    allow(user_double).to receive(:is_superadmin?).and_return(true)
     allow_any_instance_of(SiteChromeController).to receive(:current_user).and_return(user_double)
   end
 

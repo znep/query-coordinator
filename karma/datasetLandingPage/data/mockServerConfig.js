@@ -1,6 +1,7 @@
 export default {
   environment: 'production',
   currentUser: null,
+  domain: 'localhost',
   featureFlags: {
     csrfToken: 'supersecuretoken',
     defaultToDatasetLandingPage: true,

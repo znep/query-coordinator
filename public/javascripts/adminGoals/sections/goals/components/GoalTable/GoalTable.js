@@ -37,13 +37,13 @@ class GoalTable extends React.Component {
     const perPageSelectorTitle = translations.getIn(['admin', 'listing', 'rows_per_page']);
 
     return (
-      <div>
-        <table className="table table-borderless op-admin-table">
+      <div className="goal-table">
+        <table className="table table-borderless table-discrete op-admin-table">
           <GoalTableHead />
           <GoalTableBody />
         </table>
         { loadInProgress ? this.renderLoadingSpinner() : null }
-        <div>
+        <div className="footer">
           <PageSelector />
           <Components.RowsPerPageSelector
             onChange={this.handleOnRowsPerPageChanged}

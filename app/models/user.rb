@@ -171,16 +171,19 @@ class User < Model
     CoreServer::Base.connection.multipart_post_file("/users/#{id}/profile_images", file)
   end
 
-  def public_blists
-    View.find_for_user(id).reject { |v| !v.is_public? || v.owner.id != id }
-  end
-
   def is_owner?(view)
     view.owner.id == id
   end
 
-  def is_admin?
+  # Recently renamed from is_admin? to avoid confusion. Renamed in the Javascript code as well.
+  def is_superadmin?
     flag?('admin')
+  end
+
+  # An "administrator" in this context, means a customer who is a domain administrator that can change
+  # features or attributes on the customer domain itself, such as Site Appearance, and so on.
+  def is_administrator_or_superadmin?
+    role_name == 'administrator' || is_superadmin?
   end
 
   def has_right?(right)

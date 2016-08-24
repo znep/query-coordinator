@@ -348,7 +348,6 @@ describe('LocationColumns', () => {
   describe('reducer', () => {
     it(`Check initial configuration of locationColumns`, () => {
       const expected = {
-        type: 'MultipleCols',
         isMultiple: true,
         singleSource: '',
         street: '',

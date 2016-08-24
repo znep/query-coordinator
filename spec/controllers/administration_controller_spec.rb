@@ -487,25 +487,58 @@ describe AdministrationController do
     end
 
   end
+
+  describe 'site appearance panel' do
+
+    context 'show_site_chrome_admin_panel helper method' do
+      context 'as an anonymous user' do
+        it 'should return false' do
+          allow(subject).to receive(:current_user).and_return(nil)
+          expect(subject.show_site_chrome_admin_panel?).to eq(false)
+        end
+      end
+
+      context 'as a non-administrator' do
+        it 'should return false' do
+          user_double = double(User)
+          allow(user_double).to receive(:role_name).and_return('viewer')
+          allow(subject).to receive(:current_user).and_return(user_double)
+          expect(subject.show_site_chrome_admin_panel?).to eq(false)
+        end
+      end
+
+      context 'as an administrator or superadmin' do
+        it 'should return true' do
+          user_double = double(User)
+          allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(true)
+          allow(subject).to receive(:current_user).and_return(user_double)
+          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        end
+      end
+
+    end
+
+  end
+
   private
 
   def stub_admin_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(false)
+    allow(user_double).to receive(:is_superadmin?).and_return(false)
     allow(user_double).to receive(:roleName).and_return('administrator')
     allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end
 
   def stub_superadmin_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(true)
+    allow(user_double).to receive(:is_superadmin?).and_return(true)
     allow(user_double).to receive(:roleName).and_return('viewer')
     allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end
 
   def stub_non_admin_user
     user_double = double(User)
-    allow(user_double).to receive(:is_admin?).and_return(false)
+    allow(user_double).to receive(:is_superadmin?).and_return(false)
     allow(user_double).to receive(:roleName).and_return('viewer')
     allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
   end

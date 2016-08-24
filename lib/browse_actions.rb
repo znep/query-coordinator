@@ -95,7 +95,7 @@ module BrowseActions
     topic_chop = get_facet_cutoff(:topic)
 
     if using_cetera?
-      all_tags = Cetera.get_tags(forwardable_session_cookies, request_id(request)).results
+      all_tags = Cetera::Utils.get_tags(forwardable_session_cookies, request_id(request)).results
     else
       all_tags = Tag.find(:method => 'viewsTags')
     end
@@ -437,7 +437,7 @@ module BrowseActions
             # @profile_search_method is set in the profile controller
             if @profile_search_method
               if using_cetera_profile_search?
-                Cetera.public_send(
+                Cetera::Utils.public_send(
                   @profile_search_method,
                   browse_options[:search_options],
                   forwardable_session_cookies(request.cookies),
@@ -447,7 +447,7 @@ module BrowseActions
                 Clytemnestra.search_views(browse_options[:search_options])
               end
             else
-              Cetera.public_send(
+              Cetera::Utils.public_send(
                 :search_views,
                 browse_options[:search_options],
                 forwardable_session_cookies(request.cookies),

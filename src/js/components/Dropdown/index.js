@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -29,21 +30,9 @@ export default React.createClass({
   },
 
   getInitialState() {
-    let selectedOption;
-    const { value, options } = this.props;
-
-    for (let i = 0; i < options.length; i++) {
-      const option = options[i];
-
-      if (option.value === value) {
-        selectedOption = option;
-        break;
-      }
-    }
-
     return {
       highlightedOption: null,
-      selectedOption: selectedOption || null,
+      selectedOption: this.getSelectedOption(this.props),
       focused: false,
       opened: false
     };
@@ -53,6 +42,12 @@ export default React.createClass({
     window.addEventListener('scroll', this.onWheel);
     window.addEventListener('wheel', this.onWheel);
     window.addEventListener('resize', this.onWheel);
+  },
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectedOption: this.getSelectedOption(nextProps)
+    });
   },
 
   componentWillUnmount() {
@@ -158,6 +153,11 @@ export default React.createClass({
 
   onMouseDownOption(event) {
     event.preventDefault();
+  },
+
+  getSelectedOption(props) {
+    const { value, options } = props;
+    return _.find(options, { value }) || null;
   },
 
   moveToNextOption() {

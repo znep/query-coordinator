@@ -1661,7 +1661,7 @@ en:
       sdp_templates: Data Player Templates
       title: Manage Site Configuration
       users: Users
-      goal_management_preview: Goal Management Preview
+      goal_management_preview: Goal Management
     measure:
       end_progress:
         bad: Did not meet target
@@ -1853,7 +1853,7 @@ en:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
       preview_bar:
         back_to_configuration: Back to Configuration
-        performance_goal_management_preview: Performance Goal Management Preview
+        performance_goal_management_preview: Performance Goal Management
         learn_more: Learn More
         feedback: Feedback
       feedback_flannel:

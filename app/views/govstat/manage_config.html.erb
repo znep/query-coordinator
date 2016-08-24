@@ -20,8 +20,10 @@
       links: [
         { icon: 'users', translateKey: 'users', href: '/admin/users', right: UserRights::MANAGE_USERS },
         { icon: 'linecharts', translateKey: 'analytics', href: '/admin/analytics' },
-        { icon: 'checkclipboard', translateKey: 'goal_management_preview', href: '/admin/goals' }
-      ]
+        (if FeatureFlags.value_for(:open_performance_enable_goal_management_admin_pane, request: request)
+         { icon: 'checkclipboard', translateKey: 'goal_management_preview', href: '/admin/goals' }
+         end)
+      ].compact
     }, {
       title: t("#{prefix}.data_management"),
       color: '#d97925',

@@ -1749,6 +1749,7 @@ en:
         bad: Did not meet target
       subheadline: This goal is measured by tracking {0} in {1}.
     admin:
+      page_title: Goal Management
       export:
         info_box:
           ok: OK
@@ -1765,7 +1766,6 @@ en:
         goal_status: Goal Status
         dashboard: Dashboard
         manage_on_goal_page: Manage on Goal Page
-        view_dashboard: View Dashboard
         quick_edit: Quick Edit
         goal_page: Manage On Goal Page
         default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>

@@ -22,7 +22,7 @@ class GoalsPage extends React.Component {
     const { translations, isBulkEditFormVisible, isQuickEditFormVisible } = this.props;
 
     return (
-      <div>
+      <div className="goals-page">
         <div className="table-top">
           <h1>
             { translations.getIn(['admin', 'manage_performance_goals']) }

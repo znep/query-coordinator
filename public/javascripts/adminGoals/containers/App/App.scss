@@ -25,14 +25,14 @@
 
   .icon-external {
     margin-left: 5px;
-    display: none;
+    visibility: hidden;
   }
 
   &:hover {
     text-decoration: underline;
 
     .icon-external {
-      display: initial;
+      visibility: visible;
     }
   }
 }
@@ -142,7 +142,7 @@
 }
 
 .bulk-actions {
-  margin: 16px;
+  margin: 16px 3px 0 0;
   overflow: auto;
 
   .btn-group {
@@ -197,6 +197,11 @@ a.btn {
   justify-content: space-between;
 
   h1 {
-    margin: 16px;
+    font-weight: 400;
   }
+}
+
+.goals-page {
+  width: 98%;
+  margin: 0 auto;
 }

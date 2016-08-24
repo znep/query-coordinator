@@ -84,7 +84,12 @@ class DatasetLandingPage
   def add_featured_content(uid, featured_item, cookie_string, request_id)
     path = "/views/#{uid}/featured_content.json"
     view = JSON.parse(CoreServer::Base.connection.create_request(path, featured_item))
-    image_url = view.get_preview_image_url(cookie_string, request_id)
+    image_url = nil
+
+    if view['contentType'] == 'internal'
+      featured_view = View.set_up_model(view['featuredView'])
+      image_url = featured_view.get_preview_image_url(cookie_string, request_id)
+    end
 
     format_featured_item(view, image_url)
   end

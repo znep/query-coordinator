@@ -103,6 +103,15 @@ features that will be used to increase understanding and collaboration.  Our doc
 standards can be found in [this Google
 Doc](https://docs.google.com/document/d/1dAU1QbonSKNob1o4FvDHiJUfRVgGZl6wCmEybwHVzmU/edit#heading=h.e5cwa92crct).
 
+### Naming Conventions
+
+Use the following rules for naming JavaScript files and directories:
+
+- If the file or directory deals with nodejs, npm, or is tooling written in JavaScript, use
+  kebab-case.
+- If the file or directory is application code designed to be run in the browser, use camelCase for
+  it, with the exception that if it exports a class use StudlyCase.
+
 Dependencies
 ---
 

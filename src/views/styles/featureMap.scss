@@ -3,7 +3,7 @@
   width: 100%;
   height: 100%;
   font-size: 14px;
-  background-color: #ccc;
+  background-color: #fff;
 }
 
 .feature-map {
@@ -50,6 +50,10 @@
 
 .feature-map-locate-user-btn:hover {
   background-color: #f4f4f4;
+}
+
+.leaflet-container {
+  background-color: #fff !important;
 }
 
 .leaflet-container ~ .feature-map-locate-user-btn {

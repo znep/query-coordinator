@@ -190,6 +190,8 @@ describe('SvgRegionMap jQuery component', function() {
           stubRegionMap = sinon.stub().returns({
             render: _.noop,
             renderError: _.noop,
+            showBusyIndicator: _.noop,
+            hideBusyIndicator: _.noop,
             destroy: _.noop
           });
 
@@ -202,7 +204,7 @@ describe('SvgRegionMap jQuery component', function() {
           revertVisualization();
         });
 
-        it('invokes socrata.visualization.ChoroplethMap', function() {
+        it('invokes $.fn.socrataSvgRegionMap', function() {
           $container.socrataSvgRegionMap(regionMapVif);
           assert.isTrue(stubRegionMap.called);
         });

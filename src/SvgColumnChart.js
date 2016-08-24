@@ -90,7 +90,9 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function updateData(newVif) {
+
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+    visualization.showBusyIndicator();
 
     $.fn.socrataSvgColumnChart.validateVif(newVif).then(() => {
       const dataRequests = newVif.
@@ -119,6 +121,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
             var overMaxRowCount;
 
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+            visualization.hideBusyIndicator();
 
             overMaxRowCount = dataResponses.
               some(

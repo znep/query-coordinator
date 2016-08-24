@@ -116,6 +116,8 @@ describe('Table', function() {
           this.destroy = _.noop;
           this.render = tableRenderSpy;
           this.renderError = tableRenderErrorSpy;
+          this.showBusyIndicator = _.noop;
+          this.hideBusyIndicator = _.noop;
         }
       });
 

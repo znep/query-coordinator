@@ -111,6 +111,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
       newVif = _.cloneDeep(newVif);
 
       $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+      visualization.showBusyIndicator();
 
       const dataRequests = newVif.
         series.
@@ -138,6 +139,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
             var overMaxRowCount;
 
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+            visualization.hideBusyIndicator();
 
             overMaxRowCount = dataResponses.
               some(

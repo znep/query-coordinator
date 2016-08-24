@@ -445,6 +445,8 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
     var featureExtentRequest;
     var soqlQueryRequest;
 
+    visualization.showBusyIndicator();
+
     utils.assertHasProperties(
       vifToRender,
       'configuration.computedColumnName',
@@ -613,6 +615,7 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
             }).
             then(function(data) {
 
+              visualization.hideBusyIndicator();
               visualization.render(vifToRender, data);
               lastRenderedVif = vifToRender;
             }).

@@ -255,6 +255,8 @@ $.fn.socrataTable = function(originalVif) {
       return visualization.renderError();
     }
 
+    visualization.hideBusyIndicator();
+
     pager.render(computePagerOptions());
     visualization.render(renderState.vif, renderState.fetchedData);
   }
@@ -589,6 +591,8 @@ $.fn.socrataTable = function(originalVif) {
           updateState(newState);
         })['catch'](handleSetDataQueryError);
     }
+
+    visualization.showBusyIndicator();
 
     if (order.length !== 1) {
       return Promise.reject(

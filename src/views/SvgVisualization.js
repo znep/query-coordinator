@@ -201,13 +201,26 @@ function SvgVisualization($element, vif) {
         ));
     }
 
-    self.$container.addClass('visualization-error');
+    self.
+      $container.
+      removeClass('visualization-busy').
+      addClass('visualization-error');
   };
 
   this.clearError = function() {
 
     self.$container.find('.error-message').text('');
     self.$container.removeClass('visualization-error');
+  };
+
+  this.showBusyIndicator = function() {
+
+    self.$container.addClass('visualization-busy');
+  };
+
+  this.hideBusyIndicator = function() {
+
+    self.$container.removeClass('visualization-busy');
   };
 
   this.showViewSourceDataLink = function() {
@@ -452,6 +465,10 @@ function SvgVisualization($element, vif) {
               $('<div>', {'class': 'error-container error light'}).
                 append([
                   $('<span>', {'class': 'error-message text'})
+                ]),
+              $('<div>', {'class': 'busy-indicator-container'}).
+                append([
+                  $('<span>', {'class': 'busy-indicator'})
                 ])
             ])
         );

@@ -248,14 +248,14 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
             type="text"
             className="columnName"
             title={I18nPrefixed.name_this_col}
-            value={resultColumn.name}
-            onChange={(event) => dispatchUpdate(updateColumnName(event.target.value))} />
+            defaultValue={resultColumn.name}
+            onBlur={(event) => dispatchUpdate(updateColumnName(event.target.value))} />
         </div>
         <div className="columnTypeCell">
           <select
             className="columnTypeSelect"
-            value={resultColumn.chosenType}
-            onChange={(event) => dispatchUpdate(updateColumnType(event.target.value))}>
+            defaultValue={resultColumn.chosenType}
+            onBlur={(event) => dispatchUpdate(updateColumnType(event.target.value))}>
             {
               importableTypes.map(([typeName, humanReadableName]) => (
                 <option value={typeName} key={typeName}>{humanReadableName}</option>
@@ -268,8 +268,8 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
           <div className="columnSourceCell">
             <select
               className="columnTypeSelect"
-              value={nameAndValueForColumnSource(resultColumn.columnSource).value}
-              onChange={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
+              defaultValue={nameAndValueForColumnSource(resultColumn.columnSource).value}
+              onBlur={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
               {
                 sourceOptions.map((sourceOption, idx) => {
                   const {name, value} = nameAndValueForColumnSource(sourceOption);
@@ -393,8 +393,8 @@ function ViewCompositeColumnComponents({ components, sourceOptions, dispatch }) 
               <input
                 type="text"
                 className="staticSourceText"
-                value={component}
-                onChange={(evt) => dispatch(updateComponent(componentIdx, evt.target.value))} />
+                defaultValue={component}
+                onBlur={(evt) => dispatch(updateComponent(componentIdx, evt.target.value))} />
               : null
             }
           </li>
@@ -448,11 +448,11 @@ function ViewTransforms({ transforms, dispatchUpdate }) {
                 <label className="findTextLabel">{I18nTransform.find}</label>
                 <input
                   type="text" className="findText" defaultValue={transform.findText}
-                  onChange={(event) => dispatchUpdate(updateTransform(idx, {...transform, findText: event.target.value}))} />
+                  onBlur={(event) => dispatchUpdate(updateTransform(idx, {...transform, findText: event.target.value}))} />
                 <label className="replaceTextLabel">{I18nTransform.replace}</label>
                 <input
                   type="text" className="replaceText" defaultValue={transform.replaceText}
-                  onChange={(event) => dispatchUpdate(updateTransform(idx, {...transform, replaceText: event.target.value}))} />
+                  onBlur={(event) => dispatchUpdate(updateTransform(idx, {...transform, replaceText: event.target.value}))} />
                 <input
                   type="checkbox" className="caseSensitive"
                   defaultChecked={transform.caseSensitive}

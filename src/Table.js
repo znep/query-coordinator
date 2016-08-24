@@ -404,7 +404,9 @@ $.fn.socrataTable = function(originalVif) {
   }
 
   function handleRenderVif(event) {
-    const newVif = _.cloneDeep(event.originalEvent.detail);
+    const newVif = VifHelpers.migrateVif(
+      _.cloneDeep(event.originalEvent.detail)
+    );
 
     // If we are asked to re-render the same vif we don't need to do anything
     // at all.

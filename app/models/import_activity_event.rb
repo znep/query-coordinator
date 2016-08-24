@@ -1,5 +1,5 @@
 class ImportActivityEvent
-  include ActivityFeedHelper
+  include JobsHelper
 
   def initialize(data)
     @data = data

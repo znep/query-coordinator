@@ -1,6 +1,6 @@
-var adminActivityFeedShowScreen = require('screens/admin-activity-feed-show');
+var adminShowJobScreen = require('screens/admin-show-job');
 
-describe('adminActivityFeedJobScreen', function() {
+describe('adminShowJobScreen', function() {
 
   describe('replaceTimestamps', function() {
 
@@ -19,7 +19,7 @@ describe('adminActivityFeedJobScreen', function() {
         </div>
       `);
 
-      adminActivityFeedShowScreen.replaceTimestamps($testDom);
+      adminShowJobScreen.replaceTimestamps($testDom);
 
       expect($testDom.find('.result-time-stamp.time-stamp span')[0].innerText).
           to.equal(moment.unix(testTimestampEpochSecs).format('D MMM YYYY [at] HH:mm:ss Z'));

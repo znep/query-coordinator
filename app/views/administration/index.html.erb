@@ -118,8 +118,8 @@
     <%- end -%>
     <%- if FeatureFlags.derive(nil, request).show_admin_processes &&
             CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
-      <li class="activity-feed">
-        <%= admin_nav_link_to t("#{prefix}.jobs"), :controller => '/administration/activity_feed', :action => 'index' %>
+      <li class="jobs">
+        <%= admin_nav_link_to t("#{prefix}.jobs"), :controller => '/administration', :action => 'jobs' %>
         <span class="description">
           <%= t("#{prefix}.jobs_description") %>
         </span>

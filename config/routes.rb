@@ -126,17 +126,8 @@ Rails.application.routes.draw do
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'
       get :metadata, :as => 'metadata_administration'
-
-      scope :controller => 'administration/activity_feed', :path => '/jobs' do
-        get '', to: redirect('/admin/activity_feed')
-        get '/:id', to: redirect('/admin/activity_feed/%{id}')
-      end
-
-      scope :controller => 'administration/activity_feed', :path => '/activity_feed' do
-        get '', :action => :index, :as => 'activity_feed_administration'
-        get '/:id', :action => 'show'
-      end
-
+      get :jobs
+      get 'jobs/:id', :action => 'show_job'
       get :views
       put :save_featured_views
       get :goals

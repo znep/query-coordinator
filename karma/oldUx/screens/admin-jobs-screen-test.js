@@ -1,6 +1,6 @@
-var adminActivityFeedScreen = require('screens/admin-activity-feed');
+var adminJobsScreen = require('screens/admin-jobs');
 
-describe('adminActivityFeedScreen', function() {
+describe('adminJobsScreen', function() {
 
   before(function() {
     blist.translations = {
@@ -35,7 +35,7 @@ describe('adminActivityFeedScreen', function() {
         </tr>
       `);
 
-      adminActivityFeedScreen.replaceTimestamps($testDom);
+      adminJobsScreen.replaceTimestamps($testDom);
 
       // date
       expect($testDom.find('.started-time-relative-day')[0].innerText).to.equal('Today');
@@ -52,17 +52,17 @@ describe('adminActivityFeedScreen', function() {
   describe('todayYesterdayOrDate', function() {
     it('returns "today" for a date today', function() {
       var now = moment();
-      expect(adminActivityFeedScreen.todayYesterdayOrDate(now)).to.equal('Today');
+      expect(adminJobsScreen.todayYesterdayOrDate(now)).to.equal('Today');
     });
 
     it('returns "yesterday" for a date yesterday', function() {
       var yesterday = moment().subtract(1, 'days');
-      expect(adminActivityFeedScreen.todayYesterdayOrDate(yesterday)).to.equal('Yesterday');
+      expect(adminJobsScreen.todayYesterdayOrDate(yesterday)).to.equal('Yesterday');
     });
 
     it('returns the date for a date before yesterday', function() {
       var weekAgo = moment().subtract(1, 'weeks');
-      expect(adminActivityFeedScreen.todayYesterdayOrDate(weekAgo)).to.equal(weekAgo.format('M/D/YYYY'));
+      expect(adminJobsScreen.todayYesterdayOrDate(weekAgo)).to.equal(weekAgo.format('M/D/YYYY'));
     });
   });
 

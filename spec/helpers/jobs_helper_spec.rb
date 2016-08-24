@@ -1,7 +1,7 @@
 # Encoding: utf-8
 require 'rails_helper'
 
-describe ActivityFeedHelper do
+describe JobsHelper do
 
   describe '#event_description' do
 
@@ -134,7 +134,7 @@ describe ActivityFeedHelper do
           'publicationStage' => 'published',
           'displayType' => 'table',
           'viewType' => 'tabular',
-          'flags' => ['default', 'restorable', 'restorePossibleForType']
+          'flags' => ['default']
         ),
         nil
       )

@@ -1,11 +1,9 @@
 require 'test_helper'
 
-include Clytemnestra
-
 class ClytemnestraTest < Minitest::Test
   # yes, this is a little silly
   def test_check_time_and_id_are_there_yo
-    searchView = ViewSearchResult.new
+    searchView = Clytemnestra::ViewSearchResult.new
     searchView.check_time = 1
     searchView.id = "blahblah"
   end

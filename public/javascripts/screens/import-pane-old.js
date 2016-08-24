@@ -12,8 +12,6 @@
 //      objects are going to be the final product. An importColumn can be composed
 //      of zero, one, or more sourceColumns.
 
-// TODO: fix the linting errors in this file and re-enable linting in the .eslintignore file
-
 (function($) {
 
     var importNS = blist.namespace.fetch('blist.importer');
@@ -1957,6 +1955,13 @@
                 });
                 $.serialPromiser(promiseQueue);
             } else {
+                var interpolator = new Interpolator(250); // eslint-disable-line no-undef
+                interpolator.addListener(function(rows) {
+                    var message = t('rows_imported', {
+                        num: rows
+                    });
+                    $importingPane.find('.importStatus').text(message);
+                });
                 $.socrataServer.makeRequest({
                     type: 'post',
                     url: '/api/imports2.json?' + $.toParam(urlParams),
@@ -1967,6 +1972,7 @@
                         state.submittedView = new Dataset(response);
                         command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
                             'importWarnings' : (isReimport ? 'finish' : 'metadata'));
+                        interpolator.stop();
                     },
                     error: function(request) {
                         setTimeout(function() {
@@ -1975,6 +1981,7 @@
                                 JSON.parse(request.responseText).message;
                             command.prev();
                         }, 2000);
+                        interpolator.stop();
                     },
                     pending: function(response) {
                         if (blist.feature_flags.notify_import_result) {
@@ -2010,12 +2017,13 @@
                         if ($.subKeyDefined(response, 'details.stage')) {
                             $importingPane.find('.importStatus').text(t(response.details.stage));
                         } else if ($.subKeyDefined(response, 'details.progress') && response.details.progress) {
-                            var message = t('rows_imported', {
-                                num: response.details.progress
-                            });
-                            if ($.subKeyDefined(response, 'details.layer'))
-                                message = t('layer') + '  ' + response.details.layer + ': ' + message;
-                            $importingPane.find('.importStatus').text(message);
+                            if ($.subKeyDefined(response, 'details.progress')) {
+                                interpolator.addEvent(response.details.progress);
+                            }
+                            if ($.subKeyDefined(response, 'details.layer')) {
+                                var message = t('layer') + '  ' + response.details.layer + ': ' + message;
+                                $importingPane.find('.importStatus').text(message);
+                            }
                         }
                     }
                 });

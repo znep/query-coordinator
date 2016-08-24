@@ -421,6 +421,7 @@ javascripts:
     - public/javascripts/screens/import-pane-old.js
     - public/javascripts/screens/dataset-new-old.js
     - public/javascripts/screens/edit-license.js
+    - public/javascripts/util/interpolator.js
   dataset-edit:
     - public/javascripts/util/datasync.js
     - public/javascripts/plugins/ajaxupload.js

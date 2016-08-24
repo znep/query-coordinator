@@ -4,7 +4,7 @@ PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
 
 git checkout master
 git pull --rebase origin master
-npm run gulp
+NODE_ENV=production npm run gulp
 
 for package in packages/*; do
   pushd $package

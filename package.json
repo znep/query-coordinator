@@ -8,7 +8,7 @@
     "doc": "readme"
   },
   "scripts": {
-    "deploy": "./deploy.sh",
+    "deploy": "NODE_ENV=production ./deploy.sh",
     "release": "./tools/publish.sh",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "gulp watch",

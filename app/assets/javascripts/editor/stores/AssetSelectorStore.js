@@ -789,7 +789,8 @@ export default function AssetSelectorStore() {
       componentProperties: component.value,
       originalComponentType: _.clone(component.type),
       originalComponentProperties: _.cloneDeep(component.value),
-      isEditingExisting: true
+      isEditingExisting: true,
+      isAuthoringVisualization: Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS
     };
 
     if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {

@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import styleguide from 'socrata-styleguide';
+import components from 'socrata-components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var BootstrapAlert = React.createClass({
@@ -16,10 +16,10 @@ export var BootstrapAlert = React.createClass({
     this.uniqueId = _.uniqueId();
   },
 
-  // Using styleguide.attachTo here isn't possible.  Until styleguide is able to handle multiple
-  // attachTo's and scope them properly, we must use the factory manually.
+  // Using components.attachTo here isn't possible.  Until socrata-components is able to handle
+  // multiple attachTo's and scope them properly, we must use the factory manually.
   componentDidMount: function() {
-    styleguide.factories.FlyoutFactory(ReactDOM.findDOMNode(this)); // eslint-disable-line
+    components.factories.FlyoutFactory(ReactDOM.findDOMNode(this)); // eslint-disable-line
   },
 
   render: function() {

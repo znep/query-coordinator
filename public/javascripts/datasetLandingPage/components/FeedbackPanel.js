@@ -12,7 +12,7 @@ function t(key) {
 
 export var FeedbackPanel = React.createClass({
   componentDidMount: function() {
-    // Copy some of the close behavior of styleguide flannels because they don't
+    // Copy some of the close behavior of socrata-components flannels because they don't
     // support the behavior we want for the feedback panel yet.
     const self = this;
     document.body.addEventListener('keyup', function(event) {

@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import a11y from 'react-a11y';
 import airbrake from './lib/airbrake';
-import styleguide from 'socrata-styleguide';
+import components from 'socrata-components';
 
 import datasetLandingPage from './reducers';
 import App from './App';
@@ -71,7 +71,7 @@ _.defer(function() {
       document.querySelector('#dynamic-content')
     );
 
-    // Initialize the styleguide javascript components
-    styleguide.attachTo(document.querySelector('.dataset-landing-page'));
+    // Initialize the javascript components
+    components.attachTo(document.querySelector('.dataset-landing-page'));
   });
 });

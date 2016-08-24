@@ -112,6 +112,12 @@ export default function LinkTipRenderer() {
     var padding = 5;
     var $container = editorId ? $(StorytellerUtils.format('[data-editor-id="{0}"]', editorId)) : $('body');
 
+    // Append here, or else the first time you insert this tip into the DOM,
+    // your height calculation will be wrong.
+    if (_.last($container[0].children) !== $tip[0]) {
+      $container.append($tip);
+    }
+
     var clientRect = boundingClientRect || $container[0].getBoundingClientRect();
     var linkTipWidth = $tip.outerWidth(true);
     var linkTipHeight = $tip.outerHeight(true);
@@ -126,9 +132,5 @@ export default function LinkTipRenderer() {
       top: clientRect.top - linkTipHeight - padding,
       left: Math.max(linkTipLeft, 0)
     });
-
-    if (_.last($container[0].children) !== $tip[0]) {
-      $container.append($tip);
-    }
   }
 }

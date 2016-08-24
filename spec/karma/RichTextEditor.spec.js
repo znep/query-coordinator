@@ -396,6 +396,7 @@ describe('RichTextEditor', function() {
                   href: 'an href',
                   getAttribute: _.constant('attribute value'),
                   getBoundingClientRect: _.constant({ foo: 'bar' }),
+                  nodeName: 'A',
                   nodeType: 1
                 };
                 return returnValue;

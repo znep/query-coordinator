@@ -1,6 +1,6 @@
 module.exports = {
   context: __dirname,
-  devtool: 'eval', // eval is faster than source-map
+  devtool: 'source-map',
   entry: `${__dirname}/src/js/index.js`,
   externals: {
     'react': {

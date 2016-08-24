@@ -1,13 +1,17 @@
-var async = require('async');
-var gulp = require('gulp');
-var _ = require('lodash');
-var UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
+const async = require('async');
+const gulp = require('gulp');
+const _ = require('lodash');
+const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 
-var webpack = require('gulp-webpack');
-var webpackConfig = require('../webpack.config');
+const webpack = require('gulp-webpack');
+const webpackConfig = require('../webpack.config');
 
 function configuration(filename, minify) {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const devtool = isProduction ? 'source-map' : 'eval';
+
   return _.merge({}, webpackConfig, {
+    devtool,
     output: {
       filename
     },

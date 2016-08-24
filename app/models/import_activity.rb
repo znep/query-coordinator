@@ -21,6 +21,10 @@ class ImportActivity
       [uid, value]
     end]
 
+    restorable_views = views.keep_if do |uid, value|
+      value.data['flags'].include?('restorePossibleForType')
+    end
+
     user_ids = activities.pluck(:user_id)
     users = User.find_multiple_dedup(user_ids)
 

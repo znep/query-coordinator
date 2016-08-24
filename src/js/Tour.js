@@ -37,7 +37,7 @@ var TourFactory = module.exports = function(element) {
     tourOverlayElement.classList.add('tour-overlay');
     tourOverlayElement.classList.add('overlay-hidden');
 
-    this.tourOverlay = element.body.appendChild(tourOverlayElement);
+    this.tourOverlay = document.body.appendChild(tourOverlayElement);
 
     this.initialize();
 

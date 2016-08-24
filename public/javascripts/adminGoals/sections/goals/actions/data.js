@@ -1,6 +1,8 @@
 import * as api from '../../../api';
 import * as SharedActions from '../../shared/actions';
 import * as Immutable from 'immutable';
+import * as Helpers from '../../../helpers';
+import * as State from '../state';
 
 export const types = {
   setAll: 'goals.data.setAll',
@@ -24,7 +26,7 @@ export const updateAll = goals => ({
   goals
 });
 
-export const load = () => dispatch => {
+export const load = () => (dispatch, getState) => {
   dispatch(SharedActions.loading.start());
 
   return api.goals.getAll().
@@ -32,7 +34,10 @@ export const load = () => dispatch => {
       dispatch(setAll(Immutable.fromJS(goals)));
       dispatch(SharedActions.loading.stop());
     }).
-    catch(error => {// eslint-disable-line dot-notation
-      dispatch(SharedActions.showGlobalMessage('goals', error.message));
+    catch(() => { // eslint-disable-line dot-notation
+      const translations = State.getTranslations(getState());
+      const message = Helpers.translator(translations, 'admin.listing.load_error');
+
+      dispatch(SharedActions.showGlobalMessage('goals', message));
     });
 };

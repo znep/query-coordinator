@@ -1759,6 +1759,7 @@ en:
           info_title: Generating Download
           info_description: Generating a CSV. The download will automatically start when ready
       listing:
+        load_error: There was a problem loading content.
         title: Title
         owner: Last updated by
         updated_at: Updated

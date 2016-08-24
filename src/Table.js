@@ -510,8 +510,8 @@ $.fn.socrataTable = function(originalVif) {
   ) {
 
     const dataProviderConfig = {
-      datasetUid: _.get(renderState.vif, 'series[0].dataSource.datasetUid'),
-      domain: _.get(renderState.vif, 'series[0].dataSource.domain')
+      datasetUid: _.get(vifForDataQuery, 'series[0].dataSource.datasetUid'),
+      domain: _.get(vifForDataQuery, 'series[0].dataSource.domain')
     };
 
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {

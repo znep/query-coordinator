@@ -73,10 +73,8 @@ class GoalTableRow extends React.Component {
         <td className="single-line">{ translations.getIn(['admin', 'goal_values', goalVisibility]) }</td>
         <td className="single-line">{ goalStatus }</td>
         <td className="dashboard-link">
-          <Components.Socrata.Flyout text={ translations.getIn(['admin', 'listing', 'view_dashboard']) } left="true">
-            <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>
-              { goal.getIn(['dashboard', 'name']) } <span className="icon-external"/></a>
-          </Components.Socrata.Flyout>
+          <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>
+            { goal.getIn(['dashboard', 'name']) } <span className="icon-external"/></a>
         </td>
       </tr>
     );

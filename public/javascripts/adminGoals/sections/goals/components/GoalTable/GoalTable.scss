@@ -3,6 +3,16 @@ $max_table_body_height: 700px;
 
 $row_highlight_color: #F5F5F5;
 
+.goal-table {
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 98%;
+    background: white;
+    padding: 11px 0;
+  }
+}
+
 table.op-admin-table {
   background-color: #f8f8f8;
   border-collapse: collapse;
@@ -28,16 +38,16 @@ table.op-admin-table {
       span.order-icon {
         margin-left: 7px;
         font-size: 12px;
-        display: none;
+        visibility: hidden;
 
         &.persist-visible {
-          display: initial;
+          visibility: visible;
         }
       }
 
       &:hover {
         .order-icon {
-          display: initial;
+          visibility: visible;
         }
       }
 
@@ -130,17 +140,21 @@ table.op-admin-table {
 }
 
 .page-selector-container {
-  float: right;
-  margin-right: 150px;
-  height: 36px;
-  padding-top: 5px;
+  display: inline-block;
 
   .labels {
     margin-right: 10px;
   }
 
-  .page-change-icon {
+  .page-previous {
+    margin-left: 10px;
+  }
+
+  .page-next {
     margin-left: 30px;
+  }
+
+  .page-change-icon {
     color: #5e5e5e;
     cursor: pointer;
 

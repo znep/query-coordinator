@@ -224,20 +224,4 @@ module InternalHelper
 
     content_tag(:div, content, :class => reason)
   end
-
-  def list_of_feature_flags_as_options
-    safe_join(FeatureFlags.list.map do |flag|
-      content_tag(:option, flag, :selected => params[:for] == flag)
-    end.unshift(content_tag(:option, ' -- Choose one -- ')))
-  end
-
-  def list_of_cnames_as_links(domains)
-    safe_join(
-      domains.
-        map(&:first).
-        map { |cname| link_to(cname, feature_flags_config_path(domain_id: cname)) }.
-        sort,
-      ', '
-    )
-  end
 end

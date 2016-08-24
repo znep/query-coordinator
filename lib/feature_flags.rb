@@ -125,10 +125,6 @@ class FeatureFlags
       ExternalConfig.for(:feature_flag)[flag]
     end
 
-    def description_for(flag)
-      config_for(flag)['description']
-    end
-
     def default_for(flag)
       process_value((ExternalConfig.for(:feature_flag)[flag] || {})['defaultValue'])
     end

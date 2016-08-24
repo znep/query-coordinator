@@ -584,34 +584,3 @@ ul.autocomplete {
 .guidelink {
   margin-top: 2em;
 }
-
-.featureFlagReport {
-  p {
-    font-size: 1.3em;
-  }
-
-  input[type=text] {
-    width: auto;
-  }
-
-  .domainFeatureFlags > div {
-    margin-top: 0.5em;
-
-    .label {
-      display: inline-block;
-      font-size: 1.3em;
-      min-width: 16em;
-      margin-right: 2em;
-    }
-
-    .value {
-      display: inline-block;
-      font-size: 1.3em;
-      width: auto;
-    }
-
-    &:hover {
-      background-color: #f1f1f1;
-    }
-  }
-}

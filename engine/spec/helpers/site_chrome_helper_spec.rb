@@ -86,6 +86,50 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
+  describe 'current_user_can_modify_site_chrome' do
+    context 'with an instance of a User object' do
+      let(:user) { User.new }
+
+      before do
+        allow(helper).to receive(:request_current_user).and_return(user)
+      end
+
+      it 'returns true when can_use_site_appearance? is true' do
+        allow(user).to receive(:can_use_site_appearance?).and_return(true)
+        expect(helper.current_user_can_modify_site_chrome?).to eq(true)
+      end
+
+      it 'returns false when can_use_site_appearance? is false' do
+        allow(user).to receive(:can_use_site_appearance?).and_return(false)
+        expect(helper.current_user_can_modify_site_chrome?).to eq(false)
+      end
+    end
+
+    context 'with Hash representation of a User object' do
+      let(:user) { {'roleName' => roleName } }
+
+      before do
+        allow(helper).to receive(:request_current_user).and_return(user)
+      end
+
+      context 'as a designer' do
+        let(:roleName) { 'designer' }
+
+        it 'returns true when the user has correct privileges' do
+          expect(helper.current_user_can_modify_site_chrome?).to eq(true)
+        end
+      end
+
+      context 'as a viewer' do
+        let(:roleName) { 'viewer' }
+
+        it 'returns false' do
+          expect(helper.current_user_can_modify_site_chrome?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#username' do
     it 'returns "Profile" if there is no request_current_user' do
       allow(RequestStore.store).to receive(:[]).and_return(nil)

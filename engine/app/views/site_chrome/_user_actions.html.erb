@@ -6,7 +6,7 @@
       <%- end if show_profile? %>
       <%- admin_link = capture do %>
         <%= link_to('Administration', '/admin', :class => 'admin-link') %>
-      <%- end if current_user_is_admin? %>
+      <%- end if current_user_can_modify_site_chrome? %>
       <%- logout_link = capture do %>
         <%= link_to('Sign Out', '/logout', :class => 'logout-link') %>
       <%- end %>
@@ -14,7 +14,7 @@
     <% else %>
       <%= link_to('Sign In', '/login', :class => "sign-in-toggle site-chrome-btn") %>
     <% end %>
-  <%- elsif current_user_is_admin? %>
+  <%- elsif current_user_can_modify_site_chrome? %>
     <%= link_to('Administration', '/admin', :class => 'admin-link in-header') %>
   <%- end %>
 </div>

@@ -37,13 +37,13 @@ module SocrataSiteChrome
         'Profile'
     end
 
-    def current_user_is_admin?
+    def current_user_can_modify_site_chrome?
       return false unless request_current_user.present?
-      request_current_user.try(:is_administrator_or_superadmin?) ||
-        # Consuming apps may store current_user as a json representation of the current user,
-        # rather than a User object.
-        request_current_user['flags'].try(:include?, 'admin') ||
-        request_current_user['roleName'] == 'administrator'
+      if request_current_user.is_a?(User)
+        request_current_user
+      else
+        User.new(request_current_user)
+      end.can_use_site_appearance?
     end
 
     def copyright_source

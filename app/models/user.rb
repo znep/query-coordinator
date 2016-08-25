@@ -184,8 +184,24 @@ class User < Model
     view.owner.id == self.id
   end
 
-  def is_admin?
-    self.flag?('admin')
+  def is_superadmin?
+    flag?('admin')
+  end
+
+  def is_administrator?
+    role_name == 'administrator'
+  end
+
+  def is_designer?
+    role_name == 'designer'
+  end
+
+  def role_name
+    @data['roleName']
+  end
+
+  def can_use_site_appearance?
+    is_superadmin? || is_administrator? || is_designer?
   end
 
   def has_right?(right)

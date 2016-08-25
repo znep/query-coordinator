@@ -3,7 +3,7 @@ $row-background-color: transparent;
 $highlighted-row-color: #2f2f2f;
 $highlighted-row-background-color: #f6f6f6;
 
-.visualization-container.loaded {
+.socrata-visualization-container.loaded {
 
   .socrata-table,
   .socrata-pager {
@@ -268,7 +268,7 @@ $highlighted-row-background-color: #f6f6f6;
   }
 }
 
-.visualization-container {
+.socrata-visualization-container {
 
   .socrata-table {
 

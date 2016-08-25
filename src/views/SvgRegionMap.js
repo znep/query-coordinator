@@ -79,7 +79,7 @@ function SvgRegionMap(element, vif) {
    */
 
   this.render = function(newVif, newData) {
-    var $visualizationContainer = self.$element.find('.visualization-container');
+    var $visualizationContainer = self.$element.find('.socrata-visualization-container');
 
     if (
       $visualizationContainer.width() <= 0 ||
@@ -160,7 +160,7 @@ function SvgRegionMap(element, vif) {
 
     self.
       $element.
-        find('.visualization-container').
+        find('.socrata-visualization-container').
           append([
             $mapElement,
             $legend
@@ -245,14 +245,14 @@ function SvgRegionMap(element, vif) {
 
     self.
       $element.
-      find('.visualization-container').
+      find('.socrata-visualization-container').
       append($legend);
 
     attachLegendEvents();
 
     legend = new LegendType(
       self.$element.find('.region-map-legend'),
-      self.$element.find('.visualization-container'),
+      self.$element.find('.socrata-visualization-container'),
       colors
     );
   }
@@ -646,8 +646,8 @@ function SvgRegionMap(element, vif) {
 
   function updateRegionLayer(dataToRender) {
     const dimensions = {
-      width: self.$element.find('.visualization-container').width(),
-      height: self.$element.find('.visualization-container').width()
+      width: self.$element.find('.socrata-visualization-container').width(),
+      height: self.$element.find('.socrata-visualization-container').width()
     };
     // Add legend and get color scale
     var coloring;

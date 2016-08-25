@@ -11,13 +11,13 @@ end) %>
 <!--<%#= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>-->
 
 <section class="settings-group">
-  <div class="settings-form full">
+  <div class="settings-form full signin-signout">
     <%- fields = [:general] %>
     <%- translation = translations[:show_signin_signout] %>
+    <h3><%= translation[:title] %></h3>
     <aside>
       <p><%= translation[:description] %></p>
     </aside>
-    <h3><%= translation[:title] %></h3>
     <%= signin_signout_checkbox(:show_signin_signout, translation) %>
     <%= signin_signout_checkbox(:show_signup, translation, indent: true) %>
     <%= signin_signout_checkbox(:show_profile, translation, indent: true) %>

@@ -184,10 +184,13 @@ function confirmReload() {
   }
 }
 
-// Updates the hidden dropdown input value whenever a styleguide dropdown selection is made.
-function updateHiddenInputValue(selectedElement) {
+function dropdownValueSelected(selectedElement) {
+  // Update the hidden dropdown input value
   var selectedValue = $(selectedElement).attr('value');
   $(selectedElement).closest('div.dropdown').siblings('.hidden-dropdown-input').value(selectedValue);
+
+  // Remove the placeholder class on the title if it's present
+  $(selectedElement).closest('div.dropdown').find('span.placeholder').removeClass('placeholder');
 }
 
 function currentLocale() {

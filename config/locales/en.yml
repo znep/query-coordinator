@@ -2650,7 +2650,7 @@ en:
                 label: Show Socrata branding in the Footer
                 title: Powered by Socrata
               url_label: URL
-              url_placeholder: URL
+              url_placeholder: http://data.evergreen.gov
             title: Footer
           general:
             fields:
@@ -2672,13 +2672,14 @@ en:
               template:
                 description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
                 title: Template
+                placeholder: Select a template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
                 placeholder: https://yoursite.gov/logos/favicon.png
                 title: Browser Window or Tab Icon (favicon)
               window_title_display:
                 description: This is the name displayed in the browser window or tab title.
-                placeholder: Window Title Display
+                placeholder: Browser Window or Tab Title Display
                 title: Browser Window or Tab Title Display
             title: General Settings
           header:
@@ -2716,11 +2717,11 @@ en:
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:
-                description: Display up to 15 links in the Header Bar. If the link labels get too long or a visitor is viewing your site on a small device, then the links are automatically collapsed into a menu.
+                description: Display up to 15 links or menus with links in the Header Bar. To create a drop down menu, first add a Menu then add the link labels and associated URLs to it. The menus and other links will be placed in a single row in the Header. If the labels get too long or a visitor is viewing your site on a small device, the menus and links will automatically be collapsed into a single menu.
                 title: Header Links
               menu_title_placeholder: Menu Text
               url_label: URL
-              url_placeholder: URL
+              url_placeholder: http://data.evergreen.gov
             title: Header Bar
           homepage:
             fields:

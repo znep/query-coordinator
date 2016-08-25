@@ -140,6 +140,13 @@ header#site-chrome-header[template="default"] {
               form {
                 display: flex;
 
+                label {
+                  width: auto;
+                  display: block;
+                  margin: auto;
+                  font-size: inherit;
+                }
+
                 button.search-button {
                   height: $searchbox_height;
                   display: none; // appears with toggleSearchButton()

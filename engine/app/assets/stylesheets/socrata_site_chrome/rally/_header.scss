@@ -44,6 +44,13 @@ header#site-chrome-header[template="rally"] {
           display: inline-flex;
           vertical-align: middle;
 
+          label {
+            width: auto;
+            display: block;
+            margin: auto;
+            font-size: inherit;
+          }
+
           .search-button {
             display: none; // appears with toggleSearchButton()
           }

@@ -261,9 +261,6 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
         _handleContentChangeByUser();
       });
 
-      _editor.addEventListener('mouseup', _linkActionTip);
-      _editor.addEventListener('pathChange', _linkActionTip);
-
       _editor.setKeyHandler('ctrl-k', _clickEditorLinkButton);
       _editor.setKeyHandler('meta-k', _clickEditorLinkButton);
 
@@ -273,6 +270,13 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
         _editor.setHTML(_contentToPreload);
         _broadcastFormatChange();
       }
+
+      // Bind these listeners *after* the HTML has been set because Squire will
+      // fire a pathChange event in reaction to that HTML setting, and the
+      // selection range is initialized to (0,0)... which means that the tooltip
+      // will in fact appear if the HTML content starts with a link.
+      _editor.addEventListener('mouseup', _linkActionTip);
+      _editor.addEventListener('pathChange', _linkActionTip);
 
       _setupMouseMoveEventBroadcast();
 
@@ -318,9 +322,16 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       // There are two cases:
       // - We have a cursor in the link,
       // - or we have a selection of the link.
-      anchor = selection.startContainer.nodeType === 1 ?
-        selection.startContainer :
-        selection.startContainer.parentNode;
+      // This is complicated, however, by the fact that formatting options
+      // such as color will add extra spans inside the anchor tag.
+      // So just let jQuery figure the damn situation out.
+      anchor = $(selection.startContainer).closest('a[href]')[0];
+
+      if (!anchor) {
+        exceptionNotifier.notify(
+          new Error('Unable to find anchor node in _linkActionTip!')
+        );
+      }
 
       // TODO gferrari (12/21/2015): Architectural issue:
       // The 'pathChange' event triggers '_linkActionTip', which dispatches

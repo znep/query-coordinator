@@ -391,29 +391,10 @@ function SvgRegionMap(element, vif) {
     };
     var value = feature.properties[SvgRegionMap.SHAPEFILE_REGION_VALUE];
     var valueUnit;
-    var aggregationField = _.get(
-      self.getVif(),
-      'series[0].dataSource.measure.columnName'
-    );
-    var aggregationFunction = _.get(
-      self.getVif(),
-      'series[0].dataSource.measure.aggregationFunction'
-    );
 
-    if (aggregationFunction === 'sum') {
-
-      valueUnit = utils.pluralize(
-        aggregationField,
-        value
-      );
-    } else {
-
-      if (value === 1) {
-        valueUnit = self.getUnitOneBySeriesIndex(0);
-      } else {
-        valueUnit = self.getUnitOtherBySeriesIndex(0);
-      }
-    }
+    valueUnit = value === 1 ?
+      self.getUnitOneBySeriesIndex(0) :
+      self.getUnitOtherBySeriesIndex(0);
 
     if (_.isNumber(value)) {
       payload.value = `${utils.formatNumber(value)} ${valueUnit}`;

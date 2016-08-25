@@ -48,7 +48,7 @@ module.exports = _.defaultsDeep({
       plugins: path.resolve(common.root, 'public/javascripts/plugins'),
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
       'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
-      '_': 'lodash'
+      'lodash': path.resolve(common.root, 'node_modules/lodash')
     }
   },
   externals: common.packageJson.config.dataCardsWebpackExternals,

@@ -1,0 +1,88 @@
+// All tag-level styles should go here to keep things import-able from other places
+
+hr {
+  border-style: none;
+  border-top: 1px solid $light-grey-1;
+  margin: ms(4) 0 ms(4);
+}
+
+body {
+  @include base;
+}
+
+input,
+textarea,
+keygen,
+select,
+button {
+  @include default-font;
+}
+
+p,
+ol,
+ul {
+  @include default-spacing;
+}
+
+i {
+  font-style: italic;
+}
+
+b {
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: ms(2);
+}
+
+ol {
+  list-style: decimal;
+  padding-left: ms(2);
+}
+
+a {
+  color: $primary-text;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+form {
+  @include form;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include header;
+}
+
+h1 {
+  @include h1;
+}
+
+h2 {
+  @include h2;
+}
+
+h3 {
+  @include h3;
+}
+
+h4 {
+  @include h4;
+}
+
+h5 {
+  @include h5;
+}
+
+h6 {
+  @include h6;
+}

@@ -31,7 +31,7 @@ class GoalTableRow extends React.Component {
     }
   }
 
-  handleEditClick() {
+  handleEditClick(event) {
     event.stopPropagation();
     this.props.quickEditActions.openModal(this.props.goal.get('id'));
   }

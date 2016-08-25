@@ -122,11 +122,6 @@ module.exports = function Table(element, originalVif) {
       maxRowCount = Math.max(0, Math.floor(numberOfRows));
     }
 
-    // If we rendered placeholder data, remove it.
-    if (!alreadyHasData) {
-      self.$element.find('.socrata-table').remove();
-    }
-
     return maxRowCount;
   };
 

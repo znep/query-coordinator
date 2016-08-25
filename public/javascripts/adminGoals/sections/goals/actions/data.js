@@ -39,5 +39,6 @@ export const load = () => (dispatch, getState) => {
       const message = Helpers.translator(translations, 'admin.listing.load_error');
 
       dispatch(SharedActions.showGlobalMessage('goals', message));
+      dispatch(SharedActions.loading.stop());
     });
 };

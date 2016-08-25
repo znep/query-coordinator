@@ -63,8 +63,7 @@ class GoalTable extends React.Component {
     return (
       <div className="goal-table">
         { this.renderTable() }
-        { loadInProgress ? this.renderLoadingSpinner() : null }
-        { !loadInProgress ? this.renderFooter() : null }
+        { loadInProgress ? this.renderLoadingSpinner() : this.renderFooter() }
       </div>
     );
   }

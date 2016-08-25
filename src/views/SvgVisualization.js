@@ -62,7 +62,7 @@ function SvgVisualization($element, vif) {
   };
 
   this.renderTitle = function() {
-    const $title = self.$container.find('.title');
+    const $title = self.$container.find('.socrata-visualization-title');
     const titleText = _.get(self.getVif(), 'title', null);
 
     if (titleText) {
@@ -70,18 +70,18 @@ function SvgVisualization($element, vif) {
       $title.
         attr('data-full-text', titleText).
         text(titleText);
-      self.$container.addClass('title');
+      self.$container.addClass('socrata-visualization-title');
     } else {
 
       $title.
         removeAttr('data-full-text').
         text('');
-      self.$container.removeClass('title');
+      self.$container.removeClass('socrata-visualization-title');
     }
   };
 
   this.renderDescription = function() {
-    const $description = self.$container.find('.description');
+    const $description = self.$container.find('.socrata-visualization-description');
     const descriptionText = _.get(self.getVif(), 'description', null);
 
     if (descriptionText) {
@@ -89,103 +89,107 @@ function SvgVisualization($element, vif) {
       $description.
         attr('data-full-text', descriptionText).
         text(descriptionText);
-      self.$container.addClass('description');
+      self.$container.addClass('socrata-visualization-description');
     } else {
 
       $description.
         removeAttr('data-full-text').
         text('');
-      self.$container.removeClass('description');
+      self.$container.removeClass('socrata-visualization-description');
     }
   };
 
   this.renderAxisLabels = function() {
-    const $topAxisLabel = self.$container.find('.top-axis-label');
-    const $rightAxisLabel = self.$container.find('.right-axis-label');
-    const $bottomAxisLabel = self.$container.find('.bottom-axis-label');
-    const $leftAxisLabel = self.$container.find('.left-axis-label');
-    const axisLabels = _.get(self.getVif(), 'configuration.axisLabels', {});
+    const $topAxisTitle = self.$container.find('.socrata-visualization-top-axis-title');
+    const $rightAxisTitle = self.$container.find('.socrata-visualization-right-axis-title');
+    const $bottomAxisTitle = self.$container.find('.socrata-visualization-bottom-axis-title');
+    const $leftAxisTitle = self.$container.find('.socrata-visualization-left-axis-title');
+    const axisLabels = _.get(
+      self.getVif(),
+      'configuration.axisTitles',
+      _.get(self.getVif(), 'configuration.axisLabels', {})
+    );
     const outerHeight = self.
       $container.
-      find('.visualization-container').
+      find('.socrata-visualization-container').
       outerHeight(true);
     const maxWidth = outerHeight * 0.9;
 
     if (axisLabels.top) {
 
-      $topAxisLabel.
+      $topAxisTitle.
         attr('data-full-text', axisLabels.top).
         text(axisLabels.top).
         css('max-width', maxWidth);
 
-      self.$container.addClass('top-axis-label');
+      self.$container.addClass('socrata-visualization-top-axis-title');
     } else {
 
-      $topAxisLabel.
+      $topAxisTitle.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
 
-      self.$container.removeClass('top-axis-label');
+      self.$container.removeClass('socrata-visualization-top-axis-title');
     }
 
     if (axisLabels.right) {
 
-      $rightAxisLabel.
+      $rightAxisTitle.
         attr('data-full-text', axisLabels.right).
         text(axisLabels.right).
         css('max-width', maxWidth);
 
-      self.$container.addClass('right-axis-label');
+      self.$container.addClass('socrata-visualization-right-axis-title');
     } else {
 
-      $rightAxisLabel.
+      $rightAxisTitle.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
 
-      self.$container.removeClass('right-axis-label');
+      self.$container.removeClass('socrata-visualization-right-axis-title');
     }
 
     if (axisLabels.bottom) {
 
-      $bottomAxisLabel.
+      $bottomAxisTitle.
         attr('data-full-text', axisLabels.bottom).
         text(axisLabels.bottom).
         css('max-width', maxWidth);
 
-      self.$container.addClass('bottom-axis-label');
+      self.$container.addClass('socrata-visualization-bottom-axis-title');
     } else {
 
-      $bottomAxisLabel.
+      $bottomAxisTitle.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
 
-      self.$container.removeClass('bottom-axis-label');
+      self.$container.removeClass('socrata-visualization-bottom-axis-title');
     }
 
     if (axisLabels.left) {
 
-      $leftAxisLabel.
+      $leftAxisTitle.
         attr('data-full-text', axisLabels.left).
         text(axisLabels.left).
         css('max-width', maxWidth);
 
-      self.$container.addClass('left-axis-label');
+      self.$container.addClass('socrata-visualization-left-axis-title');
     } else {
 
-      $leftAxisLabel.
+      $leftAxisTitle.
         removeAttr('data-full-text').
         text('').
         css('max-width', maxWidth);
 
-      self.$container.removeClass('left-axis-label');
+      self.$container.removeClass('socrata-visualization-left-axis-title');
     }
   };
 
   this.renderError = function(messages) {
-    const $message = self.$container.find('.error-message');
+    const $message = self.$container.find('.socrata-visualization-error-message');
 
     if (!messages || _.isString(messages) || messages.length === 1) {
       $message.text(messages || 'Error');
@@ -203,24 +207,24 @@ function SvgVisualization($element, vif) {
 
     self.
       $container.
-      removeClass('visualization-busy').
-      addClass('visualization-error');
+      removeClass('socrata-visualization-busy').
+      addClass('socrata-visualization-error');
   };
 
   this.clearError = function() {
 
-    self.$container.find('.error-message').text('');
-    self.$container.removeClass('visualization-error');
+    self.$container.find('.socrata-visualization-error-message').text('');
+    self.$container.removeClass('socrata-visualization-error');
   };
 
   this.showBusyIndicator = function() {
 
-    self.$container.addClass('visualization-busy');
+    self.$container.addClass('socrata-visualization-busy');
   };
 
   this.hideBusyIndicator = function() {
 
-    self.$container.removeClass('visualization-busy');
+    self.$container.removeClass('socrata-visualization-busy');
   };
 
   this.showViewSourceDataLink = function() {
@@ -231,8 +235,8 @@ function SvgVisualization($element, vif) {
 
       self.
         $container.
-        addClass('view-source-data').
-        find('.view-source-data a').
+        addClass('socrata-visualization-view-source-data').
+        find('.socrata-visualization-view-source-data a').
         attr('href', `https://${domain}/d/${linkableDatasetUid}`);
     };
 
@@ -253,19 +257,19 @@ function SvgVisualization($element, vif) {
 
   this.hideViewSourceDataLink = function() {
 
-    self.$container.removeClass('view-source-data');
+    self.$container.removeClass('socrata-visualization-view-source-data');
     self.hideInfo();
   };
 
   this.showPanningNotice = function() {
 
-    self.$container.addClass('panning-notice');
+    self.$container.addClass('socrata-visualization-panning-notice');
     self.showInfo();
   };
 
   this.hidePanningNotice = function() {
 
-    self.$container.removeClass('panning-notice');
+    self.$container.removeClass('socrata-visualization-panning-notice');
     self.hideInfo();
   };
 
@@ -275,7 +279,7 @@ function SvgVisualization($element, vif) {
     const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
 
     if (hasInfoClass) {
-      self.$container.addClass('info');
+      self.$container.addClass('socrata-visualization-info');
     }
   };
 
@@ -295,7 +299,7 @@ function SvgVisualization($element, vif) {
     const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
 
     if (!hasInfoClass) {
-      self.$container.removeClass('info');
+      self.$container.removeClass('socrata-visualization-info');
     }
   };
 
@@ -433,42 +437,42 @@ function SvgVisualization($element, vif) {
     self.
       $element.
         append(
-          $('<div>', {'class': 'visualization'}).
+          $('<div>', {'class': 'socrata-visualization'}).
             append([
-              $('<div>', {'class': 'title-container'}).
+              $('<div>', {'class': 'socrata-visualization-title-container'}).
                 append(
-                  $('<div>', {'class': 'title'})
+                  $('<div>', {'class': 'socrata-visualization-title'})
                 ),
-              $('<div>', {'class': 'description-container'}).
+              $('<div>', {'class': 'socrata-visualization-description-container'}).
                 append(
-                  $('<div>', {'class': 'description'})
+                  $('<div>', {'class': 'socrata-visualization-description'})
                 ),
-              $('<div>', {'class': 'visualization-container'}).
+              $('<div>', {'class': 'socrata-visualization-container'}).
                 append([
-                  $('<div>', {'class': 'top-axis-label'}),
-                  $('<div>', {'class': 'right-axis-label'}),
-                  $('<div>', {'class': 'bottom-axis-label'}),
-                  $('<div>', {'class': 'left-axis-label'})
+                  $('<div>', {'class': 'socrata-visualization-top-axis-title'}),
+                  $('<div>', {'class': 'socrata-visualization-right-axis-title'}),
+                  $('<div>', {'class': 'socrata-visualization-bottom-axis-title'}),
+                  $('<div>', {'class': 'socrata-visualization-left-axis-title'})
                 ]),
-              $('<div>', {'class': 'info'}).
+              $('<div>', {'class': 'socrata-visualization-info'}).
                 append([
-                  $('<div>', {'class': 'view-source-data'}).append(
+                  $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(
                     $('<a>', {'href': '', 'target': '_blank'}).append([
                       I18n.translate('visualizations.common.view_source_data'),
                       $('<span>', {'class': 'icon-external'})
                     ])
                   ),
-                  $('<div>', {'class': 'panning-notice'}).text(
+                  $('<div>', {'class': 'socrata-visualization-panning-notice'}).text(
                     I18n.translate('visualizations.common.panning_notice')
                   )
                 ]),
-              $('<div>', {'class': 'error-container error light'}).
+              $('<div>', {'class': 'socrata-visualization-error-container error light'}).
                 append([
-                  $('<span>', {'class': 'error-message text'})
+                  $('<span>', {'class': 'socrata-visualization-error-message text'})
                 ]),
-              $('<div>', {'class': 'busy-indicator-container'}).
+              $('<div>', {'class': 'socrata-visualization-busy-indicator-container'}).
                 append([
-                  $('<span>', {'class': 'busy-indicator'})
+                  $('<span>', {'class': 'socrata-visualization-busy-indicator'})
                 ])
             ])
         );
@@ -478,52 +482,52 @@ function SvgVisualization($element, vif) {
 
     // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
     self.$element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
-      self.$element.find('.visualization').remove();
+      self.$element.find('.socrata-visualization').remove();
       detachEvents();
     });
 
-    self.$element.on('mouseover', '.title', showFlyout);
-    self.$element.on('mouseout', '.title', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-title', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-title', hideFlyout);
 
-    self.$element.on('mouseover', '.description', showFlyout);
-    self.$element.on('mouseout', '.description', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-description', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-description', hideFlyout);
 
-    self.$element.on('mouseover', '.top-axis-label', showFlyout);
-    self.$element.on('mouseout', '.top-axis-label', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-top-axis-title', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-top-axis-title', hideFlyout);
 
-    self.$element.on('mouseover', '.right-axis-label', showFlyout);
-    self.$element.on('mouseout', '.right-axis-label', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-right-axis-title', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-right-axis-title', hideFlyout);
 
-    self.$element.on('mouseover', '.bottom-axis-label', showFlyout);
-    self.$element.on('mouseout', '.bottom-axis-label', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-bottom-axis-title', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-bottom-axis-title', hideFlyout);
 
-    self.$element.on('mouseover', '.left-axis-label', showFlyout);
-    self.$element.on('mouseout', '.left-axis-label', hideFlyout);
+    self.$element.on('mouseover', '.socrata-visualization-left-axis-title', showFlyout);
+    self.$element.on('mouseout', '.socrata-visualization-left-axis-title', hideFlyout);
 
-    self.$element.on('click', '.download-button', handleDownload);
+    self.$element.on('click', '.socrata-visualization-download-button', handleDownload);
   }
 
   function detachEvents() {
 
-    self.$element.off('mouseover', '.title', showFlyout);
-    self.$element.off('mouseout', '.title', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-title', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-title', hideFlyout);
 
-    self.$element.off('mouseover', '.description', showFlyout);
-    self.$element.off('mouseout', '.description', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-description', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-description', hideFlyout);
 
-    self.$element.off('mouseover', '.top-axis-label', showFlyout);
-    self.$element.off('mouseout', '.top-axis-label', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-top-axis-title', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-top-axis-title', hideFlyout);
 
-    self.$element.off('mouseover', '.right-axis-label', showFlyout);
-    self.$element.off('mouseout', '.right-axis-label', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-right-axis-title', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-right-axis-title', hideFlyout);
 
-    self.$element.off('mouseover', '.bottom-axis-label', showFlyout);
-    self.$element.off('mouseout', '.bottom-axis-label', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-bottom-axis-title', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-bottom-axis-title', hideFlyout);
 
-    self.$element.off('mouseover', '.left-axis-label', showFlyout);
-    self.$element.off('mouseout', '.left-axis-label', hideFlyout);
+    self.$element.off('mouseover', '.socrata-visualization-left-axis-title', showFlyout);
+    self.$element.off('mouseout', '.socrata-visualization-left-axis-title', hideFlyout);
 
-    self.$element.off('click', '.download-button', handleDownload);
+    self.$element.off('click', '.socrata-visualization-download-button', handleDownload);
   }
 
   function showFlyout(event) {
@@ -603,7 +607,7 @@ function SvgVisualization($element, vif) {
   renderTemplate();
   attachEvents();
 
-  this.$container = self.$element.find('.visualization');
+  this.$container = self.$element.find('.socrata-visualization');
 
   this.updateVif(vif);
 }

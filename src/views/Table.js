@@ -61,7 +61,7 @@ module.exports = function Table(element, originalVif) {
 
     self.
       $element.
-        find('.visualization-container').
+        find('.socrata-visualization-container').
           removeClass('loaded');
 
     superRenderError(
@@ -124,7 +124,7 @@ module.exports = function Table(element, originalVif) {
 
     // If we rendered placeholder data, remove it.
     if (!alreadyHasData) {
-      element.find('.table-container').remove();
+      self.$element.find('.socrata-table').remove();
     }
 
     return maxRowCount;
@@ -379,7 +379,7 @@ module.exports = function Table(element, originalVif) {
 
       self.
         $element.
-        find('.visualization-container').
+        find('.socrata-visualization-container').
         append($template);
     }
 
@@ -449,7 +449,7 @@ module.exports = function Table(element, originalVif) {
 
     self.
       $element.
-      find('.visualization-container').
+      find('.socrata-visualization-container').
       addClass('loaded');
   }
 

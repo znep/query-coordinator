@@ -5,29 +5,28 @@ describe AdministrationController do
 
   let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
 
-  describe 'georegions' do
+  # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
+  describe 'georegions', :verify_stubs => false do
     before(:each) do
       init_current_user(controller)
       init_current_domain
-      allow_any_instance_of(ApplicationController).to receive(:default_url_options).and_return({})
-      allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
-      allow_any_instance_of(ApplicationController).to receive(:set_user)
-      allow_any_instance_of(ApplicationController).to receive(:set_meta)
-      allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
-      allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return([])
-      allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return([])
+      allow(subject).to receive(:default_url_options).and_return({})
+      allow(subject).to receive(:sync_logged_in_cookie)
+      allow(subject).to receive(:set_user)
+      allow(subject).to receive(:set_meta)
+      allow(subject).to receive(:feature_flag?).and_return(true)
+      allow(subject).to receive(:incomplete_curated_region_jobs).and_return([])
+      allow(subject).to receive(:failed_curated_region_jobs).and_return([])
       allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
-      strings = Hashie::Mash.new
-      strings.site_title = 'My Site'
-      allow(CurrentDomain).to receive(:strings).and_return(strings)
+      allow(CurrentDomain).to receive(:strings).and_return(Hashie::Mash.new(:site_title => 'My Site'))
     end
 
     describe 'GET /admin/geo' do
 
       describe 'not logged in' do
         before(:each) do
-          allow_any_instance_of(UserAuthMethods).to receive(:current_user_session).and_return(nil)
-          allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(nil)
+          allow(subject).to receive(:current_user_session).and_return(nil)
+          allow(subject).to receive(:current_user).and_return(nil)
         end
 
         it 'should redirect to login page' do
@@ -36,9 +35,9 @@ describe AdministrationController do
         end
       end
 
-      describe 'not admin user' do
+      describe 'logged in as viewer user' do
         before(:each) do
-          stub_non_admin_user
+          stub_viewer_user
         end
 
         it 'should be forbidden' do
@@ -49,7 +48,7 @@ describe AdministrationController do
 
       describe 'logged in as admin user' do
         before(:each) do
-          stub_admin_user
+          stub_administrator_user
         end
 
         it 'responds successfully with a 200 HTTP status code' do
@@ -70,21 +69,18 @@ describe AdministrationController do
         end
 
         it 'does not error if CRJQ and ISS are down' do
-          allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
-          allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
-
           curated_region = build(:curated_region)
           allow(CuratedRegion).to receive(:find).and_return([curated_region])
 
-          allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_call_original
-          allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_call_original
+          allow(subject).to receive(:incomplete_curated_region_jobs).and_call_original
+          allow(subject).to receive(:failed_curated_region_jobs).and_call_original
           allow_any_instance_of(CuratedRegionJobQueue).to receive(:get_queue).and_raise('CRJQ is down')
           allow(ImportStatusService).to receive(:get).and_raise('ISS is down')
 
           get :georegions
           expect(response).to be_success
           expect(response).to have_http_status(200)
-          expect(flash[:notice]).to include('Translation for: screens.admin.georegions.flashes.service_unavailable')
+          expect(flash[:notice]).to include('We are experiencing technical issues')
         end
 
         it 'loads template data into @georegions' do
@@ -136,7 +132,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1) }
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
 
         # TODO: Remove this stub once using synthetic spatial lens shape ids exclusively
         feature_flags = Hashie::Mash.new
@@ -185,10 +181,8 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
-        allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
-        allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
       end
 
       it 'redirects to /admin/geo for html requests' do
@@ -199,10 +193,7 @@ describe AdministrationController do
       it 'returns a response for json requests' do
         put :edit_georegion, :id => 1, :format => :json
         expect(response).to have_http_status(200)
-        expect(response.body).to eq({
-          :error => true,
-          :message => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
-        }.to_json)
+        expect(response.body).to include('Something went wrong')
       end
 
       it 'edits the region' do
@@ -214,9 +205,8 @@ describe AdministrationController do
 
       describe 'with core server error' do
         before(:each) do
-          allow_any_instance_of(::Services::Administration::GeoregionEditor).
-            to receive(:edit).
-              and_raise(CoreServer::CoreServerError.new(1, 2, 3))
+          allow_any_instance_of(::Services::Administration::GeoregionEditor).to receive(:edit).
+            and_raise(CoreServer::CoreServerError.new(1, 2, 3))
         end
 
         describe 'html request' do
@@ -225,7 +215,7 @@ describe AdministrationController do
           end
 
           it 'sets the appropriate flash error' do
-            expect(flash[:error]).to eq('Translation for: screens.admin.georegions.configure_boundary.save_error')
+            expect(flash[:error]).to include('Something went wrong')
           end
 
           it 'redirects to /admin/geo' do
@@ -239,19 +229,15 @@ describe AdministrationController do
           end
 
           it 'set the appropriate error' do
-            expect(JSON.parse(response.body)).to include(
-              'error' => true,
-              'message' => 'Translation for: screens.admin.georegions.configure_boundary.save_error'
-            )
+            expect(JSON.parse(response.body)['message']).to include('Something went wrong')
           end
         end
       end
 
       describe 'with missing name' do
         before(:each) do
-          allow_any_instance_of(::Services::Administration::GeoregionEditor).
-            to receive(:edit).
-              and_raise(::Services::Administration::MissingBoundaryNameError)
+          allow_any_instance_of(::Services::Administration::GeoregionEditor).to receive(:edit).
+            and_raise(::Services::Administration::MissingBoundaryNameError)
         end
 
         describe 'html request' do
@@ -259,7 +245,7 @@ describe AdministrationController do
             put :edit_georegion, :id => 1
           end
           it 'sets the appropriate error for failed html requests' do
-            expect(flash[:error]).to eq('Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error')
+            expect(flash[:error]).to include('boundary must have a name')
           end
 
           it 're-renders the /admin/geo/:id/configure page for html requests' do
@@ -273,10 +259,7 @@ describe AdministrationController do
           end
 
           it 'set the appropriate error' do
-            expect(JSON.parse(response.body)).to include(
-              'error' => true,
-              'message' => 'Translation for: screens.admin.georegions.configure_boundary.boundary_name_required_page_error'
-            )
+            expect(JSON.parse(response.body)['message']).to include('the boundary must have')
           end
         end
       end
@@ -294,10 +277,8 @@ describe AdministrationController do
       end
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
-        allow_any_instance_of(ApplicationHelper).to receive(:translate) { |_, key| "Translation for: #{key}" }
-        allow_any_instance_of(ApplicationHelper).to receive(:t) { |_, key| "Translation for: #{key}" }
       end
 
       it 'renders' do
@@ -318,7 +299,7 @@ describe AdministrationController do
 
     describe 'DELETE /admin/geo/:id' do
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
       end
 
       it 'redirects to /admin/geo' do
@@ -331,7 +312,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_enabled).and_return([])
       end
@@ -354,7 +335,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
@@ -374,7 +355,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
 
       before(:each) do
-        stub_admin_user
+        stub_administrator_user
         allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
         allow(CuratedRegion).to receive(:find_default).and_return([])
       end
@@ -423,10 +404,10 @@ describe AdministrationController do
         allow(CuratedRegion).to receive(:find).and_return(
           [build(:curated_region), build(:curated_region), build(:curated_region)]
         )
-        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_return(
+        allow(subject).to receive(:incomplete_curated_region_jobs).and_return(
           [{ 'jobId' => 'cur8ed-r3g10n-j0b'}]
         )
-        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+        allow(subject).to receive(:failed_curated_region_jobs).and_return(
           [{ 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-1'}, { 'jobId' => 'f41l3d-cur8ed-r3g10n-j0b-2'}]
         )
 
@@ -443,10 +424,10 @@ describe AdministrationController do
         allow(CuratedRegion).to receive(:find).and_return(
           []
         )
-        allow_any_instance_of(GeoregionsHelper).to receive(:incomplete_curated_region_jobs).and_raise(
+        allow(subject).to receive(:incomplete_curated_region_jobs).and_raise(
           'CRJQ exploded'
         )
-        allow_any_instance_of(GeoregionsHelper).to receive(:failed_curated_region_jobs).and_return(
+        allow(subject).to receive(:failed_curated_region_jobs).and_return(
           []
         )
 
@@ -463,17 +444,14 @@ describe AdministrationController do
 
     before(:each) do
       init_current_user(controller)
-      allow_any_instance_of(ApplicationController).to receive(:default_url_options).and_return({})
-      allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
-      allow_any_instance_of(ApplicationController).to receive(:set_user)
-      allow_any_instance_of(ApplicationController).to receive(:set_meta)
-      allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
+      allow(subject).to receive(:default_url_options).and_return({})
+      allow(subject).to receive(:sync_logged_in_cookie)
+      allow(subject).to receive(:set_user)
+      allow(subject).to receive(:set_meta)
+      allow(subject).to receive(:feature_flag?).and_return(true)
       allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse('[{}]'))
       allow_any_instance_of(Configuration).to receive(:update_or_create_property)
-      strings = Hashie::Mash.new
-      strings.site_title = 'My Site'
       allow(CurrentDomain).to receive(:user_can?).with(anything, UserRights::EDIT_SITE_THEME).and_return(true)
-      allow(CurrentDomain).to receive(:strings).and_return(strings)
     end
 
     describe '#create_metadata_field' do
@@ -488,7 +466,7 @@ describe AdministrationController do
 
   end
 
-  describe 'site appearance panel' do
+  describe 'site appearance panel', :verify_stubs => false do
 
     context 'show_site_chrome_admin_panel helper method' do
       context 'as an anonymous user' do
@@ -498,20 +476,30 @@ describe AdministrationController do
         end
       end
 
-      context 'as a non-administrator' do
+      context 'as a viewer' do
         it 'should return false' do
-          user_double = double(User)
-          allow(user_double).to receive(:role_name).and_return('viewer')
-          allow(subject).to receive(:current_user).and_return(user_double)
+          stub_viewer_user
           expect(subject.show_site_chrome_admin_panel?).to eq(false)
         end
       end
 
-      context 'as an administrator or superadmin' do
+      context 'as a superadmin' do
         it 'should return true' do
-          user_double = double(User)
-          allow(user_double).to receive(:is_administrator_or_superadmin?).and_return(true)
-          allow(subject).to receive(:current_user).and_return(user_double)
+          stub_superadmin_user
+          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        end
+      end
+
+      context 'as an administrator' do
+        it 'should return true' do
+          stub_administrator_user
+          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        end
+      end
+
+      context 'as a designer' do
+        it 'should return true' do
+          stub_designer_user
           expect(subject.show_site_chrome_admin_panel?).to eq(true)
         end
       end
@@ -522,25 +510,33 @@ describe AdministrationController do
 
   private
 
-  def stub_admin_user
-    user_double = double(User)
-    allow(user_double).to receive(:is_superadmin?).and_return(false)
-    allow(user_double).to receive(:roleName).and_return('administrator')
-    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
+  def stub_administrator_user
+    user = User.new
+    allow(user).to receive(:is_superadmin?).and_return(false)
+    allow(user).to receive(:roleName).and_return('administrator')
+    allow(user).to receive(:role_name).and_return('administrator')
+    allow(subject).to receive(:current_user).and_return(user)
   end
 
   def stub_superadmin_user
-    user_double = double(User)
-    allow(user_double).to receive(:is_superadmin?).and_return(true)
-    allow(user_double).to receive(:roleName).and_return('viewer')
-    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
+    user = User.new
+    allow(user).to receive(:is_superadmin?).and_return(true)
+    allow(subject).to receive(:current_user).and_return(user)
   end
 
-  def stub_non_admin_user
-    user_double = double(User)
-    allow(user_double).to receive(:is_superadmin?).and_return(false)
-    allow(user_double).to receive(:roleName).and_return('viewer')
-    allow_any_instance_of(AdministrationController).to receive(:current_user).and_return(user_double)
+  def stub_designer_user
+    user = User.new
+    allow(user).to receive(:is_designer?).and_return(true)
+    allow(user).to receive(:roleName).and_return('designer')
+    allow(user).to receive(:role_name).and_return('designer')
+    allow(subject).to receive(:current_user).and_return(user)
+  end
+
+  def stub_viewer_user
+    user = User.new
+    allow(user).to receive(:is_superadmin?).and_return(false)
+    allow(user).to receive(:roleName).and_return('viewer')
+    allow(subject).to receive(:current_user).and_return(user)
   end
 
 end

@@ -20,6 +20,12 @@ module.exports = {
       commonjs2: 'jquery',
       commonjs: 'jquery',
       amd: 'jquery'
+    },
+    lodash: {
+      root: '_',
+      commonjs2: 'lodash',
+      commonjs: 'lodash',
+      amd: 'lodash'
     }
   },
   output: {

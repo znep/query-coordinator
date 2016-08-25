@@ -412,13 +412,6 @@ module ApplicationHelper
     return flash_obj
   end
 
-  # Relies on either a symlink to ../../node_modules, or manually copying files around.
-  # See also public/javascripts/site_appearance/main.js
-  # See also config/webpack/site-appearance.config.js
-  def socrata_styleguide
-    stylesheet_link_tag('/stylesheets/socrata-styleguide/css/styleguide.css', media: 'all')
-  end
-
 # DATE HELPERS
 
   def blist_date(time, no_html = false)

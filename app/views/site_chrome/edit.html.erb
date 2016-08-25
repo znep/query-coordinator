@@ -3,7 +3,6 @@
   <%= rendered_stylesheet_tag 'administration-index-screen' %>
   <%= rendered_stylesheet_tag 'administration-site-chrome' %>
   <title>Editing Site Chrome | <%= CurrentDomain.strings.site_title %></title>
-  <%= socrata_styleguide %>
 <% end %>
 
 <%= display_standard_flashes %>
@@ -68,5 +67,5 @@
 <% content_for :js_footer do %>
   <%= render_translations LocalePart.screens.admin.site_chrome %>
   <%= include_javascripts 'admin-site-chrome' %>
-  <%= include_webpack_bundle 'site-appearance/main.js' %>
+  <%= include_webpack_bundle 'site-chrome/main.js' %>
 <% end %>

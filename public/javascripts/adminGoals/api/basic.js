@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import 'whatwg-fetch';
 import { fetchOptions } from '../constants';
 
 function checkXhrStatus(response) {

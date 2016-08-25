@@ -45,7 +45,7 @@ export var TableView = React.createClass({
   renderTableView() {
     var { metadata, vif } = this.props;
     var $tableView = $(this.tableView);
-    var alreadyRendered = $tableView.find('.socrata-visualization').length === 1;
+    var alreadyRendered = $tableView.find('.visualization').length === 1;
 
     if (alreadyRendered) {
 

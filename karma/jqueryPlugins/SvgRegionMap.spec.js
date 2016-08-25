@@ -297,7 +297,7 @@ describe('SvgRegionMap jQuery component', function() {
       });
 
       setTimeout(function() {
-        $container.find('.socrata-visualization-container')[0].dispatchEvent(
+        $container.find('.visualization-container')[0].dispatchEvent(
           new window.CustomEvent(
             'SOCRATA_VISUALIZATION_REGION_MAP_REGION_SELECTED',
             {

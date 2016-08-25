@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 var DEFAULT_VIF = {
   configuration: {
-    axisTitles: {
+    axisLabels: {
       top: false,
       right: false,
       bottom: false,

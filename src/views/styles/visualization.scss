@@ -12,7 +12,7 @@ $axis-font-size: 14px;
 $axis-offset: 21px;
 $axis-padding: 42px;
 
-.socrata-visualization {
+.visualization {
   position: relative;
   width: 100%;
   height: 100%;
@@ -29,16 +29,16 @@ $axis-padding: 42px;
    * Title and description
    */
 
-  .socrata-visualization-title-container,
-  .socrata-visualization-description-container {
+  .title-container,
+  .description-container {
     position: relative;
     display: none;
     padding: 0 14px;
     background-color: #fff;
     box-sizing: border-box;
 
-    .socrata-visualization-title,
-    .socrata-visualization-description {
+    .title,
+    .description {
       position: relative;
       display: inline-block;
       width: auto;
@@ -49,27 +49,27 @@ $axis-padding: 42px;
     }
   }
 
-  .socrata-visualization-title-container {
+  .title-container {
     height: $title-height;
     padding-top: 7px;
 
-    .socrata-visualization-title {
+    .title {
       font-size: 20px;
       letter-spacing: -0.8px;
     }
   }
 
-  .socrata-visualization-description-container {
+  .description-container {
     height: $description-height;
 
-    .socrata-visualization-description {
+    .description {
       font-size: 13px;
       line-height: 17.3px;
       letter-spacing: -0.3px;
     }
   }
 
-  .socrata-visualization-info {
+  .info {
     position: absolute;
     display: none;
     width: 100%;
@@ -80,21 +80,21 @@ $axis-padding: 42px;
     border-top: 1px solid $visualization-border-color;
     box-sizing: border-box;
 
-    .socrata-visualization-view-source-data,
-    .socrata-visualization-panning-notice {
+    .view-source-data,
+    .panning-notice {
       display: none;
       margin: auto;
     }
 
-    .socrata-visualization-view-source-data {
+    .view-source-data {
       margin-left: 6px;
 
-      .socrata-visualization-icon-external {
+      .icon-external {
         margin-left: 6px;
       }
     }
 
-    .socrata-visualization-panning-notice {
+    .panning-notice {
       margin-right: 6px;
       color: #ccc;
       font-size: 14px;
@@ -105,7 +105,7 @@ $axis-padding: 42px;
     }
   }
 
-  .socrata-visualization-error-container {
+  .error-container {
     position: absolute;
     display: none;
     width: 100%;
@@ -114,7 +114,7 @@ $axis-padding: 42px;
     top: 0;
     z-index: 4;
 
-    .socrata-visualization-error-message {
+    .error-message {
       position: absolute;
       display: block;
       left: 50%;
@@ -129,7 +129,7 @@ $axis-padding: 42px;
     }
   }
 
-  .socrata-visualization-busy-indicator-container {
+  .busy-indicator-container {
     position: absolute;
     display: none;
     width: 64px;
@@ -141,7 +141,7 @@ $axis-padding: 42px;
     transform: translate(-50%, -50%);
     z-index: 5;
 
-    .socrata-visualization-busy-indicator {
+    .busy-indicator {
       @keyframes(spin) {
         100% {
           transform: rotate(360deg);
@@ -158,121 +158,120 @@ $axis-padding: 42px;
     }
   }
 
-  &.socrata-visualization-title {
+  &.title {
 
-    .socrata-visualization-title-container {
+    .title-container {
       display: block;
       padding-bottom: $title-description-padding;
       border-bottom: 1px solid $visualization-border-color;
     }
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$title-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-description {
+  &.description {
 
-    .socrata-visualization-title-container {
+    .title-container {
       padding-bottom: 0;
     }
 
-    .socrata-visualization-description-container {
+    .description-container {
       display: block;
       padding-top: $title-description-padding;
       padding-bottom: $title-description-padding;
       border-bottom: 1px solid $visualization-border-color;
     }
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$description-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-title.description {
+  &.title.description {
 
-    .socrata-visualization-title-container {
+    .title-container {
       border-bottom: none;
     }
 
-    .socrata-visualization-description-container {
+    .description-container {
       padding-top: 0;
       border-bottom: 1px solid $visualization-border-color;
     }
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-info {
+  &.info {
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$info-height});
     }
 
-    .socrata-visualization-info {
+    .info {
       display: flex;
     }
 
-    &.socrata-visualization-panning-notice .socrata-visualization-panning-notice {
+    &.panning-notice .panning-notice {
       display: block;
     }
 
-    &.socrata-visualization-view-source-data .socrata-visualization-view-source-data {
+    &.view-source-data .view-source-data {
       display: block;
     }
   }
 
-  &.socrata-visualization-title.socrata-visualization-info {
+  &.title.info {
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$title-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-description.socrata-visualization-info {
+  &.description.info {
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-info {
+  &.title.description.info {
 
-    .socrata-visualization-container {
+    .visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
     }
   }
 
-  &.socrata-visualization-error {
+  &.visualization-error {
 
-    .socrata-visualization-error-container {
+    .error-container {
       display: block;
-
       ul {
         text-align: left;
       }
     }
   }
 
-  &.socrata-visualization-busy {
+  &.visualization-busy {
 
-    .socrata-visualization-busy-indicator-container {
+    .busy-indicator-container {
       display: block;
     }
   }
 
-  &.socrata-visualization-title,
-  &.socrata-visualization-description {
+  &.title,
+  &.description {
 
-    .socrata-visualization-container {
+    .visualization-container {
       border-top: 1px solid $visualization-container-border-color;
     }
   }
@@ -281,7 +280,7 @@ $axis-padding: 42px;
    * The container for the actual visualization
    */
 
-  .socrata-visualization-container {
+  .visualization-container {
     position: relative;
     display: block;
     width: 100%;
@@ -290,13 +289,13 @@ $axis-padding: 42px;
     box-sizing: border-box;
 
     /**
-     * Axis titles
+     * Axis labels
      */
 
-    .socrata-visualization-top-axis-title,
-    .socrata-visualization-right-axis-title,
-    .socrata-visualization-bottom-axis-title,
-    .socrata-visualization-left-axis-title {
+    .top-axis-label,
+    .right-axis-label,
+    .bottom-axis-label,
+    .left-axis-label {
       position: absolute;
       font-size: $axis-font-size;
       color: #767676;
@@ -306,28 +305,28 @@ $axis-padding: 42px;
       visibility: hidden;
     }
 
-    .socrata-visualization-top-axis-title {
+    .top-axis-label {
       left: 50%;
       top: $axis-font-size;
       transform-origin: left top 0;
       transform: translate(-50%, 0);
     }
 
-    .socrata-visualization-right-axis-title {
+    .right-axis-label {
       right: 2 * $axis-font-size;
       top: 50%;
       transform-origin: right top 0;
       transform: rotate(-90deg) translate(50%, 0);
     }
 
-    .socrata-visualization-bottom-axis-title {
+    .bottom-axis-label {
       left: 50%;
       bottom: $axis-font-size;
       transform-origin: left top 0;
       transform: translate(-50%, 0);
     }
 
-    .socrata-visualization-left-axis-title {
+    .left-axis-label {
       left: $axis-font-size;
       top: 50%;
       transform-origin: left top 0;
@@ -335,45 +334,45 @@ $axis-padding: 42px;
     }
   }
 
-  &.socrata-visualization-top-axis-title {
+  &.top-axis-label {
 
-    .socrata-visualization-container {
+    .visualization-container {
       padding-top: $axis-padding;
 
-      .socrata-visualization-top-axis-title {
+      .top-axis-label {
         visibility: visible;
       }
     }
   }
 
-  &.socrata-visualization-right-axis-title {
+  &.right-axis-label {
 
-    .socrata-visualization-container {
+    .visualization-container {
       padding-right: $axis-padding;
 
-      .socrata-visualization-right-axis-title {
+      .right-axis-label {
         visibility: visible;
       }
     }
   }
 
-  &.socrata-visualization-bottom-axis-title {
+  &.bottom-axis-label {
 
-    .socrata-visualization-container {
+    .visualization-container {
       padding-bottom: $axis-padding;
 
-      .socrata-visualization-bottom-axis-title {
+      .bottom-axis-label {
         visibility: visible;
       }
     }
   }
 
-  &.socrata-visualization-left-axis-title {
+  &.left-axis-label {
 
-    .socrata-visualization-container {
+    .visualization-container {
       padding-left: $axis-padding;
 
-      .socrata-visualization-left-axis-title {
+      .left-axis-label {
         visibility: visible;
       }
     }

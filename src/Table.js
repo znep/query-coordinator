@@ -115,7 +115,7 @@ $.fn.socrataTable = function(originalVif) {
     //
     // Note that the Pager will not actually modify the DOM until you actually
     // call render, so we do that as well.
-    pager = new Pager($element.find('.socrata-visualization-container'));
+    pager = new Pager($element.find('.visualization-container'));
     pager.render(computePagerOptions());
 
     // Note that we do this here and not just call computePageSize() as an
@@ -475,7 +475,7 @@ $.fn.socrataTable = function(originalVif) {
       return 0;
     }
 
-    const overallHeight = $element.find('.socrata-visualization-container').height();
+    const overallHeight = $element.find('.visualization-container').height();
     const pagerHeight = $element.find('.socrata-pager').outerHeight();
     const heightRemaining = overallHeight - pagerHeight;
 

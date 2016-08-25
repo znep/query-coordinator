@@ -239,7 +239,7 @@ function SvgFeatureMap(element, vif) {
     mapPanZoomDisabledWarning = $mapPanZoomDisabledWarning;
     mapLocateUserButton = $mapLocateUserButton;
 
-    self.$element.find('.socrata-visualization-container').append(mapContainer);
+    self.$element.find('.visualization-container').append(mapContainer);
   }
 
   function attachEvents() {

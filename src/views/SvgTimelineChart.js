@@ -107,7 +107,7 @@ function SvgTimelineChart($element, vif) {
 
     self.
       $element.
-        find('.visualization-container').
+        find('.socrata-visualization-container').
           remove();
   };
 
@@ -126,7 +126,7 @@ function SvgTimelineChart($element, vif) {
 
     self.
       $element.
-        find('.visualization-container').
+        find('.socrata-visualization-container').
           append($chartElement);
   }
 

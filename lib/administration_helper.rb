@@ -23,7 +23,7 @@ module AdministrationHelper
   end
 
   def show_site_chrome_admin_panel?
-    !!current_user.try(:is_administrator_or_superadmin?)
+    !!current_user.try(:can_use_site_appearance?)
   end
 
 end

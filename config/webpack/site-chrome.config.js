@@ -27,7 +27,7 @@ module.exports = _.defaultsDeep({
         include: path.resolve(common.root, 'public/javascripts'),
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       },
-      { test: /\.css$/, loader: "style-loader!css-loader" },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         loader: 'file?name=not-sure-where/fonts/[name].[ext]'

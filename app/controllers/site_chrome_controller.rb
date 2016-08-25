@@ -5,7 +5,7 @@ class SiteChromeController < ApplicationController
   include CommonSocrataMethods # forwardable_session_cookies
 
   # TODO: rename to before_action with Rails upgrade
-  before_filter :ensure_admin_or_superadmin
+  before_filter :ensure_access
   before_filter :find_or_create_default_site_chrome
 
   def tab_sections
@@ -43,9 +43,9 @@ class SiteChromeController < ApplicationController
 
   private
 
-  def ensure_admin_or_superadmin
+  def ensure_access
     if current_user.present?
-      render_forbidden unless current_user.is_administrator_or_superadmin?
+      render_forbidden unless current_user.can_use_site_appearance?
     else
       redirect_to(login_url)
     end

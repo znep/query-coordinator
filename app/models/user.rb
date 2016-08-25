@@ -180,10 +180,12 @@ class User < Model
     flag?('admin')
   end
 
-  # An "administrator" in this context, means a customer who is a domain administrator that can change
-  # features or attributes on the customer domain itself, such as Site Appearance, and so on.
-  def is_administrator_or_superadmin?
-    role_name == 'administrator' || is_superadmin?
+  def is_administrator?
+    role_name == 'administrator'
+  end
+
+  def is_designer?
+    role_name == 'designer'
   end
 
   def has_right?(right)
@@ -192,6 +194,10 @@ class User < Model
 
   def can_approve?
     has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
+  end
+
+  def can_use_site_appearance?
+    is_superadmin? || is_administrator? || is_designer?
   end
 
   def role_name

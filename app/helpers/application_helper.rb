@@ -412,13 +412,6 @@ module ApplicationHelper
     return flash_obj
   end
 
-  # Relies on the tools/postinstall.sh to symlink stylesheets into /public.
-  # See also public/javascripts/site_appearance/main.js
-  # See also config/webpack/site-appearance.config.js
-  def socrata_styleguide
-    stylesheet_link_tag('/stylesheets/socrata-components/css/styleguide.min.css', media: 'all')
-  end
-
 # DATE HELPERS
 
   def blist_date(time, no_html = false)

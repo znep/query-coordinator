@@ -7,6 +7,10 @@ $red-btn-hover: #a55151;
 $faint-border-color: #ebebeb;
 
 .site-chrome {
+  .flannel-hidden {
+    display: none;
+  }
+
   font-family: "Open Sans", "Helvetica", Arial, sans-serif;
   max-width: 68rem;
   margin: 0 auto;

@@ -3,7 +3,8 @@
     <%= label_tag(form_field(fields), translation[:title]) %>
 
     <div class="dropdown btn btn-default" data-orientation="bottom" data-selectable data-dropdown>
-      <span><%= fetch_content(fields).presence || translation[:title] %></span><span class="icon-arrow-down"></span>
+      <%= dropdown_title_tag(fetch_content(fields), translation[:placeholder]) %>
+      <span class="icon-arrow-down"></span>
       <ul class="dropdown-options">
         <%= options %>
       </ul>

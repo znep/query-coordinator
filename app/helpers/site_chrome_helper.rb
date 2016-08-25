@@ -76,12 +76,20 @@ module SiteChromeHelper
         :class => 'localized-label-input',
         :placeholder => options.dig(:placeholder, :link_title)
       ) <<
-      content_tag(
-        :span,
-        nil,
-        :class => 'icon-move icon-move-vertical move-link-row',
+      # content_tag(
+      #   :span,
+      #   nil,
+      #   :class => 'icon-move-vertical move-link-row',
+      #   :title => t('screens.admin.site_chrome.move_link_row')
+      # ) <<
+
+      # Temporary img until we get the icon font in socrata-components
+      image_tag(
+        'admin/site_appearance/icon_move_vertical.svg',
+        :class => 'move-link-row',
         :title => t('screens.admin.site_chrome.move_link_row')
       ) <<
+
       text_field_tag(
         url_path, link['url'] || '',
         :class => 'url-input',
@@ -187,7 +195,7 @@ module SiteChromeHelper
 
   def signin_signout_checkbox(field, translation, options = {})
     fields = [:general, field]
-    content_tag :div do
+    content_tag(:div, nil, :class => 'signin-signout-checkbox') do
       label_tag form_field(fields), :class => ('indented' if options[:indent]) do
         html = check_box(
           form_field(fields[0..-2]),
@@ -249,9 +257,18 @@ module SiteChromeHelper
   def dropdown_option_tags(dropdown_options)
     dropdown_options.to_a.reduce('') do |result, option|
       result << content_tag(:li) do
-        link_to(option, '#', :value => option, :onclick => 'updateHiddenInputValue(this);')
+        link_to(option, '#', :value => option,
+          :onclick => 'dropdownValueSelected(this);'
+        )
       end
     end.html_safe
+  end
+
+  # Dropdown tag and its initial value (falls back to the placeholder if there isn't a value present)
+  def dropdown_title_tag(initial_value, placeholder)
+    content_tag(:span, nil, :class => initial_value.present? ? nil : 'placeholder') do
+      initial_value.presence || placeholder
+    end
   end
 
   # Should return true if the site chrome has never been activated, or if enabled for entire site

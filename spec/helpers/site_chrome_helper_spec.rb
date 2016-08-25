@@ -333,7 +333,7 @@ describe SiteChromeHelper do
       rza = result.search('a').first
       expect(rza.text).to eq('rza')
       expect(rza.attribute('href').value).to eq('#')
-      expect(rza.attribute('onclick').value).to eq('updateHiddenInputValue(this);')
+      expect(rza.attribute('onclick').value).to eq('dropdownValueSelected(this);')
     end
   end
 end

@@ -5,9 +5,20 @@ $red-text: #d06463;
 $red-btn: #ce6565;
 $red-btn-hover: #a55151;
 $faint-border-color: #ebebeb;
+$font_family: "Open Sans", "Helvetica", Arial, sans-serif;
+$link_color: #2279a6;
+
+.siteOuterWrapper {
+  background: white;
+}
 
 .site-chrome {
   font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+  .flannel-hidden {
+    display: none;
+  }
+
+  font-family: $font_family;
   max-width: 68rem;
   margin: 0 auto;
 
@@ -17,7 +28,7 @@ $faint-border-color: #ebebeb;
   }
 
   .section-separator {
-    border-bottom: 1px solid #d6d6d6;
+    border-bottom: 1px solid $faint-border-color;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
 
@@ -64,7 +75,7 @@ $faint-border-color: #ebebeb;
     }
     &.btn-primary {
       color: #fff;
-      background-color: #2279a6;
+      background-color: $link_color;
       border-color: #288dc1;
     }
     &.btn-transparent {
@@ -148,8 +159,8 @@ $faint-border-color: #ebebeb;
       }
 
       p {
-        margin: 1.75rem 0 0 0;
-        font-size: 12px;
+        margin: 0.25rem 0 1rem;
+        font-size: 13px;
         line-height: 1.2rem;
         color: $dark-grey;
       }
@@ -206,10 +217,21 @@ $faint-border-color: #ebebeb;
               cursor: default;
             }
           }
-          aside {
-            float: right;
-            p {
-              margin-top: 0;
+
+          &.signin-signout {
+            aside {
+              width: 100%;
+              margin: 0.25rem 0 1rem;
+              p {
+                color: $grey;
+                font-size: 14px;
+              }
+            }
+            .signin-signout-checkbox {
+              label {
+                font-size: 14px;
+                margin-bottom: 0;
+              }
             }
           }
         }
@@ -234,6 +256,7 @@ $faint-border-color: #ebebeb;
           font-size: 15px;
           padding: 8px;
           margin-bottom: 12px;
+          font-family: $font_family;
 
           &::-webkit-input-placeholder {
             font-style: italic;
@@ -267,6 +290,10 @@ $faint-border-color: #ebebeb;
             float: right;
             line-height: 24px;
           }
+
+          span.placeholder {
+            font-style: italic;
+          }
         }
       }
 
@@ -274,6 +301,11 @@ $faint-border-color: #ebebeb;
         display: inline-block;
         width: calc(35% - 1.5rem);
         vertical-align: middle;
+
+        a, a:visited {
+          color: $link_color;
+          font-weight: 600;
+        }
 
         p {
           margin: 0;
@@ -347,6 +379,18 @@ $faint-border-color: #ebebeb;
             border: solid 1px #c2c2c2;
             border-radius: 1px;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            font-family: $font_family;
+            &::-webkit-input-placeholder {
+              font-style: italic;
+            }
+            &::-moz-placeholder {
+              font-style: italic;
+            }
+            /* firefox 19+ */
+            &:-ms-input-placeholder {
+              font-style: italic;
+            }
+            /* ie */
           }
 
           .move-link-row {
@@ -356,6 +400,12 @@ $faint-border-color: #ebebeb;
             line-height: 50px;
             position: relative;
             left: -5px;
+          }
+
+          // Temporary img until we get the icon font in socrata-components
+          img.move-link-row {
+            height: 22px;
+            margin-top: 14px;
           }
 
           .remove-link-row {
@@ -385,6 +435,7 @@ $faint-border-color: #ebebeb;
             border: solid 1px #c2c2c2;
             border-radius: 1px;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            font-family: $font_family;
           }
 
           .remove-link-menu {
@@ -456,6 +507,11 @@ $faint-border-color: #ebebeb;
           font-size: 10pt;
           line-height: 1.2rem;
           margin: 0 0 16px;
+        }
+
+        a, a:visited {
+          color: $link_color;
+          font-weight: 600;
         }
 
         &:last-of-type {

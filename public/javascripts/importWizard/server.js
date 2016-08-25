@@ -86,7 +86,7 @@ export function proceedFromMetadataPane() {
         case 'CREATE_FROM_SCRATCH':
           dispatch(goToPage('Finish'));
           break;
-        case 'LinkToExternal':
+        case 'LINK_EXTERNAL':
           dispatch(saveMetadataToViewsApi());
           dispatch(goToPage('Finish'));
           break;
@@ -136,7 +136,6 @@ function hrefMetadata(href, meta) {
     accessPoints: {
       com: href
     },
-    rowLabel: 'Row',
     availableDisplayTypes: ['href'],
     renderTypeConfig: {
       visible: {
@@ -146,14 +145,17 @@ function hrefMetadata(href, meta) {
   });
 }
 
-function viewMetadata({href, displayType, rowLabel, mapLayer, customMetadata}) {
+function viewMetadata({href, rowLabel, mapLayer, customMetadata}) {
   var meta = {
     rowLabel: rowLabel,
     attributionLink: mapLayer,
     custom_fields: customMetadataModelToCoreView(customMetadata, false)
   };
-  if (displayType === 'href') return hrefMetadata(href, meta);
-  return meta;
+  if (href) {
+    return hrefMetadata(href, meta);
+  } else {
+    return meta;
+  }
 }
 
 export function modelToViewParam(metadata) {
@@ -274,6 +276,9 @@ export function coreViewContents(view) {
     customMetadata: coreViewToCustomMetadataModel(view),
     contactEmail: view.privateMetadata.contactEmail,
     displayType: view.displayType,
+    href: _.has(view.metadata, 'accessPoints')
+            ? view.metadata.accessPoints.com
+            : '',
     privacySettings: _.has(view, 'grants')
                         ? 'public'
                         : 'private'

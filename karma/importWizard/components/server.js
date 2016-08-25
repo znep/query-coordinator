@@ -49,8 +49,9 @@ describe("testing for API responses", () => {
       description: 'desc',
       category: 'cat',
       tags: ['one', 'two'],
-      rowLabel: 'row',
+      rowLabel: 'Row',
       mapLayer: 'link',
+      href: '',
       contactEmail: 'email@email.com',
       privacySettings: 'private',
       displayType: 'draft',
@@ -100,9 +101,7 @@ describe("testing for API responses", () => {
     }
   };
 
-  const navigation = {
-    path: []
-  };
+  const navigation = { path: [] };
 
   describe('translation between Redux model and /api/views payloads', () => {
     const customMetadata = metadata.contents.customMetadata;
@@ -147,7 +146,7 @@ describe("testing for API responses", () => {
   });
 
   describe('modelToViewParam', () => {
-    it('test everything else', () => {
+    it('test round trip without href', () => {
       const coreView = modelToViewParam(metadata, navigation);
       const viewMetadata = coreView.metadata;
 
@@ -155,13 +154,32 @@ describe("testing for API responses", () => {
       expect(coreView.description).to.equal('desc');
       expect(coreView.category).to.equal('cat');
       expect(coreView.tags).to.deep.equal(['one', 'two']);
-      expect(viewMetadata.rowLabel).to.equal('row');
+      expect(viewMetadata.rowLabel).to.equal('Row');
       expect(viewMetadata.attributionLink).to.equal('link');
       expect(coreView.privateMetadata.contactEmail).to.equal('email@email.com');
       expect(coreView.attribution).to.equal('Me');
       expect(coreView.attributionLink).to.equal('google.com');
       expect(coreView.licenseId).to.equal('PDDL');
       expect(coreView.displayType).to.equal('draft');
+    });
+
+    it('test round trip with href', () => {
+      metadata.contents.href = 'yahoo.com';
+      const coreView = modelToViewParam(metadata, navigation);
+      const viewMetadata = coreView.metadata;
+
+      expect(coreView.name).to.equal('name');
+      expect(coreView.description).to.equal('desc');
+      expect(coreView.category).to.equal('cat');
+      expect(coreView.tags).to.deep.equal(['one', 'two']);
+      expect(viewMetadata.rowLabel).to.equal('Row');
+      expect(viewMetadata.attributionLink).to.equal('link');
+      expect(coreView.privateMetadata.contactEmail).to.equal('email@email.com');
+      expect(coreView.attribution).to.equal('Me');
+      expect(coreView.attributionLink).to.equal('google.com');
+      expect(coreView.licenseId).to.equal('PDDL');
+      expect(coreView.displayType).to.equal('draft');
+      expect(viewMetadata.accessPoints.com).to.equal('yahoo.com');
     });
   });
 

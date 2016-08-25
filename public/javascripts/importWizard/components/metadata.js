@@ -111,163 +111,163 @@ export function emptyForName(name: string): DatasetMetadata {
   };
 }
 
-const MD_UPDATE_NAME = 'MD_UPDATE_NAME';
+const METADATA_UPDATE_NAME = 'METADATA_UPDATE_NAME';
 export function updateName(newName: string) {
   return {
-    type: MD_UPDATE_NAME,
+    type: METADATA_UPDATE_NAME,
     newName: newName
   };
 }
 
-const MD_UPDATE_DESCRIPTION = 'MD_UPDATE_DESCRIPTION';
+const METADATA_UPDATE_DESCRIPTION = 'METADATA_UPDATE_DESCRIPTION';
 export function updateDescription(newDescription: string) {
   return {
-    type: MD_UPDATE_DESCRIPTION,
+    type: METADATA_UPDATE_DESCRIPTION,
     newDescription: newDescription
   };
 }
 
-const MD_UPDATE_CATEGORY = 'MD_UPDATE_CATEGORY';
+const METADATA_UPDATE_CATEGORY = 'METADATA_UPDATE_CATEGORY';
 export function updateCategory(newCategory: string) {
   return {
-    type: MD_UPDATE_CATEGORY,
+    type: METADATA_UPDATE_CATEGORY,
     newCategory: newCategory
   };
 }
 
-const MD_UPDATE_TAGS = 'MD_UPDATE_TAGS';
+const METADATA_UPDATE_TAGS = 'METADATA_UPDATE_TAGS';
 export function updateTags(newTags: string) {
   return {
-    type: MD_UPDATE_TAGS,
+    type: METADATA_UPDATE_TAGS,
     newTags: newTags
   };
 }
 
-const MD_UPDATE_ROWLABEL = 'MD_UPDATE_ROWLABEL';
+const METADATA_UPDATE_ROWLABEL = 'METADATA_UPDATE_ROWLABEL';
 export function updateRowLabel(newRowLabel: string) {
   return {
-    type: MD_UPDATE_ROWLABEL,
+    type: METADATA_UPDATE_ROWLABEL,
     newRowLabel: newRowLabel
   };
 }
 
-const MD_UPDATE_MAPLAYER = 'MD_UPDATE_MAPLAYER';
+const METADATA_UPDATE_MAPLAYER = 'METADATA_UPDATE_MAPLAYER';
 export function updateMapLayer(newMapLayer: string) {
   return {
-    type: MD_UPDATE_MAPLAYER,
+    type: METADATA_UPDATE_MAPLAYER,
     newMapLayer: newMapLayer
   };
 }
 
-const MD_UPDATE_LICENSENAME = 'MD_UPDATE_LICENSENAME';
+const METADATA_UPDATE_LICENSENAME = 'METADATA_UPDATE_LICENSENAME';
 export function updateLicenseName(newLicenseName: string) {
   return {
-    type: MD_UPDATE_LICENSENAME,
+    type: METADATA_UPDATE_LICENSENAME,
     newLicenseName: newLicenseName
   };
 }
 
-const MD_UPDATE_LICENSING = 'MD_UPDATE_LICENSING';
+const METADATA_UPDATE_LICENSING = 'METADATA_UPDATE_LICENSING';
 export function updateLicensing(newLicensing: string) {
   return {
-    type: MD_UPDATE_LICENSING,
+    type: METADATA_UPDATE_LICENSING,
     newLicensing: newLicensing
   };
 }
 
-const MD_UPDATE_LICENSEATTRIBUTION = 'MD_UPDATE_LICENSEATTRIBUTION';
+const METADATA_UPDATE_LICENSEATTRIBUTION = 'METADATA_UPDATE_LICENSEATTRIBUTION';
 export function updateLicenseAttribution(newLicenseAttribution: string) {
   return {
-    type: MD_UPDATE_LICENSEATTRIBUTION,
+    type: METADATA_UPDATE_LICENSEATTRIBUTION,
     newLicenseAttribution: newLicenseAttribution
   };
 }
 
-const MD_UPDATE_LICENSESOURCELINK = 'MD_UPDATE_LICENSESOURCELINK';
+const METADATA_UPDATE_LICENSESOURCELINK = 'METADATA_UPDATE_LICENSESOURCELINK';
 export function updateLicenseSourceLink(newLicenseSourceLink: string) {
   return {
-    type: MD_UPDATE_LICENSESOURCELINK,
+    type: METADATA_UPDATE_LICENSESOURCELINK,
     newLicenseSourceLink: newLicenseSourceLink
   };
 }
 
-const MD_UPDATE_CUSTOMMETADATA = 'MD_UPDATE_CUSTOMMETADATA';
+const METADATA_UPDATE_CUSTOMMETADATA = 'METADATA_UPDATE_CUSTOMMETADATA';
 export function updateCustomData(newCustomData: string, setName: string, fieldIdx: number) {
   return {
-    type: MD_UPDATE_CUSTOMMETADATA,
+    type: METADATA_UPDATE_CUSTOMMETADATA,
     newCustomData: newCustomData,
     setName: setName,
     fieldIdx: fieldIdx
   };
 }
 
-const MD_UPDATE_PRIVACYSETTINGS = 'MD_UPDATE_PRIVACYSETTINGS';
+const METADATA_UPDATE_PRIVACYSETTINGS = 'METADATA_UPDATE_PRIVACYSETTINGS';
 export function updatePrivacySettings(newPrivacySettings: string) {
   return {
-    type: MD_UPDATE_PRIVACYSETTINGS,
+    type: METADATA_UPDATE_PRIVACYSETTINGS,
     newPrivacySettings: newPrivacySettings
   };
 }
 
-const MD_UPDATE_CONTACTEMAIL = 'MD_UPDATE_CONTACTEMAIL';
+const METADATA_UPDATE_CONTACTEMAIL = 'METADATA_UPDATE_CONTACTEMAIL';
 export function updateContactEmail(newContactEmail: string) {
   return {
-    type: MD_UPDATE_CONTACTEMAIL,
+    type: METADATA_UPDATE_CONTACTEMAIL,
     newContactEmail: newContactEmail
   };
 }
 
-const MD_UPDATE_NEXTCLICKED = 'MD_UPDATE_NEXTCLICKED';
+const METADATA_UPDATE_NEXTCLICKED = 'METADATA_UPDATE_NEXTCLICKED';
 export function updateNextClicked() {
   return {
-    type: MD_UPDATE_NEXTCLICKED
+    type: METADATA_UPDATE_NEXTCLICKED
   };
 }
 
-const MD_LAST_SAVED = 'MD_LAST_SAVED';
+const METADATA_LAST_SAVED = 'METADATA_LAST_SAVED';
 export function updateLastSaved(savedMetadata) {
   return {
-    type: MD_LAST_SAVED,
+    type: METADATA_LAST_SAVED,
     savedMetadata: _.cloneDeep(savedMetadata)
   };
 }
 
-const MD_SAVE_START = 'MD_SAVE_START';
+const METADATA_SAVE_START = 'METADATA_SAVE_START';
 export function metadataSaveStart() {
   return {
-    type: MD_SAVE_START
+    type: METADATA_SAVE_START
   };
 }
 
-const MD_SAVE_COMPLETE = 'MD_SAVE_COMPLETE';
+const METADATA_SAVE_COMPLETE = 'METADATA_SAVE_COMPLETE';
 export function metadataSaveComplete(contents) {
   return {
-    type: MD_SAVE_COMPLETE,
+    type: METADATA_SAVE_COMPLETE,
     contents: contents
   };
 }
 
-const MD_SAVE_ERROR = 'MD_SAVE_ERROR';
+const METADATA_SAVE_ERROR = 'METADATA_SAVE_ERROR';
 export function metadataSaveError(err) {
   return {
-    type: MD_SAVE_ERROR,
+    type: METADATA_SAVE_ERROR,
     err: err
   };
 }
 
-const MD_UPDATE_HREF = 'MD_UPDATE_HREF';
+const METADATA_UPDATE_HREF = 'METADATA_UPDATE_HREF';
 export function updateHref(href) {
   return {
-    type: MD_UPDATE_HREF,
+    type: METADATA_UPDATE_HREF,
     href: href
   };
 }
 
 
-const MD_UPDATE_DISPLAY_TYPE = 'MD_UPDATE_DISPLAY_TYPE';
+const METADATA_UPDATE_DISPLAY_TYPE = 'METADATA_UPDATE_DISPLAY_TYPE';
 export function updateDisplayType(operation) {
   return {
-    type: MD_UPDATE_DISPLAY_TYPE,
+    type: METADATA_UPDATE_DISPLAY_TYPE,
     operation: operation
   };
 }
@@ -283,7 +283,7 @@ export const update =
 
 export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
   switch (action.type) {
-    case MD_LAST_SAVED:
+    case METADATA_LAST_SAVED:
       return {
         lastSavedContents: _.cloneDeep(action.savedMetadata.contents),
         lastSavedLicense: _.cloneDeep(action.savedMetadata.license)
@@ -295,38 +295,38 @@ export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action
 
 export function updateContents(contents = emptyContents(''), action): DatasetMetadata {
   switch (action.type) {
-    case MD_UPDATE_NAME:
+    case METADATA_UPDATE_NAME:
       return {
         ...contents,
         name: action.newName
       };
-    case MD_UPDATE_DESCRIPTION:
+    case METADATA_UPDATE_DESCRIPTION:
       return {
         ...contents,
         description: action.newDescription
       };
-    case MD_UPDATE_CATEGORY:
+    case METADATA_UPDATE_CATEGORY:
       return {
         ...contents,
         category: action.newCategory
       };
-    case MD_UPDATE_TAGS:
+    case METADATA_UPDATE_TAGS:
       contents.tags = action.newTags.split(',');
       return {
         ...contents,
         tags: contents.tags
       };
-    case MD_UPDATE_ROWLABEL:
+    case METADATA_UPDATE_ROWLABEL:
       return {
         ...contents,
         rowLabel: action.newRowLabel
       };
-    case MD_UPDATE_MAPLAYER:
+    case METADATA_UPDATE_MAPLAYER:
       return {
         ...contents,
         mapLayer: action.newMapLayer
       };
-    case MD_UPDATE_CUSTOMMETADATA: {
+    case METADATA_UPDATE_CUSTOMMETADATA: {
       const newCustomMetadata = _.cloneDeep(contents.customMetadata);
       newCustomMetadata[action.setName][action.fieldIdx].value = action.newCustomData;
 
@@ -335,22 +335,22 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
         customMetadata: newCustomMetadata
       };
     }
-    case MD_UPDATE_PRIVACYSETTINGS:
+    case METADATA_UPDATE_PRIVACYSETTINGS:
       return {
         ...contents,
         privacySettings: action.newPrivacySettings
       };
-    case MD_UPDATE_CONTACTEMAIL:
+    case METADATA_UPDATE_CONTACTEMAIL:
       return {
         ...contents,
         contactEmail: action.newContactEmail
       };
-    case MD_UPDATE_DISPLAY_TYPE:
+    case METADATA_UPDATE_DISPLAY_TYPE:
       return {
         ...contents,
         displayType: displayTypeFor(action.operation)
       };
-    case MD_UPDATE_HREF:
+    case METADATA_UPDATE_HREF:
       return {
         ...contents,
         href: action.href
@@ -362,9 +362,9 @@ export function updateContents(contents = emptyContents(''), action): DatasetMet
 
 function displayTypeFor(operation) {
   switch (operation) {
-    case 'LinkToExternal':
+    case 'LINK_EXTERNAL':
       return 'href';
-    case 'CreateFromScratch':
+    case 'CREATE_FROM_SCRATCH':
       return 'tabular';
     default:
       return 'draft';
@@ -373,7 +373,7 @@ function displayTypeFor(operation) {
 
 export function updateLicense(license = emptyLicense(), action): LicenseType {
   switch (action.type) {
-    case MD_UPDATE_LICENSENAME: {
+    case METADATA_UPDATE_LICENSENAME: {
       const licenseByName = licenseFind(action.newLicenseName);
       if (_.has(licenseByName, 'licenses')) {
         const firstLicensing = licenseByName.licenses[0];
@@ -392,7 +392,7 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
         };
       }
     }
-    case MD_UPDATE_LICENSING: {
+    case METADATA_UPDATE_LICENSING: {
       const licenseByName = licenseFind(license.licenseName).licenses;
       const newLicenseId = _.find(licenseByName, (l) => {
         return l.name === action.newLicensing;
@@ -403,12 +403,12 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
         licenseId: newLicenseId
       };
     }
-    case MD_UPDATE_LICENSEATTRIBUTION:
+    case METADATA_UPDATE_LICENSEATTRIBUTION:
       return {
         ...license,
         attribution: action.newLicenseAttribution
       };
-    case MD_UPDATE_LICENSESOURCELINK:
+    case METADATA_UPDATE_LICENSESOURCELINK:
       return {
         ...license,
         sourceLink: action.newLicenseSourceLink
@@ -420,7 +420,7 @@ export function updateLicense(license = emptyLicense(), action): LicenseType {
 
 export function updateForNextClicked(nextClicked: boolean = false, action) {
   switch (action.type) {
-    case MD_UPDATE_NEXTCLICKED:
+    case METADATA_UPDATE_NEXTCLICKED:
       return true;
     default:
       return nextClicked;
@@ -429,11 +429,11 @@ export function updateForNextClicked(nextClicked: boolean = false, action) {
 
 export function updateApiCallState(apiCallState = {type: 'Not Started'}, action) {
   switch (action.type) {
-    case MD_SAVE_START:
+    case METADATA_SAVE_START:
       return {type: 'In Progress'};
-    case MD_SAVE_COMPLETE:
+    case METADATA_SAVE_COMPLETE:
       return {type: 'Success', contents: action.contents};
-    case MD_SAVE_ERROR:
+    case METADATA_SAVE_ERROR:
       return {type: 'Error', error: action.err};
     default:
       return apiCallState;
@@ -515,7 +515,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
     return (
       <select
         className={field.name}
-        value={metadata.contents.customMetadata[setName][fieldIdx].value}
+        defaultValue={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} >
           {options.map((value) =>
             <option value={value}>{value}</option>
@@ -528,7 +528,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
       <input
         type="text"
         className={field.name}
-        value={metadata.contents.customMetadata[setName][fieldIdx].value}
+        defaultValue={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} />
     );
   }
@@ -599,13 +599,15 @@ function licenseFind(licenseName) {
 
 function renderHref(metadata, operation, validationErrors, onMetadataAction) {
   const I18nPrefixed = I18n.screens.edit_metadata;
-  if (operation === 'LinkToExternal') {
+  if (operation === 'LINK_EXTERNAL') {
     return (<div>
       <div className="line clearfix">
         <label className="required">{I18nPrefixed.dataset_url}</label>
         <input
           type="text"
           className="textPrompt url required"
+          defaultValue={metadata.contents.href}
+          placeholder={I18n.screens.edit_metadata.dataset_url}
           onBlur={(evt) => onMetadataAction(updateHref(evt.target.value))}
           title={I18nPrefixed.dataset_url_prompt} />
         {(!validationErrors.href && metadata.nextClicked)
@@ -626,7 +628,7 @@ function renderLicenses(metadata, onMetadataAction) {
         <label htmlFor="view_licenses">{I18n.screens.edit_metadata.license_type}</label>
         <select
           name="view[licenses]"
-          value={metadata.license.licenseName}
+          defaultValue={metadata.license.licenseName}
           onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
           {blistLicenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
         </select>
@@ -638,7 +640,7 @@ function renderLicenses(metadata, onMetadataAction) {
           <label htmlFor="view_licensing" className="required">{I18n.screens.edit_metadata.licensing}</label>
           <select
             name="view[licensing]"
-            value={metadata.license.licensing}
+            defaultValue={metadata.license.licensing}
             onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
             {licensesByName.licenses.map((obj) => <option value={obj.name}>{obj.name}</option>)}
           </select>
@@ -659,7 +661,7 @@ function renderLicenses(metadata, onMetadataAction) {
           type="text"
           name="view[attribution]"
           id="view_attribution"
-          value={metadata.license.attribution}
+          defaultValue={metadata.license.attribution}
           placeholder={I18n.screens.edit_metadata.data_provided_prompt}
           onChange={(evt) => onMetadataAction(updateLicenseAttribution(evt.target.value))}
           className="textPrompt" />
@@ -674,7 +676,7 @@ function renderLicenses(metadata, onMetadataAction) {
           type="text"
           name="view[attributionLink]"
           id="view_attributionLink"
-          value={metadata.license.sourceLink}
+          defaultValue={metadata.license.sourceLink}
           placeholder={I18n.screens.edit_metadata.source_link_prompt}
           onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
           className="textPrompt" />
@@ -735,7 +737,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
               name="view[name]"
               title={I18nPrefixed.dataset_title_prompt}
               className="textPrompt required error"
-              value={metadata.contents.name}
+              defaultValue={metadata.contents.name}
               onChange={(evt) => onMetadataAction(updateName(evt.target.value))} />
               {(!validationErrors.name && metadata.nextClicked)
                 ? <label htmlFor="view_name" className="error name">{I18n.screens.dataset_new.errors.missing_name}</label>
@@ -748,7 +750,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
               type="text"
               name="view[description]"
               title={I18nPrefixed.brief_description_prompt} className="textPrompt"
-              value={metadata.contents.description}
+              defaultValue={metadata.contents.description}
               placeholder={I18nPrefixed.brief_description_prompt}
               onChange={(evt) => onMetadataAction(updateDescription(evt.target.value))} />
           </div>
@@ -757,7 +759,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
             <label htmlFor="view_category">{I18nPrefixed.category}</label>
             <select
               name="view[category]"
-              value={metadata.contents.category}
+              defaultValue={metadata.contents.category}
               onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
               {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
             </select>
@@ -768,7 +770,8 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
             <input
               type="text" name="view[tags]"
               title={I18nPrefixed.tags_prompt}
-              value={metadata.contents.tags}
+              placeholder={I18n.screens.edit_metadata.tags_keywords}
+              defaultValue={metadata.contents.tags}
               className="textPrompt"
               onChange={(evt) => onMetadataAction(updateTags(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.keywords_help}</div>
@@ -780,7 +783,8 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
               type="text"
               name="view[rowLabel]"
               className="textPrompt"
-              value={metadata.contents.rowLabel}
+              placeholder={I18n.screens.edit_metadata.row_label}
+              defaultValue={metadata.contents.rowLabel}
               onChange={(evt) => onMetadataAction(updateRowLabel(evt.target.value))} />
             <div className="additionalHelp">{I18nPrefixed.row_label_help}</div>
           </div>
@@ -796,7 +800,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
                 type="text"
                 name="view[esri_src]"
                 className="textPrompt required"
-                value={metadata.contents.mapLayer}
+                defaultValue={metadata.contents.mapLayer}
                 onChange={(evt) => onMetadataAction(updateMapLayer(evt.target.value))} />
               {(!validationErrors.mapLayer && metadata.nextClicked)
                 ? <label htmlFor="view_esri" className="error">{I18n.screens.dataset_new.errors.missing_esri_url}</label>
@@ -850,7 +854,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
           <input
             type="text"
             name="view[contactEmail]"
-            value={metadata.contents.contactEmail}
+            defaultValue={metadata.contents.contactEmail}
             title={I18nPrefixed.email_address} className="textPrompt contactEmail"
             onChange={(evt) => onMetadataAction(updateContactEmail(evt.target.value))} />
           <div className="additionalHelp">{I18nPrefixed.email_help}</div>

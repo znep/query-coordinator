@@ -69,7 +69,7 @@ export function view(props) {
         <div
           className="external"
           title={I18nPrefixed.external_explain}
-          onClick={onChooseOperation('LinkToExternal')}>
+          onClick={onChooseOperation('LINK_EXTERNAL')}>
           <span className="icon"></span>
           <p>{I18nPrefixed.external}</p>
         </div>

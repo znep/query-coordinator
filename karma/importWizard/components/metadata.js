@@ -395,7 +395,7 @@ describe('view testing', () => {
 
   it('shows the href component when displayType is href', () => {
     state.contents.displayType = 'href'
-    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop, operation: 'LinkToExternal' }));
+    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop, operation: 'LINK_EXTERNAL' }));
     expect(element.querySelector('.textPrompt.url')).to.exist;
   });
 
@@ -409,13 +409,13 @@ describe('view testing', () => {
     let emitted = {};
     const element = renderComponent(view( {metadata: state, onMetadataAction: (action) => {
       emitted = action;
-    }, operation: 'LinkToExternal'}));
+    }, operation: 'LINK_EXTERNAL'}));
 
     let input = element.querySelector('input.url');
     input.value = 'foobar.com';
     TestUtils.Simulate.blur(input);
 
-    expect(emitted.type).to.equal('MD_UPDATE_HREF');
+    expect(emitted.type).to.equal('METADATA_UPDATE_HREF');
     expect(emitted.href).to.equal('foobar.com');
   });
 

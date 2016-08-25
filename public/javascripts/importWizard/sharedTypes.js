@@ -42,11 +42,12 @@ export type GeoLayer = {
   referenceSystem: string
 }
 
+
+// match https://github.com/socrata/core/blob/246c2cf811e81a0ac780e391632e56d77b4f0696/unobtainium/src/main/java/com/blist/models/views/ImportSource.java#L17-L17
 export type OperationName
-  = 'UploadData'
-  | 'DownloadData'
-  | 'UploadBlob'
-  | 'ConnectToEsri'
-  | 'UploadGeospatial'
-  | 'LinkToExternal'
-  | 'CreateFromScratch'
+  = 'UPLOAD_DATA'
+  | 'UPLOAD_BLOB'
+  | 'CONNECT_TO_ESRI'
+  | 'UPLOAD_GEO'
+  | 'LINK_EXTERNAL'
+  | 'CREATE_FROM_SCRATCH'

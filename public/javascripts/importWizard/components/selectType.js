@@ -7,20 +7,20 @@ export function view(props) {
   const {enabledModules, currentDomainMemberCurrentUser, onChooseOperation} = props;
 
   const firstSections = [
-    <li key="CreateFromScratch">
+    <li key="CREATE_FROM_SCRATCH">
       <div
         className="create"
         title={I18nPrefixed.create_explain}
-        onClick={onChooseOperation('CreateFromScratch')}>
+        onClick={onChooseOperation('CREATE_FROM_SCRATCH')}>
         <span className="icon"></span>
         <p>{I18nPrefixed.create}</p>
       </div>
     </li>,
-    <li key="UploadData">
+    <li key="UPLOAD_DATA">
       <div
         className="upload"
         title={I18nPrefixed.import_explain}
-        onClick={onChooseOperation('UploadData')}>
+        onClick={onChooseOperation('UPLOAD_DATA')}>
         <span className="icon"></span>
         <p>{I18nPrefixed.import}</p>
       </div>
@@ -46,7 +46,7 @@ export function view(props) {
         <div
           className="shapefile"
           title={I18nPrefixed.shapefile_explain}
-          onClick={onChooseOperation('UploadGeospatial')}>
+          onClick={onChooseOperation('UPLOAD_GEO')}>
           <span className="icon"></span>
           <p>{I18nPrefixed.shapefile}</p>
         </div>

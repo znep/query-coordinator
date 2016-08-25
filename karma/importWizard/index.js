@@ -286,3 +286,5 @@ window.blistLicenses = [
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));
+requireAll(require.context('./meta', true, /\.js$/));
+requireAll(require.context('./server', true, /\.js$/));

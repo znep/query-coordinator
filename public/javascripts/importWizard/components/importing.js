@@ -5,7 +5,7 @@ import format from 'stringformat';
 function renderProgressText(importStatus, operation) {
   let progressText = null;
   switch (operation) {
-    case 'UploadData':
+    case 'UPLOAD_DATA':
       switch (importStatus.type) {
         case 'InProgress':
           progressText = format(I18n.screens.import_pane.rows_imported_js, importStatus.progress.rowsImported);
@@ -13,7 +13,7 @@ function renderProgressText(importStatus, operation) {
       }
       break;
 
-    case 'UploadGeospatial':
+    case 'UPLOAD_GEO':
       switch (importStatus.type) {
         case 'InProgress':
           progressText = I18n.screens.import_pane[importStatus.progress.stage];

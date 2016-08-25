@@ -11,6 +11,7 @@ import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
 import * as Validation from './importColumns/validation';
 import NavigationControl from './navigationControl';
+import * as SaveState from '../saveState';
 
 /*
 - Blueprint: schema (names & types)
@@ -40,17 +41,18 @@ export type ColumnSource
 
 
 // TODO: rename to 'Model' or something. Ugh.
-type Transform = {
+export type Transform = {
   columns: Translation,
+  defaultColumns: Translation, // so we can reset back to this
   numHeaders: number,
   sample: Array<Array<string>>
 }
 
 
-type Translation = Array<ResultColumn>
+export type Translation = Array<ResultColumn>
 
 
-export function initialTranslation(summary: UploadFile.Summary): Transform {
+export function initialTranslation(summary: ST.Summary): Translation {
   const columns = summary.columns.map((column, idx) => (
     {
       columnSource: { type: 'SingleColumn', sourceColumn: column },
@@ -123,6 +125,23 @@ function removeColumn(index) {
   return {
     type: REMOVE_COLUMN,
     index: index
+  };
+}
+
+export function saveImportColumns() {
+  return (dispatch, getState) => {
+    const lastSavedVersion = getState().lastSavedVersion;
+    const datasetId = getState().datasetId;
+    SaveState.saveTransform(datasetId, lastSavedVersion, getState().transform).then((importSource) => {
+      dispatch(SaveState.stateSaved(importSource));
+    });
+  };
+}
+
+export const RESTORE_SUGGESTED_SETTINGS = 'RESTORE_SUGGESTED_SETTINGS';
+export function restoreSuggestedSettings() {
+  return {
+    type: RESTORE_SUGGESTED_SETTINGS
   };
 }
 
@@ -227,6 +246,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
       <NavigationControl
         onNext={nextAction}
         onPrev={goToPrevious}
+        onSave={() => dispatch(saveImportColumns())}
         cancelLink="/profile" />
     </div>
   );
@@ -302,11 +322,6 @@ ViewColumns.propTypes = {
 ViewToolbar.propTypes = {
   dispatch: PropTypes.func.isRequired
 };
-
-export const RESTORE_SUGGESTED_SETTINGS = 'RESTORE_SUGGESTED_SETTINGS';
-export function restoreSuggestedSettings() {
-  return { type: RESTORE_SUGGESTED_SETTINGS };
-}
 
 // TODO actually hook up buttons
 function ViewToolbar({dispatch}) {

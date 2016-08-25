@@ -113,7 +113,7 @@ describe("uploadFile's reducer", () => {
   describe('view', () => {
 
     it('renders an upload box with help text initially', () => {
-      const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UploadData'}));
+      const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       expect(element.querySelector('input.uploadFileName.valid').value)
         .to.equal(I18n.screens.dataset_new.upload_file.no_file_selected);
     });
@@ -129,7 +129,7 @@ describe("uploadFile's reducer", () => {
               percent: 6
             }
           },
-          operation: 'UploadData'
+          operation: 'UPLOAD_DATA'
         })
       );
       expect(element.querySelector('input.uploadFileName.valid').value)
@@ -149,7 +149,7 @@ describe("uploadFile's reducer", () => {
               error: 'There was a problem importing that file. Please make sure it is valid.'
             }
           },
-          operation: 'UploadData'
+          operation: 'UPLOAD_DATA'
         })
       );
       expect(element.querySelector('.flash-alert.error').innerText)
@@ -167,7 +167,7 @@ describe("uploadFile's reducer", () => {
               error: '{"error":{"reason":"incomplete_shapefile_error","english":"Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp.","params":{"missing":"SIGNIFICANT_ECOLOGICAL_AREA_(SEA).shp"}}}'
             }
           },
-          operation: 'UploadData'
+          operation: 'UPLOAD_DATA'
         })
       );
       expect(element.querySelector('.flash-alert.error').innerText)
@@ -176,15 +176,15 @@ describe("uploadFile's reducer", () => {
 
     it('dispatches the function for loading a file when the input of the fileUpload changes', () => {
       const spy = sinon.spy();
-      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       const fileInput = element.querySelector('input[type="file"]');
       TestUtils.Simulate.change(fileInput, {target: {files: ['afile'] }});
       expect(spy.callCount).to.equal(1);
-    })
+    });
 
     it('does not dispatch the function for loading a file when the input of the fileUpload changes to no file', () => {
       const spy = sinon.spy();
-      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UploadData'}));
+      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       const fileInput = element.querySelector('input[type="file"]');
       TestUtils.Simulate.change(fileInput, {target: {files: [] }});
       expect(spy.callCount).to.equal(0);

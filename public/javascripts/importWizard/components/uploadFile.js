@@ -9,6 +9,7 @@ import airbrake from '../airbrake';
 import {addColumnIndicesToSummary} from '../importUtils';
 import format from 'stringformat';
 
+
 type FileName = string
 
 type UploadProgress
@@ -22,20 +23,27 @@ type FileUpload
   = { type: 'NothingSelected' }
   | { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
 
-function scanUrlForOperation(operation: SharedTypes.OperationName) {
-  const urlAttrs = { pathname: '/imports2.txt' };
+function scanUrlForOperation(datasetId: string, operation: SharedTypes.OperationName) {
+  const urlAttrs = {
+    pathname: '/imports2.txt',
+    query: {
+      saveUnderViewUid: datasetId
+    }
+  };
   // TODO: NBE? Blobby?
   // TODO: error handling (extension checking)
   switch (operation) {
-    case 'UploadData':
+    case 'UPLOAD_DATA':
       urlAttrs.query = {
+        ...urlAttrs.query,
         method: 'scan',
         authenticity_token: authenticityToken,
         app_token: appToken
       };
       break;
-    case 'UploadGeospatial':
+    case 'UPLOAD_GEO':
       urlAttrs.query = {
+        ...urlAttrs.query,
         method: 'scanShape',
         authenticity_token: authenticityToken,
         app_token: appToken
@@ -49,9 +57,9 @@ function scanUrlForOperation(operation: SharedTypes.OperationName) {
 
 
 export function selectFile(file: File, operation: SharedTypes.OperationName) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const upload = new Upload(file);
-    upload.to(scanUrlForOperation(operation));
+    upload.to(scanUrlForOperation(getState().datasetId, operation));
     upload.on('progress', (evt) => {
       if (evt.percent === 100) {
         dispatch(fileUploadAnalyzing(upload));
@@ -64,7 +72,11 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       switch (xhr.status) {
         case 200:
           response = JSON.parse(xhr.responseText);
-          dispatch(fileUploadComplete(response.fileId, addColumnIndicesToSummary(response.summary)));
+          dispatch(fileUploadComplete(
+            response.fileId,
+            addColumnIndicesToSummary(response.summary),
+            response.newImportSourceVersion
+          ));
           break;
         case 400:
           airbrake.notify({
@@ -136,11 +148,12 @@ export function fileUploadAnalyzing(uploader) {
 }
 
 export const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
-export function fileUploadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.Summary) {
+export function fileUploadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.Summary, newImportSourceVersion: number) {
   return {
     type: FILE_UPLOAD_COMPLETE,
-    fileId: fileId,
-    summary: summary
+    fileId,
+    summary,
+    newImportSourceVersion
   };
 }
 
@@ -300,9 +313,9 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
             <span className="type type-blist">
               {(() => {
                 switch (operation) {
-                  case 'UploadData':
+                  case 'UPLOAD_DATA':
                     return I18nPrefixed.supported_blist;
-                  case 'UploadGeospatial':
+                  case 'UPLOAD_GEO':
                     return I18nPrefixed.supported_shapefile;
                   default:
                     console.error('unknown operation', operation);

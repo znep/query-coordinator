@@ -43,7 +43,7 @@ module ImportWizardHelper
       environment: Rails.env
     }
 
-    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)}")
+    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
   end
 
   def render_import_wizard_view(view)
@@ -56,6 +56,15 @@ module ImportWizardHelper
 
     options_for_select(licenses.sort_by(&:first), selected_license)
     javascript_tag("var licenses = #{json_escape(licenses.to_json)};")
+  end
+
+  def render_import_source(view)
+    begin
+      import_source = CoreServer::Base.connection.get_request("/views/#{view.id}/import_sources")
+      javascript_tag("var importSource = #{json_escape(JSON::parse(import_source).to_json)};")
+    rescue CoreServer::ResourceNotFound
+      javascript_tag("var importSource = null;")
+    end
   end
 
 end

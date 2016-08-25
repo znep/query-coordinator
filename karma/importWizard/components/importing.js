@@ -10,7 +10,7 @@ describe('importing screen view', () => {
         progress: { rowsImported: 0, ticket: 'asdf-1234-asdf-1234' },
         notification: 'Available'
       },
-      operation: 'UploadData',
+      operation: 'UPLOAD_DATA',
       onNotifyMe: _.noop
     }));
     expect(element.querySelector('a.button.setNotifyComplete'))
@@ -23,7 +23,7 @@ describe('importing screen view', () => {
         type: 'InProgress',
         progress: { stage: 'processing', ticket: 'asdf-1234-asdf-1234' }
       },
-      operation: 'UploadGeospatial',
+      operation: 'UPLOAD_GEO',
       onNotifyMe: _.noop
     }));
     expect(element.querySelector('a.button.setNotifyComplete'))

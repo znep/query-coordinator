@@ -2,6 +2,11 @@ import * as IC from 'components/importColumns';
 import * as ED from 'components/exampleData';
 import * as UF from 'components/uploadFile';
 import * as CD from 'components/importColumns/columnDetail';
+import * as SaveState from 'saveState';
+
+import { withMockFetch, testThunk } from '../asyncUtils';
+import Promise from 'bluebird';
+
 
 describe('ImportColumns component', () => {
 
@@ -120,138 +125,231 @@ describe('ImportColumns component', () => {
       // My name is Alexander Hamilton.
       expect(result.columns).to.deep.equal(expectedColumns);
     });
-  });
 
-  it(`handles ${IC.REMOVE_COLUMN}`, () => {
-    const originalColumns = [
-      {virginian: false, name:'Aaron Burr'},
-      {virginian: false, name: 'Alexander Hamilton'},
-      {virginian: true, name: 'Thomas Jefferson', home: 'Monticello'},
-      {virginian: true, name: 'George Washington', home: 'Mount Vernon'}
-    ];
+    it(`handles ${IC.REMOVE_COLUMN}`, () => {
+      const originalColumns = [
+        {virginian: false, name:'Aaron Burr'},
+        {virginian: false, name: 'Alexander Hamilton'},
+        {virginian: true, name: 'Thomas Jefferson', home: 'Monticello'},
+        {virginian: true, name: 'George Washington', home: 'Mount Vernon'}
+      ];
 
-    const expectedColumns = originalColumns.slice(0, 1).concat(originalColumns.slice(2));
+      const expectedColumns = originalColumns.slice(0, 1).concat(originalColumns.slice(2));
 
-    const original = {
-      untouched: 'do not touch!',
-      columns: originalColumns,
-      defaultColumns: 'original default columns',
-      numHeaders: 42,
-      sample: 'original sample'
-    };
+      const original = {
+        untouched: 'do not touch!',
+        columns: originalColumns,
+        defaultColumns: 'original default columns',
+        numHeaders: 42,
+        sample: 'original sample'
+      };
 
-    // Ten!  Paces fire!
-    const result  = IC.update(original, {
-      type: IC.REMOVE_COLUMN,
-      index: 1
+      // Ten!  Paces fire!
+      const result  = IC.update(original, {
+        type: IC.REMOVE_COLUMN,
+        index: 1
+      });
+
+      expect(result.untouched).to.deep.equal(original.untouched);
+      expect(result.defaultColumns).to.deep.equal(original.defaultColumns);
+      expect(result.sample).to.deep.equal(original.sample);
+
+      // I imagine death so much it feels more like a memory.
+      expect(result.columns).to.deep.equal(expectedColumns);
     });
 
-    expect(result.untouched).to.deep.equal(original.untouched);
-    expect(result.defaultColumns).to.deep.equal(original.defaultColumns);
-    expect(result.sample).to.deep.equal(original.sample);
+    it(`handles ${IC.REMOVE_COLUMN}`, () => {
+      const defaultColumns = [
+        {married: false, name: 'Alexander Hamilton'},
+        {married: false, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-    // I imagine death so much it feels more like a memory.
-    expect(result.columns).to.deep.equal(expectedColumns);
-  });
+      const columns = [
+        {married: true, name: 'Alexander Hamilton'},
+        {married: true, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-  it(`handles ${IC.REMOVE_COLUMN}`, () => {
-    const defaultColumns = [
-      {married: false, name: 'Alexander Hamilton'},
-      {married: false, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      const original = {
+        freeAdvice: 'talk less; smile more.',
+        columns: columns,
+        defaultColumns: defaultColumns,
+        numHeaders: 1776,
+        sample: 'new york city'
+      };
 
-    const columns = [
-      {married: true, name: 'Alexander Hamilton'},
-      {married: true, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      // Rewind...  Rewind...
+      const result  = IC.update(original, {
+        type: IC.RESTORE_SUGGESTED_SETTINGS
+      });
 
-    const original = {
-      freeAdvice: 'talk less; smile more.',
-      columns: columns,
-      defaultColumns: defaultColumns,
-      numHeaders: 1776,
-      sample: 'new york city'
-    };
+      expect(result.untouched).to.deep.equal(original.untouched);
+      expect(result.defaultColumns).to.deep.equal(original.defaultColumns);
+      expect(result.numHeaders).to.deep.equal(original.numHeaders);
+      expect(result.sample).to.deep.equal(original.sample);
 
-    // Rewind...  Rewind...
-    const result  = IC.update(original, {
-      type: IC.RESTORE_SUGGESTED_SETTINGS
+      // Satisfied.
+      expect(result.columns).to.deep.equal(defaultColumns);
     });
 
-    expect(result.untouched).to.deep.equal(original.untouched);
-    expect(result.defaultColumns).to.deep.equal(original.defaultColumns);
-    expect(result.numHeaders).to.deep.equal(original.numHeaders);
-    expect(result.sample).to.deep.equal(original.sample);
+    it(`handles ${IC.ADD_COLUMN}`, () => {
+      const defaultColumns = [
+        {married: false, name: 'Alexander Hamilton'},
+        {married: false, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-    // Satisfied.
-    expect(result.columns).to.deep.equal(defaultColumns);
-  });
+      const columns = [
+        {married: true, name: 'Alexander Hamilton'},
+        {married: true, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-  it(`handles ${IC.ADD_COLUMN}`, () => {
-    const defaultColumns = [
-      {married: false, name: 'Alexander Hamilton'},
-      {married: false, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      const original = {
+        freeAdvice: 'talk less; smile more.',
+        columns: columns,
+        defaultColumns: defaultColumns,
+        numHeaders: 1776,
+        sample: 'new york city'
+      };
 
-    const columns = [
-      {married: true, name: 'Alexander Hamilton'},
-      {married: true, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      const result  = IC.update(original, {
+        type: IC.ADD_COLUMN
+      });
 
-    const original = {
-      freeAdvice: 'talk less; smile more.',
-      columns: columns,
-      defaultColumns: defaultColumns,
-      numHeaders: 1776,
-      sample: 'new york city'
-    };
-
-    const result  = IC.update(original, {
-      type: IC.ADD_COLUMN
+      expect(result.columns.length).to.deep.equal(4);
+      expect(_.last(result.columns)).to.deep.equal({
+        id: 3,
+        columnSource: {
+          type: 'CompositeColumn',
+          components: []
+        },
+        name: 'New Column 3',
+        chosenType: 'text',
+        transforms: []
+      });
     });
 
-    expect(result.columns.length).to.deep.equal(4);
-    expect(_.last(result.columns)).to.deep.equal({
-      id: 3,
-      columnSource: {
-        type: 'CompositeColumn',
-        components: []
-      },
-      name: 'New Column 3',
-      chosenType: 'text',
-      transforms: []
-    });
-  });
+    it(`handles ${IC.CLEAR_ALL_COLUMNS}`, () => {
+      const defaultColumns = [
+        {married: false, name: 'Alexander Hamilton'},
+        {married: false, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-  it(`handles ${IC.CLEAR_ALL_COLUMNS}`, () => {
-    const defaultColumns = [
-      {married: false, name: 'Alexander Hamilton'},
-      {married: false, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      const columns = [
+        {married: true, name: 'Alexander Hamilton'},
+        {married: true, name: 'Elizabeth Schulyer'},
+        {married: false, name: 'Angelica Schulyer'}
+      ];
 
-    const columns = [
-      {married: true, name: 'Alexander Hamilton'},
-      {married: true, name: 'Elizabeth Schulyer'},
-      {married: false, name: 'Angelica Schulyer'}
-    ];
+      const original = {
+        freeAdvice: 'talk less; smile more.',
+        columns: columns,
+        defaultColumns: defaultColumns,
+        numHeaders: 1776,
+        sample: 'new york city'
+      };
 
-    const original = {
-      freeAdvice: 'talk less; smile more.',
-      columns: columns,
-      defaultColumns: defaultColumns,
-      numHeaders: 1776,
-      sample: 'new york city'
-    };
+      const result  = IC.update(original, {
+        type: IC.CLEAR_ALL_COLUMNS
+      });
 
-    const result  = IC.update(original, {
-      type: IC.CLEAR_ALL_COLUMNS
+      expect(result.columns).to.deep.equal([]);
     });
 
-    expect(result.columns).to.deep.equal([]);
   });
+
+  describe('thunks', () => {
+
+    it(`makes a call to core's importSources endpoint when the saveImportColumns thunk is dispatched`, (done) => {
+      const resultColumns = [
+        {
+          name: 'col 1',
+          columnSource: {
+            type: 'SingleColumn',
+            sourceColumn: {
+              index: 0,
+              name: 'col 1'
+            }
+          },
+          transforms: [],
+          id: 0
+        },
+        {
+          name: 'col 2',
+          columnSource: {
+            type: 'SingleColumn',
+            sourceColumn: {
+              index: 1,
+              name: 'col 2'
+            }
+          },
+          transforms: [],
+          id: 1
+        }
+      ];
+      withMockFetch(
+        (url, options, resolve, reject) => {
+          expect(url).to.equal('/views/abcd-efgh/import_sources');
+          expect(JSON.parse(options.body)).to.deep.equal({
+            translation: {
+              version: 1,
+              content: {
+                columns: [
+                  {
+                    name: 'col 1',
+                    columnSource: {
+                      type: 'SingleColumn',
+                      sourceColumn: {index: 0, name: 'col 1'}
+                    },
+                    transforms: [],
+                    id: 0
+                  },
+                  {
+                    name: 'col 2',
+                    columnSource: {
+                      type: 'SingleColumn',
+                      sourceColumn: {index: 1, name: 'col 2'}
+                    },
+                    transforms: [],
+                    id: 1
+                  }
+                ]
+              }
+            },
+            version: 1470000000000
+          });
+          resolve({
+            status: 200,
+            json: () => Promise.resolve({
+              importMode: 'UPLOAD_DATA',
+              version: 1470979299528
+            })
+          });
+        },
+        () => {
+          testThunk(
+            done,
+            IC.saveImportColumns(),
+            {
+              datasetId: 'abcd-efgh',
+              lastSavedVersion: 1470000000000,
+              transform: {
+                columns: resultColumns
+              }
+            },
+            [
+              (state, action) => {
+                expect(SaveState.update(state.lastSavedVersion, action)).to.equal(1470979299528);
+              }
+            ]
+          );
+        }
+      )
+    });
+
+  });
+
 });

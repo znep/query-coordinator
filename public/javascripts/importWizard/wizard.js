@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+
 import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
@@ -11,6 +12,8 @@ import * as Server from './server';
 import * as ImportShapefile from './components/importShapefile';
 import * as SharedTypes from './sharedTypes';
 import * as SelectUploadType from './components/selectUploadType';
+import * as SaveState from './saveState';
+import {addColumnIndicesToSummary} from './importUtils';
 
 import enabledModules from 'enabledModules';
 
@@ -39,10 +42,11 @@ type Navigation = {
 
 type NewDatasetModel = {
   datasetId: string,                  // this should never change
+  lastSavedVersion: string,
   navigation: Navigation,
   upload: UploadFile.FileUpload,
   download: DownloadFile.FileDownload,
-  transform: ImportColumns.Transform,               // only used in UploadData operation
+  transform: ImportColumns.Transform,               // only used in UPLOAD_DATA operation
   layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata,
   importStatus: Server.ImportStatus
@@ -54,10 +58,11 @@ const initialNavigation: Navigation = {
   operation: null // will be filled in when we click something on the first screen
 };
 
-// is this even used or is it just the no-args call to the reducer?
-export function initialNewDatasetModel(initialView): NewDatasetModel {
-  return {
+
+export function initialNewDatasetModel(initialView, importSource: SaveState.ImportSource): NewDatasetModel {
+  const initial = {
     datasetId: initialView.id,
+    lastSavedVersion: _.get(importSource, 'version', null),
     navigation: initialNavigation,
     upload: {},
     download: {},
@@ -66,6 +71,68 @@ export function initialNewDatasetModel(initialView): NewDatasetModel {
     metadata: initialMetadata(initialView),
     importStatus: Server.initialImportStatus()
   };
+  const rawOperation = _.get(importSource, 'importMode', null);
+  const operation = rawOperation ? rawOperation.toUpperCase() : null;
+  switch (operation) {
+    case 'CREATE_FROM_SCRATCH':
+      return {
+        ...initial,
+        navigation: {
+          operation: operation,
+          path: ['SelectType'],
+          page: 'Metadata'
+        }
+      };
+
+    case 'UPLOAD_DATA':
+      if (importSource.scanResults) {
+        const sourceColumnsWithIndices = addColumnIndicesToSummary(importSource.scanResults);
+        const defaultTranslation = ImportColumns.initialTranslation(sourceColumnsWithIndices);
+        const resultColumns = _.get(importSource, 'translation.content.columns', defaultTranslation);
+        const resultColumnsWithTranslations = resultColumns.map((resultColumn) => ({
+          ...resultColumn,
+          transforms: _.defaultTo(resultColumn.transforms, [])
+        }));
+        return {
+          ...initial,
+          navigation: {
+            operation: operation,
+            path: ['SelectType', 'SelectUploadType', 'UploadFile'],
+            page: 'ImportColumns'
+          },
+          upload: {
+            fileName: importSource.fileName,
+            progress: {
+              type: 'Complete',
+              fileId: importSource.fileId,
+              summary: sourceColumnsWithIndices
+            }
+          },
+          transform: {
+            defaultColumns: defaultTranslation,
+            columns: resultColumnsWithTranslations,
+            numHeaders: _.get(importSource, 'translation.content.numHeaders', importSource.scanResults.headers),
+            sample: importSource.scanResults.sample
+          }
+        };
+      } else {
+        return {
+          ...initial,
+          navigation: {
+            operation: operation,
+            path: ['SelectType'],
+            page: 'SelectUploadType'
+          }
+        };
+      }
+
+    case null:
+      return initial;
+
+    default:
+      console.log('trying to reenter to', operation);
+      return initial;
+  }
 }
 
 function initialMetadata(initialView) {
@@ -80,11 +147,21 @@ function initialMetadata(initialView) {
 
 const CHOOSE_OPERATION = 'CHOOSE_OPERATION';
 export function chooseOperation(name: SharedTypes.OperationName) {
-  return {
-    type: CHOOSE_OPERATION,
-    name: name
+  return (dispatch, getState) => {
+    const version = getState().lastSavedVersion;
+    const datasetId = getState().datasetId;
+    dispatch({
+      type: CHOOSE_OPERATION,
+      name: name
+    });
+    SaveState.saveOperation(datasetId, version, name).then((newImportSource) => {
+      dispatch(SaveState.stateSaved(newImportSource));
+    }).catch(() => {
+      console.error('already airbraked');
+    });
   };
 }
+
 
 const GO_TO_PAGE = 'GO_TO_PAGE';
 export function goToPage(page) {
@@ -101,30 +178,27 @@ export function goToPrevious() {
   };
 }
 
-export function updateNavigation(navigation: Navigation = initialNavigation, action): Navigation {
 
+export function updateNavigation(navigation: Navigation = initialNavigation, action): Navigation {
   let nextPage = navigation.page;
   switch (action.type) {
     case CHOOSE_OPERATION:
       switch (action.name) {
-        case 'UploadData':
+        case 'UPLOAD_DATA':
           nextPage = 'SelectUploadType';
           break;
-        case 'UploadBlob':
-        case 'UploadGeospatial':
+        case 'UPLOAD_BLOB':
+        case 'UPLOAD_GEO':
           nextPage = 'UploadFile'; // TODO: select upload type
           break;
-        case 'ConnectToEsri': // TODO what is this actually supposed to go to?
-        case 'LinkToExternal':
-          nextPage = 'Metadata';
-          break;
-        case 'CreateFromScratch':
+        case 'CONNECT_TO_ESRI': // TODO what is this actually supposed to go to?
+        case 'LINK_EXTERNAL':
+        case 'CREATE_FROM_SCRATCH':
           nextPage = 'Metadata';
           break;
         default:
           console.error('invalid operation name:', action.name);
       }
-
       return {
         operation: action.name,
         page: nextPage,
@@ -133,13 +207,13 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
 
     case UploadFile.FILE_UPLOAD_COMPLETE:
       switch (navigation.operation) {
-        case 'UploadData':
+        case 'UPLOAD_DATA':
           nextPage = 'ImportColumns';
           break;
-        case 'UploadGeospatial':
+        case 'UPLOAD_GEO':
           nextPage = 'ImportShapefile';
           break;
-        case 'UploadBlob':
+        case 'UPLOAD_BLOB':
           nextPage = 'Metadata';
           break;
         default:

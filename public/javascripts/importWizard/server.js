@@ -77,13 +77,13 @@ export function proceedFromMetadataPane() {
         dispatch(goToPage('Metadata'));
       };
       switch (navigation.operation) {
-        case 'UploadData':
+        case 'UPLOAD_DATA':
           dispatch(importData(onImportError));
           break;
-        case 'UploadGeospatial':
+        case 'UPLOAD_GEO':
           dispatch(importGeospatial(onImportError));
           break;
-        case 'CreateFromScratch':
+        case 'CREATE_FROM_SCRATCH':
           dispatch(goToPage('Finish'));
           break;
         case 'LinkToExternal':

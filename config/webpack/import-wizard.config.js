@@ -25,12 +25,13 @@ module.exports = _.defaultsDeep({
     }
   },
   externals: {
+    // TODO: compress these down to one...
     'importableTypes': 'importableTypes',
     'datasetCategories': 'datasetCategories',
     'customMetadataSchema': 'customMetadataSchema',
     'enabledModules': 'enabledModules',
     'licenses': 'licenses',
-    // TODO: eventually compress into ImportSource
+    'importSource': 'importSource',
     'view': 'view'
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

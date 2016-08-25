@@ -6,14 +6,10 @@ import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES } from '../constants';
-import { setVisualizationType } from '../actions';
+import { setVisualizationType, setDimension } from '../actions';
+import { getAnyDimension, getSelectedVisualizationType, isRegionMap } from '../selectors/vifAuthoring';
 import {
-  getAnyDimension,
-  getSelectedVisualizationType,
-  isRegionMap
-} from '../selectors/vifAuthoring';
-
-import {
+  getAnyLocationColumn,
   getRecommendedVisualizationTypes,
   hasData,
   hasRegions
@@ -39,7 +35,23 @@ export const VisualizationTypeSelector = React.createClass({
   },
 
   onClickVisualizationType(visualizationType) {
-    return () => this.props.onSelectVisualizationType(visualizationType);
+    return () => {
+      const {
+        onSelectVisualizationType,
+        setDimensionToLocation,
+        vifAuthoring,
+        metadata
+      } = this.props;
+
+      const dimension = getAnyDimension(vifAuthoring);
+      const isMap = visualizationType === 'regionMap' || visualizationType === 'featureMap';
+
+      onSelectVisualizationType(visualizationType);
+
+      if (isMap && _.isNull(dimension.columnName)) {
+        setDimensionToLocation(_.get(getAnyLocationColumn(metadata), 'fieldName', null));
+      }
+    };
   },
 
   renderVisualizationTypeFlyout(visualizationType, isRecommended) {
@@ -162,6 +174,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onSelectVisualizationType(visualizationType) {
       dispatch(setVisualizationType(visualizationType));
+    },
+    setDimensionToLocation(dimension) {
+      dispatch(setDimension(dimension));
     }
   };
 }

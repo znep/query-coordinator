@@ -591,14 +591,79 @@ function compositeColumnComponent(component: string | SharedTypes.SourceColumn) 
     : '"' + component.replace(/"/g, '\\"') + '"';
 }
 
+function locationSourceColumnExpr(sourceColumn: string | SharedTypes.SourceColumn) {
+  if (!sourceColumn) {
+    return '';
+  } else {
+    return sourceColumnExpr(sourceColumn);
+  }
+}
+
+function getHumanAddress(components) {
+  function getLocationComponent(component) {
+    return component.isColumn
+                  ? locationSourceColumnExpr(component.column.sourceColumn)
+                  : component.text;
+  }
+
+  const humanAddress = {};
+
+  const street = locationSourceColumnExpr(components.street.sourceColumn);
+  if (street) {
+    humanAddress.street = street;
+  }
+
+  const city = getLocationComponent(components.city);
+  if (city) {
+    humanAddress.city = city;
+  }
+
+  const state = getLocationComponent(components.state);
+  if (state) {
+    humanAddress.state = state;
+  }
+
+  const zip = getLocationComponent(components.zip);
+  if (zip) {
+    humanAddress.zip = zip;
+  }
+
+  return humanAddress;
+}
+
+export function getLocationColumnSource(resultColumn) {
+  const components = resultColumn.columnSource.components;
+  if (resultColumn.columnSource.components.isMultiple) {
+    const lat = sourceColumnExpr(components.lat.sourceColumn);
+    const lon = sourceColumnExpr(components.lon.sourceColumn);
+
+    return JSON.stringify({
+      latitude: lat,
+      longitude: lon,
+      human_address: getHumanAddress(components)
+    });
+  } else {
+    return locationSourceColumnExpr(components.singleSource.sourceColumn);
+  }
+
+}
+
+function getColumnSource(resultColumn) {
+  switch (resultColumn.columnSource.type) {
+    case 'SingleColumn':
+      return sourceColumnExpr(resultColumn.columnSource.sourceColumn);
+    case 'CompositeColumn':
+      return resultColumn.columnSource.components.map(compositeColumnComponent).join(' + ');
+    case 'LocationColumn':
+      return getLocationColumnSource(resultColumn);
+  }
+}
+
 
 export function transformToImports2Translation(importTransform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {
-    // TODO: location columns
-    const columnSource =
-      resultColumn.columnSource.type === 'SingleColumn'
-        ? sourceColumnExpr(resultColumn.columnSource.sourceColumn)
-        : resultColumn.columnSource.components.map(compositeColumnComponent).join(' + ');
+    const columnSource = getColumnSource(resultColumn);
+
     return _.reduce(resultColumn.transforms, (transformed, transform) => {
       switch (transform.type) {
         case 'title':

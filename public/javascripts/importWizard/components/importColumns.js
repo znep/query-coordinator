@@ -64,7 +64,7 @@ export function initialTranslation(summary: ST.Summary): Translation {
   ));
 
   const defaultColumnOrText = {
-    select: '',
+    column: '',
     text: '',
     isColumn: true
   };
@@ -85,7 +85,7 @@ export function initialTranslation(summary: ST.Summary): Translation {
         }
       },
       name: 'Location ' + (idx + 1),
-      chosenType: column.suggestion,
+      chosenType: 'location',
       transforms: []
     }
   ));

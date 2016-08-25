@@ -8,6 +8,7 @@ import {
   customMetadataModelToCoreView,
   licenseToView,
   coreViewToModel,
+  getLocationColumnSource,
   transformToImports2Translation,
   update,
   importProgress
@@ -198,5 +199,79 @@ describe('transformToImports2Translation', () => {
     const result = transformToImports2Translation(ExampleData.translationWithCompositeColAndTransform);
     expect(result).to.equal('[col1,upper(col2 + "some constant text" + col4)]')
   });
+});
 
+
+describe('locationColumn transforms', () => {
+  let blankLocation;
+
+  beforeEach(() => {
+    blankLocation = {
+      isMultiple: true,
+      lat: { sourceColumn: { index: 1 } },
+      lon: { sourceColumn: { index: 2 } },
+      street: { sourceColumn: '' },
+      city: { isColumn: false, text: '' },
+      state: { isColumn: false, text: '' },
+      zip: { isColumn: false, text: '' },
+      singleSource: {}
+    };
+  });
+
+  it('correctly generates for a single column', () => {
+    blankLocation.isMultiple = false;
+    blankLocation.singleSource = { sourceColumn: { index: 1 } };
+    const resultColumn = {
+      columnSource: {
+        components: blankLocation
+      }
+    };
+
+    const result = getLocationColumnSource(resultColumn);
+    expect(result).to.equal('col2');
+  });
+
+  it('correctly generates latitude and longitude and does not generate anything for blank human_addresses', () => {
+    // Test for a selector that has not selected a column yet.
+    blankLocation.state = {
+      isColumn: true,
+      column: { sourceColumn: '' }
+    };
+
+    const resultColumn = {
+      columnSource: {
+        components: blankLocation
+      }
+    };
+
+    const result = getLocationColumnSource(resultColumn);
+    expect(result).to.equal('{"latitude":"col2","longitude":"col3","human_address":{}}');
+  });
+
+  it('correctly generates latitude and longitude and human_addresses for both column and text types', () => {
+    blankLocation.street = {
+      sourceColumn: { index: 1 }
+    };
+    blankLocation.city = {
+      isColumn: true,
+      column: { sourceColumn: { index: 2 } }
+    };
+    blankLocation.state = {
+      isColumn: true,
+      column: { sourceColumn: { index: 3 } }
+    };
+    blankLocation.zip = {
+      isColumn: false,
+      text: 'zip'
+    };
+
+    const resultColumn = {
+      columnSource: {
+        components: blankLocation
+      }
+    };
+
+    const result = getLocationColumnSource(resultColumn);
+    expect(result).to.equal('{"latitude":"col2","longitude":"col3","human_address":{"street":"col2","city":"col3","state":"col4","zip":"zip"}}');
+  });
 });

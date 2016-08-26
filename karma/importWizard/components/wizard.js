@@ -204,7 +204,7 @@ describe('initialNewDatasetModel', () => {
         rowLabel: '',
         mapLayer: '',
         customMetadata: {
-          jack: [
+          first: [
             {
               field: '1',
               value: 'ant',
@@ -265,7 +265,7 @@ describe('initialNewDatasetModel', () => {
           rowLabel: '',
           mapLayer: '',
           customMetadata: {
-            jack: [
+            first: [
               {
                 field: '1',
                 value: 'ant',

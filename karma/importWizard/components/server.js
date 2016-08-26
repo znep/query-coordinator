@@ -56,7 +56,7 @@ describe("testing for API responses", () => {
       privacySettings: 'private',
       displayType: 'draft',
       customMetadata: {
-        'jack':
+        'first':
           [
             {
               field: '1',
@@ -110,7 +110,7 @@ describe("testing for API responses", () => {
       const publicCustom = customMetadataModelToCoreView(customMetadata, false);
 
       expect(publicCustom).to.deep.equal({
-        jack: {
+        first: {
           '1': 'ant',
           '3': 'fred'
         },
@@ -125,10 +125,10 @@ describe("testing for API responses", () => {
 
     it('test that private metadata values are correctly returned', () => {
       const privateCustom = customMetadataModelToCoreView(customMetadata, true);
-      const jack = privateCustom.jack;
+      const first = privateCustom.first;
       const second = privateCustom.second;
 
-      expect(jack['2']).to.equal('frank');
+      expect(first['2']).to.equal('frank');
       expect(second).to.deep.equal({});
     });
   });
@@ -187,6 +187,37 @@ describe("testing for API responses", () => {
     it('test round trip', () => {
       const view = modelToViewParam(metadata, navigation);
       const meta = coreViewToModel(view);
+      expect(metadata.contents).to.deep.equal(meta.contents);
+    });
+  });
+
+  describe('coreViewToModel', () => {
+    it('test round trip when core strips null values', () => {
+      const view = modelToViewParam(metadata, navigation);
+      delete view.metadata.custom_fields;
+      delete view.privateMetadata.custom_fields;
+      const meta = coreViewToModel(view);
+
+      const first = metadata.contents.customMetadata.first.map((obj) => {
+        return {
+          field: obj.field,
+          value: '',
+          privateField: obj.privateField
+        }
+      });
+
+      const second = metadata.contents.customMetadata.second.map((obj) => {
+        return {
+          field: obj.field,
+          value: '',
+          privateField: obj.privateField
+        }
+      });
+
+      metadata.contents.customMetadata = {
+        first: first,
+        second: second
+      };
 
       expect(metadata.contents).to.deep.equal(meta.contents);
     });

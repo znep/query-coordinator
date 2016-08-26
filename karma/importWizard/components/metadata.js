@@ -190,7 +190,7 @@ describe('validators', () => {
         description: '',
         tags: [],
         customMetadata: {
-          'jack':
+          'first':
             [
               {
                 field: '1',

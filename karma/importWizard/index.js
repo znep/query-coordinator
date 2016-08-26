@@ -15,7 +15,7 @@ window.importableTypes = ['text', 'date', 'number'];
 window.enabledModules = ['geospatial', 'esri_integration'];
 window.customMetadataSchema = [
   {
-    'name': 'jack',
+    'name': 'first',
     'fields': [
       {
         'name': '1',

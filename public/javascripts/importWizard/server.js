@@ -285,15 +285,26 @@ export function coreViewContents(view) {
   };
 }
 
+function getCustomMetadataValueFromView(view, privateField, fieldSetName, field) {
+  if (privateField) {
+    if (_.has(view.privateMetadata.custom_fields, fieldSetName) && _.has(view.privateMetadata.custom_fields[fieldSetName], field)) {
+      return view.privateMetadata.custom_fields[fieldSetName][field];
+    }
+  } else {
+    if (_.has(view.metadata.custom_fields, fieldSetName) && _.has(view.metadata.custom_fields[fieldSetName], field)) {
+      return view.metadata.custom_fields[fieldSetName][field];
+    }
+  }
+  return '';
+}
+
 function coreViewToCustomMetadataModel(view) {
   return _.mapValues(Metadata.defaultCustomData(), (fieldSet, fieldSetName) => (
     fieldSet.map(({field, privateField}) => (
       {
         field: field,
-        privateField: privateField,
-        value: privateField
-          ? view.privateMetadata.custom_fields[fieldSetName][field]
-          : view.metadata.custom_fields[fieldSetName][field]
+        value: getCustomMetadataValueFromView(view, privateField, fieldSetName, field),
+        privateField: privateField
       }
     ))
   ));

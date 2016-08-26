@@ -8,22 +8,26 @@ export function view(props) {
 
   const firstSections = [
     <li key="CREATE_FROM_SCRATCH">
-      <div
-        className="create"
+      <a
+        className="create tooltip"
         title={I18nPrefixed.create_explain}
         onClick={onChooseOperation('CREATE_FROM_SCRATCH')}>
-        <span className="icon"></span>
-        <p>{I18nPrefixed.create}</p>
-      </div>
+        <span title="">
+          <span className="icon"></span>
+          <p>{I18nPrefixed.create}</p>
+        </span>
+      </a>
     </li>,
     <li key="UPLOAD_DATA">
-      <div
-        className="upload"
+      <a
+        className="upload tooltip"
         title={I18nPrefixed.import_explain}
         onClick={onChooseOperation('UPLOAD_DATA')}>
-        <span className="icon"></span>
-        <p>{I18nPrefixed.import}</p>
-      </div>
+        <span title="">
+          <span className="icon" title=""></span>
+          <p>{I18nPrefixed.import}</p>
+        </span>
+      </a>
     </li>
   ];
 
@@ -31,10 +35,14 @@ export function view(props) {
     _.includes(enabledModules, 'esri_integration')
     ? [
       <li key="esriIntegration">
-        <div className="mapLayer" title={I18nPrefixed.mapLayer_explain}>
-          <span className="icon"></span>
-          <p>{I18nPrefixed.mapLayer}</p>
-        </div>
+        <a
+          className="mapLayer tooltip"
+          title={I18nPrefixed.mapLayer_explain}>
+          <span title="">
+            <span className="icon"></span>
+            <p>{I18nPrefixed.mapLayer}</p>
+          </span>
+        </a>
       </li>
     ]
     : [];
@@ -43,36 +51,44 @@ export function view(props) {
     _.includes(enabledModules, 'geospatial')
     ? [
       <li key="geoSpatial">
-        <div
-          className="shapefile"
+        <a
+          className="shapefile tooltip"
           title={I18nPrefixed.shapefile_explain}
           onClick={onChooseOperation('UPLOAD_GEO')}>
-          <span className="icon"></span>
-          <p>{I18nPrefixed.shapefile}</p>
-        </div>
+          <span title="">
+            <span className="icon"></span>
+            <p>{I18nPrefixed.shapefile}</p>
+          </span>
+        </a>
       </li>
     ]
     : [];
 
-  const blobby =
-    (<li key="blobby">
-      <div className="blobby" title={I18nPrefixed.blobby_explain}>
-        <span className="icon"></span>
-        <p>{I18nPrefixed.blobby}</p>
-      </div>
+  const blobby = (
+    <li key="blobby">
+      <a
+        className="blobby tooltip"
+        title={I18nPrefixed.blobby_explain}>
+        <span title="">
+          <span className="icon"></span>
+          <p>{I18nPrefixed.blobby}</p>
+        </span>
+      </a>
     </li>);
 
   const external =
     currentDomainMemberCurrentUser
     ? [
       <li key="external">
-        <div
-          className="external"
+        <a
+          className="external tooltip"
           title={I18nPrefixed.external_explain}
           onClick={onChooseOperation('LINK_EXTERNAL')}>
-          <span className="icon"></span>
-          <p>{I18nPrefixed.external}</p>
-        </div>
+          <span title="">
+            <span className="icon"></span>
+            <p>{I18nPrefixed.external}</p>
+          </span>
+        </a>
       </li>
     ]
     : [];

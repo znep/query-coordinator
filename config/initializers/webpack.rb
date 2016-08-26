@@ -1,5 +1,13 @@
 package_json_file = Rails.root.join('package.json')
 
+# See also config/application.rb
+if ENV.key?('WEBPACK_USE_MANIFEST')
+  Rails.configuration.webpack[:use_manifest] = ENV['WEBPACK_USE_MANIFEST'].to_s.downcase == 'true'
+end
+if ENV.key?('WEBPACK_USE_DEV_SERVER')
+  Rails.configuration.webpack[:use_dev_server] = ENV['WEBPACK_USE_DEV_SERVER'].to_s.downcase == 'true'
+end
+
 if File.exist?(package_json_file)
   package_json = JSON.parse(File.read(package_json_file)).with_indifferent_access
   Rails.configuration.webpack[:dev_server_port] = package_json[:config][:webpackDevServerPort]

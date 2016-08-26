@@ -3,6 +3,7 @@ import * as ReactRedux from 'react-redux';
 
 import * as Actions from './actions';
 import * as State from './state';
+import * as Selectors from './selectors';
 import * as Components from './components';
 
 class GoalsPage extends React.Component {
@@ -19,7 +20,7 @@ class GoalsPage extends React.Component {
   }
 
   render() {
-    const { translations, isBulkEditFormVisible, isQuickEditFormVisible } = this.props;
+    const { translations, isBulkEditFormVisible, isQuickEditFormVisible, isInitialLoadInProgress } = this.props;
 
     return (
       <div className="goals-page">
@@ -29,7 +30,7 @@ class GoalsPage extends React.Component {
           </h1>
           <Components.SocrataBulkActions />
         </div>
-        <Components.GoalTable />
+        <Components.GoalTable loadInProgress={isInitialLoadInProgress} />
         { isQuickEditFormVisible && <Components.QuickEditForm /> }
         { isBulkEditFormVisible && <Components.BulkEditForm /> }
       </div>
@@ -39,6 +40,7 @@ class GoalsPage extends React.Component {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
+  isInitialLoadInProgress: Selectors.getLoading(state),
   isBulkEditFormVisible: State.getBulkEdit(state).get('visible'),
   isQuickEditFormVisible: State.getQuickEdit(state).get('visible')
 });

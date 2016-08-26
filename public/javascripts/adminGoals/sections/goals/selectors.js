@@ -77,7 +77,9 @@ export const getPaginatedGoalIds = Reselect.createSelector(
 export const getIsAllSelected = Reselect.createSelector(
   getPaginatedGoalIds, State.getSelectedIds,
   (paginatedGoalIds, selectedIds) => {
-    if (selectedIds.count() !== paginatedGoalIds.count())
+    const selectedIdsCount = selectedIds.count();
+
+    if (selectedIdsCount === 0 || selectedIdsCount !== paginatedGoalIds.count())
       return false;
 
     return selectedIds.isSuperset(paginatedGoalIds);
@@ -114,3 +116,5 @@ export const getQuickEditGoal = Reselect.createSelector(
 );
 
 export const getCsvExport = state => SharedSelectors.Downloads.getFile(state, 'goals', Constants.goalsCsvFilename);
+
+export const getLoading = SharedSelectors.getLoading;

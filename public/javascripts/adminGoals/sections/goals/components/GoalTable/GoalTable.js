@@ -24,24 +24,46 @@ class GoalTable extends React.Component {
     this.props.uiActions.setGoalsPerPage(goalsPerPage, this.props.goalsCount);
   }
 
-  render() {
-    const { pagination, uiActions, translations } = this.props;
+  renderTable() {
+    return (
+      <table className="table table-borderless table-discrete op-admin-table">
+        <GoalTableHead />
+        <GoalTableBody />
+      </table>
+    );
+  }
+
+  renderLoadingSpinner() {
+    return (
+      <div className="op-table-load-in-progress">
+        <span className="spinner-default spinner-large" />
+      </div>
+    );
+  }
+
+  renderFooter() {
+    const { pagination, translations } = this.props;
     const perPageSelectorTitle = translations.getIn(['admin', 'listing', 'rows_per_page']);
 
     return (
+      <div className="footer">
+        <PageSelector />
+        <Components.RowsPerPageSelector
+          onChange={this.handleOnRowsPerPageChanged}
+          options={this.paginationOptions}
+          title={perPageSelectorTitle}
+          value={pagination.get('goalsPerPage')}/>
+      </div>
+    );
+  }
+
+  render() {
+    const { loadInProgress } = this.props;
+
+    return (
       <div className="goal-table">
-        <table className="table table-borderless table-discrete op-admin-table">
-          <GoalTableHead />
-          <GoalTableBody />
-        </table>
-        <div className="footer">
-          <PageSelector />
-          <Components.RowsPerPageSelector
-            onChange={this.handleOnRowsPerPageChanged}
-            options={this.paginationOptions}
-            title={perPageSelectorTitle}
-            value={pagination.get('goalsPerPage')}/>
-        </div>
+        { this.renderTable() }
+        { loadInProgress ? this.renderLoadingSpinner() : this.renderFooter() }
       </div>
     );
   }

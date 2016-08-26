@@ -3,21 +3,28 @@ import * as ReactDOM from 'react-dom';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
 
-import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
+import * as Middlewares from './middlewares';
 import rootReducer from './reducers';
+
 import App from './containers/App/App';
 
-import notifyUser from './middlewares/notifyUser';
-import fileDownloader from './middlewares/fileDownloader';
+let middlewares = [
+  Middlewares.thunk,
+  Middlewares.notifyUser,
+  Middlewares.fileDownloader
+];
 
-let middleware = [thunk, notifyUser, fileDownloader];
+if (!window.mixpanelConfig.disabled) {
+  Middlewares.analytics.initMixpanel();
+  middlewares.push(Middlewares.analytics.mixpanel);
+}
+
 if (window.serverConfig.environment === 'development') {
-  middleware.push(createLogger());
+  middlewares.push(Middlewares.createLogger());
 }
 
 let store = Redux.createStore(rootReducer, Redux.compose(
-  Redux.applyMiddleware(...middleware),
+  Redux.applyMiddleware(...middlewares),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ));
 

@@ -4,6 +4,7 @@ import * as SharedActions from '../../shared/actions';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
+import * as Analytics from '../../shared/analytics';
 
 export const types = {
   openModal: 'goals.quickEdit.openModal',
@@ -13,7 +14,10 @@ export const types = {
 
 export const openModal = goalId => ({
   type: types.openModal,
-  goalId
+  goalId,
+  ...Analytics.createTrackEventActionData(Analytics.EventNames.quickEditGoal, {
+    [Analytics.EventPayloadKeys.goalId]: goalId
+  })
 });
 
 export const closeModal = () => ({
@@ -59,21 +63,24 @@ export function save() {
       'maintain_type': formData.get('measureMaintainType')
     };
 
+    const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnQuickEdit, {
+      [Analytics.EventPayloadKeys.goalId]: goalId
+    });
+
+    dispatch(SharedActions.doSideEffect(analyticsEvent));
     dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', true));
     dispatch(SharedActions.hideModalMessage('goals', 'quickEdit'));
 
-    return Api.goals.update(goalId, version, values).
-      then(updatedGoal => {
-        const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
+    return Api.goals.update(goalId, version, values).then(updatedGoal => {
+      const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
 
-        dispatch(DataActions.updateById(goalId, updatedGoal));
-        dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
-        dispatch(closeModal());
-      }).
-      catch(() => {// eslint-disable-line dot-notation
-        const failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
-        dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
-        dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
-      });
+      dispatch(DataActions.updateById(goalId, updatedGoal));
+      dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
+      dispatch(closeModal());
+    }).catch(() => {// eslint-disable-line dot-notation
+      const failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
+      dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
+      dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
+    });
   };
 }

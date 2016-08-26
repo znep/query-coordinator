@@ -296,6 +296,12 @@ export const isInsertableVisualization = createSelector(
   }
 );
 
+export const isMap = createSelector(
+  isRegionMap,
+  isFeatureMap,
+  (isRegionMap, isFeatureMap) => isRegionMap || isFeatureMap
+);
+
 export const isRenderableMap = createSelector(
   isRegionMap,
   isValidRegionMapVif,

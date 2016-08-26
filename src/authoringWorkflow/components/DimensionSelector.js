@@ -6,10 +6,20 @@ import Styleguide from 'socrata-components';
 import { translate } from '../../I18n';
 import { setDimension } from '../actions';
 import { COLUMN_TYPES } from '../constants';
-import { getAnyDimension, getVisualizationType } from '../selectors/vifAuthoring';
-import { hasData, getRecommendedDimensions, getValidDimensions } from '../selectors/metadata';
+import {
+  getAnyDimension,
+  getVisualizationType,
+  isMap
+} from '../selectors/vifAuthoring';
 
-export var DimensionSelector = React.createClass({
+import {
+  getAnyLocationColumn,
+  getRecommendedDimensions,
+  getValidDimensions,
+  hasData
+} from '../selectors/metadata';
+
+export const DimensionSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
@@ -17,7 +27,7 @@ export var DimensionSelector = React.createClass({
   },
 
   renderDimensionOption(option) {
-    var columnType = _.find(COLUMN_TYPES, {type: option.type});
+    const columnType = _.find(COLUMN_TYPES, {type: option.type});
 
     return (
       <div className="dataset-column-dropdown-option">
@@ -27,11 +37,12 @@ export var DimensionSelector = React.createClass({
   },
 
   renderDimensionSelector() {
-    var { metadata, onSelectDimension, vifAuthoring } = this.props;
-    var dimension = getAnyDimension(vifAuthoring);
-    var type = getVisualizationType(vifAuthoring);
+    const { metadata, onSelectDimension, vifAuthoring } = this.props;
+    const dimension = getAnyDimension(vifAuthoring);
+    const type = getVisualizationType(vifAuthoring);
+    const value = dimension.columnName;
 
-    var buildOption = group => {
+    const buildOption = group => {
       return dimension => ({
         title: dimension.name,
         value: dimension.fieldName,
@@ -41,20 +52,20 @@ export var DimensionSelector = React.createClass({
       });
     };
 
-    var toRenderableRecommendedOption = buildOption(translate('panes.data.fields.dimension.groups.recommended_columns'));
-    var toRenderableOption = buildOption(translate('panes.data.fields.dimension.groups.all_columns'));
+    const toRenderableRecommendedOption = buildOption(translate('panes.data.fields.dimension.groups.recommended_columns'));
+    const toRenderableOption = buildOption(translate('panes.data.fields.dimension.groups.all_columns'));
 
-    var dimensions = [
+    const dimensions = [
       ..._.map(getRecommendedDimensions(metadata, type), toRenderableRecommendedOption),
       ..._.map(getValidDimensions(metadata), toRenderableOption)
     ];
 
-    var dimensionAttributes = {
+    const dimensionAttributes = {
       id: 'dimension-selection',
       placeholder: translate('panes.data.fields.dimension.placeholder'),
       options: dimensions,
       onSelection: onSelectDimension,
-      value: dimension.columnName
+      value
     };
 
     return (
@@ -69,7 +80,7 @@ export var DimensionSelector = React.createClass({
   },
 
   render() {
-    var { metadata } = this.props;
+    const { metadata } = this.props;
 
     return hasData(metadata) ?
       this.renderDimensionSelector() :
@@ -78,7 +89,7 @@ export var DimensionSelector = React.createClass({
 });
 
 function mapStateToProps(state) {
-  var { vifAuthoring, metadata } = state;
+  const { vifAuthoring, metadata } = state;
   return { vifAuthoring, metadata };
 }
 

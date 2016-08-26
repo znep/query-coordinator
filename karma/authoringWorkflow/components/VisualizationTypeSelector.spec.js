@@ -85,7 +85,8 @@ describe('VisualizationTypeSelector', function() {
     var props;
     var component;
     var overrides = {
-      onSelectVisualizationType: sinon.stub()
+      onSelectVisualizationType: sinon.stub(),
+      setDimensionToLocation: sinon.stub()
     };
 
     var emitsDropdownEvent = function(selector, eventName) {
@@ -103,6 +104,31 @@ describe('VisualizationTypeSelector', function() {
 
     describe('when changing the visualization type dropdown', function() {
       emitsDropdownEvent('#visualization-type-selection', 'onSelectVisualizationType');
+    });
+
+    describe('when selecting a map and the dataset contains a location column', function() {
+      beforeEach(function() {
+        props = defaultProps(overrides);
+
+        props.metadata.data.columns.push({
+          renderTypeName: 'point',
+          fieldName: 'location_column',
+          name: 'Location Column'
+        });
+
+        props.metadata.phidippidesMetadata.columns.location_column = {
+          renderTypeName: 'point',
+          name: 'Location Column'
+        };
+
+        component = renderComponent(VisualizationTypeSelector, props);
+      });
+
+      it('emits a setDimensionToLocation event', function() {
+        var featureMapButton = component.querySelector('[data-flyout="featureMap-flyout"]');
+        TestUtils.Simulate.click(featureMapButton);
+        sinon.assert.calledOnce(props.setDimensionToLocation);
+      });
     });
   });
 });

@@ -134,6 +134,11 @@ export const hasRegions = createSelector(
   (curatedRegions, computedColumns) => curatedRegions.length > 0 || computedColumns.length > 0
 );
 
+export const getAnyLocationColumn = createSelector(
+  getDatasetMetadata,
+  (datasetMetadata) => _.find(datasetMetadata.columns, {renderTypeName: 'point'})
+);
+
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
 
 const isNotSystemColumn = column => {

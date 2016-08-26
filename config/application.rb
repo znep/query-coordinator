@@ -128,6 +128,7 @@ module Frontend
 
     config.action_view.sanitized_allowed_attributes = Set.new(%w(href src width height alt cite datetime title class name xml:lang abbr rel))
 
+    # See also config/initializers/webpack.rb
     config.webpack = {
       :use_manifest => !Rails.env.development?,
       :use_dev_server => Rails.env.development?,

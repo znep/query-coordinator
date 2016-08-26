@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import 'es6-promise';
+import 'whatwg-fetch';
 import { fetchOptions } from '../constants';
 
 function checkXhrStatus(response) {

@@ -26,6 +26,7 @@ const paths = {
   title: 'title',
   unitOne: 'series[0].unit.one',
   unitOther: 'series[0].unit.other',
+  viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
   zeroColor: 'configuration.legend.zeroColor'
 };
@@ -120,6 +121,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.unitOther)) {
     dispatch(actions.setUnitsOther(get(paths.unitOther)));
+  }
+
+  if (has(paths.viewSourceDataLink)) {
+    dispatch(actions.setViewSourceDataLink(get(paths.viewSourceDataLink)));
   }
 
   if (has(paths.visualizationType)) {

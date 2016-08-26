@@ -131,6 +131,11 @@ export const getAxisLabels = createSelector(
   vif => _.get(vif, 'configuration.axisLabels')
 );
 
+export const getViewSourceDataLink = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.viewSourceDataLink', true)
+);
+
 export const getXAxisDataLabels = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'configuration.xAxisDataLabels', false)

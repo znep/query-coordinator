@@ -81,6 +81,9 @@ export default {
         },
         description: {
           title: 'Description'
+        },
+        show_source_data_link: {
+          title: 'Show "View Source Data" link'
         }
       }
     },

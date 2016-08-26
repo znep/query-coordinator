@@ -39,7 +39,7 @@ function SvgVisualization($element, vif) {
 
   this.updateVif = function(vifToRender) {
     const shouldRenderViewSourceDataLink = _.get(
-      self.getVif(),
+      vifToRender,
       'configuration.viewSourceDataLink',
       true
     );
@@ -274,13 +274,7 @@ function SvgVisualization($element, vif) {
   };
 
   this.showInfo = function() {
-    // See comment at the top of the implementation of this.hideInfo.
-    const containerClasses = self.$container.attr('class');
-    const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
-
-    if (hasInfoClass) {
-      self.$container.addClass('socrata-visualization-info');
-    }
+    self.$container.addClass('socrata-visualization-info');
   };
 
   this.hideInfo = function() {

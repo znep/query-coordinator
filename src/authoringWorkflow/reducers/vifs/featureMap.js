@@ -23,7 +23,8 @@ import {
   SET_ROW_INSPECTOR_TITLE_COLUMN_NAME,
   SET_CENTER_AND_ZOOM,
   SET_DOMAIN,
-  SET_DATASET_UID
+  SET_DATASET_UID,
+  SET_VIEW_SOURCE_DATA_LINK
 } from '../../actions';
 
 export default function featureMap(state, action) {
@@ -66,6 +67,10 @@ export default function featureMap(state, action) {
 
     case SET_DESCRIPTION:
       setStringValueOrDefaultValue(state, 'description', action.description, null);
+      break;
+
+    case SET_VIEW_SOURCE_DATA_LINK:
+      _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;
 
     case SET_PRIMARY_COLOR:

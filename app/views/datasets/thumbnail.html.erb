@@ -80,6 +80,6 @@
     <%# So we have the blist.dataset object %>
     <%= raw @view.display.render_dataset_setup_js %>
   </script>
-  <%= include_javascripts 'screen-dataset-thumbnail' %>
+  <%= include_webpack_bundle 'open-data/screen-dataset-thumbnail.js' %>
 <% end %>
 <%= render_translations LocalePart.screens.thumbnail %>

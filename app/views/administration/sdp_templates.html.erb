@@ -92,6 +92,6 @@
       blist.sdpTemplates.templates = <%= raw json_escape(@templates.to_json) %>;
     </script>
 
-    <%= include_javascripts 'admin-sdp-templates' %>
+    <%= include_webpack_bundle 'open-data/admin-sdp-templates.js' %>
   <%- end -%>
 <% end %>

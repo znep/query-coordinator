@@ -804,12 +804,24 @@ module.exports = _.defaultsDeep({
     // Disables linting during compilation, for now.
     preLoaders: null,
 
+    loaders: [
+      {
+        test: /(component|controls|screens|util)\//,
+        loader: 'script'
+      },
+      {
+        test: /(plugins|bower)\//,
+        loader: 'imports?define=>false,require=>false,module=>undefined,exports=>undefined,this=>window'
+      }
+    ],
+
     // Note that some 3rd party libraries cause problems with webpack because they support AMD/UMD
     // and try to require other modules.  To solve this, we disable webpack's moduling on these
     // files.  If a 3rd party library is erroring with something like "Could not find module X",
     // then try adding its regex to this list.
     noParse: [
-      /plugins\//
+      /plugins\//,
+      /bower\//
     ]
   },
   output: common.getOutput(identifier),

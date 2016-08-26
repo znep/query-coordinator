@@ -282,11 +282,11 @@
   </script>
 
   <%- if @view.is_tabular? -%>
-    <%= include_javascripts 'shared-editors' %>
+    <%= include_webpack_bundle 'open-data/shared-editors.js' %>
   <%- end -%>
 
-  <%= include_javascripts 'dompurify' %>
-  <%= include_javascripts 'dataset-show' %>
+  <%= include_webpack_bundle 'open-data/dompurify.js' %>
+  <%= include_webpack_bundle 'open-data/dataset-show.js' %>
   <script type="text/javascript">
     if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
   </script>

@@ -11,7 +11,7 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
-    <%= include_javascripts 'admin-activity-feed' %>
+    <%= include_webpack_bundle 'open-data/admin-activity-feed.js' %>
   <%- end -%>
 <% end %>
 

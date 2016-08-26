@@ -28,10 +28,10 @@
     <div id="js-appended-templates" style="display: none;" aria-hidden="true"></div>
     <%= render_translations %>
 
-    <%= include_javascripts 'base' %>
+    <%= include_webpack_bundle 'open-data/base.js' %>
 
     <%- if !Rails.env.end_with?('production') -%>
-        <%= include_javascripts "debug" %>
+        <%= include_webpack_bundle 'open-data/debug.js' %>
     <%- else -%>
       <script type="text/javascript">
         $.debug = function() {};
@@ -61,6 +61,6 @@
       <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
     </script>
 
-    <%= include_javascripts 'screen-bare-dataset' %>
+    <%= include_webpack_bundle 'open-data/screen-bare-dataset.js' %>
   </body>
 </html>

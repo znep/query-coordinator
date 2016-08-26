@@ -16,7 +16,7 @@
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
-  <%= include_javascripts 'embed-form' %>
+  <%= include_webpack_bundle 'open-data/embed-form.js' %>
   <%- end -%>
   <script type="text/javascript">
     // activator for <%= widget.elem_id %>

@@ -203,10 +203,10 @@ http://www.socrata.com
 
   <%# Libraries for use with BeautyTip %>
   <!--[if IE]>
-  <%= include_javascripts 'excanvas' %>
+  <%= include_webpack_bundle 'open-data/excanvas.js' %>
   <![endif]-->
   <!--[if lt IE 9]>
-  <%= include_javascripts 'oldie' %>
+  <%= include_webpack_bundle 'open-data/oldie.js' %>
   <![endif]-->
 
   <%# Inject the download types, filtered via feature flag, before the templates.js file is loaded %>
@@ -216,15 +216,15 @@ http://www.socrata.com
     blist.configuration.normalDownloadTypes = <%= raw json_escape(normal_download_types.to_json) %>;
   </script>
 
-  <%= include_javascripts 'base' %>
+  <%= include_webpack_bundle 'open-data/base.js' %>
   <%- if module_enabled?(:govStat) -%>
-  <%= include_javascripts 'new-base' %>
+  <%= include_webpack_bundle 'open-data/new-base.js' %>
   <%- end -%>
 
   <%= render_view_js %>
 
   <%- if !Rails.env.end_with?('production') -%>
-    <%= include_javascripts 'debug' %>
+    <%= include_webpack_bundle 'open-data/debug.js' %>
   <%- else -%>
     <script type="text/javascript">
       $.debug = function() {};

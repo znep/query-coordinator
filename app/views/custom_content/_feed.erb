@@ -4,10 +4,10 @@
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
-    <%= include_javascripts 'feed-list' %>
+    <%= include_webpack_bundle 'open-data/feed-list.js' %>
   <%- end -%>
   <%- allow_once :inline_login do -%>
-    <%= include_javascripts 'inline-login' %>
+    <%= include_webpack_bundle 'open-data/inline-login.js' %>
   <%- end -%>
 
   <script type="text/javascript">

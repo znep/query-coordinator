@@ -90,5 +90,5 @@
     blist.publish.currentTheme = <%= raw json_escape(@story_theme.to_json) %>;
   </script>
 
-  <%= include_javascripts 'admin-stories-appearance' %>
+  <%= include_webpack_bundle 'open-data/admin-stories-appearance.js' %>
 <% end %>

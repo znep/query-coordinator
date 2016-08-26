@@ -26,6 +26,6 @@
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
-    <%= include_javascripts 'featured_views' %>
+    <%= include_webpack_bundle 'open-data/featured_views.js' %>
   <%- end -%>
 <%- end -%>

@@ -23,6 +23,6 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
-    <%= include_javascripts 'admin-story' %>
+    <%= include_webpack_bundle 'open-data/admin-story.js' %>
   <%- end -%>
 <% end %>

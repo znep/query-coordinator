@@ -125,5 +125,5 @@
     blist.namespace.fetch('blist.nominations');
     blist.nominations.items = <%= safe_json(@nominations); %>;
   </script>
-  <%= include_javascripts 'screen-nominations' %>
+  <%= include_webpack_bundle 'open-data/screen-nominations.js' %>
 <% end %>

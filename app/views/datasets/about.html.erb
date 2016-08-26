@@ -28,5 +28,5 @@
   <script type="text/javascript">
     blist.dataset = new Dataset(<%= safe_json(@view) %>);
   </script>
-  <%= include_javascripts 'dataset-about-full' %>
+  <%= include_webpack_bundle 'open-data/dataset-about-full.js' %>
 <% end %>

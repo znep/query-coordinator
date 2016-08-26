@@ -400,7 +400,7 @@
     blist.namespace.fetch('blist.licenses');
     blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
   </script>
-  <%= include_javascripts 'dataset-new-old' %>
+  <%= include_webpack_bundle 'open-data/dataset-new-old.js' %>
 <% end %>
 <%= render_translations LocalePart.screens.import_pane %>
 <%= render_translations LocalePart.screens.wizard %>

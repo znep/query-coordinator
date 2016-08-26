@@ -64,12 +64,12 @@ http://www.socrata.com
   <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
   <![endif]-->
 
-  <%= include_javascripts 'base' %>
+  <%= include_webpack_bundle 'open-data/base.js' %>
 
   <%= render_view_js %>
 
   <%- if !Rails.env.end_with?('production') -%>
-      <%= include_javascripts 'debug' %>
+      <%= include_webpack_bundle 'open-data/debug.js' %>
   <%- else -%>
     <script type="text/javascript">
       $.debug = function() {};

@@ -33,7 +33,7 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js].present? -%>
-    <%= include_javascripts 'screen-login-signup' %>
+    <%= include_webpack_bundle 'open-data/screen-login-signup.js' %>
     <%= javascript_include_tag 'https://rpxnow.com/openid/v2/widget' %>
     <script>
       RPXNOW.overlay = true;

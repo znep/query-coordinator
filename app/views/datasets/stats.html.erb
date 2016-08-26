@@ -53,9 +53,9 @@
       blist.metrics.viewID = '<%= @view.id %>';
       <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
     </script>
-    <%= include_javascripts 'sanitize-html' %>
-    <%= include_javascripts 'shared-metrics' %>
-    <%= include_javascripts 'dataset-metrics' %>
+    <%= include_webpack_bundle 'open-data/sanitize-html.js' %>
+    <%= include_webpack_bundle 'open-data/shared-metrics.js' %>
+    <%= include_webpack_bundle 'open-data/dataset-metrics.js' %>
   <%- end -%>
 <% end %>
 <%= render_translations LocalePart.screens.stats %>

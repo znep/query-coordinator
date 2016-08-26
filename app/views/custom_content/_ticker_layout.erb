@@ -26,7 +26,7 @@
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
-    <%= include_javascripts 'ticker-layout' %>
+    <%= include_webpack_bundle 'open-data/ticker-layout.js' %>
   <%- end -%>
 
   <script type="text/javascript">

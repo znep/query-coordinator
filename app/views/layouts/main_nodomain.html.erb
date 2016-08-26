@@ -75,7 +75,7 @@ http://www.socrata.com
   </script>
   <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
 
-  <%= include_javascripts 'base' %>
+  <%= include_webpack_bundle 'open-data/base.js' %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.configuration');

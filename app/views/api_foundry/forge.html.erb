@@ -174,7 +174,7 @@
           defaultUniqueId: '<%= @view.row_identifier %>'
         }
       </script>
-      <%= include_javascripts 'api-new' %>
+      <%= include_webpack_bundle 'open-data/api-new.js' %>
     <% end %>
   </form>
 </div>

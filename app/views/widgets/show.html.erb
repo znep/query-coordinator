@@ -187,7 +187,7 @@
     blist.widget.showPrivateMessage = <%= !@view.is_public? && !is_mobile? %>;
   </script>
 
-  <%= include_javascripts 'widgets-show' %>
+  <%= include_webpack_bundle 'open-data/widgets-show.js' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">

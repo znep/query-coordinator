@@ -103,5 +103,5 @@
   <script type='text/javascript'>
     blist.dataset = new Dataset(<%= safe_json(@view) %>);
   </script>
-  <%= include_javascripts 'dataset-edit-rr' %>
+  <%= include_webpack_bundle 'open-data/dataset-edit-rr.js' %>
 <% end %>

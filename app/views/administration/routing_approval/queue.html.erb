@@ -196,6 +196,6 @@
          raNS.approvalTemplate = new Approval(<%= safe_json(@approval_template) %>);
       });
     </script>
-    <%= include_javascripts 'admin-routing-approval' %>
+    <%= include_webpack_bundle 'open-data/admin-routing-approval.js' %>
   <%- end -%>
 <%- end -%>

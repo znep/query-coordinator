@@ -66,6 +66,6 @@
 
 <% content_for :js_footer do %>
   <%= render_translations LocalePart.screens.admin.site_chrome %>
-  <%= include_javascripts 'admin-site-chrome' %>
+  <%= include_webpack_bundle 'open-data/admin-site-chrome.js' %>
   <%= include_webpack_bundle 'site-chrome/main.js' %>
 <% end %>

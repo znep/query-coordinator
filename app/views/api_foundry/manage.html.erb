@@ -45,7 +45,7 @@
   <%- end -%>
 
   <% content_for :js_footer do %>
-    <%= include_javascripts 'api-manage' %>
+    <%= include_webpack_bundle 'open-data/api-manage.js' %>
     <script type="text/javascript">
       blist.dataset = new Dataset(<%= safe_json(@view) %>);
     </script>

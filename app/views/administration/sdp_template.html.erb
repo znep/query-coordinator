@@ -144,6 +144,6 @@
     blist.publish.viewIsGrid = <%= !@view.is_alt_view? %>;
   </script>
 
-  <%= include_javascripts 'admin-sdp-template' %>
+  <%= include_webpack_bundle 'open-data/admin-sdp-template.js' %>
 <% end %>
 <%= render_translations LocalePart.controls.upload_dialog %>

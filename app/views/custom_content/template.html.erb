@@ -48,9 +48,9 @@
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @templet.page, :template => @templet } %>
-  <%= include_javascripts 'configurator' %>
-  <%= include_javascripts 'shared-editors' %>
-  <%= include_javascripts 'template-instantiator' %>
+  <%= include_webpack_bundle 'open-data/configurator.js' %>
+  <%= include_webpack_bundle 'open-data/shared-editors.js' %>
+  <%= include_webpack_bundle 'open-data/template-instantiator.js' %>
 <%- end -%>
 <%= render_translations LocalePart.screens.wizard %>
 <%= render_translations LocalePart.controls.upload_dialog %>

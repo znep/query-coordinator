@@ -6,5 +6,5 @@
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <%= include_javascripts 'browse-select-dataset' %>
+  <%= include_webpack_bundle 'open-data/browse-select-dataset.js' %>
 <%- end -%>

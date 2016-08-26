@@ -17,7 +17,7 @@
 
     <%= render_translations %>
 
-    <%= include_javascripts 'base' %>
+    <%= include_webpack_bundle 'open-data/base.js' %>
 
     <%= render_view_js %>
 
@@ -45,7 +45,7 @@
       <%= raw render_inline_setup_js('renderTypeContainer', self) %>
     </script>
 
-    <%= include_javascripts 'screen-classic-visualization' %>
+    <%= include_webpack_bundle 'open-data/screen-classic-visualization.js' %>
 
   </body>
 </html>

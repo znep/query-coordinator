@@ -9,8 +9,8 @@
 
 <%- content_for :js_footer do -%>
   <%- allow_once do -%>
-    <%= include_javascripts 'unified-filter' %>
-    <%= include_javascripts 'shared-editors' %>
+    <%= include_webpack_bundle 'open-data/unified-filter.js' %>
+    <%= include_webpack_bundle 'open-data/shared-editors.js' %>
   <%- end -%>
 
   <script type="text/javascript">

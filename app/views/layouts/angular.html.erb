@@ -48,7 +48,7 @@
       <%= render_noscript(@migration_metadata[:obeId]) %>
     <% end %>
 
-    <%= include_javascripts 'bower-all' %>
+    <%= include_webpack_bundle 'open-data/bower-all.js' %>
     <%= render_airbrake_shim %>
     <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>

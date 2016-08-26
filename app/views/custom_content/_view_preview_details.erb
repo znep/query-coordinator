@@ -35,7 +35,7 @@
 
       <%- content_for :js_footer do -%>
         <%- allow_once do -%>
-          <%= include_javascripts 'stars' %>
+          <%= include_webpack_bundle 'open-data/stars.js' %>
         <%- end -%>
 
         <script type="text/javascript">

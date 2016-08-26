@@ -115,5 +115,5 @@
     blist.namespace.fetch('blist.profile');
     blist.profile.profileUserId = '<%= @user.id %>';
   </script>
-  <%= include_javascripts 'screen-profile' %>
+  <%= include_webpack_bundle 'open-data/screen-profile.js' %>
 <% end %>

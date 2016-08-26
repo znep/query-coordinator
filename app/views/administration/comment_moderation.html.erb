@@ -73,5 +73,5 @@
 <%- end -%>
 
 <%- content_for :js_footer do -%>
-  <%= include_javascripts 'admin-moderation' %>
+  <%= include_webpack_bundle 'open-data/admin-moderation.js' %>
 <%- end -%>

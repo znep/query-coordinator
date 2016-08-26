@@ -262,7 +262,7 @@
 
 <% content_for :js_footer do %>
   <%- unless no_js -%>
-    <%= include_javascripts 'admin-users' %>
+    <%= include_webpack_bundle 'open-data/admin-users.js' %>
   <%- end -%>
 <% end %>
 <%= render_translations LocalePart.screens.admin.users %>

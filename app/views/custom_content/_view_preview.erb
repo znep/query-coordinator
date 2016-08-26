@@ -19,7 +19,7 @@
         blist.namespace.fetch('blist.configuration');
         blist.configuration.development = <%= Rails.env.development? %>;
       </script>
-      <%= include_javascripts 'render-view-minimum' %>
+      <%= include_webpack_bundle 'open-data/render-view-minimum.js' %>
     <%- end -%>
 
     <%- if widget.view.visible_display_types.include? 'table' -%>

@@ -1,4 +1,4 @@
-<%= include_javascripts 'canvas' %>
+<%= include_webpack_bundle 'open-data/canvas.js' %>
 <script type="text/javascript">
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
   blist.namespace.fetch('blist.configuration');

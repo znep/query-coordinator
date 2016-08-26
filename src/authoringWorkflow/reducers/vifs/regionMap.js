@@ -23,7 +23,8 @@ import {
   SET_DATASET_UID,
   SET_NEGATIVE_COLOR,
   SET_ZERO_COLOR,
-  SET_POSITIVE_COLOR
+  SET_POSITIVE_COLOR,
+  SET_VIEW_SOURCE_DATA_LINK
 } from '../../actions';
 
 export default function regionMap(state, action) {
@@ -66,6 +67,10 @@ export default function regionMap(state, action) {
 
     case SET_DESCRIPTION:
       setStringValueOrDefaultValue(state, 'description', action.description, null);
+      break;
+
+    case SET_VIEW_SOURCE_DATA_LINK:
+      _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;
 
     case SET_MEASURE:

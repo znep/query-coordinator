@@ -30,7 +30,8 @@ import {
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
   SET_DOMAIN,
-  SET_DATASET_UID
+  SET_DATASET_UID,
+  SET_VIEW_SOURCE_DATA_LINK
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -71,6 +72,10 @@ export default function columnChart(state, action) {
 
     case SET_DESCRIPTION:
       setStringValueOrDefaultValue(state, 'description', action.description, null);
+      break;
+
+    case SET_VIEW_SOURCE_DATA_LINK:
+      _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;
 
     case SET_MEASURE:

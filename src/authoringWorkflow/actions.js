@@ -273,6 +273,14 @@ export function setDescription(description) {
   };
 }
 
+export var SET_VIEW_SOURCE_DATA_LINK = 'SET_VIEW_SOURCE_DATA_LINK';
+export function setViewSourceDataLink(viewSourceDataLink) {
+  return {
+    type: SET_VIEW_SOURCE_DATA_LINK,
+    viewSourceDataLink
+  };
+}
+
 export var SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
 export function setPrimaryColor(primaryColor) {
   return {

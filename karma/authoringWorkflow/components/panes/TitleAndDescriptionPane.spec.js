@@ -12,7 +12,8 @@ describe('TitleAndDescriptionPane', function() {
   beforeEach(function() {
     props = defaultProps({
       onChangeTitle: sinon.stub(),
-      onChangeDescription: sinon.stub()
+      onChangeDescription: sinon.stub(),
+      onChangeShowSourceDataLink: sinon.stub()
     });
     component = renderComponent(TitleAndDescriptionPane, props);
   });
@@ -24,6 +25,10 @@ describe('TitleAndDescriptionPane', function() {
 
     it('renders a description text area', function() {
       expect(component.querySelector('textarea')).to.exist;
+    });
+
+    it('renders a source data link checkbox', function() {
+      expect(component.querySelector('input[type="checkbox"]')).to.exist;
     });
   });
 
@@ -43,6 +48,15 @@ describe('TitleAndDescriptionPane', function() {
 
         TestUtils.Simulate.change(textarea);
         sinon.assert.calledOnce(props.onChangeDescription);
+      });
+    });
+
+    describe('when changing the visibility of source data link', function() {
+      it('should emit an onChangeShowSourceDataLink event', function() {
+        var checkbox = component.querySelector('input[type="checkbox"]');
+
+        TestUtils.Simulate.change(checkbox);
+        sinon.assert.calledOnce(props.onChangeShowSourceDataLink);
       });
     });
   });

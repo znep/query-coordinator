@@ -49,7 +49,7 @@ describe('actions/bulkEditActions', () => {
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
     store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [ startInProgress, updateGoals, closeModal ] = store.getActions();
+      const [ doSideEffect, startInProgress, updateGoals, closeModal ] = store.getActions();
 
       expect(startInProgress.type).to.eq(SharedActions.types.setModalInProgress);
       expect(updateGoals.type).to.eq(Actions.Data.types.updateAll);
@@ -73,7 +73,7 @@ describe('actions/bulkEditActions', () => {
     });
 
     store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [started, failed] = store.getActions();
+      const [doSideEffect, started, failed] = store.getActions();
 
       expect(failed.type).to.eq(SharedActions.types.showModalMessage);
       done();
@@ -84,7 +84,7 @@ describe('actions/bulkEditActions', () => {
     const goals = GOALS.concat([{ id: 'not_configured' }]);
 
     store.dispatch(Actions.BulkEdit.saveGoals(goals.map(goal => Immutable.fromJS(goal))), {});
-    const [notConfigured] = store.getActions();
+    const [doSideEffect, notConfigured] = store.getActions();
 
     expect(notConfigured.type).to.eq(SharedActions.types.showModalMessage);
   });

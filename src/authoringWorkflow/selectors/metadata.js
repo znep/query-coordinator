@@ -128,6 +128,12 @@ export const getValidRegions = createSelector(
   }
 );
 
+export const hasRegions = createSelector(
+  getValidCuratedRegions,
+  getValidComputedColumns,
+  (curatedRegions, computedColumns) => curatedRegions.length > 0 || computedColumns.length > 0
+);
+
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});
 
 const isNotSystemColumn = column => {

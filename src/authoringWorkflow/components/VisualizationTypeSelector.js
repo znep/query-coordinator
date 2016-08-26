@@ -7,13 +7,19 @@ import Styleguide from 'socrata-components';
 import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES } from '../constants';
 import { setVisualizationType } from '../actions';
-import { getAnyDimension, getSelectedVisualizationType } from '../selectors/vifAuthoring';
 import {
+  getAnyDimension,
+  getSelectedVisualizationType,
+  isRegionMap
+} from '../selectors/vifAuthoring';
+
+import {
+  getRecommendedVisualizationTypes,
   hasData,
-  getRecommendedVisualizationTypes
+  hasRegions
 } from '../selectors/metadata';
 
-export var VisualizationTypeSelector = React.createClass({
+export const VisualizationTypeSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
@@ -37,20 +43,20 @@ export var VisualizationTypeSelector = React.createClass({
   },
 
   renderVisualizationTypeFlyout(visualizationType, isRecommended) {
-    var recommendedLabel = isRecommended ? (
+    const recommendedLabel = isRecommended ? (
       <div className="visualization-type-recommended-label">
         <span className="visualization-type-recommended-indicator" />
         <span>{translate('panes.data.fields.visualization_type.recommended')}</span>
       </div>
     ) : null;
 
-    var recommendedInfo = isRecommended ? (
+    const recommendedInfo = isRecommended ? (
       <p className="visualization-type-info">
         {translate('panes.data.fields.visualization_type.recommended_based_on')}
       </p>
     ) : null;
 
-    var flyoutAttributes = {
+    const flyoutAttributes = {
       id: `${visualizationType.type}-flyout`,
       className: classNames('visualization-type-flyout flyout flyout-hidden', {
         recommended: isRecommended
@@ -70,17 +76,37 @@ export var VisualizationTypeSelector = React.createClass({
     );
   },
 
+  renderEmptyRegionAlert() {
+    const { metadata, vifAuthoring } = this.props;
+    const alertAttributes = {
+      id: 'empty-region-selection-alert',
+      className: 'empty-region-selection-alert alert warning'
+    };
+
+    return !hasRegions(metadata) && isRegionMap(vifAuthoring) ? (
+      <div {...alertAttributes}>
+        <div>
+          <span className="icon-warning" />
+        </div>
+        <div>
+          <p>{translate('panes.data.fields.visualization_type.no_boundaries')}</p>
+          <p dangerouslySetInnerHTML={{__html: translate('panes.data.fields.visualization_type.ask_site_admin')}} />
+        </div>
+      </div>
+    ) : null;
+  },
+
   renderVisualizationTypeButton(visualizationType) {
-    var { metadata, vifAuthoring } = this.props;
+    const { metadata, vifAuthoring } = this.props;
 
-    var recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
-    var isRecommended = _.some(recommendedVisualizationTypes, {type: visualizationType});
-    var isSelected = visualizationType === getSelectedVisualizationType(vifAuthoring);
+    const recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
+    const isRecommended = _.some(recommendedVisualizationTypes, {type: visualizationType});
+    const isSelected = visualizationType === getSelectedVisualizationType(vifAuthoring);
 
-    var visualizationTypeMetadata = _.find(VISUALIZATION_TYPES, {type: visualizationType});
-    var flyout = this.renderVisualizationTypeFlyout(visualizationTypeMetadata, isRecommended);
+    const visualizationTypeMetadata = _.find(VISUALIZATION_TYPES, {type: visualizationType});
+    const flyout = this.renderVisualizationTypeFlyout(visualizationTypeMetadata, isRecommended);
 
-    var buttonAttributes = {
+    const buttonAttributes = {
       className: classNames('btn btn-default btn-lg', {
         active: isSelected,
         recommended: isRecommended
@@ -98,7 +124,7 @@ export var VisualizationTypeSelector = React.createClass({
   },
 
   renderVisualizationTypeSelector() {
-    var attributes = {
+    const attributes = {
       id: 'visualization-type-selection',
       className: 'visualization-type-container',
       ref: (ref) => this.selector = ref
@@ -113,12 +139,13 @@ export var VisualizationTypeSelector = React.createClass({
           {this.renderVisualizationTypeButton('featureMap')}
           {this.renderVisualizationTypeButton('regionMap')}
         </div>
+        {this.renderEmptyRegionAlert()}
       </div>
     );
   },
 
   render() {
-    var { metadata } = this.props;
+    const { metadata } = this.props;
 
     return hasData(metadata) ?
       this.renderVisualizationTypeSelector() :
@@ -127,7 +154,7 @@ export var VisualizationTypeSelector = React.createClass({
 });
 
 function mapStateToProps(state) {
-  var { vifAuthoring, metadata } = state;
+  const { vifAuthoring, metadata } = state;
   return { vifAuthoring, metadata };
 }
 

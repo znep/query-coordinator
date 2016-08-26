@@ -36,6 +36,21 @@ describe('VisualizationTypeSelector', function() {
         })
       });
 
+      describe('with region map selected and no regions', function() {
+        beforeEach(function() {
+          var props = defaultProps();
+
+          _.set(props, 'vifAuthoring.authoring.selectedVisualizationType', 'regionMap');
+          _.set(props, 'metadata.curatedRegions', []);
+
+          component = renderComponent(VisualizationTypeSelector, props);
+        });
+
+        it('renders a warning', function() {
+          expect(component.querySelector('#empty-region-selection-alert')).to.exist;
+        });
+      });
+
       describe('with a dimension selected', function() {
         beforeEach(function() {
           component = renderComponent(VisualizationTypeSelector, defaultProps({

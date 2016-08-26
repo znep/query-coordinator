@@ -106,8 +106,8 @@ function SvgVisualization($element, vif) {
     const $leftAxisTitle = self.$container.find('.socrata-visualization-left-axis-title');
     const axisLabels = _.get(
       self.getVif(),
-      'configuration.axisTitles',
-      _.get(self.getVif(), 'configuration.axisLabels', {})
+      'configuration.axisLabels',
+      {}
     );
     const outerHeight = self.
       $container.

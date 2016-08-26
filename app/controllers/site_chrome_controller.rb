@@ -25,11 +25,11 @@ class SiteChromeController < ApplicationController
     end
 
     if @site_chrome.update_content(params[:stage] || :published, params[:content])
-      flash[:notice] = 'Site theme updated'
       if params[:stage] == 'draft'
         cookies[:socrata_site_chrome_preview] = true
         redirect_to browse_path
       else
+        flash[:notice] = 'Site theme updated'
         redirect_to edit_site_chrome_path
       end
     elsif @site_chrome.errors.any?

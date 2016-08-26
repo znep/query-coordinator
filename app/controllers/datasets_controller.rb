@@ -139,15 +139,9 @@ class DatasetsController < ApplicationController
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
 
-    # TODO: Remove this after DSLP launch (note that this is not being localized
-    # intentionally and we plan on removing it post-launch)
-    if display_dataset_landing_page_notice?
-      flash.now[:notice] = %{
-        Notice to Socrata Administrators: You can now configure the header and footer for your site,
-        including the links, colors, logos, and more. As well, tabular datasets now have a new front-page
-        experience called Dataset Landing Page which surfaces key content in intuitive ways. To preview
-        these features and activate them on your site, please visit your <a href="/admin/site_chrome">Site Appearance</a> panel.
-      }.html_safe
+    # TODO: Remove this after DSLP launch
+    if @view.has_landing_page?
+      display_dataset_landing_page_notice
     end
 
     etag = "#{dsmtime}-#{user}"
@@ -1204,12 +1198,6 @@ class DatasetsController < ApplicationController
   def dataset_landing_page_is_default?
     dataset_landing_page_enabled? &&
       FeatureFlags.derive(nil, request).default_to_dataset_landing_page == true
-  end
-
-  def display_dataset_landing_page_notice?
-    FeatureFlags.derive(nil, request).display_dataset_landing_page_notice == true &&
-      view.has_landing_page? &&
-      current_user.try(:roleName) == 'administrator'
   end
 
   def fetch_layer_info(layer_url)

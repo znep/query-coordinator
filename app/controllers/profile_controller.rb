@@ -10,6 +10,9 @@ class ProfileController < ApplicationController
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
+  # TODO: Remove this after DSLP launch
+  before_filter :display_dataset_landing_page_notice
+
   helper :user
 
   def index

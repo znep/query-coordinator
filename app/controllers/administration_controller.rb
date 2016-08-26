@@ -11,6 +11,9 @@ class AdministrationController < ApplicationController
   # NOTE: AdministrationHelper is distinct from AdminHelper.
   include AdministrationHelper
 
+  # TODO: Remove this after DSLP launch
+  before_filter :display_dataset_landing_page_notice
+
   before_filter :check_member, :only => :index
   def index
     redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)
@@ -1313,7 +1316,6 @@ private
     :defaults => { },
     :limit => 10
   }
-
 end
 
 class AppHelper

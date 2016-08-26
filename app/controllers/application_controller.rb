@@ -357,4 +357,25 @@ class ApplicationController < ActionController::Base
     Rails.env.development?
   end
 
+  # TODO: Remove after DSLP launch  (note that this is not being localized intentionally
+  # and we plan on removing it post-launch)
+  #
+  # Used in: ProfileController, AdministrationController, DatasetsController
+  def display_dataset_landing_page_notice
+    feature_flags = FeatureFlags.derive(nil, request)
+
+    should_display_notice = current_user.try(:roleName) == 'administrator' &&
+      feature_flags.enable_dataset_landing_page == false &&
+      feature_flags.default_to_dataset_landing_page == false &&
+      feature_flags.display_dataset_landing_page_notice == true
+
+    if should_display_notice
+      flash.now[:notice] = %{
+        Notice to Socrata Administrators: You can now configure the header and footer for your site,
+        including the links, colors, logos, and more. Tabular datasets also have a new front-page
+        experience which surfaces content more intuitively. To preview these features and activate
+        them on your site, please visit your <a href="/admin/site_chrome">Site Appearance</a> panel.
+      }.html_safe
+    end
+  end
 end

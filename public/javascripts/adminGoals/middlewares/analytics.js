@@ -18,7 +18,9 @@ const userData = _.pick(staticPageData, [
   'Domain'
 ]);
 
-const additionalPayload = {};
+const additionalPayload = _.pick(staticPageData, [
+  'On Page'
+]);
 
 /**
  * This is for filtering actions on middleware
@@ -30,7 +32,8 @@ const TRACK_FIELD = 'analyticsTrackEvent';
  * Creates analytics middleware.
  *
  * This middleware interprets actions which has *analyticsTrackEvent* object defined. This object should have two fields
- * called 'eventName' and 'eventPayload'.
+ * called 'eventName' and 'eventPayload'. Please use `createTrackEventActionData` helper function to create this
+ * necessary data.
  *
  * Example action structure:
  * ```js

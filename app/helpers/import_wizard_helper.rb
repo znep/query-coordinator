@@ -30,7 +30,12 @@ module ImportWizardHelper
   end
 
   def render_import_wizard_enabled_modules
-    javascript_tag("var enabledModules = #{json_escape(CurrentDomain.modules.pluck('name'))};")
+    modules = CurrentDomain.modules.pluck('name');
+    enabled_modules = modules.select do |mod|
+      CurrentDomain.module_enabled?(mod)
+    end
+
+    javascript_tag("var enabledModules = #{json_escape(enabled_modules)};")
   end
 
   def render_import_wizard_blist_licenses

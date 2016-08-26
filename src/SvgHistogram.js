@@ -273,11 +273,26 @@ $.fn.socrataSvgHistogram = function(originalVif) {
         all(dataRequests).
         then(
           function(dataResponses) {
+            const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
+              const measureIndex = dataResponse.columns.indexOf('measure');
+              return dataResponse.rows.map((row) => row[measureIndex]);
+            });
+
+            const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+              flatten().
+              compact().
+              isEmpty();
 
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
             visualization.hideBusyIndicator();
 
-            visualization.render(newVif, dataResponses);
+            if (onlyNullOrZeroValues) {
+              visualization.renderError(
+                I18n.translate('visualizations.common.error_no_data')
+              );
+            } else {
+              visualization.render(newVif, dataResponses);
+            }
           }
         )
     })['catch'](handleError);

@@ -118,24 +118,35 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         all(dataRequests).
         then(
           function(dataResponses) {
-            let overMaxRowCount;
-
-            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-            visualization.hideBusyIndicator();
-
-            overMaxRowCount = dataResponses.
+            const overMaxRowCount = dataResponses.
               some(
                 function(dataResponse) {
                   return dataResponse.rows.length > MAX_COLUMN_COUNT;
                 }
               );
 
-            if (overMaxRowCount) {
+            const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
+              const measureIndex = dataResponse.columns.indexOf('measure');
+              return dataResponse.rows.map((row) => row[measureIndex]);
+            });
 
+            const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+              flatten().
+              compact().
+              isEmpty();
+
+            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+            visualization.hideBusyIndicator();
+
+            if (overMaxRowCount) {
               visualization.renderError(
                 I18n.translate(
                   'visualizations.column_chart.error_exceeded_max_column_count'
                 ).format(MAX_COLUMN_COUNT)
+              );
+            } else if (onlyNullOrZeroValues) {
+              visualization.renderError(
+                I18n.translate('visualizations.common.error_no_data')
               );
             } else {
               visualization.render(newVif, dataResponses);

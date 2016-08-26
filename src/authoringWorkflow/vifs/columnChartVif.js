@@ -29,6 +29,10 @@ export default {
           columnName: null,
           aggregationFunction: 'count'
         },
+        orderBy: {
+          parameter: 'measure',
+          sort: 'desc'
+        },
         type: 'socrata.soql',
         filters: []
       },

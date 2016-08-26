@@ -126,7 +126,8 @@ export default {
       title: 'Axis & Scale',
       subheaders: {
         axis_titles: 'Axis Titles',
-        x_axis_data_labels: 'Data labels'
+        x_axis_data_labels: 'Data labels',
+        chart_sorting: 'Chart Sorting'
       },
       fields: {
         top_axis_title: {
@@ -146,6 +147,12 @@ export default {
         },
         x_axis_data_labels: {
           title: 'Show X-Axis Data Labels'
+        },
+        chart_sorting: {
+          large_to_small: 'Largest to smallest by value',
+          small_to_large: 'Smallest to largest by value',
+          ascending: 'Ascending by label',
+          descending: 'Descending by label'
         }
       }
     },

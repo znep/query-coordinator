@@ -10,20 +10,20 @@ const I18n = require('./I18n');
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const MAX_COLUMN_COUNT = 1000;
-const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
-const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {0} {5} NULL LAST LIMIT {6}';
-const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {2} {6} NULL LAST LIMIT {7}';
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = SoqlHelpers.measureAlias();
+const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {5} NULL LAST LIMIT {6}';
+const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {6} NULL LAST LIMIT {7}';
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(originalVif) {
   originalVif = VifHelpers.migrateVif(originalVif);
-  var $element = $(this);
-  var visualization = new SvgColumnChart(
+  const $element = $(this);
+  const visualization = new SvgColumnChart(
     $element,
     originalVif
   );
-  var rerenderOnResizeTimeout;
+  let rerenderOnResizeTimeout;
 
   /**
    * Event handling
@@ -66,7 +66,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function handleRenderVif(event) {
-    var newVif = event.originalEvent.detail;
+    const newVif = event.originalEvent.detail;
 
     updateData(
       VifHelpers.migrateVif(newVif)
@@ -74,7 +74,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function handleError(error) {
-    var messages;
+    let messages;
 
     if (window.console && console.error) {
       console.error(error);
@@ -118,7 +118,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         all(dataRequests).
         then(
           function(dataResponses) {
-            var overMaxRowCount;
+            let overMaxRowCount;
 
             $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
             visualization.hideBusyIndicator();
@@ -146,39 +146,35 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {
-    var series = vifToRender.series[seriesIndex];
-    var soqlDataProvider = new SoqlDataProvider({
+    const series = vifToRender.series[seriesIndex];
+    const soqlDataProvider = new SoqlDataProvider({
       datasetUid: series.dataSource.datasetUid,
       domain: series.dataSource.domain
     });
-    var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
-    var measure = SoqlHelpers.measure(vifToRender, seriesIndex);
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
+    const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+    const measure = SoqlHelpers.measure(vifToRender, seriesIndex);
+    const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       vifToRender,
       seriesIndex
     );
-    var whereClause = (whereClauseComponents.length > 0) ?
+    const whereClause = (whereClauseComponents.length > 0) ?
         'WHERE {0}'.format(whereClauseComponents) :
         '';
-    var aggregationClause = SoqlHelpers.aggregationClause(
+    const aggregationClause = SoqlHelpers.aggregationClause(
       vifToRender,
       seriesIndex,
       'dimension'
     );
-    var ascending;
-    var queryString;
+
+    const orderClause = SoqlHelpers.orderByClauseFromSeries(vifToRender, seriesIndex);
+
+    let ascending;
+    let queryString;
 
     if (
       series.dataSource.dimension.aggregationFunction === null &&
       series.dataSource.measure.aggregationFunction === null
     ) {
-
-      // Default to ascending order if this is an unaggregated query, since
-      // people are likely more interested in the categories rather than the
-      // values in this case.
-      ascending = Boolean(
-        _.get(series, 'dataSource.configuration.orderByAscending', true)
-      );
 
       queryString = UNAGGREGATED_BASE_QUERY.format(
         dimension,
@@ -186,17 +182,10 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         measure,
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
-        (ascending) ? 'ASC' : 'DESC',
+        orderClause,
         MAX_COLUMN_COUNT + 1
       );
     } else {
-
-      // Default to descending order if this is an aggregated query, since
-      // people are likely more interested in the values rather than the
-      // categories in this case.
-      ascending = Boolean(
-        _.get(series, 'dataSource.configuration.orderByAscending', false)
-      );
 
       queryString = AGGREGATED_BASE_QUERY.format(
         dimension,
@@ -205,7 +194,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
         SOQL_DATA_PROVIDER_MEASURE_ALIAS,
         whereClause,
         aggregationClause,
-        (ascending) ? 'ASC' : 'DESC',
+        orderClause,
         MAX_COLUMN_COUNT + 1
       );
     }
@@ -218,13 +207,13 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
       ).
       then(
         function(queryResponse) {
-          var dimensionIndex = queryResponse.
+          const dimensionIndex = queryResponse.
             columns.
             indexOf(SOQL_DATA_PROVIDER_DIMENSION_ALIAS);
-          var measureIndex = queryResponse.
+          const measureIndex = queryResponse.
             columns.
             indexOf(SOQL_DATA_PROVIDER_MEASURE_ALIAS);
-          var valueAsNumber;
+          let valueAsNumber;
 
           queryResponse.columns[dimensionIndex] = 'dimension';
           queryResponse.columns[measureIndex] = 'measure';

@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
+import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
-import { setLabelBottom, setLabelLeft, setXAxisDataLabels } from '../../actions';
+import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING } from '../../constants';
+import { setLabelBottom, setLabelLeft, setXAxisDataLabels, setOrderBy } from '../../actions';
 import {
   getAxisLabels,
+  getOrderBy,
   getXAxisDataLabels,
   isColumnChart,
   isHistogram,
@@ -17,6 +19,15 @@ import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
 
 export var AxisAndScalePane = React.createClass({
+  propTypes: {
+    chartSorting: React.PropTypes.arrayOf(React.PropTypes.object)
+  },
+
+  getDefaultProps() {
+    return {
+      chartSorting: _.cloneDeep(CHART_SORTING)
+    };
+  },
 
   renderVisualizationLabels() {
     const vifAuthoring = this.props.vifAuthoring;
@@ -41,16 +52,20 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div>
+      <div className="authoring-field-group">
         <h5>{translate('panes.axis_and_scale.subheaders.axis_titles')}</h5>
-        <label className="block-label" htmlFor="label-left">
-          {translate('panes.axis_and_scale.fields.left_axis_title.title')}
-        </label>
-        <input {...labelLeftInputAttributes}/>
-        <label className="block-label" htmlFor="label-bottom">
-          {translate('panes.axis_and_scale.fields.bottom_axis_title.title')}
-        </label>
-        <input {...labelBottomInputAttributes} />
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="label-left">
+            {translate('panes.axis_and_scale.fields.left_axis_title.title')}
+          </label>
+          <input {...labelLeftInputAttributes}/>
+        </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="label-bottom">
+            {translate('panes.axis_and_scale.fields.bottom_axis_title.title')}
+          </label>
+          <input {...labelBottomInputAttributes} />
+        </div>
       </div>
     );
   },
@@ -65,16 +80,53 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div>
+      <div className="authoring-field-group">
         <h5>{translate('panes.axis_and_scale.subheaders.x_axis_data_labels')}</h5>
-        <div className="checkbox">
-          <input {...inputAttributes}/>
-          <label className="inline-label" htmlFor="x-axis-data-labels">
-            <span className="fake-checkbox">
-              <span className="icon-checkmark3"></span>
-            </span>
-            {translate('panes.axis_and_scale.fields.x_axis_data_labels.title')}
-          </label>
+        <div className="authoring-field">
+          <div className="checkbox">
+            <input {...inputAttributes}/>
+            <label className="inline-label" htmlFor="x-axis-data-labels">
+              <span className="fake-checkbox">
+                <span className="icon-checkmark3"></span>
+              </span>
+              {translate('panes.axis_and_scale.fields.x_axis_data_labels.title')}
+            </label>
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  renderChartSortingOption(option) {
+    return (
+      <div className="dataset-column-dropdown-option">
+        <span className={option.icon}></span> {option.title}
+      </div>
+    );
+  },
+
+  renderChartSorting() {
+    const { onSelectChartSorting, chartSorting, vifAuthoring } = this.props;
+    const defaultChartSort = getOrderBy(vifAuthoring) || { parameter: 'measure', sort: 'desc' };
+    const options = _.map(chartSorting, (option) => {
+      option.value = `${option.orderBy.parameter}-${option.orderBy.sort}`;
+      option.render = this.renderChartSortingOption;
+
+      return option;
+    });
+
+    const attributes = {
+      options,
+      onSelection: onSelectChartSorting,
+      id: 'chart-sorting-selection',
+      value: `${defaultChartSort.parameter}-${defaultChartSort.sort}`
+    }
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.chart_sorting')}</h5>
+        <div className="authoring-field">
+          <Styleguide.Dropdown {...attributes} />
         </div>
       </div>
     );
@@ -83,11 +135,13 @@ export var AxisAndScalePane = React.createClass({
   renderColumnChartControls() {
     const visualizationLabels = this.renderVisualizationLabels();
     const xAxisDataLabels = this.renderXAxisDataLabels();
+    const chartSorting = this.renderChartSorting();
 
     return (
       <div>
         {visualizationLabels}
         {xAxisDataLabels}
+        {chartSorting}
       </div>
     );
   },
@@ -154,6 +208,10 @@ function mapDispatchToProps(dispatch) {
       const xAxisDataLabels = event.target.checked;
 
       dispatch(setXAxisDataLabels(xAxisDataLabels));
+    },
+
+    onSelectChartSorting: (chartSorting) => {
+      dispatch(setOrderBy(chartSorting.orderBy));
     }
   };
 }

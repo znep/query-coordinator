@@ -16,7 +16,8 @@
 
       #column-chart-1,
       #column-chart-2,
-      #column-chart-3 {
+      #column-chart-3,
+      #column-chart-4 {
         display: block;
         position: relative;
         width: 640px;
@@ -29,6 +30,7 @@
     <div id="column-chart-1"></div>
     <div id="column-chart-2"></div>
     <div id="column-chart-3"></div>
+    <div id="column-chart-4"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -278,6 +280,17 @@
         }
       ];
 
+      var columnChart4Vif = _.defaultsDeep({}, columnChart1Vif, {
+        series: [{
+          dataSource: {
+            orderBy: {
+              parameter: 'measure',
+              sort: 'asc'
+            }
+          }
+        }]
+      });
+
       /**
        * Instantiate the plugins
        */
@@ -307,6 +320,14 @@
         handleVifUpdated
       );
       $columnChart3Element.socrataSvgColumnChart(columnChart3Vif);
+
+      var $columnChart4Element = $('#column-chart-4');
+      $columnChart4Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart4Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart4Element.socrataSvgColumnChart(columnChart4Vif);
 
       /**
        * Handle plugin events

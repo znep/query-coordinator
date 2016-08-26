@@ -14,24 +14,25 @@ import {
 
 import {
   RECEIVE_METADATA,
-  SET_DIMENSION,
-  SET_MEASURE,
-  SET_MEASURE_AGGREGATION,
-  SET_TITLE,
+  SET_DATASET_UID,
   SET_DESCRIPTION,
-  SET_PRIMARY_COLOR,
-  SET_SECONDARY_COLOR,
-  SET_LABEL_TOP,
+  SET_DIMENSION,
+  SET_DOMAIN,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
-  SET_X_AXIS_DATA_LABELS,
-  SET_X_AXIS_SCALING_MODE,
+  SET_LABEL_TOP,
+  SET_MEASURE,
+  SET_MEASURE_AGGREGATION,
+  SET_ORDER_BY,
+  SET_PRIMARY_COLOR,
+  SET_SECONDARY_COLOR,
+  SET_TITLE,
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
-  SET_DOMAIN,
-  SET_DATASET_UID,
-  SET_VIEW_SOURCE_DATA_LINK
+  SET_VIEW_SOURCE_DATA_LINK,
+  SET_X_AXIS_DATA_LABELS,
+  SET_X_AXIS_SCALING_MODE
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -143,6 +144,12 @@ export default function columnChart(state, action) {
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+      });
+      break;
+
+    case SET_ORDER_BY:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
       });
       break;
   }

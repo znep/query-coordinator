@@ -37,6 +37,13 @@ function dimension(vif, seriesIndex) {
 }
 
 /**
+ * Returns a safe alias for all dimension SQL references.
+ */
+function dimensionAlias() {
+  return '__dimension_alias__';
+}
+
+/**
  * @param {Object} vif
  * @param {Number} seriesIndex
  *
@@ -63,6 +70,13 @@ function measure(vif, seriesIndex) {
     default:
       return '`{0}`'.format(columnName);
   }
+}
+
+/**
+ * Returns a safe alias for all measure SQL references.
+ */
+function measureAlias() {
+  return '__measure_alias__';
 }
 
 /**
@@ -254,6 +268,37 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
     ).
     map(filterToWhereClauseComponent).
     join(' AND ');
+}
+
+function orderByClauseFromSeries(vif, seriesIndex) {
+  const series = _.get(vif, `series[${seriesIndex}]`);
+  const dimensionAggregation = _.get(series, 'dataSource.dimension.aggregationFunction');
+  const measureAggregation = _.get(series, 'dataSource.measure.aggregationFunction');
+  const isUnaggregated = _.isNull(dimensionAggregation) && _.isNull(measureAggregation);
+  const orderBy = _.get(series, 'dataSource.orderBy', {
+    parameter: isUnaggregated ? 'measure' : 'dimension',
+    sort: isUnaggregated ? 'desc' : 'asc'
+  });
+
+  utils.assertIsOneOfTypes(orderBy.parameter, 'string');
+  utils.assertIsOneOfTypes(orderBy.sort, 'string');
+
+  utils.assert(
+     _.includes(['dimension', 'measure'], _.lowerCase(orderBy.parameter)),
+     'The key parameter must have a value of "dimension" or "measure".'
+  );
+
+  utils.assert(
+    _.includes(['asc', 'desc'], _.lowerCase(orderBy.sort)),
+    'The key sort must have a value of "asc" or "desc"'
+  );
+
+  const sort = _.lowerCase(orderBy.sort) === 'asc' ?  'ASC' : 'DESC';
+  const parameter = _.lowerCase(orderBy.parameter) === 'dimension' ?
+    dimensionAlias() :
+    measureAlias();
+
+  return `${parameter} ${sort}`;
 }
 
 function filterToWhereClauseComponent(filter) {
@@ -470,9 +515,12 @@ function valueRangeWhereClauseComponent(filter) {
 }
 
 module.exports = {
-  dimension: dimension,
-  measure: measure,
-  aggregationClause: aggregationClause,
-  whereClauseNotFilteringOwnColumn: whereClauseNotFilteringOwnColumn,
-  whereClauseFilteringOwnColumn: whereClauseFilteringOwnColumn
+  dimension,
+  dimensionAlias,
+  measure,
+  measureAlias,
+  aggregationClause,
+  orderByClauseFromSeries,
+  whereClauseNotFilteringOwnColumn,
+  whereClauseFilteringOwnColumn
 };

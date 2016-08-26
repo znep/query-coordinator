@@ -12,8 +12,8 @@ const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSo
 
 const MAX_POINT_COUNT = 1000;
 const MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
-const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = '__dimension_alias__';
-const SOQL_DATA_PROVIDER_MEASURE_ALIAS = '__measure_alias__';
+const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
+const SOQL_DATA_PROVIDER_MEASURE_ALIAS = SoqlHelpers.measureAlias();
 const PRECISION_BASE_QUERY = 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\'';
 const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}';
 const AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}';

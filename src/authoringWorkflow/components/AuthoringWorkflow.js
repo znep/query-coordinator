@@ -54,6 +54,11 @@ export var AuthoringWorkflow = React.createClass({
           paneComponent: DataPane
         },
         {
+          id: 'authoring-axis-and-scale',
+          title: translate('panes.axis_and_scale.title'),
+          paneComponent: AxisAndScalePane
+        },
+        {
           id: 'authoring-title-and-description',
           title: translate('panes.title_and_description.title'),
           paneComponent: TitleAndDescriptionPane
@@ -62,11 +67,6 @@ export var AuthoringWorkflow = React.createClass({
           id: 'authoring-colors-and-style',
           title: translate('panes.colors_and_style.title'),
           paneComponent: ColorsAndStylePane
-        },
-        {
-          id: 'authoring-axis-and-scale',
-          title: translate('panes.axis_and_scale.title'),
-          paneComponent: AxisAndScalePane
         },
         {
           id: 'authoring-legends-and-flyouts',

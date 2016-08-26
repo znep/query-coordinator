@@ -1,0 +1,24 @@
+<div id="picklist-container"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      onSelection: function(option) {
+        console.log('option selected:', option.title, option.value);
+      },
+      options: [
+        {title: 'Inoculate the Innocuous', value: 'inoculate'},
+        {title: 'Tuff Luff', value: 'tuff-luff'},
+        {title: 'Ghost Mountain', value: 'ghost-mountain'},
+        {title: 'Jellybones', value: 'jellybones'},
+        {title: 'Les Os', value: 'les-os'},
+      ],
+      value: 'les-os'
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.Picklist, props),
+      document.getElementById('picklist-container')
+    );
+  });
+</script>

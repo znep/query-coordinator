@@ -1,0 +1,49 @@
+.picklist {
+  background: $white;
+  border: solid 1px $light-grey-3;
+  overflow-y: auto;
+  color: $dark-grey-1;
+
+  &.picklist-true-width {
+    right: auto;
+  }
+}
+
+.picklist-group-header {
+  background: $light-grey-5;
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.picklist-separator {
+  height: 1px;
+  background: $light-grey-3;
+  border-left: none;
+  border-right: none;
+}
+
+.picklist-option {
+  padding: 10px;
+  user-select: none;
+  cursor: default;
+  transition: background-color 0.02s ease-in-out, color 0.02s ease-in-out;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: tint($primary, 20%);
+    color: $light-grey-7;
+  }
+
+  &.picklist-option-selected {
+    color: $dark-grey-1;
+    background-color: tint($primary, 85%);
+  }
+
+  &:active:not(.picklist-option-selected) {
+    color: $light-grey-7;
+    background-color: tint($primary, 5%);
+  }
+}

@@ -9,6 +9,7 @@ import TourFactory from './Tour';
 
 import ColorPicker from './components/ColorPicker';
 import Dropdown from './components/Dropdown';
+import Picklist from './components/Picklist';
 import ViewCard from './components/ViewCard';
 import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 
@@ -32,6 +33,7 @@ module.exports = {
 
   ColorPicker,
   Dropdown,
+  Picklist,
   ViewCard,
   ExternalViewCard
 };

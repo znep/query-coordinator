@@ -10,5 +10,6 @@
 - [Installation nation](readme/installation.md)
 - [Usage in downstream projects](readme/downstream.md)
 - [Development tips and tricks](readme/development.md)
+- [Building the docs](readme/build.md)
 
 Thanks for your contributions and continued support!

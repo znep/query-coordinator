@@ -43,7 +43,7 @@ module SiteChromeHelper
 
   def site_chrome_favicon_tag
     favicon_url = get_site_chrome.general[:window_icon]
-    favicon_link_tag(favicon_url) if favicon_url.present?
+    favicon_link_tag(url_with_prefix(favicon_url)) if favicon_url.present?
   end
 
   def site_chrome_window_title

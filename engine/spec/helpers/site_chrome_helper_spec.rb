@@ -360,6 +360,31 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
+  describe '#url_with_prefix' do
+    it 'does not modify a url that starts with http://' do
+      url = 'http://google.com'
+      expect(helper.url_with_prefix(url)).to eq('http://google.com')
+    end
+
+    it 'does not modify a url that starts with https://' do
+      url = 'https://google.com'
+      expect(helper.url_with_prefix(url)).to eq('https://google.com')
+    end
+
+    it 'does not modify a url that starts with /' do
+      url = '/browse'
+      expect(helper.url_with_prefix(url)).to eq('/browse')
+    end
+
+    it 'prepends http:// to a url that does not have a scheme or leading slash' do
+      url = 'facebook.com/bananas'
+      expect(helper.url_with_prefix(url)).to eq('http://facebook.com/bananas')
+
+      url2 = 'www.test.com/asdf'
+      expect(helper.url_with_prefix(url2)).to eq('http://www.test.com/asdf')
+    end
+  end
+
   describe '#localized' do
     it 'returns nil if it cannot find the locale_key in the locales hash' do
       locales = {

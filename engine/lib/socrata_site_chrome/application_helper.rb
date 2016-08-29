@@ -14,7 +14,7 @@ module SocrataSiteChrome
     def logo(img)
       img_src = img.dig('logo', 'src')
       if img_src.present?
-        image_tag(img_src, :alt => img.dig('logo', 'alt') || header_title || 'Header Logo',
+        image_tag(url_with_prefix(img_src), :alt => img.dig('logo', 'alt') || header_title || 'Header Logo',
           :onerror => 'this.style.display="none"')
       end
     end
@@ -139,7 +139,7 @@ module SocrataSiteChrome
             elsif valid_link_item?(link)
               # Top level link
               link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-                link[:url], :class => 'site-chrome-nav-link noselect')
+                url_with_prefix(link[:url]), :class => 'site-chrome-nav-link noselect')
             end
           )
         end
@@ -150,7 +150,7 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         if valid_link_item?(link)
           link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-            link[:url], :class => 'site-chrome-nav-child-link noselect')
+            url_with_prefix(link[:url]), :class => 'site-chrome-nav-child-link noselect')
         end
       end
     end
@@ -163,6 +163,15 @@ module SocrataSiteChrome
     # Valid if link has :key and :url
     def valid_link_item?(link)
       !!(link.try(:dig, :key).present? && link[:url].present?)
+    end
+
+    # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
+    def url_with_prefix(url)
+      return unless url.present?
+      return url if url.start_with?('/') # relative path
+
+      uri = URI.parse(url)
+      uri.scheme.present? ? uri.to_s : "http://#{uri}"
     end
 
     def dropdown(prompt, dropdown_options = [], orientation = 'bottom')

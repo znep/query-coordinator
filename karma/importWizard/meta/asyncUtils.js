@@ -1,5 +1,4 @@
 import {withMockFetch, testThunk} from '../asyncUtils';
-import Promise from 'bluebird';
 
 
 describe('withMockFetch', () => {

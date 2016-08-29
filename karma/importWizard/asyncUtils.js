@@ -9,7 +9,6 @@ helpers for testing Redux flows which include IO and multiple actions, e.g.
 tested in meta/asyncUtils.js
 */
 
-import Promise from 'bluebird';
 
 // something like this probably already exists in NPM
 export function testThunk(done, actionThunk, wholeState, expectationThunks) {

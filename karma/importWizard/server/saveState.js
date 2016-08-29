@@ -1,5 +1,4 @@
 import { withMockFetch } from '../asyncUtils';
-import Promise from 'bluebird';
 
 import * as SaveState from 'saveState';
 

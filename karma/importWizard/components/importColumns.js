@@ -5,7 +5,6 @@ import * as CD from 'components/importColumns/columnDetail';
 import * as SaveState from 'saveState';
 
 import { withMockFetch, testThunk } from '../asyncUtils';
-import Promise from 'bluebird';
 
 
 describe('ImportColumns component', () => {

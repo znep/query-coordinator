@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 var root = path.resolve(__dirname, '../..');
 
@@ -50,7 +51,12 @@ module.exports = function(karma) {
         'customMetadataSchema': 'customMetadataSchema',
         'licenses': 'licenses',
         'blistLicenses': 'blistLicenses'
-      }
+      },
+      plugins: [
+        new webpack.ProvidePlugin({
+          Promise: 'imports?this=>global!exports?global.Promise!es6-promise'
+        })
+      ]
     },
 
     webpackMiddleware: {

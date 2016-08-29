@@ -1,5 +1,6 @@
 /*eslint-env node */
 var path = require('path');
+var webpack = require('webpack');
 var _ = require('lodash');
 
 var common = require('./common');
@@ -34,5 +35,10 @@ module.exports = _.defaultsDeep({
     'importSource': 'importSource',
     'view': 'view'
   },
-  plugins: common.plugins.concat(common.getManifestPlugin(identifier))
+  plugins: common.plugins.concat(
+    common.getManifestPlugin(identifier),
+    new webpack.ProvidePlugin({
+      Promise: 'imports?this=>global!exports?global.Promise!es6-promise'
+    })
+  )
 }, require('./base'));

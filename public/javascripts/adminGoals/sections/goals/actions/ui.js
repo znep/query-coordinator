@@ -1,4 +1,5 @@
 import * as Analytics from '../../shared/analytics';
+import _ from 'lodash';
 
 export const types = {
   setSelection: 'goals.ui.setSelection',
@@ -31,7 +32,7 @@ export const openGoalManagePage = goalId => ({
  * Sort data
  * @param { fieldName, direction, fieldType} options
  */
-export const sortBy = options => Object.assign({ type: types.sortBy }, options);
+export const sortBy = options => _.merge({ type: types.sortBy }, options);
 
 export const showPage = pageNumber => ({
   type: types.showPage,

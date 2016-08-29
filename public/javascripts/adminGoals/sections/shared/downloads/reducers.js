@@ -2,19 +2,19 @@ import * as Immutable from 'immutable';
 import * as ReduxImmutable from 'redux-immutablejs';
 import * as Actions from './actions';
 
-const initialState = Immutable.Map({});
+const initialState = new Immutable.Map;
 
-const initialFileState = Immutable.Map({
+const initialFileState = new Immutable.Map({
   inProgress: false,
   failed: false
 });
 
-const failedFileState = Immutable.Map({
+const failedFileState = new Immutable.Map({
   inProgress: false,
   failed: true
 });
 
-const inProgressFileState = Immutable.Map({
+const inProgressFileState = new Immutable.Map({
   inProgress: true,
   failed: false
 });

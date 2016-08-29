@@ -90,10 +90,12 @@ class GoalQuickEdit extends React.Component {
    */
   onSelectChange(name, selected) {
     let data = {};
-    data[name] = _.isFunction(selected.format) ? selected.format(Constants.datetimeFormat) : selected.value;
+    if (!_.isNil(selected)) {
+      data[name] = _.isFunction(selected.format) ? selected.format(Constants.datetimeFormat) : selected.value;
 
-    const newData = this.props.formData.merge(data);
-    this.props.updateFormData(newData);
+      const newData = this.props.formData.merge(data);
+      this.props.updateFormData(newData);
+    }
   }
 
   /**
@@ -209,4 +211,4 @@ const mapDispatchToProps = dispatch => ({
   openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target))
 });
 
-export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(GoalQuickEdit));
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(GoalQuickEdit));//eslint-disable-line new-cap

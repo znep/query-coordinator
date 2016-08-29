@@ -24,7 +24,7 @@ const setFormData = (state, { data }) => state.mergeIn(['goal'], data);
 
 const setModalInProgress = (state, { inProgress }) => state.set('saveInProgress', inProgress);
 
-const showModalMessage = (state, { message, messageType }) => state.set('message', Immutable.Map({
+const showModalMessage = (state, { message, messageType }) => state.set('message', new Immutable.Map({
   visible: true,
   content: message,
   type: messageType

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom'; //eslint-disable-line no-unused-vars
 import * as ReactRedux  from 'react-redux';
 import * as Components from '../../../components';
 import * as Actions from '../actions';
@@ -8,7 +8,6 @@ import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
 import * as Constants from '../constants';
-
 
 class SocrataBulkActions extends React.Component {
   constructor(props) {

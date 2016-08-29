@@ -1,6 +1,3 @@
-$min_table_body_height: 400px;
-$max_table_body_height: 700px;
-
 $row_highlight_color: #F5F5F5;
 
 .goal-table {
@@ -59,8 +56,6 @@ table.op-admin-table {
     background-color: white;
     overflow: auto;
     width: 100%;
-    min-height: $min_table_body_height;
-    max-height: $max_table_body_height;
 
     tr {
       user-select: none; /* CSS3 (little to no support) */

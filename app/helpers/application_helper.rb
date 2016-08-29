@@ -308,7 +308,7 @@ module ApplicationHelper
         manifest = Rails.configuration.webpack[:asset_manifest]
         "build/#{manifest[resource]}"
       else
-        "build/#{entrypoint}"
+        "build/#{resource}"
       end
     end
     javascript_include_tag(src)

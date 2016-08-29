@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -96,9 +97,8 @@ export var Picklist = React.createClass({
 
   render() {
     const renderedOptions = [];
-    const { disabled, options, displayTrueWidthOptions } = this.props;
+    const { disabled, options } = this.props;
     const classes = classNames('picklist', {
-      'picklist-true-width': displayTrueWidthOptions,
       'picklist-disabled': disabled
     });
 

@@ -10,11 +10,15 @@ const KEYS = {
 export default React.createClass({
   propTypes: {
     disabled: React.PropTypes.bool,
-    value: React.PropTypes.string,
-    options: React.PropTypes.arrayOf(React.PropTypes.object),
+    displayTrueWidthOptions: React.PropTypes.bool,
+    id: React.PropTypes.string,
     onSelection: React.PropTypes.func,
-    placeholder: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.func]),
-    displayTrueWidthOptions: React.PropTypes.bool
+    options: React.PropTypes.arrayOf(React.PropTypes.object),
+    placeholder: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.func
+    ]),
+    value: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -96,7 +100,7 @@ export default React.createClass({
     this.options.scrollTop = 0;
     this.setState({
       focused: false,
-      opened: false,
+      opened: false
     });
   },
 

@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "7.0.2",
+  "version": "7.1.0",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -69,6 +69,7 @@
     "karma-mocha": "1.1.1",
     "karma-phantomjs-launcher": "1.0.1",
     "karma-scss-preprocessor": "2.0.0",
+    "karma-sinon": "1.0.5",
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "1.8.0",
     "mocha": "3.0.2",
@@ -79,6 +80,7 @@
     "rimraf": "2.5.0",
     "semver": "5.3.0",
     "shelljs": "0.7.3",
+    "sinon": "1.17.5",
     "stylelint-config-standard": "12.0.0",
     "tether-shepherd": "1.2.0",
     "tether": "1.0.1",

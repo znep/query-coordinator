@@ -197,6 +197,7 @@ export default {
       currency_symbol: '$',
       decimal_separator: '.',
       error_generic: 'An error occurred when rendering this chart.',
+      error_no_data: 'There is no data to display.',
       flyout_value_label: 'Value',
       group_separator: ',',
       latitude: 'Latitude',

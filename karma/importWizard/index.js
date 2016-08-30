@@ -2,6 +2,8 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import _ from 'lodash';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
+import jQuery from 'jquery';
+window.jQuery = jQuery;
 
 function requireAll(context) {
   context.keys().forEach(context);

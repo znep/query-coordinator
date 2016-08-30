@@ -36,7 +36,8 @@ module.exports = function(karma) {
       },
       resolve: {
         alias: {
-          '_': 'lodash'
+          '_': 'lodash',
+          'jquery.awesomereorder': path.resolve(root, 'public/javascripts/plugins/jquery.awesomereorder.js')
         },
         root: [
           path.resolve('.'),

@@ -12,6 +12,7 @@ import * as Utils from '../utils';
 import * as Validation from './importColumns/validation';
 import NavigationControl from './navigationControl';
 import * as SaveState from '../saveState';
+import 'jquery.awesomereorder';
 
 /*
 - Blueprint: schema (names & types)
@@ -152,6 +153,16 @@ function clearAllColumns() {
   };
 }
 
+export const REORDER_ITEMS = 'REORDER_ITEMS';
+function reorderItems(originalIdx, newIdx) {
+  return {
+    type: REORDER_ITEMS,
+    originalIdx,
+    newIdx
+  };
+}
+
+
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     // this is gross because it falls through
@@ -205,6 +216,15 @@ export function update(transform: Transform = null, action): Transform {
       return {
         ...transform,
         columns: transform.defaultColumns
+      };
+    case REORDER_ITEMS:
+      return {
+        ...transform,
+        columns: Utils.insertAt(
+          Utils.removeAt(transform.columns, action.originalIdx),
+          action.newIdx,
+          transform.columns[action.originalIdx]
+        )
       };
     default:
       return transform;
@@ -264,66 +284,84 @@ view.propTypes = {
 
 export const EMPTY_COMPOSITE_COLUMN = { type: 'CompositeColumn', components: [] };
 
-function ViewColumns({columns, dispatch, sourceColumns}) {
-  const sourceOptions = [
-    ...sourceColumns.map((column) => ({
-      type: 'SingleColumn',
-      sourceColumn: column
-    })),
-    EMPTY_COMPOSITE_COLUMN
-  ];
+const ViewColumns = React.createClass({
+  propTypes: {
+    columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+    sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
+    dispatch: PropTypes.func.isRequired
+  },
 
-  return (
-    <div>
-      <div className="columnsListHeader importListHeader clearfix">
-        <div className="columnHandleCell importHandleCell"></div>
-        <div className="columnNameCell">{I18nPrefixed.name}</div>
-        <div className="columnTypeCell">{I18nPrefixed.data_type}</div>
-        <div className="columnSourceCell">
-          {I18nPrefixed.source_column}
-          <a href="#" className="alert importTypesMessageLink">
-            <span className="icon"></span>
-            {I18nPrefixed.why_choose_now}
-          </a>
+  componentDidMount: function() {
+    const listElSelector = 'ul.columnsList.importList';
+    $(listElSelector).awesomereorder({
+      stop: (evt) => {
+        const originalIdx = parseInt(evt.target.dataset.idx, 10);
+        const newIdx = _.findIndex(
+          document.querySelector(listElSelector).children,
+          (childNode) => parseInt(childNode.dataset.idx, 10) === originalIdx
+        );
+        this.props.dispatch(reorderItems(originalIdx, newIdx));
+      },
+      uiDraggableDefaults: {
+        handle: '.importHandleCell'
+      }
+    });
+  },
+
+  render: function() {
+    const {columns, dispatch, sourceColumns} = this.props;
+
+    const sourceOptions = [
+      ...sourceColumns.map((column) => ({
+        type: 'SingleColumn',
+        sourceColumn: column
+      })),
+      EMPTY_COMPOSITE_COLUMN
+    ];
+
+    return (
+      <div>
+        <div className="columnsListHeader importListHeader clearfix">
+          <div className="columnHandleCell importHandleCell"></div>
+          <div className="columnNameCell">{I18nPrefixed.name}</div>
+          <div className="columnTypeCell">{I18nPrefixed.data_type}</div>
+          <div className="columnSourceCell">
+            {I18nPrefixed.source_column}
+            <a href="#" className="alert importTypesMessageLink">
+              <span className="icon"></span>
+              {I18nPrefixed.why_choose_now}
+            </a>
+          </div>
         </div>
+        <ul className="columnsList importList" >
+          {
+            columns.map((resultColumn, idx) => {
+              function dispatchUpdateColumn(action) {
+                return dispatch(updateColumn(idx, action));
+              }
+
+              function dispatchRemoveColumn(event) {
+                event.preventDefault();
+                return dispatch(removeColumn(idx));
+              }
+              return (
+                <ColumnDetail.view
+                  key={resultColumn.id}
+                  idx={idx}
+                  resultColumn={resultColumn}
+                  sourceOptions={sourceOptions}
+                  dispatchUpdate={dispatchUpdateColumn}
+                  dispatchRemove={dispatchRemoveColumn} />
+              );
+            })
+         }
+        </ul>
       </div>
-      <ul className="columnsList importList" >
-        {
-          columns.map((resultColumn, idx) => {
-            function dispatchUpdateColumn(action) {
-              return dispatch(updateColumn(idx, action));
-            }
+    );
+  }
+});
 
-            function dispatchRemoveColumn(event) {
-              event.preventDefault();
-              return dispatch(removeColumn(idx));
-            }
-            return (
-              <ColumnDetail.view
-                key={resultColumn.id}
-                resultColumn={resultColumn}
-                sourceOptions={sourceOptions}
-                dispatchUpdate={dispatchUpdateColumn}
-                dispatchRemove={dispatchRemoveColumn} />
-            );
-          })
-       }
-      </ul>
-    </div>
-  );
-}
 
-ViewColumns.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  dispatch: PropTypes.func.isRequired
-};
-
-ViewToolbar.propTypes = {
-  dispatch: PropTypes.func.isRequired
-};
-
-// TODO actually hook up buttons
 function ViewToolbar({dispatch}) {
   return (
     <div className="columnsToolbar clearfix">
@@ -354,7 +392,9 @@ function ViewToolbar({dispatch}) {
   );
 }
 
-ViewToolbar.propTypes = {};
+ViewToolbar.propTypes = {
+  dispatch: PropTypes.func.isRequired
+};
 
 
 function ViewPreview({sample, numHeaderRows, dispatch}) {

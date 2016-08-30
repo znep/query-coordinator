@@ -22,7 +22,8 @@ module.exports = _.defaultsDeep({
   },
   resolve: {
     alias: {
-      'socrata-utils': 'socrata-utils/dist/socrata.utils.js'
+      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
+      'jquery.awesomereorder': path.resolve(common.root, 'public/javascripts/plugins/jquery.awesomereorder.js')
     }
   },
   externals: {

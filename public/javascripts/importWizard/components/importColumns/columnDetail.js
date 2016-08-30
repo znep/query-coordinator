@@ -226,7 +226,7 @@ function nameAndValueForCompositeComponent(source: ImportColumns.ColumnSource): 
 const I18nPrefixed = I18n.screens.dataset_new.column_template;
 const I18nTransform = I18n.screens.import_common;
 
-export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemove }) {
+export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatchRemove }) {
   const isLocationColumn = resultColumn.columnSource.type === 'LocationColumn';
 
   const isTransformEditorVisible = !_.isUndefined(resultColumn.showColumnTransforms)
@@ -240,7 +240,7 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
   }
 
   return (
-    <li className="importColumn">
+    <li className="importColumn" data-idx={idx}>
       <div className="mainLine">
         <div className="columnHandleCell importHandleCell"></div>
         <div className="columnNameCell">
@@ -271,9 +271,9 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
               defaultValue={nameAndValueForColumnSource(resultColumn.columnSource).value}
               onBlur={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
               {
-                sourceOptions.map((sourceOption, idx) => {
+                sourceOptions.map((sourceOption, optionIdx) => {
                   const {name, value} = nameAndValueForColumnSource(sourceOption);
-                  return <option value={value} key={idx}>{name}</option>;
+                  return <option value={value} key={optionIdx}>{name}</option>;
                 })
               }
             </select>
@@ -345,6 +345,7 @@ export function view({ resultColumn, sourceOptions, dispatchUpdate, dispatchRemo
 }
 
 view.propTypes = {
+  idx: PropTypes.number.isRequired,
   resultColumn: PropTypes.object.isRequired,
   sourceOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchUpdate: PropTypes.func.isRequired,

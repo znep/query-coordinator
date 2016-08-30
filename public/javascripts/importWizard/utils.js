@@ -16,6 +16,12 @@ export function removeAt(array, index) {
   return cloned;
 }
 
+export function insertAt(array, index, item) {
+  const cloned = _.clone(array);
+  cloned.splice(index, 0, item);
+  return cloned;
+}
+
 export function wordifyList(list: Array<string>) {
   if (list.length === 1) {
     return list[0];

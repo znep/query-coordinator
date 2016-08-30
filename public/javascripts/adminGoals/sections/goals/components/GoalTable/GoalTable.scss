@@ -7,12 +7,14 @@ $row_highlight_color: #F5F5F5;
     width: 98%;
     background: white;
     padding: 11px 0;
+    border-top: solid 1px #f2f2f2;
   }
 }
 
 table.op-admin-table {
   background-color: #f8f8f8;
   border-collapse: collapse;
+  margin-bottom: 54px;
 
   thead {
     background-color: #f8f8f8;

@@ -24,12 +24,6 @@ class GoalsPage extends React.Component {
 
     return (
       <div className="goals-page">
-        <div className="table-top">
-          <h1>
-            { translations.getIn(['admin', 'manage_performance_goals']) }
-          </h1>
-          <Components.SocrataBulkActions />
-        </div>
         <Components.GoalTable loadInProgress={isInitialLoadInProgress} />
         { isQuickEditFormVisible && <Components.QuickEditForm /> }
         { isBulkEditFormVisible && <Components.BulkEditForm /> }

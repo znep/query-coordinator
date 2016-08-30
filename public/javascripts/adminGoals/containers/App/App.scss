@@ -192,16 +192,8 @@ a.btn {
   height: 14px;
 }
 
-.table-top {
-  display: flex;
-  justify-content: space-between;
-
-  h1 {
-    font-weight: 400;
-  }
-}
-
 .goals-page {
   width: 98%;
   margin: 0 auto;
+  margin-top: calc(154px + 1%);
 }

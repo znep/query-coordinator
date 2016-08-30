@@ -4,7 +4,14 @@
   right: 0;
   left: 0;
   background: white;
-  z-index: 9999;
+  z-index: 4;
+
+  .alert {
+    position: absolute;
+    width: 70%;
+    left: calc(50% - 35%);
+    top: 51px;
+  }
 }
 
 .preview-bar-header {
@@ -44,10 +51,6 @@
       margin-left: 10px;
       margin-right: 18px;
       font-size: 11px;
-
-      &:hover {
-        margin-right: 0;
-      }
     }
   }
 

@@ -2,12 +2,20 @@ import * as React  from 'react';
 import * as ReactRedux from 'react-redux';
 import * as Feedback from '../feedback';
 import { SocrataBulkActions } from '../../sections/goals/components';
+import SocrataAlert from '../SocrataAlert';
 
 import './PreviewBar.scss';
 
 class PreviewBar extends React.Component {
   render() {
-    const translations = this.props.translations;
+    const { notification, translations, onDismissNotification } = this.props;
+
+    let alert = null;
+    if (notification.get('visible')) {
+      alert = <SocrataAlert type={ notification.get('type') }
+                                        message={ notification.get('message') }
+                                        onDismiss={ onDismissNotification }/>;
+    }
 
     return (
       <div className="preview-bar">
@@ -29,6 +37,7 @@ class PreviewBar extends React.Component {
           <h1>
             { translations.getIn(['admin', 'manage_performance_goals']) }
           </h1>
+          { alert }
           <SocrataBulkActions />
         </div>
       </div>
@@ -37,10 +46,12 @@ class PreviewBar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.get('translations')
+  translations: state.get('translations'),
+  notification: state.get('notification')
 });
 
 const mapDispatchToProps = dispatch => ({
+  onDismissNotification: () => dispatch(Actions.notifications.dismissNotification()),
   openFeedbackFlannel: event => dispatch(Feedback.Flannel.actions.open(event.target))
 });
 

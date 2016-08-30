@@ -13,8 +13,8 @@ import 'dotdotdot';
  *     times it has been viewed.
  *   - An image, typically a preview of the view.
  *   - A description.
- * The title and description are automatically ellipsified using react-dotdotdot. Buttons, spinners,
- * or other elements may be rendered as an overlay centered over the main content by specifying them
+ * The title and description are automatically ellipsified using dotdotdot. Buttons, spinners, or
+ * other elements may be rendered as an overlay centered over the main content by specifying them
  * as children of the component.
  */
 export default React.createClass({
@@ -30,7 +30,7 @@ export default React.createClass({
 
     /**
      * The description prop renders a description in the lower area of the ViewCard. The description
-     * will automatically be ellipsified using react-dotdotdot if it is longer than 3 lines of text.
+     * will automatically be ellipsified using dotdotdot if it is longer than 3 lines of text.
      * Currently the ellipsification has problems in Firefox. If this prop is omitted, the
      * description area will render blank.
      */
@@ -80,7 +80,7 @@ export default React.createClass({
     /**
      * The name prop contains the string that will be rendered at the top of the card. It is
      * rendered as a header and links to the url prop. The header is ellipsified using
-     * react-dotdotdot if it exceeds two lines in length.
+     * dotdotdot if it exceeds two lines in length.
      */
     name: PropTypes.string,
 
@@ -113,8 +113,8 @@ export default React.createClass({
   },
 
   ellipsify() {
-    this.$name.dotdotdot({ height: 50 });
-    this.$description.dotdotdot({ height: 100 });
+    this.$name.dotdotdot({ height: 50, watch: true });
+    this.$description.dotdotdot({ height: 75, watch: true });
   },
 
   renderOverlay() {

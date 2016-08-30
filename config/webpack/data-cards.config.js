@@ -14,7 +14,7 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
         loaders: [
           'ng-annotate',
           'babel'
@@ -22,7 +22,7 @@ module.exports = _.defaultsDeep({
       },
       {
         test: /\.html$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
         loaders: [
           'ngtemplate?relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
           'html?minimize=false'

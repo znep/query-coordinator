@@ -45,8 +45,5 @@ curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://so
 npm install -g karma-cli phantomjs karma-phantomjs-launcher
 npm install
 
-# 4. Bower
-echo "{\"registry\": \"https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/bower/bower-remote-github\" }" > "${HOME}/.bowerrc"
-
 # 5. Postgres User
 psql blist_dev -c "insert into users (email, created_at, updated_at, admin, uid, domain_id, screen_name, password, created_meta) select 'frontend@socrata.com', now(), now(), true, 'zfnt-user', 1, 'Frontend Dev Admin', 'pbkdf2|sha1|10000|71ak_kGn-LxBmY2apdapSe6TuMjfCfAa|vE4G7bFp21NjpatmmM5W561qG1dL0DFhSc7Ntutr7w_ZLGKM', 'frontend dev user' where not exists (select * from users where email = 'frontend@socrata.com')"

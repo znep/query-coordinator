@@ -16,32 +16,29 @@ module.exports = function ( karma ) {
     files: [
 
       // Phantom polyfills
-      'bower_components/js-polyfills/url.js',
-      'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
+      'public/javascripts/bower/url.js',
+      'public/javascripts/bower/requestAnimationFrame.js',
       'public/javascripts/util/polyfills.js',
 
       // Dependencies
       // TODO move to npm, remove from webpack externals, and require them where needed.
-      'bower_components/jquery/dist/jquery.js',
+      'public/javascripts/bower/jquery.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
-      'bower_components/javascript-detect-element-resize/jquery.resize.js',
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-sanitize/angular-sanitize.js',
-      'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/angular-elastic/elastic.js',
-      'bower_components/rxjs/dist/rx.js',
-      'bower_components/rxjs/dist/rx.async.js',
-      'bower_components/rxjs/dist/rx.aggregates.js',
-      'bower_components/rxjs/dist/rx.time.js',
-      'bower_components/rxjs/dist/rx.binding.js',
-      'bower_components/rxjs/dist/rx.virtualtime.js',
-      'bower_components/rxjs/dist/rx.testing.js',
-      'bower_components/angular-rx/dist/rx.angular.js',
-      'bower_components/jjv/lib/jjv.js',
-      'bower_components/d3/d3.min.js',
-      'bower_components/leaflet/dist/leaflet-src.js',
-      'bower_components/moment/moment.js',
+      'public/javascripts/bower/jquery.resize.js',
+      'public/javascripts/bower/angular.min.js',
+      'public/javascripts/bower/angular-sanitize.js',
+      'public/javascripts/bower/angular-ui-router.js',
+      'public/javascripts/bower/elastic.js',
+      'public/javascripts/bower/rx.js',
+      'public/javascripts/bower/rx.async.js',
+      'public/javascripts/bower/rx.aggregates.js',
+      'public/javascripts/bower/rx.time.js',
+      'public/javascripts/bower/rx.binding.js',
+      'public/javascripts/bower/rx.angular.js',
+      'public/javascripts/bower/jjv.js',
+      'public/javascripts/bower/d3.js',
+      'public/javascripts/bower/leaflet.js',
+      'public/javascripts/bower/moment.js',
       'public/javascripts/plugins/modernizr.js',
       'public/javascripts/plugins/squire.js',
 
@@ -77,7 +74,7 @@ module.exports = function ( karma ) {
         loaders: [
           {
             test: /\.jsx?$/,
-            exclude: /(node_modules|bower_components)/,
+            exclude: /node_modules/,
             loader: 'babel'
           },
           {
@@ -106,7 +103,7 @@ module.exports = function ( karma ) {
           '_': 'lodash'
         },
         root: [ path.resolve('.') ],
-        modulesDirectories: [ 'node_modules', 'bower_components' ]
+        modulesDirectories: [ 'node_modules' ]
       },
       sassLoader: {
         includePaths: ['app/styles']

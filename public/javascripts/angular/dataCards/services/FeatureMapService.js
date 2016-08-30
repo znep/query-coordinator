@@ -1,4 +1,4 @@
-var DOMPurify = require('DOMPurify');
+var DOMPurify = require('dompurify');
 
 module.exports = function FeatureMapService(DataTypeFormatService, linkyFilter) {
 

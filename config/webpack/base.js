@@ -26,6 +26,6 @@ module.exports = {
     pathinfo: !common.isProduction
   },
   resolve: {
-    modulesDirectories: [ 'node_modules', 'bower_components' ]
+    modulesDirectories: [ 'node_modules' ]
   }
 };

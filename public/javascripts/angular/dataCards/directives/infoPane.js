@@ -1,5 +1,5 @@
 const templateUrl = require('angular_templates/dataCards/infoPane.html');
-var DOMPurify = require('DOMPurify');
+var DOMPurify = require('dompurify');
 
 function sanitizeUserHtml(htmlString) {
   if (!_.isString(htmlString) || htmlString.length === 0) {

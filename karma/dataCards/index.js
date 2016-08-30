@@ -1,8 +1,10 @@
 // Miscellaneous dependencies that require global scope
-window.DOMPurify = require('DOMPurify');
+window.DOMPurify = require('dompurify');
 window._ = require('lodash');
 window.socrata = window.socrata || {};
 window.socrata.utils = require('socrata-utils');
+require('angular-mocks');
+require('script!rx-core-testing');
 require('public/javascripts/util/jquery-extensions.js');
 require('public/javascripts/util/dompurify-extensions.js');
 require('public/javascripts/lib/RxExtensions.js');

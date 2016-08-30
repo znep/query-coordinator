@@ -18,7 +18,7 @@ module.exports = _.defaultsDeep({
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
+      exclude: /node_modules/,
       loaders: ['babel']
     }]
   },

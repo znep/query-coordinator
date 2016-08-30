@@ -25,8 +25,7 @@ module.exports = function ( karma ) {
       // Libraries
       'public/javascripts/jquery-1.7.1.js',
       'public/javascripts/plugins/lodash.js',
-      'bower_components/sinon-browser-only/sinon.js',
-      'bower_components/moment/moment.js',
+      'public/javascripts/bower/moment.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
@@ -144,13 +143,13 @@ module.exports = function ( karma ) {
         loaders: [
           {
             test: /\.jsx?$/,
-            exclude: /(node_modules|bower_components)/,
+            exclude: /node_modules/,
             loader: 'babel'
           }
         ]
       },
       resolve: {
-        modulesDirectories: [ 'node_modules', 'bower_components', projectRoot + '/public/javascripts/src' ]
+        modulesDirectories: [ 'node_modules', projectRoot + '/public/javascripts/src' ]
       }
 
     },

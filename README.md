@@ -267,16 +267,6 @@ setting and environment variable of `BABEL_ENV="jscodeshift"` - this ensures
 that a clean babel configuration is used for the transforms, alleviating an issue
 with babel versions.
 
-### Bower packages
-
-In order to allow clearer management of dependencies, Bower was (eventually) integrated into the asset management system. Unfortunately, the "normal" ways of integrating bower packages and Rails won't work:
-- Rails-Assets (a gem source which transparently wraps Bower packages as gems) would result in yet another 3rd-party dependency on deploy. This is too risky, especially as this service is still in beta.
-- bower-rails does not introduce a deploy dependency, but since we've butchered the Rails asset pipeline from the beginning this package turned out to be difficult to integrate.
-
-#### Setting up bower locally
-1. Install node.js (platform dependent).
-2. Install bower: `# npm install -g bower`
-
 ### YUI Compressor errors
 
 There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.

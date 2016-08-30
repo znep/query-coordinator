@@ -40,10 +40,19 @@ class View < Model
   def self.find_deleted(id)
     params = { 'method' => 'getDeletedViewById', 'id' => id }.to_param
     path = "/#{name.pluralize.downcase}.json?#{params}"
-    parse(CoreServer::Base.connection.get_request(
-            path,
-            'X-Socrata-Federation' => 'Honey Badger'
-    ))
+    begin
+      parse(CoreServer::Base.connection.get_request(
+              path,
+              'X-Socrata-Federation' => 'Honey Badger'
+      ))
+    rescue CoreServer::ResourceNotFound => error
+      Airbrake.notify(
+        error,
+        :error_class => 'DeletedViewNotFound',
+        :error_message => "Could not find deleted view #{id}"
+      )
+      nil # This means the view is completely gone
+    end
   end
 
   def self.find_for_user(id)

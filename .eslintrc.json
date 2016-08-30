@@ -3,101 +3,40 @@
     "browser": true,
     "commonjs": true
   },
-  "extends": "eslint:recommended",
+  "extends": "./node_modules/eslint-base/.eslintrc.json",
   "parser": "babel-eslint",
   "plugins": ["react"],
-  "rules": {
-    "brace-style": [
-      2,
-      "1tbs",
-      {
-        "allowSingleLine": true
-      }
-    ],
-    "camelcase": [1, {"properties": "never"}],
-    "consistent-return": 0,
-    "dot-location": [
-      1,
-      "object"
-    ],
-    "dot-notation": [
-      1,
-      {
-        "allowKeywords": false,
-        "allowPattern": "^[a-z]+(_[a-z]+)+$"
-      }
-    ],
-    "eol-last": 1,
-    "indent": 0,
-    "new-cap": [
-      1,
-      {
-        "newIsCapExceptions": [
-          "pbf"
-        ]
-      }
-    ],
-    "no-console": 0,
-    "no-extend-native": 2,
-    "no-extra-semi": 1,
-    "no-shadow": [
-      2,
-      {
-        "hoist": "all"
-      }
-    ],
-    "no-spaced-func": 2,
-    "no-trailing-spaces": 2,
-    "no-underscore-dangle": 0,
-    "no-unused-vars": 1,
-    "no-use-before-define": 0,
-    "quotes": [
-      1,
-      "single",
-      "avoid-escape"
-    ],
-    "quote-props": [
-      2,
-      "as-needed",
-      {
-        "keywords": true,
-        "unnecessary": false
-      }
-    ],
-    "semi": [
-      2,
-      "always"
-    ],
-    "keyword-spacing": [
-      2,
-      { "after": true }
-    ],
-    "space-before-blocks": [
-      2,
-      "always"
-    ],
-    "space-before-function-paren": [
-      2,
-      "never"
-    ],
-    "space-infix-ops": 2,
-    "strict": 0
-  },
   "globals": {
     "$": true,
+    "Airbrake": true,
+    "AjaxUpload": true,
+    "Backbone": true,
+    "Class": true,
+    "Column": true,
     "ColumnContainer": true,
+    "Configuration": true,
     "DOMPurify": true,
     "Dataset": true,
+    "DataContext": true,
     "Highcharts": true,
     "I18n": true,
     "L": true,
+    "Model": true,
     "Modernizr": true,
+    "Nomination": true,
     "OpenLayers": true,
+    "Page": true,
+    "Proj4js": true,
+    "Recaptcha": true,
     "RowSet": true,
+    "Showdown": true,
     "ServerModel": true,
+    "User": true,
     "UserSnap": true,
     "VBArray": true,
     "VectorTile": true,
+    "WKT": true,
+    "ZeroClipboard": true,
     "_": true,
     "angular": true,
     "blist": true,
@@ -105,16 +44,24 @@
     "currentUser": true,
     "d3": true,
     "datasetMetadata": true,
+    "dojo": true,
+    "esri": true,
+    "google": true,
+    "html": true,
+    "html4": true,
     "jQuery": true,
+    "iScroll": true,
     "migrationMetadata": true,
     "mixpanel": true,
     "moment": true,
     "pageMetadata": true,
     "pbf": true,
+    "rangy": true,
     "saveAs": true,
     "serverConfig": true,
     "socrata": true,
     "ss": true,
+    "tinymce": true,
     "zE": true
   }
 }

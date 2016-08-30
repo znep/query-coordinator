@@ -1,13 +1,13 @@
 /*
  * Javascript Humane Dates
  * Copyright (c) 2008 Dean Landolt (deanlandolt.com
- * 
- * 
+ *
+ *
  * Adopted from the John Resig's pretty.js
  * at http://ejohn.org/blog/javascript-pretty-date
- * and henrah's proposed modification 
+ * and henrah's proposed modification
  * at http://ejohn.org/blog/javascript-pretty-date/#comment-297458
- * 
+ *
  * Licensed under the MIT license.
  */
 
@@ -22,49 +22,46 @@
 
 var humaneUtilNS = blist.namespace.fetch('blist.util.humaneDate');
 
-_.each(['minute', 'hour', 'day', 'week', 'month', 'year'], function(duration)
-{
-    blist.util.humaneDate[duration.toUpperCase()] = {
-        duration: moment.duration(1, duration).as('milliseconds'),
-        translation_key: 'current_' + duration + '_future'
-    };
+_.each(['minute', 'hour', 'day', 'week', 'month', 'year'], function(duration) {
+  blist.util.humaneDate[duration.toUpperCase()] = {
+    duration: moment.duration(1, duration).as('milliseconds'),
+    translation_key: 'current_' + duration + '_future'
+  };
 });
 
-blist.util.humaneDate.getFromDate = function (date_obj, granularity)
-{
-    var date = moment(date_obj);
+blist.util.humaneDate.getFromDate = function(dateObj, granularity) {
+  var date = moment(dateObj);
 
-    if (!date.isValid())
-    { return $.t('core.forms.none'); } // Yes, I'm cheating.
-    if (_.isUndefined(granularity))
-    { return date.fromNow(); }
+  if (!date.isValid()) {
+    return $.t('core.forms.none');
+  } // Yes, I'm cheating.
+  if (_.isUndefined(granularity)) {
+    return date.fromNow();
+  }
 
-    var now = moment(), abs_diff = Math.abs(date.diff(now));
+  var now = moment();
+  var absDiff = Math.abs(date.diff(now));
 
-    if (granularity.duration >= abs_diff)
-    { return $.t('core.date_time.' + granularity.translation_key); }
-    else
-    { return date.fromNow(); }
+  if (granularity.duration >= absDiff) {
+    return $.t('core.date_time.' + granularity.translation_key);
+  } else {
+    return date.fromNow();
+  }
 };
 
-blist.util.humaneDate.getFromISO = function (date_str)
-{
-    var time = ('' + date_str).replace(/-/g,"/").replace(/[TZ]/g," ");
-    return humaneUtilNS.getFromDate(new Date(time));
+blist.util.humaneDate.getFromISO = function(dateStr) {
+  var time = ('' + dateStr).replace(/-/g, '/').replace(/[TZ]/g, ' ');
+  return humaneUtilNS.getFromDate(new Date(time));
 };
 
 // If jQuery is included in the page, adds a jQuery plugin to handle it as well
-if ( typeof jQuery != "undefined" )
-{
-    jQuery.fn.humane_dates = function()
-    {
-        return this.each(function()
-                {
-                    var date = moment(this.title);
-                    if ( date.isValid() )
-                    {
-                        jQuery(this).text( date.fromNow() );
-                    }
-                });
-    };
+if (typeof jQuery != 'undefined') {
+  jQuery.fn.humane_dates = function() {
+    return this.each(function() {
+      var date = moment(this.title);
+      if (date.isValid()) {
+        jQuery(this).text(date.fromNow());
+      }
+    });
+  };
 }

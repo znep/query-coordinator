@@ -1,33 +1,27 @@
-(function(){
+(function() {
+  // NOTE: This functionality is for snapshotting ONLY
+  // If you add something here that should be specific to grouped/non-grouped
+  // datasets, we should separate these into separate files
 
-// NOTE: This functionality is for snapshotting ONLY
-// If you add something here that should be specific to grouped/non-grouped
-// datasets, we should separate these into separate files
-Dataset.modules['grouped'] =
-Dataset.modules['filter'] =
-Dataset.modules['blist'] =
-Dataset.modules['table'] =
-{
-    supportsSnapshotting: function()
-    {
-        return true;
+  var snapshotCapabilities = {
+    supportsSnapshotting: function() {
+      return true;
     },
 
-    _setupSnapshotting: function()
-    {
-        var ds = this,
-            timeout = 500;
+    _setupSnapshotting: function() {
+      // Give more time for the browser to render images
+      var slowTypes = ['checkbox', 'percent', 'stars', 'flag', 'photo'];
+      var requiresLargerDelay = _.any(this.columns, function(col) {
+        return _.include(slowTypes, col.dataTypeName);
+      });
 
-        // Give more time for the browser to render images
-        if (_.any(ds.columns, function(col)
-            {
-                return _.include(['checkbox', 'percent', 'stars', 'flag', 'photo'],
-                    col.dataTypeName);
-            }))
-        { timeout = 1500; }
-
-        this._setupDefaultSnapshotting(timeout);
+      var timeout = requiresLargerDelay ? 1500 : 500;
+      this._setupDefaultSnapshotting(timeout);
     }
-};
+  };
 
+  Dataset.modules.grouped = snapshotCapabilities;
+  Dataset.modules.filter = snapshotCapabilities;
+  Dataset.modules.blist = snapshotCapabilities;
+  Dataset.modules.table =  snapshotCapabilities;
 })();

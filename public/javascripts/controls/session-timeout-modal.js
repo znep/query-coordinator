@@ -4,7 +4,9 @@ $(function() {
   var startSessionCheck = function() {
 
     //do nothing if the user is not logged in.
-    if (!blist.currentUserId) { return; }
+    if (!blist.currentUserId) {
+      return;
+    }
 
     var $m;
 
@@ -15,26 +17,22 @@ $(function() {
           _: 'div',
           className: 'modalDialog',
           id: 'sessionTimeoutModal',
-          contents: [
-            {
-              _: 'h2',
-              contents: $.t('core.dialogs.session_timeout.warning.title')
-            },
-            {
-              _: 'p',
-              contents: $.t('core.dialogs.session_timeout.warning.body_html')
-            },
-            {
-              _: 'div',
-              className: 'buttonWrapper',
-              contents: [{
-                _: 'a',
-                id: 'keepSessionButton',
-                className: 'button',
-                contents: $.t('core.dialogs.session_timeout.warning.belay_button')
-              }]
-            }
-          ]
+          contents: [{
+            _: 'h2',
+            contents: $.t('core.dialogs.session_timeout.warning.title')
+          }, {
+            _: 'p',
+            contents: $.t('core.dialogs.session_timeout.warning.body_html')
+          }, {
+            _: 'div',
+            className: 'buttonWrapper',
+            contents: [{
+              _: 'a',
+              id: 'keepSessionButton',
+              className: 'button',
+              contents: $.t('core.dialogs.session_timeout.warning.belay_button')
+            }]
+          }]
         })
       );
       $m = $('#sessionTimeoutModal');
@@ -64,10 +62,14 @@ $(function() {
           } else {
             secondsUntilTimeout = parseFloat(response.seconds);
             if (secondsUntilTimeout > countdownSeconds) {
-              if ($m) { $m.jqmHide(); }
+              if ($m) {
+                $m.jqmHide();
+              }
               scheduleCheckTime();
             } else {
-              if (!$m) { createModal(); }
+              if (!$m) {
+                createModal();
+              }
               showModal();
             }
           }
@@ -81,14 +83,20 @@ $(function() {
     checkTime();
 
     function scheduleCheckTime() {
-      if (modalTimer) { clearTimeout(modalTimer); }
-      if (updateTimer) { clearTimeout(updateTimer); }
+      if (modalTimer) {
+        clearTimeout(modalTimer);
+      }
+      if (updateTimer) {
+        clearTimeout(updateTimer);
+      }
       modalTimer = setTimeout(checkTime, (secondsUntilTimeout - countdownSeconds) * 1000);
     }
 
     function showModal() {
       secondsRemaining = secondsUntilTimeout;
-      if (updateTimer) { clearInterval(updateTimer); }
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
       updateTimer = setInterval(countdown, 1000);
       countdown();
       $m.jqmShow();
@@ -97,11 +105,15 @@ $(function() {
     function countdown() {
       $('#secondsRemaining').text(secondsRemaining);
       if (secondsRemaining <= 0) {
-        if (updateTimer) { clearInterval(updateTimer); }
+        if (updateTimer) {
+          clearInterval(updateTimer);
+        }
         setTimeout(checkTime, 1000);
         return;
       }
-      if (secondsRemaining > 0) { secondsRemaining--; }
+      if (secondsRemaining > 0) {
+        secondsRemaining--;
+      }
     }
 
     function delayExpiration() {

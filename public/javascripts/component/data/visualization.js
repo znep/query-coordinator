@@ -1,21 +1,18 @@
-;(function() {
+(function() {
 
 $.component.Component.extend('Visualization', 'data', {
-    _init: function()
-    {
+    _init: function() {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
         this._noTransactionForUndo = true;
         this._super.apply(this, arguments);
     },
 
-    isValid: function()
-    {
+    isValid: function() {
         return this._dataContext;
     },
 
-    configurationSchema: function()
-    {
+    configurationSchema: function() {
         return {
             schema: [
                 { fields: [$.cf.contextPicker()] },
@@ -25,39 +22,38 @@ $.component.Component.extend('Visualization', 'data', {
             view: this._dataset};
     },
 
-    _getAssets: function()
-    {
+    _getAssets: function() {
         return {
             javascripts: [ { assets: 'shared-visualization' } ],
             translations: [ 'dataslate.component.visualization' ]
         };
     },
 
-    _render: function()
-    {
+    _render: function() {
         var lcObj = this;
-        if (!_.isNumber(lcObj._properties.height))
-        { lcObj._properties.height = 300; }
-        if (!lcObj._super.apply(lcObj, arguments)) { return false; }
+        if (!_.isNumber(lcObj._properties.height)) {
+            lcObj._properties.height = 300;
+        }
+        if (!lcObj._super.apply(lcObj, arguments)) {
+            return false;
+        }
 
         updateProperties(lcObj, lcObj._properties);
         return true;
     },
 
-    _propWrite: function(properties)
-    {
+    _propWrite: function(properties) {
         var lcObj = this;
         lcObj._super.apply(lcObj, arguments);
 
-        if (lcObj._rendered)
-        { updateProperties(lcObj, properties); }
+        if (lcObj._rendered) {
+            updateProperties(lcObj, properties);
+        }
     },
 
-    design: function()
-    {
+    design: function() {
         this._super.apply(this, arguments);
-        if ($.isBlank(this.$editOverlay))
-        {
+        if ($.isBlank(this.$editOverlay)) {
             this.$editOverlay = $.tag2({ _: 'div', className: 'editOverlay' });
             this.$dom.append(this.$editOverlay);
         }
@@ -65,12 +61,9 @@ $.component.Component.extend('Visualization', 'data', {
     }
 });
 
-var updateProperties = function(lcObj)
-{
-    var renderViz = function()
-    {
-        if (lcObj.$contents.data('renderTypeManager'))
-        {
+var updateProperties = function(lcObj) {
+    var renderViz = function() {
+        if (lcObj.$contents.data('renderTypeManager')) {
             var rtm = lcObj.$contents.data('renderTypeManager');
             rtm.hide(_.keys(rtm.settings.defaultTypes)[0]);
             lcObj.$contents.removeData('renderTypeManager');
@@ -88,28 +81,29 @@ var updateProperties = function(lcObj)
         type = type || 'table'; // Last ditch, even though 'table' doesn't work anyways.
         defaultTypes[type] = true;
 
-        if (!lcObj._$container)
-        { lcObj.$contents.prepend(lcObj._$container = $('<div />')); }
+        if (!lcObj._$container) {
+            lcObj.$contents.prepend(lcObj._$container = $('<div />'));
+        }
 
-        if (lcObj._properties.exploreLink)
-        {
-            if (!lcObj._$exploreLink)
-            { lcObj.$contents.append( lcObj._$exploreLink = $.tag2({
-                _: 'div', className: 'exploreLink', contents: [
-                    { _: 'a', className: 'ss-navigateright', href: ds.url,
-                        contents: _.isString(lcObj._properties.exploreLink)
-                            ? lcObj._properties.exploreLink
-                            : $.t('dataslate.component.visualization.exploreLink') }
-            ]})); }
-            else
-            { lcObj._$exploreLink.show().find('a').attr('href', ds.url); }
+        if (lcObj._properties.exploreLink) {
+            if (!lcObj._$exploreLink) {
+                lcObj.$contents.append( lcObj._$exploreLink = $.tag2({
+                    _: 'div', className: 'exploreLink', contents: [
+                        { _: 'a', className: 'ss-navigateright', href: ds.url,
+                            contents: _.isString(lcObj._properties.exploreLink)
+                                ? lcObj._properties.exploreLink
+                                : $.t('dataslate.component.visualization.exploreLink') }
+                ]}));
+            } else {
+                lcObj._$exploreLink.show().find('a').attr('href', ds.url);
+            }
 
             lcObj._$container.height(lcObj._properties.height - lcObj._$exploreLink.outerHeight());
+        } else if (lcObj._$exploreLink) {
+            lcObj._$exploreLink.hide();
+        } else {
+            lcObj._$container.height(lcObj._properties.height);
         }
-        else if (lcObj._$exploreLink)
-        { lcObj._$exploreLink.hide(); }
-        else
-        { lcObj._$container.height(lcObj._properties.height); }
 
         lcObj._rtm = lcObj._$container.renderTypeManager({
             defaultTypes: defaultTypes,
@@ -124,7 +118,9 @@ var updateProperties = function(lcObj)
 
     };
 
-    if (!lcObj._updateDataSource(null, renderViz)) { renderViz(); };
+    if (!lcObj._updateDataSource(null, renderViz)) {
+        renderViz();
+    }
 };
 
 })(jQuery);

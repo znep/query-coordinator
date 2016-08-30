@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
   var _ssync;
 
@@ -11,11 +11,11 @@
     ssync: function() {
       if (!_ssync) {
         try {
-          _ssync = new DatasyncUpload({
+          _ssync = new window.DatasyncUpload({
             // log : function(thing) { console.log(thing); },
             // forceWorkerReload : true
           });
-        } catch(e) {
+        } catch (e) {
           _ssync = null;
         }
       }
@@ -25,11 +25,11 @@
     _buildControlFile: function(optionsParam) {
       //options = options || {};
       var options = $.extend(true, {}, optionsParam, optionsParam.blueprint),
-          control = {};
+        control = {};
 
       if (_.isUndefined(options.action)) {
         control.action = 'replace';
-      } else if (_.include([ 'append', 'replace' ], options.action.toLowerCase())) {
+      } else if (_.include(['append', 'replace'], options.action.toLowerCase())) {
         control.action = options.action;
       } else {
         throw 'Control file is missing valid action.';
@@ -52,8 +52,8 @@
 
       var controlFile = {};
       if (_.isUndefined(options.fileType)) {
-        controlFile['csv'] = control;
-      } else if (_.include([ 'csv', 'tsv' ], options.fileType)) {
+        controlFile.csv = control;
+      } else if (_.include(['csv', 'tsv'], options.fileType)) {
         controlFile[options.fileType] = control;
       } else {
         throw 'Control file is missing file type.';
@@ -76,8 +76,8 @@
         throw 'Given dataset ID is not a dataset ID.';
       }
 
-      var deferred = $.Deferred(),
-          controlFile = this._buildControlFile(options);
+      var deferred = $.Deferred(), // eslint-disable-line new-cap
+        controlFile = this._buildControlFile(options);
 
       var onProgress = function(progressObj) {
         if (_.isFunction(options.onProgress)) {
@@ -125,8 +125,7 @@
   if (blist.inBrowser) {
     this.DataSync = DataSync;
     $.dataSync = new DataSync();
-  }
-  else {
+  } else {
     module.exports = DataSync;
   }
 

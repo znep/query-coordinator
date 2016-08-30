@@ -11,7 +11,7 @@ $(function() {
     var $saving = $wrapper.find('.saving');
     var $saved = $wrapper.find('.saved');
 
-    var valueChanged = function(e) {
+    var valueChanged = function() {
       var $t = $(this);
       _.defer(function() {
         var newVal = $t.val();

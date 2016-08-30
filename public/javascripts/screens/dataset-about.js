@@ -3,8 +3,8 @@ $(function() {
 
   // Before we fullscreen, move the footer inside the sizing container.
   $('#siteFooter, #site-chrome-footer').
-    addClass('clearfix').
-    appendTo('.siteInnerWrapper');
+  addClass('clearfix').
+  appendTo('.siteInnerWrapper');
 
   $('.outerContainer').fullScreen();
   $container.blobDataset({

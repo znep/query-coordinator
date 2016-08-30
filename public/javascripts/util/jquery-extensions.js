@@ -10,7 +10,10 @@
     //  height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)
     //};
     // Might be worth looking into next time we make a perf pass.
-    return {width: this.width(), height: this.height()};
+    return {
+      width: this.width(),
+      height: this.height()
+    };
   };
 
   // Yields an RX observable sequence of this selection's dimensions.
@@ -18,7 +21,7 @@
     var self = this;
     var dimensionsSubject = self.data('dimensionsSubject');
     if (!dimensionsSubject) {
-      dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
+      dimensionsSubject = new Rx.BehaviorSubject(self.dimensions()); // eslint-disable-line no-undef
       self.data('dimensionsSubject', dimensionsSubject);
 
       self.resize(function() {
@@ -39,7 +42,7 @@
     return !_.isEmpty(argument);
   };
 
-  String.prototype.capitalizeEachWord = function() {
+  String.prototype.capitalizeEachWord = function() { // eslint-disable-line no-extend-native
     return this.split(' ').map(function(word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }).join(' ');
@@ -60,7 +63,10 @@
       }
       $ruler.css('font-size', fontSize);
       $ruler.text(this + '');
-      dimensions = {width: $ruler.width(), height: $ruler.height()};
+      dimensions = {
+        width: $ruler.width(),
+        height: $ruler.height()
+      };
       $ruler.remove();
 
       return dimensions;
@@ -163,13 +169,13 @@
     var self = this;
     var inFlyout = false;
     var inTarget = false;
-    var renderFlyout = function(target) {
-      var $target = $(target);
+    var renderFlyout = function(targetElement) {
+      var $target = $(targetElement);
       var parentElem = $(options.parent || $target);
       $('.flyout').remove();
       flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
       flyout.addClass('flyout-' + options.style);
-      flyout.data('target', target);
+      flyout.data('target', targetElement);
       var getVal = function(data) {
         if (_.isFunction(data)) {
           return data($target, self, options, flyout);
@@ -185,8 +191,7 @@
       }
       if (!getVal(options.interact)) flyout.addClass('nointeract');
       if (options.title) {
-        flyout.append('<div class="flyout-title">{0}</div>'.
-          format(getVal(options.title)));
+        flyout.append('<div class="flyout-title">{0}</div>'.format(getVal(options.title)));
       }
       if (options.table) {
         var html = '';
@@ -220,7 +225,8 @@
         containerRightEdge = container.offset().left + container.outerWidth() - options.margin;
       }
       var direction = getVal(options.direction);
-      var pos = $positionOn.offset(), top, left;
+      var pos = $positionOn.offset(),
+        top, left;
       var targetLeftEdge = pos.left;
       var targetSize = {};
       if (typeof $positionOn[0].getBoundingClientRect === 'function') {
@@ -234,9 +240,9 @@
         targetSize.width = $positionOn.outerWidth() || parseInt($positionOn.attr('width'));
       }
       // TODO decide what to do here. Either show the tooltip at the zero point or thrown an error, but don't log
-//    if (!targetSize.width || !targetSize.height) {
-//      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
-//    }
+      //    if (!targetSize.width || !targetSize.height) {
+      //      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
+      //    }
       var targetRightEdge = pos.left + targetSize.width;
       var targetWidth = targetRightEdge - targetLeftEdge;
       if (direction == 'horizontal') {
@@ -249,16 +255,16 @@
       }
       flyout.addClass(direction);
       if (options.style == 'table') {
-        if (direction == "top") {
+        if (direction == 'top') {
           top = pos.top - flyout.outerHeight() + options.inset.vertical;
           left = pos.left + targetWidth / 2 - flyout.outerWidth() / 2;
-        } else if (direction == "bottom") {
+        } else if (direction == 'bottom') {
           top = pos.top + targetSize.height - options.inset.vertical;
           left = pos.left + targetWidth / 2 - flyout.outerWidth() / 2;
-        } else if (direction == "right") {
+        } else if (direction == 'right') {
           top = pos.top + targetSize.height / 2 - flyout.outerHeight() / 2;
           left = pos.left + targetSize.width - options.inset.horizontal;
-        } else if (direction == "left") {
+        } else if (direction == 'left') {
           top = pos.top + targetSize.height / 2 - flyout.outerHeight() / 2;
           left = pos.left - flyout.outerWidth() + options.inset.horizontal;
         }
@@ -274,10 +280,13 @@
         if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
         if (direction == 'top' || direction == 'bottom') {
           var center = (targetLeftEdge + targetRightEdge) / 2;
-          var arrow_pos = center - left;
-          if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
-          else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
-          flyout.find('.flyout-arrow').css('left', arrow_pos);
+          var arrowPos = center - left;
+          if (arrowPos <= options.arrowMargin) {
+            arrowPos = options.arrowMargin;
+          } else if (arrowPos >= flyout.outerWidth() - options.arrowMargin) {
+            arrowPos = flyout.outerWidth() - options.arrowMargin;
+          }
+          flyout.find('.flyout-arrow').css('left', arrowPos);
         }
       } else if (options.style == 'chart') {
         if (direction == 'top') {
@@ -295,14 +304,17 @@
             arrowLeft -= flyoutArrow.outerWidth(true) + 2;
           }
           flyoutArrow.addClass(orientationIsLeft ? 'left' : 'right').
-            css('left', arrowLeft - left);
+          css('left', arrowLeft - left);
         }
       }
-      flyout.offset({ top: top, left: left });
+      flyout.offset({
+        top: top,
+        left: left
+      });
       getVal(options.onOpen);
       inFlyout = false;
       inTarget = true;
-      flyout.on('mouseover.soc-flyout, mouseenter.soc-flyout', function(e) {
+      flyout.on('mouseover.soc-flyout, mouseenter.soc-flyout', function() {
         inFlyout = true;
       }).bind('mouseleave.soc-flyout', function(e) {
         if (!$(e.target).parents().hasClass('dragged')) {
@@ -340,7 +352,7 @@
 
     self.delegate(options.selector, 'mouseover.soc-flyout', function(e) {
       if (!$(e.target).parents().hasClass('dragged') &&
-          !$(e.target).is(flyout)) {
+        !$(e.target).is(flyout)) {
         var canRenderFlyout = true;
         if (options.hasOwnProperty('onBeforeRender') && _.isFunction(options.onBeforeRender)) {
           canRenderFlyout = options.onBeforeRender.call(self, e.target);
@@ -428,6 +440,6 @@
 
   $.relativeUrl = function(url) {
     return url.href.replace(baseUrlRegex, '/');
-  }
+  };
 
 })(jQuery, _, window);

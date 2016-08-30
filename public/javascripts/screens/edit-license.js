@@ -15,8 +15,8 @@ $(function() {
       initialCategory = license.id;
     } else if (_.isArray(license.licenses)) {
       if (_.detect(license.licenses, function(categorizedLicense) {
-        return categorizedLicense.id === initialValue;
-      })) {
+          return categorizedLicense.id === initialValue;
+        })) {
         initialCategory = license.id;
       }
     }
@@ -26,7 +26,7 @@ $(function() {
   var $licenseType;
   var categoricalTypes = [];
 
-  var get_name_for = function(license) {
+  var getNameFor = function(license) {
     return license.selector_name || license.name || license.display_name;
   };
 
@@ -40,7 +40,11 @@ $(function() {
       });
 
       _.each(category.licenses, function(license) {
-        var $license = $.tag2({ _: 'option', contents: get_name_for(license), value: license.id });
+        var $license = $.tag2({
+          _: 'option',
+          contents: getNameFor(license),
+          value: license.id
+        });
         if (initialValue === license.id) {
           $license.attr('selected', 'selected');
         }
@@ -50,7 +54,7 @@ $(function() {
       $licenseType.attr('name', '');
       $licenseId.attr('name', 'view[licenseId]');
       $licenseId.closest('.line').show().
-        find('label').addClass('required');
+      find('label').addClass('required');
     } else {
       $licenseType.attr('name', 'view[licenseId]');
       $licenseId.attr('name', '');
@@ -89,11 +93,13 @@ $(function() {
       $viewAttribution.siblings('label').addClass('required');
       $viewAttribution.rules('add', {
         required: true,
-        messages: { required: ' ' + $.t('screens.edit_metadata.data_provider_required') }
+        messages: {
+          required: ' ' + $.t('screens.edit_metadata.data_provider_required')
+        }
       });
     } else {
       $viewAttribution.siblings('label').removeClass('required');
-      $viewAttribution.rules("remove");
+      $viewAttribution.rules('remove');
     }
   };
 
@@ -101,14 +107,20 @@ $(function() {
     $licenseId = $('#view_licenseId');
 
     if (_.any(blist.licenses, function(license) {
-      return !_.isUndefined(license.licenses);
-    })) {
+        return !_.isUndefined(license.licenses);
+      })) {
       var $licenseTypeLine = $.tag2({
-        _: 'div', 'class': 'line clearfix', contents: [
-          { _: 'label', 'for': 'view_licenseType',
-            contents: $.t('screens.edit_metadata.license_type') },
-          { _: 'select', id: 'view_licenseType', name: 'view[licenseId]' }
-        ]
+        _: 'div',
+        'class': 'line clearfix',
+        contents: [{
+          _: 'label',
+          'for': 'view_licenseType',
+          contents: $.t('screens.edit_metadata.license_type')
+        }, {
+          _: 'select',
+          id: 'view_licenseType',
+          name: 'view[licenseId]'
+        }]
       });
 
       $licenseType = $licenseTypeLine.find('select');
@@ -116,7 +128,11 @@ $(function() {
         if (license.licenses) {
           categoricalTypes.push(license.id);
         }
-        var $license = $.tag2({ _: 'option', contents: license.name, value: license.id });
+        var $license = $.tag2({
+          _: 'option',
+          contents: license.name,
+          value: license.id
+        });
         if (license.id === '') {
           $license.attr('value', '');
         }

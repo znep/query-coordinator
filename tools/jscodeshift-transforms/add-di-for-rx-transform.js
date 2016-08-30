@@ -1,9 +1,9 @@
-module.exports = function(fileInfo, api, options) {
+module.exports = function(fileInfo, api) {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
   function hasRxIdentifier(node) {
-    return node.find(j.Identifier, { name: "Rx" }).size() > 0;
+    return node.find(j.Identifier, { name: 'Rx' }).size() > 0;
   }
 
   if (hasRxIdentifier(root)) {
@@ -22,7 +22,7 @@ module.exports = function(fileInfo, api, options) {
       var providerFunction;
       if (j.match(providerDefinition, {type: 'Identifier'})) {
         providerFunction = root.find(j.FunctionDeclaration, { id: {name: providerDefinition.name }}).get().value;
-      } else if(j.match(providerDefinition, {type: 'FunctionExpression'})) {
+      } else if (j.match(providerDefinition, {type: 'FunctionExpression'})) {
         providerFunction = providerDefinition;
       }
       if (providerFunction && !providerFunction.params.some(p => j.match(p, {name: 'rx'}))) {

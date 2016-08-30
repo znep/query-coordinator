@@ -28,7 +28,7 @@ blist.datasetPage.setTempView = function() {
   }
 
   $('body, #datasetBar').addClass('unsavedView').
-    toggleClass('minorChange', blist.dataset.minorChange);
+  toggleClass('minorChange', blist.dataset.minorChange);
   // For now unsaved view means something has changed in filter tab
   $('#sidebarOptions .tabFilter a').addClass('alert');
   datasetPageNS.sidebar.updateEnabledSubPanes();
@@ -57,8 +57,8 @@ $(function() {
 
   // Before we fullscreen, move the footer inside the sizing container.
   $('#siteFooter, #site-chrome-footer').
-    addClass('clearfix').
-    appendTo('.siteInnerWrapper');
+  addClass('clearfix').
+  appendTo('.siteInnerWrapper');
 
   $('.outerContainer').fullScreen();
 
@@ -116,37 +116,37 @@ $(function() {
       blist.dataset.getChildOptionsForType(rt, function(options) {
         if (options.length > 1) {
           $button.toggleClass('active', blist.dataset.metadata.renderTypeConfig.visible[rt]).
-            popupSelect({
-              canDeselect: true,
-              choices: options,
-              isSelected: function(option) {
-                var selId = $.deepGetStringField(blist.dataset.metadata,
-                  'renderTypeConfig.active.' + rt + '.id');
-                return $.deepGetStringField(blist.dataset.metadata,
-                    'renderTypeConfig.visible.' + rt) &&
-                  (option.id == selId || $.isBlank(selId) && option.id == blist.dataset.id);
-              },
-              prompt: 'Select a layer:',
-              renderer: function(option) {
-                return option.name;
-              },
-              selectCallback: function(option, checked) {
-                if (checked) {
-                  finished(option.id);
-                } else {
-                  finished();
-                }
-                return checked;
+          popupSelect({
+            canDeselect: true,
+            choices: options,
+            isSelected: function(option) {
+              var selId = $.deepGetStringField(blist.dataset.metadata,
+                'renderTypeConfig.active.' + rt + '.id');
+              return $.deepGetStringField(blist.dataset.metadata,
+                  'renderTypeConfig.visible.' + rt) &&
+                (option.id == selId || $.isBlank(selId) && option.id == blist.dataset.id);
+            },
+            prompt: 'Select a layer:',
+            renderer: function(option) {
+              return option.name;
+            },
+            selectCallback: function(option, checked) {
+              if (checked) {
+                finished(option.id);
+              } else {
+                finished();
               }
-            }).data('popupSelect-tip').show();
+              return checked;
+            }
+          }).data('popupSelect-tip').show();
 
           $button.data('popupSelect-width', $(window).width());
           $(window).resize(function() {
             var width = $(window).width();
             $button.data('popupSelect-tip').
-              adjustPosition({
-                left: width - $button.data('popupSelect-width')
-              });
+            adjustPosition({
+              left: width - $button.data('popupSelect-width')
+            });
             $button.data('popupSelect-width', width);
           });
         } else {
@@ -291,7 +291,7 @@ $(function() {
     },
     onSidebarClosed: function() {
       $('#sidebarOptions').css('background-color', 'transparent').
-        find('li').removeClass('active');
+      find('li').removeClass('active');
     },
     columnChoosers: blist.$container.renderTypeManager().$domForType('table'),
     renderTypeManager: blist.$container.renderTypeManager(),
@@ -324,7 +324,7 @@ $(function() {
   datasetPageNS.$feedTab = $('#sidebarOptions').find('a.feed');
   if (datasetPageNS.$feedTab.is(':visible')) {
     datasetPageNS.$feedTab.
-      contentIndicator().setText(blist.dataset.numberOfComments || '');
+    contentIndicator().setText(blist.dataset.numberOfComments || '');
   }
 
   // Show guided filter by default if there is a default filter
@@ -354,8 +354,8 @@ $(function() {
     datasetPageNS.sidebar.updateEnabledSubPanes();
   };
   blist.dataset.
-    bind('columns_changed', sidebarUpdate).
-    bind('displaytype_change', sidebarUpdate);
+  bind('columns_changed', sidebarUpdate).
+  bind('displaytype_change', sidebarUpdate);
 
   // Hook up search form
   var $clearSearch = $('#searchForm .clearSearch');
@@ -420,8 +420,8 @@ $(function() {
       datasetPageNS.adjustSize);
     datasetPageNS.adjustSize(); // So that when animating in footer is visible.
     $(this).
-      toggleClass('maximize').
-      toggleClass('minimize');
+    toggleClass('maximize').
+    toggleClass('minimize');
   });
 
   $('#shareOptions .email').click(function(event) {
@@ -452,12 +452,12 @@ $(function() {
     }
   });
   $dataGrid.bind('undo_redo_change', function() {
-    var model = $dataGrid.blistModel();// eslint-disable-line no-shadow
+    var model = $dataGrid.blistModel(); // eslint-disable-line no-shadow
     $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
     $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
   });
   if (!$.isBlank($dataGrid.blistModel)) {
-    var model = $dataGrid.blistModel();// eslint-disable-line no-shadow
+    var model = $dataGrid.blistModel(); // eslint-disable-line no-shadow
     $('#editOptions .undo').toggleClass('disabled', !model.canUndo());
     $('#editOptions .redo').toggleClass('disabled', !model.canRedo());
   }
@@ -605,7 +605,7 @@ $(function() {
   $('.viewError').text(blist.dataset.invalidMessage());
 
   var viewEditPane = $.gridSidebar.
-    paneForDisplayType[blist.dataset.metadata.availableDisplayTypes[0]] ||
+  paneForDisplayType[blist.dataset.metadata.availableDisplayTypes[0]] ||
     $.gridSidebar.paneForDisplayType[blist.dataset.type];
   if ($.isBlank(viewEditPane) || !datasetPageNS.sidebar.isPaneEnabled(viewEditPane)) {
     $('.invalidActions .editView').hide();
@@ -776,16 +776,16 @@ $(function() {
       blist.dataset.getParentView(function(parDS) {
         if (!$.isBlank(parDS)) {
           $('.basedOnParent').
-            addClass('hasParent').
-            find('.parentName').
-            attr('href', parDS.url).
-            text(parDS.name);
+          addClass('hasParent').
+          find('.parentName').
+          attr('href', parDS.url).
+          text(parDS.name);
         } else {
           $('.basedOnParent').
-            addClass('hasParent').
-            find('.parentName').
-            attr('href', null).
-            text($.t('screens.ds.bar.based_on_private_view'));
+          addClass('hasParent').
+          find('.parentName').
+          attr('href', null).
+          text($.t('screens.ds.bar.based_on_private_view'));
         }
       });
     }
@@ -876,8 +876,8 @@ $(function() {
       }
 
       // Send GA event for showing bootstrap link
-      if (typeof _gaSocrata !== 'undefined') {// eslint-disable-line no-undef
-        _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'show');// eslint-disable-line no-undef
+      if (typeof _gaSocrata !== 'undefined') { // eslint-disable-line no-undef
+        _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'show'); // eslint-disable-line no-undef
       }
 
       var newUxLink = $('<div class="new-ux-link icon-cards">' +
@@ -914,8 +914,8 @@ $(function() {
         });
       }).on('click', 'a', function() {
         // Send GA event for user clicking bootstrap link
-        if (typeof _gaSocrata !== 'undefined') {// eslint-disable-line no-undef
-          _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'click');// eslint-disable-line no-undef
+        if (typeof _gaSocrata !== 'undefined') { // eslint-disable-line no-undef
+          _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'click'); // eslint-disable-line no-undef
         }
 
         // Add some feedback

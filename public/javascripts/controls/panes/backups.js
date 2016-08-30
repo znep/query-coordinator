@@ -43,7 +43,7 @@
       remaining -= PAGE_SIZE;
       if (remaining > 0) {
         $moreLink.removeClass('hide');
-        if (remaining == 1) {
+        if (remaining === 1) {
           $moreLink.text($.t('screens.ds.grid_sidebar.view_list.pagination.last'));
         } else {
           $moreLink.text(

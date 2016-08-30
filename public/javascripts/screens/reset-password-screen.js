@@ -1,22 +1,23 @@
-$(function ()
-{
-    $("#password").focus();
-    
-    // Signup form validation.
-    $("#resetPasswordForm").validate({
-        rules: {
-            "password": {
-                required: true,
-                minlength: 8
-            },
-            confirm_password: {
-                required: true,
-                equalTo: "#password"
-            }
-        }
-    });
+$(function() {
+  $('#password').focus();
 
-    var $content = $('<div/>').append($.t('account.common.form.password_requirements_html'));
+  // Signup form validation.
+  $('#resetPasswordForm').validate({
+    rules: {
+      'password': {
+        required: true,
+        minlength: 8
+      },
+      confirm_password: {
+        required: true,
+        equalTo: '#password'
+      }
+    }
+  });
 
-    $('.passwordHint').socrataTip({ content: $content });
+  var $content = $('<div/>').append($.t('account.common.form.password_requirements_html'));
+
+  $('.passwordHint').socrataTip({
+    content: $content
+  });
 });

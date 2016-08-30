@@ -1,73 +1,75 @@
-(function($)
-{
+(function($) {
 
-var d3ns = blist.namespace.fetch('blist.d3');
+  blist.namespace.fetch('blist.d3');
 
-$.Control.registerMixin('d3_impl_bubble', {
+  $.Control.registerMixin('d3_impl_bubble', {
 
     // It's probably worth forcing a sort on cc.fixedColumn
     //initializeVisualization: function() {
     columnsLoaded: function() {
-        this._super.apply(this, arguments);
+      this._super.apply(this, arguments);
 
-        var vizObj = this,
-            cc = vizObj._chartConfig;
-        cc.fixedColumn = vizObj._fixedColumns[0];
+      var vizObj = this,
+        cc = vizObj._chartConfig;
+      cc.fixedColumn = vizObj._fixedColumns[0];
 
-        if (vizObj._pointColor)
-        {
-            // This is gutting color.js#$.gradient and taking its essentials.
-            // d3 scales are fundamentally better.
-            var colorRange = [ vizObj._displayFormat.color || '#042656' ];
-            var hsv = $.rgbToHsv($.hexToRgb(colorRange[0]));
-            hsv.s = hsv.s > 50 ? 0 : 100;
-            hsv.v = hsv.v > 50 ? 0 : 80;
-            colorRange.unshift('#' + $.rgbToHex($.hsvToRgb(hsv)));
+      if (vizObj._pointColor) {
+        // This is gutting color.js#$.gradient and taking its essentials.
+        // d3 scales are fundamentally better.
+        var colorRange = [vizObj._displayFormat.color || '#042656'];
+        var hsv = $.rgbToHsv($.hexToRgb(colorRange[0]));
+        hsv.s = hsv.s > 50 ? 0 : 100;
+        hsv.v = hsv.v > 50 ? 0 : 80;
+        colorRange.unshift('#' + $.rgbToHex($.hsvToRgb(hsv)));
 
-            cc.colorScale = d3.scale.linear()
-                                    .domain([ vizObj._pointColor.aggregates.minimum,
-                                              vizObj._pointColor.aggregates.maximum ])
-                                    .range(colorRange);
-        }
+        cc.colorScale = d3.scale.linear().
+          domain([vizObj._pointColor.aggregates.minimum,
+            vizObj._pointColor.aggregates.maximum
+          ]).
+          range(colorRange);
+      }
 
-        if (vizObj._pointSize)
-        {
-            cc.sizeScale  = d3.scale.linear()
-                                    .domain([ vizObj._pointSize.aggregates.minimum,
-                                              vizObj._pointSize.aggregates.maximum ])
-                                    .range([ 4, 40 ]);
-        }
+      if (vizObj._pointSize) {
+        cc.sizeScale = d3.scale.linear().
+          domain([vizObj._pointSize.aggregates.minimum,
+            vizObj._pointSize.aggregates.maximum
+          ]).
+          range([4, 40]);
+      }
     },
 
-    _lineType: function()
-    { return 'none'; },
-
-    _d3_getColor: function(colDef, d)
-    {
-        var vizObj = this,
-            cc = this._chartConfig;
-
-        if (d && vizObj._pointColor)
-        { return d.color || cc.colorScale(d.data[vizObj._pointColor.lookup]); }
-        else
-        { return this._super.apply(this, arguments); }
+    _lineType: function() {
+      return 'none';
     },
 
-    _sizifyRow: function(colDef)
-    {
-        var vizObj = this,
-            cc = this._chartConfig;
+    _d3_getColor: function(colDef, d) {
+      var vizObj = this,
+        cc = this._chartConfig;
 
-        if (!vizObj._pointSize) { return this._super.apply(this, arguments); }
+      if (d && vizObj._pointColor) {
+        return d.color || cc.colorScale(d.data[vizObj._pointColor.lookup]);
+      } else {
+        return this._super.apply(this, arguments);
+      }
+    },
 
-        return function(d) {
-            if (d && vizObj._pointSize && cc.sizeScale)
-            { return cc.sizeScale(d.data[vizObj._pointSize.lookup]); }
-            else
-            { return 5; }
-        };
+    _sizifyRow: function() {
+      var vizObj = this,
+        cc = this._chartConfig;
+
+      if (!vizObj._pointSize) {
+        return this._super.apply(this, arguments);
+      }
+
+      return function(d) {
+        if (d && vizObj._pointSize && cc.sizeScale) {
+          return cc.sizeScale(d.data[vizObj._pointSize.lookup]);
+        } else {
+          return 5;
+        }
+      };
     }
 
-}, null, 'socrataChart', [ 'd3_impl_line', 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);
+  }, null, 'socrataChart', ['d3_impl_line', 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend']);
 
 })(jQuery);

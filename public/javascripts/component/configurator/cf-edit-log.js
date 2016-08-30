@@ -20,7 +20,7 @@
     function createAction(typeName, config) {
         var Action = registry[typeName];
         if (!Action)
-            throw "Unsupported action " + typeName;
+            throw 'Unsupported action ' + typeName;
         return new Action(config);
     }
 
@@ -31,9 +31,9 @@
          */
         registerAction: function(name, config) {
             if (registry[name])
-                throw "Duplicate registered action " + name;
+                throw 'Duplicate registered action ' + name;
             if (!config.commit && config.rollback)
-                throw "Edit actions require commit and rollback";
+                throw 'Edit actions require commit and rollback';
             registry[name] = function(options) {
                 if (this.initialize)
                     this.initialize(options || {});
@@ -81,7 +81,7 @@
          */
         executed: function(typeName, config) {
             if (!transaction)
-                throw "Illegal executed outside of transaction";
+                throw 'Illegal executed outside of transaction';
 
             var action = createAction(typeName, config);
             transaction.push(action);

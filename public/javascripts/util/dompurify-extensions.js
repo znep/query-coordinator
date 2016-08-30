@@ -9,8 +9,7 @@
     function(currentNode) {
       if (currentNode instanceof HTMLAnchorElement) {
         currentNode.rel = _.union(
-          _.words(currentNode.rel),
-          [ 'noreferrer' ]
+          _.words(currentNode.rel), ['noreferrer']
         ).join(' ');
       }
     }

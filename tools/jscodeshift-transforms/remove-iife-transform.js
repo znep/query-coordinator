@@ -1,6 +1,5 @@
-module.exports = function(fileInfo, api, options) {
+module.exports = function(fileInfo, api) {
   const j = api.jscodeshift;
-  const {expression, statement, statements} = j.template;
   const root = j(fileInfo.source);
 
   const isIIFE = p => j.match(p, {

@@ -20,12 +20,14 @@
    *
    */
 
-// Common render function to take a list of data and make table
+  // Common render function to take a list of data and make table
   metricsNS.renderTopList = function(data, $target) {
     var table = $target.find('.metricsList');
 
     table.attr('summary', a11y.tableSummary({
-      columns: $.map(table.find('thead th'), function(element) { return $(element).text().trim(); }),
+      columns: $.map(table.find('thead th'), function(element) {
+        return $(element).text().trim();
+      }),
       rows: _.pluck(data, 'linkText'),
       tableDescription: $target.find('.sectionTitle').text()
     }));
@@ -37,21 +39,25 @@
 
     if (data.length > 0) {
       table.parent().
-        removeClass('noDataAvailable loadingMore').
-        end().
-        append(
-          $.renderTemplate('metricsTopItem', data,
-            metricsNS.topListItemDirective)).
-        trigger('update').
-        trigger('sorton', [[[1, 1]]]).
-        end().fadeIn();
+      removeClass('noDataAvailable loadingMore').
+      end().
+      append(
+        $.renderTemplate('metricsTopItem', data,
+          metricsNS.topListItemDirective)).
+      trigger('update').
+      trigger('sorton', [
+        [
+          [1, 1]
+        ]
+      ]).
+      end().fadeIn();
     } else {
       table.parent().addClass('noDataAvailable').fadeIn();
     }
   };
 
-// Shared data processing function to turn balboa metrics hash, call
-// appropriate transformation then rendering function
+  // Shared data processing function to turn balboa metrics hash, call
+  // appropriate transformation then rendering function
   metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess) {
     var mapped = [];
     var sorted = $context.data('sorted-data');
@@ -120,7 +126,7 @@
     return array;
   };
 
-// This one's pretty easy
+  // This one's pretty easy
   metricsNS.updateTopSearchesCallback = function($context, key) {
     var data = $context.data(metricsNS.DATA_KEY)[key];
 
@@ -148,7 +154,7 @@
     metricsNS.updateTopListWrapper($context, data, searchMap);
   };
 
-// Need to do some extra work here because only UIDs are returned from balboa
+  // Need to do some extra work here because only UIDs are returned from balboa
   metricsNS.topViewsCallback = function(isIncluded) {
     return function($context) {
       metricsNS.updateTopListWrapper($context,
@@ -191,9 +197,11 @@
     return responseData.viewType == 'tabular' && responseData.displayType != 'data_lens';
   });
 
-  metricsNS.topViewsCallbackNoFilter = metricsNS.topViewsCallback(function() { return true; });
+  metricsNS.topViewsCallbackNoFilter = metricsNS.topViewsCallback(function() {
+    return true;
+  });
 
-// This one's pretty easy
+  // This one's pretty easy
   metricsNS.topQueryStringsCallback = function($context) {
     var data = $context.data(metricsNS.DATA_KEY);
     var searchMap = function(term, count, results) {
@@ -208,7 +216,7 @@
     metricsNS.updateTopListWrapper($context, data, searchMap);
   };
 
-// Grab the name and info for an app_token, including thumbnail URL (if present)
+  // Grab the name and info for an app_token, including thumbnail URL (if present)
   metricsNS.topAppTokensCallback = function($context) {
     metricsNS.updateTopListWrapper($context,
       $context.data(metricsNS.DATA_KEY),
@@ -223,13 +231,14 @@
         }
         $.socrataServer.makeRequest({
           url: '/api/app_tokens/' + key + '.json',
-          batch: true, type: 'get',
+          batch: true,
+          type: 'get',
           success: function(responseOrNull) {
             var response = responseOrNull || {};
             var thumbed = response.thumbnailSha,
               klass = thumbed ? 'showThumbnail' : '',
               thumbnail = thumbed ? ('/api/file_data/' + response.thumbnailSha +
-              '?size=tiny') : '';
+                '?size=tiny') : '';
 
             var owner = new User(response.owner);
             results.push({
@@ -254,7 +263,7 @@
     );
   };
 
-// Take the url maps and transform them into usable links with sublinks
+  // Take the url maps and transform them into usable links with sublinks
   metricsNS.urlMapCallback = function($context) {
     metricsNS.updateTopListWrapper($context,
       $context.data(metricsNS.DATA_KEY),
@@ -347,12 +356,12 @@
         $.t('screens.stats.delta' +
           (fraction < 0 ? '_decrease' : '_increase') +
           (summaries.total === false ? '_compared' : '')).
-        format(
-          summaries.deltaPhrase || section.displayName,
-          mappedData[key],
-          $timeslice.data('range-text') || $timeslice.val(),
-          $timeslice.data('range-previousText') || $.t('screens.stats.preceding_period')
-        );
+      format(
+        summaries.deltaPhrase || section.displayName,
+        mappedData[key],
+        $timeslice.data('range-text') || $timeslice.val(),
+        $timeslice.data('range-previousText') || $.t('screens.stats.preceding_period')
+      );
     };
 
     summaryCalculator('total', '-total');
@@ -400,7 +409,7 @@
       if (summaries.range === false) {
         summaryDirective = metricsNS.simpleSummaryDataDirectiveV1;
       } else if (summaries.total === false) {
-      // Show only the delta, compared to a previous delta, if summaries.total = false
+        // Show only the delta, compared to a previous delta, if summaries.total = false
         summaryDirective = metricsNS.deltaDataDirective;
       }
     }
@@ -414,7 +423,7 @@
   metricsNS.renderSummarySection = function($context, data, directive, templateName) {
     $context.find('.dynamicContent').empty().append(
       $.renderTemplate(templateName, data, directive)).
-        end().fadeIn();
+    end().fadeIn();
   };
 
   metricsNS.updateChartCallback = function($chart, sliceType, options) {
@@ -436,8 +445,8 @@
     }
   };
 
-// Removes jagged drops to zero, which are probably the result
-// of data not being recorded for that period
+  // Removes jagged drops to zero, which are probably the result
+  // of data not being recorded for that period
   metricsNS.transforms.smooth = function(data) {
     var lastVal;
     for (var i = 0; i < data.length; i++) {
@@ -453,7 +462,7 @@
 
   metricsNS.chartLoading = function($chart) {
     $chart.hide().
-      parent().loadingSpinner().showHide(true);
+    parent().loadingSpinner().showHide(true);
   };
 
   metricsNS.topListItemDirective = {

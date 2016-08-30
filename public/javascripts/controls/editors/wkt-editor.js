@@ -23,7 +23,7 @@
   function flatten(parent, child) {
     parent.splice(0);
     Array.prototype.push.apply(parent, child);
-  };
+  }
 
   /**
    * @function removeExcessParentheses
@@ -40,10 +40,10 @@
       item.forEach(removeExcessParentheses, item);
     }
 
-    if(this.length === 1) {
+    if (this.length === 1) {
       flatten(this, item);
     }
-  };
+  }
 
   var wktEditor = {
 
@@ -53,7 +53,7 @@
      * @param {String} wkt - A candidate WKT string.
      * @returns {Object|null} - Returns a GeoJSON object, or null if WKT cannot be converted.
      */
-    toGeoJSON: function (wkt) {
+    toGeoJSON: function(wkt) {
       var parsed = WKT.parse(wkt);
 
       // Multipoint are specifically declared by the OGC as follows:
@@ -74,7 +74,7 @@
      * @param {String} geoJSON - A candidate GeoJSON string.
      * @returns {String|null} - A string representation of WKT.
      */
-    toWKT: function (geoJSON) {
+    toWKT: function(geoJSON) {
       return WKT.stringify(geoJSON);
     },
 
@@ -101,7 +101,7 @@
     // This is the value we're sending up to the server.
     currentValue: function() {
       var wktValue = this.wktValue(),
-          geoJSON = this.toGeoJSON(wktValue);
+        geoJSON = this.toGeoJSON(wktValue);
 
       // If GeoJSON is null, wktValue is invalid.
       // This is to keep it visible in the UI.
@@ -117,4 +117,3 @@
   $.blistEditor.addEditor('multipolygon', wktEditor, 'text');
 
 })(jQuery);
-

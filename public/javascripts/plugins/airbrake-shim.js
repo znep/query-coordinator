@@ -106,7 +106,7 @@
     var jqReady = jQuery.fn.ready;
     jQuery.fn.ready = function(fn) {
       return jqReady(global.Airbrake.wrap(fn));
-    }
+    };
   };
 
 // Asynchronously loads Airbrake notifier.

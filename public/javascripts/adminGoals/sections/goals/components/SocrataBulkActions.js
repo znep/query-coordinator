@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom'; //eslint-disable-line no-unused-vars
+import * as ReactDOM from 'react-dom'; // eslint-disable-line no-unused-vars
 import * as ReactRedux  from 'react-redux';
 import * as Components from '../../../components';
 import * as Actions from '../actions';

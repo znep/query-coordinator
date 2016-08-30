@@ -6,69 +6,88 @@ $.cf = {};
 
 $(function() {
 
-    $.cf.top = function()
-    {
-        var $editLink = $.tag({tagName: 'a', href: '#edit', 'class': 'cfEditSwitch', title: 'Edit Page'});
-        var $body = $(document.body);
-        $body.append($editLink);
+  $.cf.top = function() {
+    var $editLink = $.tag({tagName: 'a', href: '#edit', 'class': 'cfEditSwitch', title: 'Edit Page'});
+    var $body = $(document.body);
+    $body.append($editLink);
 
-        var loading = false;
+    var loading = false;
 
-        var initializeEditMode = function()
+    var initializeEditMode = function() {
+      if ($.subKeyDefined($.cf, 'edit')) {
+        $.cf.edit(true);
+        return;
+      }
+
+      if (loading) {
+        return;
+      }
+      loading = true;
+      $('.socrata-page').loadingSpinner().showHide(true);
+      // Need to load & set-up
+      var stylesheets = [
+        {assets: 'colorpicker'},
+        {assets: 'base-control-third-party'},
+        {assets: 'base-control'},
+        {assets: 'configurator'}
+      ];
+      var translations = [
+        { key: 'dataslate', force: true },
+        'controls.common.sidebar.tabs'
+      ];
+
+      if (!blist.configuration.govStat) {
+        stylesheets.unshift({sheet: '/webfonts/ss-standard.css', hasFonts: true});
+      } else {
+        translations.push('govstat.reports.component');
+      }
+
+      blist.util.assetLoading.loadAssets(
         {
-            if ($.subKeyDefined($.cf, 'edit'))
-            {
-                $.cf.edit(true);
-                return;
-            }
-
-            if (loading) { return; }
-            loading = true;
-            $('.socrata-page').loadingSpinner().showHide(true);
-            // Need to load & set-up
-            var stylesheets = [ {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
-                        {assets: 'base-control'}, {assets: 'configurator'} ];
-            var translations = [ { key: 'dataslate', force: true }, 'controls.common.sidebar.tabs'];
-            if (!blist.configuration.govStat)
-            { stylesheets.unshift( {sheet: '/webfonts/ss-standard.css', hasFonts: true} ); }
-            else
-            { translations.push('govstat.reports.component'); }
-            blist.util.assetLoading.loadAssets(
-                {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
-                    stylesheets: stylesheets,
-                    translations: translations,
-                    templates: ['grid_sidebar'],
-                    newModals: ['configurator_permissions', 'configurator_settings'],
-                    modals: ['select_dataset?federate=true']},
-            function()
-            {
-                $('.socrata-page').loadingSpinner().showHide(false);
-                $.cf.initialize();
-                loading = false;
-            },
-            function() { $(window).trigger('resize'); });
-        };
-
-        $editLink.click(function(e)
-        {
-            e.preventDefault();
-            initializeEditMode();
-        });
-
-        if (blist.configuration.immediateEdit)
-        { initializeEditMode(); }
+          javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
+          stylesheets: stylesheets,
+          translations: translations,
+          templates: ['grid_sidebar'],
+          newModals: ['configurator_permissions', 'configurator_settings'],
+          modals: ['select_dataset?federate=true']
+        },
+        function() {
+          $('.socrata-page').loadingSpinner().showHide(false);
+          $.cf.initialize();
+          loading = false;
+        },
+        function() {
+          $(window).trigger('resize');
+        }
+      );
     };
 
-    blist.configuration.onCurrentUser(function(user)
-    {
-        if (!$.isBlank(user) && (user.hasRight(blist.rights.user.EDIT_PAGES) || user.id == blist.configuration.page.owner ||
-                user.id == (blist.configuration.page.owner || {}).id) &&
-            blist.configuration.designerEnabled)
-        {
-            $(document.body).addClass('socrata-page');
-            $.cf.top();
-            _.defer(function() { $(document.body).addClass('configurable'); });
-        }
+    $editLink.click(function(e) {
+      e.preventDefault();
+      initializeEditMode();
     });
+
+    if (blist.configuration.immediateEdit) {
+      initializeEditMode();
+    }
+  };
+
+  blist.configuration.onCurrentUser(function(user) {
+    var isPermitted =
+      blist.configuration.designerEnabled &&
+      !$.isBlank(user) && (
+        user.hasRight(blist.rights.user.EDIT_PAGES) ||
+        user.id == blist.configuration.page.owner ||
+        user.id == (blist.configuration.page.owner || {}).id
+      );
+
+    if (isPermitted) {
+      $(document.body).addClass('socrata-page');
+      $.cf.top();
+      _.defer(function() {
+        $(document.body).addClass('configurable');
+      });
+    }
+  });
 
 });

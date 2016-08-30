@@ -75,7 +75,9 @@ $(function() {
 
     _.defer(function() {
       var query = $searchSection.find('.browse2-search-control').val();
-      var searchOptions = $.extend({}, opts, { 'q': encodeURIComponent(query) });
+      var searchOptions = $.extend({}, opts, {
+        'q': encodeURIComponent(query)
+      });
       var mixpanelPayload = {
         'Type': {
           'Name': 'Used Search Field',
@@ -298,18 +300,26 @@ $(function() {
     // Slide out other main elements on page when the mobile facet section slides in
     var $mainPageElements = $(
       ['.siteContentWrapper > ul.featuredViews', '.browse2-search', '.browse2-mobile-filter',
-        '.browse2-results-pane', '#siteHeader', '#site-chrome-header', '#siteFooter', '#site-chrome-footer'].
-      join(', ')
+        '.browse2-results-pane', '#siteHeader', '#site-chrome-header', '#siteFooter', '#site-chrome-footer'
+      ].join(', ')
     );
 
     var action = 'slide';
     var time = 200;
     if ($facetPaneSection.is(':visible')) {
-      $mainPageElements.show(action, { direction: 'right' }, time);
-      $facetPaneSection.hide(action, { direction: 'left' }, time);
+      $mainPageElements.show(action, {
+        direction: 'right'
+      }, time);
+      $facetPaneSection.hide(action, {
+        direction: 'left'
+      }, time);
     } else {
-      $facetPaneSection.show(action, { direction: 'left' }, time);
-      $mainPageElements.hide(action, { direction: 'right' }, time);
+      $facetPaneSection.show(action, {
+        direction: 'left'
+      }, time);
+      $mainPageElements.hide(action, {
+        direction: 'right'
+      }, time);
     }
   }
 
@@ -317,10 +327,8 @@ $(function() {
   // clearing the filter. This finds the clicked option in the facet dropdown section below
   // and removes the "active" class, then removes the option from the active filter section.
   function browse2MobileActiveFilterClick() {
-    var $facetOption = $('.browse2-facet-section[{0}="{1}"]'.
-      format('data-facet-option-type', $(this).data('facetOptionType'))).
-      find('.browse2-facet-section-option[{0}="{1}"], .browse2-facet-section-child-option[{0}="{1}"]'.
-        format('data-facet-option-value', $(this).data('facetOptionValue')));
+    var $facetOption = $('.browse2-facet-section[{0}="{1}"]'.format('data-facet-option-type', $(this).data('facetOptionType'))).
+    find('.browse2-facet-section-option[{0}="{1}"], .browse2-facet-section-child-option[{0}="{1}"]'.format('data-facet-option-value', $(this).data('facetOptionValue')));
     $facetOption.removeClass('active');
     // Remove option from active filter section
     $(this).fadeOut('fast');
@@ -338,8 +346,8 @@ $(function() {
 
     // There can only be one active facet per section. Remove other active facet if any.
     $(this).closest('.browse2-facet-section').
-      find('.active').
-      removeClass('active');
+    find('.active').
+    removeClass('active');
 
     if (!facetOptionIsCurrentlyActive) {
       $(this).addClass('active');
@@ -349,7 +357,7 @@ $(function() {
   function browse2MobileFacetClearAll(event) {
     event.preventDefault();
     $('.browse2-facet-section-option.active, .browse2-facet-section-child-option.active').
-      removeClass('active');
+    removeClass('active');
     filterBrowse2MobileFacets();
   }
 
@@ -368,10 +376,7 @@ $(function() {
     var oldUrlParamString = location.search.substring(1);
     if (oldUrlParamString) {
       urlParams = JSON.parse('{"{0}"}'.format(
-        decodeURI(oldUrlParamString).
-          replace(/"/g, '\\"').
-          replace(/&/g, '","').
-          replace(/=/g,'":"')
+        decodeURI(oldUrlParamString).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')
       ));
     }
 
@@ -460,7 +465,7 @@ $(function() {
       callback: function(isTruncated) {
         if (isTruncated) {
           $(this).parent('.browse2-result-description-container').
-            attr('data-description-display', 'truncate');
+          attr('data-description-display', 'truncate');
         }
       }
     });
@@ -491,7 +496,9 @@ $(function() {
 
     function onMakePublicError() {
       alert(
-        $.t('controls.browse.browse2.edit.make_public.error', { dataset: dataset.name })
+        $.t('controls.browse.browse2.edit.make_public.error', {
+          dataset: dataset.name
+        })
       );
     }
 
@@ -526,7 +533,9 @@ $(function() {
 
     function onMakePrivateError() {
       alert(
-        $.t('controls.browse.browse2.edit.make_private.error', { dataset: dataset.name })
+        $.t('controls.browse.browse2.edit.make_private.error', {
+          dataset: dataset.name
+        })
       );
     }
 
@@ -561,7 +570,9 @@ $(function() {
 
     function onDeleteError() {
       alert(
-        $.t('controls.browse.browse2.edit.delete.error', { dataset: dataset.name })
+        $.t('controls.browse.browse2.edit.delete.error', {
+          dataset: dataset.name
+        })
       );
     }
 
@@ -589,7 +600,9 @@ $(function() {
       success: onDeleteSuccess
     };
 
-    if (confirm($.t('controls.browse.browse2.edit.delete.confirm', { dataset: dataset.name }))) {
+    if (confirm($.t('controls.browse.browse2.edit.delete.confirm', {
+        dataset: dataset.name
+      }))) {
       $.ajax(url, deleteSettings);
     }
   }
@@ -669,29 +682,29 @@ $(function() {
       description = linkify($.htmlEscape(description), 'rel="nofollow"');
 
       $modal.
-        find('.leavingLink').
-        attr('href', href).
-        text(href);
+      find('.leavingLink').
+      attr('href', href).
+      text(href);
 
       $modal.
-        find('.accept.button').
-        attr('href', href);
+      find('.accept.button').
+      attr('href', href);
 
       $modal.
-        find('.datasetType').
-        text(ds.displayName);
+      find('.datasetType').
+      text(ds.displayName);
 
       $modal.
-        find('.externalDomain').
-        attr('href', ds.domainUrl).
-        text(ds.domainCName);
+      find('.externalDomain').
+      attr('href', ds.domainUrl).
+      text(ds.domainCName);
 
       $modal.
-        find('.browse2-external-link-title').
-        text(ds.name).
-        end().
-        find('.browse2-external-link-description').
-        html(description);
+      find('.browse2-external-link-title').
+      text(ds.name).
+      end().
+      find('.browse2-external-link-description').
+      html(description);
 
       $modal.jqmShow();
     }
@@ -699,8 +712,8 @@ $(function() {
 
   // blist.iframeHack belongs in the parent window and listens for a modifier key.
   if (window != window.parent &&
-      window.parent.blist &&
-      window.parent.blist.iframeHack) {
+    window.parent.blist &&
+    window.parent.blist.iframeHack) {
 
     $browse.on(
       'click',
@@ -736,9 +749,9 @@ $(function() {
   $('.browse2-result-description').each(function(index, element) {
     var descriptionHeight = 0;
     $(element).children().
-      each(function(i, childElement) {
-        descriptionHeight += $(childElement).outerHeight(true);
-      });
+    each(function(i, childElement) {
+      descriptionHeight += $(childElement).outerHeight(true);
+    });
 
     if (descriptionHeight >= DESCRIPTION_TRUNCATION_THRESHOLD) {
       truncateDescription(element);

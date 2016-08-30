@@ -191,7 +191,9 @@ $(document).ready(function() {
     }
   };
 
-  var sincePageOpened = function() { return Math.round(new Date().getTime() / 1000) - blist.pageOpened };
+  var sincePageOpened = function() {
+    return Math.round(new Date().getTime() / 1000) - blist.pageOpened;
+  };
 
   // Page properties we want to also track
   var genericPagePayload = function() {
@@ -243,7 +245,7 @@ $(document).ready(function() {
     var isActiveOrClearAll = $(element).hasClass('active') || $(element).attr('class') === 'browse2-results-clear-all-button';
     return _.extend(genericBrowsePayload(), {
       'Type': {
-        'Name': isActiveOrClearAll  ? 'Cleared Facet' : eventName,
+        'Name': isActiveOrClearAll ? 'Cleared Facet' : eventName,
         'Properties': _.extend({},
           isActiveOrClearAll ? {} : {
             'Facet Value': $(element).attr('title'),
@@ -259,7 +261,9 @@ $(document).ready(function() {
     return _.extend(genericBrowsePayload(), {
       'Type': {
         'Name': eventName,
-        'Properties': clickPosition >= 0 ? {'Click Position': clickPosition} : {}
+        'Properties': clickPosition >= 0 ? {
+          'Click Position': clickPosition
+        } : {}
       }
     });
   };
@@ -303,8 +307,7 @@ $(document).ready(function() {
 
         // Validate and track!
         validateAndSendPayload(eventName, mergedProperties, callback);
-      }
-      catch(e) {
+      } catch (e) {
         if (!isDefaultPrevented && (event.currentTarget.href != null)) {
           window.location = event.currentTarget.href;
         }
@@ -341,8 +344,9 @@ $(document).ready(function() {
       'URL'
     ];
 
-    var mergedProperties = _.extend(
-      { 'Time Since Page Opened (sec)': sincePageOpened() },
+    var mergedProperties = _.extend({
+        'Time Since Page Opened (sec)': sincePageOpened()
+      },
       _.pick(staticPageProperties, staticPropertyNames),
       properties
     );
@@ -368,23 +372,31 @@ $(document).ready(function() {
     //HEADER
     mixpanelNS.delegateLinks('#siteHeader', 'a', 'Clicked Header Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
-      return { 'Header Item Type': linkType };
+      return {
+        'Header Item Type': linkType
+      };
     });
 
     mixpanelNS.delegateLinks('#site-chrome-header', 'a', 'Clicked Header Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
-      return { 'Header Item Type': linkType };
+      return {
+        'Header Item Type': linkType
+      };
     });
 
     //FOOTER
     mixpanelNS.delegateLinks('#siteFooter', 'a', 'Clicked Footer Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
-      return { 'Footer Item Type': linkType };
+      return {
+        'Footer Item Type': linkType
+      };
     });
 
     mixpanelNS.delegateLinks('#site-chrome-footer', 'a', 'Clicked Footer Item', false, function(element) {
       var linkType = (element.title != '') ? element.title : element.text;
-      return { 'Footer Item Type': linkType };
+      return {
+        'Footer Item Type': linkType
+      };
     });
 
     //CATALOG
@@ -399,8 +411,11 @@ $(document).ready(function() {
     mixpanelNS.delegateLinks('.gridList .titleLine', 'a', 'Clicked Catalog Result', false, function(element) {
       var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
       var page = $(element).closest('.browseList').find('.pagination .active').text().match(/\d/);
-      var pageNo = (page=='')? 1 : parseFloat(page);
-      return { 'Result Number': linkNo, 'Page Number': pageNo };
+      var pageNo = (page == '') ? 1 : parseFloat(page);
+      return {
+        'Result Number': linkNo,
+        'Page Number': pageNo
+      };
     });
 
     // API docs link
@@ -420,42 +435,59 @@ $(document).ready(function() {
     mixpanelNS.delegateLinks('.facetSection', 'a', 'Used Search Facets', false, function(element) {
       var facetType = $(element).closest('.facetSection').find('> .title').text();
       var linkName = element.text;
-      return { 'Facet Type': facetType, 'Facet Type Name': linkName };
+      return {
+        'Facet Type': facetType,
+        'Facet Type Name': linkName
+      };
     });
 
     //SIDEBAR TRACKING
     mixpanelNS.delegateLinks('#sidebarOptions', 'a', 'Clicked Sidebar Option', false, function(element) {
-      return {'Sidebar Name': element.title};
+      return {
+        'Sidebar Name': element.title
+      };
     });
 
     //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
     mixpanelNS.delegateLinks('#gridSidebar', 'a.headerLink', 'Clicked Pane in Sidebar', false, function(element) {
-      return {'Pane Name': element.text};
+      return {
+        'Pane Name': element.text
+      };
     });
 
     // Edit Metadata Button
-    mixpanelNS.delegateLinks('#gridSidebar', 'a.editMetadataButton', 'Edited Metadata', false, function(element) {
-      return { 'From Page': 'Grid Page' };
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.editMetadataButton', 'Edited Metadata', false, function() {
+      return {
+        'From Page': 'Grid Page'
+      };
     });
 
     // Stats Metadata Button
-    mixpanelNS.delegateLinks('#gridSidebar', 'a.statsButton', 'Viewed Dataset Statistics', false, function(element) {
-      return { 'From Page': 'Grid Page' };
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.statsButton', 'Viewed Dataset Statistics', false, function() {
+      return {
+        'From Page': 'Grid Page'
+      };
     });
 
     // Bootstrap Data Lens Button
-    mixpanelNS.delegateLinks('#gridSidebar', 'a.bootstrapButton', 'Created a Data Lens', false, function(element) {
-      return { 'From Page': 'Grid Page' };
+    mixpanelNS.delegateLinks('#gridSidebar', 'a.bootstrapButton', 'Created a Data Lens', false, function() {
+      return {
+        'From Page': 'Grid Page'
+      };
     });
 
     //In the visualize pane - the different visualization types
     mixpanelNS.delegateLinks('#gridSidebar', '.radioBlock .radioLine', 'Chose Visualization Type', true, function(element) {
-      return {'Visualization Type': element.outerText};
+      return {
+        'Visualization Type': element.outerText
+      };
     });
 
     //Render Type Options
     mixpanelNS.delegateLinks('#renderTypeOptions', 'a', 'Changed Render Type Options', false, function(element) {
-      return {'Render Type': element.title};
+      return {
+        'Render Type': element.title
+      };
     });
 
     // GOVSTAT

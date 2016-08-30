@@ -3,17 +3,17 @@
     _init: function() {
       var cpObj = this;
       cpObj._super.apply(cpObj, arguments);
-      cpObj._view.bind('clear_temporary', function() { cpObj.reset(); }, cpObj);
+      cpObj._view.bind('clear_temporary', function() {
+        cpObj.reset();
+      }, cpObj);
     },
 
     _getSections: function() {
-      return [
-        {
-          customContent: {
-            template: 'dataLensPaneContentWrapper'
-          }
+      return [{
+        customContent: {
+          template: 'dataLensPaneContentWrapper'
         }
-      ]
+      }];
     },
 
     render: function(data, isTempData, completeCallback) {
@@ -29,14 +29,17 @@
 
         // Display flyout while fetching the correct href (and the button is disabled)
         var msg = $.t('screens.ds.grid_sidebar.data_lens.button_flyout');
-        button.socrataTip({content: msg, positions: 'left'});
+        button.socrataTip({
+          content: msg,
+          positions: 'left'
+        });
 
         generateDataLensLinkHref().then(function(href) {
           if (href !== '#') {
             button.
-              removeClass('disabled').
-              attr('href', href).
-              socrataTip().destroy();
+            removeClass('disabled').
+            attr('href', href).
+            socrataTip().destroy();
           }
         });
       });
@@ -46,7 +49,9 @@
       return $.t('screens.ds.grid_sidebar.data_lens.title');
     }
 
-  }, {name: 'dataLensCreate'}, 'controlPane');
+  }, {
+    name: 'dataLensCreate'
+  }, 'controlPane');
 
   // See datasets_helper.rb for sidebarHidden settings
   var userCanUpdateMetadata = $.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.dataLensCreate;
@@ -79,7 +84,7 @@
     var localePart = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
     var linkParams = generateDataLensLinkParams();
     var canBootstrapDataLens = !linkParams.hasGroupBys;
-    var deferred = $.Deferred();
+    var deferred = $.Deferred(); // eslint-disable-line new-cap
 
     // Prevent data lens button for geo dataset
     if (linkParams.dataset.viewType === 'geo') {
@@ -108,7 +113,9 @@
           href = '{0}/view/bootstrap/{1}'.format(localePart, nbeMetadata.id);
         }
         return href;
-      }).fail(function() { return href; });
+      }).fail(function() {
+        return href;
+      });
 
     }
   }

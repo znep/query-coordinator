@@ -14,11 +14,11 @@
     "webpackDestination": "public/javascripts/build",
     "webpackDevServerPort": "3030",
     "dataCardsWebpackExternals": {
+      "L": "L",
       "angular": "angular",
-      "rx": "Rx",
-      "jquery": "$",
       "d3": "d3",
-      "L": "L"
+      "jquery": "$",
+      "rx": "Rx"
     }
   },
   "scripts": {

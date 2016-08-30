@@ -9,10 +9,10 @@
       var $section = $screen.find('#' + section.id),
         series = $section.data(metricsNS.SERIES_KEY),
         url = urlBase + '?start=' + startDate.getTime() +
-          '&end=' + endDate.getTime() +
-          (previousDate ? '&previous=' + previousDate.getTime() : '') +
-            // core requires an integer; treat "true" as 1
-          '&embetter=' + (+blist.feature_flags['embetter_analytics_page']);
+        '&end=' + endDate.getTime() +
+        (previousDate ? '&previous=' + previousDate.getTime() : '') +
+        // core requires an integer; treat "true" as 1
+        '&embetter=' + (+blist.feature_flags['embetter_analytics_page']);
 
       if (_.isFunction(section.loading)) {
         section.loading($section);
@@ -26,8 +26,8 @@
       } else if (!$.isBlank(section.top)) {
         url = url + '&method=top&top=' + section.top;
         $section.
-          data('count', 0).
-          data('sorted-data', null);
+        data('count', 0).
+        data('sorted-data', null);
       }
 
       $.Tache.Get({ // eslint-disable-line new-cap
@@ -36,10 +36,10 @@
         url: url,
         success: function(data) {
           $section.
-            data(metricsNS.DATE_START, startDate).
-            data(metricsNS.DATE_END, endDate).
-            data(metricsNS.DATA_KEY, data).
-            closest('.container').removeClass('metricsError');
+          data(metricsNS.DATE_START, startDate).
+          data(metricsNS.DATE_END, endDate).
+          data(metricsNS.DATA_KEY, data).
+          closest('.container').removeClass('metricsError');
           if (_.isFunction(section.callback)) {
             section.callback($section, slice, section);
           }
@@ -55,8 +55,7 @@
 
     redrawChart = function(chart, sliceDepth, animate) {
       chart.data('data-callback')(chart, sliceDepth,
-        $.extend({},
-          {
+        $.extend({}, {
             plotOptions: {
               area: {
                 animation: animate
@@ -68,7 +67,7 @@
     },
 
     refreshData = function($screen, sections, opts,
-                           currentStartDate, currentEndDate, currentPreviousDate, currentSlice) {
+      currentStartDate, currentEndDate, currentPreviousDate, currentSlice) {
       _.each(sections, function(section) {
         fireSectionUpdate(section, $screen, opts.urlBase,
           currentStartDate, currentEndDate, currentPreviousDate, currentSlice);
@@ -78,10 +77,10 @@
     expandTopSubSection = function(event) {
       event.preventDefault();
       $(event.target).closest('.item').find('.subContainer').
-        slideToggle();
+      slideToggle();
     },
 
-  // Merge defaults into each of the list's items
+    // Merge defaults into each of the list's items
     mergeItems = function(list, defaults) {
       return _.map(list, function(item) {
         return $.extend({}, defaults, item);
@@ -128,9 +127,9 @@
       detailSections = mergeItems(opts.detailSections, opts.detailDefaults),
       summarySections = mergeItems(opts.summarySections, opts.summaryDefaults),
       sections = chartSections.
-        concat(detailSections).
-        concat(summarySections).
-        concat(opts.topListSections);
+    concat(detailSections).
+    concat(summarySections).
+    concat(opts.topListSections);
 
     var $summaryDisplay = $screen.find('.summaryDisplay').append(
       $.renderTemplate('metricsSummaryItem', summarySections,
@@ -150,7 +149,9 @@
 
     _.each(chartSections, function(section) {
       var $chart = chartDisplay.find('#' + section.id);
-      $chart.parent().loadingSpinner({showInitially: true});
+      $chart.parent().loadingSpinner({
+        showInitially: true
+      });
       generateChartMenu($chart, section);
     });
 
@@ -171,20 +172,20 @@
     });
 
     $screen.find('.topDisplay').
-      append($.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective)).
-      find('table').tablesorter({
-        textExtraction: function(node) {
-          return $(node).find('.primaryValue').text();
-        }
-      });
+    append($.renderTemplate('metricsTopList', opts.topListSections, opts.topListDirective)).
+    find('table').tablesorter({
+      textExtraction: function(node) {
+        return $(node).find('.primaryValue').text();
+      }
+    });
 
     _.each(opts.topListSections, function(section) {
       $screen.find('#' + section.id).
-        find('.showMoreLink').click(function(event) {
-          event.preventDefault();
-          metricsNS.showMoreClicked(section);
-        }).end().
-        appendTo($screen.find('.' + section.renderTo));
+      find('.showMoreLink').click(function(event) {
+        event.preventDefault();
+        metricsNS.showMoreClicked(section);
+      }).end().
+      appendTo($screen.find('.' + section.renderTo));
     });
 
     if (blist.feature_flags['embetter_analytics_page']) {
@@ -241,8 +242,8 @@
     _.each(sections, function(section) {
       var $section = $screen.find('#' + section.id);
       $section.
-        data('data-callback', section.callback).
-        data('options', section);
+      data('data-callback', section.callback).
+      data('options', section);
       if (!$.isBlank(section.dataKeys)) {
         _.each(section.dataKeys, function(key) {
           $section.data('data-' + key, section[key] || {});
@@ -274,9 +275,9 @@
       var $sliceDepth = $updateSlicer.find('[value="' + sliceDepth + '"]');
 
       $sliceDepth.prop('disabled', false).
-        prevAll().prop('disabled', false).
-        end().
-        nextAll().prop('disabled', true);
+      prevAll().prop('disabled', false).
+      end().
+      nextAll().prop('disabled', true);
 
       if (startDate.clone().addMonths(1) < endDate) {
         $updateSlicer.find('[value="Hourly"]').attr('disabled', 'disabled');
@@ -285,9 +286,9 @@
       $updateSlicer.val(sliceDepth);
       $.uniform.update($updateSlicer);
 
-      opts.metricsScreen.trigger('metricsTimeChanged',
-        [startDate, endDate.addDays(1).addMilliseconds(-1), previousDate,
-          sliceDepth.toUpperCase()]);
+      opts.metricsScreen.trigger('metricsTimeChanged', [startDate, endDate.addDays(1).addMilliseconds(-1), previousDate,
+        sliceDepth.toUpperCase()
+      ]);
     };
     var url = window.location.href;
     var params = ['start', 'end'];
@@ -356,16 +357,14 @@
       posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
       rangeSplitter: opts.separator,
       initialRange: initialRange,
-      presetRanges: _.filter([
-        {
+      presetRanges: _.filter([{
           text: $.t('plugins.daterangepicker.today'),
           previousText: $.t('plugins.daterangepicker.yesterday'),
           dateStart: 'today',
           dateEnd: 'today',
           datePrevious: 'yesterday',
           enabled: !blist.feature_flags['embetter_analytics_page']
-        },
-        {
+        }, {
           text: $.t('plugins.daterangepicker.week_to_date'),
           previousText: $.t('plugins.daterangepicker.last_week'),
           dateStart: function() {
@@ -377,8 +376,7 @@
           },
           enabled: !blist.feature_flags['embetter_analytics_page']
         },
-        defaultRange,
-        {
+        defaultRange, {
           text: $.t('plugins.daterangepicker.year_to_date'),
           previousText: $.t('plugins.daterangepicker.last_year'),
           dateStart: function() {
@@ -392,8 +390,7 @@
             return Date.parse('1 year ago').moveToMonth(0, -1).moveToFirstDayOfMonth();
           },
           enabled: true
-        },
-        {
+        }, {
           text: $.t('plugins.daterangepicker.last_week'),
           previousText: $.t('plugins.daterangepicker.preceding_week'),
           dateStart: function() {
@@ -406,8 +403,7 @@
             return Date.parse('2 weeks ago').moveToDayOfWeek(0, -1);
           },
           enabled: blist.feature_flags['embetter_analytics_page']
-        },
-        {
+        }, {
           text: $.t('plugins.daterangepicker.last_month'),
           previousText: $.t('plugins.daterangepicker.preceding_month'),
           dateStart: function() {
@@ -510,11 +506,16 @@
     // to switch to the next slice interval. e.g. {'Hourly': 4, 'Daily': 64}
     // means that if the date difference is greater than 4 days,
     // hourly is out of the question and we must slice 'Daily'
-    rolloverDays: [
-      {slice: 'Hourly', days: 4},
-      {slice: 'Daily', days: 64},
-      {slice: 'Weekly', days: 128}
-    ],
+    rolloverDays: [{
+      slice: 'Hourly',
+      days: 4
+    }, {
+      slice: 'Daily',
+      days: 64
+    }, {
+      slice: 'Weekly',
+      days: 128
+    }],
     largestSlice: 'Monthly',
     xOffset: 10,
     yOffset: 5

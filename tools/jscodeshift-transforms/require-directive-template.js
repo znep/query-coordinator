@@ -1,9 +1,9 @@
-module.exports = function(fileInfo, api, options) {
+module.exports = function(fileInfo, api) {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
-  root.find(j.Property, {key: {type: 'Identifier', name: 'templateUrl'}, value: {type: 'Literal'}})
-    .forEach((p, i) => {
+  root.find(j.Property, {key: {type: 'Identifier', name: 'templateUrl'}, value: {type: 'Literal'}}).
+    forEach((p, i) => {
       var id = `templateUrl${i > 0 ? i : ''}`;
       var templatePath = j(p).find(j.Literal).get('value').value.replace(/^\//, '');
       if (/\.html$/.test(templatePath)) {

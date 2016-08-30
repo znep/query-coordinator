@@ -13,7 +13,10 @@
     var apprTmpl = blist.routingApproval.approvalTemplate;
 
     $dashboard.find('.report.loading.hide').each(function() {
-      $(this).loadingSpinner({metric: 'routing', showInitially: true});
+      $(this).loadingSpinner({
+        metric: 'routing',
+        showInitially: true
+      });
     }).removeClass('hide');
 
     var getStageIcon = function(stage) {
@@ -40,39 +43,43 @@
         return memo + ai.count;
       }, 0));
       _.each(apprTmpl.stages, function(s) {
-        var ai = s.visible ? {count: allViewsCount} : _.detect(ageInfo, function(a) {
+        var ai = s.visible ? {
+          count: allViewsCount
+        } : _.detect(ageInfo, function(a) {
           return a.approval_stage_id == s.id;
-        }) || {count: 0};
+        }) || {
+          count: 0
+        };
         $pipeline.append($.renderTemplate('pipelineItem', {
-            ageInfo: ai,
-            stage: s
-          },
-          {
-            '.label@title': 'stage.name!',
-            '.label span': function(d) {
-              var stage = d.context.stage;
-              return $.htmlEscape(stage.visible ?
+          ageInfo: ai,
+          stage: s
+        }, {
+          '.label@title': 'stage.name!',
+          '.label span': function(d) {
+            var stage = d.context.stage;
+            return $.htmlEscape(stage.visible ?
               'Publicly available (' + stage.name + ')' : stage.name);
-            },
-            '.barContainer .bar@style': function(d) {
-              return 'width:' +
-                Math.min(100, 99 * d.context.ageInfo.count / totalCount) +
-                '%';
-            },
-            '.barContainer .count': function(d) {
-              return $.commaify(d.context.ageInfo.count);
-            },
-            'li@class+': function(d) {
-              return d.context.stage.visible ? 'finalStage' : '';
-            }
-          }));
+          },
+          '.barContainer .bar@style': function(d) {
+            return 'width:' +
+              Math.min(100, 99 * d.context.ageInfo.count / totalCount) +
+              '%';
+          },
+          '.barContainer .count': function(d) {
+            return $.commaify(d.context.ageInfo.count);
+          },
+          'li@class+': function(d) {
+            return d.context.stage.visible ? 'finalStage' : '';
+          }
+        }));
       });
       $pipeline.closest('.report').removeClass('loading').loadingSpinner().showHide(false);
     });
 
     $.Tache.Get({
       url: '/api/search/views.json?limit=1&datasetView=dataset',
-      dataType: 'json', contentType: 'application/json',
+      dataType: 'json',
+      contentType: 'application/json',
       success: function(results) {
         allViewsCount = results.count;
         renderPipeline();
@@ -87,27 +94,29 @@
         }
 
         var ai = _.detect(ageInfo, function(a) {
-            return a.approval_stage_id == s.id;
-          }) || {count: 0, average_age: 0};
+          return a.approval_stage_id == s.id;
+        }) || {
+          count: 0,
+          average_age: 0
+        };
         ai.average_age = Math.round(ai.average_age);
         $ageByStage.append($.renderTemplate('ageItem', {
-            stage: s,
-            ageInfo: ai
+          stage: s,
+          ageInfo: ai
+        }, {
+          '.stage .icon': function(d) {
+            return getStageIcon(d.context.stage);
           },
-          {
-            '.stage .icon': function(d) {
-              return getStageIcon(d.context.stage);
-            },
-            '.stage .name': 'stage.name!',
-            '.count': function(d) {
-              return $.commaify(d.context.ageInfo.count);
-            },
-            '.average': function(d) {
-              return d.context.ageInfo.count < 1 ? 'N/A' :
+          '.stage .name': 'stage.name!',
+          '.count': function(d) {
+            return $.commaify(d.context.ageInfo.count);
+          },
+          '.average': function(d) {
+            return d.context.ageInfo.count < 1 ? 'N/A' :
               $.commaify(d.context.ageInfo.average_age) +
               ' day' + (d.context.ageInfo.average_age != 1 ? 's' : '');
-            }
-          }).find('tr'));
+          }
+        }).find('tr'));
       });
       $ageByStage.closest('.report').removeClass('loading').loadingSpinner().showHide(false);
     };
@@ -124,14 +133,18 @@
       var $stageBreakdown = $dashboard.find('.agingReport.report table');
       var cols = [];
       _.times(numGroups, function() {
-        cols.push({tagName: 'col', 'class': 'unitCount'});
+        cols.push({
+          tagName: 'col',
+          'class': 'unitCount'
+        });
       });
       $stageBreakdown.find('colgroup').append($.tag(cols));
 
       var ths = [];
       _.times(numGroups, function(i) {
         ths.push({
-          tagName: 'th', 'class': 'unitCount',
+          tagName: 'th',
+          'class': 'unitCount',
           contents: i == 0 ?
             'Today' : i == numGroups - 1 ?
             'Older' : i + ' day' + (i == 1 ? '' : 's') + ' old'
@@ -149,18 +162,18 @@
           return a.approval_stage_id == s.id;
         });
         var $tr = $.renderTemplate('agingItem', {
-            stage: s,
-            agingInfo: ai
+          stage: s,
+          agingInfo: ai
+        }, {
+          '.stage .icon': function(d) {
+            return getStageIcon(d.context.stage);
           },
-          {
-            '.stage .icon': function(d) {
-              return getStageIcon(d.context.stage);
-            },
-            '.stage .name': 'stage.name!'
-          }).find('tr');
+          '.stage .name': 'stage.name!'
+        }).find('tr');
         _.times(numGroups, function(i) {
           $tr.append($.tag({
-            tagName: 'td', 'class': 'unitCount',
+            tagName: 'td',
+            'class': 'unitCount',
             contents: $.commaify(ai.counts[i] || 0)
           }));
         });
@@ -208,61 +221,61 @@
       }
 
       var ds = getDS($row);
-      $content.append($.renderTemplate('expandedInfo',
-        {dataset: ds, nextStage: ds.nextApprovalStage() || {}},
-        {
-          '.stage .description': function(v) {
-            return $.htmlEscape(v.context.dataset.approvalStage().name);
-          },
-          '.created .user .value': 'dataset.owner.displayName!',
-          '.created .user .value@href': function(v) {
-            return new User(v.context.dataset.owner).getProfileUrl();
-          },
-          '.created .date .value': function(v) {
-            return new Date(v.context.dataset.createdAt * 1000).
-              toString('d MMMM yyyy');
-          },
-          '.lastApproved .user .type': function(v) {
-            var la = v.context.dataset.lastApproval(true);
-            return la.approvalTypeName == 'R' ? 'Rejected' :
-              la.approvalTypeName == 'A' ? 'Approved' : 'Resubmitted';
-          },
-          '.lastApproved .user .value@data-userId': function(v) {
-            return v.context.dataset.lastApproval(true).
-                approverUserUid || '';
-          },
-          '.lastApproved .date .type': function(v) {
-            var la = v.context.dataset.lastApproval(true);
-            return la.approvalTypeName == 'R' ? 'Rejection' :
-              la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
-          },
-          '.lastApproved .date .value': function(v) {
-            return new Date((v.context.dataset.lastApproval(true).
-                approvalDate || 0) * 1000).toString('d MMMM yyyy');
-          },
-          '.lastApproved@class+': function(v) {
-            return _.isEmpty(v.context.dataset.approvalHistory) ?
-              'hide' : '';
-          },
-          '.reason .title .type': function(v) {
-            var la = v.context.dataset.lastApproval(true);
-            return la.approvalTypeName == 'R' ? 'Rejection' :
-              la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
-          },
-          '.reason .value': function(v) {
-            return v.context.dataset.lastApproval(true).comment ||
-              'No reason provided';
-          },
-          '.reason@class+': function(v) {
-            return v.context.dataset.lastApproval(true).
-              approvalTypeName == 'A' ? 'hide' : '';
-          },
-          '.nextApprover .user li': {
-            'userId<-nextStage.approverUids': {
-              '.value@data-userId': 'userId'
-            }
+      $content.append($.renderTemplate('expandedInfo', {
+        dataset: ds,
+        nextStage: ds.nextApprovalStage() || {}
+      }, {
+        '.stage .description': function(v) {
+          return $.htmlEscape(v.context.dataset.approvalStage().name);
+        },
+        '.created .user .value': 'dataset.owner.displayName!',
+        '.created .user .value@href': function(v) {
+          return new User(v.context.dataset.owner).getProfileUrl();
+        },
+        '.created .date .value': function(v) {
+          return new Date(v.context.dataset.createdAt * 1000).
+          toString('d MMMM yyyy');
+        },
+        '.lastApproved .user .type': function(v) {
+          var la = v.context.dataset.lastApproval(true);
+          return la.approvalTypeName == 'R' ? 'Rejected' :
+            la.approvalTypeName == 'A' ? 'Approved' : 'Resubmitted';
+        },
+        '.lastApproved .user .value@data-userId': function(v) {
+          return v.context.dataset.lastApproval(true).
+          approverUserUid || '';
+        },
+        '.lastApproved .date .type': function(v) {
+          var la = v.context.dataset.lastApproval(true);
+          return la.approvalTypeName == 'R' ? 'Rejection' :
+            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
+        },
+        '.lastApproved .date .value': function(v) {
+          return new Date((v.context.dataset.lastApproval(true).approvalDate || 0) * 1000).toString('d MMMM yyyy');
+        },
+        '.lastApproved@class+': function(v) {
+          return _.isEmpty(v.context.dataset.approvalHistory) ?
+            'hide' : '';
+        },
+        '.reason .title .type': function(v) {
+          var la = v.context.dataset.lastApproval(true);
+          return la.approvalTypeName == 'R' ? 'Rejection' :
+            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
+        },
+        '.reason .value': function(v) {
+          return v.context.dataset.lastApproval(true).comment ||
+            'No reason provided';
+        },
+        '.reason@class+': function(v) {
+          return v.context.dataset.lastApproval(true).
+          approvalTypeName == 'A' ? 'hide' : '';
+        },
+        '.nextApprover .user li': {
+          'userId<-nextStage.approverUids': {
+            '.value@data-userId': 'userId'
           }
-        }));
+        }
+      }));
 
       $content.find('.userLoad').each(function() {
         var $a = $(this);
@@ -285,16 +298,17 @@
       _.each(ds.approvalStream(), function(ah) {
         $stageIcon.append($.tag({
           tagName: 'span',
-          title: (blist.routingApproval.approvalTemplate.
-            getStage(ah.approvalStageId) || {}).name,
-          'class': ah.approvalTypeName == 'R' ? 'rejected' :
-            ah.approvalTypeName == 'A' ? 'on' : 'off'
+          title: (blist.routingApproval.approvalTemplate.getStage(ah.approvalStageId) || {}).name,
+          'class': ah.approvalTypeName == 'R' ? 'rejected' : ah.approvalTypeName == 'A' ? 'on' : 'off'
         }));
       });
 
       // Subtract an extra one because we add a dummy stage 0 into approval
       _.times(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1, function() {
-        $stageIcon.append($.tag({tagName: 'span', 'class': 'off'}));
+        $stageIcon.append($.tag({
+          tagName: 'span',
+          'class': 'off'
+        }));
       });
     };
 
@@ -331,7 +345,9 @@
         return !_.isNull(value.match(/\w{4}-\w{4}$/));
       },
       'A valid user is required');
-    $.validator.addClassRules('userId', {userId: true});
+    $.validator.addClassRules('userId', {
+      userId: true
+    });
 
     $manage.find('form').validate();
 
@@ -343,7 +359,8 @@
           $newLi.find('ul.autocomplete').remove();
           $newLi.find('label.error').remove();
           $newLi.append($.tag({
-            tagName: 'a', 'class': 'userLink',
+            tagName: 'a',
+            'class': 'userLink',
             href: user.getProfileUrl(),
             contents: $.htmlEscape(user.displayName)
           }));
@@ -402,15 +419,21 @@
     $manage.find('.stageItem').each(function() {
       var $stage = $(this);
       $stage.prepend($.tag({
-        tagName: 'a', href: '#Remove', title: 'Remove Stage',
-        'class': 'remove', contents: {tagName: 'span', 'class': 'icon'}
+        tagName: 'a',
+        href: '#Remove',
+        title: 'Remove Stage',
+        'class': 'remove',
+        contents: {
+          tagName: 'span',
+          'class': 'icon'
+        }
       }));
     });
 
     $manage.delegate('.stageItem > .remove', 'click', function(e) {
       e.preventDefault();
       $(this).closest('.stageItem').addClass('hide').
-        find('input.stageName').val('');
+      find('input.stageName').val('');
       adjustStages();
     });
 
@@ -420,8 +443,14 @@
     var hookUpUserItem = function($li) {
       $li.find('input').addClass('hide');
       $li.append($.tag({
-        tagName: 'a', href: '#Remove', title: 'Remove Approver',
-        'class': 'remove', contents: {tagName: 'span', 'class': 'icon'}
+        tagName: 'a',
+        href: '#Remove',
+        title: 'Remove Approver',
+        'class': 'remove',
+        contents: {
+          tagName: 'span',
+          'class': 'icon'
+        }
       }));
     };
 

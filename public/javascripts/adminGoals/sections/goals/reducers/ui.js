@@ -31,7 +31,8 @@ const sortBy = (state, { fieldName, fieldType, direction }) => state.mergeIn(['s
 });
 
 const showPage = (state, { pageNumber }) => {
-  return state.setIn(['pagination', 'currentPage'], pageNumber).
+  return state.
+    setIn(['pagination', 'currentPage'], pageNumber).
     set('selectedGoalIds', new Immutable.List);
 };
 

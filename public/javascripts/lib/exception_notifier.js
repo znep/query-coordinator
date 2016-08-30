@@ -1,11 +1,14 @@
+/* global StackTrace: true */
 (function() {
   function pushExceptionToAirbrake(exception, cause) {
     var stackTrace;
     var exceptionInformation;
 
     try {
-      stackTrace = new StackTrace().fromError(exception).join("\n");
-    } catch(stackTraceError) { }
+      stackTrace = new StackTrace().fromError(exception).join('\n');
+    } catch (stackTraceError) {
+      // no-op
+    }
 
     exceptionInformation = { error: exception, context: {} };
 
@@ -26,13 +29,13 @@
       Airbrake.push(exceptionInformation);
     } catch (airbrakeError) {
       if (console && console.error) {
-        console.error("Exception encountered when reporting an error to Airbrake: ", airbrakeError);
+        console.error('Exception encountered when reporting an error to Airbrake: ', airbrakeError);
       }
     }
   }
 
   angular.module('exceptionNotifier', []).
-    factory('$exceptionHandler', function ($log) {
+    factory('$exceptionHandler', function($log) {
       return function(exception, cause) {
 
         // Check to make sure that we are actually passing an error
@@ -63,14 +66,14 @@
         $log.error(exception);
       };
     }).
-    factory('httpErrorInterceptor', function ($q) {
+    factory('httpErrorInterceptor', function($q, $log) {
       return {
         responseError: function responseError(rejection) {
           if (!rejection.config.hasOwnProperty('airbrakeShouldIgnore404Errors') &&
               !rejection.config.airbrakeShouldIgnore404Errors) {
             try {
-              rejectionConfig = rejection.config || {};
-              errorMsg = 'HTTP response error ({0} {1}): {2}, request: {3} {4}'.
+              var rejectionConfig = rejection.config || {};
+              var errorMsg = 'HTTP response error ({0} {1}): {2}, request: {3} {4}'.
                 format(
                   rejection.status || '???',
                   rejection.statusText || 'unknown status',
@@ -79,13 +82,13 @@
                   rejectionConfig.url || 'no config.url present'
                 );
               pushExceptionToAirbrake(new Error(errorMsg));
-            } catch(airbrakeError) {
-              $log.error("Exception encountered when reporting an HTTP error to Airbrake: ", airbrakeError);
+            } catch (airbrakeError) {
+              $log.error('Exception encountered when reporting an HTTP error to Airbrake: ', airbrakeError);
             }
           }
           return $q.reject(rejection);
         }
-      }
+      };
     }).
     config(function($httpProvider, $provide) {
       // Decorate the logger to log errors to Airbrake.

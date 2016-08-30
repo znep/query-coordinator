@@ -294,4 +294,8 @@ module SiteChromeHelper
     )
   end
 
+  def valid_webfonts
+    ['Arial', 'Georgia', 'Open Sans', 'Verdana']
+  end
+
 end

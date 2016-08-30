@@ -2657,6 +2657,10 @@ en:
             title: Footer
           general:
             fields:
+              font_family:
+                description: Choose the typeface that will be used in both Header and Footer for all text.
+                placeholder: Typeface
+                title: Typeface
               google_analytics_token:
                 description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
                 error: 'Token should match the format: UA-XXXXX-XXXX'

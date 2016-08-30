@@ -7,6 +7,8 @@ end) %>
 <%= site_chrome_form_field(:general, [:styles, :max_width], translations[:max_width]) %>
 <%= site_chrome_form_field(:general, :window_title_display, translations[:window_title_display]) %>
 <%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
+
+<%= site_chrome_dropdown_field(:general, [:styles, :font_family], valid_webfonts, translations[:font_family]) %>
 <!-- EN-9176: Hide Google Analytics field for now -->
 <!--<%#= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>-->
 

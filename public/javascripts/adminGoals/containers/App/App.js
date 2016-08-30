@@ -7,14 +7,7 @@ import * as Components from '../../components';
 import './App.scss';
 
 function App(props) {
-  const { notification, onDismissNotification, feedbackFlannelVisible, translations } = props;
-
-  let alert = null;
-  if (notification.get('visible')) {
-    alert = <Components.Socrata.Alert type={ notification.get('type') }
-                                      message={ notification.get('message') }
-                                      onDismiss={ onDismissNotification }/>;
-  }
+  const { onDismissNotification, feedbackFlannelVisible, translations } = props;
 
   let feedbackFlannel = null;
   if (feedbackFlannelVisible) {
@@ -24,7 +17,6 @@ function App(props) {
   return (
     <div className="app-container">
       <Components.PreviewBar />
-      { alert }
       <Goals.Page />
       { feedbackFlannel }
     </div>
@@ -33,7 +25,6 @@ function App(props) {
 
 const mapStateToProps = state => ({
   translations: state.get('translations'),
-  notification: state.get('notification'),
   feedbackFlannelVisible: state.getIn(['feedback', 'visible'])
 });
 

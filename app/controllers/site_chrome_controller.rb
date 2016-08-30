@@ -56,7 +56,7 @@ class SiteChromeController < ApplicationController
     @site_chrome = SiteChrome.find_or_create_default(forwardable_session_cookies)
 
     # Ensure site_chrome has content necessary for rendering plain views
-    @content = @site_chrome.content || {}
+    @content = @site_chrome.send(in_preview_mode? ? :draft_content : :published_content) || {}
     %w(header footer general locales).each do |key|
       @content[key] ||= {}
     end

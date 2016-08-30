@@ -95,6 +95,7 @@ $(document).ready(function() {
     e.preventDefault();
     if ($siteChromeForm.length) {
       if ($siteChromeForm.valid()) {
+        preSubmitLinkCleansing();
         $siteChromeForm.attr('target', '_blank');
         var $stage = $siteChromeForm.find('input#stage');
         if (!$stage.exists()) {
@@ -103,6 +104,7 @@ $(document).ready(function() {
         }
         $stage.val('draft');
         $siteChromeForm.submit();
+        setTimeout(function() { window.location.reload(); }, 500);
       }
     } else {
       alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');

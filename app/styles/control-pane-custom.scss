@@ -347,6 +347,18 @@
           }
         }
       }
+      .backupItem {
+        border: 1px solid $color_chrome_box_border;
+        margin: 0.5em 0;
+        padding: 0.5em;
+        position: relative;
+        .deleteBackupLink {
+          @include sprite-repeater-icons;
+          position: absolute;
+          right: 0.45em;
+          top: 0.45em;
+        }
+      }
     }
   }
   &.conditionalFormatting {
